@@ -24,5 +24,6 @@
 	<classpathentry kind="lib" path="C:/Program Files/Java/poi-4.1.0/lib/junit-4.12.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/Java/poi-4.1.0/lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/icy.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/importer/xuggler/VideoImporter.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
