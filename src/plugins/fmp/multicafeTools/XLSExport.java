@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.DataConsolidateFunction;
@@ -25,7 +24,6 @@ public class XLSExport {
 	protected XLSExportOptions 	options 	= null;
 	protected Experiment 		expAll 		= null;
 	int							nintervals	= 0;
-	List <XLSNameAndPosition> 	listOfStacks; 
 
 	public long getnearest(long value, int step) {
 		long diff0 = (value /step)*step;
@@ -36,47 +34,12 @@ public class XLSExport {
 			value = diff1;
 		return value;
 	}
-	
-	private void addDescriptorTitlestoExperimentDescriptors(XSSFSheet sheet, Point pt, boolean transpose) {
 		
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DATE.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.BOXID.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.EXPMT.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.COMMENT.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.STIM.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.CONC.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.CAM.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.CAP.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.CAGE.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.NFLIES.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DUM1.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DUM2.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DUM3.toString());
-		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DUM4.toString());
-		pt.y++;
-	}
-	
-	protected Point addExperimentDescriptorsToHeader(Experiment exp, XSSFSheet sheet, Point pt, boolean transpose) {
+	protected Point writeExperimentDescriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, boolean transpose) {
 		
 		int row = pt.y;
-		
 		int col0 = pt.x;
-		if (col0 == 0)
-			addDescriptorTitlestoExperimentDescriptors(sheet, pt, transpose);
-		pt.x++;
+
 		pt.x++;
 		pt.x++;
 		int colseries = pt.x;
@@ -91,6 +54,7 @@ public class XLSExport {
 		String concentrationR = exp.vSequence.capillaries.concentrationR;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String date = df.format(exp.fileTimeImageFirst.toMillis());	
+		String name0 = path.toString();
 		String name1 = getSubName(path, 2);
 		String cam = "-"; 
 		if (name1.length() >= 5) cam = name1.substring(0, 5); 
@@ -105,6 +69,10 @@ public class XLSExport {
 			if (col >= 0) 
 				pt.x = colseries + col;
 			pt.y = row;
+			
+			// path
+			XLSUtils.setValue(sheet, pt, transpose, name0);
+			pt.y++;
 			
 			// date
 			XLSUtils.setValue(sheet, pt, transpose, date);
@@ -136,6 +104,9 @@ public class XLSExport {
 			int i = getCageFromCapillaryName(name);
 			XLSUtils.setValue(sheet, pt, transpose, i);
 			pt.y++;
+			// cageID
+			XLSUtils.setValue(sheet, pt, transpose, charSeries+i);
+			pt.y++;
 			// nflies
 			int j = 1;
 			if (i < 1 || i > 8)
@@ -154,10 +125,55 @@ public class XLSExport {
 			// dum4
 			XLSUtils.setValue(sheet, pt, transpose, sheetName);
 			pt.y++;
+			// rois
+			XLSUtils.setValue(sheet, pt, transpose, seq.getName());
+			pt.y++;
 		}
 		pt.x = col0;
 		return pt;
 	}
+	
+	public int outputFieldHeaders(XSSFSheet sheet, boolean transpose) {
+		
+		Point pt = new Point(0,0);
+		XLSUtils.setValue(sheet, pt, transpose, "path");
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DATE.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.BOXID.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.EXPMT.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.COMMENT.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.STIM.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.CONC.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.CAM.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.CAP.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.CAGE.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.CAGEID.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.NFLIES.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DUM1.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DUM2.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DUM3.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DUM4.toString());
+		pt.y++;
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.ROIS.toString());
+		pt.y++;
+		
+		return pt.y;
+	}
+	
 	
 	protected int getCageFromCapillaryName(String name) {
 		if (!name .contains("line"))
@@ -209,70 +225,11 @@ public class XLSExport {
         }
 	}
 
-	protected Point writeGenericHeader (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, boolean transpose, String charSeries) {
-
-		pt = addExperimentDescriptorsToHeader(exp, sheet, pt, transpose);
-	
-		XLSUtils.setValue(sheet, pt, transpose, "rois"+charSeries);
-		pt.x++;
-		XLSUtils.setValue(sheet, pt, transpose, "timeMin"+charSeries);
-		pt.x++;
-		XLSUtils.setValue(sheet, pt, transpose, "filename" );
-		pt.x++;
-
-		return pt;
-	}
-
 	protected void xlsCreatePivotTables(XSSFWorkbook workBook, String fromWorkbook) {
         
 		xlsCreatePivotTable(workBook, "pivot_avg", fromWorkbook, DataConsolidateFunction.AVERAGE);
 		xlsCreatePivotTable(workBook, "pivot_std", fromWorkbook, DataConsolidateFunction.STD_DEV);
 		xlsCreatePivotTable(workBook, "pivot_n", fromWorkbook, DataConsolidateFunction.COUNT);
-	}
-	
-	// TODO: replace with chained exp
-	protected Point getStackColumnPosition (Experiment exp, Point pt) {
-		Point localPt = pt;
-		String name = exp.vSequence.capillaries.boxID;
-		boolean found = false;
-		for (XLSNameAndPosition desc: listOfStacks) {
-			if (name .equals(desc.name)) {
-				found = true;
-				localPt = new Point(desc.column, desc.row);
-				if (desc.fileTimeImageLastMinutes < exp.fileTimeImageLastMinutes) {
-					desc.fileTimeImageLastMinutes = exp.fileTimeImageLastMinutes;
-					desc.fileTimeImageLast = exp.fileTimeImageLast;
-				}
-				if (desc.fileTimeImageFirstMinutes 	> exp.fileTimeImageFirstMinutes) {
-					desc.fileTimeImageFirstMinutes 	= exp.fileTimeImageFirstMinutes;
-					desc.fileTimeImageFirst = exp.fileTimeImageFirst;
-				}
-				long filespan = desc.fileTimeImageLastMinutes - desc.fileTimeImageFirstMinutes;
-				if (filespan > desc.fileTimeSpan)
-					desc.fileTimeSpan = filespan;
-				break;
-			}
-		}
-		
-		if (!found) {
-			XLSNameAndPosition desc = new XLSNameAndPosition(name, pt);
-			desc.fileTimeImageFirstMinutes 	= exp.fileTimeImageFirstMinutes;
-			desc.fileTimeImageFirst = exp.fileTimeImageFirst;
-			desc.fileTimeSpan  = desc.fileTimeImageLastMinutes - desc.fileTimeImageFirstMinutes;
-			listOfStacks.add(desc);
-		}
-		return localPt;
-	}
-	
-	// TODO: replace with getSeriesName of exp
-	protected XLSNameAndPosition getStackGlobalSeriesDescriptor (Experiment exp) {
-		String name = exp.vSequence.capillaries.boxID;
-		for (XLSNameAndPosition desc: listOfStacks) {
-			if (name .equals(desc.name)) {
-				return desc;				
-			}
-		}
-		return null;
 	}
 	
 	protected int getColFromKymoSequenceName(String name) {

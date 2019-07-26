@@ -5,8 +5,8 @@ public enum EnumXLSExperimentDescriptors {
 	DATE( "date"), 
 	BOXID("box_ID"), EXPMT("expmt"), COMMENT("comment"),
 	STIM("stim"), CONC("conc"), CAM ("cam"), CAP ("cap"),
-	CAGE("cage"), NFLIES("nflies"), 
-	DUM1("dum1"), DUM2("dum2"), DUM3 ("dum3"), DUM4("dum4");
+	CAGE("cage"), NFLIES("nflies"), CAGEID ("cageID"),
+	DUM1("dum1"), DUM2("dum2"), DUM3 ("dum3"), DUM4("dum4"), ROIS("rois");
 	
 	private String label;
 	EnumXLSExperimentDescriptors (String label) { 

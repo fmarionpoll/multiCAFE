@@ -19,7 +19,7 @@ public class MCExcelTab_Kymos extends JPanel implements ActionListener  {
 	 */
 	private static final long serialVersionUID = 1290058998782225526L;
 
-	JButton 		exportToXLSButton 	= new JButton("save XLS");
+	JButton 	exportToXLSButton 	= new JButton("save XLS");
 	JCheckBox 	topLevelCheckBox 	= new JCheckBox("top", true);
 	JCheckBox 	topLevelDCheckBox 	= new JCheckBox("top delta", true);
 	
@@ -29,13 +29,13 @@ public class MCExcelTab_Kymos extends JPanel implements ActionListener  {
 	JCheckBox 	derivativeCheckBox  = new JCheckBox("derivative", false);
 	JCheckBox	t0CheckBox			= new JCheckBox("t-t0", true);
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty");
-
+	JCheckBox 	combineCheckBox 	= new JCheckBox("combine runs", true);
 	
 	
 	void init(GridLayout capLayout) {	
 		setLayout(capLayout);
 		add(GuiUtil.besidesPanel( topLevelCheckBox, topLevelDCheckBox, bottomLevelCheckBox, consumptionCheckBox));
-		add(GuiUtil.besidesPanel( t0CheckBox, sumCheckBox, new JLabel(" "), new JLabel(" "))); 
+		add(GuiUtil.besidesPanel( t0CheckBox, sumCheckBox, combineCheckBox, new JLabel(" "))); 
 		add(GuiUtil.besidesPanel( onlyaliveCheckBox, new JLabel(" "), new JLabel(" "), exportToXLSButton)); 
 		defineActionListeners();
 	}

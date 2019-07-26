@@ -1,7 +1,6 @@
 package plugins.fmp.multicafeTools;
 
 import java.awt.Point;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.attribute.FileTime;
@@ -29,14 +28,15 @@ public class XLSExportCapillaryResults extends XLSExport {
 		try { 
 			XSSFWorkbook workbook = new XSSFWorkbook(); 
 			workbook.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-			int col_max = 0;
-			int col_end = 0;
+			int col_max = 1;
+			int col_end = 1;
 			int iSeries = 0;
 			
 			options.experimentList.readInfosFromAllExperiments();
-			expAll = options.experimentList.getStartAndEndFromAllExperiments();
+			options.experimentList.chainExperiments();
+			
+			expAll 		= options.experimentList.getStartAndEndFromAllExperiments();
 			expAll.step = options.experimentList.experimentList.get(0).vSequence.analysisStep;
-			listOfStacks = new ArrayList <XLSNameAndPosition> ();
 			
 			progress.setMessage("Load measures...");
 			progress.setLength(options.experimentList.experimentList.size());
@@ -118,15 +118,25 @@ public class XLSExportCapillaryResults extends XLSExport {
 				break;
 			case SUMGULPS:
 			case SUMGULPS_LR:
-				results.data = seq.getArrayListFromRois(EnumArrayListType.cumSum);
+				if (options.combine && exp.expPrevious != null) {
+					int addedValue = getLastValueOfPreviousExp(seq.getName(), exp.expPrevious, xlsoption, optiont0);
+					results.data = seq.addConstant(seq.getArrayListFromRois(EnumArrayListType.cumSum), addedValue);
+				}
+				else
+					results.data = seq.getArrayListFromRois(EnumArrayListType.cumSum);
 				break;
 			case BOTTOMLEVEL:
 				results.data = seq.getArrayListFromRois(EnumArrayListType.bottomLevel);
 				break;
 			case TOPLEVEL:
 			case TOPLEVEL_LR:
-				if (optiont0)
-					results.data = seq.subtractT0(seq.getArrayListFromRois(EnumArrayListType.topLevel));
+				if (optiont0) {
+					int addedValue = 0;
+					if (options.combine && exp.expPrevious != null) {
+						addedValue = getLastValueOfPreviousExp(seq.getName(), exp.expPrevious, xlsoption, optiont0);
+					}
+					results.data = seq.subtractT0AndAddConstant(seq.getArrayListFromRois(EnumArrayListType.topLevel), addedValue);
+				}
 				else
 					results.data = seq.getArrayListFromRois(EnumArrayListType.topLevel);
 				break;
@@ -135,8 +145,40 @@ public class XLSExportCapillaryResults extends XLSExport {
 			}
 			resultsArrayList.add(results);
 		}
-			
 		return resultsArrayList;
+	}
+	
+	private int getLastValueOfPreviousExp(String kymoName, Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
+		int lastValue = 0;
+		
+		for (SequencePlus seq: exp.kymographArrayList) {
+			if (!seq.getName().equals(kymoName))
+				continue;
+			
+			XLSCapillaryResults results = new XLSCapillaryResults();
+			results.name = seq.getName();
+			switch (xlsoption) {
+
+			case SUMGULPS:
+			case SUMGULPS_LR:
+				results.data = seq.getArrayListFromRois(EnumArrayListType.cumSum);
+				break;
+
+			case TOPLEVEL:
+			case TOPLEVEL_LR:
+				if (optiont0) 
+					results.data = seq.subtractT0(seq.getArrayListFromRois(EnumArrayListType.topLevel));
+				else
+					results.data = seq.getArrayListFromRois(EnumArrayListType.topLevel);
+				break;
+			default:
+				return lastValue;
+			}
+			
+			lastValue = results.data.get(results.data.size()-1);
+			return lastValue;
+		}
+		return lastValue;
 	}
 	
 	private void trimDeadsFromArrayList(Experiment exp, ArrayList <XLSCapillaryResults> resultsArrayList) {
@@ -172,64 +214,28 @@ public class XLSExportCapillaryResults extends XLSExport {
 	
 	private int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, String title, EnumXLSExportItems xlsExportOption, int col0, String charSeries, ArrayList <XLSCapillaryResults> arrayList) {
 			
-		XSSFSheet sheet = workBook.getSheet(title );
-		if (sheet == null)
+		XSSFSheet sheet = workBook.getSheet(title);
+		if (sheet == null) {
 			sheet = workBook.createSheet(title);
+			outputFieldHeaders(sheet, options.transpose);
+		}
 		
 		Point pt = new Point(col0, 0);
 		if (options.collateSeries) {
-			pt = getStackColumnPosition(exp, pt);
+			pt.x = options.experimentList.getStackColumnPosition(exp, col0);
 		}
 		
-		pt = writeGlobalInfos(exp, sheet, pt, options.transpose);
-		pt = writeHeader(exp, sheet, xlsExportOption, pt, options.transpose, charSeries);
+		pt = writeSeriesInfos(exp, sheet, xlsExportOption, pt, options.transpose, charSeries);
 		pt = writeData(exp, sheet, xlsExportOption, pt, options.transpose, charSeries, arrayList);
 		return pt.x;
 	}
 	
-	private Point writeGlobalInfos(Experiment exp, XSSFSheet sheet, Point pt, boolean transpose) {
-
-		int col0 = pt.x;
-		XLSUtils.setValue(sheet, pt, transpose, "expt");
-		pt.x++;
-		File file = new File(exp.vSequence.getFileName(0));
-		String path = file.getParent();
-		XLSUtils.setValue(sheet, pt, transpose, path);
-		pt.x++;
-		XLSUtils.setValue(sheet, pt, transpose, "µl" );
-		pt.x++;
-		XLSUtils.setValue(sheet, pt, transpose, "pixels" );
-		pt.x++;
-		pt.y++;
+	private Point writeSeriesInfos (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, boolean transpose, String charSeries) {
 		
-		pt.x = col0;
-		XLSUtils.setValue(sheet, pt, transpose, "scale");
-		pt.x++;
-		pt.x++;
-		XLSUtils.setValue(sheet, pt, transpose, exp.vSequence.capillaries.volume);
-		pt.x++;
-		XLSUtils.setValue(sheet, pt, transpose, exp.vSequence.capillaries.pixels);
-		pt.x = col0;
-		pt.y++;
-		
-		return pt;
-	}
-
-	private Point writeHeader (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, boolean transpose, String charSeries) {
-		
-		int col0 = pt.x;
-		pt = writeGenericHeader(exp, sheet, option, pt, transpose, charSeries);
-		int colseries = pt.x;
-		
-		for (SequencePlus seq: exp.kymographArrayList) {
-			int col = getColFromKymoSequenceName(seq.getName());
-			if (col >= 0)
-				pt.x = colseries + col;
-			XLSUtils.setValue(sheet, pt, transpose, seq.getName());
-			pt.x++;
-		}
-		pt.x = col0;
-		pt.y++;
+		if (exp.expPrevious == null)
+			writeExperimentDescriptors(exp, charSeries, sheet, pt, transpose);
+		else
+			pt.y += 17;
 		return pt;
 	}
 		
@@ -251,21 +257,12 @@ public class XLSExportCapillaryResults extends XLSExport {
 		long referenceFileTimeImageLastMinutes = 0;
 		
 		if (options.absoluteTime) {
-			referenceFileTimeImageFirstMinutes = expAll.fileTimeImageFirstMinutes;
+			referenceFileTimeImageFirstMinutes = expAll.fileTimeImageFirstMinute;
 			referenceFileTimeImageLastMinutes = expAll.fileTimeImageLastMinutes;
 		}
 		else {
-			// TODO replace with exp chained
-			XLSNameAndPosition desc = getStackGlobalSeriesDescriptor(exp);
-			if (desc != null) {
-				referenceFileTimeImageFirstMinutes = desc.fileTimeImageFirstMinutes;
-				referenceFileTimeImageLastMinutes = desc.fileTimeImageLastMinutes;
-			}
-			else
-			{
-				referenceFileTimeImageFirstMinutes = exp.fileTimeImageFirstMinutes;
-				referenceFileTimeImageLastMinutes = exp.fileTimeImageLastMinutes;
-			}
+			referenceFileTimeImageFirstMinutes = options.experimentList.getFirstMinute(exp);
+			referenceFileTimeImageLastMinutes = options.experimentList.getLastMinute(exp);
 		}
 			
 		pt.x =0;
@@ -289,7 +286,6 @@ public class XLSExportCapillaryResults extends XLSExport {
 			long diff_current = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
 			pt.y = (int) (diff_current/step + row0);
 
-			pt.x++;
 			XLSUtils.setValue(sheet, pt, transpose, imageTimeMinutes);
 			pt.x++;
 			if (exp.vSequence.isFileStack()) {

@@ -114,6 +114,30 @@ public class SequencePlus extends SequenceVirtual  {
 		return array;
 	}
 	
+	public ArrayList<Integer> subtractT0AndAddConstant (ArrayList<Integer> array, int constant) {
+
+		if (array == null)
+			return null;
+		int item0 = array.get(0) - constant;
+		for (int index= 0; index < array.size(); index++) {
+			int value = array.get(index);
+			array.set(index, value-item0);
+		}
+		return array;
+	}
+	
+	public ArrayList<Integer> addConstant (ArrayList<Integer> array, int constant) {
+
+		if (array == null)
+			return null;
+		for (int index= 0; index < array.size(); index++) {
+			int value = array.get(index);
+			array.set(index, value + constant);
+		}
+		return array;
+	}
+
+	
 	private ArrayList<Integer> copyFirstRoiMatchingFilterToDataArray (String filter) {
 		
 		ArrayList<ROI2D> listRois = getROI2Ds();

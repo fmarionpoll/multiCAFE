@@ -147,6 +147,7 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 		options.sum 			= kymosTab.sumCheckBox.isSelected(); 
 		options.t0 				= kymosTab.t0CheckBox.isSelected();
 		options.onlyalive 		= kymosTab.onlyaliveCheckBox.isSelected();
+		options.combine			= kymosTab.combineCheckBox.isSelected();
 
 		getCommonOptions(options);
 		return options;

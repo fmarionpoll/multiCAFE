@@ -35,7 +35,6 @@ public class XLSExportMoveResults extends XLSExport {
 			options.experimentList.readInfosFromAllExperiments();
 			expAll = options.experimentList.getStartAndEndFromAllExperiments();
 			expAll.step = options.experimentList.experimentList.get(0).vSequence.analysisStep;
-			listOfStacks = new ArrayList <XLSNameAndPosition> ();
 			
 			progress.setMessage( "Load measures...");
 			progress.setLength(options.experimentList.experimentList.size());
@@ -111,9 +110,11 @@ public class XLSExportMoveResults extends XLSExport {
 			sheet = workBook.createSheet(xlsExportOption.toString());
 		
 		Point pt = new Point(col0, 0);
+
 		if (options.collateSeries) {
-			pt = getStackColumnPosition(exp, pt);
+			pt.x = options.experimentList.getStackColumnPosition(exp, col0);
 		}
+		
 		pt = writeGlobalInfos(exp, sheet, pt, options.transpose, xlsExportOption);
 		pt = writeHeader(exp, sheet, pt, xlsExportOption, options.transpose, charSeries);
 		pt = writeData(exp, sheet, pt, xlsExportOption, arrayList, options.transpose, charSeries);
@@ -160,7 +161,11 @@ public class XLSExportMoveResults extends XLSExport {
 	private Point writeHeader (Experiment exp, XSSFSheet sheet, Point pt, EnumXLSExportItems xlsExportOption, boolean transpose, String charSeries) {
 		
 		int col0 = pt.x;
-		pt = writeGenericHeader(exp, sheet, xlsExportOption, pt, transpose, charSeries);
+		// TODO: check if this is ok
+//		pt = writeGenericHeader(exp, sheet, xlsExportOption, pt, transpose, charSeries);
+		if (exp.expPrevious == null)
+			writeExperimentDescriptors(exp, charSeries, sheet, pt, transpose);
+		
 		
 		switch (xlsExportOption) {
 		case DISTANCE:
@@ -210,11 +215,11 @@ public class XLSExportMoveResults extends XLSExport {
 		long imageTimeMinutes = imageTime.toMillis()/ 60000;
 		if (options.absoluteTime && (col0 ==0)) {
 			imageTimeMinutes = expAll.fileTimeImageLastMinutes;
-			long diff = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinutes, step)/ step;
-			imageTimeMinutes = expAll.fileTimeImageFirstMinutes;
+			long diff = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinute, step)/ step;
+			imageTimeMinutes = expAll.fileTimeImageFirstMinute;
 			pt.x = col0;
 			for (int i = 0; i<= diff; i++) {
-				long diff2 = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinutes, step);
+				long diff2 = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinute, step);
 				pt.y = (int) (diff2/step + row0); 
 				XLSUtils.setValue(sheet, pt, transpose, "t"+diff2);
 				imageTimeMinutes += step;
@@ -235,7 +240,7 @@ public class XLSExportMoveResults extends XLSExport {
 			imageTimeMinutes = imageTime.toMillis()/ 60000;
 
 			if (options.absoluteTime) {
-				long diff = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinutes, step);
+				long diff = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinute, step);
 				pt.y = (int) (diff/step + row0);
 				diff0 = diff; //getnearest(imageTimeMinutes-exp.fileTimeImageFirst.toMillis()/60000, step);
 			} else {

@@ -14,7 +14,7 @@ public class Experiment {
 	
 	public FileTime						fileTimeImageFirst;
 	public FileTime						fileTimeImageLast;
-	public long							fileTimeImageFirstMinutes 	= 0;
+	public long							fileTimeImageFirstMinute 	= 0;
 	public long							fileTimeImageLastMinutes 	= 0;
 	public int							number_of_frames 			= 0;
 	
@@ -23,9 +23,11 @@ public class Experiment {
 	public int 							endFrame 					= 0;
 	
 	public String						boxIDFromFilePath;		// TODO suppress here and move to multicafe
-	public String						boxID = null;
-	public Experiment 					expPrevious = null;
-	public Experiment 					expNext = null;
+	public String						boxID 						= null;
+	public int							col							= -1;
+	
+	public Experiment 					expPrevious 				= null;
+	public Experiment 					expNext 					= null;
 	
 	
 	public boolean openSequenceAndMeasures() {
@@ -37,7 +39,7 @@ public class Experiment {
 		fileTimeImageLast = vSequence.getImageModifiedTime(vSequence.getSizeT()-1);
 		//System.out.println("read expt: "+ filename+" .....size "+ vSequence.getSizeT());
 		
-		fileTimeImageFirstMinutes = fileTimeImageFirst.toMillis()/60000;
+		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinutes = fileTimeImageLast.toMillis()/60000;
 		
 		if (!vSequence.xmlReadCapillaryTrackDefault()) 

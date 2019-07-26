@@ -2,7 +2,6 @@ package plugins.fmp.multicafeSequence;
 
 
 import java.util.ArrayList;
-
 import icy.gui.frame.progress.ProgressFrame;
 
 public class ExperimentList {
@@ -36,7 +35,7 @@ public class ExperimentList {
 			progress.incPosition();
 		}
 		
-		expglobal.fileTimeImageFirstMinutes = expglobal.fileTimeImageFirst.toMillis()/60000;
+		expglobal.fileTimeImageFirstMinute = expglobal.fileTimeImageFirst.toMillis()/60000;
 		expglobal.fileTimeImageLastMinutes = expglobal.fileTimeImageLast.toMillis()/60000;
 		progress.close();
 		return expglobal;
@@ -68,7 +67,7 @@ public class ExperimentList {
 				
 				if (expi.boxID .equals(exp.boxID)) {
 					// if before, insert eventually
-					if (expi.fileTimeImageLastMinutes < exp.fileTimeImageFirstMinutes) {
+					if (expi.fileTimeImageLastMinutes < exp.fileTimeImageFirstMinute) {
 						if (exp.expPrevious == null)
 							exp.expPrevious = expi;
 						else if (expi.fileTimeImageLastMinutes > exp.expPrevious.fileTimeImageLastMinutes ) {
@@ -78,10 +77,10 @@ public class ExperimentList {
 						continue;
 					}
 					// if after, insert eventually
-					if (expi.fileTimeImageFirstMinutes > exp.fileTimeImageLastMinutes) {
+					if (expi.fileTimeImageFirstMinute > exp.fileTimeImageLastMinutes) {
 						if (exp.expNext == null)
 							exp.expNext = expi;
-						else if (expi.fileTimeImageFirstMinutes < exp.expNext.fileTimeImageFirstMinutes ) {
+						else if (expi.fileTimeImageFirstMinute < exp.expNext.fileTimeImageFirstMinute ) {
 							exp.expNext.expPrevious = expi;
 							exp.expNext = expi;
 						}
@@ -93,5 +92,52 @@ public class ExperimentList {
 			}
 		}
 		return flagOK;
+	}
+	
+	public long getFirstMinute(Experiment exp) {
+		
+		long firstMinute = exp.fileTimeImageFirstMinute;
+		for (Experiment expi: experimentList) {
+			if (!expi.boxID .equals(exp.boxID))
+				continue;
+			// if before, change
+			if (expi.fileTimeImageFirstMinute < firstMinute) 
+				firstMinute = expi.fileTimeImageFirstMinute;
+		}				
+		return firstMinute;
+	}
+	
+	public long getLastMinute(Experiment exp) {
+		
+		long lastMinute = exp.fileTimeImageLastMinutes;
+		for (Experiment expi: experimentList) {
+			if (!expi.boxID .equals(exp.boxID))
+				continue;
+			// if before, change
+			if (expi.fileTimeImageLastMinutes > lastMinute) 
+				lastMinute = expi.fileTimeImageLastMinutes;
+		}			
+		return lastMinute;
+	}
+	
+	public int getStackColumnPosition (Experiment exp, int col0) {
+		
+		boolean found = false;
+		for (Experiment expi: experimentList) {
+			if (!expi.boxID .equals(exp.boxID) || expi == exp)
+				continue;
+			if (expi.col < 0)
+				continue;
+			
+			found = true;
+			exp.col = expi.col;
+			col0 = exp.col;
+				break;
+		}
+		
+		if (!found) {
+			exp.col = col0;
+		}
+		return col0;
 	}
 }
