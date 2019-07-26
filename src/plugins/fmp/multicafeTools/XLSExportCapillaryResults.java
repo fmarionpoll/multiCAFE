@@ -104,6 +104,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 	private ArrayList <XLSCapillaryResults> getDataFromRois(Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
 		
 		ArrayList <XLSCapillaryResults> resultsArrayList = new ArrayList <XLSCapillaryResults> ();	
+		double scalingFactorToPhysicalUnits = exp.vSequence.capillaries.volume / exp.vSequence.capillaries.pixels;
 		
 		for (SequencePlus seq: exp.kymographArrayList) {
 			XLSCapillaryResults results = new XLSCapillaryResults();
@@ -119,7 +120,8 @@ public class XLSExportCapillaryResults extends XLSExport {
 			case SUMGULPS:
 			case SUMGULPS_LR:
 				if (options.combine && exp.expPrevious != null) {
-					int addedValue = getLastValueOfPreviousExp(seq.getName(), exp.expPrevious, xlsoption, optiont0);
+					double dvalue = getLastValueOfPreviousExp(seq.getName(), exp.expPrevious, xlsoption, optiont0);
+					int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
 					results.data = seq.addConstant(seq.getArrayListFromRois(EnumArrayListType.cumSum), addedValue);
 				}
 				else
@@ -131,11 +133,13 @@ public class XLSExportCapillaryResults extends XLSExport {
 			case TOPLEVEL:
 			case TOPLEVEL_LR:
 				if (optiont0) {
-					int addedValue = 0;
 					if (options.combine && exp.expPrevious != null) {
-						addedValue = getLastValueOfPreviousExp(seq.getName(), exp.expPrevious, xlsoption, optiont0);
+						double dvalue = getLastValueOfPreviousExp(seq.getName(), exp.expPrevious, xlsoption, optiont0);
+						int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
+						results.data = seq.subtractT0AndAddConstant(seq.getArrayListFromRois(EnumArrayListType.topLevel), addedValue);
 					}
-					results.data = seq.subtractT0AndAddConstant(seq.getArrayListFromRois(EnumArrayListType.topLevel), addedValue);
+					else
+						results.data = seq.subtractT0(seq.getArrayListFromRois(EnumArrayListType.topLevel));
 				}
 				else
 					results.data = seq.getArrayListFromRois(EnumArrayListType.topLevel);
@@ -148,8 +152,11 @@ public class XLSExportCapillaryResults extends XLSExport {
 		return resultsArrayList;
 	}
 	
-	private int getLastValueOfPreviousExp(String kymoName, Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
-		int lastValue = 0;
+	private double getLastValueOfPreviousExp(String kymoName, Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
+		
+		double lastValue = 0;
+		if (exp.expPrevious != null)
+			lastValue =  getLastValueOfPreviousExp( kymoName,  exp.expPrevious, xlsoption, optiont0);
 		
 		for (SequencePlus seq: exp.kymographArrayList) {
 			if (!seq.getName().equals(kymoName))
@@ -158,7 +165,6 @@ public class XLSExportCapillaryResults extends XLSExport {
 			XLSCapillaryResults results = new XLSCapillaryResults();
 			results.name = seq.getName();
 			switch (xlsoption) {
-
 			case SUMGULPS:
 			case SUMGULPS_LR:
 				results.data = seq.getArrayListFromRois(EnumArrayListType.cumSum);
@@ -175,7 +181,10 @@ public class XLSExportCapillaryResults extends XLSExport {
 				return lastValue;
 			}
 			
-			lastValue = results.data.get(results.data.size()-1);
+			double scalingFactorToPhysicalUnits = exp.vSequence.capillaries.volume / exp.vSequence.capillaries.pixels;
+			double valuePreviousSeries = results.data.get(results.data.size()-1) * scalingFactorToPhysicalUnits;
+			
+			lastValue = lastValue + valuePreviousSeries;
 			return lastValue;
 		}
 		return lastValue;

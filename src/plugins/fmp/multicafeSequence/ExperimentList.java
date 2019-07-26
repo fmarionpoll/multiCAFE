@@ -71,7 +71,9 @@ public class ExperimentList {
 						if (exp.expPrevious == null)
 							exp.expPrevious = expi;
 						else if (expi.fileTimeImageLastMinutes > exp.expPrevious.fileTimeImageLastMinutes ) {
-							exp.expPrevious.expNext = expi;
+							(exp.expPrevious).expNext = expi;
+							expi.expPrevious = exp.expPrevious;
+							expi.expNext = exp;
 							exp.expPrevious = expi;
 						}
 						continue;
@@ -81,7 +83,9 @@ public class ExperimentList {
 						if (exp.expNext == null)
 							exp.expNext = expi;
 						else if (expi.fileTimeImageFirstMinute < exp.expNext.fileTimeImageFirstMinute ) {
-							exp.expNext.expPrevious = expi;
+							(exp.expNext).expPrevious = expi;
+							expi.expNext = (exp.expNext);
+							expi.expPrevious = exp;
 							exp.expNext = expi;
 						}
 						continue;
