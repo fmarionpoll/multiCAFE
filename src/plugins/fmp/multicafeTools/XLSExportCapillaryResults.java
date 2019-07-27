@@ -237,7 +237,10 @@ public class XLSExportCapillaryResults extends XLSExport {
 		if (ilastalive > (arraysize-1))
 			ilastalive = arraysize-1;
 		
-		array.subList(ilastalive, arraysize-1).clear();		
+//		array.subList(ilastalive, arraysize-1).clear();		
+//		array.trimToSize();
+		for (int i=array.size()-1; i> ilastalive; i--)
+			array.remove(i);
 	}
 	
 	private int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, String title, EnumXLSExportItems xlsExportOption, int col0, String charSeries, ArrayList <XLSCapillaryResults> arrayList) {
