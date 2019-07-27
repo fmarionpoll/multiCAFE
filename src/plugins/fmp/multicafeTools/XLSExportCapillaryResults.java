@@ -119,8 +119,8 @@ public class XLSExportCapillaryResults extends XLSExport {
 				break;
 			case SUMGULPS:
 			case SUMGULPS_LR:
-				if (options.combine && exp.expPrevious != null) {
-					double dvalue = getLastValueOfPreviousExp(seq.getName(), exp.expPrevious, xlsoption, optiont0);
+				if (options.combine && exp.previousExperiment != null) {
+					double dvalue = getLastValueOfPreviousExp(seq.getName(), exp.previousExperiment, xlsoption, optiont0);
 					int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
 					results.data = seq.addConstant(seq.getArrayListFromRois(EnumArrayListType.cumSum), addedValue);
 				}
@@ -133,8 +133,8 @@ public class XLSExportCapillaryResults extends XLSExport {
 			case TOPLEVEL:
 			case TOPLEVEL_LR:
 				if (optiont0) {
-					if (options.combine && exp.expPrevious != null) {
-						double dvalue = getLastValueOfPreviousExp(seq.getName(), exp.expPrevious, xlsoption, optiont0);
+					if (options.combine && exp.previousExperiment != null) {
+						double dvalue = getLastValueOfPreviousExp(seq.getName(), exp.previousExperiment, xlsoption, optiont0);
 						int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
 						results.data = seq.subtractT0AndAddConstant(seq.getArrayListFromRois(EnumArrayListType.topLevel), addedValue);
 					}
@@ -155,8 +155,8 @@ public class XLSExportCapillaryResults extends XLSExport {
 	private double getLastValueOfPreviousExp(String kymoName, Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
 		
 		double lastValue = 0;
-		if (exp.expPrevious != null)
-			lastValue =  getLastValueOfPreviousExp( kymoName,  exp.expPrevious, xlsoption, optiont0);
+		if (exp.previousExperiment != null)
+			lastValue =  getLastValueOfPreviousExp( kymoName,  exp.previousExperiment, xlsoption, optiont0);
 		
 		for (SequencePlus seq: exp.kymographArrayList) {
 			if (!seq.getName().equals(kymoName))
@@ -202,7 +202,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 			for (XLSCapillaryResults capillaryResult : resultsArrayList) {
 				
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
-					if (!isAliveInNextBout(exp.expNext, cagenumber)) {
+					if (!isAliveInNextBout(exp.nextExperiment, cagenumber)) {
 						int ilastalive = flypos.getLastIntervalAlive();
 						trimArrayLength(capillaryResult.data, ilastalive);
 					}
@@ -236,9 +236,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 			ilastalive = 0;
 		if (ilastalive > (arraysize-1))
 			ilastalive = arraysize-1;
-		
-//		array.subList(ilastalive, arraysize-1).clear();		
-//		array.trimToSize();
+
 		for (int i=array.size()-1; i> ilastalive; i--)
 			array.remove(i);
 	}
@@ -263,7 +261,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 	
 	private Point writeSeriesInfos (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, boolean transpose, String charSeries) {
 		
-		if (exp.expPrevious == null)
+		if (exp.previousExperiment == null)
 			writeExperimentDescriptors(exp, charSeries, sheet, pt, transpose);
 		else
 			pt.y += 17;

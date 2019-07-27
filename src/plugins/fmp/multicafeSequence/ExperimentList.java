@@ -68,29 +68,30 @@ public class ExperimentList {
 				if (expi.boxID .equals(exp.boxID)) {
 					// if before, insert eventually
 					if (expi.fileTimeImageLastMinutes < exp.fileTimeImageFirstMinute) {
-						if (exp.expPrevious == null)
-							exp.expPrevious = expi;
-						else if (expi.fileTimeImageLastMinutes > exp.expPrevious.fileTimeImageLastMinutes ) {
-							(exp.expPrevious).expNext = expi;
-							expi.expPrevious = exp.expPrevious;
-							expi.expNext = exp;
-							exp.expPrevious = expi;
+						if (exp.previousExperiment == null)
+							exp.previousExperiment = expi;
+						else if (expi.fileTimeImageLastMinutes > exp.previousExperiment.fileTimeImageLastMinutes ) {
+							(exp.previousExperiment).nextExperiment = expi;
+							expi.previousExperiment = exp.previousExperiment;
+							expi.nextExperiment = exp;
+							exp.previousExperiment = expi;
 						}
 						continue;
 					}
 					// if after, insert eventually
 					if (expi.fileTimeImageFirstMinute > exp.fileTimeImageLastMinutes) {
-						if (exp.expNext == null)
-							exp.expNext = expi;
-						else if (expi.fileTimeImageFirstMinute < exp.expNext.fileTimeImageFirstMinute ) {
-							(exp.expNext).expPrevious = expi;
-							expi.expNext = (exp.expNext);
-							expi.expPrevious = exp;
-							exp.expNext = expi;
+						if (exp.nextExperiment == null)
+							exp.nextExperiment = expi;
+						else if (expi.fileTimeImageFirstMinute < exp.nextExperiment.fileTimeImageFirstMinute ) {
+							(exp.nextExperiment).previousExperiment = expi;
+							expi.nextExperiment = (exp.nextExperiment);
+							expi.previousExperiment = exp;
+							exp.nextExperiment = expi;
 						}
 						continue;
 					}
 					// it should never arrive here
+					System.out.println("error in chainExperiments");
 					flagOK = false;
 				}
 			}

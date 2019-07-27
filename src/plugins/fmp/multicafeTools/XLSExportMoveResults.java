@@ -163,7 +163,7 @@ public class XLSExportMoveResults extends XLSExport {
 		int col0 = pt.x;
 		// TODO: check if this is ok
 //		pt = writeGenericHeader(exp, sheet, xlsExportOption, pt, transpose, charSeries);
-		if (exp.expPrevious == null)
+		if (exp.previousExperiment == null)
 			writeExperimentDescriptors(exp, charSeries, sheet, pt, transpose);
 		
 		

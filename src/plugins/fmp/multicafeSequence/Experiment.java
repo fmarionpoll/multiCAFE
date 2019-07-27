@@ -22,12 +22,10 @@ public class Experiment {
 	public int 							step 						= 1;
 	public int 							endFrame 					= 0;
 	
-	public String						boxIDFromFilePath;		// TODO suppress here and move to multicafe
 	public String						boxID 						= null;
 	public int							col							= -1;
-	
-	public Experiment 					expPrevious 				= null;
-	public Experiment 					expNext 					= null;
+	public Experiment 					previousExperiment			= null;		// pointer to chain this experiment to another one before
+	public Experiment 					nextExperiment 				= null;		// pointer to chain this experiment to another one after
 	
 	
 	public boolean openSequenceAndMeasures() {
@@ -45,7 +43,6 @@ public class Experiment {
 		if (!vSequence.xmlReadCapillaryTrackDefault()) 
 			return false;
 		
-		boxIDFromFilePath = getBoxIdentificatorFromFilePath();
 		boxID = vSequence.capillaries.boxID;
 		
 		String directory = vSequence.getDirectory() +"\\results";

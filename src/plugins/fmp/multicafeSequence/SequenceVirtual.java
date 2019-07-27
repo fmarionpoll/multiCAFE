@@ -10,7 +10,6 @@ import java.nio.file.attribute.FileTime;
 
 import icy.canvas.Canvas2D;
 import icy.gui.dialog.LoaderDialog;
-import icy.gui.dialog.MessageDialog;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
