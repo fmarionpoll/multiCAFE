@@ -200,12 +200,31 @@ public class XLSExportCapillaryResults extends XLSExport {
 				continue;
 			
 			for (XLSCapillaryResults capillaryResult : resultsArrayList) {
+				
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
-					int ilastalive = flypos.getLastIntervalAlive();
-					trimArrayLength(capillaryResult.data, ilastalive);
+					if (!isAliveInNextBout(exp.expNext, cagenumber)) {
+						int ilastalive = flypos.getLastIntervalAlive();
+						trimArrayLength(capillaryResult.data, ilastalive);
+					}
 				}
 			}
 		}		
+	}
+	
+	private boolean isAliveInNextBout(Experiment exp, int cagenumber) {
+		boolean isalive = false;
+		if (exp != null) {
+			for (XYTaSeries flypos: exp.vSequence.cages.flyPositionsList) {
+				
+				String cagenumberString = flypos.roi.getName().substring(4);
+				if (Integer.parseInt(cagenumberString) != cagenumber)
+					continue;
+				
+				isalive = true;
+				break;
+			}
+		}
+		return isalive;
 	}
 	
 	private void trimArrayLength (ArrayList<Integer> array, int ilastalive) {
