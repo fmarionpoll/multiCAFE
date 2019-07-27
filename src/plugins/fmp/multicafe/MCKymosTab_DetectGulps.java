@@ -24,17 +24,18 @@ public class MCKymosTab_DetectGulps extends JPanel implements ActionListener {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5590697762090397890L;
-	JCheckBox	detectAllGulpsCheckBox 	= new JCheckBox ("all", true);
-	private JButton		displayTransform2Button	= new JButton("Display");
-	private JTextField	spanTransf2TextField	= new JTextField("3");
-	private  JTextField 	detectGulpsThresholdTextField 	= new JTextField("90");
-	private JButton 	detectGulpsButton 		= new JButton("Detect");
-	JComboBox<TransformOp> transformForGulpsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
-			TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
-	private	int	spanDiffTransf2 			= 3;
-	private double detectGulpsThreshold 	= 5.;
-	private MultiCAFE parent0;
+	private static final long 	serialVersionUID 				= -5590697762090397890L;
+	
+	JCheckBox					detectAllGulpsCheckBox 			= new JCheckBox ("all", true);
+	private JButton				displayTransform2Button			= new JButton("Display");
+	private JTextField			spanTransf2TextField			= new JTextField("3");
+	private  JTextField 		detectGulpsThresholdTextField 	= new JTextField("90");
+	private JButton 			detectGulpsButton 				= new JButton("Detect");
+	JComboBox<TransformOp> 		transformForGulpsComboBox 		= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
+	private	int					spanDiffTransf2 				= 3;
+	private double 				detectGulpsThreshold 			= 5.;
+	private MultiCAFE 			parent0;
+	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);

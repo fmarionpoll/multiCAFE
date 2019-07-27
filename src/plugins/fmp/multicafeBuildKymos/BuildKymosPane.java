@@ -1,4 +1,4 @@
-package plugins.fmp.multicafeExport;
+package plugins.fmp.multicafeBuildKymos;
 
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -58,9 +58,9 @@ public class BuildKymosPane  extends JPanel implements PropertyChangeListener, A
 
 
 	
-private ExportMultiCAFE 	parent0 	= null;
+private BuildKymographs 	parent0 	= null;
 	
-	public void init (JPanel mainPanel, String string, ExportMultiCAFE parent0) {
+	public void init (JPanel mainPanel, String string, BuildKymographs parent0) {
 		this.parent0 = parent0;
 		
 		final JPanel kymographsPanel = GuiUtil.generatePanel("KYMOGRAPHS");

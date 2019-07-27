@@ -19,6 +19,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 public class MCBuildDetect_Gulps {
 	
 	public void detectGulps(MultiCAFE parent0) {	
+		
 		// send some info
 		ProgressFrame progress = new ProgressFrame("Gulp analysis started");
 		progress.setLength(parent0.kymographArrayList.size() * (parent0.vSequence.analysisEnd - parent0.vSequence.analysisStart +1));
@@ -65,7 +66,8 @@ public class MCBuildDetect_Gulps {
 
 			// scan each image row
 			kymographSeq.derivedValuesArrayList.add(0);
-			// once an event is detected, we will cut and save the corresponding part of topLevelArray
+			
+			// once an event is detected, we will cut and paste the corresponding part of topLevelArray
 			ArrayList <Integer> topLevelArray = kymographSeq.getArrayListFromRois(EnumArrayListType.topLevel);
 
 			for (ix = 1; ix < topLevelArray.size(); ix++) 

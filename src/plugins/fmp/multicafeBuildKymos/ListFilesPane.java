@@ -1,4 +1,4 @@
-package plugins.fmp.multicafeExport;
+package plugins.fmp.multicafeBuildKymos;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -32,19 +32,19 @@ public class ListFilesPane extends JPanel implements PropertyChangeListener, Act
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -41617764209983340L;
+	private static final long serialVersionUID 	= -41617764209983340L;
 	
-	public JTabbedPane 	tabsPane 	= new JTabbedPane();
-	public JTextField 	filterTextField 	= new JTextField("roisline");
-	public JButton 	findButton				= new JButton("Select root directory and search...");
-	public JButton 	clearSelectedButton		= new JButton("Clear selected");
-	public JButton 	clearAllButton			= new JButton("Clear all");
+	public JTabbedPane 	tabsPane 				= new JTabbedPane();
+	public JTextField 	filterTextField 		= new JTextField("capillarytrack");
+	public JButton 		findButton				= new JButton("Select root directory and search...");
+	public JButton 		clearSelectedButton		= new JButton("Clear selected");
+	public JButton 		clearAllButton			= new JButton("Clear all");
 	public JList<String> xmlFilesJList			= new JList<String>(new DefaultListModel<String>());
 	
-	private ExportMultiCAFE 	parent0 	= null;
+	private BuildKymographs parent0 			= null;
 	
 	
-	public void init (JPanel mainPanel, String string, ExportMultiCAFE parent0) {
+	public void init (JPanel mainPanel, String string, BuildKymographs parent0) {
 		this.parent0 = parent0;
 		final JPanel sourcePanel = GuiUtil.generatePanel("SOURCE");
 		mainPanel.add(GuiUtil.besidesPanel(sourcePanel));

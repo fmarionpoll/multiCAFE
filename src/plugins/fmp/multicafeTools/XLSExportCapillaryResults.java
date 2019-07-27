@@ -33,7 +33,8 @@ public class XLSExportCapillaryResults extends XLSExport {
 			int iSeries = 0;
 			
 			options.experimentList.readInfosFromAllExperiments();
-			options.experimentList.chainExperiments();
+			if (options.combine)
+				options.experimentList.chainExperiments();
 			
 			expAll 		= options.experimentList.getStartAndEndFromAllExperiments();
 			expAll.step = options.experimentList.experimentList.get(0).vSequence.analysisStep;
