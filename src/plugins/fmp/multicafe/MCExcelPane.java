@@ -88,7 +88,6 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 					XLSExportCapillaryResults xlsExport = new XLSExportCapillaryResults();
 					xlsExport.exportToFile(filename, getCapillariesOptions());
 				}});
-				
 				firePropertyChange("EXPORT_TO_EXCEL", false, true);	
 			}
 		}
@@ -114,8 +113,9 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 			}
 			options.pivotBinStep = (int) optionsTab.pivotBinStep.getValue();
 		}
-		else
+		else {
 			options.transpose 	= optionsTab.transposeCheckBox.isSelected();
+		}
 		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
 		options.experimentList 	= new ExperimentList ();
 		options.collateSeries 	= optionsTab.collateSeriesCheckBox.isSelected();

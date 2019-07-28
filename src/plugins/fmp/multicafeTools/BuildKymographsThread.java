@@ -3,13 +3,17 @@ package plugins.fmp.multicafeTools;
 
 import java.util.ArrayList;
 
+import javax.swing.SwingUtilities;
+
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.main.Icy;
 import icy.sequence.Sequence;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
+
 import plugins.fmp.multicafeSequence.SequencePlus;
+
 import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.nchenouard.kymographtracker.Util;
 import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
@@ -24,21 +28,21 @@ public class BuildKymographsThread implements Runnable
 	private ArrayList<ArrayList <double []>> 		rois_tabValuesList 	= new ArrayList<ArrayList <double []>>();
 	private ArrayList<IcyBufferedImage>				imageArrayList 		= new ArrayList<IcyBufferedImage> ();
 	private ArrayList<double []> 					sourceValuesList 	= null;
-	public boolean 				stopFlag 			= false;
-	public boolean 				threadRunning 		= false;
+	public boolean 									stopFlag 			= false;
+	public boolean 									threadRunning 		= false;
 	
-	private Viewer 				sequenceViewer 		= null;
-	private IcyBufferedImage 	workImage 			= null; 
-	private Sequence 			seqForRegistration	= new Sequence();
-	private DataType 			dataType 			= DataType.INT;
-	private int imagewidth =1;
+	private Viewer 									sequenceViewer 		= null;
+	private IcyBufferedImage 						workImage 			= null; 
+	private Sequence 								seqForRegistration	= new Sequence();
+	private DataType 								dataType 			= DataType.INT;
+	private int 									imagewidth =1;
 	
 	@Override
 	public void run() {
 
 		if (options.vSequence == null)
 			return;
-		
+		System.out.println("start buildkymographsThreads");
 		threadRunning = true;
 		if (options.startFrame < 0) 
 			options.startFrame = 0;
@@ -49,15 +53,17 @@ public class BuildKymographsThread implements Runnable
 		progressBar.initStuff(nbframes);
 		stopFlag = false;
 
-		initKymographs();
+		initArraysToBuildKymographImages();
 		
 		int vinputSizeX = options.vSequence.getSizeX();
 		options.vSequence.beginUpdate();
 		sequenceViewer = Icy.getMainInterface().getFirstViewer(options.vSequence);
 		int ipixelcolumn = 0;
 		getImageAndUpdateViewer (options.startFrame);
+		
 		seqForRegistration.addImage(0, workImage);
 		seqForRegistration.addImage(1, workImage);
+		int nbcapillaries = options.vSequence.capillaries.capillariesArrayList.size();
 
 		for (int t = options.startFrame ; t <= options.endFrame && !stopFlag; t += options.analyzeStep, ipixelcolumn++ )
 		{
@@ -69,7 +75,7 @@ public class BuildKymographsThread implements Runnable
 			}
 			transferWorkImageToDoubleArrayList ();
 			
-			for (int iroi=0; iroi < options.vSequence.capillaries.capillariesArrayList.size(); iroi++)
+			for (int iroi=0; iroi < nbcapillaries; iroi++)
 			{
 				ArrayList<ArrayList<int[]>> masks = masksArrayList.get(iroi);	
 				ArrayList <double []> tabValuesList = rois_tabValuesList.get(iroi);
@@ -95,9 +101,9 @@ public class BuildKymographsThread implements Runnable
 		}
 		options.vSequence.endUpdate();
 
-		for (int iroi=0; iroi < options.vSequence.capillaries.capillariesArrayList.size(); iroi++)
+		int nbkymographs = kymographArrayList.size();
+		for (int iroi=0; iroi < nbcapillaries; iroi++)
 		{
-			SequencePlus kymographSeq = kymographArrayList.get(iroi);
 			IcyBufferedImage image = imageArrayList.get(iroi);
 			ArrayList <double []> tabValuesList = rois_tabValuesList.get(iroi);
 			
@@ -106,7 +112,19 @@ public class BuildKymographsThread implements Runnable
 				double [] tabValues = tabValuesList.get(chan); 
 				Array1DUtil.doubleArrayToSafeArray(tabValues, image.getDataXY(chan), image.isSignedDataType());
 			}
-			kymographSeq.addImage(0, image);
+			
+			if (nbkymographs > 0) {
+				SequencePlus kymographSeq = kymographArrayList.get(iroi);
+				kymographSeq.addImage(0, image);
+			}
+			else {
+				String capillaryName = options.vSequence.capillaries.capillariesArrayList.get(iroi).getName();
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						SequencePlus kymographSeq = new SequencePlus(capillaryName, image);
+						kymographArrayList.add(kymographSeq);
+					}});
+			}
 		}
 		
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
@@ -138,7 +156,7 @@ public class BuildKymographsThread implements Runnable
 		return true;
 	}
 	
-	private void initKymographs() {
+	private void initArraysToBuildKymographImages() {
 
 		int sizex = options.vSequence.getSizeX();
 		int sizey = options.vSequence.getSizeY();
@@ -155,7 +173,8 @@ public class BuildKymographsThread implements Runnable
 		masksArrayList.clear();
 		rois_tabValuesList.clear();
 		
-		for (int iroi=0; iroi < options.vSequence.capillaries.capillariesArrayList.size(); iroi++)
+		int nbcapillaries = options.vSequence.capillaries.capillariesArrayList.size();
+		for (int iroi=0; iroi < nbcapillaries; iroi++)
 		{
 			ROI2DShape roi = options.vSequence.capillaries.capillariesArrayList.get(iroi);
 			ArrayList<ArrayList<int[]>> mask = new ArrayList<ArrayList<int[]>>();

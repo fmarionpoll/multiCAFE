@@ -32,12 +32,12 @@ public class MCCapillaryTab_BuildKymos extends JPanel implements ActionListener 
 	JTextField 						diskRadiusTextField 		= new JTextField("5");
 	JCheckBox 						doRegistrationCheckBox 		= new JCheckBox("registration", false);
 	
-	EnumStatusComputation 				sComputation 	= EnumStatusComputation.START_COMPUTATION; 
-	int 							diskRadius 		= 5;
+	EnumStatusComputation 			sComputation 				= EnumStatusComputation.START_COMPUTATION; 
+	int 							diskRadius 					= 5;
 	
-	private MultiCAFE 				parent0					= null;
-	private BuildKymographsThread 	buildKymographsThread 	= null;
-	private Thread 					thread 					= null;
+	private MultiCAFE 				parent0						= null;
+	private BuildKymographsThread 	buildKymographsThread 		= null;
+	private Thread 					thread 						= null;
 
 
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -141,17 +141,17 @@ public class MCCapillaryTab_BuildKymos extends JPanel implements ActionListener 
 		thread = new Thread(null, buildKymographsThread, "buildkymos");
 		thread.start();
 		
-		Thread waitcompletionThread = new Thread(null, new Runnable() {public void run()
-		{
-			try{ 
-				thread.join();
+		Thread waitcompletionThread = new Thread(null, new Runnable() {
+			public void run() {
+				try{ 
+					thread.join();
+					}
+				catch(Exception e){;} 
+				finally { 
+					kymosBuildStop();
+					resetUserInterface();
 				}
-			catch(Exception e){;} 
-			finally { 
-				kymosBuildStop();
-				resetUserInterface();
-			}
-		}}, "waitforcompletion");
+			}}, "waitforcompletion");
 		waitcompletionThread.start();
 	}
 
