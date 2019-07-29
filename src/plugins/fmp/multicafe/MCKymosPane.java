@@ -24,10 +24,10 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 	private static final long serialVersionUID = -7339633966002954720L;
 	
 	private JTabbedPane 	tabsPane 	= new JTabbedPane();
-	MCKymosTab_File 			fileTab 	= new MCKymosTab_File();
-	MCKymosTab_DetectLimits 	limitsTab 	= new MCKymosTab_DetectLimits();
+	MCKymosTab_File 		fileTab 	= new MCKymosTab_File();
+	MCKymosTab_DetectLimits limitsTab 	= new MCKymosTab_DetectLimits();
 	MCKymosTab_DetectGulps 	gulpsTab 	= new MCKymosTab_DetectGulps();
-	MCKymosTab_Graphs 				graphsTab 	= new MCKymosTab_Graphs();
+	MCKymosTab_Graphs 		graphsTab 	= new MCKymosTab_Graphs();
 	
 	ImageTransformTools tImg = null;
 	private MultiCAFE parent0 = null;
