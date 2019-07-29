@@ -33,7 +33,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 			int iSeries = 0;
 			
 			options.experimentList.readInfosFromAllExperiments();
-			if (options.combine)
+			if (options.collateSeries)
 				options.experimentList.chainExperiments();
 			
 			expAll 		= options.experimentList.getStartAndEndFromAllExperiments();
@@ -120,7 +120,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 				break;
 			case SUMGULPS:
 			case SUMGULPS_LR:
-				if (options.combine && exp.previousExperiment != null) {
+				if (options.collateSeries && exp.previousExperiment != null) {
 					double dvalue = getLastValueOfPreviousExp(seq.getName(), exp.previousExperiment, xlsoption, optiont0);
 					int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
 					results.data = seq.addConstant(seq.getArrayListFromRois(EnumArrayListType.cumSum), addedValue);
@@ -134,7 +134,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 			case TOPLEVEL:
 			case TOPLEVEL_LR:
 				if (optiont0) {
-					if (options.combine && exp.previousExperiment != null) {
+					if (options.collateSeries && exp.previousExperiment != null) {
 						double dvalue = getLastValueOfPreviousExp(seq.getName(), exp.previousExperiment, xlsoption, optiont0);
 						int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
 						results.data = seq.subtractT0AndAddConstant(seq.getArrayListFromRois(EnumArrayListType.topLevel), addedValue);

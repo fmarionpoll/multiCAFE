@@ -271,14 +271,12 @@ public class SequencePlus extends SequenceVirtual  {
 		if (Files.notExists(filenamePath)) 
 			return false; 
 		
+		int old_analysisStep = analysisStep;
+//		long old_analysisStart = analysisStart;
+//		long old_analysisEnd  = analysisEnd;
+		
 		removeAllROI();
 		boolean flag = loadXMLData();
-		if (flag) {
-			ArrayList<ROI2D> listRois = getROI2Ds();
-			for (ROI2D roi: listRois) {
-			    addROI(roi);
-			}
-		}
 		
 		Node myNode = getNode(this.getName()+"_parameters");
 		detectTop = XMLUtil.getElementBooleanValue(myNode, "detectTop", true);
@@ -302,6 +300,23 @@ public class SequencePlus extends SequenceVirtual  {
 		kymoMeasures.imageWidth = XMLUtil.getElementIntValue(myNode, "imageWidth", 1);
 		kymoMeasures.imageHeight = XMLUtil.getElementIntValue(myNode, "imageHeight", 1);
 
+
+		if (flag) {
+			
+			ArrayList<ROI2D> listRois = getROI2Ds();
+			for (ROI2D roi: listRois) {
+//				if (analysisStep != old_analysisStep) {
+//					Polyline2D polyline = ((ROI2DPolyLine) roi).getPolyline2D();
+//					double ratio = analysisStep / old_analysisStep;
+//					for (int i=0; i< polyline.npoints; i++) {
+//						polyline.xpoints[i]  = polyline.xpoints[i] * ratio;
+//					}
+//					((ROI2DPolyLine) roi).setPolyline2D(polyline);
+//				}
+			    addROI(roi);
+			}
+		}
+		
 		return flag;
 	}
 

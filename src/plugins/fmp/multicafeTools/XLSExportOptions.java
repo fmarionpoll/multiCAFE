@@ -16,7 +16,6 @@ public class XLSExportOptions {
 	public boolean 	sum 			= true;
 	public boolean 	t0				= true;
 	public boolean 	onlyalive		= true;
-	public boolean	combine			= false;
 
 	public boolean 	transpose 		= false;
 	public boolean 	duplicateSeries = true;
