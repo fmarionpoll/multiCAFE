@@ -10,6 +10,7 @@ import javax.swing.event.ChangeListener;
 
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
+import icy.main.Icy;
 import icy.plugin.abstract_.PluginActionable;
 
 
@@ -21,6 +22,9 @@ public class BuildKymographs  extends PluginActionable implements ChangeListener
 
 	@Override
 	public void run() {
+
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
+		Icy.getMainInterface().getMainFrame().getInspector().imageCacheDisabled();
 
 		// build and display the GUI
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();

@@ -62,19 +62,23 @@ public class SequenceVirtual extends Sequence
 	public SequenceVirtual () 
 	{
 		status = EnumStatus.REGULAR;
+		setVirtual(false);
 	}
 	
 	public SequenceVirtual(String name, IcyBufferedImage image) {
 		super (name, image);
+		setVirtual(false);
 	}
 
 	public SequenceVirtual (String csFile)
 	{
+		setVirtual(false);
 		loadSequenceVirtualAVI(csFile);
 	}
 
 	public SequenceVirtual (String [] list, String directory)
 	{
+		setVirtual(false);
 		loadSequenceVirtual(list, directory);
 		filename = directory + ".xml";
 	}

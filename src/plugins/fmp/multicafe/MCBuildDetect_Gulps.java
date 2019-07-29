@@ -13,6 +13,7 @@ import icy.system.profile.Chronometer;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeTools.EnumArrayListType;
+import plugins.fmp.multicafeTools.ProgressChrono;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
@@ -21,11 +22,8 @@ public class MCBuildDetect_Gulps {
 	public void detectGulps(MultiCAFE parent0) {	
 		
 		// send some info
-		ProgressFrame progress = new ProgressFrame("Gulp analysis started");
-		progress.setLength(parent0.kymographArrayList.size() * (parent0.vSequence.analysisEnd - parent0.vSequence.analysisStart +1));
-		progress.setPosition(0);
-		Chronometer chrono = new Chronometer("Tracking computation" );
-		int  nbSeconds = 0;
+		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
+		progressBar.initStuff(parent0.kymographArrayList.size() );
 		int jitter = 5;
 
 		// scan each kymograph in the list
@@ -39,12 +37,7 @@ public class MCBuildDetect_Gulps {
 		for (int kymo=firstkymo; kymo <= lastkymo; kymo++) 
 		{
 			// update progression bar
-			int pos = (int)(100d * (double)kymo / parent0.kymographArrayList.size());
-			progress.setPosition( kymo  );
-			nbSeconds =  (int) (chrono.getNanos() / 1000000000f);
-			int nbSecondsNext = nbSeconds*10 + 1;
-			double timeleft = ((double)nbSeconds)* (100d-pos) /pos;
-			progress.setMessage( "Processing gulps: " + pos + " % - Elapsed time: " + nbSeconds + " s - Estimated time left: " + (int) timeleft + " s");
+			progressBar.updatePositionAndTimeLeft(kymo);
 			int done = 0;
 
 			// clear old data
@@ -60,9 +53,9 @@ public class MCBuildDetect_Gulps {
 			int yheight = image.getSizeY();
 			int ix = 0;
 			int iy = 0;
-			List<Point2D> pts = new ArrayList<>();
+			List<Point2D> listOfPoints = new ArrayList<>();
 			Collection<ROI> boutsRois = new ArrayList <> ();
-			Point2D.Double pt = null;
+			Point2D.Double singlePoint = null;
 
 			// scan each image row
 			kymographSeq.derivedValuesArrayList.add(0);
@@ -72,15 +65,6 @@ public class MCBuildDetect_Gulps {
 
 			for (ix = 1; ix < topLevelArray.size(); ix++) 
 			{
-				// send some info to the user
-				nbSeconds =  (int) (chrono.getNanos() / 100000000f);
-				if (nbSeconds > nbSecondsNext) {
-					nbSecondsNext = nbSeconds*10 + 1;
-					pos = (int)(100d * (double)((done +ix) / parent0.kymographArrayList.size()));
-					timeleft = ((double)nbSeconds)* (100d-pos) /pos;
-					progress.setMessage( "Processing gulps : " + pos + " % - Elapsed time: " + nbSeconds + " s - Estimated time left: " + (int) timeleft + " s");
-				}
-
 				// for each point of topLevelArray, define a bracket of rows to look at ("jitter" = 10)
 				int low = topLevelArray.get(ix)- jitter;
 				int high = low + 2*jitter;
@@ -93,34 +77,33 @@ public class MCBuildDetect_Gulps {
 				for (iy = low+1; iy < high; iy++) 
 				{
 					int val = (int) tabValues [ix  + iy*xwidth];
-					if (max < val) {
+					if (max < val) 
 						max = val;
-					}
 				}
 
 				// add new point to display as roi
 				if (max > kymographSeq.detectGulpsThreshold) {
-					if (pts.size() > 0) {
-						Point2D prevPt = pts.get(pts.size() -1);
+					if (listOfPoints.size() > 0) {
+						Point2D prevPt = listOfPoints.get(listOfPoints.size() -1);
 						if (prevPt.getX() != (double) (ix-1)) {
 							roiTrack.setColor(Color.red);
 							roiTrack.setName("gulp"+String.format("%07d", ix));
-							roiTrack.setPoints(pts);
+							roiTrack.setPoints(listOfPoints);
 							boutsRois.add(roiTrack);
 							roiTrack = new ROI2DPolyLine ();
-							pts = new ArrayList<>();
-							pt = new Point2D.Double (ix-1, topLevelArray.get(ix-1));
-							pts.add(pt);
+							listOfPoints = new ArrayList<>();
+							singlePoint = new Point2D.Double (ix-1, topLevelArray.get(ix-1));
+							listOfPoints.add(singlePoint);
 						}
 					} 
-					pt = new Point2D.Double (ix, topLevelArray.get(ix));
-					pts.add(pt);
+					singlePoint = new Point2D.Double (ix, topLevelArray.get(ix));
+					listOfPoints.add(singlePoint);
 				}
 				kymographSeq.derivedValuesArrayList.add(max);
 			}
 
-			if (pts.size() > 0) {
-				roiTrack.setPoints(pts);
+			if (listOfPoints.size() > 0) {
+				roiTrack.setPoints(listOfPoints);
 				roiTrack.setColor(Color.red);
 				roiTrack.setName("gulp"+String.format("%07d", ix));
 				boutsRois.add(roiTrack);
@@ -133,8 +116,8 @@ public class MCBuildDetect_Gulps {
 		}
 
 		// send some info
-		progress.close();
-		System.out.println("Elapsed time (s):" + nbSeconds);
+		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
+		progressBar.close();;
 	}	
 
 	private void kymosInitForGulpsDetection(SequencePlus kymographSeq, MultiCAFE parent0) {

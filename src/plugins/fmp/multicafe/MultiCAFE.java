@@ -13,10 +13,10 @@ import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.gui.viewer.ViewerEvent;
 import icy.gui.viewer.ViewerEvent.ViewerEventType;
+import icy.main.Icy;
 import icy.gui.viewer.ViewerListener;
 
 import icy.plugin.abstract_.PluginActionable;
-
 import icy.sequence.DimensionId;
 import icy.sequence.Sequence;
 import icy.sequence.SequenceEvent;
@@ -44,6 +44,10 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	
 	@Override
 	public void run() {
+		
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
+		Icy.getMainInterface().getMainFrame().getInspector().imageCacheDisabled();
+
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
 		mainFrame.setLayout(new BorderLayout());
 		mainFrame.add(mainPanel, BorderLayout.CENTER);
