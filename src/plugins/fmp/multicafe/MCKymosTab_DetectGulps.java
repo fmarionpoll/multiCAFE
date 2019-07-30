@@ -63,8 +63,15 @@ public class MCKymosTab_DetectGulps extends JPanel implements ActionListener {
 		else if (o == detectGulpsButton) {
 			getDetectGulpsThreshold();
 			kymosDisplayFiltered2();
+			
+			MCBuildDetect_GulpsOptions options = new MCBuildDetect_GulpsOptions();
+			options.detectGulpsThreshold 	= (int) getDetectGulpsThreshold();
+			options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
+			options.detectAllGulps 			= detectAllGulpsCheckBox.isSelected();
+			options.firstkymo 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
+			
 			MCBuildDetect_Gulps detect = new MCBuildDetect_Gulps();
-			detect.detectGulps(parent0);
+			detect.detectGulps(options, parent0.kymographArrayList);
 			firePropertyChange("KYMO_DETECT_GULP", false, true);
 		}
 		else if (o == displayTransform2Button) {

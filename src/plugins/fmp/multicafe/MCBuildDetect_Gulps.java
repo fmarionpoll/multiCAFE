@@ -6,48 +6,42 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
-import icy.system.profile.Chronometer;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeTools.EnumArrayListType;
 import plugins.fmp.multicafeTools.ProgressChrono;
-import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class MCBuildDetect_Gulps {
 	
-	public void detectGulps(MultiCAFE parent0) {	
+	public void detectGulps(MCBuildDetect_GulpsOptions options, ArrayList <SequencePlus> kymographArrayList) {	
 		
-		// send some info
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
-		progressBar.initStuff(parent0.kymographArrayList.size() );
+		progressBar.initStuff(kymographArrayList.size() );
+		
 		int jitter = 5;
-
-		// scan each kymograph in the list
 		int firstkymo = 0;
-		int lastkymo = parent0.kymographArrayList.size() -1;
-		if (! parent0.kymographsPane.gulpsTab.detectAllGulpsCheckBox.isSelected()) {
-			firstkymo = parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
+		int lastkymo = kymographArrayList.size() -1;
+		if (! options.detectAllGulps) {
+			firstkymo = options.firstkymo;
 			lastkymo = firstkymo;
 		}
 		
 		for (int kymo=firstkymo; kymo <= lastkymo; kymo++) 
 		{
-			// update progression bar
 			progressBar.updatePositionAndTimeLeft(kymo);
-			int done = 0;
 
-			// clear old data
-			SequencePlus kymographSeq = parent0.kymographArrayList.get(kymo);
-			kymosInitForGulpsDetection(kymographSeq, parent0);
+			SequencePlus kymographSeq = kymographArrayList.get(kymo);
+			kymographSeq.beginUpdate();
+			
+			options.copyDetectionParametersToSequenceHeader(kymographSeq);
+			clearPreviousGulps(kymographSeq);
 			ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
 
-			kymographSeq.beginUpdate();
 			IcyBufferedImage image = kymographSeq.getImage(0, 2, 0);	// time=0; z=2; c=0
-			double[] tabValues = Array1DUtil.arrayToDoubleArray(image.getDataXY(0), image.isSignedDataType());			// channel 0 - RED
+			double[] kymoImageValues = Array1DUtil.arrayToDoubleArray(image.getDataXY(0), image.isSignedDataType());			// channel 0 - RED
 
 			int xwidth = image.getSizeX();
 			int yheight = image.getSizeY();
@@ -73,10 +67,10 @@ public class MCBuildDetect_Gulps {
 				if (high >= yheight) 
 					high = yheight-1;
 
-				int max = (int) tabValues [ix + low*xwidth];
+				int max = (int) kymoImageValues [ix + low*xwidth];
 				for (iy = low+1; iy < high; iy++) 
 				{
-					int val = (int) tabValues [ix  + iy*xwidth];
+					int val = (int) kymoImageValues [ix  + iy*xwidth];
 					if (max < val) 
 						max = val;
 				}
@@ -111,18 +105,15 @@ public class MCBuildDetect_Gulps {
 
 			kymographSeq.addROIs(boutsRois, false);
 			kymographSeq.endUpdate(); 
-
-			done += xwidth;
 		}
 
 		// send some info
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
-		progressBar.close();;
+		progressBar.close();
 	}	
 
-	private void kymosInitForGulpsDetection(SequencePlus kymographSeq, MultiCAFE parent0) {
+	private void clearPreviousGulps(SequencePlus kymographSeq) {
 		
-		getDialogBoxParametersForDetection(kymographSeq, false, true, parent0);
 		for (ROI roi:kymographSeq.getROIs()) {
 			if (roi.getName().contains("gulp"))
 				kymographSeq.removeROI(roi);
@@ -130,21 +121,4 @@ public class MCBuildDetect_Gulps {
 		kymographSeq.derivedValuesArrayList.clear();
 	}
 	
-	private void getDialogBoxParametersForDetection(SequencePlus seq, boolean blevel, boolean bgulps, MultiCAFE parent0) {
-		if (blevel) {
-			seq.detectTop 				= true; 
-			seq.detectBottom 			= true; 
-			seq.transformForLevels 		= (TransformOp) parent0.kymographsPane.limitsTab.transformForLevelsComboBox.getSelectedItem();
-			seq.direction 				= parent0.kymographsPane.limitsTab.directionComboBox.getSelectedIndex();
-			seq.detectLevelThreshold 	= (int) parent0.kymographsPane.limitsTab.getDetectLevelThreshold();
-			seq.detectAllLevel 			= parent0.kymographsPane.limitsTab.detectAllLevelCheckBox.isSelected();
-		}
-		
-		if (bgulps) {
-			seq.detectGulpsThreshold 	= (int) parent0.kymographsPane.gulpsTab.getDetectGulpsThreshold();
-			seq.transformForGulps 		= (TransformOp) parent0.kymographsPane.gulpsTab.transformForGulpsComboBox.getSelectedItem();
-			seq.detectAllGulps 			= parent0.kymographsPane.gulpsTab.detectAllGulpsCheckBox.isSelected();
-		}
-		seq.bStatusChanged = true;
-	}
 }

@@ -38,7 +38,7 @@ public class SequencePlus extends SequenceVirtual  {
 	public 	boolean 		detectBottom 			= true;
 	public 	boolean 		detectAllLevel 			= true;
 	public 	boolean 		detectAllGulps 			= true;
-	public 	int 			direction 				= 0;
+	public 	boolean			directionUp 			= true;
 	public 	int				detectLevelThreshold 	= 35;
 	public 	int 			detectGulpsThreshold 	= 90;
 	public	TransformOp		transformForLevels 		= TransformOp.R2MINUS_GB;
@@ -271,7 +271,7 @@ public class SequencePlus extends SequenceVirtual  {
 		if (Files.notExists(filenamePath)) 
 			return false; 
 		
-		int old_analysisStep = analysisStep;
+//		int old_analysisStep = analysisStep;
 //		long old_analysisStart = analysisStart;
 //		long old_analysisEnd  = analysisEnd;
 		
@@ -287,7 +287,7 @@ public class SequencePlus extends SequenceVirtual  {
 
 		int dummy = XMLUtil.getElementIntValue(myNode, "transformForLevels", 0);
 		transformForLevels = TransformOp.values()[dummy];
-		direction = XMLUtil.getElementIntValue(myNode, "direction", 0);
+		directionUp = XMLUtil.getElementBooleanValue(myNode, "direction", true);
 		detectLevelThreshold = XMLUtil.getElementIntValue(myNode, "detectLevelThreshold", 35);
 		detectGulpsThreshold = XMLUtil.getElementIntValue(myNode, "detectGulpsThreshold", 75);
 		int dummy2 = XMLUtil.getElementIntValue(myNode, "transformForGulps", 3);
@@ -347,7 +347,7 @@ public class SequencePlus extends SequenceVirtual  {
 
 		int dummy1 = transformForLevels.ordinal(); 
 		XMLUtil.setElementIntValue(myNode, "transformForLevels", dummy1);
-		XMLUtil.setElementIntValue(myNode, "direction", direction);
+		XMLUtil.setElementBooleanValue(myNode, "direction", directionUp);
 		XMLUtil.setElementIntValue(myNode, "detectLevelThreshold", detectLevelThreshold);
 		XMLUtil.setElementIntValue(myNode, "detectGulpsThreshold", detectGulpsThreshold);
 		int dummy2 = transformForGulps.ordinal();

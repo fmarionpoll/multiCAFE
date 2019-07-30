@@ -69,8 +69,15 @@ public class MCKymosTab_DetectLimits  extends JPanel implements ActionListener {
 		}
 		else if (o == detectTopButton) {
 			kymosDisplayFiltered1();
+			MCBuildDetect_LimitsOptions options = new MCBuildDetect_LimitsOptions();
+			options.transformForLevels 		= (TransformOp) transformForLevelsComboBox.getSelectedItem();
+			options.directionUp 			= (directionComboBox.getSelectedIndex() == 0);
+			options.detectLevelThreshold 	= (int) getDetectLevelThreshold();
+			options.detectAllLevel 			= detectAllLevelCheckBox.isSelected();
+			options.firstkymo 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
+
 			MCBuildDetect_Limits detect = new MCBuildDetect_Limits();
-			detect.detectCapillaryLevels(parent0);
+			detect.detectCapillaryLevels(options, parent0.kymographArrayList);
 			firePropertyChange("KYMO_DETECT_TOP", false, true);
 		}
 		else if (o== displayTransform1Button) {
@@ -110,7 +117,8 @@ public class MCKymosTab_DetectLimits  extends JPanel implements ActionListener {
 	
 	void setInfos(SequencePlus seq) {
 		transformForLevelsComboBox.setSelectedItem(seq.transformForLevels);
-		directionComboBox.setSelectedIndex(seq.direction);
+		int index =seq.directionUp ? 0:1;
+		directionComboBox.setSelectedIndex(index);
 		setDetectLevelThreshold(seq.detectLevelThreshold);
 		detectTopTextField.setText(Integer.toString(seq.detectLevelThreshold));
 		detectAllLevelCheckBox.setSelected(seq.detectAllLevel);

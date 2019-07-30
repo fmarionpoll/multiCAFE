@@ -4,34 +4,27 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
-import icy.system.profile.Chronometer;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeTools.EnumArrayListType;
-import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
+import plugins.fmp.multicafeTools.ProgressChrono;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class MCBuildDetect_Limits {
 	
-	public void detectCapillaryLevels(MultiCAFE parent0) {
+	public void detectCapillaryLevels(MCBuildDetect_LimitsOptions options,  ArrayList <SequencePlus> kymographArrayList) {
 
 		// send some info
-		ProgressFrame progress = new ProgressFrame("Processing started");
-		int len = parent0.kymographArrayList.size();
-		int nbframes = (int) (parent0.vSequence.analysisEnd - parent0.vSequence.analysisStart +1);
-		progress.setLength(len*nbframes);
-		progress.setPosition(0);
-		Chronometer chrono = new Chronometer("Tracking computation" );
-		int  nbSeconds = 0;
+		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
+		progressBar.initStuff(kymographArrayList.size() );
+		
 
-		boolean bdetectUp = (parent0.kymographsPane.limitsTab.directionComboBox.getSelectedIndex() == 0);
 		int jitter = 10;
 		int firstkymo = 0;
-		int lastkymo = parent0.kymographArrayList.size() -1;
-		if (! parent0.kymographsPane.limitsTab.detectAllLevelCheckBox.isSelected()) {
-			firstkymo = parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
+		int lastkymo = kymographArrayList.size() -1;
+		if (! options.detectAllLevel) {
+			firstkymo = options.firstkymo;
 			lastkymo = firstkymo;
 		}
 
@@ -39,20 +32,11 @@ public class MCBuildDetect_Limits {
 		for (int kymo=firstkymo; kymo <= lastkymo; kymo++) 
 		{
 			// update progression bar
-			double pos = (100d * (double)kymo / len);
-			progress.setPosition( kymo  );
-			nbSeconds =  (int) (chrono.getNanos() / 1000000000f);
-			int nbSecondsNext = nbSeconds*10 + 1;
-			double timeleft = ((double)nbSeconds)* (100d-pos) /pos;
-			progress.setMessage( "Processing: " + pos + " % - Elapsed time: " + nbSeconds + " s - Estimated time left: " +  (int) timeleft + " s");
-			int done = 0;
+			progressBar.updatePositionAndTimeLeft(kymo);
 
-			SequencePlus kymographSeq = parent0.kymographArrayList.get(kymo);
-			double detectLevelThreshold = parent0.kymographsPane.limitsTab.getDetectLevelThreshold();
+			SequencePlus kymographSeq = kymographArrayList.get(kymo);
 			kymographSeq.removeAllROI();
-			
-			// save parameters status
-			getDialogBoxParametersForDetection(kymographSeq, true, false, parent0); 
+			options.copyDetectionParametersToSequenceHeader(kymographSeq); 
 			
 			ROI2DPolyLine roiTopTrack = new ROI2DPolyLine ();
 			roiTopTrack.setName("toplevel");
@@ -86,15 +70,6 @@ public class MCBuildDetect_Limits {
 			// scan each image column
 			for (ix = 0; ix < xwidth; ix++) 
 			{
-				// send some info
-				nbSeconds =  (int) (chrono.getNanos() / 100000000f);
-				if (nbSeconds > nbSecondsNext) {
-					nbSecondsNext = nbSeconds*10 + 1;
-					pos = (int)(100d * (double)((done +ix) / len));
-					timeleft = ((double)nbSeconds)* (100d-pos) /pos;
-					progress.setMessage( "Processing: " + pos + " % - Elapsed time: " + nbSeconds + " s - Estimated time left: " + (int) timeleft + " s");
-				}
-
 				// ---------------------------------------------------- detect top level
 				if (flagtop) {
 					// set flags for internal loop (part of the row)
@@ -108,10 +83,10 @@ public class MCBuildDetect_Limits {
 					for (iy = oldiytop; iy < yheight; iy++) 
 					{
 						boolean flag = false;
-						if (bdetectUp)
-							flag = tabValues [ix + iy* xwidth] > detectLevelThreshold;
+						if (options.directionUp)
+							flag = tabValues [ix + iy* xwidth] > options.detectLevelThreshold;
 						else 
-							flag = tabValues [ix + iy* xwidth] < detectLevelThreshold;
+							flag = tabValues [ix + iy* xwidth] < options.detectLevelThreshold;
 
 						if( flag) {
 							y = iy;
@@ -138,10 +113,10 @@ public class MCBuildDetect_Limits {
 					for (iy = oldiybottom; iy >= 0 ; iy--) 
 					{
 						boolean flag = false;
-						if (bdetectUp)
-							flag = tabValues [ix + iy* xwidth] > detectLevelThreshold;
+						if (options.directionUp)
+							flag = tabValues [ix + iy* xwidth] > options.detectLevelThreshold;
 						else 
-							flag = tabValues [ix + iy* xwidth] < detectLevelThreshold;
+							flag = tabValues [ix + iy* xwidth] < options.detectLevelThreshold;
 
 						if (flag) {
 							y = iy;
@@ -162,23 +137,11 @@ public class MCBuildDetect_Limits {
 			roiBottomTrack.setPoints(ptsBottom);
 			kymographSeq.getArrayListFromRois(EnumArrayListType.cumSum);
 			kymographSeq.endUpdate();
-			done += xwidth;
 		}
 
 		// send some info
-		progress.close();
-		System.out.println("Elapsed time (s):" + nbSeconds);
+		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
+		progressBar.close();
 	}
 	
-	private void getDialogBoxParametersForDetection(SequencePlus seq, boolean blevel, boolean bgulps, MultiCAFE parent0) {
-		if (blevel) {
-			seq.detectTop 				= true; 
-			seq.detectBottom 			= true; 
-			seq.transformForLevels 		= (TransformOp) parent0.kymographsPane.limitsTab.transformForLevelsComboBox.getSelectedItem();
-			seq.direction 				= parent0.kymographsPane.limitsTab.directionComboBox.getSelectedIndex();
-			seq.detectLevelThreshold 	= (int) parent0.kymographsPane.limitsTab.getDetectLevelThreshold();
-			seq.detectAllLevel 			= parent0.kymographsPane.limitsTab.detectAllLevelCheckBox.isSelected();
-		}
-		seq.bStatusChanged = true;
-	}
 }
