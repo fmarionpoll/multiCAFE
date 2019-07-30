@@ -38,14 +38,7 @@ public class MCBuildDetect_Limits {
 			kymographSeq.removeAllROI();
 			options.copyDetectionParametersToSequenceHeader(kymographSeq); 
 			
-			ROI2DPolyLine roiTopTrack = new ROI2DPolyLine ();
-			roiTopTrack.setName("toplevel");
-			kymographSeq.addROI(roiTopTrack);
-			List<Point2D> ptsTop = new ArrayList<>();
-			
-			ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine ();
-			roiBottomTrack.setName("bottomlevel");
-			kymographSeq.addROI(roiBottomTrack);
+			List<Point2D> ptsTop = new ArrayList<>();			
 			List<Point2D> ptsBottom = new ArrayList<>();
 
 			kymographSeq.beginUpdate();
@@ -57,8 +50,7 @@ public class MCBuildDetect_Limits {
 			
 			int xwidth = image.getSizeX();
 			int yheight = image.getSizeY();
-			double x = 0;
-			double y = 0;
+	
 			int ix = 0;
 			int iy = 0;
 			int oldiytop = 0;		// assume that curve goes from left to right with jitter 
@@ -74,7 +66,8 @@ public class MCBuildDetect_Limits {
 				if (flagtop) {
 					// set flags for internal loop (part of the row)
 					boolean found = false;
-					x = ix;
+					double x = ix;
+					double y = 0;
 					oldiytop -= jitter;
 					if (oldiytop < 0) 
 						oldiytop = 0;
@@ -106,7 +99,8 @@ public class MCBuildDetect_Limits {
 				if (flagbottom) {
 					// set flags for internal loop (part of the row)
 					boolean found = false;
-					x = ix;
+					double x = ix;
+					double y = 0;
 					oldiybottom = yheight - 1;
 
 					// for each line, go from left to right - starting from the last position found minus "jitter" (set to 10)
@@ -133,8 +127,22 @@ public class MCBuildDetect_Limits {
 				}
 			}
 			
-			roiTopTrack.setPoints(ptsTop);
-			roiBottomTrack.setPoints(ptsBottom);
+			if (flagtop) {
+				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine ();
+				roiTopTrack.setName("toplevel");
+				roiTopTrack.setStroke(1);
+				kymographSeq.addROI(roiTopTrack);
+				roiTopTrack.setPoints(ptsTop);
+			}
+			
+			if (flagbottom) {
+				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine ();
+				roiBottomTrack.setName("bottomlevel");
+				roiBottomTrack.setStroke(1);
+				kymographSeq.addROI(roiBottomTrack);
+				roiBottomTrack.setPoints(ptsBottom);
+			}
+			
 			kymographSeq.getArrayListFromRois(EnumArrayListType.cumSum);
 			kymographSeq.endUpdate();
 		}

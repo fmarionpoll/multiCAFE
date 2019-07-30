@@ -234,6 +234,10 @@ public class SequencePlus extends SequenceVirtual  {
 				interpolateMissingPointsAlongXAxis ((ROI2DPolyLine) roi);
 				continue;
 			}
+			
+			if (roi.getName().contains("derivative")) {
+				continue;
+			}
 
 			// if gulp not found - add an index to it
 			if (roi instanceof ROI2DPolyLine) {
