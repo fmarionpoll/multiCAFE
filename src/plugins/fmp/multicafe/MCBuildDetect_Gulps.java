@@ -41,7 +41,7 @@ public class MCBuildDetect_Gulps {
 			clearPreviousGulps(kymographSeq, "derivative");
 			
 			IcyBufferedImage image = kymographSeq.getImage(0, 2, 0);	// time=0; z=2; c=0
-			double[] kymoImageValues = Array1DUtil.arrayToDoubleArray(image.getDataXY(0), image.isSignedDataType());	// channel 0 - RED
+			int[] kymoImageValues = Array1DUtil.arrayToIntArray(image.getDataXY(0), image.isSignedDataType());	// channel 0 - RED
 
 			int xwidth = image.getSizeX();
 			int yheight = image.getSizeY();
@@ -69,10 +69,10 @@ public class MCBuildDetect_Gulps {
 				if (high >= yheight) 
 					high = yheight-1;
 
-				int max = (int) kymoImageValues [ix + low*xwidth];
+				int max = kymoImageValues [ix + low*xwidth];
 				for (iy = low+1; iy < high; iy++) 
 				{
-					int val = (int) kymoImageValues [ix  + iy*xwidth];
+					int val = kymoImageValues [ix  + iy*xwidth];
 					if (max < val) 
 						max = val;
 				}
@@ -96,7 +96,7 @@ public class MCBuildDetect_Gulps {
 					listOfGulpPoints.add(singlePoint);
 				}
 				
-				listOfMaxPoints.add(new Point2D.Double((double) ix, (double) (max + yheight/2)));
+				listOfMaxPoints.add(new Point2D.Double((double) ix, (double) ( yheight/2 - max)));
 				kymographSeq.derivedValuesArrayList.add(max);
 			}
 
@@ -111,11 +111,10 @@ public class MCBuildDetect_Gulps {
 			
 			ROI2DPolyLine roiMaxTrack = new ROI2DPolyLine ();
 			roiMaxTrack.setName("derivative");
-			roiMaxTrack.setColor(Color.cyan);
+			roiMaxTrack.setColor(Color.yellow);
 			roiMaxTrack.setStroke(1);
 			roiMaxTrack.setPoints(listOfMaxPoints);
 			kymographSeq.addROI(roiMaxTrack, false);
-			
 			
 			kymographSeq.endUpdate(); 
 		}

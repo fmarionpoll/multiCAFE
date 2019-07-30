@@ -178,8 +178,8 @@ public class ImageTransformTools {
 		
 		for (int c=chan0; c < chan1; c++) {
 
-			double[] tabValues = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
-			double[] outValues = Array1DUtil.arrayToDoubleArray(img2.getDataXY(c), img2.isSignedDataType());			
+			int[] tabValues = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
+			int[] outValues = Array1DUtil.arrayToIntArray(img2.getDataXY(c), img2.isSignedDataType());			
 
 			for (int iy = 0; iy < imageSizeY; iy++) {	
 				// erase border values
@@ -206,7 +206,7 @@ public class ImageTransformTools {
 					outValues[ix + iy* imageSizeX] = 0;
 				}
 			}
-			Array1DUtil.doubleArrayToSafeArray(outValues, img2.getDataXY(c), false); // true);
+			Array1DUtil.intArrayToSafeArray(outValues, img2.getDataXY(c), true, img2.isSignedDataType());
 		}
 		return img2;
 	}
@@ -221,8 +221,8 @@ public class ImageTransformTools {
 		
 		for (int c=chan0; c < chan1; c++) {
 
-			double[] tabValues = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
-			double[] outValues = Array1DUtil.arrayToDoubleArray(img2.getDataXY(c), img2.isSignedDataType());			
+			int [] tabValues = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
+			int [] outValues = Array1DUtil.arrayToIntArray(img2.getDataXY(c), img2.isSignedDataType());			
 
 			for (int ix = spanDiff; ix < imageSizeX - spanDiff; ix++) {	
 //				// erase border values
@@ -246,7 +246,7 @@ public class ImageTransformTools {
 //					outValues[ix + iy* imageSizeX] = 0;
 //				}
 			}
-			Array1DUtil.doubleArrayToSafeArray(outValues, img2.getDataXY(c), false); // true);
+			Array1DUtil.intArrayToSafeArray(outValues, img2.getDataXY(c), true, img2.isSignedDataType());
 		}
 		return img2;
 	}
@@ -261,8 +261,8 @@ public class ImageTransformTools {
 		
 		for (int c=chan0; c < chan1; c++) {
 
-			double[] tabValues = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
-			double[] outValues = Array1DUtil.arrayToDoubleArray(img2.getDataXY(c), img2.isSignedDataType());			
+			int[] tabValues = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
+			int[] outValues = Array1DUtil.arrayToIntArray(img2.getDataXY(c), img2.isSignedDataType());			
 			
 			for (int ix =0; ix < imageSizeX; ix++) {	
 
@@ -296,7 +296,7 @@ public class ImageTransformTools {
 				for (int iy = imageSizeY-spanDiff; iy < imageSizeY; iy++) 
 					outValues[ix + iy* imageSizeX] = 0;
 			}
-			Array1DUtil.doubleArrayToSafeArray(outValues,  img2.getDataXY(c), false); // img2.isSignedDataType());
+			Array1DUtil.intArrayToSafeArray(outValues,  img2.getDataXY(c), true, img2.isSignedDataType());
 		}
 		return img2;
 	}
@@ -322,7 +322,7 @@ public class ImageTransformTools {
 		}
 		
 		Object dataArray = img2.getDataXY(0);
-		Array1DUtil.intArrayToSafeArray(outValues0, dataArray, sourceImage.isSignedDataType(), false); //image.isSignedDataType());
+		Array1DUtil.intArrayToSafeArray(outValues0, dataArray, sourceImage.isSignedDataType(), img2.isSignedDataType());
 		return img2;
 	}
 	
@@ -380,7 +380,7 @@ public class ImageTransformTools {
 					val = -val;
 				img2Int[i] = 0xFF - val;
 			}
-			Array1DUtil.intArrayToSafeArray(img2Int,  img2.getDataXY(c), true, false); // img2.isSignedDataType());
+			Array1DUtil.intArrayToSafeArray(img2Int,  img2.getDataXY(c), true, img2.isSignedDataType());
 			
 		}
 		return img2;
