@@ -22,7 +22,7 @@ import plugins.fmp.multicafeTools.Line2DPlus;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 
 
-public class MCCapillariesTab_Adjust extends JPanel implements ActionListener{
+public class MCCapillariesTab_Adjust extends JPanel {
 	/**
 	 * 
 	 */
@@ -49,19 +49,15 @@ public class MCCapillariesTab_Adjust extends JPanel implements ActionListener{
 	}
 	
 	private void defineActionListeners() {
-		adjustButton.addActionListener(this);
+		adjustButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+			Object o = e.getSource();
+			if ( o == adjustButton)  
+				roisCenterLinestoAllCapillaries();
+		}});
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object o = e.getSource();
-		if ( o == adjustButton)  {
-			roisCenterLinestoCapillaries();
-		}
-	}
-
 	// -------------------------------------------------------
-	private void roisCenterLinestoCapillaries() {
+	private void roisCenterLinestoAllCapillaries() {
 		
 		if (parent0.vSequence.capillaries.capillariesArrayList == null || parent0.vSequence.capillaries.capillariesArrayList.size() == 0)
 			return;
@@ -86,12 +82,7 @@ public class MCCapillariesTab_Adjust extends JPanel implements ActionListener{
 			ROI2D roi = parent0.vSequence.capillaries.capillariesArrayList.get(i);
 			if (roi instanceof ROI2DLine) 			{
 				Line2D line = roisCenterLinetoCapillary(sourceValues, xwidth, (ROI2DLine) roi, jitter);
-				((ROI2DLine) roi).setLine(line); // replace with the 5 following lines 
-//				List <Anchor2D> pts = ((ROI2DLine) roi).getControlPoints();
-//				Anchor2D p1 = pts.get(0);
-//				Anchor2D p2 = pts.get(1);
-//				p1.setPosition(line.getP1());
-//				p2.setPosition(line.getP2());
+				((ROI2DLine) roi).setLine(line); 
 			}
 		}
 	}

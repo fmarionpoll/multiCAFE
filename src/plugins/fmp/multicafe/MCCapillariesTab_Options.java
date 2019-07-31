@@ -12,6 +12,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -38,11 +39,12 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 	 */
 	private static final long serialVersionUID = -2103052112476748890L;
 	JComboBox<String> kymographNamesComboBox = new JComboBox<String> (new String[] {"none"});
-	JCheckBox 	viewKymosCheckBox 		= new JCheckBox("View kymos");
 	JButton 	updateButton 			= new JButton("Update");
 	JButton  	previousButton		 	= new JButton("<");
 	JButton		nextButton				= new JButton(">");
+	JCheckBox 	viewKymosCheckBox 		= new JCheckBox("View kymos");
 	JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("capillary levels", true);
+	JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative", true);
 	JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps", true);
 
 	private MultiCAFE parent0 = null;
@@ -64,6 +66,7 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 		add(GuiUtil.besidesPanel( viewKymosCheckBox, k2Panel));
 		
 		add(GuiUtil.besidesPanel( viewLevelsCheckbox, viewGulpsCheckbox, updateButton));
+		add(GuiUtil.besidesPanel( viewDerivativeCheckbox, new JLabel(" "), new JLabel(" ")));
 		
 		defineActionListeners();
 	}
@@ -77,12 +80,16 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 			displayUpdateOnSwingThread();
 		} } );
 		
+		viewDerivativeCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+			roisDisplay("derivative", viewDerivativeCheckbox.isSelected());
+		} } );
+
 		viewGulpsCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			roisDisplay();
+			roisDisplay("gulp", viewGulpsCheckbox.isSelected());
 		} } );
 		
 		viewLevelsCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			roisDisplay();
+			roisDisplay("level", viewLevelsCheckbox.isSelected());
 		} } );
 		
 		viewKymosCheckBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
@@ -121,9 +128,8 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 			}});
 	}
 	
-	private void roisDisplay() {
-		boolean displayTop = viewLevelsCheckbox.isSelected();
-		boolean displayGulps = viewGulpsCheckbox.isSelected();
+	private void roisDisplay(String filter, boolean visible) {
+
 		for (SequencePlus seq: parent0.kymographArrayList) {
 			ArrayList<Viewer>vList =  seq.getViewers();
 			Viewer v = vList.get(0);
@@ -136,11 +142,9 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 				if (roi == null)
 					continue;
 				String cs = roi.getName();
-				if (cs.contains("level")) { 
-					layer.setVisible(displayTop);
+				if (cs.contains(filter)) { 
+					layer.setVisible(visible);
 				}
-				else 
-					layer.setVisible(displayGulps);
 			}
 		}
 	}

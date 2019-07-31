@@ -28,7 +28,7 @@ import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeSequence.SequencePlusUtils;
 
 
-public class MCCapillariesTab_File extends JPanel implements ActionListener {
+public class MCCapillariesTab_File extends JPanel {
 	/**
 	 * 
 	 */
@@ -56,33 +56,24 @@ public class MCCapillariesTab_File extends JPanel implements ActionListener {
 	}
 	
 	private void defineActionListeners() {
-		openButtonCapillaries.addActionListener(this); 
-		saveButtonCapillaries.addActionListener(this);	
-		openButtonKymos.addActionListener(this);
-		saveButtonKymos.addActionListener(this);
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object o = e.getSource();
-		if ( o == openButtonCapillaries)  {
+		openButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			firePropertyChange("CAPILLARIES_NEW", false, true);
-		}
-		else if ( o == saveButtonCapillaries) {
-			firePropertyChange("CAP_ROIS_SAVE", false, true);	
-		}
-		else if ( o == openButtonKymos)  {
+		}}); 
+		saveButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+			firePropertyChange("CAP_ROIS_SAVE", false, true);
+		}});	
+		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			String path = parent0.vSequence.getDirectory()+ "\\results";
 			parent0.kymographArrayList = SequencePlusUtils.openFiles(path, parent0.vSequence.capillaries); 
 			firePropertyChange("KYMOS_OPEN", false, true);	
-		}
-		else if ( o == saveButtonKymos) {
+		}});
+		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			String path = parent0.vSequence.getDirectory() + "\\results";
 			saveFiles(path);
-			firePropertyChange("KYMOS_SAVE", false, true);	
-		}
+			firePropertyChange("KYMOS_SAVE", false, true);
+		}});
 	}
-
+	
 	boolean capillaryRoisOpen(String csFileName) {
 		
 		boolean flag = false;

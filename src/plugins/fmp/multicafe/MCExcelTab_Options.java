@@ -25,8 +25,7 @@ public class MCExcelTab_Options extends JPanel {
 	JCheckBox 	exportAllFilesCheckBox 	= new JCheckBox("all experiments", true);
 	JCheckBox	absoluteTimeCheckBox 	= new JCheckBox("absolute time", false);
 	JCheckBox   collateSeriesCheckBox	= new JCheckBox("collate series", false);
-	JSpinner 	pivotBinStep				= new JSpinner(new SpinnerNumberModel(1, 0, 500, 1));
-	
+	JSpinner 	pivotBinStep			= new JSpinner(new SpinnerNumberModel(1, 0, 500, 1));
 	JLabel		pivotStepText			= new JLabel("binning step");
 	
 	

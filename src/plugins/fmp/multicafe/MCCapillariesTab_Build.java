@@ -26,7 +26,7 @@ import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
-public class MCCapillariesTab_Build extends JPanel implements ActionListener {
+public class MCCapillariesTab_Build extends JPanel {
 	/**
 	 * 
 	 */
@@ -65,27 +65,19 @@ public class MCCapillariesTab_Build extends JPanel implements ActionListener {
 	}
 	
 	private void defineActionListeners() {
-		addPolygon2DButton.addActionListener(this);
-		createROIsFromPolygonButton2.addActionListener(this);
-		selectRegularButton.addActionListener(this);
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object o = e.getSource();
-		if ( o == createROIsFromPolygonButton2)  {
-			roisGenerateFromPolygon();
-			parent0.vSequence.capillaries.extractLinesFromSequence(parent0.vSequence);
-			firePropertyChange("CAPILLARIES_NEW", false, true);	
-		}
-		else if ( o == selectRegularButton) {
-			boolean status = false;
-			width_between_capillariesTextField.setEnabled(status);
-			width_intervalTextField.setEnabled(status);	
-		}
-		else if (o == addPolygon2DButton) {
-			create2DPolygon();
-		}
+		addPolygon2DButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+				create2DPolygon();
+			}});
+		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+				roisGenerateFromPolygon();
+				parent0.vSequence.capillaries.extractLinesFromSequence(parent0.vSequence);
+				firePropertyChange("CAPILLARIES_NEW", false, true);
+			}});
+		selectRegularButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+				boolean status = false;
+				width_between_capillariesTextField.setEnabled(status);
+				width_intervalTextField.setEnabled(status);
+			}});
 	}
 	
 	// set/ get	
