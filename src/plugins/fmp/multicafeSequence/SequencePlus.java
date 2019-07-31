@@ -229,23 +229,24 @@ public class SequencePlus extends SequenceVirtual  {
 		ArrayList<ROI2D> listRois = getROI2Ds();
 		for (ROI2D roi: listRois) {
 
+			if (!(roi instanceof ROI2DPolyLine))
+				continue;
+				
 			// interpolate missing points if necessary
 			if (roi.getName().contains("level") || roi.getName().contains("gulp")) {
 				interpolateMissingPointsAlongXAxis ((ROI2DPolyLine) roi);
 				continue;
 			}
 			
-			if (roi.getName().contains("derivative")) {
+			if (roi.getName().contains("derivative"))
 				continue;
-			}
 
-			// if gulp not found - add an index to it
-			if (roi instanceof ROI2DPolyLine) {
-				ROI2DPolyLine roiLine = (ROI2DPolyLine) roi;
-				Polyline2D line = roiLine.getPolyline2D();
-				roi.setName("gulp"+String.format("%07d", (int) line.xpoints[0]));
-				roi.setColor(Color.red);						// set color to red
-			}
+			// if gulp not found - add an index to it	
+			ROI2DPolyLine roiLine = (ROI2DPolyLine) roi;
+			Polyline2D line = roiLine.getPolyline2D();
+			roi.setName("gulp"+String.format("%07d", (int) line.xpoints[0]));
+			roi.setColor(Color.red);						// set color to red
+			
 		}
 		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());
 	}

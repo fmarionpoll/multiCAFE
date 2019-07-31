@@ -44,7 +44,7 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		tabsPane.addTab("Liquid", null, limitsTab, "Find limits of the columns of liquid");
 		
 		gulpsTab.init(capLayout, parent0);	
-		tabsPane.addTab("Gulps", null, gulpsTab, "detect gulps");
+		tabsPane.addTab("Gulps", null, gulpsTab, "Detect gulps");
 		gulpsTab.addPropertyChangeListener(this);
 		
 		fileTab.init(capLayout, parent0);
@@ -83,9 +83,6 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		}
 		else if (arg0.getPropertyName().equals("KYMO_DETECT_TOP")) {
 			firePropertyChange("MEASURETOP_OK", false, true);
-		}
-		else if (arg0.getPropertyName().equals("KYMO_DETECT_GULP")) {
-			firePropertyChange( "MEASUREGULPS_OK", false, true);
 		}
 		else if (arg0.getPropertyName().equals("MEASURES_SAVE")) {
 			tabsPane.setSelectedIndex(0);
