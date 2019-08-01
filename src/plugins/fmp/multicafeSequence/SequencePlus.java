@@ -245,7 +245,7 @@ public class SequencePlus extends SequenceVirtual  {
 			ROI2DPolyLine roiLine = (ROI2DPolyLine) roi;
 			Polyline2D line = roiLine.getPolyline2D();
 			roi.setName("gulp"+String.format("%07d", (int) line.xpoints[0]));
-			roi.setColor(Color.red);						// set color to red
+			roi.setColor(Color.red);
 			
 		}
 		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());

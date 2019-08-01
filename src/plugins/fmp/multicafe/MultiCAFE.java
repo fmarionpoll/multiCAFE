@@ -3,7 +3,6 @@ package plugins.fmp.multicafe;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -31,7 +30,8 @@ import plugins.fmp.multicafeTools.EnumArrayListType;
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener, SequenceListener
 {
 	SequenceVirtual 			vSequence 			= null;
-	ArrayList <SequencePlus> 	kymographArrayList	= new ArrayList <SequencePlus> ();
+	SequencePlus				vkymos				= null;
+	
 	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 01-August-2019", true, true, true, true);
 	
 	MCSequencePane 				sequencePane 		= new MCSequencePane();
@@ -52,19 +52,19 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		mainFrame.setLayout(new BorderLayout());
 		mainFrame.add(mainPanel, BorderLayout.CENTER);
 
-		sequencePane.init(mainPanel, "SOURCE", this);
+		sequencePane.init(mainPanel, "SOURCE DATA", this);
 		sequencePane.addPropertyChangeListener(this);
 
-		capillariesPane.init(mainPanel, "CAPILLARIES", this);
+		capillariesPane.init(mainPanel, "CAPILLARIES -> KYMOGRAPHS", this);
 		capillariesPane.addPropertyChangeListener(this);	
 				
-		kymographsPane.init(mainPanel, "MEASURE LEVELS", this);
+		kymographsPane.init(mainPanel, "KYMOS -> MEASURE TOP LEVEL & GULPS", this);
 		kymographsPane.addPropertyChangeListener(this);
 		
 		movePane.init(mainPanel, "DETECT FLIES", this);
 		movePane.addPropertyChangeListener(this);
 		
-		excelPane.init(mainPanel, "EXPORT TO EXCEL FILE", this);
+		excelPane.init(mainPanel, "MEASURES -> EXCEL FILE (XLSX)", this);
 		excelPane.addPropertyChangeListener(this);
 		
 		mainFrame.pack();
@@ -73,14 +73,13 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		mainFrame.addToDesktopPane();
 	}
 
+	
 	void roisSaveEdits() 
 	{
-		for (SequencePlus seq: kymographArrayList) {
-			if (seq.hasChanged) {
-				seq.validateRois();
-				seq.getArrayListFromRois(EnumArrayListType.cumSum);
-				seq.hasChanged = false;
-			}
+		if (vkymos != null && vkymos.hasChanged) {
+			vkymos.validateRois();
+			vkymos.getArrayListFromRois(EnumArrayListType.cumSum);
+			vkymos.hasChanged = false;
 		}
 	}
 

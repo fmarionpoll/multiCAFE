@@ -64,7 +64,7 @@ public class MCCapillariesTab_File extends JPanel {
 		}});	
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			String path = parent0.vSequence.getDirectory()+ "\\results";
-			parent0.kymographArrayList = SequencePlusUtils.openFiles(path, parent0.vSequence.capillaries); 
+			parent0.vkymos = SequencePlusUtils.openFiles(path, parent0.vSequence.capillaries); 
 			firePropertyChange("KYMOS_OPEN", false, true);	
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 

@@ -58,6 +58,7 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 			kymosBuildStart();
 		}});
+		
 		kymosStopComputationButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 			kymosBuildStop();
@@ -105,17 +106,9 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 	
 	private void kymosBuildKymographs() {
 		buildKymographsThread = null;
-		if (parent0.kymographArrayList.size() > 0) {
-			for (SequencePlus seq:parent0.kymographArrayList)
-				seq.close();
+		if (parent0.vkymos != null) {
+			parent0.vkymos.close();
 		}
-		parent0.kymographArrayList.clear();
-		for (ROI2DShape roi:parent0.vSequence.capillaries.capillariesArrayList) {
-			SequencePlus kymographSeq = new SequencePlus();	
-			kymographSeq.setName(roi.getName());
-			parent0.kymographArrayList.add(kymographSeq);
-		} 
-		parent0.capillariesPane.optionsTab.displayON();
 		
 		// start building kymos in a separate thread
 		buildKymographsThread = new BuildKymographsThread();
@@ -125,7 +118,7 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 		buildKymographsThread.options.endFrame 		= (int) parent0.vSequence.analysisEnd;
 		buildKymographsThread.options.diskRadius 	= (int) diskRadiusSpinner.getValue();
 		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected();
-		buildKymographsThread.kymographArrayList 	= parent0.kymographArrayList;
+		buildKymographsThread.vkymos 				= parent0.vkymos;
 
 		thread = new Thread(null, buildKymographsThread, "buildkymos");
 		thread.start();

@@ -23,7 +23,7 @@ public class BuildKymographsThread implements Runnable
 {
 	public BuildKymographsOptions 					options 			= new BuildKymographsOptions();
 	
-	public  ArrayList <SequencePlus> 				kymographArrayList 	= null;
+	public  SequencePlus 							vkymos 				= null;
 	private ArrayList<ArrayList<ArrayList<int[]>>> 	masksArrayList 		= new ArrayList<ArrayList<ArrayList<int[]>>>();
 	private ArrayList<ArrayList <double []>> 		rois_tabValuesList 	= new ArrayList<ArrayList <double []>>();
 	private ArrayList<IcyBufferedImage>				imageArrayList 		= new ArrayList<IcyBufferedImage> ();
@@ -44,6 +44,7 @@ public class BuildKymographsThread implements Runnable
 			return;
 		System.out.println("start buildkymographsThreads");
 		threadRunning = true;
+		
 		if (options.startFrame < 0) 
 			options.startFrame = 0;
 		if ((options.endFrame >= (int) options.vSequence.nTotalFrames) || (options.endFrame < 0)) 
@@ -101,30 +102,17 @@ public class BuildKymographsThread implements Runnable
 		}
 		options.vSequence.endUpdate();
 
-		int nbkymographs = kymographArrayList.size();
+		vkymos = new SequencePlus();
 		for (int iroi=0; iroi < nbcapillaries; iroi++)
 		{
 			IcyBufferedImage image = imageArrayList.get(iroi);
 			ArrayList <double []> tabValuesList = rois_tabValuesList.get(iroi);
-			
 			for (int chan = 0; chan < options.vSequence.getSizeC(); chan++) 
 			{
 				double [] tabValues = tabValuesList.get(chan); 
 				Array1DUtil.doubleArrayToSafeArray(tabValues, image.getDataXY(chan), image.isSignedDataType());
 			}
-			
-			if (nbkymographs > 0) {
-				SequencePlus kymographSeq = kymographArrayList.get(iroi);
-				kymographSeq.addImage(0, image);
-			}
-			else {
-				String capillaryName = options.vSequence.capillaries.capillariesArrayList.get(iroi).getName();
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						SequencePlus kymographSeq = new SequencePlus(capillaryName, image);
-						kymographArrayList.add(kymographSeq);
-					}});
-			}
+			vkymos.addImage(iroi, image);
 		}
 		
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
@@ -135,6 +123,7 @@ public class BuildKymographsThread implements Runnable
 	
 	// -------------------------------------------
 	private boolean getImageAndUpdateViewer(int t) {
+		
 		workImage = getImageFromSequence(t); 
 		sequenceViewer.setPositionT(t);
 		sequenceViewer.setTitle(options.vSequence.getDecoratedImageName(t));
@@ -174,14 +163,20 @@ public class BuildKymographsThread implements Runnable
 		rois_tabValuesList.clear();
 		
 		int nbcapillaries = options.vSequence.capillaries.capillariesArrayList.size();
+		int masksizeMax = 0;
 		for (int iroi=0; iroi < nbcapillaries; iroi++)
 		{
 			ROI2DShape roi = options.vSequence.capillaries.capillariesArrayList.get(iroi);
 			ArrayList<ArrayList<int[]>> mask = new ArrayList<ArrayList<int[]>>();
 			masksArrayList.add(mask);
 			initExtractionParametersfromROI(roi, mask, options.diskRadius, sizex, sizey);
-			
-			IcyBufferedImage bufImage = new IcyBufferedImage(imagewidth, mask.size(), numC, dataType);
+			if (mask.size() > masksizeMax)
+				masksizeMax = mask.size();
+		}
+		
+		for (int iroi=0; iroi < nbcapillaries; iroi++)
+		{
+			IcyBufferedImage bufImage = new IcyBufferedImage(imagewidth, masksizeMax, numC, dataType);
 			imageArrayList.add(bufImage);
 	
 			ArrayList <double []> tabValuesList = new ArrayList <double []>();

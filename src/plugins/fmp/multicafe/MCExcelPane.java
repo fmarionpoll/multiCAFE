@@ -1,6 +1,9 @@
 package plugins.fmp.multicafe;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.nio.file.Path;
@@ -10,6 +13,7 @@ import java.text.ParseException;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Experiment;
@@ -36,8 +40,13 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		
 		this.parent0 = parent0;
-		final JPanel excelPanel = GuiUtil.generatePanel(string);
-		mainPanel.add(GuiUtil.besidesPanel(excelPanel));
+		
+		PopupPanel capPopupPanel = new PopupPanel(string);
+		JPanel capPanel = capPopupPanel.getMainPanel();
+		capPanel.setLayout(new BorderLayout());
+		capPopupPanel.collapse();
+		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
+
 		GridLayout capLayout = new GridLayout(3, 2);
 		
 		optionsTab.init(capLayout);
@@ -52,8 +61,17 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Move", null, moveTab, "Export fly positions to file");
 		moveTab.addPropertyChangeListener(this);
 		
-		excelPanel.add(GuiUtil.besidesPanel(tabsPane));
+		capPanel.add(GuiUtil.besidesPanel(tabsPane));
 		tabsPane.setSelectedIndex(0);
+		
+		capPopupPanel.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				parent0.mainFrame.revalidate();
+				parent0.mainFrame.pack();
+				parent0.mainFrame.repaint();
+			}
+		});
 	}
 
 	@Override

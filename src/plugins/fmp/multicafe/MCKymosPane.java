@@ -1,6 +1,9 @@
 package plugins.fmp.multicafe;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -9,6 +12,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
@@ -35,8 +39,13 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		
 		this.parent0 = parent0;
-		final JPanel kymosPanel = GuiUtil.generatePanel(string);
-		mainPanel.add(GuiUtil.besidesPanel(kymosPanel));
+		
+		PopupPanel capPopupPanel = new PopupPanel(string);
+		JPanel capPanel = capPopupPanel.getMainPanel();
+		capPanel.setLayout(new BorderLayout());
+		capPopupPanel.expand();
+		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
+
 		GridLayout capLayout = new GridLayout(3, 1);
 		
 		limitsTab.init(capLayout, parent0);
@@ -58,9 +67,18 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabsPane.addChangeListener(this);
 		
-		kymosPanel.add(GuiUtil.besidesPanel(tabsPane));
+		capPanel.add(GuiUtil.besidesPanel(tabsPane));
 		limitsTab.transformForLevelsComboBox.setSelectedItem(TransformOp.G2MINUS_RB);
 		tabsPane.setSelectedIndex(0);
+		
+		capPopupPanel.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				parent0.mainFrame.revalidate();
+				parent0.mainFrame.pack();
+				parent0.mainFrame.repaint();
+			}
+		});
 	}
 	
 	@Override

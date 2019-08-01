@@ -3,8 +3,6 @@ package plugins.fmp.multicafe;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -18,8 +16,7 @@ import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
 import plugins.fmp.multicafeSequence.SequenceVirtual;
 
-
-public class MCSequencePane extends JPanel implements PropertyChangeListener {
+public class MCSequencePanePopup  extends JPanel implements PropertyChangeListener {
 	/**
 	 * 
 	 */
@@ -33,14 +30,20 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	private MultiCAFE 		parent0 	= null;
 	
 	
-	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
+	void init (JPanel mainPanel, String string, MultiCAFE parent0) 
+	{
 		this.parent0 = parent0;
 		
+		//final JPanel capPanel = GuiUtil.generatePanel(string);
 		PopupPanel capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.expand();
+		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 		
+		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		capPanel.add(GuiUtil.besidesPanel(tabsPane));
+		//mainPanel.add(GuiUtil.besidesPanel(capPanel));
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 		GridLayout capLayout = new GridLayout(3, 1);
 		
@@ -59,18 +62,6 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		closeTab.init(capLayout, parent0);
 		tabsPane.addTab("Close", null, closeTab, "Close file and associated windows");
 		closeTab.addPropertyChangeListener(this);
-
-		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		capPanel.add(GuiUtil.besidesPanel(tabsPane));
-		
-		capPopupPanel.addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentResized(ComponentEvent e) {
-				parent0.mainFrame.revalidate();
-				parent0.mainFrame.pack();
-				parent0.mainFrame.repaint();
-			}
-		});
 	}
 	
 	@Override

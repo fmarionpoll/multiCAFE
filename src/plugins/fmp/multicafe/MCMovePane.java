@@ -1,6 +1,9 @@
 package plugins.fmp.multicafe;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -9,6 +12,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 
 
@@ -21,18 +25,23 @@ public class MCMovePane extends JPanel implements PropertyChangeListener {
 	private static final long serialVersionUID = 3457738144388946607L;
 	
 	private JTabbedPane 		tabsPane	= new JTabbedPane();
-	private MCMoveTab_BuildROIs 	buildROIsTab= new MCMoveTab_BuildROIs();
-	private MCMoveTab_Detect 		detectTab 	= new MCMoveTab_Detect();
+	private MCMoveTab_BuildROIs buildROIsTab= new MCMoveTab_BuildROIs();
+	private MCMoveTab_Detect 	detectTab 	= new MCMoveTab_Detect();
 	private MCMoveTab_File 		filesTab 	= new MCMoveTab_File();
-	MCMoveTab_Graphs 				graphicsTab = new MCMoveTab_Graphs();
+	MCMoveTab_Graphs 			graphicsTab = new MCMoveTab_Graphs();
 	
 	MultiCAFE parent0 = null;
 
 	
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		this.parent0 = parent0;
-		final JPanel panel = GuiUtil.generatePanel(string);
-		mainPanel.add(GuiUtil.besidesPanel(panel));
+		
+		PopupPanel capPopupPanel = new PopupPanel(string);
+		JPanel capPanel = capPopupPanel.getMainPanel();
+		capPanel.setLayout(new BorderLayout());
+		capPopupPanel.collapse();
+		
+		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 		GridLayout capLayout = new GridLayout(4, 1);
 		
 		buildROIsTab.init(capLayout, parent0);
@@ -52,7 +61,7 @@ public class MCMovePane extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Graphs", null, graphicsTab, "Display results as graphics");
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		panel.add(GuiUtil.besidesPanel(tabsPane));
+		capPanel.add(GuiUtil.besidesPanel(tabsPane));
 		tabsPane.setSelectedIndex(0);
 		
 		tabsPane.addChangeListener(new ChangeListener() {
@@ -62,6 +71,15 @@ public class MCMovePane extends JPanel implements PropertyChangeListener {
 	            detectTab.thresholdedImageCheckBox.setSelected(itab == 1);
 	        }
 	    });
+		
+		capPopupPanel.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				parent0.mainFrame.revalidate();
+				parent0.mainFrame.pack();
+				parent0.mainFrame.repaint();
+			}
+		});
 	}
 
 	@Override
