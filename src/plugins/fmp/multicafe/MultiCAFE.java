@@ -23,7 +23,6 @@ import icy.sequence.SequenceListener;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeSequence.SequenceVirtual;
-import plugins.fmp.multicafeTools.EnumArrayListType;
 
 
 // SequenceListener?
@@ -78,7 +77,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	{
 		if (vkymos != null && vkymos.hasChanged) {
 			vkymos.validateRois();
-			vkymos.getArrayListFromRois(EnumArrayListType.cumSum);
+			// TODO? vkymos.getArrayListFromRois(EnumArrayListType.cumSum, -1);
 			vkymos.hasChanged = false;
 		}
 	}

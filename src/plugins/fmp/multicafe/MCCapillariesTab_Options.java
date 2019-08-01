@@ -16,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import icy.canvas.Canvas2D;
 import icy.canvas.IcyCanvas;
 import icy.canvas.Layer;
 import icy.gui.main.ActiveViewerListener;
@@ -26,10 +25,9 @@ import icy.gui.viewer.ViewerEvent;
 import icy.image.IcyBufferedImage;
 import icy.main.Icy;
 import icy.roi.ROI;
-import icy.roi.ROI2D;
 import icy.sequence.Sequence;
-import plugins.fmp.multicafeSequence.SequencePlus;
-import plugins.kernel.roi.roi2d.ROI2DShape;
+import plugins.fmp.multicafeSequence.Capillary;
+
 
 
 public class MCCapillariesTab_Options extends JPanel implements ActiveViewerListener {
@@ -48,7 +46,6 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 	JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps", true);
 
 	private MultiCAFE parent0 = null;
-	private int previousupfront  = -1;
 
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
 		setLayout(capLayout);
@@ -112,46 +109,41 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 	// ---------------------------
 	void transferFileNamesToComboBox() {
 		kymographNamesComboBox.removeAllItems();
-		if (parent0.kymographArrayList == null)
-			return;
-		for (SequencePlus kymographSeq: parent0.kymographArrayList) {
-			kymographNamesComboBox.addItem(kymographSeq.getName());
+		if (parent0.vkymos != null) {
+			for (Capillary cap: parent0.vkymos.capillaries.capillariesArrayList) 
+				kymographNamesComboBox.addItem(cap.getName());
 		}
 	}
 	
-	void transferRoisNamesToComboBox(ArrayList <ROI2DShape> roi2DArrayList) {
+	void transferRoisNamesToComboBox(ArrayList <Capillary> capillaryArrayList) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				kymographNamesComboBox.removeAllItems();
-				for (ROI2D roi:roi2DArrayList)
-					kymographNamesComboBox.addItem(roi.getName());	
+				for (Capillary cap: capillaryArrayList)
+					kymographNamesComboBox.addItem(cap.getName());	
 			}});
 	}
 	
 	private void roisDisplay(String filter, boolean visible) {
 
-		for (SequencePlus seq: parent0.kymographArrayList) {
-			ArrayList<Viewer>vList =  seq.getViewers();
-			Viewer v = vList.get(0);
-			IcyCanvas canvas = v.getCanvas();
-			List<Layer> layers = canvas.getLayers(false);
-			if (layers == null)
-				return;	
+		ArrayList<Viewer>vList =  parent0.vkymos.getViewers();
+		IcyCanvas canvas = vList.get(0).getCanvas();
+		List<Layer> layers = canvas.getLayers(false);
+		if (layers != null) {	
 			for (Layer layer: layers) {
 				ROI roi = layer.getAttachedROI();
-				if (roi == null)
-					continue;
-				String cs = roi.getName();
-				if (cs.contains(filter)) { 
-					layer.setVisible(visible);
+				if (roi != null) {
+					String cs = roi.getName();
+					if (cs.contains(filter))  
+						layer.setVisible(visible);
 				}
 			}
 		}
 	}
 
 	void displayON() {
-		if (parent0.kymographArrayList == null 
-			||parent0.kymographArrayList.size() < 1) {
+		if (parent0.vkymos == null 
+			||parent0.vkymos.getSizeT() < 1) {
 			System.out.println("displayON() skipped");
 			return;
 		}
@@ -159,44 +151,37 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 		Rectangle rectMaster = parent0.vSequence.getFirstViewer().getBounds();
 		int deltax = 5 + rectMaster.width;
 		int deltay = 5;
-
-		for(SequencePlus seq: parent0.kymographArrayList) 
+		
+		ArrayList<Viewer>vList = parent0.vkymos.getViewers();
+		if (vList.size() == 0) 
 		{
-			ArrayList<Viewer>vList = seq.getViewers();
-			if (vList.size() == 0) 
-			{
-				Viewer v = new Viewer(seq, true);
-				v.addListener(parent0);
-				Rectangle rectDataView = v.getBounds();
-				rectDataView.height = rectMaster.height;
-				IcyBufferedImage img = seq.getFirstImage();
-				rectDataView.width = 100;
-				if (img != null)
-					rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
-				rectDataView.translate(
-						rectMaster.x + deltax - rectDataView.x, 
-						rectMaster.y + deltay - rectDataView.y);
-				v.setBounds(rectDataView);
-			}
+			Viewer v = new Viewer(parent0.vkymos, true);
+			v.addListener(parent0);
+			Rectangle rectDataView = v.getBounds();
+			rectDataView.height = rectMaster.height;
+			IcyBufferedImage img = parent0.vkymos.getFirstImage();
+			rectDataView.width = 100;
+			if (img != null)
+				rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
+			rectDataView.translate(
+					rectMaster.x + deltax - rectDataView.x, 
+					rectMaster.y + deltay - rectDataView.y);
+			v.setBounds(rectDataView);
 		}
 		Icy.getMainInterface().addActiveViewerListener(this);
 	}
 	
 	void displayOFF() {
-		int nseq = parent0.kymographArrayList.size();
-		if (nseq < 1) return;
 
-		for(SequencePlus seq: parent0.kymographArrayList) 
+		if (parent0.vkymos == null) 
+			return;
+		ArrayList<Viewer>vList =  parent0.vkymos.getViewers();
+		if (vList.size() > 0) 
 		{
-			ArrayList<Viewer>vList =  seq.getViewers();
-			if (vList.size() > 0) 
-			{
-				for (Viewer v: vList) 
-					v.close();
-				vList.clear();
-			}
+			for (Viewer v: vList) 
+				v.close();
+			vList.clear();
 		}
-		previousupfront =-1;
 		Icy.getMainInterface().removeActiveViewerListener(this);
 	}
 	
@@ -210,60 +195,15 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 	
 	void displayUpdate() {	
 
-		if (parent0.kymographArrayList.size() < 1 || kymographNamesComboBox.getItemCount() < 1)
+		if (parent0.vkymos == null || kymographNamesComboBox.getItemCount() < 1)
 			return;	
-		
 		displayON();
 		int itemupfront = kymographNamesComboBox.getSelectedIndex();
 		if (itemupfront < 0) {
 			itemupfront = 0;
 			kymographNamesComboBox.setSelectedIndex(0);
 		}
-		Viewer v = parent0.kymographArrayList.get(itemupfront).getFirstViewer();
-		if (v != null) {
-			if (previousupfront != itemupfront 
-					&& previousupfront >= 0 
-					&& previousupfront < parent0.kymographArrayList.size()) {
-				
-				SequencePlus seq0 =  parent0.kymographArrayList.get(previousupfront);
-				// save changes and interpolate points if necessary
-				if (seq0.hasChanged) {
-					seq0.validateRois();
-					seq0.hasChanged = false;
-				}
-				// update canvas size of all kymograph windows if size of window has changed
-				Viewer v0 = parent0.kymographArrayList.get(previousupfront).getFirstViewer();
-				Rectangle rect0 = v0.getBounds();
-				Canvas2D cv0 = (Canvas2D) v0.getCanvas();
-				int positionZ0 = cv0.getPositionZ(); 
-						
-				Rectangle rect = v.getBounds();
-				if (rect != rect0) {
-					v.setBounds(rect0);
-					int i= 0;
-					int imax = 500;
-					while (!v.isInitialized() && i < imax) { i ++; }
-					if (!v.isInitialized())
-						System.out.println("Viewer still not initialized after " + imax +" iterations");
-					
-					for (SequencePlus seq: parent0.kymographArrayList) {
-						Viewer vi = seq.getFirstViewer();
-						Rectangle recti = vi.getBounds();
-						if (recti != rect0)
-							vi.setBounds(rect0);
-					}
-				}
-				// copy zoom and position of image from previous canvas to the one selected
-				Canvas2D cv = (Canvas2D) v.getCanvas();
-				cv.setScale(cv0.getScaleX(), cv0.getScaleY(), false);
-				cv.setOffset(cv0.getOffsetX(), cv0.getOffsetY(), false);
-				cv.setPositionZ(positionZ0);
-			}
-			v.toFront();
-			v.requestFocus();
-			previousupfront = itemupfront;
-		}
-
+		parent0.vkymos.displayImageAt(itemupfront);
 	}
 
 	void displayViews (boolean bEnable) {

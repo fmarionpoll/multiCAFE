@@ -1,29 +1,26 @@
 package plugins.fmp.multicafe;
 
-import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class MCBuildDetect_LimitsOptions {
 	
 	boolean 		detectTop 				= true;
 	boolean 		detectBottom 			= true;
-	boolean 		detectAllLevel 			= true;
-	int				firstkymo				= 0;
+	boolean 		detectAllImages 		= true;
+	int				firstImage				= 0;
 	boolean			directionUp				= true;
 	int				detectLevelThreshold 	= 35;
 	TransformOp		transformForLevels 		= TransformOp.R2MINUS_GB;
 
 	
-	void copyDetectionParametersToSequenceHeader(SequencePlus seq) {
+	void copy(MCBuildDetect_LimitsOptions destination) {
 
-		seq.detectTop 				= detectTop; 
-		seq.detectBottom 			= detectBottom; 
-		seq.transformForLevels 		= transformForLevels;
-		seq.directionUp 			= directionUp;
-		seq.detectLevelThreshold 	= detectLevelThreshold;
-		seq.detectAllLevel 			= detectAllLevel;
-	
-		seq.bStatusChanged = true;
+		destination.detectTop 				= detectTop; 
+		destination.detectBottom 			= detectBottom; 
+		destination.transformForLevels 		= transformForLevels;
+		destination.directionUp 			= directionUp;
+		destination.detectLevelThreshold 	= detectLevelThreshold;
+		destination.detectAllImages 		= detectAllImages;
 	}
 
 }

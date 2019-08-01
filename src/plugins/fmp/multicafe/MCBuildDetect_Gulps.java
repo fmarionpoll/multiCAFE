@@ -8,66 +8,68 @@ import java.util.List;
 
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
+import icy.roi.ROI2D;
 import icy.type.collection.array.Array1DUtil;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequencePlus;
-import plugins.fmp.multicafeTools.EnumArrayListType;
 import plugins.fmp.multicafeTools.ProgressChrono;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class MCBuildDetect_Gulps {
 	
-	public void detectGulps(MCBuildDetect_GulpsOptions options, ArrayList <SequencePlus> kymographArrayList) {	
+	public void detectGulps(MCBuildDetect_GulpsOptions options, SequencePlus seqkymo) {	
 		
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
-		progressBar.initStuff(kymographArrayList.size() );
+		progressBar.initStuff(seqkymo.getSizeT() );
 		
 		int jitter = 5;
 		int firstkymo = 0;
-		int lastkymo = kymographArrayList.size() -1;
+		int lastkymo = seqkymo.getSizeT() -1;
 		if (! options.detectAllGulps) {
 			firstkymo = options.firstkymo;
 			lastkymo = firstkymo;
 		}
 		
+		seqkymo.beginUpdate();
+		
 		for (int kymo=firstkymo; kymo <= lastkymo; kymo++) 
 		{
 			progressBar.updatePositionAndTimeLeft(kymo);
 
-			SequencePlus kymographSeq = kymographArrayList.get(kymo);
-			kymographSeq.beginUpdate();
+			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(kymo);
 			
-			options.copyDetectionParametersToSequenceHeader(kymographSeq);
-			removeSpecificRoisFromSequence(kymographSeq, "gulp");
-			removeSpecificRoisFromSequence(kymographSeq, "derivative");
+			options.copy(cap.gulpsOptions);
+			removeSpecificRoisFromSequence(seqkymo, kymo, "gulp");
+			removeSpecificRoisFromSequence(seqkymo, kymo, "derivative");
+			cap.derivedValuesArrayList.clear();
 
-			kymographSeq.derivedValuesArrayList.add(0);
-			ArrayList <Integer> topLevelArray = kymographSeq.getArrayListFromRois(EnumArrayListType.topLevel);
-			
-			getDerivativeProfile(kymographSeq, topLevelArray,  jitter);				;
+			cap.derivedValuesArrayList.add(0);
+			ArrayList <Integer> topLevelArray = cap.getYFromPtArray(cap.ptsTop);
+			getDerivativeProfile(seqkymo, kymo, cap, topLevelArray, jitter);				;
 			if (options.computeDiffnAndDetect) 
-				getGulps(kymographSeq, topLevelArray);
-			
-			kymographSeq.endUpdate(); 
+				getGulps(seqkymo, cap, topLevelArray);
 		}
+		seqkymo.endUpdate();
 
 		// send some info
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
 	}	
 
-	private void removeSpecificRoisFromSequence(SequencePlus kymographSeq, String gulp) {
+	private void removeSpecificRoisFromSequence(SequencePlus kymographSeq, int t, String gulp) {
 		
 		for (ROI roi:kymographSeq.getROIs()) {
-			if (roi.getName().contains(gulp))
+			if (roi instanceof ROI2D 
+			&& ((ROI2D) roi).getT() == t 
+			&& roi.getName().contains(gulp))
 				kymographSeq.removeROI(roi);
 		}
-		kymographSeq.derivedValuesArrayList.clear();
 	}
 	
-	private void getDerivativeProfile(SequencePlus kymographSeq, ArrayList <Integer> topLevelArray, int jitter) {
+	private void getDerivativeProfile(SequencePlus kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray, int jitter) {
 		
 		int z = kymographSeq.getSizeZ() -1;
-		IcyBufferedImage image = kymographSeq.getImage(0, z, 0);
+		IcyBufferedImage image = kymographSeq.getImage(t, z, 0);
 		List<Point2D> listOfMaxPoints = new ArrayList<>();
 		int[] kymoImageValues = Array1DUtil.arrayToIntArray(image.getDataXY(0), image.isSignedDataType());	// channel 0 - RED
 		int xwidth = image.getSizeX();
@@ -92,7 +94,7 @@ public class MCBuildDetect_Gulps {
 					max = val;
 			}
 			listOfMaxPoints.add(new Point2D.Double((double) ix, (double) ( yheight/2 - max)));
-			kymographSeq.derivedValuesArrayList.add(max);
+			cap.derivedValuesArrayList.add(max);
 		}
 		ROI2DPolyLine roiMaxTrack = new ROI2DPolyLine ();
 		roiMaxTrack.setName("derivative");
@@ -102,7 +104,7 @@ public class MCBuildDetect_Gulps {
 		kymographSeq.addROI(roiMaxTrack, false);
 	}
 
-	private void getGulps(SequencePlus kymographSeq, ArrayList <Integer> topLevelArray) {
+	private void getGulps(SequencePlus kymographSeq, Capillary cap, ArrayList <Integer> topLevelArray) {
 		int ix = 0;
 		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
 
@@ -111,7 +113,7 @@ public class MCBuildDetect_Gulps {
 		Point2D.Double singlePoint = null;
 		for (ix = 1; ix < topLevelArray.size(); ix++) 
 		{
-			int max = kymographSeq.derivedValuesArrayList.get(ix-1);
+			int max = cap.derivedValuesArrayList.get(ix-1);
 			if (max < kymographSeq.detectGulpsThreshold)
 				continue;
 			

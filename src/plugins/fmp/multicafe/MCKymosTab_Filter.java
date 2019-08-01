@@ -39,9 +39,9 @@ public class MCKymosTab_Filter  extends JPanel {
 		startButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				int span = getSpan();
-				for (SequencePlus kymoSequence: parent0.kymographArrayList) {
-					int c = 1;
-					crossCorrelatePixels(kymoSequence, span, c);
+				int c = 1;
+				for (int t=0; t < parent0.vkymos.getSizeT(); t++) {
+					crossCorrelatePixels(parent0.vkymos, t, span, c);
 				}
 			}});
 	}
@@ -50,9 +50,9 @@ public class MCKymosTab_Filter  extends JPanel {
 		return Integer.parseInt( spanText.getText() );
 	}
 	
-	private void crossCorrelatePixels (SequencePlus kymographSeq, int span, int c) {
+	private void crossCorrelatePixels (SequencePlus kymographSeq, int span, int t, int c) {
 		IcyBufferedImage image = null;
-		image = kymographSeq.getImage(0, 0, c);
+		image = kymographSeq.getImage(t, 0, c);
 		double [] tabValues = Array1DUtil.arrayToDoubleArray(image.getDataXY(0), image.isSignedDataType()); 
 		
 		int xwidth = image.getSizeX();

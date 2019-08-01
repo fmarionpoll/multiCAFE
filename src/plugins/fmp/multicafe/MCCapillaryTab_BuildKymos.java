@@ -14,10 +14,8 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
-import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeTools.BuildKymographsThread;
 import plugins.fmp.multicafeTools.EnumStatusComputation;
-import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
 public class MCCapillaryTab_BuildKymos extends JPanel { 

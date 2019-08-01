@@ -90,9 +90,9 @@ public class MCMoveTab_BuildROIs extends JPanel {
 		int rectleft = rect.x + rect.width /6;
 		int rectright = rect.x + rect.width*5 /6;
 		if (parent0.vSequence.capillaries.capillariesArrayList.size() > 0) {
-			Rectangle bound0 = parent0.vSequence.capillaries.capillariesArrayList.get(0).getBounds();
+			Rectangle bound0 = parent0.vSequence.capillaries.capillariesArrayList.get(0).roi.getBounds();
 			int last = parent0.vSequence.capillaries.capillariesArrayList.size() - 1;
-			Rectangle bound1 = parent0.vSequence.capillaries.capillariesArrayList.get(last).getBounds();
+			Rectangle bound1 = parent0.vSequence.capillaries.capillariesArrayList.get(last).roi.getBounds();
 			rectleft = bound0.x;
 			rectright = bound1.x + bound1.width;
 			int diff = (rectright - rectleft)*2/60;

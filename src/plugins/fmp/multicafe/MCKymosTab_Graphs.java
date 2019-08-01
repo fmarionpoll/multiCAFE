@@ -89,14 +89,14 @@ public class MCKymosTab_Graphs extends JPanel {
 	private XYMultiChart xyDisplayGraphsItem(String title, EnumArrayListType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative, int kmax) {
 		
 		if (iChart != null && iChart.mainChartPanel.isValid()) {
-			iChart.fetchNewData(parent0.kymographArrayList, option, kmax, (int) parent0.vSequence.analysisStart);
+			iChart.fetchNewData(parent0.vkymos, option, kmax, (int) parent0.vSequence.analysisStart);
 
 		}
 		else {
 			iChart = new XYMultiChart();
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
-			iChart.displayData(parent0.kymographArrayList, option, kmax, (int) parent0.vSequence.analysisStart);
+			iChart.displayData(parent0.vkymos, option, kmax, (int) parent0.vSequence.analysisStart);
 		}
 		iChart.mainChartFrame.toFront();
 		return iChart;

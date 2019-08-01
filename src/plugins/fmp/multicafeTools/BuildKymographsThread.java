@@ -3,15 +3,13 @@ package plugins.fmp.multicafeTools;
 
 import java.util.ArrayList;
 
-import javax.swing.SwingUtilities;
-
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.main.Icy;
 import icy.sequence.Sequence;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
-
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequencePlus;
 
 import plugins.kernel.roi.roi2d.ROI2DShape;
@@ -166,10 +164,10 @@ public class BuildKymographsThread implements Runnable
 		int masksizeMax = 0;
 		for (int iroi=0; iroi < nbcapillaries; iroi++)
 		{
-			ROI2DShape roi = options.vSequence.capillaries.capillariesArrayList.get(iroi);
+			Capillary cap = options.vSequence.capillaries.capillariesArrayList.get(iroi);
 			ArrayList<ArrayList<int[]>> mask = new ArrayList<ArrayList<int[]>>();
 			masksArrayList.add(mask);
-			initExtractionParametersfromROI(roi, mask, options.diskRadius, sizex, sizey);
+			initExtractionParametersfromROI(cap.roi, mask, options.diskRadius, sizex, sizey);
 			if (mask.size() > masksizeMax)
 				masksizeMax = mask.size();
 		}

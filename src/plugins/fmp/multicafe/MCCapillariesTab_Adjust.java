@@ -16,8 +16,8 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
-import icy.roi.ROI2D;
 import icy.type.collection.array.Array1DUtil;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeTools.Line2DPlus;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 
@@ -79,10 +79,10 @@ public class MCCapillariesTab_Adjust extends JPanel {
 		
 		// loop through all lines
 		for (int i=0; i< parent0.vSequence.capillaries.capillariesArrayList.size(); i++) {
-			ROI2D roi = parent0.vSequence.capillaries.capillariesArrayList.get(i);
-			if (roi instanceof ROI2DLine) 			{
-				Line2D line = roisCenterLinetoCapillary(sourceValues, xwidth, (ROI2DLine) roi, jitter);
-				((ROI2DLine) roi).setLine(line); 
+			Capillary cap = parent0.vSequence.capillaries.capillariesArrayList.get(i);
+			if (cap.roi instanceof ROI2DLine) 			{
+				Line2D line = roisCenterLinetoCapillary(sourceValues, xwidth, (ROI2DLine) cap.roi, jitter);
+				((ROI2DLine) cap.roi).setLine(line); 
 			}
 		}
 	}
@@ -207,10 +207,10 @@ public class MCCapillariesTab_Adjust extends JPanel {
 			refLineUpper = new Line2D.Double (0, seqheight/3, seqwidth, seqheight/3);
 			refLineLower = new Line2D.Double (0, 2*seqheight/3, seqwidth, 2*seqheight/3);
 			
-			Rectangle extRect = new Rectangle (parent0.vSequence.capillaries.capillariesArrayList.get(0).getBounds());
-			for (ROI2D roi: parent0.vSequence.capillaries.capillariesArrayList)
+			Rectangle extRect = new Rectangle (parent0.vSequence.capillaries.capillariesArrayList.get(0).roi.getBounds());
+			for (Capillary cap: parent0.vSequence.capillaries.capillariesArrayList)
 			{
-				Rectangle rect = roi.getBounds();
+				Rectangle rect = cap.roi.getBounds();
 				extRect.add(rect);
 			}
 			extRect.grow(extRect.width*1/10, -extRect.height*2/10);

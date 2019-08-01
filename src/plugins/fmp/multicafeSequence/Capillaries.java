@@ -2,7 +2,6 @@ package plugins.fmp.multicafeSequence;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -24,7 +23,7 @@ public class Capillaries {
 	public double 	pixels 				= 300.;
 	public int		grouping 			= 2;
 	public String 	sourceName 			= null;
-	public ArrayList <ROI2DShape> capillariesArrayList 	= new ArrayList <ROI2DShape>();	
+	public ArrayList <Capillary> capillariesArrayList 	= new ArrayList <Capillary>();	
 	public long 	analysisStart 		= 0;
 	public long 	analysisEnd 		= 0;
 	public int 		analysisStep 		= 1;
@@ -37,6 +36,7 @@ public class Capillaries {
 	public String 	stimulusL			= new String("stimulusL");
 	public String 	concentrationL		= new String("xmML");
 	
+	// ------------------------------------------------------------
 	public boolean xmlReadCapillaryParameters (Document doc) {
 		String nodeName = "capillaryTrack";
 		// read local parameters
@@ -136,9 +136,8 @@ public class Capillaries {
 			if (!roi.getName().contains("line"))
 				continue;
 			if (roi instanceof ROI2DLine || roi instanceof ROI2DPolyLine)
-				capillariesArrayList.add((ROI2DShape)roi);
-		}
-		Collections.sort(capillariesArrayList, new MulticafeTools.ROI2DNameComparator()); 
+				capillariesArrayList.add(new Capillary((ROI2DShape)roi));
+		} 
 	}
 	
 	public boolean xmlWriteROIsAndData(String name, SequenceVirtual seq) {
@@ -162,8 +161,8 @@ public class Capillaries {
 				if (doc != null)
 				{
 					List<ROI> roisList = new ArrayList<ROI>();
-					for (ROI roi: capillariesArrayList)
-						roisList.add(roi);
+					for (Capillary cap: capillariesArrayList) 
+						roisList.add(cap.roi);
 					ROI.saveROIsToXML(XMLUtil.getRootElement(doc), roisList);
 					xmlWriteCapillaryParameters (doc, seq);
 					XMLUtil.saveDocument(doc, csFile);
@@ -191,7 +190,6 @@ public class Capillaries {
 			XMLUtil.saveDocument(doc, csFile);
 			return true;
 		}
-		
 		return false;
 	}
 	
@@ -221,11 +219,10 @@ public class Capillaries {
 				List<ROI> listOfROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
 				capillariesArrayList.clear();
 				for (ROI roi: listOfROIs)
-					capillariesArrayList.add((ROI2DShape) roi);
-				Collections.sort(capillariesArrayList, new MulticafeTools.ROINameComparator()); 
+					capillariesArrayList.add(new Capillary((ROI2DShape) roi));
 				try  {  
-					for (ROI roi : capillariesArrayList)  {
-						seq.addROI(roi);
+					for (Capillary cap : capillariesArrayList)  {
+						seq.addROI(cap.roi);
 					}
 				}
 				finally {
@@ -245,6 +242,7 @@ public class Capillaries {
 	}
 
 	public Capillaries copy (Capillaries cap) {
+		
 		volume = cap.volume;
 		pixels = cap.pixels;
 		grouping = cap.grouping;
@@ -263,6 +261,7 @@ public class Capillaries {
 	}
 	
 	public boolean isChanged (Capillaries cap) {
+		
 		boolean flag = false; 
 		flag = (cap.volume != volume) || flag;
 		flag = (cap.pixels != pixels) || flag;

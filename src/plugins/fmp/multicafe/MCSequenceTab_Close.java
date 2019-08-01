@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
-import plugins.fmp.multicafeSequence.SequencePlus;
+
 
 public class MCSequenceTab_Close  extends JPanel {
 
@@ -36,14 +36,12 @@ public class MCSequenceTab_Close  extends JPanel {
 		
 	void closeAll() {
 		
-		if (parent0.kymographArrayList != null) {
-			for (SequencePlus seq:parent0.kymographArrayList) {
-				ArrayList<Viewer> viewerList = seq.getViewers();
-				for (Viewer v: viewerList)
-					v.close();
-				seq.close();
-			}
-			parent0.kymographArrayList.clear();
+		if (parent0.vkymos != null) {
+			ArrayList<Viewer> viewerList = parent0.vkymos.getViewers();
+			for (Viewer v: viewerList)
+				v.close();
+			parent0.vkymos.close();
+			parent0.vkymos = null;
 		}
 		
 		parent0.movePane.graphicsTab.closeAll();

@@ -1,5 +1,6 @@
 package plugins.fmp.multicafeSequence;
 
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import icy.common.exception.UnsupportedFormatException;
 import icy.file.Loader;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
-import plugins.kernel.roi.roi2d.ROI2DShape;
+import icy.image.IcyBufferedImageUtil;
 
 
 
@@ -68,15 +69,58 @@ public class SequencePlusUtils {
 		return arrayKymos;
 	}
 	
-	public static ArrayList<SequencePlus> openFiles (String directory, Capillaries cap) {
+	public static SequencePlus openKymoFiles (String directory, Capillaries caps) {
+		
+		isRunning = true;
+		SequencePlus kymos = new SequencePlus ();	
+
+		ProgressFrame progress = new ProgressFrame("Load kymographs");
+		progress.setLength(caps.capillariesArrayList.size());
+		
+		int t=0;
+		for (Capillary cop: caps.capillariesArrayList) {
+			
+			if (isInterrupted) {
+				isInterrupted = false;
+				isRunning = false;
+				progress.close();
+				return null;
+			}
+			 
+			final String name =  directory + "\\" + cop.roi.getName() + ".tiff";
+			progress.setMessage( "Load "+name);
+	
+			try {
+				IcyBufferedImage ibufImage = Loader.loadImage(name);
+				if (t != 0 && (ibufImage.getWidth() != kymos.getWidth() || ibufImage.getHeight() != kymos.getHeight())) {
+					Rectangle rect = new Rectangle(0, 0, kymos.getWidth(), kymos.getHeight() );
+					ibufImage = IcyBufferedImageUtil.getSubImage(ibufImage, rect );
+				}
+				kymos.addImage(t, ibufImage);
+			} catch (UnsupportedFormatException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			t++;
+			kymos.loadXMLKymographAnalysis(directory);
+			
+			progress.incPosition();
+		}
+		progress.close();
+		isRunning = false;
+		return kymos;
+	}
+	
+	public static ArrayList<SequencePlus> openFiles (String directory, Capillaries capillaries) {
 		
 		isRunning = true;
 		ArrayList<SequencePlus> arrayKymos = new ArrayList<SequencePlus> ();	
 
 		ProgressFrame progress = new ProgressFrame("Load kymographs");
-		progress.setLength(cap.capillariesArrayList.size());
+		progress.setLength(capillaries.capillariesArrayList.size());
 		
-		for (ROI2DShape roi: cap.capillariesArrayList) {
+		for (Capillary cap: capillaries.capillariesArrayList) {
 			
 			if (isInterrupted) {
 				isInterrupted = false;
@@ -86,7 +130,7 @@ public class SequencePlusUtils {
 			}
 			 
 			SequencePlus kymographSeq = new SequencePlus();
-			final String name =  directory + "\\" + roi.getName() + ".tiff";
+			final String name =  directory + "\\" + cap.roi.getName() + ".tiff";
 			progress.setMessage( "Load "+name);
 			
 			IcyBufferedImage ibufImage = null;
@@ -100,7 +144,7 @@ public class SequencePlusUtils {
 			}
 			kymographSeq.addImage(0, ibufImage);
 			
-			String title = roi.getName();
+			String title = cap.roi.getName();
 			kymographSeq.setName(title);
 			kymographSeq.loadXMLKymographAnalysis(directory);
 			arrayKymos.add(kymographSeq);

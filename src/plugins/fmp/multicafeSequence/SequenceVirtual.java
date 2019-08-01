@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
+import java.util.List;
 
 import icy.canvas.Canvas2D;
 import icy.gui.dialog.LoaderDialog;
@@ -16,7 +17,8 @@ import icy.image.IcyBufferedImageUtil;
 import icy.image.ImageUtil;
 import icy.main.Icy;
 import icy.math.ArrayMath;
-
+import icy.roi.ROI;
+import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.system.thread.ThreadUtil;
 import icy.type.collection.array.Array1DUtil;
@@ -703,5 +705,16 @@ public class SequenceVirtual extends Sequence
 		}
 //		LocalDateTime loc = LocalDateTime.ofInstant(fileTime.toInstant(), ZoneOffset.UTC);
 		return fileTime;
+	}
+
+	public void removeAllROISatT(int t) {
+		if (!rois.isEmpty())
+        {
+            final List<ROI> allROIs = getROIs();
+            for (ROI roi : allROIs) {
+            	if (roi instanceof ROI2D && ((ROI2D) roi).getT() == t)
+            		removeROI(roi, false);
+            }
+        }
 	}
 }

@@ -3,7 +3,6 @@ package plugins.fmp.multicafe;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -15,8 +14,8 @@ import javax.swing.SwingConstants;
 
 import icy.gui.frame.progress.AnnounceFrame;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequencePlus;
-import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class MCKymosTab_DetectLimits  extends JPanel {
@@ -27,7 +26,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	private static final long serialVersionUID = -6329863521455897561L;
 	
 	JComboBox<String> 	directionComboBox 		= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
-	JCheckBox			detectAllLevelCheckBox 	= new JCheckBox ("all", true);
+	JCheckBox			detectAllCheckBox 	= new JCheckBox ("all", true);
 	private JTextField 	detectTopTextField 		= new JTextField("35");
 	JComboBox<TransformOp> transformForLevelsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
 			TransformOp.R_RGB, TransformOp.G_RGB, TransformOp.B_RGB, 
@@ -47,7 +46,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 		((JLabel) directionComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
 		add( GuiUtil.besidesPanel(directionComboBox, detectTopTextField, transformForLevelsComboBox, displayTransform1Button )); 
 		add( GuiUtil.besidesPanel(new JLabel("span ", SwingConstants.RIGHT), spanTopTextField, new JLabel(" "), new JLabel(" ")));
-		add( GuiUtil.besidesPanel( detectTopButton,  detectAllLevelCheckBox, new JLabel(" ")));
+		add( GuiUtil.besidesPanel( detectTopButton,  detectAllCheckBox, new JLabel(" ")));
 		
 		defineActionListeners();
 	}
@@ -67,11 +66,11 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 				options.transformForLevels 		= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 				options.directionUp 			= (directionComboBox.getSelectedIndex() == 0);
 				options.detectLevelThreshold 	= (int) getDetectLevelThreshold();
-				options.detectAllLevel 			= detectAllLevelCheckBox.isSelected();
-				options.firstkymo 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
+				options.detectAllImages 			= detectAllCheckBox.isSelected();
+				options.firstImage 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
 
 				MCBuildDetect_Limits detect = new MCBuildDetect_Limits();
-				detect.detectCapillaryLevels(options, parent0.kymographArrayList);
+				detect.detectCapillaryLevels(options, parent0.vkymos);
 				firePropertyChange("KYMO_DETECT_TOP", false, true);
 			}});		
 		displayTransform1Button.addActionListener(new ActionListener () { 
@@ -102,20 +101,21 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	}
 		
 	void kymosDisplayFiltered1() {
-		if (parent0.kymographArrayList == null)
+		if (parent0.vkymos == null)
 			return;
-		Collections.sort(parent0.kymographArrayList, new MulticafeTools.SequenceNameComparator()); 
 		TransformOp transform;
 		transform = (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		parent0.kymographsPane.kymosBuildFiltered(0, 1, transform, getSpanDiffTop());
 	}
 	
-	void setInfos(SequencePlus seq) {
-		transformForLevelsComboBox.setSelectedItem(seq.transformForLevels);
-		int index =seq.directionUp ? 0:1;
+	void setInfos(int kymo) {
+		Capillary cap = parent0.vkymos.capillaries.capillariesArrayList.get(kymo);
+		MCBuildDetect_LimitsOptions options = cap.limitsOptions;
+		transformForLevelsComboBox.setSelectedItem(options.transformForLevels);
+		int index =options.directionUp ? 0:1;
 		directionComboBox.setSelectedIndex(index);
-		setDetectLevelThreshold(seq.detectLevelThreshold);
-		detectTopTextField.setText(Integer.toString(seq.detectLevelThreshold));
-		detectAllLevelCheckBox.setSelected(seq.detectAllLevel);
+		setDetectLevelThreshold(options.detectLevelThreshold);
+		detectTopTextField.setText(Integer.toString(options.detectLevelThreshold));
+		detectAllCheckBox.setSelected(options.detectAllImages);
 	}
 }

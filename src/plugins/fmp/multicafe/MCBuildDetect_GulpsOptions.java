@@ -1,7 +1,6 @@
 package plugins.fmp.multicafe;
 
 
-import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class MCBuildDetect_GulpsOptions {
@@ -12,12 +11,10 @@ public class MCBuildDetect_GulpsOptions {
 	boolean			computeDiffnAndDetect	= true;
 	int				firstkymo 				= 0;
 	
-	void copyDetectionParametersToSequenceHeader(SequencePlus seq) {
-		seq.detectGulpsThreshold 	= detectGulpsThreshold;
-		seq.transformForGulps 		= transformForGulps;
-		seq.detectAllGulps 			= detectAllGulps;
-		
-		seq.bStatusChanged = true;
+	public void copy(MCBuildDetect_GulpsOptions destination) {
+		destination.detectGulpsThreshold 	= detectGulpsThreshold;
+		destination.transformForGulps 		= transformForGulps;
+		destination.detectAllGulps 			= detectAllGulps;
 	}
 
 }

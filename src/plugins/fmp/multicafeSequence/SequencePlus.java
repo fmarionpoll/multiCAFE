@@ -31,7 +31,9 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class SequencePlus extends SequenceVirtual  {
 	
-	public 	ArrayList<Integer> derivedValuesArrayList= new ArrayList<Integer>(); // (derivative) result of the detection of the capillary level
+	public	Capillaries		capillaries 			= null;
+	public 	KymoMeasures	kymoMeasures			= new KymoMeasures ();
+	
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;
 	public 	boolean 		detectTop 				= true;
@@ -50,8 +52,7 @@ public class SequencePlus extends SequenceVirtual  {
 	public 	OverlayThreshold thresholdOverlay 		= null;
 	public 	OverlayTrapMouse trapOverlay 			= null;
 	
-	public 	KymoMeasures	kymoMeasures			= new KymoMeasures ();
-	
+
 	// -----------------------------------------------------
 	
 	public SequencePlus() {
@@ -64,8 +65,9 @@ public class SequencePlus extends SequenceVirtual  {
 		kymoMeasures.imageHeight = image.getHeight();
 	}
 	
-	public ArrayList<Integer> getArrayListFromRois (EnumArrayListType option) {
+	public ArrayList<Integer> getArrayListFromRois (EnumArrayListType option, int t) {
 		
+		Capillary cap = capillaries.capillariesArrayList.get(t);
 		ArrayList<ROI2D> listRois = getROI2Ds();
 		if (listRois == null)
 			return null;
@@ -73,7 +75,7 @@ public class SequencePlus extends SequenceVirtual  {
 		
 		switch (option) {
 		case derivedValues:
-			datai = derivedValuesArrayList;
+			datai = cap.derivedValuesArrayList;
 			break;
 		case cumSum:
 			datai = new ArrayList<Integer>(Collections.nCopies(this.getWidth(), 0));
@@ -137,7 +139,6 @@ public class SequencePlus extends SequenceVirtual  {
 		return array;
 	}
 
-	
 	private ArrayList<Integer> copyFirstRoiMatchingFilterToDataArray (String filter) {
 		
 		ArrayList<ROI2D> listRois = getROI2Ds();
@@ -275,10 +276,6 @@ public class SequencePlus extends SequenceVirtual  {
 		Path filenamePath = Paths.get(filename);
 		if (Files.notExists(filenamePath)) 
 			return false; 
-		
-//		int old_analysisStep = analysisStep;
-//		long old_analysisStart = analysisStart;
-//		long old_analysisEnd  = analysisEnd;
 		
 		removeAllROI();
 		boolean flag = loadXMLData();

@@ -16,7 +16,6 @@ import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
-import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeTools.ImageTransformTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
@@ -91,11 +90,11 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (arg0.getPropertyName().equals("MEASURES_OPEN")) {
-			if (parent0.kymographArrayList.size() > 0) 		
+			if (parent0.vkymos != null) 		
 				firePropertyChange("MEASURES_OPEN", false, true);
 		}
 		else if (arg0.getPropertyName().equals("KYMO_DISPLAY_FILTERED1")) {
-			if (parent0.kymographArrayList.size() > 0) {		
+			if (parent0.vkymos != null) {		
 				firePropertyChange("KYMO_DISPLAYFILTERED", false, true);
 			}
 		}
@@ -126,9 +125,8 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 	}
 
 	void setDetectionParameters(int ikymo) {
-		SequencePlus seq = parent0.kymographArrayList.get(ikymo);
-		limitsTab.setInfos(seq);
-		gulpsTab.setInfos(seq);
+		limitsTab.setInfos(ikymo);
+		gulpsTab.setInfos(ikymo);
 	}
 	
 	void kymosBuildFiltered(int zChannelSource, int zChannelDestination, TransformOp transformop, int spanDiff) {
@@ -137,27 +135,28 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 			tImg = new ImageTransformTools();
 		tImg.setSpanDiff(spanDiff);
 		
-		for (SequencePlus kSeq: parent0.kymographArrayList) {
-			kSeq.beginUpdate();
-			
-			tImg.setSequence(kSeq);
-			IcyBufferedImage img = kSeq.getImage(0, zChannelSource);
+		int nimages = parent0.vkymos.getSizeT();
+		parent0.vkymos.beginUpdate();
+		tImg.setSequence(parent0.vkymos);
+		
+		for (int t= 0; t < nimages; t++) {
+
+			IcyBufferedImage img = parent0.vkymos.getImage(t, zChannelSource);
 			IcyBufferedImage img2 = tImg.transformImage (img, transformop);
 			img2 = tImg.transformImage(img2, TransformOp.RTOGB);
 			
-			if (kSeq.getSizeZ(0) < (zChannelDestination+1)) 
-				kSeq.addImage(img2);
+			if (parent0.vkymos.getSizeZ(0) < (zChannelDestination+1)) 
+				parent0.vkymos.addImage(img2);
 			else
-				kSeq.setImage(0, zChannelDestination, img2);
+				parent0.vkymos.setImage(0, zChannelDestination, img2);
 			
 			if (zChannelDestination == 1)
-				kSeq.transformForLevels = transformop;
+				parent0.vkymos.transformForLevels = transformop;
 			else
-				kSeq.transformForGulps = transformop;
-
-			kSeq.dataChanged();
-			kSeq.endUpdate();
-			kSeq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
+				parent0.vkymos.transformForGulps = transformop;
 		}
+		parent0.vkymos.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
+		parent0.vkymos.dataChanged();
+		parent0.vkymos.endUpdate();
 	}
 }

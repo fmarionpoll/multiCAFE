@@ -24,6 +24,7 @@ import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeSequence.SequencePlusUtils;
 
@@ -64,7 +65,7 @@ public class MCCapillariesTab_File extends JPanel {
 		}});	
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			String path = parent0.vSequence.getDirectory()+ "\\results";
-			parent0.vkymos = SequencePlusUtils.openFiles(path, parent0.vSequence.capillaries); 
+			parent0.vkymos = SequencePlusUtils.openKymoFiles(path, parent0.vSequence.capillaries); 
 			firePropertyChange("KYMOS_OPEN", false, true);	
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
@@ -106,9 +107,7 @@ public class MCCapillariesTab_File extends JPanel {
 	
 	void saveFiles(String directory) {
 
-		// send some info
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
-		
 		if (directory == null) {
 			directory = parent0.vSequence.getDirectory()+ "\\results";
 			}
@@ -125,14 +124,15 @@ public class MCCapillariesTab_File extends JPanel {
 		int returnedval = f.showSaveDialog(null);
 		if (returnedval == JFileChooser.APPROVE_OPTION) { 
 			outputpath = f.getSelectedFile().getAbsolutePath();		
-			for (SequencePlus seq: parent0.kymographArrayList) {
+			for (int i = 0; i < parent0.vkymos.getSizeT(); i++) {
 	
-				progress.setMessage( "Save kymograph file : " + seq.getName());
-				String filename = outputpath + "\\" + seq.getName() + ".tiff";
+				Capillary cap = parent0.vkymos.capillaries.capillariesArrayList.get(i);
+				progress.setMessage( "Save kymograph file : " + cap.getName());
+				String filename = outputpath + "\\" + cap.getName() + ".tiff";
 				final File file = new File (filename);
+				IcyBufferedImage image = parent0.vkymos.getImage(i, 0);
+				
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
-					
-					IcyBufferedImage image = seq.getFirstImage();
 					try {
 						Saver.saveImage(image, file, true);
 					} catch (FormatException e) {
@@ -140,7 +140,7 @@ public class MCCapillariesTab_File extends JPanel {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					System.out.println("File "+ seq.getName() + " saved " );
+					System.out.println("File "+ cap.getName() + " saved " );
 				}});
 			}
 			System.out.println("End of Kymograph saving process");
@@ -154,10 +154,10 @@ public class MCCapillariesTab_File extends JPanel {
 		if (SequencePlusUtils.isRunning)
 			SequencePlusUtils.isInterrupted = true;
 		
-		final String cs = parent0.vSequence.getDirectory()+"\\results";
-		parent0.kymographArrayList = SequencePlusUtils.openFiles(cs, parent0.vSequence.capillaries);
+		String directory = parent0.vSequence.getDirectory()+"\\results";
+		parent0.vkymos = SequencePlusUtils.openKymoFiles(directory, parent0.vSequence.capillaries);
 
-		if (parent0.kymographArrayList != null) {
+		if (parent0.vkymos != null) {
 			flag = true;
 			SwingUtilities.invokeLater(new Runnable() {
 			    public void run() {

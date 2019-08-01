@@ -29,11 +29,12 @@ import icy.preferences.XMLPreferences;
 import icy.sequence.DimensionId;
 import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.EnumStatus;
 import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeSequence.SequenceVirtual;
 import plugins.fmp.multicafeTools.BuildKymographsThread;
-import plugins.kernel.roi.roi2d.ROI2DShape;
+
 
 public class BuildKymosPane  extends JPanel implements ActionListener, ViewerListener {
 
@@ -45,6 +46,7 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	public JButton 					stopComputationButton 	= new JButton("Stop");
 	
 	SequenceVirtual 				vSequence 				= null;
+	SequencePlus					vkymos					= null;
 	private ArrayList <SequencePlus> kymographArrayList 	= new ArrayList <SequencePlus> ();
 	 
 	private BuildKymographsThread 	buildKymographsThread 	= null;
@@ -114,9 +116,9 @@ private BuildKymographs 	parent0 	= null;
 				seq.close();
 		}
 		kymographArrayList.clear();
-		for (ROI2DShape roi:vSequence.capillaries.capillariesArrayList) {
+		for (Capillary cap:vSequence.capillaries.capillariesArrayList) {
 			SequencePlus kymographSeq = new SequencePlus();	
-			kymographSeq.setName(roi.getName());
+			kymographSeq.setName(cap.getName());
 			kymographArrayList.add(kymographSeq);
 		} 
 		
@@ -128,7 +130,7 @@ private BuildKymographs 	parent0 	= null;
 		buildKymographsThread.options.endFrame 		= (int) vSequence.analysisEnd;
 		buildKymographsThread.options.diskRadius 	= diskRadius;
 		buildKymographsThread.options.doRegistration= false; // doRegistrationCheckBox.isSelected();
-		buildKymographsThread.kymographArrayList 	= kymographArrayList;
+		buildKymographsThread.vkymos 				= vkymos;
 
 		// change display status
 		stopComputationButton.setEnabled(true);

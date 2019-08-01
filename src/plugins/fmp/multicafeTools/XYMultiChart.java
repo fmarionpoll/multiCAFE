@@ -17,6 +17,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequencePlus;
 
 public class XYMultiChart extends IcyFrame  {
@@ -52,11 +53,11 @@ public class XYMultiChart extends IcyFrame  {
 		pt = new Point(rectv.x + deltapt.x, rectv.y + deltapt.y);
 	}
 	
-	public void displayData(ArrayList <SequencePlus> kymographArrayList, EnumArrayListType option, int kmax, int startFrame) {
+	public void displayData(SequencePlus kymoseq, EnumArrayListType option, int kmax, int startFrame) {
 
 		// copy data into charts
 		xyChartList.clear();
-		if (kymographArrayList == null)
+		if (kymoseq == null)
 			return;
 		ymax = 0;
 		ymin = 0;
@@ -66,26 +67,27 @@ public class XYMultiChart extends IcyFrame  {
 		flagMaxMinSet = false;
 //		System.out.println("nb of series "+kymographArrayList.size());
 		
-		for (int i=0; i< kymographArrayList.size(); i+= kmax) 
+		int nimages = kymoseq.getSizeT();
+		for (int t=0; t< nimages; t+= kmax) 
 		{
 			XYSeriesCollection xyDataset = new XYSeriesCollection();
 			XYSeriesCollection xyDataset2 = new XYSeriesCollection();
 			for (int k=0; k <kmax; k++) 
 			{
-				if ((i+k) >= kymographArrayList.size())
+				if ((t+k) >= nimages)
 					continue;
-				SequencePlus seq = kymographArrayList.get(i+k);
-				String name = seq.getName();
+				Capillary cap = kymoseq.capillaries.capillariesArrayList.get(t+k);
+				String name = cap.getName();
 				EnumArrayListType ooption = option;
 				if (option == EnumArrayListType.topAndBottom)
 					ooption = EnumArrayListType.topLevel;
-				ArrayList<Integer> results = seq.getArrayListFromRois(ooption);
+				ArrayList<Integer> results = cap.getArrayListFromRois(ooption);
 				if (option == EnumArrayListType.topLevelDelta) {
-					results = seq.subtractTi(results);
+					results = kymoseq.subtractTi(results);
 				}
 				XYSeries seriesXY = getXYSeries(results, name, startFrame);
 				if (option == EnumArrayListType.topAndBottom) 
-					appendDataToXYSeries(seriesXY, seq.getArrayListFromRois(EnumArrayListType.bottomLevel), startFrame );
+					appendDataToXYSeries(seriesXY, cap.getArrayListFromRois(EnumArrayListType.bottomLevel), startFrame );
 				xyDataset.addSeries( seriesXY );
 				getMaxMin();
 			}
@@ -121,7 +123,7 @@ public class XYMultiChart extends IcyFrame  {
 		mainChartFrame.setVisible(true);
 	}
 
-	public void fetchNewData(ArrayList <SequencePlus> kymographArrayList, EnumArrayListType option, int kmax, int startFrame) {
+	public void fetchNewData(SequencePlus kymoseq, EnumArrayListType option, int kmax, int startFrame) {
 		
 		int ixy = 0;
 		if (xyDataSetList == null || xyDataSetList.size() < 1)
@@ -131,7 +133,8 @@ public class XYMultiChart extends IcyFrame  {
 		XYSeriesCollection xyDataset2 = null;
 		
 		// loop over all kymographs
-		for (int i=0; i< kymographArrayList.size(); i+= kmax, ixy++) {
+		int nimages = kymoseq.getSizeT();
+		for (int t=0; t< nimages; t+= kmax, ixy++) {
 			if (ixy >= xyDataSetList.size())
 				break;
 			xyDataset = xyDataSetList.get(ixy);
@@ -144,16 +147,16 @@ public class XYMultiChart extends IcyFrame  {
 			}
 			// collect xy data
 			for (int k=0; k <kmax; k++) {
-				if ((i+k) >= kymographArrayList.size())
+				if ((t+k) >= nimages)
 					continue;
-				SequencePlus seq = kymographArrayList.get(i+k);
-				ArrayList<Integer> results = seq.getArrayListFromRois(ooption);
+				Capillary cap = kymoseq.capillaries.capillariesArrayList.get(t+k);
+				ArrayList<Integer> results = cap.getArrayListFromRois(ooption);
 				if (option == EnumArrayListType.topLevelDelta) {
-					results = seq.subtractTi(results);
+					results = kymoseq.subtractTi(results);
 				}
-				XYSeries seriesXY = getXYSeries(results, seq.getName(), startFrame);
+				XYSeries seriesXY = getXYSeries(results, cap.getName(), startFrame);
 				if (option == EnumArrayListType.topAndBottom) 
-					appendDataToXYSeries(seriesXY, seq.getArrayListFromRois(EnumArrayListType.bottomLevel), startFrame );
+					appendDataToXYSeries(seriesXY, cap.getArrayListFromRois(EnumArrayListType.bottomLevel), startFrame );
 				
 				xyDataset.addSeries( seriesXY );
 				getMaxMin();
