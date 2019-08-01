@@ -14,7 +14,7 @@ import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeSequence.SequencePlusUtils;
 import plugins.fmp.multicafeTools.EnumArrayListType;
 
-public class MCKymosTab_File  extends JPanel implements ActionListener {
+public class MCKymosTab_File  extends JPanel {
 	/**
 	 * 
 	 */
@@ -40,24 +40,18 @@ public class MCKymosTab_File  extends JPanel implements ActionListener {
 	
 	private void defineActionListeners() {
 
-		openMeasuresButton.addActionListener(this); 
-		saveMeasuresButton.addActionListener(this);	
+		openMeasuresButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				if (openKymosMeasures()) {
+					firePropertyChange("MEASURES_OPEN", false, true);
+				}
+			}}); 
+		saveMeasuresButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				saveKymosMeasures();
+				firePropertyChange("MEASURES_SAVE", false, true);
+			}});	
 	}
-	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object o = e.getSource();
-		if ( o == openMeasuresButton)  {
-			if (openKymosMeasures()) {
-				firePropertyChange("MEASURES_OPEN", false, true);
-			}
-		}
-		else if ( o == saveMeasuresButton) {
-			saveKymosMeasures();
-			firePropertyChange("MEASURES_SAVE", false, true);	
-		}		
-	}
-	
 
 	// ASSUME: same parameters for each kymograph
 	boolean openKymosMeasures() {

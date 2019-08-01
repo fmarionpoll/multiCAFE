@@ -658,7 +658,10 @@ public class SequenceVirtual extends Sequence
 	}
 	
 	public boolean xmlReadCapillaryTrackDefault() {
-		return xmlReadCapillaryTrack(getDirectory()+"\\capillarytrack.xml");
+		boolean found = xmlReadCapillaryTrack(getDirectory()+"\\capillarytrack.xml");
+		if (!found)
+			found = capillaries.xmlReadROIsAndData(this);
+		return found;
 	}
 	
 	public boolean xmlReadCapillaryTrack(String filename) {

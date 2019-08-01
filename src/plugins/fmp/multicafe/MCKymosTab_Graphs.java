@@ -15,7 +15,7 @@ import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeTools.EnumArrayListType;
 import plugins.fmp.multicafeTools.XYMultiChart;
 
-public class MCKymosTab_Graphs extends JPanel implements ActionListener  {
+public class MCKymosTab_Graphs extends JPanel {
 
 	/**
 	 * 
@@ -44,18 +44,13 @@ public class MCKymosTab_Graphs extends JPanel implements ActionListener  {
 	}
 	
 	private void defineActionListeners() {
-		displayResultsButton.addActionListener(this);
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		Object o = arg0.getSource();
-		if ( o == displayResultsButton)  {
-			displayResultsButton.setEnabled(false);
-			parent0.roisSaveEdits();
-			xyDisplayGraphs();
-			displayResultsButton.setEnabled(true);
-		}
+		displayResultsButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				displayResultsButton.setEnabled(false);
+				parent0.roisSaveEdits();
+				xyDisplayGraphs();
+				displayResultsButton.setEnabled(true);
+			}});
 	}
 	
 	void xyDisplayGraphs() {

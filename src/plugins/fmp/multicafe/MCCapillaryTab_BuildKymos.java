@@ -8,10 +8,10 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
-import icy.gui.frame.progress.AnnounceFrame;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafeSequence.SequencePlus;
@@ -20,7 +20,7 @@ import plugins.fmp.multicafeTools.EnumStatusComputation;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
-public class MCCapillaryTab_BuildKymos extends JPanel implements ActionListener { 
+public class MCCapillaryTab_BuildKymos extends JPanel { 
 
 	/**
 	 * 
@@ -29,11 +29,10 @@ public class MCCapillaryTab_BuildKymos extends JPanel implements ActionListener 
 	
 	JButton 						kymoStartComputationButton 	= new JButton("Start");
 	JButton 						kymosStopComputationButton 	= new JButton("Stop");
-	JTextField 						diskRadiusTextField 		= new JTextField("5");
+	JSpinner 						diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
 	JCheckBox 						doRegistrationCheckBox 		= new JCheckBox("registration", false);
 	
 	EnumStatusComputation 			sComputation 				= EnumStatusComputation.START_COMPUTATION; 
-	int 							diskRadius 					= 5;
 	
 	private MultiCAFE 				parent0						= null;
 	private BuildKymographsThread 	buildKymographsThread 		= null;
@@ -48,36 +47,26 @@ public class MCCapillaryTab_BuildKymos extends JPanel implements ActionListener 
 				kymosStopComputationButton));
 		add(GuiUtil.besidesPanel(
 				new JLabel("area around ROIs", SwingConstants.RIGHT), 
-				diskRadiusTextField, 
+				diskRadiusSpinner, 
 				new JLabel (" "), doRegistrationCheckBox
 				));
 		defineActionListeners();
 	}
 	
 	private void defineActionListeners() {
-		kymoStartComputationButton.addActionListener(this);
-		kymosStopComputationButton.addActionListener(this);	
+		kymoStartComputationButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+			kymosBuildStart();
+		}});
+		kymosStopComputationButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+			kymosBuildStop();
+		}});	
 	}
 	
 	private void setStartButton(boolean enableStart) {
 		kymoStartComputationButton.setEnabled(enableStart );
 		kymosStopComputationButton.setEnabled(!enableStart);
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent evt) {
-		Object o = evt.getSource();
-		if ( o == kymoStartComputationButton)  {
-			try { 
-				diskRadius = Integer.parseInt(diskRadiusTextField.getText());
-			} catch( Exception e ) { 
-				new AnnounceFrame("Can't interpret the disk radius value."); 
-			} 
-			kymosBuildStart();
-		}
-		else if ( o == kymosStopComputationButton) {
-			kymosBuildStop();
-		}
 	}
 	
 	// -----------------------------------
@@ -134,7 +123,7 @@ public class MCCapillaryTab_BuildKymos extends JPanel implements ActionListener 
 		buildKymographsThread.options.analyzeStep 	= parent0.vSequence.analysisStep;
 		buildKymographsThread.options.startFrame 	= (int) parent0.vSequence.analysisStart;
 		buildKymographsThread.options.endFrame 		= (int) parent0.vSequence.analysisEnd;
-		buildKymographsThread.options.diskRadius 	= diskRadius;
+		buildKymographsThread.options.diskRadius 	= (int) diskRadiusSpinner.getValue();
 		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected();
 		buildKymographsThread.kymographArrayList 	= parent0.kymographArrayList;
 

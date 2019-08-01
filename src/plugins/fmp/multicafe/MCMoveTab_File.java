@@ -15,7 +15,7 @@ import icy.gui.util.GuiUtil;
 
 
 
-public class MCMoveTab_File extends JPanel implements ActionListener {
+public class MCMoveTab_File extends JPanel {
 	/**
 	 * 
 	 */
@@ -41,36 +41,17 @@ public class MCMoveTab_File extends JPanel implements ActionListener {
 	private void defineActionListeners() {
 	
 		openROIsButton.addActionListener(new ActionListener () {
-			@Override
-			public void actionPerformed( final ActionEvent e ) { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				parent0.vSequence.cages.xmlReadCagesFromFile(parent0.vSequence);
 				firePropertyChange("LOAD_DATA", false, true);	
 			}});
 		
 		saveROIsButton.addActionListener(new ActionListener () {
-			@Override
-			public void actionPerformed( final ActionEvent e ) { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				parent0.vSequence.storeAnalysisParametersToCages();
 				parent0.vSequence.xmlWriteDrosoTrackDefault();
-
 			}});
 	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-//		Object o = e.getSource();
-//		if ( o == createROIsFromPolygonButton2)  {
-//			roisGenerateFromPolygon();
-//			parent0.vSequence.keepOnly2DLines_CapillariesArrayList();
-//			firePropertyChange("CAPILLARIES_NEW", false, true);	
-//		}
-//		else if ( o == selectRegularButton) {
-//			boolean status = false;
-//			width_between_capillariesTextField.setEnabled(status);
-//			width_intervalTextField.setEnabled(status);	
-//		}
-	}
-	
 
 	boolean cageRoisOpen(String csFileName) {
 		

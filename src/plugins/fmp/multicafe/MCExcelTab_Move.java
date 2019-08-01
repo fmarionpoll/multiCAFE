@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import icy.gui.util.GuiUtil;
 
 
-public class MCExcelTab_Move  extends JPanel implements ActionListener  {
+public class MCExcelTab_Move  extends JPanel {
 
 	/**
 	 * 
@@ -33,15 +33,10 @@ public class MCExcelTab_Move  extends JPanel implements ActionListener  {
 	}
 	
 	private void defineActionListeners() {
-		exportToXLSButton.addActionListener (this);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object o = e.getSource();
-		if ( o == exportToXLSButton)  {
-			firePropertyChange("EXPORT_MOVEDATA", false, true);
-		}
+		exportToXLSButton.addActionListener (new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				firePropertyChange("EXPORT_MOVEDATA", false, true);
+			}});
 	}
 	
 }

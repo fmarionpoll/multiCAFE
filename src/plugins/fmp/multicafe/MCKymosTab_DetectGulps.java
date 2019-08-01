@@ -61,23 +61,16 @@ public class MCKymosTab_DetectGulps extends JPanel {
 		transformForGulpsComboBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				kymosDisplayFiltered2();
+				kymosBuildDerivative(false);
+				roisDisplayAllThresholds(viewGulpsThresholdCheckBox.isSelected());
 			}});
 		
 		detectGulpsButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 //				int kymo = parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();	
 				kymosDisplayFiltered2();
-				
-				MCBuildDetect_GulpsOptions options = new MCBuildDetect_GulpsOptions();
-				options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
-				options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
-				options.detectAllGulps 			= detectAllGulpsCheckBox.isSelected();
-				options.firstkymo 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
-				
-				MCBuildDetect_Gulps detect = new MCBuildDetect_Gulps();
-				detect.detectGulps(options, parent0.kymographArrayList);
+				kymosBuildDerivative(true);
 				roisDisplayAllThresholds(viewGulpsThresholdCheckBox.isSelected());
-				
 //				parent0.capillariesPane.optionsTab.kymographNamesComboBox.setSelectedIndex(kymo);
 			}});
 		
@@ -114,8 +107,20 @@ public class MCKymosTab_DetectGulps extends JPanel {
 		TransformOp transform;
 		transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		parent0.kymographsPane.kymosBuildFiltered(0, 2, transform, (int) spanTransf2Spinner.getValue());
-		roisDisplayAllThresholds(viewGulpsThresholdCheckBox.isSelected());
 	}
+	
+	void kymosBuildDerivative(boolean detectGulps) {
+		MCBuildDetect_GulpsOptions options = new MCBuildDetect_GulpsOptions();
+		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
+		options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
+		options.detectAllGulps 			= detectAllGulpsCheckBox.isSelected();
+		options.firstkymo 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
+		options.computeDiffnAndDetect	= detectGulps;
+		
+		MCBuildDetect_Gulps detect = new MCBuildDetect_Gulps();
+		detect.detectGulps(options, parent0.kymographArrayList);
+	}
+
 	
 	void setInfos(SequencePlus seq) {
 		detectGulpsThresholdSpinner.setValue(seq.detectGulpsThreshold);
@@ -140,17 +145,17 @@ public class MCKymosTab_DetectGulps extends JPanel {
 			
 		if (display)
 		{
+			if (!seq.contains(roiThreshold)) {
+				roiThreshold.setName("derivativeThresh");
+				roiThreshold.setColor(Color.ORANGE);
+				roiThreshold.setStroke(1);
+				roiThreshold.setOpacity((float) 0.2);
+				seq.addROI(roiThreshold);
+			}
 			int seqheight = seq.getHeight()/2;
 			double value = seqheight - thresholdValue;
 			Line2D refLineUpper = new Line2D.Double (0, value, seq.getWidth(), value);
-			
 			roiThreshold.setLine(refLineUpper);
-			roiThreshold.setName("derivativeThresh");
-			roiThreshold.setColor(Color.ORANGE);
-			roiThreshold.setStroke(1);
-			roiThreshold.setOpacity((float) 0.2);
-
-			seq.addROI(roiThreshold);
 		}
 		else 
 		{

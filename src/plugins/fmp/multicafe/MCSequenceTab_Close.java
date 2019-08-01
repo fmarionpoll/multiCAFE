@@ -13,7 +13,7 @@ import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafeSequence.SequencePlus;
 
-public class MCSequenceTab_Close  extends JPanel implements ActionListener {
+public class MCSequenceTab_Close  extends JPanel {
 
 	/**
 	 * 
@@ -27,17 +27,13 @@ public class MCSequenceTab_Close  extends JPanel implements ActionListener {
 		this.parent0  = parent0;
 		add( GuiUtil.besidesPanel(closeAllButton, new JLabel(" ")));
 		
-		closeAllButton.addActionListener(this);
+		closeAllButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				closeAll();
+				firePropertyChange("SEQ_CLOSE", false, true);
+			}});
 	}
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		Object o = arg0.getSource();
-		if ( o == closeAllButton) {
-			closeAll();
-			firePropertyChange("SEQ_CLOSE", false, true);
-		}
-	}
-	
+		
 	void closeAll() {
 		
 		if (parent0.kymographArrayList != null) {

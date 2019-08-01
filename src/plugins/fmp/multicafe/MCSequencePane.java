@@ -97,10 +97,12 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 				 sequenceAddtoCombo(name);
 			}
 			openTab.selectedNames.clear();
-			infosTab.experimentComboBox.setSelectedIndex(index);
-			infosTab.updateBrowseInterface();
-			infosTab.disableChangeFile = false;
-			openSequenceFromCombo();
+			if (infosTab.experimentComboBox.getItemCount() > 0) {
+				infosTab.experimentComboBox.setSelectedIndex(index);
+				infosTab.updateBrowseInterface();
+				infosTab.disableChangeFile = false;
+				openSequenceFromCombo();
+			}
 		 }
 	}
 	

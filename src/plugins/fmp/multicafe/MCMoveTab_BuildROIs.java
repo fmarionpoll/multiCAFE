@@ -22,7 +22,7 @@ import icy.roi.ROI2D;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
-public class MCMoveTab_BuildROIs extends JPanel implements ActionListener {
+public class MCMoveTab_BuildROIs extends JPanel {
 	/**
 	 * 
 	 */
@@ -58,19 +58,14 @@ public class MCMoveTab_BuildROIs extends JPanel implements ActionListener {
 	
 	private void defineActionListeners() {
 		
-		createROIsFromPolygonButton.addActionListener(this);
-		addPolygon2DButton.addActionListener(this);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object o = e.getSource();
-		if ( o == createROIsFromPolygonButton)  {
-			addROISCreatedFromSelectedPolygon();
-		}
-		else if ( o == addPolygon2DButton) {
-			create2DPolygon();
-		}
+		createROIsFromPolygonButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				addROISCreatedFromSelectedPolygon();
+			}});
+		addPolygon2DButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				create2DPolygon();
+			}});
 	}
 	
 	void updateFromSequence() {

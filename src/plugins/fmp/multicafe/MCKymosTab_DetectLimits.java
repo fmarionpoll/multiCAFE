@@ -19,7 +19,7 @@ import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
-public class MCKymosTab_DetectLimits  extends JPanel implements ActionListener {
+public class MCKymosTab_DetectLimits  extends JPanel {
 
 	/**
 	 * 
@@ -53,37 +53,32 @@ public class MCKymosTab_DetectLimits  extends JPanel implements ActionListener {
 	}
 	
 	private void defineActionListeners() {
-		transformForLevelsComboBox.addActionListener(this);
-		detectTopButton.addActionListener(this);		
-		displayTransform1Button.addActionListener(this);
-	}
+		transformForLevelsComboBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				if (parent0.vSequence != null) {
+					kymosDisplayFiltered1();
+					firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
+				}
+			}});
+		detectTopButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				kymosDisplayFiltered1();
+				MCBuildDetect_LimitsOptions options = new MCBuildDetect_LimitsOptions();
+				options.transformForLevels 		= (TransformOp) transformForLevelsComboBox.getSelectedItem();
+				options.directionUp 			= (directionComboBox.getSelectedIndex() == 0);
+				options.detectLevelThreshold 	= (int) getDetectLevelThreshold();
+				options.detectAllLevel 			= detectAllLevelCheckBox.isSelected();
+				options.firstkymo 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		Object o = e.getSource();
-		if ( o == transformForLevelsComboBox)  {
-			if (parent0.vSequence != null) {
+				MCBuildDetect_Limits detect = new MCBuildDetect_Limits();
+				detect.detectCapillaryLevels(options, parent0.kymographArrayList);
+				firePropertyChange("KYMO_DETECT_TOP", false, true);
+			}});		
+		displayTransform1Button.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				kymosDisplayFiltered1();
 				firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
-			}
-		}
-		else if (o == detectTopButton) {
-			kymosDisplayFiltered1();
-			MCBuildDetect_LimitsOptions options = new MCBuildDetect_LimitsOptions();
-			options.transformForLevels 		= (TransformOp) transformForLevelsComboBox.getSelectedItem();
-			options.directionUp 			= (directionComboBox.getSelectedIndex() == 0);
-			options.detectLevelThreshold 	= (int) getDetectLevelThreshold();
-			options.detectAllLevel 			= detectAllLevelCheckBox.isSelected();
-			options.firstkymo 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
-
-			MCBuildDetect_Limits detect = new MCBuildDetect_Limits();
-			detect.detectCapillaryLevels(options, parent0.kymographArrayList);
-			firePropertyChange("KYMO_DETECT_TOP", false, true);
-		}
-		else if (o== displayTransform1Button) {
-			kymosDisplayFiltered1();
-			firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
-		}
+			}});
 	}
 	
 	// -------------------------------------------------

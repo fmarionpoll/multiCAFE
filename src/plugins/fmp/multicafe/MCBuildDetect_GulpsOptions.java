@@ -9,6 +9,7 @@ public class MCBuildDetect_GulpsOptions {
 	int 			detectGulpsThreshold	= 90;
 	TransformOp 	transformForGulps 		= TransformOp.XDIFFN;
 	boolean 		detectAllGulps 			= true;
+	boolean			computeDiffnAndDetect	= true;
 	int				firstkymo 				= 0;
 	
 	void copyDetectionParametersToSequenceHeader(SequencePlus seq) {

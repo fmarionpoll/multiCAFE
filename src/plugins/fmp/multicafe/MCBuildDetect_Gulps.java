@@ -37,84 +37,15 @@ public class MCBuildDetect_Gulps {
 			kymographSeq.beginUpdate();
 			
 			options.copyDetectionParametersToSequenceHeader(kymographSeq);
-			clearPreviousGulps(kymographSeq, "gulp");
-			clearPreviousGulps(kymographSeq, "derivative");
-			
-			IcyBufferedImage image = kymographSeq.getImage(0, 2, 0);	// time=0; z=2; c=0
-			int[] kymoImageValues = Array1DUtil.arrayToIntArray(image.getDataXY(0), image.isSignedDataType());	// channel 0 - RED
+			removeSpecificRoisFromSequence(kymographSeq, "gulp");
+			removeSpecificRoisFromSequence(kymographSeq, "derivative");
 
-			int xwidth = image.getSizeX();
-			int yheight = image.getSizeY();
-			int ix = 0;
-			int iy = 0;
-			List<Point2D> listOfMaxPoints = new ArrayList<>();
-			List<Point2D> listOfGulpPoints = new ArrayList<>();
-			Collection<ROI> gulpsRois = new ArrayList <> ();
-			Point2D.Double singlePoint = null;
-
-			// scan each image row
 			kymographSeq.derivedValuesArrayList.add(0);
-			
-			// once an event is detected, we will cut and paste the corresponding part of topLevelArray
 			ArrayList <Integer> topLevelArray = kymographSeq.getArrayListFromRois(EnumArrayListType.topLevel);
-			ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
-
-			for (ix = 1; ix < topLevelArray.size(); ix++) 
-			{
-				// for each point of topLevelArray, define a bracket of rows to look at ("jitter" = 10)
-				int low = topLevelArray.get(ix)- jitter;
-				int high = low + 2*jitter;
-				if (low < 0) 
-					low = 0;
-				if (high >= yheight) 
-					high = yheight-1;
-
-				int max = kymoImageValues [ix + low*xwidth];
-				for (iy = low+1; iy < high; iy++) 
-				{
-					int val = kymoImageValues [ix  + iy*xwidth];
-					if (max < val) 
-						max = val;
-				}
-
-				// add new point to display as roi
-				if (max > kymographSeq.detectGulpsThreshold) {
-					if (listOfGulpPoints.size() > 0) {
-						Point2D prevPt = listOfGulpPoints.get(listOfGulpPoints.size() -1);
-						if (prevPt.getX() != (double) (ix-1)) {
-							roiTrack.setColor(Color.red);
-							roiTrack.setName("gulp"+String.format("%07d", ix));
-							roiTrack.setPoints(listOfGulpPoints);
-							gulpsRois.add(roiTrack);
-							roiTrack = new ROI2DPolyLine ();
-							listOfGulpPoints = new ArrayList<>();
-							singlePoint = new Point2D.Double (ix-1, topLevelArray.get(ix-1));
-							listOfGulpPoints.add(singlePoint);
-						}
-					} 
-					singlePoint = new Point2D.Double (ix, topLevelArray.get(ix));
-					listOfGulpPoints.add(singlePoint);
-				}
-				
-				listOfMaxPoints.add(new Point2D.Double((double) ix, (double) ( yheight/2 - max)));
-				kymographSeq.derivedValuesArrayList.add(max);
-			}
-
-			if (listOfGulpPoints.size() > 0) {
-				roiTrack.setPoints(listOfGulpPoints);
-				roiTrack.setColor(Color.red);
-				roiTrack.setStroke(1);
-				roiTrack.setName("gulp"+String.format("%07d", ix));
-				gulpsRois.add(roiTrack);
-			}
-			kymographSeq.addROIs(gulpsRois, false);
 			
-			ROI2DPolyLine roiMaxTrack = new ROI2DPolyLine ();
-			roiMaxTrack.setName("derivative");
-			roiMaxTrack.setColor(Color.yellow);
-			roiMaxTrack.setStroke(1);
-			roiMaxTrack.setPoints(listOfMaxPoints);
-			kymographSeq.addROI(roiMaxTrack, false);
+			getDerivativeProfile(kymographSeq, topLevelArray,  jitter);				;
+			if (options.computeDiffnAndDetect) 
+				getGulps(kymographSeq, topLevelArray);
 			
 			kymographSeq.endUpdate(); 
 		}
@@ -124,7 +55,7 @@ public class MCBuildDetect_Gulps {
 		progressBar.close();
 	}	
 
-	private void clearPreviousGulps(SequencePlus kymographSeq, String gulp) {
+	private void removeSpecificRoisFromSequence(SequencePlus kymographSeq, String gulp) {
 		
 		for (ROI roi:kymographSeq.getROIs()) {
 			if (roi.getName().contains(gulp))
@@ -133,4 +64,82 @@ public class MCBuildDetect_Gulps {
 		kymographSeq.derivedValuesArrayList.clear();
 	}
 	
+	private void getDerivativeProfile(SequencePlus kymographSeq, ArrayList <Integer> topLevelArray, int jitter) {
+		
+		int z = kymographSeq.getSizeZ() -1;
+		IcyBufferedImage image = kymographSeq.getImage(0, z, 0);
+		List<Point2D> listOfMaxPoints = new ArrayList<>();
+		int[] kymoImageValues = Array1DUtil.arrayToIntArray(image.getDataXY(0), image.isSignedDataType());	// channel 0 - RED
+		int xwidth = image.getSizeX();
+		int yheight = image.getSizeY();
+		int ix = 0;
+		int iy = 0;
+		for (ix = 1; ix < topLevelArray.size(); ix++) 
+		{
+			// for each point of topLevelArray, define a bracket of rows to look at ("jitter" = 10)
+			int low = topLevelArray.get(ix)- jitter;
+			int high = low + 2*jitter;
+			if (low < 0) 
+				low = 0;
+			if (high >= yheight) 
+				high = yheight-1;
+
+			int max = kymoImageValues [ix + low*xwidth];
+			for (iy = low+1; iy < high; iy++) 
+			{
+				int val = kymoImageValues [ix  + iy*xwidth];
+				if (max < val) 
+					max = val;
+			}
+			listOfMaxPoints.add(new Point2D.Double((double) ix, (double) ( yheight/2 - max)));
+			kymographSeq.derivedValuesArrayList.add(max);
+		}
+		ROI2DPolyLine roiMaxTrack = new ROI2DPolyLine ();
+		roiMaxTrack.setName("derivative");
+		roiMaxTrack.setColor(Color.yellow);
+		roiMaxTrack.setStroke(1);
+		roiMaxTrack.setPoints(listOfMaxPoints);
+		kymographSeq.addROI(roiMaxTrack, false);
+	}
+
+	private void getGulps(SequencePlus kymographSeq, ArrayList <Integer> topLevelArray) {
+		int ix = 0;
+		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
+
+		List<Point2D> listOfGulpPoints = new ArrayList<>();
+		Collection<ROI> gulpsRois = new ArrayList <> ();
+		Point2D.Double singlePoint = null;
+		for (ix = 1; ix < topLevelArray.size(); ix++) 
+		{
+			int max = kymographSeq.derivedValuesArrayList.get(ix-1);
+			if (max < kymographSeq.detectGulpsThreshold)
+				continue;
+			
+			if (listOfGulpPoints.size() > 0) {
+				Point2D prevPt = listOfGulpPoints.get(listOfGulpPoints.size() -1);
+				if (prevPt.getX() != (double) (ix-1)) {
+					roiTrack.setColor(Color.red);
+					roiTrack.setName("gulp"+String.format("%07d", ix));
+					roiTrack.setPoints(listOfGulpPoints);
+					gulpsRois.add(roiTrack);
+					roiTrack = new ROI2DPolyLine ();
+					listOfGulpPoints = new ArrayList<>();
+					singlePoint = new Point2D.Double (ix-1, topLevelArray.get(ix-1));
+					listOfGulpPoints.add(singlePoint);
+				}
+			} 
+			singlePoint = new Point2D.Double (ix, topLevelArray.get(ix));
+			listOfGulpPoints.add(singlePoint);
+		}
+
+		if (listOfGulpPoints.size() > 0) {
+			roiTrack.setPoints(listOfGulpPoints);
+			roiTrack.setColor(Color.red);
+			roiTrack.setStroke(1);
+			roiTrack.setName("gulp"+String.format("%07d", ix));
+			gulpsRois.add(roiTrack);
+		}
+		kymographSeq.addROIs(gulpsRois, false);
+		
+	}
 }

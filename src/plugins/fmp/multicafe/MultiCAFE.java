@@ -32,7 +32,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 {
 	SequenceVirtual 			vSequence 			= null;
 	ArrayList <SequencePlus> 	kymographArrayList	= new ArrayList <SequencePlus> ();
-	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 26-July-2019", true, true, true, true);
+	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 01-August-2019", true, true, true, true);
 	
 	MCSequencePane 				sequencePane 		= new MCSequencePane();
 	MCCapillariesPane 			capillariesPane 	= new MCCapillariesPane();
@@ -43,8 +43,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	//-------------------------------------------------------------------
 	
 	@Override
-	public void run() {
-		
+	public void run() 
+	{		
 		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
 		Icy.getMainInterface().getMainFrame().getInspector().imageCacheDisabled();
 
@@ -73,8 +73,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		mainFrame.addToDesktopPane();
 	}
 
-	void roisSaveEdits() {
-
+	void roisSaveEdits() 
+	{
 		for (SequencePlus seq: kymographArrayList) {
 			if (seq.hasChanged) {
 				seq.validateRois();
@@ -100,7 +100,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent arg0) {
+	public void propertyChange(PropertyChangeEvent arg0) 
+	{
 		if (arg0.getPropertyName().equals("SEQ_OPENED")) {
 			loadPreviousMeasures(
 					sequencePane.openTab.isCheckedLoadPreviousProfiles(), 
@@ -193,7 +194,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 						SwingUtilities.invokeLater(new Runnable() {
 						    public void run() {
 						    	kymographsPane.graphsTab.xyDisplayGraphs();
-						    }});
+						}});
 				}
 			}});
 		}

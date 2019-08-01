@@ -112,33 +112,27 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 							parent0.vSequence.addOverlay(ov);
 						updateOverlay();
 					}
-					else {
+					else
 						removeOverlay();
-					}
-		      }
-		    });
+		      }});
 
 		startComputationButton.addActionListener(new ActionListener () {
-			@Override
-			public void actionPerformed( final ActionEvent e ) { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				startComputation();
 			}});
 		
 		buildBackgroundButton.addActionListener(new ActionListener () {
-			@Override
-			public void actionPerformed( final ActionEvent e ) { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				builBackgroundImage();
 			}});
 		
 		saveButton.addActionListener(new ActionListener () {
-			@Override
-			public void actionPerformed( final ActionEvent e ) { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				saveRef();
 			}});
 		
 		loadButton.addActionListener(new ActionListener () {
-			@Override
-			public void actionPerformed( final ActionEvent e ) { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				loadRef();
 			}});
 	}

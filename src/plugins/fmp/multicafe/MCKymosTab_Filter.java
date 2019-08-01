@@ -16,7 +16,7 @@ import icy.image.IcyBufferedImageUtil;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.SequencePlus;
 
-public class MCKymosTab_Filter  extends JPanel implements ActionListener {
+public class MCKymosTab_Filter  extends JPanel {
 
 	/**
 	 * 
@@ -36,25 +36,20 @@ public class MCKymosTab_Filter  extends JPanel implements ActionListener {
 	}
 	
 	private void defineActionListeners() {
-		startButton.addActionListener(this);
+		startButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				int span = getSpan();
+				for (SequencePlus kymoSequence: parent0.kymographArrayList) {
+					int c = 1;
+					crossCorrelatePixels(kymoSequence, span, c);
+				}
+			}});
 	}
 
 	int getSpan( ) {
 		return Integer.parseInt( spanText.getText() );
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		Object o = arg0.getSource();
-		if ( o == startButton)  {
-			int span = getSpan();
-			for (SequencePlus kymoSequence: parent0.kymographArrayList) {
-				int c = 1;
-				crossCorrelatePixels(kymoSequence, span, c);
-			}
-		}
-	}
-
 	private void crossCorrelatePixels (SequencePlus kymographSeq, int span, int c) {
 		IcyBufferedImage image = null;
 		image = kymographSeq.getImage(0, 0, c);

@@ -112,8 +112,8 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	boolean loadDefaultCapillaries() {
-		String path = parent0.vSequence.getDirectory();
-		boolean flag = fileTab.capillaryRoisOpen(path+"\\capillarytrack.xml");
+//		String path = parent0.vSequence.getDirectory();
+		boolean flag = fileTab.capillaryRoisOpen(null);
 		if (flag) {
 			setCapillariesInfos(parent0.vSequence);
 			capold.copy(parent0.vSequence.capillaries);

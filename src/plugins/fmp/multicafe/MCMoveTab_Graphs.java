@@ -19,7 +19,7 @@ import plugins.fmp.multicafeTools.EnumArrayListType;
 import plugins.fmp.multicafeTools.YPosMultiChart;
 
 
-public class MCMoveTab_Graphs extends JPanel implements ActionListener  {
+public class MCMoveTab_Graphs extends JPanel {
 
 	/**
 	 * 
@@ -49,19 +49,14 @@ public class MCMoveTab_Graphs extends JPanel implements ActionListener  {
 	}
 	
 	private void defineActionListeners() {
-		displayResultsButton.addActionListener(this);
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		Object o = arg0.getSource();
-		if ( o == displayResultsButton)  {
-			displayResultsButton.setEnabled(false);
-			parent0.roisSaveEdits();
-			xyDisplayGraphs();
-			displayResultsButton.setEnabled(true);
-			firePropertyChange("DISPLAY_RESULTS", false, true);	
-		}
+		displayResultsButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				displayResultsButton.setEnabled(false);
+				parent0.roisSaveEdits();
+				xyDisplayGraphs();
+				displayResultsButton.setEnabled(true);
+				firePropertyChange("DISPLAY_RESULTS", false, true);
+			}});
 	}
 
 	private void xyDisplayGraphs() {
