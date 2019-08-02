@@ -10,9 +10,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
-import plugins.fmp.multicafeSequence.SequencePlus;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequencePlusUtils;
-import plugins.fmp.multicafeTools.EnumArrayListType;
+
+
 
 public class MCKymosTab_File  extends JPanel {
 	/**
@@ -57,19 +58,17 @@ public class MCKymosTab_File  extends JPanel {
 	boolean openKymosMeasures() {
 		
 		String directory = parent0.vSequence.getDirectory();
-		for (int kymo=0; kymo < parent0.kymographArrayList.size(); kymo++) {
+		for (Capillary cap: parent0.vkymos.capillaries.capillariesArrayList) {
 			
-			SequencePlus seq = parent0.kymographArrayList.get(kymo);
-			seq.beginUpdate();
 			boolean flag2 = true;
-			if (flag2 = seq.loadXMLKymographAnalysis(directory)) {
-				seq.validateRois();
-				seq.getArrayListFromRois(EnumArrayListType.cumSum);
+			if (flag2 = parent0.vkymos.loadXMLKymographAnalysis(cap, directory)) {
+				parent0.vkymos.validateRois();
+//	TODO??			parent0.vkymos.getArrayListFromRois(EnumArrayListType.cumSum);
 			}
 			else {
 				System.out.println("load measures -> failed or not found in directory: " + directory);
 			}
-			seq.endUpdate();
+			parent0.vkymos.endUpdate();
 			if (!flag2)
 				flag = false;
 			if (isInterrupted) {
@@ -78,14 +77,14 @@ public class MCKymosTab_File  extends JPanel {
 			}
 		}
 		
-		if (parent0.kymographArrayList.size() >0 ) {
-			SequencePlus seq = parent0.kymographArrayList.get(0);
-			if (seq.analysisEnd > seq.analysisStart) {
-				parent0.vSequence.analysisStart = seq.analysisStart; 
-				parent0.vSequence.analysisEnd 	= seq.analysisEnd;
-				parent0.vSequence.analysisStep 	= seq.analysisStep;
-			}
-		}
+// TODO??	if (parent0.kymographArrayList.size() >0 ) {
+//			SequencePlus seq = parent0.kymographArrayList.get(0);
+//			if (seq.analysisEnd > seq.analysisStart) {
+//				parent0.vSequence.analysisStart = seq.analysisStart; 
+//				parent0.vSequence.analysisEnd 	= seq.analysisEnd;
+//				parent0.vSequence.analysisStep 	= seq.analysisStep;
+//			}
+//		}
 			
 		isRunning = false;
 		return flag;
@@ -93,7 +92,7 @@ public class MCKymosTab_File  extends JPanel {
 	
 	void saveKymosMeasures() {
 		
-		SequencePlusUtils.transferSequenceInfoToKymos(parent0.kymographArrayList, parent0.vSequence);
-		SequencePlusUtils.saveKymosMeasures(parent0.kymographArrayList, parent0.vSequence.getDirectory());
+		SequencePlusUtils.transferSequenceInfoToKymos(parent0.vkymos, parent0.vSequence);
+		SequencePlusUtils.saveKymosMeasures(parent0.vkymos, parent0.vSequence.getDirectory());
 	}
 }

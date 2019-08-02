@@ -3,7 +3,6 @@ package plugins.fmp.multicafe;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import icy.image.IcyBufferedImage;
@@ -23,35 +22,35 @@ public class MCBuildDetect_Gulps {
 		progressBar.initStuff(seqkymo.getSizeT() );
 		
 		int jitter = 5;
-		int firstkymo = 0;
-		int lastkymo = seqkymo.getSizeT() -1;
+		int tfirst = 0;
+		int tlast = seqkymo.getSizeT() -1;
 		if (! options.detectAllGulps) {
-			firstkymo = options.firstkymo;
-			lastkymo = firstkymo;
+			tfirst = options.firstkymo;
+			tlast = tfirst;
 		}
 		
 		seqkymo.beginUpdate();
 		
-		for (int kymo=firstkymo; kymo <= lastkymo; kymo++) 
+		for (int t=tfirst; t <= tlast; t++) 
 		{
-			progressBar.updatePositionAndTimeLeft(kymo);
-
-			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(kymo);
-			
+			progressBar.updatePositionAndTimeLeft(t);
+			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(t);
 			options.copy(cap.gulpsOptions);
-			removeSpecificRoisFromSequence(seqkymo, kymo, "gulp");
-			removeSpecificRoisFromSequence(seqkymo, kymo, "derivative");
+			
+			removeSpecificRoisFromSequence(seqkymo, t, "derivative");
 			cap.derivedValuesArrayList.clear();
-
+			cap.derivedValuesArrayList = new ArrayList<Integer>();
 			cap.derivedValuesArrayList.add(0);
 			ArrayList <Integer> topLevelArray = cap.getYFromPtArray(cap.ptsTop);
-			getDerivativeProfile(seqkymo, kymo, cap, topLevelArray, jitter);				;
-			if (options.computeDiffnAndDetect) 
-				getGulps(seqkymo, cap, topLevelArray);
+			
+			getDerivativeProfile(seqkymo, t, cap, topLevelArray, jitter);	
+			if (options.computeDiffnAndDetect) {
+				removeSpecificRoisFromSequence(seqkymo, t, "gulp");
+				getGulps(seqkymo, t, cap, topLevelArray);
+			}
 		}
 		seqkymo.endUpdate();
 
-		// send some info
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
 	}	
@@ -104,12 +103,13 @@ public class MCBuildDetect_Gulps {
 		kymographSeq.addROI(roiMaxTrack, false);
 	}
 
-	private void getGulps(SequencePlus kymographSeq, Capillary cap, ArrayList <Integer> topLevelArray) {
+	private void getGulps(SequencePlus kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray) {
 		int ix = 0;
+		if (cap.gulpsRois.size() > 0)
+			cap.gulpsRois.clear();
+		cap.gulpsRois = new ArrayList <> ();
 		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
-
-		List<Point2D> listOfGulpPoints = new ArrayList<>();
-		Collection<ROI> gulpsRois = new ArrayList <> ();
+		List<Point2D> gulpPoints = new ArrayList<>();
 		Point2D.Double singlePoint = null;
 		for (ix = 1; ix < topLevelArray.size(); ix++) 
 		{
@@ -117,31 +117,34 @@ public class MCBuildDetect_Gulps {
 			if (max < kymographSeq.detectGulpsThreshold)
 				continue;
 			
-			if (listOfGulpPoints.size() > 0) {
-				Point2D prevPt = listOfGulpPoints.get(listOfGulpPoints.size() -1);
-				if (prevPt.getX() != (double) (ix-1)) {
+			if (gulpPoints.size() > 0) {
+				Point2D prevPt = gulpPoints.get(gulpPoints.size() -1);
+				if ((int) prevPt.getX() !=  (ix-1)) {
 					roiTrack.setColor(Color.red);
+					roiTrack.setStroke(1);
 					roiTrack.setName("gulp"+String.format("%07d", ix));
-					roiTrack.setPoints(listOfGulpPoints);
-					gulpsRois.add(roiTrack);
+					roiTrack.setPoints(gulpPoints);
+					roiTrack.setT(t);
+					cap.gulpsRois.add(roiTrack);
+					
 					roiTrack = new ROI2DPolyLine ();
-					listOfGulpPoints = new ArrayList<>();
+					gulpPoints = new ArrayList<>();
 					singlePoint = new Point2D.Double (ix-1, topLevelArray.get(ix-1));
-					listOfGulpPoints.add(singlePoint);
+					gulpPoints.add(singlePoint);
 				}
 			} 
 			singlePoint = new Point2D.Double (ix, topLevelArray.get(ix));
-			listOfGulpPoints.add(singlePoint);
+			gulpPoints.add(singlePoint);
 		}
 
-		if (listOfGulpPoints.size() > 0) {
-			roiTrack.setPoints(listOfGulpPoints);
+		if (gulpPoints.size() > 0) {
+			roiTrack.setPoints(gulpPoints);
 			roiTrack.setColor(Color.red);
 			roiTrack.setStroke(1);
+			roiTrack.setT(t);
 			roiTrack.setName("gulp"+String.format("%07d", ix));
-			gulpsRois.add(roiTrack);
+			cap.gulpsRois.add(roiTrack);
 		}
-		kymographSeq.addROIs(gulpsRois, false);
-		
+		kymographSeq.addROIs(cap.gulpsRois, false);
 	}
 }

@@ -23,7 +23,6 @@ public class Capillaries {
 	public double 	pixels 				= 300.;
 	public int		grouping 			= 2;
 	public String 	sourceName 			= null;
-	public ArrayList <Capillary> capillariesArrayList 	= new ArrayList <Capillary>();	
 	public long 	analysisStart 		= 0;
 	public long 	analysisEnd 		= 0;
 	public int 		analysisStep 		= 1;
@@ -35,6 +34,9 @@ public class Capillaries {
 	public String 	concentrationR		= new String("xmMR");
 	public String 	stimulusL			= new String("stimulusL");
 	public String 	concentrationL		= new String("xmML");
+	
+	public ArrayList <Capillary> capillariesArrayList 	= new ArrayList <Capillary>();	
+	
 	
 	// ------------------------------------------------------------
 	public boolean xmlReadCapillaryParameters (Document doc) {

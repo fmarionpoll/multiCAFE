@@ -32,8 +32,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 public class SequencePlus extends SequenceVirtual  {
 	
 	public	Capillaries		capillaries 			= null;
-	public 	KymoMeasures	kymoMeasures			= new KymoMeasures ();
-	
+		
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;
 	public 	boolean 		detectTop 				= true;
@@ -61,8 +60,6 @@ public class SequencePlus extends SequenceVirtual  {
 	
 	public SequencePlus(String name, IcyBufferedImage image) {
 		super (name, image);
-		kymoMeasures.imageWidth = image.getWidth();
-		kymoMeasures.imageHeight = image.getHeight();
 	}
 	
 	public ArrayList<Integer> getArrayListFromRois (EnumArrayListType option, int t) {
@@ -259,7 +256,7 @@ public class SequencePlus extends SequenceVirtual  {
         super.roiChanged(event.getSource(), SequenceEventType.CHANGED);
     }
 
-	public boolean loadXMLKymographAnalysis (String directory) {
+	public boolean loadXMLKymographAnalysis (Capillary cap, String directory) {
 	
 		if (directory == null)
 			return false;
@@ -298,10 +295,6 @@ public class SequencePlus extends SequenceVirtual  {
 		analysisStart = XMLUtil.getElementIntValue(myNode, "analysisStart", 0);
 		analysisEnd = XMLUtil.getElementIntValue(myNode, "analysisEnd", -1);
 		analysisStep = XMLUtil.getElementIntValue(myNode, "analysisStep", 1);
-		
-		kymoMeasures.imageWidth = XMLUtil.getElementIntValue(myNode, "imageWidth", 1);
-		kymoMeasures.imageHeight = XMLUtil.getElementIntValue(myNode, "imageHeight", 1);
-
 
 		if (flag) {
 			
@@ -322,7 +315,7 @@ public class SequencePlus extends SequenceVirtual  {
 		return flag;
 	}
 
-	public boolean saveXMLKymographAnalysis(String directory) {
+	public boolean saveXMLKymographAnalysis(Capillary cap, String directory) {
 
 		// check if directory is present. If not, create it
 		String resultsDirectory = directory;
@@ -358,10 +351,7 @@ public class SequencePlus extends SequenceVirtual  {
 		XMLUtil.setElementIntValue(myNode, "analysisStart", (int) analysisStart);
 		XMLUtil.setElementIntValue(myNode, "analysisEnd", (int) analysisEnd);
 		XMLUtil.setElementIntValue(myNode, "analysisStep", analysisStep);
-		
-		XMLUtil.setElementIntValue(myNode, "imageWidth", kymoMeasures.imageWidth);
-		XMLUtil.setElementIntValue(myNode, "imageHeight", kymoMeasures.imageHeight);
-		
+			
 		setFilename(resultsDirectory+getName()+".xml");
 		return saveXMLData();
 	}

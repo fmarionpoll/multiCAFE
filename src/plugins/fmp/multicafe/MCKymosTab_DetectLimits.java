@@ -15,7 +15,6 @@ import javax.swing.SwingConstants;
 import icy.gui.frame.progress.AnnounceFrame;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class MCKymosTab_DetectLimits  extends JPanel {

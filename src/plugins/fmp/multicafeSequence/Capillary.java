@@ -4,30 +4,40 @@ package plugins.fmp.multicafeSequence;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import icy.roi.ROI;
+import icy.type.geom.Polyline2D;
 import plugins.fmp.multicafeTools.EnumArrayListType;
 import plugins.fmp.multicafe.MCBuildDetect_GulpsOptions;
 import plugins.fmp.multicafe.MCBuildDetect_LimitsOptions;
+import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Capillary {
 
-	public int							indexImage 	= 0;
-	public ROI2DShape 					roi 		= null;	// the capillary
+	public int							indexImage 				= 0;
+	public String						name;
+	public ROI2DShape 					roi 					= null;	// the capillary
 	
 	public MCBuildDetect_LimitsOptions 	limitsOptions;
 	public MCBuildDetect_GulpsOptions 	gulpsOptions;
-	public List<Point2D> 				ptsTop  = new ArrayList<>(); 
-	public List<Point2D> 				ptsBottom = new ArrayList<>();
-	public ArrayList<Integer> 			derivedValuesArrayList = new ArrayList<Integer>(); // (derivative) result of the detection of the capillary level
+	public List<Point2D> 				ptsTop  				= new ArrayList<>(); 
+	public List<Point2D> 				ptsBottom 				= new ArrayList<>();
+	public Collection<ROI> 				gulpsRois 				= new ArrayList <> ();
+	public ArrayList<Integer> 			derivedValuesArrayList 	= new ArrayList<Integer>(); // (derivative) result of the detection of the capillary level
 	
 	
 	Capillary(ROI2DShape roi) {
 		this.roi = roi;
 	}
 	
+	public Capillary() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public String getName() {
 		return roi.getName();
 	}
@@ -49,8 +59,7 @@ public class Capillary {
 			datai = derivedValuesArrayList;
 			break;
 		case cumSum:
-			datai = new ArrayList<Integer>(Collections.nCopies(this.getWidth(), 0));
-			addRoisMatchingFilterToCumSumDataArray("gulp", datai);
+			datai = getCumSumFromRoisArray(gulpsRois);
 			break;
 		case bottomLevel:
 			datai = getYFromPtArray(ptsBottom);
@@ -61,5 +70,77 @@ public class Capillary {
 			break;
 		}
 		return datai;
+	}
+	
+	public ArrayList<Integer> getCumSumFromRoisArray(Collection<ROI> gulpsRois) {
+		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(ptsTop.size(), 0));
+		for (ROI roi: gulpsRois) {
+			addRoitoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
+		}
+		return arrayInt;
+	}
+	
+	private void addRoitoCumulatedSumArray(ROI2DPolyLine roi, ArrayList<Integer> sumArrayList) {
+		
+		interpolateMissingPointsAlongXAxis (roi);
+		ArrayList<Integer> intArray = transfertRoiYValuesToDataArray(roi);
+		Polyline2D line = roi.getPolyline2D();
+		int jstart = (int) line.xpoints[0];
+
+		int previousY = intArray.get(0);
+		for (int i=0; i< intArray.size(); i++) {
+			int val = intArray.get(i);
+			int deltaY = val - previousY;
+			previousY = val;
+			for (int j = jstart+i; j< sumArrayList.size(); j++) {
+				sumArrayList.set(j, sumArrayList.get(j) +deltaY);
+			}
+		}
+	}
+	
+	private boolean interpolateMissingPointsAlongXAxis (ROI2DPolyLine roiLine) {
+		// interpolate points so that each x step has a value	
+		// assume that points are ordered along x
+	
+		Polyline2D line = roiLine.getPolyline2D();
+		int roiLine_npoints = line.npoints;
+		// exit if the length of the segment is the same
+		int roiLine_nintervals =(int) line.xpoints[roiLine_npoints-1] - (int) line.xpoints[0] +1;  
+		
+		if (roiLine_npoints == roiLine_nintervals)
+			return true;
+		else if (roiLine_npoints > roiLine_nintervals)
+			return false;
+		
+		List<Point2D> pts = new ArrayList <Point2D>(roiLine_npoints);
+		double ylast = line.ypoints[roiLine_npoints-1];
+		for (int i=1; i< roiLine_npoints; i++) {
+			
+			int xfirst = (int) line.xpoints[i-1];
+			int xlast = (int) line.xpoints[i];
+			double yfirst = line.ypoints[i-1];
+			ylast = line.ypoints[i];
+			for (int j = xfirst; j< xlast; j++) {
+				
+				int val = (int) (yfirst + (ylast-yfirst)*(j-xfirst)/(xlast-xfirst));
+				Point2D pt = new Point2D.Double(j, val);
+				pts.add(pt);
+			}
+		}
+		Point2D pt = new Point2D.Double(line.xpoints[roiLine_npoints-1], ylast);
+		pts.add(pt);
+		
+		roiLine.setPoints(pts);
+		return true;
+	}
+	
+	private ArrayList<Integer> transfertRoiYValuesToDataArray(ROI2DPolyLine roiLine) {
+
+		Polyline2D line = roiLine.getPolyline2D();
+		ArrayList<Integer> intArray = new ArrayList<Integer> (line.npoints);
+		for (int i=0; i< line.npoints; i++) 
+			intArray.add((int) line.ypoints[i]);
+
+		return intArray;
 	}
 }
