@@ -64,6 +64,11 @@ public class SequencePlus extends SequenceVirtual  {
 		super (name, image);
 	}
 	
+	public SequencePlus (String [] list, String directory)
+	{
+		super(list, directory);
+	}
+	
 	public ArrayList<Integer> getArrayListFromRois (EnumArrayListType option, int t) {
 		
 		Capillary cap = capillaries.capillariesArrayList.get(t);
@@ -279,7 +284,7 @@ public class SequencePlus extends SequenceVirtual  {
         	return false;
 
         Element root = XMLUtil.getRootElement(xml);
-		if (!readOldVersion()) {
+		if (!readOldVersionOfCapillaryMeasure(root, cap)) {
 			if (!cap.loadFromXML(root))
 				return false;
 		}
@@ -297,8 +302,9 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 	
 
-	private boolean readOldVersion() {
-		Node myNode = getNode(this.getName()+"_parameters");
+	private boolean readOldVersionOfCapillaryMeasure(Node node, Capillary cap) {
+		//Node myNode = getNode(this.getName()+"_parameters");
+		final Node myNode = XMLUtil.getElement(node, cap.name + "_parameters");
 		if (myNode == null)
 			return false;
 		

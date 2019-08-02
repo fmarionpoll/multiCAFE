@@ -33,7 +33,7 @@ public class SequenceVirtual extends Sequence
 	//private XugglerAviFile 	aviFile 		= null;
 	private String [] 				listFiles 				= null;
 	private String 					csFileName 				= null;
-	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp"};
+	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif"};
 	private String					directory 				= null;
 	public IcyBufferedImage 		refImage 				= null;
 	
@@ -90,7 +90,7 @@ public class SequenceVirtual extends Sequence
 		 * Returns true if 'name' includes one of the accepted types stored in the "accepted" list 
 		 */
 		if (name==null) return false;
-		for (int i=0; i<acceptedTypes.length; i++) {
+		for (int i=0; i< acceptedTypes.length; i++) {
 			if (name.endsWith(acceptedTypes[i]))
 				return true;
 		}
@@ -438,14 +438,13 @@ public class SequenceVirtual extends Sequence
 		}
 
 		@Override
-		public void run()
-		{
+		public void run() {
+			
 			try
 			{
 				while (!isInterrupted())
 				{
 					ThreadUtil.sleep(100);
-
 					int frameStart 	= currentFrame - span;
 					int frameEnd 	= currentFrame + span;
 					if (frameStart < 0) 
@@ -457,7 +456,6 @@ public class SequenceVirtual extends Sequence
 					for (int t = 0; t < nTotalFrames-1 ; t+= analysisStep) { // t++) {
 						if (t < frameStart || t > frameEnd)
 							removeImage(t, 0);
-						
 						if (isInterrupted())
 							return;
 					}
@@ -628,8 +626,7 @@ public class SequenceVirtual extends Sequence
 		status = EnumStatus.FILESTACK;		
 	}
 
-	private void setVImageName(int t)
-	{
+	private void setVImageName(int t) {
 		if (status == EnumStatus.FILESTACK)
 			setName(getDecoratedImageName(t));
 	}

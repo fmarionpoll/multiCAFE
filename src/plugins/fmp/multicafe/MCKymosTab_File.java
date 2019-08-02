@@ -47,6 +47,7 @@ public class MCKymosTab_File  extends JPanel {
 					firePropertyChange("MEASURES_OPEN", false, true);
 				}
 			}}); 
+		
 		saveMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				saveKymosMeasures();

@@ -4,13 +4,12 @@ package plugins.fmp.multicafeSequence;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
 
 public class Experiment {
 	
 	public String						filename 					= null;
 	public SequenceVirtual 				vSequence 					= null;
-	public ArrayList <SequencePlus> 	kymographArrayList			= null;
+	public SequencePlus 				vkymos						= null;
 	
 	public FileTime						fileTimeImageFirst;
 	public FileTime						fileTimeImageLast;
@@ -46,7 +45,7 @@ public class Experiment {
 		boxID = vSequence.capillaries.boxID;
 		
 		String directory = vSequence.getDirectory() +"\\results";
-		kymographArrayList = SequencePlusUtils.openFiles(directory, vSequence.capillaries);
+		vkymos = SequencePlusUtils.openKymoFiles(directory, vSequence.capillaries);
 		vSequence.xmlReadDrosoTrackDefault();
 		return true;
 	}

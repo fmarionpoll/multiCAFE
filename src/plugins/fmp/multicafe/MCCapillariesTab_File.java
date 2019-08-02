@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -25,7 +24,6 @@ import icy.image.IcyBufferedImage;
 import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeSequence.SequencePlusUtils;
 
 
@@ -92,19 +90,6 @@ public class MCCapillariesTab_File extends JPanel {
 		return parent0.vSequence.capillaries.xmlWriteROIsAndDataNoQuestion(name, parent0.vSequence);
 	}
 
-	ArrayList<SequencePlus> openFiles() {
-		String directory = parent0.vSequence.getDirectory();
-		
-		JFileChooser f = new JFileChooser(directory);
-		f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
-		int v = f.showOpenDialog(null);
-		if (v == JFileChooser.APPROVE_OPTION  )
-			directory =  f.getSelectedFile().getAbsolutePath();
-		else
-			return null;
-		return SequencePlusUtils.openFiles(directory, parent0.vSequence.capillaries); 
-	}
-	
 	void saveFiles(String directory) {
 
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
