@@ -120,6 +120,7 @@ public class BuildKymographsThread implements Runnable
 	}
 	
 	// -------------------------------------------
+	
 	private boolean getImageAndUpdateViewer(int t) {
 		
 		workImage = getImageFromSequence(t); 

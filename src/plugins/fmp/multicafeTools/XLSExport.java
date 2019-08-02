@@ -232,7 +232,7 @@ public class XLSExport {
 		xlsCreatePivotTable(workBook, "pivot_n", fromWorkbook, DataConsolidateFunction.COUNT);
 	}
 	
-	protected int getColFromKymoSequenceName(String name) {
+	public int getColFromKymoSequenceName(String name) {
 		if (!name .contains("line"))
 			return -1;
 

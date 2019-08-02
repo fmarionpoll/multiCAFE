@@ -8,30 +8,47 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.w3c.dom.Node;
+
+import icy.file.xml.XMLPersistent;
 import icy.roi.ROI;
 import icy.type.geom.Polyline2D;
+import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.EnumArrayListType;
 import plugins.fmp.multicafe.MCBuildDetect_GulpsOptions;
 import plugins.fmp.multicafe.MCBuildDetect_LimitsOptions;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
-public class Capillary {
+public class Capillary implements XMLPersistent  {
 
-	public int							indexImage 				= 0;
-	public String						name;
+	public int							indexImage 				= -1;
+	public String						name 					= null;
+	public String 						version 				= null;
 	public ROI2DShape 					roi 					= null;	// the capillary
-	
 	public MCBuildDetect_LimitsOptions 	limitsOptions;
 	public MCBuildDetect_GulpsOptions 	gulpsOptions;
+	
 	public List<Point2D> 				ptsTop  				= new ArrayList<>(); 
 	public List<Point2D> 				ptsBottom 				= new ArrayList<>();
 	public Collection<ROI> 				gulpsRois 				= new ArrayList <> ();
-	public ArrayList<Integer> 			derivedValuesArrayList 	= new ArrayList<Integer>(); // (derivative) result of the detection of the capillary level
-	
+	public ArrayList<Integer> 			derivedValuesArrayList 	= new ArrayList<Integer>(); 
+
+	private final static String ID_META = "meta";
+	private final static String ID_ROI = "roi";
+	private final static String ID_GULPS = "gulps";
+	private final static String ID_INDEXIMAGE = "indexImage";
+	private final static String ID_NAME = "name";
+	    
+	// ----------------------------------------------------
 	
 	Capillary(ROI2DShape roi) {
 		this.roi = roi;
+		this.name = roi.getName();
+	}
+	
+	Capillary(String name) {
+		this.name = name;
 	}
 	
 	public Capillary() {
@@ -39,7 +56,7 @@ public class Capillary {
 	}
 
 	public String getName() {
-		return roi.getName();
+		return name;
 	}
 	
 	public ArrayList<Integer> getYFromPtArray(List<Point2D> ptsList) {
@@ -142,5 +159,159 @@ public class Capillary {
 			intArray.add((int) line.ypoints[i]);
 
 		return intArray;
+	}
+
+	@Override
+	public boolean loadFromXML(Node node) {
+		boolean result = true;
+		result |= loadMetaDataFromXML(node);
+		result |= loadROIsFromXML(node, gulpsRois);
+		result |= loadIntegerArrayFromXML(node, "derivedvalues", derivedValuesArrayList);
+		ArrayList<Integer> data = new ArrayList<Integer>();
+		boolean flag = loadIntegerArrayFromXML(node, "topLevel", data);
+		result |= flag;
+		if (flag)
+			convertIntegerArrayToPointArray(data, ptsTop);
+		flag = loadIntegerArrayFromXML(node, "bottomLevel", data);
+		if (flag)
+			convertIntegerArrayToPointArray(data, ptsBottom);
+		result |= flag;
+		return result;
+	}
+
+	@Override
+	public boolean saveToXML(Node node) {
+
+		saveMetaDataToXML(node);
+        saveROIsToXML(node, gulpsRois);
+        saveIntArraytoXML(node, derivedValuesArrayList, "derivedvalues");
+        saveIntArraytoXML(node, getYFromPtArray(ptsTop), "topLevel");
+        saveIntArraytoXML(node, getYFromPtArray(ptsBottom), "bottomLevel");
+        
+        return true;
+	}
+	
+	private boolean loadMetaDataFromXML(Node node)
+	{
+	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
+	    if (nodeMeta == null)	// nothing to load
+            return true;
+	    
+	    if (nodeMeta != null)
+	    {
+	    	version = XMLUtil.getElementValue(nodeMeta, "capillary ", "version 1.0.0");
+	        
+	    	indexImage = XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
+	        name = XMLUtil.getElementValue(nodeMeta, ID_NAME, name);
+	        roi = (ROI2DShape) loadROIFromXML(nodeMeta);
+	        limitsOptions.loadFromXML(nodeMeta);
+	        gulpsOptions.loadFromXML(nodeMeta);
+	    }
+	    return true;
+	}
+	
+	private void saveMetaDataToXML(Node node)
+	{
+	    final Node nodeMeta = XMLUtil.setElement(node, ID_META);
+	    if (nodeMeta != null)
+	    {
+	    	if (version == null)
+	    		version = "version 1.0.0";
+	    	XMLUtil.setElementValue(nodeMeta, "capillary ", version);
+	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
+	        XMLUtil.setElementValue(nodeMeta, ID_NAME, name);
+	        saveROIToXML(nodeMeta, roi); 
+	        limitsOptions.saveToXML(nodeMeta);
+	        gulpsOptions.saveToXML(nodeMeta);
+	    }
+	}
+
+	private void saveROIToXML(Node node, ROI roi) {
+		final Node nodeROI = XMLUtil.addElement(node, ID_ROI);
+        if (!roi.saveToXML(nodeROI))
+        {
+            XMLUtil.removeNode(node, nodeROI);
+            System.err.println("Error: the roi " + roi.getName() + " was not correctly saved to XML !");
+        }
+	}
+ 
+	private ROI loadROIFromXML(Node node) {
+		final Node nodeROI = XMLUtil.getElement(node, ID_ROI);
+        if (nodeROI != null) {
+			ROI roi = ROI.createFromXML(nodeROI);
+	        return roi;
+        }
+        return null;
+	}
+	
+	private void saveROIsToXML(Node node, Collection<ROI> rois)
+	{
+        final Node nodeROIs = XMLUtil.setElement(node, ID_GULPS);
+        if (nodeROIs != null)
+        {
+            XMLUtil.removeAllChildren(nodeROIs);
+	        ROI.saveROIsToXML(nodeROIs, (List<ROI>) rois);
+	    }
+	}
+	
+	private boolean loadROIsFromXML(Node node, Collection<ROI> rois)
+	{
+        final Node nodeROIs = XMLUtil.getElement(node, ID_GULPS);
+        if (nodeROIs != null)
+        {
+        	rois = ROI.loadROIsFromXML(nodeROIs);
+	    }
+        return true;
+	}
+	
+	private void saveIntArraytoXML(Node node, ArrayList <Integer> data, String name) {
+		final Node nodeMeta = XMLUtil.setElement(node, name);
+	    if (nodeMeta != null) {
+	    	int i= 0;
+	    	XMLUtil.setElementIntValue(nodeMeta, "nitems", data.size());
+	    	for (int value: data) {
+	    		XMLUtil.setElementIntValue(nodeMeta, "point"+i, value);
+	    		i++;
+	    	}
+	    }
+	}
+	
+	private boolean loadIntegerArrayFromXML(Node node, String name, ArrayList <Integer> data) {
+		final Node nodeMeta = XMLUtil.getElement(node, name);
+	    if (nodeMeta != null) {
+	    	int nitems = XMLUtil.getElementIntValue(nodeMeta, "nitems", data.size());
+	    	data = new ArrayList<Integer>(nitems);
+	    	for (int i=0; i< nitems; i++) {
+	    		int value = XMLUtil.getElementIntValue(nodeMeta, "point"+i, 0);
+	    		data.set(i, value);
+	    	}
+	    }
+	    return true;
+	}
+	
+	private void convertIntegerArrayToPointArray(ArrayList<Integer> data, List<Point2D> ptsList) {
+		ptsList = new ArrayList<Point2D>();
+		for (int i=0; i < data.size(); i++) {
+			Point2D pt = new Point2D.Double((double) i, (double) data.get(i));
+			ptsList.add(pt);
+		}
+	}
+	
+	public int getCapillaryIndexFromCapillaryName(String name) {
+		if (!name .contains("line"))
+			return -1;
+
+		String num = name.substring(4, 5);
+		int numFromName = Integer.parseInt(num);
+		String side = name.substring(5, 6);
+		if (side != null) {
+			if (side .equals("R")) {
+				numFromName = numFromName* 2;
+				numFromName += 1;
+			}
+			else if (side .equals("L"))
+				numFromName = numFromName* 2;
+		}
+		return numFromName;
 	}
 }

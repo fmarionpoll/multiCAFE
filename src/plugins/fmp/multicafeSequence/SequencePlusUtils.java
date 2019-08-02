@@ -73,16 +73,16 @@ public class SequencePlusUtils {
 		return kymographSeq;
 	}
 	
-	public static SequencePlus openKymoFiles (String directory, Capillaries caps) {
+	public static SequencePlus openKymoFiles (String directory, Capillaries capillaries) {
 		
 		isRunning = true;
 		SequencePlus kymos = new SequencePlus ();	
 
 		ProgressFrame progress = new ProgressFrame("Load kymographs");
-		progress.setLength(caps.capillariesArrayList.size());
+		progress.setLength(capillaries.capillariesArrayList.size());
 		
 		int t=0;
-		for (Capillary cop: caps.capillariesArrayList) {
+		for (Capillary cap: capillaries.capillariesArrayList) {
 			
 			if (isInterrupted) {
 				isInterrupted = false;
@@ -91,7 +91,7 @@ public class SequencePlusUtils {
 				return null;
 			}
 			 
-			final String name =  directory + "\\" + cop.roi.getName() + ".tiff";
+			final String name =  directory + "\\" + cap.roi.getName() + ".tiff";
 			progress.setMessage( "Load "+name);
 	
 			try {
@@ -100,15 +100,22 @@ public class SequencePlusUtils {
 					Rectangle rect = new Rectangle(0, 0, kymos.getWidth(), kymos.getHeight() );
 					ibufImage = IcyBufferedImageUtil.getSubImage(ibufImage, rect );
 				}
-				kymos.addImage(t, ibufImage);
+				int it = cap.getCapillaryIndexFromCapillaryName(cap.roi.getName());
+				if (it < 0)
+					it = t;
+				kymos.setImage(it, 0, ibufImage);
+				cap.indexImage = it;
+				
 			} catch (UnsupportedFormatException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			t++;
-			kymos.loadXMLKymographAnalysis(cop, directory);
+			if (cap.indexImage == -1)
+				cap.indexImage = t;
+			kymos.loadXMLKymographAnalysis(cap, directory);
 			
+			t++;
 			progress.incPosition();
 		}
 		progress.close();

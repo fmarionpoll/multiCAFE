@@ -37,8 +37,8 @@ public class Capillaries {
 	
 	public ArrayList <Capillary> capillariesArrayList 	= new ArrayList <Capillary>();	
 	
-	
 	// ------------------------------------------------------------
+	
 	public boolean xmlReadCapillaryParameters (Document doc) {
 		String nodeName = "capillaryTrack";
 		// read local parameters

@@ -14,6 +14,8 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import icy.image.IcyBufferedImage;
@@ -261,23 +263,45 @@ public class SequencePlus extends SequenceVirtual  {
 		if (directory == null)
 			return false;
 		
-		String resultsDirectory = directory;
-		String subDirectory = "\\results";
-		if (!resultsDirectory.contains (subDirectory))
-			resultsDirectory += subDirectory;
-		Path resultsPath = Paths.get(resultsDirectory);
-		if (Files.notExists(resultsPath)) 
+		String resultsDirectory = directory + "\\results";
+		Path resultsDirectoryPath = Paths.get(resultsDirectory);
+		if (Files.notExists(resultsDirectoryPath)) 
 			return false; 
 		
-		setFilename(resultsDirectory+"\\"+getName()+".xml");
+		setFilename(resultsDirectory+"\\"+ cap.getName()+".xml");
 		Path filenamePath = Paths.get(filename);
 		if (Files.notExists(filenamePath)) 
 			return false; 
 		
 		removeAllROI();
-		boolean flag = loadXMLData();
+		Document xml = XMLUtil.loadDocument(filename);
+        if (xml == null) 
+        	return false;
+
+        Element root = XMLUtil.getRootElement(xml);
+		if (!readOldVersion()) {
+			if (!cap.loadFromXML(root))
+				return false;
+		}
 		
+		ArrayList<ROI2D> listRois = getROI2Ds();
+		for (ROI2D roi: listRois) {
+
+			int t = roi.getT();
+			if (t < 0)
+				roi.setT(cap.indexImage);
+		    addROI(roi);
+		}
+		
+		return true;
+	}
+	
+
+	private boolean readOldVersion() {
 		Node myNode = getNode(this.getName()+"_parameters");
+		if (myNode == null)
+			return false;
+		
 		detectTop = XMLUtil.getElementBooleanValue(myNode, "detectTop", true);
 		detectBottom = XMLUtil.getElementBooleanValue(myNode, "detectBottom", false);
 		detectAllLevel = XMLUtil.getElementBooleanValue(myNode, "detectAllLevel", true);
@@ -295,27 +319,10 @@ public class SequencePlus extends SequenceVirtual  {
 		analysisStart = XMLUtil.getElementIntValue(myNode, "analysisStart", 0);
 		analysisEnd = XMLUtil.getElementIntValue(myNode, "analysisEnd", -1);
 		analysisStep = XMLUtil.getElementIntValue(myNode, "analysisStep", 1);
-
-		if (flag) {
-			
-			ArrayList<ROI2D> listRois = getROI2Ds();
-			for (ROI2D roi: listRois) {
-//				if (analysisStep != old_analysisStep) {
-//					Polyline2D polyline = ((ROI2DPolyLine) roi).getPolyline2D();
-//					double ratio = analysisStep / old_analysisStep;
-//					for (int i=0; i< polyline.npoints; i++) {
-//						polyline.xpoints[i]  = polyline.xpoints[i] * ratio;
-//					}
-//					((ROI2DPolyLine) roi).setPolyline2D(polyline);
-//				}
-			    addROI(roi);
-			}
-		}
-		
-		return flag;
+		return true;
 	}
-
-	public boolean saveXMLKymographAnalysis(Capillary cap, String directory) {
+	
+ 	public boolean saveXMLKymographAnalysis(Capillary cap, String directory) {
 
 		// check if directory is present. If not, create it
 		String resultsDirectory = directory;
@@ -357,6 +364,7 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 
 	// ----------------------------
+	
 	public void setThresholdOverlay(boolean bActive) {
 		if (bActive) {
 			if (thresholdOverlay == null) 

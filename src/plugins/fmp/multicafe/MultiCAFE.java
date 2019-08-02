@@ -72,7 +72,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		mainFrame.addToDesktopPane();
 	}
 
-	
 	void roisSaveEdits() 
 	{
 		if (vkymos != null && vkymos.hasChanged) {

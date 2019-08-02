@@ -69,6 +69,7 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 	}
 	
 	// -----------------------------------
+	
 	private void kymosBuildStart() {
 		if (parent0.vSequence == null) 
 			return;
