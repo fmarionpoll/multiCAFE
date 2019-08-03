@@ -268,12 +268,14 @@ public class SequencePlus extends SequenceVirtual  {
 		if (directory == null)
 			return false;
 		
-		String resultsDirectory = directory + "\\results";
-		Path resultsDirectoryPath = Paths.get(resultsDirectory);
-		if (Files.notExists(resultsDirectoryPath)) 
-			return false; 
+		if (!directory .contains("results")) {
+			directory = directory + "\\results";
+			Path resultsDirectoryPath = Paths.get(directory);
+			if (Files.notExists(resultsDirectoryPath)) 
+				return false; 
+		}
 		
-		setFilename(resultsDirectory+"\\"+ cap.getName()+".xml");
+		setFilename(directory+"\\"+ cap.getName()+".xml");
 		Path filenamePath = Paths.get(filename);
 		if (Files.notExists(filenamePath)) 
 			return false; 
@@ -282,8 +284,9 @@ public class SequencePlus extends SequenceVirtual  {
 		Document xml = XMLUtil.loadDocument(filename);
         if (xml == null) 
         	return false;
-
-        Element root = XMLUtil.getRootElement(xml);
+		
+		Element root = XMLUtil.getRootElement(xml);
+		
 		if (!readOldVersionOfCapillaryMeasure(root, cap)) {
 			if (!cap.loadFromXML(root))
 				return false;
@@ -301,10 +304,9 @@ public class SequencePlus extends SequenceVirtual  {
 		return true;
 	}
 	
-
-	private boolean readOldVersionOfCapillaryMeasure(Node node, Capillary cap) {
-		//Node myNode = getNode(this.getName()+"_parameters");
-		final Node myNode = XMLUtil.getElement(node, cap.name + "_parameters");
+	private boolean readOldVersionOfCapillaryMeasure(Node rootNode, Capillary cap) {
+		
+		final Node myNode = XMLUtil.getElement(rootNode, cap.name + "_parameters");
 		if (myNode == null)
 			return false;
 		

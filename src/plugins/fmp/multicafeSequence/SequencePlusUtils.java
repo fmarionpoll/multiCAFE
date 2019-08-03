@@ -4,18 +4,19 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
+import java.util.Collections;
 
 import icy.common.exception.UnsupportedFormatException;
 import icy.file.Loader;
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
-import icy.image.IcyBufferedImageUtil;
+import icy.sequence.MetaDataUtil;
+import icy.type.DataType;
+import icy.type.collection.array.Array1DUtil;
+import icy.util.StringUtil.AlphanumComparator;
 import loci.formats.FormatException;
+import ome.xml.meta.OMEXMLMetadata;
 
 
 
@@ -27,13 +28,15 @@ public class SequencePlusUtils {
 	private static int imageWidthMax = 0;
 	private static int imageHeightMax = 0;
 	private static ArrayList<Rectangle> rectList = null;
+	static String extension = ".jpg"; //".tiff"
 	
 	// -------------------------------------------------------
 	
 	private static ArrayList<File> keepOnlyFilesMatchingCapillaries(File[] files, Capillaries capillaries) {
-		ArrayList<File> filesArray= new ArrayList<File> ();
+
+		ArrayList<File> filesArray = new ArrayList<File>();
 		for (int i= 0; i < files.length; i++) {
-			String filename = files[i].getName();
+			String filename = files[i].getAbsolutePath();
 			for (Capillary cap: capillaries.capillariesArrayList) {
 				if (filename.contains(cap.roi.getName())) {
 					filesArray.add(files[i]);
@@ -43,158 +46,139 @@ public class SequencePlusUtils {
 		}
 		return filesArray;
 	}
-	
+		
 	private static void getMaxSizeofTiffFiles(ArrayList<File> files) {
 
 		imageWidthMax = 0;
 		imageHeightMax = 0;
 		rectList = new ArrayList<Rectangle>(files.size());
 		
+		ProgressFrame progress = new ProgressFrame("Read kymographs width and height");
+		progress.setLength(files.size());
+		
 		for (int i= 0; i < files.size(); i++) {
-			File filetest = files.get(i);
-			ImageInputStream imageStream = null;
+			String path = files.get(i).getPath();
+			OMEXMLMetadata metaData = null;
 			try {
-				imageStream = ImageIO.createImageInputStream(filetest);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+				metaData = Loader.getOMEXMLMetaData(path);
+			} catch (UnsupportedFormatException | IOException e) {
 				e.printStackTrace();
 			}
-			java.util.Iterator<ImageReader> readers = ImageIO.getImageReaders(imageStream);
-			ImageReader reader = null;
-			if(readers.hasNext()) {
-				reader = readers.next();
-			}else {
-				try {
-					imageStream.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			//can't read image format... 
-				continue;
-			}
+			int imageWidth = MetaDataUtil.getSizeX(metaData, 0);
+			int imageHeight= MetaDataUtil.getSizeY(metaData, 0);
+			if (imageWidth > imageWidthMax)
+				imageWidthMax = imageWidth;
+			if (imageHeight > imageHeightMax)
+				imageHeightMax = imageHeight;
 			
-			reader.setInput(imageStream,true,true);
-			int imageWidth = 0;
-			int imageHeight= 0;
-			try {
-				imageWidth = reader.getWidth(0);
-				if (imageWidth > imageWidthMax)
-					imageWidthMax = imageWidth;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				imageHeight = reader.getHeight(0);
-				if (imageHeight > imageHeightMax)
-					imageHeightMax = imageHeight;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			reader.dispose();
-			try {
-				imageStream.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			rectList.get(i).width = imageWidth;
-			rectList.get(i).height = imageHeight;
+			Rectangle rect = new Rectangle(0, 0, imageWidth, imageHeight);
+			rectList.add(rect);
+			progress.incPosition();
 		}
+		progress.close();
 	}
 	
 	private static void adjustImagesToMaxSize(ArrayList<File> files) {
 
-		Rectangle rectRef = new Rectangle(0, 0, imageWidthMax, imageHeightMax );
-		
+		ProgressFrame progress = new ProgressFrame("Make kymographs the same width and height");
+		progress.setLength(files.size());
+
 		for (int i= 0; i < files.size(); i++) {
 			if (rectList.get(i).width == imageWidthMax && rectList.get(i).height == imageHeightMax)
 				continue;
+			
+			progress.setMessage("adjust image "+files.get(i));
 			IcyBufferedImage ibufImage = null;
 			try {
-				ibufImage = Loader.loadImage(files.get(i).getPath());
+				ibufImage = Loader.loadImage(files.get(i).getAbsolutePath());
 			} catch (UnsupportedFormatException | IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			ibufImage = IcyBufferedImageUtil.getSubImage(ibufImage, rectRef );
+			
+			IcyBufferedImage ibufImage2 = new IcyBufferedImage(imageWidthMax, imageHeightMax, ibufImage.getSizeC(), ibufImage.getDataType_());
+			transferImage1To2(ibufImage, ibufImage2);
 			try {
-				Saver.saveImage(ibufImage, files.get(i), true);
+				Saver.saveImage(ibufImage2, files.get(i), true);
 			} catch (FormatException | IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			progress.incPosition();
 		}
+		progress.close();
 	}
 	
-	private static void adjustImagesToSizeOfFirst(ArrayList<File> files) {
+	private static void transferImage1To2(IcyBufferedImage source, IcyBufferedImage result) {
 
-		IcyBufferedImage ibufImage = null;
-		try {
-			ibufImage = Loader.loadImage(files.get(0).getPath());
-		} catch (UnsupportedFormatException | IOException e) {
-			e.printStackTrace();
-		}
-		imageWidthMax = ibufImage.getWidth();
-		imageHeightMax = ibufImage.getHeight();
-		Rectangle rectRef = new Rectangle(0, 0, imageWidthMax, imageHeightMax );
-		
-		for (int i= 1; i < files.size(); i++) {
-//			if (rectList.get(i).width == imageWidthMax && rectList.get(i).height == imageHeightMax)
-//				continue;
-			ibufImage = null;
-			try {
-				ibufImage = Loader.loadImage(files.get(i).getPath());
-			} catch (UnsupportedFormatException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (ibufImage.getWidth() == imageWidthMax && ibufImage.getHeight() == imageHeightMax)
-				continue;
-			ibufImage = IcyBufferedImageUtil.getSubImage(ibufImage, rectRef );
-			try {
-				Saver.saveImage(ibufImage, files.get(i), true);
-			} catch (FormatException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+	        final int sizeY = source.getSizeY();
+	        final int endC = source.getSizeC();
+	        final int sourceSizeX 	= source.getSizeX();
+	        final int destSizeX 	= result.getSizeX();
+	        final DataType dataType = source.getDataType_();
+	        final boolean signed = dataType.isSigned();
+
+	        result.lockRaster();
+	        try
+	        {
+	            for (int ch = 0; ch < endC; ch++)
+	            {
+	                final Object src = source.getDataXY(ch);
+	                final Object dst = result.getDataXY(ch);
+
+	                int srcOffset = 0;
+	                int dstOffset = 0;
+
+	                for (int curY = 0; curY < sizeY; curY++)
+	                {
+	                    Array1DUtil.arrayToArray(src, srcOffset, dst, dstOffset, sourceSizeX, signed);
+	                    srcOffset += sourceSizeX;
+	                    dstOffset += destSizeX;
+	                }
+	            }
+	        }
+	        finally
+	        {
+	            result.releaseRaster(true);
+	        }
+	        result.dataChanged();
 	}
 	
 	public static SequencePlus openKymoFiles (String directory, Capillaries parent_capillaries) {
 		
 		isRunning = true;
+
 		File dir = new File(directory);
-		File[] files = dir.listFiles((d, name) -> name.endsWith(".tiff"));
+		File[] files = dir.listFiles((d, name) -> name.endsWith(extension));
 		if (files == null)
 			return null;
 		
-		ProgressFrame progress = new ProgressFrame("Read kymographs length");
-		progress.setLength(files.length);
-		
-		ArrayList<File> filesArray = keepOnlyFilesMatchingCapillaries(files, parent_capillaries);
-//		progress.setMessage("get size of tiff images");
-//		getMaxSizeofTiffFiles(filesArray);
-//		progress.setMessage("adjust size of tiff images");
-//		adjustImagesToMaxSize(filesArray);
-		
-		adjustImagesToSizeOfFirst(filesArray);
-		progress.setMessage("create kymographs sequence");
-		String [] filenames = new String [filesArray.size()];
-		for (int i=0; i< filesArray.size(); i++) {
-			filenames[i] = filesArray.get(i).getName();
+		ProgressFrame progress = new ProgressFrame("Read kymographs");
+				
+		ArrayList <File> filesArray = keepOnlyFilesMatchingCapillaries(files, parent_capillaries);
+		getMaxSizeofTiffFiles(filesArray);
+		adjustImagesToMaxSize(filesArray);
+
+		progress.setMessage("create sequence");
+		ArrayList<String> listFileNames = new ArrayList<String> (filesArray.size());
+		for (File file: filesArray) {
+			listFileNames.add(file.getName());
+		}
+		Collections.sort(listFileNames, new AlphanumComparator());
+ 		String [] filenames = new String [listFileNames.size()];
+		for (int i=0; i< listFileNames.size(); i++) {
+			filenames[i] = listFileNames.get(i);
 		}
 		SequencePlus kymographSeq = new SequencePlus(filenames, directory);
+		kymographSeq.analysisStep = 1;
+		kymographSeq.vImageBufferThread_START(filesArray.size());
 		
 		progress.setMessage("load measures for each capillary");
 		kymographSeq.capillaries = new Capillaries();
 		String [] listFiles = kymographSeq.getListofFiles();
+		
 		for (int i=0; i < listFiles.length; i++) {
 			
 			String filename = listFiles[i];
-			int index1 = filename.indexOf(".tiff");
+			int index1 = filename.indexOf(extension);
 			int index0 = filename.lastIndexOf("\\")+1;
 			String title = filename.substring(index0, index1);
 			Capillary cap = new Capillary();
@@ -208,58 +192,6 @@ public class SequencePlusUtils {
 		isRunning = false;
 		return kymographSeq;
 	}
-	
-	/*
-	public static SequencePlus openKymoFiles (String directory, Capillaries capillaries) {
-		
-		isRunning = true;
-		SequencePlus kymos = new SequencePlus ();	
-
-		ProgressFrame progress = new ProgressFrame("Load kymographs");
-		progress.setLength(capillaries.capillariesArrayList.size());
-		
-		int t=0;
-		for (Capillary cap: capillaries.capillariesArrayList) {
-			
-			if (isInterrupted) {
-				isInterrupted = false;
-				isRunning = false;
-				progress.close();
-				return null;
-			}
-			 
-			final String name =  directory + "\\" + cap.roi.getName() + ".tiff";
-			progress.setMessage( "Load "+name);
-	
-			try {
-				IcyBufferedImage ibufImage = Loader.loadImage(name);
-				if (t != 0 && (ibufImage.getWidth() != kymos.getWidth() || ibufImage.getHeight() != kymos.getHeight())) {
-					Rectangle rect = new Rectangle(0, 0, kymos.getWidth(), kymos.getHeight() );
-					ibufImage = IcyBufferedImageUtil.getSubImage(ibufImage, rect );
-				}
-				int it = cap.getCapillaryIndexFromCapillaryName(cap.roi.getName());
-				if (it < 0)
-					it = t;
-				kymos.setImage(it, 0, ibufImage);
-				cap.indexImage = it;
-				
-			} catch (UnsupportedFormatException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if (cap.indexImage == -1)
-				cap.indexImage = t;
-			kymos.loadXMLKymographAnalysis(cap, directory);
-			
-			t++;
-			progress.incPosition();
-		}
-		progress.close();
-		isRunning = false;
-		return kymos;
-	}
-	*/
 	
 	public static void saveKymosMeasures (SequencePlus vkymos, String directory) {
 		

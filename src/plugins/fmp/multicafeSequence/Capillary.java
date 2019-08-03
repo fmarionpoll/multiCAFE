@@ -1,7 +1,6 @@
 package plugins.fmp.multicafeSequence;
 
 
-
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,16 +28,16 @@ public class Capillary implements XMLPersistent  {
 	public MCBuildDetect_LimitsOptions 	limitsOptions;
 	public MCBuildDetect_GulpsOptions 	gulpsOptions;
 	
-	public List<Point2D> 				ptsTop  				= new ArrayList<>(); 
-	public List<Point2D> 				ptsBottom 				= new ArrayList<>();
-	public Collection<ROI> 				gulpsRois 				= new ArrayList <> ();
-	public ArrayList<Integer> 			derivedValuesArrayList 	= new ArrayList<Integer>(); 
+	public List<Point2D> 				ptsTop  				= null; 
+	public List<Point2D> 				ptsBottom 				= null; 
+	public Collection<ROI> 				gulpsRois 				= null; 
+	public ArrayList<Integer> 			derivedValuesArrayList 	= null; 
 
-	private final static String ID_META = "meta";
-	private final static String ID_ROI = "roi";
-	private final static String ID_GULPS = "gulps";
-	private final static String ID_INDEXIMAGE = "indexImage";
-	private final static String ID_NAME = "name";
+	private final static String ID_META = "metaMC";
+	private final static String ID_ROI = "roiMC";
+	private final static String ID_GULPS = "gulpsMC";
+	private final static String ID_INDEXIMAGE = "indexImageMC";
+	private final static String ID_NAME = "nameMC";
 	    
 	// ----------------------------------------------------
 	
@@ -60,6 +59,9 @@ public class Capillary implements XMLPersistent  {
 	}
 	
 	public ArrayList<Integer> getYFromPtArray(List<Point2D> ptsList) {
+		if (ptsList == null)
+			return null;
+		
 		ArrayList<Integer> arrayInt = new ArrayList<Integer> ();
 		for (Point2D pt: ptsList) {
 			int value = (int) pt.getY();
@@ -90,6 +92,8 @@ public class Capillary implements XMLPersistent  {
 	}
 	
 	public ArrayList<Integer> getCumSumFromRoisArray(Collection<ROI> gulpsRois) {
+		if (gulpsRois == null)
+			return null;
 		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(ptsTop.size(), 0));
 		for (ROI roi: gulpsRois) {
 			addRoitoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
@@ -183,10 +187,14 @@ public class Capillary implements XMLPersistent  {
 	public boolean saveToXML(Node node) {
 
 		saveMetaDataToXML(node);
-        saveROIsToXML(node, gulpsRois);
-        saveIntArraytoXML(node, derivedValuesArrayList, "derivedvalues");
-        saveIntArraytoXML(node, getYFromPtArray(ptsTop), "topLevel");
-        saveIntArraytoXML(node, getYFromPtArray(ptsBottom), "bottomLevel");
+		if (gulpsRois != null)
+			saveROIsToXML(node, gulpsRois);
+		if (derivedValuesArrayList != null)
+			saveIntArraytoXML(node, derivedValuesArrayList, "derivedvalues");
+		if (ptsTop != null)
+			saveIntArraytoXML(node, getYFromPtArray(ptsTop), "topLevel");
+		if (ptsBottom != null)
+			saveIntArraytoXML(node, getYFromPtArray(ptsBottom), "bottomLevel");
         
         return true;
 	}

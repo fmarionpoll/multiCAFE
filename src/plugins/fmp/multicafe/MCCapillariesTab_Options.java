@@ -219,10 +219,17 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 
 	void selectKymograph(int isel) {
 		int icurrent = kymographNamesComboBox.getSelectedIndex();
+		if (isel < 0)
+			isel = 0;
+		if (isel >= parent0.vkymos.getSizeT() )
+			isel = parent0.vkymos.getSizeT() -1;
 		if (icurrent != isel) {
 			kymographNamesComboBox.setSelectedIndex(isel);
-			firePropertyChange("KYMOS_DISPLAY_UPDATE", false, true);
 		}
+
+		Viewer v =  Icy.getMainInterface().getFirstViewer(parent0.vkymos);
+		v.setPositionT(isel);
+		v.setTitle(parent0.vkymos.getDecoratedImageName(isel));
 	}
 
 	@Override

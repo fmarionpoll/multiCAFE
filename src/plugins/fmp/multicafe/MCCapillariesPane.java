@@ -116,10 +116,6 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 			optionsTab.transferRoisNamesToComboBox(parent0.vSequence.capillaries.capillariesArrayList);
 			tabsPane.setSelectedIndex(2);
 		}
-		else if (event.getPropertyName() .equals("KYMOS_DISPLAY_UPDATE")) {
-			int ikymo = optionsTab.kymographNamesComboBox.getSelectedIndex();
-			optionsTab.selectKymograph(ikymo);
-		}
 		else if (event.getPropertyName().equals("KYMOS_OK")) {
 			tabsPane.setSelectedIndex(4);
 		}

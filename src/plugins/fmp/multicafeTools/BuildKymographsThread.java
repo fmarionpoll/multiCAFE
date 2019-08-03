@@ -124,8 +124,8 @@ public class BuildKymographsThread implements Runnable
 	private boolean getImageAndUpdateViewer(int t) {
 		
 		workImage = getImageFromSequence(t); 
-		sequenceViewer.setPositionT(t);
-		sequenceViewer.setTitle(options.vSequence.getDecoratedImageName(t));
+//		sequenceViewer.setPositionT(t);
+//		sequenceViewer.setTitle(options.vSequence.getDecoratedImageName(t));
 		if (workImage == null) {
 			System.out.println("workImage null");
 			return false;

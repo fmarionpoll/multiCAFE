@@ -123,7 +123,7 @@ public class SequenceVirtual extends Sequence
 		currentFrame = t;
 		if (getImage(t, 0) == null)
 		{
-			final boolean wasEmpty = getNumImage() == 0;
+			final boolean wasEmpty = (getNumImage() == 0);
 			setCurrentVImage (t);
 			if (wasEmpty)
 			{
@@ -329,7 +329,6 @@ public class SequenceVirtual extends Sequence
 	public String[] keepOnlyAcceptedNames(String[] rawlist) {
 		// -----------------------------------------------
 		// subroutines borrowed from FolderOpener
-		/* Keep only "accepted" names (file extension)*/
 		int count = 0;
 		for (int i=0; i< rawlist.length; i++) {
 			String name = rawlist[i];
@@ -619,7 +618,7 @@ public class SequenceVirtual extends Sequence
 		int j = 0;
 		for (int i=0; i<list.length; i++) {
 			if (list[i]!=null)
-				listFiles [j++] = directory + '/'+ list[i];
+				listFiles [j++] = directory + File.separator + list[i];
 		}
 		listFiles = StringSorter.sortNumerically(listFiles);
 		nTotalFrames = listFiles.length;
