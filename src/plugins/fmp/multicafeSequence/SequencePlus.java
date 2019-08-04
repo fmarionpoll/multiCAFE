@@ -21,6 +21,7 @@ import org.w3c.dom.Node;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI2D;
 import icy.roi.ROIEvent;
+import icy.sequence.Sequence;
 import icy.sequence.SequenceEvent.SequenceEventType;
 import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
@@ -53,7 +54,6 @@ public class SequencePlus extends SequenceVirtual  {
 	public 	OverlayThreshold thresholdOverlay 		= null;
 	public 	OverlayTrapMouse trapOverlay 			= null;
 	
-
 	// -----------------------------------------------------
 	
 	public SequencePlus() {
@@ -67,6 +67,28 @@ public class SequencePlus extends SequenceVirtual  {
 	public SequencePlus (String [] list, String directory)
 	{
 		super(list, directory);
+	}
+	
+	public SequencePlus(Sequence seq) {
+		super ();
+
+//		this.volumetricImages = seq.getVolumetricImages();
+//	    this.overlays = seq.getOverlaySet();
+//	    this.rois = seq.getROISet();
+	    this.colorModel = seq.getColorModel();
+	    this.defaultLut = seq.getDefaultLUT();
+	    setUserLUT(seq.getUserLUT());
+	    this.filename = seq.getFilename();
+	    setImageProvider(seq.getImageProvider());
+	    setOriginResolution(seq.getOriginResolution());
+	    this.originXYRegion = seq.getOriginXYRegion();
+	    this.originZMin = seq.getOriginZMin();
+	    this.originZMax= seq.getOriginZMax() ;
+	    this.originTMin = seq.getOriginTMin();
+	    this.originTMax= seq.getOriginTMax() ;
+	    this.originChannel = seq.getOriginChannel();
+	    setMetaData(seq.getOMEXMLMetadata());
+	    this.autoUpdateChannelBounds = seq.getAutoUpdateChannelBounds(); 
 	}
 	
 	public ArrayList<Integer> getArrayListFromRois (EnumArrayListType option, int t) {
@@ -97,6 +119,7 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 	
 	public ArrayList<Integer> subtractTi(ArrayList<Integer > array) {
+		
 		if (array == null)
 			return null;
 		int item0 = array.get(0);

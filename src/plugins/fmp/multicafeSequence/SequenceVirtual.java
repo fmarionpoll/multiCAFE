@@ -7,14 +7,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import icy.canvas.Canvas2D;
+import icy.common.exception.UnsupportedFormatException;
+import icy.file.Loader;
+import icy.file.SequenceFileImporter;
 import icy.gui.dialog.LoaderDialog;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
-import icy.image.ImageUtil;
 import icy.main.Icy;
 import icy.math.ArrayMath;
 import icy.roi.ROI;
@@ -59,10 +62,12 @@ public class SequenceVirtual extends Sequence
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
+	private SequenceFileImporter	importer = null;
 	
 	// ----------------------------------------
 	public SequenceVirtual () 
 	{
+		super();
 		status = EnumStatus.REGULAR;
 		setVirtual(false);
 	}
@@ -74,12 +79,14 @@ public class SequenceVirtual extends Sequence
 
 	public SequenceVirtual (String csFile)
 	{
+		super();
 		setVirtual(false);
 		loadSequenceVirtualAVI(csFile);
 	}
 
 	public SequenceVirtual (String [] list, String directory)
 	{
+		super();
 		setVirtual(false);
 		loadSequenceVirtual(list, directory);
 		filename = directory + ".xml";
@@ -233,12 +240,7 @@ public class SequenceVirtual extends Sequence
 
 	public String getDecoratedImageName(int t)
 	{
-		String csTitle = "["+t+ "/" + nTotalFrames + " V] : ";
-		if (status == EnumStatus.FILESTACK) 
-			csTitle += listFiles[t];
-		else //  if ((status == EnumStatus.AVIFILE))
-			csTitle += csFileName;
-		return csTitle;
+		return  "["+t+ "/" + nTotalFrames + " V] : " + getFileName(t);
 	}
 
 	public String getFileName(int t) {
@@ -274,20 +276,19 @@ public class SequenceVirtual extends Sequence
 	}
 	
 	private IcyBufferedImage loadVImageFromFile(int t) {
-		BufferedImage buf =null;
+
+		IcyBufferedImage buf = null;
 		if (status == EnumStatus.FILESTACK) {
-			buf = ImageUtil.load(listFiles[t]);
-			ImageUtil.waitImageReady(buf);
-			if (buf == null)
-				return null;
-							
+			try {
+				if (importer == null)
+					importer = Loader.getSequenceFileImporter(listFiles[t], true);
+				buf = Loader.loadImage(importer, listFiles[t], 0, 0, t);
+			} catch (UnsupportedFormatException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-//		else if (status == EnumStatus.AVIFILE) {
-//			buf = aviFile.getImage(t);
-//		}
-		// --------------------------------
-//		setImage(t, 0, buf);
-		return IcyBufferedImage.createFrom(buf);
+		return buf;
 	}
 	
 	public boolean setCurrentVImage(int t)
@@ -619,6 +620,21 @@ public class SequenceVirtual extends Sequence
 		for (int i=0; i<list.length; i++) {
 			if (list[i]!=null)
 				listFiles [j++] = directory + File.separator + list[i];
+		}
+		listFiles = StringSorter.sortNumerically(listFiles);
+		nTotalFrames = listFiles.length;
+		status = EnumStatus.FILESTACK;		
+	}
+	
+	public void setListOfFiles(ArrayList<String> list) {
+		status = EnumStatus.FAILURE;
+		if (list==null) 
+			return;
+
+		listFiles = new String [list.size()];
+		int j = 0;
+		for (int i=0; i<list.size(); i++) {
+			listFiles [j++] = list.get(i);
 		}
 		listFiles = StringSorter.sortNumerically(listFiles);
 		nTotalFrames = listFiles.length;

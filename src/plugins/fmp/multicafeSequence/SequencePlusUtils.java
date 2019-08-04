@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import icy.common.exception.UnsupportedFormatException;
 import icy.file.Loader;
@@ -14,10 +13,8 @@ import icy.image.IcyBufferedImage;
 import icy.sequence.MetaDataUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
-import icy.util.StringUtil.AlphanumComparator;
 import loci.formats.FormatException;
 import ome.xml.meta.OMEXMLMetadata;
-
 
 
 public class SequencePlusUtils {
@@ -28,7 +25,7 @@ public class SequencePlusUtils {
 	private static int imageWidthMax = 0;
 	private static int imageHeightMax = 0;
 	private static ArrayList<Rectangle> rectList = null;
-	static String extension = ".jpg"; //".tiff"
+	static String extension = ".tiff"; //".tiff"; //".jpg"; //
 	
 	// -------------------------------------------------------
 	
@@ -160,14 +157,11 @@ public class SequencePlusUtils {
 		progress.setMessage("create sequence");
 		ArrayList<String> listFileNames = new ArrayList<String> (filesArray.size());
 		for (File file: filesArray) {
-			listFileNames.add(file.getName());
+			listFileNames.add(file.getPath());
 		}
-		Collections.sort(listFileNames, new AlphanumComparator());
- 		String [] filenames = new String [listFileNames.size()];
-		for (int i=0; i< listFileNames.size(); i++) {
-			filenames[i] = listFileNames.get(i);
-		}
-		SequencePlus kymographSeq = new SequencePlus(filenames, directory);
+		//SequencePlus kymographSeq = new SequencePlus(Loader.loadSequence(null, listFileNames, true));
+		SequencePlus kymographSeq = new SequencePlus();
+		kymographSeq.setListOfFiles(listFileNames);
 		kymographSeq.analysisStep = 1;
 		kymographSeq.vImageBufferThread_START(filesArray.size());
 		
@@ -193,6 +187,8 @@ public class SequencePlusUtils {
 		return kymographSeq;
 	}
 	
+
+    
 	public static void saveKymosMeasures (SequencePlus vkymos, String directory) {
 		
 		isRunning = true;

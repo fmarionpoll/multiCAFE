@@ -124,8 +124,10 @@ public class BuildKymographsThread implements Runnable
 	private boolean getImageAndUpdateViewer(int t) {
 		
 		workImage = getImageFromSequence(t); 
-//		sequenceViewer.setPositionT(t);
-//		sequenceViewer.setTitle(options.vSequence.getDecoratedImageName(t));
+		sequenceViewer.setPositionT(t);
+		sequenceViewer.setTitle(options.vSequence.getDecoratedImageName(t));		
+		options.vSequence.currentFrame = t;
+
 		if (workImage == null) {
 			System.out.println("workImage null");
 			return false;
@@ -230,9 +232,9 @@ public class BuildKymographsThread implements Runnable
 			}
 		}
 		
-		options.vSequence.currentFrame = t;
-		sequenceViewer.setPositionT(t);
-		sequenceViewer.setTitle(options.vSequence.getDecoratedImageName(t)); 
+//		options.vSequence.currentFrame = t;
+//		sequenceViewer.setPositionT(t);
+//		sequenceViewer.setTitle(options.vSequence.getDecoratedImageName(t)); 
 		return workImage;
 	}
 	
