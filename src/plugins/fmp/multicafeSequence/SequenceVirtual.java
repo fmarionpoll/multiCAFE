@@ -30,7 +30,6 @@ import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class SequenceVirtual  
 {
-	//private XugglerAviFile 	aviFile 		= null;
 	public Sequence					seq						= null;
 	private List <String>  			listFiles 				= new ArrayList<String>();
 	private String 					csFileName 				= null;
