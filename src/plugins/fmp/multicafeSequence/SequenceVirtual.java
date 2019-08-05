@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icy.canvas.Canvas2D;
-import icy.common.exception.UnsupportedFormatException;
-import icy.file.Loader;
-import icy.file.SequenceFileImporter;
 import icy.gui.dialog.LoaderDialog;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
+import icy.image.ImageUtil;
 import icy.main.Icy;
 import icy.math.ArrayMath;
 import icy.roi.ROI;
@@ -62,13 +60,11 @@ public class SequenceVirtual extends Sequence
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
-	private SequenceFileImporter	importer = null;
 	
 	// ----------------------------------------
 	public SequenceVirtual () 
 	{
 		super();
-		status = EnumStatus.REGULAR;
 		setVirtual(false);
 	}
 	
@@ -277,18 +273,25 @@ public class SequenceVirtual extends Sequence
 	
 	private IcyBufferedImage loadVImageFromFile(int t) {
 
-		IcyBufferedImage buf = null;
+//		IcyBufferedImage buf = null;
+//		if (status == EnumStatus.FILESTACK) {
+//			try {
+//				buf = Loader.loadImage(listFiles[t], 0, 0, t);
+//			} catch (UnsupportedFormatException | IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		return buf;
+		
+		BufferedImage buf =null;
 		if (status == EnumStatus.FILESTACK) {
-			try {
-				if (importer == null)
-					importer = Loader.getSequenceFileImporter(listFiles[t], true);
-				buf = Loader.loadImage(importer, listFiles[t], 0, 0, t);
-			} catch (UnsupportedFormatException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			buf = ImageUtil.load(listFiles[t]);
+			ImageUtil.waitImageReady(buf);
+			if (buf == null)
+				return null;			
 		}
-		return buf;
+		return IcyBufferedImage.createFrom(buf);
 	}
 	
 	public boolean setCurrentVImage(int t)
