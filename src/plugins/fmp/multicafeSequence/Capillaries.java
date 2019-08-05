@@ -129,7 +129,7 @@ public class Capillaries {
 	public void extractLinesFromSequence(SequenceVirtual seq) {
 
 		capillariesArrayList.clear();
-		ArrayList<ROI2D> list = seq.getROI2Ds();
+		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
 		 
 		for (ROI2D roi:list)
 		{
@@ -186,7 +186,7 @@ public class Capillaries {
 		final Document doc = XMLUtil.createDocument(true);
 		if (doc != null)
 		{
-			List<ROI> roisList = seq.getROIs();
+			List<ROI> roisList = seq.seq.getROIs();
 			ROI.saveROIsToXML(XMLUtil.getRootElement(doc), roisList);
 			xmlWriteCapillaryParameters (doc, seq);
 			XMLUtil.saveDocument(doc, csFile);
@@ -224,13 +224,13 @@ public class Capillaries {
 					capillariesArrayList.add(new Capillary((ROI2DShape) roi));
 				try  {  
 					for (Capillary cap : capillariesArrayList)  {
-						seq.addROI(cap.roi);
+						seq.seq.addROI(cap.roi);
 					}
 				}
 				finally {
 				}
 				// add to undo manager
-				seq.addUndoableEdit(new ROIAddsSequenceEdit(seq, listOfROIs) {
+				seq.seq.addUndoableEdit(new ROIAddsSequenceEdit(seq.seq, listOfROIs) {
 					@Override
 					public String getPresentationName() {
 						if (getROIs().size() > 1)

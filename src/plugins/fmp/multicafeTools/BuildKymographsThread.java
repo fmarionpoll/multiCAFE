@@ -54,9 +54,9 @@ public class BuildKymographsThread implements Runnable
 
 		initArraysToBuildKymographImages();
 		
-		int vinputSizeX = options.vSequence.getSizeX();
-		options.vSequence.beginUpdate();
-		sequenceViewer = Icy.getMainInterface().getFirstViewer(options.vSequence);
+		int vinputSizeX = options.vSequence.seq.getSizeX();
+		options.vSequence.seq.beginUpdate();
+		sequenceViewer = Icy.getMainInterface().getFirstViewer(options.vSequence.seq);
 		int ipixelcolumn = 0;
 		getImageAndUpdateViewer (options.startFrame);
 		
@@ -80,7 +80,7 @@ public class BuildKymographsThread implements Runnable
 				ArrayList <double []> tabValuesList = rois_tabValuesList.get(iroi);
 				final int t_out = ipixelcolumn;
 
-				for (int chan = 0; chan < options.vSequence.getSizeC(); chan++) 
+				for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) 
 				{ 
 					double [] tabValues = tabValuesList.get(chan); 
 					double [] sourceValues = sourceValuesList.get(chan);
@@ -98,19 +98,19 @@ public class BuildKymographsThread implements Runnable
 				}
 			}
 		}
-		options.vSequence.endUpdate();
+		options.vSequence.seq.endUpdate();
 
 		vkymos = new SequencePlus();
 		for (int iroi=0; iroi < nbcapillaries; iroi++)
 		{
 			IcyBufferedImage image = imageArrayList.get(iroi);
 			ArrayList <double []> tabValuesList = rois_tabValuesList.get(iroi);
-			for (int chan = 0; chan < options.vSequence.getSizeC(); chan++) 
+			for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) 
 			{
 				double [] tabValues = tabValuesList.get(chan); 
 				Array1DUtil.doubleArrayToSafeArray(tabValues, image.getDataXY(chan), image.isSignedDataType());
 			}
-			vkymos.addImage(iroi, image);
+			vkymos.seq.addImage(iroi, image);
 		}
 		
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
@@ -138,7 +138,7 @@ public class BuildKymographsThread implements Runnable
 	private boolean transferWorkImageToDoubleArrayList() {
 		
 		sourceValuesList = new ArrayList<double []>();
-		for (int chan = 0; chan < options.vSequence.getSizeC(); chan++) 
+		for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) 
 		{
 			double [] sourceValues = Array1DUtil.arrayToDoubleArray(workImage.getDataXY(chan), workImage.isSignedDataType()); 
 			sourceValuesList.add(sourceValues);
@@ -148,15 +148,15 @@ public class BuildKymographsThread implements Runnable
 	
 	private void initArraysToBuildKymographImages() {
 
-		int sizex = options.vSequence.getSizeX();
-		int sizey = options.vSequence.getSizeY();
+		int sizex = options.vSequence.seq.getSizeX();
+		int sizey = options.vSequence.seq.getSizeY();
 		options.vSequence.capillaries.extractLinesFromSequence(options.vSequence);
-		int numC = options.vSequence.getSizeC();
+		int numC = options.vSequence.seq.getSizeC();
 		if (numC <= 0)
 			numC = 3;
 		double fimagewidth =  1 + (options.endFrame - options.startFrame )/options.analyzeStep;
 		imagewidth = (int) fimagewidth;
-		dataType = options.vSequence.getDataType_();
+		dataType = options.vSequence.seq.getDataType_();
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;
 

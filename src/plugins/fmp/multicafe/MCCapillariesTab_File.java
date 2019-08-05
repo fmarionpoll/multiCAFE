@@ -85,7 +85,6 @@ public class MCCapillariesTab_File extends JPanel {
 	
 	boolean capillaryRoisSave() {
 		parent0.sequencePane.browseTab.getBrowseItems (parent0.vSequence);
-		parent0.vSequence.cleanUpBufferAndRestart();
 		String name = parent0.vSequence.getDirectory()+ "\\capillarytrack.xml";
 		return parent0.vSequence.capillaries.xmlWriteROIsAndDataNoQuestion(name, parent0.vSequence);
 	}
@@ -109,13 +108,13 @@ public class MCCapillariesTab_File extends JPanel {
 		int returnedval = f.showSaveDialog(null);
 		if (returnedval == JFileChooser.APPROVE_OPTION) { 
 			outputpath = f.getSelectedFile().getAbsolutePath();		
-			for (int i = 0; i < parent0.vkymos.getSizeT(); i++) {
+			for (int i = 0; i < parent0.vkymos.seq.getSizeT(); i++) {
 	
 				Capillary cap = parent0.vkymos.capillaries.capillariesArrayList.get(i);
 				progress.setMessage( "Save kymograph file : " + cap.getName());
 				String filename = outputpath + "\\" + cap.getName() + ".tiff";
 				final File file = new File (filename);
-				IcyBufferedImage image = parent0.vkymos.getImage(i, 0);
+				IcyBufferedImage image = parent0.vkymos.seq.getImage(i, 0);
 				
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
 					try {

@@ -28,10 +28,10 @@ public class ExperimentList {
 				expglobal.fileTimeImageFirst = exp.fileTimeImageFirst;
 			if (expglobal.fileTimeImageLast .compareTo(exp.fileTimeImageLast) <0)
 				expglobal.fileTimeImageLast = exp.fileTimeImageLast;
-			if (expglobal.number_of_frames < exp.vSequence.getSizeT())
-				expglobal.number_of_frames = exp.vSequence.getSizeT();
-			if (exp.vSequence.analysisEnd > exp.vSequence.getSizeT()-1)
-				exp.vSequence.analysisEnd = exp.vSequence.getSizeT()-1;
+			if (expglobal.number_of_frames < exp.vSequence.seq.getSizeT())
+				expglobal.number_of_frames = exp.vSequence.seq.getSizeT();
+			if (exp.vSequence.analysisEnd > exp.vSequence.seq.getSizeT()-1)
+				exp.vSequence.analysisEnd = exp.vSequence.seq.getSizeT()-1;
 			progress.incPosition();
 		}
 		

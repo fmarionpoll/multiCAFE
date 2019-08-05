@@ -15,7 +15,7 @@ public class ROI2DUtilities  {
 		if (vSequence == null)
 			 return null;
 		
-		ArrayList<ROI2D> roiList = vSequence.getROI2Ds();
+		ArrayList<ROI2D> roiList = vSequence.seq.getROI2Ds();
 		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
 		ArrayList<ROI2D> cageLimitROIList		= new ArrayList<ROI2D>();
 		for ( ROI2D roi : roiList )
@@ -39,7 +39,7 @@ public class ROI2DUtilities  {
 	
 	public static void removeROIsFromSequence (SequenceVirtual vSequence, ArrayList<ROI2D> roiList) {
 		for ( ROI2D roi : roiList ) {
-			vSequence.removeROI(roi);
+			vSequence.seq.removeROI(roi);
 		}
 	}
 

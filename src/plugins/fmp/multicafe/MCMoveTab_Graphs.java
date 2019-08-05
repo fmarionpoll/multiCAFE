@@ -61,7 +61,7 @@ public class MCMoveTab_Graphs extends JPanel {
 
 	private void xyDisplayGraphs() {
 
-		final Rectangle rectv = parent0.vSequence.getFirstViewer().getBounds();
+		final Rectangle rectv = parent0.vSequence.seq.getFirstViewer().getBounds();
 		Point ptRelative = new Point(0,30);
 		final int deltay = 230;
 	

@@ -67,7 +67,7 @@ public class XYMultiChart extends IcyFrame  {
 		flagMaxMinSet = false;
 //		System.out.println("nb of series "+kymographArrayList.size());
 		
-		int nimages = kymoseq.getSizeT();
+		int nimages = kymoseq.seq.getSizeT();
 		for (int t=0; t< nimages; t+= kmax) 
 		{
 			XYSeriesCollection xyDataset = new XYSeriesCollection();
@@ -133,7 +133,7 @@ public class XYMultiChart extends IcyFrame  {
 		XYSeriesCollection xyDataset2 = null;
 		
 		// loop over all kymographs
-		int nimages = kymoseq.getSizeT();
+		int nimages = kymoseq.seq.getSizeT();
 		for (int t=0; t< nimages; t+= kmax, ixy++) {
 			if (ixy >= xyDataSetList.size())
 				break;

@@ -109,7 +109,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 						if (ov == null)
 							ov = new OverlayThreshold(parent0.vSequence);
 						if (parent0.vSequence != null)
-							parent0.vSequence.addOverlay(ov);
+							parent0.vSequence.seq.addOverlay(ov);
 						updateOverlay();
 					}
 					else
@@ -143,16 +143,16 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 		if (ov == null) 
 			ov = new OverlayThreshold(parent0.vSequence);
 		else {
-			parent0.vSequence.removeOverlay(ov);
+			parent0.vSequence.seq.removeOverlay(ov);
 			ov.setSequence(parent0.vSequence);
 		}
-		parent0.vSequence.addOverlay(ov);	
+		parent0.vSequence.seq.addOverlay(ov);	
 		ov.setThresholdSingle(parent0.vSequence.cages.detect.threshold);
 		ov.painterChanged();
 	}
 	
 	public void removeOverlay() {
-		parent0.vSequence.removeOverlay(ov);
+		parent0.vSequence.seq.removeOverlay(ov);
 	}
 
 	@Override
@@ -189,10 +189,10 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	
 	private void cleanPreviousDetections() {
 		parent0.vSequence.cages.flyPositionsList.clear();
-		ArrayList<ROI2D> list = parent0.vSequence.getROI2Ds();
+		ArrayList<ROI2D> list = parent0.vSequence.seq.getROI2Ds();
 		for (ROI2D roi: list) {
 			if (roi.getName().contains("det")) {
-				parent0.vSequence.removeROI(roi);
+				parent0.vSequence.seq.removeROI(roi);
 			}
 		}
 	}
@@ -243,7 +243,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 		}
 		parent0.vSequence.refImage=  IcyBufferedImage.createFrom(image);
 		if (trackAllFliesThread != null && trackAllFliesThread.rectangleAllCages != null && trackAllFliesThread.seqReference != null)
-			trackAllFliesThread.seqReference.setImage(0,  0, IcyBufferedImageUtil.getSubImage(
+			trackAllFliesThread.seqReference.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(
 					parent0.vSequence.refImage, 
 					trackAllFliesThread.rectangleAllCages));
 	}

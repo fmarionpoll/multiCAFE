@@ -37,10 +37,10 @@ public class MCSequenceTab_Close  extends JPanel {
 	void closeAll() {
 		
 		if (parent0.vkymos != null) {
-			ArrayList<Viewer> viewerList = parent0.vkymos.getViewers();
+			ArrayList<Viewer> viewerList = parent0.vkymos.seq.getViewers();
 			for (Viewer v: viewerList)
 				v.close();
-			parent0.vkymos.close();
+			parent0.vkymos.seq.close();
 			parent0.vkymos = null;
 		}
 		
@@ -48,9 +48,9 @@ public class MCSequenceTab_Close  extends JPanel {
 		parent0.kymographsPane.graphsTab.closeAll();
 
 		if (parent0.vSequence != null) {
-			parent0.vSequence.removeAllROI();
-			parent0.vSequence.removeListener(parent0);
-			parent0.vSequence.close();
+			parent0.vSequence.seq.removeAllROI();
+			parent0.vSequence.seq.removeListener(parent0);
+			parent0.vSequence.seq.close();
 			parent0.vSequence.capillaries.capillariesArrayList.clear();
 		}
 

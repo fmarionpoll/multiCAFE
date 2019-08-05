@@ -1,5 +1,6 @@
 package plugins.fmp.multicafeSequence;
 
+
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
@@ -159,19 +160,16 @@ public class SequencePlusUtils {
 		for (File file: filesArray) {
 			listFileNames.add(file.getPath());
 		}
-		//SequencePlus kymographSeq = new SequencePlus(Loader.loadSequence(null, listFileNames, true));
-		SequencePlus kymographSeq = new SequencePlus();
-		kymographSeq.setListOfFiles(listFileNames);
+		SequencePlus kymographSeq = new SequencePlus(listFileNames);
 		kymographSeq.analysisStep = 1;
-		kymographSeq.vImageBufferThread_START(filesArray.size());
 		
 		progress.setMessage("load measures for each capillary");
 		kymographSeq.capillaries = new Capillaries();
-		String [] listFiles = kymographSeq.getListofFiles();
+		ArrayList<String> listFiles = (ArrayList<String>) kymographSeq.getListofFiles();
 		
-		for (int i=0; i < listFiles.length; i++) {
+		for (int i=0; i < listFiles.size(); i++) {
 			
-			String filename = listFiles[i];
+			String filename = listFiles.get(i);
 			int index1 = filename.indexOf(extension);
 			int index0 = filename.lastIndexOf("\\")+1;
 			String title = filename.substring(index0, index1);
@@ -193,7 +191,7 @@ public class SequencePlusUtils {
 		
 		isRunning = true;
 		ProgressFrame progress = new ProgressFrame("Save kymograph measures");
-		progress.setLength(vkymos.getSizeT());
+		progress.setLength(vkymos.seq.getSizeT());
 		
 		for (Capillary cap : vkymos.capillaries.capillariesArrayList) {
 			if (isInterrupted) {
@@ -213,7 +211,7 @@ public class SequencePlusUtils {
 
 	public static void transferSequenceInfoToKymos (SequencePlus vkymos, SequenceVirtual vSequence) {
 		
-		if (vkymos.capillaries == null)
+		if (vkymos == null || vkymos.capillaries == null)
 			return;
 					
 		vkymos.capillaries.analysisStart = vSequence.analysisStart; 

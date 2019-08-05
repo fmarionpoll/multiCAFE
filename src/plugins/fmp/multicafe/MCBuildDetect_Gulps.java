@@ -19,17 +19,17 @@ public class MCBuildDetect_Gulps {
 	public void detectGulps(MCBuildDetect_GulpsOptions options, SequencePlus seqkymo) {	
 		
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
-		progressBar.initStuff(seqkymo.getSizeT() );
+		progressBar.initStuff(seqkymo.seq.getSizeT() );
 		
 		int jitter = 5;
 		int tfirst = 0;
-		int tlast = seqkymo.getSizeT() -1;
+		int tlast = seqkymo.seq.getSizeT() -1;
 		if (! options.detectAllGulps) {
 			tfirst = options.firstkymo;
 			tlast = tfirst;
 		}
 		
-		seqkymo.beginUpdate();
+		seqkymo.seq.beginUpdate();
 		
 		for (int t=tfirst; t <= tlast; t++) 
 		{
@@ -49,7 +49,7 @@ public class MCBuildDetect_Gulps {
 				getGulps(seqkymo, t, cap, topLevelArray);
 			}
 		}
-		seqkymo.endUpdate();
+		seqkymo.seq.endUpdate();
 
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
@@ -57,18 +57,18 @@ public class MCBuildDetect_Gulps {
 
 	private void removeSpecificRoisFromSequence(SequencePlus kymographSeq, int t, String gulp) {
 		
-		for (ROI roi:kymographSeq.getROIs()) {
+		for (ROI roi:kymographSeq.seq.getROIs()) {
 			if (roi instanceof ROI2D 
 			&& ((ROI2D) roi).getT() == t 
 			&& roi.getName().contains(gulp))
-				kymographSeq.removeROI(roi);
+				kymographSeq.seq.removeROI(roi);
 		}
 	}
 	
 	private void getDerivativeProfile(SequencePlus kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray, int jitter) {
 		
-		int z = kymographSeq.getSizeZ() -1;
-		IcyBufferedImage image = kymographSeq.getImage(t, z, 0);
+		int z = kymographSeq.seq.getSizeZ() -1;
+		IcyBufferedImage image = kymographSeq.seq.getImage(t, z, 0);
 		List<Point2D> listOfMaxPoints = new ArrayList<>();
 		int[] kymoImageValues = Array1DUtil.arrayToIntArray(image.getDataXY(0), image.isSignedDataType());	// channel 0 - RED
 		int xwidth = image.getSizeX();
@@ -100,7 +100,7 @@ public class MCBuildDetect_Gulps {
 		roiMaxTrack.setColor(Color.yellow);
 		roiMaxTrack.setStroke(1);
 		roiMaxTrack.setPoints(listOfMaxPoints);
-		kymographSeq.addROI(roiMaxTrack, false);
+		kymographSeq.seq.addROI(roiMaxTrack, false);
 	}
 
 	private void getGulps(SequencePlus kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray) {
@@ -145,6 +145,6 @@ public class MCBuildDetect_Gulps {
 			roiTrack.setName("gulp"+String.format("%07d", ix));
 			cap.gulpsRois.add(roiTrack);
 		}
-		kymographSeq.addROIs(cap.gulpsRois, false);
+		kymographSeq.seq.addROIs(cap.gulpsRois, false);
 	}
 }

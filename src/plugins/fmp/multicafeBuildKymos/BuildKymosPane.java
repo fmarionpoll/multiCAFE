@@ -113,12 +113,12 @@ private BuildKymographs 	parent0 	= null;
 		buildKymographsThread = null;
 		if (kymographArrayList.size() > 0) {
 			for (SequencePlus seq:kymographArrayList)
-				seq.close();
+				seq.seq.close();
 		}
 		kymographArrayList.clear();
 		for (Capillary cap:vSequence.capillaries.capillariesArrayList) {
 			SequencePlus kymographSeq = new SequencePlus();	
-			kymographSeq.setName(cap.getName());
+			kymographSeq.seq.setName(cap.getName());
 			kymographArrayList.add(kymographSeq);
 		} 
 		
@@ -200,7 +200,7 @@ private BuildKymographs 	parent0 	= null;
 
 	private void loadRois(String oo) {
 		System.out.println("read capillaries info for: "+ oo);
-		vSequence.removeAllROI();
+		vSequence.seq.removeAllROI();
 		String path = vSequence.getDirectory();
 		boolean flag = vSequence.xmlReadCapillaryTrack(path+"\\capillarytrack.xml");
 		if (flag) 
@@ -212,12 +212,12 @@ private BuildKymographs 	parent0 	= null;
 		ThreadUtil.invoke (new Runnable() {
 			@Override
 			public void run() {
-				viewer1 = new Viewer(vSequence, true);
+				viewer1 = new Viewer(vSequence.seq, true);
 			}
 		}, true);
 		
 		if (viewer1 == null) {
-			viewer1 = vSequence.getFirstViewer(); 
+			viewer1 = vSequence.seq.getFirstViewer(); 
 			if (!viewer1.isInitialized()) {
 				try {
 					Thread.sleep(1000);
@@ -240,9 +240,7 @@ private BuildKymographs 	parent0 	= null;
 		if (vSequence == null)
 			return;
 
-		vSequence.vImageBufferThread_STOP();
 		vSequence.analysisStep = analyzeStep;
-		vSequence.vImageBufferThread_START(100); //numberOfImageForBuffer
 	}
 
 	private void saveComputation() {
@@ -269,11 +267,11 @@ private BuildKymographs 	parent0 	= null;
 		vSequence.capillaries.xmlWriteROIsAndDataNoQuestion(name, vSequence);
 		
 		for (SequencePlus seq: kymographArrayList) {
-			progress.setMessage( "Save kymograph file : " + seq.getName());
+			progress.setMessage( "Save kymograph file : " + seq.seq.getName());
 
-			String filename = directory + "\\" + seq.getName() + ".tiff";
+			String filename = directory + "\\" + seq.seq.getName() + ".tiff";
 			File file = new File (filename);
-			IcyBufferedImage image = seq.getFirstImage();
+			IcyBufferedImage image = seq.seq.getFirstImage();
 			try {
 				Saver.saveImage(image, file, true);
 			} catch (FormatException e) {
@@ -290,10 +288,10 @@ private BuildKymographs 	parent0 	= null;
 	private void closeSequence() {
 		
 		for (SequencePlus seq:kymographArrayList)
-			seq.close();
+			seq.seq.close();
 		kymographArrayList.clear();
 		vSequence.capillaries.capillariesArrayList.clear();
-		vSequence.close();
+		vSequence.seq.close();
 	}
 
 	@Override	

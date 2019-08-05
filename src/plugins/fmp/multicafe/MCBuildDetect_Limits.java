@@ -16,17 +16,17 @@ public class MCBuildDetect_Limits {
 
 		// send some info
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
-		progressBar.initStuff(seqkymo.getSizeT() );
+		progressBar.initStuff(seqkymo.seq.getSizeT() );
 		
 		int jitter = 10;
 		int tfirst = 0;
-		int tlast = seqkymo.getSizeT() -1;
+		int tlast = seqkymo.seq.getSizeT() -1;
 		if (! options.detectAllImages) {
 			tfirst = options.firstImage;
 			tlast = tfirst;
 		}
 
-		seqkymo.beginUpdate();
+		seqkymo.seq.beginUpdate();
 		for (int t=tfirst; t <= tlast; t++) 
 		{
 			// update progression bar
@@ -41,7 +41,7 @@ public class MCBuildDetect_Limits {
 
 			IcyBufferedImage image = null;
 			int c = 0;
-			image = seqkymo.getImage(t, 1);
+			image = seqkymo.seq.getImage(t, 1);
 			Object dataArray = image.getDataXY(c);
 			double[] tabValues = Array1DUtil.arrayToDoubleArray(dataArray, image.isSignedDataType());
 			
@@ -69,7 +69,7 @@ public class MCBuildDetect_Limits {
 				roiTopTrack.setName("toplevel");
 				roiTopTrack.setStroke(1);
 				roiTopTrack.setT(t);
-				seqkymo.addROI(roiTopTrack);
+				seqkymo.seq.addROI(roiTopTrack);
 				roiTopTrack.setPoints(cap.ptsTop);
 			}
 			
@@ -78,13 +78,13 @@ public class MCBuildDetect_Limits {
 				roiBottomTrack.setName("bottomlevel");
 				roiBottomTrack.setStroke(1);
 				roiBottomTrack.setT(t);
-				seqkymo.addROI(roiBottomTrack);
+				seqkymo.seq.addROI(roiBottomTrack);
 				roiBottomTrack.setPoints(cap.ptsBottom);
 			}
 			
 			//TODO ?.? kymographSeq.getArrayListFromRois(EnumArrayListType.cumSum);
 		}
-		seqkymo.endUpdate();
+		seqkymo.seq.endUpdate();
 
 		// send some info
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());

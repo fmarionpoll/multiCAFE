@@ -79,13 +79,13 @@ public class MCMoveTab_BuildROIs extends JPanel {
 	private void create2DPolygon() {
 		
 		final String dummyname = "perimeter_enclosing_capillaries";
-		ArrayList<ROI2D> listRois = parent0.vSequence.getROI2Ds();
+		ArrayList<ROI2D> listRois = parent0.vSequence.seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName() .equals(dummyname))
 				return;
 		}
 
-		Rectangle rect = parent0.vSequence.getBounds2D();
+		Rectangle rect = parent0.vSequence.seq.getBounds2D();
 		List<Point2D> points = new ArrayList<Point2D>();
 		int rectleft = rect.x + rect.width /6;
 		int rectright = rect.x + rect.width*5 /6;
@@ -107,8 +107,8 @@ public class MCMoveTab_BuildROIs extends JPanel {
 		points.add(new Point2D.Double(rectleft, rect.y + rect.height - 4 ));
 		ROI2DPolygon roi = new ROI2DPolygon(points);
 		roi.setName(dummyname);
-		parent0.vSequence.addROI(roi);
-		parent0.vSequence.setSelectedROI(roi);
+		parent0.vSequence.seq.addROI(roi);
+		parent0.vSequence.seq.setSelectedROI(roi);
 	}
 		
 	private void addROISCreatedFromSelectedPolygon() {
@@ -119,19 +119,19 @@ public class MCMoveTab_BuildROIs extends JPanel {
 			width_interval = Integer.parseInt( width_intervalTextField.getText() );
 		}catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
 
-		ROI2D roi = parent0.vSequence.getSelectedROI2D();
+		ROI2D roi = parent0.vSequence.seq.getSelectedROI2D();
 		if ( ! ( roi instanceof ROI2DPolygon ) ) {
 			new AnnounceFrame("The frame for the cages must be a ROI2D POLYGON");
 			return;
 		}
 		Polygon roiPolygon = MulticafeTools.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
-		parent0.vSequence.removeROI(roi);
+		parent0.vSequence.seq.removeROI(roi);
 
 		// generate cage frames
 		int span = nbcages*width_cage + (nbcages-1)*width_interval;
 		String cageRoot = "cage";
 		int iRoot = -1;
-		for (ROI iRoi: parent0.vSequence.getROIs()) {
+		for (ROI iRoi: parent0.vSequence.seq.getROIs()) {
 			if (iRoi.getName().contains(cageRoot)) {
 				String left = iRoi.getName().substring(4);
 				int item = Integer.parseInt(left);
@@ -168,7 +168,7 @@ public class MCMoveTab_BuildROIs extends JPanel {
 			ROI2DPolygon roiP = new ROI2DPolygon (points);
 			roiP.setName(cageRoot+String.format("%03d", iRoot));
 			iRoot++;
-			parent0.vSequence.addROI(roiP);
+			parent0.vSequence.seq.addROI(roiP);
 		}
 
 		parent0.vSequence.cages.getCagesFromSequence(parent0.vSequence);

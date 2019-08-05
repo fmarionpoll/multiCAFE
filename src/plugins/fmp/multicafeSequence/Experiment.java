@@ -33,7 +33,7 @@ public class Experiment {
 		if (null == vSequence.loadVirtualStackAt(filename))
 			return false;
 		fileTimeImageFirst = vSequence.getImageModifiedTime(0);
-		fileTimeImageLast = vSequence.getImageModifiedTime(vSequence.getSizeT()-1);
+		fileTimeImageLast = vSequence.getImageModifiedTime(vSequence.seq.getSizeT()-1);
 		//System.out.println("read expt: "+ filename+" .....size "+ vSequence.getSizeT());
 		
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;

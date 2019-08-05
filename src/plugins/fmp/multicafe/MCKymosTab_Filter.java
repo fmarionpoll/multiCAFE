@@ -40,7 +40,7 @@ public class MCKymosTab_Filter  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				int span = getSpan();
 				int c = 1;
-				for (int t=0; t < parent0.vkymos.getSizeT(); t++) {
+				for (int t=0; t < parent0.vkymos.seq.getSizeT(); t++) {
 					crossCorrelatePixels(parent0.vkymos, t, span, c);
 				}
 			}});
@@ -52,7 +52,7 @@ public class MCKymosTab_Filter  extends JPanel {
 	
 	private void crossCorrelatePixels (SequencePlus kymographSeq, int span, int t, int c) {
 		IcyBufferedImage image = null;
-		image = kymographSeq.getImage(t, 0, c);
+		image = kymographSeq.seq.getImage(t, 0, c);
 		double [] tabValues = Array1DUtil.arrayToDoubleArray(image.getDataXY(0), image.isSignedDataType()); 
 		
 		int xwidth = image.getSizeX();
@@ -93,12 +93,12 @@ public class MCKymosTab_Filter  extends JPanel {
 	
 	private void shiftColumnsOfPixels(int [] shift, SequencePlus kymographSeq) {
 		
-		IcyBufferedImage image0 = kymographSeq.getFirstImage();
+		IcyBufferedImage image0 = kymographSeq.seq.getFirstImage();
 		IcyBufferedImage image1 = IcyBufferedImageUtil.getCopy(image0); 
 		int xwidth = image0.getSizeX();
 		int yheight = image0.getSizeY();
 		
-		for (int chan=0; chan < kymographSeq.getSizeC(); chan++) {
+		for (int chan=0; chan < kymographSeq.seq.getSizeC(); chan++) {
 			Object dataObject0 = image0.getDataXY(chan);
 			double[] dataArray0 = Array1DUtil.arrayToDoubleArray(dataObject0, image0.isSignedDataType());
 			Object dataObject1 = image1.getDataXY(chan);

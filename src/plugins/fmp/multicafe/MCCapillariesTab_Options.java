@@ -126,7 +126,7 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 	
 	private void roisDisplay(String filter, boolean visible) {
 
-		ArrayList<Viewer>vList =  parent0.vkymos.getViewers();
+		ArrayList<Viewer>vList =  parent0.vkymos.seq.getViewers();
 		IcyCanvas canvas = vList.get(0).getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
 		if (layers != null) {	
@@ -142,24 +142,23 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 	}
 
 	void displayON() {
-		if (parent0.vkymos == null 
-			||parent0.vkymos.getSizeT() < 1) {
+		if (parent0.vkymos == null ||parent0.vkymos.seq.getSizeT() < 1) {
 			System.out.println("displayON() skipped");
 			return;
 		}
 
-		Rectangle rectMaster = parent0.vSequence.getFirstViewer().getBounds();
+		Rectangle rectMaster = parent0.vSequence.seq.getFirstViewer().getBounds();
 		int deltax = 5 + rectMaster.width;
 		int deltay = 5;
 		
-		ArrayList<Viewer>vList = parent0.vkymos.getViewers();
+		ArrayList<Viewer>vList = parent0.vkymos.seq.getViewers();
 		if (vList.size() == 0) 
 		{
-			Viewer v = new Viewer(parent0.vkymos, true);
+			Viewer v = new Viewer(parent0.vkymos.seq, true);
 			v.addListener(parent0);
 			Rectangle rectDataView = v.getBounds();
 			rectDataView.height = rectMaster.height;
-			IcyBufferedImage img = parent0.vkymos.getFirstImage();
+			IcyBufferedImage img = parent0.vkymos.seq.getFirstImage();
 			rectDataView.width = 100;
 			if (img != null)
 				rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
@@ -175,7 +174,7 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 
 		if (parent0.vkymos == null) 
 			return;
-		ArrayList<Viewer>vList =  parent0.vkymos.getViewers();
+		ArrayList<Viewer>vList =  parent0.vkymos.seq.getViewers();
 		if (vList.size() > 0) 
 		{
 			for (Viewer v: vList) 
@@ -221,13 +220,13 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 		int icurrent = kymographNamesComboBox.getSelectedIndex();
 		if (isel < 0)
 			isel = 0;
-		if (isel >= parent0.vkymos.getSizeT() )
-			isel = parent0.vkymos.getSizeT() -1;
+		if (isel >= parent0.vkymos.seq.getSizeT() )
+			isel = parent0.vkymos.seq.getSizeT() -1;
 		if (icurrent != isel) {
 			kymographNamesComboBox.setSelectedIndex(isel);
 		}
 
-		Viewer v =  Icy.getMainInterface().getFirstViewer(parent0.vkymos);
+		Viewer v =  Icy.getMainInterface().getFirstViewer(parent0.vkymos.seq);
 		v.setPositionT(isel);
 		v.setTitle(parent0.vkymos.getDecoratedImageName(isel));
 	}

@@ -174,20 +174,20 @@ public class Cages {
 	}
 	
 	private void replaceROIsInSequence(SequenceVirtual seq) {
-		ArrayList<ROI2D> list = seq.getROI2Ds();
+		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
 		for (ROI2D roi: list) {
 			if (!(roi instanceof ROI2DShape))
 				continue;
 			if (!roi.getName().contains("cage"))
 				continue;
-			seq.removeROI(roi);
+			seq.seq.removeROI(roi);
 		}
-		seq.addROIs(cageLimitROIList, true);
+		seq.seq.addROIs(cageLimitROIList, true);
 	}
 	
 	public void getCagesFromSequence(SequenceVirtual seq) {
 		cageLimitROIList.clear();
-		ArrayList<ROI2D> list = seq.getROI2Ds();
+		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
 		for (ROI2D roi: list) {
 			if (!(roi instanceof ROI2DShape))
 				continue;

@@ -120,20 +120,19 @@ public class MulticafeSequence extends EzPlug {
 			loadDefaultCapillaries();
 		if (loadCages.getValue())
 			loadDefaultCages();
-		startstopBufferingThread();
+
 		groupLoadFiles.setFoldedState(true);
 		groupViewMode.setFoldedState(false);
 	}
 	
 	private void closeAll() {
-		vSequence.close();
+		vSequence.seq.close();
 		groupLoadFiles.setFoldedState(false);
 		groupViewMode.setFoldedState(true);
 		groupClose.setFoldedState(true);
 	}
 	
 	public void updateVisuals() {
-		startstopBufferingThread();
 		roisDisplayLine(displayCapillaries.getValue(), 1);
 		roisDisplayLine(displayCages.getValue(), 2);
 	}
@@ -145,7 +144,7 @@ public class MulticafeSequence extends EzPlug {
 		String ccs = "line";
 		if (option == 2)
 			ccs = "cage";
-		ArrayList<Viewer>vList =  vSequence.getViewers();
+		ArrayList<Viewer>vList =  vSequence.seq.getViewers();
 		Viewer v = vList.get(0);
 		IcyCanvas canvas = v.getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
@@ -160,25 +159,17 @@ public class MulticafeSequence extends EzPlug {
 				layer.setVisible(isVisible);
 		}
 	}
-	
-	public void startstopBufferingThread() {
-		if (vSequence == null)
-			return;
-		vSequence.vImageBufferThread_STOP();
-		UpdateItemsToSequence(vSequence); 
-		vSequence.vImageBufferThread_START(100); 
-	}
-	
+		
 	public boolean sequenceOpenFile() {
 		if (vSequence != null)
-			vSequence.close();		
+			vSequence.seq.close();		
 		vSequence = new SequenceVirtual();
 		
 		String path = vSequence.loadInputVirtualStack(null);
 		if (path != null) {
 			XMLPreferences guiPrefs = getPreferences("gui");
 			guiPrefs.put("lastUsedPath", path);
-			addSequence(vSequence);
+			addSequence(vSequence.seq);
 			initSequenceParameters(vSequence);
 		}
 		return (path != null);
@@ -186,7 +177,7 @@ public class MulticafeSequence extends EzPlug {
 	
 	private void initSequenceParameters(SequenceVirtual seq) {
 		seq.analysisStart = 0;
-		seq.analysisEnd = seq.getSizeT()-1;
+		seq.analysisEnd = seq.seq.getSizeT()-1;
 		seq.analysisStep = 1;
 	}
 	
@@ -198,6 +189,7 @@ public class MulticafeSequence extends EzPlug {
 		step.setValue((int) vSequence.analysisStep);
 	}
 	
+	/*
 	private void UpdateItemsToSequence(SequenceVirtual vSequence) {
 		if (vSequence == null)
 			return;
@@ -205,6 +197,7 @@ public class MulticafeSequence extends EzPlug {
 		vSequence.analysisStart = start.getValue();
 		vSequence.analysisStep = step.getValue();
 	}
+	*/
 
 	private boolean loadDefaultCapillaries() {
 		String path = vSequence.getDirectory();

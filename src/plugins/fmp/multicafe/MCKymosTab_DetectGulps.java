@@ -142,21 +142,21 @@ public class MCKymosTab_DetectGulps extends JPanel {
 			
 		if (display)
 		{
-			if (!seq.contains(roiThreshold)) {
+			if (!seq.seq.contains(roiThreshold)) {
 				roiThreshold.setName("derivativeThresh");
 				roiThreshold.setColor(Color.ORANGE);
 				roiThreshold.setStroke(1);
 				roiThreshold.setOpacity((float) 0.2);
-				seq.addROI(roiThreshold);
+				seq.seq.addROI(roiThreshold);
 			}
-			int seqheight = seq.getHeight()/2;
+			int seqheight = seq.seq.getHeight()/2;
 			double value = seqheight - thresholdValue;
-			Line2D refLineUpper = new Line2D.Double (0, value, seq.getWidth(), value);
+			Line2D refLineUpper = new Line2D.Double (0, value, seq.seq.getWidth(), value);
 			roiThreshold.setLine(refLineUpper);
 		}
 		else 
 		{
-			seq.removeROI(roiThreshold);
+			seq.seq.removeROI(roiThreshold);
 		}
 	}
 

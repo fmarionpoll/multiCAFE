@@ -20,8 +20,6 @@ import org.w3c.dom.Node;
 
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI2D;
-import icy.roi.ROIEvent;
-import icy.sequence.SequenceEvent.SequenceEventType;
 import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.EnumArrayListType;
@@ -67,11 +65,16 @@ public class SequencePlus extends SequenceVirtual  {
 	{
 		super(list, directory);
 	}
+	
+	public SequencePlus (List<String> listFullPaths)
+	{
+		super(listFullPaths);
+	}
 
 	public ArrayList<Integer> getArrayListFromRois (EnumArrayListType option, int t) {
 		
 		Capillary cap = capillaries.capillariesArrayList.get(t);
-		ArrayList<ROI2D> listRois = getROI2Ds();
+		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		if (listRois == null)
 			return null;
 		ArrayList<Integer> datai = null;
@@ -81,7 +84,7 @@ public class SequencePlus extends SequenceVirtual  {
 			datai = cap.derivedValuesArrayList;
 			break;
 		case cumSum:
-			datai = new ArrayList<Integer>(Collections.nCopies(this.getWidth(), 0));
+			datai = new ArrayList<Integer>(Collections.nCopies(seq.getWidth(), 0));
 			addRoisMatchingFilterToCumSumDataArray("gulp", datai);
 			break;
 		case bottomLevel:
@@ -145,7 +148,7 @@ public class SequencePlus extends SequenceVirtual  {
 
 	private ArrayList<Integer> copyFirstRoiMatchingFilterToDataArray (String filter) {
 		
-		ArrayList<ROI2D> listRois = getROI2Ds();
+		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName().contains(filter)) { 
 				interpolateMissingPointsAlongXAxis ((ROI2DPolyLine)roi);
@@ -157,7 +160,7 @@ public class SequencePlus extends SequenceVirtual  {
 	
 	private void addRoisMatchingFilterToCumSumDataArray (String filter, ArrayList<Integer> cumSumArray) {
 		
-		ArrayList<ROI2D> listRois = getROI2Ds();
+		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName().contains(filter)) 
 				addRoitoCumulatedSumArray((ROI2DPolyLine) roi, cumSumArray);
@@ -231,7 +234,7 @@ public class SequencePlus extends SequenceVirtual  {
 	
 	public void validateRois() {
 
-		ArrayList<ROI2D> listRois = getROI2Ds();
+		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 
 			if (!(roi instanceof ROI2DPolyLine))
@@ -256,12 +259,6 @@ public class SequencePlus extends SequenceVirtual  {
 		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());
 	}
 	
-    @Override
-    public void roiChanged(ROIEvent event)
-    {
-    	hasChanged = true;
-        super.roiChanged(event.getSource(), SequenceEventType.CHANGED);
-    }
 
 	public boolean loadXMLKymographAnalysis (Capillary cap, String directory) {
 	
@@ -275,13 +272,13 @@ public class SequencePlus extends SequenceVirtual  {
 				return false; 
 		}
 		
-		setFilename(directory+"\\"+ cap.getName()+".xml");
-		Path filenamePath = Paths.get(filename);
+		seq.setFilename(directory+"\\"+ cap.getName()+".xml");
+		Path filenamePath = Paths.get(seq.getFilename());
 		if (Files.notExists(filenamePath)) 
 			return false; 
 		
-		removeAllROI();
-		Document xml = XMLUtil.loadDocument(filename);
+		seq.removeAllROI();
+		Document xml = XMLUtil.loadDocument(seq.getFilename());
         if (xml == null) 
         	return false;
 		
@@ -292,13 +289,13 @@ public class SequencePlus extends SequenceVirtual  {
 				return false;
 		}
 		
-		ArrayList<ROI2D> listRois = getROI2Ds();
+		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 
 			int t = roi.getT();
 			if (t < 0)
 				roi.setT(cap.indexImage);
-		    addROI(roi);
+			seq.addROI(roi);
 		}
 		
 		return true;
@@ -348,7 +345,7 @@ public class SequencePlus extends SequenceVirtual  {
 			}
 		}
 		
-		Node myNode = getNode(this.getName()+"_parameters");
+		Node myNode = seq.getNode(seq.getName()+"_parameters");
 		XMLUtil.setElementBooleanValue(myNode, "detectTop", detectTop);
 		XMLUtil.setElementBooleanValue(myNode, "detectBottom", detectBottom);
 		XMLUtil.setElementBooleanValue(myNode, "detectAllLevel", detectAllLevel);
@@ -367,8 +364,8 @@ public class SequencePlus extends SequenceVirtual  {
 		XMLUtil.setElementIntValue(myNode, "analysisEnd", (int) analysisEnd);
 		XMLUtil.setElementIntValue(myNode, "analysisStep", analysisStep);
 			
-		setFilename(resultsDirectory+getName()+".xml");
-		return saveXMLData();
+		seq.setFilename(resultsDirectory+seq.getName()+".xml");
+		return seq.saveXMLData();
 	}
 
 	// ----------------------------
@@ -377,13 +374,13 @@ public class SequencePlus extends SequenceVirtual  {
 		if (bActive) {
 			if (thresholdOverlay == null) 
 				thresholdOverlay = new OverlayThreshold(this);
-			if (!this.contains(thresholdOverlay)) 
-				this.addOverlay(thresholdOverlay);
+			if (!seq.contains(thresholdOverlay)) 
+				seq.addOverlay(thresholdOverlay);
 			thresholdOverlay.setSequence (this);
 		}
 		else {
-			if (thresholdOverlay != null && this.contains(thresholdOverlay) )
-				this.removeOverlay(thresholdOverlay);
+			if (thresholdOverlay != null && seq.contains(thresholdOverlay) )
+				seq.removeOverlay(thresholdOverlay);
 			thresholdOverlay = null;
 		}
 	}
@@ -404,12 +401,12 @@ public class SequencePlus extends SequenceVirtual  {
 		if (bActive) {
 			if (trapOverlay == null)
 				trapOverlay = new OverlayTrapMouse (pickColorButton, colorPickCombo);
-			if (!this.contains(trapOverlay))
-				this.addOverlay(trapOverlay);
+			if (!seq.contains(trapOverlay))
+				seq.addOverlay(trapOverlay);
 		}
 		else {
-			if (trapOverlay != null && this.contains(trapOverlay))
-				this.removeOverlay(trapOverlay);
+			if (trapOverlay != null && seq.contains(trapOverlay))
+				seq.removeOverlay(trapOverlay);
 			trapOverlay = null;
 		}
 	}

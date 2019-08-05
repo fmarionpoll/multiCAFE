@@ -76,10 +76,9 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		parent0.sequencePane.browseTab.getBrowseItems (parent0.vSequence);
-		parent0.vSequence.cleanUpBufferAndRestart();
 		setStartButton(false);
 		kymosBuildKymographs();	
-		Viewer v = parent0.vSequence.getFirstViewer();
+		Viewer v = parent0.vSequence.seq.getFirstViewer();
 		v.toFront();
 	}
 	
@@ -106,7 +105,7 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 	private void kymosBuildKymographs() {
 		buildKymographsThread = null;
 		if (parent0.vkymos != null) {
-			parent0.vkymos.close();
+			parent0.vkymos.seq.close();
 		}
 		
 		// start building kymos in a separate thread

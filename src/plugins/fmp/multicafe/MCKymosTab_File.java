@@ -59,6 +59,7 @@ public class MCKymosTab_File  extends JPanel {
 	boolean openKymosMeasures() {
 		
 		String directory = parent0.vSequence.getDirectory();
+		parent0.vkymos.seq.beginUpdate();
 		for (Capillary cap: parent0.vkymos.capillaries.capillariesArrayList) {
 			
 			boolean flag2 = true;
@@ -69,7 +70,7 @@ public class MCKymosTab_File  extends JPanel {
 			else {
 				System.out.println("load measures -> failed or not found in directory: " + directory);
 			}
-			parent0.vkymos.endUpdate();
+			
 			if (!flag2)
 				flag = false;
 			if (isInterrupted) {
@@ -77,6 +78,7 @@ public class MCKymosTab_File  extends JPanel {
 				break;
 			}
 		}
+		parent0.vkymos.seq.endUpdate();
 		
 // TODO??	if (parent0.kymographArrayList.size() >0 ) {
 //			SequencePlus seq = parent0.kymographArrayList.get(0);

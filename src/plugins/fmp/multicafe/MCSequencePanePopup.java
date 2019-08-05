@@ -83,8 +83,8 @@ public class MCSequencePanePopup  extends JPanel implements PropertyChangeListen
 		 }
 		 else if (event.getPropertyName().equals("UPDATE")) {
 			browseTab.getBrowseItems(parent0.vSequence);
-			parent0.vSequence.cleanUpBufferAndRestart();
-			ArrayList<Viewer>vList =  parent0.vSequence.getViewers();
+//			parent0.vSequence.cleanUpBufferAndRestart();
+			ArrayList<Viewer>vList =  parent0.vSequence.seq.getViewers();
 			Viewer v = vList.get(0);
 			v.toFront();
 			v.requestFocus();
@@ -154,15 +154,15 @@ public class MCSequencePanePopup  extends JPanel implements PropertyChangeListen
 		if (parent0.vSequence == null)
 			return;
 
-		parent0.vSequence.vImageBufferThread_STOP();
+//		parent0.vSequence.vImageBufferThread_STOP();
 		browseTab.getBrowseItems(parent0.vSequence); 
-		parent0.vSequence.cleanUpBufferAndRestart();
-		parent0.vSequence.vImageBufferThread_START(100); //numberOfImageForBuffer);
+//		parent0.vSequence.cleanUpBufferAndRestart();
+//		parent0.vSequence.vImageBufferThread_START(100); //numberOfImageForBuffer);
 	}
 	
 	boolean sequenceCreateNew (String filename) {
 		if (parent0.vSequence != null)
-			parent0.vSequence.close();		
+			parent0.vSequence.seq.close();		
 		parent0.vSequence = new SequenceVirtual();
 		
 		String path = parent0.vSequence.loadVirtualStackAt(filename);
@@ -170,8 +170,8 @@ public class MCSequencePanePopup  extends JPanel implements PropertyChangeListen
 			initSequenceParameters(parent0.vSequence);
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", path);
-			parent0.addSequence(parent0.vSequence);
-			parent0.vSequence.addListener(parent0);
+			parent0.addSequence(parent0.vSequence.seq);
+			parent0.vSequence.seq.addListener(parent0);
 			startstopBufferingThread();
 		}
 		return (path != null);
@@ -179,10 +179,10 @@ public class MCSequencePanePopup  extends JPanel implements PropertyChangeListen
 	
 	
 	private void updateParametersForSequence() {
-		int endFrame = parent0.vSequence.getSizeT()-1;
+		int endFrame = parent0.vSequence.seq.getSizeT()-1;
 		browseTab.endFrameTextField.setText( Integer.toString(endFrame));
 
-		Viewer v = parent0.vSequence.getFirstViewer();
+		Viewer v = parent0.vSequence.seq.getFirstViewer();
 		if (v != null) {
 			Rectangle rectv = v.getBoundsInternal();
 			Rectangle rect0 = parent0.mainFrame.getBoundsInternal();
@@ -194,7 +194,7 @@ public class MCSequencePanePopup  extends JPanel implements PropertyChangeListen
 	private void initSequenceParameters(SequenceVirtual seq) {
 		if (seq.analysisEnd == 99999999) {
 			seq.analysisStart = 0;
-			seq.analysisEnd = seq.getSizeT()-1;
+			seq.analysisEnd = seq.seq.getSizeT()-1;
 			seq.analysisStep = 1;
 		}
 	}

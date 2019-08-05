@@ -69,7 +69,7 @@ public class MCCapillariesTab_Adjust extends JPanel {
 		int jitter = Integer.parseInt( jitterTextField2.getText() );
 		int t = parent0.vSequence.currentFrame;
 		parent0.vSequence.setCurrentVImage(t);
-		IcyBufferedImage vinputImage = parent0.vSequence.getImage(t, 0, chan) ;
+		IcyBufferedImage vinputImage = parent0.vSequence.seq.getImage(t, 0, chan) ;
 		if (vinputImage == null) {
 			System.out.println("An error occurred while reading image: " + t );
 			return;
@@ -202,8 +202,8 @@ public class MCCapillariesTab_Adjust extends JPanel {
 		if (display)
 		{
 			// take as ref the whole image otherwise, we won't see the lines if the use has not defined any capillaries
-			int seqheight = parent0.vSequence.getHeight();
-			int seqwidth = parent0.vSequence.getWidth();
+			int seqheight = parent0.vSequence.seq.getHeight();
+			int seqwidth = parent0.vSequence.seq.getWidth();
 			refLineUpper = new Line2D.Double (0, seqheight/3, seqwidth, seqheight/3);
 			refLineLower = new Line2D.Double (0, 2*seqheight/3, seqwidth, 2*seqheight/3);
 			
@@ -226,13 +226,13 @@ public class MCCapillariesTab_Adjust extends JPanel {
 			roiRefLineLower.setName("refBarLower");
 			roiRefLineLower.setColor(Color.YELLOW);
 			
-			parent0.vSequence.addROI(roiRefLineUpper);
-			parent0.vSequence.addROI(roiRefLineLower);
+			parent0.vSequence.seq.addROI(roiRefLineUpper);
+			parent0.vSequence.seq.addROI(roiRefLineLower);
 		}
 		else 
 		{
-			parent0.vSequence.removeROI(roiRefLineUpper);
-			parent0.vSequence.removeROI(roiRefLineLower);
+			parent0.vSequence.seq.removeROI(roiRefLineUpper);
+			parent0.vSequence.seq.removeROI(roiRefLineLower);
 		}
 	}
 }

@@ -56,7 +56,7 @@ public class MCKymosTab_Graphs extends JPanel {
 	void xyDisplayGraphs() {
 
 		int kmax = parent0.vSequence.capillaries.grouping;
-		final Rectangle rectv = parent0.vSequence.getFirstViewer().getBounds();
+		final Rectangle rectv = parent0.vSequence.seq.getFirstViewer().getBounds();
 		Point ptRelative = new Point(0,rectv.height);
 		final int deltay = 230;
 

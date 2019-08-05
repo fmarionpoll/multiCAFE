@@ -81,7 +81,7 @@ public class MCCapillariesTab_Units extends JPanel {
 
 	
 	private void roisDisplayLine(boolean isVisible) {
-		ArrayList<Viewer>vList =  parent0.vSequence.getViewers();
+		ArrayList<Viewer>vList =  parent0.vSequence.seq.getViewers();
 		Viewer v = vList.get(0);
 		IcyCanvas canvas = v.getCanvas();
 		List<Layer> layers = canvas.getLayers(false);

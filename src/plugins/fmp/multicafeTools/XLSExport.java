@@ -64,7 +64,7 @@ public class XLSExport {
 		
 		for (SequencePlus seq: exp.kymographArrayList) { 
 
-			String name = seq.getName();
+			String name = seq.seq.getName();
 			int col = getColFromKymoSequenceName(name);
 			if (col >= 0) 
 				pt.x = colseries + col;
@@ -126,7 +126,7 @@ public class XLSExport {
 			XLSUtils.setValue(sheet, pt, transpose, sheetName);
 			pt.y++;
 			// rois
-			XLSUtils.setValue(sheet, pt, transpose, seq.getName());
+			XLSUtils.setValue(sheet, pt, transpose, seq.seq.getName());
 			pt.y++;
 		}
 		pt.x = col0;
