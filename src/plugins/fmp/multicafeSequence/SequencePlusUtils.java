@@ -160,16 +160,16 @@ public class SequencePlusUtils {
 		for (File file: filesArray) {
 			listFileNames.add(file.getPath());
 		}
+		
 		SequencePlus kymographSeq = new SequencePlus(listFileNames);
 		kymographSeq.analysisStep = 1;
 		
 		progress.setMessage("load measures for each capillary");
 		kymographSeq.capillaries = new Capillaries();
-		ArrayList<String> listFiles = (ArrayList<String>) kymographSeq.getListofFiles();
 		
-		for (int i=0; i < listFiles.size(); i++) {
+		for (int i=0; i < listFileNames.size(); i++) {
 			
-			String filename = listFiles.get(i);
+			String filename = listFileNames.get(i);
 			int index1 = filename.indexOf(extension);
 			int index0 = filename.lastIndexOf("\\")+1;
 			String title = filename.substring(index0, index1);
@@ -185,8 +185,6 @@ public class SequencePlusUtils {
 		return kymographSeq;
 	}
 	
-
-    
 	public static void saveKymosMeasures (SequencePlus vkymos, String directory) {
 		
 		isRunning = true;

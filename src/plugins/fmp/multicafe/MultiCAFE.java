@@ -12,7 +12,6 @@ import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.gui.viewer.ViewerEvent;
 import icy.gui.viewer.ViewerEvent.ViewerEventType;
-import icy.main.Icy;
 import icy.gui.viewer.ViewerListener;
 
 import icy.plugin.abstract_.PluginActionable;
@@ -31,7 +30,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	SequenceVirtual 			vSequence 			= null;
 	SequencePlus				vkymos				= null;
 	
-	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 01-August-2019", true, true, true, true);
+	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 05-August-2019", true, true, true, true);
 	
 	MCSequencePane 				sequencePane 		= new MCSequencePane();
 	MCCapillariesPane 			capillariesPane 	= new MCCapillariesPane();
@@ -44,9 +43,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	@Override
 	public void run() 
 	{		
-		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
-		Icy.getMainInterface().getMainFrame().getInspector().imageCacheDisabled();
-
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
 		mainFrame.setLayout(new BorderLayout());
 		mainFrame.add(mainPanel, BorderLayout.CENTER);

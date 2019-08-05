@@ -16,7 +16,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeSequence.SequenceVirtual;
 
 public class XLSExport {
@@ -62,10 +61,10 @@ public class XLSExport {
 		String name111 = getSubName(path, 4); 
 		String sheetName = sheet.getSheetName();		
 		
-		for (SequencePlus seq: exp.kymographArrayList) { 
+		for (int t=0; t<exp.vkymos.seq.getSizeT(); t++) { 
 
-			String name = seq.seq.getName();
-			int col = getColFromKymoSequenceName(name);
+			String name = exp.vkymos.getFileName(t);
+			int col = getColFromKymoFileName(name);
 			if (col >= 0) 
 				pt.x = colseries + col;
 			pt.y = row;
@@ -126,7 +125,7 @@ public class XLSExport {
 			XLSUtils.setValue(sheet, pt, transpose, sheetName);
 			pt.y++;
 			// rois
-			XLSUtils.setValue(sheet, pt, transpose, seq.seq.getName());
+			XLSUtils.setValue(sheet, pt, transpose, exp.vkymos.getFileName(t));
 			pt.y++;
 		}
 		pt.x = col0;
@@ -232,7 +231,7 @@ public class XLSExport {
 		xlsCreatePivotTable(workBook, "pivot_n", fromWorkbook, DataConsolidateFunction.COUNT);
 	}
 	
-	public int getColFromKymoSequenceName(String name) {
+	public int getColFromKymoFileName(String name) {
 		if (!name .contains("line"))
 			return -1;
 

@@ -329,8 +329,20 @@ public class SequenceVirtual
 	
 	private void loadSequenceFromList(List<String> listFiles) {
 		List<Sequence> lseq = Loader.loadSequences(null, listFiles, 0, false, false, false, true);
-		status = EnumStatus.FILESTACK;
 		seq = lseq.get(0);
+		if (lseq.size()>1) {
+			seq = new Sequence();
+			int tmax = lseq.get(0).getSizeT();
+			int tseq = 0;
+			for (int t = 0; t < tmax; t++) {
+				for (int i=0; i < lseq.size(); i++) {
+					IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
+					seq.setImage(tseq, 0, bufImg);
+					tseq++;
+				}
+			}
+		}
+		status = EnumStatus.FILESTACK;
 	}
 		
 	public String loadVirtualStackAt(String textPath) {
