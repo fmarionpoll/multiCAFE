@@ -12,7 +12,8 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import icy.gui.frame.progress.AnnounceFrame;
@@ -29,9 +30,9 @@ public class MCMoveTab_BuildROIs extends JPanel {
 	private static final long serialVersionUID = -5257698990389571518L;
 	private JButton 	addPolygon2DButton 		= new JButton("Draw Polygon2D");
 	private JButton createROIsFromPolygonButton = new JButton("Create/add (from Polygon 2D)");
-	private JTextField nbcagesTextField 	= new JTextField("10");
-	private JTextField width_cageTextField 	= new JTextField("10");
-	private JTextField width_intervalTextField = new JTextField("2");
+	private JSpinner nbcagesTextField 	= new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));
+	private JSpinner width_cageTextField 	= new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));
+	private JSpinner width_intervalTextField = new JSpinner(new SpinnerNumberModel(2, 0, 10000, 1));
 	private int 	nbcages 				= 10;
 	private int 	width_cage 				= 10;
 	private int 	width_interval 			= 2;
@@ -71,7 +72,7 @@ public class MCMoveTab_BuildROIs extends JPanel {
 	void updateFromSequence() {
 		int nrois = parent0.vSequence.cages.cageLimitROIList.size();	
 		if (nrois > 0) {
-			nbcagesTextField.setText(Integer.toString(nrois));
+			nbcagesTextField.setValue(nrois);
 			nbcages = nrois;
 		}
 	}
@@ -114,9 +115,9 @@ public class MCMoveTab_BuildROIs extends JPanel {
 	private void addROISCreatedFromSelectedPolygon() {
 		// read values from text boxes
 		try { 
-			nbcages = Integer.parseInt( nbcagesTextField.getText() );
-			width_cage = Integer.parseInt( width_cageTextField.getText() );
-			width_interval = Integer.parseInt( width_intervalTextField.getText() );
+			nbcages = (int) nbcagesTextField.getValue();
+			width_cage = (int) width_cageTextField.getValue();
+			width_interval = (int) width_intervalTextField.getValue();
 		}catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
 
 		ROI2D roi = parent0.vSequence.seq.getSelectedROI2D();

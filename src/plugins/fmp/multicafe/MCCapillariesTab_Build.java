@@ -14,7 +14,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import icy.gui.frame.progress.AnnounceFrame;
@@ -33,13 +34,13 @@ public class MCCapillariesTab_Build extends JPanel {
 	private static final long serialVersionUID = -5257698990389571518L;
 	
 	private JButton 	addPolygon2DButton 		= new JButton("Draw Polygon2D");
-	private JButton 	createROIsFromPolygonButton2 = new JButton("Generate ROIs (from Polygon 2D)");
+	private JButton 	createROIsFromPolygonButton2 = new JButton("Generate capillaries");
 	private JRadioButton selectGroupedby2Button = new JRadioButton("grouped by 2");
 	private JRadioButton selectRegularButton 	= new JRadioButton("evenly spaced");
 	private ButtonGroup buttonGroup2 			= new ButtonGroup();
-	private JTextField 	nbcapillariesTextField 	= new JTextField("20");
-	private JTextField 	width_between_capillariesTextField = new JTextField("30");
-	private JTextField 	width_intervalTextField = new JTextField("53");
+	private JSpinner 	nbcapillariesJSpinner 	= new JSpinner(new SpinnerNumberModel(20, 0, 500, 1));
+	private JSpinner 	width_between_capillariesJSpinner = new JSpinner(new SpinnerNumberModel(30, 0, 10000, 1));
+	private JSpinner 	width_intervalJSpinner = new JSpinner(new SpinnerNumberModel(53, 0, 10000, 1)); 
 	private MultiCAFE parent0;
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -51,14 +52,14 @@ public class MCCapillariesTab_Build extends JPanel {
 		selectGroupedby2Button.setSelected(true);
 		add( GuiUtil.besidesPanel( 
 				new JLabel ("N capillaries ", SwingConstants.RIGHT),  
-				nbcapillariesTextField, 
+				nbcapillariesJSpinner, 
 				selectRegularButton, 
 				selectGroupedby2Button)); 
 		add( GuiUtil.besidesPanel( 
 				new JLabel("Pixels btw. caps ", SwingConstants.RIGHT), 
-				width_between_capillariesTextField, 
+				width_between_capillariesJSpinner, 
 				new JLabel("btw. groups ", SwingConstants.RIGHT), 
-				width_intervalTextField ) );
+				width_intervalJSpinner ) );
 		
 		defineActionListeners();
 		this.parent0 = parent0;
@@ -75,25 +76,25 @@ public class MCCapillariesTab_Build extends JPanel {
 			}});
 		selectRegularButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				boolean status = false;
-				width_between_capillariesTextField.setEnabled(status);
-				width_intervalTextField.setEnabled(status);
+				width_between_capillariesJSpinner.setEnabled(status);
+				width_intervalJSpinner.setEnabled(status);
 			}});
 	}
 	
 	// set/ get	
 	private void setNbCapillaries(int nrois) {
-		nbcapillariesTextField.setText(Integer.toString(nrois));
+		nbcapillariesJSpinner.setValue(nrois);
 	}
 	private int getNbCapillaries( ) {
-		return Integer.parseInt( nbcapillariesTextField.getText() );
+		return (int) nbcapillariesJSpinner.getValue();
 	}
 
 	private int getWidthSmallInterval ( ) {
-		return Integer.parseInt( width_between_capillariesTextField.getText() );
+		return (int) width_between_capillariesJSpinner.getValue();
 	}
 	
 	private int getWidthLongInterval() {
-		return Integer.parseInt( width_intervalTextField.getText() );
+		return (int) width_intervalJSpinner.getValue();
 	}
 	
 	private boolean getGroupedBy2() {

@@ -98,10 +98,14 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 		if (parent0.vkymos == null)
 			return;
 		TransformOp transform = (TransformOp) transformForLevelsComboBox.getSelectedItem();
+		for (int t=0; t < parent0.vkymos.seq.getSizeT(); t++) {
+			Capillary cap = parent0.vkymos.capillaries.capillariesArrayList.get(t);
+			getInfosFromDialog(cap);		
+		}
 		parent0.kymographsPane.kymosBuildFiltered(0, 1, transform, getSpanDiffTop());
 	}
 	
-	void setInfos(Capillary cap) {
+	void setInfosToDialog(Capillary cap) {
 
 		MCBuildDetect_LimitsOptions options = cap.limitsOptions;
 		transformForLevelsComboBox.setSelectedItem(options.transformForLevels);
@@ -110,5 +114,14 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 		setDetectLevelThreshold(options.detectLevelThreshold);
 		detectTopSpinner.setValue(options.detectLevelThreshold);
 		detectAllCheckBox.setSelected(options.detectAllImages);
+	}
+	
+	void getInfosFromDialog(Capillary cap) {
+
+		MCBuildDetect_LimitsOptions options = cap.limitsOptions;
+		options.transformForLevels = (TransformOp) transformForLevelsComboBox.getSelectedItem();
+		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
+		options.detectLevelThreshold = getDetectLevelThreshold();
+		options.detectAllImages = detectAllCheckBox.isSelected();
 	}
 }

@@ -11,12 +11,12 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import icy.canvas.IcyCanvas;
 import icy.canvas.Layer;
-import icy.gui.frame.progress.AnnounceFrame;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.roi.ROI;
@@ -29,8 +29,8 @@ public class MCCapillariesTab_Units extends JPanel {
 	private static final long serialVersionUID = 4950182090521600937L;
 
 	JCheckBox					visibleCheckBox				= new JCheckBox("ROIs visible", true);
-	private JTextField 			capillaryVolumeTextField	= new JTextField("5");
-	private JTextField 			capillaryPixelsTextField	= new JTextField("5");
+	private JSpinner 			capillaryVolumeTextField	= new JSpinner(new SpinnerNumberModel(5., 0., 100., 1.));
+	private JSpinner 			capillaryPixelsTextField	= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
 	private JComboBox<String> 	stimulusRJCombo				= new JComboBox<String>();
 	private JComboBox<String> 	concentrationRJCombo 		= new JComboBox<String>();
 	private JComboBox<String> 	stimulusLJCombo				= new JComboBox<String>();
@@ -100,8 +100,8 @@ public class MCCapillariesTab_Units extends JPanel {
 	// set/ get
 	
 	void setCapillariesInfos(Capillaries cap) {
-		capillaryVolumeTextField.setText( Double.toString(cap.volume));
-		capillaryPixelsTextField.setText( Double.toString(cap.pixels));
+		capillaryVolumeTextField.setValue( cap.volume);
+		capillaryPixelsTextField.setValue( cap.pixels);
 		addItem(stimulusRJCombo, cap.stimulusR);
 		addItem(concentrationRJCombo, cap.concentrationR);
 		addItem(stimulusLJCombo, cap.stimulusL);
@@ -110,20 +110,11 @@ public class MCCapillariesTab_Units extends JPanel {
 
 	
 	private double getCapillaryVolume() {
-		double capillaryVolume = 0;
-		try { 
-			capillaryVolume = Double.parseDouble(capillaryVolumeTextField.getText());
-		} catch( Exception e ) { new AnnounceFrame("Can't interpret capillary volume value."); }
-		return capillaryVolume;
+		return (double) capillaryVolumeTextField.getValue();
 	}
 	
-	
-	private double getCapillaryPixelLength() {
-		double capillaryPixels=0;
-		try { 
-			capillaryPixels = Double.parseDouble(capillaryPixelsTextField.getText()); 
-		} catch( Exception e ) { new AnnounceFrame("Can't interpret capillary volume value."); }
-		return capillaryPixels;
+	private int getCapillaryPixelLength() {
+		return (int) capillaryPixelsTextField.getValue(); 
 	}
 	
 	void getCapillariesInfos(Capillaries cap) {

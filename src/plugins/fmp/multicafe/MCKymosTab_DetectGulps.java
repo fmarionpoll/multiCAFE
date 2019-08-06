@@ -103,8 +103,12 @@ public class MCKymosTab_DetectGulps extends JPanel {
 		if (parent0.vkymos == null)
 			return;
  
-		TransformOp transform;
-		transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
+		for (int t=0; t < parent0.vkymos.seq.getSizeT(); t++) {
+			Capillary cap = parent0.vkymos.capillaries.capillariesArrayList.get(t);
+			getInfosFromDialog(cap);		
+		}
+		
+		TransformOp transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		parent0.kymographsPane.kymosBuildFiltered(0, 2, transform, (int) spanTransf2Spinner.getValue());
 	}
 	
@@ -126,6 +130,13 @@ public class MCKymosTab_DetectGulps extends JPanel {
 		detectGulpsThresholdSpinner.setValue(options.detectGulpsThreshold);
 		transformForGulpsComboBox.setSelectedItem(options.transformForGulps);
 		detectAllGulpsCheckBox.setSelected(options.detectAllGulps);
+	}
+	
+	void getInfosFromDialog(Capillary cap) {
+		MCBuildDetect_GulpsOptions options = cap.gulpsOptions;
+		options.detectGulpsThreshold = (int) detectGulpsThresholdSpinner.getValue();
+		options.transformForGulps = (TransformOp) transformForGulpsComboBox.getSelectedItem();
+		options.detectAllGulps = detectAllGulpsCheckBox.isSelected();
 	}
 	
 	void roisDisplayAllThresholds(boolean display) {

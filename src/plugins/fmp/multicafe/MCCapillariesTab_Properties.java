@@ -23,6 +23,7 @@ public class MCCapillariesTab_Properties extends JPanel {
 		private JComboBox<String> 	stimulusLJCombo				= new JComboBox<String>();
 		private JComboBox<String> 	concentrationLJCombo 		= new JComboBox<String>();
 		
+		
 		void init(GridLayout capLayout) {
 			setLayout(capLayout);
 									
@@ -48,7 +49,6 @@ public class MCCapillariesTab_Properties extends JPanel {
 			return panel;
 		}
 		
-							
 		// set/ get
 		
 		void setCapillariesInfos(Capillaries cap) {			

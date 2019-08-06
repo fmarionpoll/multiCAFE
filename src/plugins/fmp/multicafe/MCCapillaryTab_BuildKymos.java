@@ -14,6 +14,7 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
+import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeTools.BuildKymographsThread;
 import plugins.fmp.multicafeTools.EnumStatusComputation;
 
@@ -107,6 +108,7 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 		if (parent0.vkymos != null) {
 			parent0.vkymos.seq.close();
 		}
+		parent0.vkymos = new SequencePlus();
 		
 		// start building kymos in a separate thread
 		buildKymographsThread = new BuildKymographsThread();
@@ -115,7 +117,7 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 		buildKymographsThread.options.startFrame 	= (int) parent0.vSequence.analysisStart;
 		buildKymographsThread.options.endFrame 		= (int) parent0.vSequence.analysisEnd;
 		buildKymographsThread.options.diskRadius 	= (int) diskRadiusSpinner.getValue();
-		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected();
+		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected(); 
 		buildKymographsThread.vkymos 				= parent0.vkymos;
 
 		thread = new Thread(null, buildKymographsThread, "buildkymos");

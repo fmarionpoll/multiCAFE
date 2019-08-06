@@ -7,7 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
@@ -20,9 +21,9 @@ public class MCSequenceTab_Browse extends JPanel {
 	 */
 	private static final long serialVersionUID = -5739112045358747277L;
 	
-	private JTextField 	startFrameTextField		= new JTextField("0");
-	JTextField 			endFrameTextField		= new JTextField("99999999");
-	private JTextField 	analyzeStepTextField 	= new JTextField("1");
+	private JSpinner 	startFrameJSpinner		= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
+	JSpinner 			endFrameJSpinner		= new JSpinner(new SpinnerNumberModel(99999999, 0, 99999999, 1));
+	private JSpinner 	analyzeStepJSpinner 	= new JSpinner(new SpinnerNumberModel(1, 1, 10000, 1));
 	private JButton 	updateButton 			= new JButton("Update");
 	
 	
@@ -30,11 +31,11 @@ public class MCSequenceTab_Browse extends JPanel {
 		setLayout(capLayout);
 			
 		add(GuiUtil.besidesPanel( 
-				new JLabel("start ", SwingConstants.RIGHT), startFrameTextField, 
-				new JLabel("step ", SwingConstants.RIGHT) , analyzeStepTextField 				
+				new JLabel("start ", SwingConstants.RIGHT), startFrameJSpinner, 
+				new JLabel("step ", SwingConstants.RIGHT) , analyzeStepJSpinner 				
 				));
 		add(GuiUtil.besidesPanel( 
-				new JLabel("end ", SwingConstants.RIGHT), endFrameTextField, 
+				new JLabel("end ", SwingConstants.RIGHT), endFrameJSpinner, 
 				new JLabel(" "), updateButton ));
 
 		updateButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
@@ -44,15 +45,15 @@ public class MCSequenceTab_Browse extends JPanel {
 	}
 		
 	void setBrowseItems (SequenceVirtual seq) {
-		endFrameTextField.setText(Integer.toString((int) seq.analysisEnd));
-		startFrameTextField.setText(Integer.toString((int) seq.analysisStart));
-		analyzeStepTextField.setText(Integer.toString(seq.analysisStep));
+		endFrameJSpinner.setValue((int) seq.analysisEnd);
+		startFrameJSpinner.setValue((int) seq.analysisStart);
+		analyzeStepJSpinner.setValue(seq.analysisStep);
 	}
 	
 	void getBrowseItems (SequenceVirtual seq) {
-		seq.analysisStart 	= Integer.parseInt( startFrameTextField.getText() );
-		seq.analysisEnd 	= Integer.parseInt( endFrameTextField.getText());
-		seq.analysisStep 	= Integer.parseInt( analyzeStepTextField.getText() );
+		seq.analysisStart 	= (int) startFrameJSpinner.getValue();
+		seq.analysisEnd 	= (int) endFrameJSpinner.getValue();
+		seq.analysisStep 	= (int) analyzeStepJSpinner.getValue();
 	}
 
 }

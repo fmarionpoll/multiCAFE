@@ -11,7 +11,8 @@ import java.awt.geom.Point2D;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
@@ -28,7 +29,7 @@ public class MCCapillariesTab_Adjust extends JPanel {
 	 */
 	private static final long serialVersionUID = 1756354919434057560L;
 	
-	JTextField			jitterTextField2	= new JTextField("10");
+	JSpinner			jitterJSpinner	= new JSpinner(new SpinnerNumberModel(10, 0, 500, 1)); 
 	private JButton 	adjustButton 		= new JButton("Align");
 	private MultiCAFE 	parent0				= null;
 	private Line2D		refLineUpper 		= null;
@@ -41,7 +42,7 @@ public class MCCapillariesTab_Adjust extends JPanel {
 		add( GuiUtil.besidesPanel(
 				new JLabel(" "), 
 				new JLabel("jitter ", SwingConstants.RIGHT), 
-				jitterTextField2, 
+				jitterJSpinner, 
 				adjustButton));
 		
 		this.parent0 = parent0;
@@ -66,7 +67,7 @@ public class MCCapillariesTab_Adjust extends JPanel {
 		refLineLower = roiRefLineLower.getLine(); 
 		
 		int chan = 0;
-		int jitter = Integer.parseInt( jitterTextField2.getText() );
+		int jitter = (int) jitterJSpinner.getValue();
 		int t = parent0.vSequence.currentFrame;
 		parent0.vSequence.setCurrentVImage(t);
 		IcyBufferedImage vinputImage = parent0.vSequence.seq.getImage(t, 0, chan) ;

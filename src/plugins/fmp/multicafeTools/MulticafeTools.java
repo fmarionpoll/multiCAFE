@@ -16,6 +16,7 @@ import icy.plugin.abstract_.Plugin;
 import icy.sequence.Sequence;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 
 
@@ -119,7 +120,21 @@ public class MulticafeTools  extends Plugin {
 			return o1.getName().compareTo(o2.getName());
 		}
 	}
+	
+	public static class CapillaryROINameComparator implements Comparator<Capillary> {
+		@Override
+		public int compare(Capillary o1, Capillary o2) {
+			return o1.roi.getName().compareTo(o2.roi.getName());
+		}
+	}
 
+	public static class CapillaryNameComparator implements Comparator<Capillary> {
+		@Override
+		public int compare(Capillary o1, Capillary o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+	}
+	
 	public static class ROINameComparator implements Comparator<ROI> {
 		@Override
 		public int compare(ROI o1, ROI o2) {

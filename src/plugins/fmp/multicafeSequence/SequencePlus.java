@@ -342,8 +342,8 @@ public class SequencePlus extends SequenceVirtual  {
 				return false;
 			}
 		}
-		
-		Node myNode = seq.getNode(seq.getName()+"_parameters");
+
+		Node myNode = seq.getNode(cap.getName()+"_parameters");
 		XMLUtil.setElementBooleanValue(myNode, "detectTop", detectTop);
 		XMLUtil.setElementBooleanValue(myNode, "detectBottom", detectBottom);
 		XMLUtil.setElementBooleanValue(myNode, "detectAllLevel", detectAllLevel);

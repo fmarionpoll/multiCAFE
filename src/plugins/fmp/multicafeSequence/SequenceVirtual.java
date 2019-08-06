@@ -437,8 +437,10 @@ public class SequenceVirtual
 	}
 	
 	public void initCapillaries() {
-		xx
-		
+		if (capillaries == null)
+			capillaries = new Capillaries();
+		capillaries.extractLinesFromSequence(this);
+		storeAnalysisParametersToCapillaries();
 	}
 	
 	public void updateCapillaries(int size) {

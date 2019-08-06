@@ -106,14 +106,10 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 			firePropertyChange("CAPILLARIES_NEW", false, true);
 			tabsPane.setSelectedIndex(2);
 		}
-		else if (event.getPropertyName().equals("KYMOS_OPEN")) {
+		else if (event.getPropertyName().equals("KYMOS_OPEN") 
+			|| event.getPropertyName().equals("KYMOS_CREATE")) {
 			optionsTab.viewKymosCheckBox.setSelected(true);
-			optionsTab.transferFileNamesToComboBox();
-			tabsPane.setSelectedIndex(2);
-		}	
-		else if (event.getPropertyName().equals("KYMOS_CREATE")) {
-			optionsTab.viewKymosCheckBox.setSelected(true);
-			optionsTab.transferRoisNamesToComboBox(parent0.vSequence.capillaries.capillariesArrayList);
+			optionsTab.transferCapillaryNamesToComboBox(parent0.vSequence.capillaries.capillariesArrayList);
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("KYMOS_OK")) {

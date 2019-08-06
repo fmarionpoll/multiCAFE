@@ -17,13 +17,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import icy.gui.frame.progress.AnnounceFrame;
 import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
@@ -47,7 +45,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	
 	private JButton 	startComputationButton 	= new JButton("Detect flies / Stop");
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(100, 0, 255, 10));
-	private JTextField 	jitterTextField 		= new JTextField("5");
+	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 255, 1));
 	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object >");
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object <");
@@ -173,12 +171,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 		detect.blimitUp 		= objectUpsizeCheckBox.isSelected();
 		detect.limitLow 		= (int) objectLowsizeSpinner.getValue();
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
-		try { detect.jitter 	= Integer.parseInt( jitterTextField.getText() );
-		} catch( Exception e ) { 
-			new AnnounceFrame("Can't interpret the jitter value."); 
-			return false; 
-			}
-		
+		detect.jitter 			= (int) jitterTextField.getValue();
 		trackAllFliesThread.vSequence 	= parent0.vSequence;		
 		trackAllFliesThread.stopFlag 	= false;
 		trackAllFliesThread.detect 		= detect;

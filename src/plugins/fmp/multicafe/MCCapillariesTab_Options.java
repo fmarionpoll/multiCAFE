@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -27,6 +28,7 @@ import icy.main.Icy;
 import icy.roi.ROI;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeTools.MulticafeTools;
 
 
 
@@ -106,20 +108,13 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 		} } );
 	}
 		
-	// ---------------------------
-	void transferFileNamesToComboBox() {
-		kymographNamesComboBox.removeAllItems();
-		if (parent0.vkymos != null) {
-			for (Capillary cap: parent0.vkymos.capillaries.capillariesArrayList) 
-				kymographNamesComboBox.addItem(cap.getName());
-		}
-	}
 	
-	void transferRoisNamesToComboBox(ArrayList <Capillary> capillaryArrayList) {
+	void transferCapillaryNamesToComboBox(ArrayList <Capillary> capillaryArrayList) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				kymographNamesComboBox.removeAllItems();
-				for (Capillary cap: capillaryArrayList)
+				Collections.sort(capillaryArrayList, new MulticafeTools.CapillaryNameComparator()); 
+				for (Capillary cap: capillaryArrayList) 
 					kymographNamesComboBox.addItem(cap.getName());	
 			}});
 	}

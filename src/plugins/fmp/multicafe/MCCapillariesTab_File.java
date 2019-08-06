@@ -145,7 +145,7 @@ public class MCCapillariesTab_File extends JPanel {
 			flag = true;
 			SwingUtilities.invokeLater(new Runnable() {
 			    public void run() {
-	        	parent0.capillariesPane.optionsTab.transferFileNamesToComboBox();
+	        	parent0.capillariesPane.optionsTab.transferCapillaryNamesToComboBox(parent0.vSequence.capillaries.capillariesArrayList);
 				parent0.capillariesPane.optionsTab.viewKymosCheckBox.setSelected(true);
 			    }
 			});

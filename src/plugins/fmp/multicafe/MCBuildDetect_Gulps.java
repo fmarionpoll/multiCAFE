@@ -38,7 +38,8 @@ public class MCBuildDetect_Gulps {
 			options.copy(cap.gulpsOptions);
 			
 			removeSpecificRoisFromSequence(seqkymo, t, "derivative");
-			cap.derivedValuesArrayList.clear();
+			if (cap.derivedValuesArrayList != null)
+				cap.derivedValuesArrayList.clear();
 			cap.derivedValuesArrayList = new ArrayList<Integer>();
 			cap.derivedValuesArrayList.add(0);
 			ArrayList <Integer> topLevelArray = cap.getYFromPtArray(cap.ptsTop);
@@ -105,7 +106,7 @@ public class MCBuildDetect_Gulps {
 
 	private void getGulps(SequencePlus kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray) {
 		int ix = 0;
-		if (cap.gulpsRois.size() > 0)
+		if (cap.gulpsRois != null)
 			cap.gulpsRois.clear();
 		cap.gulpsRois = new ArrayList <> ();
 		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();

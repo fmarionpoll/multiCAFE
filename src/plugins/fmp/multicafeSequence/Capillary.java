@@ -10,6 +10,7 @@ import java.util.List;
 import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
+import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
 import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
@@ -25,13 +26,18 @@ public class Capillary implements XMLPersistent  {
 	public String						name 					= null;
 	public String 						version 				= null;
 	public ROI2DShape 					roi 					= null;	// the capillary (source)
-	public MCBuildDetect_LimitsOptions 	limitsOptions;
-	public MCBuildDetect_GulpsOptions 	gulpsOptions;
+	public MCBuildDetect_LimitsOptions 	limitsOptions			= new MCBuildDetect_LimitsOptions();
+	public MCBuildDetect_GulpsOptions 	gulpsOptions			= new MCBuildDetect_GulpsOptions();
 	
 	public List<Point2D> 				ptsTop  				= null; 
 	public List<Point2D> 				ptsBottom 				= null; 
 	public Collection<ROI> 				gulpsRois 				= null; 
 	public ArrayList<Integer> 			derivedValuesArrayList 	= null; 
+	
+	public ArrayList<ArrayList<int[]>> masksList = null;
+	public ArrayList <double []> tabValuesList = null;
+	public IcyBufferedImage bufImage = null;
+	
 
 	private final static String ID_META = "metaMC";
 	private final static String ID_ROI = "roiMC";
@@ -322,4 +328,5 @@ public class Capillary implements XMLPersistent  {
 		}
 		return numFromName;
 	}
+
 }

@@ -30,7 +30,7 @@ public class MCKymosTab_Graphs extends JPanel {
 	private JCheckBox 	limitsCheckbox 			= new JCheckBox("top/bottom", true);
 	private JCheckBox 	derivativeCheckbox 		= new JCheckBox("derivative", false);
 	private JCheckBox 	consumptionCheckbox 	= new JCheckBox("consumption", false);
-	private JCheckBox 	deltaCheckbox 			= new JCheckBox("delta (v(t) - v(t-1))", false);
+	private JCheckBox 	deltaCheckbox 			= new JCheckBox("delta (Vt - Vt-1)", false);
 	
 	private JButton displayResultsButton 		= new JButton("Display results");
 	

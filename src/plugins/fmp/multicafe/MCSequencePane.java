@@ -187,8 +187,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	}
 	
 	private void updateParametersForSequence() {
-		int endFrame = parent0.vSequence.seq.getSizeT()-1;
-		browseTab.endFrameTextField.setText( Integer.toString(endFrame));
+		browseTab.endFrameJSpinner.setValue(parent0.vSequence.seq.getSizeT()-1);
 
 		Viewer v = parent0.vSequence.seq.getFirstViewer();
 		if (v != null) {

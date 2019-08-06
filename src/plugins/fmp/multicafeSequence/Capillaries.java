@@ -2,6 +2,7 @@ package plugins.fmp.multicafeSequence;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -20,7 +21,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 public class Capillaries {
 	
 	public double 	volume 				= 5.;
-	public double 	pixels 				= 300.;
+	public int 	pixels 					= 5;
 	public int		grouping 			= 2;
 	public String 	sourceName 			= null;
 	public long 	analysisStart 		= 0;
@@ -60,7 +61,8 @@ public class Capillaries {
 		volume = XMLUtil.getAttributeDoubleValue(xmlVal, "volume_ul", Double.NaN);
 
 		xmlVal = XMLUtil.getElement(xmlElement, "capillaryPixels");
-		pixels = XMLUtil.getAttributeDoubleValue(xmlVal, "npixels", Double.NaN);
+		double dpixels = XMLUtil.getAttributeDoubleValue(xmlVal, "npixels", Double.NaN);
+		pixels = (int) dpixels;
 
 		xmlVal = XMLUtil.getElement(xmlElement, "analysis");
 		if (xmlVal != null) {
@@ -105,7 +107,7 @@ public class Capillaries {
 		XMLUtil.setAttributeDoubleValue(xmlVal, "volume_ul", volume);
 
 		xmlVal = XMLUtil.addElement(xmlElement, "capillaryPixels");
-		XMLUtil.setAttributeDoubleValue(xmlVal, "npixels", pixels);
+		XMLUtil.setAttributeDoubleValue(xmlVal, "npixels", (double) pixels);
 
 		xmlVal = XMLUtil.addElement(xmlElement, "analysis");
 		XMLUtil.setAttributeLongValue(xmlVal, "start", seq.analysisStart);
@@ -128,18 +130,21 @@ public class Capillaries {
 	
 	public void extractLinesFromSequence(SequenceVirtual seq) {
 
-		capillariesArrayList.clear();
 		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
-		 
+		capillariesArrayList.clear();
+		
 		for (ROI2D roi:list)
 		{
-			if ((roi instanceof ROI2DShape) == false)
-				continue;
-			if (!roi.getName().contains("line"))
+			if (!(roi instanceof ROI2DShape) || !roi.getName().contains("line")) 
 				continue;
 			if (roi instanceof ROI2DLine || roi instanceof ROI2DPolyLine)
 				capillariesArrayList.add(new Capillary((ROI2DShape)roi));
-		} 
+		}
+		Collections.sort(capillariesArrayList, new MulticafeTools.CapillaryNameComparator()); 
+		for (int t = 0; t< capillariesArrayList.size(); t++) {
+			Capillary cap = capillariesArrayList.get(t);
+			cap.indexImage = t;
+		}
 	}
 	
 	public boolean xmlWriteROIsAndData(String name, SequenceVirtual seq) {
@@ -156,15 +161,12 @@ public class Capillaries {
 
 		if (csFile != null) 
 		{
-			extractLinesFromSequence(seq);
 			if (capillariesArrayList.size() > 0)
 			{
 				final Document doc = XMLUtil.createDocument(true);
 				if (doc != null)
 				{
 					List<ROI> roisList = new ArrayList<ROI>();
-					for (Capillary cap: capillariesArrayList) 
-						roisList.add(cap.roi);
 					ROI.saveROIsToXML(XMLUtil.getRootElement(doc), roisList);
 					xmlWriteCapillaryParameters (doc, seq);
 					XMLUtil.saveDocument(doc, csFile);
@@ -220,8 +222,11 @@ public class Capillaries {
 				xmlReadCapillaryParameters(doc);
 				List<ROI> listOfROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
 				capillariesArrayList.clear();
-				for (ROI roi: listOfROIs)
-					capillariesArrayList.add(new Capillary((ROI2DShape) roi));
+				for (ROI roi: listOfROIs) {
+					if (!isAlreadyStoredAsCapillary(roi.getName()))
+						capillariesArrayList.add(new Capillary((ROI2DShape) roi));
+				}
+				
 				try  {  
 					for (Capillary cap : capillariesArrayList)  {
 						seq.seq.addROI(cap.roi);
@@ -242,8 +247,19 @@ public class Capillaries {
 		}
 		return false;
 	}
+	
+	private boolean isAlreadyStoredAsCapillary(String name) {
+		boolean flag = false;
+		for (Capillary cap: capillariesArrayList) {
+			if (name .equals (cap.getName())) {
+				flag = true;
+				break;
+			}
+		}
+		return flag;
+	}
 
-	public Capillaries copy (Capillaries cap) {
+	public void copy (Capillaries cap) {
 		
 		volume = cap.volume;
 		pixels = cap.pixels;
@@ -259,7 +275,9 @@ public class Capillaries {
 		experiment = cap.experiment;
 		comment = cap.comment;
 		
-		return cap;
+		capillariesArrayList.clear();
+		for (Capillary ccap: cap.capillariesArrayList)
+			capillariesArrayList.add(ccap);
 	}
 	
 	public boolean isChanged (Capillaries cap) {
