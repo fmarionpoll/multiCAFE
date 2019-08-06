@@ -16,6 +16,7 @@ import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeTools.ImageTransformTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
@@ -124,9 +125,9 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 			tabbedCapillariesAndKymosSelected();
 	}
 
-	void setDetectionParameters(int ikymo) {
-		limitsTab.setInfos(ikymo);
-		gulpsTab.setInfos(ikymo);
+	void setDetectionParameters(Capillary cap) {
+		limitsTab.setInfos(cap);
+		gulpsTab.setInfos(cap);
 	}
 	
 	void kymosBuildFiltered(int zChannelSource, int zChannelDestination, TransformOp transformop, int spanDiff) {
@@ -134,27 +135,30 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		if (tImg == null) 
 			tImg = new ImageTransformTools();
 		tImg.setSpanDiff(spanDiff);
-		
 		int nimages = parent0.vkymos.seq.getSizeT();
 		parent0.vkymos.seq.beginUpdate();
 		tImg.setSequence(parent0.vkymos);
+		parent0.vkymos.updateCapillaries(nimages);
 		
 		for (int t= 0; t < nimages; t++) {
 
+			Capillary cap = parent0.vkymos.capillaries.capillariesArrayList.get(t);
+			cap.indexImage = t;
+			setDetectionParameters(cap);
 			IcyBufferedImage img = parent0.vkymos.seq.getImage(t, zChannelSource);
 			IcyBufferedImage img2 = tImg.transformImage (img, transformop);
 			img2 = tImg.transformImage(img2, TransformOp.RTOGB);
 			
 			if (parent0.vkymos.seq.getSizeZ(0) < (zChannelDestination+1)) 
-				parent0.vkymos.seq.addImage(img2);
+				parent0.vkymos.seq.addImage(t, img2);
 			else
-				parent0.vkymos.seq.setImage(0, zChannelDestination, img2);
-			
-			if (zChannelDestination == 1)
-				parent0.vkymos.transformForLevels = transformop;
-			else
-				parent0.vkymos.transformForGulps = transformop;
+				parent0.vkymos.seq.setImage(t, zChannelDestination, img2);
 		}
+		
+		if (zChannelDestination == 1)
+			parent0.vkymos.transformForLevels = transformop;
+		else
+			parent0.vkymos.transformForGulps = transformop;
 		parent0.vkymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 		parent0.vkymos.seq.dataChanged();
 		parent0.vkymos.seq.endUpdate();

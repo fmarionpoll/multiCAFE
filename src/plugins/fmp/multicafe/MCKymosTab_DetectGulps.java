@@ -19,6 +19,7 @@ import javax.swing.event.ChangeListener;
 
 import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequencePlus;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DLine;
@@ -120,8 +121,8 @@ public class MCKymosTab_DetectGulps extends JPanel {
 	}
 
 	
-	void setInfos(int ikymo) {
-		MCBuildDetect_GulpsOptions options = parent0.vkymos.capillaries.capillariesArrayList.get(ikymo).gulpsOptions;
+	void setInfos(Capillary cap) {
+		MCBuildDetect_GulpsOptions options = cap.gulpsOptions;
 		detectGulpsThresholdSpinner.setValue(options.detectGulpsThreshold);
 		transformForGulpsComboBox.setSelectedItem(options.transformForGulps);
 		detectAllGulpsCheckBox.setSelected(options.detectAllGulps);

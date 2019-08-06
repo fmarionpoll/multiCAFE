@@ -31,8 +31,6 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class SequencePlus extends SequenceVirtual  {
 	
-	public	Capillaries		capillaries 			= null;
-		
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;
 	public 	boolean 		detectTop 				= true;

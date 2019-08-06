@@ -436,6 +436,17 @@ public class SequenceVirtual
 		cages.detect.analysisStep = analysisStep;
 	}
 	
+	public void initCapillaries() {
+		xx
+		
+	}
+	
+	public void updateCapillaries(int size) {
+		if (capillaries == null || capillaries.capillariesArrayList.size() != size)
+			initCapillaries();
+		return;
+	}
+	
 	public void storeAnalysisParametersToCapillaries () {
 		capillaries.analysisStart = analysisStart;
 		capillaries.analysisEnd = analysisEnd;

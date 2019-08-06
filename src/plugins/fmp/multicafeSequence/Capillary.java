@@ -24,7 +24,7 @@ public class Capillary implements XMLPersistent  {
 	public int							indexImage 				= -1;
 	public String						name 					= null;
 	public String 						version 				= null;
-	public ROI2DShape 					roi 					= null;	// the capillary
+	public ROI2DShape 					roi 					= null;	// the capillary (source)
 	public MCBuildDetect_LimitsOptions 	limitsOptions;
 	public MCBuildDetect_GulpsOptions 	gulpsOptions;
 	
