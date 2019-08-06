@@ -85,7 +85,7 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 			if (file != null) {
 				final String filename = file;
 				parent0.capillariesPane.getCapillariesInfos(parent0.vSequence.capillaries);
-				parent0.sequencePane.infosTab.getCapillariesInfos(parent0.vSequence.capillaries);
+				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.vSequence.capillaries);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 					XLSExportMoveResults xlsExport = new XLSExportMoveResults();
 					xlsExport.exportToFile(filename, getMoveOptions());
@@ -101,7 +101,7 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 			if (file != null) {
 				final String filename = file;
 				parent0.capillariesPane.getCapillariesInfos(parent0.vSequence.capillaries);
-				parent0.sequencePane.infosTab.getCapillariesInfos(parent0.vSequence.capillaries);
+				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.vSequence.capillaries);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 					XLSExportCapillaryResults xlsExport = new XLSExportCapillaryResults();
 					xlsExport.exportToFile(filename, getCapillariesOptions());

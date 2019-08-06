@@ -90,14 +90,14 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) {
 			fileTab.capillaryRoisOpen(null);
-		  	setCapillariesInfos(parent0.vSequence);
+		  	setCapillariesInfosToDialog(parent0.vSequence);
 		  	tabsPane.setSelectedIndex(2);
 		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
 		}			  
 		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) {
-			unitsTab.getCapillariesInfos(parent0.vSequence.capillaries);
-			parent0.sequencePane.infosTab.getCapillariesInfos(parent0.vSequence.capillaries);
-			buildarrayTab.getCapillariesInfos(parent0.vSequence.capillaries);
+			unitsTab.getCapillariesInfosFromDialog(parent0.vSequence.capillaries);
+			parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.vSequence.capillaries);
+			buildarrayTab.getCapillariesInfosFromDialog(parent0.vSequence.capillaries);
 			fileTab.capillaryRoisSave();
 			tabsPane.setSelectedIndex(2);
 		}
@@ -124,18 +124,18 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 //		String path = parent0.vSequence.getDirectory();
 		boolean flag = fileTab.capillaryRoisOpen(null);
 		if (flag) {
-			setCapillariesInfos(parent0.vSequence);
-			capold.copy(parent0.vSequence.capillaries);
+			setCapillariesInfosToDialog(parent0.vSequence);
+			capold.getCopy(parent0.vSequence.capillaries);
 		// TODO update measure from to, etc (see "ROIS_OPEN")
 		}
 		return flag;
 	}
 	
-	private void setCapillariesInfos(SequenceVirtual seq) {
-		unitsTab.setCapillariesInfos(seq.capillaries);
+	private void setCapillariesInfosToDialog(SequenceVirtual seq) {
+		unitsTab.setCapillariesInfosToDialog(seq.capillaries);
 		parent0.vSequence.capillaries.extractLinesFromSequence(seq);
-		buildarrayTab.setCapillariesInfos(seq.capillaries);
-		parent0.sequencePane.infosTab.setCapillariesInfos(seq.capillaries);
+		buildarrayTab.setCapillariesInfosToDialog(seq.capillaries);
+		parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seq.capillaries);
 	}
 	
 	boolean saveDefaultCapillaries() {
@@ -144,9 +144,9 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	void getCapillariesInfos(Capillaries cap) {
-		unitsTab.getCapillariesInfos(cap);
-		buildarrayTab.getCapillariesInfos(cap);
-		parent0.sequencePane.infosTab.getCapillariesInfos(cap);
+		unitsTab.getCapillariesInfosFromDialog(cap);
+		buildarrayTab.getCapillariesInfosFromDialog(cap);
+		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(cap);
 	}
 
 	@Override

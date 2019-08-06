@@ -21,6 +21,7 @@ import icy.math.ArrayMath;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
+import icy.system.thread.ThreadUtil;
 import icy.type.collection.array.Array1DUtil;
 
 import plugins.fmp.multicafeTools.ImageOperationsStruct;
@@ -58,7 +59,9 @@ public class SequenceVirtual
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
-	
+	// pre-fetch
+	public VImageBufferThread bufferThread 	= null;
+
 	// ----------------------------------------
 	public SequenceVirtual () 
 	{
@@ -510,4 +513,127 @@ public class SequenceVirtual
         		seq.removeROI(roi, false);
         }    
 	}
+
+	public void vImageBufferThread_START (int numberOfImageForBuffer) {
+		vImageBufferThread_STOP();
+
+		bufferThread = new VImageBufferThread(this, numberOfImageForBuffer);
+		bufferThread.setName("Buffer Thread");
+		bufferThread.setPriority(Thread.NORM_PRIORITY);
+		bufferThread.start();
+	}
+	
+	public void vImageBufferThread_STOP() {
+
+		if (bufferThread != null)
+		{
+			bufferThread.interrupt();
+			try {
+				bufferThread.join();
+			}
+			catch (final InterruptedException e1) { e1.printStackTrace(); }
+		}
+		// TODO clean buffer by removing images?
+	}
+
+	public void cleanUpBufferAndRestart() {
+		if (bufferThread == null)
+			return;
+		int depth = bufferThread.getFenetre();
+		vImageBufferThread_STOP();
+//		for (int t = 0; t < nTotalFrames-1 ; t++) {
+//			seq.removeImage(t, 0);
+//		}
+		vImageBufferThread_START(depth);
+	}
+	
+	public class VImageBufferThread extends Thread {
+
+		/**
+		 * pre-fetch files / companion to SequenceVirtual
+		 */
+
+		private int fenetre = 20; // 100;
+		private int span = fenetre/2;
+
+		public VImageBufferThread() {
+			bBufferON = true;
+		}
+
+		public VImageBufferThread(SequenceVirtual vseq, int depth) {
+			fenetre = depth;
+			span = fenetre/2 * analysisStep;
+			bBufferON = true;
+		}
+		
+		public void setFenetre (int depth) {
+			fenetre = depth;
+			span = fenetre/2 * analysisStep;
+		}
+
+		public int getFenetre () {
+			return fenetre;
+		}
+		public int getStep() {
+			return analysisStep;
+		}
+
+		public int getCurrentBufferLoadPercent()
+		{
+			int currentBufferPercent = 0;
+			int frameStart = currentFrame-span; 
+			int frameEnd = currentFrame + span;
+			if (frameStart < 0) 
+				frameStart = 0;
+			if (frameEnd >= (int) nTotalFrames) 
+				frameEnd = (int) nTotalFrames-1;
+
+			float nbImage = 1;
+			float nbImageLoaded = 1;
+			for (int t = frameStart; t <= frameEnd; t+= analysisStep) {
+				nbImage++;
+				if (seq.getImage(t, 0) != null)
+					nbImageLoaded++;
+			}
+			currentBufferPercent = (int) (nbImageLoaded * 100f / nbImage);
+			return currentBufferPercent;
+		}
+
+		@Override
+		public void run()
+		{
+			try
+			{
+				while (!isInterrupted())
+				{
+					ThreadUtil.sleep(100);
+
+					int frameStart 	= currentFrame - span;
+					int frameEnd 	= currentFrame + span;
+					if (frameStart < 0) 
+						frameStart = 0;
+					if (frameEnd > nTotalFrames) 
+						frameEnd = nTotalFrames;
+			
+					// clean all images except those within the buffer 
+//					for (int t = 0; t < nTotalFrames-1 ; t+= analysisStep) { // t++) {
+//						if (t < frameStart || t > frameEnd)
+//							seq.removeImage(t, 0);
+//						
+//						if (isInterrupted())
+//							return;
+//					}
+					
+					for (int t = frameStart; t < frameEnd ; t+= analysisStep) {	
+						seq.getImage(t, 0);
+						if (isInterrupted())
+							return;
+					}
+				}			
+			}
+			catch (final Exception e) 
+			{ e.printStackTrace(); }
+		}
+	}
+
 }

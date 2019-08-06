@@ -38,7 +38,6 @@ public class Capillary implements XMLPersistent  {
 	public ArrayList <double []> tabValuesList = null;
 	public IcyBufferedImage bufImage = null;
 	
-
 	private final static String ID_META = "metaMC";
 	private final static String ID_ROI = "roiMC";
 	private final static String ID_GULPS = "gulpsMC";
@@ -57,7 +56,6 @@ public class Capillary implements XMLPersistent  {
 	}
 	
 	public Capillary() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getName() {
@@ -213,11 +211,11 @@ public class Capillary implements XMLPersistent  {
 	    
 	    if (nodeMeta != null)
 	    {
-	    	version = XMLUtil.getElementValue(nodeMeta, "capillary ", "version 1.0.0");
+	    	version = XMLUtil.getElementValue(nodeMeta, "capillary__", "version 1.0.0");
 	        
 	    	indexImage = XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        name = XMLUtil.getElementValue(nodeMeta, ID_NAME, name);
-	        roi = (ROI2DShape) loadROIFromXML(nodeMeta);
+	        roi = (ROI2DShape) loadSingleROIFromXML(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
 	        gulpsOptions.loadFromXML(nodeMeta);
 	    }
@@ -231,7 +229,7 @@ public class Capillary implements XMLPersistent  {
 	    {
 	    	if (version == null)
 	    		version = "version 1.0.0";
-	    	XMLUtil.setElementValue(nodeMeta, "capillary ", version);
+	    	XMLUtil.setElementValue(nodeMeta, "capillary__", version);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        XMLUtil.setElementValue(nodeMeta, ID_NAME, name);
 	        saveROIToXML(nodeMeta, roi); 
@@ -249,7 +247,7 @@ public class Capillary implements XMLPersistent  {
         }
 	}
  
-	private ROI loadROIFromXML(Node node) {
+	private ROI loadSingleROIFromXML(Node node) {
 		final Node nodeROI = XMLUtil.getElement(node, ID_ROI);
         if (nodeROI != null) {
 			ROI roi = ROI.createFromXML(nodeROI);
