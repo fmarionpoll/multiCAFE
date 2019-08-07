@@ -553,7 +553,7 @@ public class SequenceVirtual
 		 * pre-fetch files / companion to SequenceVirtual
 		 */
 
-		private int fenetre = 20; // 100;
+		private int fenetre = 100; //20; // 100;
 		private int span = fenetre/2;
 
 		public VImageBufferThread() {

@@ -56,7 +56,6 @@ public class BuildKymographsThread implements Runnable
 		sequenceViewer = Icy.getMainInterface().getFirstViewer(options.vSequence.seq);
 		int ipixelcolumn = 0;
 		getImageAndUpdateViewer (options.startFrame);
-		
 		seqForRegistration.addImage(0, workImage);
 		seqForRegistration.addImage(1, workImage);
 		int nbcapillaries = vkymos.capillaries.capillariesArrayList.size();
@@ -66,12 +65,13 @@ public class BuildKymographsThread implements Runnable
 			progressBar.updatePositionAndTimeLeft(t);
 			if (!getImageAndUpdateViewer (t))
 				continue;
+			
 			if (options.doRegistration ) {
 				adjustImage();
 			}
 			transferWorkImageToDoubleArrayList ();
 			
-			for (int iroi=0; iroi < nbcapillaries; iroi++)
+			for (int iroi=nbcapillaries-1; iroi >= 0; iroi--)
 			{
 				Capillary cap = vkymos.capillaries.capillariesArrayList.get(iroi);
 				final int t_out = ipixelcolumn;
@@ -94,6 +94,7 @@ public class BuildKymographsThread implements Runnable
 				}
 			}
 		}
+
 		options.vSequence.seq.endUpdate();
 		vkymos.seq.removeAllImages();
 

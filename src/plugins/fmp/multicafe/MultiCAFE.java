@@ -110,12 +110,14 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			capillariesPane.optionsTab.viewKymosCheckBox.setSelected(true);
 		}
 		else if (arg0.getPropertyName().equals("SEQ_SAVEMEAS")) {
-			capillariesPane.getCapillariesInfos(vSequence.capillaries);
-			sequencePane.infosTab.getCapillariesInfosFromDialog(vSequence.capillaries);
-			if (capillariesPane.capold.isChanged(vSequence.capillaries)) {
-				capillariesPane.saveDefaultCapillaries();
-				kymographsPane.fileTab.saveKymosMeasures();
-				movePane.saveDefaultCages();
+			if (vSequence != null) {
+				capillariesPane.getCapillariesInfos(vSequence.capillaries);
+				sequencePane.infosTab.getCapillariesInfosFromDialog(vSequence.capillaries);
+				if (capillariesPane.capold.isChanged(vSequence.capillaries)) {
+					capillariesPane.saveDefaultCapillaries();
+					kymographsPane.fileTab.saveKymosMeasures();
+					movePane.saveDefaultCages();
+				}
 			}
 		}
 		else if (arg0.getPropertyName() .equals("EXPORT_TO_EXCEL")) {

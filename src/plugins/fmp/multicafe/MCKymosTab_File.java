@@ -55,7 +55,6 @@ public class MCKymosTab_File  extends JPanel {
 			}});	
 	}
 
-	// ASSUME: same parameters for each kymograph
 	boolean openKymosMeasures() {
 		
 		String directory = parent0.vSequence.getDirectory();
@@ -80,22 +79,22 @@ public class MCKymosTab_File  extends JPanel {
 		}
 		parent0.vkymos.seq.endUpdate();
 		
-// TODO??	if (parent0.kymographArrayList.size() >0 ) {
-//			SequencePlus seq = parent0.kymographArrayList.get(0);
-//			if (seq.analysisEnd > seq.analysisStart) {
-//				parent0.vSequence.analysisStart = seq.analysisStart; 
-//				parent0.vSequence.analysisEnd 	= seq.analysisEnd;
-//				parent0.vSequence.analysisStep 	= seq.analysisStep;
-//			}
-//		}
+		if (parent0.vkymos.seq.getSizeT() >0 ) {
+			if (parent0.vkymos.analysisEnd > parent0.vkymos.analysisStart) {
+				parent0.vSequence.analysisStart = parent0.vkymos.analysisStart; 
+				parent0.vSequence.analysisEnd 	= parent0.vkymos.analysisEnd;
+				parent0.vSequence.analysisStep 	= parent0.vkymos.analysisStep;
+			}
+		}
 			
 		isRunning = false;
 		return flag;
 	}
 	
 	void saveKymosMeasures() {
-		
-		SequencePlusUtils.transferSequenceInfoToKymos(parent0.vkymos, parent0.vSequence);
-		SequencePlusUtils.saveKymosMeasures(parent0.vkymos, parent0.vSequence.getDirectory());
+		if (parent0.vkymos != null) {
+			SequencePlusUtils.transferSequenceInfoToKymos(parent0.vkymos, parent0.vSequence);
+			SequencePlusUtils.saveKymosMeasures(parent0.vkymos, parent0.vSequence.getDirectory());
+		}
 	}
 }
