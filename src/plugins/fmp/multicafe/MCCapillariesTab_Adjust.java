@@ -69,7 +69,7 @@ public class MCCapillariesTab_Adjust extends JPanel {
 		int chan = 0;
 		int jitter = (int) jitterJSpinner.getValue();
 		int t = parent0.vSequence.currentFrame;
-		parent0.vSequence.setCurrentVImage(t);
+		parent0.vSequence.seq.setPositionT(t);
 		IcyBufferedImage vinputImage = parent0.vSequence.seq.getImage(t, 0, chan) ;
 		if (vinputImage == null) {
 			System.out.println("An error occurred while reading image: " + t );

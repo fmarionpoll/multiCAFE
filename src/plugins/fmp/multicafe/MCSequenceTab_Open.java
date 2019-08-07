@@ -1,7 +1,6 @@
 package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,7 +44,7 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 	private JButton 	openButton				= new JButton("Open...");
 	private JButton 	addButton				= new JButton("Add...");
 	private JButton		showButton 				= new JButton("Search for files...");
-	private JButton		closeButton				= new JButton("Close dialog");
+	private JButton		closeButton				= new JButton("Close search dialog");
 	private JCheckBox	capillariesCheckBox		= new JCheckBox("capillaries", true);
 	private JCheckBox	cagesCheckBox			= new JCheckBox("cages", true);
 	private JCheckBox	kymographsCheckBox		= new JCheckBox("kymographs", true);
@@ -53,7 +52,7 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 	JCheckBox			graphsCheckBox			= new JCheckBox("graphs", true);
 
 	private JTextField 	filterTextField 		= new JTextField("capillarytrack");
-	private JButton 	findButton				= new JButton("Select directory...");
+	private JButton 	findButton				= new JButton("Select root directory and search...");
 	private JButton 	clearSelectedButton		= new JButton("Clear selected");
 	private JButton 	clearAllButton			= new JButton("Clear all");
 	private JButton 	addSelectedButton		= new JButton("Add selected");
@@ -72,17 +71,7 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 		
 		add( GuiUtil.besidesPanel(openButton, addButton));
 		add( GuiUtil.besidesPanel(showButton, closeButton));
-		
-		JPanel panel = new JPanel();
-		panel.setLayout(new FlowLayout());
-		panel.add(capillariesCheckBox); 
-		panel.add(kymographsCheckBox);
-		panel.add(cagesCheckBox);
-		panel.add(measuresCheckBox);
-		panel.add(graphsCheckBox);
-		FlowLayout layout1 = (FlowLayout) panel.getLayout();
-		layout1.setVgap(0);
-		add( GuiUtil.besidesPanel(panel));
+		add( GuiUtil.besidesPanel(capillariesCheckBox, kymographsCheckBox, cagesCheckBox, measuresCheckBox, graphsCheckBox));
 		
 		showButton.addActionListener(new ActionListener()  {
             @Override

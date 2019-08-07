@@ -34,10 +34,11 @@ public class MCSequenceTab_Close  extends JPanel {
 		
 	void closeAll() {
 		
-		if (parent0.vkymos != null) {
+		if (parent0.vkymos != null && parent0.vkymos.seq != null) {
 			parent0.vkymos.seq.close();
 			parent0.vkymos = null;
-		}		
+		}
+		
 		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
 
@@ -45,6 +46,7 @@ public class MCSequenceTab_Close  extends JPanel {
 			parent0.vSequence.seq.close();
 			parent0.vSequence = null;
 		}
+
 		parent0.capillariesPane.optionsTab.kymographNamesComboBox.removeAllItems();
 	}
 

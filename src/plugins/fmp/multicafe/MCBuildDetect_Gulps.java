@@ -31,7 +31,7 @@ public class MCBuildDetect_Gulps {
 		
 		seqkymo.seq.beginUpdate();
 		
-		for (int t = tfirst; t <= tlast; t++) 
+		for (int t=tfirst; t <= tlast; t++) 
 		{
 			progressBar.updatePositionAndTimeLeft(t);
 			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(t);
@@ -101,7 +101,6 @@ public class MCBuildDetect_Gulps {
 		roiMaxTrack.setColor(Color.yellow);
 		roiMaxTrack.setStroke(1);
 		roiMaxTrack.setPoints(listOfMaxPoints);
-		roiMaxTrack.setT(t);
 		kymographSeq.seq.addROI(roiMaxTrack, false);
 	}
 

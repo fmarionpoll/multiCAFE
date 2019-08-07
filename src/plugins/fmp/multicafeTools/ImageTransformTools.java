@@ -51,7 +51,7 @@ public class ImageTransformTools {
 	
 	public void setSequence (SequenceVirtual vinputSeq) {
 		vinputSequence = vinputSeq;
-		referenceImage = vinputSequence.loadVImage(0);
+		referenceImage = vinputSequence.loadVImage(0, 0);
 	}
 		
 	public IcyBufferedImage transformImage (IcyBufferedImage inputImage, TransformOp transformop) {
@@ -88,7 +88,7 @@ public class ImageTransformTools {
 		case REF_PREVIOUS: 
 			int t = vinputSequence.currentFrame;
 			if (t>0){
-				referenceImage = vinputSequence.loadVImage(t-1); 
+				referenceImage = vinputSequence.loadVImage(t-1, 0); 
 				transformedImage= functionSubtractRef(inputImage);} 
 			break;
 			
@@ -104,7 +104,7 @@ public class ImageTransformTools {
 	}
 	
 	public IcyBufferedImage transformImageFromVirtualSequence (int t, TransformOp transformop) {
-		return transformImage(vinputSequence.loadVImage(t), transformop);
+		return transformImage(vinputSequence.loadVImage(t, 0), transformop);
 	}
 		
 	// function proposed by François Rebaudo
@@ -360,11 +360,8 @@ public class ImageTransformTools {
 	
 	private IcyBufferedImage functionSubtractRef(IcyBufferedImage sourceImage) {
 		
-		/* algorithm borrowed from  Perrine.Paul-Gilloteaux@univ-nantes.fr in EC-CLEM
-		 * original function: private IcyBufferedImage substractbg(Sequence ori, Sequence bg,int t, int z) 
-		 */
 		if (referenceImage == null)
-			referenceImage = vinputSequence.loadVImage(0);
+			referenceImage = vinputSequence.loadVImage(0, 0);
 		
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getSizeX(), sourceImage.getSizeY(),sourceImage.getSizeC(), sourceImage.getDataType_());
 		

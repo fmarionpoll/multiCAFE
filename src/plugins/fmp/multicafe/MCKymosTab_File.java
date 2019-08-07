@@ -58,26 +58,28 @@ public class MCKymosTab_File  extends JPanel {
 	boolean openKymosMeasures() {
 		
 		String directory = parent0.vSequence.getDirectory();
-		parent0.vkymos.seq.beginUpdate();
-		for (Capillary cap: parent0.vkymos.capillaries.capillariesArrayList) {
-			
-			boolean flag2 = true;
-			if (flag2 = parent0.vkymos.loadXMLKymographAnalysis(cap, directory)) {
-				parent0.vkymos.validateRois();
+		if (parent0.vkymos.seq != null) {
+			parent0.vkymos.seq.beginUpdate();
+			for (Capillary cap: parent0.vkymos.capillaries.capillariesArrayList) {
+				
+				boolean flag2 = true;
+				if (flag2 = parent0.vkymos.loadXMLKymographAnalysis(cap, directory)) {
+					parent0.vkymos.validateRois();
 //	TODO??			parent0.vkymos.getArrayListFromRois(EnumArrayListType.cumSum);
+				}
+				else {
+					System.out.println("load measures -> failed or not found in directory: " + directory);
+				}
+				
+				if (!flag2)
+					flag = false;
+				if (isInterrupted) {
+					isInterrupted = false;
+					break;
+				}
 			}
-			else {
-				System.out.println("load measures -> failed or not found in directory: " + directory);
-			}
-			
-			if (!flag2)
-				flag = false;
-			if (isInterrupted) {
-				isInterrupted = false;
-				break;
-			}
+			parent0.vkymos.seq.endUpdate();
 		}
-		parent0.vkymos.seq.endUpdate();
 		
 		if (parent0.vkymos.seq.getSizeT() >0 ) {
 			if (parent0.vkymos.analysisEnd > parent0.vkymos.analysisStart) {

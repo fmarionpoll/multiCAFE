@@ -106,12 +106,12 @@ public class MCCapillariesTab_Build extends JPanel {
 		selectRegularButton.setSelected(!flag);
 	}
 	
-	void setCapillariesInfosToDialog(Capillaries cap) {
+	void setCapillariesInfos(Capillaries cap) {
 		setNbCapillaries(cap.capillariesArrayList.size());
 		setGroupedBy2(cap.grouping == 2);
 	}
 	
-	Capillaries getCapillariesInfosFromDialog(Capillaries cap) {
+	Capillaries getCapillariesInfos(Capillaries cap) {
 		//cap.capillariesArrayList.Setsize() getNbCapillaries();
 		cap.grouping = getGroupedBy2() ? 2: 1;
 		return cap;

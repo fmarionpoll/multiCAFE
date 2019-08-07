@@ -187,9 +187,12 @@ public class SequencePlusUtils {
 	
 	public static void saveKymosMeasures (SequencePlus vkymos, String directory) {
 		
+		if (vkymos == null || vkymos.capillaries == null)
+			return;
+			
 		isRunning = true;
 		ProgressFrame progress = new ProgressFrame("Save kymograph measures");
-		progress.setLength(vkymos.seq.getSizeT());
+		progress.setLength(vkymos.capillaries.capillariesArrayList.size());
 		
 		for (Capillary cap : vkymos.capillaries.capillariesArrayList) {
 			if (isInterrupted) {

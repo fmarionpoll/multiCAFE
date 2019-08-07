@@ -102,10 +102,7 @@ private BuildKymographs 	parent0 	= null;
 		initInputSequenceViewer();
 		startstopBufferingThread();
 		
-		if (!vSequence.setCurrentVImage(0)) {
-			System.out.println("first image from sequence "+oo+ " could not be opened: skip record");
-			return;
-		}
+		vSequence.seq.setPositionT(0);
 		kymosBuildKymographs();
 	}
 	

@@ -1,6 +1,5 @@
 package plugins.fmp.multicafeSequence;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,13 +9,10 @@ import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import icy.canvas.Canvas2D;
 import icy.file.Loader;
 import icy.gui.dialog.LoaderDialog;
-import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
-import icy.main.Icy;
 import icy.math.ArrayMath;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
@@ -55,13 +51,12 @@ public class SequenceVirtual
 	public double [][] 				data_filtered 			= null;
 	
 	// image cache
+	public VImageBufferThread 		bufferThread 			= null;
 	public IcyBufferedImage 		cacheTransformedImage 	= null;
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
-	// pre-fetch
-	public VImageBufferThread bufferThread 	= null;
-
+	
 	// ----------------------------------------
 	public SequenceVirtual () 
 	{
@@ -89,8 +84,11 @@ public class SequenceVirtual
 		listFiles.clear();
 		for (String cs: listNames)
 			listFiles.add(cs);
-		loadSequenceFromList(listFiles);
-		seq.setName(listFiles.get(0));
+		if (loadSequenceFromList(listFiles)) {
+			Path path = Paths.get(listFiles.get(0));
+			String dir = path.getName(path.getNameCount()-1).toString();
+			seq.setName(dir);
+		}
 	}
 	
 	public static boolean acceptedFileType(String name) {
@@ -104,38 +102,6 @@ public class SequenceVirtual
 		}
 		return false;
 	}	
-
-	public void displayRelativeFrame( int nbFrame )
-	{
-		int currentTime = getT()+ nbFrame ;
-		if (currentTime < 0)
-			currentTime = 0;
-		if (currentTime > nTotalFrames-1)
-			currentTime = (int) (nTotalFrames -1);
-
-		final Viewer v = Icy.getMainInterface().getFirstViewer(seq);
-		if (v != null) 
-			v.setPositionT(currentTime);
-		displayImageAt(currentTime);
-	}
-
-	public void displayImageAt(int t)
-	{
-		currentFrame = t;
-		if (seq.getImage(t, 0) == null)
-		{
-			final boolean wasEmpty = (seq.getNumImage() == 0);
-			setCurrentVImage (t);
-			if (wasEmpty)
-			{
-				for (Viewer viewer : seq.getViewers())
-				{
-					if (viewer.getCanvas() instanceof Canvas2D)
-						((Canvas2D) viewer.getCanvas()).fitCanvasToImage();
-				}
-			}
-		}
-	}
 
 	public String getDirectory () {
 		return directory;
@@ -151,21 +117,21 @@ public class SequenceVirtual
 	
 	public IcyBufferedImage loadVImageAndSubtractReference(int t, TransformOp transformop)
 	{
-		IcyBufferedImage ibufImage = loadVImage(t);
+		IcyBufferedImage ibufImage = loadVImage(t, 0);
 		switch (transformop) {
 			case REF_PREVIOUS: // subtract image n-analysisStep
 			{
 				int t0 = t-analysisStep;
 				if (t0 <0)
 					t0 = 0;
-				IcyBufferedImage ibufImage0 = loadVImage(t0);
+				IcyBufferedImage ibufImage0 = loadVImage(t0, 0);
 				ibufImage = subtractImages (ibufImage, ibufImage0);
 			}	
 				break;
 			case REF_T0: // subtract reference image
 			case REF:
 				if (refImage == null)
-					refImage = loadVImage((int) analysisStart);
+					refImage = loadVImage((int) analysisStart, 0);
 				ibufImage = subtractImages (ibufImage, refImage);
 				break;
 
@@ -178,18 +144,6 @@ public class SequenceVirtual
 		
 	public List <String> getListofFiles() {
 		return listFiles;
-	}
-
-	public int getT() {
-		return currentFrame;
-	}
-
-	public double getVData(int t, int z, int c, int y, int x)
-	{
-		final IcyBufferedImage img = loadVImage(t);
-		if (img != null)
-			return img.getData(x, y, c);
-		return 0d;
 	}
 
 	public String getDecoratedImageName(int t)
@@ -215,23 +169,6 @@ public class SequenceVirtual
 		return seq.getImage(t, z);
 	}
 	
-	public IcyBufferedImage loadVImage(int t)
-	{
-		return seq.getImage(t, 0);
-	}
-	
-	public boolean setCurrentVImage(int t)
-	{
-		BufferedImage bimage = loadVImage(t);
-		if (bimage == null)
-			return false;
-
-		seq.setImage(t, 0, bimage);
-		setVImageName(t);		
-		currentFrame = t;
-		return true;
-	}
-
 	public String[] keepOnlyAcceptedNames(String[] rawlist) {
 		// -----------------------------------------------
 		// subroutines borrowed from FolderOpener
@@ -330,22 +267,27 @@ public class SequenceVirtual
 		loadSequenceFromList(listFiles);
 	}
 	
-	private void loadSequenceFromList(List<String> listFiles) {
+	private boolean loadSequenceFromList(List<String> listFiles) {
+		boolean flag = false;
 		List<Sequence> lseq = Loader.loadSequences(null, listFiles, 0, false, false, false, true);
-		seq = lseq.get(0);
-		if (lseq.size()>1) {
-			seq = new Sequence();
-			int tmax = lseq.get(0).getSizeT();
-			int tseq = 0;
-			for (int t = 0; t < tmax; t++) {
-				for (int i=0; i < lseq.size(); i++) {
-					IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
-					seq.setImage(tseq, 0, bufImg);
-					tseq++;
+		if (lseq.size() > 0) {
+			flag = true;
+			seq = lseq.get(0);
+			if (lseq.size()>1) {
+				seq = new Sequence();
+				int tmax = lseq.get(0).getSizeT();
+				int tseq = 0;
+				for (int t = 0; t < tmax; t++) {
+					for (int i=0; i < lseq.size(); i++) {
+						IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
+						seq.setImage(tseq, 0, bufImg);
+						tseq++;
+					}
 				}
 			}
+			status = EnumStatus.FILESTACK;
 		}
-		status = EnumStatus.FILESTACK;
+		return flag;
 	}
 		
 	public String loadVirtualStackAt(String textPath) {
@@ -412,11 +354,6 @@ public class SequenceVirtual
 			loadSequenceFromListAndDirectory(list, directory);
 	}
 	
-	private void setVImageName(int t) {
-		if (status == EnumStatus.FILESTACK)
-			seq.setName(getDecoratedImageName(t));
-	}
-
 	public String getFileName() {
 		if (seq != null)
 			return seq.getFilename();
@@ -439,16 +376,13 @@ public class SequenceVirtual
 		cages.detect.analysisStep = analysisStep;
 	}
 	
-	public void initCapillaries() {
-		if (capillaries == null)
-			capillaries = new Capillaries();
-		capillaries.extractLinesFromSequence(this);
-		storeAnalysisParametersToCapillaries();
-	}
-	
 	public void updateCapillaries(int size) {
-		if (capillaries == null || capillaries.capillariesArrayList.size() != size)
-			initCapillaries();
+		if (capillaries == null || capillaries.capillariesArrayList.size() != size) {
+			if (capillaries == null)
+				capillaries = new Capillaries();
+			capillaries.extractLinesFromSequence(this);
+			storeAnalysisParametersToCapillaries();
+		}
 		return;
 	}
 	
@@ -513,7 +447,9 @@ public class SequenceVirtual
         		seq.removeROI(roi, false);
         }    
 	}
-
+	
+	// --------------------------
+	
 	public void vImageBufferThread_START (int numberOfImageForBuffer) {
 		vImageBufferThread_STOP();
 
@@ -553,7 +489,7 @@ public class SequenceVirtual
 		 * pre-fetch files / companion to SequenceVirtual
 		 */
 
-		private int fenetre = 100; //20; // 100;
+		private int fenetre = 20; // 100;
 		private int span = fenetre/2;
 
 		public VImageBufferThread() {
@@ -578,27 +514,6 @@ public class SequenceVirtual
 			return analysisStep;
 		}
 
-		public int getCurrentBufferLoadPercent()
-		{
-			int currentBufferPercent = 0;
-			int frameStart = currentFrame-span; 
-			int frameEnd = currentFrame + span;
-			if (frameStart < 0) 
-				frameStart = 0;
-			if (frameEnd >= (int) nTotalFrames) 
-				frameEnd = (int) nTotalFrames-1;
-
-			float nbImage = 1;
-			float nbImageLoaded = 1;
-			for (int t = frameStart; t <= frameEnd; t+= analysisStep) {
-				nbImage++;
-				if (seq.getImage(t, 0) != null)
-					nbImageLoaded++;
-			}
-			currentBufferPercent = (int) (nbImageLoaded * 100f / nbImage);
-			return currentBufferPercent;
-		}
-
 		@Override
 		public void run()
 		{
@@ -614,18 +529,19 @@ public class SequenceVirtual
 						frameStart = 0;
 					if (frameEnd > nTotalFrames) 
 						frameEnd = nTotalFrames;
-			
+
+/*
 					// clean all images except those within the buffer 
-//					for (int t = 0; t < nTotalFrames-1 ; t+= analysisStep) { // t++) {
-//						if (t < frameStart || t > frameEnd)
-//							seq.removeImage(t, 0);
-//						
-//						if (isInterrupted())
-//							return;
-//					}
-					
+					for (int t = 0; t < nTotalFrames-1 ; t+= analysisStep) { // t++) {
+						if (t < frameStart || t > frameEnd)
+							seq.removeImage(t, 0);
+						
+						if (isInterrupted())
+							return;
+					}
+*/					
 					for (int t = frameStart; t < frameEnd ; t+= analysisStep) {	
-						seq.getImage(t, 0);
+						seq.getImage(t, 0, false);
 						if (isInterrupted())
 							return;
 					}
@@ -635,5 +551,4 @@ public class SequenceVirtual
 			{ e.printStackTrace(); }
 		}
 	}
-
 }

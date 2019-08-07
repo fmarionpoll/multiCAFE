@@ -156,6 +156,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
+/*
 	void startstopBufferingThread() {
 
 		if (parent0.vSequence == null)
@@ -166,6 +167,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		parent0.vSequence.cleanUpBufferAndRestart();
 		parent0.vSequence.vImageBufferThread_START(100); //numberOfImageForBuffer);
 	}
+*/
 
 	boolean sequenceCreateNew (String filename) {
 		if (parent0.vSequence != null)
@@ -179,7 +181,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 			guiPrefs.put("lastUsedPath", path);
 			parent0.addSequence(parent0.vSequence.seq);
 			parent0.vSequence.seq.addListener(parent0);
-			startstopBufferingThread();
+//			startstopBufferingThread();
 		}
 		return (path != null);
 	}

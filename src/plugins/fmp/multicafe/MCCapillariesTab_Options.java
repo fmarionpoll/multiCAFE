@@ -197,7 +197,7 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 			itemupfront = 0;
 			kymographNamesComboBox.setSelectedIndex(0);
 		}
-		parent0.vkymos.displayImageAt(itemupfront);
+		parent0.vkymos.seq.setPositionT(itemupfront);
 	}
 
 	void displayViews (boolean bEnable) {

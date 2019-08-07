@@ -42,13 +42,13 @@ public class MCSequenceTab_Infos  extends JPanel {
 		
 		JPanel k2Panel = new JPanel();
 		k2Panel.setLayout(new BorderLayout());
-		k2Panel.add(previousButton, BorderLayout.LINE_START); 
+		k2Panel.add(previousButton, BorderLayout.WEST); 
 		int bWidth = 30;
 		int height = 10;
 		previousButton.setPreferredSize(new Dimension(bWidth, height));
 		k2Panel.add(experimentComboBox, BorderLayout.CENTER);
 		nextButton.setPreferredSize(new Dimension(bWidth, height)); 
-		k2Panel.add(nextButton, BorderLayout.LINE_END);
+		k2Panel.add(nextButton, BorderLayout.EAST);
 		add(GuiUtil.besidesPanel( k2Panel));
 		
 		add( GuiUtil.besidesPanel(
@@ -128,7 +128,7 @@ public class MCSequenceTab_Infos  extends JPanel {
 		
 	// set/ get
 	
-	void setCapillariesInfosToDialog(Capillaries cap) {
+	void setCapillariesInfos(Capillaries cap) {
 
 		addItem(boxID_JCombo, cap.boxID);
 		addItem(experimentJCombo, cap.experiment);

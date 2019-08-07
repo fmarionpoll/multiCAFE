@@ -85,22 +85,6 @@ public class Capillaries {
 			experiment 	= XMLUtil.getAttributeValue(xmlVal, "expt", "experiment");
 			comment 	= XMLUtil.getAttributeValue(xmlVal, "comment", ".");
 		}
-		
-		xmlVal = XMLUtil.getElement(xmlElement, "Capillaries");
-		if (xmlVal != null) {
-			int nitems = XMLUtil.getAttributeIntValue(xmlVal, "nitems", 0);
-			if(nitems > 0) {
-				capillariesArrayList.clear();	
-				for (int i= 0; i < nitems; i++) {
-					Node nodei = XMLUtil.getElement(xmlElement, "capillary_"+i);
-					if (nodei != null) {
-						Capillary cap = new Capillary();
-						cap.loadFromXML(nodei);
-						capillariesArrayList.add(cap);
-					}
-				}
-			}
-		}
 		return true;
 	}
 	
@@ -141,19 +125,6 @@ public class Capillaries {
 		XMLUtil.setAttributeValue(xmlVal, "expt", experiment);
 		XMLUtil.setAttributeValue(xmlVal, "comment", comment);
 
-		
-		xmlVal = XMLUtil.addElement(xmlElement, "Capillaries");
-		XMLUtil.setAttributeIntValue(xmlVal, "nitems", capillariesArrayList.size());
-		if(capillariesArrayList.size() > 0) {
-				
-			int i = 0;
-			for (Capillary cap: capillariesArrayList) {
-				Node nodei = XMLUtil.addElement(xmlElement, "capillary_"+i);
-				if (nodei != null)
-					cap.saveToXML(nodei);
-				i++;
-			}
-		}
 		return true;
 	}
 	
@@ -195,7 +166,7 @@ public class Capillaries {
 				final Document doc = XMLUtil.createDocument(true);
 				if (doc != null)
 				{
-					List<ROI> roisList = seq.seq.getROIs();
+					List<ROI> roisList = new ArrayList<ROI>();
 					ROI.saveROIsToXML(XMLUtil.getRootElement(doc), roisList);
 					xmlWriteCapillaryParameters (doc, seq);
 					XMLUtil.saveDocument(doc, csFile);
@@ -250,6 +221,7 @@ public class Capillaries {
 			if (doc != null) {
 				xmlReadCapillaryParameters(doc);
 				List<ROI> listOfROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
+				capillariesArrayList.clear();
 				for (ROI roi: listOfROIs) {
 					if (!isAlreadyStoredAsCapillary(roi.getName()))
 						capillariesArrayList.add(new Capillary((ROI2DShape) roi));
@@ -287,7 +259,7 @@ public class Capillaries {
 		return flag;
 	}
 
-	public void getCopy (Capillaries cap) {
+	public void copy (Capillaries cap) {
 		
 		volume = cap.volume;
 		pixels = cap.pixels;

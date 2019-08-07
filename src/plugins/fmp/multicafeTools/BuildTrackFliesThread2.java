@@ -139,7 +139,7 @@ public class BuildTrackFliesThread2  implements Runnable {
 				progress.setMessage( "Processing: " + pos + " % - Elapsed time: " + nbSeconds + " s - Estimated time left: " + timeleft + " s");
 
 				// load next image and compute threshold
-				IcyBufferedImage currentImage = vSequence.loadVImage(t);
+				IcyBufferedImage currentImage = vSequence.loadVImage(t, 0);
 				vSequence.currentFrame = t;
 				viewer.setPositionT(t);
 				viewer.setTitle(vSequence.getDecoratedImageName(t));
@@ -365,7 +365,7 @@ public class BuildTrackFliesThread2  implements Runnable {
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		
 		int nfliesRemoved = 0;
-		vSequence.refImage = IcyBufferedImageUtil.getCopy(vSequence.loadVImage(startFrame));
+		vSequence.refImage = IcyBufferedImageUtil.getCopy(vSequence.loadVImage(startFrame, 0));
 		
 		initParametersForDetection();
 		initialflyRemoved.clear();
@@ -383,7 +383,7 @@ public class BuildTrackFliesThread2  implements Runnable {
 		
 		for (int t = startFrame +1 ; t <= endFrame && !stopFlag; t  += analyzeStep )
 		{				
-			IcyBufferedImage currentImage = vSequence.loadVImage(t);
+			IcyBufferedImage currentImage = vSequence.loadVImage(t, 0);
 			vSequence.currentFrame = t;
 			viewer.setPositionT(t);
 			viewer.setTitle(vSequence.getDecoratedImageName(t));
