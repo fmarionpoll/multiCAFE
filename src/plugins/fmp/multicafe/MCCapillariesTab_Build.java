@@ -106,7 +106,7 @@ public class MCCapillariesTab_Build extends JPanel {
 		selectRegularButton.setSelected(!flag);
 	}
 	
-	void setCapillariesInfos(Capillaries cap) {
+	void setCapillariesInfosToDialog(Capillaries cap) {
 		setNbCapillaries(cap.capillariesArrayList.size());
 		setGroupedBy2(cap.grouping == 2);
 	}

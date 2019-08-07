@@ -114,7 +114,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 				capillariesPane.getCapillariesInfos(vSequence.capillaries);
 				sequencePane.infosTab.getCapillariesInfosFromDialog(vSequence.capillaries);
 				if (capillariesPane.capold.isChanged(vSequence.capillaries)) {
-					capillariesPane.saveDefaultCapillaries();
+					capillariesPane.saveCapillaryTrack();
 					kymographsPane.fileTab.saveKymosMeasures();
 					movePane.saveDefaultCages();
 				}
@@ -164,7 +164,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	private void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
 		
 		if (loadCapillaries) {
-			if( !capillariesPane.loadDefaultCapillaries()) 
+			if( !capillariesPane.loadCapillaryTrack()) 
 				return;
 			sequencePane.browseTab.setBrowseItems(this.vSequence);
 			capillariesPane.unitsTab.visibleCheckBox.setSelected(true);

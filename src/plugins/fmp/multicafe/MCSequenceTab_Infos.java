@@ -128,7 +128,7 @@ public class MCSequenceTab_Infos  extends JPanel {
 		
 	// set/ get
 	
-	void setCapillariesInfos(Capillaries cap) {
+	void setCapillariesInfosToDialog(Capillaries cap) {
 
 		addItem(boxID_JCombo, cap.boxID);
 		addItem(experimentJCombo, cap.experiment);

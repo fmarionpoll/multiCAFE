@@ -162,22 +162,50 @@ public class SequencePlusUtils {
 		}
 		
 		SequencePlus kymographSeq = new SequencePlus(listFileNames);
-		kymographSeq.analysisStep = 1;
-		
 		progress.setMessage("load measures for each capillary");
 		kymographSeq.capillaries = new Capillaries();
+		kymographSeq.capillaries.copy(parent_capillaries);
 		
-		for (int i=0; i < listFileNames.size(); i++) {
+		/*
+		int i= 0;
+		for (Capillary cap: kymographSeq.capillaries.capillariesArrayList) {
+			boolean found = false;
+			for (String filename : listFileNames) {
+				if (filename.contains(cap.getName() )) {
+					found = true;
+					kymographSeq.loadXMLKymographAnalysis(cap, directory);
+					cap.indexImage = i;
+					i++;
+					//kymographSeq.seq.
+					IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
+					seq.setImage(tseq, 0, bufImg);
+					
+				}
+			}
+		} */
+		int i = 0;
+		for (String filename: kymographSeq.listFiles) {
+			boolean found = false;
+			for (Capillary cap: kymographSeq.capillaries.capillariesArrayList) {
+				if (filename.contains(cap.getName())) {
+					found = true;
+					kymographSeq.loadXMLKymographAnalysis(cap, directory);
+					cap.indexImage = i;
+					break;
+				}
+			}
 			
-			String filename = listFileNames.get(i);
-			int index1 = filename.indexOf(extension);
-			int index0 = filename.lastIndexOf("\\")+1;
-			String title = filename.substring(index0, index1);
-			Capillary cap = new Capillary();
-			cap.indexImage = i;
-			cap.name = title;
-			kymographSeq.loadXMLKymographAnalysis(cap, directory);
-			kymographSeq.capillaries.capillariesArrayList.add(cap);
+			if (!found) {
+				Capillary cap = new Capillary();
+				int index1 = filename.indexOf(extension);
+				int index0 = filename.lastIndexOf("\\")+1;
+				String title = filename.substring(index0, index1);
+				cap.indexImage = i;
+				cap.name = title;
+				kymographSeq.loadXMLKymographAnalysis(cap, directory);
+				kymographSeq.capillaries.capillariesArrayList.add(cap);
+			}
+			i++;
 		}
 		
 		progress.close();

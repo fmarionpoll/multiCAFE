@@ -73,7 +73,7 @@ public class MCCapillariesTab_File extends JPanel {
 		}});
 	}
 	
-	boolean capillaryRoisOpen(String csFileName) {
+	boolean loadCapillaryTrack(String csFileName) {
 		
 		boolean flag = false;
 		if (csFileName == null)
@@ -83,7 +83,7 @@ public class MCCapillariesTab_File extends JPanel {
 		return flag;
 	}
 	
-	boolean capillaryRoisSave() {
+	boolean saveCapillaryTrack() {
 		parent0.sequencePane.browseTab.getBrowseItems (parent0.vSequence);
 		String name = parent0.vSequence.getDirectory()+ "\\capillarytrack.xml";
 		return parent0.vSequence.capillaries.xmlWriteROIsAndDataNoQuestion(name, parent0.vSequence);
@@ -137,6 +137,11 @@ public class MCCapillariesTab_File extends JPanel {
 		boolean flag = false;
 		if (SequencePlusUtils.isRunning)
 			SequencePlusUtils.isInterrupted = true;
+		
+		if (parent0.vSequence== null || parent0.vSequence.capillaries == null) {
+			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
+			return flag;
+		}
 		
 		String directory = parent0.vSequence.getDirectory()+"\\results";
 		parent0.vkymos = SequencePlusUtils.openKymoFiles(directory, parent0.vSequence.capillaries);

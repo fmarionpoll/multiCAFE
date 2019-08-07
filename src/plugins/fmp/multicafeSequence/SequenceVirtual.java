@@ -9,6 +9,8 @@ import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
 import icy.file.Loader;
 import icy.gui.dialog.LoaderDialog;
 import icy.image.IcyBufferedImage;
@@ -28,7 +30,7 @@ import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 public class SequenceVirtual  
 {
 	public Sequence					seq						= null;
-	private List <String>  			listFiles 				= new ArrayList<String>();
+	List <String>  					listFiles 				= new ArrayList<String>();
 	private String 					csFileName 				= null;
 	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif"};
 	private String					directory 				= null;
@@ -267,26 +269,78 @@ public class SequenceVirtual
 		loadSequenceFromList(listFiles);
 	}
 	
-	private boolean loadSequenceFromList(List<String> listFiles) {
+	private boolean isLinexLRFileNames(List<String> myListOfFilesNames) {
 		boolean flag = false;
-		List<Sequence> lseq = Loader.loadSequences(null, listFiles, 0, false, false, false, true);
-		if (lseq.size() > 0) {
-			flag = true;
-			seq = lseq.get(0);
-			if (lseq.size()>1) {
-				seq = new Sequence();
-				int tmax = lseq.get(0).getSizeT();
-				int tseq = 0;
-				for (int t = 0; t < tmax; t++) {
-					for (int i=0; i < lseq.size(); i++) {
-						IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
-						seq.setImage(tseq, 0, bufImg);
-						tseq++;
-					}
-				}
+		int nfound = 0;
+		for (String filenameFull: myListOfFilesNames) {
+			Path path = Paths.get(filenameFull);
+			String filename = path.getName(path.getNameCount()).toString();
+			if (filename.endsWith("R") || filename.endsWith("L"))
+				nfound++;
+			if (nfound >1) {
+				flag = true;
+				break;
 			}
-			status = EnumStatus.FILESTACK;
 		}
+		return flag;
+	}
+	
+	private List<String> convertLinexLRFileNames(List<String> myListOfFilesNames) {
+		List<String> newList = new ArrayList<String>();
+		for (String filenameFull: myListOfFilesNames) {
+			Path path = Paths.get(filenameFull);
+			String filename = path.getName(path.getNameCount()).toString();
+			String newFileName;
+			if (filename.endsWith("R")) {
+				xx
+			}
+			else if (filename.endsWith("L")) {
+				xx
+			}
+			File file = new File(filename);
+		}
+		return newList; 
+	}
+	
+	private boolean renameFile (String oldName, String newName) {
+		String newFilePath = oldFile.getAbsolutePath().replace(oldFile.getName(), "") + newName;
+		File newFile = new File(newFilePath);
+		try {
+			FileUtils.moveFile(oldFile, newFile);
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+		boolean success = file1.renameTo(file2);
+		return success;
+	}
+	
+	private boolean loadSequenceFromList(List<String> myListOfFilesNames) {
+		if (isLinexLRFileNames(myListOfFilesNames))
+			myListOfFilesNames = convertLinexLRFileNames(myListOfFilesNames);
+			
+		boolean flag = false;
+		List<Sequence> lseq = Loader.loadSequences(null, myListOfFilesNames, 0, false, false, false, true);
+		if (!(flag = (lseq.size() > 0)))
+			return flag;
+		
+		seq = new Sequence();
+		if (lseq.size() == 1) {
+			seq = lseq.get(0);
+			return flag; 
+		}
+		
+		seq = lseq.get(0);	
+		int tmax = lseq.get(0).getSizeT();
+		int tseq = 0;
+		for (int t = 0; t < tmax; t++) {
+			for (int i=0; i < lseq.size(); i++) {
+				IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
+				seq.setImage(tseq, 0, bufImg);
+				tseq++;
+			}
+		}
+		
+		status = EnumStatus.FILESTACK;	
 		return flag;
 	}
 		
@@ -489,7 +543,7 @@ public class SequenceVirtual
 		 * pre-fetch files / companion to SequenceVirtual
 		 */
 
-		private int fenetre = 20; // 100;
+		private int fenetre = 100; //20; // 100;
 		private int span = fenetre/2;
 
 		public VImageBufferThread() {
@@ -541,7 +595,7 @@ public class SequenceVirtual
 					}
 */					
 					for (int t = frameStart; t < frameEnd ; t+= analysisStep) {	
-						seq.getImage(t, 0, false);
+						seq.getImage(t, 0).loadData();
 						if (isInterrupted())
 							return;
 					}

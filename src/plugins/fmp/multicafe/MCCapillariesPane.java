@@ -89,8 +89,8 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) {
-			fileTab.capillaryRoisOpen(null);
-		  	setCapillariesInfos(parent0.vSequence);
+			fileTab.loadCapillaryTrack(null);
+		  	setCapillariesInfosToDialogs(parent0.vSequence);
 		  	tabsPane.setSelectedIndex(2);
 		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
 		}			  
@@ -98,7 +98,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 			unitsTab.getCapillariesInfos(parent0.vSequence.capillaries);
 			parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.vSequence.capillaries);
 			buildarrayTab.getCapillariesInfos(parent0.vSequence.capillaries);
-			fileTab.capillaryRoisSave();
+			fileTab.saveCapillaryTrack();
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) {
@@ -120,27 +120,27 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 		}
 	}
 	
-	boolean loadDefaultCapillaries() {
+	boolean loadCapillaryTrack() {
 //		String path = parent0.vSequence.getDirectory();
-		boolean flag = fileTab.capillaryRoisOpen(null);
+		boolean flag = fileTab.loadCapillaryTrack(null);
 		if (flag) {
-			setCapillariesInfos(parent0.vSequence);
+			setCapillariesInfosToDialogs(parent0.vSequence);
 			capold.copy(parent0.vSequence.capillaries);
 		// TODO update measure from to, etc (see "ROIS_OPEN")
 		}
 		return flag;
 	}
 	
-	private void setCapillariesInfos(SequenceVirtual seq) {
-		unitsTab.setCapillariesInfos(seq.capillaries);
+	private void setCapillariesInfosToDialogs(SequenceVirtual seq) {
+		unitsTab.setCapillariesInfosToDialog(seq.capillaries);
 		parent0.vSequence.capillaries.extractLinesFromSequence(seq);
-		buildarrayTab.setCapillariesInfos(seq.capillaries);
-		parent0.sequencePane.infosTab.setCapillariesInfos(seq.capillaries);
+		buildarrayTab.setCapillariesInfosToDialog(seq.capillaries);
+		parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seq.capillaries);
 	}
 	
-	boolean saveDefaultCapillaries() {
+	boolean saveCapillaryTrack() {
 		getCapillariesInfos(parent0.vSequence.capillaries);
-		return fileTab.capillaryRoisSave();
+		return fileTab.saveCapillaryTrack();
 	}
 	
 	void getCapillariesInfos(Capillaries cap) {

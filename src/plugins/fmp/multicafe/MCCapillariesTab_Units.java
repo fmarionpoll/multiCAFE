@@ -99,7 +99,7 @@ public class MCCapillariesTab_Units extends JPanel {
 		
 	// set/ get
 	
-	void setCapillariesInfos(Capillaries cap) {
+	void setCapillariesInfosToDialog(Capillaries cap) {
 		capillaryVolumeTextField.setValue( cap.volume);
 		capillaryPixelsTextField.setValue( cap.pixels);
 		addItem(stimulusRJCombo, cap.stimulusR);
