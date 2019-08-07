@@ -34,26 +34,25 @@ public class Capillary implements XMLPersistent  {
 	public Collection<ROI> 				gulpsRois 				= null; 
 	public ArrayList<Integer> 			derivedValuesArrayList 	= null; 
 	
-	public ArrayList<ArrayList<int[]>> masksList = null;
-	public ArrayList <double []> tabValuesList = null;
-	public IcyBufferedImage bufImage = null;
+	public ArrayList<ArrayList<int[]>> 	masksList 				= null;
+	public ArrayList <double []> 		tabValuesList 			= null;
+	public IcyBufferedImage 			bufImage 				= null;
 	
-
-	private final static String ID_META = "metaMC";
-	private final static String ID_ROI = "roiMC";
-	private final static String ID_GULPS = "gulpsMC";
-	private final static String ID_INDEXIMAGE = "indexImageMC";
-	private final static String ID_NAME = "nameMC";
+	private final static String ID_META 		= "metaMC";
+	private final static String ID_ROI 			= "roiMC";
+	private final static String ID_GULPS 		= "gulpsMC";
+	private final static String ID_INDEXIMAGE 	= "indexImageMC";
+	private final static String ID_NAME 		= "nameMC";
 	    
 	// ----------------------------------------------------
 	
 	Capillary(ROI2DShape roi) {
 		this.roi = roi;
-		this.name = roi.getName();
+		this.name = replaceLRwith12(roi.getName());
 	}
 	
 	Capillary(String name) {
-		this.name = name;
+		this.name = replaceLRwith12(name);
 	}
 	
 	public Capillary() {
@@ -64,6 +63,16 @@ public class Capillary implements XMLPersistent  {
 		return name;
 	}
 	
+	public String replaceLRwith12(String name) {
+		String newname = null;
+		if (name .endsWith("R"))
+			newname = name.replace("R",  "2");
+		else if (name.endsWith("L"))
+			newname = name.replace("L", "1");
+		else 
+			newname = name;
+		return newname;
+	}
 	public ArrayList<Integer> getYFromPtArray(List<Point2D> ptsList) {
 		if (ptsList == null)
 			return null;
@@ -107,8 +116,7 @@ public class Capillary implements XMLPersistent  {
 		return arrayInt;
 	}
 	
-	private void addRoitoCumulatedSumArray(ROI2DPolyLine roi, ArrayList<Integer> sumArrayList) {
-		
+	private void addRoitoCumulatedSumArray(ROI2DPolyLine roi, ArrayList<Integer> sumArrayList) {		
 		interpolateMissingPointsAlongXAxis (roi);
 		ArrayList<Integer> intArray = transfertRoiYValuesToDataArray(roi);
 		Polyline2D line = roi.getPolyline2D();
@@ -162,7 +170,6 @@ public class Capillary implements XMLPersistent  {
 	}
 	
 	private ArrayList<Integer> transfertRoiYValuesToDataArray(ROI2DPolyLine roiLine) {
-
 		Polyline2D line = roiLine.getPolyline2D();
 		ArrayList<Integer> intArray = new ArrayList<Integer> (line.npoints);
 		for (int i=0; i< line.npoints; i++) 
@@ -191,7 +198,6 @@ public class Capillary implements XMLPersistent  {
 
 	@Override
 	public boolean saveToXML(Node node) {
-
 		saveMetaDataToXML(node);
 		if (gulpsRois != null)
 			saveROIsToXML(node, gulpsRois);
@@ -205,8 +211,7 @@ public class Capillary implements XMLPersistent  {
         return true;
 	}
 	
-	private boolean loadMetaDataFromXML(Node node)
-	{
+	private boolean loadMetaDataFromXML(Node node) {
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
 	    if (nodeMeta == null)	// nothing to load
             return true;
@@ -224,8 +229,7 @@ public class Capillary implements XMLPersistent  {
 	    return true;
 	}
 	
-	private void saveMetaDataToXML(Node node)
-	{
+	private void saveMetaDataToXML(Node node) {
 	    final Node nodeMeta = XMLUtil.setElement(node, ID_META);
 	    if (nodeMeta != null)
 	    {
@@ -258,8 +262,7 @@ public class Capillary implements XMLPersistent  {
         return null;
 	}
 	
-	private void saveROIsToXML(Node node, Collection<ROI> rois)
-	{
+	private void saveROIsToXML(Node node, Collection<ROI> rois) {
         final Node nodeROIs = XMLUtil.setElement(node, ID_GULPS);
         if (nodeROIs != null)
         {
@@ -268,8 +271,7 @@ public class Capillary implements XMLPersistent  {
 	    }
 	}
 	
-	private boolean loadROIsFromXML(Node node, Collection<ROI> rois)
-	{
+	private boolean loadROIsFromXML(Node node, Collection<ROI> rois) {
         final Node nodeROIs = XMLUtil.getElement(node, ID_GULPS);
         if (nodeROIs != null)
         {
@@ -319,11 +321,11 @@ public class Capillary implements XMLPersistent  {
 		int numFromName = Integer.parseInt(num);
 		String side = name.substring(5, 6);
 		if (side != null) {
-			if (side .equals("R")) {
+			if (side .equals("R") || side .equals("2")) {
 				numFromName = numFromName* 2;
 				numFromName += 1;
 			}
-			else if (side .equals("L"))
+			else if (side .equals("L") || side .equals("1"))
 				numFromName = numFromName* 2;
 		}
 		return numFromName;

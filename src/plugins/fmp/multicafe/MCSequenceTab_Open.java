@@ -57,12 +57,12 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 	private JButton 	clearAllButton			= new JButton("Clear all");
 	private JButton 	addSelectedButton		= new JButton("Add selected");
 	private JButton 	addAllButton			= new JButton("Add all");
-	private JList<String> 	xmlFilesJList		= new JList<String>(new DefaultListModel<String>());
+	private JList<String> xmlFilesJList			= new JList<String>(new DefaultListModel<String>());
 	
-	public List<String> 	selectedNames = new ArrayList<String> ();
-	IcyFrame mainFrame = null;
-	private MultiCAFE parent0 = null;
-	private boolean isSearchRunning = false;
+	public List<String> selectedNames 			= new ArrayList<String> ();
+	IcyFrame 			mainFrame 				= null;
+	private MultiCAFE 	parent0 				= null;
+	private boolean 	isSearchRunning 		= false;
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -75,16 +75,14 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 		
 		showButton.addActionListener(new ActionListener()  {
             @Override
-            public void actionPerformed(ActionEvent arg0)
-            {
+            public void actionPerformed(ActionEvent arg0) {
             	showDialog();
             }
         });
 		
 		closeButton.addActionListener(new ActionListener()  {
             @Override
-            public void actionPerformed(ActionEvent arg0)
-            {
+            public void actionPerformed(ActionEvent arg0) {
             	closeDialog();
             	firePropertyChange("SEARCH_CLOSED", false, true);
             }
@@ -92,8 +90,7 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 		
 		openButton.addActionListener(new ActionListener()  {
             @Override
-            public void actionPerformed(ActionEvent arg0)
-            {
+            public void actionPerformed(ActionEvent arg0) {
             	if(parent0.sequencePane.infosTab.experimentComboBox.getItemCount() > 0 )
             		parent0.sequencePane.closeTab.closeAll();
             	firePropertyChange("SEQ_OPENFILE", false, true);
@@ -102,8 +99,7 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
   
 		addButton.addActionListener(new ActionListener()  {
             @Override
-            public void actionPerformed(ActionEvent arg0)
-            {
+            public void actionPerformed(ActionEvent arg0) {
             	firePropertyChange("SEQ_ADDFILE", false, true);
             }
          });
@@ -165,8 +161,7 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 	void addActionListeners() {
 		findButton.addActionListener(new ActionListener()  {
             @Override
-            public void actionPerformed(ActionEvent arg0)
-            {	
+            public void actionPerformed(ActionEvent arg0)  {	
     			final String pattern = filterTextField.getText();
     			if (isSearchRunning) 
     				return;
@@ -183,8 +178,7 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 		
 		clearSelectedButton.addActionListener(new ActionListener()  {
             @Override
-            public void actionPerformed(ActionEvent arg0)
-            {
+            public void actionPerformed(ActionEvent arg0) {
             	List<String> selectedItems = xmlFilesJList.getSelectedValuesList();
     		    removeListofNamesFromXmlList (selectedItems);
             }
@@ -192,16 +186,14 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 		
 		clearAllButton.addActionListener(new ActionListener()  {
             @Override
-            public void actionPerformed(ActionEvent arg0)
-            {
+            public void actionPerformed(ActionEvent arg0) {
             	((DefaultListModel<String>) xmlFilesJList.getModel()).removeAllElements();
             }
         });
 		
 		addSelectedButton.addActionListener(new ActionListener()  {
             @Override
-            public void actionPerformed(ActionEvent arg0)
-            {
+            public void actionPerformed(ActionEvent arg0) {
             	List<String> selectedItems = xmlFilesJList.getSelectedValuesList();
     			addNamesToSelectedList(selectedItems);
     			removeListofNamesFromXmlList(selectedItems);
@@ -210,8 +202,7 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 		
 		addAllButton.addActionListener(new ActionListener()  {
             @Override
-            public void actionPerformed(ActionEvent arg0)
-            {
+            public void actionPerformed(ActionEvent arg0) {
     			List<String> allItems = new ArrayList <String> ();
     			for(int i = 0; i< xmlFilesJList.getModel().getSize();i++)
     			    allItems.add(xmlFilesJList.getModel().getElementAt(i));
@@ -242,7 +233,6 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 	}
 	
  	private void getXmlListofFilesMatchingPattern(String pattern) {
-		
 		XMLPreferences guiPrefs = parent0.getPreferences("gui");
 		String lastUsedPathString = guiPrefs.get("lastUsedPath", "");
 		File dir = MulticafeTools.chooseDirectory(lastUsedPathString);
@@ -269,12 +259,10 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 		}
 	}
 	
-	private void addNameToXmlListIfNew(String fileName) {
-		
+	private void addNameToXmlListIfNew(String fileName) {	
 		int ilast = ((DefaultListModel<String>) xmlFilesJList.getModel()).getSize();
 		boolean found = false;
-		for (int i=0; i < ilast; i++)
-		{
+		for (int i=0; i < ilast; i++) {
 			String oo = ((DefaultListModel<String>) xmlFilesJList.getModel()).getElementAt(i);
 			if (oo.equalsIgnoreCase (fileName)) {
 				found = true;
@@ -287,8 +275,6 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 
 	@Override
 	public void icyFrameOpened(IcyFrameEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -302,38 +288,26 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 
 	@Override
 	public void icyFrameIconified(IcyFrameEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void icyFrameDeiconified(IcyFrameEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void icyFrameActivated(IcyFrameEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void icyFrameDeactivated(IcyFrameEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void icyFrameInternalized(IcyFrameEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void icyFrameExternalized(IcyFrameEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

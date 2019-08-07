@@ -176,7 +176,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			MCKymosTab_File.isInterrupted = false;
 			
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
-				
 				if ( !capillariesPane.fileTab.loadDefaultKymos()) {
 					return;
 				}

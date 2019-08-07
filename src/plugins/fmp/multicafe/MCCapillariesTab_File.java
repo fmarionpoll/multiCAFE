@@ -54,7 +54,7 @@ public class MCCapillariesTab_File extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
+	private void defineActionListeners() {	
 		openButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			firePropertyChange("CAPILLARIES_NEW", false, true);
 		}}); 
@@ -73,8 +73,7 @@ public class MCCapillariesTab_File extends JPanel {
 		}});
 	}
 	
-	boolean loadCapillaryTrack(String csFileName) {
-		
+	boolean loadCapillaryTrack(String csFileName) {	
 		boolean flag = false;
 		if (csFileName == null)
 			flag = parent0.vSequence.xmlReadCapillaryTrackDefault();
@@ -90,12 +89,10 @@ public class MCCapillariesTab_File extends JPanel {
 	}
 
 	void saveFiles(String directory) {
-
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
 		if (directory == null) {
 			directory = parent0.vSequence.getDirectory()+ "\\results";
 			}
-		
 		try {
 			Files.createDirectories(Paths.get(directory));
 		} catch (IOException e1) {
@@ -109,7 +106,6 @@ public class MCCapillariesTab_File extends JPanel {
 		if (returnedval == JFileChooser.APPROVE_OPTION) { 
 			outputpath = f.getSelectedFile().getAbsolutePath();		
 			for (int i = 0; i < parent0.vkymos.seq.getSizeT(); i++) {
-	
 				Capillary cap = parent0.vkymos.capillaries.capillariesArrayList.get(i);
 				progress.setMessage( "Save kymograph file : " + cap.getName());
 				String filename = outputpath + "\\" + cap.getName() + ".tiff";
@@ -132,8 +128,7 @@ public class MCCapillariesTab_File extends JPanel {
 		progress.close();
 	}
 	
-	boolean loadDefaultKymos() {
-		
+	boolean loadDefaultKymos() {		
 		boolean flag = false;
 		if (SequencePlusUtils.isRunning)
 			SequencePlusUtils.isInterrupted = true;

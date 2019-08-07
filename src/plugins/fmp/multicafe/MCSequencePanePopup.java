@@ -154,10 +154,10 @@ public class MCSequencePanePopup  extends JPanel implements PropertyChangeListen
 		if (parent0.vSequence == null)
 			return;
 
-//		parent0.vSequence.vImageBufferThread_STOP();
+		parent0.vSequence.vImageBufferThread_STOP();
 		browseTab.getBrowseItems(parent0.vSequence); 
-//		parent0.vSequence.cleanUpBufferAndRestart();
-//		parent0.vSequence.vImageBufferThread_START(100); //numberOfImageForBuffer);
+		parent0.vSequence.cleanUpBufferAndRestart();
+		parent0.vSequence.vImageBufferThread_START(100); //numberOfImageForBuffer);
 	}
 	
 	boolean sequenceCreateNew (String filename) {

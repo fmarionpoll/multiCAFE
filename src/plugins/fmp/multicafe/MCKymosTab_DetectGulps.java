@@ -66,11 +66,9 @@ public class MCKymosTab_DetectGulps extends JPanel {
 		
 		detectGulpsButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
-//				int kymo = parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();	
 				kymosDisplayFiltered2();
 				kymosBuildDerivative(true);
 				roisDisplayAllThresholds(viewGulpsThresholdCheckBox.isSelected());
-//				parent0.capillariesPane.optionsTab.kymographNamesComboBox.setSelectedIndex(kymo);
 			}});
 		
 		displayTransform2Button.addActionListener(new ActionListener () { 
@@ -88,7 +86,6 @@ public class MCKymosTab_DetectGulps extends JPanel {
 			@Override public void stateChanged(ChangeEvent arg0) {
 				if (parent0.vkymos != null && viewGulpsThresholdCheckBox.isSelected()) {
 					int thresholdValue = (int) detectGulpsThresholdSpinner.getValue();
-					//int kymo = parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
 					SequencePlus seq = parent0.vkymos; 
 					roiDisplayThreshold(true, seq, thresholdValue);
 					if (detectAllGulpsCheckBox.isSelected())

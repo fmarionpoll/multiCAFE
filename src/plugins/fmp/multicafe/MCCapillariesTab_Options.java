@@ -19,21 +19,17 @@ import javax.swing.SwingUtilities;
 
 import icy.canvas.IcyCanvas;
 import icy.canvas.Layer;
-import icy.gui.main.ActiveViewerListener;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
-import icy.gui.viewer.ViewerEvent;
 import icy.image.IcyBufferedImage;
 import icy.main.Icy;
 import icy.roi.ROI;
-import icy.sequence.Sequence;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeTools.MulticafeTools;
 
 
 
-public class MCCapillariesTab_Options extends JPanel implements ActiveViewerListener {
-
+public class MCCapillariesTab_Options extends JPanel {
 	/**
 	 * 
 	 */
@@ -49,6 +45,7 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 
 	private MultiCAFE parent0 = null;
 
+	
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
 		setLayout(capLayout);
 		this.parent0 = parent0;
@@ -71,56 +68,62 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 	}
 	
 	private void defineActionListeners() {
-		updateButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		updateButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 			displayUpdateOnSwingThread();
 		} } );
 		
-		kymographNamesComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		kymographNamesComboBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 			displayUpdateOnSwingThread();
 		} } );
 		
-		viewDerivativeCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		viewDerivativeCheckbox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 			roisDisplay("derivative", viewDerivativeCheckbox.isSelected());
 		} } );
 
-		viewGulpsCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		viewGulpsCheckbox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 			roisDisplay("gulp", viewGulpsCheckbox.isSelected());
 		} } );
 		
-		viewLevelsCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		viewLevelsCheckbox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 			roisDisplay("level", viewLevelsCheckbox.isSelected());
 		} } );
 		
-		viewKymosCheckBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		viewKymosCheckBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 			displayViews(viewKymosCheckBox.isSelected());
 		} } );
 		
-		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		nextButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 			int isel = kymographNamesComboBox.getSelectedIndex()+1;
 			if (isel < kymographNamesComboBox.getItemCount())
 				selectKymograph(isel);
 		} } );
 		
-		previousButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		previousButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 			int isel = kymographNamesComboBox.getSelectedIndex()-1;
 			if (isel < kymographNamesComboBox.getItemCount())
 				selectKymograph(isel);
 		} } );
 	}
 		
-	
 	void transferCapillaryNamesToComboBox(ArrayList <Capillary> capillaryArrayList) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				kymographNamesComboBox.removeAllItems();
 				Collections.sort(capillaryArrayList, new MulticafeTools.CapillaryNameComparator()); 
 				for (Capillary cap: capillaryArrayList) 
-					kymographNamesComboBox.addItem(cap.getName());	
+					kymographNamesComboBox.addItem(cap.roi.getName());	
 			}});
 	}
 	
 	private void roisDisplay(String filter, boolean visible) {
-
 		ArrayList<Viewer>vList =  parent0.vkymos.seq.getViewers();
 		IcyCanvas canvas = vList.get(0).getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
@@ -137,18 +140,17 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 	}
 
 	void displayON() {
-		if (parent0.vkymos == null ||parent0.vkymos.seq.getSizeT() < 1) {
+		if (parent0.vkymos == null ||parent0.vkymos.seq == null || parent0.vkymos.seq.getSizeT() < 1) {
 			System.out.println("displayON() skipped");
 			return;
 		}
-
-		Rectangle rectMaster = parent0.vSequence.seq.getFirstViewer().getBounds();
-		int deltax = 5 + rectMaster.width;
-		int deltay = 5;
 		
 		ArrayList<Viewer>vList = parent0.vkymos.seq.getViewers();
-		if (vList.size() == 0) 
-		{
+		if (vList.size() == 0) {
+			Rectangle rectMaster = parent0.vSequence.seq.getFirstViewer().getBounds();
+			int deltax = 5 + rectMaster.width;
+			int deltay = 5;
+
 			Viewer v = new Viewer(parent0.vkymos.seq, true);
 			v.addListener(parent0);
 			Rectangle rectDataView = v.getBounds();
@@ -162,21 +164,17 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 					rectMaster.y + deltay - rectDataView.y);
 			v.setBounds(rectDataView);
 		}
-		Icy.getMainInterface().addActiveViewerListener(this);
 	}
 	
 	void displayOFF() {
-
 		if (parent0.vkymos == null) 
 			return;
 		ArrayList<Viewer>vList =  parent0.vkymos.seq.getViewers();
-		if (vList.size() > 0) 
-		{
+		if (vList.size() > 0) {
 			for (Viewer v: vList) 
 				v.close();
 			vList.clear();
 		}
-		Icy.getMainInterface().removeActiveViewerListener(this);
 	}
 	
 	void displayUpdateOnSwingThread() {		
@@ -188,8 +186,7 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 	}
 	
 	void displayUpdate() {	
-
-		if (parent0.vkymos == null || kymographNamesComboBox.getItemCount() < 1)
+		if (parent0.vkymos == null || parent0.vkymos.seq== null || kymographNamesComboBox.getItemCount() < 1)
 			return;	
 		displayON();
 		int itemupfront = kymographNamesComboBox.getSelectedIndex();
@@ -197,7 +194,7 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 			itemupfront = 0;
 			kymographNamesComboBox.setSelectedIndex(0);
 		}
-		parent0.vkymos.seq.setPositionT(itemupfront);
+		selectKymograph(itemupfront); 
 	}
 
 	void displayViews (boolean bEnable) {
@@ -223,23 +220,7 @@ public class MCCapillariesTab_Options extends JPanel implements ActiveViewerList
 
 		Viewer v =  Icy.getMainInterface().getFirstViewer(parent0.vkymos.seq);
 		v.setPositionT(isel);
-		v.setTitle(parent0.vkymos.getDecoratedImageName(isel));
+		v.setTitle(parent0.vkymos.getDecoratedImageNameFromCapillary(isel));
 	}
 
-	@Override
-	public void viewerActivated(Viewer viewer) {
-	}
-
-	@Override
-	public void viewerDeactivated(Viewer viewer) {
-		if (viewer != null) {
-			Sequence seq = viewer.getSequence();
-			if (seq != null)
-				seq.setSelectedROI(null);
-		}
-	}
-
-	@Override
-	public void activeViewerChanged(ViewerEvent event) {		
-	}
 }

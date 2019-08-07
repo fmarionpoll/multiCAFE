@@ -40,7 +40,6 @@ public class MCKymosTab_File  extends JPanel {
 	}
 	
 	private void defineActionListeners() {
-
 		openMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				if (openKymosMeasures()) {
@@ -56,12 +55,10 @@ public class MCKymosTab_File  extends JPanel {
 	}
 
 	boolean openKymosMeasures() {
-		
 		String directory = parent0.vSequence.getDirectory();
 		if (parent0.vkymos.seq != null) {
 			parent0.vkymos.seq.beginUpdate();
 			for (Capillary cap: parent0.vkymos.capillaries.capillariesArrayList) {
-				
 				boolean flag2 = true;
 				if (flag2 = parent0.vkymos.loadXMLKymographAnalysis(cap, directory)) {
 					parent0.vkymos.validateRois();
@@ -79,16 +76,16 @@ public class MCKymosTab_File  extends JPanel {
 				}
 			}
 			parent0.vkymos.seq.endUpdate();
-		}
-		
-		if (parent0.vkymos.seq.getSizeT() >0 ) {
-			if (parent0.vkymos.analysisEnd > parent0.vkymos.analysisStart) {
-				parent0.vSequence.analysisStart = parent0.vkymos.analysisStart; 
-				parent0.vSequence.analysisEnd 	= parent0.vkymos.analysisEnd;
-				parent0.vSequence.analysisStep 	= parent0.vkymos.analysisStep;
+			
+			if (parent0.vkymos.seq.getSizeT() >0 ) {
+				if (parent0.vkymos.analysisEnd > parent0.vkymos.analysisStart) {
+					parent0.vSequence.analysisStart = parent0.vkymos.analysisStart; 
+					parent0.vSequence.analysisEnd 	= parent0.vkymos.analysisEnd;
+					parent0.vSequence.analysisStep 	= parent0.vkymos.analysisStep;
+				}
 			}
 		}
-			
+		
 		isRunning = false;
 		return flag;
 	}

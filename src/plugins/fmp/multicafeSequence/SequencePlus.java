@@ -59,18 +59,15 @@ public class SequencePlus extends SequenceVirtual  {
 		super (name, image);
 	}
 	
-	public SequencePlus (String [] list, String directory)
-	{
+	public SequencePlus (String [] list, String directory) {
 		super(list, directory);
 	}
 	
-	public SequencePlus (List<String> listFullPaths)
-	{
+	public SequencePlus (List<String> listFullPaths) {
 		super(listFullPaths);
 	}
 
-	public ArrayList<Integer> getArrayListFromRois (EnumArrayListType option, int t) {
-		
+	public ArrayList<Integer> getArrayListFromRois (EnumArrayListType option, int t) {	
 		Capillary cap = capillaries.capillariesArrayList.get(t);
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		if (listRois == null)
@@ -97,7 +94,6 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 	
 	public ArrayList<Integer> subtractTi(ArrayList<Integer > array) {
-		
 		if (array == null)
 			return null;
 		int item0 = array.get(0);
@@ -110,7 +106,6 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 	
 	public ArrayList<Integer> subtractT0 (ArrayList<Integer> array) {
-
 		if (array == null)
 			return null;
 		int item0 = array.get(0);
@@ -122,7 +117,6 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 	
 	public ArrayList<Integer> subtractT0AndAddConstant (ArrayList<Integer> array, int constant) {
-
 		if (array == null)
 			return null;
 		int item0 = array.get(0) - constant;
@@ -134,7 +128,6 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 	
 	public ArrayList<Integer> addConstant (ArrayList<Integer> array, int constant) {
-
 		if (array == null)
 			return null;
 		for (int index= 0; index < array.size(); index++) {
@@ -145,7 +138,6 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 
 	private ArrayList<Integer> copyFirstRoiMatchingFilterToDataArray (String filter) {
-		
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName().contains(filter)) { 
@@ -157,7 +149,6 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 	
 	private void addRoisMatchingFilterToCumSumDataArray (String filter, ArrayList<Integer> cumSumArray) {
-		
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName().contains(filter)) 
@@ -167,7 +158,6 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 
 	private ArrayList<Integer> transfertRoiYValuesToDataArray(ROI2DPolyLine roiLine) {
-
 		Polyline2D line = roiLine.getPolyline2D();
 		ArrayList<Integer> intArray = new ArrayList<Integer> (line.npoints);
 		for (int i=0; i< line.npoints; i++) 
@@ -193,13 +183,11 @@ public class SequencePlus extends SequenceVirtual  {
 		List<Point2D> pts = new ArrayList <Point2D>(roiLine_npoints);
 		double ylast = line.ypoints[roiLine_npoints-1];
 		for (int i=1; i< roiLine_npoints; i++) {
-			
 			int xfirst = (int) line.xpoints[i-1];
 			int xlast = (int) line.xpoints[i];
 			double yfirst = line.ypoints[i-1];
 			ylast = line.ypoints[i];
 			for (int j = xfirst; j< xlast; j++) {
-				
 				int val = (int) (yfirst + (ylast-yfirst)*(j-xfirst)/(xlast-xfirst));
 				Point2D pt = new Point2D.Double(j, val);
 				pts.add(pt);
@@ -213,7 +201,6 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 	
 	private void addRoitoCumulatedSumArray(ROI2DPolyLine roi, ArrayList<Integer> sumArrayList) {
-		
 		interpolateMissingPointsAlongXAxis (roi);
 		ArrayList<Integer> intArray = transfertRoiYValuesToDataArray(roi);
 		Polyline2D line = roi.getPolyline2D();
@@ -234,54 +221,44 @@ public class SequencePlus extends SequenceVirtual  {
 
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
-
 			if (!(roi instanceof ROI2DPolyLine))
 				continue;
-				
 			// interpolate missing points if necessary
 			if (roi.getName().contains("level") || roi.getName().contains("gulp")) {
 				interpolateMissingPointsAlongXAxis ((ROI2DPolyLine) roi);
 				continue;
 			}
-			
 			if (roi.getName().contains("derivative"))
 				continue;
-
 			// if gulp not found - add an index to it	
 			ROI2DPolyLine roiLine = (ROI2DPolyLine) roi;
 			Polyline2D line = roiLine.getPolyline2D();
 			roi.setName("gulp"+String.format("%07d", (int) line.xpoints[0]));
 			roi.setColor(Color.red);
-			
 		}
 		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());
 	}
 	
 
 	public boolean loadXMLKymographAnalysis (Capillary cap, String directory) {
-	
 		if (directory == null)
-			return false;
-		
+			return false;	
 		if (!directory .contains("results")) {
 			directory = directory + "\\results";
 			Path resultsDirectoryPath = Paths.get(directory);
 			if (Files.notExists(resultsDirectoryPath)) 
 				return false; 
 		}
-		
 		seq.setFilename(directory+"\\"+ cap.getName()+".xml");
 		Path filenamePath = Paths.get(seq.getFilename());
 		if (Files.notExists(filenamePath)) 
 			return false; 
-		
 		seq.removeAllROI();
 		Document xml = XMLUtil.loadDocument(seq.getFilename());
         if (xml == null) 
         	return false;
 		
 		Element root = XMLUtil.getRootElement(xml);
-		
 		if (!readOldVersionOfCapillaryMeasure(root, cap)) {
 			if (!cap.loadFromXML(root))
 				return false;
@@ -289,18 +266,15 @@ public class SequencePlus extends SequenceVirtual  {
 		
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
-
 			int t = roi.getT();
 			if (t < 0)
 				roi.setT(cap.indexImage);
 			seq.addROI(roi);
 		}
-		
 		return true;
 	}
 	
 	private boolean readOldVersionOfCapillaryMeasure(Node rootNode, Capillary cap) {
-		
 		final Node myNode = XMLUtil.getElement(rootNode, cap.name + "_parameters");
 		if (myNode == null)
 			return false;
@@ -326,7 +300,6 @@ public class SequencePlus extends SequenceVirtual  {
 	}
 	
  	public boolean saveXMLKymographAnalysis(Capillary cap, String directory) {
-
 		// check if directory is present. If not, create it
 		String resultsDirectory = directory;
 		String subDirectory = "\\results";
@@ -409,5 +382,4 @@ public class SequencePlus extends SequenceVirtual  {
 		}
 	}
 	
-
 }

@@ -32,6 +32,7 @@ public class BuildKymographsThread implements Runnable
 	private DataType 								dataType 			= DataType.INT;
 	private int 									imagewidth =1;
 	
+	
 	@Override
 	public void run() {
 
@@ -67,23 +68,19 @@ public class BuildKymographsThread implements Runnable
 			if (!getImageAndUpdateViewer (t))
 				continue;
 			
-			if (options.doRegistration ) {
+			if (options.doRegistration ) 
 				adjustImage();
-			}
 			transferWorkImageToDoubleArrayList ();
 			
-			for (int iroi=0; iroi < nbcapillaries; iroi++)
-			{
+			for (int iroi=0; iroi < nbcapillaries; iroi++) {
 				Capillary cap = vkymos.capillaries.capillariesArrayList.get(iroi);
 				final int t_out = ipixelcolumn;
 
-				for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) 
-				{ 
+				for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) { 
 					double [] tabValues = cap.tabValuesList.get(chan); 
 					double [] sourceValues = sourceValuesList.get(chan);
 					int cnt = 0;
-					for (ArrayList<int[]> mask:cap.masksList)
-					{
+					for (ArrayList<int[]> mask:cap.masksList) {
 						double sum = 0;
 						for (int[] m:mask)
 							sum += sourceValues[m[0] + m[1]*vinputSizeX];
@@ -98,11 +95,9 @@ public class BuildKymographsThread implements Runnable
 		options.vSequence.seq.endUpdate();
 		vkymos.seq.removeAllImages();
 
-		for (int t=0; t < nbcapillaries; t++)
-		{
+		for (int t=0; t < nbcapillaries; t++) {
 			Capillary cap = vkymos.capillaries.capillariesArrayList.get(t);
-			for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) 
-			{
+			for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) {
 				double [] tabValues = cap.tabValuesList.get(chan); 
 				Array1DUtil.doubleArrayToSafeArray(tabValues, cap.bufImage.getDataXY(chan), cap.bufImage.isSignedDataType());
 			}
@@ -122,8 +117,7 @@ public class BuildKymographsThread implements Runnable
 	
 	// -------------------------------------------
 	
-	private boolean getImageAndUpdateViewer(int t) {
-		
+	private boolean getImageAndUpdateViewer(int t) {	
 		workImage = options.vSequence.seq.getImage(t, 0); 
 		sequenceViewer.setPositionT(t);
 		sequenceViewer.setTitle(options.vSequence.getDecoratedImageName(t));		
@@ -136,11 +130,9 @@ public class BuildKymographsThread implements Runnable
 		return true;
 	}
 	
-	private boolean transferWorkImageToDoubleArrayList() {
-		
+	private boolean transferWorkImageToDoubleArrayList() {	
 		sourceValuesList = new ArrayList<double []>();
-		for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) 
-		{
+		for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++)  {
 			double [] sourceValues = Array1DUtil.arrayToDoubleArray(workImage.getDataXY(chan), workImage.isSignedDataType()); 
 			sourceValuesList.add(sourceValues);
 		}
@@ -161,14 +153,12 @@ public class BuildKymographsThread implements Runnable
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;
 
-		
 		options.vSequence.capillaries.extractLinesFromSequence(options.vSequence);
 		vkymos.capillaries.copy(options.vSequence.capillaries);
 		
 		int nbcapillaries = vkymos.capillaries.capillariesArrayList.size();
 		int masksizeMax = 0;
-		for (int t=0; t < nbcapillaries; t++)
-		{
+		for (int t=0; t < nbcapillaries; t++) {
 			Capillary cap = vkymos.capillaries.capillariesArrayList.get(t);
 			cap.masksList = new ArrayList<ArrayList<int[]>>();
 			
@@ -177,14 +167,12 @@ public class BuildKymographsThread implements Runnable
 				masksizeMax = cap.masksList.size();
 		}
 		
-		for (int t=0; t < nbcapillaries; t++)
-		{
+		for (int t=0; t < nbcapillaries; t++) {
 			Capillary cap = vkymos.capillaries.capillariesArrayList.get(t);
 			cap.bufImage = new IcyBufferedImage(imagewidth, masksizeMax, numC, dataType);
 			cap.tabValuesList = new ArrayList <double []>();
 			
-			for (int chan = 0; chan < numC; chan++) 
-			{
+			for (int chan = 0; chan < numC; chan++) {
 				Object dataArray = cap.bufImage.getDataXY(chan);
 				double[] tabValues =  Array1DUtil.arrayToDoubleArray(dataArray, false);
 				cap.tabValuesList.add(tabValues);
@@ -198,8 +186,7 @@ public class BuildKymographsThread implements Runnable
 		CubicSmoothingSpline ySpline 	= Util.getYsplineFromROI((ROI2DShape) roi);
 		double length 					= Util.getSplineLength((ROI2DShape) roi);
 		double len = 0;
-		while (len < length)
-		{
+		while (len < length) {
 			ArrayList<int[]> mask = new ArrayList<int[]>();
 			double x = xSpline.evaluate(len);
 			double y = ySpline.evaluate(len);
@@ -208,8 +195,7 @@ public class BuildKymographsThread implements Runnable
 			double ux = dy/Math.sqrt(dx*dx + dy*dy);
 			double uy = -dx/Math.sqrt(dx*dx + dy*dy);
 			double tt = -diskRadius;
-			while (tt <= diskRadius)
-			{
+			while (tt <= diskRadius) {
 				int xx = (int) Math.round(x + tt*ux);
 				int yy = (int) Math.round(y + tt*uy);
 				if (xx >= 0 && xx < sizex && yy >= 0 && yy < sizey)
@@ -230,7 +216,6 @@ public class BuildKymographsThread implements Runnable
         boolean rotate = DufourRigidRegistration.correctTemporalRotation2D(seqForRegistration, referenceChannel, referenceSlice);
         if (rotate) 
         	DufourRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
-
         workImage = seqForRegistration.getLastImage(1);
 	}
 
