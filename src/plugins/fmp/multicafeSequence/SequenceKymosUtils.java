@@ -158,6 +158,7 @@ public class SequenceKymosUtils {
 		progress.setMessage("load measures for each capillary");
 		kymographSeq.capillaries = new Capillaries();
 		kymographSeq.capillaries.copy(parent_capillaries);
+		kymographSeq.seq.removeAllROI();
 		
 		int i = 0;
 		for (String filename: kymographSeq.listFiles) {

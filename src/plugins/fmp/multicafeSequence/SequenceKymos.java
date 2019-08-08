@@ -259,7 +259,6 @@ public class SequenceKymos extends SequenceVirtual  {
 		Path filenamePath = Paths.get(filename);
 		if (Files.notExists(filenamePath)) 
 			return false; 
-		seq.removeAllROI();
 		
 		File file = new File(filename);
 		Document document = XMLUtil.loadDocument(file);
