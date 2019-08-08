@@ -91,6 +91,7 @@ public class BuildKymographsThread implements Runnable
 		}
 		options.vSequence.seq.endUpdate();
 		vkymos.seq.removeAllImages();
+		vkymos.seq.setVirtual(false); 
 
 		for (int t=0; t < nbcapillaries; t++) {
 			Capillary cap = vkymos.capillaries.capillariesArrayList.get(t);

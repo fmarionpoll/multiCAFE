@@ -194,16 +194,18 @@ public class Capillary implements XMLPersistent  {
 		boolean result = true;
 		result |= loadMetaDataFromXML(node);
 		result |= loadROIsFromXML(node, gulpsRois);
-		result |= loadIntegerArrayFromXML(node, "derivedvalues", derivedValuesArrayList);
-		ArrayList<Integer> data = new ArrayList<Integer>();
-		boolean flag = loadIntegerArrayFromXML(node, "topLevel", data);
-		result |= flag;
-		if (flag)
-			convertIntegerArrayToPointArray(data, ptsTop);
-		flag = loadIntegerArrayFromXML(node, "bottomLevel", data);
-		if (flag)
-			convertIntegerArrayToPointArray(data, ptsBottom);
-		result |= flag;
+		derivedValuesArrayList = loadIntegerArrayFromXML(node, "derivedvalues");
+		result |= (derivedValuesArrayList != null);
+		ArrayList<Integer> data = loadIntegerArrayFromXML(node, "topLevel");
+		if (data != null)
+			ptsTop = convertIntegerArrayToPointArray(data);
+		else 
+			result = false;
+		data = loadIntegerArrayFromXML(node, "bottomLevel");
+		if (data != null)
+			ptsBottom = convertIntegerArrayToPointArray(data);
+		else
+			result = false;
 		return result;
 	}
 
@@ -296,8 +298,9 @@ public class Capillary implements XMLPersistent  {
 	    }
 	}
 	
-	private boolean loadIntegerArrayFromXML(Node node, String name, ArrayList <Integer> data) {
+	private ArrayList <Integer> loadIntegerArrayFromXML(Node node, String name) {
 		final Node nodeMeta = XMLUtil.getElement(node, name);
+		ArrayList <Integer> data = null;
 	    if (nodeMeta != null) {
 	    	int nitems = XMLUtil.getElementIntValue(nodeMeta, "nitems", 0);
 	    	data = new ArrayList<Integer>(nitems);
@@ -306,15 +309,19 @@ public class Capillary implements XMLPersistent  {
 	    		data.add(i, value);
     		}
 	    }
-	    return true;
+	    return data;
 	}
 	
-	private void convertIntegerArrayToPointArray(ArrayList<Integer> data, List<Point2D> ptsList) {
-		ptsList = new ArrayList<Point2D>();
-		for (int i=0; i < data.size(); i++) {
-			Point2D pt = new Point2D.Double((double) i, (double) data.get(i));
-			ptsList.add(pt);
+	private List<Point2D> convertIntegerArrayToPointArray(ArrayList<Integer> data) {
+		List<Point2D> ptsList = null;
+		if (data.size() > 0) {
+			ptsList = new ArrayList<Point2D>(data.size());
+			for (int i=0; i < data.size(); i++) {
+				Point2D pt = new Point2D.Double((double) i, (double) data.get(i));
+				ptsList.add(pt);
+			}
 		}
+		return ptsList;
 	}
 	
 	public int getCapillaryIndexFromCapillaryName(String name) {

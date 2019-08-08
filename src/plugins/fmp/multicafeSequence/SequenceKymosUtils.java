@@ -18,7 +18,7 @@ import loci.formats.FormatException;
 import ome.xml.meta.OMEXMLMetadata;
 
 
-public class SequencePlusUtils {
+public class SequenceKymosUtils {
 	
 	public static boolean 	isInterrupted 			= false;
 	public static boolean 	isRunning 				= false;

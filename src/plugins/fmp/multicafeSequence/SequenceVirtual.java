@@ -27,8 +27,7 @@ import plugins.fmp.multicafeTools.StringSorter;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class SequenceVirtual  
-{
+public class SequenceVirtual  {
 	public Sequence					seq						= null;
 	List <String>  					listFiles 				= new ArrayList<String>();
 	private String 					csFileName 				= null;
@@ -56,6 +55,7 @@ public class SequenceVirtual
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
 	
 	// ----------------------------------------
+	
 	public SequenceVirtual () {
 		seq = new Sequence();
 	}
@@ -140,15 +140,14 @@ public class SequenceVirtual
 	}
 
 	public String getDecoratedImageName(int t) {
-		//System.out.println(" currentFrame ="+currentFrame +" isel="+t);
 		currentFrame = t;  
 		if (EnumStatus.KYMOGRAPH == status)
 			return getDecoratedImageNameFromCapillary(t);
-		return  csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
+		return csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
 	}
 	
 	public String getDecoratedImageNameFromCapillary(int isel) {
-		return  capillaries.capillariesArrayList.get(isel).roi.getName() + " ["+(isel+1)+ "/" + seq.getSizeT() + "]";
+		return capillaries.capillariesArrayList.get(isel).roi.getName() + " ["+(isel+1)+ "/" + seq.getSizeT() + "]";
 	}
 
 	public String getFileName(int t) {
@@ -173,8 +172,6 @@ public class SequenceVirtual
 	}
 	
 	public String[] keepOnlyAcceptedNames(String[] rawlist) {
-		// -----------------------------------------------
-		// subroutine borrowed from FolderOpener
 		int count = 0;
 		for (int i=0; i< rawlist.length; i++) {
 			String name = rawlist[i];
@@ -238,8 +235,7 @@ public class SequenceVirtual
 				return directory;
 			}
 		}
-		else
-		{
+		else {
 			list = new String[selectedFiles.length];
 			  for (int i = 0; i < selectedFiles.length; i++) {
 				if (selectedFiles[i].getName().toLowerCase().contains(".avi"))
@@ -397,13 +393,7 @@ public class SequenceVirtual
 	public String getFileName() {
 		if (seq != null)
 			return seq.getFilename();
-		return null;
-//		String fileName;
-//		if (status == EnumStatus.FILESTACK) 
-//			fileName = listFiles[0];
-//		else //  if ((status == EnumStatus.AVIFILE))
-//			fileName = csFileName;
-//		return fileName;		
+		return null;	
 	}
 	
 	public void setFileNameAsPathUp1() {
@@ -484,7 +474,6 @@ public class SequenceVirtual
 			System.err.println("Cannot get the last modified time - "+e+ "image "+ t+ " -- file "+ name);
 			return null;
 		}
-//		LocalDateTime loc = LocalDateTime.ofInstant(fileTime.toInstant(), ZoneOffset.UTC);
 		return fileTime;
 	}
 
@@ -497,7 +486,6 @@ public class SequenceVirtual
 	}
 	
 	public void removeRoisContainingName(int t, String gulp) {
-		
 		for (ROI roi: seq.getROIs()) {
 			if (roi instanceof ROI2D 
 			&& ((ROI2D) roi).getT() == t 
@@ -510,7 +498,6 @@ public class SequenceVirtual
 	
 	public void vImageBufferThread_START (int numberOfImageForBuffer) {
 		vImageBufferThread_STOP();
-
 		bufferThread = new VImageBufferThread(this, numberOfImageForBuffer);
 		bufferThread.setName("Buffer Thread");
 		bufferThread.setPriority(Thread.NORM_PRIORITY);
@@ -525,7 +512,6 @@ public class SequenceVirtual
 			}
 			catch (final InterruptedException e1) { e1.printStackTrace(); }
 		}
-		// TODO clean buffer by removing images?
 	}
 
 	public void cleanUpBufferAndRestart() {

@@ -11,7 +11,7 @@ import javax.swing.SwingConstants;
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.SequencePlusUtils;
+import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 
 
 
@@ -89,8 +89,8 @@ public class MCKymosTab_File  extends JPanel {
 	
 	void saveKymosMeasures() {
 		if (parent0.vkymos != null) {
-			SequencePlusUtils.transferSequenceInfoToKymos(parent0.vkymos, parent0.vSequence);
-			SequencePlusUtils.saveKymosMeasures(parent0.vkymos, parent0.vSequence.getDirectory());
+			SequenceKymosUtils.transferSequenceInfoToKymos(parent0.vkymos, parent0.vSequence);
+			SequenceKymosUtils.saveKymosMeasures(parent0.vkymos, parent0.vSequence.getDirectory());
 		}
 	}
 }

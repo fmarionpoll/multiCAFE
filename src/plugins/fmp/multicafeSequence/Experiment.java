@@ -45,7 +45,7 @@ public class Experiment {
 		boxID = vSequence.capillaries.boxID;
 		
 		String directory = vSequence.getDirectory() +"\\results";
-		vkymos = SequencePlusUtils.openKymoFiles(directory, vSequence.capillaries);
+		vkymos = SequenceKymosUtils.openKymoFiles(directory, vSequence.capillaries);
 		vSequence.xmlReadDrosoTrackDefault();
 		return true;
 	}

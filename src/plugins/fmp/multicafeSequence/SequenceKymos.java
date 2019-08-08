@@ -261,7 +261,6 @@ public class SequenceKymos extends SequenceVirtual  {
 			return false; 
 		seq.removeAllROI();
 		
-		
 		File file = new File(filename);
 		Document document = XMLUtil.loadDocument(file);
         if (document == null) 
@@ -287,7 +286,7 @@ public class SequenceKymos extends SequenceVirtual  {
 	}
 	
 	private boolean readCapillaryMeasure(Node rootNode, Capillary cap) {
-		final Node myNode = XMLUtil.getElement(rootNode, cap.name + "_parameters");
+		final Node myNode = rootNode; //XMLUtil.getElement(rootNode, cap.name + "_parameters");
 		if (myNode == null)
 			return false;
 		
@@ -331,10 +330,10 @@ public class SequenceKymos extends SequenceVirtual  {
 		}
 		
 		Document document = XMLUtil.createDocument(true);
-		Element resultsElement = document.createElement(KYMOGRAPH_RESULTS);
-		XMLUtil.getRootElement( document ).appendChild(resultsElement);
+		Element myNode = document.createElement(KYMOGRAPH_RESULTS);
+		XMLUtil.getRootElement( document ).appendChild(myNode);
 		
-		Node myNode = seq.getNode(cap.getName()+"_parameters");
+		XMLUtil.setAttributeValue(myNode, "SequenceName", cap.getName()+"_parameters");
 		XMLUtil.setElementBooleanValue(myNode, "detectTop", detectTop);
 		XMLUtil.setElementBooleanValue(myNode, "detectBottom", detectBottom);
 		XMLUtil.setElementBooleanValue(myNode, "detectAllLevel", detectAllLevel);

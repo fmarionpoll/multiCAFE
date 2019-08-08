@@ -24,7 +24,7 @@ import icy.image.IcyBufferedImage;
 import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.SequencePlusUtils;
+import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 
 
 public class MCCapillariesTab_File extends JPanel {
@@ -63,7 +63,7 @@ public class MCCapillariesTab_File extends JPanel {
 		}});	
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			String directory = parent0.vSequence.getDirectory()+ "\\results";
-			parent0.vkymos = SequencePlusUtils.openKymoFiles(directory, parent0.vSequence.capillaries); 
+			parent0.vkymos = SequenceKymosUtils.openKymoFiles(directory, parent0.vSequence.capillaries); 
 			firePropertyChange("KYMOS_OPEN", false, true);	
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
@@ -130,8 +130,8 @@ public class MCCapillariesTab_File extends JPanel {
 	
 	boolean loadDefaultKymos() {		
 		boolean flag = false;
-		if (SequencePlusUtils.isRunning)
-			SequencePlusUtils.isInterrupted = true;
+		if (SequenceKymosUtils.isRunning)
+			SequenceKymosUtils.isInterrupted = true;
 		
 		if (parent0.vSequence== null || parent0.vSequence.capillaries == null) {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
@@ -139,7 +139,7 @@ public class MCCapillariesTab_File extends JPanel {
 		}
 		
 		String directory = parent0.vSequence.getDirectory()+"\\results";
-		parent0.vkymos = SequencePlusUtils.openKymoFiles(directory, parent0.vSequence.capillaries);
+		parent0.vkymos = SequenceKymosUtils.openKymoFiles(directory, parent0.vSequence.capillaries);
 
 		if (parent0.vkymos != null) {
 			flag = true;
