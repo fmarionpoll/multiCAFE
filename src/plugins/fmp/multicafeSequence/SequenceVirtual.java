@@ -47,11 +47,7 @@ public class SequenceVirtual
 		
 	public Capillaries 				capillaries 			= new Capillaries();
 	public Cages					cages 					= new Cages();
-	
-	public String [] 				seriesname 				= null;
-	public int [][] 				data_raw 				= null;
-	public double [][] 				data_filtered 			= null;
-	
+		
 	// image cache
 	public VImageBufferThread 		bufferThread 			= null;
 	public IcyBufferedImage 		cacheTransformedImage 	= null;
@@ -84,8 +80,9 @@ public class SequenceVirtual
 			listFiles.add(cs);
 		if (loadSequenceFromList(listFiles)) {
 			Path path = Paths.get(listFiles.get(0));
-			String dir = path.getName(path.getNameCount()-1).toString();
-			seq.setName(dir);
+			String dir = path.getName(path.getNameCount()-2).toString();
+			if (dir != null)
+				seq.setName(dir);
 		}
 	}
 	
@@ -143,11 +140,15 @@ public class SequenceVirtual
 	}
 
 	public String getDecoratedImageName(int t) {
-		return  "["+(t+1)+ "/" + seq.getSizeT() + " V] : " + getFileName(t);
+		//System.out.println(" currentFrame ="+currentFrame +" isel="+t);
+		currentFrame = t;  
+		if (EnumStatus.KYMOGRAPH == status)
+			return getDecoratedImageNameFromCapillary(t);
+		return  csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
 	}
 	
 	public String getDecoratedImageNameFromCapillary(int isel) {
-		return  "["+(isel+1)+ "/" + seq.getSizeT() + " V] : " + capillaries.capillariesArrayList.get(isel).roi.getName();
+		return  capillaries.capillariesArrayList.get(isel).roi.getName() + " ["+(isel+1)+ "/" + seq.getSizeT() + "]";
 	}
 
 	public String getFileName(int t) {
@@ -405,6 +406,14 @@ public class SequenceVirtual
 //		return fileName;		
 	}
 	
+	public void setFileNameAsPathUp1() {
+		String directory = seq.getFilename();
+		Path path = Paths.get(directory);
+		String dirupup = path.getName(path.getNameCount()-2).toString();
+		setFileName(dirupup);
+		seq.setName(dirupup);
+	}
+	
 	public void setFileName(String name) {
 		csFileName = name;		
 	}
@@ -419,7 +428,7 @@ public class SequenceVirtual
 		if (capillaries == null || capillaries.capillariesArrayList.size() != size) {
 			if (capillaries == null)
 				capillaries = new Capillaries();
-			capillaries.extractLinesFromSequence(this);
+			capillaries.createCapillariesFromROIS(this);
 			storeAnalysisParametersToCapillaries();
 		}
 		return;

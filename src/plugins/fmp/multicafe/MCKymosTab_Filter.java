@@ -14,7 +14,7 @@ import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.type.collection.array.Array1DUtil;
-import plugins.fmp.multicafeSequence.SequencePlus;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 
 public class MCKymosTab_Filter  extends JPanel {
 
@@ -50,7 +50,7 @@ public class MCKymosTab_Filter  extends JPanel {
 		return Integer.parseInt( spanText.getText() );
 	}
 	
-	private void crossCorrelatePixels (SequencePlus kymographSeq, int span, int t, int c) {
+	private void crossCorrelatePixels (SequenceKymos kymographSeq, int span, int t, int c) {
 		IcyBufferedImage image = null;
 		image = kymographSeq.seq.getImage(t, 0, c);
 		double [] tabValues = Array1DUtil.arrayToDoubleArray(image.getDataXY(0), image.isSignedDataType()); 
@@ -91,7 +91,7 @@ public class MCKymosTab_Filter  extends JPanel {
 		shiftColumnsOfPixels(ishift, kymographSeq);
 	}
 	
-	private void shiftColumnsOfPixels(int [] shift, SequencePlus kymographSeq) {
+	private void shiftColumnsOfPixels(int [] shift, SequenceKymos kymographSeq) {
 		
 		IcyBufferedImage image0 = kymographSeq.seq.getFirstImage();
 		IcyBufferedImage image1 = IcyBufferedImageUtil.getCopy(image0); 

@@ -149,6 +149,7 @@ public class MCSequencePanePopup  extends JPanel implements PropertyChangeListen
 	}
 	
 	// -------------------------
+	
 	void startstopBufferingThread() {
 
 		if (parent0.vSequence == null)
@@ -171,7 +172,6 @@ public class MCSequencePanePopup  extends JPanel implements PropertyChangeListen
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", path);
 			parent0.addSequence(parent0.vSequence.seq);
-			parent0.vSequence.seq.addListener(parent0);
 			startstopBufferingThread();
 		}
 		return (path != null);
@@ -180,7 +180,6 @@ public class MCSequencePanePopup  extends JPanel implements PropertyChangeListen
 	
 	private void updateParametersForSequence() {
 		browseTab.endFrameJSpinner.setValue(parent0.vSequence.seq.getSizeT()-1);
-
 		Viewer v = parent0.vSequence.seq.getFirstViewer();
 		if (v != null) {
 			Rectangle rectv = v.getBoundsInternal();

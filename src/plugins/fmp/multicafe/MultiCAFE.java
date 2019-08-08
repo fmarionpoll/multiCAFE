@@ -16,21 +16,18 @@ import icy.gui.viewer.ViewerListener;
 
 import icy.plugin.abstract_.PluginActionable;
 import icy.sequence.DimensionId;
-import icy.sequence.Sequence;
-import icy.sequence.SequenceEvent;
-import icy.sequence.SequenceListener;
 import icy.system.thread.ThreadUtil;
-import plugins.fmp.multicafeSequence.SequencePlus;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceVirtual;
 
 
 // SequenceListener?
-public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener, SequenceListener
+public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener
 {
 	SequenceVirtual 			vSequence 			= null;
-	SequencePlus				vkymos				= null;
+	SequenceKymos				vkymos				= null;
 	
-	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 05-August-2019", true, true, true, true);
+	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 08-August-2019", true, true, true, true);
 	
 	MCSequencePane 				sequencePane 		= new MCSequencePane();
 	MCCapillariesPane 			capillariesPane 	= new MCCapillariesPane();
@@ -78,8 +75,14 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	@Override	
 	public void viewerChanged(ViewerEvent event) {
 		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) {
-			if (event.getDim() == DimensionId.T)        
-            	vSequence.currentFrame = event.getSource().getPositionT() ;
+			if (event.getDim() == DimensionId.T) {
+				Viewer v = event.getSource(); 
+				int id = v.getSequence().getId();
+				if (id == vSequence.seq.getId())
+					v.setTitle(vSequence.getDecoratedImageName(v.getPositionT()));
+				else
+					v.setTitle(vkymos.getDecoratedImageName(v.getPositionT()));
+			}
 		}
 	}
 
@@ -123,41 +126,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			}});
 		}
 	} 
-	
-	@Override
-	public void sequenceChanged(SequenceEvent sequenceEvent) {
-//		Sequence seq = sequenceEvent.getSequence();
-//		SequenceEventSourceType seqSourceType = sequenceEvent.getSourceType();
-//		switch(seqSourceType) {
-//		case SEQUENCE_TYPE:
-//		case SEQUENCE_META:
-//		case SEQUENCE_COLORMAP:
-//		case SEQUENCE_COMPONENTBOUNDS:
-//		case SEQUENCE_DATA:
-//		case SEQUENCE_ROI:
-//		case SEQUENCE_OVERLAY:
-//		default:
-//			break;
-//        
-//		}
-//		SequenceEventType seqEventType = sequenceEvent.getType();
-//		switch (seqEventType) {
-//		case ADDED:
-//			break;
-//		case CHANGED:
-//			break;
-//		case REMOVED:
-//			break;
-//		default:
-//			break;
-//		}
-	}
 
-	@Override
-	public void sequenceClosed(Sequence sequence) {
-		sequencePane.closeTab.closeAll();
-	}
-	
 	private void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
 		if (loadCapillaries) {
 			if( !capillariesPane.loadCapillaryTrack()) 

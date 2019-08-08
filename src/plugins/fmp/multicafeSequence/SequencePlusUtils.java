@@ -134,7 +134,7 @@ public class SequencePlusUtils {
 	        result.dataChanged();
 	}
 	
-	public static SequencePlus openKymoFiles (String directory, Capillaries parent_capillaries) {
+	public static SequenceKymos openKymoFiles (String directory, Capillaries parent_capillaries) {
 		isRunning = true;
 
 		File dir = new File(directory);
@@ -154,7 +154,7 @@ public class SequencePlusUtils {
 			listFileNames.add(file.getPath());
 		}
 		
-		SequencePlus kymographSeq = new SequencePlus(listFileNames);
+		SequenceKymos kymographSeq = new SequenceKymos(listFileNames);
 		progress.setMessage("load measures for each capillary");
 		kymographSeq.capillaries = new Capillaries();
 		kymographSeq.capillaries.copy(parent_capillaries);
@@ -188,13 +188,12 @@ public class SequencePlusUtils {
 		return kymographSeq;
 	}
 	
-	public static void saveKymosMeasures (SequencePlus vkymos, String directory) {	
+	public static void saveKymosMeasures (SequenceKymos vkymos, String directory) {	
 		if (vkymos == null || vkymos.capillaries == null)
 			return;
 		isRunning = true;
 		ProgressFrame progress = new ProgressFrame("Save kymograph measures");
 		progress.setLength(vkymos.capillaries.capillariesArrayList.size());
-		
 		for (Capillary cap : vkymos.capillaries.capillariesArrayList) {
 			if (isInterrupted) {
 				isInterrupted = false;
@@ -203,14 +202,13 @@ public class SequencePlusUtils {
 			}
 			if (!vkymos.saveXMLKymographAnalysis(cap, directory))
 				System.out.println(" -> failed - in directory: " + directory);
-			
 			progress.incPosition();
 		}
 		progress.close();
 		isRunning = false;
 	}
 
-	public static void transferSequenceInfoToKymos (SequencePlus vkymos, SequenceVirtual vSequence) {
+	public static void transferSequenceInfoToKymos (SequenceKymos vkymos, SequenceVirtual vSequence) {
 		if (vkymos == null || vkymos.capillaries == null)
 			return;		
 		vkymos.capillaries.analysisStart = vSequence.analysisStart; 

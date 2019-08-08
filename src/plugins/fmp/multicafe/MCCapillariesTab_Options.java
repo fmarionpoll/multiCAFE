@@ -22,7 +22,6 @@ import icy.canvas.Layer;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
-import icy.main.Icy;
 import icy.roi.ROI;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeTools.MulticafeTools;
@@ -217,10 +216,7 @@ public class MCCapillariesTab_Options extends JPanel {
 		if (icurrent != isel) {
 			kymographNamesComboBox.setSelectedIndex(isel);
 		}
-
-		Viewer v =  Icy.getMainInterface().getFirstViewer(parent0.vkymos.seq);
-		v.setPositionT(isel);
-		v.setTitle(parent0.vkymos.getDecoratedImageNameFromCapillary(isel));
+		parent0.vkymos.seq.getFirstViewer().setPositionT(isel);
 	}
 
 }

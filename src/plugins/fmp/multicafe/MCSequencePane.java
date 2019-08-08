@@ -171,12 +171,13 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		
 		String path = parent0.vSequence.loadVirtualStackAt(filename);
 		if (path != null) {
+			parent0.vSequence.setFileNameAsPathUp1() ;
 			updateReadingParameters(parent0.vSequence);
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", path);
 			parent0.addSequence(parent0.vSequence.seq);
-			parent0.vSequence.seq.addListener(parent0);
 			startstopBufferingThread();
+			parent0.vSequence.seq.getFirstViewer().addListener( parent0 );
 		}
 		return (path != null);
 	}

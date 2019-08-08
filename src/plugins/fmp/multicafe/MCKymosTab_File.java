@@ -62,12 +62,11 @@ public class MCKymosTab_File  extends JPanel {
 				boolean flag2 = true;
 				if (flag2 = parent0.vkymos.loadXMLKymographAnalysis(cap, directory)) {
 					parent0.vkymos.validateRois();
-//	TODO??			parent0.vkymos.getArrayListFromRois(EnumArrayListType.cumSum);
+					//	TODO??	parent0.vkymos.getArrayListFromRois(EnumArrayListType.cumSum);
 				}
 				else {
 					System.out.println("load measures -> failed or not found in directory: " + directory);
 				}
-				
 				if (!flag2)
 					flag = false;
 				if (isInterrupted) {
@@ -76,7 +75,6 @@ public class MCKymosTab_File  extends JPanel {
 				}
 			}
 			parent0.vkymos.seq.endUpdate();
-			
 			if (parent0.vkymos.seq.getSizeT() >0 ) {
 				if (parent0.vkymos.analysisEnd > parent0.vkymos.analysisStart) {
 					parent0.vSequence.analysisStart = parent0.vkymos.analysisStart; 
@@ -85,7 +83,6 @@ public class MCKymosTab_File  extends JPanel {
 				}
 			}
 		}
-		
 		isRunning = false;
 		return flag;
 	}

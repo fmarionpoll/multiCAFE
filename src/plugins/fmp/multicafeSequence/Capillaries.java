@@ -21,7 +21,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 public class Capillaries {
 	
 	public double 	volume 				= 5.;
-	public int 	pixels 					= 5;
+	public int 		pixels 				= 5;
 	public int		grouping 			= 2;
 	public String 	sourceName 			= null;
 	public long 	analysisStart 		= 0;
@@ -42,7 +42,6 @@ public class Capillaries {
 	
 	public boolean xmlReadCapillaryParameters (Document doc) {
 		String nodeName = "capillaryTrack";
-		// read local parameters
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), nodeName);
 		if (node == null)
 			return false;
@@ -128,13 +127,10 @@ public class Capillaries {
 		return true;
 	}
 	
-	public void extractLinesFromSequence(SequenceVirtual seq) {
-
+	public void createCapillariesFromROIS(SequenceVirtual seq) {
 		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
 		capillariesArrayList.clear();
-		
-		for (ROI2D roi:list)
-		{
+		for (ROI2D roi:list) {
 			if (!(roi instanceof ROI2DShape) || !roi.getName().contains("line")) 
 				continue;
 			if (roi instanceof ROI2DLine || roi instanceof ROI2DPolyLine)
@@ -148,7 +144,6 @@ public class Capillaries {
 	}
 	
 	public boolean xmlWriteROIsAndData(String name, SequenceVirtual seq) {
-
 		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");
 		csFile.toLowerCase();
 		if (!csFile.contains(".xml")) {
@@ -158,14 +153,10 @@ public class Capillaries {
 	}
 	
 	public boolean xmlWriteROIsAndDataNoQuestion(String csFile, SequenceVirtual seq) {
-
-		if (csFile != null) 
-		{
-			if (capillariesArrayList.size() > 0)
-			{
+		if (csFile != null) {
+			if (capillariesArrayList.size() > 0) {
 				final Document doc = XMLUtil.createDocument(true);
-				if (doc != null)
-				{
+				if (doc != null) {
 					List<ROI> roisList = new ArrayList<ROI>();
 					ROI.saveROIsToXML(XMLUtil.getRootElement(doc), roisList);
 					xmlWriteCapillaryParameters (doc, seq);
@@ -178,7 +169,6 @@ public class Capillaries {
 	}
 	
 	public boolean xmlWriteROIsAndDataNoFilter(String name, SequenceVirtual seq) {
-
 		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");
 		csFile.toLowerCase();
 		if (!csFile.contains(".xml")) {
@@ -186,8 +176,7 @@ public class Capillaries {
 		}
 		
 		final Document doc = XMLUtil.createDocument(true);
-		if (doc != null)
-		{
+		if (doc != null) {
 			List<ROI> roisList = seq.seq.getROIs();
 			ROI.saveROIsToXML(XMLUtil.getRootElement(doc), roisList);
 			xmlWriteCapillaryParameters (doc, seq);
@@ -198,7 +187,6 @@ public class Capillaries {
 	}
 	
 	public boolean xmlReadROIsAndData(SequenceVirtual seq) {
-
 		String [] filedummy = null;
 		String filename = seq.getFileName();
 		File file = new File(filename);
@@ -215,7 +203,6 @@ public class Capillaries {
 	}
 	
 	public boolean xmlReadROIsAndData(String csFileName, SequenceVirtual seq) {
-		
 		if (csFileName != null)  {
 			final Document doc = XMLUtil.loadDocument(csFileName);
 			if (doc != null) {
@@ -226,7 +213,6 @@ public class Capillaries {
 					if (!isAlreadyStoredAsCapillary(roi.getName()))
 						capillariesArrayList.add(new Capillary((ROI2DShape) roi));
 				}
-				
 				try  {  
 					for (Capillary cap : capillariesArrayList)  {
 						seq.seq.addROI(cap.roi);
@@ -260,7 +246,6 @@ public class Capillaries {
 	}
 
 	public void copy (Capillaries cap) {
-		
 		volume = cap.volume;
 		pixels = cap.pixels;
 		grouping = cap.grouping;
@@ -281,7 +266,6 @@ public class Capillaries {
 	}
 	
 	public boolean isChanged (Capillaries cap) {
-		
 		boolean flag = false; 
 		flag = (cap.volume != volume) || flag;
 		flag = (cap.pixels != pixels) || flag;

@@ -127,7 +127,6 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 	}
 	
 	void kymosBuildFiltered(int zChannelSource, int zChannelDestination, TransformOp transformop, int spanDiff) {
-
 		if (tImg == null) 
 			tImg = new ImageTransformTools();
 		tImg.setSpanDiff(spanDiff);
@@ -136,9 +135,11 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		tImg.setSequence(parent0.vkymos);
 		parent0.vkymos.updateCapillaries(nimages);
 		Capillaries capillaries = parent0.vkymos.capillaries;
+		if (capillaries.capillariesArrayList.size() != nimages) {
+			capillaries.createCapillariesFromROIS(parent0.vSequence);
+		}
 		
 		for (int t= 0; t < nimages; t++) {
-
 			Capillary cap = capillaries.capillariesArrayList.get(t);
 			cap.indexImage = t;
 			IcyBufferedImage img = parent0.vkymos.seq.getImage(t, zChannelSource);

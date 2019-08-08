@@ -20,7 +20,7 @@ import javax.swing.event.ChangeListener;
 import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.SequencePlus;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.BuildDetect_Gulps;
 import plugins.fmp.multicafeTools.BuildDetect_GulpsOptions;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
@@ -88,7 +88,7 @@ public class MCKymosTab_DetectGulps extends JPanel {
 			@Override public void stateChanged(ChangeEvent arg0) {
 				if (parent0.vkymos != null && viewGulpsThresholdCheckBox.isSelected()) {
 					int thresholdValue = (int) detectGulpsThresholdSpinner.getValue();
-					SequencePlus seq = parent0.vkymos; 
+					SequenceKymos seq = parent0.vkymos; 
 					roiDisplayThreshold(true, seq, thresholdValue);
 					if (detectAllGulpsCheckBox.isSelected())
 						roisDisplayAllThresholds(viewGulpsThresholdCheckBox.isSelected());
@@ -149,7 +149,7 @@ public class MCKymosTab_DetectGulps extends JPanel {
 			}});
 	}
 	
-	void roiDisplayThreshold(boolean display, SequencePlus seq, int thresholdValue) {
+	void roiDisplayThreshold(boolean display, SequenceKymos seq, int thresholdValue) {
 			
 		if (display)
 		{

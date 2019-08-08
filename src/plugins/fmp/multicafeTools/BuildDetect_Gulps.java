@@ -8,12 +8,12 @@ import java.util.List;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.SequencePlus;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class BuildDetect_Gulps {
 	
-	public void detectGulps(BuildDetect_GulpsOptions options, SequencePlus seqkymo) {	
+	public void detectGulps(BuildDetect_GulpsOptions options, SequenceKymos seqkymo) {	
 		
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
 		progressBar.initStuff(seqkymo.seq.getSizeT() );
@@ -51,7 +51,7 @@ public class BuildDetect_Gulps {
 		progressBar.close();
 	}	
 
-	private void getDerivativeProfile(SequencePlus kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray, int jitter) {
+	private void getDerivativeProfile(SequenceKymos kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray, int jitter) {
 		
 		int z = kymographSeq.seq.getSizeZ() -1;
 		IcyBufferedImage image = kymographSeq.seq.getImage(t, z, 0);
@@ -89,7 +89,7 @@ public class BuildDetect_Gulps {
 		kymographSeq.seq.addROI(roiDerivative, false);
 	}
 
-	private void getGulps(SequencePlus kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray) {
+	private void getGulps(SequenceKymos kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray) {
 		int ix = 0;
 		if (cap.gulpsRois != null)
 			cap.gulpsRois.clear();

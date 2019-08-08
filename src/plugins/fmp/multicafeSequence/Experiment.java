@@ -9,7 +9,7 @@ public class Experiment {
 	
 	public String						filename 					= null;
 	public SequenceVirtual 				vSequence 					= null;
-	public SequencePlus 				vkymos						= null;
+	public SequenceKymos 				vkymos						= null;
 	
 	public FileTime						fileTimeImageFirst;
 	public FileTime						fileTimeImageLast;

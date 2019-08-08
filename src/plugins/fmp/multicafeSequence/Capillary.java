@@ -56,7 +56,6 @@ public class Capillary implements XMLPersistent  {
 	}
 	
 	public Capillary() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public String getName() {
@@ -76,7 +75,6 @@ public class Capillary implements XMLPersistent  {
 	public ArrayList<Integer> getYFromPtArray(List<Point2D> ptsList) {
 		if (ptsList == null)
 			return null;
-		
 		ArrayList<Integer> arrayInt = new ArrayList<Integer> ();
 		for (Point2D pt: ptsList) {
 			int value = (int) pt.getY();
@@ -85,9 +83,28 @@ public class Capillary implements XMLPersistent  {
 		return arrayInt;
 	}
 	
-	public ArrayList<Integer> getArrayListFromRois(EnumArrayListType option) {
+	public boolean isThereAnyMeasuresDone(EnumArrayListType option) {
+		boolean yes = false;
+		switch (option) {
+		case derivedValues:
+			yes= (derivedValuesArrayList != null && derivedValuesArrayList.size() > 0);
+			break;
+		case cumSum:
+			yes= (gulpsRois != null && gulpsRois.size() > 0);
+			break;
+		case bottomLevel:
+			yes= (ptsBottom != null && ptsBottom.size() > 0);
+			break;
+		case topLevel:
+		default:
+			yes= (ptsTop != null && ptsTop.size() > 0);
+			break;
+		}
+		return yes;
+	}
+	
+	public ArrayList<Integer> getMeasures(EnumArrayListType option) {
 		ArrayList<Integer> datai = null;
-		
 		switch (option) {
 		case derivedValues:
 			datai = derivedValuesArrayList;
@@ -121,7 +138,6 @@ public class Capillary implements XMLPersistent  {
 		ArrayList<Integer> intArray = transfertRoiYValuesToDataArray(roi);
 		Polyline2D line = roi.getPolyline2D();
 		int jstart = (int) line.xpoints[0];
-
 		int previousY = intArray.get(0);
 		for (int i=0; i< intArray.size(); i++) {
 			int val = intArray.get(i);
@@ -136,12 +152,10 @@ public class Capillary implements XMLPersistent  {
 	private boolean interpolateMissingPointsAlongXAxis (ROI2DPolyLine roiLine) {
 		// interpolate points so that each x step has a value	
 		// assume that points are ordered along x
-	
 		Polyline2D line = roiLine.getPolyline2D();
 		int roiLine_npoints = line.npoints;
 		// exit if the length of the segment is the same
 		int roiLine_nintervals =(int) line.xpoints[roiLine_npoints-1] - (int) line.xpoints[0] +1;  
-		
 		if (roiLine_npoints == roiLine_nintervals)
 			return true;
 		else if (roiLine_npoints > roiLine_nintervals)
@@ -149,14 +163,12 @@ public class Capillary implements XMLPersistent  {
 		
 		List<Point2D> pts = new ArrayList <Point2D>(roiLine_npoints);
 		double ylast = line.ypoints[roiLine_npoints-1];
-		for (int i=1; i< roiLine_npoints; i++) {
-			
+		for (int i=1; i< roiLine_npoints; i++) {			
 			int xfirst = (int) line.xpoints[i-1];
 			int xlast = (int) line.xpoints[i];
 			double yfirst = line.ypoints[i-1];
 			ylast = line.ypoints[i];
 			for (int j = xfirst; j< xlast; j++) {
-				
 				int val = (int) (yfirst + (ylast-yfirst)*(j-xfirst)/(xlast-xfirst));
 				Point2D pt = new Point2D.Double(j, val);
 				pts.add(pt);
@@ -164,7 +176,6 @@ public class Capillary implements XMLPersistent  {
 		}
 		Point2D pt = new Point2D.Double(line.xpoints[roiLine_npoints-1], ylast);
 		pts.add(pt);
-		
 		roiLine.setPoints(pts);
 		return true;
 	}
@@ -172,9 +183,9 @@ public class Capillary implements XMLPersistent  {
 	private ArrayList<Integer> transfertRoiYValuesToDataArray(ROI2DPolyLine roiLine) {
 		Polyline2D line = roiLine.getPolyline2D();
 		ArrayList<Integer> intArray = new ArrayList<Integer> (line.npoints);
-		for (int i=0; i< line.npoints; i++) 
+		for (int i=0; i< line.npoints; i++) {
 			intArray.add((int) line.ypoints[i]);
-
+		}
 		return intArray;
 	}
 
@@ -202,11 +213,11 @@ public class Capillary implements XMLPersistent  {
 		if (gulpsRois != null)
 			saveROIsToXML(node, gulpsRois);
 		if (derivedValuesArrayList != null)
-			saveIntArraytoXML(node, derivedValuesArrayList, "derivedvalues");
+			saveIntArraytoXML(node, "derivedvalues", derivedValuesArrayList);
 		if (ptsTop != null)
-			saveIntArraytoXML(node, getYFromPtArray(ptsTop), "topLevel");
+			saveIntArraytoXML(node, "topLevel", getYFromPtArray(ptsTop));
 		if (ptsBottom != null)
-			saveIntArraytoXML(node, getYFromPtArray(ptsBottom), "bottomLevel");
+			saveIntArraytoXML(node, "bottomLevel", getYFromPtArray(ptsBottom));
         
         return true;
 	}
@@ -215,10 +226,8 @@ public class Capillary implements XMLPersistent  {
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
 	    if (nodeMeta == null)	// nothing to load
             return true;
-	    
-	    if (nodeMeta != null)
-	    {
-	    	version = XMLUtil.getElementValue(nodeMeta, "capillary ", "version 1.0.0");
+	    if (nodeMeta != null) {
+	    	version = XMLUtil.getElementValue(nodeMeta, "capillary_", "version 1.0.0");
 	        
 	    	indexImage = XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        name = XMLUtil.getElementValue(nodeMeta, ID_NAME, name);
@@ -231,11 +240,10 @@ public class Capillary implements XMLPersistent  {
 	
 	private void saveMetaDataToXML(Node node) {
 	    final Node nodeMeta = XMLUtil.setElement(node, ID_META);
-	    if (nodeMeta != null)
-	    {
+	    if (nodeMeta != null) {
 	    	if (version == null)
 	    		version = "version 1.0.0";
-	    	XMLUtil.setElementValue(nodeMeta, "capillary ", version);
+	    	XMLUtil.setElementValue(nodeMeta, "capillary_", version);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        XMLUtil.setElementValue(nodeMeta, ID_NAME, name);
 	        saveROIToXML(nodeMeta, roi); 
@@ -246,8 +254,7 @@ public class Capillary implements XMLPersistent  {
 
 	private void saveROIToXML(Node node, ROI roi) {
 		final Node nodeROI = XMLUtil.addElement(node, ID_ROI);
-        if (!roi.saveToXML(nodeROI))
-        {
+        if (!roi.saveToXML(nodeROI)) {
             XMLUtil.removeNode(node, nodeROI);
             System.err.println("Error: the roi " + roi.getName() + " was not correctly saved to XML !");
         }
@@ -264,29 +271,26 @@ public class Capillary implements XMLPersistent  {
 	
 	private void saveROIsToXML(Node node, Collection<ROI> rois) {
         final Node nodeROIs = XMLUtil.setElement(node, ID_GULPS);
-        if (nodeROIs != null)
-        {
-            XMLUtil.removeAllChildren(nodeROIs);
+        if (nodeROIs != null){
 	        ROI.saveROIsToXML(nodeROIs, (List<ROI>) rois);
 	    }
 	}
 	
 	private boolean loadROIsFromXML(Node node, Collection<ROI> rois) {
         final Node nodeROIs = XMLUtil.getElement(node, ID_GULPS);
-        if (nodeROIs != null)
-        {
+        if (nodeROIs != null) {
         	rois = ROI.loadROIsFromXML(nodeROIs);
 	    }
         return true;
 	}
 	
-	private void saveIntArraytoXML(Node node, ArrayList <Integer> data, String name) {
+	private void saveIntArraytoXML(Node node, String name, ArrayList <Integer> data) {
 		final Node nodeMeta = XMLUtil.setElement(node, name);
 	    if (nodeMeta != null) {
 	    	int i= 0;
 	    	XMLUtil.setElementIntValue(nodeMeta, "nitems", data.size());
 	    	for (int value: data) {
-	    		XMLUtil.setElementIntValue(nodeMeta, "point"+i, value);
+	    		XMLUtil.setElementIntValue(nodeMeta, "i"+i, value);
 	    		i++;
 	    	}
 	    }
@@ -295,12 +299,12 @@ public class Capillary implements XMLPersistent  {
 	private boolean loadIntegerArrayFromXML(Node node, String name, ArrayList <Integer> data) {
 		final Node nodeMeta = XMLUtil.getElement(node, name);
 	    if (nodeMeta != null) {
-	    	int nitems = XMLUtil.getElementIntValue(nodeMeta, "nitems", data.size());
+	    	int nitems = XMLUtil.getElementIntValue(nodeMeta, "nitems", 0);
 	    	data = new ArrayList<Integer>(nitems);
 	    	for (int i=0; i< nitems; i++) {
-	    		int value = XMLUtil.getElementIntValue(nodeMeta, "point"+i, 0);
-	    		data.set(i, value);
-	    	}
+    			int value = XMLUtil.getElementIntValue(nodeMeta, "i"+i, 0);
+	    		data.add(i, value);
+    		}
 	    }
 	    return true;
 	}
@@ -316,7 +320,6 @@ public class Capillary implements XMLPersistent  {
 	public int getCapillaryIndexFromCapillaryName(String name) {
 		if (!name .contains("line"))
 			return -1;
-
 		String num = name.substring(4, 5);
 		int numFromName = Integer.parseInt(num);
 		String side = name.substring(5, 6);

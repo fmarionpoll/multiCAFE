@@ -10,7 +10,7 @@ import icy.sequence.Sequence;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.SequencePlus;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 
 import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.nchenouard.kymographtracker.Util;
@@ -21,7 +21,7 @@ public class BuildKymographsThread implements Runnable
 {
 	public BuildKymographsOptions 					options 			= new BuildKymographsOptions();
 	
-	public  SequencePlus 							vkymos 				= null;
+	public  SequenceKymos 							vkymos 				= null;
 	private ArrayList<double []> 					sourceValuesList 	= null;
 	public boolean 									stopFlag 			= false;
 	public boolean 									threadRunning 		= false;
@@ -53,7 +53,6 @@ public class BuildKymographsThread implements Runnable
 		initArraysToBuildKymographImages();
 		
 		int vinputSizeX = options.vSequence.seq.getSizeX();
-		options.vSequence.seq.beginUpdate();
 		sequenceViewer = Icy.getMainInterface().getFirstViewer(options.vSequence.seq);
 		int ipixelcolumn = 0;
 		getImageAndUpdateViewer (options.startFrame);
@@ -62,12 +61,11 @@ public class BuildKymographsThread implements Runnable
 		seqForRegistration.addImage(1, workImage);
 		int nbcapillaries = vkymos.capillaries.capillariesArrayList.size();
 		
-		for (int t = options.startFrame ; t <= options.endFrame && !stopFlag; t += options.analyzeStep, ipixelcolumn++ )
-		{
+		options.vSequence.seq.beginUpdate();
+		for (int t = options.startFrame ; t <= options.endFrame && !stopFlag; t += options.analyzeStep, ipixelcolumn++ ) {
 			progressBar.updatePositionAndTimeLeft(t);
 			if (!getImageAndUpdateViewer (t))
 				continue;
-			
 			if (options.doRegistration ) 
 				adjustImage();
 			transferWorkImageToDoubleArrayList ();
@@ -75,7 +73,6 @@ public class BuildKymographsThread implements Runnable
 			for (int iroi=0; iroi < nbcapillaries; iroi++) {
 				Capillary cap = vkymos.capillaries.capillariesArrayList.get(iroi);
 				final int t_out = ipixelcolumn;
-
 				for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) { 
 					double [] tabValues = cap.tabValuesList.get(chan); 
 					double [] sourceValues = sourceValuesList.get(chan);
@@ -120,7 +117,7 @@ public class BuildKymographsThread implements Runnable
 	private boolean getImageAndUpdateViewer(int t) {	
 		workImage = options.vSequence.seq.getImage(t, 0); 
 		sequenceViewer.setPositionT(t);
-		sequenceViewer.setTitle(options.vSequence.getDecoratedImageName(t));		
+//		sequenceViewer.setTitle(options.vSequence.getDecoratedImageName(t));		
 		options.vSequence.currentFrame = t;
 
 		if (workImage == null) {
@@ -153,7 +150,7 @@ public class BuildKymographsThread implements Runnable
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;
 
-		options.vSequence.capillaries.extractLinesFromSequence(options.vSequence);
+		options.vSequence.capillaries.createCapillariesFromROIS(options.vSequence);
 		vkymos.capillaries.copy(options.vSequence.capillaries);
 		
 		int nbcapillaries = vkymos.capillaries.capillariesArrayList.size();
@@ -171,7 +168,6 @@ public class BuildKymographsThread implements Runnable
 			Capillary cap = vkymos.capillaries.capillariesArrayList.get(t);
 			cap.bufImage = new IcyBufferedImage(imagewidth, masksizeMax, numC, dataType);
 			cap.tabValuesList = new ArrayList <double []>();
-			
 			for (int chan = 0; chan < numC; chan++) {
 				Object dataArray = cap.bufImage.getDataXY(chan);
 				double[] tabValues =  Array1DUtil.arrayToDoubleArray(dataArray, false);

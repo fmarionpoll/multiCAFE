@@ -29,7 +29,7 @@ import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
-public class SequencePlus extends SequenceVirtual  {
+public class SequenceKymos extends SequenceVirtual  {
 	
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;
@@ -51,20 +51,24 @@ public class SequencePlus extends SequenceVirtual  {
 	
 	// -----------------------------------------------------
 	
-	public SequencePlus() {
+	public SequenceKymos() {
 		super ();
+		status = EnumStatus.KYMOGRAPH;
 	}
 	
-	public SequencePlus(String name, IcyBufferedImage image) {
+	public SequenceKymos(String name, IcyBufferedImage image) {
 		super (name, image);
+		status = EnumStatus.KYMOGRAPH;
 	}
 	
-	public SequencePlus (String [] list, String directory) {
+	public SequenceKymos (String [] list, String directory) {
 		super(list, directory);
+		status = EnumStatus.KYMOGRAPH;
 	}
 	
-	public SequencePlus (List<String> listFullPaths) {
+	public SequenceKymos (List<String> listFullPaths) {
 		super(listFullPaths);
+		status = EnumStatus.KYMOGRAPH;
 	}
 
 	public ArrayList<Integer> getArrayListFromRois (EnumArrayListType option, int t) {	
@@ -259,10 +263,8 @@ public class SequencePlus extends SequenceVirtual  {
         	return false;
 		
 		Element root = XMLUtil.getRootElement(xml);
-		if (!readOldVersionOfCapillaryMeasure(root, cap)) {
-			if (!cap.loadFromXML(root))
-				return false;
-		}
+		if (!readCapillaryMeasure(root, cap)) 
+			return false;
 		
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
@@ -274,7 +276,7 @@ public class SequencePlus extends SequenceVirtual  {
 		return true;
 	}
 	
-	private boolean readOldVersionOfCapillaryMeasure(Node rootNode, Capillary cap) {
+	private boolean readCapillaryMeasure(Node rootNode, Capillary cap) {
 		final Node myNode = XMLUtil.getElement(rootNode, cap.name + "_parameters");
 		if (myNode == null)
 			return false;
@@ -296,6 +298,8 @@ public class SequencePlus extends SequenceVirtual  {
 		analysisStart = XMLUtil.getElementIntValue(myNode, "analysisStart", 0);
 		analysisEnd = XMLUtil.getElementIntValue(myNode, "analysisEnd", -1);
 		analysisStep = XMLUtil.getElementIntValue(myNode, "analysisStep", 1);
+		
+		cap.loadFromXML(myNode);
 		return true;
 	}
 	
@@ -334,8 +338,10 @@ public class SequencePlus extends SequenceVirtual  {
 		XMLUtil.setElementIntValue(myNode, "analysisStart", (int) analysisStart);
 		XMLUtil.setElementIntValue(myNode, "analysisEnd", (int) analysisEnd);
 		XMLUtil.setElementIntValue(myNode, "analysisStep", analysisStep);
-			
-		seq.setFilename(resultsDirectory+seq.getName()+".xml");
+		
+		cap.saveToXML(myNode);
+		
+		seq.setFilename(resultsDirectory+cap.getName()+".xml");
 		return seq.saveXMLData();
 	}
 

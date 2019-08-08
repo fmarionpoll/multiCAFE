@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.SequencePlus;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class MCBuildDetect_Limits {
 	
-	public void detectCapillaryLevels(BuildDetect_LimitsOptions options,  SequencePlus seqkymo) {
+	public void detectCapillaryLevels(BuildDetect_LimitsOptions options,  SequenceKymos seqkymo) {
 
 		// send some info
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
