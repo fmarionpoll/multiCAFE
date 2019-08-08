@@ -2,6 +2,7 @@ package plugins.fmp.multicafeSequence;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,6 +49,8 @@ public class SequenceKymos extends SequenceVirtual  {
 	public 	long			minutesBetweenImages	= 1;
 	public 	OverlayThreshold thresholdOverlay 		= null;
 	public 	OverlayTrapMouse trapOverlay 			= null;
+	
+	public static String KYMOGRAPH_RESULTS = "KymographAnalysis";
 	
 	// -----------------------------------------------------
 	
@@ -243,7 +246,6 @@ public class SequenceKymos extends SequenceVirtual  {
 		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());
 	}
 	
-
 	public boolean loadXMLKymographAnalysis (Capillary cap, String directory) {
 		if (directory == null)
 			return false;	
@@ -253,17 +255,25 @@ public class SequenceKymos extends SequenceVirtual  {
 			if (Files.notExists(resultsDirectoryPath)) 
 				return false; 
 		}
-		seq.setFilename(directory+"\\"+ cap.getName()+".xml");
-		Path filenamePath = Paths.get(seq.getFilename());
+		String filename = directory+"\\"+ cap.getName()+".xml";
+		Path filenamePath = Paths.get(filename);
 		if (Files.notExists(filenamePath)) 
 			return false; 
 		seq.removeAllROI();
-		Document xml = XMLUtil.loadDocument(seq.getFilename());
-        if (xml == null) 
-        	return false;
 		
-		Element root = XMLUtil.getRootElement(xml);
-		if (!readCapillaryMeasure(root, cap)) 
+		
+		File file = new File(filename);
+		Document document = XMLUtil.loadDocument(file);
+        if (document == null) 
+        	return false;
+        Element root = XMLUtil.getRootElement( document );
+		if ( root == null )
+			return false;
+		Element resultsElement = XMLUtil.getElement( root, KYMOGRAPH_RESULTS );
+		if ( resultsElement == null )
+			return false;
+		
+		if (!readCapillaryMeasure(resultsElement, cap)) 
 			return false;
 		
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
@@ -319,7 +329,11 @@ public class SequenceKymos extends SequenceVirtual  {
 				return false;
 			}
 		}
-
+		
+		Document document = XMLUtil.createDocument(true);
+		Element resultsElement = document.createElement(KYMOGRAPH_RESULTS);
+		XMLUtil.getRootElement( document ).appendChild(resultsElement);
+		
 		Node myNode = seq.getNode(cap.getName()+"_parameters");
 		XMLUtil.setElementBooleanValue(myNode, "detectTop", detectTop);
 		XMLUtil.setElementBooleanValue(myNode, "detectBottom", detectBottom);
@@ -341,8 +355,9 @@ public class SequenceKymos extends SequenceVirtual  {
 		
 		cap.saveToXML(myNode);
 		
-		seq.setFilename(resultsDirectory+cap.getName()+".xml");
-		return seq.saveXMLData();
+		File file = new File(resultsDirectory+cap.getName()+".xml");
+		boolean result = XMLUtil.saveDocument(document, file);
+		return result;
 	}
 
 	// ----------------------------
