@@ -79,7 +79,6 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 			openSequenceFromCombo(); 
 		}
 		else if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
-			
 			if (sequenceCreateNew(null)) {
 				infosTab.experimentComboBox.removeAllItems();
 				addSequenceToComboAndLoadData();
@@ -126,7 +125,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	private void openSequenceFromCombo() {
 		String filename = (String) infosTab.experimentComboBox.getSelectedItem();
 		sequenceCreateNew(filename);
-		updateParametersForSequence();
+		updateViewerForSequence();
 		sequenceAddtoCombo(parent0.vSequence.getFileName());
 		firePropertyChange("SEQ_OPENED", false, true);
 		tabsPane.setSelectedIndex(1);
@@ -151,21 +150,19 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		if (strItem != null) {
 			sequenceAddtoCombo(strItem);
 			infosTab.experimentComboBox.setSelectedItem(strItem);
-			updateParametersForSequence();
+			updateViewerForSequence();
 			firePropertyChange("SEQ_OPENED", false, true);
 		}
 	}
 	
-
 	void startstopBufferingThread() {
 		if (parent0.vSequence == null)
 			return;
 		parent0.vSequence.vImageBufferThread_STOP();
 		browseTab.getBrowseItems(parent0.vSequence); 
 		parent0.vSequence.cleanUpBufferAndRestart();
-		parent0.vSequence.vImageBufferThread_START(100); //numberOfImageForBuffer);
+		parent0.vSequence.vImageBufferThread_START(100);
 	}
-
 
 	boolean sequenceCreateNew (String filename) {
 		if (parent0.vSequence != null)
@@ -174,7 +171,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		
 		String path = parent0.vSequence.loadVirtualStackAt(filename);
 		if (path != null) {
-			initSequenceParameters(parent0.vSequence);
+			updateReadingParameters(parent0.vSequence);
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", path);
 			parent0.addSequence(parent0.vSequence.seq);
@@ -184,9 +181,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		return (path != null);
 	}
 	
-	private void updateParametersForSequence() {
-		browseTab.endFrameJSpinner.setValue(parent0.vSequence.seq.getSizeT()-1);
-
+	private void updateViewerForSequence() {
 		Viewer v = parent0.vSequence.seq.getFirstViewer();
 		if (v != null) {
 			Rectangle rectv = v.getBoundsInternal();
@@ -196,12 +191,13 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
-	private void initSequenceParameters(SequenceVirtual seq) {
+	private void updateReadingParameters(SequenceVirtual seq) {
 		if (seq.analysisEnd == 99999999) {
 			seq.analysisStart = 0;
 			seq.analysisEnd = seq.seq.getSizeT()-1;
 			seq.analysisStep = 1;
 		}
+		browseTab.endFrameJSpinner.setValue(parent0.vSequence.seq.getSizeT()-1);
 	}
 
 }

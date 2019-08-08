@@ -254,7 +254,6 @@ public class SequenceVirtual
 		status = EnumStatus.FAILURE;
 		list = keepOnlyAcceptedNames(list);
 		list = StringSorter.sortNumerically(list);
-		
 		listFiles = new ArrayList<String>(list.length);
 		for (int i=0; i<list.length; i++) {
 			if (list[i]!=null)
@@ -262,7 +261,6 @@ public class SequenceVirtual
 		}
 		nTotalFrames = list.length;
 		status = EnumStatus.FILESTACK;	
- 
 		loadSequenceFromList(listFiles);
 	}
 	
@@ -302,7 +300,6 @@ public class SequenceVirtual
 		return newList; 
 	}
 	
-	
 	public void renameFile(String pathSource, String pathDestination) throws IOException {
 	    FileUtils.moveFile(
 	      FileUtils.getFile(pathSource), 
@@ -313,30 +310,27 @@ public class SequenceVirtual
 		if (isLinexLRFileNames(myListOfFilesNames)) {
 			listFiles = convertLinexLRFileNames(myListOfFilesNames);
 		}
-			
 		boolean flag = false;
 		List<Sequence> lseq = Loader.loadSequences(null, listFiles, 0, false, false, false, true);
-		if (!(flag = (lseq.size() > 0)))
-			return flag;
-		
-		seq = new Sequence();
-		if (lseq.size() == 1) {
-			seq = lseq.get(0);
-			return flag; 
-		}
-		
-		seq = lseq.get(0);	
-		int tmax = lseq.get(0).getSizeT();
-		int tseq = 0;
-		for (int t = 0; t < tmax; t++) {
-			for (int i=0; i < lseq.size(); i++) {
-				IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
-				seq.setImage(tseq, 0, bufImg);
-				tseq++;
+		if ((flag = (lseq.size() > 0))) {
+			seq = new Sequence();
+			if (lseq.size() == 1) {
+				seq = lseq.get(0);
 			}
+			else {
+				seq = lseq.get(0);	
+				int tmax = lseq.get(0).getSizeT();
+				int tseq = 0;
+				for (int t = 0; t < tmax; t++) {
+					for (int i=0; i < lseq.size(); i++) {
+						IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
+						seq.setImage(tseq, 0, bufImg);
+						tseq++;
+					}
+				}
+			}
+			status = EnumStatus.FILESTACK;	
 		}
-		
-		status = EnumStatus.FILESTACK;	
 		return flag;
 	}
 		
@@ -359,10 +353,9 @@ public class SequenceVirtual
 		
 		if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi")) {
 			seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
-			return directory;
 		}
-		
-		loadSequenceFromListAndDirectory(list, directory);
+		else
+			loadSequenceFromListAndDirectory(list, directory);
 		return directory;
 	}
 
@@ -492,6 +485,16 @@ public class SequenceVirtual
         	if (roi instanceof ROI2D && ((ROI2D) roi).getT() == t)
         		seq.removeROI(roi, false);
         }    
+	}
+	
+	public void removeRoisContainingName(int t, String gulp) {
+		
+		for (ROI roi: seq.getROIs()) {
+			if (roi instanceof ROI2D 
+			&& ((ROI2D) roi).getT() == t 
+			&& roi.getName().contains(gulp))
+				seq.removeROI(roi);
+		}
 	}
 	
 	// --------------------------

@@ -41,8 +41,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	//-------------------------------------------------------------------
 	
 	@Override
-	public void run() 
-	{		
+	public void run() {		
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
 		mainFrame.setLayout(new BorderLayout());
 		mainFrame.add(mainPanel, BorderLayout.CENTER);
@@ -68,8 +67,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		mainFrame.addToDesktopPane();
 	}
 
-	void roisSaveEdits() 
-	{
+	void roisSaveEdits() {
 		if (vkymos != null && vkymos.hasChanged) {
 			vkymos.validateRois();
 			// TODO? vkymos.getArrayListFromRois(EnumArrayListType.cumSum, -1);
@@ -78,8 +76,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	}
 
 	@Override	
-	public void viewerChanged(ViewerEvent event)
-	{
+	public void viewerChanged(ViewerEvent event) {
 		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) {
 			if (event.getDim() == DimensionId.T)        
             	vSequence.currentFrame = event.getSource().getPositionT() ;
@@ -87,14 +84,12 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	}
 
 	@Override
-	public void viewerClosed(Viewer viewer)
-	{
+	public void viewerClosed(Viewer viewer) {
 		viewer.removeListener(this);
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent arg0) 
-	{
+	public void propertyChange(PropertyChangeEvent arg0) {
 		if (arg0.getPropertyName().equals("SEQ_OPENED")) {
 			loadPreviousMeasures(
 					sequencePane.openTab.isCheckedLoadPreviousProfiles(), 
@@ -110,7 +105,9 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			capillariesPane.optionsTab.viewKymosCheckBox.setSelected(true);
 		}
 		else if (arg0.getPropertyName().equals("SEQ_SAVEMEAS")) {
-			if (vSequence != null && vSequence.capillaries != null) {
+			if (vSequence != null 
+					&& vSequence.capillaries != null 
+					&& vSequence.capillaries.capillariesArrayList.size() > 0) {
 				capillariesPane.getCapillariesInfos(vSequence.capillaries);
 				sequencePane.infosTab.getCapillariesInfosFromDialog(vSequence.capillaries);
 				if (capillariesPane.capold.isChanged(vSequence.capillaries)) {
@@ -162,7 +159,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	}
 	
 	private void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
-		
 		if (loadCapillaries) {
 			if( !capillariesPane.loadCapillaryTrack()) 
 				return;
@@ -174,7 +170,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			MCKymosTab_File.flag = true;
 			MCKymosTab_File.isRunning = true;
 			MCKymosTab_File.isInterrupted = false;
-			
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
 				if ( !capillariesPane.fileTab.loadDefaultKymos()) {
 					return;
@@ -196,7 +191,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (loadCages) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				ProgressFrame progress = new ProgressFrame("Load cages and fly movements");
-				
 				movePane.loadDefaultCages();
 				movePane.graphicsTab.moveCheckbox.setEnabled(true);
 				movePane.graphicsTab.displayResultsButton.setEnabled(true);

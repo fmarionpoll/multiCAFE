@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icy.image.IcyBufferedImage;
-import icy.roi.ROI;
-import icy.roi.ROI2D;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequencePlus;
@@ -29,14 +27,12 @@ public class BuildDetect_Gulps {
 		}
 		
 		seqkymo.seq.beginUpdate();
-		
-		for (int t=tfirst; t <= tlast; t++) 
-		{
+		for (int t=tfirst; t <= tlast; t++) {
 			progressBar.updatePositionAndTimeLeft(t);
 			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(t);
 			options.copy(cap.gulpsOptions);
 			
-			removeSpecificRoisFromSequence(seqkymo, t, "derivative");
+			seqkymo.removeRoisContainingName(t, "derivative");
 			if (cap.derivedValuesArrayList != null)
 				cap.derivedValuesArrayList.clear();
 			cap.derivedValuesArrayList = new ArrayList<Integer>();
@@ -45,7 +41,7 @@ public class BuildDetect_Gulps {
 			
 			getDerivativeProfile(seqkymo, t, cap, topLevelArray, jitter);	
 			if (options.computeDiffnAndDetect) {
-				removeSpecificRoisFromSequence(seqkymo, t, "gulp");
+				seqkymo.removeRoisContainingName(t, "gulp");
 				getGulps(seqkymo, t, cap, topLevelArray);
 			}
 		}
@@ -55,16 +51,6 @@ public class BuildDetect_Gulps {
 		progressBar.close();
 	}	
 
-	private void removeSpecificRoisFromSequence(SequencePlus kymographSeq, int t, String gulp) {
-		
-		for (ROI roi:kymographSeq.seq.getROIs()) {
-			if (roi instanceof ROI2D 
-			&& ((ROI2D) roi).getT() == t 
-			&& roi.getName().contains(gulp))
-				kymographSeq.seq.removeROI(roi);
-		}
-	}
-	
 	private void getDerivativeProfile(SequencePlus kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray, int jitter) {
 		
 		int z = kymographSeq.seq.getSizeZ() -1;
@@ -75,8 +61,7 @@ public class BuildDetect_Gulps {
 		int yheight = image.getSizeY();
 		int ix = 0;
 		int iy = 0;
-		for (ix = 1; ix < topLevelArray.size(); ix++) 
-		{
+		for (ix = 1; ix < topLevelArray.size(); ix++) {
 			// for each point of topLevelArray, define a bracket of rows to look at ("jitter" = 10)
 			int low = topLevelArray.get(ix)- jitter;
 			int high = low + 2*jitter;
@@ -95,12 +80,13 @@ public class BuildDetect_Gulps {
 			listOfMaxPoints.add(new Point2D.Double((double) ix, (double) ( yheight/2 - max)));
 			cap.derivedValuesArrayList.add(max);
 		}
-		ROI2DPolyLine roiMaxTrack = new ROI2DPolyLine ();
-		roiMaxTrack.setName("derivative");
-		roiMaxTrack.setColor(Color.yellow);
-		roiMaxTrack.setStroke(1);
-		roiMaxTrack.setPoints(listOfMaxPoints);
-		kymographSeq.seq.addROI(roiMaxTrack, false);
+		ROI2DPolyLine roiDerivative = new ROI2DPolyLine ();
+		roiDerivative.setName("derivative");
+		roiDerivative.setColor(Color.yellow);
+		roiDerivative.setStroke(1);
+		roiDerivative.setPoints(listOfMaxPoints);
+		roiDerivative.setT(t);
+		kymographSeq.seq.addROI(roiDerivative, false);
 	}
 
 	private void getGulps(SequencePlus kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray) {
@@ -111,8 +97,7 @@ public class BuildDetect_Gulps {
 		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
 		List<Point2D> gulpPoints = new ArrayList<>();
 		Point2D.Double singlePoint = null;
-		for (ix = 1; ix < topLevelArray.size(); ix++) 
-		{
+		for (ix = 1; ix < topLevelArray.size(); ix++) {
 			int max = cap.derivedValuesArrayList.get(ix-1);
 			if (max < kymographSeq.detectGulpsThreshold)
 				continue;
