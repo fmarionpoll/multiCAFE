@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe;
+package plugins.fmp.multicafeTools;
 
 
 import org.w3c.dom.Node;
@@ -7,15 +7,15 @@ import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
-public class MCBuildDetect_GulpsOptions implements XMLPersistent {
+public class BuildDetect_GulpsOptions implements XMLPersistent {
 	
-	int 			detectGulpsThreshold	= 90;
-	TransformOp 	transformForGulps 		= TransformOp.XDIFFN;
-	boolean 		detectAllGulps 			= true;
-	boolean			computeDiffnAndDetect	= true;
-	int				firstkymo 				= 0;
+	public int 			detectGulpsThreshold	= 90;
+	public TransformOp 	transformForGulps 		= TransformOp.XDIFFN;
+	public boolean 		detectAllGulps 			= true;
+	public boolean		computeDiffnAndDetect	= true;
+	public int			firstkymo 				= 0;
 	
-	public void copy(MCBuildDetect_GulpsOptions destination) {
+	public void copy(BuildDetect_GulpsOptions destination) {
 		destination.detectGulpsThreshold 	= detectGulpsThreshold;
 		destination.transformForGulps 		= transformForGulps;
 		destination.detectAllGulps 			= detectAllGulps;

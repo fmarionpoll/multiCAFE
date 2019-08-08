@@ -15,6 +15,8 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeTools.MCBuildDetect_Limits;
+import plugins.fmp.multicafeTools.BuildDetect_LimitsOptions;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
@@ -25,19 +27,19 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	 */
 	private static final long serialVersionUID = -6329863521455897561L;
 	
-	JComboBox<String> 	directionComboBox 		= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
-	JCheckBox			detectAllCheckBox 		= new JCheckBox ("all", true);
+	private JComboBox<String> 	directionComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
+	private JCheckBox	detectAllCheckBox 		= new JCheckBox ("all", true);
 	private JSpinner 	detectTopSpinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
+	private JButton		displayTransform1Button	= new JButton("Display");
+	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
+	private JButton 	detectTopButton 		= new JButton("Detect");
+	private MultiCAFE 	parent0 				= null;
 	JComboBox<TransformOp> transformForLevelsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
 			TransformOp.R_RGB, TransformOp.G_RGB, TransformOp.B_RGB, 
 			TransformOp.R2MINUS_GB, TransformOp.G2MINUS_RB, TransformOp.B2MINUS_RG, TransformOp.RGB,
 			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, 
 			TransformOp.H_HSB, TransformOp.S_HSB, TransformOp.B_HSB	});
 	
-	private JButton		displayTransform1Button	= new JButton("Display");
-	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
-	private JButton 	detectTopButton 		= new JButton("Detect");
-	MultiCAFE 			parent0 				= null;
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -59,10 +61,11 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 					firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
 				}
 			}});
+		
 		detectTopButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				kymosDisplayFiltered1();
-				MCBuildDetect_LimitsOptions options = new MCBuildDetect_LimitsOptions();
+				BuildDetect_LimitsOptions options = new BuildDetect_LimitsOptions();
 				options.transformForLevels 		= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 				options.directionUp 			= (directionComboBox.getSelectedIndex() == 0);
 				options.detectLevelThreshold 	= (int) getDetectLevelThreshold();
@@ -72,7 +75,8 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 				MCBuildDetect_Limits detect = new MCBuildDetect_Limits();
 				detect.detectCapillaryLevels(options, parent0.vkymos);
 				firePropertyChange("KYMO_DETECT_TOP", false, true);
-			}});		
+			}});	
+		
 		displayTransform1Button.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				kymosDisplayFiltered1();
@@ -107,7 +111,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	
 	void setInfosToDialog(Capillary cap) {
 
-		MCBuildDetect_LimitsOptions options = cap.limitsOptions;
+		BuildDetect_LimitsOptions options = cap.limitsOptions;
 		transformForLevelsComboBox.setSelectedItem(options.transformForLevels);
 		int index =options.directionUp ? 0:1;
 		directionComboBox.setSelectedIndex(index);
@@ -118,7 +122,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	
 	void getInfosFromDialog(Capillary cap) {
 
-		MCBuildDetect_LimitsOptions options = cap.limitsOptions;
+		BuildDetect_LimitsOptions options = cap.limitsOptions;
 		options.transformForLevels = (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
 		options.detectLevelThreshold = getDetectLevelThreshold();

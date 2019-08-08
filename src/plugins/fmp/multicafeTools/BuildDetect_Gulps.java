@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe;
+package plugins.fmp.multicafeTools;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
@@ -11,12 +11,11 @@ import icy.roi.ROI2D;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequencePlus;
-import plugins.fmp.multicafeTools.ProgressChrono;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
-public class MCBuildDetect_Gulps {
+public class BuildDetect_Gulps {
 	
-	public void detectGulps(MCBuildDetect_GulpsOptions options, SequencePlus seqkymo) {	
+	public void detectGulps(BuildDetect_GulpsOptions options, SequencePlus seqkymo) {	
 		
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
 		progressBar.initStuff(seqkymo.seq.getSizeT() );

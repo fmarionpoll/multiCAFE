@@ -21,6 +21,8 @@ import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequencePlus;
+import plugins.fmp.multicafeTools.BuildDetect_Gulps;
+import plugins.fmp.multicafeTools.BuildDetect_GulpsOptions;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 
@@ -110,27 +112,27 @@ public class MCKymosTab_DetectGulps extends JPanel {
 	}
 	
 	void kymosBuildDerivative(boolean detectGulps) {
-		MCBuildDetect_GulpsOptions options = new MCBuildDetect_GulpsOptions();
+		BuildDetect_GulpsOptions options = new BuildDetect_GulpsOptions();
 		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
 		options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps 			= detectAllGulpsCheckBox.isSelected();
 		options.firstkymo 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
 		options.computeDiffnAndDetect	= detectGulps;
 		
-		MCBuildDetect_Gulps detect = new MCBuildDetect_Gulps();
+		BuildDetect_Gulps detect = new BuildDetect_Gulps();
 		detect.detectGulps(options, parent0.vkymos);
 	}
 
 	
 	void setInfos(Capillary cap) {
-		MCBuildDetect_GulpsOptions options = cap.gulpsOptions;
+		BuildDetect_GulpsOptions options = cap.gulpsOptions;
 		detectGulpsThresholdSpinner.setValue(options.detectGulpsThreshold);
 		transformForGulpsComboBox.setSelectedItem(options.transformForGulps);
 		detectAllGulpsCheckBox.setSelected(options.detectAllGulps);
 	}
 	
 	void getInfosFromDialog(Capillary cap) {
-		MCBuildDetect_GulpsOptions options = cap.gulpsOptions;
+		BuildDetect_GulpsOptions options = cap.gulpsOptions;
 		options.detectGulpsThreshold = (int) detectGulpsThresholdSpinner.getValue();
 		options.transformForGulps = (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps = detectAllGulpsCheckBox.isSelected();

@@ -15,8 +15,8 @@ import icy.roi.ROI;
 import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.EnumArrayListType;
-import plugins.fmp.multicafe.MCBuildDetect_GulpsOptions;
-import plugins.fmp.multicafe.MCBuildDetect_LimitsOptions;
+import plugins.fmp.multicafeTools.BuildDetect_GulpsOptions;
+import plugins.fmp.multicafeTools.BuildDetect_LimitsOptions;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
@@ -26,8 +26,8 @@ public class Capillary implements XMLPersistent  {
 	public String						name 					= null;
 	public String 						version 				= null;
 	public ROI2DShape 					roi 					= null;	// the capillary (source)
-	public MCBuildDetect_LimitsOptions 	limitsOptions			= new MCBuildDetect_LimitsOptions();
-	public MCBuildDetect_GulpsOptions 	gulpsOptions			= new MCBuildDetect_GulpsOptions();
+	public BuildDetect_LimitsOptions 	limitsOptions			= new BuildDetect_LimitsOptions();
+	public BuildDetect_GulpsOptions 	gulpsOptions			= new BuildDetect_GulpsOptions();
 	
 	public List<Point2D> 				ptsTop  				= null; 
 	public List<Point2D> 				ptsBottom 				= null; 

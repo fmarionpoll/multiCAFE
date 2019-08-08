@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe;
+package plugins.fmp.multicafeTools;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -7,12 +7,11 @@ import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequencePlus;
-import plugins.fmp.multicafeTools.ProgressChrono;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class MCBuildDetect_Limits {
 	
-	public void detectCapillaryLevels(MCBuildDetect_LimitsOptions options,  SequencePlus seqkymo) {
+	public void detectCapillaryLevels(BuildDetect_LimitsOptions options,  SequencePlus seqkymo) {
 
 		// send some info
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
@@ -91,7 +90,7 @@ public class MCBuildDetect_Limits {
 		progressBar.close();
 	}
 	
-	void detectTop(int ix, int oldiytop, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, MCBuildDetect_LimitsOptions options) {
+	void detectTop(int ix, int oldiytop, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, BuildDetect_LimitsOptions options) {
 		
 		boolean found = false;
 		double x = ix;
@@ -123,7 +122,7 @@ public class MCBuildDetect_Limits {
 		cap.ptsTop.add(new Point2D.Double (x, y));
 	}
 	
-	void detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, MCBuildDetect_LimitsOptions options) {
+	void detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, BuildDetect_LimitsOptions options) {
 		// set flags for internal loop (part of the row)
 		boolean found = false;
 		double x = ix;

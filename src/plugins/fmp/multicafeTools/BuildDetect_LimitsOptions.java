@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe;
+package plugins.fmp.multicafeTools;
 
 import org.w3c.dom.Node;
 
@@ -6,18 +6,18 @@ import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
-public class MCBuildDetect_LimitsOptions implements XMLPersistent {
+public class BuildDetect_LimitsOptions implements XMLPersistent {
 	
-	boolean 		detectTop 				= true;
-	boolean 		detectBottom 			= true;
-	boolean 		detectAllImages 		= true;
-	int				firstImage				= 0;
-	boolean			directionUp				= true;
-	int				detectLevelThreshold 	= 35;
-	TransformOp		transformForLevels 		= TransformOp.R2MINUS_GB;
+			boolean 	detectTop 				= true;
+			boolean 	detectBottom 			= true;
+	public boolean 		detectAllImages 		= true;
+	public int			firstImage				= 0;
+	public boolean		directionUp				= true;
+	public int			detectLevelThreshold 	= 35;
+	public TransformOp	transformForLevels 		= TransformOp.R2MINUS_GB;
 
 	
-	void copy(MCBuildDetect_LimitsOptions destination) {
+	void copy(BuildDetect_LimitsOptions destination) {
 
 		destination.detectTop 				= detectTop; 
 		destination.detectBottom 			= detectBottom; 
