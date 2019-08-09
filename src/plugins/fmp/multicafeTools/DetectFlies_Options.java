@@ -7,7 +7,7 @@ import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
-public class DetectFliesParameters implements XMLPersistent {
+public class DetectFlies_Options implements XMLPersistent {
 	
 	public int 		threshold = -1;
 	public boolean 	btrackWhite = false;
@@ -25,7 +25,6 @@ public class DetectFliesParameters implements XMLPersistent {
 	
 	@Override
 	public boolean loadFromXML(Node node) {
-
 		if (node == null)
 			return false;
 		Element xmlVal = XMLUtil.getElement(node, "DetectFliesParameters");
@@ -51,7 +50,6 @@ public class DetectFliesParameters implements XMLPersistent {
 	
 	@Override
 	public boolean saveToXML(Node node) {
-
 		if (node == null)
 			return false;
 

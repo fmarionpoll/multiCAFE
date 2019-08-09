@@ -28,8 +28,8 @@ import icy.image.IcyBufferedImageUtil;
 import icy.image.ImageUtil;
 import icy.roi.ROI2D;
 import icy.system.thread.ThreadUtil;
-import plugins.fmp.multicafeTools.BuildTrackFliesThread2;
-import plugins.fmp.multicafeTools.DetectFliesParameters;
+import plugins.fmp.multicafeTools.DetectFlies;
+import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.OverlayThreshold;
 
 
@@ -57,7 +57,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	private JButton 	saveButton 	= new JButton("Save...");
 	
 	private OverlayThreshold 		ov = null;
-	private BuildTrackFliesThread2 	trackAllFliesThread = null;
+	private DetectFlies 	trackAllFliesThread = null;
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -165,7 +165,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 		if (trackAllFliesThread == null)
 			return false;
 		
-		DetectFliesParameters detect = new DetectFliesParameters();
+		DetectFlies_Options detect = new DetectFlies_Options();
 		detect.btrackWhite 		= true;
 		detect.blimitLow 		= objectLowsizeCheckBox.isSelected();
 		detect.blimitUp 		= objectUpsizeCheckBox.isSelected();
@@ -192,7 +192,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 
 	void builBackgroundImage() {
 		if (trackAllFliesThread == null)
-			trackAllFliesThread = new BuildTrackFliesThread2();
+			trackAllFliesThread = new DetectFlies();
 		
 		if (trackAllFliesThread.threadRunning) {
 			stopComputation();
@@ -207,7 +207,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	
 	void startComputation() {
 		if (trackAllFliesThread == null)
-			trackAllFliesThread = new BuildTrackFliesThread2();
+			trackAllFliesThread = new DetectFlies();
 		
 		if (trackAllFliesThread.threadRunning) {
 			stopComputation();

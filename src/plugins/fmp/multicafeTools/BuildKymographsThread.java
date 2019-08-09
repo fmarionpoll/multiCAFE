@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
-import icy.main.Icy;
 import icy.sequence.Sequence;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
@@ -53,7 +52,7 @@ public class BuildKymographsThread implements Runnable
 		initArraysToBuildKymographImages();
 		
 		int vinputSizeX = options.vSequence.seq.getSizeX();
-		sequenceViewer = Icy.getMainInterface().getFirstViewer(options.vSequence.seq);
+		sequenceViewer = options.vSequence.seq.getFirstViewer();
 		int ipixelcolumn = 0;
 		getImageAndUpdateViewer (options.startFrame);
 		
@@ -108,6 +107,7 @@ public class BuildKymographsThread implements Runnable
 			cap.tabValuesList.clear();
 			cap.bufImage = null;
 		}
+		vkymos.seq.setName(vkymos.getDecoratedImageName(0));
 		
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
@@ -119,10 +119,8 @@ public class BuildKymographsThread implements Runnable
 	
 	private boolean getImageAndUpdateViewer(int t) {	
 		workImage = options.vSequence.seq.getImage(t, 0); 
-		sequenceViewer.setPositionT(t);
-//		sequenceViewer.setTitle(options.vSequence.getDecoratedImageName(t));		
-		options.vSequence.currentFrame = t;
-
+		sequenceViewer.setPositionT(t);		
+		
 		if (workImage == null) {
 			System.out.println("workImage null");
 			return false;

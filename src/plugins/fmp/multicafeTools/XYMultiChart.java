@@ -74,7 +74,6 @@ public class XYMultiChart extends IcyFrame  {
 				if ((t+k) >= nimages)
 					continue;
 				Capillary cap = kymoseq.capillaries.capillariesArrayList.get(t+k);
-				String name = cap.getName();
 				EnumArrayListType ooption = option;
 				if (option == EnumArrayListType.topAndBottom)
 					ooption = EnumArrayListType.topLevel;
@@ -82,7 +81,7 @@ public class XYMultiChart extends IcyFrame  {
 				if (option == EnumArrayListType.topLevelDelta) {
 					results = kymoseq.subtractTi(results);
 				}
-				XYSeries seriesXY = getXYSeries(results, name, startFrame);
+				XYSeries seriesXY = getXYSeries(results, cap.roi.getName(), startFrame);
 				if (option == EnumArrayListType.topAndBottom) 
 					appendDataToXYSeries(seriesXY, cap.getMeasures(EnumArrayListType.bottomLevel), startFrame );
 				xyDataset.addSeries( seriesXY );
@@ -151,7 +150,7 @@ public class XYMultiChart extends IcyFrame  {
 				if (option == EnumArrayListType.topLevelDelta) {
 					results = kymoseq.subtractTi(results);
 				}
-				XYSeries seriesXY = getXYSeries(results, cap.getName(), startFrame);
+				XYSeries seriesXY = getXYSeries(results, cap.roi.getName(), startFrame);
 				if (option == EnumArrayListType.topAndBottom) 
 					appendDataToXYSeries(seriesXY, cap.getMeasures(EnumArrayListType.bottomLevel), startFrame );
 				

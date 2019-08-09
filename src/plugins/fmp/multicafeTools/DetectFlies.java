@@ -24,7 +24,7 @@ import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
-public class BuildTrackFliesThread2  implements Runnable {
+public class DetectFlies  implements Runnable {
 	
 	private ArrayList<BooleanMask2D> 	cageMaskList 	= new ArrayList<BooleanMask2D>();
 	private ArrayList<Boolean>			initialflyRemoved = new ArrayList<Boolean> ();
@@ -41,7 +41,7 @@ public class BuildTrackFliesThread2  implements Runnable {
 	public boolean						buildBackground	= true;
 	public boolean						detectFlies		= true;
 	
-	public DetectFliesParameters 		detect 			= new DetectFliesParameters();
+	public DetectFlies_Options 		detect 			= new DetectFlies_Options();
 	public Cages 						cages 			= new Cages();
 	public SequenceVirtual 				seqNegative 	= null;
 	public SequenceVirtual 				seqPositive 	= null;

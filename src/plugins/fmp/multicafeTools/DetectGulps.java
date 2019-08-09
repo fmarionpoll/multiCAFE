@@ -11,9 +11,9 @@ import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
-public class BuildDetect_Gulps {
+public class DetectGulps {
 	
-	public void detectGulps(BuildDetect_GulpsOptions options, SequenceKymos seqkymo) {	
+	public void detectGulps(DetectGulps_Options options, SequenceKymos seqkymo) {	
 		
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
 		progressBar.initStuff(seqkymo.seq.getSizeT() );

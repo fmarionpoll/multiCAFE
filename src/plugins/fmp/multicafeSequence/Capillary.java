@@ -1,6 +1,7 @@
 package plugins.fmp.multicafeSequence;
 
 
+import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,8 +18,8 @@ import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.EnumArrayListType;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
-import plugins.fmp.multicafeTools.BuildDetect_GulpsOptions;
-import plugins.fmp.multicafeTools.BuildDetect_LimitsOptions;
+import plugins.fmp.multicafeTools.DetectGulps_Options;
+import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
@@ -28,8 +29,8 @@ public class Capillary implements XMLPersistent  {
 	public String						name 					= null;
 	public String 						version 				= null;
 	public ROI2DShape 					roi 					= null;	// the capillary (source)
-	public BuildDetect_LimitsOptions 	limitsOptions			= new BuildDetect_LimitsOptions();
-	public BuildDetect_GulpsOptions 	gulpsOptions			= new BuildDetect_GulpsOptions();
+	public DetectLimits_Options 	limitsOptions			= new DetectLimits_Options();
+	public DetectGulps_Options 	gulpsOptions			= new DetectGulps_Options();
 	
 	public List<Point2D> 				ptsTop  				= null; 
 	public List<Point2D> 				ptsBottom 				= null; 
@@ -45,6 +46,11 @@ public class Capillary implements XMLPersistent  {
 	private final static String ID_GULPS 		= "gulpsMC";
 	private final static String ID_INDEXIMAGE 	= "indexImageMC";
 	private final static String ID_NAME 		= "nameMC";
+	private final static String ID_TOPLEVEL 	= "toplevel";	
+	private final static String ID_BOTTOMLEVEL 	= "bottomlevel";	
+	private final static String ID_DERIVATIVE 	= "derivedvalues";	
+	private final static String ID_VERSION		= "version"; 
+	private final static String ID_VERSIONNUM	= "1.0.0"; 
 	    
 	// ----------------------------------------------------
 	
@@ -156,19 +162,32 @@ public class Capillary implements XMLPersistent  {
 	}
 	
 	public List<ROI> getROIsFromMeasures() {
+		//System.out.println("output rois for t="+indexImage+" kymo="+name);
 		List<ROI> listrois = new ArrayList<ROI> ();
-		listrois.add(getPtListToROI(ptsTop));
-		listrois.add(getPtListToROI(ptsBottom));
-		listrois.addAll(gulpsRois);
+		if (ptsTop != null) listrois.add(getPtListToROI(ID_TOPLEVEL, ptsTop));
+		if (ptsBottom != null) listrois.add(getPtListToROI(ID_BOTTOMLEVEL, ptsBottom));
+		if (gulpsRois != null)	listrois.addAll(gulpsRois);
+		if (derivedValuesArrayList != null) {
+			ROI2D derivativeRoi = getPtListToROI(ID_DERIVATIVE, getPointArrayFromIntegerArray(derivedValuesArrayList));
+			derivativeRoi.setColor(Color.yellow);
+			derivativeRoi.setStroke(1.);
+			listrois.add(derivativeRoi);
+		}
 		return listrois;
 	}
 	
 	// ---------------------
 	
-	private ROI2D getPtListToROI(List<Point2D> ptslist) {
-		ROI2D topline = ROI2DUtilities.transferPointArrayToRoi(ptslist);
-		topline.setT(indexImage);
-		return topline;
+	private ROI2D getPtListToROI(String name, List<Point2D> ptslist) {
+		ROI2D roi = ROI2DUtilities.transferPointArrayToRoi(ptslist);
+		int index = indexImage;
+		if (index >= 0) {
+			roi.setT(indexImage);
+			roi.setName(name+indexImage);
+		}
+		else
+			roi.setName(name);
+		return roi;
 	}
 
 	private ArrayList<Integer> getCumSumFromRoisArray(Collection<ROI> gulpsRois) {
@@ -188,14 +207,14 @@ public class Capillary implements XMLPersistent  {
 	public boolean loadFromXML(Node node) {
 		boolean result = true;
 		result |= loadMetaDataFromXML(node);
-		derivedValuesArrayList = loadIntegerArrayFromXML(node, "derivedvalues");
+		derivedValuesArrayList = loadIntegerArrayFromXML(node, ID_DERIVATIVE);
 		result |= (derivedValuesArrayList != null);
-		ArrayList<Integer> data = loadIntegerArrayFromXML(node, "topLevel");
+		ArrayList<Integer> data = loadIntegerArrayFromXML(node, ID_TOPLEVEL);
 		if (data != null)
 			ptsTop = getPointArrayFromIntegerArray(data);
 		else 
 			result = false;
-		data = loadIntegerArrayFromXML(node, "bottomLevel");
+		data = loadIntegerArrayFromXML(node, ID_BOTTOMLEVEL);
 		if (data != null)
 			ptsBottom = getPointArrayFromIntegerArray(data);
 		else
@@ -208,11 +227,11 @@ public class Capillary implements XMLPersistent  {
 	public boolean saveToXML(Node node) {
 		saveMetaDataToXML(node);
 		if (derivedValuesArrayList != null)
-			saveIntArraytoXML(node, "derivedvalues", derivedValuesArrayList);
+			saveIntArraytoXML(node, ID_DERIVATIVE, derivedValuesArrayList);
 		if (ptsTop != null)
-			saveIntArraytoXML(node, "topLevel", getIntegerArrayFromPointArray(ptsTop));
+			saveIntArraytoXML(node, ID_TOPLEVEL, getIntegerArrayFromPointArray(ptsTop));
 		if (ptsBottom != null)
-			saveIntArraytoXML(node, "bottomLevel", getIntegerArrayFromPointArray(ptsBottom));
+			saveIntArraytoXML(node, ID_BOTTOMLEVEL, getIntegerArrayFromPointArray(ptsBottom));
 		if (gulpsRois != null)
 			saveROIsToXML(node, gulpsRois);
         return true;
@@ -225,7 +244,7 @@ public class Capillary implements XMLPersistent  {
 	    if (nodeMeta == null)	// nothing to load
             return true;
 	    if (nodeMeta != null) {
-	    	version = XMLUtil.getElementValue(nodeMeta, "capillary_", "version 1.0.0");
+	    	version = XMLUtil.getElementValue(nodeMeta, ID_VERSION, ID_VERSIONNUM);
 	        
 	    	indexImage = XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        name = XMLUtil.getElementValue(nodeMeta, ID_NAME, name);
@@ -240,8 +259,8 @@ public class Capillary implements XMLPersistent  {
 	    final Node nodeMeta = XMLUtil.setElement(node, ID_META);
 	    if (nodeMeta != null) {
 	    	if (version == null)
-	    		version = "version 1.0.0";
-	    	XMLUtil.setElementValue(nodeMeta, "capillary_", version);
+	    		version = ID_VERSIONNUM;
+	    	XMLUtil.setElementValue(nodeMeta, ID_VERSION, version);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        XMLUtil.setElementValue(nodeMeta, ID_NAME, name);
 	        saveROIToXML(nodeMeta, roi); 

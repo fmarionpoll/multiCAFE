@@ -11,14 +11,14 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 import plugins.kernel.roi.roi2d.ROI2DShape;
-import plugins.fmp.multicafeTools.DetectFliesParameters;
+import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
 public class Cages {
 	
-	public DetectFliesParameters 	detect 					= new DetectFliesParameters();
+	public DetectFlies_Options 	detect 					= new DetectFlies_Options();
 	public ArrayList<ROI2D> 		cageLimitROIList		= new ArrayList<ROI2D>();
 	public ArrayList<XYTaSeries> 	flyPositionsList 		= new ArrayList<XYTaSeries>();
 	

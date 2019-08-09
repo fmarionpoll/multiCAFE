@@ -6,19 +6,18 @@ import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
-public class BuildDetect_LimitsOptions implements XMLPersistent {
+public class DetectLimits_Options implements XMLPersistent {
 	
 			boolean 	detectTop 				= true;
 			boolean 	detectBottom 			= true;
-	public boolean 		detectAllImages 		= true;
-	public int			firstImage				= 0;
-	public boolean		directionUp				= true;
-	public int			detectLevelThreshold 	= 35;
-	public TransformOp	transformForLevels 		= TransformOp.R2MINUS_GB;
+	public 	boolean 	detectAllImages 		= true;
+	public 	int			firstImage				= 0;
+	public 	boolean		directionUp				= true;
+	public 	int			detectLevelThreshold 	= 35;
+	public 	TransformOp	transformForLevels 		= TransformOp.R2MINUS_GB;
 
 	
-	void copy(BuildDetect_LimitsOptions destination) {
-
+	void copy(DetectLimits_Options destination) {
 		destination.detectTop 				= detectTop; 
 		destination.detectBottom 			= detectBottom; 
 		destination.transformForLevels 		= transformForLevels;
@@ -31,8 +30,7 @@ public class BuildDetect_LimitsOptions implements XMLPersistent {
 	@Override
 	public boolean loadFromXML(Node node) {
 		final Node nodeMeta = XMLUtil.setElement(node, "LimitsOptions");
-	    if (nodeMeta != null)
-	    {
+	    if (nodeMeta != null) {
 	    	detectTop = XMLUtil.getElementBooleanValue(nodeMeta, "detectTop", detectTop);
 	    	detectBottom = XMLUtil.getElementBooleanValue(nodeMeta, "detectBottom", detectBottom);
 	    	detectAllImages = XMLUtil.getElementBooleanValue(nodeMeta, "detectAllImages", detectAllImages);
@@ -48,8 +46,7 @@ public class BuildDetect_LimitsOptions implements XMLPersistent {
 	@Override
 	public boolean saveToXML(Node node) {
 		final Node nodeMeta = XMLUtil.setElement(node, "LimitsOptions");
-	    if (nodeMeta != null)
-	    {
+	    if (nodeMeta != null) {
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "detectTop", detectTop);
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "detectBottom", detectBottom);
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "detectAllImages", detectAllImages);

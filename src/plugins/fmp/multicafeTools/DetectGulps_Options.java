@@ -7,7 +7,7 @@ import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
-public class BuildDetect_GulpsOptions implements XMLPersistent {
+public class DetectGulps_Options implements XMLPersistent {
 	
 	public int 			detectGulpsThreshold	= 90;
 	public TransformOp 	transformForGulps 		= TransformOp.XDIFFN;
@@ -15,7 +15,7 @@ public class BuildDetect_GulpsOptions implements XMLPersistent {
 	public boolean		computeDiffnAndDetect	= true;
 	public int			firstkymo 				= 0;
 	
-	public void copy(BuildDetect_GulpsOptions destination) {
+	public void copy(DetectGulps_Options destination) {
 		destination.detectGulpsThreshold 	= detectGulpsThreshold;
 		destination.transformForGulps 		= transformForGulps;
 		destination.detectAllGulps 			= detectAllGulps;

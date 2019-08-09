@@ -18,7 +18,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import icy.image.IcyBufferedImage;
-import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.OverlayThreshold;
@@ -138,16 +137,8 @@ public class SequenceKymos extends SequenceVirtual  {
 		if ( resultsElement == null )
 			return false;
 		
-		if (!readCapillaryMeasure(resultsElement, cap)) 
-			return false;
-		
-		ArrayList<ROI2D> listRois = seq.getROI2Ds();
-		for (ROI2D roi: listRois) {
-			int t = roi.getT();
-			if (t < 0)
-				roi.setT(cap.indexImage);
-			seq.addROI(roi);
-		}
+		readCapillaryMeasure(resultsElement, cap); 
+		seq.addROIs(cap.getROIsFromMeasures(), false);
 		return true;
 	}
 	

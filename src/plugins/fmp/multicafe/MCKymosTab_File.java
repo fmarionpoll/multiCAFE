@@ -12,7 +12,6 @@ import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
-import plugins.fmp.multicafeTools.ROI2DUtilities;
 
 
 
@@ -60,12 +59,9 @@ public class MCKymosTab_File  extends JPanel {
 		if (parent0.vkymos.seq != null) {
 			parent0.vkymos.seq.beginUpdate();
 			for (Capillary cap: parent0.vkymos.capillaries.capillariesArrayList) {
+				System.out.println("open cap -" + cap.getName());
 				boolean flag2 = true;
-				if (flag2 = parent0.vkymos.loadXMLKymographAnalysis(cap, directory)) {
-					ROI2DUtilities.validateRois(parent0.vkymos.seq);
-					//	TODO??	parent0.vkymos.getArrayListFromRois(EnumArrayListType.cumSum);
-				}
-				else {
+				if (!(flag2 = parent0.vkymos.loadXMLKymographAnalysis(cap, directory))) {
 					System.out.println("load measures -> failed or not found in directory: " + directory);
 				}
 				if (!flag2)

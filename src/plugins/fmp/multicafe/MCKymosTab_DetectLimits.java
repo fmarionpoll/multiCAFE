@@ -15,8 +15,8 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeTools.MCBuildDetect_Limits;
-import plugins.fmp.multicafeTools.BuildDetect_LimitsOptions;
+import plugins.fmp.multicafeTools.DetectLimits;
+import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
@@ -65,14 +65,14 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 		detectTopButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				kymosDisplayFiltered1();
-				BuildDetect_LimitsOptions options = new BuildDetect_LimitsOptions();
+				DetectLimits_Options options = new DetectLimits_Options();
 				options.transformForLevels 		= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 				options.directionUp 			= (directionComboBox.getSelectedIndex() == 0);
 				options.detectLevelThreshold 	= (int) getDetectLevelThreshold();
 				options.detectAllImages 		= detectAllCheckBox.isSelected();
 				options.firstImage 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
 
-				MCBuildDetect_Limits detect = new MCBuildDetect_Limits();
+				DetectLimits detect = new DetectLimits();
 				detect.detectCapillaryLevels(options, parent0.vkymos);
 				firePropertyChange("KYMO_DETECT_TOP", false, true);
 			}});	
@@ -111,7 +111,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	
 	void setInfosToDialog(Capillary cap) {
 
-		BuildDetect_LimitsOptions options = cap.limitsOptions;
+		DetectLimits_Options options = cap.limitsOptions;
 		transformForLevelsComboBox.setSelectedItem(options.transformForLevels);
 		int index =options.directionUp ? 0:1;
 		directionComboBox.setSelectedIndex(index);
@@ -122,7 +122,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	
 	void getInfosFromDialog(Capillary cap) {
 
-		BuildDetect_LimitsOptions options = cap.limitsOptions;
+		DetectLimits_Options options = cap.limitsOptions;
 		options.transformForLevels = (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
 		options.detectLevelThreshold = getDetectLevelThreshold();

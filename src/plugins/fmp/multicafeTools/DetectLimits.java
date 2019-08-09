@@ -9,9 +9,9 @@ import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
-public class MCBuildDetect_Limits {
+public class DetectLimits {
 	
-	public void detectCapillaryLevels(BuildDetect_LimitsOptions options,  SequenceKymos seqkymo) {
+	public void detectCapillaryLevels(DetectLimits_Options options,  SequenceKymos seqkymo) {
 
 		// send some info
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
@@ -90,7 +90,7 @@ public class MCBuildDetect_Limits {
 		progressBar.close();
 	}
 	
-	void detectTop(int ix, int oldiytop, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, BuildDetect_LimitsOptions options) {
+	void detectTop(int ix, int oldiytop, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, DetectLimits_Options options) {
 		
 		boolean found = false;
 		double x = ix;
@@ -122,7 +122,7 @@ public class MCBuildDetect_Limits {
 		cap.ptsTop.add(new Point2D.Double (x, y));
 	}
 	
-	void detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, BuildDetect_LimitsOptions options) {
+	void detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, DetectLimits_Options options) {
 		// set flags for internal loop (part of the row)
 		boolean found = false;
 		double x = ix;

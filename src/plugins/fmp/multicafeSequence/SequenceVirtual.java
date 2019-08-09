@@ -33,6 +33,7 @@ public class SequenceVirtual  {
 	private String 					csFileName 				= null;
 	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif"};
 	private String					directory 				= null;
+	
 	public IcyBufferedImage 		refImage 				= null;
 	
 	public long						analysisStart 			= 0;
@@ -519,9 +520,6 @@ public class SequenceVirtual  {
 			return;
 		int depth = bufferThread.getFenetre();
 		vImageBufferThread_STOP();
-//		for (int t = 0; t < nTotalFrames-1 ; t++) {
-//			seq.removeImage(t, 0);
-//		}
 		vImageBufferThread_START(depth);
 	}
 	
@@ -529,7 +527,7 @@ public class SequenceVirtual  {
 		/**
 		 * pre-fetch files / companion to SequenceVirtual
 		 */
-		private int fenetre = 100; //20; // 100;
+		private int fenetre = 200; // 100;
 		private int span = fenetre/2;
 
 		public VImageBufferThread() {
@@ -557,6 +555,7 @@ public class SequenceVirtual  {
 
 		@Override
 		public void run() {
+			boolean [] done = new boolean[seq.getSizeT()];
 			try {
 				while (!isInterrupted()) {
 					ThreadUtil.sleep(100);
@@ -567,17 +566,12 @@ public class SequenceVirtual  {
 						frameStart = 0;
 					if (frameEnd > nTotalFrames) 
 						frameEnd = nTotalFrames;
-/*
-					// clean all images except those within the buffer 
-					for (int t = 0; t < nTotalFrames-1 ; t+= analysisStep) { // t++) {
-						if (t < frameStart || t > frameEnd)
-							seq.removeImage(t, 0);
-						if (isInterrupted())
-							return;
-					}
-*/					
-					for (int t = frameStart; t < frameEnd ; t+= analysisStep) {	
-						seq.getImage(t, 0).loadData();
+				
+					for (int t = frameStart; t < frameEnd ; t+= analysisStep) {
+						if (!done[t]) {
+							seq.getImage(t, 0).loadData();
+							done[t] = true;
+						}
 						if (isInterrupted())
 							return;
 					}
