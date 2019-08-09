@@ -29,8 +29,8 @@ public class Capillary implements XMLPersistent  {
 	private String						name 					= null;
 	public String 						version 				= null;
 	public ROI2DShape 					roi 					= null;	// the capillary (source)
-	public DetectLimits_Options 	limitsOptions			= new DetectLimits_Options();
-	public DetectGulps_Options 	gulpsOptions			= new DetectGulps_Options();
+	public DetectLimits_Options 		limitsOptions			= new DetectLimits_Options();
+	public DetectGulps_Options 			gulpsOptions			= new DetectGulps_Options();
 	
 	public List<Point2D> 				ptsTop  				= null; 
 	public List<Point2D> 				ptsBottom 				= null; 
@@ -61,7 +61,6 @@ public class Capillary implements XMLPersistent  {
 	
 	Capillary(String name) {
 		this.name = replace_LR_with_12(name);
-		
 	}
 	
 	public Capillary() {
@@ -104,7 +103,6 @@ public class Capillary implements XMLPersistent  {
 	public List<Point2D> getPointArrayFromIntegerArray(ArrayList<Integer> data) {
 		if (data == null)
 			return null;
-		
 		List<Point2D> ptsList = null;
 		if (data.size() > 0) {
 			ptsList = new ArrayList<Point2D>(data.size());

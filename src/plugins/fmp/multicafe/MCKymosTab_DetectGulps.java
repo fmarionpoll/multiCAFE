@@ -35,12 +35,12 @@ public class MCKymosTab_DetectGulps extends JPanel {
 	
 	JCheckBox				detectAllGulpsCheckBox 			= new JCheckBox ("all", true);
 	JCheckBox				viewGulpsThresholdCheckBox 		= new JCheckBox ("view threshold", false);
+	JComboBox<TransformOp> 	transformForGulpsComboBox 		= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
 	
 	private JButton			displayTransform2Button			= new JButton("Display");
 	private JSpinner		spanTransf2Spinner				= new JSpinner(new SpinnerNumberModel(3, 0, 500, 1));
 	private JSpinner 		detectGulpsThresholdSpinner		= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
 	private JButton 		detectGulpsButton 				= new JButton("Detect");
-	JComboBox<TransformOp> 	transformForGulpsComboBox 		= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
 	private ROI2DLine		roiThreshold 					= new ROI2DLine ();
 
 	private MultiCAFE 		parent0;
@@ -139,10 +139,8 @@ public class MCKymosTab_DetectGulps extends JPanel {
 	}
 	
 	void roisDisplayAllThresholds(boolean display) {
-		
 		if (parent0.vkymos == null)
 			return;
-		
 		ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
 				final int thresholdValue = (int) detectGulpsThresholdSpinner.getValue();
 				roiDisplayThreshold(display, parent0.vkymos, thresholdValue);
@@ -150,7 +148,6 @@ public class MCKymosTab_DetectGulps extends JPanel {
 	}
 	
 	void roiDisplayThreshold(boolean display, SequenceKymos seq, int thresholdValue) {
-			
 		if (display)
 		{
 			if (!seq.seq.contains(roiThreshold)) {
@@ -160,8 +157,9 @@ public class MCKymosTab_DetectGulps extends JPanel {
 				roiThreshold.setOpacity((float) 0.2);
 				seq.seq.addROI(roiThreshold);
 			}
-			int seqheight = seq.seq.getHeight()/2;
-			double value = seqheight - thresholdValue;
+			//int seqheight = seq.seq.getHeight()/2;
+			//double value = seqheight - thresholdValue;
+			double value = thresholdValue;
 			Line2D refLineUpper = new Line2D.Double (0, value, seq.seq.getWidth(), value);
 			roiThreshold.setLine(refLineUpper);
 		}

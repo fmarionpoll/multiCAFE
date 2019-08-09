@@ -139,11 +139,11 @@ public class SequenceKymosUtils {
 
 		File dir = new File(directory);
 		File[] files = dir.listFiles((d, name) -> name.endsWith(extension));
-		if (files == null)
+		if (files == null || files.length < 1)
 			return null;
 		
 		ProgressFrame progress = new ProgressFrame("Read kymographs");
-				
+	
 		ArrayList <File> filesArray = keepOnlyFilesMatchingCapillaries(files, parent_capillaries);
 		getMaxSizeofTiffFiles(filesArray);
 		adjustImagesToMaxSize(filesArray);
@@ -184,7 +184,6 @@ public class SequenceKymosUtils {
 			i++;
 		}
 		
-		kymographSeq.seq.setName(kymographSeq.getDecoratedImageName(0));
 		progress.close();
 		isRunning = false;
 		return kymographSeq;

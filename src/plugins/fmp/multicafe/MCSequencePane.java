@@ -161,7 +161,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		parent0.vSequence.vImageBufferThread_STOP();
 		browseTab.getBrowseItems(parent0.vSequence); 
 		parent0.vSequence.cleanUpBufferAndRestart();
-		parent0.vSequence.vImageBufferThread_START(100);
+		parent0.vSequence.vImageBufferThread_START(100); //fenêtre
 	}
 
 	boolean sequenceCreateNew (String filename) {

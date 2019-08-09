@@ -34,8 +34,7 @@ public class XLSExport {
 		return value;
 	}
 		
-	protected Point writeExperimentDescriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, boolean transpose) {
-		
+	protected Point writeExperimentDescriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, boolean transpose) {	
 		int row = pt.y;
 		int col0 = pt.x;
 
@@ -61,8 +60,7 @@ public class XLSExport {
 		String name111 = getSubName(path, 4); 
 		String sheetName = sheet.getSheetName();		
 		
-		for (int t=0; t<exp.vkymos.seq.getSizeT(); t++) { 
-
+		for (int t=0; t<exp.vkymos.capillaries.capillariesArrayList.size(); t++) { 
 			String name = exp.vkymos.getFileName(t);
 			int col = getColFromKymoFileName(name);
 			if (col >= 0) 
@@ -132,8 +130,7 @@ public class XLSExport {
 		return pt;
 	}
 	
-	public int outputFieldHeaders(XSSFSheet sheet, boolean transpose) {
-		
+	public int outputFieldHeaders(XSSFSheet sheet, boolean transpose) {		
 		Point pt = new Point(0,0);
 		XLSUtils.setValue(sheet, pt, transpose, "path");
 		pt.y++;
@@ -169,7 +166,6 @@ public class XLSExport {
 		pt.y++;
 		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.ROIS.toString());
 		pt.y++;
-		
 		return pt.y;
 	}
 	
@@ -191,12 +187,11 @@ public class XLSExport {
 	}
 	
 	protected String getShortenedName(SequenceVirtual seq, int t) {
-		String cs = seq.getFileName(t);
-		return cs.substring(cs.lastIndexOf("\\") + 1) ;
+		return seq.getFileNameNoPath(t);
+		//return cs.substring(cs.lastIndexOf("\\") + 1) ;
 	}
 
 	protected void xlsCreatePivotTable(XSSFWorkbook workBook, String workBookName, String fromWorkbook, DataConsolidateFunction function) {
-
 		XSSFSheet pivotSheet = workBook.createSheet(workBookName);
         XSSFSheet sourceSheet = workBook.getSheet(fromWorkbook);
 
@@ -225,7 +220,6 @@ public class XLSExport {
 	}
 
 	protected void xlsCreatePivotTables(XSSFWorkbook workBook, String fromWorkbook) {
-        
 		xlsCreatePivotTable(workBook, "pivot_avg", fromWorkbook, DataConsolidateFunction.AVERAGE);
 		xlsCreatePivotTable(workBook, "pivot_std", fromWorkbook, DataConsolidateFunction.STD_DEV);
 		xlsCreatePivotTable(workBook, "pivot_n", fromWorkbook, DataConsolidateFunction.COUNT);

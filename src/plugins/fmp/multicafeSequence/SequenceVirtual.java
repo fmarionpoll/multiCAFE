@@ -157,6 +157,15 @@ public class SequenceVirtual  {
 			csName = listFiles.get(t);
 		else if (status == EnumStatus.AVIFILE)
 			csName = csFileName;
+		return csName;
+	}
+	
+	public String getFileNameNoPath(int t) {
+		String csName = null;
+		if (status == EnumStatus.FILESTACK) 
+			csName = listFiles.get(t);
+		else if (status == EnumStatus.AVIFILE)
+			csName = csFileName;
 		if (csName != null) {
 			Path path = Paths.get(csName);
 			return path.getName(path.getNameCount()-1).toString();
@@ -501,6 +510,8 @@ public class SequenceVirtual  {
 	
 	public void vImageBufferThread_START (int numberOfImageForBuffer) {
 		vImageBufferThread_STOP();
+		if (numberOfImageForBuffer <= 0) 
+			return;
 		bufferThread = new VImageBufferThread(this, numberOfImageForBuffer);
 		bufferThread.setName("Buffer Thread");
 		bufferThread.setPriority(Thread.NORM_PRIORITY);
@@ -573,6 +584,7 @@ public class SequenceVirtual  {
 						if (!done[t]) {
 							seq.getImage(t, 0).loadData();
 							done[t] = true;
+							//System.out.println("t:"+t);
 						}
 						if (isInterrupted())
 							return;

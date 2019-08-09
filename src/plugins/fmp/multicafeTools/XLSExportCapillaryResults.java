@@ -111,10 +111,10 @@ public class XLSExportCapillaryResults extends XLSExport {
 		Capillaries capillaries = exp.vSequence.capillaries;
 		double scalingFactorToPhysicalUnits = capillaries.volume / exp.vSequence.capillaries.pixels;
 		
-		for (int t=0; t < exp.vkymos.seq.getSizeT(); t++) {
+		for (int t=0; t < capillaries.capillariesArrayList.size(); t++) {
 			Capillary cap = capillaries.capillariesArrayList.get(t);
 			XLSCapillaryResults results = new XLSCapillaryResults();
-			results.name = exp.vkymos.getFileName(t);
+			results.name = exp.vkymos.getFileNameNoPath(t);
 			switch (xlsoption) {
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:

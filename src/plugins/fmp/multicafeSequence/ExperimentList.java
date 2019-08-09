@@ -13,7 +13,6 @@ public class ExperimentList {
 	}
 	
 	public Experiment getStartAndEndFromAllExperiments() {
-		
 		ProgressFrame progress = new ProgressFrame("Get time start and time end across all experiments");
 		progress.setLength(experimentList.size());
 
@@ -42,7 +41,6 @@ public class ExperimentList {
 	}
 	
 	public boolean readInfosFromAllExperiments() {
-
 		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
 		progress.setLength(experimentList.size());
 		
@@ -58,7 +56,6 @@ public class ExperimentList {
 	}
 	
 	public boolean chainExperiments() {
-		
 		boolean flagOK = true;
 		for (Experiment exp: experimentList) {
 			for (Experiment expi: experimentList) {
@@ -100,7 +97,6 @@ public class ExperimentList {
 	}
 	
 	public long getFirstMinute(Experiment exp) {
-		
 		long firstMinute = exp.fileTimeImageFirstMinute;
 		for (Experiment expi: experimentList) {
 			if (!expi.boxID .equals(exp.boxID))
@@ -112,8 +108,7 @@ public class ExperimentList {
 		return firstMinute;
 	}
 	
-	public long getLastMinute(Experiment exp) {
-		
+	public long getLastMinute(Experiment exp) {	
 		long lastMinute = exp.fileTimeImageLastMinutes;
 		for (Experiment expi: experimentList) {
 			if (!expi.boxID .equals(exp.boxID))
@@ -126,7 +121,6 @@ public class ExperimentList {
 	}
 	
 	public int getStackColumnPosition (Experiment exp, int col0) {
-		
 		boolean found = false;
 		for (Experiment expi: experimentList) {
 			if (!expi.boxID .equals(exp.boxID) || expi == exp)

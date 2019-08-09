@@ -137,18 +137,12 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 		
 		if (loadKymographs) {
-			MCKymosTab_File.flag = true;
-			MCKymosTab_File.isRunning = true;
-			MCKymosTab_File.isInterrupted = false;
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
 				if ( !capillariesPane.fileTab.loadDefaultKymos()) {
 					return;
 				}
 				if (loadMeasures) {
-					if (MCKymosTab_File.isRunning) {
-						MCKymosTab_File.isInterrupted = true;
-					}
-					kymographsPane.fileTab.openKymosMeasures();
+					kymographsPane.fileTab.loadKymosMeasures();
 					if (sequencePane.openTab.graphsCheckBox.isSelected())
 						SwingUtilities.invokeLater(new Runnable() {
 						    public void run() {

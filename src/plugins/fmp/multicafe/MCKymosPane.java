@@ -153,9 +153,9 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		}
 		
 		if (zChannelDestination == 1)
-			parent0.vkymos.transformForLevels = transformop;
+			parent0.vkymos.capillaries.limitsOptions.transformForLevels = transformop;
 		else
-			parent0.vkymos.transformForGulps = transformop;
+			parent0.vkymos.capillaries.gulpsOptions.transformForGulps = transformop;
 		parent0.vkymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 		parent0.vkymos.seq.dataChanged();
 		parent0.vkymos.seq.endUpdate();

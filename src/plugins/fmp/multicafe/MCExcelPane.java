@@ -94,7 +94,8 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 		}
 		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
 			parent0.roisSaveEdits();
-			Path directory = Paths.get(parent0.vSequence.getFileName(0)).getParent();
+			String filename0 = parent0.vSequence.getFileName(0);
+			Path directory = Paths.get(filename0).getParent();
 			Path subpath = directory.getName(directory.getNameCount()-1);
 			String tentativeName = subpath.toString()+"_feeding.xlsx";
 			String file = MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");

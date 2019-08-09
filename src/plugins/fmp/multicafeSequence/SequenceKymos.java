@@ -28,15 +28,9 @@ public class SequenceKymos extends SequenceVirtual  {
 	
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;
-//	public 	boolean 		detectTop 				= true;
-//	public 	boolean 		detectBottom 			= true;
-//	public 	boolean 		detectAllLevel 			= true;
-//	public 	boolean 		detectAllGulps 			= true;
-//	public 	boolean			directionUp 			= true;
-//	public 	int				detectLevelThreshold 	= 35;
-//	public 	int 			detectGulpsThreshold 	= 90;
-	public	TransformOp		transformForLevels 		= TransformOp.R2MINUS_GB;
-	public	TransformOp 	transformForGulps 		= TransformOp.XDIFFN;
+
+//	public	TransformOp		transformForLevels 		= TransformOp.R2MINUS_GB;
+//	public	TransformOp 	transformForGulps 		= TransformOp.XDIFFN;
 	
 	public 	LocalDateTime	startDate				= null;
 	public 	LocalDateTime	endDate					= null;
@@ -138,7 +132,6 @@ public class SequenceKymos extends SequenceVirtual  {
 			return false;
 		
 		readCapillaryMeasure(resultsElement, cap); 
-		seq.addROIs(cap.getROIsFromMeasures(), false);
 		return true;
 	}
 	

@@ -13,6 +13,8 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.edit.ROIAddsSequenceEdit;
 import icy.util.XMLUtil;
+import plugins.fmp.multicafeTools.DetectGulps_Options;
+import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
@@ -36,6 +38,8 @@ public class Capillaries {
 	public String 	stimulusL			= new String("stimulusL");
 	public String 	concentrationL		= new String("xmML");
 	
+	public DetectLimits_Options limitsOptions			= new DetectLimits_Options();
+	public DetectGulps_Options 	gulpsOptions			= new DetectGulps_Options();
 	public ArrayList <Capillary> capillariesArrayList 	= new ArrayList <Capillary>();	
 	
 	// ------------------------------------------------------------

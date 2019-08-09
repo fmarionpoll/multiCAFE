@@ -21,12 +21,9 @@ public class MCKymosTab_File  extends JPanel {
 	 */
 	private static final long serialVersionUID = -3973928400949966679L;
 
-	private JButton		openMeasuresButton		= new JButton("Load");
+	private JButton		loadMeasuresButton		= new JButton("Load");
 	private JButton		saveMeasuresButton		= new JButton("Save");
 	private MultiCAFE 	parent0 				= null;
-	static boolean 		flag 					= true;
-	static boolean 		isInterrupted 			= false;
-	static boolean 		isRunning 				= false;
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
@@ -34,15 +31,15 @@ public class MCKymosTab_File  extends JPanel {
 	
 		JLabel loadsaveText3 = new JLabel ("-> File (xml) ", SwingConstants.RIGHT); 
 		loadsaveText3.setFont(FontUtil.setStyle(loadsaveText3.getFont(), Font.ITALIC));
-		add(GuiUtil.besidesPanel(new JLabel (" "), loadsaveText3,  openMeasuresButton, saveMeasuresButton));
+		add(GuiUtil.besidesPanel(new JLabel (" "), loadsaveText3,  loadMeasuresButton, saveMeasuresButton));
 
 		defineActionListeners();
 	}
 	
 	private void defineActionListeners() {
-		openMeasuresButton.addActionListener(new ActionListener () { 
+		loadMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				if (openKymosMeasures()) {
+				if (loadKymosMeasures()) {
 					firePropertyChange("MEASURES_OPEN", false, true);
 				}
 			}}); 
@@ -54,24 +51,20 @@ public class MCKymosTab_File  extends JPanel {
 			}});	
 	}
 
-	boolean openKymosMeasures() {
+	boolean loadKymosMeasures() {
 		String directory = parent0.vSequence.getDirectory();
+		boolean flag = true;
 		if (parent0.vkymos.seq != null) {
-			parent0.vkymos.seq.beginUpdate();
+			parent0.vkymos.seq.removeAllROI();
 			for (Capillary cap: parent0.vkymos.capillaries.capillariesArrayList) {
-				System.out.println("open cap -" + cap.getName());
-				boolean flag2 = true;
-				if (!(flag2 = parent0.vkymos.loadXMLKymographAnalysis(cap, directory))) {
+				boolean flag2 = parent0.vkymos.loadXMLKymographAnalysis(cap, directory);
+				if (flag2 ) {
+					parent0.vkymos.seq.addROIs(cap.getROIsFromMeasures(), false);
+				} else {
 					System.out.println("load measures -> failed or not found in directory: " + directory);
-				}
-				if (!flag2)
 					flag = false;
-				if (isInterrupted) {
-					isInterrupted = false;
-					break;
-				}
+				}					
 			}
-			parent0.vkymos.seq.endUpdate();
 			if (parent0.vkymos.seq.getSizeT() >0 ) {
 				if (parent0.vkymos.analysisEnd > parent0.vkymos.analysisStart) {
 					parent0.vSequence.analysisStart = parent0.vkymos.analysisStart; 
@@ -80,7 +73,6 @@ public class MCKymosTab_File  extends JPanel {
 				}
 			}
 		}
-		isRunning = false;
 		return flag;
 	}
 	

@@ -28,7 +28,6 @@ public class Experiment {
 	
 	
 	public boolean openSequenceAndMeasures() {
-
 		vSequence = new SequenceVirtual();
 		if (null == vSequence.loadVirtualStackAt(filename))
 			return false;
@@ -43,7 +42,6 @@ public class Experiment {
 			return false;
 		
 		boxID = vSequence.capillaries.boxID;
-		
 		String directory = vSequence.getDirectory() +"\\results";
 		vkymos = SequenceKymosUtils.openKymoFiles(directory, vSequence.capillaries);
 		vSequence.xmlReadDrosoTrackDefault();
