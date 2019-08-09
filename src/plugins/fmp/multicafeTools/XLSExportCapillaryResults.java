@@ -112,23 +112,23 @@ public class XLSExportCapillaryResults extends XLSExport {
 			switch (xlsoption) {
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:
-				results.data = exp.vkymos.subtractTi(exp.vkymos.getArrayListFromRois(EnumArrayListType.topLevel, t));
+				results.data = exp.vkymos.subtractTi(ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t));
 				break;
 			case DERIVEDVALUES:
-				results.data = exp.vkymos.getArrayListFromRois(EnumArrayListType.derivedValues, t);
+				results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.derivedValues, t);
 				break;
 			case SUMGULPS:
 			case SUMGULPS_LR:
 				if (options.collateSeries && exp.previousExperiment != null) {
 					double dvalue = getLastValueOfPreviousExp(exp.vkymos.getFileName(t), exp.previousExperiment, xlsoption, optiont0);
 					int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
-					results.data = exp.vkymos.addConstant(exp.vkymos.getArrayListFromRois(EnumArrayListType.cumSum, t), addedValue);
+					results.data = exp.vkymos.addConstant(ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.cumSum, t), addedValue);
 				}
 				else
-					results.data = exp.vkymos.getArrayListFromRois(EnumArrayListType.cumSum, t);
+					results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.cumSum, t);
 				break;
 			case BOTTOMLEVEL:
-				results.data = exp.vkymos.getArrayListFromRois(EnumArrayListType.bottomLevel, t);
+				results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.bottomLevel, t);
 				break;
 			case TOPLEVEL:
 			case TOPLEVEL_LR:
@@ -136,13 +136,13 @@ public class XLSExportCapillaryResults extends XLSExport {
 					if (options.collateSeries && exp.previousExperiment != null) {
 						double dvalue = getLastValueOfPreviousExp(exp.vkymos.getFileName(t), exp.previousExperiment, xlsoption, optiont0);
 						int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
-						results.data = exp.vkymos.subtractT0AndAddConstant(exp.vkymos.getArrayListFromRois(EnumArrayListType.topLevel, t), addedValue);
+						results.data = exp.vkymos.subtractT0AndAddConstant(ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t), addedValue);
 					}
 					else
-						results.data = exp.vkymos.subtractT0(exp.vkymos.getArrayListFromRois(EnumArrayListType.topLevel, t));
+						results.data = exp.vkymos.subtractT0(ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t));
 				}
 				else
-					results.data = exp.vkymos.getArrayListFromRois(EnumArrayListType.topLevel, t);
+					results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t);
 				break;
 			default:
 				break;
@@ -167,15 +167,15 @@ public class XLSExportCapillaryResults extends XLSExport {
 			switch (xlsoption) {
 			case SUMGULPS:
 			case SUMGULPS_LR:
-				results.data = exp.vkymos.getArrayListFromRois(EnumArrayListType.cumSum, t);
+				results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.cumSum, t);
 				break;
 
 			case TOPLEVEL:
 			case TOPLEVEL_LR:
 				if (optiont0) 
-					results.data = exp.vkymos.subtractT0(exp.vkymos.getArrayListFromRois(EnumArrayListType.topLevel, t));
+					results.data = exp.vkymos.subtractT0(ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t));
 				else
-					results.data = exp.vkymos.getArrayListFromRois(EnumArrayListType.topLevel, t);
+					results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t);
 				break;
 			default:
 				return lastValue;

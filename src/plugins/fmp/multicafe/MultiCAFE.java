@@ -19,6 +19,7 @@ import icy.sequence.DimensionId;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceVirtual;
+import plugins.fmp.multicafeTools.ROI2DUtilities;
 
 
 // SequenceListener?
@@ -66,7 +67,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 
 	void roisSaveEdits() {
 		if (vkymos != null && vkymos.hasChanged) {
-			vkymos.validateRois();
+			ROI2DUtilities.validateRois(vkymos.seq);
 			// TODO? vkymos.getArrayListFromRois(EnumArrayListType.cumSum, -1);
 			vkymos.hasChanged = false;
 		}

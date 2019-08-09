@@ -37,7 +37,7 @@ public class BuildDetect_Gulps {
 				cap.derivedValuesArrayList.clear();
 			cap.derivedValuesArrayList = new ArrayList<Integer>();
 			cap.derivedValuesArrayList.add(0);
-			ArrayList <Integer> topLevelArray = cap.getYFromPtArray(cap.ptsTop);
+			ArrayList <Integer> topLevelArray = cap.getIntegerArrayFromPointArray(cap.ptsTop);
 			
 			getDerivativeProfile(seqkymo, t, cap, topLevelArray, jitter);	
 			if (options.computeDiffnAndDetect) {

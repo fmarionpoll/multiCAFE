@@ -164,7 +164,7 @@ public class SequenceKymosUtils {
 		for (String filename: kymographSeq.listFiles) {
 			boolean found = false;
 			for (Capillary cap: kymographSeq.capillaries.capillariesArrayList) {				
-				cap.name = cap.replaceLRwith12(cap.getName());
+				cap.name = cap.replace_LR_with_12(cap.getName());
 				if (filename.contains(cap.getName())) {
 					found = true;
 					kymographSeq.loadXMLKymographAnalysis(cap, directory);
