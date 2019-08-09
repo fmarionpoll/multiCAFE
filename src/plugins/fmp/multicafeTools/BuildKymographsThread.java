@@ -39,7 +39,6 @@ public class BuildKymographsThread implements Runnable
 		if (options.vSequence == null || vkymos == null)
 			return;
 		System.out.println("start buildkymographsThreads");
-		threadRunning = true;
 		
 		if (options.startFrame < 0) 
 			options.startFrame = 0;
@@ -48,6 +47,7 @@ public class BuildKymographsThread implements Runnable
 		int nbframes = options.endFrame - options.startFrame +1;
 		ProgressChrono progressBar = new ProgressChrono("Processing started");
 		progressBar.initStuff(nbframes);
+		threadRunning = true;
 		stopFlag = false;
 		  
 		initArraysToBuildKymographImages();
@@ -97,7 +97,9 @@ public class BuildKymographsThread implements Runnable
 			Capillary cap = vkymos.capillaries.capillariesArrayList.get(t);
 			for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) {
 				double [] tabValues = cap.tabValuesList.get(chan); 
-				Array1DUtil.doubleArrayToSafeArray(tabValues, cap.bufImage.getDataXY(chan), cap.bufImage.isSignedDataType());
+				Object destArray = cap.bufImage.getDataXY(chan);
+				Array1DUtil.doubleArrayToSafeArray(tabValues, destArray, cap.bufImage.isSignedDataType());
+				cap.bufImage.setDataXY(chan, destArray);
 			}
 			vkymos.seq.setImage(t, 0, cap.bufImage);
 			vkymos.capillaries.capillariesArrayList.add(options.vSequence.capillaries.capillariesArrayList.get(t));

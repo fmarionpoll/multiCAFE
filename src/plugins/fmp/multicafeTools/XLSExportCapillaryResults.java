@@ -12,8 +12,12 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import icy.gui.frame.progress.ProgressFrame;
+import plugins.fmp.multicafeSequence.Capillaries;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.XYTaSeries;
+
+
 
 public class XLSExportCapillaryResults extends XLSExport {
 
@@ -104,31 +108,33 @@ public class XLSExportCapillaryResults extends XLSExport {
 	private ArrayList <XLSCapillaryResults> getDataFromRois(Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
 		
 		ArrayList <XLSCapillaryResults> resultsArrayList = new ArrayList <XLSCapillaryResults> ();	
-		double scalingFactorToPhysicalUnits = exp.vSequence.capillaries.volume / exp.vSequence.capillaries.pixels;
+		Capillaries capillaries = exp.vSequence.capillaries;
+		double scalingFactorToPhysicalUnits = capillaries.volume / exp.vSequence.capillaries.pixels;
 		
 		for (int t=0; t < exp.vkymos.seq.getSizeT(); t++) {
+			Capillary cap = capillaries.capillariesArrayList.get(t);
 			XLSCapillaryResults results = new XLSCapillaryResults();
 			results.name = exp.vkymos.getFileName(t);
 			switch (xlsoption) {
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:
-				results.data = exp.vkymos.subtractTi(ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t));
+				results.data = exp.vkymos.subtractTi(cap.getMeasures(EnumArrayListType.topLevel));
 				break;
 			case DERIVEDVALUES:
-				results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.derivedValues, t);
+				results.data = cap.getMeasures(EnumArrayListType.derivedValues);
 				break;
 			case SUMGULPS:
 			case SUMGULPS_LR:
 				if (options.collateSeries && exp.previousExperiment != null) {
-					double dvalue = getLastValueOfPreviousExp(exp.vkymos.getFileName(t), exp.previousExperiment, xlsoption, optiont0);
+					double dvalue = getLastValueOfPreviousExp(cap.getName(), exp.previousExperiment, xlsoption, optiont0);
 					int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
-					results.data = exp.vkymos.addConstant(ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.cumSum, t), addedValue);
+					results.data = exp.vkymos.addConstant(cap.getMeasures(EnumArrayListType.cumSum), addedValue);
 				}
 				else
-					results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.cumSum, t);
+					results.data = cap.getMeasures(EnumArrayListType.cumSum);
 				break;
 			case BOTTOMLEVEL:
-				results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.bottomLevel, t);
+				results.data = cap.getMeasures(EnumArrayListType.bottomLevel);
 				break;
 			case TOPLEVEL:
 			case TOPLEVEL_LR:
@@ -136,13 +142,13 @@ public class XLSExportCapillaryResults extends XLSExport {
 					if (options.collateSeries && exp.previousExperiment != null) {
 						double dvalue = getLastValueOfPreviousExp(exp.vkymos.getFileName(t), exp.previousExperiment, xlsoption, optiont0);
 						int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
-						results.data = exp.vkymos.subtractT0AndAddConstant(ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t), addedValue);
+						results.data = exp.vkymos.subtractT0AndAddConstant(cap.getMeasures(EnumArrayListType.topLevel), addedValue);
 					}
 					else
-						results.data = exp.vkymos.subtractT0(ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t));
+						results.data = exp.vkymos.subtractT0(cap.getMeasures(EnumArrayListType.topLevel));
 				}
 				else
-					results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t);
+					results.data = cap.getMeasures(EnumArrayListType.topLevel);
 				break;
 			default:
 				break;
@@ -152,38 +158,38 @@ public class XLSExportCapillaryResults extends XLSExport {
 		return resultsArrayList;
 	}
 	
-	private double getLastValueOfPreviousExp(String kymoName, Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
+	private double getLastValueOfPreviousExp(String capName, Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
 		
 		double lastValue = 0;
 		if (exp.previousExperiment != null)
-			lastValue =  getLastValueOfPreviousExp( kymoName,  exp.previousExperiment, xlsoption, optiont0);
+			lastValue =  getLastValueOfPreviousExp( capName,  exp.previousExperiment, xlsoption, optiont0);
+		
+		Capillaries capillaries = exp.vSequence.capillaries;
 		
 		for (int t=0; t< exp.vkymos.seq.getSizeT(); t++) {
-			if (!exp.vkymos.getFileName(t).equals(kymoName))
+			Capillary cap = capillaries.capillariesArrayList.get(t);			
+			if (!cap.getName().equals(capName))
 				continue;
 			
 			XLSCapillaryResults results = new XLSCapillaryResults();
-			results.name = exp.vkymos.getFileName(t);
+			results.name = cap.getName();
 			switch (xlsoption) {
 			case SUMGULPS:
 			case SUMGULPS_LR:
-				results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.cumSum, t);
+				results.data = cap.getMeasures(EnumArrayListType.cumSum);
 				break;
-
 			case TOPLEVEL:
 			case TOPLEVEL_LR:
 				if (optiont0) 
-					results.data = exp.vkymos.subtractT0(ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t));
+					results.data = exp.vkymos.subtractT0(cap.getMeasures(EnumArrayListType.topLevel));
 				else
-					results.data = ROI2DUtilities.getArrayListFromRois(exp.vkymos, EnumArrayListType.topLevel, t);
+					results.data = cap.getMeasures(EnumArrayListType.topLevel);
 				break;
 			default:
 				return lastValue;
 			}
-			
 			double scalingFactorToPhysicalUnits = exp.vSequence.capillaries.volume / exp.vSequence.capillaries.pixels;
 			double valuePreviousSeries = results.data.get(results.data.size()-1) * scalingFactorToPhysicalUnits;
-			
 			lastValue = lastValue + valuePreviousSeries;
 			return lastValue;
 		}

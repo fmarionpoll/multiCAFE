@@ -11,8 +11,6 @@ import icy.roi.BooleanMask2D;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
-import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceVirtual;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
@@ -82,15 +80,6 @@ public class ROI2DUtilities  {
 		return true;
 	}
 
-	public static ArrayList<Integer> transfertRoiYValuesToDataArray(ROI2DPolyLine roiLine) {
-		Polyline2D line = roiLine.getPolyline2D();
-		ArrayList<Integer> intArray = new ArrayList<Integer> (line.npoints);
-		for (int i=0; i< line.npoints; i++) {
-			intArray.add((int) line.ypoints[i]);
-		}
-		return intArray;
-	}
-	
 	public static void validateRois(Sequence seq) {
 
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
@@ -114,30 +103,22 @@ public class ROI2DUtilities  {
 		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());
 	}
 
-	public static ArrayList<Integer> getArrayListFromRois (SequenceKymos seqK, EnumArrayListType option, int t) {	
-		Capillary cap = seqK.capillaries.capillariesArrayList.get(t);
-		ArrayList<ROI2D> listRois = seqK.seq.getROI2Ds();
-		if (listRois == null)
-			return null;
-		ArrayList<Integer> datai = null;
-		
-		switch (option) {
-		case derivedValues:
-			datai = cap.derivedValuesArrayList;
-			break;
-		case cumSum:
-			datai = new ArrayList<Integer>(Collections.nCopies(seqK.seq.getWidth(), 0));
-			addRoisMatchingFilterToCumSumDataArray(seqK.seq, "gulp", datai);
-			break;
-		case bottomLevel:
-			datai = copyFirstRoiMatchingFilterToDataArray(seqK.seq, "bottomlevel");
-			break;
-		case topLevel:
-		default:
-			datai = copyFirstRoiMatchingFilterToDataArray(seqK.seq, "toplevel");
-			break;
+	private static ArrayList<Integer> transferRoiToDataArray(ROI2DPolyLine roiLine) {
+		Polyline2D line = roiLine.getPolyline2D();
+		ArrayList<Integer> intArray = new ArrayList<Integer> (line.npoints);
+		for (int i=0; i< line.npoints; i++) {
+			intArray.add((int) line.ypoints[i]);
 		}
-		return datai;
+		return intArray;
+	}
+	
+	public static ROI2DPolyLine transfertDataArrayToRoi(ArrayList<Integer> intArray) {
+		Polyline2D line = new Polyline2D();
+		for (int i =0; i< intArray.size(); i++) {
+			Point2D pt = new Point2D.Double(i, intArray.get(i));
+			line.addPoint(pt);
+		}
+		return new ROI2DPolyLine(line);
 	}
 	
 	public static ArrayList<Integer> copyFirstRoiMatchingFilterToDataArray (Sequence seq, String filter) {
@@ -145,7 +126,7 @@ public class ROI2DUtilities  {
 		for (ROI2D roi: listRois) {
 			if (roi.getName().contains(filter)) { 
 				interpolateMissingPointsAlongXAxis ((ROI2DPolyLine)roi);
-				return transfertRoiYValuesToDataArray((ROI2DPolyLine)roi);
+				return transferRoiToDataArray((ROI2DPolyLine)roi);
 			}
 		}
 		return null;
@@ -162,7 +143,7 @@ public class ROI2DUtilities  {
 	
 	public static void addRoitoCumulatedSumArray(ROI2DPolyLine roi, ArrayList<Integer> sumArrayList) {
 		interpolateMissingPointsAlongXAxis (roi);
-		ArrayList<Integer> intArray = transfertRoiYValuesToDataArray(roi);
+		ArrayList<Integer> intArray = transferRoiToDataArray(roi);
 		Polyline2D line = roi.getPolyline2D();
 		int jstart = (int) line.xpoints[0];
 
@@ -177,9 +158,11 @@ public class ROI2DUtilities  {
 		}
 	}
 
-	public static ROI2D getROIFromIntArray(ArrayList<Integer> sumArrayList) {
-		ROI2D roi = new ROI2DPolyLine();
-		xx
-		return roi;
+	public static ROI2DPolyLine transferPointArrayToRoi(List<Point2D> pointsList) {
+		Polyline2D line = new Polyline2D();
+		for (int i =0; i< pointsList.size(); i++) {
+			line.addPoint(pointsList.get(i));
+		}
+		return new ROI2DPolyLine(line);
 	}
 }

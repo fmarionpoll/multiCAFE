@@ -12,6 +12,7 @@ import org.w3c.dom.Node;
 import icy.file.xml.XMLPersistent;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
+import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.EnumArrayListType;
@@ -154,7 +155,24 @@ public class Capillary implements XMLPersistent  {
 		return datai;
 	}
 	
+	public List<ROI> getROIsFromMeasures() {
+		List<ROI> listrois = new ArrayList<ROI> ();
+		listrois.add(getPtListToROI(ptsTop));
+		listrois.add(getPtListToROI(ptsBottom));
+		listrois.addAll(gulpsRois);
+		return listrois;
+	}
+	
+	// ---------------------
+	
+	private ROI2D getPtListToROI(List<Point2D> ptslist) {
+		ROI2D topline = ROI2DUtilities.transferPointArrayToRoi(ptslist);
+		topline.setT(indexImage);
+		return topline;
+	}
+
 	private ArrayList<Integer> getCumSumFromRoisArray(Collection<ROI> gulpsRois) {
+	
 		if (gulpsRois == null)
 			return null;
 		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(ptsTop.size(), 0));
@@ -163,6 +181,8 @@ public class Capillary implements XMLPersistent  {
 		}
 		return arrayInt;
 	}
+	
+	// ---------------------
 	
 	@Override
 	public boolean loadFromXML(Node node) {
@@ -197,6 +217,8 @@ public class Capillary implements XMLPersistent  {
 			saveROIsToXML(node, gulpsRois);
         return true;
 	}
+	
+	// ---------------------
 	
 	private boolean loadMetaDataFromXML(Node node) {
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
