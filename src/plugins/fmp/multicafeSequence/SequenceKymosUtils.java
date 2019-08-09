@@ -121,6 +121,7 @@ public class SequenceKymosUtils {
 
 	                for (int curY = 0; curY < sizeY; curY++) {
 	                    Array1DUtil.arrayToArray(src, srcOffset, dst, dstOffset, sourceSizeX, signed);
+	                    result.setDataXY(ch, dst);
 	                    srcOffset += sourceSizeX;
 	                    dstOffset += destSizeX;
 	                }
@@ -162,7 +163,7 @@ public class SequenceKymosUtils {
 		for (String filename: kymographSeq.listFiles) {
 			boolean found = false;
 			for (Capillary cap: kymographSeq.capillaries.capillariesArrayList) {				
-				cap.name = cap.replace_LR_with_12(cap.getName());
+				cap.setName(cap.replace_LR_with_12(cap.getName()));
 				if (filename.contains(cap.getName())) {
 					found = true;
 					kymographSeq.loadXMLKymographAnalysis(cap, directory);
@@ -176,12 +177,14 @@ public class SequenceKymosUtils {
 				int index0 = filename.lastIndexOf("\\")+1;
 				String title = filename.substring(index0, index1);
 				cap.indexImage = i;
-				cap.name = title;
+				cap.setName(title);
 				kymographSeq.loadXMLKymographAnalysis(cap, directory);
 				kymographSeq.capillaries.capillariesArrayList.add(cap);
 			}
 			i++;
 		}
+		
+		kymographSeq.seq.setName(kymographSeq.getDecoratedImageName(0));
 		progress.close();
 		isRunning = false;
 		return kymographSeq;

@@ -112,7 +112,7 @@ public class MCKymosTab_DetectGulps extends JPanel {
 	}
 	
 	void kymosDetectGulps(boolean detectGulps) {
-		DetectGulps_Options options = new DetectGulps_Options();
+		DetectGulps_Options options 	= new DetectGulps_Options();
 		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
 		options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps 			= detectAllGulpsCheckBox.isSelected();

@@ -28,13 +28,13 @@ public class SequenceKymos extends SequenceVirtual  {
 	
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;
-	public 	boolean 		detectTop 				= true;
-	public 	boolean 		detectBottom 			= true;
-	public 	boolean 		detectAllLevel 			= true;
-	public 	boolean 		detectAllGulps 			= true;
-	public 	boolean			directionUp 			= true;
-	public 	int				detectLevelThreshold 	= 35;
-	public 	int 			detectGulpsThreshold 	= 90;
+//	public 	boolean 		detectTop 				= true;
+//	public 	boolean 		detectBottom 			= true;
+//	public 	boolean 		detectAllLevel 			= true;
+//	public 	boolean 		detectAllGulps 			= true;
+//	public 	boolean			directionUp 			= true;
+//	public 	int				detectLevelThreshold 	= 35;
+//	public 	int 			detectGulpsThreshold 	= 90;
 	public	TransformOp		transformForLevels 		= TransformOp.R2MINUS_GB;
 	public	TransformOp 	transformForGulps 		= TransformOp.XDIFFN;
 	
@@ -147,25 +147,11 @@ public class SequenceKymos extends SequenceVirtual  {
 		if (myNode == null)
 			return false;
 		
-		detectTop = XMLUtil.getElementBooleanValue(myNode, "detectTop", true);
-		detectBottom = XMLUtil.getElementBooleanValue(myNode, "detectBottom", false);
-		detectAllLevel = XMLUtil.getElementBooleanValue(myNode, "detectAllLevel", true);
-		detectAllGulps = XMLUtil.getElementBooleanValue(myNode, "detectAllGulps", true); 
-		bStatusChanged = XMLUtil.getElementBooleanValue(myNode, "bStatusChanged", false);
-
-		int dummy = XMLUtil.getElementIntValue(myNode, "transformForLevels", 0);
-		transformForLevels = TransformOp.values()[dummy];
-		directionUp = XMLUtil.getElementBooleanValue(myNode, "direction", true);
-		detectLevelThreshold = XMLUtil.getElementIntValue(myNode, "detectLevelThreshold", 35);
-		detectGulpsThreshold = XMLUtil.getElementIntValue(myNode, "detectGulpsThreshold", 75);
-		int dummy2 = XMLUtil.getElementIntValue(myNode, "transformForGulps", 3);
-		transformForGulps = TransformOp.values()[dummy2];
-		
 		analysisStart = XMLUtil.getElementIntValue(myNode, "analysisStart", 0);
 		analysisEnd = XMLUtil.getElementIntValue(myNode, "analysisEnd", -1);
 		analysisStep = XMLUtil.getElementIntValue(myNode, "analysisStep", 1);
 		
-		cap.loadFromXML(myNode);
+		cap.loadFromXML(myNode); 
 		return true;
 	}
 	
@@ -191,20 +177,7 @@ public class SequenceKymos extends SequenceVirtual  {
 		XMLUtil.getRootElement( document ).appendChild(myNode);
 		
 		XMLUtil.setAttributeValue(myNode, "SequenceName", cap.getName()+"_parameters");
-		XMLUtil.setElementBooleanValue(myNode, "detectTop", detectTop);
-		XMLUtil.setElementBooleanValue(myNode, "detectBottom", detectBottom);
-		XMLUtil.setElementBooleanValue(myNode, "detectAllLevel", detectAllLevel);
-		XMLUtil.setElementBooleanValue(myNode, "detectAllGulps", detectAllGulps); 
-		XMLUtil.setElementBooleanValue(myNode, "bStatusChanged", bStatusChanged);
 
-		int dummy1 = transformForLevels.ordinal(); 
-		XMLUtil.setElementIntValue(myNode, "transformForLevels", dummy1);
-		XMLUtil.setElementBooleanValue(myNode, "direction", directionUp);
-		XMLUtil.setElementIntValue(myNode, "detectLevelThreshold", detectLevelThreshold);
-		XMLUtil.setElementIntValue(myNode, "detectGulpsThreshold", detectGulpsThreshold);
-		int dummy2 = transformForGulps.ordinal();
-		XMLUtil.setElementIntValue(myNode, "transformForGulps", dummy2);
-		
 		XMLUtil.setElementIntValue(myNode, "analysisStart", (int) analysisStart);
 		XMLUtil.setElementIntValue(myNode, "analysisEnd", (int) analysisEnd);
 		XMLUtil.setElementIntValue(myNode, "analysisStep", analysisStep);

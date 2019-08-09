@@ -26,7 +26,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 public class Capillary implements XMLPersistent  {
 
 	public int							indexImage 				= -1;
-	public String						name 					= null;
+	private String						name 					= null;
 	public String 						version 				= null;
 	public ROI2DShape 					roi 					= null;	// the capillary (source)
 	public DetectLimits_Options 	limitsOptions			= new DetectLimits_Options();
@@ -61,6 +61,7 @@ public class Capillary implements XMLPersistent  {
 	
 	Capillary(String name) {
 		this.name = replace_LR_with_12(name);
+		
 	}
 	
 	public Capillary() {
@@ -70,23 +71,14 @@ public class Capillary implements XMLPersistent  {
 		return name;
 	}
 	
-	public int getCapillaryIndexFromCapillaryName(String name) {
-		if (!name .contains("line"))
-			return -1;
-		String num = name.substring(4, 5);
-		int numFromName = Integer.parseInt(num);
-		String side = name.substring(5, 6);
-		if (side != null) {
-			if (side .equals("R") || side .equals("2")) {
-				numFromName = numFromName* 2;
-				numFromName += 1;
-			}
-			else if (side .equals("L") || side .equals("1"))
-				numFromName = numFromName* 2;
-		}
-		return numFromName;
+	public void setName(String name) {
+		this.name = name;
 	}
-
+	
+	public String getLast2ofCapillaryName() {
+		return roi.getName().substring(roi.getName().length() -2);
+	}
+	
 	public String replace_LR_with_12(String name) {
 		String newname = null;
 		if (name .endsWith("R"))
@@ -110,6 +102,9 @@ public class Capillary implements XMLPersistent  {
 	}
 	
 	public List<Point2D> getPointArrayFromIntegerArray(ArrayList<Integer> data) {
+		if (data == null)
+			return null;
+		
 		List<Point2D> ptsList = null;
 		if (data.size() > 0) {
 			ptsList = new ArrayList<Point2D>(data.size());
@@ -162,11 +157,13 @@ public class Capillary implements XMLPersistent  {
 	}
 	
 	public List<ROI> getROIsFromMeasures() {
-		//System.out.println("output rois for t="+indexImage+" kymo="+name);
 		List<ROI> listrois = new ArrayList<ROI> ();
-		if (ptsTop != null) listrois.add(getPtListToROI(ID_TOPLEVEL, ptsTop));
-		if (ptsBottom != null) listrois.add(getPtListToROI(ID_BOTTOMLEVEL, ptsBottom));
-		if (gulpsRois != null)	listrois.addAll(gulpsRois);
+		if (ptsTop != null) 
+			listrois.add(getPtListToROI(ID_TOPLEVEL, ptsTop));
+		if (ptsBottom != null) 
+			listrois.add(getPtListToROI(ID_BOTTOMLEVEL, ptsBottom));
+		if (gulpsRois != null)	
+			listrois.addAll(gulpsRois);
 		if (derivedValuesArrayList != null) {
 			ROI2D derivativeRoi = getPtListToROI(ID_DERIVATIVE, getPointArrayFromIntegerArray(derivedValuesArrayList));
 			derivativeRoi.setColor(Color.yellow);
@@ -180,10 +177,9 @@ public class Capillary implements XMLPersistent  {
 	
 	private ROI2D getPtListToROI(String name, List<Point2D> ptslist) {
 		ROI2D roi = ROI2DUtilities.transferPointArrayToRoi(ptslist);
-		int index = indexImage;
-		if (index >= 0) {
+		if (indexImage >= 0) {
 			roi.setT(indexImage);
-			roi.setName(name+indexImage);
+			roi.setName(getLast2ofCapillaryName()+"_"+name);
 		}
 		else
 			roi.setName(name);
@@ -206,20 +202,11 @@ public class Capillary implements XMLPersistent  {
 	@Override
 	public boolean loadFromXML(Node node) {
 		boolean result = true;
-		result |= loadMetaDataFromXML(node);
-		derivedValuesArrayList = loadIntegerArrayFromXML(node, ID_DERIVATIVE);
-		result |= (derivedValuesArrayList != null);
-		ArrayList<Integer> data = loadIntegerArrayFromXML(node, ID_TOPLEVEL);
-		if (data != null)
-			ptsTop = getPointArrayFromIntegerArray(data);
-		else 
-			result = false;
-		data = loadIntegerArrayFromXML(node, ID_BOTTOMLEVEL);
-		if (data != null)
-			ptsBottom = getPointArrayFromIntegerArray(data);
-		else
-			result = false;
-		result |= loadROIsFromXML(node, gulpsRois);
+		result |= loadMetaDataFromXML(node);		
+		result |= (derivedValuesArrayList = loadIntegerArrayFromXML(node, ID_DERIVATIVE)) != null;
+		result |= (ptsTop = getPointArrayFromIntegerArray(loadIntegerArrayFromXML(node, ID_TOPLEVEL))) != null;
+		result |= (ptsBottom = getPointArrayFromIntegerArray(loadIntegerArrayFromXML(node, ID_BOTTOMLEVEL)))!= null;
+		result |= (gulpsRois = loadROIsFromXML(node)) != null;
 		return result;
 	}
 
@@ -293,12 +280,13 @@ public class Capillary implements XMLPersistent  {
 	    }
 	}
 	
-	private boolean loadROIsFromXML(Node node, Collection<ROI> rois) {
+	private List <ROI> loadROIsFromXML(Node node) {
         final Node nodeROIs = XMLUtil.getElement(node, ID_GULPS);
+        List <ROI> rois = new ArrayList <ROI> ();
         if (nodeROIs != null) {
         	rois = ROI.loadROIsFromXML(nodeROIs);
 	    }
-        return true;
+        return rois;
 	}
 	
 	private void saveIntArraytoXML(Node node, String name, ArrayList <Integer> data) {

@@ -112,8 +112,9 @@ public class ImageThresholdTools {
 			Object sourceArray = img.getDataXY(0);
 			imageSourceDataBuffer = Array1DUtil.arrayToByteArray(sourceArray);
 		}
-		else
+		else {
 			imageSourceDataBuffer = img.getDataXYAsByte(0);
+		}
 		
 		for (int x = 0; x < boolMap.length; x++)  {
 			if (imageSourceDataBuffer[x] == byteFALSE)

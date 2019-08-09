@@ -120,16 +120,18 @@ public class ImageTransformTools {
 			ExG[i] = ((Gn[i] *2 / 255 / sum) - (Rn[i] / 255/sum) - (Bn [i] / 255/sum)) * 255;
 		}
 		
-		IcyBufferedImage img = new IcyBufferedImage (sourceImage.getWidth(), sourceImage.getHeight(), 1, sourceImage.getDataType_());
-		Array1DUtil.doubleArrayToSafeArray(ExG,  img.getDataXY(0), false); //true); 
-		return img;
+		IcyBufferedImage img2 = new IcyBufferedImage (sourceImage.getWidth(), sourceImage.getHeight(), 1, sourceImage.getDataType_());
+		Array1DUtil.doubleArrayToSafeArray(ExG,  img2.getDataXY(0), false); //true);
+		img2.setDataXY(0, img2.getDataXY(0));
+		return img2;
 	}
 	
 	private IcyBufferedImage functionTransferRedToGreenAndBlue(IcyBufferedImage sourceImage) {
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
-		img2.copyData(sourceImage, 0, 0);
-		img2.copyData(sourceImage, 0, 1);
-		img2.copyData(sourceImage, 0, 2);
+		for (int c= 0; c<3; c++ ) {
+			img2.copyData(sourceImage, 0, c);
+			img2.setDataXY(c, img2.getDataXY(c));
+		}
 		return img2;
 	}
 	
@@ -146,7 +148,9 @@ public class ImageTransformTools {
 			double val = tabSubtract[i]* 2 - tabAdd1[i] - tabAdd2[i] ;
 			tabResult [i] = val;
 		}
+		
 		Array1DUtil.doubleArrayToSafeArray(tabResult, img2.getDataXY(0), false); //  true);
+		img2.setDataXY(0, img2.getDataXY(0));
 		return img2; 
 	}
 	
@@ -165,6 +169,7 @@ public class ImageTransformTools {
 		}
 		
 		Array1DUtil.doubleArrayToSafeArray(tabResult, img2.getDataXY(0), false); //  true);
+		img2.setDataXY(0, img2.getDataXY(0));
 		return img2;
 	}
 	
@@ -207,6 +212,7 @@ public class ImageTransformTools {
 				}
 			}
 			Array1DUtil.intArrayToSafeArray(outValues, img2.getDataXY(c), true, img2.isSignedDataType());
+			img2.setDataXY(c, img2.getDataXY(c));
 		}
 		return img2;
 	}
@@ -247,6 +253,7 @@ public class ImageTransformTools {
 //				}
 			}
 			Array1DUtil.intArrayToSafeArray(outValues, img2.getDataXY(c), true, img2.isSignedDataType());
+			img2.setDataXY(c, img2.getDataXY(c));
 		}
 		return img2;
 	}
@@ -297,6 +304,7 @@ public class ImageTransformTools {
 					outValues[ix + iy* imageSizeX] = 0;
 			}
 			Array1DUtil.intArrayToSafeArray(outValues,  img2.getDataXY(c), true, img2.isSignedDataType());
+			img2.setDataXY(c, img2.getDataXY(c));
 		}
 		return img2;
 	}
@@ -305,6 +313,7 @@ public class ImageTransformTools {
 
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 1, sourceImage.getDataType_());
 		img2.copyData(sourceImage, keepChan, 0);
+		img2.setDataXY(0, img2.getDataXY(0));
 		return img2;
 	}
 	
@@ -321,8 +330,10 @@ public class ImageTransformTools {
 			outValues0 [ky] = (tabValuesR[ky]+tabValuesG[ky]+tabValuesB[ky])/3;
 		}
 		
-		Object dataArray = img2.getDataXY(0);
+		int c= 0;
+		Object dataArray = img2.getDataXY(c);
 		Array1DUtil.intArrayToSafeArray(outValues0, dataArray, sourceImage.isSignedDataType(), img2.isSignedDataType());
+		img2.setDataXY(c, img2.getDataXY(c));
 		return img2;
 	}
 	
@@ -352,9 +363,15 @@ public class ImageTransformTools {
 			outValues2 [ky] = val;
 		}
 
-		Array1DUtil.doubleArrayToSafeArray(outValues0,  img2.getDataXY(0), false); // img2.isSignedDataType());
-		Array1DUtil.doubleArrayToSafeArray(outValues1,  img2.getDataXY(1), false); //  img2.isSignedDataType());
-		Array1DUtil.doubleArrayToSafeArray(outValues2,  img2.getDataXY(2), false); //  img2.isSignedDataType());
+		int c= 0;
+		Array1DUtil.doubleArrayToSafeArray(outValues0,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		img2.setDataXY(c, img2.getDataXY(c));
+		c++;
+		Array1DUtil.doubleArrayToSafeArray(outValues1,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		img2.setDataXY(c, img2.getDataXY(c));
+		c++;
+		Array1DUtil.doubleArrayToSafeArray(outValues2,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		img2.setDataXY(c, img2.getDataXY(c));
 		return img2;
 	}
 	
@@ -378,7 +395,7 @@ public class ImageTransformTools {
 				img2Int[i] = 0xFF - val;
 			}
 			Array1DUtil.intArrayToSafeArray(img2Int,  img2.getDataXY(c), true, img2.isSignedDataType());
-			
+			img2.setDataXY(c, img2.getDataXY(c));
 		}
 		return img2;
 	}
@@ -408,9 +425,15 @@ public class ImageTransformTools {
 			outValues2 [ky] = (double) hsb[2] ;
 		}
 
-		Array1DUtil.doubleArrayToSafeArray(outValues0,  img2.getDataXY(0), false); //  img2.isSignedDataType());
-		Array1DUtil.doubleArrayToSafeArray(outValues1,  img2.getDataXY(1), false); //  img2.isSignedDataType());
-		Array1DUtil.doubleArrayToSafeArray(outValues2,  img2.getDataXY(2), false); //  img2.isSignedDataType());
+		int c= 0;
+		Array1DUtil.doubleArrayToSafeArray(outValues0,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		img2.setDataXY(c, img2.getDataXY(c));
+		c++;
+		Array1DUtil.doubleArrayToSafeArray(outValues1,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		img2.setDataXY(c, img2.getDataXY(c));
+		c++;
+		Array1DUtil.doubleArrayToSafeArray(outValues2,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		img2.setDataXY(c, img2.getDataXY(c));
 		return img2;
 	}
 
@@ -439,9 +462,15 @@ public class ImageTransformTools {
 			outValues2 [ky] = (VMAX + b - (r + g) / 2.0) / 2.0;
 		}
 
-		Array1DUtil.doubleArrayToSafeArray(outValues0,  img2.getDataXY(0), false); //  img2.isSignedDataType());
-		Array1DUtil.doubleArrayToSafeArray(outValues1,  img2.getDataXY(1), false); //  img2.isSignedDataType());
-		Array1DUtil.doubleArrayToSafeArray(outValues2,  img2.getDataXY(2), false); //  img2.isSignedDataType());
+		int c= 0;
+		Array1DUtil.doubleArrayToSafeArray(outValues0,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		img2.setDataXY(c, img2.getDataXY(c));
+		c++;
+		Array1DUtil.doubleArrayToSafeArray(outValues1,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		img2.setDataXY(c, img2.getDataXY(c));
+		c++;
+		Array1DUtil.doubleArrayToSafeArray(outValues2,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		img2.setDataXY(c, img2.getDataXY(c));
 		return img2;
 	}
 	

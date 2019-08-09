@@ -59,7 +59,7 @@ public class DetectLimits {
 			
 			if (flagtop) {
 				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine ();
-				roiTopTrack.setName("toplevel"+t);
+				roiTopTrack.setName(cap.getLast2ofCapillaryName()+"_toplevel");
 				roiTopTrack.setStroke(1);
 				roiTopTrack.setT(t);
 				seqkymo.seq.addROI(roiTopTrack);
@@ -68,7 +68,7 @@ public class DetectLimits {
 			
 			if (flagbottom) {
 				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine ();
-				roiBottomTrack.setName("bottomlevel"+t);
+				roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
 				roiBottomTrack.setStroke(1);
 				roiBottomTrack.setT(t);
 				seqkymo.seq.addROI(roiBottomTrack);

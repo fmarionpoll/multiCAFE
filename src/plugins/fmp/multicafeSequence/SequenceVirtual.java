@@ -204,7 +204,9 @@ public class SequenceVirtual  {
 
 			double[] dummyzerosArray = Array1DUtil.arrayToDoubleArray(result.getDataXY(c), result.isSignedDataType());
 			ArrayMath.max(img1DoubleArray, dummyzerosArray, img1DoubleArray);
-			Array1DUtil.doubleArrayToArray(img1DoubleArray, result.getDataXY(c));
+			Object destArray = result.getDataXY(c);
+			Array1DUtil.doubleArrayToSafeArray(img1DoubleArray, destArray, result.isSignedDataType());
+			result.setDataXY(c, destArray);
 		}
 		result.dataChanged();
 		return result;
@@ -486,11 +488,11 @@ public class SequenceVirtual  {
         }    
 	}
 	
-	public void removeRoisContainingName(int t, String gulp) {
+	public void removeRoisContainingString(int t, String string) {
 		for (ROI roi: seq.getROIs()) {
 			if (roi instanceof ROI2D 
 			&& ((ROI2D) roi).getT() == t 
-			&& roi.getName().contains(gulp))
+			&& roi.getName().contains(string))
 				seq.removeROI(roi);
 		}
 	}
