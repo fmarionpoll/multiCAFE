@@ -111,8 +111,7 @@ public class SequenceKymosUtils {
 	        final boolean signed 	= dataType.isSigned();
 
 	        result.lockRaster();
-	        try
-	        {
+	        try {
 	            for (int ch = 0; ch < endC; ch++) {
 	                final Object src = source.getDataXY(ch);
 	                final Object dst = result.getDataXY(ch);

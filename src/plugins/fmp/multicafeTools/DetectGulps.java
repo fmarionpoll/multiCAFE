@@ -77,11 +77,11 @@ public class DetectGulps {
 				if (max < val) 
 					max = val;
 			}
-			listOfMaxPoints.add(new Point2D.Double((double) ix, (double) ( yheight/2 - max)));
+			listOfMaxPoints.add(new Point2D.Double((double) ix, (double) max));
 			cap.derivedValuesArrayList.add(max);
 		}
 		ROI2DPolyLine roiDerivative = new ROI2DPolyLine ();
-		roiDerivative.setName("derivative");
+		roiDerivative.setName("derivative"+t);
 		roiDerivative.setColor(Color.yellow);
 		roiDerivative.setStroke(1);
 		roiDerivative.setPoints(listOfMaxPoints);
@@ -107,7 +107,7 @@ public class DetectGulps {
 				if ((int) prevPt.getX() !=  (ix-1)) {
 					roiTrack.setColor(Color.red);
 					roiTrack.setStroke(1);
-					roiTrack.setName("gulp"+String.format("%07d", ix));
+					roiTrack.setName("gulp"+t+String.format("_%07d", ix));
 					roiTrack.setPoints(gulpPoints);
 					roiTrack.setT(t);
 					cap.gulpsRois.add(roiTrack);
@@ -127,7 +127,7 @@ public class DetectGulps {
 			roiTrack.setColor(Color.red);
 			roiTrack.setStroke(1);
 			roiTrack.setT(t);
-			roiTrack.setName("gulp"+String.format("%07d", ix));
+			roiTrack.setName("gulp"+String.format("_%07d", ix));
 			cap.gulpsRois.add(roiTrack);
 		}
 		kymographSeq.seq.addROIs(cap.gulpsRois, false);

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import icy.roi.ROI2D;
 import plugins.fmp.multicafeSequence.SequenceVirtual;
 
-public class BuildKymographsOptions {
+public class BuildKymographs_Options {
 	public int 				analyzeStep 		= 1;
 	public int 				startFrame 			= 1;
 	public int				endFrame 			= 99999999;

@@ -41,10 +41,10 @@ public class ListFilesPane extends JPanel implements PropertyChangeListener, Act
 	public JButton 		clearAllButton			= new JButton("Clear all");
 	public JList<String> xmlFilesJList			= new JList<String>(new DefaultListModel<String>());
 	
-	private BuildKymographs parent0 			= null;
+	private BuildKymographsBatch parent0 			= null;
 	
 	
-	public void init (JPanel mainPanel, String string, BuildKymographs parent0) {
+	public void init (JPanel mainPanel, String string, BuildKymographsBatch parent0) {
 		this.parent0 = parent0;
 		final JPanel sourcePanel = GuiUtil.generatePanel("SOURCE");
 		mainPanel.add(GuiUtil.besidesPanel(sourcePanel));

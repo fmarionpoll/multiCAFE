@@ -41,7 +41,7 @@ public class DetectFlies  implements Runnable {
 	public boolean						buildBackground	= true;
 	public boolean						detectFlies		= true;
 	
-	public DetectFlies_Options 		detect 			= new DetectFlies_Options();
+	public DetectFlies_Options 			detect 			= new DetectFlies_Options();
 	public Cages 						cages 			= new Cages();
 	public SequenceVirtual 				seqNegative 	= null;
 	public SequenceVirtual 				seqPositive 	= null;
@@ -59,8 +59,7 @@ public class DetectFlies  implements Runnable {
 	 */
 	
 	@Override
-	public void run()
-	{
+	public void run() {
 		threadRunning = true;
 
 		System.out.println("Computation over frames: " + startFrame + " - " + endFrame );
@@ -95,14 +94,12 @@ public class DetectFlies  implements Runnable {
 	}
 
 	private void detectFlies () {
-		
 		Chronometer chrono = new Chronometer("Tracking computation" );
 		ProgressFrame progress = new ProgressFrame("Detecting flies...");
 		int nbcages = cages.cageLimitROIList.size();
 		ROI2DRectangle [] tempRectROI = new ROI2DRectangle [nbcages];
 		int minCapacity = (endFrame - startFrame + 1) / analyzeStep;		
-		for (int i=0; i < nbcages; i++)
-		{
+		for (int i=0; i < nbcages; i++) {
 			tempRectROI[i] = new ROI2DRectangle(0, 0, 10, 10);
 			tempRectROI[i].setName("fly_"+i);
 			vSequence.seq.addROI(tempRectROI[i]);
@@ -129,8 +126,7 @@ public class DetectFlies  implements Runnable {
 			
 			// ----------------- loop over all images of the stack
 			int it = 0;
-			for (int t = startFrame; t <= endFrame && !stopFlag; t  += analyzeStep, it++ )
-			{				
+			for (int t = startFrame; t <= endFrame && !stopFlag; t  += analyzeStep, it++ ) {				
 				// update progression bar
 				int pos = (int)(100d * (double)t / (double) nbframes);
 				progress.setPosition( pos );
@@ -150,10 +146,8 @@ public class DetectFlies  implements Runnable {
 				ROI2DArea roiAll = findFly (negativeImage, vSequence.cages.detect.threshold, detect.ichanselected, detect.btrackWhite );
 
 				// ------------------------ loop over all the cages of the stack
-				for ( int iroi = 0; iroi < cages.cageLimitROIList.size(); iroi++ )
-				{		
+				for ( int iroi = 0; iroi < cages.cageLimitROIList.size(); iroi++ ) {		
 					BooleanMask2D bestMask = findLargestComponent(roiAll, iroi);
-					
 					ROI2DArea flyROI = null;
 					if ( bestMask != null ) {
 						flyROI = new ROI2DArea( bestMask );
@@ -190,8 +184,7 @@ public class DetectFlies  implements Runnable {
 
 		//	 copy created ROIs to inputSequence
 		System.out.println("Copying results to input sequence");
-		try
-		{
+		try {
 			vSequence.seq.beginUpdate();
 			vSequence.cages = cages;
 			int nrois = cages.cageLimitROIList.size();
@@ -214,14 +207,12 @@ public class DetectFlies  implements Runnable {
 
 		boolean[] mask = new boolean[ img.getSizeX() * img.getSizeY() ];
 
-		if (white)
-		{
+		if (white) {
 			byte[] arrayRed 	= img.getDataXYAsByte( 0);
 			byte[] arrayGreen 	= img.getDataXYAsByte( 1);
 			byte[] arrayBlue 	= img.getDataXYAsByte( 2);
 
-			for ( int i = 0 ; i < arrayRed.length ; i++ )
-			{
+			for ( int i = 0 ; i < arrayRed.length ; i++ ) {
 				float r = ( arrayRed[i] 	& 0xFF );
 				float g = ( arrayGreen[i] 	& 0xFF );
 				float b = ( arrayBlue[i] 	& 0xFF );
@@ -233,8 +224,7 @@ public class DetectFlies  implements Runnable {
 		else {
 
 			byte[] arrayChan = img.getDataXYAsByte( chan);
-			for ( int i = 0 ; i < arrayChan.length ; i++ )
-			{
+			for ( int i = 0 ; i < arrayChan.length ; i++ ) {
 				mask[i] = ( ((int) arrayChan[i] ) & 0xFF ) < threshold ;
 			}
 		}
@@ -244,7 +234,6 @@ public class DetectFlies  implements Runnable {
 	}
 	
 	private void patchRectToReferenceImage(IcyBufferedImage currentImage, Rectangle2D rect) {
-		
 		int cmax = currentImage.getSizeC();
 		for (int c=0; c< cmax; c++) {
 			int[] intCurrentImage = Array1DUtil.arrayToIntArray(currentImage.getDataXY(c), currentImage.isSignedDataType());
@@ -264,7 +253,6 @@ public class DetectFlies  implements Runnable {
 	}
 	
 	private void displayDetectViewer () {
-		
 		if (seqPositive != null ) {
 			seqPositive.seq.close();
 			seqPositive=null;
@@ -295,7 +283,6 @@ public class DetectFlies  implements Runnable {
 	}
 
 	private void displayRefViewers () {
-		
 		if (seqPositive != null ) {
 			seqPositive.seq.close();
 			seqPositive = null;
@@ -361,12 +348,9 @@ public class DetectFlies  implements Runnable {
 	}
 	
 	private void buildBackgroundImage() {
-
 		ProgressFrame progress = new ProgressFrame("Build background image...");
-		
 		int nfliesRemoved = 0;
 		vSequence.refImage = IcyBufferedImageUtil.getCopy(vSequence.loadVImage(startFrame, 0));
-		
 		initParametersForDetection();
 		initialflyRemoved.clear();
 		for (int i=0; i < cages.cageLimitROIList.size(); i++)
@@ -381,8 +365,7 @@ public class DetectFlies  implements Runnable {
 			});
 		}
 		
-		for (int t = startFrame +1 ; t <= endFrame && !stopFlag; t  += analyzeStep )
-		{				
+		for (int t = startFrame +1 ; t <= endFrame && !stopFlag; t  += analyzeStep ) {				
 			IcyBufferedImage currentImage = vSequence.loadVImage(t, 0);
 			vSequence.currentFrame = t;
 			viewer.setPositionT(t);
@@ -393,8 +376,7 @@ public class DetectFlies  implements Runnable {
 				seqPositive.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(positiveImage, rectangleAllCages));
 			ROI2DArea roiAll = findFly (positiveImage, vSequence.cages.detect.threshold, detect.ichanselected, detect.btrackWhite );
 
-			for ( int iroi = 1; iroi < cages.cageLimitROIList.size()-1; iroi++ )
-			{
+			for ( int iroi = 1; iroi < cages.cageLimitROIList.size()-1; iroi++ ) {
 				BooleanMask2D bestMask = findLargestComponent(roiAll, iroi);		
 				if ( bestMask != null ) {
 					ROI2DArea flyROI = new ROI2DArea( bestMask );
@@ -430,8 +412,7 @@ public class DetectFlies  implements Runnable {
 		// find largest component in the threshold
 		int max = 0;
 		BooleanMask2D bestMask = null;
-		for ( BooleanMask2D mask : roi.getBooleanMask( true ).getComponents() )
-		{
+		for ( BooleanMask2D mask : roi.getBooleanMask( true ).getComponents() ) {
 			int len = mask.getPoints().length;
 			if (detect.blimitLow && len < detect.limitLow)
 				len = 0;

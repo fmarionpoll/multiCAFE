@@ -33,7 +33,7 @@ import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.EnumStatus;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceVirtual;
-import plugins.fmp.multicafeTools.BuildKymographsThread;
+import plugins.fmp.multicafeTools.BuildKymographs;
 
 
 public class BuildKymosPane  extends JPanel implements ActionListener, ViewerListener {
@@ -49,7 +49,7 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	SequenceKymos					vkymos					= null;
 	private ArrayList <SequenceKymos> kymographArrayList 	= new ArrayList <SequenceKymos> ();
 	 
-	private BuildKymographsThread 	buildKymographsThread 	= null;
+	private BuildKymographs 	buildKymographsThread 	= null;
 	private Viewer 					viewer1 				= null;
 	private Thread 					thread 					= null;
 	private int						analyzeStep 			= 1; // TODO:  textbox? add checkbox for registration
@@ -57,9 +57,9 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	
 
 
-private BuildKymographs 	parent0 	= null;
+private BuildKymographsBatch 	parent0 	= null;
 	
-	public void init (JPanel mainPanel, String string, BuildKymographs parent0) {
+	public void init (JPanel mainPanel, String string, BuildKymographsBatch parent0) {
 		this.parent0 = parent0;
 		
 		final JPanel kymographsPanel = GuiUtil.generatePanel("KYMOGRAPHS");
@@ -120,7 +120,7 @@ private BuildKymographs 	parent0 	= null;
 		} 
 		
 		// build kymograph
-		buildKymographsThread = new BuildKymographsThread();
+		buildKymographsThread = new BuildKymographs();
 		buildKymographsThread.options.vSequence  	= vSequence;
 		buildKymographsThread.options.analyzeStep 	= analyzeStep;
 		buildKymographsThread.options.startFrame 	= (int) vSequence.analysisStart;

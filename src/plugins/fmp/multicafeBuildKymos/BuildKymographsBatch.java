@@ -14,7 +14,7 @@ import icy.main.Icy;
 import icy.plugin.abstract_.PluginActionable;
 
 
-public class BuildKymographs  extends PluginActionable implements ChangeListener, PropertyChangeListener {
+public class BuildKymographsBatch  extends PluginActionable implements ChangeListener, PropertyChangeListener {
 
 	IcyFrame 		mainFrame 			= new IcyFrame("Build kymographs 27-07-06-2019", true, true, true, true);
 	ListFilesPane 	listFilesPane 		= new ListFilesPane();

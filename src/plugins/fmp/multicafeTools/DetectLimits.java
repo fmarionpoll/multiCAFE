@@ -12,7 +12,6 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 public class DetectLimits {
 	
 	public void detectCapillaryLevels(DetectLimits_Options options,  SequenceKymos seqkymo) {
-
 		// send some info
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
 		progressBar.initStuff(seqkymo.seq.getSizeT() );
@@ -26,15 +25,13 @@ public class DetectLimits {
 		}
 
 		seqkymo.seq.beginUpdate();
-		for (int t=tfirst; t <= tlast; t++) 
-		{
+		for (int t=tfirst; t <= tlast; t++) {
 			// update progression bar
 			progressBar.updatePositionAndTimeLeft(t);
-
 			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(t);
+			
 			seqkymo.removeAllROISatT(t);
 			options.copy(cap.limitsOptions); 
-			
 			cap.ptsTop = new ArrayList<>();			
 			cap.ptsBottom = new ArrayList<>();
 
@@ -46,16 +43,13 @@ public class DetectLimits {
 			
 			int xwidth = image.getSizeX();
 			int yheight = image.getSizeY();
-	
 			int oldiytop = 0;		// assume that curve goes from left to right with jitter 
 			int oldiybottom = yheight-1;
-			
 			boolean flagtop = true;
 			boolean flagbottom = true; 
 
 			// scan each image column
-			for (int ix = 0; ix < xwidth; ix++) 
-			{
+			for (int ix = 0; ix < xwidth; ix++) {
 				if (flagtop)
 					detectTop(ix, oldiytop, jitter, tabValues, cap, xwidth, yheight, options);
 				
@@ -65,7 +59,7 @@ public class DetectLimits {
 			
 			if (flagtop) {
 				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine ();
-				roiTopTrack.setName("toplevel");
+				roiTopTrack.setName("toplevel"+t);
 				roiTopTrack.setStroke(1);
 				roiTopTrack.setT(t);
 				seqkymo.seq.addROI(roiTopTrack);
@@ -74,14 +68,12 @@ public class DetectLimits {
 			
 			if (flagbottom) {
 				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine ();
-				roiBottomTrack.setName("bottomlevel");
+				roiBottomTrack.setName("bottomlevel"+t);
 				roiBottomTrack.setStroke(1);
 				roiBottomTrack.setT(t);
 				seqkymo.seq.addROI(roiBottomTrack);
 				roiBottomTrack.setPoints(cap.ptsBottom);
 			}
-			
-			//TODO ?.? kymographSeq.getArrayListFromRois(EnumArrayListType.cumSum);
 		}
 		seqkymo.seq.endUpdate();
 
@@ -91,7 +83,6 @@ public class DetectLimits {
 	}
 	
 	void detectTop(int ix, int oldiytop, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, DetectLimits_Options options) {
-		
 		boolean found = false;
 		double x = ix;
 		double y = 0;
@@ -100,8 +91,7 @@ public class DetectLimits {
 			oldiytop = 0;
 
 		// for each line, go from left to right - starting from the last position found minus "jitter" (set to 10)
-		for (int iy = oldiytop; iy < yheight; iy++) 
-		{
+		for (int iy = oldiytop; iy < yheight; iy++) {
 			boolean flag = false;
 			if (options.directionUp)
 				flag = tabValues [ix + iy* xwidth] > options.detectLevelThreshold;
@@ -130,14 +120,12 @@ public class DetectLimits {
 		oldiybottom = yheight - 1;
 
 		// for each line, go from left to right - starting from the last position found minus "jitter" (set to 10)
-		for (int iy = oldiybottom; iy >= 0 ; iy--) 
-		{
+		for (int iy = oldiybottom; iy >= 0 ; iy--) {
 			boolean flag = false;
 			if (options.directionUp)
 				flag = tabValues [ix + iy* xwidth] > options.detectLevelThreshold;
 			else 
 				flag = tabValues [ix + iy* xwidth] < options.detectLevelThreshold;
-
 			if (flag) {
 				y = iy;
 				found = true;
@@ -151,4 +139,5 @@ public class DetectLimits {
 		// add new point to display as roi
 		cap.ptsBottom.add(new Point2D.Double (x, y));
 	}
+	
 }
