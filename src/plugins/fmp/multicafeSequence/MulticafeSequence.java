@@ -62,12 +62,7 @@ public class MulticafeSequence extends EzPlug {
 	
 	@Override
 	protected void initialize() {
-
 		getUI().setTitle("SequenceVirtual");
-		
-//		loadKymographs 	= new EzVarBoolean("load kymographs", true);
-//		loadMeasures 	= new EzVarBoolean("load measures", true);
-//		groupLoadFiles 	= new EzGroup("Open", openFile, loadCapillaries, loadCages, loadKymographs, loadMeasures);
 		openFile = new EzButton("Select file...", openfile);
 		groupLoadFiles = new EzGroup("Open", 
 				openFile, 
@@ -165,7 +160,7 @@ public class MulticafeSequence extends EzPlug {
 			vSequence.seq.close();		
 		vSequence = new SequenceCapillaries();
 		
-		String path = vSequence.loadInputVirtualStack(null);
+		String path = vSequence.loadSequenceFromDialog(null);
 		if (path != null) {
 			XMLPreferences guiPrefs = getPreferences("gui");
 			guiPrefs.put("lastUsedPath", path);
@@ -189,16 +184,6 @@ public class MulticafeSequence extends EzPlug {
 		step.setValue((int) vSequence.analysisStep);
 	}
 	
-	/*
-	private void UpdateItemsToSequence(SequenceVirtual vSequence) {
-		if (vSequence == null)
-			return;
-		vSequence.analysisEnd = end.getValue();
-		vSequence.analysisStart = start.getValue();
-		vSequence.analysisStep = step.getValue();
-	}
-	*/
-
 	private boolean loadDefaultCapillaries() {
 		String path = vSequence.getDirectory();
 		boolean flag = capillaryRoisOpen(path+"\\capillarytrack.xml");

@@ -33,6 +33,7 @@ public class SequenceCapillaries  {
 	private String 					csFileName 				= null;
 	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif"};
 	private String					directory 				= null;
+	private boolean					doLRFileNameTest		= false;
 	
 	public IcyBufferedImage 		refImage 				= null;
 	
@@ -87,6 +88,33 @@ public class SequenceCapillaries  {
 		}
 	}
 	
+	public SequenceCapillaries(String name, boolean testLR, IcyBufferedImage image) {
+		this.doLRFileNameTest = testLR;
+		seq = new Sequence (name, image);
+	}
+
+	public SequenceCapillaries (String [] list, boolean testLR, String directory) {
+		this.doLRFileNameTest = testLR;
+		
+		loadSequenceFromListAndDirectory(list, directory);
+		seq.setName(listFiles.get(0));
+	}
+	
+	public SequenceCapillaries (List<String> listNames, boolean testLR) {
+		this.doLRFileNameTest = testLR;
+		listFiles.clear();
+		for (String cs: listNames)
+			listFiles.add(cs);
+		if (loadSequenceFromList(listFiles)) {
+			Path path = Paths.get(listFiles.get(0));
+			String dir = path.getName(path.getNameCount()-2).toString();
+			if (dir != null)
+				seq.setName(dir);
+		}
+	}
+	
+	// -----------------------
+	
 	public static boolean acceptedFileType(String name) {
 		/* 
 		 * Returns true if 'name' includes one of the accepted types stored in the "accepted" list 
@@ -104,28 +132,32 @@ public class SequenceCapillaries  {
 	}
 	
 	public IcyBufferedImage getImageTransf(int t, int z, int c, TransformOp transformop)  {
-		IcyBufferedImage image =  loadVImageAndSubtractReference(t, transformop);
+		IcyBufferedImage image =  getImageAndSubtractReference(t, transformop);
 		if (image != null && c != -1)
 			image = IcyBufferedImageUtil.extractChannel(image, c);
 		return image;
 	}
 	
-	public IcyBufferedImage loadVImageAndSubtractReference(int t, TransformOp transformop) {
-		IcyBufferedImage ibufImage = loadVImage(t, 0);
+	public IcyBufferedImage getImage(int t, int z) {
+		return seq.getImage(t, z);
+	}
+	
+	public IcyBufferedImage getImageAndSubtractReference(int t, TransformOp transformop) {
+		IcyBufferedImage ibufImage = getImage(t, 0);
 		switch (transformop) {
 			case REF_PREVIOUS: // subtract image n-analysisStep 
 				{
 				int t0 = t-analysisStep;
 				if (t0 <0)
 					t0 = 0;
-				IcyBufferedImage ibufImage0 = loadVImage(t0, 0);
+				IcyBufferedImage ibufImage0 = getImage(t0, 0);
 				ibufImage = subtractImages (ibufImage, ibufImage0);
 				}	
 				break;
 			case REF_T0: // subtract reference image
 			case REF:
 				if (refImage == null)
-					refImage = loadVImage((int) analysisStart, 0);
+					refImage = getImage((int) analysisStart, 0);
 				ibufImage = subtractImages (ibufImage, refImage);
 				break;
 
@@ -177,10 +209,6 @@ public class SequenceCapillaries  {
 		return (status == EnumStatus.FILESTACK);
 	}
 		
-	public IcyBufferedImage loadVImage(int t, int z) {
-		return seq.getImage(t, z);
-	}
-	
 	public String[] keepOnlyAcceptedNames(String[] rawlist) {
 		int count = 0;
 		for (int i=0; i< rawlist.length; i++) {
@@ -221,7 +249,9 @@ public class SequenceCapillaries  {
 		return result;
 	}
 	
-	public String loadInputVirtualStack(String path) {
+	// --------------------------
+	
+	public String loadSequenceFromDialog(String path) {
 		LoaderDialog dialog = new LoaderDialog(false);
 		if (path != null) 
 			dialog.setCurrentDirectory(new File(path));
@@ -229,35 +259,50 @@ public class SequenceCapillaries  {
 	    if (selectedFiles.length == 0)
 	    	return null;
 	    
-	    if (selectedFiles[0].isDirectory())
-	    	directory = selectedFiles[0].getAbsolutePath();
-	    else
-	    	directory = selectedFiles[0].getParentFile().getAbsolutePath();
-		if (directory == null )
-			return null;
-
-		String [] list;
-		if (selectedFiles.length == 1) {
-			list = (new File(directory)).list();
-			if (list ==null)
-				return null;
-			
-			if (!(selectedFiles[0].isDirectory()) && selectedFiles[0].getName().toLowerCase().contains(".avi")) {
-				seq = Loader.loadSequence(selectedFiles[0].getAbsolutePath(), 0, true);
-				return directory;
+	    directory = selectedFiles[0].isDirectory() ? selectedFiles[0].getAbsolutePath() : selectedFiles[0].getParentFile().getAbsolutePath();
+		if (directory != null ) {
+			if (selectedFiles.length == 1) {
+				loadSequenceFromName(selectedFiles[0].getAbsolutePath());
+			}
+			else {
+				String [] list = new String [selectedFiles.length];
+				for (int i = 0; i < selectedFiles.length; i++) {
+					if (!selectedFiles[i].getName().toLowerCase().contains(".avi"))
+						list[i] = selectedFiles[i].getAbsolutePath();
+				}
+				loadSequenceFromListAndDirectory(list, directory);
 			}
 		}
-		else {
-			list = new String[selectedFiles.length];
-			  for (int i = 0; i < selectedFiles.length; i++) {
-				if (selectedFiles[i].getName().toLowerCase().contains(".avi"))
-					continue;
-			    list[i] = selectedFiles[i].getAbsolutePath();
-			}
-		}
-		loadSequenceFromListAndDirectory(list, directory);
 		return directory;
 	}
+	
+	public String loadSequenceAt(String textPath) {
+		if (textPath == null) 
+			return loadSequenceFromDialog(null); 
+		
+		File filepath = new File(textPath); 
+	    directory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
+		if (directory != null ) {
+			String [] list = (new File(directory)).list();
+			if (list == null)
+				return null;
+			else 
+				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi")) 
+					seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
+				else
+					loadSequenceFromListAndDirectory(list, directory);
+		}
+		return directory;
+	}
+
+	public void loadSequenceFromName(String name) {
+		if (name.toLowerCase().contains(".avi"))
+			seq = Loader.loadSequence(name, 0, true);
+		else
+			loadSequenceVirtualFromName(name);
+	}
+	
+	// --------------------------
 	
 	private void loadSequenceFromListAndDirectory(String [] list, String directory) {
 		status = EnumStatus.FAILURE;
@@ -271,6 +316,55 @@ public class SequenceCapillaries  {
 		nTotalFrames = list.length;
 		status = EnumStatus.FILESTACK;	
 		loadSequenceFromList(listFiles);
+	}
+	
+	private boolean loadSequenceFromList(List<String> myListOfFilesNames) {
+		if (doLRFileNameTest && isLinexLRFileNames(myListOfFilesNames)) {
+			listFiles = convertLinexLRFileNames(myListOfFilesNames);
+		}
+		boolean flag = false;
+		List<Sequence> lseq = Loader.loadSequences(null, listFiles, 0, false, false, false, true);
+		if ((flag = (lseq.size() > 0))) {
+			seq = new Sequence();
+			if (lseq.size() == 1) {
+				seq = lseq.get(0);
+			}
+			else {
+				seq = lseq.get(0);	
+				int tmax = lseq.get(0).getSizeT();
+				int tseq = 0;
+				for (int t = 0; t < tmax; t++) {
+					for (int i=0; i < lseq.size(); i++) {
+						IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
+						seq.setImage(tseq, 0, bufImg);
+						tseq++;
+					}
+				}
+			}
+			status = EnumStatus.FILESTACK;	
+		}
+		return flag;
+	}
+	
+	private void loadSequenceVirtualFromName(String name) {
+		File filename = new File (name);
+		if (filename.isDirectory())
+	    	directory = filename.getAbsolutePath();
+	    else {
+	    	directory = filename.getParentFile().getAbsolutePath();
+	    }
+		if (directory == null) {
+			status = EnumStatus.FAILURE;
+			return;
+		}
+		String [] list;
+		File fdir = new File(directory);
+		boolean flag = fdir.isDirectory();
+		if (!flag)
+			return;
+		list = fdir.list();
+		if (list != null)
+			loadSequenceFromListAndDirectory(list, directory);
 	}
 	
 	private boolean isLinexLRFileNames(List<String> myListOfFilesNames) {
@@ -309,97 +403,12 @@ public class SequenceCapillaries  {
 		return newList; 
 	}
 	
+	// --------------------------
+
 	public void renameFile(String pathSource, String pathDestination) throws IOException {
 	    FileUtils.moveFile(
 	      FileUtils.getFile(pathSource), 
 	      FileUtils.getFile(pathDestination));
-	}
-	
-	private boolean loadSequenceFromList(List<String> myListOfFilesNames) {
-		if (isLinexLRFileNames(myListOfFilesNames)) {
-			listFiles = convertLinexLRFileNames(myListOfFilesNames);
-		}
-		boolean flag = false;
-		List<Sequence> lseq = Loader.loadSequences(null, listFiles, 0, false, false, false, true);
-		if ((flag = (lseq.size() > 0))) {
-			seq = new Sequence();
-			if (lseq.size() == 1) {
-				seq = lseq.get(0);
-			}
-			else {
-				seq = lseq.get(0);	
-				int tmax = lseq.get(0).getSizeT();
-				int tseq = 0;
-				for (int t = 0; t < tmax; t++) {
-					for (int i=0; i < lseq.size(); i++) {
-						IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
-						seq.setImage(tseq, 0, bufImg);
-						tseq++;
-					}
-				}
-			}
-			status = EnumStatus.FILESTACK;	
-		}
-		return flag;
-	}
-		
-	public String loadVirtualStackAt(String textPath) {
-		if (textPath == null) 
-			return loadInputVirtualStack(null); 
-		
-		File filepath = new File(textPath); 
-	    if (filepath.isDirectory())
-	    	directory = filepath.getAbsolutePath();
-	    else
-	    	directory = filepath.getParentFile().getAbsolutePath();
-		if (directory == null )
-			return null;
-
-		String [] list;
-		list = (new File(directory)).list();
-		if (list ==null)
-			return null;
-		
-		if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi")) {
-			seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
-		}
-		else
-			loadSequenceFromListAndDirectory(list, directory);
-		return directory;
-	}
-
-	public String loadInputVirtualFromNameSavedInRoiXML() {
-		if (csFileName != null)
-			loadSequenceVirtualFromName(csFileName);
-		return csFileName;
-	}
-	
-	public void loadInputVirtualFromName(String name) {
-		if (name.toLowerCase().contains(".avi"))
-			seq = Loader.loadSequence(name, 0, true);
-		else
-			loadSequenceVirtualFromName(name);
-	}
-	
-	private void loadSequenceVirtualFromName(String name) {
-		File filename = new File (name);
-		if (filename.isDirectory())
-	    	directory = filename.getAbsolutePath();
-	    else {
-	    	directory = filename.getParentFile().getAbsolutePath();
-	    }
-		if (directory == null) {
-			status = EnumStatus.FAILURE;
-			return;
-		}
-		String [] list;
-		File fdir = new File(directory);
-		boolean flag = fdir.isDirectory();
-		if (!flag)
-			return;
-		list = fdir.list();
-		if (list != null)
-			loadSequenceFromListAndDirectory(list, directory);
 	}
 	
 	public String getFileName() {
@@ -420,12 +429,8 @@ public class SequenceCapillaries  {
 		csFileName = name;		
 	}
 	
-	public void storeAnalysisParametersToCages() {
-		cages.detect.analysisEnd = analysisEnd;
-		cages.detect.analysisStart = analysisStart;
-		cages.detect.analysisStep = analysisStep;
-	}
-	
+	// --------------------------
+		
 	public void updateCapillaries(int size) {
 		if (capillaries == null || capillaries.capillariesArrayList.size() != size) {
 			if (capillaries == null)
@@ -458,7 +463,22 @@ public class SequenceCapillaries  {
 		}
 		return flag;
 	}
-		
+	
+	public boolean xmlWriteCapillaryTrackDefault() {
+		boolean flag = false;
+		String name = getDirectory()+ "\\capillarytrack.xml";
+		flag = capillaries.xmlWriteROIsAndDataNoQuestion(name, this);
+		return flag;
+	}
+	
+	// --------------------------
+	
+	public void storeAnalysisParametersToCages() {
+		cages.detect.analysisEnd = analysisEnd;
+		cages.detect.analysisStart = analysisStart;
+		cages.detect.analysisStep = analysisStep;
+	}
+	
 	public boolean xmlReadDrosoTrackDefault() {
 		return cages.xmlReadCagesFromFileNoQuestion(getDirectory() + "\\drosotrack.xml", this);
 	}
@@ -477,6 +497,8 @@ public class SequenceCapillaries  {
 		return cages.xmlWriteCagesToFile("drosotrack.xml", getDirectory());
 	}
 	
+	// --------------------------
+
 	public FileTime getImageModifiedTime (int t) {
 		String name = getFileName(t);
 		Path path = Paths.get(name);

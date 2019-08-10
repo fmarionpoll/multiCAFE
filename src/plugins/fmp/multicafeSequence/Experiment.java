@@ -29,7 +29,7 @@ public class Experiment {
 	
 	public boolean openSequenceAndMeasures() {
 		vSequence = new SequenceCapillaries();
-		if (null == vSequence.loadVirtualStackAt(filename))
+		if (null == vSequence.loadSequenceAt(filename))
 			return false;
 		fileTimeImageFirst = vSequence.getImageModifiedTime(0);
 		fileTimeImageLast = vSequence.getImageModifiedTime(vSequence.seq.getSizeT()-1);

@@ -48,17 +48,17 @@ public class SequenceKymos extends SequenceCapillaries  {
 	}
 	
 	public SequenceKymos(String name, IcyBufferedImage image) {
-		super (name, image);
+		super (name, true, image);
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
 	public SequenceKymos (String [] list, String directory) {
-		super(list, directory);
+		super(list, true, directory);
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
 	public SequenceKymos (List<String> listFullPaths) {
-		super(listFullPaths);
+		super(listFullPaths, true);
 		status = EnumStatus.KYMOGRAPH;
 	}
 	

@@ -45,11 +45,11 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	public JButton 					startComputationButton 	= new JButton("Start");
 	public JButton 					stopComputationButton 	= new JButton("Stop");
 	
-	SequenceCapillaries 				vSequence 				= null;
+	SequenceCapillaries 			vSequence 				= null;
 	SequenceKymos					vkymos					= null;
 	private ArrayList <SequenceKymos> kymographArrayList 	= new ArrayList <SequenceKymos> ();
 	 
-	private BuildKymographs 	buildKymographsThread 	= null;
+	private BuildKymographs 		buildKymographsThread 	= null;
 	private Viewer 					viewer1 				= null;
 	private Thread 					thread 					= null;
 	private int						analyzeStep 			= 1; // TODO:  textbox? add checkbox for registration
@@ -178,17 +178,17 @@ private BuildKymographsBatch 	parent0 	= null;
 		String csdummy = oofile.getParentFile().getAbsolutePath();
 		
 		vSequence = new SequenceCapillaries();
-		vSequence.loadInputVirtualFromName(csdummy);
+		vSequence.loadSequenceFromName(csdummy);
 		vSequence.setFileName(csdummy);
 		if (vSequence.status == EnumStatus.FAILURE) {
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			String lastUsedPath = guiPrefs.get("lastUsedPath", "");
-			String path = vSequence.loadInputVirtualStack(lastUsedPath);
+			String path = vSequence.loadSequenceFromDialog(lastUsedPath);
 			if (path.isEmpty())
 				return false;
 			vSequence.setFileName(path);
 			guiPrefs.put("lastUsedPath", path);
-			vSequence.loadInputVirtualFromName(vSequence.getFileName());
+			vSequence.loadSequenceFromName(vSequence.getFileName());
 		}
 		System.out.println("sequence openened: "+ vSequence.getFileName());
 

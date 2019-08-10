@@ -51,7 +51,7 @@ public class ImageTransformTools {
 	
 	public void setSequence (SequenceCapillaries vinputSeq) {
 		vinputSequence = vinputSeq;
-		referenceImage = vinputSequence.loadVImage(0, 0);
+		referenceImage = vinputSequence.getImage(0, 0);
 	}
 		
 	public IcyBufferedImage transformImage (IcyBufferedImage inputImage, TransformOp transformop) {
@@ -88,7 +88,7 @@ public class ImageTransformTools {
 		case REF_PREVIOUS: 
 			int t = vinputSequence.currentFrame;
 			if (t>0){
-				referenceImage = vinputSequence.loadVImage(t-1, 0); 
+				referenceImage = vinputSequence.getImage(t-1, 0); 
 				transformedImage= functionSubtractRef(inputImage);} 
 			break;
 			
@@ -104,7 +104,7 @@ public class ImageTransformTools {
 	}
 	
 	public IcyBufferedImage transformImageFromVirtualSequence (int t, TransformOp transformop) {
-		return transformImage(vinputSequence.loadVImage(t, 0), transformop);
+		return transformImage(vinputSequence.getImage(t, 0), transformop);
 	}
 		
 	// function proposed by François Rebaudo
@@ -378,7 +378,7 @@ public class ImageTransformTools {
 	private IcyBufferedImage functionSubtractRef(IcyBufferedImage sourceImage) {
 		
 		if (referenceImage == null)
-			referenceImage = vinputSequence.loadVImage(0, 0);
+			referenceImage = vinputSequence.getImage(0, 0);
 		
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getSizeX(), sourceImage.getSizeY(),sourceImage.getSizeC(), sourceImage.getDataType_());
 		

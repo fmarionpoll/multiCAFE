@@ -135,7 +135,7 @@ public class DetectFlies  implements Runnable {
 				progress.setMessage( "Processing: " + pos + " % - Elapsed time: " + nbSeconds + " s - Estimated time left: " + timeleft + " s");
 
 				// load next image and compute threshold
-				IcyBufferedImage currentImage = vSequence.loadVImage(t, 0);
+				IcyBufferedImage currentImage = vSequence.getImage(t, 0);
 				vSequence.currentFrame = t;
 				viewer.setPositionT(t);
 				viewer.setTitle(vSequence.getDecoratedImageName(t));
@@ -352,7 +352,7 @@ public class DetectFlies  implements Runnable {
 	private void buildBackgroundImage() {
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		int nfliesRemoved = 0;
-		vSequence.refImage = IcyBufferedImageUtil.getCopy(vSequence.loadVImage(startFrame, 0));
+		vSequence.refImage = IcyBufferedImageUtil.getCopy(vSequence.getImage(startFrame, 0));
 		initParametersForDetection();
 		initialflyRemoved.clear();
 		for (int i=0; i < cages.cageLimitROIList.size(); i++)
@@ -368,7 +368,7 @@ public class DetectFlies  implements Runnable {
 		}
 		
 		for (int t = startFrame +1 ; t <= endFrame && !stopFlag; t  += analyzeStep ) {				
-			IcyBufferedImage currentImage = vSequence.loadVImage(t, 0);
+			IcyBufferedImage currentImage = vSequence.getImage(t, 0);
 			vSequence.currentFrame = t;
 			viewer.setPositionT(t);
 			viewer.setTitle(vSequence.getDecoratedImageName(t));
