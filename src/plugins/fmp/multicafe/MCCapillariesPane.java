@@ -15,7 +15,7 @@ import javax.swing.event.ChangeListener;
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillaries;
-import plugins.fmp.multicafeSequence.SequenceVirtual;
+import plugins.fmp.multicafeSequence.SequenceCapillaries;
 
 
 
@@ -131,7 +131,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 		return flag;
 	}
 	
-	private void setCapillariesInfosToDialogs(SequenceVirtual seq) {
+	private void setCapillariesInfosToDialogs(SequenceCapillaries seq) {
 		unitsTab.setCapillariesInfosToDialog(seq.capillaries);
 		parent0.vSequence.capillaries.createCapillariesFromROIS(seq);
 		buildarrayTab.setCapillariesInfosToDialog(seq.capillaries);

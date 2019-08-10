@@ -91,7 +91,7 @@ public class Capillaries {
 		return true;
 	}
 	
-	private boolean xmlWriteCapillaryParameters (Document doc, SequenceVirtual seq) {
+	private boolean xmlWriteCapillaryParameters (Document doc, SequenceCapillaries seq) {
 		String nodeName = "capillaryTrack";
 		Node node = XMLUtil.addElement(XMLUtil.getRootElement(doc), nodeName);
 		if (node == null)
@@ -131,7 +131,7 @@ public class Capillaries {
 		return true;
 	}
 	
-	public void createCapillariesFromROIS(SequenceVirtual seq) {
+	public void createCapillariesFromROIS(SequenceCapillaries seq) {
 		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
 		capillariesArrayList.clear();
 		for (ROI2D roi:list) {
@@ -147,7 +147,7 @@ public class Capillaries {
 		}
 	}
 	
-	public boolean xmlWriteROIsAndData(String name, SequenceVirtual seq) {
+	public boolean xmlWriteROIsAndData(String name, SequenceCapillaries seq) {
 		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");
 		csFile.toLowerCase();
 		if (!csFile.contains(".xml")) {
@@ -156,7 +156,7 @@ public class Capillaries {
 		return xmlWriteROIsAndDataNoQuestion(csFile, seq);
 	}
 	
-	public boolean xmlWriteROIsAndDataNoQuestion(String csFile, SequenceVirtual seq) {
+	public boolean xmlWriteROIsAndDataNoQuestion(String csFile, SequenceCapillaries seq) {
 		if (csFile != null) {
 			if (capillariesArrayList.size() > 0) {
 				final Document doc = XMLUtil.createDocument(true);
@@ -172,7 +172,7 @@ public class Capillaries {
 		return false;
 	}
 	
-	public boolean xmlWriteROIsAndDataNoFilter(String name, SequenceVirtual seq) {
+	public boolean xmlWriteROIsAndDataNoFilter(String name, SequenceCapillaries seq) {
 		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");
 		csFile.toLowerCase();
 		if (!csFile.contains(".xml")) {
@@ -190,7 +190,7 @@ public class Capillaries {
 		return false;
 	}
 	
-	public boolean xmlReadROIsAndData(SequenceVirtual seq) {
+	public boolean xmlReadROIsAndData(SequenceCapillaries seq) {
 		String [] filedummy = null;
 		String filename = seq.getFileName();
 		File file = new File(filename);
@@ -206,7 +206,7 @@ public class Capillaries {
 		return wasOk;
 	}
 	
-	public boolean xmlReadROIsAndData(String csFileName, SequenceVirtual seq) {
+	public boolean xmlReadROIsAndData(String csFileName, SequenceCapillaries seq) {
 		if (csFileName != null)  {
 			final Document doc = XMLUtil.loadDocument(csFileName);
 			if (doc != null) {

@@ -19,7 +19,7 @@ import icy.roi.ROI2D;
 import icy.system.profile.Chronometer;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Cages;
-import plugins.fmp.multicafeSequence.SequenceVirtual;
+import plugins.fmp.multicafeSequence.SequenceCapillaries;
 import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 import plugins.kernel.roi.roi2d.ROI2DRectangle;
@@ -35,7 +35,7 @@ public class DetectFlies  implements Runnable {
 	private Viewer 						viewer;
 	public Rectangle					rectangleAllCages = null;
 		
-	public SequenceVirtual 				vSequence 		= null;	
+	public SequenceCapillaries 				vSequence 		= null;	
 	public boolean 						stopFlag 		= false;
 	public boolean 						threadRunning 	= false;
 	public boolean						buildBackground	= true;
@@ -43,9 +43,9 @@ public class DetectFlies  implements Runnable {
 	
 	public DetectFlies_Options 			detect 			= new DetectFlies_Options();
 	public Cages 						cages 			= new Cages();
-	public SequenceVirtual 				seqNegative 	= null;
-	public SequenceVirtual 				seqPositive 	= null;
-	public SequenceVirtual				seqReference	= null;
+	public SequenceCapillaries 				seqNegative 	= null;
+	public SequenceCapillaries 				seqPositive 	= null;
+	public SequenceCapillaries				seqReference	= null;
 	public boolean						viewInternalImages = false;
 
 	/*
@@ -264,7 +264,7 @@ public class DetectFlies  implements Runnable {
 			seqNegative.seq.close();
 			seqNegative = null;
 		}
-		seqNegative = new SequenceVirtual();
+		seqNegative = new SequenceCapillaries();
 		Viewer vNegative = new Viewer(seqNegative.seq, false);
 		seqNegative.seq.setName("detectionImage");
 		seqNegative.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(vSequence.refImage, rectangleAllCages));
@@ -289,7 +289,7 @@ public class DetectFlies  implements Runnable {
 			seqPositive.seq.close();
 			seqPositive = null;
 		}
-		seqPositive = new SequenceVirtual();
+		seqPositive = new SequenceCapillaries();
 		Viewer vPositive = new Viewer(seqPositive.seq, false);
 		seqPositive.seq.setName("positiveImage");
 		
@@ -297,7 +297,7 @@ public class DetectFlies  implements Runnable {
 			seqReference.seq.close();
 			seqReference=null;
 		}
-		seqReference = new SequenceVirtual();
+		seqReference = new SequenceCapillaries();
 		Viewer vReference = new Viewer(seqReference.seq, false);
 		seqReference.seq.setName("referenceImage");
 		

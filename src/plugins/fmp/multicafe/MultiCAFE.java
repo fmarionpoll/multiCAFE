@@ -18,14 +18,14 @@ import icy.plugin.abstract_.PluginActionable;
 import icy.sequence.DimensionId;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.fmp.multicafeSequence.SequenceVirtual;
+import plugins.fmp.multicafeSequence.SequenceCapillaries;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener
 {
-	SequenceVirtual 			vSequence 			= null;
+	SequenceCapillaries 			vSequence 			= null;
 	SequenceKymos				vkymos				= null;
 	
 	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 08-August-2019", true, true, true, true);

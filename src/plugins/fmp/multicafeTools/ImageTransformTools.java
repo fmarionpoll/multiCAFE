@@ -5,7 +5,7 @@ import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
-import plugins.fmp.multicafeSequence.SequenceVirtual;
+import plugins.fmp.multicafeSequence.SequenceCapillaries;
 
 public class ImageTransformTools {
 
@@ -34,7 +34,7 @@ public class ImageTransformTools {
 
 	private IcyBufferedImage 	referenceImage = null;
 	private int 				spanDiff = 3;
-	private SequenceVirtual 	vinputSequence 	= null;
+	private SequenceCapillaries 	vinputSequence 	= null;
 	
 	// -------------------------------------
 	public void setReferenceImage(IcyBufferedImage img) {
@@ -49,7 +49,7 @@ public class ImageTransformTools {
 		return spanDiff;
 	}
 	
-	public void setSequence (SequenceVirtual vinputSeq) {
+	public void setSequence (SequenceCapillaries vinputSeq) {
 		vinputSequence = vinputSeq;
 		referenceImage = vinputSequence.loadVImage(0, 0);
 	}

@@ -32,7 +32,7 @@ import loci.formats.FormatException;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.EnumStatus;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.fmp.multicafeSequence.SequenceVirtual;
+import plugins.fmp.multicafeSequence.SequenceCapillaries;
 import plugins.fmp.multicafeTools.BuildKymographs;
 
 
@@ -45,7 +45,7 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	public JButton 					startComputationButton 	= new JButton("Start");
 	public JButton 					stopComputationButton 	= new JButton("Stop");
 	
-	SequenceVirtual 				vSequence 				= null;
+	SequenceCapillaries 				vSequence 				= null;
 	SequenceKymos					vkymos					= null;
 	private ArrayList <SequenceKymos> kymographArrayList 	= new ArrayList <SequenceKymos> ();
 	 
@@ -177,7 +177,7 @@ private BuildKymographsBatch 	parent0 	= null;
 		File oofile = new File(oo);
 		String csdummy = oofile.getParentFile().getAbsolutePath();
 		
-		vSequence = new SequenceVirtual();
+		vSequence = new SequenceCapillaries();
 		vSequence.loadInputVirtualFromName(csdummy);
 		vSequence.setFileName(csdummy);
 		if (vSequence.status == EnumStatus.FAILURE) {

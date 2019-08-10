@@ -8,7 +8,7 @@ import java.nio.file.attribute.FileTime;
 public class Experiment {
 	
 	public String						filename 					= null;
-	public SequenceVirtual 				vSequence 					= null;
+	public SequenceCapillaries 				vSequence 					= null;
 	public SequenceKymos 				vkymos						= null;
 	
 	public FileTime						fileTimeImageFirst;
@@ -28,7 +28,7 @@ public class Experiment {
 	
 	
 	public boolean openSequenceAndMeasures() {
-		vSequence = new SequenceVirtual();
+		vSequence = new SequenceCapillaries();
 		if (null == vSequence.loadVirtualStackAt(filename))
 			return false;
 		fileTimeImageFirst = vSequence.getImageModifiedTime(0);

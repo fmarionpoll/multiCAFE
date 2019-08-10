@@ -16,7 +16,7 @@ import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
-import plugins.fmp.multicafeSequence.SequenceVirtual;
+import plugins.fmp.multicafeSequence.SequenceCapillaries;
 
 
 public class MCSequencePane extends JPanel implements PropertyChangeListener {
@@ -167,7 +167,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	boolean sequenceCreateNew (String filename) {
 		if (parent0.vSequence != null)
 			parent0.vSequence.seq.close();		
-		parent0.vSequence = new SequenceVirtual();
+		parent0.vSequence = new SequenceCapillaries();
 		
 		String path = parent0.vSequence.loadVirtualStackAt(filename);
 		if (path != null) {
@@ -192,7 +192,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
-	private void updateReadingParameters(SequenceVirtual seq) {
+	private void updateReadingParameters(SequenceCapillaries seq) {
 		if (seq.analysisEnd == 99999999) {
 			seq.analysisStart = 0;
 			seq.analysisEnd = seq.seq.getSizeT()-1;

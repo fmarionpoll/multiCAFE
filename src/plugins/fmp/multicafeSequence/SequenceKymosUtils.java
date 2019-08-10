@@ -136,7 +136,6 @@ public class SequenceKymosUtils {
 	
 	public static SequenceKymos openKymoFiles (String directory, Capillaries parent_capillaries) {
 		isRunning = true;
-
 		File dir = new File(directory);
 		File[] files = dir.listFiles((d, name) -> name.endsWith(extension));
 		if (files == null || files.length < 1)
@@ -144,6 +143,7 @@ public class SequenceKymosUtils {
 		
 		ProgressFrame progress = new ProgressFrame("Read kymographs");
 	
+		//TODO: parent_capillaries does not necessarily contains a list of the capillaries (capillarytrack does not)
 		ArrayList <File> filesArray = keepOnlyFilesMatchingCapillaries(files, parent_capillaries);
 		getMaxSizeofTiffFiles(filesArray);
 		adjustImagesToMaxSize(filesArray);
@@ -209,7 +209,7 @@ public class SequenceKymosUtils {
 		isRunning = false;
 	}
 
-	public static void transferSequenceInfoToKymos (SequenceKymos vkymos, SequenceVirtual vSequence) {
+	public static void transferSequenceInfoToKymos (SequenceKymos vkymos, SequenceCapillaries vSequence) {
 		if (vkymos == null || vkymos.capillaries == null)
 			return;		
 		vkymos.capillaries.analysisStart = vSequence.analysisStart; 

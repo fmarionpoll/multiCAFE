@@ -11,13 +11,13 @@ import icy.roi.BooleanMask2D;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
-import plugins.fmp.multicafeSequence.SequenceVirtual;
+import plugins.fmp.multicafeSequence.SequenceCapillaries;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 public class ROI2DUtilities  {
 	
-	public static ArrayList<ROI2D> getListofCagesFromSequence (SequenceVirtual vSequence) {
+	public static ArrayList<ROI2D> getListofCagesFromSequence (SequenceCapillaries vSequence) {
 		if (vSequence == null)
 			 return null;
 		
@@ -43,7 +43,7 @@ public class ROI2DUtilities  {
 		return cageMaskList;
 	}
 	
-	public static void removeROIsFromSequence (SequenceVirtual vSequence, ArrayList<ROI2D> roiList) {
+	public static void removeROIsFromSequence (SequenceCapillaries vSequence, ArrayList<ROI2D> roiList) {
 		for ( ROI2D roi : roiList ) {
 			vSequence.seq.removeROI(roi);
 		}

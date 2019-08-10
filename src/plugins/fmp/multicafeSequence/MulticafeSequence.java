@@ -19,7 +19,7 @@ import plugins.adufour.ezplug.EzVarInteger;
 import plugins.adufour.ezplug.EzVarListener;
 
 public class MulticafeSequence extends EzPlug {
-	public SequenceVirtual vSequence = null;
+	public SequenceCapillaries vSequence = null;
 	ArrayList <SequenceKymos> kymographArrayList	= new ArrayList <SequenceKymos> ();	// list of kymograph sequences
 
 	boolean stopFlag = false;
@@ -163,7 +163,7 @@ public class MulticafeSequence extends EzPlug {
 	public boolean sequenceOpenFile() {
 		if (vSequence != null)
 			vSequence.seq.close();		
-		vSequence = new SequenceVirtual();
+		vSequence = new SequenceCapillaries();
 		
 		String path = vSequence.loadInputVirtualStack(null);
 		if (path != null) {
@@ -175,13 +175,13 @@ public class MulticafeSequence extends EzPlug {
 		return (path != null);
 	}
 	
-	private void initSequenceParameters(SequenceVirtual seq) {
+	private void initSequenceParameters(SequenceCapillaries seq) {
 		seq.analysisStart = 0;
 		seq.analysisEnd = seq.seq.getSizeT()-1;
 		seq.analysisStep = 1;
 	}
 	
-	public void UpdateItemsFromSequence (SequenceVirtual vSequence) {
+	public void UpdateItemsFromSequence (SequenceCapillaries vSequence) {
 		if (vSequence == null)
 			return;
 		end.setValue((int) vSequence.analysisEnd);

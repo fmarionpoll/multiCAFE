@@ -24,7 +24,7 @@ import plugins.fmp.multicafeTools.OverlayThreshold;
 import plugins.fmp.multicafeTools.OverlayTrapMouse;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
-public class SequenceKymos extends SequenceVirtual  {
+public class SequenceKymos extends SequenceCapillaries  {
 	
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;

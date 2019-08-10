@@ -16,7 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceVirtual;
+import plugins.fmp.multicafeSequence.SequenceCapillaries;
 
 public class XLSExport {
 
@@ -186,7 +186,7 @@ public class XLSExport {
 		return name;
 	}
 	
-	protected String getShortenedName(SequenceVirtual seq, int t) {
+	protected String getShortenedName(SequenceCapillaries seq, int t) {
 		return seq.getFileNameNoPath(t);
 		//return cs.substring(cs.lastIndexOf("\\") + 1) ;
 	}

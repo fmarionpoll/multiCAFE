@@ -27,7 +27,7 @@ import plugins.fmp.multicafeTools.StringSorter;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class SequenceVirtual  {
+public class SequenceCapillaries  {
 	public Sequence					seq						= null;
 	List <String>  					listFiles 				= new ArrayList<String>();
 	private String 					csFileName 				= null;
@@ -57,25 +57,25 @@ public class SequenceVirtual  {
 	
 	// ----------------------------------------
 	
-	public SequenceVirtual () {
+	public SequenceCapillaries () {
 		seq = new Sequence();
 	}
 	
-	public SequenceVirtual(String name, IcyBufferedImage image) {
+	public SequenceCapillaries(String name, IcyBufferedImage image) {
 		seq = new Sequence (name, image);
 	}
 
-	public SequenceVirtual (String csFile) {
+	public SequenceCapillaries (String csFile) {
 		seq = Loader.loadSequence(csFile, 0, true);
 		seq.setName(csFile);
 	}
 
-	public SequenceVirtual (String [] list, String directory) {
+	public SequenceCapillaries (String [] list, String directory) {
 		loadSequenceFromListAndDirectory(list, directory);
 		seq.setName(listFiles.get(0));
 	}
 	
-	public SequenceVirtual (List<String> listNames) {
+	public SequenceCapillaries (List<String> listNames) {
 		listFiles.clear();
 		for (String cs: listNames)
 			listFiles.add(cs);
@@ -547,7 +547,7 @@ public class SequenceVirtual  {
 			bBufferON = true;
 		}
 
-		public VImageBufferThread(SequenceVirtual vseq, int depth) {
+		public VImageBufferThread(SequenceCapillaries vseq, int depth) {
 			fenetre = depth;
 			span = fenetre/2 * analysisStep;
 			bBufferON = true;
