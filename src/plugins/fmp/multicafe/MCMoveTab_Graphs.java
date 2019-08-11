@@ -52,7 +52,6 @@ public class MCMoveTab_Graphs extends JPanel {
 		displayResultsButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				displayResultsButton.setEnabled(false);
-				parent0.roisSaveEdits();
 				xyDisplayGraphs();
 				displayResultsButton.setEnabled(true);
 				firePropertyChange("DISPLAY_RESULTS", false, true);
@@ -61,7 +60,7 @@ public class MCMoveTab_Graphs extends JPanel {
 
 	private void xyDisplayGraphs() {
 
-		final Rectangle rectv = parent0.vSequence.seq.getFirstViewer().getBounds();
+		final Rectangle rectv = parent0.seqCamData.seq.getFirstViewer().getBounds();
 		Point ptRelative = new Point(0,30);
 		final int deltay = 230;
 	
@@ -77,7 +76,7 @@ public class MCMoveTab_Graphs extends JPanel {
 		}
 		if (aliveCheckbox.isSelected()) {
 			double threshold = (double) aliveThresholdSpinner.getValue();		
-			for (XYTaSeries posSeries: parent0.vSequence.cages.flyPositionsList) {
+			for (XYTaSeries posSeries: parent0.seqCamData.cages.flyPositionsList) {
 				posSeries.threshold = threshold;
 				posSeries.getDoubleArrayList(EnumListType.isalive);
 			}
@@ -94,7 +93,7 @@ public class MCMoveTab_Graphs extends JPanel {
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		}
-		iChart.displayData(parent0.vSequence.cages.flyPositionsList, option);
+		iChart.displayData(parent0.seqCamData.cages.flyPositionsList, option);
 		iChart.mainChartFrame.toFront();
 		return iChart;
 	}

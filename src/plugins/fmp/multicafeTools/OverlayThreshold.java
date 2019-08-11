@@ -13,7 +13,7 @@ import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.painter.Overlay;
 import icy.sequence.Sequence;
-import plugins.fmp.multicafeSequence.SequenceCapillaries;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class OverlayThreshold extends Overlay
@@ -29,12 +29,12 @@ public class OverlayThreshold extends Overlay
 		super("ThresholdOverlay");	
 	}
 	
-	public OverlayThreshold(SequenceCapillaries seq) {
+	public OverlayThreshold(SequenceCamData seq) {
 		super("ThresholdOverlay");
 		setSequence(seq);
 	}
 	
-	public void setSequence (SequenceCapillaries seq)
+	public void setSequence (SequenceCamData seq)
 	{
 		if (seq == null)
 			return;

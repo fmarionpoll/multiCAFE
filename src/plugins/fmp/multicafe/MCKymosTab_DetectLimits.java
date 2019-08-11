@@ -56,7 +56,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	private void defineActionListeners() {
 		transformForLevelsComboBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				if (parent0.vSequence != null) {
+				if (parent0.seqCamData != null) {
 					kymosDisplayFiltered1();
 					firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
 				}
@@ -73,7 +73,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 				options.firstImage 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
 
 				DetectLimits detect = new DetectLimits();
-				detect.detectCapillaryLevels(options, parent0.vkymos);
+				detect.detectCapillaryLevels(options, parent0.seqKymos);
 				firePropertyChange("KYMO_DETECT_TOP", false, true);
 			}});	
 		
@@ -99,11 +99,11 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	}
 		
 	void kymosDisplayFiltered1() {
-		if (parent0.vkymos == null)
+		if (parent0.seqKymos == null)
 			return;
 		TransformOp transform = (TransformOp) transformForLevelsComboBox.getSelectedItem();
-		for (int t=0; t < parent0.vkymos.seq.getSizeT(); t++) {
-			Capillary cap = parent0.vkymos.capillaries.capillariesArrayList.get(t);
+		for (int t=0; t < parent0.seqKymos.seq.getSizeT(); t++) {
+			Capillary cap = parent0.seqKymos.capillaries.capillariesArrayList.get(t);
 			getInfosFromDialog(cap);		
 		}
 		parent0.kymographsPane.kymosBuildFiltered(0, 1, transform, getSpanDiffTop());

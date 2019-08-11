@@ -2,7 +2,6 @@ package plugins.fmp.multicafeSequence;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -10,14 +9,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import icy.roi.ROI;
-import icy.roi.ROI2D;
 import icy.sequence.edit.ROIAddsSequenceEdit;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.fmp.multicafeTools.MulticafeTools;
-import plugins.kernel.roi.roi2d.ROI2DLine;
-import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Capillaries {
@@ -118,7 +114,7 @@ public class Capillaries {
 		return true;
 	}
 	
-	private boolean xmlWriteCapillaryParameters (Document doc, SequenceCapillaries seq) {
+	private boolean xmlWriteCapillaryParameters (Document doc, SequenceKymos seq) {
 		Node node = XMLUtil.addElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return false;
@@ -156,7 +152,7 @@ public class Capillaries {
 		return true;
 	}
 	
-	public boolean xmlWriteCapillaries(Document doc, SequenceCapillaries seq) {
+	public boolean xmlWriteCapillaries(Document doc, SequenceKymos seq) {
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return false;
@@ -171,48 +167,7 @@ public class Capillaries {
 		return true;
 	}
 
-	public void transferROIStoCapillaries (SequenceCapillaries seq) {
-		List<ROI2D> list = seq.seq.getROI2Ds();
-		List<ROI2D> listROISCap = new ArrayList<ROI2D> ();
-		for (ROI2D roi:list) {
-			if (!(roi instanceof ROI2DShape) || !roi.getName().contains("line")) 
-				continue;
-			if (roi instanceof ROI2DLine || roi instanceof ROI2DPolyLine)
-				listROISCap.add(roi);
-		}
-		Collections.sort(listROISCap, new MulticafeTools.ROI2DNameComparator());
-		
-		if (seq.capillaries == null)
-			seq.capillaries = new Capillaries();
-		
-		// rois not in cap?
-		for (ROI2D roi:listROISCap) {
-			boolean found = false;
-			for (Capillary cap: seq.capillaries.capillariesArrayList) {
-				if (roi.getName().equals(cap.roi.getName())) {
-					found = true;
-					break;
-				}
-			}
-			if (!found)
-				capillariesArrayList.add(new Capillary((ROI2DShape)roi));
-		}
-		
-		// cap with no corresponding roi?
-		for (Capillary cap: seq.capillaries.capillariesArrayList) {
-			boolean found = false;
-			for (ROI2D roi:listROISCap) {
-				if (roi.getName().equals(cap.roi.getName())) {
-					found = true;
-					break;
-				}
-			}
-			if (!found)
-				seq.capillaries.capillariesArrayList.remove(cap);
-		}
-	}
-	
-	public boolean xmlWriteROIsAndData(String name, SequenceCapillaries seq) {
+	public boolean xmlWriteROIsAndData(String name, SequenceKymos seq) {
 		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");
 		csFile.toLowerCase();
 		if (!csFile.contains(".xml")) {
@@ -221,7 +176,7 @@ public class Capillaries {
 		return xmlWriteROIsAndDataNoQuestion(csFile, seq);
 	}
 	
-	public boolean xmlWriteROIsAndDataNoQuestion(String csFile, SequenceCapillaries seq) {
+	public boolean xmlWriteROIsAndDataNoQuestion(String csFile, SequenceKymos seq) {
 		if (csFile != null) {
 			final Document doc = XMLUtil.createDocument(true);
 			if (doc != null) {
@@ -236,7 +191,7 @@ public class Capillaries {
 		return false;
 	}
 	
-	public boolean xmlWriteROIsAndDataNoFilter(String name, SequenceCapillaries seq) {
+	public boolean xmlWriteROIsAndDataNoFilter(String name, SequenceKymos seq) {
 		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");
 		csFile.toLowerCase();
 		if (!csFile.contains(".xml")) {
@@ -254,7 +209,7 @@ public class Capillaries {
 		return false;
 	}
 	
-	public boolean xmlReadROIsAndData(SequenceCapillaries seq) {
+	public boolean xmlReadROIsAndData(SequenceKymos seq) {
 		String [] filedummy = null;
 		String filename = seq.getFileName();
 		File file = new File(filename);
@@ -270,7 +225,7 @@ public class Capillaries {
 		return wasOk;
 	}
 	
-	public boolean xmlReadROIsAndData(String csFileName, SequenceCapillaries seq) {
+	public boolean xmlReadROIsAndData(String csFileName, SequenceKymos seq) {
 		if (csFileName != null)  {
 			final Document doc = XMLUtil.loadDocument(csFileName);
 			if (doc != null) {

@@ -109,8 +109,8 @@ public class XLSExportCapillaryResults extends XLSExport {
 	private List <XLSCapillaryResults> getDataFromRois(Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
 		
 		List <XLSCapillaryResults> resultsList = new ArrayList <XLSCapillaryResults> ();	
-		Capillaries capillaries = exp.vSequence.capillaries;
-		double scalingFactorToPhysicalUnits = capillaries.volume / exp.vSequence.capillaries.pixels;
+		Capillaries capillaries = exp.vkymos.capillaries;
+		double scalingFactorToPhysicalUnits = capillaries.volume / exp.vkymos.capillaries.pixels;
 		
 		for (int t=0; t < capillaries.capillariesArrayList.size(); t++) {
 			Capillary cap = capillaries.capillariesArrayList.get(t);
@@ -165,7 +165,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 		if (exp.previousExperiment != null)
 			lastValue =  getLastValueOfPreviousExp( capName,  exp.previousExperiment, xlsoption, optiont0);
 		
-		Capillaries capillaries = exp.vSequence.capillaries;
+		Capillaries capillaries = exp.vkymos.capillaries;
 		
 		for (int t=0; t< exp.vkymos.seq.getSizeT(); t++) {
 			Capillary cap = capillaries.capillariesArrayList.get(t);			
@@ -189,7 +189,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 			default:
 				return lastValue;
 			}
-			double scalingFactorToPhysicalUnits = exp.vSequence.capillaries.volume / exp.vSequence.capillaries.pixels;
+			double scalingFactorToPhysicalUnits = exp.vkymos.capillaries.volume / exp.vkymos.capillaries.pixels;
 			double valuePreviousSeries = results.data.get(results.data.size()-1) * scalingFactorToPhysicalUnits;
 			lastValue = lastValue + valuePreviousSeries;
 			return lastValue;
@@ -279,7 +279,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, boolean transpose, 
 			String charSeries, List <XLSCapillaryResults> dataArrayList) {
 		
-		double scalingFactorToPhysicalUnits = exp.vSequence.capillaries.volume / exp.vSequence.capillaries.pixels;
+		double scalingFactorToPhysicalUnits = exp.vkymos.capillaries.volume / exp.vkymos.capillaries.pixels;
 		
 		int col0 = pt.x;
 		int row0 = pt.y;

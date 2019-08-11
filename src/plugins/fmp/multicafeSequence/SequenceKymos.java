@@ -22,10 +22,12 @@ import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.OverlayThreshold;
 import plugins.fmp.multicafeTools.OverlayTrapMouse;
+import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
-public class SequenceKymos extends SequenceCapillaries  {
+public class SequenceKymos extends SequenceCamData  {
 	
+	public Capillaries 		capillaries 			= new Capillaries();
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;
 
@@ -35,6 +37,7 @@ public class SequenceKymos extends SequenceCapillaries  {
 	public 	OverlayThreshold thresholdOverlay 		= null;
 	public 	OverlayTrapMouse trapOverlay 			= null;
 	
+
 	public static String KYMOGRAPH_RESULTS = "KymographAnalysis";
 	
 	// -----------------------------------------------------
@@ -59,6 +62,66 @@ public class SequenceKymos extends SequenceCapillaries  {
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
+	public String getDecoratedImageNameFromCapillary(int t) {
+		if (capillaries != null & capillaries.capillariesArrayList.size() > 0)
+			return capillaries.capillariesArrayList.get(t).roi.getName() + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
+		return csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
+	}
+
+	// ----------------------------
+	
+	public void roisSaveEdits() {
+		if (hasChanged) {
+			ROI2DUtilities.validateRois(this);
+			updateMeasures();
+			hasChanged = false;
+		}
+	}
+
+	private void updateMeasures() {
+		// TODO transfer 
+	}
+	
+	// ----------------------------
+	
+	public void updateCapillaries(SequenceCamData seqCam) {
+		SequenceKymosUtils.transferROIStoCapillaries(seqCam, this);
+		storeAnalysisParametersToCapillaries();
+		return;
+	}
+	
+	public void storeAnalysisParametersToCapillaries () {
+		capillaries.analysisStart = analysisStart;
+		capillaries.analysisEnd = analysisEnd;
+		capillaries.analysisStep = analysisStep;
+	}
+	
+	public boolean xmlReadCapillaryTrackDefault() {
+		boolean found = xmlReadCapillaryTrack(getDirectory()+"\\capillarytrack.xml");
+		if (!found)
+			found = capillaries.xmlReadROIsAndData(this);
+		return found;
+	}
+	
+	public boolean xmlReadCapillaryTrack(String filename) {
+		boolean flag = capillaries.xmlReadROIsAndData(filename, this);
+		if (flag) {
+			analysisStart = capillaries.analysisStart;
+			analysisEnd = capillaries.analysisEnd;
+			analysisStep = capillaries.analysisStep;
+		}
+		return flag;
+	}
+	
+	public boolean xmlWriteCapillaryTrackDefault() {
+		boolean flag = false;
+		String name = getDirectory()+ "\\capillarytrack.xml";
+		flag = capillaries.xmlWriteROIsAndDataNoQuestion(name, this);
+		return flag;
+	}
+	
+	// ----------------------------
+
 	public List<Integer> subtractTi(List<Integer > array) {
 		if (array == null)
 			return null;

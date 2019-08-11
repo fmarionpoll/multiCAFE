@@ -11,7 +11,7 @@ import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-
+import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.nchenouard.kymographtracker.Util;
 import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
@@ -154,8 +154,7 @@ public class BuildKymographs implements Runnable
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;
 
-		options.vSequence.capillaries.transferROIStoCapillaries(options.vSequence);
-		vkymos.capillaries.copy(options.vSequence.capillaries);
+		SequenceKymosUtils.transferROIStoCapillaries(options.vSequence, options.vkymos);
 		
 		int nbcapillaries = vkymos.capillaries.capillariesArrayList.size();
 		int masksizeMax = 0;

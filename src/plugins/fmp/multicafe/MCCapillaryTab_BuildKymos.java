@@ -72,15 +72,15 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 	// -----------------------------------
 	
 	private void kymosBuildStart() {
-		if (parent0.vSequence == null) 
+		if (parent0.seqCamData == null) 
 			return;
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
-		parent0.sequencePane.browseTab.getBrowseItems (parent0.vSequence);
-		parent0.vSequence.updateCapillaries();
+		parent0.sequencePane.browseTab.getBrowseItems (parent0.seqCamData);
+		parent0.seqKymos.updateCapillaries(parent0.seqCamData);
 		setStartButton(false);
 		kymosBuildKymographs();	
-		Viewer v = parent0.vSequence.seq.getFirstViewer();
+		Viewer v = parent0.seqCamData.seq.getFirstViewer();
 		v.toFront();
 	}
 	
@@ -106,20 +106,20 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 	
 	private void kymosBuildKymographs() {
 		buildKymographsThread = null;
-		if (parent0.vkymos != null && parent0.vkymos.seq != null) {
-			parent0.vkymos.seq.close();
+		if (parent0.seqKymos != null && parent0.seqKymos.seq != null) {
+			parent0.seqKymos.seq.close();
 		}
-		parent0.vkymos = new SequenceKymos();
+		parent0.seqKymos = new SequenceKymos();
 		
 		// start building kymos in a separate thread
 		buildKymographsThread = new BuildKymographs();
-		buildKymographsThread.options.vSequence 	= parent0.vSequence;
-		buildKymographsThread.options.analyzeStep 	= parent0.vSequence.analysisStep;
-		buildKymographsThread.options.startFrame 	= (int) parent0.vSequence.analysisStart;
-		buildKymographsThread.options.endFrame 		= (int) parent0.vSequence.analysisEnd;
+		buildKymographsThread.options.vSequence 	= parent0.seqCamData;
+		buildKymographsThread.options.analyzeStep 	= parent0.seqCamData.analysisStep;
+		buildKymographsThread.options.startFrame 	= (int) parent0.seqCamData.analysisStart;
+		buildKymographsThread.options.endFrame 		= (int) parent0.seqCamData.analysisEnd;
 		buildKymographsThread.options.diskRadius 	= (int) diskRadiusSpinner.getValue();
 		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected(); 
-		buildKymographsThread.vkymos 				= parent0.vkymos;
+		buildKymographsThread.vkymos 				= parent0.seqKymos;
 
 		thread = new Thread(null, buildKymographsThread, "buildkymos");
 		thread.start();

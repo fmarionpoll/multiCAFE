@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -17,9 +18,10 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
+import icy.roi.ROI2D;
 import icy.type.collection.array.Array1DUtil;
-import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeTools.Line2DPlus;
+import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 
 
@@ -60,17 +62,14 @@ public class MCCapillariesTab_Adjust extends JPanel {
 	// -------------------------------------------------------
 	private void roisCenterLinestoAllCapillaries() {
 		
-		if (parent0.vSequence.capillaries.capillariesArrayList == null || parent0.vSequence.capillaries.capillariesArrayList.size() == 0)
-			return;
-
 		refLineUpper = roiRefLineUpper.getLine();
 		refLineLower = roiRefLineLower.getLine(); 
 		
 		int chan = 0;
 		int jitter = (int) jitterJSpinner.getValue();
-		int t = parent0.vSequence.currentFrame;
-		parent0.vSequence.seq.setPositionT(t);
-		IcyBufferedImage vinputImage = parent0.vSequence.seq.getImage(t, 0, chan) ;
+		int t = parent0.seqCamData.currentFrame;
+		parent0.seqCamData.seq.setPositionT(t);
+		IcyBufferedImage vinputImage = parent0.seqCamData.seq.getImage(t, 0, chan) ;
 		if (vinputImage == null) {
 			System.out.println("An error occurred while reading image: " + t );
 			return;
@@ -79,11 +78,11 @@ public class MCCapillariesTab_Adjust extends JPanel {
 		double [] sourceValues = Array1DUtil.arrayToDoubleArray(vinputImage.getDataXY(0), vinputImage.isSignedDataType());
 		
 		// loop through all lines
-		for (int i=0; i< parent0.vSequence.capillaries.capillariesArrayList.size(); i++) {
-			Capillary cap = parent0.vSequence.capillaries.capillariesArrayList.get(i);
-			if (cap.roi instanceof ROI2DLine) 			{
-				Line2D line = roisCenterLinetoCapillary(sourceValues, xwidth, (ROI2DLine) cap.roi, jitter);
-				((ROI2DLine) cap.roi).setLine(line); 
+		List <ROI2D> capillaryRois = ROI2DUtilities.getListofCapillariesFromSequence(parent0.seqCamData);
+		for (ROI2D roi: capillaryRois) {
+			if (roi instanceof ROI2DLine) {
+				Line2D line = roisCenterLinetoCapillary(sourceValues, xwidth, (ROI2DLine) roi, jitter);
+				((ROI2DLine) roi).setLine(line);
 			}
 		}
 	}
@@ -197,21 +196,19 @@ public class MCCapillariesTab_Adjust extends JPanel {
 	}
 
 	void roisDisplayrefBar(boolean display) {
-		if (parent0.vSequence == null || parent0.vSequence.capillaries.capillariesArrayList.size() == 0)
-			return;
-		
+
 		if (display)
 		{
 			// take as ref the whole image otherwise, we won't see the lines if the use has not defined any capillaries
-			int seqheight = parent0.vSequence.seq.getHeight();
-			int seqwidth = parent0.vSequence.seq.getWidth();
+			int seqheight = parent0.seqCamData.seq.getHeight();
+			int seqwidth = parent0.seqCamData.seq.getWidth();
 			refLineUpper = new Line2D.Double (0, seqheight/3, seqwidth, seqheight/3);
 			refLineLower = new Line2D.Double (0, 2*seqheight/3, seqwidth, 2*seqheight/3);
 			
-			Rectangle extRect = new Rectangle (parent0.vSequence.capillaries.capillariesArrayList.get(0).roi.getBounds());
-			for (Capillary cap: parent0.vSequence.capillaries.capillariesArrayList)
-			{
-				Rectangle rect = cap.roi.getBounds();
+			List <ROI2D> capillaryRois = ROI2DUtilities.getListofCapillariesFromSequence(parent0.seqCamData);
+			Rectangle extRect = new Rectangle (capillaryRois.get(0).getBounds());
+			for (ROI2D roi: capillaryRois) {
+				Rectangle rect = roi.getBounds();
 				extRect.add(rect);
 			}
 			extRect.grow(extRect.width*1/10, -extRect.height*2/10);
@@ -227,13 +224,13 @@ public class MCCapillariesTab_Adjust extends JPanel {
 			roiRefLineLower.setName("refBarLower");
 			roiRefLineLower.setColor(Color.YELLOW);
 			
-			parent0.vSequence.seq.addROI(roiRefLineUpper);
-			parent0.vSequence.seq.addROI(roiRefLineLower);
+			parent0.seqCamData.seq.addROI(roiRefLineUpper);
+			parent0.seqCamData.seq.addROI(roiRefLineLower);
 		}
 		else 
 		{
-			parent0.vSequence.seq.removeROI(roiRefLineUpper);
-			parent0.vSequence.seq.removeROI(roiRefLineLower);
+			parent0.seqCamData.seq.removeROI(roiRefLineUpper);
+			parent0.seqCamData.seq.removeROI(roiRefLineLower);
 		}
 	}
 }

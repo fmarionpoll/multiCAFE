@@ -8,7 +8,7 @@ import java.nio.file.attribute.FileTime;
 public class Experiment {
 	
 	public String						filename 					= null;
-	public SequenceCapillaries 				vSequence 					= null;
+	public SequenceCamData 				vSequence 					= null;
 	public SequenceKymos 				vkymos						= null;
 	
 	public FileTime						fileTimeImageFirst;
@@ -28,7 +28,7 @@ public class Experiment {
 	
 	
 	public boolean openSequenceAndMeasures() {
-		vSequence = new SequenceCapillaries();
+		vSequence = new SequenceCamData();
 		if (null == vSequence.loadSequence(filename))
 			return false;
 		fileTimeImageFirst = vSequence.getImageModifiedTime(0);
@@ -36,12 +36,13 @@ public class Experiment {
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinutes = fileTimeImageLast.toMillis()/60000;
 		
-		if (!vSequence.xmlReadCapillaryTrackDefault()) 
+		String directory = vSequence.getDirectory() +"\\results";
+		
+		if (!vkymos.xmlReadCapillaryTrackDefault()) 
 			return false;
 		
-		boxID = vSequence.capillaries.boxID;
-		String directory = vSequence.getDirectory() +"\\results";
-		vkymos = SequenceKymosUtils.openKymoFiles(directory, vSequence.capillaries);
+		boxID = vkymos.capillaries.boxID;
+		vkymos = SequenceKymosUtils.openKymoFiles(directory, vkymos.capillaries);
 		vSequence.xmlReadDrosoTrackDefault();
 		return true;
 	}

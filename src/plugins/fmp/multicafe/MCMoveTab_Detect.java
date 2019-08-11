@@ -105,9 +105,9 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 		      public void itemStateChanged(ItemEvent e) {
 		    	  if (thresholdedImageCheckBox.isSelected()) {
 						if (ov == null)
-							ov = new OverlayThreshold(parent0.vSequence);
-						if (parent0.vSequence != null)
-							parent0.vSequence.seq.addOverlay(ov);
+							ov = new OverlayThreshold(parent0.seqCamData);
+						if (parent0.seqCamData != null)
+							parent0.seqCamData.seq.addOverlay(ov);
 						updateOverlay();
 					}
 					else
@@ -136,27 +136,27 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	}
 	
 	public void updateOverlay () {
-		if (parent0.vSequence == null)
+		if (parent0.seqCamData == null)
 			return;
 		if (ov == null) 
-			ov = new OverlayThreshold(parent0.vSequence);
+			ov = new OverlayThreshold(parent0.seqCamData);
 		else {
-			parent0.vSequence.seq.removeOverlay(ov);
-			ov.setSequence(parent0.vSequence);
+			parent0.seqCamData.seq.removeOverlay(ov);
+			ov.setSequence(parent0.seqCamData);
 		}
-		parent0.vSequence.seq.addOverlay(ov);	
-		ov.setThresholdSingle(parent0.vSequence.cages.detect.threshold);
+		parent0.seqCamData.seq.addOverlay(ov);	
+		ov.setThresholdSingle(parent0.seqCamData.cages.detect.threshold);
 		ov.painterChanged();
 	}
 	
 	public void removeOverlay() {
-		parent0.vSequence.seq.removeOverlay(ov);
+		parent0.seqCamData.seq.removeOverlay(ov);
 	}
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdSpinner) {
-			parent0.vSequence.cages.detect.threshold = Integer.parseInt(thresholdSpinner.getValue().toString());
+			parent0.seqCamData.cages.detect.threshold = Integer.parseInt(thresholdSpinner.getValue().toString());
 			updateOverlay();
 		}
 	}
@@ -172,7 +172,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 		detect.limitLow 		= (int) objectLowsizeSpinner.getValue();
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
-		trackAllFliesThread.vSequence 	= parent0.vSequence;		
+		trackAllFliesThread.vSequence 	= parent0.seqCamData;		
 		trackAllFliesThread.stopFlag 	= false;
 		trackAllFliesThread.detect 		= detect;
 		trackAllFliesThread.viewInternalImages = viewsCheckBox.isSelected();
@@ -181,11 +181,11 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	}
 	
 	private void cleanPreviousDetections() {
-		parent0.vSequence.cages.flyPositionsList.clear();
-		ArrayList<ROI2D> list = parent0.vSequence.seq.getROI2Ds();
+		parent0.seqCamData.cages.flyPositionsList.clear();
+		ArrayList<ROI2D> list = parent0.seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: list) {
 			if (roi.getName().contains("det")) {
-				parent0.vSequence.seq.removeROI(roi);
+				parent0.seqCamData.seq.removeROI(roi);
 			}
 		}
 	}
@@ -227,25 +227,25 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	}
 	
 	void loadRef () {
-		String path = parent0.vSequence.getDirectory()+ "\\results\\referenceImage.jpg";
+		String path = parent0.seqCamData.getDirectory()+ "\\results\\referenceImage.jpg";
 		File inputfile = new File(path);
 		BufferedImage image = ImageUtil.load(inputfile, true);
 		if (image == null) {
 			System.out.println("image not loaded / not found");
 			return;
 		}
-		parent0.vSequence.refImage=  IcyBufferedImage.createFrom(image);
+		parent0.seqCamData.refImage=  IcyBufferedImage.createFrom(image);
 		if (trackAllFliesThread != null && trackAllFliesThread.rectangleAllCages != null && trackAllFliesThread.seqReference != null)
 			trackAllFliesThread.seqReference.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(
-					parent0.vSequence.refImage, 
+					parent0.seqCamData.refImage, 
 					trackAllFliesThread.rectangleAllCages));
 	}
 	
 	void saveRef () {
 		
-		String path = parent0.vSequence.getDirectory()+ "\\results\\referenceImage.jpg";
+		String path = parent0.seqCamData.getDirectory()+ "\\results\\referenceImage.jpg";
 		File outputfile = new File(path);
-		RenderedImage image = ImageUtil.toRGBImage(parent0.vSequence.refImage);
+		RenderedImage image = ImageUtil.toRGBImage(parent0.seqCamData.refImage);
 		boolean success = ImageUtil.save(image, "jpg", outputfile);
 		if (success)
 			System.out.println("successfully saved background.jpg image");

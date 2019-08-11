@@ -53,7 +53,7 @@ public class Cages {
 		return true;
 	}
 	
-	public boolean xmlReadCagesFromFile(SequenceCapillaries seq) {
+	public boolean xmlReadCagesFromFile(SequenceCamData seq) {
 
 		String [] filedummy = null;
 		String filename = seq.getFileName();
@@ -71,7 +71,7 @@ public class Cages {
 
 	}
 	
-	public boolean xmlReadCagesFromFileNoQuestion(String csFileName, SequenceCapillaries seq) {
+	public boolean xmlReadCagesFromFileNoQuestion(String csFileName, SequenceCamData seq) {
 
 		if (csFileName != null)  {
 			final Document doc = XMLUtil.loadDocument(csFileName);
@@ -174,7 +174,7 @@ public class Cages {
 		return true;
 	}
 	
-	private void replaceROIsInSequence(SequenceCapillaries seq) {
+	private void replaceROIsInSequence(SequenceCamData seq) {
 		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
 		for (ROI2D roi: list) {
 			if (!(roi instanceof ROI2DShape))
@@ -186,7 +186,7 @@ public class Cages {
 		seq.seq.addROIs(cageLimitROIList, true);
 	}
 	
-	public void getCagesFromSequence(SequenceCapillaries seq) {
+	public void getCagesFromSequence(SequenceCamData seq) {
 		cageLimitROIList.clear();
 		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
 		for (ROI2D roi: list) {

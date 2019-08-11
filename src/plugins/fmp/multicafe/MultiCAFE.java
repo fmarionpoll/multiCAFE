@@ -18,17 +18,16 @@ import icy.plugin.abstract_.PluginActionable;
 import icy.sequence.DimensionId;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.fmp.multicafeSequence.SequenceCapillaries;
-import plugins.fmp.multicafeTools.ROI2DUtilities;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener
 {
-	SequenceCapillaries 			vSequence 			= null;
-	SequenceKymos				vkymos				= null;
+	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 11-August-2019", true, true, true, true);
 	
-	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 08-August-2019", true, true, true, true);
+	SequenceCamData 			seqCamData 			= null;
+	SequenceKymos				seqKymos			= null;
 	
 	MCSequencePane 				sequencePane 		= new MCSequencePane();
 	MCCapillariesPane 			capillariesPane 	= new MCCapillariesPane();
@@ -65,24 +64,16 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		mainFrame.addToDesktopPane();
 	}
 
-	void roisSaveEdits() {
-		if (vkymos != null && vkymos.hasChanged) {
-			ROI2DUtilities.validateRois(vkymos.seq);
-			// TODO? vkymos.getArrayListFromRois(EnumArrayListType.cumSum, -1);
-			vkymos.hasChanged = false;
-		}
-	}
-
 	@Override	
 	public void viewerChanged(ViewerEvent event) {
 		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) {
 			if (event.getDim() == DimensionId.T) {
 				Viewer v = event.getSource(); 
 				int id = v.getSequence().getId();
-				if (id == vSequence.seq.getId())
-					v.setTitle(vSequence.getDecoratedImageName(v.getPositionT()));
+				if (id == seqCamData.seq.getId())
+					v.setTitle(seqCamData.getDecoratedImageName(v.getPositionT()));
 				else
-					v.setTitle(vkymos.getDecoratedImageName(v.getPositionT()));
+					v.setTitle(seqKymos.getDecoratedImageName(v.getPositionT()));
 			}
 		}
 	}
@@ -102,19 +93,19 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 					sequencePane.openTab.isCheckedLoadMeasures());
 		}
 		else if (arg0.getPropertyName().equals("CAPILLARIES_OPEN")) {
-		  	sequencePane.browseTab.setBrowseItems(this.vSequence);
+		  	sequencePane.browseTab.setBrowseItems(this.seqCamData);
 		}
 		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
 			capillariesPane.optionsTab.displayUpdateOnSwingThread();
 			capillariesPane.optionsTab.viewKymosCheckBox.setSelected(true);
 		}
 		else if (arg0.getPropertyName().equals("SEQ_SAVEMEAS")) {
-			if (vSequence != null 
-					&& vSequence.capillaries != null 
-					&& vSequence.capillaries.capillariesArrayList.size() > 0) {
-				capillariesPane.getCapillariesInfos(vSequence.capillaries);
-				sequencePane.infosTab.getCapillariesInfosFromDialog(vSequence.capillaries);
-				if (capillariesPane.capold.isChanged(vSequence.capillaries)) {
+			if (seqKymos != null 
+					&& seqKymos.capillaries != null 
+					&& seqKymos.capillaries.capillariesArrayList.size() > 0) {
+				capillariesPane.getCapillariesInfos(seqKymos.capillaries);
+				sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
+				if (capillariesPane.capold.isChanged(seqKymos.capillaries)) {
 					capillariesPane.saveCapillaryTrack();
 					kymographsPane.fileTab.saveKymosMeasures();
 					movePane.saveDefaultCages();
@@ -132,7 +123,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (loadCapillaries) {
 			if( !capillariesPane.loadCapillaryTrack()) 
 				return;
-			sequencePane.browseTab.setBrowseItems(this.vSequence);
+			sequencePane.browseTab.setBrowseItems(this.seqCamData);
 			capillariesPane.unitsTab.visibleCheckBox.setSelected(true);
 		}
 		
@@ -158,8 +149,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 				movePane.loadDefaultCages();
 				movePane.graphicsTab.moveCheckbox.setEnabled(true);
 				movePane.graphicsTab.displayResultsButton.setEnabled(true);
-				if (vSequence.cages != null && vSequence.cages.flyPositionsList.size() > 0) {
-					double threshold = vSequence.cages.flyPositionsList.get(0).threshold;
+				if (seqCamData.cages != null && seqCamData.cages.flyPositionsList.size() > 0) {
+					double threshold = seqCamData.cages.flyPositionsList.get(0).threshold;
 					movePane.graphicsTab.aliveThresholdSpinner.setValue(threshold);
 				}
 				progress.close();

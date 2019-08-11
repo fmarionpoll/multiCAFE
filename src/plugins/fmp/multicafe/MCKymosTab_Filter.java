@@ -40,8 +40,8 @@ public class MCKymosTab_Filter  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				int span = getSpan();
 				int c = 1;
-				for (int t=0; t < parent0.vkymos.seq.getSizeT(); t++) {
-					crossCorrelatePixels(parent0.vkymos, t, span, c);
+				for (int t=0; t < parent0.seqKymos.seq.getSizeT(); t++) {
+					crossCorrelatePixels(parent0.seqKymos, t, span, c);
 				}
 			}});
 	}

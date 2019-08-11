@@ -52,24 +52,24 @@ public class MCKymosTab_File  extends JPanel {
 	}
 
 	boolean loadKymosMeasures() {
-		String directory = parent0.vSequence.getDirectory();
+		String directory = parent0.seqCamData.getDirectory();
 		boolean flag = true;
-		if (parent0.vkymos.seq != null) {
-			parent0.vkymos.seq.removeAllROI();
-			for (Capillary cap: parent0.vkymos.capillaries.capillariesArrayList) {
-				boolean flag2 = parent0.vkymos.loadXMLKymographAnalysis(cap, directory);
+		if (parent0.seqKymos.seq != null) {
+			parent0.seqKymos.seq.removeAllROI();
+			for (Capillary cap: parent0.seqKymos.capillaries.capillariesArrayList) {
+				boolean flag2 = parent0.seqKymos.loadXMLKymographAnalysis(cap, directory);
 				if (flag2 ) {
-					parent0.vkymos.seq.addROIs(cap.getROIsFromMeasures(), false);
+					parent0.seqKymos.seq.addROIs(cap.transferMeasuresToROIs(), false);
 				} else {
 					System.out.println("load measures -> failed or not found in directory: " + directory);
 					flag = false;
 				}					
 			}
-			if (parent0.vkymos.seq.getSizeT() >0 ) {
-				if (parent0.vkymos.analysisEnd > parent0.vkymos.analysisStart) {
-					parent0.vSequence.analysisStart = parent0.vkymos.analysisStart; 
-					parent0.vSequence.analysisEnd 	= parent0.vkymos.analysisEnd;
-					parent0.vSequence.analysisStep 	= parent0.vkymos.analysisStep;
+			if (parent0.seqKymos.seq.getSizeT() >0 ) {
+				if (parent0.seqKymos.analysisEnd > parent0.seqKymos.analysisStart) {
+					parent0.seqCamData.analysisStart = parent0.seqKymos.analysisStart; 
+					parent0.seqCamData.analysisEnd 	= parent0.seqKymos.analysisEnd;
+					parent0.seqCamData.analysisStep 	= parent0.seqKymos.analysisStep;
 				}
 			}
 		}
@@ -77,9 +77,9 @@ public class MCKymosTab_File  extends JPanel {
 	}
 	
 	void saveKymosMeasures() {
-		if (parent0.vkymos != null) {
-			SequenceKymosUtils.transferSequenceInfoToKymos(parent0.vkymos, parent0.vSequence);
-			SequenceKymosUtils.saveKymosMeasures(parent0.vkymos, parent0.vSequence.getDirectory());
+		if (parent0.seqKymos != null) {
+			SequenceKymosUtils.transferSequenceInfoToKymos(parent0.seqKymos, parent0.seqCamData);
+			SequenceKymosUtils.saveKymosMeasures(parent0.seqKymos, parent0.seqCamData.getDirectory());
 		}
 	}
 }

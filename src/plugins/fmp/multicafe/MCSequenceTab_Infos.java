@@ -12,7 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
@@ -26,7 +25,7 @@ public class MCSequenceTab_Infos  extends JPanel {
 	 */
 	private static final long serialVersionUID = 2190848825783418962L;
 
-	private JTextField 			commentTextField	= new JTextField("...");
+	private JComboBox<String>	commentJCombo		= new JComboBox<String>();
 	private JComboBox<String> 	boxID_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	experimentJCombo 	= new JComboBox<String>();
 	private JButton  			previousButton		= new JButton("<");
@@ -58,12 +57,12 @@ public class MCSequenceTab_Infos  extends JPanel {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.add(new JLabel("Comment   ", SwingConstants.RIGHT), BorderLayout.WEST); 
-		panel.add(commentTextField, BorderLayout.CENTER);
+		panel.add(commentJCombo, BorderLayout.CENTER);
 		add( GuiUtil.besidesPanel(panel));
 
 		boxID_JCombo.setEditable(true);
 		experimentJCombo.setEditable(true);	
-		commentTextField.setEditable(true);
+		commentJCombo.setEditable(true);
 		
 		defineActionListeners();
 		
@@ -84,10 +83,10 @@ public class MCSequenceTab_Infos  extends JPanel {
 	
 	private void defineActionListeners() {
 		experimentComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (experimentComboBox.getItemCount() == 0 || parent0.vSequence == null || disableChangeFile)
+			if (experimentComboBox.getItemCount() == 0 || parent0.seqCamData == null || disableChangeFile)
 				return;
 			String newtext = (String) experimentComboBox.getSelectedItem();
-			String oldtext = parent0.vSequence.getFileName();
+			String oldtext = parent0.seqCamData.getFileName();
 			if (!newtext.equals(oldtext)) {
 				firePropertyChange("SEQ_OPEN", false, true);
 			}
@@ -132,14 +131,14 @@ public class MCSequenceTab_Infos  extends JPanel {
 
 		addItem(boxID_JCombo, cap.boxID);
 		addItem(experimentJCombo, cap.experiment);
-		commentTextField.setText(cap.comment);
+		addItem(commentJCombo, cap.comment);
 	}
 
 	void getCapillariesInfosFromDialog(Capillaries cap) {
 
 		cap.boxID = (String) boxID_JCombo.getSelectedItem();
 		cap.experiment = (String) experimentJCombo.getSelectedItem();
-		cap.comment = commentTextField.getText();
+		cap.comment = (String) commentJCombo.getSelectedItem();
 	}
 	
 	private void addItem(JComboBox<String> combo, String text) {

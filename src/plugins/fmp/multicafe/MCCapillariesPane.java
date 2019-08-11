@@ -15,7 +15,7 @@ import javax.swing.event.ChangeListener;
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillaries;
-import plugins.fmp.multicafeSequence.SequenceCapillaries;
+import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 
 
 
@@ -90,14 +90,14 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) {
 			fileTab.loadCapillaryTrack(null);
-		  	setCapillariesInfosToDialogs(parent0.vSequence);
+		  	setCapillariesInfosToDialogs();
 		  	tabsPane.setSelectedIndex(2);
 		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
 		}			  
 		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) {
-			unitsTab.getCapillariesInfos(parent0.vSequence.capillaries);
-			parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.vSequence.capillaries);
-			buildarrayTab.getCapillariesInfos(parent0.vSequence.capillaries);
+			unitsTab.getCapillariesInfos(parent0.seqKymos.capillaries);
+			parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
+			buildarrayTab.getCapillariesInfos(parent0.seqKymos.capillaries);
 			fileTab.saveCapillaryTrack();
 			tabsPane.setSelectedIndex(2);
 		}
@@ -109,7 +109,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 		else if (event.getPropertyName().equals("KYMOS_OPEN") 
 			|| event.getPropertyName().equals("KYMOS_CREATE")) {
 			optionsTab.viewKymosCheckBox.setSelected(true);
-			optionsTab.transferCapillaryNamesToComboBox(parent0.vSequence.capillaries.capillariesArrayList);
+			optionsTab.transferCapillaryNamesToComboBox(parent0.seqKymos.capillaries.capillariesArrayList);
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("KYMOS_OK")) {
@@ -124,23 +124,23 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 //		String path = parent0.vSequence.getDirectory();
 		boolean flag = fileTab.loadCapillaryTrack(null);
 		if (flag) {
-			setCapillariesInfosToDialogs(parent0.vSequence);
-			capold.copy(parent0.vSequence.capillaries);
+			setCapillariesInfosToDialogs();
+			capold.copy(parent0.seqKymos.capillaries);
 		// TODO update measure from to, etc (see "ROIS_OPEN")
 		}
 		return flag;
 	}
 	
-	private void setCapillariesInfosToDialogs(SequenceCapillaries seq) {
-		parent0.vSequence.capillaries.transferROIStoCapillaries(seq);
+	private void setCapillariesInfosToDialogs() {
+		SequenceKymosUtils.transferROIStoCapillaries(parent0.seqCamData, parent0.seqKymos);
 		
-		unitsTab.setCapillariesInfosToDialog(seq.capillaries);
-		buildarrayTab.setCapillariesInfosToDialog(seq.capillaries);
-		parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seq.capillaries);
+		unitsTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
+		buildarrayTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
+		parent0.sequencePane.infosTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
 	}
 	
 	boolean saveCapillaryTrack() {
-		getCapillariesInfos(parent0.vSequence.capillaries);
+		getCapillariesInfos(parent0.seqKymos.capillaries);
 		return fileTab.saveCapillaryTrack();
 	}
 	

@@ -4,6 +4,7 @@ package plugins.fmp.multicafeSequence;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,7 @@ import icy.file.xml.XMLPersistent;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
+import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.EnumListType;
@@ -29,11 +31,13 @@ public class Capillary implements XMLPersistent  {
 	private String						name 					= null;
 	public String 						version 				= null;
 	public ROI2DShape 					roi 					= null;	// the capillary (source)
+	public String						fileName				= null;
+	
 	public DetectLimits_Options 		limitsOptions			= new DetectLimits_Options();
 	public DetectGulps_Options 			gulpsOptions			= new DetectGulps_Options();
 	
-	public List<Point2D> 				ptsTop  				= null; 
-	public List<Point2D> 				ptsBottom 				= null; 
+	public Polyline2D 					ptsTop  				= null; 
+	public Polyline2D 					ptsBottom 				= null; 
 	public Collection<ROI> 				gulpsRois 				= null; 
 	public List<Integer> 				derivedValuesArrayList 	= null; 
 	
@@ -100,6 +104,16 @@ public class Capillary implements XMLPersistent  {
 		return arrayInt;
 	}
 	
+	public List<Integer> getIntegerArrayFromPolyline2D(Polyline2D ptsList) {
+		if (ptsList == null)
+			return null;
+		double [] array = ptsList.ypoints;
+		List<Integer> arrayInt = new ArrayList<Integer>(array.length);
+		for (int i=0; i< array.length; i++)
+			arrayInt.add((int) array[i]);
+		return arrayInt;
+	}
+	
 	public List<Point2D> getPointArrayFromIntegerArray(List<Integer> data) {
 		if (data == null)
 			return null;
@@ -124,11 +138,11 @@ public class Capillary implements XMLPersistent  {
 			yes= (gulpsRois != null && gulpsRois.size() > 0);
 			break;
 		case bottomLevel:
-			yes= (ptsBottom != null && ptsBottom.size() > 0);
+			yes= (ptsBottom != null && ptsBottom.npoints > 0);
 			break;
 		case topLevel:
 		default:
-			yes= (ptsTop != null && ptsTop.size() > 0);
+			yes= (ptsTop != null && ptsTop.npoints > 0);
 			break;
 		}
 		return yes;
@@ -144,26 +158,26 @@ public class Capillary implements XMLPersistent  {
 			datai = getCumSumFromRoisArray(gulpsRois);
 			break;
 		case bottomLevel:
-			datai = getIntegerArrayFromPointArray(ptsBottom);
+			datai = getIntegerArrayFromPolyline2D(ptsBottom);
 			break;
 		case topLevel:
 		default:
-			datai = getIntegerArrayFromPointArray(ptsTop);
+			datai = getIntegerArrayFromPolyline2D(ptsTop);
 			break;
 		}
 		return datai;
 	}
 	
-	public List<ROI> getROIsFromMeasures() {
+	public List<ROI> transferMeasuresToROIs() {
 		List<ROI> listrois = new ArrayList<ROI> ();
 		if (ptsTop != null) 
-			listrois.add(getPtListToROI(ID_TOPLEVEL, ptsTop));
+			listrois.add(transferPolyline2DToROI(ID_TOPLEVEL, ptsTop));
 		if (ptsBottom != null) 
-			listrois.add(getPtListToROI(ID_BOTTOMLEVEL, ptsBottom));
+			listrois.add(transferPolyline2DToROI(ID_BOTTOMLEVEL, ptsBottom));
 		if (gulpsRois != null)	
 			listrois.addAll(gulpsRois);
 		if (derivedValuesArrayList != null) {
-			ROI2D derivativeRoi = getPtListToROI(ID_DERIVATIVE, getPointArrayFromIntegerArray(derivedValuesArrayList));
+			ROI2D derivativeRoi = transferPtListToROI(ID_DERIVATIVE, getPointArrayFromIntegerArray(derivedValuesArrayList));
 			derivativeRoi.setColor(Color.yellow);
 			derivativeRoi.setStroke(1.);
 			listrois.add(derivativeRoi);
@@ -171,10 +185,23 @@ public class Capillary implements XMLPersistent  {
 		return listrois;
 	}
 	
+	public void transferROIsToMeasures(List<ROI> listRois) {	
+		gulpsRois.clear();
+		for (ROI roi: listRois) {		
+			String roiname = roi.getName();
+			if (roiname .contains ("toplevel") && roi instanceof ROI2DPolyLine )
+				ptsTop = ((ROI2DPolyLine)roi).getPolyline2D();
+			else if (roiname .contains("bottomlevel")  && roi instanceof ROI2DPolyLine )
+				ptsBottom = ((ROI2DPolyLine)roi).getPolyline2D(); 	
+			else if (roiname .contains("gulp"))	
+				gulpsRois.add(roi);
+		}
+	}
+	
 	// ---------------------
 	
-	private ROI2D getPtListToROI(String name, List<Point2D> ptslist) {
-		ROI2D roi = ROI2DUtilities.transferPointArrayToRoi(ptslist);
+	private ROI2D transferPolyline2DToROI(String name, Polyline2D ptslist) {
+		ROI2D roi = new ROI2DPolyLine(ptslist); 
 		if (indexImage >= 0) {
 			roi.setT(indexImage);
 			roi.setName(getLast2ofCapillaryName()+"_"+name);
@@ -183,6 +210,18 @@ public class Capillary implements XMLPersistent  {
 			roi.setName(name);
 		return roi;
 	}
+	
+	private ROI2D transferPtListToROI(String name, List<Point2D> pointsList) {
+		ROI2D roi = new ROI2DPolyLine(pointsList); 
+		if (indexImage >= 0) {
+			roi.setT(indexImage);
+			roi.setName(getLast2ofCapillaryName()+"_"+name);
+		}
+		else
+			roi.setName(name);
+		return roi;
+	}
+	
 
 	private List<Integer> getCumSumFromRoisArray(Collection<ROI> gulpsRois) {
 	

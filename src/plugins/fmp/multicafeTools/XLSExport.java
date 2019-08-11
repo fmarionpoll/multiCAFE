@@ -16,7 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceCapillaries;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 
 public class XLSExport {
 
@@ -43,13 +43,13 @@ public class XLSExport {
 		int colseries = pt.x;
 		
 		Path path = Paths.get(exp.vSequence.getFileName());
-		String boxID = exp.vSequence.capillaries.boxID;
-		String experiment = exp.vSequence.capillaries.experiment;
-		String comment = exp.vSequence.capillaries.comment;
-		String stimulusL = exp.vSequence.capillaries.stimulusL;
-		String stimulusR = exp.vSequence.capillaries.stimulusR;
-		String concentrationL = exp.vSequence.capillaries.concentrationL;
-		String concentrationR = exp.vSequence.capillaries.concentrationR;
+		String boxID = exp.vkymos.capillaries.boxID;
+		String experiment = exp.vkymos.capillaries.experiment;
+		String comment = exp.vkymos.capillaries.comment;
+		String stimulusL = exp.vkymos.capillaries.stimulusL;
+		String stimulusR = exp.vkymos.capillaries.stimulusR;
+		String concentrationL = exp.vkymos.capillaries.concentrationL;
+		String concentrationR = exp.vkymos.capillaries.concentrationR;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String date = df.format(exp.fileTimeImageFirst.toMillis());	
 		String name0 = path.toString();
@@ -186,7 +186,7 @@ public class XLSExport {
 		return name;
 	}
 	
-	protected String getShortenedName(SequenceCapillaries seq, int t) {
+	protected String getShortenedName(SequenceCamData seq, int t) {
 		return seq.getFileNameNoPath(t);
 		//return cs.substring(cs.lastIndexOf("\\") + 1) ;
 	}

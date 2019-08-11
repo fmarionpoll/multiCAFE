@@ -50,36 +50,36 @@ public class MCKymosTab_Graphs extends JPanel {
 		displayResultsButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				displayResultsButton.setEnabled(false);
-				parent0.roisSaveEdits();
+				parent0.seqKymos.roisSaveEdits();
 				xyDisplayGraphs();
 				displayResultsButton.setEnabled(true);
 			}});
 	}
 	
 	void xyDisplayGraphs() {
-		final Rectangle rectv = parent0.vSequence.seq.getFirstViewer().getBounds();
+		final Rectangle rectv = parent0.seqCamData.seq.getFirstViewer().getBounds();
 		Point ptRelative = new Point(0,rectv.height);
 		final int deltay = 230;
 
-		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(parent0.vkymos, EnumListType.topAndBottom)) {
+		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(parent0.seqKymos, EnumListType.topAndBottom)) {
 			topandbottomChart = xyDisplayGraphsItem("top + bottom levels", 
 					EnumListType.topAndBottom, 
 					topandbottomChart, rectv, ptRelative);
 			ptRelative.y += deltay;
 		}
-		if (deltaCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.vkymos, EnumListType.topLevelDelta)) {
+		if (deltaCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.seqKymos, EnumListType.topLevelDelta)) {
 			deltaChart = xyDisplayGraphsItem("top delta t -(t-1)", 
 					EnumListType.topLevelDelta, 
 					deltaChart, rectv, ptRelative);
 			ptRelative.y += deltay;
 		}
-		if (derivativeCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.vkymos, EnumListType.derivedValues)) {
+		if (derivativeCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.seqKymos, EnumListType.derivedValues)) {
 			derivativeChart = xyDisplayGraphsItem("Derivative", 
 					EnumListType.derivedValues, 
 					derivativeChart, rectv, ptRelative);
 			ptRelative.y += deltay; 
 		}
-		if (consumptionCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.vkymos, EnumListType.cumSum)) {
+		if (consumptionCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.seqKymos, EnumListType.cumSum)) {
 			sumgulpsChart = xyDisplayGraphsItem("Cumulated gulps", 
 					EnumListType.cumSum, 
 					sumgulpsChart, rectv, ptRelative);
@@ -89,13 +89,13 @@ public class MCKymosTab_Graphs extends JPanel {
 
 	private XYMultiChart xyDisplayGraphsItem(String title, EnumListType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) {	
 		if (iChart != null && iChart.mainChartPanel.isValid()) {
-			iChart.fetchNewData(parent0.vkymos, option);
+			iChart.fetchNewData(parent0.seqKymos, option);
 		}
 		else {
 			iChart = new XYMultiChart();
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
-			iChart.displayData(parent0.vkymos, option);
+			iChart.displayData(parent0.seqKymos, option);
 		}
 		iChart.mainChartFrame.toFront();
 		return iChart;

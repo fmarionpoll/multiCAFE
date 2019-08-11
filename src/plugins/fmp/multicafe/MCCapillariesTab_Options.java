@@ -123,7 +123,7 @@ public class MCCapillariesTab_Options extends JPanel {
 	}
 	
 	private void roisDisplay(String filter, boolean visible) {
-		ArrayList<Viewer>vList =  parent0.vkymos.seq.getViewers();
+		ArrayList<Viewer>vList =  parent0.seqKymos.seq.getViewers();
 		IcyCanvas canvas = vList.get(0).getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
 		if (layers != null) {	
@@ -139,22 +139,22 @@ public class MCCapillariesTab_Options extends JPanel {
 	}
 
 	void displayON() {
-		if (parent0.vkymos == null ||parent0.vkymos.seq == null || parent0.vkymos.seq.getSizeT() < 1) {
+		if (parent0.seqKymos == null ||parent0.seqKymos.seq == null || parent0.seqKymos.seq.getSizeT() < 1) {
 			System.out.println("displayON() skipped");
 			return;
 		}
 		
-		ArrayList<Viewer>vList = parent0.vkymos.seq.getViewers();
+		ArrayList<Viewer>vList = parent0.seqKymos.seq.getViewers();
 		if (vList.size() == 0) {
-			Rectangle rectMaster = parent0.vSequence.seq.getFirstViewer().getBounds();
+			Rectangle rectMaster = parent0.seqCamData.seq.getFirstViewer().getBounds();
 			int deltax = 5 + rectMaster.width;
 			int deltay = 5;
 
-			Viewer v = new Viewer(parent0.vkymos.seq, true);
+			Viewer v = new Viewer(parent0.seqKymos.seq, true);
 			v.addListener(parent0);
 			Rectangle rectDataView = v.getBounds();
 			rectDataView.height = rectMaster.height;
-			IcyBufferedImage img = parent0.vkymos.seq.getFirstImage();
+			IcyBufferedImage img = parent0.seqKymos.seq.getFirstImage();
 			rectDataView.width = 100;
 			if (img != null)
 				rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
@@ -166,9 +166,9 @@ public class MCCapillariesTab_Options extends JPanel {
 	}
 	
 	void displayOFF() {
-		if (parent0.vkymos == null) 
+		if (parent0.seqKymos == null) 
 			return;
-		ArrayList<Viewer>vList =  parent0.vkymos.seq.getViewers();
+		ArrayList<Viewer>vList =  parent0.seqKymos.seq.getViewers();
 		if (vList.size() > 0) {
 			for (Viewer v: vList) 
 				v.close();
@@ -185,7 +185,7 @@ public class MCCapillariesTab_Options extends JPanel {
 	}
 	
 	void displayUpdate() {	
-		if (parent0.vkymos == null || parent0.vkymos.seq== null || kymographNamesComboBox.getItemCount() < 1)
+		if (parent0.seqKymos == null || parent0.seqKymos.seq== null || kymographNamesComboBox.getItemCount() < 1)
 			return;	
 		displayON();
 		int itemupfront = kymographNamesComboBox.getSelectedIndex();
@@ -211,12 +211,12 @@ public class MCCapillariesTab_Options extends JPanel {
 		int icurrent = kymographNamesComboBox.getSelectedIndex();
 		if (isel < 0)
 			isel = 0;
-		if (isel >= parent0.vkymos.seq.getSizeT() )
-			isel = parent0.vkymos.seq.getSizeT() -1;
+		if (isel >= parent0.seqKymos.seq.getSizeT() )
+			isel = parent0.seqKymos.seq.getSizeT() -1;
 		if (icurrent != isel) {
 			kymographNamesComboBox.setSelectedIndex(isel);
 		}
-		parent0.vkymos.seq.getFirstViewer().setPositionT(isel);
+		parent0.seqKymos.seq.getFirstViewer().setPositionT(isel);
 	}
 
 }

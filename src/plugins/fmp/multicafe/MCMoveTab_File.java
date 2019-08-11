@@ -42,14 +42,14 @@ public class MCMoveTab_File extends JPanel {
 	
 		openROIsButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				parent0.vSequence.cages.xmlReadCagesFromFile(parent0.vSequence);
+				parent0.seqCamData.cages.xmlReadCagesFromFile(parent0.seqCamData);
 				firePropertyChange("LOAD_DATA", false, true);	
 			}});
 		
 		saveROIsButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				parent0.vSequence.storeAnalysisParametersToCages();
-				parent0.vSequence.xmlWriteDrosoTrackDefault();
+				parent0.seqCamData.storeAnalysisParametersToCages();
+				parent0.seqCamData.xmlWriteDrosoTrackDefault();
 			}});
 	}
 
@@ -57,14 +57,14 @@ public class MCMoveTab_File extends JPanel {
 		
 		boolean flag = false;
 		if (csFileName == null)
-			flag = parent0.vSequence.xmlReadDrosoTrackDefault();
+			flag = parent0.seqCamData.xmlReadDrosoTrackDefault();
 		else
-			flag = parent0.vSequence.xmlReadDrosoTrack(csFileName);
+			flag = parent0.seqCamData.xmlReadDrosoTrack(csFileName);
 		return flag;
 	}
 	
 	boolean cageRoisSave() {
 		
-		return parent0.vSequence.cages.xmlWriteCagesToFile("drosotrack.xml", parent0.vSequence.getDirectory());
+		return parent0.seqCamData.cages.xmlWriteCagesToFile("drosotrack.xml", parent0.seqCamData.getDirectory());
 	}
 }

@@ -32,7 +32,8 @@ import loci.formats.FormatException;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.EnumStatus;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.fmp.multicafeSequence.SequenceCapillaries;
+import plugins.fmp.multicafeSequence.SequenceKymosUtils;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.BuildKymographs;
 
 
@@ -45,7 +46,7 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	public JButton 					startComputationButton 	= new JButton("Start");
 	public JButton 					stopComputationButton 	= new JButton("Stop");
 	
-	SequenceCapillaries 			vSequence 				= null;
+	SequenceCamData 				vSequence 				= null;
 	SequenceKymos					vkymos					= null;
 	private ArrayList <SequenceKymos> kymographArrayList 	= new ArrayList <SequenceKymos> ();
 	 
@@ -113,7 +114,7 @@ private BuildKymographsBatch 	parent0 	= null;
 				seq.seq.close();
 		}
 		kymographArrayList.clear();
-		for (Capillary cap:vSequence.capillaries.capillariesArrayList) {
+		for (Capillary cap:vkymos.capillaries.capillariesArrayList) {
 			SequenceKymos kymographSeq = new SequenceKymos();	
 			kymographSeq.seq.setName(cap.getName());
 			kymographArrayList.add(kymographSeq);
@@ -177,7 +178,7 @@ private BuildKymographsBatch 	parent0 	= null;
 		File oofile = new File(oo);
 		String csdummy = oofile.getParentFile().getAbsolutePath();
 		
-		vSequence = new SequenceCapillaries();
+		vSequence = new SequenceCamData();
 		vSequence.loadSequence(csdummy);
 		vSequence.setFileName(csdummy);
 		if (vSequence.status == EnumStatus.FAILURE) {
@@ -199,9 +200,9 @@ private BuildKymographsBatch 	parent0 	= null;
 		System.out.println("read capillaries info for: "+ oo);
 		vSequence.seq.removeAllROI();
 		String path = vSequence.getDirectory();
-		boolean flag = vSequence.xmlReadCapillaryTrack(path+"\\capillarytrack.xml");
+		boolean flag = vkymos.xmlReadCapillaryTrack(path+"\\capillarytrack.xml");
 		if (flag) 
-			vSequence.capillaries.transferROIStoCapillaries(vSequence);
+			SequenceKymosUtils.transferROIStoCapillaries(vSequence, vkymos);
 	}
 
 	private void initInputSequenceViewer () {
@@ -261,7 +262,7 @@ private BuildKymographsBatch 	parent0 	= null;
 
 		// save capillarytrack.xml
 		String name = vSequence.getDirectory()+ "\\capillarytrack.xml";
-		vSequence.capillaries.xmlWriteROIsAndDataNoQuestion(name, vSequence);
+		vkymos.capillaries.xmlWriteROIsAndDataNoQuestion(name, vkymos);
 		
 		for (SequenceKymos seq: kymographArrayList) {
 			progress.setMessage( "Save kymograph file : " + seq.seq.getName());
@@ -287,7 +288,6 @@ private BuildKymographsBatch 	parent0 	= null;
 		for (SequenceKymos seq:kymographArrayList)
 			seq.seq.close();
 		kymographArrayList.clear();
-		vSequence.capillaries.capillariesArrayList.clear();
 		vSequence.seq.close();
 	}
 

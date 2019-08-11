@@ -212,7 +212,6 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
     			firePropertyChange("SEARCH_CLOSED", false, true);
             }
         });
-		
 	}
 		
 	private void addNamesToSelectedList(List<String> stringList) {
@@ -245,8 +244,6 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 	
 		try {
 			Files.walk(Paths.get(lastUsedPathString))
-//			.collect(Collectors.toList())
-//			.parallelStream()
 			.filter(Files::isRegularFile)		
 			.forEach((f)->{
 			    String fileName = f.toString();

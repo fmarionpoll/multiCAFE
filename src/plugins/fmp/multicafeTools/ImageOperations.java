@@ -4,22 +4,22 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 import icy.image.IcyBufferedImage;
-import plugins.fmp.multicafeSequence.SequenceCapillaries;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class ImageOperations {
 	
-	private SequenceCapillaries 		seq 		= null;
+	private SequenceCamData 		seq 		= null;
 	private ImageOperationsStruct 	opTransf 	= new ImageOperationsStruct();
 	private ImageOperationsStruct 	opThresh 	= new ImageOperationsStruct();
 	private ImageTransformTools 	imgTransf 	= new ImageTransformTools();
 	private ImageThresholdTools 	imgThresh 	= new ImageThresholdTools();
 	
-	public ImageOperations (SequenceCapillaries seq) {
+	public ImageOperations (SequenceCamData seq) {
 		setSequence(seq);
 	}
 	
-	public void setSequence(SequenceCapillaries seq) {
+	public void setSequence(SequenceCamData seq) {
 		this.seq = seq;
 		imgTransf.setSequence(seq);
 	}

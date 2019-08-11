@@ -70,7 +70,7 @@ public class MCMoveTab_BuildROIs extends JPanel {
 	}
 	
 	void updateFromSequence() {
-		int nrois = parent0.vSequence.cages.cageLimitROIList.size();	
+		int nrois = parent0.seqCamData.cages.cageLimitROIList.size();	
 		if (nrois > 0) {
 			nbcagesTextField.setValue(nrois);
 			nbcages = nrois;
@@ -80,20 +80,20 @@ public class MCMoveTab_BuildROIs extends JPanel {
 	private void create2DPolygon() {
 		
 		final String dummyname = "perimeter_enclosing_capillaries";
-		ArrayList<ROI2D> listRois = parent0.vSequence.seq.getROI2Ds();
+		ArrayList<ROI2D> listRois = parent0.seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName() .equals(dummyname))
 				return;
 		}
 
-		Rectangle rect = parent0.vSequence.seq.getBounds2D();
+		Rectangle rect = parent0.seqCamData.seq.getBounds2D();
 		List<Point2D> points = new ArrayList<Point2D>();
 		int rectleft = rect.x + rect.width /6;
 		int rectright = rect.x + rect.width*5 /6;
-		if (parent0.vSequence.capillaries.capillariesArrayList.size() > 0) {
-			Rectangle bound0 = parent0.vSequence.capillaries.capillariesArrayList.get(0).roi.getBounds();
-			int last = parent0.vSequence.capillaries.capillariesArrayList.size() - 1;
-			Rectangle bound1 = parent0.vSequence.capillaries.capillariesArrayList.get(last).roi.getBounds();
+		if (parent0.seqKymos.capillaries.capillariesArrayList.size() > 0) {
+			Rectangle bound0 = parent0.seqKymos.capillaries.capillariesArrayList.get(0).roi.getBounds();
+			int last = parent0.seqKymos.capillaries.capillariesArrayList.size() - 1;
+			Rectangle bound1 = parent0.seqKymos.capillaries.capillariesArrayList.get(last).roi.getBounds();
 			rectleft = bound0.x;
 			rectright = bound1.x + bound1.width;
 			int diff = (rectright - rectleft)*2/60;
@@ -108,8 +108,8 @@ public class MCMoveTab_BuildROIs extends JPanel {
 		points.add(new Point2D.Double(rectleft, rect.y + rect.height - 4 ));
 		ROI2DPolygon roi = new ROI2DPolygon(points);
 		roi.setName(dummyname);
-		parent0.vSequence.seq.addROI(roi);
-		parent0.vSequence.seq.setSelectedROI(roi);
+		parent0.seqCamData.seq.addROI(roi);
+		parent0.seqCamData.seq.setSelectedROI(roi);
 	}
 		
 	private void addROISCreatedFromSelectedPolygon() {
@@ -120,19 +120,19 @@ public class MCMoveTab_BuildROIs extends JPanel {
 			width_interval = (int) width_intervalTextField.getValue();
 		}catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
 
-		ROI2D roi = parent0.vSequence.seq.getSelectedROI2D();
+		ROI2D roi = parent0.seqCamData.seq.getSelectedROI2D();
 		if ( ! ( roi instanceof ROI2DPolygon ) ) {
 			new AnnounceFrame("The frame for the cages must be a ROI2D POLYGON");
 			return;
 		}
 		Polygon roiPolygon = MulticafeTools.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
-		parent0.vSequence.seq.removeROI(roi);
+		parent0.seqCamData.seq.removeROI(roi);
 
 		// generate cage frames
 		int span = nbcages*width_cage + (nbcages-1)*width_interval;
 		String cageRoot = "cage";
 		int iRoot = -1;
-		for (ROI iRoi: parent0.vSequence.seq.getROIs()) {
+		for (ROI iRoi: parent0.seqCamData.seq.getROIs()) {
 			if (iRoi.getName().contains(cageRoot)) {
 				String left = iRoi.getName().substring(4);
 				int item = Integer.parseInt(left);
@@ -169,10 +169,10 @@ public class MCMoveTab_BuildROIs extends JPanel {
 			ROI2DPolygon roiP = new ROI2DPolygon (points);
 			roiP.setName(cageRoot+String.format("%03d", iRoot));
 			iRoot++;
-			parent0.vSequence.seq.addROI(roiP);
+			parent0.seqCamData.seq.addROI(roiP);
 		}
 
-		parent0.vSequence.cages.getCagesFromSequence(parent0.vSequence);
+		parent0.seqCamData.cages.getCagesFromSequence(parent0.seqCamData);
 	}
 
 }

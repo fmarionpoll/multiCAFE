@@ -86,9 +86,9 @@ public class MCKymosTab_DetectGulps extends JPanel {
 		
 		detectGulpsThresholdSpinner.addChangeListener(new ChangeListener() {
 			@Override public void stateChanged(ChangeEvent arg0) {
-				if (parent0.vkymos != null && viewGulpsThresholdCheckBox.isSelected()) {
+				if (parent0.seqKymos != null && viewGulpsThresholdCheckBox.isSelected()) {
 					int thresholdValue = (int) detectGulpsThresholdSpinner.getValue();
-					SequenceKymos seq = parent0.vkymos; 
+					SequenceKymos seq = parent0.seqKymos; 
 					roiDisplayThreshold(true, seq, thresholdValue);
 					if (detectAllGulpsCheckBox.isSelected())
 						roisDisplayAllThresholds(viewGulpsThresholdCheckBox.isSelected());
@@ -99,11 +99,11 @@ public class MCKymosTab_DetectGulps extends JPanel {
 	// get/set
 		
 	void kymosDisplayFiltered2() {
-		if (parent0.vkymos == null)
+		if (parent0.seqKymos == null)
 			return;
  
-		for (int t=0; t < parent0.vkymos.seq.getSizeT(); t++) {
-			Capillary cap = parent0.vkymos.capillaries.capillariesArrayList.get(t);
+		for (int t=0; t < parent0.seqKymos.seq.getSizeT(); t++) {
+			Capillary cap = parent0.seqKymos.capillaries.capillariesArrayList.get(t);
 			getInfosFromDialog(cap);		
 		}
 		
@@ -120,7 +120,7 @@ public class MCKymosTab_DetectGulps extends JPanel {
 		options.computeDiffnAndDetect	= detectGulps;
 		
 		DetectGulps detect = new DetectGulps();
-		detect.detectGulps(options, parent0.vkymos);
+		detect.detectGulps(options, parent0.seqKymos);
 	}
 
 	
@@ -139,11 +139,11 @@ public class MCKymosTab_DetectGulps extends JPanel {
 	}
 	
 	void roisDisplayAllThresholds(boolean display) {
-		if (parent0.vkymos == null)
+		if (parent0.seqKymos == null)
 			return;
 		ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
 				final int thresholdValue = (int) detectGulpsThresholdSpinner.getValue();
-				roiDisplayThreshold(display, parent0.vkymos, thresholdValue);
+				roiDisplayThreshold(display, parent0.seqKymos, thresholdValue);
 			}});
 	}
 	

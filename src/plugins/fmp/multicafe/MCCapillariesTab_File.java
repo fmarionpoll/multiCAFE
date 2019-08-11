@@ -62,12 +62,12 @@ public class MCCapillariesTab_File extends JPanel {
 			firePropertyChange("CAP_ROIS_SAVE", false, true);
 		}});	
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			String directory = parent0.vSequence.getDirectory()+ "\\results";
-			parent0.vkymos = SequenceKymosUtils.openKymoFiles(directory, parent0.vSequence.capillaries); 
+			String directory = parent0.seqCamData.getDirectory()+ "\\results";
+			parent0.seqKymos = SequenceKymosUtils.openKymoFiles(directory, parent0.seqKymos.capillaries); 
 			firePropertyChange("KYMOS_OPEN", false, true);	
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			String path = parent0.vSequence.getDirectory() + "\\results";
+			String path = parent0.seqCamData.getDirectory() + "\\results";
 			saveFiles(path);
 			firePropertyChange("KYMOS_SAVE", false, true);
 		}});
@@ -76,21 +76,21 @@ public class MCCapillariesTab_File extends JPanel {
 	boolean loadCapillaryTrack(String csFileName) {	
 		boolean flag = false;
 		if (csFileName == null)
-			flag = parent0.vSequence.xmlReadCapillaryTrackDefault();
+			flag = parent0.seqKymos.xmlReadCapillaryTrackDefault();
 		else
-			flag = parent0.vSequence.xmlReadCapillaryTrack(csFileName);
+			flag = parent0.seqKymos.xmlReadCapillaryTrack(csFileName);
 		return flag;
 	}
 	
 	boolean saveCapillaryTrack() {
-		parent0.sequencePane.browseTab.getBrowseItems (parent0.vSequence);
-		return parent0.vSequence.xmlWriteCapillaryTrackDefault();
+		parent0.sequencePane.browseTab.getBrowseItems (parent0.seqCamData);
+		return parent0.seqKymos.xmlWriteCapillaryTrackDefault();
 	}
 
 	void saveFiles(String directory) {
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
 		if (directory == null) {
-			directory = parent0.vSequence.getDirectory()+ "\\results";
+			directory = parent0.seqCamData.getDirectory()+ "\\results";
 			}
 		try {
 			Files.createDirectories(Paths.get(directory));
@@ -104,12 +104,12 @@ public class MCCapillariesTab_File extends JPanel {
 		int returnedval = f.showSaveDialog(null);
 		if (returnedval == JFileChooser.APPROVE_OPTION) { 
 			outputpath = f.getSelectedFile().getAbsolutePath();		
-			for (int i = 0; i < parent0.vkymos.seq.getSizeT(); i++) {
-				Capillary cap = parent0.vkymos.capillaries.capillariesArrayList.get(i);
+			for (int i = 0; i < parent0.seqKymos.seq.getSizeT(); i++) {
+				Capillary cap = parent0.seqKymos.capillaries.capillariesArrayList.get(i);
 				progress.setMessage( "Save kymograph file : " + cap.getName());
 				String filename = outputpath + "\\" + cap.getName() + ".tiff";
 				final File file = new File (filename);
-				IcyBufferedImage image = parent0.vkymos.seq.getImage(i, 0);
+				IcyBufferedImage image = parent0.seqKymos.seq.getImage(i, 0);
 				
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
 					try {
@@ -132,19 +132,19 @@ public class MCCapillariesTab_File extends JPanel {
 		if (SequenceKymosUtils.isRunning)
 			SequenceKymosUtils.isInterrupted = true;
 		
-		if (parent0.vSequence== null || parent0.vSequence.capillaries == null) {
+		if (parent0.seqKymos == null || parent0.seqKymos.capillaries == null) {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
 		
-		String directory = parent0.vSequence.getDirectory()+"\\results";
-		parent0.vkymos = SequenceKymosUtils.openKymoFiles(directory, parent0.vSequence.capillaries);
+		String directory = parent0.seqCamData.getDirectory()+"\\results";
+		parent0.seqKymos = SequenceKymosUtils.openKymoFiles(directory, parent0.seqKymos.capillaries);
 
-		if (parent0.vkymos != null) {
+		if (parent0.seqKymos != null) {
 			flag = true;
 			SwingUtilities.invokeLater(new Runnable() {
 			    public void run() {
-	        	parent0.capillariesPane.optionsTab.transferCapillaryNamesToComboBox(parent0.vSequence.capillaries.capillariesArrayList);
+	        	parent0.capillariesPane.optionsTab.transferCapillaryNamesToComboBox(parent0.seqKymos.capillaries.capillariesArrayList);
 				parent0.capillariesPane.optionsTab.viewKymosCheckBox.setSelected(true);
 			    }
 			});

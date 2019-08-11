@@ -22,6 +22,7 @@ import icy.gui.frame.progress.AnnounceFrame;
 import icy.gui.util.GuiUtil;
 import icy.roi.ROI2D;
 import plugins.fmp.multicafeSequence.Capillaries;
+import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
@@ -71,7 +72,7 @@ public class MCCapillariesTab_Build extends JPanel {
 			}});
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				roisGenerateFromPolygon();
-				parent0.vSequence.capillaries.transferROIStoCapillaries(parent0.vSequence);
+				SequenceKymosUtils.transferROIStoCapillaries(parent0.seqCamData, parent0.seqKymos);
 				firePropertyChange("CAPILLARIES_NEW", false, true);
 			}});
 		selectRegularButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
@@ -121,13 +122,13 @@ public class MCCapillariesTab_Build extends JPanel {
 	private void create2DPolygon() {
 		
 		final String dummyname = "perimeter_enclosing_capillaries";
-		ArrayList<ROI2D> listRois = parent0.vSequence.seq.getROI2Ds();
+		ArrayList<ROI2D> listRois = parent0.seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName() .equals(dummyname))
 				return;
 		}
 		
-		Rectangle rect = parent0.vSequence.seq.getBounds2D();
+		Rectangle rect = parent0.seqCamData.seq.getBounds2D();
 		List<Point2D> points = new ArrayList<Point2D>();
 		points.add(new Point2D.Double(rect.x + rect.width /5, rect.y + rect.height /5));
 		points.add(new Point2D.Double(rect.x + rect.width*4 /5, rect.y + rect.height /5));
@@ -135,8 +136,8 @@ public class MCCapillariesTab_Build extends JPanel {
 		points.add(new Point2D.Double(rect.x + rect.width /5, rect.y + rect.height *2 /3));
 		ROI2DPolygon roi = new ROI2DPolygon(points);
 		roi.setName(dummyname);
-		parent0.vSequence.seq.addROI(roi);
-		parent0.vSequence.seq.setSelectedROI(roi);
+		parent0.seqCamData.seq.addROI(roi);
+		parent0.seqCamData.seq.setSelectedROI(roi);
 	}
 	
 	private void roisGenerateFromPolygon() {
@@ -157,7 +158,7 @@ public class MCCapillariesTab_Build extends JPanel {
 
 		}catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
 
-		ROI2D roi = parent0.vSequence.seq.getSelectedROI2D();
+		ROI2D roi = parent0.seqCamData.seq.getSelectedROI2D();
 		if ( ! ( roi instanceof ROI2DPolygon ) ) {
 			new AnnounceFrame("The frame must be a ROI2D POLYGON");
 			return;
@@ -166,7 +167,7 @@ public class MCCapillariesTab_Build extends JPanel {
 		Polygon roiPolygon = MulticafeTools.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
 			
 		// clear Rois from sequence
-		parent0.vSequence.seq.removeROI(roi);
+		parent0.seqCamData.seq.removeROI(roi);
 
 		// generate lines from polygon frame
 		if (statusGroup2Mode) {	
@@ -187,7 +188,7 @@ public class MCCapillariesTab_Build extends JPanel {
 				ROI2DLine roiL1 = new ROI2DLine (point0, point1);
 				roiL1.setName("line"+i/2+"L");
 				roiL1.setReadOnly(false);
-				parent0.vSequence.seq.addROI(roiL1, true);
+				parent0.seqCamData.seq.addROI(roiL1, true);
 
 				span0 += width_between_capillaries ;
 				x = roiPolygon.xpoints[0]+ (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
@@ -203,7 +204,7 @@ public class MCCapillariesTab_Build extends JPanel {
 				ROI2DLine roiL2 = new ROI2DLine (point3, point4);
 				roiL2.setName("line"+i/2+"R");
 				roiL2.setReadOnly(false);
-				parent0.vSequence.seq.addROI(roiL2, true);
+				parent0.seqCamData.seq.addROI(roiL2, true);
 			}
 		}
 		else {
@@ -219,7 +220,7 @@ public class MCCapillariesTab_Build extends JPanel {
 				ROI2DLine roiL1 = new ROI2DLine (point0, point1);				
 				roiL1.setName("line"+i);
 				roiL1.setReadOnly(false);
-				parent0.vSequence.seq.addROI(roiL1, true);
+				parent0.seqCamData.seq.addROI(roiL1, true);
 			}
 		}
 	}

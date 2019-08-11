@@ -90,15 +90,15 @@ public class MCMovePane extends JPanel implements PropertyChangeListener {
 	}
 
 	boolean loadDefaultCages() {
-		String path = parent0.vSequence.getDirectory();
+		String path = parent0.seqCamData.getDirectory();
 		boolean flag = filesTab.cageRoisOpen(path+"\\drosotrack.xml");
 		return flag;
 	}
 	
 	boolean saveDefaultCages() {
-		String directory = parent0.vSequence.getDirectory();
+		String directory = parent0.seqCamData.getDirectory();
 		String filename = directory + "\\drosotrack.xml";
-		return parent0.vSequence.cages.xmlWriteCagesToFileNoQuestion(filename);
+		return parent0.seqCamData.cages.xmlWriteCagesToFileNoQuestion(filename);
 	}
 }
 

@@ -19,7 +19,8 @@ import plugins.adufour.ezplug.EzVarInteger;
 import plugins.adufour.ezplug.EzVarListener;
 
 public class MulticafeSequence extends EzPlug {
-	public SequenceCapillaries vSequence = null;
+	public SequenceCamData vSequence = null;
+	public SequenceKymos vkymos = null;
 	List <SequenceKymos> kymographArrayList	= new ArrayList <SequenceKymos> ();	// list of kymograph sequences
 
 	boolean stopFlag = false;
@@ -158,7 +159,7 @@ public class MulticafeSequence extends EzPlug {
 	public boolean sequenceOpenFile() {
 		if (vSequence != null)
 			vSequence.seq.close();		
-		vSequence = new SequenceCapillaries();
+		vSequence = new SequenceCamData();
 		
 		String path = vSequence.loadSequenceFromDialog(null);
 		if (path != null) {
@@ -170,13 +171,13 @@ public class MulticafeSequence extends EzPlug {
 		return (path != null);
 	}
 	
-	private void initSequenceParameters(SequenceCapillaries seq) {
+	private void initSequenceParameters(SequenceCamData seq) {
 		seq.analysisStart = 0;
 		seq.analysisEnd = seq.seq.getSizeT()-1;
 		seq.analysisStep = 1;
 	}
 	
-	public void UpdateItemsFromSequence (SequenceCapillaries vSequence) {
+	public void UpdateItemsFromSequence (SequenceCamData vSequence) {
 		if (vSequence == null)
 			return;
 		end.setValue((int) vSequence.analysisEnd);
@@ -198,14 +199,16 @@ public class MulticafeSequence extends EzPlug {
 	
 	public boolean capillaryRoisOpen(String csFileName) {
 		boolean flag = false;
-		if (csFileName == null)
-			flag = vSequence.capillaries.xmlReadROIsAndData(vSequence);
-		else
-			flag = vSequence.capillaries.xmlReadROIsAndData(csFileName, vSequence);
-		
-		vSequence.analysisStart = vSequence.capillaries.analysisStart;
-		vSequence.analysisEnd = vSequence.capillaries.analysisEnd;
-		vSequence.analysisStep = vSequence.capillaries.analysisStep;
+		if (vkymos != null && vkymos.capillaries != null) {
+			if (csFileName == null)
+				flag = vkymos.capillaries.xmlReadROIsAndData(vkymos);
+			else
+				flag = vkymos.capillaries.xmlReadROIsAndData(csFileName, vkymos);
+			
+			vSequence.analysisStart = vkymos.capillaries.analysisStart;
+			vSequence.analysisEnd = vkymos.capillaries.analysisEnd;
+			vSequence.analysisStep = vkymos.capillaries.analysisStep;
+		}
 		return flag;
 	}
 }

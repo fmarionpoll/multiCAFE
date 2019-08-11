@@ -7,7 +7,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -16,7 +15,7 @@ import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
-import plugins.fmp.multicafeSequence.SequenceCapillaries;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
 public class MCSequencePane extends JPanel implements PropertyChangeListener {
@@ -76,23 +75,22 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("SEQ_OPEN")) {
-			openSequenceFromCombo(); 
+			openSequenceCamFromCombo(); 
 		}
 		else if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
-			if (sequenceCreateNew(null)) {
+			if (createSequenceCamFromString(null)) {
 				infosTab.experimentComboBox.removeAllItems();
-				addSequenceToComboAndLoadData();
+				addSequenceCamToComboAndLoadData();
 			}
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
-			if (sequenceCreateNew(null)) {
-				addSequenceToComboAndLoadData();
+			if (createSequenceCamFromString(null)) {
+				addSequenceCamToComboAndLoadData();
 			}
 		 }
 		 else if (event.getPropertyName().equals("UPDATE")) {
-			browseTab.getBrowseItems(parent0.vSequence);
-			ArrayList<Viewer>vList =  parent0.vSequence.seq.getViewers();
-			Viewer v = vList.get(0);
+			browseTab.getBrowseItems(parent0.seqCamData);
+			Viewer v =parent0.seqCamData.seq.getFirstViewer();
 			v.toFront();
 			v.requestFocus();
 		 }
@@ -110,28 +108,28 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 				index = 0;
 			infosTab.disableChangeFile = true;
 			for (String name: openTab.selectedNames) {
-				 sequenceAddtoCombo(name);
+				 addSequenceCamToCombo(name);
 			}
 			openTab.selectedNames.clear();
 			if (infosTab.experimentComboBox.getItemCount() > 0) {
 				infosTab.experimentComboBox.setSelectedIndex(index);
 				infosTab.updateBrowseInterface();
 				infosTab.disableChangeFile = false;
-				openSequenceFromCombo();
+				openSequenceCamFromCombo();
 			}
 		 }
 	}
 	
-	private void openSequenceFromCombo() {
+	private void openSequenceCamFromCombo() {
 		String filename = (String) infosTab.experimentComboBox.getSelectedItem();
-		sequenceCreateNew(filename);
-		updateViewerForSequence();
-		sequenceAddtoCombo(parent0.vSequence.getFileName());
+		createSequenceCamFromString(filename);
+		updateViewerForSequenceCam();
+		addSequenceCamToCombo(parent0.seqCamData.getFileName());
 		firePropertyChange("SEQ_OPENED", false, true);
 		tabsPane.setSelectedIndex(1);
 	}
 	
-	void sequenceAddtoCombo(String strItem) {
+	void addSequenceCamToCombo(String strItem) {
 		int nitems = infosTab.experimentComboBox.getItemCount();
 		boolean alreadystored = false;
 		for (int i=0; i < nitems; i++) {
@@ -140,50 +138,39 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 				break;
 			}
 		}
-		if(!alreadystored) {
+		if(!alreadystored) 
 			infosTab.experimentComboBox.addItem(strItem);
-		}
 	}
 	
-	void addSequenceToComboAndLoadData() {
-		String strItem = parent0.vSequence.getFileName();
+	void addSequenceCamToComboAndLoadData() {
+		String strItem = parent0.seqCamData.getFileName();
 		if (strItem != null) {
-			sequenceAddtoCombo(strItem);
+			addSequenceCamToCombo(strItem);
 			infosTab.experimentComboBox.setSelectedItem(strItem);
-			updateViewerForSequence();
+			updateViewerForSequenceCam();
 			firePropertyChange("SEQ_OPENED", false, true);
 		}
 	}
 	
-	void startstopBufferingThread() {
-		if (parent0.vSequence == null)
-			return;
-		parent0.vSequence.vImageBufferThread_STOP();
-		browseTab.getBrowseItems(parent0.vSequence); 
-		parent0.vSequence.cleanUpBufferAndRestart();
-		parent0.vSequence.vImageBufferThread_START(100); //fenêtre
-	}
-
-	boolean sequenceCreateNew (String filename) {
-		if (parent0.vSequence != null)
-			parent0.vSequence.seq.close();		
-		parent0.vSequence = new SequenceCapillaries();
+	boolean createSequenceCamFromString (String filename) {
+		if (parent0.seqCamData != null)
+			parent0.seqCamData.seq.close();		
+		parent0.seqCamData = new SequenceCamData();
 		
-		String path = parent0.vSequence.loadSequence(filename);
+		String path = parent0.seqCamData.loadSequence(filename);
 		if (path != null) {
-			parent0.vSequence.setFileNameAsPathUp1() ;
-			updateReadingParameters(parent0.vSequence);
+			parent0.seqCamData.setParentDirectoryAsFileName() ;
+			browseTab.endFrameJSpinner.setValue((int)parent0.seqCamData.analysisEnd);
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", path);
-			parent0.addSequence(parent0.vSequence.seq);
-			startstopBufferingThread();
-			parent0.vSequence.seq.getFirstViewer().addListener( parent0 );
+			parent0.addSequence(parent0.seqCamData.seq);
+			parent0.seqCamData.seq.getFirstViewer().addListener( parent0 );
 		}
 		return (path != null);
 	}
 	
-	private void updateViewerForSequence() {
-		Viewer v = parent0.vSequence.seq.getFirstViewer();
+	private void updateViewerForSequenceCam() {
+		Viewer v = parent0.seqCamData.seq.getFirstViewer();
 		if (v != null) {
 			Rectangle rectv = v.getBoundsInternal();
 			Rectangle rect0 = parent0.mainFrame.getBoundsInternal();
@@ -192,13 +179,4 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
-	private void updateReadingParameters(SequenceCapillaries seq) {
-		if (seq.analysisEnd == 99999999) {
-			seq.analysisStart = 0;
-			seq.analysisEnd = seq.seq.getSizeT()-1;
-			seq.analysisStep = 1;
-		}
-		browseTab.endFrameJSpinner.setValue(parent0.vSequence.seq.getSizeT()-1);
-	}
-
 }

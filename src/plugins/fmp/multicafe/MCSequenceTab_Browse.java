@@ -12,7 +12,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
-import plugins.fmp.multicafeSequence.SequenceCapillaries;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
 public class MCSequenceTab_Browse extends JPanel {
@@ -44,13 +44,13 @@ public class MCSequenceTab_Browse extends JPanel {
 
 	}
 		
-	void setBrowseItems (SequenceCapillaries seq) {
+	void setBrowseItems (SequenceCamData seq) {
 		endFrameJSpinner.setValue((int) seq.analysisEnd);
 		startFrameJSpinner.setValue((int) seq.analysisStart);
 		analyzeStepJSpinner.setValue(seq.analysisStep);
 	}
 	
-	void getBrowseItems (SequenceCapillaries seq) {
+	void getBrowseItems (SequenceCamData seq) {
 		seq.analysisStart 	= (int) startFrameJSpinner.getValue();
 		seq.analysisEnd 	= (int) endFrameJSpinner.getValue();
 		seq.analysisStep 	= (int) analyzeStepJSpinner.getValue();

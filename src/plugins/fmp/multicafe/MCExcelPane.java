@@ -77,15 +77,14 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals("EXPORT_MOVEDATA")) {
-			parent0.roisSaveEdits();
-			Path directory = Paths.get(parent0.vSequence.getFileName(0)).getParent();
+			Path directory = Paths.get(parent0.seqCamData.getFileName(0)).getParent();
 			Path subpath = directory.getName(directory.getNameCount()-1);
 			String tentativeName = subpath.toString()+"_move.xlsx";
 			String file = MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
 			if (file != null) {
 				final String filename = file;
-				parent0.capillariesPane.getCapillariesInfos(parent0.vSequence.capillaries);
-				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.vSequence.capillaries);
+				parent0.capillariesPane.getCapillariesInfos(parent0.seqKymos.capillaries);
+				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 					XLSExportMoveResults xlsExport = new XLSExportMoveResults();
 					xlsExport.exportToFile(filename, getMoveOptions());
@@ -93,16 +92,15 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 			}
 		}
 		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
-			parent0.roisSaveEdits();
-			String filename0 = parent0.vSequence.getFileName(0);
+			String filename0 = parent0.seqCamData.getFileName(0);
 			Path directory = Paths.get(filename0).getParent();
 			Path subpath = directory.getName(directory.getNameCount()-1);
 			String tentativeName = subpath.toString()+"_feeding.xlsx";
 			String file = MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
 			if (file != null) {
 				final String filename = file;
-				parent0.capillariesPane.getCapillariesInfos(parent0.vSequence.capillaries);
-				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.vSequence.capillaries);
+				parent0.capillariesPane.getCapillariesInfos(parent0.seqKymos.capillaries);
+				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 					XLSExportCapillaryResults xlsExport = new XLSExportCapillaryResults();
 					xlsExport.exportToFile(filename, getCapillariesOptions());
@@ -150,7 +148,7 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 		}
 		else {
 			Experiment exp = new Experiment();
-			exp.filename = parent0.vSequence.getFileName();
+			exp.filename = parent0.seqCamData.getFileName();
 			options.experimentList.experimentList.add(exp);
 		}
 	}

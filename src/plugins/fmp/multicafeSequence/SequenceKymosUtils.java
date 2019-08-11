@@ -12,11 +12,14 @@ import icy.file.Loader;
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
+import icy.roi.ROI2D;
 import icy.sequence.MetaDataUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import loci.formats.FormatException;
 import ome.xml.meta.OMEXMLMetadata;
+import plugins.fmp.multicafeTools.ROI2DUtilities;
+import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
 public class SequenceKymosUtils {
@@ -211,12 +214,43 @@ public class SequenceKymosUtils {
 		isRunning = false;
 	}
 
-	public static void transferSequenceInfoToKymos (SequenceKymos vkymos, SequenceCapillaries vSequence) {
+	public static void transferSequenceInfoToKymos (SequenceKymos vkymos, SequenceCamData vSequence) {
 		if (vkymos == null || vkymos.capillaries == null)
 			return;		
 		vkymos.capillaries.analysisStart = vSequence.analysisStart; 
 		vkymos.capillaries.analysisEnd  = vSequence.analysisEnd;
 		vkymos.capillaries.analysisStep = vSequence.analysisStep;
+	}
+	
+	public static void transferROIStoCapillaries (SequenceCamData seqCams, SequenceKymos seqKymos) {
+		List<ROI2D> listROISCap = ROI2DUtilities.getListofCapillariesFromSequence(seqCams);
+		if (seqKymos.capillaries == null)
+			seqKymos.capillaries = new Capillaries();
 		
+		// rois not in cap?
+		for (ROI2D roi:listROISCap) {
+			boolean found = false;
+			for (Capillary cap: seqKymos.capillaries.capillariesArrayList) {
+				if (roi.getName().equals(cap.roi.getName())) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				seqKymos.capillaries.capillariesArrayList.add(new Capillary((ROI2DShape)roi));
+		}
+		
+		// cap with no corresponding roi?
+		for (Capillary cap: seqKymos.capillaries.capillariesArrayList) {
+			boolean found = false;
+			for (ROI2D roi:listROISCap) {
+				if (roi.getName().equals(cap.roi.getName())) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				seqKymos.capillaries.capillariesArrayList.remove(cap);
+		}
 	}
 }

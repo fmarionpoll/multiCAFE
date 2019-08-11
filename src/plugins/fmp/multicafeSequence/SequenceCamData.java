@@ -1,4 +1,4 @@
-package plugins.fmp.multicafeSequence;
+ package plugins.fmp.multicafeSequence;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,10 +27,10 @@ import plugins.fmp.multicafeTools.StringSorter;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class SequenceCapillaries  {
+public class SequenceCamData  {
 	public Sequence					seq						= null;
 	List <String>  					listFiles 				= new ArrayList<String>();
-	private String 					csFileName 				= null;
+	protected String 				csFileName 				= null;
 	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif"};
 	private String					directory 				= null;
 	private boolean					doLRFileNameTest		= false;
@@ -46,7 +46,6 @@ public class SequenceCapillaries  {
 	public boolean					bBufferON 				= false;
 	public EnumStatus 				status					= EnumStatus.REGULAR;
 		
-	public Capillaries 				capillaries 			= new Capillaries();
 	public Cages					cages 					= new Cages();
 		
 	// image cache
@@ -58,25 +57,25 @@ public class SequenceCapillaries  {
 	
 	// ----------------------------------------
 	
-	public SequenceCapillaries () {
+	public SequenceCamData () {
 		seq = new Sequence();
 	}
 	
-	public SequenceCapillaries(String name, IcyBufferedImage image) {
+	public SequenceCamData(String name, IcyBufferedImage image) {
 		seq = new Sequence (name, image);
 	}
 
-	public SequenceCapillaries (String csFile) {
+	public SequenceCamData (String csFile) {
 		seq = Loader.loadSequence(csFile, 0, true);
 		seq.setName(csFile);
 	}
 
-	public SequenceCapillaries (String [] list, String directory) {
+	public SequenceCamData (String [] list, String directory) {
 		loadSequenceFromListAndDirectory(list, directory);
 		seq.setName(listFiles.get(0));
 	}
 	
-	public SequenceCapillaries (List<String> listNames) {
+	public SequenceCamData (List<String> listNames) {
 		listFiles.clear();
 		for (String cs: listNames)
 			listFiles.add(cs);
@@ -88,19 +87,19 @@ public class SequenceCapillaries  {
 		}
 	}
 	
-	public SequenceCapillaries(String name, boolean testLR, IcyBufferedImage image) {
+	public SequenceCamData(String name, boolean testLR, IcyBufferedImage image) {
 		this.doLRFileNameTest = testLR;
 		seq = new Sequence (name, image);
 	}
 
-	public SequenceCapillaries (String [] list, boolean testLR, String directory) {
+	public SequenceCamData (String [] list, boolean testLR, String directory) {
 		this.doLRFileNameTest = testLR;
 		
 		loadSequenceFromListAndDirectory(list, directory);
 		seq.setName(listFiles.get(0));
 	}
 	
-	public SequenceCapillaries (List<String> listNames, boolean testLR) {
+	public SequenceCamData (List<String> listNames, boolean testLR) {
 		this.doLRFileNameTest = testLR;
 		listFiles.clear();
 		for (String cs: listNames)
@@ -174,17 +173,9 @@ public class SequenceCapillaries  {
 
 	public String getDecoratedImageName(int t) {
 		currentFrame = t;  
-		if (EnumStatus.KYMOGRAPH == status)
-			return getDecoratedImageNameFromCapillary(t);
 		return csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
 	}
 	
-	public String getDecoratedImageNameFromCapillary(int t) {
-		if (capillaries != null & capillaries.capillariesArrayList.size() > 0)
-			return capillaries.capillariesArrayList.get(t).roi.getName() + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
-		return csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
-	}
-
 	public String getFileName(int t) {
 		String csName = null;
 		if (status == EnumStatus.FILESTACK) 
@@ -334,8 +325,15 @@ public class SequenceCapillaries  {
 				}
 			}
 			status = EnumStatus.FILESTACK;	
+			initReadingParameters();
 		}
 		return flag;
+	}
+	
+	private void initReadingParameters() {
+		analysisStart = 0;
+		analysisEnd = seq.getSizeT()-1;
+		analysisStep = 1;
 	}
 		
 	private boolean isLinexLRFileNames(List<String> myListOfFilesNames) {
@@ -388,7 +386,7 @@ public class SequenceCapillaries  {
 		return null;	
 	}
 	
-	public void setFileNameAsPathUp1() {
+	public void setParentDirectoryAsFileName() {
 		String directory = seq.getFilename();
 		Path path = Paths.get(directory);
 		String dirupup = path.getName(path.getNameCount()-2).toString();
@@ -398,45 +396,6 @@ public class SequenceCapillaries  {
 	
 	public void setFileName(String name) {
 		csFileName = name;		
-	}
-	
-	// --------------------------
-		
-	public void updateCapillaries() {
-		capillaries.transferROIStoCapillaries(this);
-		storeAnalysisParametersToCapillaries();
-		return;
-	}
-	
-	public void storeAnalysisParametersToCapillaries () {
-		capillaries.analysisStart = analysisStart;
-		capillaries.analysisEnd = analysisEnd;
-		capillaries.analysisStep = analysisStep;
-	}
-	
-	public boolean xmlReadCapillaryTrackDefault() {
-		boolean found = xmlReadCapillaryTrack(getDirectory()+"\\capillarytrack.xml");
-		if (!found)
-			found = capillaries.xmlReadROIsAndData(this);
-		return found;
-	}
-	
-	public boolean xmlReadCapillaryTrack(String filename) {
-		boolean flag = capillaries.xmlReadROIsAndData(filename, this);
-		if (flag) {
-			analysisStart = capillaries.analysisStart;
-			analysisEnd = capillaries.analysisEnd;
-			analysisStep = capillaries.analysisStep;
-		}
-		return flag;
-	}
-	
-	public boolean xmlWriteCapillaryTrackDefault() {
-		boolean flag = false;
-		String name = getDirectory()+ "\\capillarytrack.xml";
-		updateCapillaries();
-		flag = capillaries.xmlWriteROIsAndDataNoQuestion(name, this);
-		return flag;
 	}
 	
 	// --------------------------
@@ -495,7 +454,7 @@ public class SequenceCapillaries  {
 				seq.removeROI(roi);
 		}
 	}
-	
+		
 	// --------------------------
 	
 	public void vImageBufferThread_START (int numberOfImageForBuffer) {
@@ -537,7 +496,7 @@ public class SequenceCapillaries  {
 			bBufferON = true;
 		}
 
-		public VImageBufferThread(SequenceCapillaries vseq, int depth) {
+		public VImageBufferThread(SequenceCamData vseq, int depth) {
 			fenetre = depth;
 			span = fenetre/2 * analysisStep;
 			bBufferON = true;
