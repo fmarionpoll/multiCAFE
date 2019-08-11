@@ -1,10 +1,11 @@
 package plugins.fmp.multicafeTools;
 
-import java.util.ArrayList;
+
+import java.util.List;
 
 public class XLSCapillaryResults {
 	
-	String				name = null;
-	ArrayList<Integer > data = null;
+	String			name = null;
+	List<Integer > 	data = null;
 	
 }

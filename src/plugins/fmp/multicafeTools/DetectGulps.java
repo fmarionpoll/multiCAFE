@@ -37,7 +37,7 @@ public class DetectGulps {
 				cap.derivedValuesArrayList.clear();
 			cap.derivedValuesArrayList = new ArrayList<Integer>();
 			cap.derivedValuesArrayList.add(0);
-			ArrayList <Integer> topLevelArray = cap.getIntegerArrayFromPointArray(cap.ptsTop);
+			List <Integer> topLevelArray = cap.getIntegerArrayFromPointArray(cap.ptsTop);
 			
 			getDerivativeProfile(seqkymo, t, cap, topLevelArray, jitter);	
 			if (options.computeDiffnAndDetect) {
@@ -51,7 +51,7 @@ public class DetectGulps {
 		progressBar.close();
 	}	
 
-	private void getDerivativeProfile(SequenceKymos kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray, int jitter) {
+	private void getDerivativeProfile(SequenceKymos kymographSeq, int t, Capillary cap, List <Integer> topLevelArray, int jitter) {
 		
 		int z = kymographSeq.seq.getSizeZ() -1;
 		IcyBufferedImage image = kymographSeq.seq.getImage(t, z, 0);
@@ -89,7 +89,7 @@ public class DetectGulps {
 		kymographSeq.seq.addROI(roiDerivative, false);
 	}
 
-	private void getGulps(SequenceKymos kymographSeq, int t, Capillary cap, ArrayList <Integer> topLevelArray) {
+	private void getGulps(SequenceKymos kymographSeq, int t, Capillary cap, List <Integer> topLevelArray) {
 		int ix = 0;
 		if (cap.gulpsRois != null)
 			cap.gulpsRois.clear();

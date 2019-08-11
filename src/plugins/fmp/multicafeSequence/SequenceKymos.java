@@ -59,7 +59,7 @@ public class SequenceKymos extends SequenceCapillaries  {
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
-	public ArrayList<Integer> subtractTi(ArrayList<Integer > array) {
+	public List<Integer> subtractTi(List<Integer > array) {
 		if (array == null)
 			return null;
 		int item0 = array.get(0);
@@ -71,7 +71,7 @@ public class SequenceKymos extends SequenceCapillaries  {
 		return array;
 	}
 	
-	public ArrayList<Integer> subtractT0 (ArrayList<Integer> array) {
+	public List<Integer> subtractT0 (List<Integer> array) {
 		if (array == null)
 			return null;
 		int item0 = array.get(0);
@@ -82,7 +82,7 @@ public class SequenceKymos extends SequenceCapillaries  {
 		return array;
 	}
 	
-	public ArrayList<Integer> subtractT0AndAddConstant (ArrayList<Integer> array, int constant) {
+	public List<Integer> subtractT0AndAddConstant (List<Integer> array, int constant) {
 		if (array == null)
 			return null;
 		int item0 = array.get(0) - constant;
@@ -93,7 +93,7 @@ public class SequenceKymos extends SequenceCapillaries  {
 		return array;
 	}
 	
-	public ArrayList<Integer> addConstant (ArrayList<Integer> array, int constant) {
+	public List<Integer> addConstant (List<Integer> array, int constant) {
 		if (array == null)
 			return null;
 		for (int index= 0; index < array.size(); index++) {

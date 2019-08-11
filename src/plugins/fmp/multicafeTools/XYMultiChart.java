@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -32,9 +33,9 @@ public class XYMultiChart extends IcyFrame  {
 
 	private int ymax = 0;
 	private int ymin = 0;
-	private ArrayList<XYSeriesCollection> 	xyDataSetList 	= new ArrayList <XYSeriesCollection>();
-	private ArrayList<XYSeriesCollection> 	xyDataSetList2 	= new ArrayList <XYSeriesCollection>();
-	private ArrayList<JFreeChart> 			xyChartList = new ArrayList <JFreeChart>();
+	private List<XYSeriesCollection> 	xyDataSetList 	= new ArrayList <XYSeriesCollection>();
+	private List<XYSeriesCollection> 	xyDataSetList2 	= new ArrayList <XYSeriesCollection>();
+	private List<JFreeChart> 			xyChartList = new ArrayList <JFreeChart>();
 	private String title;
 
 	//----------------------------------------
@@ -53,7 +54,7 @@ public class XYMultiChart extends IcyFrame  {
 		pt = new Point(rectv.x + deltapt.x, rectv.y + deltapt.y);
 	}
 	
-	public void displayData(SequenceKymos kymoseq, EnumArrayListType option) {
+	public void displayData(SequenceKymos kymoseq, EnumListType option) {
 		xyChartList.clear();
 		if (kymoseq == null || kymoseq.seq == null)
 			return;
@@ -74,21 +75,21 @@ public class XYMultiChart extends IcyFrame  {
 				if ((t+k) >= nimages)
 					continue;
 				Capillary cap = kymoseq.capillaries.capillariesArrayList.get(t+k);
-				EnumArrayListType ooption = option;
-				if (option == EnumArrayListType.topAndBottom)
-					ooption = EnumArrayListType.topLevel;
-				ArrayList<Integer> results = cap.getMeasures(ooption);
-				if (option == EnumArrayListType.topLevelDelta) {
+				EnumListType ooption = option;
+				if (option == EnumListType.topAndBottom)
+					ooption = EnumListType.topLevel;
+				List<Integer> results = cap.getMeasures(ooption);
+				if (option == EnumListType.topLevelDelta) {
 					results = kymoseq.subtractTi(results);
 				}
 				XYSeries seriesXY = getXYSeries(results, cap.roi.getName(), startFrame);
-				if (option == EnumArrayListType.topAndBottom) 
-					appendDataToXYSeries(seriesXY, cap.getMeasures(EnumArrayListType.bottomLevel), startFrame );
+				if (option == EnumListType.topAndBottom) 
+					appendDataToXYSeries(seriesXY, cap.getMeasures(EnumListType.bottomLevel), startFrame );
 				xyDataset.addSeries( seriesXY );
 				getMaxMin();
 			}
 			xyDataSetList.add(xyDataset);
-			if (option == EnumArrayListType.topAndBottom)
+			if (option == EnumListType.topAndBottom)
 				xyDataSetList2.add(xyDataset2);
 		}
 		
@@ -99,12 +100,12 @@ public class XYMultiChart extends IcyFrame  {
 			xyChart.setTextAntiAlias( true );
 			// set Y range from 0 to max 
 			xyChart.getXYPlot().getRangeAxis(0).setRange(globalYMin, globalYMax);
-			if (option == EnumArrayListType.topAndBottom) {
+			if (option == EnumListType.topAndBottom) {
 				XYSeriesCollection xyDataset2 = xyDataSetList2.get(i);
 				xyChart.getXYPlot().setDataset(1, xyDataset2);
 			}
 			
-			if (option == EnumArrayListType.topLevel || option == EnumArrayListType.bottomLevel || option == EnumArrayListType.topAndBottom) {
+			if (option == EnumListType.topLevel || option == EnumListType.bottomLevel || option == EnumListType.topAndBottom) {
 				xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
 			}
 			xyChartList.add(xyChart);
@@ -118,7 +119,7 @@ public class XYMultiChart extends IcyFrame  {
 		mainChartFrame.setVisible(true);
 	}
 
-	public void fetchNewData(SequenceKymos kymoseq, EnumArrayListType option) {
+	public void fetchNewData(SequenceKymos kymoseq, EnumListType option) {
 		
 		int ixy = 0;
 		if (xyDataSetList == null || xyDataSetList.size() < 1)
@@ -135,9 +136,9 @@ public class XYMultiChart extends IcyFrame  {
 				break;
 			xyDataset = xyDataSetList.get(ixy);
 			xyDataset.removeAllSeries();
-			EnumArrayListType ooption = option;
-			if (option == EnumArrayListType.topAndBottom) {
-				ooption = EnumArrayListType.topLevel;
+			EnumListType ooption = option;
+			if (option == EnumListType.topAndBottom) {
+				ooption = EnumListType.topLevel;
 				xyDataset2 = xyDataSetList2.get(ixy);
 				xyDataset2.removeAllSeries();
 			}
@@ -146,13 +147,13 @@ public class XYMultiChart extends IcyFrame  {
 				if ((t+k) >= nimages)
 					continue;
 				Capillary cap = kymoseq.capillaries.capillariesArrayList.get(t+k);
-				ArrayList<Integer> results = cap.getMeasures(ooption);
-				if (option == EnumArrayListType.topLevelDelta) {
+				List<Integer> results = cap.getMeasures(ooption);
+				if (option == EnumListType.topLevelDelta) {
 					results = kymoseq.subtractTi(results);
 				}
 				XYSeries seriesXY = getXYSeries(results, cap.roi.getName(), startFrame);
-				if (option == EnumArrayListType.topAndBottom) 
-					appendDataToXYSeries(seriesXY, cap.getMeasures(EnumArrayListType.bottomLevel), startFrame );
+				if (option == EnumListType.topAndBottom) 
+					appendDataToXYSeries(seriesXY, cap.getMeasures(EnumListType.bottomLevel), startFrame );
 				
 				xyDataset.addSeries( seriesXY );
 				getMaxMin();
@@ -160,7 +161,7 @@ public class XYMultiChart extends IcyFrame  {
 			
 			// save data into xyDataSetList
 			xyDataSetList.set(ixy, xyDataset);
-			if (option ==  EnumArrayListType.topAndBottom)
+			if (option ==  EnumListType.topAndBottom)
 				xyDataSetList2.set(ixy, xyDataset2);
 		}
 
@@ -170,12 +171,12 @@ public class XYMultiChart extends IcyFrame  {
 			xyChart.getXYPlot().setDataset(0, xyDataset);
 			xyChart.getXYPlot().getRangeAxis(0).setRange(globalYMin, globalYMax);
 			
-			if (option ==  EnumArrayListType.topAndBottom) {
+			if (option ==  EnumListType.topAndBottom) {
 				xyDataset2 = xyDataSetList2.get(i);
 				xyChart.getXYPlot().setDataset(1, xyDataset2);
 			}
 			// invert Y scale if raw levels
-			if (option == EnumArrayListType.topLevel || option == EnumArrayListType.bottomLevel || option == EnumArrayListType.topAndBottom) {
+			if (option == EnumListType.topLevel || option == EnumListType.bottomLevel || option == EnumListType.topAndBottom) {
 					xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
 
 			}
@@ -194,7 +195,7 @@ public class XYMultiChart extends IcyFrame  {
 		}
 	}
 
-	private XYSeries getXYSeries(ArrayList<Integer> data, String name, int startFrame) {
+	private XYSeries getXYSeries(List<Integer> data, String name, int startFrame) {
 		XYSeries seriesXY = new XYSeries(name, false);
 		if (data != null) {
 			int npoints = data.size();
@@ -214,7 +215,7 @@ public class XYMultiChart extends IcyFrame  {
 		return seriesXY;
 	}
 
-	private void appendDataToXYSeries(XYSeries seriesXY, ArrayList<Integer> data, int startFrame ) {
+	private void appendDataToXYSeries(XYSeries seriesXY, List<Integer> data, int startFrame ) {
 		
 		if (data == null)
 			return;

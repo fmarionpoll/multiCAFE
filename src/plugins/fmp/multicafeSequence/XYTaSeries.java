@@ -2,6 +2,7 @@ package plugins.fmp.multicafeSequence;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -9,7 +10,7 @@ import org.w3c.dom.Node;
 import icy.file.xml.XMLPersistent;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafeTools.EnumArrayListType;
+import plugins.fmp.multicafeTools.EnumListType;
 import plugins.kernel.roi.roi2d.*;
 
 public class XYTaSeries implements XMLPersistent {
@@ -18,19 +19,19 @@ public class XYTaSeries implements XMLPersistent {
 	public Double 			threshold 			= 50.;
 	public int 				lastTimeAlive 		= 0;
 	public int 				lastIntervalAlive 	= 0;
-	public ArrayList<XYTaValue> pointsList 		= new ArrayList<XYTaValue>();
+	public ArrayList<XYTaValue> pointsList  = new ArrayList<XYTaValue>();
 
 	
 	public XYTaSeries(ROI2D roi) {
 		this.roi = (ROI2DPolygon) roi;
 	}
 	
-	public XYTaSeries() {
-		this.roi = new ROI2DPolygon();
-	}
-	
 	public void ensureCapacity(int minCapacity) {
 		pointsList.ensureCapacity(minCapacity);
+	}
+	
+	public XYTaSeries() {
+		this.roi = new ROI2DPolygon();
 	}
 
 	public Point2D getPoint(int i) {
@@ -103,11 +104,11 @@ public class XYTaSeries implements XMLPersistent {
 		return true;
 	}
 	
-	public ArrayList<Double> getDoubleArrayList (EnumArrayListType option) {
+	public List<Double> getDoubleArrayList (EnumListType option) {
 		
 		if (pointsList.size() == 0)
 			return null;
-		ArrayList<Double> datai = null;
+		List<Double> datai = null;
 		
 		switch (option) {
 		case distance:
@@ -131,7 +132,7 @@ public class XYTaSeries implements XMLPersistent {
 		return lastIntervalAlive;
 	}
 	
-	private ArrayList<Double> getDistanceBetweenPoints() {
+	private List<Double> getDistanceBetweenPoints() {
 		ArrayList<Double> dataArray = new ArrayList<Double>();
 		dataArray.ensureCapacity(pointsList.size());
 		Point2D previous = new Point2D.Double();
@@ -144,7 +145,7 @@ public class XYTaSeries implements XMLPersistent {
 		return dataArray;
 	}
 	
-	public ArrayList<Double> getIsAliveAsDoubleArray() {
+	public List<Double> getIsAliveAsDoubleArray() {
 		ArrayList<Double> dataArray = new ArrayList<Double>();
 		dataArray.ensureCapacity(pointsList.size());
 		for (XYTaValue pos: pointsList) {
@@ -153,7 +154,7 @@ public class XYTaSeries implements XMLPersistent {
 		return dataArray;
 	}
 	
-	public ArrayList<Integer> getIsAliveAsIntegerArray() {
+	public List<Integer> getIsAliveAsIntegerArray() {
 		ArrayList<Integer> dataArray = new ArrayList<Integer>();
 		dataArray.ensureCapacity(pointsList.size());
 		for (XYTaValue pos: pointsList) {
@@ -162,7 +163,7 @@ public class XYTaSeries implements XMLPersistent {
 		return dataArray;
 	}
 	
-	public void computeIsAlive(ArrayList<Double> data, Double threshold) {
+	public void computeIsAlive(List<Double> data, Double threshold) {
 		this.threshold = threshold;
 		lastIntervalAlive = 0;
 		boolean isalive = false;
@@ -176,10 +177,9 @@ public class XYTaSeries implements XMLPersistent {
 		}
 	}
 	
-	private ArrayList<Double> getXYPositions() {
+	private List<Double> getXYPositions() {
 		ArrayList<Double> dataArray = new ArrayList<Double>();
 		dataArray.ensureCapacity(pointsList.size()*2);
-
 		for (XYTaValue pos: pointsList) {
 			double x = pos.point.getX(); 
 			double y = pos.point.getY();

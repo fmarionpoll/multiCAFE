@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
@@ -96,7 +97,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 	
 	private int getDataAndExport(Experiment exp, XSSFWorkbook workbook, int col0, String charSeries, EnumXLSExportItems datatype) 
 	{	
-		ArrayList <XLSCapillaryResults> arrayList = getDataFromRois(exp, datatype, options.t0);	
+		List <XLSCapillaryResults> arrayList = getDataFromRois(exp, datatype, options.t0);	
 		int colmax = xlsExportToWorkbook(exp, workbook, datatype.toString(), datatype, col0, charSeries, arrayList);
 		if (options.onlyalive) {
 			trimDeadsFromArrayList(exp, arrayList);
@@ -105,9 +106,9 @@ public class XLSExportCapillaryResults extends XLSExport {
 		return colmax;
 	}
 	
-	private ArrayList <XLSCapillaryResults> getDataFromRois(Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
+	private List <XLSCapillaryResults> getDataFromRois(Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
 		
-		ArrayList <XLSCapillaryResults> resultsArrayList = new ArrayList <XLSCapillaryResults> ();	
+		List <XLSCapillaryResults> resultsList = new ArrayList <XLSCapillaryResults> ();	
 		Capillaries capillaries = exp.vSequence.capillaries;
 		double scalingFactorToPhysicalUnits = capillaries.volume / exp.vSequence.capillaries.pixels;
 		
@@ -118,23 +119,23 @@ public class XLSExportCapillaryResults extends XLSExport {
 			switch (xlsoption) {
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:
-				results.data = exp.vkymos.subtractTi(cap.getMeasures(EnumArrayListType.topLevel));
+				results.data = exp.vkymos.subtractTi(cap.getMeasures(EnumListType.topLevel));
 				break;
 			case DERIVEDVALUES:
-				results.data = cap.getMeasures(EnumArrayListType.derivedValues);
+				results.data = cap.getMeasures(EnumListType.derivedValues);
 				break;
 			case SUMGULPS:
 			case SUMGULPS_LR:
 				if (options.collateSeries && exp.previousExperiment != null) {
 					double dvalue = getLastValueOfPreviousExp(cap.getName(), exp.previousExperiment, xlsoption, optiont0);
 					int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
-					results.data = exp.vkymos.addConstant(cap.getMeasures(EnumArrayListType.cumSum), addedValue);
+					results.data = exp.vkymos.addConstant(cap.getMeasures(EnumListType.cumSum), addedValue);
 				}
 				else
-					results.data = cap.getMeasures(EnumArrayListType.cumSum);
+					results.data = cap.getMeasures(EnumListType.cumSum);
 				break;
 			case BOTTOMLEVEL:
-				results.data = cap.getMeasures(EnumArrayListType.bottomLevel);
+				results.data = cap.getMeasures(EnumListType.bottomLevel);
 				break;
 			case TOPLEVEL:
 			case TOPLEVEL_LR:
@@ -142,20 +143,20 @@ public class XLSExportCapillaryResults extends XLSExport {
 					if (options.collateSeries && exp.previousExperiment != null) {
 						double dvalue = getLastValueOfPreviousExp(exp.vkymos.getFileName(t), exp.previousExperiment, xlsoption, optiont0);
 						int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
-						results.data = exp.vkymos.subtractT0AndAddConstant(cap.getMeasures(EnumArrayListType.topLevel), addedValue);
+						results.data = exp.vkymos.subtractT0AndAddConstant(cap.getMeasures(EnumListType.topLevel), addedValue);
 					}
 					else
-						results.data = exp.vkymos.subtractT0(cap.getMeasures(EnumArrayListType.topLevel));
+						results.data = exp.vkymos.subtractT0(cap.getMeasures(EnumListType.topLevel));
 				}
 				else
-					results.data = cap.getMeasures(EnumArrayListType.topLevel);
+					results.data = cap.getMeasures(EnumListType.topLevel);
 				break;
 			default:
 				break;
 			}
-			resultsArrayList.add(results);
+			resultsList.add(results);
 		}
-		return resultsArrayList;
+		return resultsList;
 	}
 	
 	private double getLastValueOfPreviousExp(String capName, Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
@@ -176,14 +177,14 @@ public class XLSExportCapillaryResults extends XLSExport {
 			switch (xlsoption) {
 			case SUMGULPS:
 			case SUMGULPS_LR:
-				results.data = cap.getMeasures(EnumArrayListType.cumSum);
+				results.data = cap.getMeasures(EnumListType.cumSum);
 				break;
 			case TOPLEVEL:
 			case TOPLEVEL_LR:
 				if (optiont0) 
-					results.data = exp.vkymos.subtractT0(cap.getMeasures(EnumArrayListType.topLevel));
+					results.data = exp.vkymos.subtractT0(cap.getMeasures(EnumListType.topLevel));
 				else
-					results.data = cap.getMeasures(EnumArrayListType.topLevel);
+					results.data = cap.getMeasures(EnumListType.topLevel);
 				break;
 			default:
 				return lastValue;
@@ -196,7 +197,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 		return lastValue;
 	}
 	
-	private void trimDeadsFromArrayList(Experiment exp, ArrayList <XLSCapillaryResults> resultsArrayList) {
+	private void trimDeadsFromArrayList(Experiment exp, List <XLSCapillaryResults> resultsArrayList) {
 
 		for (XYTaSeries flypos: exp.vSequence.cages.flyPositionsList) {
 			
@@ -233,7 +234,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 		return isalive;
 	}
 	
-	private void trimArrayLength (ArrayList<Integer> array, int ilastalive) {
+	private void trimArrayLength (List<Integer> array, int ilastalive) {
 		if (array == null)
 			return;
 		
@@ -247,7 +248,8 @@ public class XLSExportCapillaryResults extends XLSExport {
 			array.remove(i);
 	}
 	
-	private int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, String title, EnumXLSExportItems xlsExportOption, int col0, String charSeries, ArrayList <XLSCapillaryResults> arrayList) {
+	private int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, String title, 
+			EnumXLSExportItems xlsExportOption, int col0, String charSeries, List <XLSCapillaryResults> arrayList) {
 			
 		XSSFSheet sheet = workBook.getSheet(title);
 		if (sheet == null) {
@@ -274,7 +276,8 @@ public class XLSExportCapillaryResults extends XLSExport {
 		return pt;
 	}
 		
-	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, boolean transpose, String charSeries, ArrayList <XLSCapillaryResults> dataArrayList) {
+	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, boolean transpose, 
+			String charSeries, List <XLSCapillaryResults> dataArrayList) {
 		
 		double scalingFactorToPhysicalUnits = exp.vSequence.capillaries.volume / exp.vSequence.capillaries.pixels;
 		
@@ -339,8 +342,8 @@ public class XLSExportCapillaryResults extends XLSExport {
 					if (colL >= 0)
 						pt.x = colseries + colL;			
 
-					ArrayList<Integer> dataL = dataArrayList.get(idataArray).data ;
-					ArrayList<Integer> dataR = dataArrayList.get(idataArray+1).data;
+					List<Integer> dataL = dataArrayList.get(idataArray).data ;
+					List<Integer> dataR = dataArrayList.get(idataArray+1).data;
 					if (dataL != null && dataR != null) {
 						int j = (currentFrame - startFrame)/step;
 						if (j < dataL.size() && j < dataR.size()) {
@@ -368,7 +371,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 					if (col >= 0)
 						pt.x = colseries + col;			
 
-					ArrayList<Integer> data = dataArrayList.get(idataArray).data;
+					List<Integer> data = dataArrayList.get(idataArray).data;
 					if (data != null) {
 						int j = (currentFrame - startFrame)/step;
 						if (j < data.size()) {

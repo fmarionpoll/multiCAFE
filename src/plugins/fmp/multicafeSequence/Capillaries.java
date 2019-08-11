@@ -38,9 +38,9 @@ public class Capillaries {
 	public String 	stimulusL			= new String("stimulusL");
 	public String 	concentrationL		= new String("xmML");
 	
-	public DetectLimits_Options limitsOptions			= new DetectLimits_Options();
-	public DetectGulps_Options 	gulpsOptions			= new DetectGulps_Options();
-	public ArrayList <Capillary> capillariesArrayList 	= new ArrayList <Capillary>();
+	public DetectLimits_Options limitsOptions		= new DetectLimits_Options();
+	public DetectGulps_Options 	gulpsOptions		= new DetectGulps_Options();
+	public List <Capillary> capillariesArrayList 	= new ArrayList <Capillary>();
 	
 	private final static String ID_CAPILLARYTRACK = "capillaryTrack";
 	private final static String ID_PARAMETERS = "Parameters";	
@@ -172,8 +172,8 @@ public class Capillaries {
 	}
 
 	public void transferROIStoCapillaries (SequenceCapillaries seq) {
-		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
-		ArrayList<ROI2D> listROISCap = new ArrayList<ROI2D> ();
+		List<ROI2D> list = seq.seq.getROI2Ds();
+		List<ROI2D> listROISCap = new ArrayList<ROI2D> ();
 		for (ROI2D roi:list) {
 			if (!(roi instanceof ROI2DShape) || !roi.getName().contains("line")) 
 				continue;

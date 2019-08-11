@@ -15,7 +15,7 @@ import javax.swing.SpinnerNumberModel;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.XYTaSeries;
-import plugins.fmp.multicafeTools.EnumArrayListType;
+import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.YPosMultiChart;
 
 
@@ -67,28 +67,28 @@ public class MCMoveTab_Graphs extends JPanel {
 	
 		if (moveCheckbox.isSelected() ) {
 			ypositionsChart = displayYPos("flies Y positions", ypositionsChart, rectv, ptRelative, 
-					EnumArrayListType.xyPosition);
+					EnumListType.xyPosition);
 			ptRelative.y += deltay;
 		}
 		if (distanceCheckbox.isSelected()) {
 			distanceChart = displayYPos("distance between positions at t+1 and t", distanceChart, rectv, ptRelative,
-					EnumArrayListType.distance);
+					EnumListType.distance);
 			ptRelative.y += deltay;
 		}
 		if (aliveCheckbox.isSelected()) {
 			double threshold = (double) aliveThresholdSpinner.getValue();		
 			for (XYTaSeries posSeries: parent0.vSequence.cages.flyPositionsList) {
 				posSeries.threshold = threshold;
-				posSeries.getDoubleArrayList(EnumArrayListType.isalive);
+				posSeries.getDoubleArrayList(EnumListType.isalive);
 			}
 			aliveChart = displayYPos("flies alive", aliveChart, rectv, ptRelative,
-					EnumArrayListType.isalive);	
+					EnumListType.isalive);	
 			ptRelative.y += deltay;
 		}
 	}
 
 	
-	private YPosMultiChart displayYPos(String title, YPosMultiChart iChart, Rectangle rectv, Point ptRelative, EnumArrayListType option) {
+	private YPosMultiChart displayYPos(String title, YPosMultiChart iChart, Rectangle rectv, Point ptRelative, EnumListType option) {
 		if (iChart == null || !iChart.mainChartPanel.isValid()) {
 			iChart = new YPosMultiChart();
 			iChart.createPanel(title);

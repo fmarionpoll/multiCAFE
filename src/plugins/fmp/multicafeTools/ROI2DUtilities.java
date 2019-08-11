@@ -35,8 +35,8 @@ public class ROI2DUtilities  {
 		return cageLimitROIList;
 	}
 	
-	public static ArrayList<BooleanMask2D> getMask2DFromRoiList (ArrayList<ROI2D> roiList) {
-		ArrayList<BooleanMask2D> cageMaskList = new ArrayList<BooleanMask2D>();
+	public static List<BooleanMask2D> getMask2DFromRoiList (List<ROI2D> roiList) {
+		List<BooleanMask2D> cageMaskList = new ArrayList<BooleanMask2D>();
 		for ( ROI2D roi : roiList ) {
 			cageMaskList.add(roi.getBooleanMask2D( 0 , 0, 1, true ));
 		}
@@ -141,7 +141,7 @@ public class ROI2DUtilities  {
 		return ;
 	}
 	
-	public static void addRoitoCumulatedSumArray(ROI2DPolyLine roi, ArrayList<Integer> sumArrayList) {
+	public static void addRoitoCumulatedSumArray(ROI2DPolyLine roi, List<Integer> sumArrayList) {
 		interpolateMissingPointsAlongXAxis (roi);
 		ArrayList<Integer> intArray = transferRoiToDataArray(roi);
 		Polyline2D line = roi.getPolyline2D();

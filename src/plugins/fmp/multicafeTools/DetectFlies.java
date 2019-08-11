@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.swing.SwingUtilities;
 
@@ -26,27 +27,27 @@ import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
 public class DetectFlies  implements Runnable {
 	
-	private ArrayList<BooleanMask2D> 	cageMaskList 	= new ArrayList<BooleanMask2D>();
-	private ArrayList<Boolean>			initialflyRemoved = new ArrayList<Boolean> ();
-	private int							analyzeStep ;
-	private int 						startFrame;
-	private int 						endFrame;
-	private int 						nbframes;
-	private Viewer 						viewer;
-	public Rectangle					rectangleAllCages = null;
+	private List<BooleanMask2D> cageMaskList 	= new ArrayList<BooleanMask2D>();
+	private List<Boolean>		initialflyRemoved = new ArrayList<Boolean> ();
+	private int					analyzeStep ;
+	private int 				startFrame;
+	private int 				endFrame;
+	private int 				nbframes;
+	private Viewer 				viewer;
+	public Rectangle			rectangleAllCages = null;
 		
-	public SequenceCapillaries 				vSequence 		= null;	
-	public boolean 						stopFlag 		= false;
-	public boolean 						threadRunning 	= false;
-	public boolean						buildBackground	= true;
-	public boolean						detectFlies		= true;
+	public SequenceCapillaries 	vSequence 		= null;	
+	public boolean 				stopFlag 		= false;
+	public boolean 				threadRunning 	= false;
+	public boolean				buildBackground	= true;
+	public boolean				detectFlies		= true;
 	
-	public DetectFlies_Options 			detect 			= new DetectFlies_Options();
-	public Cages 						cages 			= new Cages();
-	public SequenceCapillaries 				seqNegative 	= null;
-	public SequenceCapillaries 				seqPositive 	= null;
-	public SequenceCapillaries				seqReference	= null;
-	public boolean						viewInternalImages = false;
+	public DetectFlies_Options 	detect 			= new DetectFlies_Options();
+	public Cages 				cages 			= new Cages();
+	public SequenceCapillaries 	seqNegative 	= null;
+	public SequenceCapillaries 	seqPositive 	= null;
+	public SequenceCapillaries	seqReference	= null;
+	public boolean				viewInternalImages = false;
 
 	/*
 	 * (non-Javadoc)
@@ -98,13 +99,12 @@ public class DetectFlies  implements Runnable {
 		ProgressFrame progress = new ProgressFrame("Detecting flies...");
 		int nbcages = cages.cageLimitROIList.size();
 		ROI2DRectangle [] tempRectROI = new ROI2DRectangle [nbcages];
-		int minCapacity = (endFrame - startFrame + 1) / analyzeStep;		
+		//int minCapacity = (endFrame - startFrame + 1) / analyzeStep;		
 		for (int i=0; i < nbcages; i++) {
 			tempRectROI[i] = new ROI2DRectangle(0, 0, 10, 10);
 			tempRectROI[i].setName("fly_"+i);
 			vSequence.seq.addROI(tempRectROI[i]);
 			XYTaSeries positions = new XYTaSeries(cages.cageLimitROIList.get(i));
-			positions.ensureCapacity(minCapacity);
 			cages.flyPositionsList.add(positions);
 		}
 

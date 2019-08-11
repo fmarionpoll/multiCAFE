@@ -15,7 +15,7 @@ import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.fmp.multicafeTools.EnumArrayListType;
+import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.XYMultiChart;
 
 public class MCKymosTab_Graphs extends JPanel {
@@ -61,33 +61,33 @@ public class MCKymosTab_Graphs extends JPanel {
 		Point ptRelative = new Point(0,rectv.height);
 		final int deltay = 230;
 
-		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(parent0.vkymos, EnumArrayListType.topAndBottom)) {
+		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(parent0.vkymos, EnumListType.topAndBottom)) {
 			topandbottomChart = xyDisplayGraphsItem("top + bottom levels", 
-					EnumArrayListType.topAndBottom, 
+					EnumListType.topAndBottom, 
 					topandbottomChart, rectv, ptRelative);
 			ptRelative.y += deltay;
 		}
-		if (deltaCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.vkymos, EnumArrayListType.topLevelDelta)) {
+		if (deltaCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.vkymos, EnumListType.topLevelDelta)) {
 			deltaChart = xyDisplayGraphsItem("top delta t -(t-1)", 
-					EnumArrayListType.topLevelDelta, 
+					EnumListType.topLevelDelta, 
 					deltaChart, rectv, ptRelative);
 			ptRelative.y += deltay;
 		}
-		if (derivativeCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.vkymos, EnumArrayListType.derivedValues)) {
+		if (derivativeCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.vkymos, EnumListType.derivedValues)) {
 			derivativeChart = xyDisplayGraphsItem("Derivative", 
-					EnumArrayListType.derivedValues, 
+					EnumListType.derivedValues, 
 					derivativeChart, rectv, ptRelative);
 			ptRelative.y += deltay; 
 		}
-		if (consumptionCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.vkymos, EnumArrayListType.cumSum)) {
+		if (consumptionCheckbox.isSelected()&& isThereAnyDataToDisplay(parent0.vkymos, EnumListType.cumSum)) {
 			sumgulpsChart = xyDisplayGraphsItem("Cumulated gulps", 
-					EnumArrayListType.cumSum, 
+					EnumListType.cumSum, 
 					sumgulpsChart, rectv, ptRelative);
 			ptRelative.y += deltay; 
 		}
 	}
 
-	private XYMultiChart xyDisplayGraphsItem(String title, EnumArrayListType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) {	
+	private XYMultiChart xyDisplayGraphsItem(String title, EnumListType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) {	
 		if (iChart != null && iChart.mainChartPanel.isValid()) {
 			iChart.fetchNewData(parent0.vkymos, option);
 		}
@@ -101,7 +101,7 @@ public class MCKymosTab_Graphs extends JPanel {
 		return iChart;
 	}
 	
-	private boolean isThereAnyDataToDisplay(SequenceKymos sequence, EnumArrayListType option) {
+	private boolean isThereAnyDataToDisplay(SequenceKymos sequence, EnumListType option) {
 		boolean flag = false;
 		Capillaries capillaries = sequence.capillaries;
 		for (Capillary cap: capillaries.capillariesArrayList) {

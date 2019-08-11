@@ -112,7 +112,7 @@ public class MCCapillariesTab_Options extends JPanel {
 		} } );
 	}
 		
-	void transferCapillaryNamesToComboBox(ArrayList <Capillary> capillaryArrayList) {
+	void transferCapillaryNamesToComboBox(List <Capillary> capillaryArrayList) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				kymographNamesComboBox.removeAllItems();

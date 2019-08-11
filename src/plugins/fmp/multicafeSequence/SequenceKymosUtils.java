@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import icy.common.exception.UnsupportedFormatException;
 import icy.file.Loader;
@@ -25,13 +26,13 @@ public class SequenceKymosUtils {
 	
 	private static int 		imageWidthMax 			= 0;
 	private static int 		imageHeightMax 			= 0;
-	private static ArrayList<Rectangle> rectList 	= null;
+	private static List<Rectangle> rectList 	= null;
 	static String 			extension 				= ".tiff";
 	
 	// -------------------------------------------------------
 	
-	private static ArrayList<File> keepOnlyFilesMatchingCapillaries(File[] files, Capillaries capillaries) {
-		ArrayList<File> filesArray = new ArrayList<File>();
+	private static List<File> keepOnlyFilesMatchingCapillaries(File[] files, Capillaries capillaries) {
+		List<File> filesArray = new ArrayList<File>();
 		for (int i= 0; i < files.length; i++) {
 			String filename = files[i].getAbsolutePath();
 			for (Capillary cap: capillaries.capillariesArrayList) {
@@ -44,7 +45,7 @@ public class SequenceKymosUtils {
 		return filesArray;
 	}
 		
-	private static void getMaxSizeofTiffFiles(ArrayList<File> files) {
+	private static void getMaxSizeofTiffFiles(List<File> files) {
 		imageWidthMax = 0;
 		imageHeightMax = 0;
 		rectList = new ArrayList<Rectangle>(files.size());
@@ -74,7 +75,7 @@ public class SequenceKymosUtils {
 		progress.close();
 	}
 	
-	private static void adjustImagesToMaxSize(ArrayList<File> files) {
+	private static void adjustImagesToMaxSize(List<File> files) {
 		ProgressFrame progress = new ProgressFrame("Make kymographs the same width and height");
 		progress.setLength(files.size());
 
@@ -144,12 +145,12 @@ public class SequenceKymosUtils {
 		ProgressFrame progress = new ProgressFrame("Read kymographs");
 	
 		//TODO: parent_capillaries does not necessarily contains a list of the capillaries (capillarytrack does not)
-		ArrayList <File> filesArray = keepOnlyFilesMatchingCapillaries(files, parent_capillaries);
+		List <File> filesArray = keepOnlyFilesMatchingCapillaries(files, parent_capillaries);
 		getMaxSizeofTiffFiles(filesArray);
 		adjustImagesToMaxSize(filesArray);
 
 		progress.setMessage("create sequence");
-		ArrayList<String> listFileNames = new ArrayList<String> (filesArray.size());
+		List<String> listFileNames = new ArrayList<String> (filesArray.size());
 		for (File file: filesArray) {
 			listFileNames.add(file.getPath());
 		}

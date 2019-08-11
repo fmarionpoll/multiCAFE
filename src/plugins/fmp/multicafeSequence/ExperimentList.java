@@ -2,11 +2,13 @@ package plugins.fmp.multicafeSequence;
 
 
 import java.util.ArrayList;
+import java.util.List;
+
 import icy.gui.frame.progress.ProgressFrame;
 
 public class ExperimentList {
 	
-	public ArrayList<Experiment> experimentList = null;
+	public List<Experiment> experimentList = null;
 	
 	public ExperimentList () {
 		experimentList = new ArrayList<Experiment> ();

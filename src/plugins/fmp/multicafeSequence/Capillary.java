@@ -16,7 +16,7 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 
-import plugins.fmp.multicafeTools.EnumArrayListType;
+import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.DetectLimits_Options;
@@ -35,10 +35,10 @@ public class Capillary implements XMLPersistent  {
 	public List<Point2D> 				ptsTop  				= null; 
 	public List<Point2D> 				ptsBottom 				= null; 
 	public Collection<ROI> 				gulpsRois 				= null; 
-	public ArrayList<Integer> 			derivedValuesArrayList 	= null; 
+	public List<Integer> 				derivedValuesArrayList 	= null; 
 	
-	public ArrayList<ArrayList<int[]>> 	masksList 				= null;
-	public ArrayList <double []> 		tabValuesList 			= null;
+	public List<ArrayList<int[]>> 		masksList 				= null;
+	public List <double []> 			tabValuesList 			= null;
 	public IcyBufferedImage 			bufImage 				= null;
 	
 	private final static String ID_META 		= "metaMC";
@@ -89,10 +89,10 @@ public class Capillary implements XMLPersistent  {
 		return newname;
 	}
 	
-	public ArrayList<Integer> getIntegerArrayFromPointArray(List<Point2D> ptsList) {
+	public List<Integer> getIntegerArrayFromPointArray(List<Point2D> ptsList) {
 		if (ptsList == null)
 			return null;
-		ArrayList<Integer> arrayInt = new ArrayList<Integer> ();
+		List<Integer> arrayInt = new ArrayList<Integer> ();
 		for (Point2D pt: ptsList) {
 			int value = (int) pt.getY();
 			arrayInt.add(value);
@@ -100,7 +100,7 @@ public class Capillary implements XMLPersistent  {
 		return arrayInt;
 	}
 	
-	public List<Point2D> getPointArrayFromIntegerArray(ArrayList<Integer> data) {
+	public List<Point2D> getPointArrayFromIntegerArray(List<Integer> data) {
 		if (data == null)
 			return null;
 		List<Point2D> ptsList = null;
@@ -114,7 +114,7 @@ public class Capillary implements XMLPersistent  {
 		return ptsList;
 	}
 	
-	public boolean isThereAnyMeasuresDone(EnumArrayListType option) {
+	public boolean isThereAnyMeasuresDone(EnumListType option) {
 		boolean yes = false;
 		switch (option) {
 		case derivedValues:
@@ -134,8 +134,8 @@ public class Capillary implements XMLPersistent  {
 		return yes;
 	}
 	
-	public ArrayList<Integer> getMeasures(EnumArrayListType option) {
-		ArrayList<Integer> datai = null;
+	public List<Integer> getMeasures(EnumListType option) {
+		List<Integer> datai = null;
 		switch (option) {
 		case derivedValues:
 			datai = derivedValuesArrayList;
@@ -184,11 +184,11 @@ public class Capillary implements XMLPersistent  {
 		return roi;
 	}
 
-	private ArrayList<Integer> getCumSumFromRoisArray(Collection<ROI> gulpsRois) {
+	private List<Integer> getCumSumFromRoisArray(Collection<ROI> gulpsRois) {
 	
 		if (gulpsRois == null)
 			return null;
-		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(ptsTop.size(), 0));
+		List<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(ptsTop.size(), 0));
 		for (ROI roi: gulpsRois) {
 			ROI2DUtilities.addRoitoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
 		}
@@ -287,7 +287,7 @@ public class Capillary implements XMLPersistent  {
         return rois;
 	}
 	
-	private void saveIntArraytoXML(Node node, String name, ArrayList <Integer> data) {
+	private void saveIntArraytoXML(Node node, String name, List <Integer> data) {
 		final Node nodeMeta = XMLUtil.setElement(node, name);
 	    if (nodeMeta != null) {
 	    	int i= 0;

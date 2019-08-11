@@ -2,6 +2,7 @@ package plugins.fmp.multicafeTools;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
@@ -179,7 +180,7 @@ public class BuildKymographs implements Runnable
 		} 
 	}
 	
-	private double initExtractionParametersfromROI( ROI2DShape roi, ArrayList<ArrayList<int[]>> masks,  double diskRadius, int sizex, int sizey)
+	private double initExtractionParametersfromROI( ROI2DShape roi, List<ArrayList<int[]>> masks,  double diskRadius, int sizex, int sizey)
 	{
 		CubicSmoothingSpline xSpline 	= Util.getXsplineFromROI((ROI2DShape) roi);
 		CubicSmoothingSpline ySpline 	= Util.getYsplineFromROI((ROI2DShape) roi);

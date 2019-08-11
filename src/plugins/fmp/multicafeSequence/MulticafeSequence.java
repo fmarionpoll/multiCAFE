@@ -20,7 +20,7 @@ import plugins.adufour.ezplug.EzVarListener;
 
 public class MulticafeSequence extends EzPlug {
 	public SequenceCapillaries vSequence = null;
-	ArrayList <SequenceKymos> kymographArrayList	= new ArrayList <SequenceKymos> ();	// list of kymograph sequences
+	List <SequenceKymos> kymographArrayList	= new ArrayList <SequenceKymos> ();	// list of kymograph sequences
 
 	boolean stopFlag = false;
 	EzGroup groupLoadFiles;

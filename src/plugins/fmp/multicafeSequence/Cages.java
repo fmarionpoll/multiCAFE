@@ -3,6 +3,7 @@ package plugins.fmp.multicafeSequence;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -19,8 +20,8 @@ import plugins.kernel.roi.roi2d.ROI2DPolygon;
 public class Cages {
 	
 	public DetectFlies_Options 	detect 					= new DetectFlies_Options();
-	public ArrayList<ROI2D> 		cageLimitROIList		= new ArrayList<ROI2D>();
-	public ArrayList<XYTaSeries> 	flyPositionsList 		= new ArrayList<XYTaSeries>();
+	public List<ROI2D> 		cageLimitROIList			= new ArrayList<ROI2D>();
+	public List<XYTaSeries> 	flyPositionsList 		= new ArrayList<XYTaSeries>();
 	
 
 	public void clear() {

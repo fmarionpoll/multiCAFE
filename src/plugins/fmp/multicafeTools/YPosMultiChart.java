@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -25,7 +26,7 @@ public class YPosMultiChart extends IcyFrame {
 
 	public JPanel 	mainChartPanel = null;
 	private ArrayList<ChartPanel> chartsInMainChartPanel = null;
-	ArrayList<XYSeriesCollection> xyDataSetList = null;
+	List<XYSeriesCollection> xyDataSetList = null;
 	
 	public IcyFrame mainChartFrame = null;
 	private String 	title;
@@ -47,7 +48,7 @@ public class YPosMultiChart extends IcyFrame {
 		pt = new Point(rectv.x + deltapt.x, rectv.y + deltapt.y);
 	}
 	
-	public void displayData(ArrayList<XYTaSeries> flyPositionsList, EnumArrayListType option) {
+	public void displayData(List<XYTaSeries> flyPositionsList, EnumListType option) {
 
 		if (xyDataSetList == null)
 			displayNewData(flyPositionsList, option);
@@ -55,7 +56,7 @@ public class YPosMultiChart extends IcyFrame {
 			fetchNewData(flyPositionsList, option);
 	}
 	
-	private void displayNewData(ArrayList<XYTaSeries> flyPositionsList, EnumArrayListType option) {
+	private void displayNewData(List<XYTaSeries> flyPositionsList, EnumListType option) {
 
 		xyDataSetList = new ArrayList <XYSeriesCollection>();
 		MinMaxDouble valMinMax = new MinMaxDouble();
@@ -89,7 +90,7 @@ public class YPosMultiChart extends IcyFrame {
 		mainChartFrame.setVisible(true);
 	}
 	
-	private void fetchNewData (ArrayList<XYTaSeries> flyPositionsList, EnumArrayListType option) {
+	private void fetchNewData (List<XYTaSeries> flyPositionsList, EnumListType option) {
 
 		for (XYTaSeries positionxyt: flyPositionsList) 
 		{
@@ -108,7 +109,7 @@ public class YPosMultiChart extends IcyFrame {
 		}
 	}
 	
-	private MinMaxDouble addPointsToXYSeries(XYTaSeries positionxyt, EnumArrayListType option, XYSeries seriesXY) {
+	private MinMaxDouble addPointsToXYSeries(XYTaSeries positionxyt, EnumListType option, XYSeries seriesXY) {
 		int itmax = positionxyt.pointsList.size();
 		MinMaxDouble minmax =null;
 		switch (option) {
@@ -159,7 +160,7 @@ public class YPosMultiChart extends IcyFrame {
 		return minmax;
 	}
 	
-	private YPosMultiChartStructure getDataSet(XYTaSeries positionxyt, EnumArrayListType option) {
+	private YPosMultiChartStructure getDataSet(XYTaSeries positionxyt, EnumListType option) {
 		
 		XYSeriesCollection xyDataset = new XYSeriesCollection();	
 		String name = positionxyt.roi.getName();

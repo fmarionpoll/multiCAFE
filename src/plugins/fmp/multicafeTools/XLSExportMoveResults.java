@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.ss.usermodel.Row;
@@ -79,22 +80,22 @@ public class XLSExportMoveResults extends XLSExport {
 		System.out.println("XLS output finished");
 	}
 	
-	private static ArrayList <ArrayList<Double>> getDataFromCages(Experiment exp, EnumXLSExportItems option) {
+	private static List <ArrayList<Double>> getDataFromCages(Experiment exp, EnumXLSExportItems option) {
 
-		ArrayList <ArrayList<Double >> arrayList = new ArrayList <ArrayList <Double>> ();
+		List<ArrayList<Double>> arrayList = new ArrayList <ArrayList <Double>> ();
 		
 		for (XYTaSeries posxyt: exp.vSequence.cages.flyPositionsList) {
 			switch (option) {
 			case DISTANCE: 
-				arrayList.add(posxyt.getDoubleArrayList(EnumArrayListType.distance));
+				arrayList.add((ArrayList<Double>) posxyt.getDoubleArrayList(EnumListType.distance));
 				break;
 			case ISALIVE:
-				arrayList.add(posxyt.getDoubleArrayList(EnumArrayListType.isalive));
+				arrayList.add((ArrayList<Double>) posxyt.getDoubleArrayList(EnumListType.isalive));
 				// TODO add threshold to cleanup data?
 				break;
 			case XYCENTER:
 			default:
-				arrayList.add(posxyt.getDoubleArrayList(EnumArrayListType.xyPosition));
+				arrayList.add((ArrayList<Double>) posxyt.getDoubleArrayList(EnumListType.xyPosition));
 				break;
 			}
 		}
@@ -103,7 +104,7 @@ public class XLSExportMoveResults extends XLSExport {
 
 	public int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, int col0, String charSeries, EnumXLSExportItems xlsExportOption) {
 
-		ArrayList <ArrayList<Double >> arrayList = getDataFromCages(exp, xlsExportOption);
+		List <ArrayList<Double >> arrayList = getDataFromCages(exp, xlsExportOption);
 
 		XSSFSheet sheet = workBook.getSheet(xlsExportOption.toString());
 		if (sheet == null) 
@@ -201,7 +202,7 @@ public class XLSExportMoveResults extends XLSExport {
 		return pt;
 	}
 	
-	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt, EnumXLSExportItems option, ArrayList <ArrayList<Double >> dataArrayList, boolean transpose, String charSeries) {
+	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt, EnumXLSExportItems option, List <ArrayList<Double >> dataArrayList, boolean transpose, String charSeries) {
 	
 		int col0 = pt.x;
 		int row0 = pt.y;
