@@ -29,9 +29,6 @@ public class SequenceKymos extends SequenceCapillaries  {
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;
 
-//	public	TransformOp		transformForLevels 		= TransformOp.R2MINUS_GB;
-//	public	TransformOp 	transformForGulps 		= TransformOp.XDIFFN;
-	
 	public 	LocalDateTime	startDate				= null;
 	public 	LocalDateTime	endDate					= null;
 	public 	long			minutesBetweenImages	= 1;

@@ -84,7 +84,6 @@ public class MCCapillariesTab_File extends JPanel {
 	
 	boolean saveCapillaryTrack() {
 		parent0.sequencePane.browseTab.getBrowseItems (parent0.vSequence);
-		
 		return parent0.vSequence.xmlWriteCapillaryTrackDefault();
 	}
 

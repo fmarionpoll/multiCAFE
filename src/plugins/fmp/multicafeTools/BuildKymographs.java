@@ -59,6 +59,8 @@ public class BuildKymographs implements Runnable
 		seqForRegistration.addImage(0, workImage);
 		seqForRegistration.addImage(1, workImage);
 		int nbcapillaries = vkymos.capillaries.capillariesArrayList.size();
+		if (nbcapillaries == 0)
+			return;
 		
 		options.vSequence.seq.beginUpdate();
 		for (int t = options.startFrame ; t <= options.endFrame && !stopFlag; t += options.analyzeStep, ipixelcolumn++ ) {
@@ -101,7 +103,7 @@ public class BuildKymographs implements Runnable
 				cap.bufImage.setDataXY(chan, destArray);
 			}
 			vkymos.seq.setImage(t, 0, cap.bufImage);
-			vkymos.capillaries.capillariesArrayList.add(options.vSequence.capillaries.capillariesArrayList.get(t));
+//			vkymos.capillaries.capillariesArrayList.add(options.vSequence.capillaries.capillariesArrayList.get(t));
 			
 			cap.masksList.clear();
 			cap.tabValuesList.clear();
@@ -151,7 +153,7 @@ public class BuildKymographs implements Runnable
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;
 
-		options.vSequence.capillaries.createCapillariesFromROIS(options.vSequence);
+		options.vSequence.capillaries.transferROIStoCapillaries(options.vSequence);
 		vkymos.capillaries.copy(options.vSequence.capillaries);
 		
 		int nbcapillaries = vkymos.capillaries.capillariesArrayList.size();

@@ -132,8 +132,9 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	private void setCapillariesInfosToDialogs(SequenceCapillaries seq) {
+		parent0.vSequence.capillaries.transferROIStoCapillaries(seq);
+		
 		unitsTab.setCapillariesInfosToDialog(seq.capillaries);
-		parent0.vSequence.capillaries.createCapillariesFromROIS(seq);
 		buildarrayTab.setCapillariesInfosToDialog(seq.capillaries);
 		parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seq.capillaries);
 	}

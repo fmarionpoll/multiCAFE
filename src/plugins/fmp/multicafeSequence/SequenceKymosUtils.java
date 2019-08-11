@@ -143,7 +143,7 @@ public class SequenceKymosUtils {
 		
 		ProgressFrame progress = new ProgressFrame("Read kymographs");
 	
-		x//TODO: parent_capillaries does not necessarily contains a list of the capillaries (capillarytrack does not)
+		//TODO: parent_capillaries does not necessarily contains a list of the capillaries (capillarytrack does not)
 		ArrayList <File> filesArray = keepOnlyFilesMatchingCapillaries(files, parent_capillaries);
 		getMaxSizeofTiffFiles(filesArray);
 		adjustImagesToMaxSize(filesArray);
@@ -183,6 +183,7 @@ public class SequenceKymosUtils {
 			}
 			i++;
 		}
+		kymographSeq.setFileName(kymographSeq.getDecoratedImageName(0));
 		
 		progress.close();
 		isRunning = false;

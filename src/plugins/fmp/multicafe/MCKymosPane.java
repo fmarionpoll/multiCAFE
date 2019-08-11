@@ -133,10 +133,10 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		int nimages = parent0.vkymos.seq.getSizeT();
 		parent0.vkymos.seq.beginUpdate();
 		tImg.setSequence(parent0.vkymos);
-		parent0.vkymos.updateCapillaries(nimages);
+		parent0.vkymos.storeAnalysisParametersToCapillaries();
 		Capillaries capillaries = parent0.vkymos.capillaries;
 		if (capillaries.capillariesArrayList.size() != nimages) {
-			capillaries.createCapillariesFromROIS(parent0.vSequence);
+			capillaries.transferROIStoCapillaries(parent0.vSequence);
 		}
 		
 		for (int t= 0; t < nimages; t++) {

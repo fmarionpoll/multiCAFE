@@ -179,8 +179,10 @@ public class SequenceCapillaries  {
 		return csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
 	}
 	
-	public String getDecoratedImageNameFromCapillary(int isel) {
-		return capillaries.capillariesArrayList.get(isel).roi.getName() + " ["+(isel+1)+ "/" + seq.getSizeT() + "]";
+	public String getDecoratedImageNameFromCapillary(int t) {
+		if (capillaries != null & capillaries.capillariesArrayList.size() > 0)
+			return capillaries.capillariesArrayList.get(t).roi.getName() + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
+		return csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
 	}
 
 	public String getFileName(int t) {
@@ -262,7 +264,7 @@ public class SequenceCapillaries  {
 	    directory = selectedFiles[0].isDirectory() ? selectedFiles[0].getAbsolutePath() : selectedFiles[0].getParentFile().getAbsolutePath();
 		if (directory != null ) {
 			if (selectedFiles.length == 1) {
-				loadSequenceFromName(selectedFiles[0].getAbsolutePath());
+				loadSequence(selectedFiles[0].getAbsolutePath());
 			}
 			else {
 				String [] list = new String [selectedFiles.length];
@@ -276,10 +278,9 @@ public class SequenceCapillaries  {
 		return directory;
 	}
 	
-	public String loadSequenceAt(String textPath) {
+	public String loadSequence(String textPath) {
 		if (textPath == null) 
 			return loadSequenceFromDialog(null); 
-		
 		File filepath = new File(textPath); 
 	    directory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
 		if (directory != null ) {
@@ -287,22 +288,13 @@ public class SequenceCapillaries  {
 			if (list == null)
 				return null;
 			else 
-				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi")) 
+				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi"))
 					seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
 				else
 					loadSequenceFromListAndDirectory(list, directory);
 		}
 		return directory;
 	}
-
-	public void loadSequenceFromName(String name) {
-		if (name.toLowerCase().contains(".avi"))
-			seq = Loader.loadSequence(name, 0, true);
-		else
-			loadSequenceVirtualFromName(name);
-	}
-	
-	// --------------------------
 	
 	private void loadSequenceFromListAndDirectory(String [] list, String directory) {
 		status = EnumStatus.FAILURE;
@@ -345,28 +337,7 @@ public class SequenceCapillaries  {
 		}
 		return flag;
 	}
-	
-	private void loadSequenceVirtualFromName(String name) {
-		File filename = new File (name);
-		if (filename.isDirectory())
-	    	directory = filename.getAbsolutePath();
-	    else {
-	    	directory = filename.getParentFile().getAbsolutePath();
-	    }
-		if (directory == null) {
-			status = EnumStatus.FAILURE;
-			return;
-		}
-		String [] list;
-		File fdir = new File(directory);
-		boolean flag = fdir.isDirectory();
-		if (!flag)
-			return;
-		list = fdir.list();
-		if (list != null)
-			loadSequenceFromListAndDirectory(list, directory);
-	}
-	
+		
 	private boolean isLinexLRFileNames(List<String> myListOfFilesNames) {
 		boolean flag = false;
 		int nfound = 0;
@@ -431,13 +402,9 @@ public class SequenceCapillaries  {
 	
 	// --------------------------
 		
-	public void updateCapillaries(int size) {
-		if (capillaries == null || capillaries.capillariesArrayList.size() != size) {
-			if (capillaries == null)
-				capillaries = new Capillaries();
-			capillaries.createCapillariesFromROIS(this);
-			storeAnalysisParametersToCapillaries();
-		}
+	public void updateCapillaries() {
+		capillaries.transferROIStoCapillaries(this);
+		storeAnalysisParametersToCapillaries();
 		return;
 	}
 	
@@ -467,6 +434,7 @@ public class SequenceCapillaries  {
 	public boolean xmlWriteCapillaryTrackDefault() {
 		boolean flag = false;
 		String name = getDirectory()+ "\\capillarytrack.xml";
+		updateCapillaries();
 		flag = capillaries.xmlWriteROIsAndDataNoQuestion(name, this);
 		return flag;
 	}

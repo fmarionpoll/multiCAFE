@@ -71,7 +71,7 @@ public class MCCapillariesTab_Build extends JPanel {
 			}});
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				roisGenerateFromPolygon();
-				parent0.vSequence.capillaries.createCapillariesFromROIS(parent0.vSequence);
+				parent0.vSequence.capillaries.transferROIStoCapillaries(parent0.vSequence);
 				firePropertyChange("CAPILLARIES_NEW", false, true);
 			}});
 		selectRegularButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 

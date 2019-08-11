@@ -178,7 +178,7 @@ private BuildKymographsBatch 	parent0 	= null;
 		String csdummy = oofile.getParentFile().getAbsolutePath();
 		
 		vSequence = new SequenceCapillaries();
-		vSequence.loadSequenceFromName(csdummy);
+		vSequence.loadSequence(csdummy);
 		vSequence.setFileName(csdummy);
 		if (vSequence.status == EnumStatus.FAILURE) {
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
@@ -188,7 +188,7 @@ private BuildKymographsBatch 	parent0 	= null;
 				return false;
 			vSequence.setFileName(path);
 			guiPrefs.put("lastUsedPath", path);
-			vSequence.loadSequenceFromName(vSequence.getFileName());
+			vSequence.loadSequence(vSequence.getFileName());
 		}
 		System.out.println("sequence openened: "+ vSequence.getFileName());
 
@@ -201,7 +201,7 @@ private BuildKymographsBatch 	parent0 	= null;
 		String path = vSequence.getDirectory();
 		boolean flag = vSequence.xmlReadCapillaryTrack(path+"\\capillarytrack.xml");
 		if (flag) 
-			vSequence.capillaries.createCapillariesFromROIS(vSequence);
+			vSequence.capillaries.transferROIStoCapillaries(vSequence);
 	}
 
 	private void initInputSequenceViewer () {

@@ -29,12 +29,10 @@ public class Experiment {
 	
 	public boolean openSequenceAndMeasures() {
 		vSequence = new SequenceCapillaries();
-		if (null == vSequence.loadSequenceAt(filename))
+		if (null == vSequence.loadSequence(filename))
 			return false;
 		fileTimeImageFirst = vSequence.getImageModifiedTime(0);
 		fileTimeImageLast = vSequence.getImageModifiedTime(vSequence.seq.getSizeT()-1);
-		//System.out.println("read expt: "+ filename+" .....size "+ vSequence.getSizeT());
-		
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinutes = fileTimeImageLast.toMillis()/60000;
 		

@@ -169,7 +169,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 			parent0.vSequence.seq.close();		
 		parent0.vSequence = new SequenceCapillaries();
 		
-		String path = parent0.vSequence.loadSequenceAt(filename);
+		String path = parent0.vSequence.loadSequence(filename);
 		if (path != null) {
 			parent0.vSequence.setFileNameAsPathUp1() ;
 			updateReadingParameters(parent0.vSequence);
