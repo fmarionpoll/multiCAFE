@@ -301,7 +301,7 @@ public class SequenceCamData  {
 		loadSequenceFromList(listFiles);
 	}
 	
-	private boolean loadSequenceFromList(List<String> myListOfFilesNames) {
+	protected boolean loadSequenceFromList(List<String> myListOfFilesNames) {
 		if (doLRFileNameTest && isLinexLRFileNames(myListOfFilesNames)) {
 			listFiles = convertLinexLRFileNames(myListOfFilesNames);
 		}
@@ -350,7 +350,7 @@ public class SequenceCamData  {
 		return flag;
 	}
 	
-	private List<String> convertLinexLRFileNames(List<String> myListOfFilesNames) {
+	protected List<String> convertLinexLRFileNames(List<String> myListOfFilesNames) {
 		List<String> newList = new ArrayList<String>();
 		for (String filename: myListOfFilesNames) {
 			String newName = null;

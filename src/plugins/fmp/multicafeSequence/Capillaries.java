@@ -8,13 +8,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import icy.roi.ROI;
-import icy.sequence.edit.ROIAddsSequenceEdit;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.fmp.multicafeTools.MulticafeTools;
-import plugins.kernel.roi.roi2d.ROI2DShape;
+
 
 public class Capillaries {
 	
@@ -166,6 +164,22 @@ public class Capillaries {
 		}
 		return true;
 	}
+	
+	public boolean xmlReadCapillaries(Document doc, SequenceKymos seq) {
+		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
+		if (node == null)
+			return false;
+		Node nodecaps = XMLUtil.getElement(node, ID_LISTOFCAPILLARIES);
+		int nitems = XMLUtil.getElementIntValue(nodecaps, ID_NCAPILLARIES, 0);
+		seq.capillaries.capillariesArrayList = new ArrayList<Capillary> (nitems);
+		for (int i= 0; i< nitems; i++) {
+			Node nodecapillary = XMLUtil.getElement(node, ID_CAPILLARY_+i);
+			Capillary cap = new Capillary();
+			cap.loadFromXML(nodecapillary);
+			seq.capillaries.capillariesArrayList.add(cap);
+		}
+		return true;
+	}
 
 	public boolean xmlWriteROIsAndData(String name, SequenceKymos seq) {
 		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");
@@ -180,31 +194,11 @@ public class Capillaries {
 		if (csFile != null) {
 			final Document doc = XMLUtil.createDocument(true);
 			if (doc != null) {
-				List<ROI> roisList = new ArrayList<ROI>();
-				ROI.saveROIsToXML(XMLUtil.getRootElement(doc), roisList);
 				xmlWriteCapillaryParameters (doc, seq);
 				xmlWriteCapillaries(doc, seq);
 				XMLUtil.saveDocument(doc, csFile);
 				return true;
 			}
-		}
-		return false;
-	}
-	
-	public boolean xmlWriteROIsAndDataNoFilter(String name, SequenceKymos seq) {
-		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");
-		csFile.toLowerCase();
-		if (!csFile.contains(".xml")) {
-			csFile += ".xml";
-		}
-		
-		final Document doc = XMLUtil.createDocument(true);
-		if (doc != null) {
-			List<ROI> roisList = seq.seq.getROIs();
-			ROI.saveROIsToXML(XMLUtil.getRootElement(doc), roisList);
-			xmlWriteCapillaryParameters (doc, seq);
-			XMLUtil.saveDocument(doc, csFile);
-			return true;
 		}
 		return false;
 	}
@@ -230,43 +224,13 @@ public class Capillaries {
 			final Document doc = XMLUtil.loadDocument(csFileName);
 			if (doc != null) {
 				xmlReadCapillaryParameters(doc);
-				List<ROI> listOfROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
-				for (ROI roi: listOfROIs) {
-					if (!isAlreadyStoredAsCapillary(roi.getName()))
-						capillariesArrayList.add(new Capillary((ROI2DShape) roi));
-				}
-				try  {  
-					for (Capillary cap : capillariesArrayList)  {
-						seq.seq.addROI(cap.roi);
-					}
-				}
-				finally {
-				}
-				// add to undo manager
-				seq.seq.addUndoableEdit(new ROIAddsSequenceEdit(seq.seq, listOfROIs) {
-					@Override
-					public String getPresentationName() {
-						if (getROIs().size() > 1)
-							return "ROIs loaded from XML file";
-						return "ROI loaded from XML file"; };
-				});
+				xmlReadCapillaries(doc, seq);
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	private boolean isAlreadyStoredAsCapillary(String name) {
-		boolean flag = false;
-		for (Capillary cap: capillariesArrayList) {
-			if (name .equals (cap.getName())) {
-				flag = true;
-				break;
-			}
-		}
-		return flag;
-	}
-
 	public void copy (Capillaries cap) {
 		volume = cap.volume;
 		pixels = cap.pixels;

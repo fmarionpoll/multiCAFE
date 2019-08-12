@@ -2,6 +2,7 @@ package plugins.fmp.multicafeTools;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
@@ -10,6 +11,8 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class DetectLimits {
+	List<Point2D> limitTop =null;
+	List<Point2D> limitBottom =null;
 	
 	public void detectCapillaryLevels(DetectLimits_Options options,  SequenceKymos seqkymo) {
 		// send some info
@@ -23,18 +26,20 @@ public class DetectLimits {
 			tfirst = options.firstImage;
 			tlast = tfirst;
 		}
-
 		seqkymo.seq.beginUpdate();
+		seqkymo.seq.removeAllROI();
+		
 		for (int t=tfirst; t <= tlast; t++) {
-			// update progression bar
 			progressBar.updatePositionAndTimeLeft(t);
 			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(t);
+			cap.ptsTop = null;
+			cap.ptsBottom = null;
+			cap.ptsDerivative = null;
+			cap.gulpsRois = null;
+			limitTop = new ArrayList<Point2D>();
+			limitBottom = new ArrayList<Point2D>();
 			
-			seqkymo.removeAllROISatT(t);
 			options.copy(cap.limitsOptions); 
-			cap.ptsTop = new ArrayList<>();			
-			cap.ptsBottom = new ArrayList<>();
-
 			IcyBufferedImage image = null;
 			int c = 0;
 			image = seqkymo.seq.getImage(t, 1);
@@ -58,21 +63,21 @@ public class DetectLimits {
 			}
 			
 			if (flagtop) {
-				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine ();
+				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);
 				roiTopTrack.setName(cap.getLast2ofCapillaryName()+"_toplevel");
 				roiTopTrack.setStroke(1);
 				roiTopTrack.setT(t);
 				seqkymo.seq.addROI(roiTopTrack);
-				roiTopTrack.setPoints(cap.ptsTop);
+				cap.ptsTop = roiTopTrack.getPolyline2D();
 			}
 			
 			if (flagbottom) {
-				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine ();
+				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine (limitBottom);
 				roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
 				roiBottomTrack.setStroke(1);
 				roiBottomTrack.setT(t);
 				seqkymo.seq.addROI(roiBottomTrack);
-				roiBottomTrack.setPoints(cap.ptsBottom);
+				cap.ptsBottom = roiBottomTrack.getPolyline2D();
 			}
 		}
 		seqkymo.seq.endUpdate();
@@ -108,8 +113,7 @@ public class DetectLimits {
 		if (!found) {
 			oldiytop = 0;
 		}
-		// add new point to display as roi
-		cap.ptsTop.add(new Point2D.Double (x, y));
+		limitTop.add(new Point2D.Double (x, y));
 	}
 	
 	void detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, DetectLimits_Options options) {
@@ -136,8 +140,7 @@ public class DetectLimits {
 		if (!found) {
 			oldiybottom = yheight - 1;
 		}
-		// add new point to display as roi
-		cap.ptsBottom.add(new Point2D.Double (x, y));
+		limitBottom.add(new Point2D.Double (x, y));
 	}
 	
 }

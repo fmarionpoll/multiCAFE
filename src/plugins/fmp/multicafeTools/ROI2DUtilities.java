@@ -1,7 +1,5 @@
 package plugins.fmp.multicafeTools;
 
-
-import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +15,7 @@ import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 import plugins.kernel.roi.roi2d.ROI2DShape;
+
 
 public class ROI2DUtilities  {
 	
@@ -113,29 +112,6 @@ public class ROI2DUtilities  {
 		return true;
 	}
 
-	public static void validateRois(SequenceKymos seqKymo) {
-
-		List<ROI2D> listRois = seqKymo.seq.getROI2Ds();
-		int width = seqKymo.seq.getWidth();
-		for (ROI2D roi: listRois) {
-			if (!(roi instanceof ROI2DPolyLine))
-				continue;
-			// interpolate missing points if necessary
-			if (roi.getName().contains("level") || roi.getName().contains("gulp")) {
-				interpolateMissingPointsAlongXAxis ((ROI2DPolyLine) roi, width);
-				continue;
-			}
-			if (roi.getName().contains("derivative"))
-				continue;
-				
-			// if gulp not found - add an index to it	
-			ROI2DPolyLine roiLine = (ROI2DPolyLine) roi;
-			Polyline2D line = roiLine.getPolyline2D();
-			roi.setName("gulp"+String.format("%07d", (int) line.xpoints[0]));
-			roi.setColor(Color.red);
-		}
-		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());
-	}
 
 	private static List<Integer> transferRoiToDataArray(ROI2DPolyLine roiLine) {
 		Polyline2D line = roiLine.getPolyline2D();

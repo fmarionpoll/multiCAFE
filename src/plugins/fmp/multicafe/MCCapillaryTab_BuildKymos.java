@@ -15,6 +15,7 @@ import javax.swing.SwingConstants;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafeSequence.SequenceKymos;
+import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.fmp.multicafeTools.BuildKymographs;
 import plugins.fmp.multicafeTools.EnumStatusComputation;
 
@@ -76,7 +77,8 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 			return;
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
-		parent0.sequencePane.browseTab.getBrowseItems (parent0.seqCamData);
+		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (parent0.seqCamData);
+		parent0.seqKymos = new SequenceKymos();
 		parent0.seqKymos.updateCapillaries(parent0.seqCamData);
 		setStartButton(false);
 		kymosBuildKymographs();	
@@ -106,21 +108,21 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 	
 	private void kymosBuildKymographs() {
 		buildKymographsThread = null;
-		if (parent0.seqKymos != null && parent0.seqKymos.seq != null) {
+		if (parent0.seqKymos != null && parent0.seqKymos.seq != null)
 			parent0.seqKymos.seq.close();
-		}
 		parent0.seqKymos = new SequenceKymos();
+		SequenceKymosUtils.transferROIStoCapillaries(parent0.seqCamData, parent0.seqKymos);
 		
 		// start building kymos in a separate thread
 		buildKymographsThread = new BuildKymographs();
-		buildKymographsThread.options.vSequence 	= parent0.seqCamData;
+		buildKymographsThread.options.seqCamData 	= parent0.seqCamData;
+		buildKymographsThread.options.seqKymos		= parent0.seqKymos;
 		buildKymographsThread.options.analyzeStep 	= parent0.seqCamData.analysisStep;
 		buildKymographsThread.options.startFrame 	= (int) parent0.seqCamData.analysisStart;
 		buildKymographsThread.options.endFrame 		= (int) parent0.seqCamData.analysisEnd;
 		buildKymographsThread.options.diskRadius 	= (int) diskRadiusSpinner.getValue();
 		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected(); 
-		buildKymographsThread.vkymos 				= parent0.seqKymos;
-
+		
 		thread = new Thread(null, buildKymographsThread, "buildkymos");
 		thread.start();
 		

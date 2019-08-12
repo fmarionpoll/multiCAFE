@@ -122,13 +122,13 @@ private BuildKymographsBatch 	parent0 	= null;
 		
 		// build kymograph
 		buildKymographsThread = new BuildKymographs();
-		buildKymographsThread.options.vSequence  	= vSequence;
+		buildKymographsThread.options.seqCamData  	= vSequence;
 		buildKymographsThread.options.analyzeStep 	= analyzeStep;
 		buildKymographsThread.options.startFrame 	= (int) vSequence.analysisStart;
 		buildKymographsThread.options.endFrame 		= (int) vSequence.analysisEnd;
 		buildKymographsThread.options.diskRadius 	= diskRadius;
 		buildKymographsThread.options.doRegistration= false; // doRegistrationCheckBox.isSelected();
-		buildKymographsThread.vkymos 				= vkymos;
+		buildKymographsThread.options.seqKymos		= vkymos;
 
 		// change display status
 		stopComputationButton.setEnabled(true);
@@ -137,8 +137,7 @@ private BuildKymographsBatch 	parent0 	= null;
 		thread = new Thread(buildKymographsThread);
 		thread.start();
 
-		Thread waitcompletionThread = new Thread(new Runnable(){ public void run()
-		{
+		Thread waitcompletionThread = new Thread(new Runnable(){ public void run() {
 			try { 
 				thread.join();
 			}
@@ -167,17 +166,14 @@ private BuildKymographsBatch 	parent0 	= null;
 				e1.printStackTrace();
 			}
 		}
-		
 		startComputationButton.setEnabled(true);
 		stopComputationButton.setEnabled(false);
 	}
 
 	private boolean loadSequence(String oo) {
-
 		// open sequence
 		File oofile = new File(oo);
 		String csdummy = oofile.getParentFile().getAbsolutePath();
-		
 		vSequence = new SequenceCamData();
 		vSequence.loadSequence(csdummy);
 		vSequence.setFileName(csdummy);
@@ -192,7 +188,6 @@ private BuildKymographsBatch 	parent0 	= null;
 			vSequence.loadSequence(vSequence.getFileName());
 		}
 		System.out.println("sequence openened: "+ vSequence.getFileName());
-
 		return true;
 	}
 
@@ -206,14 +201,12 @@ private BuildKymographsBatch 	parent0 	= null;
 	}
 
 	private void initInputSequenceViewer () {
-
 		ThreadUtil.invoke (new Runnable() {
 			@Override
 			public void run() {
 				viewer1 = new Viewer(vSequence.seq, true);
 			}
 		}, true);
-		
 		if (viewer1 == null) {
 			viewer1 = vSequence.seq.getFirstViewer(); 
 			if (!viewer1.isInitialized()) {
@@ -226,7 +219,6 @@ private BuildKymographsBatch 	parent0 	= null;
 				}
 			}
 		}
-		
 		Rectangle rectv = viewer1.getBoundsInternal();
 		Rectangle rect0 = parent0.mainFrame.getBoundsInternal();
 		rectv.setLocation(rect0.x+ rect0.width, rect0.y);
@@ -234,19 +226,15 @@ private BuildKymographsBatch 	parent0 	= null;
 	}
 	
 	private void startstopBufferingThread() {
-
 		if (vSequence == null)
 			return;
-
 		vSequence.analysisStep = analyzeStep;
 	}
 
 	private void saveComputation() {
-		
 		Path dir = Paths.get(vSequence.getDirectory());
 		dir = dir.resolve("results");
 		String directory = dir.toAbsolutePath().toString();
-		
 		if (Files.notExists(dir))  {
 			try {
 				Files.createDirectory(dir);
@@ -257,16 +245,11 @@ private BuildKymographsBatch 	parent0 	= null;
 			}
 		}
 
-		// send some info
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
-
-		// save capillarytrack.xml
 		String name = vSequence.getDirectory()+ "\\capillarytrack.xml";
 		vkymos.capillaries.xmlWriteROIsAndDataNoQuestion(name, vkymos);
-		
 		for (SequenceKymos seq: kymographArrayList) {
 			progress.setMessage( "Save kymograph file : " + seq.seq.getName());
-
 			String filename = directory + "\\" + seq.seq.getName() + ".tiff";
 			File file = new File (filename);
 			IcyBufferedImage image = seq.seq.getFirstImage();
@@ -279,12 +262,10 @@ private BuildKymographsBatch 	parent0 	= null;
 			}
 		}
 		progress.close();
-		
 		closeSequence();
 	}
 	
-	private void closeSequence() {
-		
+	private void closeSequence() {	
 		for (SequenceKymos seq:kymographArrayList)
 			seq.seq.close();
 		kymographArrayList.clear();
@@ -292,15 +273,13 @@ private BuildKymographsBatch 	parent0 	= null;
 	}
 
 	@Override	
-	public void viewerChanged(ViewerEvent event)
-	{
+	public void viewerChanged(ViewerEvent event) {
 		if ((event.getType() == ViewerEventType.POSITION_CHANGED) && (event.getDim() == DimensionId.T))        
             vSequence.currentFrame = event.getSource().getPositionT() ;  
 	}
 
 	@Override
-	public void viewerClosed(Viewer viewer)
-	{
+	public void viewerClosed(Viewer viewer) {
 		viewer.removeListener(this);
 	}
 }

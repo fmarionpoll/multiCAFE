@@ -4,6 +4,8 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -68,8 +70,8 @@ public class MCKymosTab_File  extends JPanel {
 			if (parent0.seqKymos.seq.getSizeT() >0 ) {
 				if (parent0.seqKymos.analysisEnd > parent0.seqKymos.analysisStart) {
 					parent0.seqCamData.analysisStart = parent0.seqKymos.analysisStart; 
-					parent0.seqCamData.analysisEnd 	= parent0.seqKymos.analysisEnd;
-					parent0.seqCamData.analysisStep 	= parent0.seqKymos.analysisStep;
+					parent0.seqCamData.analysisEnd = parent0.seqKymos.analysisEnd;
+					parent0.seqCamData.analysisStep = parent0.seqKymos.analysisStep;
 				}
 			}
 		}
@@ -79,7 +81,9 @@ public class MCKymosTab_File  extends JPanel {
 	void saveKymosMeasures() {
 		if (parent0.seqKymos != null) {
 			SequenceKymosUtils.transferSequenceInfoToKymos(parent0.seqKymos, parent0.seqCamData);
-			SequenceKymosUtils.saveKymosMeasures(parent0.seqKymos, parent0.seqCamData.getDirectory());
+			//SequenceKymosUtils.saveKymosMeasures(parent0.seqKymos, parent0.seqCamData.getDirectory());
+			String name = parent0.seqCamData.getDirectory()+ File.separator + "capillarytrack.xml";
+			parent0.seqKymos.capillaries.xmlWriteROIsAndDataNoQuestion(name, parent0.seqKymos);
 		}
 	}
 }

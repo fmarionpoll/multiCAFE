@@ -121,11 +121,9 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	boolean loadCapillaryTrack() {
-//		String path = parent0.vSequence.getDirectory();
 		boolean flag = fileTab.loadCapillaryTrack(null);
 		if (flag) {
 			setCapillariesInfosToDialogs();
-			capold.copy(parent0.seqKymos.capillaries);
 		// TODO update measure from to, etc (see "ROIS_OPEN")
 		}
 		return flag;

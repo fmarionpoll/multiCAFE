@@ -216,7 +216,9 @@ public class MCCapillariesTab_Options extends JPanel {
 		if (icurrent != isel) {
 			kymographNamesComboBox.setSelectedIndex(isel);
 		}
-		parent0.seqKymos.seq.getFirstViewer().setPositionT(isel);
+		Viewer v = parent0.seqKymos.seq.getFirstViewer();
+		if (v != null)
+			v.setPositionT(isel);
 	}
 
 }

@@ -4,7 +4,6 @@ package plugins.fmp.multicafeSequence;
 import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -38,8 +37,8 @@ public class Capillary implements XMLPersistent  {
 	
 	public Polyline2D 					ptsTop  				= null; 
 	public Polyline2D 					ptsBottom 				= null; 
+	public Polyline2D 					ptsDerivative 			= null; 
 	public Collection<ROI> 				gulpsRois 				= null; 
-	public List<Integer> 				derivedValuesArrayList 	= null; 
 	
 	public List<ArrayList<int[]>> 		masksList 				= null;
 	public List <double []> 			tabValuesList 			= null;
@@ -55,6 +54,9 @@ public class Capillary implements XMLPersistent  {
 	private final static String ID_DERIVATIVE 	= "derivedvalues";	
 	private final static String ID_VERSION		= "version"; 
 	private final static String ID_VERSIONNUM	= "1.0.0"; 
+	private final static String ID_NPOINTS		= "npoints";
+	private final static String ID_X			= "y";
+	private final static String ID_Y			= "y";
 	    
 	// ----------------------------------------------------
 	
@@ -132,7 +134,7 @@ public class Capillary implements XMLPersistent  {
 		boolean yes = false;
 		switch (option) {
 		case derivedValues:
-			yes= (derivedValuesArrayList != null && derivedValuesArrayList.size() > 0);
+			yes= (ptsDerivative != null && ptsDerivative.npoints > 0);
 			break;
 		case cumSum:
 			yes= (gulpsRois != null && gulpsRois.size() > 0);
@@ -152,7 +154,7 @@ public class Capillary implements XMLPersistent  {
 		List<Integer> datai = null;
 		switch (option) {
 		case derivedValues:
-			datai = derivedValuesArrayList;
+			datai = getIntegerArrayFromPolyline2D(ptsDerivative);
 			break;
 		case cumSum:
 			datai = getCumSumFromRoisArray(gulpsRois);
@@ -176,8 +178,8 @@ public class Capillary implements XMLPersistent  {
 			listrois.add(transferPolyline2DToROI(ID_BOTTOMLEVEL, ptsBottom));
 		if (gulpsRois != null)	
 			listrois.addAll(gulpsRois);
-		if (derivedValuesArrayList != null) {
-			ROI2D derivativeRoi = transferPtListToROI(ID_DERIVATIVE, getPointArrayFromIntegerArray(derivedValuesArrayList));
+		if (ptsDerivative != null) {
+			ROI2D derivativeRoi = transferPolyline2DToROI(ID_DERIVATIVE, ptsDerivative);
 			derivativeRoi.setColor(Color.yellow);
 			derivativeRoi.setStroke(1.);
 			listrois.add(derivativeRoi);
@@ -189,12 +191,16 @@ public class Capillary implements XMLPersistent  {
 		gulpsRois.clear();
 		for (ROI roi: listRois) {		
 			String roiname = roi.getName();
-			if (roiname .contains ("toplevel") && roi instanceof ROI2DPolyLine )
-				ptsTop = ((ROI2DPolyLine)roi).getPolyline2D();
-			else if (roiname .contains("bottomlevel")  && roi instanceof ROI2DPolyLine )
-				ptsBottom = ((ROI2DPolyLine)roi).getPolyline2D(); 	
-			else if (roiname .contains("gulp"))	
-				gulpsRois.add(roi);
+			if (roi instanceof ROI2DPolyLine ) {
+				if (roiname .contains("gulp"))	
+					gulpsRois.add(roi);
+				else if  (roiname .contains ("toplevel"))
+					ptsTop = ((ROI2DPolyLine)roi).getPolyline2D();
+				else if (roiname .contains("bottomlevel"))
+					ptsBottom = ((ROI2DPolyLine)roi).getPolyline2D();
+				else if (roiname .contains("derivative") )
+					ptsDerivative = ((ROI2DPolyLine)roi).getPolyline2D();
+			}
 		}
 	}
 	
@@ -211,23 +217,11 @@ public class Capillary implements XMLPersistent  {
 		return roi;
 	}
 	
-	private ROI2D transferPtListToROI(String name, List<Point2D> pointsList) {
-		ROI2D roi = new ROI2DPolyLine(pointsList); 
-		if (indexImage >= 0) {
-			roi.setT(indexImage);
-			roi.setName(getLast2ofCapillaryName()+"_"+name);
-		}
-		else
-			roi.setName(name);
-		return roi;
-	}
-	
-
 	private List<Integer> getCumSumFromRoisArray(Collection<ROI> gulpsRois) {
 	
 		if (gulpsRois == null)
 			return null;
-		List<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(ptsTop.size(), 0));
+		List<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(ptsTop.npoints, 0));
 		for (ROI roi: gulpsRois) {
 			ROI2DUtilities.addRoitoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
 		}
@@ -240,9 +234,9 @@ public class Capillary implements XMLPersistent  {
 	public boolean loadFromXML(Node node) {
 		boolean result = true;
 		result |= loadMetaDataFromXML(node);		
-		result |= (derivedValuesArrayList = loadIntegerArrayFromXML(node, ID_DERIVATIVE)) != null;
-		result |= (ptsTop = getPointArrayFromIntegerArray(loadIntegerArrayFromXML(node, ID_TOPLEVEL))) != null;
-		result |= (ptsBottom = getPointArrayFromIntegerArray(loadIntegerArrayFromXML(node, ID_BOTTOMLEVEL)))!= null;
+		result |= (ptsDerivative = loadPolyline2DFromXML(node, ID_DERIVATIVE)) != null;
+		result |= (ptsTop = loadPolyline2DFromXML(node, ID_TOPLEVEL)) != null;
+		result |= (ptsBottom = loadPolyline2DFromXML(node, ID_BOTTOMLEVEL))!= null;
 		result |= (gulpsRois = loadROIsFromXML(node)) != null;
 		return result;
 	}
@@ -250,18 +244,16 @@ public class Capillary implements XMLPersistent  {
 	@Override
 	public boolean saveToXML(Node node) {
 		saveMetaDataToXML(node);
-		if (derivedValuesArrayList != null)
-			saveIntArraytoXML(node, ID_DERIVATIVE, derivedValuesArrayList);
+		if (ptsDerivative != null)
+			savePolyline2DToXML(node, ID_DERIVATIVE, ptsDerivative);
 		if (ptsTop != null)
-			saveIntArraytoXML(node, ID_TOPLEVEL, getIntegerArrayFromPointArray(ptsTop));
+			savePolyline2DToXML(node, ID_TOPLEVEL, ptsTop);
 		if (ptsBottom != null)
-			saveIntArraytoXML(node, ID_BOTTOMLEVEL, getIntegerArrayFromPointArray(ptsBottom));
+			savePolyline2DToXML(node, ID_BOTTOMLEVEL, ptsBottom);
 		if (gulpsRois != null)
 			saveROIsToXML(node, gulpsRois);
         return true;
 	}
-	
-	// ---------------------
 	
 	private boolean loadMetaDataFromXML(Node node) {
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
@@ -326,31 +318,30 @@ public class Capillary implements XMLPersistent  {
         return rois;
 	}
 	
-	private void saveIntArraytoXML(Node node, String name, List <Integer> data) {
+	private void savePolyline2DToXML(Node node, String name, Polyline2D data) {
 		final Node nodeMeta = XMLUtil.setElement(node, name);
 	    if (nodeMeta != null) {
-	    	int i= 0;
-	    	XMLUtil.setElementIntValue(nodeMeta, "nitems", data.size());
-	    	for (int value: data) {
-	    		XMLUtil.setElementIntValue(nodeMeta, "i"+i, value);
-	    		i++;
+	    	XMLUtil.setElementIntValue(nodeMeta, ID_NPOINTS, data.npoints);
+	    	for (int i=0; i< data.npoints; i++) {
+	    		XMLUtil.setElementDoubleValue(nodeMeta, ID_X+i, data.xpoints[i]);
+	    		XMLUtil.setElementDoubleValue(nodeMeta, ID_Y+i, data.ypoints[i]);
 	    	}
 	    }
 	}
 	
-	private ArrayList <Integer> loadIntegerArrayFromXML(Node node, String name) {
+	private Polyline2D loadPolyline2DFromXML(Node node, String name) {
 		final Node nodeMeta = XMLUtil.getElement(node, name);
-		ArrayList <Integer> data = null;
+		Polyline2D data = null;
 	    if (nodeMeta != null) {
-	    	int nitems = XMLUtil.getElementIntValue(nodeMeta, "nitems", 0);
-	    	data = new ArrayList<Integer>(nitems);
-	    	for (int i=0; i< nitems; i++) {
-    			int value = XMLUtil.getElementIntValue(nodeMeta, "i"+i, 0);
-	    		data.add(i, value);
+	    	int npoints = XMLUtil.getElementIntValue(nodeMeta, ID_NPOINTS, 0);
+	    	double[] xpoints = new double [npoints];
+	    	double[] ypoints = new double [npoints];
+	    	for (int i=0; i< npoints; i++) {
+	    		xpoints[i] = XMLUtil.getElementDoubleValue(nodeMeta, ID_X+i, 0);
+	    		ypoints[i] = XMLUtil.getElementDoubleValue(nodeMeta, ID_Y+i, 0);
     		}
+	    	data = new Polyline2D(xpoints, ypoints, npoints);
 	    }
 	    return data;
 	}
-
-	
 }

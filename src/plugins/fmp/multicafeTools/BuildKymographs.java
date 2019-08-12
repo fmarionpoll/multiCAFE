@@ -9,9 +9,9 @@ import icy.image.IcyBufferedImage;
 import icy.sequence.Sequence;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
+
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.fmp.multicafeSequence.SequenceKymosUtils;
+
 import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.nchenouard.kymographtracker.Util;
 import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
@@ -20,9 +20,6 @@ import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 public class BuildKymographs implements Runnable 
 {
 	public BuildKymographs_Options 					options 			= new BuildKymographs_Options();
-	
-	public  SequenceKymos 							vkymos 				= null;
-	private ArrayList<double []> 					sourceValuesList 	= null;
 	public boolean 									stopFlag 			= false;
 	public boolean 									threadRunning 		= false;
 	
@@ -31,19 +28,20 @@ public class BuildKymographs implements Runnable
 	private Sequence 								seqForRegistration	= new Sequence();
 	private DataType 								dataType 			= DataType.INT;
 	private int 									imagewidth =1;
+	private ArrayList<double []> 					sourceValuesList 	= null;
 	
 	
 	@Override
 	public void run() {
 
-		if (options.vSequence == null || vkymos == null)
+		if (options.seqCamData == null || options.seqKymos == null)
 			return;
 		System.out.println("start buildkymographsThreads");
 		
 		if (options.startFrame < 0) 
 			options.startFrame = 0;
-		if ((options.endFrame >= (int) options.vSequence.nTotalFrames) || (options.endFrame < 0)) 
-			options.endFrame = (int) options.vSequence.nTotalFrames-1;
+		if ((options.endFrame >= (int) options.seqCamData.nTotalFrames) || (options.endFrame < 0)) 
+			options.endFrame = (int) options.seqCamData.nTotalFrames-1;
 		int nbframes = options.endFrame - options.startFrame +1;
 		ProgressChrono progressBar = new ProgressChrono("Processing started");
 		progressBar.initStuff(nbframes);
@@ -52,18 +50,18 @@ public class BuildKymographs implements Runnable
 		  
 		initArraysToBuildKymographImages();
 		
-		int vinputSizeX = options.vSequence.seq.getSizeX();
-		sequenceViewer = options.vSequence.seq.getFirstViewer();
+		int vinputSizeX = options.seqCamData.seq.getSizeX();
+		sequenceViewer = options.seqCamData.seq.getFirstViewer();
 		int ipixelcolumn = 0;
 		getImageAndUpdateViewer (options.startFrame);
 		
 		seqForRegistration.addImage(0, workImage);
 		seqForRegistration.addImage(1, workImage);
-		int nbcapillaries = vkymos.capillaries.capillariesArrayList.size();
+		int nbcapillaries = options.seqKymos.capillaries.capillariesArrayList.size();
 		if (nbcapillaries == 0)
 			return;
 		
-		options.vSequence.seq.beginUpdate();
+		options.seqCamData.seq.beginUpdate();
 		for (int t = options.startFrame ; t <= options.endFrame && !stopFlag; t += options.analyzeStep, ipixelcolumn++ ) {
 			progressBar.updatePositionAndTimeLeft(t);
 			if (!getImageAndUpdateViewer (t))
@@ -73,9 +71,9 @@ public class BuildKymographs implements Runnable
 			transferWorkImageToDoubleArrayList ();
 			
 			for (int iroi=0; iroi < nbcapillaries; iroi++) {
-				Capillary cap = vkymos.capillaries.capillariesArrayList.get(iroi);
+				Capillary cap = options.seqKymos.capillaries.capillariesArrayList.get(iroi);
 				final int t_out = ipixelcolumn;
-				for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) { 
+				for (int chan = 0; chan < options.seqCamData.seq.getSizeC(); chan++) { 
 					double [] tabValues = cap.tabValuesList.get(chan); 
 					double [] sourceValues = sourceValuesList.get(chan);
 					int cnt = 0;
@@ -91,26 +89,25 @@ public class BuildKymographs implements Runnable
 				}
 			}
 		}
-		options.vSequence.seq.endUpdate();
-		vkymos.seq.removeAllImages();
-		vkymos.seq.setVirtual(false); 
+		options.seqCamData.seq.endUpdate();
+		options.seqKymos.seq.removeAllImages();
+		options.seqKymos.seq.setVirtual(false); 
 
 		for (int t=0; t < nbcapillaries; t++) {
-			Capillary cap = vkymos.capillaries.capillariesArrayList.get(t);
-			for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++) {
+			Capillary cap = options.seqKymos.capillaries.capillariesArrayList.get(t);
+			for (int chan = 0; chan < options.seqCamData.seq.getSizeC(); chan++) {
 				double [] tabValues = cap.tabValuesList.get(chan); 
 				Object destArray = cap.bufImage.getDataXY(chan);
 				Array1DUtil.doubleArrayToSafeArray(tabValues, destArray, cap.bufImage.isSignedDataType());
 				cap.bufImage.setDataXY(chan, destArray);
 			}
-			vkymos.seq.setImage(t, 0, cap.bufImage);
-//			vkymos.capillaries.capillariesArrayList.add(options.vSequence.capillaries.capillariesArrayList.get(t));
+			options.seqKymos.seq.setImage(t, 0, cap.bufImage);
 			
 			cap.masksList.clear();
 			cap.tabValuesList.clear();
 			cap.bufImage = null;
 		}
-		vkymos.seq.setName(vkymos.getDecoratedImageName(0));
+		options.seqKymos.seq.setName(options.seqKymos.getDecoratedImageNameFromCapillary(0));
 		
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
@@ -121,7 +118,7 @@ public class BuildKymographs implements Runnable
 	// -------------------------------------------
 	
 	private boolean getImageAndUpdateViewer(int t) {	
-		workImage = options.vSequence.seq.getImage(t, 0); 
+		workImage = options.seqCamData.seq.getImage(t, 0); 
 		sequenceViewer.setPositionT(t);		
 		
 		if (workImage == null) {
@@ -133,7 +130,7 @@ public class BuildKymographs implements Runnable
 	
 	private boolean transferWorkImageToDoubleArrayList() {	
 		sourceValuesList = new ArrayList<double []>();
-		for (int chan = 0; chan < options.vSequence.seq.getSizeC(); chan++)  {
+		for (int chan = 0; chan < options.seqCamData.seq.getSizeC(); chan++)  {
 			double [] sourceValues = Array1DUtil.arrayToDoubleArray(workImage.getDataXY(chan), workImage.isSignedDataType()); 
 			sourceValuesList.add(sourceValues);
 		}
@@ -142,33 +139,29 @@ public class BuildKymographs implements Runnable
 	
 	private void initArraysToBuildKymographImages() {
 
-		int sizex = options.vSequence.seq.getSizeX();
-		int sizey = options.vSequence.seq.getSizeY();
-		
-		int numC = options.vSequence.seq.getSizeC();
+		int sizex = options.seqCamData.seq.getSizeX();
+		int sizey = options.seqCamData.seq.getSizeY();	
+		int numC = options.seqCamData.seq.getSizeC();
 		if (numC <= 0)
 			numC = 3;
 		double fimagewidth =  1 + (options.endFrame - options.startFrame )/options.analyzeStep;
 		imagewidth = (int) fimagewidth;
-		dataType = options.vSequence.seq.getDataType_();
+		dataType = options.seqCamData.seq.getDataType_();
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;
 
-		SequenceKymosUtils.transferROIStoCapillaries(options.vSequence, options.vkymos);
-		
-		int nbcapillaries = vkymos.capillaries.capillariesArrayList.size();
+		int nbcapillaries = options.seqKymos.capillaries.capillariesArrayList.size();
 		int masksizeMax = 0;
 		for (int t=0; t < nbcapillaries; t++) {
-			Capillary cap = vkymos.capillaries.capillariesArrayList.get(t);
+			Capillary cap = options.seqKymos.capillaries.capillariesArrayList.get(t);
 			cap.masksList = new ArrayList<ArrayList<int[]>>();
-			
 			initExtractionParametersfromROI(cap.roi, cap.masksList, options.diskRadius, sizex, sizey);
 			if (cap.masksList.size() > masksizeMax)
 				masksizeMax = cap.masksList.size();
 		}
 		
 		for (int t=0; t < nbcapillaries; t++) {
-			Capillary cap = vkymos.capillaries.capillariesArrayList.get(t);
+			Capillary cap = options.seqKymos.capillaries.capillariesArrayList.get(t);
 			cap.bufImage = new IcyBufferedImage(imagewidth, masksizeMax, numC, dataType);
 			cap.tabValuesList = new ArrayList <double []>();
 			for (int chan = 0; chan < numC; chan++) {

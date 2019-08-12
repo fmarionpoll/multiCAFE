@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -18,12 +19,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import icy.image.IcyBufferedImage;
+import icy.roi.ROI;
+import icy.roi.ROI2D;
+import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
-
+import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.OverlayThreshold;
 import plugins.fmp.multicafeTools.OverlayTrapMouse;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
+import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class SequenceKymos extends SequenceCamData  {
 	
@@ -38,7 +43,11 @@ public class SequenceKymos extends SequenceCamData  {
 	public 	OverlayTrapMouse trapOverlay 			= null;
 	
 
-	public static String KYMOGRAPH_RESULTS = "KymographAnalysis";
+	private static String KYMOGRAPH_RESULTS = "KymographAnalysis";
+	private static String ID_ANALYSISSTART = "analysisStart";
+	private static String ID_ANALYSISEND = "analysisEnd";
+	private static String ID_ANALYSISSTEP = "analysisStep";
+	private static String ID_KYMONAME = "KymoName";
 	
 	// -----------------------------------------------------
 	
@@ -72,50 +81,105 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	public void roisSaveEdits() {
 		if (hasChanged) {
-			ROI2DUtilities.validateRois(this);
-			updateMeasures();
+			validateRois();
+			transferRoisToCapillaries();
 			hasChanged = false;
 		}
 	}
+	
+	public void validateRois() {
+		List<ROI2D> listRois = seq.getROI2Ds();
+		int width = seq.getWidth();
+		for (ROI2D roi: listRois) {
+			if (!(roi instanceof ROI2DPolyLine))
+				continue;
+			// interpolate missing points if necessary
+			if (roi.getName().contains("level") || roi.getName().contains("gulp")) {
+				ROI2DUtilities.interpolateMissingPointsAlongXAxis ((ROI2DPolyLine) roi, width);
+				continue;
+			}
+			if (roi.getName().contains("derivative"))
+				continue;
+				
+			// if gulp not found - add an index to it	
+			ROI2DPolyLine roiLine = (ROI2DPolyLine) roi;
+			Polyline2D line = roiLine.getPolyline2D();
+			roi.setName("gulp"+String.format("%07d", (int) line.xpoints[0]));
+			roi.setColor(Color.red);
+		}
+		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());
+	}
 
-	private void updateMeasures() {
-		// TODO transfer 
+	private void transferRoisToCapillaries() {
+		List<ROI> allRois = seq.getROIs();
+		for (int t=0; t< seq.getSizeT(); t++) {
+			List<ROI> roisAtT = new ArrayList<ROI> ();
+			for (ROI roi: allRois) {
+				if (roi instanceof ROI2D) {
+					if (((ROI2D)roi).getT() == t)
+						roisAtT.add(roi);
+				}
+			}
+			if (capillaries.capillariesArrayList.size() <= t) {
+				capillaries.capillariesArrayList.add(new Capillary());
+			}
+			Capillary cap = capillaries.capillariesArrayList.get(t);
+			cap.fileName = getFileName(t);
+			cap.transferROIsToMeasures(roisAtT);	
+		}
 	}
 	
 	// ----------------------------
 	
 	public void updateCapillaries(SequenceCamData seqCam) {
 		SequenceKymosUtils.transferROIStoCapillaries(seqCam, this);
-		storeAnalysisParametersToCapillaries();
+		transferAnalysisParametersToCapillaries();
 		return;
 	}
 	
-	public void storeAnalysisParametersToCapillaries () {
+	public void transferAnalysisParametersToCapillaries () {
 		capillaries.analysisStart = analysisStart;
 		capillaries.analysisEnd = analysisEnd;
 		capillaries.analysisStep = analysisStep;
 	}
 	
+	private void transferCapillariesToAnalysisParameters () {
+		analysisStart = capillaries.analysisStart;
+		analysisEnd = capillaries.analysisEnd;
+		analysisStep = capillaries.analysisStep;
+	}
+	
+	private void loadFileNamesFromCapillaries() {
+		String directory = getDirectory() +File.separator +"results" +File.separator;
+		List<String> myListOfFilesNames = new ArrayList<String>(capillaries.capillariesArrayList.size());
+		Collections.sort(capillaries.capillariesArrayList, new MulticafeTools.CapillaryIndexImageComparator());
+		for (Capillary cap: capillaries.capillariesArrayList) {
+			if (!cap.fileName .contains(directory)) {
+				Path oldpath = Paths.get(cap.fileName);
+				cap.fileName = directory + oldpath.getFileName();
+			}
+			myListOfFilesNames.add(cap.fileName);
+		}
+		loadSequenceFromList(convertLinexLRFileNames(myListOfFilesNames));
+		status = EnumStatus.KYMOGRAPH;
+	}
+	
 	public boolean xmlReadCapillaryTrackDefault() {
-		boolean found = xmlReadCapillaryTrack(getDirectory()+"\\capillarytrack.xml");
-		if (!found)
-			found = capillaries.xmlReadROIsAndData(this);
-		return found;
+		return xmlReadCapillaryTrack(getDirectory()+ File.separator + "capillarytrack.xml");
 	}
 	
 	public boolean xmlReadCapillaryTrack(String filename) {
 		boolean flag = capillaries.xmlReadROIsAndData(filename, this);
 		if (flag) {
-			analysisStart = capillaries.analysisStart;
-			analysisEnd = capillaries.analysisEnd;
-			analysisStep = capillaries.analysisStep;
+			transferCapillariesToAnalysisParameters ();
+			loadFileNamesFromCapillaries();	
 		}
 		return flag;
 	}
 	
 	public boolean xmlWriteCapillaryTrackDefault() {
 		boolean flag = false;
-		String name = getDirectory()+ "\\capillarytrack.xml";
+		String name = getDirectory() + File.separator + "capillarytrack.xml";
 		flag = capillaries.xmlWriteROIsAndDataNoQuestion(name, this);
 		return flag;
 	}
@@ -170,12 +234,12 @@ public class SequenceKymos extends SequenceCamData  {
 		if (directory == null)
 			return false;	
 		if (!directory .contains("results")) {
-			directory = directory + "\\results";
+			directory = directory + File.separator + "results";
 			Path resultsDirectoryPath = Paths.get(directory);
 			if (Files.notExists(resultsDirectoryPath)) 
 				return false; 
 		}
-		String filename = directory+"\\"+ cap.getName()+".xml";
+		String filename = directory + File.separator + cap.getName()+".xml";
 		Path filenamePath = Paths.get(filename);
 		if (Files.notExists(filenamePath)) 
 			return false; 
@@ -200,9 +264,9 @@ public class SequenceKymos extends SequenceCamData  {
 		if (myNode == null)
 			return false;
 		
-		analysisStart = XMLUtil.getElementIntValue(myNode, "analysisStart", 0);
-		analysisEnd = XMLUtil.getElementIntValue(myNode, "analysisEnd", -1);
-		analysisStep = XMLUtil.getElementIntValue(myNode, "analysisStep", 1);
+		analysisStart = XMLUtil.getElementIntValue(myNode, ID_ANALYSISSTART, 0);
+		analysisEnd = XMLUtil.getElementIntValue(myNode, ID_ANALYSISEND, -1);
+		analysisStep = XMLUtil.getElementIntValue(myNode, ID_ANALYSISSTEP, 1);
 		
 		cap.loadFromXML(myNode); 
 		return true;
@@ -211,10 +275,10 @@ public class SequenceKymos extends SequenceCamData  {
  	public boolean saveXMLKymographAnalysis(Capillary cap, String directory) {
 		// check if directory is present. If not, create it
 		String resultsDirectory = directory;
-		String subDirectory = "\\results";
+		String subDirectory = File.separator + "results";
 		if (!resultsDirectory.contains (subDirectory))
 			resultsDirectory += subDirectory;
-		resultsDirectory += "\\";
+		resultsDirectory += File.separator;
 		Path resultsPath = Paths.get(resultsDirectory);
 		if (Files.notExists(resultsPath)) {
 			try {
@@ -229,11 +293,11 @@ public class SequenceKymos extends SequenceCamData  {
 		Element myNode = document.createElement(KYMOGRAPH_RESULTS);
 		XMLUtil.getRootElement( document ).appendChild(myNode);
 		
-		XMLUtil.setAttributeValue(myNode, "SequenceName", cap.getName()+"_parameters");
+		XMLUtil.setAttributeValue(myNode, ID_KYMONAME, cap.getName()+"_parameters");
 
-		XMLUtil.setElementIntValue(myNode, "analysisStart", (int) analysisStart);
-		XMLUtil.setElementIntValue(myNode, "analysisEnd", (int) analysisEnd);
-		XMLUtil.setElementIntValue(myNode, "analysisStep", analysisStep);
+		XMLUtil.setElementIntValue(myNode, ID_ANALYSISSTART, (int) analysisStart);
+		XMLUtil.setElementIntValue(myNode, ID_ANALYSISEND, (int) analysisEnd);
+		XMLUtil.setElementIntValue(myNode, ID_ANALYSISSTEP, analysisStep);
 		
 		cap.saveToXML(myNode);
 		

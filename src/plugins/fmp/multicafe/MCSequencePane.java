@@ -89,7 +89,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 			}
 		 }
 		 else if (event.getPropertyName().equals("UPDATE")) {
-			browseTab.getBrowseItems(parent0.seqCamData);
+			browseTab.getAnalyzeFrameAndStep(parent0.seqCamData);
 			Viewer v =parent0.seqCamData.seq.getFirstViewer();
 			v.toFront();
 			v.requestFocus();

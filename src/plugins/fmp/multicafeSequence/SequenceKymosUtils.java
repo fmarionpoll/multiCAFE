@@ -200,16 +200,16 @@ public class SequenceKymosUtils {
 		isRunning = true;
 		ProgressFrame progress = new ProgressFrame("Save kymograph measures");
 		progress.setLength(vkymos.capillaries.capillariesArrayList.size());
-		for (Capillary cap : vkymos.capillaries.capillariesArrayList) {
-			if (isInterrupted) {
-				isInterrupted = false;
-				isRunning = false;
-				progress.close();
-			}
-			if (!vkymos.saveXMLKymographAnalysis(cap, directory))
-				System.out.println(" -> failed - in directory: " + directory);
-			progress.incPosition();
-		}
+//		for (Capillary cap : vkymos.capillaries.capillariesArrayList) {
+//			if (isInterrupted) {
+//				isInterrupted = false;
+//				isRunning = false;
+//				progress.close();
+//			}
+//			if (!vkymos.saveXMLKymographAnalysis(cap, directory))
+//				System.out.println(" -> failed - in directory: " + directory);
+//			progress.incPosition();
+//		}
 		progress.close();
 		isRunning = false;
 	}
@@ -224,6 +224,10 @@ public class SequenceKymosUtils {
 	
 	public static void transferROIStoCapillaries (SequenceCamData seqCams, SequenceKymos seqKymos) {
 		List<ROI2D> listROISCap = ROI2DUtilities.getListofCapillariesFromSequence(seqCams);
+		if (seqKymos == null) {
+			System.out.println("seqkymos null - return");
+			return;
+		}
 		if (seqKymos.capillaries == null)
 			seqKymos.capillaries = new Capillaries();
 		

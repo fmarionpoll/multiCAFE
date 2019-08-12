@@ -24,6 +24,7 @@ import icy.image.IcyBufferedImage;
 import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 
 
@@ -75,6 +76,8 @@ public class MCCapillariesTab_File extends JPanel {
 	
 	boolean loadCapillaryTrack(String csFileName) {	
 		boolean flag = false;
+		if (parent0.seqKymos == null)
+			parent0.seqKymos = new SequenceKymos();
 		if (csFileName == null)
 			flag = parent0.seqKymos.xmlReadCapillaryTrackDefault();
 		else
@@ -83,7 +86,7 @@ public class MCCapillariesTab_File extends JPanel {
 	}
 	
 	boolean saveCapillaryTrack() {
-		parent0.sequencePane.browseTab.getBrowseItems (parent0.seqCamData);
+		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (parent0.seqCamData);
 		return parent0.seqKymos.xmlWriteCapillaryTrackDefault();
 	}
 

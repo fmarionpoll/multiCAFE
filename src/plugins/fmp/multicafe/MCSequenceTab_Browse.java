@@ -28,8 +28,7 @@ public class MCSequenceTab_Browse extends JPanel {
 	
 	
 	void init(GridLayout capLayout) {
-		setLayout(capLayout);
-			
+		setLayout(capLayout);	
 		add(GuiUtil.besidesPanel( 
 				new JLabel("start ", SwingConstants.RIGHT), startFrameJSpinner, 
 				new JLabel("step ", SwingConstants.RIGHT) , analyzeStepJSpinner 				
@@ -50,7 +49,7 @@ public class MCSequenceTab_Browse extends JPanel {
 		analyzeStepJSpinner.setValue(seq.analysisStep);
 	}
 	
-	void getBrowseItems (SequenceCamData seq) {
+	void getAnalyzeFrameAndStep (SequenceCamData seq) {
 		seq.analysisStart 	= (int) startFrameJSpinner.getValue();
 		seq.analysisEnd 	= (int) endFrameJSpinner.getValue();
 		seq.analysisStep 	= (int) analyzeStepJSpinner.getValue();

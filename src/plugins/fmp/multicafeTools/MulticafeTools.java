@@ -135,6 +135,13 @@ public class MulticafeTools  extends Plugin {
 		}
 	}
 	
+	public static class CapillaryIndexImageComparator implements Comparator<Capillary> {
+		@Override
+		public int compare(Capillary o1, Capillary o2) {
+			return o1.indexImage -o2.indexImage;
+		}
+	}
+	
 	public static class ROINameComparator implements Comparator<ROI> {
 		@Override
 		public int compare(ROI o1, ROI o2) {

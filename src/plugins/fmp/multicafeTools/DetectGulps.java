@@ -33,11 +33,7 @@ public class DetectGulps {
 			cap.gulpsOptions.copy(options);
 			
 			seqkymo.removeRoisContainingString(t, "derivative");
-			if (cap.derivedValuesArrayList != null)
-				cap.derivedValuesArrayList.clear();
-			cap.derivedValuesArrayList = new ArrayList<Integer>();
-			cap.derivedValuesArrayList.add(0);
-			List <Integer> topLevelArray = cap.getIntegerArrayFromPointArray(cap.ptsTop);
+			List <Integer> topLevelArray = cap.getIntegerArrayFromPolyline2D(cap.ptsTop);
 			
 			getDerivativeProfile(seqkymo, t, cap, topLevelArray, jitter);	
 			if (options.computeDiffnAndDetect) {
@@ -78,8 +74,8 @@ public class DetectGulps {
 					max = val;
 			}
 			listOfMaxPoints.add(new Point2D.Double((double) ix, (double) max));
-			cap.derivedValuesArrayList.add(max);
 		}
+		
 		ROI2DPolyLine roiDerivative = new ROI2DPolyLine ();
 		roiDerivative.setName(cap.getLast2ofCapillaryName()+"_derivative");
 		roiDerivative.setColor(Color.yellow);
@@ -87,6 +83,8 @@ public class DetectGulps {
 		roiDerivative.setPoints(listOfMaxPoints);
 		roiDerivative.setT(t);
 		kymographSeq.seq.addROI(roiDerivative, false);
+		
+		cap.ptsDerivative = roiDerivative.getPolyline2D();
 	}
 
 	private void getGulps(SequenceKymos kymographSeq, int t, Capillary cap, List <Integer> topLevelArray) {
@@ -98,7 +96,7 @@ public class DetectGulps {
 		List<Point2D> gulpPoints = new ArrayList<>();
 		Point2D.Double singlePoint = null;
 		for (ix = 1; ix < topLevelArray.size(); ix++) {
-			int max = cap.derivedValuesArrayList.get(ix-1);
+			int max = (int) cap.ptsDerivative.ypoints[ix-1];
 			if (max < cap.gulpsOptions.detectGulpsThreshold)
 				continue;
 			
