@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.DataConsolidateFunction;
@@ -15,6 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFPivotTable;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 
@@ -58,10 +60,13 @@ public class XLSExport {
 		if (name1.length() >= 5) cam = name1.substring(0, 5); 
 		String name11 = getSubName(path, 3); 
 		String name111 = getSubName(path, 4); 
-		String sheetName = sheet.getSheetName();		
+		String sheetName = sheet.getSheetName();
 		
-		for (int t=0; t<exp.seqKymos.capillaries.capillariesArrayList.size(); t++) { 
-			String name = exp.seqKymos.getFileName(t);
+		List<Capillary> capList = exp.seqKymos.capillaries.capillariesArrayList;
+		
+		for (int t=0; t< capList.size(); t++) { 
+			Capillary cap = capList.get(t);
+			String	name = cap.roi.getName();
 			int col = getColFromKymoFileName(name);
 			if (col >= 0) 
 				pt.x = colseries + col;

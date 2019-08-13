@@ -115,7 +115,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 		for (int t=0; t < capillaries.capillariesArrayList.size(); t++) {
 			Capillary cap = capillaries.capillariesArrayList.get(t);
 			XLSCapillaryResults results = new XLSCapillaryResults();
-			results.name = exp.seqKymos.getFileNameNoPath(t);
+			results.name = cap.roi.getName(); // exp.seqKymos.getFileNameNoPath(t);
 			switch (xlsoption) {
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:

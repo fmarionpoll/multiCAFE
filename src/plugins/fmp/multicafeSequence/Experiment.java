@@ -36,6 +36,8 @@ public class Experiment {
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinutes = fileTimeImageLast.toMillis()/60000;
 
+		if (seqKymos == null)
+			seqKymos = new SequenceKymos();
 		if (!seqKymos.xmlReadCapillaryTrack(seqCamData.getDirectory())) 
 			return false;
 		boxID = seqKymos.capillaries.boxID;
