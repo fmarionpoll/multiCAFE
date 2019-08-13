@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -63,31 +64,34 @@ public class MCCapillariesTab_File extends JPanel {
 			firePropertyChange("CAP_ROIS_SAVE", false, true);
 		}});	
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			String directory = parent0.seqCamData.getDirectory()+ "\\results";
-			parent0.seqKymos = SequenceKymosUtils.openKymoFiles(directory, parent0.seqKymos.capillaries); 
+//			String directory = parent0.seqCamData.getDirectory()+ "\\results";
+//			SequenceKymosUtils.openKymoImageFilesFromCapillaries(directory, parent0.seqKymos); 
+			parent0.seqKymos.loadListOfKymographsFromCapillaries(parent0.seqCamData.getDirectory());
 			firePropertyChange("KYMOS_OPEN", false, true);	
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			String path = parent0.seqCamData.getDirectory() + "\\results";
+			String path = parent0.seqCamData.getDirectory() + File.separator + "results";
 			saveFiles(path);
 			firePropertyChange("KYMOS_SAVE", false, true);
 		}});
 	}
 	
-	boolean loadCapillaryTrack(String csFileName) {	
+	boolean loadCapillaryTrack() {	
 		boolean flag = false;
 		if (parent0.seqKymos == null)
 			parent0.seqKymos = new SequenceKymos();
-		if (csFileName == null)
-			flag = parent0.seqKymos.xmlReadCapillaryTrackDefault();
-		else
-			flag = parent0.seqKymos.xmlReadCapillaryTrack(csFileName);
+		flag = parent0.seqKymos.xmlReadCapillaryTrack(parent0.seqCamData.getDirectory());
 		return flag;
 	}
 	
 	boolean saveCapillaryTrack() {
+		parent0.capillariesPane.unitsTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
+		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
+		parent0.capillariesPane.buildarrayTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
 		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (parent0.seqCamData);
-		return parent0.seqKymos.xmlWriteCapillaryTrackDefault();
+		if (parent0.seqKymos.capillaries.capillariesArrayList.size() == 0)
+			parent0.seqKymos.updateCapillariesFromCamData(parent0.seqCamData);
+		return parent0.seqKymos.xmlWriteCapillaryTrack(parent0.seqCamData.getDirectory());
 	}
 
 	void saveFiles(String directory) {
@@ -107,12 +111,13 @@ public class MCCapillariesTab_File extends JPanel {
 		int returnedval = f.showSaveDialog(null);
 		if (returnedval == JFileChooser.APPROVE_OPTION) { 
 			outputpath = f.getSelectedFile().getAbsolutePath();		
-			for (int i = 0; i < parent0.seqKymos.seq.getSizeT(); i++) {
-				Capillary cap = parent0.seqKymos.capillaries.capillariesArrayList.get(i);
+			for (int t = 0; t < parent0.seqKymos.seq.getSizeT(); t++) {
+				Capillary cap = parent0.seqKymos.capillaries.capillariesArrayList.get(t);
 				progress.setMessage( "Save kymograph file : " + cap.getName());
-				String filename = outputpath + "\\" + cap.getName() + ".tiff";
-				final File file = new File (filename);
-				IcyBufferedImage image = parent0.seqKymos.seq.getImage(i, 0);
+				cap.filenameTIFF = outputpath + File.separator + cap.getName() + ".tiff";
+				
+				final File file = new File (cap.filenameTIFF);
+				IcyBufferedImage image = parent0.seqKymos.seq.getImage(t, 0);
 				
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
 					try {
@@ -134,20 +139,18 @@ public class MCCapillariesTab_File extends JPanel {
 		boolean flag = false;
 		if (SequenceKymosUtils.isRunning)
 			SequenceKymosUtils.isInterrupted = true;
-		
-		if (parent0.seqKymos == null || parent0.seqKymos.capillaries == null) {
+		SequenceKymos seqk = parent0.seqKymos;
+		if (seqk == null || seqk.capillaries == null) {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
-		
-		String directory = parent0.seqCamData.getDirectory()+"\\results";
-		parent0.seqKymos = SequenceKymosUtils.openKymoFiles(directory, parent0.seqKymos.capillaries);
 
-		if (parent0.seqKymos != null) {
-			flag = true;
+		List<String> myList = seqk.loadListOfKymographsFromCapillaries(parent0.seqCamData.getDirectory());
+		flag = seqk.loadImagesFromList(myList, true);
+		if (flag) {
 			SwingUtilities.invokeLater(new Runnable() {
 			    public void run() {
-	        	parent0.capillariesPane.optionsTab.transferCapillaryNamesToComboBox(parent0.seqKymos.capillaries.capillariesArrayList);
+	        	parent0.capillariesPane.optionsTab.transferCapillaryNamesToComboBox(seqk.capillaries.capillariesArrayList);
 				parent0.capillariesPane.optionsTab.viewKymosCheckBox.setSelected(true);
 			    }
 			});

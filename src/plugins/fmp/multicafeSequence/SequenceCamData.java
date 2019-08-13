@@ -29,12 +29,6 @@ import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class SequenceCamData  {
 	public Sequence					seq						= null;
-	List <String>  					listFiles 				= new ArrayList<String>();
-	protected String 				csFileName 				= null;
-	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif"};
-	private String					directory 				= null;
-	private boolean					doLRFileNameTest		= false;
-	
 	public IcyBufferedImage 		refImage 				= null;
 	
 	public long						analysisStart 			= 0;
@@ -44,8 +38,7 @@ public class SequenceCamData  {
 	public int						nTotalFrames 			= 0;
 		
 	public boolean					bBufferON 				= false;
-	public EnumStatus 				status					= EnumStatus.REGULAR;
-		
+	public EnumStatus 				status					= EnumStatus.REGULAR;		
 	public Cages					cages 					= new Cages();
 		
 	// image cache
@@ -54,6 +47,13 @@ public class SequenceCamData  {
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
+	
+	protected List <String>  		listFiles 				= new ArrayList<String>();
+	protected String 				csFileName 				= null;
+	protected String				directory 				= null;
+	
+	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif"};
+
 	
 	// ----------------------------------------
 	
@@ -79,7 +79,7 @@ public class SequenceCamData  {
 		listFiles.clear();
 		for (String cs: listNames)
 			listFiles.add(cs);
-		if (loadSequenceFromList(listFiles)) {
+		if (loadSequenceFromList(listFiles, true)) {
 			Path path = Paths.get(listFiles.get(0));
 			String dir = path.getName(path.getNameCount()-2).toString();
 			if (dir != null)
@@ -87,24 +87,11 @@ public class SequenceCamData  {
 		}
 	}
 	
-	public SequenceCamData(String name, boolean testLR, IcyBufferedImage image) {
-		this.doLRFileNameTest = testLR;
-		seq = new Sequence (name, image);
-	}
-
-	public SequenceCamData (String [] list, boolean testLR, String directory) {
-		this.doLRFileNameTest = testLR;
-		
-		loadSequenceFromListAndDirectory(list, directory);
-		seq.setName(listFiles.get(0));
-	}
-	
 	public SequenceCamData (List<String> listNames, boolean testLR) {
-		this.doLRFileNameTest = testLR;
 		listFiles.clear();
 		for (String cs: listNames)
 			listFiles.add(cs);
-		if (loadSequenceFromList(listFiles)) {
+		if (loadSequenceFromList(listFiles, testLR)) {
 			Path path = Paths.get(listFiles.get(0));
 			String dir = path.getName(path.getNameCount()-2).toString();
 			if (dir != null)
@@ -298,21 +285,20 @@ public class SequenceCamData  {
 		}
 		nTotalFrames = list.length;
 		status = EnumStatus.FILESTACK;	
-		loadSequenceFromList(listFiles);
+		loadSequenceFromList(listFiles, true);
 	}
 	
-	protected boolean loadSequenceFromList(List<String> myListOfFilesNames) {
-		if (doLRFileNameTest && isLinexLRFileNames(myListOfFilesNames)) {
+	protected boolean loadSequenceFromList(List<String> myListOfFilesNames, boolean testFilenameDecoratedwithLR) {
+		if (testFilenameDecoratedwithLR && isLinexLRFileNames(myListOfFilesNames)) {
 			listFiles = convertLinexLRFileNames(myListOfFilesNames);
+		} else {
+			listFiles = myListOfFilesNames;
 		}
 		boolean flag = false;
 		List<Sequence> lseq = Loader.loadSequences(null, listFiles, 0, false, false, false, true);
 		if ((flag = (lseq.size() > 0))) {
-			seq = new Sequence();
-			if (lseq.size() == 1) {
-				seq = lseq.get(0);
-			}
-			else {
+			seq = lseq.get(0);
+			if (lseq.size() > 1) {
 				seq = lseq.get(0);	
 				int tmax = lseq.get(0).getSizeT();
 				int tseq = 0;
@@ -325,12 +311,12 @@ public class SequenceCamData  {
 				}
 			}
 			status = EnumStatus.FILESTACK;	
-			initReadingParameters();
+			initAnalysisParameters();
 		}
 		return flag;
 	}
 	
-	private void initReadingParameters() {
+	private void initAnalysisParameters() {
 		analysisStart = 0;
 		analysisEnd = seq.getSizeT()-1;
 		analysisStep = 1;
@@ -352,18 +338,22 @@ public class SequenceCamData  {
 	
 	protected List<String> convertLinexLRFileNames(List<String> myListOfFilesNames) {
 		List<String> newList = new ArrayList<String>();
-		for (String filename: myListOfFilesNames) {
+		for (String oldName: myListOfFilesNames) {
 			String newName = null;
-			if (filename.contains("R.")) {
-				newName = filename.replace("R.", "2.");
-			}
-			else if (filename.contains("L")) {
-				newName = filename.replace("L.", "1.");
-			}
-			if (newName != null ) {
+			if (oldName.contains("R.")) {
+				newName = oldName.replace("R.", "2.");
 				newList.add(newName);
+			}
+			else if (oldName.contains("L")) {
+				newName = oldName.replace("L.", "1.");
+				newList.add(newName);
+			}
+			else
+				newList.add(oldName);
+
+			if (newName != null ) {
 				try {
-					renameFile(filename, newName);
+					renameFile(oldName, newName);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -386,16 +376,16 @@ public class SequenceCamData  {
 		return null;	
 	}
 	
+	public void setFileName(String name) {
+		csFileName = name;		
+	}
+	
 	public void setParentDirectoryAsFileName() {
 		String directory = seq.getFilename();
 		Path path = Paths.get(directory);
 		String dirupup = path.getName(path.getNameCount()-2).toString();
 		setFileName(dirupup);
 		seq.setName(dirupup);
-	}
-	
-	public void setFileName(String name) {
-		csFileName = name;		
 	}
 	
 	// --------------------------

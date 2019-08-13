@@ -35,7 +35,7 @@ public class XLSExportMoveResults extends XLSExport {
 
 			options.experimentList.readInfosFromAllExperiments();
 			expAll = options.experimentList.getStartAndEndFromAllExperiments();
-			expAll.step = options.experimentList.experimentList.get(0).vSequence.analysisStep;
+			expAll.step = options.experimentList.experimentList.get(0).seqCamData.analysisStep;
 			
 			progress.setMessage( "Load measures...");
 			progress.setLength(options.experimentList.experimentList.size());
@@ -84,7 +84,7 @@ public class XLSExportMoveResults extends XLSExport {
 
 		List<ArrayList<Double>> arrayList = new ArrayList <ArrayList <Double>> ();
 		
-		for (XYTaSeries posxyt: exp.vSequence.cages.flyPositionsList) {
+		for (XYTaSeries posxyt: exp.seqCamData.cages.flyPositionsList) {
 			switch (option) {
 			case DISTANCE: 
 				arrayList.add((ArrayList<Double>) posxyt.getDoubleArrayList(EnumListType.distance));
@@ -129,7 +129,7 @@ public class XLSExportMoveResults extends XLSExport {
 		XLSUtils.setValue(sheet, pt, transpose, "expt");
 		pt.x++;
 		XLSUtils.setValue(sheet, pt, transpose, "name");
-		File file = new File(exp.vSequence.getFileName(0));
+		File file = new File(exp.seqCamData.getFileName(0));
 		String path = file.getParent();
 		pt.x++;
 		XLSUtils.setValue(sheet, pt, transpose, path);
@@ -139,7 +139,7 @@ public class XLSExportMoveResults extends XLSExport {
 		Point pt1 = pt;
 		XLSUtils.setValue(sheet, pt, transpose, "n_cages");
 		pt1.x++;
-		XLSUtils.setValue(sheet, pt, transpose, exp.vSequence.cages.flyPositionsList.size());
+		XLSUtils.setValue(sheet, pt, transpose, exp.seqCamData.cages.flyPositionsList.size());
 		switch (option) {
 		case DISTANCE:
 			break;
@@ -147,7 +147,7 @@ public class XLSExportMoveResults extends XLSExport {
 			pt1.x++;
 			XLSUtils.setValue(sheet, pt, transpose, "threshold");
 			pt1.x++;
-			XLSUtils.setValue(sheet, pt, transpose, exp.vSequence.cages.detect.threshold);
+			XLSUtils.setValue(sheet, pt, transpose, exp.seqCamData.cages.detect.threshold);
 			break;
 		case XYCENTER:
 		default:
@@ -170,7 +170,7 @@ public class XLSExportMoveResults extends XLSExport {
 		
 		switch (xlsExportOption) {
 		case DISTANCE:
-			for (XYTaSeries posxyt: exp.vSequence.cages.flyPositionsList) {
+			for (XYTaSeries posxyt: exp.seqCamData.cages.flyPositionsList) {
 				String name0 = posxyt.getName();
 				XLSUtils.setValue(sheet, pt, transpose, name0);
 				pt.x++;
@@ -178,7 +178,7 @@ public class XLSExportMoveResults extends XLSExport {
 			break;
 			
 		case ISALIVE:
-			for (XYTaSeries posxyt: exp.vSequence.cages.flyPositionsList) {
+			for (XYTaSeries posxyt: exp.seqCamData.cages.flyPositionsList) {
 				String name0 = posxyt.getName();
 				XLSUtils.setValue(sheet, pt, transpose, name0);
 				pt.x++;
@@ -188,7 +188,7 @@ public class XLSExportMoveResults extends XLSExport {
 			break;
 		case XYCENTER:
 		default:
-			for (XYTaSeries posxyt: exp.vSequence.cages.flyPositionsList) {
+			for (XYTaSeries posxyt: exp.seqCamData.cages.flyPositionsList) {
 				String name0 = posxyt.getName();
 				XLSUtils.setValue(sheet, pt, transpose, name0+".x");
 				pt.x++;
@@ -208,11 +208,11 @@ public class XLSExportMoveResults extends XLSExport {
 		int row0 = pt.y;
 		if (charSeries == null)
 			charSeries = "t";
-		int startFrame 	= (int) exp.vSequence.analysisStart;
-		int endFrame 	= (int) exp.vSequence.analysisEnd;
+		int startFrame 	= (int) exp.seqCamData.analysisStart;
+		int endFrame 	= (int) exp.seqCamData.analysisEnd;
 		int step 		= expAll.step;
 		
-		FileTime imageTime = exp.vSequence.getImageModifiedTime(startFrame);
+		FileTime imageTime = exp.seqCamData.getImageModifiedTime(startFrame);
 		long imageTimeMinutes = imageTime.toMillis()/ 60000;
 		if (options.absoluteTime && (col0 ==0)) {
 			imageTimeMinutes = expAll.fileTimeImageLastMinutes;
@@ -237,7 +237,7 @@ public class XLSExportMoveResults extends XLSExport {
 			pt.x = col0;
  
 			long diff0 = (currentFrame - startFrame)/step;
-			imageTime = exp.vSequence.getImageModifiedTime(currentFrame);
+			imageTime = exp.seqCamData.getImageModifiedTime(currentFrame);
 			imageTimeMinutes = imageTime.toMillis()/ 60000;
 
 			if (options.absoluteTime) {
@@ -251,8 +251,8 @@ public class XLSExportMoveResults extends XLSExport {
 			pt.x++;
 			XLSUtils.setValue(sheet, pt, transpose, imageTimeMinutes);
 			pt.x++;
-			if (exp.vSequence.isFileStack()) {
-				XLSUtils.setValue(sheet, pt, transpose, getShortenedName(exp.vSequence, currentFrame) );
+			if (exp.seqCamData.isFileStack()) {
+				XLSUtils.setValue(sheet, pt, transpose, getShortenedName(exp.seqCamData, currentFrame) );
 			}
 			pt.x++;
 			
@@ -302,7 +302,7 @@ public class XLSExportMoveResults extends XLSExport {
 
 	private int columnOfNextSeries(Experiment exp, EnumXLSExportItems option, int currentcolumn) {
 		int n = 2;
-		int value = currentcolumn + exp.vSequence.cages.cageLimitROIList.size() * n + 3;
+		int value = currentcolumn + exp.seqCamData.cages.cageLimitROIList.size() * n + 3;
 		return value;
 	}
 	

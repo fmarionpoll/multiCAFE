@@ -33,7 +33,7 @@ public class SequenceKymosUtils {
 	static String 			extension 				= ".tiff";
 	
 	// -------------------------------------------------------
-	
+	/*
 	private static List<File> keepOnlyFilesMatchingCapillaries(File[] files, Capillaries capillaries) {
 		List<File> filesArray = new ArrayList<File>();
 		for (int i= 0; i < files.length; i++) {
@@ -47,8 +47,9 @@ public class SequenceKymosUtils {
 		}
 		return filesArray;
 	}
-		
-	private static void getMaxSizeofTiffFiles(List<File> files) {
+	*/
+	
+	static void getMaxSizeofTiffFiles(List<File> files) {
 		imageWidthMax = 0;
 		imageHeightMax = 0;
 		rectList = new ArrayList<Rectangle>(files.size());
@@ -78,7 +79,7 @@ public class SequenceKymosUtils {
 		progress.close();
 	}
 	
-	private static void adjustImagesToMaxSize(List<File> files) {
+	static void adjustImagesToMaxSize(List<File> files) {
 		ProgressFrame progress = new ProgressFrame("Make kymographs the same width and height");
 		progress.setLength(files.size());
 
@@ -138,7 +139,8 @@ public class SequenceKymosUtils {
 	        result.dataChanged();
 	}
 	
-	public static SequenceKymos openKymoFiles (String directory, Capillaries parent_capillaries) {
+	/*
+	public static SequenceKymos openKymoFilesFromDirectoryAndCapillaries (String directory) {
 		isRunning = true;
 		File dir = new File(directory);
 		File[] files = dir.listFiles((d, name) -> name.endsWith(extension));
@@ -163,66 +165,39 @@ public class SequenceKymosUtils {
 		kymographSeq.capillaries = new Capillaries();
 		kymographSeq.capillaries.copy(parent_capillaries);
 		
-		int i = 0;
-		for (String filename: kymographSeq.listFiles) {
-			boolean found = false;
-			for (Capillary cap: kymographSeq.capillaries.capillariesArrayList) {				
-				cap.setName(cap.replace_LR_with_12(cap.getName()));
-				if (filename.contains(cap.getName())) {
-					found = true;
-					kymographSeq.loadXMLKymographAnalysis(cap, directory);
-					cap.indexImage = i;
-					break;
-				}
-			}
-			if (!found)  {
-				Capillary cap = new Capillary();
-				int index1 = filename.indexOf(extension);
-				int index0 = filename.lastIndexOf("\\")+1;
-				String title = filename.substring(index0, index1);
-				cap.indexImage = i;
-				cap.setName(title);
-				kymographSeq.loadXMLKymographAnalysis(cap, directory);
-				kymographSeq.capillaries.capillariesArrayList.add(cap);
-			}
-			i++;
-		}
-		kymographSeq.setFileName(kymographSeq.getDecoratedImageName(0));
+//		int i = 0;
+//		for (String filename: kymographSeq.listFiles) {
+//			boolean found = false;
+//			for (Capillary cap: kymographSeq.capillaries.capillariesArrayList) {				
+//				cap.setName(cap.replace_LR_with_12(cap.getName()));
+//				if (filename.contains(cap.getName())) {
+//					found = true;
+//					kymographSeq.loadXMLKymographAnalysis(cap, directory);
+//					cap.indexImage = i;
+//					break;
+//				}
+//			}
+//			if (!found)  {
+//				Capillary cap = new Capillary();
+//				int index1 = filename.indexOf(extension);
+//				int index0 = filename.lastIndexOf("\\")+1;
+//				String title = filename.substring(index0, index1);
+//				cap.indexImage = i;
+//				cap.setName(title);
+//				kymographSeq.loadXMLKymographAnalysis(cap, directory);
+//				kymographSeq.capillaries.capillariesArrayList.add(cap);
+//			}
+//			i++;
+//		}
+//		kymographSeq.setFileName(kymographSeq.getDecoratedImageName(0));
 		
 		progress.close();
 		isRunning = false;
 		return kymographSeq;
 	}
+	*/
 	
-	public static void saveKymosMeasures (SequenceKymos vkymos, String directory) {	
-		if (vkymos == null || vkymos.capillaries == null)
-			return;
-		isRunning = true;
-		ProgressFrame progress = new ProgressFrame("Save kymograph measures");
-		progress.setLength(vkymos.capillaries.capillariesArrayList.size());
-//		for (Capillary cap : vkymos.capillaries.capillariesArrayList) {
-//			if (isInterrupted) {
-//				isInterrupted = false;
-//				isRunning = false;
-//				progress.close();
-//			}
-//			if (!vkymos.saveXMLKymographAnalysis(cap, directory))
-//				System.out.println(" -> failed - in directory: " + directory);
-//			progress.incPosition();
-//		}
-		progress.close();
-		isRunning = false;
-	}
-
-	public static void transferSequenceInfoToKymos (SequenceKymos vkymos, SequenceCamData vSequence) {
-		if (vkymos == null || vkymos.capillaries == null)
-			return;		
-		vkymos.capillaries.analysisStart = vSequence.analysisStart; 
-		vkymos.capillaries.analysisEnd  = vSequence.analysisEnd;
-		vkymos.capillaries.analysisStep = vSequence.analysisStep;
-	}
-	
-	public static void transferROIStoCapillaries (SequenceCamData seqCams, SequenceKymos seqKymos) {
+	public static void transferCamDataROIStoKymo (SequenceCamData seqCams, SequenceKymos seqKymos) {
 		List<ROI2D> listROISCap = ROI2DUtilities.getListofCapillariesFromSequence(seqCams);
 		if (seqKymos == null) {
 			System.out.println("seqkymos null - return");

@@ -197,6 +197,9 @@ public class MCCapillariesTab_Adjust extends JPanel {
 
 	void roisDisplayrefBar(boolean display) {
 
+		if (parent0.seqCamData == null)
+			return;
+		
 		if (display)
 		{
 			// take as ref the whole image otherwise, we won't see the lines if the use has not defined any capillaries

@@ -137,7 +137,7 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		parent0.seqKymos.transferAnalysisParametersToCapillaries();
 		Capillaries capillaries = parent0.seqKymos.capillaries;
 		if (capillaries.capillariesArrayList.size() != nimages) {
-			SequenceKymosUtils.transferROIStoCapillaries(parent0.seqCamData, parent0.seqKymos);
+			SequenceKymosUtils.transferCamDataROIStoKymo(parent0.seqCamData, parent0.seqKymos);
 		}
 		
 		for (int t= 0; t < nimages; t++) {

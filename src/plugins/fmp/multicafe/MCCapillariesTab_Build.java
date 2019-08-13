@@ -72,7 +72,7 @@ public class MCCapillariesTab_Build extends JPanel {
 			}});
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				roisGenerateFromPolygon();
-				SequenceKymosUtils.transferROIStoCapillaries(parent0.seqCamData, parent0.seqKymos);
+				SequenceKymosUtils.transferCamDataROIStoKymo(parent0.seqCamData, parent0.seqKymos);
 				firePropertyChange("CAPILLARIES_NEW", false, true);
 			}});
 		selectRegularButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
@@ -112,8 +112,7 @@ public class MCCapillariesTab_Build extends JPanel {
 		setGroupedBy2(cap.grouping == 2);
 	}
 	
-	Capillaries getCapillariesInfos(Capillaries cap) {
-		//cap.capillariesArrayList.Setsize() getNbCapillaries();
+	Capillaries getCapillariesInfosFromDialog(Capillaries cap) {
 		cap.grouping = getGroupedBy2() ? 2: 1;
 		return cap;
 	}

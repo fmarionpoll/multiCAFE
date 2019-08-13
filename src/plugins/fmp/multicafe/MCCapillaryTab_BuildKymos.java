@@ -79,7 +79,7 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (parent0.seqCamData);
 		parent0.seqKymos = new SequenceKymos();
-		parent0.seqKymos.updateCapillaries(parent0.seqCamData);
+		parent0.seqKymos.updateCapillariesFromCamData(parent0.seqCamData);
 		setStartButton(false);
 		kymosBuildKymographs();	
 		Viewer v = parent0.seqCamData.seq.getFirstViewer();
@@ -111,7 +111,7 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 		if (parent0.seqKymos != null && parent0.seqKymos.seq != null)
 			parent0.seqKymos.seq.close();
 		parent0.seqKymos = new SequenceKymos();
-		SequenceKymosUtils.transferROIStoCapillaries(parent0.seqCamData, parent0.seqKymos);
+		SequenceKymosUtils.transferCamDataROIStoKymo(parent0.seqCamData, parent0.seqKymos);
 		
 		// start building kymos in a separate thread
 		buildKymographsThread = new BuildKymographs();

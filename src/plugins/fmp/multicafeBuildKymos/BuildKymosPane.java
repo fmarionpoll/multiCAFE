@@ -197,7 +197,7 @@ private BuildKymographsBatch 	parent0 	= null;
 		String path = vSequence.getDirectory();
 		boolean flag = vkymos.xmlReadCapillaryTrack(path+"\\capillarytrack.xml");
 		if (flag) 
-			SequenceKymosUtils.transferROIStoCapillaries(vSequence, vkymos);
+			SequenceKymosUtils.transferCamDataROIStoKymo(vSequence, vkymos);
 	}
 
 	private void initInputSequenceViewer () {

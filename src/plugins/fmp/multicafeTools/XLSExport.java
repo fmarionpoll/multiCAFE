@@ -42,14 +42,14 @@ public class XLSExport {
 		pt.x++;
 		int colseries = pt.x;
 		
-		Path path = Paths.get(exp.vSequence.getFileName());
-		String boxID = exp.vkymos.capillaries.boxID;
-		String experiment = exp.vkymos.capillaries.experiment;
-		String comment = exp.vkymos.capillaries.comment;
-		String stimulusL = exp.vkymos.capillaries.stimulusL;
-		String stimulusR = exp.vkymos.capillaries.stimulusR;
-		String concentrationL = exp.vkymos.capillaries.concentrationL;
-		String concentrationR = exp.vkymos.capillaries.concentrationR;
+		Path path = Paths.get(exp.seqCamData.getFileName());
+		String boxID = exp.seqKymos.capillaries.boxID;
+		String experiment = exp.seqKymos.capillaries.experiment;
+		String comment = exp.seqKymos.capillaries.comment;
+		String stimulusL = exp.seqKymos.capillaries.stimulusL;
+		String stimulusR = exp.seqKymos.capillaries.stimulusR;
+		String concentrationL = exp.seqKymos.capillaries.concentrationL;
+		String concentrationR = exp.seqKymos.capillaries.concentrationR;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String date = df.format(exp.fileTimeImageFirst.toMillis());	
 		String name0 = path.toString();
@@ -60,8 +60,8 @@ public class XLSExport {
 		String name111 = getSubName(path, 4); 
 		String sheetName = sheet.getSheetName();		
 		
-		for (int t=0; t<exp.vkymos.capillaries.capillariesArrayList.size(); t++) { 
-			String name = exp.vkymos.getFileName(t);
+		for (int t=0; t<exp.seqKymos.capillaries.capillariesArrayList.size(); t++) { 
+			String name = exp.seqKymos.getFileName(t);
 			int col = getColFromKymoFileName(name);
 			if (col >= 0) 
 				pt.x = colseries + col;
@@ -123,7 +123,7 @@ public class XLSExport {
 			XLSUtils.setValue(sheet, pt, transpose, sheetName);
 			pt.y++;
 			// rois
-			XLSUtils.setValue(sheet, pt, transpose, exp.vkymos.getFileName(t));
+			XLSUtils.setValue(sheet, pt, transpose, exp.seqKymos.getFileName(t));
 			pt.y++;
 		}
 		pt.x = col0;

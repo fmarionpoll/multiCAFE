@@ -89,15 +89,12 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) {
-			fileTab.loadCapillaryTrack(null);
+			fileTab.loadCapillaryTrack();
 		  	setCapillariesInfosToDialogs();
 		  	tabsPane.setSelectedIndex(2);
 		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
 		}			  
 		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) {
-			unitsTab.getCapillariesInfos(parent0.seqKymos.capillaries);
-			parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
-			buildarrayTab.getCapillariesInfos(parent0.seqKymos.capillaries);
 			fileTab.saveCapillaryTrack();
 			tabsPane.setSelectedIndex(2);
 		}
@@ -121,7 +118,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	boolean loadCapillaryTrack() {
-		boolean flag = fileTab.loadCapillaryTrack(null);
+		boolean flag = fileTab.loadCapillaryTrack();
 		if (flag) {
 			setCapillariesInfosToDialogs();
 		// TODO update measure from to, etc (see "ROIS_OPEN")
@@ -130,7 +127,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	private void setCapillariesInfosToDialogs() {
-		SequenceKymosUtils.transferROIStoCapillaries(parent0.seqCamData, parent0.seqKymos);
+		SequenceKymosUtils.transferCamDataROIStoKymo(parent0.seqCamData, parent0.seqKymos);
 		
 		unitsTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
 		buildarrayTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
@@ -143,8 +140,8 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	void getCapillariesInfos(Capillaries cap) {
-		unitsTab.getCapillariesInfos(cap);
-		buildarrayTab.getCapillariesInfos(cap);
+		unitsTab.getCapillariesInfosFromDialog(cap);
+		buildarrayTab.getCapillariesInfosFromDialog(cap);
 		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(cap);
 	}
 

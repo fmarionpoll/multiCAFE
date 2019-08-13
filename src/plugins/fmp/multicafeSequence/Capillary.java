@@ -3,6 +3,7 @@ package plugins.fmp.multicafeSequence;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,7 +31,7 @@ public class Capillary implements XMLPersistent  {
 	private String						name 					= null;
 	public String 						version 				= null;
 	public ROI2DShape 					roi 					= null;	// the capillary (source)
-	public String						fileName				= null;
+	public String						filenameTIFF			= null;
 	
 	public DetectLimits_Options 		limitsOptions			= new DetectLimits_Options();
 	public DetectGulps_Options 			gulpsOptions			= new DetectGulps_Options();
@@ -49,13 +50,14 @@ public class Capillary implements XMLPersistent  {
 	private final static String ID_GULPS 		= "gulpsMC";
 	private final static String ID_INDEXIMAGE 	= "indexImageMC";
 	private final static String ID_NAME 		= "nameMC";
+	private final static String ID_NAMETIFF 	= "filenameTIFF";
 	private final static String ID_TOPLEVEL 	= "toplevel";	
 	private final static String ID_BOTTOMLEVEL 	= "bottomlevel";	
 	private final static String ID_DERIVATIVE 	= "derivedvalues";	
 	private final static String ID_VERSION		= "version"; 
 	private final static String ID_VERSIONNUM	= "1.0.0"; 
 	private final static String ID_NPOINTS		= "npoints";
-	private final static String ID_X			= "y";
+	private final static String ID_X			= "x";
 	private final static String ID_Y			= "y";
 	    
 	// ----------------------------------------------------
@@ -206,8 +208,8 @@ public class Capillary implements XMLPersistent  {
 	
 	// ---------------------
 	
-	private ROI2D transferPolyline2DToROI(String name, Polyline2D ptslist) {
-		ROI2D roi = new ROI2DPolyLine(ptslist); 
+	private ROI2D transferPolyline2DToROI(String name, Polyline2D polyline) {
+		ROI2D roi = new ROI2DPolyLine(polyline); 
 		if (indexImage >= 0) {
 			roi.setT(indexImage);
 			roi.setName(getLast2ofCapillaryName()+"_"+name);
@@ -261,9 +263,9 @@ public class Capillary implements XMLPersistent  {
             return true;
 	    if (nodeMeta != null) {
 	    	version = XMLUtil.getElementValue(nodeMeta, ID_VERSION, ID_VERSIONNUM);
-	        
 	    	indexImage = XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        name = XMLUtil.getElementValue(nodeMeta, ID_NAME, name);
+	        filenameTIFF = XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);
 	        roi = (ROI2DShape) loadROIFromXML(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
 	        gulpsOptions.loadFromXML(nodeMeta);
@@ -279,6 +281,7 @@ public class Capillary implements XMLPersistent  {
 	    	XMLUtil.setElementValue(nodeMeta, ID_VERSION, version);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        XMLUtil.setElementValue(nodeMeta, ID_NAME, name);
+	        XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, Paths.get(filenameTIFF).getFileName().toString());
 	        saveROIToXML(nodeMeta, roi); 
 	        limitsOptions.saveToXML(nodeMeta);
 	        gulpsOptions.saveToXML(nodeMeta);

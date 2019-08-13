@@ -117,7 +117,7 @@ public class MCCapillariesTab_Units extends JPanel {
 		return (int) capillaryPixelsTextField.getValue(); 
 	}
 	
-	void getCapillariesInfos(Capillaries cap) {
+	void getCapillariesInfosFromDialog(Capillaries cap) {
 		cap.volume = getCapillaryVolume();
 		cap.pixels = getCapillaryPixelLength();
 		cap.stimulusR = (String) stimulusRJCombo.getSelectedItem();
