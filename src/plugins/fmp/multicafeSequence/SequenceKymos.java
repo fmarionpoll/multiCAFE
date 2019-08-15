@@ -175,6 +175,7 @@ public class SequenceKymos extends SequenceCamData  {
 		}
 		return myListOfFileNames;
 	}
+	
 	public boolean loadImagesFromList(List <String> myListOfFileNames, boolean adjustImagesSize) {
 		boolean flag = (myListOfFileNames.size() > 0);
 		if (!flag)
@@ -196,7 +197,7 @@ public class SequenceKymos extends SequenceCamData  {
 		return flag;
 	}
 	
-	public boolean xmlReadCapillaryTrack(String pathname) {
+	public boolean xmlLoadCapillaryTrack(String pathname) {
 		File tempfile = new File(pathname);
 		if (tempfile.isDirectory()) {
 			pathname = pathname + File.separator + "capillarytrack.xml";
@@ -205,7 +206,7 @@ public class SequenceKymos extends SequenceCamData  {
 		if (!tempfile.isFile())
 			return false;
 		
-		boolean flag = capillaries.xmlReadROIsAndData(pathname, this);
+		boolean flag = capillaries.xmlLoadCapillaries(pathname, this);
 		if (flag) {
 			Path pathfilename = Paths.get(pathname);
 			directory = pathfilename.getParent().toString();
@@ -215,13 +216,13 @@ public class SequenceKymos extends SequenceCamData  {
 		return flag;
 	}
 	
-	public boolean xmlWriteCapillaryTrack(String pathname) {
+	public boolean xmlSaveCapillaryTrack(String pathname) {
 		boolean flag = false;
 		File tempfile = new File(pathname);
 		if (tempfile.isDirectory()) {
 			pathname = pathname + File.separator + "capillarytrack.xml";
 		}
-		flag = capillaries.xmlWriteROIsAndDataNoQuestion(pathname, this);
+		flag = capillaries.xmlSaveCapillaries(pathname, this);
 		return flag;
 	}
 	

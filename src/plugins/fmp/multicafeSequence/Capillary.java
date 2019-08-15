@@ -190,7 +190,7 @@ public class Capillary implements XMLPersistent  {
 	}
 	
 	public void transferROIsToMeasures(List<ROI> listRois) {	
-		gulpsRois.clear();
+		gulpsRois = new ArrayList<ROI>();
 		for (ROI roi: listRois) {		
 			String roiname = roi.getName();
 			if (roi instanceof ROI2DPolyLine ) {
@@ -202,6 +202,7 @@ public class Capillary implements XMLPersistent  {
 					ptsBottom = ((ROI2DPolyLine)roi).getPolyline2D();
 				else if (roiname .contains("derivative") )
 					ptsDerivative = ((ROI2DPolyLine)roi).getPolyline2D();
+				((ROI2DPolyLine) roi).setT(indexImage);
 			}
 		}
 	}
@@ -281,7 +282,11 @@ public class Capillary implements XMLPersistent  {
 	    	XMLUtil.setElementValue(nodeMeta, ID_VERSION, version);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        XMLUtil.setElementValue(nodeMeta, ID_NAME, name);
-	        XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, Paths.get(filenameTIFF).getFileName().toString());
+	        String filename = filenameTIFF;
+	        if (filenameTIFF != null ) 
+	        	filename = Paths.get(filenameTIFF).getFileName().toString();
+		    XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);
+	        
 	        saveROIToXML(nodeMeta, roi); 
 	        limitsOptions.saveToXML(nodeMeta);
 	        gulpsOptions.saveToXML(nodeMeta);

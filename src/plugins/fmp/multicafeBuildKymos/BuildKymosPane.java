@@ -195,7 +195,7 @@ private BuildKymographsBatch 	parent0 	= null;
 		System.out.println("read capillaries info for: "+ oo);
 		vSequence.seq.removeAllROI();
 		String path = vSequence.getDirectory();
-		boolean flag = vkymos.xmlReadCapillaryTrack(path+"\\capillarytrack.xml");
+		boolean flag = vkymos.xmlLoadCapillaryTrack(path+"\\capillarytrack.xml");
 		if (flag) 
 			SequenceKymosUtils.transferCamDataROIStoKymo(vSequence, vkymos);
 	}
@@ -247,7 +247,7 @@ private BuildKymographsBatch 	parent0 	= null;
 
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
 		String name = vSequence.getDirectory()+ "\\capillarytrack.xml";
-		vkymos.capillaries.xmlWriteROIsAndDataNoQuestion(name, vkymos);
+		vkymos.capillaries.xmlSaveCapillaries(name, vkymos);
 		for (SequenceKymos seq: kymographArrayList) {
 			progress.setMessage( "Save kymograph file : " + seq.seq.getName());
 			String filename = directory + "\\" + seq.seq.getName() + ".tiff";

@@ -100,7 +100,6 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		 else if (event.getPropertyName().equals("SEQ_CLOSE")) {
 			tabsPane.setSelectedIndex(0);
 			infosTab.experimentComboBox.removeAllItems();
-			firePropertyChange("SEQ_CLOSE", false, true);
 		 }
 		 else if (event.getPropertyName().equals("SEARCH_CLOSED")) {
 			int index = infosTab.experimentComboBox.getSelectedIndex();
@@ -154,7 +153,11 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	
 	boolean createSequenceCamFromString (String filename) {
 		if (parent0.seqCamData != null)
-			parent0.seqCamData.seq.close();		
+			parent0.seqCamData.seq.close();	
+		if (parent0.seqKymos != null) {
+			parent0.seqKymos.seq.close();
+			parent0.seqKymos = null;
+		}
 		parent0.seqCamData = new SequenceCamData();
 		
 		String path = parent0.seqCamData.loadSequence(filename);

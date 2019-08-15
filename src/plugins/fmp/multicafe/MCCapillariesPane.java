@@ -120,8 +120,9 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	boolean loadCapillaryTrack() {
 		boolean flag = fileTab.loadCapillaryTrack();
 		if (flag) {
-			setCapillariesInfosToDialogs();
-		// TODO update measure from to, etc (see "ROIS_OPEN")
+			unitsTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
+			buildarrayTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
+			parent0.sequencePane.infosTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
 		}
 		return flag;
 	}

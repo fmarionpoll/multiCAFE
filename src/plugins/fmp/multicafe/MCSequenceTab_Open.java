@@ -22,17 +22,12 @@ import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.io.FilenameUtils;
-import org.w3c.dom.Document;
-
 import icy.gui.frame.IcyFrame;
 import icy.gui.frame.IcyFrameEvent;
 import icy.gui.frame.IcyFrameListener;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import icy.preferences.XMLPreferences;
-import icy.util.XMLUtil;
-import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeTools.MulticafeTools;
 
 
@@ -218,11 +213,12 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 		
 		for (String name : stringList) {
 			String directory = Paths.get(name).getParent().toString();
-			Capillaries dummyCap = new Capillaries();
-			final Document doc = XMLUtil.loadDocument(name);
-			dummyCap.xmlReadCapillaryParameters(doc);
-			String filename = directory+ "/"+ FilenameUtils.getName(dummyCap.sourceName);
-			selectedNames.add(filename);
+//			Capillaries dummyCap = new Capillaries();
+//			final Document doc = XMLUtil.loadDocument(name);
+//			dummyCap.xmlReadCapillaryParametersv1(doc);
+//			String filename = directory+ File.separator+ FilenameUtils.getName(dummyCap.sourceName);
+//			selectedNames.add(filename);
+			selectedNames.add(directory);
 		}
 	}
 	

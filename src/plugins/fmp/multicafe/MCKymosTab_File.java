@@ -60,7 +60,7 @@ public class MCKymosTab_File  extends JPanel {
 		SequenceKymos seqk = parent0.seqKymos;
 		if (seqk != null && seqk.seq != null) {
 			seqk.seq.removeAllROI();
-			seqk.xmlReadCapillaryTrack(directory);
+			seqk.xmlLoadCapillaryTrack(directory);
 			seqk.transferMeasuresToKymosRois();
 		}
 		return flag;
@@ -73,7 +73,7 @@ public class MCKymosTab_File  extends JPanel {
 			seqk.roisSaveEdits();
 			//SequenceKymosUtils.saveKymosMeasures(parent0.seqKymos, parent0.seqCamData.getDirectory());
 			String name = parent0.seqCamData.getDirectory()+ File.separator + "capillarytrack.xml";
-			seqk.xmlWriteCapillaryTrack(name);
+			seqk.xmlSaveCapillaryTrack(name);
 		}
 	}
 }

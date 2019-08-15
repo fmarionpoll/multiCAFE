@@ -38,7 +38,7 @@ public class Experiment {
 
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
-		if (!seqKymos.xmlReadCapillaryTrack(seqCamData.getDirectory())) 
+		if (!seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory())) 
 			return false;
 		boxID = seqKymos.capillaries.boxID;
 

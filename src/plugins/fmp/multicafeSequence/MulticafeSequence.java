@@ -2,6 +2,7 @@ package plugins.fmp.multicafeSequence;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -199,9 +200,9 @@ public class MulticafeSequence extends EzPlug {
 		boolean flag = false;
 		if (vkymos != null && vkymos.capillaries != null) {
 			if (csFileName == null)
-				flag = vkymos.capillaries.xmlReadROIsAndData(vkymos);
-			else
-				flag = vkymos.capillaries.xmlReadROIsAndData(csFileName, vkymos);
+				csFileName = vkymos.getDirectory() + File.separator + "capillaryTrack.xml";
+
+			flag = vkymos.capillaries.xmlLoadCapillaries(csFileName, vkymos);
 			
 			vSequence.analysisStart = vkymos.capillaries.analysisStart;
 			vSequence.analysisEnd = vkymos.capillaries.analysisEnd;

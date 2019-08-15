@@ -80,7 +80,7 @@ public class MCCapillariesTab_File extends JPanel {
 		boolean flag = false;
 		if (parent0.seqKymos == null)
 			parent0.seqKymos = new SequenceKymos();
-		flag = parent0.seqKymos.xmlReadCapillaryTrack(parent0.seqCamData.getDirectory());
+		flag = parent0.seqKymos.xmlLoadCapillaryTrack(parent0.seqCamData.getDirectory());
 		return flag;
 	}
 	
@@ -91,7 +91,7 @@ public class MCCapillariesTab_File extends JPanel {
 		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (parent0.seqCamData);
 		if (parent0.seqKymos.capillaries.capillariesArrayList.size() == 0)
 			parent0.seqKymos.updateCapillariesFromCamData(parent0.seqCamData);
-		return parent0.seqKymos.xmlWriteCapillaryTrack(parent0.seqCamData.getDirectory());
+		return parent0.seqKymos.xmlSaveCapillaryTrack(parent0.seqCamData.getDirectory());
 	}
 
 	void saveFiles(String directory) {
