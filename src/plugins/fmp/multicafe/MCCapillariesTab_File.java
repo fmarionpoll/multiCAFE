@@ -81,6 +81,9 @@ public class MCCapillariesTab_File extends JPanel {
 		if (parent0.seqKymos == null)
 			parent0.seqKymos = new SequenceKymos();
 		flag = parent0.seqKymos.xmlLoadCapillaryTrack(parent0.seqCamData.getDirectory());
+		if (flag) {
+			SequenceKymosUtils.transferKymoCapillariesToCamData (parent0.seqCamData, parent0.seqKymos);
+		}
 		return flag;
 	}
 	

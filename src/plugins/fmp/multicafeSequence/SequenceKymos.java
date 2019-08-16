@@ -61,7 +61,7 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	public String getDecoratedImageNameFromCapillary(int t) {
 		if (capillaries != null & capillaries.capillariesArrayList.size() > 0)
-			return capillaries.capillariesArrayList.get(t).roi.getName() + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
+			return capillaries.capillariesArrayList.get(t).capillaryRoi.getName() + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
 		return csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
 	}
 
@@ -155,25 +155,23 @@ public class SequenceKymos extends SequenceCamData  {
 		List<String> myListOfFileNames = new ArrayList<String>(capillaries.capillariesArrayList.size());
 		Collections.sort(capillaries.capillariesArrayList, new MulticafeTools.CapillaryIndexImageComparator());
 		for (Capillary cap: capillaries.capillariesArrayList) {
-			// is tiff file name defined but not in the right directory
-			if (cap.filenameTIFF != null && !cap.filenameTIFF.isEmpty()) {
-				if (!cap.filenameTIFF .contains(directoryFull)) {
-					Path oldpath = Paths.get(cap.filenameTIFF);
-					cap.filenameTIFF = directoryFull + oldpath.getFileName();
-				}
-				myListOfFileNames.add(cap.filenameTIFF);
+			String tempname = directoryFull+cap.getName()+ ".tiff";
+			boolean found = isFileFound(tempname);
+			if (!found) {
+				tempname = directoryFull+cap.capillaryRoi.getName()+ ".tiff";
+				found = isFileFound(tempname);
 			}
-			// name not defined but tiff file present?
-			else {
-				String tempname = directoryFull+cap.getName()+ ".tiff";
-				File tempfile = new File(tempname);
-				if (tempfile.exists() ) {
-					cap.filenameTIFF = tempname;
-					myListOfFileNames.add(cap.filenameTIFF);
-				}
+			if (found) {
+				cap.filenameTIFF = tempname;
+				myListOfFileNames.add(tempname);
 			}
 		}
 		return myListOfFileNames;
+	}
+	
+	private boolean isFileFound(String tempname) {
+		File tempfile = new File(tempname);
+		return tempfile.exists(); 
 	}
 	
 	public boolean loadImagesFromList(List <String> myListOfFileNames, boolean adjustImagesSize) {

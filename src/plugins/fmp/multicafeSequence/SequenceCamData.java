@@ -351,7 +351,8 @@ public class SequenceCamData  {
 			else
 				newList.add(oldName);
 
-			if (newName != null ) {
+			File oldfile = new File(oldName);
+			if (newName != null && oldfile.exists()) {
 				try {
 					renameFile(oldName, newName);
 				} catch (IOException e) {
@@ -360,6 +361,17 @@ public class SequenceCamData  {
 			}
 		}
 		return newList; 
+	}
+	
+	protected String convertLinexLRFileName(String oldName) {
+			String newName = null;
+			if (oldName.contains("R.")) 
+				newName = oldName.replace("R.", "2.");
+			else if (oldName.contains("L")) 
+				newName = oldName.replace("L.", "1.");
+			else
+				newName = oldName;
+		return newName; 
 	}
 	
 	// --------------------------

@@ -155,7 +155,7 @@ public class BuildKymographs implements Runnable
 		for (int t=0; t < nbcapillaries; t++) {
 			Capillary cap = options.seqKymos.capillaries.capillariesArrayList.get(t);
 			cap.masksList = new ArrayList<ArrayList<int[]>>();
-			initExtractionParametersfromROI(cap.roi, cap.masksList, options.diskRadius, sizex, sizey);
+			initExtractionParametersfromROI(cap.capillaryRoi, cap.masksList, options.diskRadius, sizex, sizey);
 			if (cap.masksList.size() > masksizeMax)
 				masksizeMax = cap.masksList.size();
 		}

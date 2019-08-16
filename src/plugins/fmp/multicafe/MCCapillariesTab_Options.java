@@ -118,7 +118,7 @@ public class MCCapillariesTab_Options extends JPanel {
 				kymographNamesComboBox.removeAllItems();
 				Collections.sort(capillaryArrayList, new MulticafeTools.CapillaryNameComparator()); 
 				for (Capillary cap: capillaryArrayList) 
-					kymographNamesComboBox.addItem(cap.roi.getName());	
+					kymographNamesComboBox.addItem(cap.capillaryRoi.getName());	
 			}});
 	}
 	

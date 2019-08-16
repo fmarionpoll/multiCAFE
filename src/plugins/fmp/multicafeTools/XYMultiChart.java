@@ -82,7 +82,7 @@ public class XYMultiChart extends IcyFrame  {
 				if (option == EnumListType.topLevelDelta) {
 					results = kymoseq.subtractTi(results);
 				}
-				XYSeries seriesXY = getXYSeries(results, cap.roi.getName(), startFrame);
+				XYSeries seriesXY = getXYSeries(results, cap.capillaryRoi.getName(), startFrame);
 				if (option == EnumListType.topAndBottom) 
 					appendDataToXYSeries(seriesXY, cap.getMeasures(EnumListType.bottomLevel), startFrame );
 				xyDataset.addSeries( seriesXY );
@@ -151,7 +151,7 @@ public class XYMultiChart extends IcyFrame  {
 				if (option == EnumListType.topLevelDelta) {
 					results = kymoseq.subtractTi(results);
 				}
-				XYSeries seriesXY = getXYSeries(results, cap.roi.getName(), startFrame);
+				XYSeries seriesXY = getXYSeries(results, cap.capillaryRoi.getName(), startFrame);
 				if (option == EnumListType.topAndBottom) 
 					appendDataToXYSeries(seriesXY, cap.getMeasures(EnumListType.bottomLevel), startFrame );
 				

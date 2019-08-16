@@ -124,7 +124,7 @@ public class MulticafeTools  extends Plugin {
 	public static class CapillaryROINameComparator implements Comparator<Capillary> {
 		@Override
 		public int compare(Capillary o1, Capillary o2) {
-			return o1.roi.getName().compareTo(o2.roi.getName());
+			return o1.capillaryRoi.getName().compareTo(o2.capillaryRoi.getName());
 		}
 	}
 

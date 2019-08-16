@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
@@ -28,9 +29,9 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 public class Capillary implements XMLPersistent  {
 
 	public int							indexImage 				= -1;
-	private String						name 					= null;
+	private String						capillaryName 			= null;
 	public String 						version 				= null;
-	public ROI2DShape 					roi 					= null;	// the capillary (source)
+	public ROI2DShape 					capillaryRoi 			= null;	// the capillary (source)
 	public String						filenameTIFF			= null;
 	
 	public DetectLimits_Options 		limitsOptions			= new DetectLimits_Options();
@@ -57,33 +58,34 @@ public class Capillary implements XMLPersistent  {
 	private final static String ID_VERSION		= "version"; 
 	private final static String ID_VERSIONNUM	= "1.0.0"; 
 	private final static String ID_NPOINTS		= "npoints";
+	private final static String ID_N			= "n";
 	private final static String ID_X			= "x";
 	private final static String ID_Y			= "y";
 	    
 	// ----------------------------------------------------
 	
 	Capillary(ROI2DShape roi) {
-		this.roi = roi;
-		this.name = replace_LR_with_12(roi.getName());
+		this.capillaryRoi = roi;
+		this.capillaryName = replace_LR_with_12(roi.getName());
 	}
 	
 	Capillary(String name) {
-		this.name = replace_LR_with_12(name);
+		this.capillaryName = replace_LR_with_12(name);
 	}
 	
 	public Capillary() {
 	}
 
 	public String getName() {
-		return name;
+		return capillaryName;
 	}
 	
 	public void setName(String name) {
-		this.name = name;
+		this.capillaryName = name;
 	}
 	
 	public String getLast2ofCapillaryName() {
-		return roi.getName().substring(roi.getName().length() -2);
+		return capillaryRoi.getName().substring(capillaryRoi.getName().length() -2);
 	}
 	
 	public String replace_LR_with_12(String name) {
@@ -265,9 +267,9 @@ public class Capillary implements XMLPersistent  {
 	    if (nodeMeta != null) {
 	    	version = XMLUtil.getElementValue(nodeMeta, ID_VERSION, ID_VERSIONNUM);
 	    	indexImage = XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
-	        name = XMLUtil.getElementValue(nodeMeta, ID_NAME, name);
+	        capillaryName = XMLUtil.getElementValue(nodeMeta, ID_NAME, capillaryName);
 	        filenameTIFF = XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);
-	        roi = (ROI2DShape) loadROIFromXML(nodeMeta);
+	        capillaryRoi = (ROI2DShape) loadROIFromXML(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
 	        gulpsOptions.loadFromXML(nodeMeta);
 	    }
@@ -281,13 +283,12 @@ public class Capillary implements XMLPersistent  {
 	    		version = ID_VERSIONNUM;
 	    	XMLUtil.setElementValue(nodeMeta, ID_VERSION, version);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
-	        XMLUtil.setElementValue(nodeMeta, ID_NAME, name);
-	        String filename = filenameTIFF;
-	        if (filenameTIFF != null ) 
-	        	filename = Paths.get(filenameTIFF).getFileName().toString();
-		    XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);
-	        
-	        saveROIToXML(nodeMeta, roi); 
+	        XMLUtil.setElementValue(nodeMeta, ID_NAME, capillaryName);
+	        if (filenameTIFF != null ) {
+	        	String filename = Paths.get(filenameTIFF).getFileName().toString();
+	        	XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);
+	        }
+	        saveROIToXML(nodeMeta, capillaryRoi); 
 	        limitsOptions.saveToXML(nodeMeta);
 	        gulpsOptions.saveToXML(nodeMeta);
 	    }
@@ -331,8 +332,9 @@ public class Capillary implements XMLPersistent  {
 	    if (nodeMeta != null) {
 	    	XMLUtil.setElementIntValue(nodeMeta, ID_NPOINTS, data.npoints);
 	    	for (int i=0; i< data.npoints; i++) {
-	    		XMLUtil.setElementDoubleValue(nodeMeta, ID_X+i, data.xpoints[i]);
-	    		XMLUtil.setElementDoubleValue(nodeMeta, ID_Y+i, data.ypoints[i]);
+	    		Element elmt = XMLUtil.setElement(nodeMeta, ID_N+i);
+	    		XMLUtil.setAttributeDoubleValue(elmt, ID_X, data.xpoints[i]);
+	    		XMLUtil.setAttributeDoubleValue(elmt, ID_Y, data.ypoints[i]);
 	    	}
 	    }
 	}
@@ -345,8 +347,9 @@ public class Capillary implements XMLPersistent  {
 	    	double[] xpoints = new double [npoints];
 	    	double[] ypoints = new double [npoints];
 	    	for (int i=0; i< npoints; i++) {
-	    		xpoints[i] = XMLUtil.getElementDoubleValue(nodeMeta, ID_X+i, 0);
-	    		ypoints[i] = XMLUtil.getElementDoubleValue(nodeMeta, ID_Y+i, 0);
+	    		Element elmt = XMLUtil.getElement(nodeMeta, ID_N+i);
+	    		xpoints[i] = XMLUtil.getAttributeDoubleValue(elmt, ID_X, 0);
+	    		ypoints[i] = XMLUtil.getAttributeDoubleValue(elmt, ID_Y, 0);
     		}
 	    	data = new Polyline2D(xpoints, ypoints, npoints);
 	    }

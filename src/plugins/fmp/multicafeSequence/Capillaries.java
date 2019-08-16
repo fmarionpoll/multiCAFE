@@ -251,7 +251,6 @@ public class Capillaries {
 		return false;
 	}
 	
-	
 	public boolean xmlLoadCapillaries(String csFileName, SequenceKymos seq) {
 		if (csFileName != null)  {
 			final Document doc = XMLUtil.loadDocument(csFileName);
@@ -263,44 +262,47 @@ public class Capillaries {
 					break;
 				case 0: // old xml storage structure
 					xmlReadCapillaryParametersv0(doc);
-					
-					// load xml files stored in "results"
-					int t = 0;
-					List<ROI> listOfCapillaryROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
-					capillariesArrayList.clear();
-					Path directorypath = Paths.get(csFileName).getParent();
-					String directory = directorypath + File.separator + "results"+File.separator;
-					// then load measures stored into individual files
-					for (ROI roiCapillary: listOfCapillaryROIs) {
-						Capillary cap = new Capillary((ROI2DShape) roiCapillary);
-						capillariesArrayList.add(cap);
-						String csFile = directory + roiCapillary.getName() + ".xml";
-						cap.filenameTIFF = directory + roiCapillary.getName() + ".tiff";
-						cap.indexImage = t;
-						t++;
-						final Document dockymo = XMLUtil.loadDocument(csFile);
-						if (dockymo != null) {
-							NodeList nodeROISingle = dockymo.getElementsByTagName("roi");					
-							if (nodeROISingle.getLength() > 0) {	
-								List<ROI> rois = new ArrayList<ROI>();
-				                for (int i=0; i< nodeROISingle.getLength(); i++) {
-				                	Node element = nodeROISingle.item(i);
-				                    ROI roi_i = ROI.createFromXML(element);
-				                    if (roi_i != null)
-				                        rois.add(roi_i);
-				                }
-								cap.transferROIsToMeasures(rois);
-							}
-						}
-					}
+					xmlLoadCapillariesv0(doc, csFileName);
 					break;
 				default:
 					return false;
 				}
-				return true;
+ 				return true;
 			}
 		}
 		return false;
+	}
+	
+	private void xmlLoadCapillariesv0(Document doc, String csFileName) {
+		// load xml files stored in "results"
+		int t = 0;
+		List<ROI> listOfCapillaryROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
+		capillariesArrayList.clear();
+		Path directorypath = Paths.get(csFileName).getParent();
+		String directory = directorypath + File.separator + "results"+File.separator;
+		// then load measures stored into individual files
+		for (ROI roiCapillary: listOfCapillaryROIs) {
+			Capillary cap = new Capillary((ROI2DShape) roiCapillary);
+			capillariesArrayList.add(cap);
+			String csFile = directory + roiCapillary.getName() + ".xml";
+			//cap.filenameTIFF = directory + roiCapillary.getName() + ".tiff";
+			cap.indexImage = t;
+			t++;
+			final Document dockymo = XMLUtil.loadDocument(csFile);
+			if (dockymo != null) {
+				NodeList nodeROISingle = dockymo.getElementsByTagName("roi");					
+				if (nodeROISingle.getLength() > 0) {	
+					List<ROI> rois = new ArrayList<ROI>();
+	                for (int i=0; i< nodeROISingle.getLength(); i++) {
+	                	Node element = nodeROISingle.item(i);
+	                    ROI roi_i = ROI.createFromXML(element);
+	                    if (roi_i != null)
+	                        rois.add(roi_i);
+	                }
+					cap.transferROIsToMeasures(rois);
+				}
+			}
+		}
 	}
 	
 	public void copy (Capillaries cap) {

@@ -66,7 +66,7 @@ public class XLSExport {
 		
 		for (int t=0; t< capList.size(); t++) { 
 			Capillary cap = capList.get(t);
-			String	name = cap.roi.getName();
+			String	name = cap.capillaryRoi.getName();
 			int col = getColFromKymoFileName(name);
 			if (col >= 0) 
 				pt.x = colseries + col;

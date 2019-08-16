@@ -33,22 +33,7 @@ public class SequenceKymosUtils {
 	static String 			extension 				= ".tiff";
 	
 	// -------------------------------------------------------
-	/*
-	private static List<File> keepOnlyFilesMatchingCapillaries(File[] files, Capillaries capillaries) {
-		List<File> filesArray = new ArrayList<File>();
-		for (int i= 0; i < files.length; i++) {
-			String filename = files[i].getAbsolutePath();
-			for (Capillary cap: capillaries.capillariesArrayList) {
-				if (filename.contains(cap.getName()) ||filename.contains(cap.roi.getName())) {
-					filesArray.add(files[i]);
-					break;
-				}
-			}
-		}
-		return filesArray;
-	}
-	*/
-	
+
 	static void getMaxSizeofTiffFiles(List<File> files) {
 		imageWidthMax = 0;
 		imageHeightMax = 0;
@@ -139,64 +124,6 @@ public class SequenceKymosUtils {
 	        result.dataChanged();
 	}
 	
-	/*
-	public static SequenceKymos openKymoFilesFromDirectoryAndCapillaries (String directory) {
-		isRunning = true;
-		File dir = new File(directory);
-		File[] files = dir.listFiles((d, name) -> name.endsWith(extension));
-		if (files == null || files.length < 1)
-			return null;
-		
-		ProgressFrame progress = new ProgressFrame("Read kymographs");
-	
-		//TODO: parent_capillaries does not necessarily contains a list of the capillaries (capillarytrack does not)
-		List <File> filesArray = keepOnlyFilesMatchingCapillaries(files, parent_capillaries);
-		getMaxSizeofTiffFiles(filesArray);
-		adjustImagesToMaxSize(filesArray);
-
-		progress.setMessage("create sequence");
-		List<String> listFileNames = new ArrayList<String> (filesArray.size());
-		for (File file: filesArray) {
-			listFileNames.add(file.getPath());
-		}
-		
-		SequenceKymos kymographSeq = new SequenceKymos(listFileNames);
-		progress.setMessage("load measures for each capillary");
-		kymographSeq.capillaries = new Capillaries();
-		kymographSeq.capillaries.copy(parent_capillaries);
-		
-//		int i = 0;
-//		for (String filename: kymographSeq.listFiles) {
-//			boolean found = false;
-//			for (Capillary cap: kymographSeq.capillaries.capillariesArrayList) {				
-//				cap.setName(cap.replace_LR_with_12(cap.getName()));
-//				if (filename.contains(cap.getName())) {
-//					found = true;
-//					kymographSeq.loadXMLKymographAnalysis(cap, directory);
-//					cap.indexImage = i;
-//					break;
-//				}
-//			}
-//			if (!found)  {
-//				Capillary cap = new Capillary();
-//				int index1 = filename.indexOf(extension);
-//				int index0 = filename.lastIndexOf("\\")+1;
-//				String title = filename.substring(index0, index1);
-//				cap.indexImage = i;
-//				cap.setName(title);
-//				kymographSeq.loadXMLKymographAnalysis(cap, directory);
-//				kymographSeq.capillaries.capillariesArrayList.add(cap);
-//			}
-//			i++;
-//		}
-//		kymographSeq.setFileName(kymographSeq.getDecoratedImageName(0));
-		
-		progress.close();
-		isRunning = false;
-		return kymographSeq;
-	}
-	*/
-	
 	public static void transferCamDataROIStoKymo (SequenceCamData seqCams, SequenceKymos seqKymos) {
 		List<ROI2D> listROISCap = ROI2DUtilities.getListofCapillariesFromSequence(seqCams);
 		if (seqKymos == null) {
@@ -210,7 +137,7 @@ public class SequenceKymosUtils {
 		for (ROI2D roi:listROISCap) {
 			boolean found = false;
 			for (Capillary cap: seqKymos.capillaries.capillariesArrayList) {
-				if (roi.getName().equals(cap.roi.getName())) {
+				if (roi.getName().equals(cap.capillaryRoi.getName())) {
 					found = true;
 					break;
 				}
@@ -223,13 +150,33 @@ public class SequenceKymosUtils {
 		for (Capillary cap: seqKymos.capillaries.capillariesArrayList) {
 			boolean found = false;
 			for (ROI2D roi:listROISCap) {
-				if (roi.getName().equals(cap.roi.getName())) {
+				if (roi.getName().equals(cap.capillaryRoi.getName())) {
 					found = true;
 					break;
 				}
 			}
 			if (!found)
 				seqKymos.capillaries.capillariesArrayList.remove(cap);
+		}
+	}
+	
+	public static void transferKymoCapillariesToCamData (SequenceCamData seqCams, SequenceKymos seqKymos) {
+		if (seqKymos == null || seqKymos.capillaries == null)
+			return;
+		
+		List<ROI2D> listROISCap = ROI2DUtilities.getListofCapillariesFromSequence(seqCams);
+		
+		// cap with no corresponding roi?
+		for (Capillary cap: seqKymos.capillaries.capillariesArrayList) {
+			boolean found = false;
+			for (ROI2D roi:listROISCap) {
+				if (roi.getName().equals(cap.capillaryRoi.getName())) {
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+				seqCams.seq.addROI(cap.capillaryRoi);
 		}
 	}
 }
