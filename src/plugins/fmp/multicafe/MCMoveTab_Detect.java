@@ -172,7 +172,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 		detect.limitLow 		= (int) objectLowsizeSpinner.getValue();
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
-		trackAllFliesThread.vSequence 	= parent0.seqCamData;		
+		trackAllFliesThread.seqCamData 	= parent0.seqCamData;		
 		trackAllFliesThread.stopFlag 	= false;
 		trackAllFliesThread.detect 		= detect;
 		trackAllFliesThread.viewInternalImages = viewsCheckBox.isSelected();

@@ -36,7 +36,7 @@ public class DetectFlies  implements Runnable {
 	private Viewer 				viewer;
 	public Rectangle			rectangleAllCages = null;
 		
-	public SequenceCamData 	vSequence 		= null;	
+	public SequenceCamData 		seqCamData 		= null;	
 	public boolean 				stopFlag 		= false;
 	public boolean 				threadRunning 	= false;
 	public boolean				buildBackground	= true;
@@ -44,9 +44,9 @@ public class DetectFlies  implements Runnable {
 	
 	public DetectFlies_Options 	detect 			= new DetectFlies_Options();
 	public Cages 				cages 			= new Cages();
-	public SequenceCamData 	seqNegative 	= null;
-	public SequenceCamData 	seqPositive 	= null;
-	public SequenceCamData	seqReference	= null;
+	public SequenceCamData 		seqNegative 	= null;
+	public SequenceCamData 		seqPositive 	= null;
+	public SequenceCamData		seqReference	= null;
 	public boolean				viewInternalImages = false;
 
 	/*
@@ -62,14 +62,16 @@ public class DetectFlies  implements Runnable {
 	@Override
 	public void run() {
 		threadRunning = true;
-
+		analyzeStep = seqCamData.analysisStep;
+		startFrame=(int) seqCamData.analysisStart;
+		endFrame=(int) seqCamData.analysisEnd;
 		System.out.println("Computation over frames: " + startFrame + " - " + endFrame );
 
 		// create arrays for storing position and init their value to zero
 	
 		initParametersForDetection();
 
-		if (buildBackground || vSequence.refImage == null)
+		if (buildBackground || seqCamData.refImage == null)
 			buildBackgroundImage();
 		
 		if (detectFlies)
@@ -103,7 +105,7 @@ public class DetectFlies  implements Runnable {
 		for (int i=0; i < nbcages; i++) {
 			tempRectROI[i] = new ROI2DRectangle(0, 0, 10, 10);
 			tempRectROI[i].setName("fly_"+i);
-			vSequence.seq.addROI(tempRectROI[i]);
+			seqCamData.seq.addROI(tempRectROI[i]);
 			XYTaSeries positions = new XYTaSeries(cages.cageLimitROIList.get(i));
 			cages.flyPositionsList.add(positions);
 		}
@@ -113,8 +115,8 @@ public class DetectFlies  implements Runnable {
 		int lastFrameAnalyzed = endFrame;
 		
 		try {
-			viewer = vSequence.seq.getFirstViewer();	
-			vSequence.seq.beginUpdate();
+			viewer = seqCamData.seq.getFirstViewer();	
+			seqCamData.seq.beginUpdate();
 			
 			if (viewInternalImages) {
 				SwingUtilities.invokeLater(new Runnable() {
@@ -135,15 +137,15 @@ public class DetectFlies  implements Runnable {
 				progress.setMessage( "Processing: " + pos + " % - Elapsed time: " + nbSeconds + " s - Estimated time left: " + timeleft + " s");
 
 				// load next image and compute threshold
-				IcyBufferedImage currentImage = vSequence.getImage(t, 0);
-				vSequence.currentFrame = t;
+				IcyBufferedImage currentImage = seqCamData.getImage(t, 0);
+				seqCamData.currentFrame = t;
 				viewer.setPositionT(t);
-				viewer.setTitle(vSequence.getDecoratedImageName(t));
+				viewer.setTitle(seqCamData.getDecoratedImageName(t));
 				
-				IcyBufferedImage negativeImage = vSequence.subtractImages (vSequence.refImage, currentImage);
+				IcyBufferedImage negativeImage = seqCamData.subtractImages (seqCamData.refImage, currentImage);
 				if (seqNegative != null)
 					seqNegative.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(negativeImage, rectangleAllCages));
-				ROI2DArea roiAll = findFly (negativeImage, vSequence.cages.detect.threshold, detect.ichanselected, detect.btrackWhite );
+				ROI2DArea roiAll = findFly (negativeImage, seqCamData.cages.detect.threshold, detect.ichanselected, detect.btrackWhite );
 
 				// ------------------------ loop over all the cages of the stack
 				for ( int iroi = 0; iroi < cages.cageLimitROIList.size(); iroi++ ) {		
@@ -177,26 +179,26 @@ public class DetectFlies  implements Runnable {
 			}
 		} finally {
 			progress.close();
-			vSequence.seq.endUpdate();
+			seqCamData.seq.endUpdate();
 			for (int i=0; i < nbcages; i++)
-				vSequence.seq.removeROI(tempRectROI[i]);
+				seqCamData.seq.removeROI(tempRectROI[i]);
 		}
 
 		//	 copy created ROIs to inputSequence
 		System.out.println("Copying results to input sequence");
 		try {
-			vSequence.seq.beginUpdate();
-			vSequence.cages = cages;
+			seqCamData.seq.beginUpdate();
+			seqCamData.cages = cages;
 			int nrois = cages.cageLimitROIList.size();
 			int it = 0;
 			for ( int t = startFrame ; t <= lastFrameAnalyzed ; t  += analyzeStep, it++ )
 				for (int iroi=0; iroi < nrois; iroi++) 
-					vSequence.seq.addROI( resultFlyPositionArrayList[it][iroi] );
+					seqCamData.seq.addROI( resultFlyPositionArrayList[it][iroi] );
 		}
 		finally
 		{
 			chrono.displayInSeconds();
-			vSequence.seq.endUpdate();
+			seqCamData.seq.endUpdate();
 		}
 	}
 
@@ -237,7 +239,7 @@ public class DetectFlies  implements Runnable {
 		int cmax = currentImage.getSizeC();
 		for (int c=0; c< cmax; c++) {
 			int[] intCurrentImage = Array1DUtil.arrayToIntArray(currentImage.getDataXY(c), currentImage.isSignedDataType());
-			int[] intRefImage = Array1DUtil.arrayToIntArray(vSequence.refImage.getDataXY(c), vSequence.refImage.isSignedDataType());
+			int[] intRefImage = Array1DUtil.arrayToIntArray(seqCamData.refImage.getDataXY(c), seqCamData.refImage.isSignedDataType());
 			int xwidth = currentImage.getSizeX();
 			for (int x = 0; x < rect.getWidth(); x++) {
 				for (int y=0; y< rect.getHeight(); y++) {
@@ -247,11 +249,11 @@ public class DetectFlies  implements Runnable {
 					intRefImage[coord] = intCurrentImage[coord];
 				}
 			}
-			Object destArray = vSequence.refImage.getDataXY(c);
-			Array1DUtil.intArrayToSafeArray(intRefImage, destArray, vSequence.refImage.isSignedDataType(), vSequence.refImage.isSignedDataType());
-			vSequence.refImage.setDataXY(c, destArray);
+			Object destArray = seqCamData.refImage.getDataXY(c);
+			Array1DUtil.intArrayToSafeArray(intRefImage, destArray, seqCamData.refImage.isSignedDataType(), seqCamData.refImage.isSignedDataType());
+			seqCamData.refImage.setDataXY(c, destArray);
 		}
-		vSequence.refImage.dataChanged();
+		seqCamData.refImage.dataChanged();
 	}
 	
 	private void displayDetectViewer () {
@@ -267,7 +269,7 @@ public class DetectFlies  implements Runnable {
 		seqNegative = new SequenceCamData();
 		Viewer vNegative = new Viewer(seqNegative.seq, false);
 		seqNegative.seq.setName("detectionImage");
-		seqNegative.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(vSequence.refImage, rectangleAllCages));
+		seqNegative.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(seqCamData.refImage, rectangleAllCages));
 		
 		try {
 			Thread.sleep(100);
@@ -309,8 +311,8 @@ public class DetectFlies  implements Runnable {
 			else
 				rectangleAllCages.add(rect);
 		}
-		seqReference.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(vSequence.refImage, rectangleAllCages));
-		seqPositive.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(vSequence.refImage, rectangleAllCages));
+		seqReference.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(seqCamData.refImage, rectangleAllCages));
+		seqPositive.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(seqCamData.refImage, rectangleAllCages));
 		
 		Point pt = viewer.getLocation();
 		int height = viewer.getHeight();
@@ -336,15 +338,15 @@ public class DetectFlies  implements Runnable {
 	}
 	
 	private void initParametersForDetection() {
-		analyzeStep = vSequence.analysisStep;
-		startFrame 	= (int) vSequence.analysisStart;
-		endFrame 	= (int) vSequence.analysisEnd;
-		if ( vSequence.nTotalFrames < endFrame+1 )
-			endFrame = (int) vSequence.nTotalFrames - 1;
+		analyzeStep = seqCamData.analysisStep;
+		startFrame 	= (int) seqCamData.analysisStart;
+		endFrame 	= (int) seqCamData.analysisEnd;
+		if ( seqCamData.nTotalFrames < endFrame+1 )
+			endFrame = (int) seqCamData.nTotalFrames - 1;
 		nbframes = (endFrame - startFrame +1)/analyzeStep +1;
 		
 		cages.clear();
-		cages.cageLimitROIList = ROI2DUtilities.getListofCagesFromSequence(vSequence);
+		cages.cageLimitROIList = ROI2DUtilities.getListofCagesFromSequence(seqCamData);
 		cageMaskList = ROI2DUtilities.getMask2DFromRoiList(cages.cageLimitROIList);
 		Collections.sort(cages.cageLimitROIList, new MulticafeTools.ROI2DNameComparator());
 	}
@@ -352,13 +354,13 @@ public class DetectFlies  implements Runnable {
 	private void buildBackgroundImage() {
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		int nfliesRemoved = 0;
-		vSequence.refImage = IcyBufferedImageUtil.getCopy(vSequence.getImage(startFrame, 0));
+		seqCamData.refImage = IcyBufferedImageUtil.getCopy(seqCamData.getImage(startFrame, 0));
 		initParametersForDetection();
 		initialflyRemoved.clear();
 		for (int i=0; i < cages.cageLimitROIList.size(); i++)
 			initialflyRemoved.add(false);
 		
-		viewer = vSequence.seq.getFirstViewer();
+		viewer = seqCamData.seq.getFirstViewer();
 		if (viewInternalImages) {	
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
@@ -368,15 +370,15 @@ public class DetectFlies  implements Runnable {
 		}
 		
 		for (int t = startFrame +1 ; t <= endFrame && !stopFlag; t  += analyzeStep ) {				
-			IcyBufferedImage currentImage = vSequence.getImage(t, 0);
-			vSequence.currentFrame = t;
+			IcyBufferedImage currentImage = seqCamData.getImage(t, 0);
+			seqCamData.currentFrame = t;
 			viewer.setPositionT(t);
-			viewer.setTitle(vSequence.getDecoratedImageName(t));
+			viewer.setTitle(seqCamData.getDecoratedImageName(t));
 			
-			IcyBufferedImage positiveImage = vSequence.subtractImages (currentImage, vSequence.refImage);
+			IcyBufferedImage positiveImage = seqCamData.subtractImages (currentImage, seqCamData.refImage);
 			if (seqPositive != null)
 				seqPositive.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(positiveImage, rectangleAllCages));
-			ROI2DArea roiAll = findFly (positiveImage, vSequence.cages.detect.threshold, detect.ichanselected, detect.btrackWhite );
+			ROI2DArea roiAll = findFly (positiveImage, seqCamData.cages.detect.threshold, detect.ichanselected, detect.btrackWhite );
 
 			for ( int iroi = 1; iroi < cages.cageLimitROIList.size()-1; iroi++ ) {
 				BooleanMask2D bestMask = findLargestComponent(roiAll, iroi);		
@@ -388,7 +390,7 @@ public class DetectFlies  implements Runnable {
 						initialflyRemoved.set(iroi, true);
 						nfliesRemoved ++;
 						if (seqReference != null)
-							seqReference.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(vSequence.refImage, rectangleAllCages));
+							seqReference.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(seqCamData.refImage, rectangleAllCages));
 						progress.setMessage( "Build background image: n flies removed =" + nfliesRemoved);
 					}
 				}
