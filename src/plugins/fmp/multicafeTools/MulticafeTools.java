@@ -196,14 +196,11 @@ public class MulticafeTools  extends Plugin {
 	}
 	
 	public static Polygon orderVerticesofPolygon(Polygon roiPolygon) {
-		
 		if (roiPolygon.npoints > 4)
 			new AnnounceFrame("Only the first 4 points of the polygon will be used...");
-		
 		Polygon extFrame = new Polygon();
 		Rectangle rect = roiPolygon.getBounds();
 		Rectangle rect1 = new Rectangle(rect);
-	
 		// find upper left
 		rect1.setSize(rect.width/2, rect.height/2);
 		for (int i = 0; i< roiPolygon.npoints; i++) {
@@ -241,9 +238,7 @@ public class MulticafeTools  extends Plugin {
 	}
 
 	public static File chooseDirectory(String rootdirectory) {
-
 		File dummy_selected = null;
-				
 		JFileChooser fc = new JFileChooser(); 
 		if (rootdirectory != null)
 			fc.setCurrentDirectory(new File(rootdirectory));

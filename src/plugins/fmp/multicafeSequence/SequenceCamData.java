@@ -190,22 +190,22 @@ public class SequenceCamData  {
 	}
 		
 	public String[] keepOnlyAcceptedNames(String[] rawlist) {
-		int count = 0;
+		int count = rawlist.length;
 		for (int i=0; i< rawlist.length; i++) {
-			String name = rawlist[i];
-			if ( !acceptedFileType(name) )
+			if ( !acceptedFileType(rawlist[i]) ) {
 				rawlist[i] = null;
-			else
-				count++;
+				count --;
+			}
 		}
-		if (count==0) return null;
+		if (count==0) 
+			return null;
 
 		String[] list = rawlist;
-		if (count<rawlist.length) {
+		if (count < rawlist.length) {
 			list = new String[count];
 			int index = 0;
 			for (int i=0; i< rawlist.length; i++) {
-				if (rawlist[i]!=null)
+				if (rawlist[i] != null)
 					list[index++] = rawlist[i];
 			}
 		}
@@ -265,11 +265,12 @@ public class SequenceCamData  {
 			String [] list = (new File(directory)).list();
 			if (list == null)
 				return null;
-			else 
+			else {
 				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi"))
 					seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
 				else
 					loadSequenceFromListAndDirectory(list, directory);
+			}
 		}
 		return directory;
 	}

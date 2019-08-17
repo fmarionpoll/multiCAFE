@@ -23,22 +23,20 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 import icy.gui.frame.IcyFrame;
-import icy.gui.frame.IcyFrameEvent;
-import icy.gui.frame.IcyFrameListener;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import icy.preferences.XMLPreferences;
 import plugins.fmp.multicafeTools.MulticafeTools;
 
 
-public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
+public class MCSequenceTab_Open extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6565346204580890307L;
 	private JButton 	openButton				= new JButton("Open...");
 	private JButton 	addButton				= new JButton("Add...");
-	private JButton		showButton 				= new JButton("Search for files...");
+	private JButton		searchButton 				= new JButton("Search for files...");
 	private JButton		closeButton				= new JButton("Close search dialog");
 	private JCheckBox	capillariesCheckBox		= new JCheckBox("capillaries", true);
 	private JCheckBox	cagesCheckBox			= new JCheckBox("cages", true);
@@ -52,9 +50,9 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 	private JButton 	clearAllButton			= new JButton("Clear all");
 	private JButton 	addSelectedButton		= new JButton("Add selected");
 	private JButton 	addAllButton			= new JButton("Add all");
-	private JList<String> xmlFilesJList			= new JList<String>(new DefaultListModel<String>());
+	private JList<String> directoriesJList		= new JList<String>(new DefaultListModel<String>());
 	
-	public List<String> selectedNames 			= new ArrayList<String> ();
+	public List<String> selectedNames 			= null;
 	IcyFrame 			mainFrame 				= null;
 	private MultiCAFE 	parent0 				= null;
 	private boolean 	isSearchRunning 		= false;
@@ -65,39 +63,34 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 		this.parent0 = parent0;
 		
 		add( GuiUtil.besidesPanel(openButton, addButton));
-		add( GuiUtil.besidesPanel(showButton, closeButton));
+		add( GuiUtil.besidesPanel(searchButton, closeButton));
 		add( GuiUtil.besidesPanel(capillariesCheckBox, kymographsCheckBox, cagesCheckBox, measuresCheckBox, graphsCheckBox));
 		
-		showButton.addActionListener(new ActionListener()  {
+		searchButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
+            	if (selectedNames == null)
+            		selectedNames = new ArrayList<String> ();
             	showDialog();
-            }
-        });
-		
+            }});
 		closeButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
             	closeDialog();
             	firePropertyChange("SEARCH_CLOSED", false, true);
-            }
-        });
-		
+            }});
 		openButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-            	if(parent0.sequencePane.infosTab.experimentComboBox.getItemCount() > 0 )
+            	if(parent0.sequencePane.infosTab.stackListComboBox.getItemCount() > 0 )
             		parent0.sequencePane.closeTab.closeAll();
             	firePropertyChange("SEQ_OPENFILE", false, true);
-            }
-         });
-  
+            }});
 		addButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
             	firePropertyChange("SEQ_ADDFILE", false, true);
-            }
-         });
+            }});
 	}
 	
 	boolean isCheckedLoadPreviousProfiles() {
@@ -118,6 +111,7 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 	
 	private void closeDialog() {
 		mainFrame.close();
+		mainFrame = null;
 	}
 	
 	private void showDialog() {
@@ -133,10 +127,10 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 		
 		mainPanel.add(GuiUtil.besidesPanel(findButton, filterTextField));
 		
-		xmlFilesJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		xmlFilesJList.setLayoutOrientation(JList.VERTICAL);
-		xmlFilesJList.setVisibleRowCount(20);
-		JScrollPane scrollPane = new JScrollPane(xmlFilesJList);
+		directoriesJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		directoriesJList.setLayoutOrientation(JList.VERTICAL);
+		directoriesJList.setVisibleRowCount(20);
+		JScrollPane scrollPane = new JScrollPane(directoriesJList);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		mainPanel.add(GuiUtil.besidesPanel(scrollPane));
@@ -160,91 +154,76 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
     			final String pattern = filterTextField.getText();
     			if (isSearchRunning) 
     				return;
-
     	      	SwingUtilities.invokeLater(new Runnable() { public void run() {
     	      		isSearchRunning = true;
     	    		ProgressFrame progress = new ProgressFrame("Browsing directories to find files matching the searched name...");
-    	    		getXmlListofFilesMatchingPattern(pattern);
+    	    		getListofFilesMatchingPattern(pattern);
     	    		progress.close();
     	    		isSearchRunning = false;
     	      	}});
-            }
-        });
-		
+            }});
 		clearSelectedButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-            	List<String> selectedItems = xmlFilesJList.getSelectedValuesList();
-    		    removeListofNamesFromXmlList (selectedItems);
-            }
-        });
-		
+            	List<String> selectedItems = directoriesJList.getSelectedValuesList();
+    		    removeListofNamesFromList (selectedItems);
+            }});
 		clearAllButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-            	((DefaultListModel<String>) xmlFilesJList.getModel()).removeAllElements();
-            }
-        });
-		
+            	((DefaultListModel<String>) directoriesJList.getModel()).removeAllElements();
+            }});
 		addSelectedButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-            	List<String> selectedItems = xmlFilesJList.getSelectedValuesList();
+            	List<String> selectedItems = directoriesJList.getSelectedValuesList();
     			addNamesToSelectedList(selectedItems);
-    			removeListofNamesFromXmlList(selectedItems);
-            }
-        });
-		
+    			removeListofNamesFromList(selectedItems);
+            }});
 		addAllButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-    			List<String> allItems = new ArrayList <String> ();
-    			for(int i = 0; i< xmlFilesJList.getModel().getSize();i++)
-    			    allItems.add(xmlFilesJList.getModel().getElementAt(i));
+    			List<String> allItems = new ArrayList <String> (directoriesJList.getModel().getSize());
+    			for(int i = 0; i< directoriesJList.getModel().getSize();i++) {
+    			    String name = directoriesJList.getModel().getElementAt(i);
+    				allItems.add(name);
+    				}
     			addNamesToSelectedList(allItems);
-    			((DefaultListModel<String>) xmlFilesJList.getModel()).removeAllElements();
+    			((DefaultListModel<String>) directoriesJList.getModel()).removeAllElements();
     			mainFrame.close();
     			firePropertyChange("SEARCH_CLOSED", false, true);
-            }
-        });
+            }});
 	}
 		
 	private void addNamesToSelectedList(List<String> stringList) {
 		
 		for (String name : stringList) {
 			String directory = Paths.get(name).getParent().toString();
-//			Capillaries dummyCap = new Capillaries();
-//			final Document doc = XMLUtil.loadDocument(name);
-//			dummyCap.xmlReadCapillaryParametersv1(doc);
-//			String filename = directory+ File.separator+ FilenameUtils.getName(dummyCap.sourceName);
-//			selectedNames.add(filename);
 			selectedNames.add(directory);
 		}
 	}
 	
-	private void removeListofNamesFromXmlList(List<String> selectedItems) {
+	private void removeListofNamesFromList(List<String> selectedItems) {
 		for (String oo: selectedItems)
-	    	 ((DefaultListModel<String>) xmlFilesJList.getModel()).removeElement(oo);
+	    	 ((DefaultListModel<String>) directoriesJList.getModel()).removeElement(oo);
 	}
 	
- 	private void getXmlListofFilesMatchingPattern(String pattern) {
+ 	private void getListofFilesMatchingPattern(String pattern) {
 		XMLPreferences guiPrefs = parent0.getPreferences("gui");
 		String lastUsedPathString = guiPrefs.get("lastUsedPath", "");
 		File dir = MulticafeTools.chooseDirectory(lastUsedPathString);
 		if (dir == null) {
 			return;
 		}
-		
 		lastUsedPathString = dir.getAbsolutePath();
 		guiPrefs.put("lastUsedPath", lastUsedPathString);
-	
 		try {
 			Files.walk(Paths.get(lastUsedPathString))
 			.filter(Files::isRegularFile)		
 			.forEach((f)->{
 			    String fileName = f.toString();
 			    if( fileName.contains(pattern)) {
-			    	addNameToXmlListIfNew(fileName);
+			    	addNameToListIfNew(fileName);
 			    }
 			});
 		} catch (IOException e) {
@@ -252,55 +231,18 @@ public class MCSequenceTab_Open extends JPanel implements IcyFrameListener {
 		}
 	}
 	
-	private void addNameToXmlListIfNew(String fileName) {	
-		int ilast = ((DefaultListModel<String>) xmlFilesJList.getModel()).getSize();
+	private void addNameToListIfNew(String fileName) {	
+		int ilast = ((DefaultListModel<String>) directoriesJList.getModel()).getSize();
 		boolean found = false;
 		for (int i=0; i < ilast; i++) {
-			String oo = ((DefaultListModel<String>) xmlFilesJList.getModel()).getElementAt(i);
+			String oo = ((DefaultListModel<String>) directoriesJList.getModel()).getElementAt(i);
 			if (oo.equalsIgnoreCase (fileName)) {
 				found = true;
 				break;
 			}
 		}
 		if (!found)
-			((DefaultListModel<String>) xmlFilesJList.getModel()).addElement(fileName);
+			((DefaultListModel<String>) directoriesJList.getModel()).addElement(fileName);
 	}
 
-	@Override
-	public void icyFrameOpened(IcyFrameEvent e) {
-	}
-
-	@Override
-	public void icyFrameClosing(IcyFrameEvent e) {
-	}
-
-	@Override
-	public void icyFrameClosed(IcyFrameEvent e) {
-		mainFrame = null;
-	}
-
-	@Override
-	public void icyFrameIconified(IcyFrameEvent e) {
-	}
-
-	@Override
-	public void icyFrameDeiconified(IcyFrameEvent e) {
-	}
-
-	@Override
-	public void icyFrameActivated(IcyFrameEvent e) {
-	}
-
-	@Override
-	public void icyFrameDeactivated(IcyFrameEvent e) {
-	}
-
-	@Override
-	public void icyFrameInternalized(IcyFrameEvent e) {
-	}
-
-	@Override
-	public void icyFrameExternalized(IcyFrameEvent e) {
-	}
-	
 }

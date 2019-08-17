@@ -64,8 +64,6 @@ public class MCCapillariesTab_File extends JPanel {
 			firePropertyChange("CAP_ROIS_SAVE", false, true);
 		}});	
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-//			String directory = parent0.seqCamData.getDirectory()+ "\\results";
-//			SequenceKymosUtils.openKymoImageFilesFromCapillaries(directory, parent0.seqKymos); 
 			parent0.seqKymos.loadListOfKymographsFromCapillaries(parent0.seqCamData.getDirectory());
 			firePropertyChange("KYMOS_OPEN", false, true);	
 		}});

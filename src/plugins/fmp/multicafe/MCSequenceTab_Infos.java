@@ -30,7 +30,7 @@ public class MCSequenceTab_Infos  extends JPanel {
 	private JComboBox<String> 	experimentJCombo 	= new JComboBox<String>();
 	private JButton  			previousButton		= new JButton("<");
 	private JButton				nextButton			= new JButton(">");
-	JComboBox<String> 			experimentComboBox	= new ComboBoxWide();
+	JComboBox<String> 			stackListComboBox	= new ComboBoxWide();
 	boolean 					disableChangeFile 	= false;
 	private MultiCAFE 			parent0 			= null;
 	
@@ -45,7 +45,7 @@ public class MCSequenceTab_Infos  extends JPanel {
 		int bWidth = 30;
 		int height = 10;
 		previousButton.setPreferredSize(new Dimension(bWidth, height));
-		k2Panel.add(experimentComboBox, BorderLayout.CENTER);
+		k2Panel.add(stackListComboBox, BorderLayout.CENTER);
 		nextButton.setPreferredSize(new Dimension(bWidth, height)); 
 		k2Panel.add(nextButton, BorderLayout.EAST);
 		add(GuiUtil.besidesPanel( k2Panel));
@@ -67,9 +67,9 @@ public class MCSequenceTab_Infos  extends JPanel {
 		defineActionListeners();
 		
 		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
-		experimentComboBox.setRenderer(renderer);
+		stackListComboBox.setRenderer(renderer);
 
-		experimentComboBox.addItemListener(new ItemListener() {
+		stackListComboBox.addItemListener(new ItemListener() {
 	        public void itemStateChanged(ItemEvent arg0) {
 	        	if (arg0.getStateChange() == ItemEvent.DESELECTED) {
 	        		firePropertyChange("SEQ_SAVEMEAS", false, true);
@@ -82,10 +82,10 @@ public class MCSequenceTab_Infos  extends JPanel {
 	}
 	
 	private void defineActionListeners() {
-		experimentComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (experimentComboBox.getItemCount() == 0 || parent0.seqCamData == null || disableChangeFile)
+		stackListComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+			if (stackListComboBox.getItemCount() == 0 || parent0.seqCamData == null || disableChangeFile)
 				return;
-			String newtext = (String) experimentComboBox.getSelectedItem();
+			String newtext = (String) stackListComboBox.getSelectedItem();
 			String oldtext = parent0.seqCamData.getFileName();
 			if (!newtext.equals(oldtext)) {
 				firePropertyChange("SEQ_OPEN", false, true);
@@ -95,24 +95,24 @@ public class MCSequenceTab_Infos  extends JPanel {
 		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			updateCombos();
 			parent0.capillariesPane.unitsTab.updateCombos();
-			if ( experimentComboBox.getSelectedIndex() < (experimentComboBox.getItemCount() -1)) {
-				experimentComboBox.setSelectedIndex(experimentComboBox.getSelectedIndex()+1);
+			if ( stackListComboBox.getSelectedIndex() < (stackListComboBox.getItemCount() -1)) {
+				stackListComboBox.setSelectedIndex(stackListComboBox.getSelectedIndex()+1);
 			}
 		} } );
 		
 		previousButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			updateCombos();
 			parent0.capillariesPane.unitsTab.updateCombos();
-			if (experimentComboBox.getSelectedIndex() > 0) {
-				experimentComboBox.setSelectedIndex(experimentComboBox.getSelectedIndex()-1);
+			if (stackListComboBox.getSelectedIndex() > 0) {
+				stackListComboBox.setSelectedIndex(stackListComboBox.getSelectedIndex()-1);
 			}
 		} } );
 	}
 	
 	void updateBrowseInterface() {
-		int isel = experimentComboBox.getSelectedIndex();
+		int isel = stackListComboBox.getSelectedIndex();
 		boolean flag1 = (isel == 0? false: true);
-		boolean flag2 = (isel == (experimentComboBox.getItemCount() -1)? false: true);
+		boolean flag2 = (isel == (stackListComboBox.getItemCount() -1)? false: true);
 		previousButton.setEnabled(flag1);
 		nextButton.setEnabled(flag2);
 	}

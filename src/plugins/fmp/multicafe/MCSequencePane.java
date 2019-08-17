@@ -79,7 +79,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		}
 		else if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
 			if (createSequenceCamFromString(null)) {
-				infosTab.experimentComboBox.removeAllItems();
+				infosTab.stackListComboBox.removeAllItems();
 				addSequenceCamToComboAndLoadData();
 			}
 		}
@@ -99,10 +99,10 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		 }
 		 else if (event.getPropertyName().equals("SEQ_CLOSE")) {
 			tabsPane.setSelectedIndex(0);
-			infosTab.experimentComboBox.removeAllItems();
+			infosTab.stackListComboBox.removeAllItems();
 		 }
 		 else if (event.getPropertyName().equals("SEARCH_CLOSED")) {
-			int index = infosTab.experimentComboBox.getSelectedIndex();
+			int index = infosTab.stackListComboBox.getSelectedIndex();
 			if (index < 0)
 				index = 0;
 			infosTab.disableChangeFile = true;
@@ -110,8 +110,8 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 				 addSequenceCamToCombo(name);
 			}
 			openTab.selectedNames.clear();
-			if (infosTab.experimentComboBox.getItemCount() > 0) {
-				infosTab.experimentComboBox.setSelectedIndex(index);
+			if (infosTab.stackListComboBox.getItemCount() > 0) {
+				infosTab.stackListComboBox.setSelectedIndex(index);
 				infosTab.updateBrowseInterface();
 				infosTab.disableChangeFile = false;
 				openSequenceCamFromCombo();
@@ -120,32 +120,31 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	}
 	
 	private void openSequenceCamFromCombo() {
-		String filename = (String) infosTab.experimentComboBox.getSelectedItem();
+		String filename = (String) infosTab.stackListComboBox.getSelectedItem();
 		createSequenceCamFromString(filename);
 		updateViewerForSequenceCam();
-		addSequenceCamToCombo(parent0.seqCamData.getFileName());
 		firePropertyChange("SEQ_OPENED", false, true);
 		tabsPane.setSelectedIndex(1);
 	}
 	
 	void addSequenceCamToCombo(String strItem) {
-		int nitems = infosTab.experimentComboBox.getItemCount();
+		int nitems = infosTab.stackListComboBox.getItemCount();
 		boolean alreadystored = false;
 		for (int i=0; i < nitems; i++) {
-			if (strItem.equalsIgnoreCase(infosTab.experimentComboBox.getItemAt(i))) {
+			if (strItem.equalsIgnoreCase(infosTab.stackListComboBox.getItemAt(i))) {
 				alreadystored = true;
 				break;
 			}
 		}
 		if(!alreadystored) 
-			infosTab.experimentComboBox.addItem(strItem);
+			infosTab.stackListComboBox.addItem(strItem);
 	}
 	
 	void addSequenceCamToComboAndLoadData() {
 		String strItem = parent0.seqCamData.getFileName();
 		if (strItem != null) {
 			addSequenceCamToCombo(strItem);
-			infosTab.experimentComboBox.setSelectedItem(strItem);
+			infosTab.stackListComboBox.setSelectedItem(strItem);
 			updateViewerForSequenceCam();
 			firePropertyChange("SEQ_OPENED", false, true);
 		}
