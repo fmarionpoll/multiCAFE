@@ -1,7 +1,9 @@
 package plugins.fmp.multicafeSequence;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -12,11 +14,19 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
+import icy.common.exception.UnsupportedFormatException;
+import icy.file.Loader;
+import icy.file.Saver;
+import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
+import icy.sequence.MetaDataUtil;
+import icy.type.DataType;
+import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
-
+import loci.formats.FormatException;
+import ome.xml.meta.OMEXMLMetadata;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.OverlayThreshold;
 import plugins.fmp.multicafeTools.OverlayTrapMouse;
@@ -36,6 +46,9 @@ public class SequenceKymos extends SequenceCamData  {
 	public 	long			minutesBetweenImages	= 1;
 	public 	OverlayThreshold thresholdOverlay 		= null;
 	public 	OverlayTrapMouse trapOverlay 			= null;
+	
+	public boolean isRunning_loadImages = false;
+	public boolean isInterrupted_loadImages = false;
 	
 	// -----------------------------------------------------
 	
@@ -151,10 +164,13 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	public List <String> loadListOfKymographsFromCapillaries(String dir) {
+		isRunning_loadImages = true;
 		String directoryFull = dir +File.separator +"results" + File.separator;	
 		List<String> myListOfFileNames = new ArrayList<String>(capillaries.capillariesArrayList.size());
 		Collections.sort(capillaries.capillariesArrayList, new MulticafeTools.CapillaryIndexImageComparator());
 		for (Capillary cap: capillaries.capillariesArrayList) {
+			if (isInterrupted_loadImages)
+				break;
 			String tempname = directoryFull+cap.getName()+ ".tiff";
 			boolean found = isFileFound(tempname);
 			if (!found) {
@@ -166,6 +182,7 @@ public class SequenceKymos extends SequenceCamData  {
 				myListOfFileNames.add(tempname);
 			}
 		}
+		isRunning_loadImages = false;
 		return myListOfFileNames;
 	}
 	
@@ -174,26 +191,145 @@ public class SequenceKymos extends SequenceCamData  {
 		return tempfile.exists(); 
 	}
 	
+	// -------------------------
+	
 	public boolean loadImagesFromList(List <String> myListOfFileNames, boolean adjustImagesSize) {
+		isRunning_loadImages = true;
 		boolean flag = (myListOfFileNames.size() > 0);
 		if (!flag)
 			return flag;
-
+		
 		if (adjustImagesSize) {
 			List <File> filesArray = new ArrayList<File> (myListOfFileNames.size());
 			for (String name : myListOfFileNames)
 				filesArray.add(new File(name));
-			SequenceKymosUtils.getMaxSizeofTiffFiles(filesArray);
-			SequenceKymosUtils.adjustImagesToMaxSize(filesArray);
+			List<Rectangle> rectList = getMaxSizeofTiffFiles(filesArray);
+			if (isInterrupted_loadImages) {
+				isRunning_loadImages = false;
+				return false;
+			}
+			adjustImagesToMaxSize(filesArray, rectList);
+			if (isInterrupted_loadImages) {
+				isRunning_loadImages = false;
+				return false;
+			}
+
 		}
 		
 		loadSequenceFromList(myListOfFileNames, true);
+		if (isInterrupted_loadImages) {
+			isRunning_loadImages = false;
+			return false;
+		}
+
 		setParentDirectoryAsFileName();
 		status = EnumStatus.KYMOGRAPH;
 		transferMeasuresToKymosRois();
-
+		isRunning_loadImages = false;
 		return flag;
 	}
+	
+	List<Rectangle> getMaxSizeofTiffFiles(List<File> files) {
+		int imageWidthMax = 0;
+		int imageHeightMax = 0;
+		List<Rectangle> rectList = new ArrayList<Rectangle>(files.size());
+		
+		ProgressFrame progress = new ProgressFrame("Read kymographs width and height");
+		progress.setLength(files.size());
+		
+		for (int i= 0; i < files.size(); i++) {
+			if (isInterrupted_loadImages) {
+				return null;
+			}
+
+			String path = files.get(i).getPath();
+			OMEXMLMetadata metaData = null;
+			try {
+				metaData = Loader.getOMEXMLMetaData(path);
+			} catch (UnsupportedFormatException | IOException e) {
+				e.printStackTrace();
+			}
+			int imageWidth = MetaDataUtil.getSizeX(metaData, 0);
+			int imageHeight= MetaDataUtil.getSizeY(metaData, 0);
+			if (imageWidth > imageWidthMax)
+				imageWidthMax = imageWidth;
+			if (imageHeight > imageHeightMax)
+				imageHeightMax = imageHeight;
+			
+			Rectangle rect = new Rectangle(0, 0, imageWidth, imageHeight);
+			rectList.add(rect);
+			progress.incPosition();
+		}
+		Rectangle rect = new Rectangle(0, 0, imageWidthMax, imageHeightMax);
+		rectList.add(rect);
+		progress.close();
+		return rectList;
+	}
+	
+	void adjustImagesToMaxSize(List<File> files, List<Rectangle> rectList) {
+		ProgressFrame progress = new ProgressFrame("Make kymographs the same width and height");
+		progress.setLength(files.size());
+		Rectangle rect = rectList.get(rectList.size()-1);
+		int imageWidthMax = rect.width;
+		int imageHeightMax = rect.height;
+		
+		for (int i= 0; i < files.size(); i++) {
+			if (isInterrupted_loadImages) {
+				return;
+			}
+			if (rectList.get(i).width == imageWidthMax && rectList.get(i).height == imageHeightMax)
+				continue;
+			
+			progress.setMessage("adjust image "+files.get(i));
+			IcyBufferedImage ibufImage = null;
+			try {
+				ibufImage = Loader.loadImage(files.get(i).getAbsolutePath());
+			} catch (UnsupportedFormatException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			IcyBufferedImage ibufImage2 = new IcyBufferedImage(imageWidthMax, imageHeightMax, ibufImage.getSizeC(), ibufImage.getDataType_());
+			transferImage1To2(ibufImage, ibufImage2);
+			try {
+				Saver.saveImage(ibufImage2, files.get(i), true);
+			} catch (FormatException | IOException e) {
+				e.printStackTrace();
+			}
+			progress.incPosition();
+		}
+		progress.close();
+	}
+	
+	private static void transferImage1To2(IcyBufferedImage source, IcyBufferedImage result) {
+        final int sizeY 		= source.getSizeY();
+        final int endC 			= source.getSizeC();
+        final int sourceSizeX 	= source.getSizeX();
+        final int destSizeX 	= result.getSizeX();
+        final DataType dataType = source.getDataType_();
+        final boolean signed 	= dataType.isSigned();
+
+        result.lockRaster();
+        try {
+            for (int ch = 0; ch < endC; ch++) {
+                final Object src = source.getDataXY(ch);
+                final Object dst = result.getDataXY(ch);
+                int srcOffset = 0;
+                int dstOffset = 0;
+                for (int curY = 0; curY < sizeY; curY++) {
+                    Array1DUtil.arrayToArray(src, srcOffset, dst, dstOffset, sourceSizeX, signed);
+                    result.setDataXY(ch, dst);
+                    srcOffset += sourceSizeX;
+                    dstOffset += destSizeX;
+                }
+            }
+        }
+        finally {
+            result.releaseRaster(true);
+        }
+        result.dataChanged();
+	}
+	
+	// ----------------------------------
 	
 	public boolean xmlLoadCapillaryTrack(String pathname) {
 		File tempfile = new File(pathname);

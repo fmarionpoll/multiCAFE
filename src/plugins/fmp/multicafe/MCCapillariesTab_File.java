@@ -140,16 +140,38 @@ public class MCCapillariesTab_File extends JPanel {
 	
 	boolean loadDefaultKymos() {		
 		boolean flag = false;
-		if (SequenceKymosUtils.isRunning)
-			SequenceKymosUtils.isInterrupted = true;
+
 		SequenceKymos seqk = parent0.seqKymos;
 		if (seqk == null || seqk.capillaries == null) {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
-
+		
+		if (seqk.isRunning_loadImages) {
+			seqk.isInterrupted_loadImages = true;
+			for (int i= 0; i < 10; i++) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				if (!seqk.isRunning_loadImages)
+					break;
+			}
+		}
+		
 		List<String> myList = seqk.loadListOfKymographsFromCapillaries(parent0.seqCamData.getDirectory());
+		if (seqk.isInterrupted_loadImages) {
+			seqk.isInterrupted_loadImages = false;
+			return false;
+		}
+		
 		flag = seqk.loadImagesFromList(myList, true);
+		if (seqk.isInterrupted_loadImages) {
+			seqk.isInterrupted_loadImages = false;
+			return false;
+		}
+
 		if (flag) {
 			SwingUtilities.invokeLater(new Runnable() {
 			    public void run() {

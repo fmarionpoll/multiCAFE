@@ -139,7 +139,7 @@ public class MCCapillariesTab_Options extends JPanel {
 	}
 
 	void displayON() {
-		if (parent0.seqKymos == null ||parent0.seqKymos.seq == null || parent0.seqKymos.seq.getSizeT() < 1) {
+		if (parent0.seqKymos == null ||parent0.seqKymos.seq == null ) {
 			System.out.println("displayON() skipped");
 			return;
 		}
@@ -180,12 +180,11 @@ public class MCCapillariesTab_Options extends JPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				displayUpdate();
-			}
-		});
+			}});
 	}
 	
 	void displayUpdate() {	
-		if (parent0.seqKymos == null || parent0.seqKymos.seq== null || kymographNamesComboBox.getItemCount() < 1)
+		if (kymographNamesComboBox.getItemCount() < 1)
 			return;	
 		displayON();
 		int itemupfront = kymographNamesComboBox.getSelectedIndex();
