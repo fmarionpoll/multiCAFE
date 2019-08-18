@@ -415,11 +415,11 @@ public class SequenceCamData  {
 	
 	public boolean xmlReadDrosoTrack(String filename) {
 		boolean flag = cages.xmlReadCagesFromFileNoQuestion(filename, this);
-		if (flag) {
-			analysisStart = cages.detect.analysisStart;
-			analysisEnd = cages.detect.analysisEnd;
-			analysisStep = cages.detect.analysisStep;
-		}
+//		if (flag) {
+//			analysisStart = cages.detect.analysisStart;
+//			analysisEnd = cages.detect.analysisEnd;
+//			analysisStep = cages.detect.analysisStep;
+//		}
 		return flag;
 	}
 	

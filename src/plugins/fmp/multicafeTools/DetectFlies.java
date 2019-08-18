@@ -62,14 +62,9 @@ public class DetectFlies  implements Runnable {
 	@Override
 	public void run() {
 		threadRunning = true;
-		analyzeStep = seqCamData.analysisStep;
-		startFrame=(int) seqCamData.analysisStart;
-		endFrame=(int) seqCamData.analysisEnd;
-		System.out.println("Computation over frames: " + startFrame + " - " + endFrame );
-
 		// create arrays for storing position and init their value to zero
-	
 		initParametersForDetection();
+		System.out.println("Computation over frames: " + startFrame + " - " + endFrame );
 
 		if (buildBackground || seqCamData.refImage == null)
 			buildBackgroundImage();
@@ -302,15 +297,7 @@ public class DetectFlies  implements Runnable {
 		seqReference = new SequenceCamData();
 		Viewer vReference = new Viewer(seqReference.seq, false);
 		seqReference.seq.setName("referenceImage");
-		
-		rectangleAllCages = null;
-		for ( ROI2D roi: cages.cageLimitROIList) {
-			Rectangle rect = roi.getBounds();
-			if (rectangleAllCages == null)
-				rectangleAllCages = new Rectangle(rect);
-			else
-				rectangleAllCages.add(rect);
-		}
+
 		seqReference.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(seqCamData.refImage, rectangleAllCages));
 		seqPositive.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(seqCamData.refImage, rectangleAllCages));
 		
@@ -341,7 +328,7 @@ public class DetectFlies  implements Runnable {
 		analyzeStep = seqCamData.analysisStep;
 		startFrame 	= (int) seqCamData.analysisStart;
 		endFrame 	= (int) seqCamData.analysisEnd;
-		if ( seqCamData.nTotalFrames < endFrame+1 )
+		if ( seqCamData.seq.getSizeT() < endFrame+1 )
 			endFrame = (int) seqCamData.nTotalFrames - 1;
 		nbframes = (endFrame - startFrame +1)/analyzeStep +1;
 		
@@ -349,6 +336,15 @@ public class DetectFlies  implements Runnable {
 		cages.cageLimitROIList = ROI2DUtilities.getListofCagesFromSequence(seqCamData);
 		cageMaskList = ROI2DUtilities.getMask2DFromRoiList(cages.cageLimitROIList);
 		Collections.sort(cages.cageLimitROIList, new MulticafeTools.ROI2DNameComparator());
+		
+		rectangleAllCages = null;
+		for ( ROI2D roi: cages.cageLimitROIList) {
+			Rectangle rect = roi.getBounds();
+			if (rectangleAllCages == null)
+				rectangleAllCages = new Rectangle(rect);
+			else
+				rectangleAllCages.add(rect);
+		}
 	}
 	
 	private void buildBackgroundImage() {

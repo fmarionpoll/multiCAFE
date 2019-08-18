@@ -30,7 +30,6 @@ public class DetectFlies_Options implements XMLPersistent {
 		Element xmlVal = XMLUtil.getElement(node, "DetectFliesParameters");
 		if (xmlVal == null) 
 			return false;
-		
 		threshold =  XMLUtil.getElementIntValue(xmlVal, "threshold", -1);
 		btrackWhite = XMLUtil.getElementBooleanValue(xmlVal, "btrackWhite", false);
 		ichanselected = XMLUtil.getElementIntValue(xmlVal, "ichanselected", 0);
@@ -44,7 +43,6 @@ public class DetectFlies_Options implements XMLPersistent {
 		analysisStart =  XMLUtil.getAttributeLongValue(xmlVal, "start", 0);
 		analysisEnd = XMLUtil.getAttributeLongValue(xmlVal, "end", 0);
 		analysisStep = XMLUtil.getAttributeIntValue(xmlVal, "step", 1);
-
 		return true;
 	}
 	
@@ -52,9 +50,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	public boolean saveToXML(Node node) {
 		if (node == null)
 			return false;
-
 		Element xmlVal = XMLUtil.addElement(node, "DetectFliesParameters");
-		
 		XMLUtil.setElementIntValue(xmlVal, "threshold", threshold);
 		XMLUtil.setElementBooleanValue(xmlVal, "btrackWhite", btrackWhite);
 		XMLUtil.setElementIntValue(xmlVal, "ichanselected", ichanselected);

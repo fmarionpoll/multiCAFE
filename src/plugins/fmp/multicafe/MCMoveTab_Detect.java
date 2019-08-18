@@ -164,7 +164,6 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	private boolean initTrackParameters() {
 		if (trackAllFliesThread == null)
 			return false;
-		
 		DetectFlies_Options detect = new DetectFlies_Options();
 		detect.btrackWhite 		= true;
 		detect.blimitLow 		= objectLowsizeCheckBox.isSelected();
@@ -176,7 +175,6 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 		trackAllFliesThread.stopFlag 	= false;
 		trackAllFliesThread.detect 		= detect;
 		trackAllFliesThread.viewInternalImages = viewsCheckBox.isSelected();
-		
 		return true;
 	}
 	
@@ -193,12 +191,10 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	void builBackgroundImage() {
 		if (trackAllFliesThread == null)
 			trackAllFliesThread = new DetectFlies();
-		
 		if (trackAllFliesThread.threadRunning) {
 			stopComputation();
 			return;
 		}
-		
 		initTrackParameters();
 		trackAllFliesThread.buildBackground	= true;
 		trackAllFliesThread.detectFlies		= false;
@@ -207,13 +203,11 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	
 	void startComputation() {
 		if (trackAllFliesThread == null)
-			trackAllFliesThread = new DetectFlies();
-		
+			trackAllFliesThread = new DetectFlies();		
 		if (trackAllFliesThread.threadRunning) {
 			stopComputation();
 			return;
-		}
-		
+		}	
 		initTrackParameters();
 		cleanPreviousDetections();
 		trackAllFliesThread.buildBackground	= false;
@@ -242,7 +236,6 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	}
 	
 	void saveRef () {
-		
 		String path = parent0.seqCamData.getDirectory()+ "\\results\\referenceImage.jpg";
 		File outputfile = new File(path);
 		RenderedImage image = ImageUtil.toRGBImage(parent0.seqCamData.refImage);

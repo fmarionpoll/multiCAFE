@@ -89,7 +89,6 @@ public class Cages {
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), nodeName);
 		if (node == null)
 			return false;
-
 		detect.loadFromXML(node);
 		xmlLoadCagesLimits(node);
 		xmlLoadCagePositionsList(node);
