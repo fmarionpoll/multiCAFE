@@ -85,7 +85,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
-		if (arg0.getPropertyName().equals("SEQ_OPENED")) {
+		if (arg0.getPropertyName().equals("SEQ_OPENED")) {			
+			seqCamData.prefetchImagesThread_START(100);
 			loadPreviousMeasures(
 					sequencePane.openTab.isCheckedLoadPreviousProfiles(), 
 					sequencePane.openTab.isCheckedLoadKymographs(),

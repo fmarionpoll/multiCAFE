@@ -42,7 +42,7 @@ public class SequenceCamData  {
 	public Cages					cages 					= new Cages();
 		
 	// image cache
-	public VImageBufferThread 		bufferThread 			= null;
+	public PreFetchImagesThread 		bufferThread 			= null;
 	public IcyBufferedImage 		cacheTransformedImage 	= null;
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
@@ -415,11 +415,6 @@ public class SequenceCamData  {
 	
 	public boolean xmlReadDrosoTrack(String filename) {
 		boolean flag = cages.xmlReadCagesFromFileNoQuestion(filename, this);
-//		if (flag) {
-//			analysisStart = cages.detect.analysisStart;
-//			analysisEnd = cages.detect.analysisEnd;
-//			analysisStep = cages.detect.analysisStep;
-//		}
 		return flag;
 	}
 	
@@ -460,17 +455,17 @@ public class SequenceCamData  {
 		
 	// --------------------------
 	
-	public void vImageBufferThread_START (int numberOfImageForBuffer) {
-		vImageBufferThread_STOP();
+	public void prefetchImagesThread_START (int numberOfImageForBuffer) {
+		prefetchImagesThread_STOP();
 		if (numberOfImageForBuffer <= 0) 
 			return;
-		bufferThread = new VImageBufferThread(this, numberOfImageForBuffer);
+		bufferThread = new PreFetchImagesThread(this, numberOfImageForBuffer);
 		bufferThread.setName("Buffer Thread");
 		bufferThread.setPriority(Thread.NORM_PRIORITY);
 		bufferThread.start();
 	}
 	
-	public void vImageBufferThread_STOP() {
+	public void prefetchImagesThread_STOP() {
 		if (bufferThread != null) {
 			bufferThread.interrupt();
 			try {
@@ -484,22 +479,22 @@ public class SequenceCamData  {
 		if (bufferThread == null)
 			return;
 		int depth = bufferThread.getFenetre();
-		vImageBufferThread_STOP();
-		vImageBufferThread_START(depth);
+		prefetchImagesThread_STOP();
+		prefetchImagesThread_START(depth);
 	}
 	
-	public class VImageBufferThread extends Thread {
+	public class PreFetchImagesThread extends Thread {
 		/**
-		 * pre-fetch files / companion to SequenceVirtual
+		 * pre-fetch files / companion to SequenceCamData
 		 */
 		private int fenetre = 200; // 100;
 		private int span = fenetre/2;
 
-		public VImageBufferThread() {
+		public PreFetchImagesThread() {
 			bBufferON = true;
 		}
 
-		public VImageBufferThread(SequenceCamData vseq, int depth) {
+		public PreFetchImagesThread(SequenceCamData vseq, int depth) {
 			fenetre = depth;
 			span = fenetre/2 * analysisStep;
 			bBufferON = true;
