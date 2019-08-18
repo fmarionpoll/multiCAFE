@@ -213,7 +213,6 @@ public class SequenceKymos extends SequenceCamData  {
 				isRunning_loadImages = false;
 				return false;
 			}
-
 		}
 		
 		loadSequenceFromList(myListOfFileNames, true);
