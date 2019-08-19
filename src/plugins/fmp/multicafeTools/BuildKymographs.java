@@ -116,7 +116,7 @@ public class BuildKymographs implements Runnable
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
 		
-//		options.seqCamData.prefetchForwardThread_STOP(); // TODO
+		options.seqCamData.prefetchForwardThread_RESTART(); 
 		threadRunning = false;
 	}
 	

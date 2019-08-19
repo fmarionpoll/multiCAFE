@@ -97,8 +97,6 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 		}
 		parent0.capillariesPane.optionsTab.viewKymosCheckBox.setSelected(true);
 		parent0.capillariesPane.optionsTab.displayViews (true);
-		parent0.seqCamData.prefetchForwardThread_RESTART(); // TODO
-		
 	}
 	
 	private void resetUserInterface() {
