@@ -19,16 +19,17 @@ import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
  
 public class BuildKymographs implements Runnable 
 {
-	public BuildKymographs_Options 					options 			= new BuildKymographs_Options();
-	public boolean 									stopFlag 			= false;
-	public boolean 									threadRunning 		= false;
+	public BuildKymographs_Options 	options 			= new BuildKymographs_Options();
+	public boolean 					stopFlag 			= false;
+	public boolean 					threadRunning 		= false;
 	
-	private Viewer 									sequenceViewer 		= null;
-	private IcyBufferedImage 						workImage 			= null; 
-	private Sequence 								seqForRegistration	= new Sequence();
-	private DataType 								dataType 			= DataType.INT;
-	private int 									imagewidth =1;
-	private ArrayList<double []> 					sourceValuesList 	= null;
+	private Viewer 					sequenceViewer 		= null;
+	private IcyBufferedImage 		workImage 			= null; 
+	private Sequence 				seqForRegistration	= new Sequence();
+	private DataType 				dataType 			= DataType.INT;
+	private int 					imagewidth =1;
+	private ArrayList<double []> 	sourceValuesList 	= null;
+	private int lastT = -1;
 	
 	
 	@Override
@@ -42,6 +43,9 @@ public class BuildKymographs implements Runnable
 			options.startFrame = 0;
 		if ((options.endFrame >= (int) options.seqCamData.nTotalFrames) || (options.endFrame < 0)) 
 			options.endFrame = (int) options.seqCamData.nTotalFrames-1;
+		
+//		options.seqCamData.prefetchForwardThread_START(10); // TODO
+		
 		int nbframes = options.endFrame - options.startFrame +1;
 		ProgressChrono progressBar = new ProgressChrono("Processing started");
 		progressBar.initStuff(nbframes);
@@ -53,7 +57,7 @@ public class BuildKymographs implements Runnable
 		int vinputSizeX = options.seqCamData.seq.getSizeX();
 		sequenceViewer = options.seqCamData.seq.getFirstViewer();
 		int ipixelcolumn = 0;
-		getImageAndUpdateViewer (options.startFrame);
+		workImage = options.seqCamData.seq.getImage(options.startFrame, 0); 
 		
 		seqForRegistration.addImage(0, workImage);
 		seqForRegistration.addImage(1, workImage);
@@ -112,18 +116,23 @@ public class BuildKymographs implements Runnable
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
 		
+//		options.seqCamData.prefetchForwardThread_STOP(); // TODO
 		threadRunning = false;
 	}
 	
 	// -------------------------------------------
 	
 	private boolean getImageAndUpdateViewer(int t) {	
-		workImage = options.seqCamData.seq.getImage(t, 0); 
-		sequenceViewer.setPositionT(t);		
-		
+		//workImage = options.seqCamData.seq.getImage(t, 0); 
+		workImage = options.seqCamData.getImageFromForwardBuffer(t);
 		if (workImage == null) {
 			System.out.println("workImage null");
 			return false;
+		}
+		int ti = (t/10)*10;
+		if (ti != lastT) {
+			sequenceViewer.setPositionT(t);
+			lastT = ti;
 		}
 		return true;
 	}

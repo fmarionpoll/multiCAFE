@@ -97,6 +97,8 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 		}
 		parent0.capillariesPane.optionsTab.viewKymosCheckBox.setSelected(true);
 		parent0.capillariesPane.optionsTab.displayViews (true);
+		parent0.seqCamData.prefetchForwardThread_RESTART(); // TODO
+		
 	}
 	
 	private void resetUserInterface() {
@@ -107,6 +109,7 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 	}
 	
 	private void kymosBuildKymographs() {
+				
 		buildKymographsThread = null;
 		if (parent0.seqKymos != null && parent0.seqKymos.seq != null)
 			parent0.seqKymos.seq.close();
