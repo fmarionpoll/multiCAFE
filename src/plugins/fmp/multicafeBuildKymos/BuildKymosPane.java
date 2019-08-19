@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -29,16 +28,17 @@ import icy.preferences.XMLPreferences;
 import icy.sequence.DimensionId;
 import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
+
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.EnumStatus;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.fmp.multicafeSequence.SequenceCamData;
+
 import plugins.fmp.multicafeTools.BuildKymographs;
 
 
 public class BuildKymosPane  extends JPanel implements ActionListener, ViewerListener {
-
 	/**
 	 * 
 	 */
@@ -46,23 +46,21 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	public JButton 					startComputationButton 	= new JButton("Start");
 	public JButton 					stopComputationButton 	= new JButton("Stop");
 	
-	SequenceCamData 				vSequence 				= null;
-	SequenceKymos					vkymos					= null;
-	private ArrayList <SequenceKymos> kymographArrayList 	= new ArrayList <SequenceKymos> ();
-	 
+	SequenceCamData 				seqCamData 				= null;
+	SequenceKymos					seqKymos				= null;
+	
 	private BuildKymographs 		buildKymographsThread 	= null;
 	private Viewer 					viewer1 				= null;
 	private Thread 					thread 					= null;
-	private int						analyzeStep 			= 1; // TODO:  textbox? add checkbox for registration
+	private int						analyzeStep 			= 1; 
+	// TODO:  textbox? add checkbox for registration
 	private int 					diskRadius 				= 5;
+	private BuildKymographsBatch 	parent0 	= null;
 	
-
-
-private BuildKymographsBatch 	parent0 	= null;
 	
 	public void init (JPanel mainPanel, String string, BuildKymographsBatch parent0) {
 		this.parent0 = parent0;
-		
+
 		final JPanel kymographsPanel = GuiUtil.generatePanel("KYMOGRAPHS");
 		mainPanel.add(GuiUtil.besidesPanel(kymographsPanel));
 		kymographsPanel.add(GuiUtil.besidesPanel(startComputationButton, stopComputationButton));
@@ -88,51 +86,36 @@ private BuildKymographsBatch 	parent0 	= null;
 	}
 
 	private void startComputation() {
-		
-		if (((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).getSize() == 0) 
+		int nstacks = ((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).getSize();
+		if (nstacks == 0) 
 			return; 
-				
-		parent0.listFilesPane.xmlFilesJList.setSelectedIndex(0);
+
 		String oo = ((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).getElementAt(0);
 		boolean flag = loadSequence(oo);
 		if (!flag) {
 			System.out.println("sequence "+oo+ " could not be opened: skip record");
 			return;
 		}
+		stopComputationButton.setEnabled(true);
+		startComputationButton.setEnabled(false);
+		
 		loadRois(oo);
 		initInputSequenceViewer();
 		startstopBufferingThread();
-		
-		vSequence.seq.setPositionT(0);
-		kymosBuildKymographs();
+		seqCamData.seq.setPositionT(0);
+		kymosBuildKymographs();		
 	}
 	
 	private void kymosBuildKymographs() {
-		buildKymographsThread = null;
-		if (kymographArrayList.size() > 0) {
-			for (SequenceKymos seq:kymographArrayList)
-				seq.seq.close();
-		}
-		kymographArrayList.clear();
-		for (Capillary cap:vkymos.capillaries.capillariesArrayList) {
-			SequenceKymos kymographSeq = new SequenceKymos();	
-			kymographSeq.seq.setName(cap.getName());
-			kymographArrayList.add(kymographSeq);
-		} 
-		
 		// build kymograph
 		buildKymographsThread = new BuildKymographs();
-		buildKymographsThread.options.seqCamData  	= vSequence;
+		buildKymographsThread.options.seqCamData  	= seqCamData;
 		buildKymographsThread.options.analyzeStep 	= analyzeStep;
-		buildKymographsThread.options.startFrame 	= (int) vSequence.analysisStart;
-		buildKymographsThread.options.endFrame 		= (int) vSequence.analysisEnd;
+		buildKymographsThread.options.startFrame 	= (int) seqCamData.analysisStart;
+		buildKymographsThread.options.endFrame 		= (int) seqCamData.analysisEnd;
 		buildKymographsThread.options.diskRadius 	= diskRadius;
 		buildKymographsThread.options.doRegistration= false; // doRegistrationCheckBox.isSelected();
-		buildKymographsThread.options.seqKymos		= vkymos;
-
-		// change display status
-		stopComputationButton.setEnabled(true);
-		startComputationButton.setEnabled(false);
+		buildKymographsThread.options.seqKymos		= seqKymos;
 		
 		thread = new Thread(buildKymographsThread);
 		thread.start();
@@ -150,7 +133,8 @@ private BuildKymographsBatch 	parent0 	= null;
 						startComputationButton.setEnabled(true);
 						String oo = ((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).getElementAt(0);
 						((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).removeElement(oo);
-						startComputationButton.doClick();
+						if (!buildKymographsThread.stopFlag)
+							startComputationButton.doClick();
 					}});
 			}
 		}});
@@ -174,41 +158,45 @@ private BuildKymographsBatch 	parent0 	= null;
 		// open sequence
 		File oofile = new File(oo);
 		String csdummy = oofile.getParentFile().getAbsolutePath();
-		vSequence = new SequenceCamData();
-		vSequence.loadSequence(csdummy);
-		vSequence.setFileName(csdummy);
-		if (vSequence.status == EnumStatus.FAILURE) {
+		seqCamData = new SequenceCamData();
+		seqCamData.loadSequence(csdummy);
+		seqCamData.setFileName(csdummy);
+		if (seqCamData.status == EnumStatus.FAILURE) {
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			String lastUsedPath = guiPrefs.get("lastUsedPath", "");
-			String path = vSequence.loadSequenceFromDialog(lastUsedPath);
+			String path = seqCamData.loadSequenceFromDialog(lastUsedPath);
 			if (path.isEmpty())
 				return false;
-			vSequence.setFileName(path);
+			seqCamData.setFileName(path);
 			guiPrefs.put("lastUsedPath", path);
-			vSequence.loadSequence(vSequence.getFileName());
 		}
-		System.out.println("sequence openened: "+ vSequence.getFileName());
+		System.out.println("sequence openened: "+ seqCamData.getFileName());
 		return true;
 	}
 
 	private void loadRois(String oo) {
 		System.out.println("read capillaries info for: "+ oo);
-		vSequence.seq.removeAllROI();
-		String path = vSequence.getDirectory();
-		boolean flag = vkymos.xmlLoadCapillaryTrack(path+"\\capillarytrack.xml");
-		if (flag) 
-			SequenceKymosUtils.transferCamDataROIStoKymo(vSequence, vkymos);
+		String filename = seqCamData.getFileName();
+		if (filename != null) {
+			seqKymos = new SequenceKymos();
+			if (!oo .contains("capillarytrack") && oo.contains(".xml")) {
+				seqCamData.xmlReadROIs(oo);
+				seqKymos.xmlReadRoiLineParameters(oo);
+			}
+			SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
+		}
+		seqKymos.xmlSaveCapillaryTrack(seqCamData.getDirectory());
 	}
 
 	private void initInputSequenceViewer () {
 		ThreadUtil.invoke (new Runnable() {
 			@Override
 			public void run() {
-				viewer1 = new Viewer(vSequence.seq, true);
+				viewer1 = new Viewer(seqCamData.seq, true);
 			}
 		}, true);
 		if (viewer1 == null) {
-			viewer1 = vSequence.seq.getFirstViewer(); 
+			viewer1 = seqCamData.seq.getFirstViewer(); 
 			if (!viewer1.isInitialized()) {
 				try {
 					Thread.sleep(1000);
@@ -226,13 +214,13 @@ private BuildKymographsBatch 	parent0 	= null;
 	}
 	
 	private void startstopBufferingThread() {
-		if (vSequence == null)
+		if (seqCamData == null)
 			return;
-		vSequence.analysisStep = analyzeStep;
+		seqCamData.analysisStep = analyzeStep;
 	}
 
 	private void saveComputation() {
-		Path dir = Paths.get(vSequence.getDirectory());
+		Path dir = Paths.get(seqCamData.getDirectory());
 		dir = dir.resolve("results");
 		String directory = dir.toAbsolutePath().toString();
 		if (Files.notExists(dir))  {
@@ -245,14 +233,13 @@ private BuildKymographsBatch 	parent0 	= null;
 			}
 		}
 
-		ProgressFrame progress = new ProgressFrame("Save kymographs");
-		String name = vSequence.getDirectory()+ "\\capillarytrack.xml";
-		vkymos.capillaries.xmlSaveCapillaries(name, vkymos);
-		for (SequenceKymos seq: kymographArrayList) {
-			progress.setMessage( "Save kymograph file : " + seq.seq.getName());
-			String filename = directory + "\\" + seq.seq.getName() + ".tiff";
+		ProgressFrame progress = new ProgressFrame("Save kymographs");		
+		for (int t = 0; t < seqKymos.seq.getSizeT(); t++) {
+			Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
+			progress.setMessage( "Save kymograph file : " + cap.getName());	
+			String filename = directory + File.separator + cap.getName() + ".tiff";
 			File file = new File (filename);
-			IcyBufferedImage image = seq.seq.getFirstImage();
+			IcyBufferedImage image = seqKymos.seq.getImage(t, 0);
 			try {
 				Saver.saveImage(image, file, true);
 			} catch (FormatException e) {
@@ -266,16 +253,16 @@ private BuildKymographsBatch 	parent0 	= null;
 	}
 	
 	private void closeSequence() {	
-		for (SequenceKymos seq:kymographArrayList)
-			seq.seq.close();
-		kymographArrayList.clear();
-		vSequence.seq.close();
+		seqKymos.seq.close();
+		seqCamData.seq.close();
+		seqCamData = null;
+		seqKymos = null;
 	}
 
 	@Override	
 	public void viewerChanged(ViewerEvent event) {
 		if ((event.getType() == ViewerEventType.POSITION_CHANGED) && (event.getDim() == DimensionId.T))        
-            vSequence.currentFrame = event.getSource().getPositionT() ;  
+            seqCamData.currentFrame = event.getSource().getPositionT() ;  
 	}
 
 	@Override

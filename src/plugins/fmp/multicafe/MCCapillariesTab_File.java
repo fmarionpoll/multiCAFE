@@ -69,7 +69,7 @@ public class MCCapillariesTab_File extends JPanel {
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			String path = parent0.seqCamData.getDirectory() + File.separator + "results";
-			saveFiles(path);
+			saveKymographFiles(path);
 			firePropertyChange("KYMOS_SAVE", false, true);
 		}});
 	}
@@ -95,11 +95,10 @@ public class MCCapillariesTab_File extends JPanel {
 		return parent0.seqKymos.xmlSaveCapillaryTrack(parent0.seqCamData.getDirectory());
 	}
 
-	void saveFiles(String directory) {
+	void saveKymographFiles(String directory) {
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
-		if (directory == null) {
+		if (directory == null) 
 			directory = parent0.seqCamData.getDirectory()+ "\\results";
-			}
 		try {
 			Files.createDirectories(Paths.get(directory));
 		} catch (IOException e1) {
@@ -119,7 +118,6 @@ public class MCCapillariesTab_File extends JPanel {
 				
 				final File file = new File (cap.filenameTIFF);
 				IcyBufferedImage image = parent0.seqKymos.seq.getImage(t, 0);
-				
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
 					try {
 						Saver.saveImage(image, file, true);

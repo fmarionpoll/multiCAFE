@@ -19,11 +19,11 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class ROI2DUtilities  {
 	
-	public static List<ROI2D> getListofCapillariesFromSequence (SequenceCamData vSequence) {
-		if (vSequence == null)
+	public static List<ROI2D> getListofCapillariesFromSequence (SequenceCamData seqCamData) {
+		if (seqCamData == null)
 			 return null;
 		
-		List<ROI2D> roiList = vSequence.seq.getROI2Ds();
+		List<ROI2D> roiList = seqCamData.seq.getROI2Ds();
 		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
 		List<ROI2D> capillaryRois = new ArrayList<ROI2D>();
 		for ( ROI2D roi : roiList ) {
@@ -35,11 +35,11 @@ public class ROI2DUtilities  {
 		return capillaryRois;
 	}
 	
-	public static List<ROI2D> getListofGulpsFromSequence (SequenceCamData vSequence) {
-		if (vSequence == null)
+	public static List<ROI2D> getListofGulpsFromSequence (SequenceCamData seqCamData) {
+		if (seqCamData == null)
 			 return null;
 		
-		List<ROI2D> roiList = vSequence.seq.getROI2Ds();
+		List<ROI2D> roiList = seqCamData.seq.getROI2Ds();
 		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
 		List<ROI2D> gulpRois = new ArrayList<ROI2D>();
 		for ( ROI2D roi : roiList ) {
@@ -51,11 +51,11 @@ public class ROI2DUtilities  {
 		return gulpRois;
 	}
 	
-	public static List<ROI2D> getListofCagesFromSequence (SequenceCamData vSequence) {
-		if (vSequence == null)
+	public static List<ROI2D> getListofCagesFromSequence (SequenceCamData seqCamData) {
+		if (seqCamData == null)
 			 return null;
 		
-		List<ROI2D> roiList = vSequence.seq.getROI2Ds();
+		List<ROI2D> roiList = seqCamData.seq.getROI2Ds();
 		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
 		List<ROI2D> cageLimitROIList = new ArrayList<ROI2D>();
 		for ( ROI2D roi : roiList ) {
@@ -76,9 +76,9 @@ public class ROI2DUtilities  {
 		return cageMaskList;
 	}
 	
-	public static void removeROIsFromSequence (SequenceCamData vSequence, List<ROI2D> roiList) {
+	public static void removeROIsFromSequence (SequenceCamData seqCamData, List<ROI2D> roiList) {
 		for ( ROI2D roi : roiList ) {
-			vSequence.seq.removeROI(roi);
+			seqCamData.seq.removeROI(roi);
 		}
 	}
 	
@@ -131,9 +131,9 @@ public class ROI2DUtilities  {
 		return new ROI2DPolyLine(line);
 	}
 	
-	public static List<Integer> copyFirstRoiMatchingFilterToDataArray (SequenceKymos seq, String filter) {
-		List<ROI2D> listRois = seq.seq.getROI2Ds();
-		int width = seq.seq.getWidth();
+	public static List<Integer> copyFirstRoiMatchingFilterToDataArray (SequenceKymos seqKymos, String filter) {
+		List<ROI2D> listRois = seqKymos.seq.getROI2Ds();
+		int width = seqKymos.seq.getWidth();
 		for (ROI2D roi: listRois) {
 			if (roi.getName().contains(filter)) { 
 				interpolateMissingPointsAlongXAxis ((ROI2DPolyLine)roi, width);

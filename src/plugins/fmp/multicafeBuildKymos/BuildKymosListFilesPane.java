@@ -25,10 +25,10 @@ import javax.swing.ScrollPaneConstants;
 
 import icy.gui.util.GuiUtil;
 import icy.preferences.XMLPreferences;
+
 import plugins.fmp.multicafeTools.MulticafeTools;
 
-public class ListFilesPane extends JPanel implements PropertyChangeListener, ActionListener {
-	
+public class BuildKymosListFilesPane extends JPanel implements PropertyChangeListener, ActionListener {
 	/**
 	 * 
 	 */
@@ -41,7 +41,7 @@ public class ListFilesPane extends JPanel implements PropertyChangeListener, Act
 	public JButton 		clearAllButton			= new JButton("Clear all");
 	public JList<String> xmlFilesJList			= new JList<String>(new DefaultListModel<String>());
 	
-	private BuildKymographsBatch parent0 			= null;
+	private BuildKymographsBatch parent0 		= null;
 	
 	
 	public void init (JPanel mainPanel, String string, BuildKymographsBatch parent0) {
@@ -81,7 +81,6 @@ public class ListFilesPane extends JPanel implements PropertyChangeListener, Act
 		if (o == findButton) {
 			getListofFiles();	
 		}
-		
 		else if (o == clearSelectedButton) {
 			List<String> selectedItems = xmlFilesJList.getSelectedValuesList();
 		    for (String oo: selectedItems)
@@ -90,7 +89,6 @@ public class ListFilesPane extends JPanel implements PropertyChangeListener, Act
 		else if (o == clearAllButton) {
 			((DefaultListModel<String>) xmlFilesJList.getModel()).removeAllElements();
 		}
-
 	}
 	
 	private void getListofFiles() {
@@ -122,8 +120,7 @@ public class ListFilesPane extends JPanel implements PropertyChangeListener, Act
 		fileName = fileName.toLowerCase();
 		int ilast = ((DefaultListModel<String>) xmlFilesJList.getModel()).getSize();
 		boolean found = false;
-		for (int i=0; i < ilast; i++)
-		{
+		for (int i=0; i < ilast; i++) {
 			String oo = ((DefaultListModel<String>) xmlFilesJList.getModel()).getElementAt(i);
 			if (oo.equals(fileName)) {
 				found = true;

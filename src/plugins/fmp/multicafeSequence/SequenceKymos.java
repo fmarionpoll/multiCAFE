@@ -14,6 +14,10 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
+import org.w3c.dom.Document;
+import loci.formats.FormatException;
+import ome.xml.meta.OMEXMLMetadata;
+
 import icy.common.exception.UnsupportedFormatException;
 import icy.file.Loader;
 import icy.file.Saver;
@@ -25,8 +29,8 @@ import icy.sequence.MetaDataUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
-import loci.formats.FormatException;
-import ome.xml.meta.OMEXMLMetadata;
+import icy.util.XMLUtil;
+
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.OverlayThreshold;
 import plugins.fmp.multicafeTools.OverlayTrapMouse;
@@ -359,6 +363,17 @@ public class SequenceKymos extends SequenceCamData  {
 		return flag;
 	}
 	
+	public boolean xmlReadRoiLineParameters(String pathname) {
+		if (pathname != null)  {
+			final Document doc = XMLUtil.loadDocument(pathname);
+			if (doc != null) { 
+				int version = capillaries.xmlReadCapillaryParametersv0(doc);
+				return (version >= 0); 
+			}
+		}
+		return false;
+	}
+
 	// ----------------------------
 
 	public List<Integer> subtractTi(List<Integer > array) {

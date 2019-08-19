@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.w3c.dom.Document;
 
 import icy.file.Loader;
 import icy.gui.dialog.LoaderDialog;
@@ -21,10 +22,12 @@ import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.system.thread.ThreadUtil;
 import icy.type.collection.array.Array1DUtil;
+import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.ImageOperationsStruct;
 import plugins.fmp.multicafeTools.StringSorter;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
+
 
 
 public class SequenceCamData  {
@@ -42,7 +45,7 @@ public class SequenceCamData  {
 	public Cages					cages 					= new Cages();
 		
 	// image cache
-	public PreFetchImagesThread 		bufferThread 			= null;
+	public PreFetchImagesThread 	bufferThread 			= null;
 	public IcyBufferedImage 		cacheTransformedImage 	= null;
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
@@ -422,6 +425,22 @@ public class SequenceCamData  {
 		return cages.xmlWriteCagesToFile("drosotrack.xml", getDirectory());
 	}
 	
+	// ---------------------------
+	public boolean xmlReadROIs(String csFileName) {
+		
+		if (csFileName != null)  {
+			final Document doc = XMLUtil.loadDocument(csFileName);
+			if (doc != null) {
+				//xmlReadCapillaryParameters(doc);
+				List<ROI> listOfROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
+				seq.addROIs(listOfROIs, false);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	// --------------------------
 
 	public FileTime getImageModifiedTime (int t) {
@@ -436,7 +455,7 @@ public class SequenceCamData  {
 		return fileTime;
 	}
 
-	public void removeAllROISatT(int t) {
+	public void removeAllROIsAtT(int t) {
 		final List<ROI> allROIs = seq.getROIs();
         for (ROI roi : allROIs) {
         	if (roi instanceof ROI2D && ((ROI2D) roi).getT() == t)

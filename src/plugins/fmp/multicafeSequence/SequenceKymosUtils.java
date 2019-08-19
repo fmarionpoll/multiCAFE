@@ -19,7 +19,6 @@ public class SequenceKymosUtils {
 
 	
 	public static void transferCamDataROIStoKymo (SequenceCamData seqCams, SequenceKymos seqKymos) {
-		List<ROI2D> listROISCap = ROI2DUtilities.getListofCapillariesFromSequence(seqCams);
 		if (seqKymos == null) {
 			System.out.println("seqkymos null - return");
 			return;
@@ -28,6 +27,7 @@ public class SequenceKymosUtils {
 			seqKymos.capillaries = new Capillaries();
 		
 		// rois not in cap?
+		List<ROI2D> listROISCap = ROI2DUtilities.getListofCapillariesFromSequence(seqCams);
 		for (ROI2D roi:listROISCap) {
 			boolean found = false;
 			for (Capillary cap: seqKymos.capillaries.capillariesArrayList) {

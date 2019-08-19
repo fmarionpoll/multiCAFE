@@ -202,8 +202,7 @@ public class Capillaries {
 		volume = XMLUtil.getAttributeDoubleValue(xmlVal, ID_VOLUMEUL, Double.NaN);
 
 		xmlVal = XMLUtil.getElement(xmlElement, ID_CAPILLARYPIX);
-		double dpixels = XMLUtil.getAttributeDoubleValue(xmlVal, ID_NPIXELS, Double.NaN);
-		pixels = (int) dpixels;
+		pixels = (int) XMLUtil.getAttributeDoubleValue(xmlVal, ID_NPIXELS, Double.NaN);
 
 		xmlVal = XMLUtil.getElement(xmlElement, ID_ANALYSIS);
 		if (xmlVal != null) {
