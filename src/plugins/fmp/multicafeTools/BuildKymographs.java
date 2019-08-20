@@ -4,8 +4,8 @@ package plugins.fmp.multicafeTools;
 import java.util.ArrayList;
 import java.util.List;
 
-import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
+import icy.image.IcyBufferedImageUtil;
 import icy.sequence.Sequence;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
@@ -23,13 +23,13 @@ public class BuildKymographs implements Runnable
 	public boolean 					stopFlag 			= false;
 	public boolean 					threadRunning 		= false;
 	
-	private Viewer 					sequenceViewer 		= null;
+//	private Viewer 					sequenceViewer 		= null;
 	private IcyBufferedImage 		workImage 			= null; 
 	private Sequence 				seqForRegistration	= new Sequence();
 	private DataType 				dataType 			= DataType.INT;
 	private int 					imagewidth =1;
 	private ArrayList<double []> 	sourceValuesList 	= null;
-	private int lastT = -1;
+//	private int lastT = -1;
 	
 	
 	@Override
@@ -43,8 +43,9 @@ public class BuildKymographs implements Runnable
 			options.startFrame = 0;
 		if ((options.endFrame >= (int) options.seqCamData.nTotalFrames) || (options.endFrame < 0)) 
 			options.endFrame = (int) options.seqCamData.nTotalFrames-1;
-		
-//		options.seqCamData.prefetchForwardThread_START(10); // TODO
+		if (options.seqCamData.bufferThread == null) {	
+			options.seqCamData.prefetchForwardThread_START(100); 
+		}
 		
 		int nbframes = options.endFrame - options.startFrame +1;
 		ProgressChrono progressBar = new ProgressChrono("Processing started");
@@ -55,7 +56,7 @@ public class BuildKymographs implements Runnable
 		initArraysToBuildKymographImages();
 		
 		int vinputSizeX = options.seqCamData.seq.getSizeX();
-		sequenceViewer = options.seqCamData.seq.getFirstViewer();
+//		sequenceViewer = options.seqCamData.seq.getFirstViewer();
 		int ipixelcolumn = 0;
 		workImage = options.seqCamData.seq.getImage(options.startFrame, 0); 
 		
@@ -124,16 +125,17 @@ public class BuildKymographs implements Runnable
 	
 	private boolean getImageAndUpdateViewer(int t) {	
 		//workImage = options.seqCamData.seq.getImage(t, 0); 
-		workImage = options.seqCamData.getImageFromForwardBuffer(t);
+		workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImageFromForwardBuffer(t));
 		if (workImage == null) {
 			System.out.println("workImage null");
 			return false;
 		}
-		int ti = (t/10)*10;
-		if (ti != lastT) {
-			sequenceViewer.setPositionT(t);
-			lastT = ti;
-		}
+//		int delta = 1000;
+//		int ti = (t/delta)*delta;
+//		if (ti != lastT) {
+//			sequenceViewer.setPositionT(t);
+//			lastT = ti;
+//		}
 		return true;
 	}
 	

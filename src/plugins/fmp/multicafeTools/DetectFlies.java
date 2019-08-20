@@ -17,8 +17,8 @@ import icy.image.IcyBufferedImageUtil;
 import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
-import icy.system.profile.Chronometer;
 import icy.type.collection.array.Array1DUtil;
+
 import plugins.fmp.multicafeSequence.Cages;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.XYTaSeries;
@@ -62,6 +62,9 @@ public class DetectFlies  implements Runnable {
 	@Override
 	public void run() {
 		threadRunning = true;
+		if (seqCamData.bufferThread == null) {	
+			seqCamData.prefetchForwardThread_START(100); 
+		}
 		// create arrays for storing position and init their value to zero
 		initParametersForDetection();
 		System.out.println("Computation over frames: " + startFrame + " - " + endFrame );
@@ -92,8 +95,9 @@ public class DetectFlies  implements Runnable {
 	}
 
 	private void detectFlies () {
-		Chronometer chrono = new Chronometer("Tracking computation" );
-		ProgressFrame progress = new ProgressFrame("Detecting flies...");
+		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
+		progressBar.initStuff(endFrame-startFrame+1);
+		
 		int nbcages = cages.cageLimitROIList.size();
 		ROI2DRectangle [] tempRectROI = new ROI2DRectangle [nbcages];
 		//int minCapacity = (endFrame - startFrame + 1) / analyzeStep;		
@@ -124,18 +128,14 @@ public class DetectFlies  implements Runnable {
 			// ----------------- loop over all images of the stack
 			int it = 0;
 			for (int t = startFrame; t <= endFrame && !stopFlag; t  += analyzeStep, it++ ) {				
-				// update progression bar
-				int pos = (int)(100d * (double)t / (double) nbframes);
-				progress.setPosition( pos );
-				int nbSeconds =  (int) (chrono.getNanos() / 1000000000f);
-				int timeleft = (int) ((nbSeconds* nbframes /(t+1)) - nbSeconds);
-				progress.setMessage( "Processing: " + pos + " % - Elapsed time: " + nbSeconds + " s - Estimated time left: " + timeleft + " s");
+				progressBar.updatePositionAndTimeLeft(t);
 
 				// load next image and compute threshold
-				IcyBufferedImage currentImage = seqCamData.getImage(t, 0);
+//				IcyBufferedImage currentImage = seqCamData.getImage(t, 0);
+				IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(seqCamData.getImageFromForwardBuffer(t));
 				seqCamData.currentFrame = t;
-				viewer.setPositionT(t);
-				viewer.setTitle(seqCamData.getDecoratedImageName(t));
+//				viewer.setPositionT(t);
+//				viewer.setTitle(seqCamData.getDecoratedImageName(t));
 				
 				IcyBufferedImage negativeImage = seqCamData.subtractImages (seqCamData.refImage, currentImage);
 				if (seqNegative != null)
@@ -173,7 +173,7 @@ public class DetectFlies  implements Runnable {
 				}
 			}
 		} finally {
-			progress.close();
+			progressBar.close();
 			seqCamData.seq.endUpdate();
 			for (int i=0; i < nbcages; i++)
 				seqCamData.seq.removeROI(tempRectROI[i]);
@@ -192,8 +192,8 @@ public class DetectFlies  implements Runnable {
 		}
 		finally
 		{
-			chrono.displayInSeconds();
 			seqCamData.seq.endUpdate();
+			seqCamData.prefetchForwardThread_RESTART(); 
 		}
 	}
 

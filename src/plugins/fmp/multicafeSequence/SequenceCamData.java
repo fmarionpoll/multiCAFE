@@ -510,22 +510,16 @@ public class SequenceCamData  {
 		IcyBufferedImage img = null;
 		for (int j=0; j< 5; j++) {
 			for (int i = 0; i < imgBuffer.size(); i++) {
-				TaggedImage timg = imgBuffer.get(i);
-				int ti = timg.t;
-				if (ti < t && ti > 0) {
-					timg.t = -1;
-					continue;
-				}
-				if (ti == t) {
-//					img =  seq.getImage(t, 0);
-					img = timg.img;
-					timg.t = -1;
+				if (imgBuffer.get(i).t == t) {
+					img = IcyBufferedImage.createFrom(imgBuffer.get(i).img);
+					bufferThread.tcurrent = t;
 					break;
 				}
 			}
 			if (img != null)
 				break;
 		}
+		
 		if (img == null) {
 			File f = new File(listFiles.get(t));
 			try {
@@ -533,13 +527,7 @@ public class SequenceCamData  {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			//prefetchForwardThread_STOP();
-//			bufferThread.tnext = t;
-//			for (int i = 0; i < imgBuffer.size(); i++) {
-//				imgBuffer.get(i).t = -1;
-//			}
-			//prefetchForwardThread_START(imgBuffer.size());
-//			System.out.println("missing img at "+t);
+			bufferThread.tcurrent = t;
 		}
 		return img;
 	}
@@ -550,7 +538,8 @@ public class SequenceCamData  {
 		 */
 		private int fenetre = 10; //200; // 100;
 		int tnext = (int) (analysisStart - analysisStep);
-
+		int tcurrent = -1;
+		
 
 		public PreFetchForwardThread() {
 			bBufferON = true;
@@ -558,8 +547,7 @@ public class SequenceCamData  {
 
 		public PreFetchForwardThread(int depth) {
 			fenetre = depth;
-			bBufferON = true;
-			
+			bBufferON = true;			
 			imgBuffer = new ArrayList <TaggedImage> (depth);
 			for (int i=0; i < depth; i++)
 				imgBuffer.add(new TaggedImage());
@@ -577,21 +565,23 @@ public class SequenceCamData  {
 				while (!isInterrupted()) {
 					ThreadUtil.sleep(100);
 					for (int i = 0; i < imgBuffer.size(); i++) {
-						if (imgBuffer.get(i).t < 0) {
-							int t = tnext;
+						int t = imgBuffer.get(i).t;
+						if (t < 0) {
+							t = tnext;
 							if (t < listFiles.size()) {
-//								System.out.println("load t "+t);
 								TaggedImage timg = imgBuffer.get(i);
 								timg.t = t;
-//								seq.getImage(t, 0).loadData();
 								File f = new File(listFiles.get(t));
 								try {
-									timg.img = IcyBufferedImage.createFrom(ImageIO.read(f));
+									timg.img = ImageIO.read(f);
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
 								tnext = t + analysisStep;
 							}
+						}
+						else if (t < (tcurrent-analysisStep)) {
+							imgBuffer.get(i).t = -1;
 						}
 						if (isInterrupted())
 							return;
