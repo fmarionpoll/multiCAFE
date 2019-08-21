@@ -14,7 +14,7 @@ public class DetectLimits {
 	List<Point2D> limitTop =null;
 	List<Point2D> limitBottom =null;
 	
-	public void detectCapillaryLevels(DetectLimits_Options options,  SequenceKymos seqkymo) {
+	public void detectCapillaryLevels(DetectLimits_Options options, SequenceKymos seqkymo) {
 		// send some info
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
 		progressBar.initStuff(seqkymo.seq.getSizeT() );
@@ -27,10 +27,10 @@ public class DetectLimits {
 			tlast = tfirst;
 		}
 		seqkymo.seq.beginUpdate();
-		seqkymo.seq.removeAllROI();
-		
+				
 		for (int t=tfirst; t <= tlast; t++) {
 			progressBar.updatePositionAndTimeLeft(t);
+			seqkymo.removeROIsAtT(t);
 			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(t);
 			cap.ptsTop = null;
 			cap.ptsBottom = null;

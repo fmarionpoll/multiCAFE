@@ -45,6 +45,7 @@ public class MCSequenceTab_Close  extends JPanel {
 			parent0.seqCamData.seq.close();
 			parent0.seqCamData = null;
 		}
+		parent0.kymographsPane.graphsTab.closeAll();
 	}
 
 }

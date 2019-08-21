@@ -22,6 +22,7 @@ import icy.canvas.Layer;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
+import icy.main.Icy;
 import icy.roi.ROI;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeTools.MulticafeTools;
@@ -156,8 +157,15 @@ public class MCCapillariesTab_Options extends JPanel {
 			rectDataView.height = rectMaster.height;
 			IcyBufferedImage img = parent0.seqKymos.seq.getFirstImage();
 			rectDataView.width = 100;
-			if (img != null)
+			if (img != null) {
 				rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
+				int desktopwidth = Icy.getMainInterface().getMainFrame().getDesktopWidth();
+				if (rectDataView.width > desktopwidth) {
+					rectDataView.setSize(desktopwidth, rectDataView.height * desktopwidth / rectDataView.width);
+					rectDataView.x = rectMaster.x;
+					rectDataView.y = rectMaster.y + rectMaster.height;
+				}
+			}
 			rectDataView.translate(
 					rectMaster.x + deltax - rectDataView.x, 
 					rectMaster.y + deltay - rectDataView.y);

@@ -81,12 +81,19 @@ public class MCCapillariesTab_File extends JPanel {
 		flag = parent0.seqKymos.xmlLoadCapillaryTrack(parent0.seqCamData.getDirectory());
 		if (flag) {
 			SequenceKymosUtils.transferKymoCapillariesToCamData (parent0.seqCamData, parent0.seqKymos);
+		} else {
+			String filename = parent0.seqCamData.getDirectory() + File.separator + "roislines.xml";
+			flag = parent0.seqCamData.xmlReadROIs(filename);
+			if (flag) {
+				parent0.seqKymos.xmlReadRoiLineParameters(filename);
+				SequenceKymosUtils.transferCamDataROIStoKymo(parent0.seqCamData, parent0.seqKymos);
+			}
 		}
 		return flag;
 	}
 	
 	boolean saveCapillaryTrack() {
-		parent0.capillariesPane.unitsTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
+		parent0.capillariesPane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
 		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
 		parent0.capillariesPane.buildarrayTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
 		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (parent0.seqCamData);
@@ -119,17 +126,14 @@ public class MCCapillariesTab_File extends JPanel {
 				final File file = new File (cap.filenameTIFF);
 				IcyBufferedImage image = parent0.seqKymos.seq.getImage(t, 0);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
-					try {
-						Saver.saveImage(image, file, true);
-					} catch (FormatException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+						try {
+							Saver.saveImage(image, file, true);
+						} catch (FormatException | IOException e) {
+							e.printStackTrace();
+						}
 					System.out.println("File "+ cap.getName() + " saved " );
 				}});
 			}
-			System.out.println("End of Kymograph saving process");
 		}
 		progress.close();
 	}

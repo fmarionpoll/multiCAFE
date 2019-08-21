@@ -29,10 +29,10 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	
 	private JComboBox<String> 	directionComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JCheckBox	detectAllCheckBox 		= new JCheckBox ("all", true);
-	private JSpinner 	detectTopSpinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
+	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
 	private JButton		displayTransform1Button	= new JButton("Display");
 	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
-	private JButton 	detectTopButton 		= new JButton("Detect");
+	private JButton 	detectButton 			= new JButton("Detect");
 	private MultiCAFE 	parent0 				= null;
 	JComboBox<TransformOp> transformForLevelsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
 			TransformOp.R_RGB, TransformOp.G_RGB, TransformOp.B_RGB, 
@@ -46,9 +46,9 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		((JLabel) directionComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
-		add( GuiUtil.besidesPanel(directionComboBox, detectTopSpinner, transformForLevelsComboBox, displayTransform1Button )); 
+		add( GuiUtil.besidesPanel(directionComboBox, thresholdSpinner, transformForLevelsComboBox, displayTransform1Button )); 
 		add( GuiUtil.besidesPanel(new JLabel("span ", SwingConstants.RIGHT), spanTopSpinner, new JLabel(" "), new JLabel(" ")));
-		add( GuiUtil.besidesPanel( detectTopButton,  detectAllCheckBox, new JLabel(" ")));
+		add( GuiUtil.besidesPanel( detectButton,  detectAllCheckBox, new JLabel(" ")));
 		
 		defineActionListeners();
 	}
@@ -62,7 +62,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 				}
 			}});
 		
-		detectTopButton.addActionListener(new ActionListener () { 
+		detectButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				kymosDisplayFiltered1();
 				DetectLimits_Options options = new DetectLimits_Options();
@@ -87,11 +87,11 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	// -------------------------------------------------
 	
 	int getDetectLevelThreshold() {
-		return (int) detectTopSpinner.getValue();
+		return (int) thresholdSpinner.getValue();
 	}
 
 	void setDetectLevelThreshold (int threshold) {
-		detectTopSpinner.setValue(threshold);
+		thresholdSpinner.setValue(threshold);
 	}
 	
 	int getSpanDiffTop() {
@@ -116,7 +116,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 		int index =options.directionUp ? 0:1;
 		directionComboBox.setSelectedIndex(index);
 		setDetectLevelThreshold(options.detectLevelThreshold);
-		detectTopSpinner.setValue(options.detectLevelThreshold);
+		thresholdSpinner.setValue(options.detectLevelThreshold);
 		detectAllCheckBox.setSelected(options.detectAllImages);
 	}
 	

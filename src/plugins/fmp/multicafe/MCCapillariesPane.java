@@ -29,7 +29,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	MCCapillariesTab_Build 		buildarrayTab 	= new MCCapillariesTab_Build();
 	MCCapillariesTab_File 		fileTab 		= new MCCapillariesTab_File();
 	MCCapillariesTab_Adjust 	adjustTab 		= new MCCapillariesTab_Adjust();
-	MCCapillariesTab_Units		unitsTab		= new MCCapillariesTab_Units();
+	MCCapillariesTab_Infos		infosTab		= new MCCapillariesTab_Infos();
 	MCCapillaryTab_BuildKymos 	buildkymosTab 	= new MCCapillaryTab_BuildKymos();
 	MCCapillariesTab_Options 	optionsTab 		= new MCCapillariesTab_Options();
 	
@@ -55,9 +55,9 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 		adjustTab.addPropertyChangeListener(parent0);
 		tabsPane.addTab("Adjust", null, adjustTab, "Adjust ROIS position to the capillaries");
 
-		unitsTab.init(capLayout, parent0);
-		unitsTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Units", null, unitsTab, "Define pixel conversion unit of images and capillaries content");
+		infosTab.init(capLayout, parent0);
+		infosTab.addPropertyChangeListener(this);
+		tabsPane.addTab("Infos", null, infosTab, "Define pixel conversion unit of images and capillaries content");
 
 		buildkymosTab.init(capLayout, parent0);
 		buildkymosTab.addPropertyChangeListener(this);
@@ -99,7 +99,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) {
-			unitsTab.visibleCheckBox.setSelected(true);
+			infosTab.visibleCheckBox.setSelected(true);
 			firePropertyChange("CAPILLARIES_NEW", false, true);
 			tabsPane.setSelectedIndex(2);
 		}
@@ -120,7 +120,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	boolean loadCapillaryTrack() {
 		boolean flag = fileTab.loadCapillaryTrack();
 		if (flag) {
-			unitsTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
+			infosTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
 			buildarrayTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
 			parent0.sequencePane.infosTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
 		}
@@ -130,7 +130,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	private void setCapillariesInfosToDialogs() {
 		SequenceKymosUtils.transferCamDataROIStoKymo(parent0.seqCamData, parent0.seqKymos);
 		
-		unitsTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
+		infosTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
 		buildarrayTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
 		parent0.sequencePane.infosTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
 	}
@@ -141,7 +141,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	void getCapillariesInfos(Capillaries cap) {
-		unitsTab.getCapillariesInfosFromDialog(cap);
+		infosTab.getCapillariesInfosFromDialog(cap);
 		buildarrayTab.getCapillariesInfosFromDialog(cap);
 		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(cap);
 	}
@@ -151,7 +151,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 		JTabbedPane tabbedPane = (JTabbedPane) arg0.getSource();
         int selectedIndex = tabbedPane.getSelectedIndex();
         adjustTab.roisDisplayrefBar(selectedIndex == 1);
-        unitsTab.visibleCheckBox.setSelected(selectedIndex == 2);
+        infosTab.visibleCheckBox.setSelected(selectedIndex == 2);
 	}
 	
 

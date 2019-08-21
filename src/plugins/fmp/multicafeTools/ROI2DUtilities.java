@@ -112,7 +112,6 @@ public class ROI2DUtilities  {
 		return true;
 	}
 
-
 	private static List<Integer> transferRoiToDataArray(ROI2DPolyLine roiLine) {
 		Polyline2D line = roiLine.getPolyline2D();
 		List<Integer> intArray = new ArrayList<Integer> (line.npoints);

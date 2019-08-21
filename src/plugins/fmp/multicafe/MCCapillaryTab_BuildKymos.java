@@ -76,6 +76,11 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 		if (parent0.seqCamData == null) 
 			return;
 		
+		if (parent0.seqKymos != null)
+		{
+			parent0.seqKymos.seq.close();
+		}
+		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (parent0.seqCamData);
 		parent0.seqKymos = new SequenceKymos();

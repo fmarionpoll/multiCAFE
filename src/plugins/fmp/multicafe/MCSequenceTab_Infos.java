@@ -94,7 +94,7 @@ public class MCSequenceTab_Infos  extends JPanel {
 		
 		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			updateCombos();
-			parent0.capillariesPane.unitsTab.updateCombos();
+			parent0.capillariesPane.infosTab.updateCombos();
 			if ( stackListComboBox.getSelectedIndex() < (stackListComboBox.getItemCount() -1)) {
 				stackListComboBox.setSelectedIndex(stackListComboBox.getSelectedIndex()+1);
 			}
@@ -102,7 +102,7 @@ public class MCSequenceTab_Infos  extends JPanel {
 		
 		previousButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			updateCombos();
-			parent0.capillariesPane.unitsTab.updateCombos();
+			parent0.capillariesPane.infosTab.updateCombos();
 			if (stackListComboBox.getSelectedIndex() > 0) {
 				stackListComboBox.setSelectedIndex(stackListComboBox.getSelectedIndex()-1);
 			}

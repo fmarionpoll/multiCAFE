@@ -22,7 +22,7 @@ import icy.gui.viewer.Viewer;
 import icy.roi.ROI;
 import plugins.fmp.multicafeSequence.Capillaries;
 
-public class MCCapillariesTab_Units extends JPanel {
+public class MCCapillariesTab_Infos extends JPanel {
 	/**
 	 * 
 	 */

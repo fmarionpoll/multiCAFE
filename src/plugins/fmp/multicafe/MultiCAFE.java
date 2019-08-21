@@ -86,8 +86,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if (arg0.getPropertyName().equals("SEQ_OPENED")) {			
-//			seqCamData.prefetchImagesThread_START(100);
-			seqCamData.prefetchForwardThread_START(200); // TODO
+			seqCamData.prefetchForwardThread_START(100); 
 			loadPreviousMeasures(
 					sequencePane.openTab.isCheckedLoadPreviousProfiles(), 
 					sequencePane.openTab.isCheckedLoadKymographs(),
@@ -126,7 +125,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			if( !capillariesPane.loadCapillaryTrack()) 
 				return;
 			sequencePane.browseTab.setBrowseItems(this.seqCamData);
-			capillariesPane.unitsTab.visibleCheckBox.setSelected(true);
+			capillariesPane.infosTab.visibleCheckBox.setSelected(true);
 		}
 		
 		if (loadKymographs) {

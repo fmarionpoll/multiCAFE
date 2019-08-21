@@ -151,12 +151,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	}
 	
 	boolean createSequenceCamFromString (String filename) {
-		if (parent0.seqCamData != null)
-			parent0.seqCamData.seq.close();	
-		if (parent0.seqKymos != null) {
-			parent0.seqKymos.seq.close();
-			parent0.seqKymos = null;
-		}
+		closeTab.closeAll();
 		parent0.seqCamData = new SequenceCamData();
 		
 		String path = parent0.seqCamData.loadSequence(filename);

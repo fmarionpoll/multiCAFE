@@ -41,8 +41,7 @@ public class SequenceCamData  {
 	public int 						analysisStep 			= 1;
 	public int 						currentFrame 			= 0;
 	public int						nTotalFrames 			= 0;
-		
-	public boolean					bBufferON 				= false;
+
 	public EnumStatus 				status					= EnumStatus.REGULAR;		
 	public Cages					cages 					= new Cages();
 		
@@ -430,6 +429,7 @@ public class SequenceCamData  {
 	}
 	
 	// ---------------------------
+	
 	public boolean xmlReadROIs(String csFileName) {
 		
 		if (csFileName != null)  {
@@ -443,7 +443,6 @@ public class SequenceCamData  {
 		}
 		return false;
 	}
-	
 	
 	// --------------------------
 
@@ -459,7 +458,7 @@ public class SequenceCamData  {
 		return fileTime;
 	}
 
-	public void removeAllROIsAtT(int t) {
+	public void removeROIsAtT(int t) {
 		final List<ROI> allROIs = seq.getROIs();
         for (ROI roi : allROIs) {
         	if (roi instanceof ROI2D && ((ROI2D) roi).getT() == t)
@@ -538,16 +537,14 @@ public class SequenceCamData  {
 		 */
 		private int fenetre = 10; //200; // 100;
 		int tnext = (int) (analysisStart - analysisStep);
-		int tcurrent = -1;
+		volatile int tcurrent = -1;
 		
 
 		public PreFetchForwardThread() {
-			bBufferON = true;
 		}
 
 		public PreFetchForwardThread(int depth) {
-			fenetre = depth;
-			bBufferON = true;			
+			fenetre = depth;			
 			imgBuffer = new ArrayList <TaggedImage> (depth);
 			for (int i=0; i < depth; i++)
 				imgBuffer.add(new TaggedImage());
@@ -558,7 +555,6 @@ public class SequenceCamData  {
 			return fenetre;
 		}
 		
-
 		@Override
 		public void run() {
 			try {

@@ -17,7 +17,6 @@ public class SequenceKymosUtils {
 	
 	// -------------------------------------------------------
 
-	
 	public static void transferCamDataROIStoKymo (SequenceCamData seqCams, SequenceKymos seqKymos) {
 		if (seqKymos == null) {
 			System.out.println("seqkymos null - return");
