@@ -91,6 +91,34 @@ public class SequenceKymos extends SequenceCamData  {
 			hasChanged = false;
 		}
 	}
+	public void validateRoisAtT(int t) {
+		List<ROI2D> listRois = seq.getROI2Ds();
+		int width = seq.getWidth();
+		for (ROI2D roi: listRois) {
+			if (!(roi instanceof ROI2DPolyLine))
+				continue;
+			if (roi.getT() == -1)
+				roi.setT(t);
+			
+			if (roi.getT() != t)
+				continue;
+			
+			// interpolate missing points if necessary
+			if (roi.getName().contains("level") || roi.getName().contains("gulp")) {
+				ROI2DUtilities.interpolateMissingPointsAlongXAxis ((ROI2DPolyLine) roi, width);
+				continue;
+			}
+			if (roi.getName().contains("derivative"))
+				continue;
+				
+			// if gulp not found - add an index to it	
+			ROI2DPolyLine roiLine = (ROI2DPolyLine) roi;
+			Polyline2D line = roiLine.getPolyline2D();
+			roi.setName("gulp"+String.format("%07d", (int) line.xpoints[0]));
+			roi.setColor(Color.red);
+		}
+		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());
+	}
 	
 	public void validateRois() {
 		List<ROI2D> listRois = seq.getROI2Ds();

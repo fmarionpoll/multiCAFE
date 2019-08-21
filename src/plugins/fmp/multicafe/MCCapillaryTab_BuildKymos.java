@@ -27,16 +27,17 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 	 */
 	private static final long serialVersionUID = 1771360416354320887L;
 	
-	JButton 						kymoStartComputationButton 	= new JButton("Start");
-	JButton 						kymosStopComputationButton 	= new JButton("Stop");
-	JSpinner 						diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
-	JCheckBox 						doRegistrationCheckBox 		= new JCheckBox("registration", false);
+	JButton 				kymoStartComputationButton 	= new JButton("Start");
+	JButton 				kymosStopComputationButton 	= new JButton("Stop");
+	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
+	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
+	JCheckBox				updateViewerCheckBox 		= new JCheckBox("update viewer", true);
 	
-	EnumStatusComputation 			sComputation 				= EnumStatusComputation.START_COMPUTATION; 
+	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
 	
-	private MultiCAFE 				parent0						= null;
-	private BuildKymographs 	buildKymographsThread 		= null;
-	private Thread 					thread 						= null;
+	private MultiCAFE 		parent0						= null;
+	private BuildKymographs	buildKymographsThread 		= null;
+	private Thread 			thread 						= null;
 
 
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -48,7 +49,8 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 		add(GuiUtil.besidesPanel(
 				new JLabel("area around ROIs", SwingConstants.RIGHT), 
 				diskRadiusSpinner, 
-				new JLabel (" "), doRegistrationCheckBox
+				updateViewerCheckBox, 
+				doRegistrationCheckBox
 				));
 		defineActionListeners();
 	}
@@ -127,9 +129,10 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 		buildKymographsThread.options.startFrame 	= (int) parent0.seqCamData.analysisStart;
 		buildKymographsThread.options.endFrame 		= (int) parent0.seqCamData.analysisEnd;
 		buildKymographsThread.options.diskRadius 	= (int) diskRadiusSpinner.getValue();
-		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected(); 
+		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected();
+		buildKymographsThread.options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
 		
-		thread = new Thread(null, buildKymographsThread, "buildkymos");
+		thread = new Thread(null, buildKymographsThread, "+++buildkymos");
 		thread.start();
 		
 		Thread waitcompletionThread = new Thread(null, new Runnable() {
@@ -142,7 +145,7 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 					kymosBuildStop();
 					resetUserInterface();
 				}
-			}}, "waitforcompletion");
+			}}, "+++waitforcompletion");
 		waitcompletionThread.start();
 	}
 

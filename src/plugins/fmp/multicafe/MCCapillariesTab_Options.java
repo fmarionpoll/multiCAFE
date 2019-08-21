@@ -159,16 +159,19 @@ public class MCCapillariesTab_Options extends JPanel {
 			rectDataView.width = 100;
 			if (img != null) {
 				rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
-				int desktopwidth = Icy.getMainInterface().getMainFrame().getDesktopWidth();
-				if (rectDataView.width > desktopwidth) {
-					rectDataView.setSize(desktopwidth, rectDataView.height * desktopwidth / rectDataView.width);
-					rectDataView.x = rectMaster.x;
-					rectDataView.y = rectMaster.y + rectMaster.height;
-				}
 			}
+			int desktopwidth = Icy.getMainInterface().getMainFrame().getDesktopWidth();
+			if (rectDataView.width > desktopwidth) {
+				int height = img.getSizeY() * desktopwidth / rectDataView.width;
+				int width = img.getSizeX() * height / rectDataView.height;
+				rectDataView.setSize(width, height);
+				rectDataView.x = 0;
+				rectDataView.y = rectMaster.y + rectMaster.height;
+			} else {
 			rectDataView.translate(
 					rectMaster.x + deltax - rectDataView.x, 
 					rectMaster.y + deltay - rectDataView.y);
+			}
 			v.setBounds(rectDataView);
 		}
 	}
@@ -221,6 +224,7 @@ public class MCCapillariesTab_Options extends JPanel {
 		if (isel >= parent0.seqKymos.seq.getSizeT() )
 			isel = parent0.seqKymos.seq.getSizeT() -1;
 		if (icurrent != isel) {
+			parent0.seqKymos.validateRoisAtT(icurrent);
 			kymographNamesComboBox.setSelectedIndex(isel);
 		}
 		Viewer v = parent0.seqKymos.seq.getFirstViewer();

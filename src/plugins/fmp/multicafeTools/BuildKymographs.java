@@ -6,6 +6,7 @@ import java.util.List;
 
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
+import icy.roi.ROI;
 import icy.sequence.Sequence;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
@@ -23,13 +24,12 @@ public class BuildKymographs implements Runnable
 	public boolean 					stopFlag 			= false;
 	public boolean 					threadRunning 		= false;
 	
-//	private Viewer 					sequenceViewer 		= null;
 	private IcyBufferedImage 		workImage 			= null; 
 	private Sequence 				seqForRegistration	= new Sequence();
 	private DataType 				dataType 			= DataType.INT;
 	private int 					imagewidth =1;
 	private ArrayList<double []> 	sourceValuesList 	= null;
-//	private int lastT = -1;
+	private List<ROI> 				roiList 			= null;
 	
 	
 	@Override
@@ -44,7 +44,7 @@ public class BuildKymographs implements Runnable
 		if ((options.endFrame >= (int) options.seqCamData.nTotalFrames) || (options.endFrame < 0)) 
 			options.endFrame = (int) options.seqCamData.nTotalFrames-1;
 		if (options.seqCamData.bufferThread == null) {	
-			options.seqCamData.prefetchForwardThread_START(100); 
+			options.seqCamData.prefetchForwardThread_START(200); 
 		}
 		
 		int nbframes = options.endFrame - options.startFrame +1;
@@ -55,10 +55,18 @@ public class BuildKymographs implements Runnable
 		  
 		initArraysToBuildKymographImages();
 		
-		int vinputSizeX = options.seqCamData.seq.getSizeX();
-//		sequenceViewer = options.seqCamData.seq.getFirstViewer();
+		int vinputSizeX = options.seqCamData.seq.getSizeX();		
 		int ipixelcolumn = 0;
 		workImage = options.seqCamData.seq.getImage(options.startFrame, 0); 
+		Thread thread = null;
+		BuildVisuUpdater visuUpdater = null;
+		if (options.updateViewerDuringComputation) {
+			roiList = options.seqCamData.seq.getROIs();
+			options.seqCamData.seq.removeAllROI();
+			visuUpdater = new BuildVisuUpdater(options.seqCamData);
+			thread = new Thread(null, visuUpdater, "visuUpdater Thread");
+			thread.start();
+		}
 		
 		seqForRegistration.addImage(0, workImage);
 		seqForRegistration.addImage(1, workImage);
@@ -97,6 +105,17 @@ public class BuildKymographs implements Runnable
 		options.seqCamData.seq.endUpdate();
 		options.seqKymos.seq.removeAllImages();
 		options.seqKymos.seq.setVirtual(false); 
+		if (options.updateViewerDuringComputation) {
+			if (thread != null && thread.isAlive()) {
+				visuUpdater.isInterrupted = true;
+				try {
+					thread.join();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+			}
+			options.seqCamData.seq.addROIs(roiList, false);
+		}
 
 		for (int t=0; t < nbcapillaries; t++) {
 			Capillary cap = options.seqKymos.capillaries.capillariesArrayList.get(t);
@@ -117,25 +136,18 @@ public class BuildKymographs implements Runnable
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
 		
-		options.seqCamData.prefetchForwardThread_RESTART(); 
+		options.seqCamData.prefetchForwardThread_STOP(); //RESTART(); 
 		threadRunning = false;
 	}
 	
 	// -------------------------------------------
 	
 	private boolean getImageAndUpdateViewer(int t) {	
-		//workImage = options.seqCamData.seq.getImage(t, 0); 
 		workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImageFromForwardBuffer(t));
 		if (workImage == null) {
 			System.out.println("workImage null");
 			return false;
 		}
-//		int delta = 1000;
-//		int ti = (t/delta)*delta;
-//		if (ti != lastT) {
-//			sequenceViewer.setPositionT(t);
-//			lastT = ti;
-//		}
 		return true;
 	}
 	
