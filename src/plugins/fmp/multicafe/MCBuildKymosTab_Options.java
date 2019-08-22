@@ -29,7 +29,7 @@ import plugins.fmp.multicafeTools.MulticafeTools;
 
 
 
-public class MCCapillariesTab_Options extends JPanel {
+public class MCBuildKymosTab_Options extends JPanel {
 	/**
 	 * 
 	 */

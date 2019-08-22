@@ -70,7 +70,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 				options.directionUp 			= (directionComboBox.getSelectedIndex() == 0);
 				options.detectLevelThreshold 	= (int) getDetectLevelThreshold();
 				options.detectAllImages 		= detectAllCheckBox.isSelected();
-				options.firstImage 				= parent0.capillariesPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
+				options.firstImage 				= parent0.buildKymosPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
 
 				DetectLimits detect = new DetectLimits();
 				detect.detectCapillaryLevels(options, parent0.seqKymos);

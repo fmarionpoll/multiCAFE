@@ -20,7 +20,7 @@ import plugins.fmp.multicafeTools.BuildKymographs;
 import plugins.fmp.multicafeTools.EnumStatusComputation;
 
 
-public class MCCapillaryTab_BuildKymos extends JPanel { 
+public class MCBuildKymosTab_Build extends JPanel { 
 
 	/**
 	 * 
@@ -102,8 +102,8 @@ public class MCCapillaryTab_BuildKymos extends JPanel {
 				e1.printStackTrace();
 			}
 		}
-		parent0.capillariesPane.optionsTab.viewKymosCheckBox.setSelected(true);
-		parent0.capillariesPane.optionsTab.displayViews (true);
+		parent0.buildKymosPane.optionsTab.viewKymosCheckBox.setSelected(true);
+		parent0.buildKymosPane.optionsTab.displayViews (true);
 	}
 	
 	private void resetUserInterface() {

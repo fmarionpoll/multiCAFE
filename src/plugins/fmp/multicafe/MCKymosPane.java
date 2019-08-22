@@ -117,7 +117,7 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 			Viewer v = parent0.seqCamData.seq.getFirstViewer();
 			v.toFront();
 		} else if (iselected == 1) {
-			parent0.capillariesPane.optionsTab.displayUpdateOnSwingThread();
+			parent0.buildKymosPane.optionsTab.displayUpdateOnSwingThread();
 		}
 	}
 	

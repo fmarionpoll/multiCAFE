@@ -39,7 +39,7 @@ public class MCSequenceTab_Close  extends JPanel {
 		}
 		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
-		parent0.capillariesPane.optionsTab.kymographNamesComboBox.removeAllItems();
+		parent0.buildKymosPane.optionsTab.kymographNamesComboBox.removeAllItems();
 
 		if (parent0.seqCamData != null) {
 			parent0.seqCamData.seq.close();

@@ -30,8 +30,8 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	MCCapillariesTab_File 		fileTab 		= new MCCapillariesTab_File();
 	MCCapillariesTab_Adjust 	adjustTab 		= new MCCapillariesTab_Adjust();
 	MCCapillariesTab_Infos		infosTab		= new MCCapillariesTab_Infos();
-	MCCapillaryTab_BuildKymos 	buildkymosTab 	= new MCCapillaryTab_BuildKymos();
-	MCCapillariesTab_Options 	optionsTab 		= new MCCapillariesTab_Options();
+//	MCCapillaryTab_BuildKymos 	buildkymosTab 	= new MCCapillaryTab_BuildKymos();
+//	MCCapillariesTab_Options 	optionsTab 		= new MCCapillariesTab_Options();
 	
 	Capillaries capold = new Capillaries();
 	private MultiCAFE parent0 = null;
@@ -59,13 +59,13 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 		infosTab.addPropertyChangeListener(this);
 		tabsPane.addTab("Infos", null, infosTab, "Define pixel conversion unit of images and capillaries content");
 
-		buildkymosTab.init(capLayout, parent0);
-		buildkymosTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Build kymos", null, buildkymosTab, "Build kymographs from ROI lines placed over capillaries");
+//		buildkymosTab.init(capLayout, parent0);
+//		buildkymosTab.addPropertyChangeListener(this);
+//		tabsPane.addTab("Build kymos", null, buildkymosTab, "Build kymographs from ROI lines placed over capillaries");
 		
-		optionsTab.init(capLayout, parent0);
-		optionsTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Display", null, optionsTab, "Display options of data & kymographs");
+//		optionsTab.init(capLayout, parent0);
+//		optionsTab.addPropertyChangeListener(this);
+//		tabsPane.addTab("Display", null, optionsTab, "Display options of data & kymographs");
 
 		fileTab.init(capLayout, parent0);
 		fileTab.addPropertyChangeListener(this);
@@ -103,12 +103,12 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 			firePropertyChange("CAPILLARIES_NEW", false, true);
 			tabsPane.setSelectedIndex(2);
 		}
-		else if (event.getPropertyName().equals("KYMOS_OPEN") 
-			|| event.getPropertyName().equals("KYMOS_CREATE")) {
-			optionsTab.viewKymosCheckBox.setSelected(true);
-			optionsTab.transferCapillaryNamesToComboBox(parent0.seqKymos.capillaries.capillariesArrayList);
-			tabsPane.setSelectedIndex(2);
-		}
+//		else if (event.getPropertyName().equals("KYMOS_OPEN") 
+//			|| event.getPropertyName().equals("KYMOS_CREATE")) {
+//			optionsTab.viewKymosCheckBox.setSelected(true);
+//			optionsTab.transferCapillaryNamesToComboBox(parent0.seqKymos.capillaries.capillariesArrayList);
+//			tabsPane.setSelectedIndex(2);
+//		}
 		else if (event.getPropertyName().equals("KYMOS_OK")) {
 			tabsPane.setSelectedIndex(4);
 		}

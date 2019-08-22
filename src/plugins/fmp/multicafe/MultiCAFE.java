@@ -24,13 +24,14 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener
 {
-	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 18-August-2019", true, true, true, true);
+	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 22-August-2019", true, true, true, true);
 	
 	SequenceCamData 			seqCamData 			= null;
 	SequenceKymos				seqKymos			= null;
 	
 	MCSequencePane 				sequencePane 		= new MCSequencePane();
 	MCCapillariesPane 			capillariesPane 	= new MCCapillariesPane();
+	MCBuildKymosPane			buildKymosPane		= new MCBuildKymosPane();
 	MCKymosPane 				kymographsPane 		= new MCKymosPane();
 	MCMovePane 					movePane 			= new MCMovePane();
 	MCExcelPane					excelPane			= new MCExcelPane();
@@ -46,10 +47,13 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		sequencePane.init(mainPanel, "SOURCE DATA", this);
 		sequencePane.addPropertyChangeListener(this);
 
-		capillariesPane.init(mainPanel, "CAPILLARIES -> KYMOGRAPHS", this);
+		capillariesPane.init(mainPanel, "CAPILLARIES", this);
 		capillariesPane.addPropertyChangeListener(this);	
-				
-		kymographsPane.init(mainPanel, "KYMOS -> MEASURE TOP LEVEL & GULPS", this);
+		
+		buildKymosPane.init(mainPanel, "KYMOGRAPHS", this);
+		buildKymosPane.addPropertyChangeListener(this);
+		
+		kymographsPane.init(mainPanel, "MEASURE TOP LEVEL & GULPS", this);
 		kymographsPane.addPropertyChangeListener(this);
 		
 		movePane.init(mainPanel, "DETECT FLIES", this);
@@ -97,8 +101,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		  	sequencePane.browseTab.setBrowseItems(this.seqCamData);
 		}
 		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
-			capillariesPane.optionsTab.displayUpdateOnSwingThread();
-			capillariesPane.optionsTab.viewKymosCheckBox.setSelected(true);
+			buildKymosPane.optionsTab.displayUpdateOnSwingThread();
+			buildKymosPane.optionsTab.viewKymosCheckBox.setSelected(true);
 		}
 		else if (arg0.getPropertyName().equals("SEQ_SAVEMEAS")) {
 			if (seqKymos != null 
@@ -130,7 +134,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		
 		if (loadKymographs) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
-				if ( !capillariesPane.fileTab.loadDefaultKymos()) {
+				if ( !buildKymosPane.fileTab.loadDefaultKymos()) {
 					return;
 				}
 				if (loadMeasures) {
