@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
@@ -118,6 +120,20 @@ public class SequenceCamData  {
 		}
 		return false;
 	}	
+	
+	public static int acceptedFileType2(String name) {
+		/* 
+		 * Returns accepted type (0-n) or -1 if not found 
+		 */
+		int ifound = -1;
+		if (name==null) 
+			return ifound;
+		for (int i=0; i< acceptedTypes.length; i++) {
+			if (name.endsWith(acceptedTypes[i]))
+				return i;
+		}
+		return ifound;
+	}
 
 	public String getDirectory () {
 		return directory;
@@ -194,6 +210,21 @@ public class SequenceCamData  {
 	public boolean isFileStack() {
 		return (status == EnumStatus.FILESTACK);
 	}
+	
+	public List<String> keepOnlyAcceptedNamesFromList(List<String> rawlist, int filetype) {
+		int count = rawlist.size();
+		List<String> outList = new ArrayList<String> (count);
+		for (String name: rawlist) {
+			int itype = acceptedFileType2(name);
+			if ( itype >= 0) {
+				if (filetype < 0)
+					filetype = itype;
+				if (itype == filetype)
+					outList.add(name);
+			}
+		}
+		return outList;
+	}
 		
 	public String[] keepOnlyAcceptedNames(String[] rawlist) {
 		int count = rawlist.length;
@@ -268,17 +299,31 @@ public class SequenceCamData  {
 		File filepath = new File(textPath); 
 	    directory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
 		if (directory != null ) {
-			String [] list = (new File(directory)).list();
+			List<String> list = null;
+			try (Stream<Path> walk = Files.walk(Paths.get(directory), 1)) {
+				list = walk.filter(Files::isRegularFile)
+						.map(x -> x.toString()).collect(Collectors.toList());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 			if (list == null)
 				return null;
 			else {
 				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi"))
 					seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
-				else
-					loadSequenceFromListAndDirectory(list, directory);
+				else {
+					loadSequenceFromListAndDirectory2(list, directory);
+				}
 			}
 		}
 		return directory;
+	}
+	
+	private void loadSequenceFromListAndDirectory2(List<String> list, String directory) {
+		status = EnumStatus.FAILURE;
+		list = keepOnlyAcceptedNamesFromList(list, 0);	
+		loadSequenceFromList(list, true);
 	}
 	
 	private void loadSequenceFromListAndDirectory(String [] list, String directory) {
@@ -290,8 +335,7 @@ public class SequenceCamData  {
 			if (list[i]!=null)
 				listFiles.add(directory + File.separator + list[i]);
 		}
-		nTotalFrames = list.length;
-		status = EnumStatus.FILESTACK;	
+		nTotalFrames = list.length;	
 		loadSequenceFromList(listFiles, true);
 	}
 	
@@ -317,6 +361,7 @@ public class SequenceCamData  {
 					}
 				}
 			}
+			nTotalFrames = listFiles.size();	
 			status = EnumStatus.FILESTACK;	
 			initAnalysisParameters();
 		}
@@ -513,6 +558,8 @@ public class SequenceCamData  {
 		for (int j=0; j< 5; j++) {
 			for (int i = 0; i < imgPrefetchArray.size(); i++) {
 				if (imgPrefetchArray.get(i).t == t) {
+					if (imgPrefetchArray.get(i).img == null)
+						break;
 					img = IcyBufferedImage.createFrom(imgPrefetchArray.get(i).img);
 					bufferThread.tcurrent = t;
 					break;

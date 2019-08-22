@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -55,7 +57,8 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	private int						analyzeStep 			= 1; 
 	// TODO:  textbox? add checkbox for registration
 	private int 					diskRadius 				= 5;
-	private BuildKymographsBatch 	parent0 	= null;
+	private BuildKymographsBatch 	parent0 				= null;
+	private List<String> 			discardedNames			= new ArrayList <String> ();
 	
 	
 	public void init (JPanel mainPanel, String string, BuildKymographsBatch parent0) {
@@ -86,20 +89,35 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	}
 
 	private void startComputation() {
-		int nstacks = ((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).getSize();
-		if (nstacks == 0) 
-			return; 
-
-		String oo = ((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).getElementAt(0);
-		boolean flag = loadSequence(oo);
-		if (!flag) {
-			System.out.println("sequence "+oo+ " could not be opened: skip record");
-			return;
+		boolean foundstack = false;
+		while (!foundstack) {
+			int nstacks = ((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).getSize();
+			if (nstacks == 0) 
+				return; 
+	
+			String oo = ((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).getElementAt(0);
+			boolean flag = loadSequence(oo);
+			if (!flag) {
+				System.out.println("sequence "+oo+ " could not be opened: skip record");
+				discardedNames.add(oo);
+				((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).removeElement(oo);
+			}
+			else {
+			
+				stopComputationButton.setEnabled(true);
+				startComputationButton.setEnabled(false);
+				
+				loadRois(oo);
+				if (seqKymos.capillaries.capillariesArrayList.size() >0)
+					foundstack = true;
+				else {
+					System.out.println("sequence "+oo+ " with no capillaries found: skip record");
+					discardedNames.add(oo);
+					((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).removeElement(oo);
+				}
+			}
 		}
-		stopComputationButton.setEnabled(true);
-		startComputationButton.setEnabled(false);
 		
-		loadRois(oo);
 		initInputSequenceViewer();
 		startstopBufferingThread();
 		seqCamData.seq.setPositionT(0);

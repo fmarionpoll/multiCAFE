@@ -52,8 +52,12 @@ public class BuildKymographs implements Runnable
 		progressBar.initStuff(nbframes);
 		threadRunning = true;
 		stopFlag = false;
-		  
+
 		initArraysToBuildKymographImages();
+		if (options.seqKymos.capillaries.capillariesArrayList.size() < 1) {
+			options.seqCamData.prefetchForwardThread_STOP(); //RESTART(); 
+			return;
+		}
 		
 		int vinputSizeX = options.seqCamData.seq.getSizeX();		
 		int ipixelcolumn = 0;
