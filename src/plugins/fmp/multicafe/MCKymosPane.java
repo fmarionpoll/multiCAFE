@@ -45,7 +45,7 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		PopupPanel capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
-		capPopupPanel.expand();
+		capPopupPanel.collapse();
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 
 		GridLayout capLayout = new GridLayout(3, 1);

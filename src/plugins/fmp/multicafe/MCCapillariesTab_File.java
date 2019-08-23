@@ -72,8 +72,7 @@ public class MCCapillariesTab_File extends JPanel {
 		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
 		parent0.capillariesPane.buildarrayTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
 		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (parent0.seqCamData);
-		if (parent0.seqKymos.capillaries.capillariesArrayList.size() == 0)
-			parent0.seqKymos.updateCapillariesFromCamData(parent0.seqCamData);
+		parent0.seqKymos.updateCapillariesFromCamData(parent0.seqCamData);
 		return parent0.seqKymos.xmlSaveCapillaryTrack(parent0.seqCamData.getDirectory());
 	}
 
