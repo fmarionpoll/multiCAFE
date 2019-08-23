@@ -238,7 +238,7 @@ public class Capillary implements XMLPersistent  {
 	@Override
 	public boolean loadFromXML(Node node) {
 		boolean result = true;
-		result |= loadMetaDataFromXML(node);		
+		result |= loadMetaDataFromXML(node);	
 		result |= (ptsDerivative = loadPolyline2DFromXML(node, ID_DERIVATIVE)) != null;
 		result |= (ptsTop = loadPolyline2DFromXML(node, ID_TOPLEVEL)) != null;
 		result |= (ptsBottom = loadPolyline2DFromXML(node, ID_BOTTOMLEVEL))!= null;
@@ -355,4 +355,5 @@ public class Capillary implements XMLPersistent  {
 	    }
 	    return data;
 	}
+	
 }

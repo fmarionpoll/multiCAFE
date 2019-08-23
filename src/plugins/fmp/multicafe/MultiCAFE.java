@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import icy.gui.frame.IcyFrame;
-import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.gui.viewer.ViewerEvent;
@@ -138,7 +137,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 					return;
 				}
 				if (loadMeasures) {
-					kymographsPane.fileTab.loadKymosMeasures();
+					kymographsPane.fileTab.transferMeasuresToROIs();			
 					if (sequencePane.openTab.graphsCheckBox.isSelected())
 						SwingUtilities.invokeLater(new Runnable() {
 						    public void run() {
@@ -150,7 +149,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		
 		if (loadCages) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-				ProgressFrame progress = new ProgressFrame("Load cages and fly movements");
 				movePane.loadDefaultCages();
 				movePane.graphicsTab.moveCheckbox.setEnabled(true);
 				movePane.graphicsTab.displayResultsButton.setEnabled(true);
@@ -158,7 +156,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 					double threshold = seqCamData.cages.flyPositionsList.get(0).threshold;
 					movePane.graphicsTab.aliveThresholdSpinner.setValue(threshold);
 				}
-				progress.close();
 			}});
 		}
 	}

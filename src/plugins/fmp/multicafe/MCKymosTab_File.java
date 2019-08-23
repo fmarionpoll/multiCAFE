@@ -43,6 +43,7 @@ public class MCKymosTab_File  extends JPanel {
 		loadMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				if (loadKymosMeasures()) {
+					transferMeasuresToROIs();
 					firePropertyChange("MEASURES_OPEN", false, true);
 				}
 			}}); 
@@ -58,9 +59,17 @@ public class MCKymosTab_File  extends JPanel {
 		String directory = parent0.seqCamData.getDirectory();
 		boolean flag = true;
 		SequenceKymos seqk = parent0.seqKymos;
+		if (seqk != null ) {
+			seqk.xmlLoadCapillaryTrack(directory);
+		}
+		return flag;
+	}
+	
+	boolean transferMeasuresToROIs() {
+		boolean flag = true;
+		SequenceKymos seqk = parent0.seqKymos;
 		if (seqk != null && seqk.seq != null) {
 			seqk.seq.removeAllROI();
-			seqk.xmlLoadCapillaryTrack(directory);
 			seqk.transferMeasuresToKymosRois();
 		}
 		return flag;

@@ -53,8 +53,9 @@ public class MCCapillariesTab_File extends JPanel {
 		if (parent0.seqKymos == null)
 			parent0.seqKymos = new SequenceKymos();
 		flag = parent0.seqKymos.xmlLoadCapillaryTrack(parent0.seqCamData.getDirectory());
+		
 		if (flag) {
-			SequenceKymosUtils.transferKymoCapillariesToCamData (parent0.seqCamData, parent0.seqKymos);
+			SequenceKymosUtils.transferKymoCapillariesToCamData (parent0.seqCamData, parent0.seqKymos);	
 		} else {
 			String filename = parent0.seqCamData.getDirectory() + File.separator + "roislines.xml";
 			flag = parent0.seqCamData.xmlReadROIs(filename);

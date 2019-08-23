@@ -15,6 +15,7 @@ import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
+import icy.system.profile.Chronometer;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
@@ -121,8 +122,14 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	
 	private void openSequenceCamFromCombo() {
 		String filename = (String) infosTab.stackListComboBox.getSelectedItem();
+		Chronometer chrono = new Chronometer("createSequenceCamFromString " );
 		createSequenceCamFromString(filename);
+		chrono.displayInSeconds();
+		
+		Chronometer chrono2 = new Chronometer("updateVieweForSequenceCam " );
 		updateViewerForSequenceCam();
+		chrono2.displayInSeconds();
+		
 		firePropertyChange("SEQ_OPENED", false, true);
 		tabsPane.setSelectedIndex(1);
 	}
@@ -153,7 +160,6 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	boolean createSequenceCamFromString (String filename) {
 		closeTab.closeAll();
 		parent0.seqCamData = new SequenceCamData();
-		
 		String path = parent0.seqCamData.loadSequence(filename);
 		if (path != null) {
 			parent0.seqCamData.setParentDirectoryAsFileName() ;

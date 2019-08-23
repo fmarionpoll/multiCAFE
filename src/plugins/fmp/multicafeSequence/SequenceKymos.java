@@ -370,13 +370,12 @@ public class SequenceKymos extends SequenceCamData  {
 		}
 		if (!tempfile.isFile())
 			return false;
-		
-		boolean flag = capillaries.xmlLoadCapillaries(pathname, this);
+		boolean flag = capillaries.xmlLoadCapillaries(pathname);
 		if (flag) {
 			Path pathfilename = Paths.get(pathname);
 			directory = pathfilename.getParent().toString();
 			transferCapillariesToAnalysisParameters ();
-			loadListOfKymographsFromCapillaries(getDirectory());	
+			loadListOfKymographsFromCapillaries(getDirectory());
 		}
 		return flag;
 	}

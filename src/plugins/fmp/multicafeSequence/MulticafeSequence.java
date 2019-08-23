@@ -202,7 +202,7 @@ public class MulticafeSequence extends EzPlug {
 			if (csFileName == null)
 				csFileName = vkymos.getDirectory() + File.separator + "capillaryTrack.xml";
 
-			flag = vkymos.capillaries.xmlLoadCapillaries(csFileName, vkymos);
+			flag = vkymos.capillaries.xmlLoadCapillaries(csFileName);
 			
 			vSequence.analysisStart = vkymos.capillaries.analysisStart;
 			vSequence.analysisEnd = vkymos.capillaries.analysisEnd;

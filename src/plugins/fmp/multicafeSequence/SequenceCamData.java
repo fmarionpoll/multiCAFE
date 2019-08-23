@@ -2,15 +2,13 @@
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
@@ -31,7 +29,6 @@ import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ImageOperationsStruct;
 import plugins.fmp.multicafeTools.StringSorter;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
-
 
 
 public class SequenceCamData  {
@@ -226,7 +223,7 @@ public class SequenceCamData  {
 		return outList;
 	}
 		
-	public String[] keepOnlyAcceptedNames(String[] rawlist) {
+	public String[] keepOnlyAcceptedNamesFromArray(String[] rawlist) {
 		int count = rawlist.length;
 		for (int i=0; i< rawlist.length; i++) {
 			if ( !acceptedFileType(rawlist[i]) ) {
@@ -297,30 +294,32 @@ public class SequenceCamData  {
 		if (textPath == null) 
 			return loadSequenceFromDialog(null); 
 		File filepath = new File(textPath); 
+		
 	    directory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
 		if (directory != null ) {
-			List<String> list = null;
-			try (Stream<Path> walk = Files.walk(Paths.get(directory), 1)) {
-				list = walk.filter(Files::isRegularFile)
-						.map(x -> x.toString()).collect(Collectors.toList());
+			List<String> list = new ArrayList<String> ();
+			try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(directory))) {
+				for (Path entry: stream) {
+					list.add(entry.toString());
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
-			if (list == null)
+			if (list.size() == 0)
 				return null;
 			else {
 				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi"))
 					seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
 				else {
-					loadSequenceFromListAndDirectory2(list, directory);
+					loadSequenceFromList2(list);
 				}
 			}
 		}
 		return directory;
 	}
 	
-	private void loadSequenceFromListAndDirectory2(List<String> list, String directory) {
+	private void loadSequenceFromList2(List<String> list) {
 		status = EnumStatus.FAILURE;
 		list = keepOnlyAcceptedNamesFromList(list, 0);	
 		loadSequenceFromList(list, true);
@@ -328,7 +327,7 @@ public class SequenceCamData  {
 	
 	private void loadSequenceFromListAndDirectory(String [] list, String directory) {
 		status = EnumStatus.FAILURE;
-		list = keepOnlyAcceptedNames(list);
+		list = keepOnlyAcceptedNamesFromArray(list);
 		list = StringSorter.sortNumerically(list);
 		listFiles = new ArrayList<String>(list.length);
 		for (int i=0; i<list.length; i++) {

@@ -164,18 +164,18 @@ public class Capillaries {
 		return true;
 	}
 	
-	public boolean xmlLoadCapillariesv1(Document doc, SequenceKymos seq) {
+	public boolean xmlLoadCapillariesv1(Document doc) {
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return false;
 		Node nodecaps = XMLUtil.getElement(node, ID_LISTOFCAPILLARIES);
 		int nitems = XMLUtil.getElementIntValue(nodecaps, ID_NCAPILLARIES, 0);
-		seq.capillaries.capillariesArrayList = new ArrayList<Capillary> (nitems);
+		capillariesArrayList = new ArrayList<Capillary> (nitems);
 		for (int i= 0; i< nitems; i++) {
 			Node nodecapillary = XMLUtil.getElement(node, ID_CAPILLARY_+i);
 			Capillary cap = new Capillary();
 			cap.loadFromXML(nodecapillary);
-			seq.capillaries.capillariesArrayList.add(cap);
+			capillariesArrayList.add(cap);
 		}
 		return true;
 	}
@@ -250,14 +250,14 @@ public class Capillaries {
 		return false;
 	}
 	
-	public boolean xmlLoadCapillaries(String csFileName, SequenceKymos seq) {
+	public boolean xmlLoadCapillaries(String csFileName) {
 		if (csFileName != null)  {
 			final Document doc = XMLUtil.loadDocument(csFileName);
 			if (doc != null) {
 				int version = xmlLoadCapillaryParametersv1(doc);
 				switch (version) {
 				case 1: // current xml storage structure
-					xmlLoadCapillariesv1(doc, seq);
+					xmlLoadCapillariesv1(doc);
 					break;
 				case 0: // old xml storage structure
 					xmlReadCapillaryParametersv0(doc);
@@ -266,7 +266,7 @@ public class Capillaries {
 				default:
 					return false;
 				}
- 				return true;
+				return true;
 			}
 		}
 		return false;
@@ -284,7 +284,6 @@ public class Capillaries {
 			Capillary cap = new Capillary((ROI2DShape) roiCapillary);
 			capillariesArrayList.add(cap);
 			String csFile = directory + roiCapillary.getName() + ".xml";
-			//cap.filenameTIFF = directory + roiCapillary.getName() + ".tiff";
 			cap.indexImage = t;
 			t++;
 			final Document dockymo = XMLUtil.loadDocument(csFile);
