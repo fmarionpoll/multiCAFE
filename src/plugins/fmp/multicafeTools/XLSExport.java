@@ -193,7 +193,6 @@ public class XLSExport {
 	
 	protected String getShortenedName(SequenceCamData seq, int t) {
 		return seq.getFileNameNoPath(t);
-		//return cs.substring(cs.lastIndexOf("\\") + 1) ;
 	}
 
 	protected void xlsCreatePivotTable(XSSFWorkbook workBook, String workBookName, String fromWorkbook, DataConsolidateFunction function) {

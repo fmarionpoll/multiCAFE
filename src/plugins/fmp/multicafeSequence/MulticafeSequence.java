@@ -188,12 +188,12 @@ public class MulticafeSequence extends EzPlug {
 	
 	private boolean loadDefaultCapillaries() {
 		String path = vSequence.getDirectory();
-		return capillaryRoisOpen(path+"\\capillarytrack.xml");
+		return capillaryRoisOpen(path+File.separator+"capillarytrack.xml");
 	}
 	
 	private boolean loadDefaultCages() {
 		String path = vSequence.getDirectory();
-		return capillaryRoisOpen(path+"\\drosotrack.xml");
+		return capillaryRoisOpen(path+File.separator+"drosotrack.xml");
 	}
 	
 	public boolean capillaryRoisOpen(String csFileName) {

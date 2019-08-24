@@ -20,7 +20,6 @@ import plugins.fmp.multicafeSequence.Capillary;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 
 
-// Your plugin class should extends \'icy.plugin.abstract_.Plugin\' class.
 public class MulticafeTools  extends Plugin {
 
 	public static String saveFileAs(String defaultName, String directory, String csExt)

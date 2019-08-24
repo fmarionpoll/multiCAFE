@@ -64,7 +64,7 @@ public class MCBuildKymosTab_File extends JPanel {
 	void saveKymographFiles(String directory) {
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
 		if (directory == null) 
-			directory = parent0.seqCamData.getDirectory()+ "\\results";
+			directory = parent0.seqCamData.getDirectory()+ File.separator+"results";
 		try {
 			Files.createDirectories(Paths.get(directory));
 		} catch (IOException e1) {

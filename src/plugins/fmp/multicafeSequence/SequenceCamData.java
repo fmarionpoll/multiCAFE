@@ -460,7 +460,7 @@ public class SequenceCamData  {
 	}
 	
 	public boolean xmlReadDrosoTrackDefault() {
-		return cages.xmlReadCagesFromFileNoQuestion(getDirectory() + "\\drosotrack.xml", this);
+		return cages.xmlReadCagesFromFileNoQuestion(getDirectory() + File.separator + "drosotrack.xml", this);
 	}
 	
 	public boolean xmlReadDrosoTrack(String filename) {

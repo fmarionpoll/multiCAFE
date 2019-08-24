@@ -221,7 +221,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	}
 	
 	void loadRef () {
-		String path = parent0.seqCamData.getDirectory()+ "\\results\\referenceImage.jpg";
+		String path = parent0.seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
 		File inputfile = new File(path);
 		BufferedImage image = ImageUtil.load(inputfile, true);
 		if (image == null) {
@@ -236,7 +236,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	}
 	
 	void saveRef () {
-		String path = parent0.seqCamData.getDirectory()+ "\\results\\referenceImage.jpg";
+		String path = parent0.seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
 		File outputfile = new File(path);
 		RenderedImage image = ImageUtil.toRGBImage(parent0.seqCamData.refImage);
 		boolean success = ImageUtil.save(image, "jpg", outputfile);

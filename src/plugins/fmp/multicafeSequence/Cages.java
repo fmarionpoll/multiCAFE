@@ -20,7 +20,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolygon;
 public class Cages {
 	
 	public DetectFlies_Options 	detect 					= new DetectFlies_Options();
-	public List<ROI2D> 		cageLimitROIList			= new ArrayList<ROI2D>();
+	public List<ROI2D> 			cageLimitROIList		= new ArrayList<ROI2D>();
 	public List<XYTaSeries> 	flyPositionsList 		= new ArrayList<XYTaSeries>();
 	
 
