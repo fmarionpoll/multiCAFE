@@ -72,7 +72,7 @@ public class MCMoveTab_BuildROIs extends JPanel {
 	}
 	
 	void updateFromSequence() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		int nrois = seqCamData.cages.cageLimitROIList.size();	
 		if (nrois > 0) {
 			nbcagesTextField.setValue(nrois);
@@ -81,7 +81,7 @@ public class MCMoveTab_BuildROIs extends JPanel {
 	}
 
 	private void create2DPolygon() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		final String dummyname = "perimeter_enclosing_capillaries";
 		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
@@ -93,7 +93,7 @@ public class MCMoveTab_BuildROIs extends JPanel {
 		List<Point2D> points = new ArrayList<Point2D>();
 		int rectleft = rect.x + rect.width /6;
 		int rectright = rect.x + rect.width*5 /6;
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (seqKymos.capillaries.capillariesArrayList.size() > 0) {
 			Rectangle bound0 = seqKymos.capillaries.capillariesArrayList.get(0).capillaryRoi.getBounds();
 			int last = seqKymos.capillaries.capillariesArrayList.size() - 1;
@@ -124,7 +124,7 @@ public class MCMoveTab_BuildROIs extends JPanel {
 			width_interval = (int) width_intervalTextField.getValue();
 		}catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
 
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		ROI2D roi = seqCamData.seq.getSelectedROI2D();
 		if ( ! ( roi instanceof ROI2DPolygon ) ) {
 			new AnnounceFrame("The frame for the cages must be a ROI2D POLYGON");

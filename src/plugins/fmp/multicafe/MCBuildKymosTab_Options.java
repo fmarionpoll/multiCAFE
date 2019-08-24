@@ -126,7 +126,7 @@ public class MCBuildKymosTab_Options extends JPanel {
 	}
 	
 	private void roisDisplay(String filter, boolean visible) {
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		Viewer v= seqKymos.seq.getFirstViewer();
 		IcyCanvas canvas = v.getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
@@ -143,8 +143,8 @@ public class MCBuildKymosTab_Options extends JPanel {
 	}
 
 	void displayON() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (seqKymos == null || seqKymos.seq == null ) {
 			System.out.println("displayON() skipped");
 			return;
@@ -182,7 +182,7 @@ public class MCBuildKymosTab_Options extends JPanel {
 	}
 	
 	void displayOFF() {
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (seqKymos == null) 
 			return;
 		ArrayList<Viewer>vList =  seqKymos.seq.getViewers();
@@ -224,7 +224,7 @@ public class MCBuildKymosTab_Options extends JPanel {
 	}
 
 	void selectKymograph(int isel) {
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		int icurrent = kymographNamesComboBox.getSelectedIndex();
 		if (isel < 0)
 			isel = 0;

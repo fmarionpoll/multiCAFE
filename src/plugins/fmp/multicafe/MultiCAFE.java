@@ -17,7 +17,6 @@ import icy.gui.viewer.ViewerListener;
 import icy.plugin.abstract_.PluginActionable;
 import icy.sequence.DimensionId;
 import icy.system.thread.ThreadUtil;
-import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
@@ -28,11 +27,9 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 {
 	IcyFrame mainFrame = new IcyFrame("MultiCAFE analysis 22-August-2019", true, true, true, true);
 	
-//	SequenceCamData 			seqCamData 			= null;
-//	SequenceKymos				seqKymos			= null;
 	ExperimentList				expList 			= new ExperimentList();
-	int							currentExp			= -1;
-	int							previousExp			= -1;
+	int							currentIndex		= -1;
+	int							previousIndex		= -1;
 	
 	MCSequencePane 				sequencePane 		= new MCSequencePane();
 	MCCapillariesPane 			capillariesPane 	= new MCCapillariesPane();
@@ -41,8 +38,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	MCMovePane 					movePane 			= new MCMovePane();
 	MCExcelPane					excelPane			= new MCExcelPane();
 	
-	boolean	isInterrupted = false;
-	boolean isRunning = false;
 
 	//-------------------------------------------------------------------
 	
@@ -80,7 +75,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	public void viewerChanged(ViewerEvent event) {
 		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) {
 			if (event.getDim() == DimensionId.T) {
-				Experiment exp = expList.experimentList.get(currentExp);
+				Experiment exp = expList.experimentList.get(currentIndex);
 				Viewer v = event.getSource(); 
 				int id = v.getSequence().getId();
 				if (id == exp.seqCamData.seq.getId())
@@ -98,37 +93,12 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
-		if (arg0.getPropertyName().equals("SEQ_OPENED")) {	
-			isInterrupted = false;
-			isRunning = true;
-			ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
-				loadPreviousMeasures(
-						sequencePane.openTab.isCheckedLoadPreviousProfiles(), 
-						sequencePane.openTab.isCheckedLoadKymographs(),
-						sequencePane.openTab.isCheckedLoadCages(),
-						sequencePane.openTab.isCheckedLoadMeasures());
-			}});
-		}
-		else if (arg0.getPropertyName().equals("CAPILLARIES_OPEN")) {
-		  	sequencePane.browseTab.setBrowseItems(expList.getSeqCamData(currentExp));
+		if (arg0.getPropertyName().equals("CAPILLARIES_OPEN")) {
+		  	sequencePane.browseTab.setAnalyzeFrameAndStepToDialog(expList.getSeqCamData(currentIndex));
 		}
 		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
 			buildKymosPane.optionsTab.displayUpdateOnSwingThread();
 			buildKymosPane.optionsTab.viewKymosCheckBox.setSelected(true);
-		}
-		else if (arg0.getPropertyName().equals("SEQ_SAVEMEAS")) {
-			SequenceKymos seqKymos = expList.getSeqKymos(currentExp);
-			if (seqKymos != null 
-					&& seqKymos.capillaries != null 
-					&& seqKymos.capillaries.capillariesArrayList.size() > 0) {
-				capillariesPane.getCapillariesInfos(seqKymos.capillaries);
-				sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
-				if (capillariesPane.capold.isChanged(seqKymos.capillaries)) {
-					capillariesPane.saveCapillaryTrack();
-					kymographsPane.fileTab.saveKymosMeasures();
-					movePane.saveDefaultCages();
-				}
-			}
 		}
 		else if (arg0.getPropertyName() .equals("EXPORT_TO_EXCEL")) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
@@ -137,62 +107,35 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 	} 
 
-	private void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
+	public void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
 		ProgressFrame progress = new ProgressFrame("Load capillaries & kymographs");
-		SequenceCamData seqCamData = expList.getSeqCamData(currentExp);
+		Experiment exp = expList.getExperiment(currentIndex);
+		SequenceCamData seqCamData = exp.seqCamData;
+		
 		if (loadCapillaries) {
 			progress.setMessage("1/3 - load capillaries and measures");
-			if( !capillariesPane.loadCapillaryTrack()) {
-				progress.close();
-				isRunning = false;
-				return;
-			}
-			sequencePane.browseTab.setBrowseItems(seqCamData);
+			System.out.println("loadCapillaryTrack");
+			exp.loadCapillaryTrack();
+			System.out.println("loadCapillaryTrack done - update dialogs");
+			sequencePane.browseTab.setAnalyzeFrameAndStepToDialog(seqCamData);
+			sequencePane.infosTab.setCapillariesInfosToDialog(exp.seqKymos.capillaries);
+			capillariesPane.infosTab.setCapillariesInfosToDialog(exp.seqKymos.capillaries);
 			capillariesPane.infosTab.visibleCheckBox.setSelected(true);
 		}
-		if (isInterrupted) {
-			isRunning = false;
-			progress.close();
-			return;
-		}
-		
+
 		if (loadKymographs) {
 			progress.setMessage("2/3 - load kymographs");
-			if ( buildKymosPane.fileTab.loadDefaultKymos()) {
-				if (isInterrupted) {
-					isRunning = false;
-					progress.close();
-					return;
-				}
-				if (loadMeasures) {
-					kymographsPane.fileTab.transferMeasuresToROIs();	
-					if (isInterrupted) {
-						isRunning = false;
-						progress.close();
-						return;
-					}
-					if (sequencePane.openTab.graphsCheckBox.isSelected())
-						SwingUtilities.invokeLater(new Runnable() {
-						    public void run() {
-						    	kymographsPane.graphsTab.xyDisplayGraphs();
-						}});
-				}
-			}
-		}
-		if (isInterrupted) {
-			isRunning = false;
-			progress.close();
-			return;
+			exp.loadKymographs();
+			kymographsPane.fileTab.transferMeasuresToROIs();	
+			if (sequencePane.openTab.graphsCheckBox.isSelected())
+				SwingUtilities.invokeLater(new Runnable() { public void run() {
+				    	kymographsPane.graphsTab.xyDisplayGraphs();
+				}});
 		}
 		
 		if (loadCages) {
 			progress.setMessage("3/3 - load cages");
-			movePane.loadDefaultCages();
-			if (isInterrupted) {
-				isRunning = false;
-				progress.close();
-				return;
-			}
+			exp.loadDrosotrack();
 			movePane.graphicsTab.moveCheckbox.setEnabled(true);
 			movePane.graphicsTab.displayResultsButton.setEnabled(true);
 			if (seqCamData.cages != null && seqCamData.cages.flyPositionsList.size() > 0) {
@@ -200,7 +143,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 				movePane.graphicsTab.aliveThresholdSpinner.setValue(threshold);
 			}
 		}
-		isRunning = false;
+
 		progress.close();
 	}
 

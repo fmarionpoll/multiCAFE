@@ -83,7 +83,7 @@ public class MCCapillariesTab_Infos extends JPanel {
 
 	
 	private void roisDisplayLine(boolean isVisible) {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		Viewer v = seqCamData.seq.getFirstViewer();
 		IcyCanvas canvas = v.getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
@@ -129,6 +129,8 @@ public class MCCapillariesTab_Infos extends JPanel {
 	}
 	
 	private void addItem(JComboBox<String> combo, String text) {
+		if (text == null)
+			return;
 		combo.setSelectedItem(text);
 		if (combo.getSelectedIndex() < 0) {
 			boolean found = false;

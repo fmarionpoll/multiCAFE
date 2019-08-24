@@ -9,6 +9,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -100,18 +101,20 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	boolean loadCapillaryTrack() {
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);boolean flag = fileTab.loadCapillaryTrack();
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);boolean flag = fileTab.loadCapillaryTrack();
 		if (flag) {
-			infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
-			buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
-			parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+			SwingUtilities.invokeLater(new Runnable() { public void run() {
+				infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+				buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+				parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+			}});
 		}
 		return flag;
 	}
 	
 	private void setCapillariesInfosToDialogs() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
 		
 		infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
@@ -120,7 +123,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	boolean saveCapillaryTrack() {
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		getCapillariesInfos(seqKymos.capillaries);
 		return fileTab.saveCapillaryTrack();
 	}

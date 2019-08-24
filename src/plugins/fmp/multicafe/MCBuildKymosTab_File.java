@@ -52,13 +52,13 @@ public class MCBuildKymosTab_File extends JPanel {
 	
 	private void defineActionListeners() {	
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-			SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+			SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 			seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory());
 			firePropertyChange("KYMOS_OPEN", false, true);	
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 			String path = seqCamData.getDirectory() + File.separator + "results";
 			saveKymographFiles(path);
 			firePropertyChange("KYMOS_SAVE", false, true);
@@ -67,8 +67,8 @@ public class MCBuildKymosTab_File extends JPanel {
 
 	void saveKymographFiles(String directory) {
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (directory == null) 
 			directory = seqCamData.getDirectory()+ File.separator+"results";
 		try {
@@ -105,8 +105,8 @@ public class MCBuildKymosTab_File extends JPanel {
 	
 	boolean loadDefaultKymos() {		
 		boolean flag = false;
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqk = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqk = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (seqk == null || seqk.capillaries == null) {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;

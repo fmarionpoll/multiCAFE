@@ -4,6 +4,7 @@ package plugins.fmp.multicafeSequence;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
+import java.util.List;
 
 public class Experiment {
 	
@@ -48,6 +49,46 @@ public class Experiment {
 		boxID = seqKymos.capillaries.boxID;
 
 		seqCamData.xmlReadDrosoTrackDefault();
+		return true;
+	}
+	
+	public SequenceCamData openSequenceCamData(String filename) {
+		this.filename = filename;
+		seqCamData = new SequenceCamData();
+		if (null == seqCamData.loadSequence(filename))
+			return null;
+		seqCamData.setParentDirectoryAsFileName() ;
+		fileTimeImageFirst = seqCamData.getImageModifiedTime(0);
+		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
+		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
+		fileTimeImageLastMinutes = fileTimeImageLast.toMillis()/60000;
+		return seqCamData;
+	}
+	
+	public boolean loadKymographs() {
+		if (seqKymos == null)
+			seqKymos = new SequenceKymos();
+		if (seqKymos.capillaries.capillariesArrayList.size() == 0) {
+			if (!seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory())) 
+				return false;
+			boxID = seqKymos.capillaries.boxID;
+		}
+		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory());
+		boolean flag = seqKymos.loadImagesFromList(myList, true);
+		return flag;
+	}
+	
+	public boolean loadDrosotrack() {
+		return seqCamData.xmlReadDrosoTrackDefault();
+	}
+	
+	public boolean loadCapillaryTrack() {
+		if (seqKymos == null)
+			seqKymos = new SequenceKymos();
+		if (!seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory())) 
+			return false;
+		boxID = seqKymos.capillaries.boxID;
+		// TODO
 		return true;
 	}
 	

@@ -60,7 +60,7 @@ public class MCMoveTab_Graphs extends JPanel {
 	}
 
 	private void xyDisplayGraphs() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		final Rectangle rectv = seqCamData.seq.getFirstViewer().getBounds();
 		Point ptRelative = new Point(0,30);
 		final int deltay = 230;
@@ -94,7 +94,7 @@ public class MCMoveTab_Graphs extends JPanel {
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		}
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		iChart.displayData(seqCamData.cages.flyPositionsList, option);
 		iChart.mainChartFrame.toFront();
 		return iChart;

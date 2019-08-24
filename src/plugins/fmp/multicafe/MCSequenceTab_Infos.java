@@ -15,7 +15,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
+import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Capillaries;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeTools.ComboBoxWide;
 import plugins.fmp.multicafeTools.ComboBoxWithIndexTextRenderer;
 
@@ -30,7 +32,7 @@ public class MCSequenceTab_Infos  extends JPanel {
 	private JComboBox<String> 	experimentJCombo 	= new JComboBox<String>();
 	private JButton  			previousButton		= new JButton("<");
 	private JButton				nextButton			= new JButton(">");
-	JComboBox<String> 			stackListComboBox	= new ComboBoxWide();
+	JComboBox<String> 			expListComboBox	= new ComboBoxWide();
 	boolean 					disableChangeFile 	= false;
 	private MultiCAFE 			parent0 			= null;
 	
@@ -45,7 +47,7 @@ public class MCSequenceTab_Infos  extends JPanel {
 		int bWidth = 30;
 		int height = 10;
 		previousButton.setPreferredSize(new Dimension(bWidth, height));
-		k2Panel.add(stackListComboBox, BorderLayout.CENTER);
+		k2Panel.add(expListComboBox, BorderLayout.CENTER);
 		nextButton.setPreferredSize(new Dimension(bWidth, height)); 
 		k2Panel.add(nextButton, BorderLayout.EAST);
 		add(GuiUtil.besidesPanel( k2Panel));
@@ -67,12 +69,15 @@ public class MCSequenceTab_Infos  extends JPanel {
 		defineActionListeners();
 		
 		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
-		stackListComboBox.setRenderer(renderer);
+		expListComboBox.setRenderer(renderer);
 
-		stackListComboBox.addItemListener(new ItemListener() {
+		expListComboBox.addItemListener(new ItemListener() {
 	        public void itemStateChanged(ItemEvent arg0) {
 	        	if (arg0.getStateChange() == ItemEvent.DESELECTED) {
-	        		firePropertyChange("SEQ_SAVEMEAS", false, true);
+	        		ThreadUtil.bgRun( new Runnable() { @Override public void run() {
+		        		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		        		parent0.sequencePane.closeTab.saveAndClose(exp);
+	        		}});
 	        	}
 	        	else if (arg0.getStateChange () == ItemEvent.SELECTED) {
 	        		updateBrowseInterface();
@@ -82,39 +87,39 @@ public class MCSequenceTab_Infos  extends JPanel {
 	}
 	
 	private void defineActionListeners() {
-		stackListComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (stackListComboBox.getItemCount() == 0 || disableChangeFile)
+		expListComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+			if (expListComboBox.getItemCount() == 0 || disableChangeFile)
 				return;
 			updateCombos();
 			parent0.capillariesPane.infosTab.updateCombos();
 			// TODO save capillaries, measures, etc here?
-			String oldtext = parent0.expList.getSeqCamData(parent0.currentExp).getFileName();
-			String newtext = (String) stackListComboBox.getSelectedItem();
+			String oldtext = parent0.expList.getSeqCamData(parent0.currentIndex).getFileName();
+			String newtext = (String) expListComboBox.getSelectedItem();
 			if (!newtext.equals(oldtext)) {
-				parent0.previousExp = parent0.currentExp;
-				parent0.currentExp = parent0.expList.getPositionOfCamFileName(newtext);
+				parent0.previousIndex = parent0.currentIndex;
+				parent0.currentIndex = parent0.expList.getPositionOfCamFileName(newtext);
 				firePropertyChange("SEQ_OPEN", false, true);
 			}
 			updateBrowseInterface();
 		} } );
 		
 		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if ( stackListComboBox.getSelectedIndex() < (stackListComboBox.getItemCount() -1)) {
-				stackListComboBox.setSelectedIndex(stackListComboBox.getSelectedIndex()+1);
+			if ( expListComboBox.getSelectedIndex() < (expListComboBox.getItemCount() -1)) {
+				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()+1);
 			}
 		} } );
 		
 		previousButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (stackListComboBox.getSelectedIndex() > 0) {
-				stackListComboBox.setSelectedIndex(stackListComboBox.getSelectedIndex()-1);
+			if (expListComboBox.getSelectedIndex() > 0) {
+				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()-1);
 			}
 		} } );
 	}
 	
 	void updateBrowseInterface() {
-		int isel = stackListComboBox.getSelectedIndex();
+		int isel = expListComboBox.getSelectedIndex();
 		boolean flag1 = (isel == 0? false: true);
-		boolean flag2 = (isel == (stackListComboBox.getItemCount() -1)? false: true);
+		boolean flag2 = (isel == (expListComboBox.getItemCount() -1)? false: true);
 		previousButton.setEnabled(flag1);
 		nextButton.setEnabled(flag2);
 	}
@@ -144,6 +149,8 @@ public class MCSequenceTab_Infos  extends JPanel {
 	}
 	
 	private void addItem(JComboBox<String> combo, String text) {
+		if (text == null)
+			return;
 		combo.setSelectedItem(text);
 		if (combo.getSelectedIndex() < 0) {
 			boolean found = false;

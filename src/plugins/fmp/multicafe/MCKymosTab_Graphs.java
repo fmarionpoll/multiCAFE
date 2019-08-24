@@ -50,7 +50,7 @@ public class MCKymosTab_Graphs extends JPanel {
 	private void defineActionListeners() {
 		displayResultsButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 				displayResultsButton.setEnabled(false);
 				seqKymos.roisSaveEdits();
 				xyDisplayGraphs();
@@ -59,12 +59,12 @@ public class MCKymosTab_Graphs extends JPanel {
 	}
 	
 	void xyDisplayGraphs() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		final Rectangle rectv = seqCamData.seq.getFirstViewer().getBounds();
 		Point ptRelative = new Point(0,rectv.height);
 		final int deltay = 230;
 
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(seqKymos, EnumListType.topAndBottom)) {
 			topandbottomChart = xyDisplayGraphsItem("top + bottom levels", 
 					EnumListType.topAndBottom, 
@@ -92,7 +92,7 @@ public class MCKymosTab_Graphs extends JPanel {
 	}
 
 	private XYMultiChart xyDisplayGraphsItem(String title, EnumListType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) {	
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (iChart != null && iChart.mainChartPanel.isValid()) {
 			iChart.fetchNewData(seqKymos, option);
 		}

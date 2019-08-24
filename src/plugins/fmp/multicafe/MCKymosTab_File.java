@@ -56,8 +56,8 @@ public class MCKymosTab_File  extends JPanel {
 	}
 
 	boolean loadKymosMeasures() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		String directory = seqCamData.getDirectory();
 		boolean flag = true;
 		SequenceKymos seqk = seqKymos;
@@ -68,7 +68,7 @@ public class MCKymosTab_File  extends JPanel {
 	}
 	
 	boolean transferMeasuresToROIs() {
-		SequenceKymos seqk = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceKymos seqk = parent0.expList.getSeqKymos(parent0.currentIndex);
 		boolean flag = true;
 		if (seqk != null && seqk.seq != null) {
 			seqk.seq.removeAllROI();
@@ -78,8 +78,8 @@ public class MCKymosTab_File  extends JPanel {
 	}
 	
 	void saveKymosMeasures() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqk = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqk = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (seqk != null) {
 			seqk.getAnalysisParametersFromCamData(seqCamData);
 			seqk.roisSaveEdits();

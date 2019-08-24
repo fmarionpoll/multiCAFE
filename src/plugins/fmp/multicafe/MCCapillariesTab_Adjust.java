@@ -62,7 +62,7 @@ public class MCCapillariesTab_Adjust extends JPanel {
 	
 	// -------------------------------------------------------
 	private void roisCenterLinestoAllCapillaries() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		refLineUpper = roiRefLineUpper.getLine();
 		refLineLower = roiRefLineLower.getLine(); 
 		
@@ -197,7 +197,7 @@ public class MCCapillariesTab_Adjust extends JPanel {
 	}
 
 	void roisDisplayrefBar(boolean display) {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		if (seqCamData == null)
 			return;
 		

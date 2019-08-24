@@ -9,6 +9,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
@@ -33,22 +34,55 @@ public class MCSequenceTab_Close  extends JPanel {
 				firePropertyChange("SEQ_CLOSE", false, true);
 			}});
 	}
-		
-	void closeAll() {
-		if (parent0.currentExp < 0)
-			return;
-		
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
-		seqKymos.seq.close();
-
+	
+	void saveAndClose(Experiment exp) {
+		if (exp != null) {
+			checkIfLoadingNotFinished(exp);
+			SequenceKymos seqKymos = exp.seqKymos;			
+			if (seqKymos != null 
+					&& seqKymos.capillaries != null 
+					&& seqKymos.capillaries.capillariesArrayList.size() > 0) {
+				parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
+				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
+				if (parent0.capillariesPane.capold.isChanged(seqKymos.capillaries)) {
+					parent0.capillariesPane.saveCapillaryTrack();
+					parent0.kymographsPane.fileTab.saveKymosMeasures();
+					parent0.movePane.saveDefaultCages();
+				}
+				seqKymos.seq.close();
+			}
+			SequenceCamData seqCamData = exp.seqCamData;
+			seqCamData.seq.close();
+		}
 		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
 		parent0.buildKymosPane.optionsTab.kymographNamesComboBox.removeAllItems();
-
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		seqCamData.seq.close();
-		
+	}
+	
+	private void checkIfLoadingNotFinished(Experiment exp) {
+		SequenceKymos seqKymos = exp.seqKymos;
+		if (seqKymos.isRunning_loadImages) {
+			seqKymos.isInterrupted_loadImages = true;
+			while (seqKymos.isRunning_loadImages) {
+				try {
+					wait(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	void closeAll() {
+		if (parent0.currentIndex < 0)
+			return;
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		seqKymos.seq.close();
+		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
+		parent0.buildKymosPane.optionsTab.kymographNamesComboBox.removeAllItems();
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		seqCamData.seq.close();
 	}
 
 }

@@ -86,7 +86,7 @@ public class MCKymosTab_DetectGulps extends JPanel {
 		
 		detectGulpsThresholdSpinner.addChangeListener(new ChangeListener() {
 			@Override public void stateChanged(ChangeEvent arg0) {
-				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 				if (seqKymos != null && viewGulpsThresholdCheckBox.isSelected()) {
 					int thresholdValue = (int) detectGulpsThresholdSpinner.getValue();
 					roiDisplayThreshold(true, seqKymos, thresholdValue);
@@ -99,7 +99,7 @@ public class MCKymosTab_DetectGulps extends JPanel {
 	// get/set
 		
 	void kymosDisplayFiltered2() {
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (seqKymos == null)
 			return;
  
@@ -121,7 +121,7 @@ public class MCKymosTab_DetectGulps extends JPanel {
 		options.computeDiffnAndDetect	= detectGulps;
 		
 		DetectGulps detect = new DetectGulps();
-		detect.detectGulps(options, parent0.expList.getSeqKymos(parent0.currentExp));
+		detect.detectGulps(options, parent0.expList.getSeqKymos(parent0.currentIndex));
 		
 	}
 
@@ -141,7 +141,7 @@ public class MCKymosTab_DetectGulps extends JPanel {
 	}
 	
 	void roisDisplayAllThresholds(boolean display) {
-		final SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		final SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (seqKymos == null)
 			return;
 		ThreadUtil.bgRun( new Runnable() { @Override public void run() { 

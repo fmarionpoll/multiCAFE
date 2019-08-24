@@ -38,7 +38,7 @@ public class MCKymosTab_Filter  extends JPanel {
 	private void defineActionListeners() {
 		startButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 				int span = getSpan();
 				int c = 1;
 				for (int t=0; t < seqKymos.seq.getSizeT(); t++) {

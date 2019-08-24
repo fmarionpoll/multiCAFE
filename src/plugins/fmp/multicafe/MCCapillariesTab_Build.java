@@ -74,8 +74,8 @@ public class MCCapillariesTab_Build extends JPanel {
 			}});
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				roisGenerateFromPolygon();
-				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 				SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
 				firePropertyChange("CAPILLARIES_NEW", false, true);
 			}});
@@ -123,7 +123,7 @@ public class MCCapillariesTab_Build extends JPanel {
 
 	// ---------------------------------
 	private void create2DPolygon() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		final String dummyname = "perimeter_enclosing_capillaries";
 		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
@@ -144,7 +144,7 @@ public class MCCapillariesTab_Build extends JPanel {
 	}
 	
 	private void roisGenerateFromPolygon() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		boolean statusGroup2Mode = false;
 		if (getGroupedBy2()) statusGroup2Mode = true;
 		// read values from text boxes

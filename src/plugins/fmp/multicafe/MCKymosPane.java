@@ -109,7 +109,7 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 	}
 
 	void tabbedCapillariesAndKymosSelected() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		if (seqCamData == null)
 			return;
 		int iselected = tabsPane.getSelectedIndex();
@@ -131,8 +131,8 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		if (tImg == null) 
 			tImg = new ImageTransformTools();
 		tImg.setSpanDiff(spanDiff);
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		int nimages = seqKymos.seq.getSizeT();
 		seqKymos.seq.beginUpdate();
 		tImg.setSequence(seqKymos);

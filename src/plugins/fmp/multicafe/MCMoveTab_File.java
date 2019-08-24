@@ -43,14 +43,14 @@ public class MCMoveTab_File extends JPanel {
 	
 		openROIsButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 				seqCamData.cages.xmlReadCagesFromFile(seqCamData);
 				firePropertyChange("LOAD_DATA", false, true);	
 			}});
 		
 		saveROIsButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 				seqCamData.storeAnalysisParametersToCages();
 				seqCamData.xmlWriteDrosoTrackDefault();
 			}});
@@ -59,7 +59,7 @@ public class MCMoveTab_File extends JPanel {
 	boolean cageRoisOpen(String csFileName) {
 		
 		boolean flag = false;
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		if (csFileName == null)
 			flag = seqCamData.xmlReadDrosoTrackDefault();
 		else
@@ -68,7 +68,7 @@ public class MCMoveTab_File extends JPanel {
 	}
 	
 	boolean cageRoisSave() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		return seqCamData.cages.xmlWriteCagesToFile("drosotrack.xml", seqCamData.getDirectory());
 	}
 }

@@ -26,6 +26,7 @@ import icy.gui.frame.IcyFrame;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import icy.preferences.XMLPreferences;
+import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeTools.MulticafeTools;
 
 
@@ -82,7 +83,7 @@ public class MCSequenceTab_Open extends JPanel {
 		openButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-            	if(parent0.sequencePane.infosTab.stackListComboBox.getItemCount() > 0 )
+            	if(parent0.sequencePane.infosTab.expListComboBox.getItemCount() > 0 )
             		parent0.sequencePane.closeTab.closeAll();
             	firePropertyChange("SEQ_OPENFILE", false, true);
             }});
@@ -244,5 +245,16 @@ public class MCSequenceTab_Open extends JPanel {
 		if (!found)
 			((DefaultListModel<String>) directoriesJList.getModel()).addElement(fileName);
 	}
+	
+	void loadMeasuresAndKymos() {
+		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
+			parent0.loadPreviousMeasures(
+					isCheckedLoadPreviousProfiles(), 
+					isCheckedLoadKymographs(),
+					isCheckedLoadCages(),
+					isCheckedLoadMeasures());
+		}});
+
+}
 
 }

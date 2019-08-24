@@ -11,7 +11,6 @@ public class ExperimentList {
 	public List<Experiment> experimentList = new ArrayList<Experiment> ();
 	
 	public ExperimentList () {
-	
 	}
 	
 	public Experiment getStartAndEndFromAllExperiments() {
@@ -144,23 +143,34 @@ public class ExperimentList {
 
 	public int getPositionOfCamFileName(String filename) {
 		int position = -1;
-		 
-		for (int i=0; i< experimentList.size(); i++) {
-			Experiment exp =  experimentList.get(i);
-			if (filename .contains(exp.seqCamData.getFileName())) {
-				position = i;
-				break;
+		if (filename != null) {
+			for (int i=0; i< experimentList.size(); i++) {
+				Experiment exp =  experimentList.get(i);
+				if (filename .contains(exp.seqCamData.getFileName())) {
+					position = i;
+					break;
+				}
 			}
 		}
 		return position;
 	}
 
-	public SequenceCamData getSeqCamData(int i) {
-		return experimentList.get(i).seqCamData;
+	public SequenceCamData getSeqCamData(int index) {
+		if (index < 0)
+			return null;
+		return experimentList.get(index).seqCamData;
 	}
 	
-	public SequenceKymos getSeqKymos(int i) {
-		return experimentList.get(i).seqKymos;
+	public SequenceKymos getSeqKymos(int index) {
+		if (index < 0)
+			return null;
+		return experimentList.get(index).seqKymos;
+	}
+	
+	public Experiment getExperiment(int index) {
+		if (index < 0)
+			return null;
+		return experimentList.get(index);
 	}
 	
 	public int addNewExperiment () {

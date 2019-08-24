@@ -16,6 +16,7 @@ import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
@@ -28,7 +29,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	private JTabbedPane 	tabsPane 	= new JTabbedPane();
 	MCSequenceTab_Open 		openTab 	= new MCSequenceTab_Open();
 	MCSequenceTab_Infos		infosTab	= new MCSequenceTab_Infos();
-	MCSequenceTab_Browse	browseTab 	= new MCSequenceTab_Browse();
+	MCSequenceTab_Analysis	browseTab 	= new MCSequenceTab_Analysis();
 	MCSequenceTab_Close 	closeTab 	= new MCSequenceTab_Close();
 	private MultiCAFE 		parent0 	= null;
 	
@@ -77,43 +78,36 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("SEQ_OPEN")) {
 			ProgressFrame progress = new ProgressFrame("Open sequence...");
-			checkIfLoadingNotFinished();
 			openSequenceCamFromCombo(); 
 			progress.close();
 		}
 		else if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
 			ProgressFrame progress = new ProgressFrame("Open file...");
-			checkIfLoadingNotFinished();
 			if (createSequenceCamFromString(null)) {
-				infosTab.stackListComboBox.removeAllItems();
-				addSequenceCamToComboAndLoadData();
+				infosTab.expListComboBox.removeAllItems();
+				addSequenceCamToCombo();
 			}
 			progress.close();
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
 			ProgressFrame progress = new ProgressFrame("Add file...");
-			checkIfLoadingNotFinished();
 			if (createSequenceCamFromString(null)) {
-				addSequenceCamToComboAndLoadData();
+				addSequenceCamToCombo();
 			}
 			progress.close();
 		 }
 		 else if (event.getPropertyName().equals("UPDATE")) {
-			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-			browseTab.getAnalyzeFrameAndStep(seqCamData);
-			Viewer v = seqCamData.seq.getFirstViewer();
-			v.toFront();
-			v.requestFocus();
+			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+			updateViewerForSequenceCam(seqCamData);
+			browseTab.getAnalyzeFrameAndStepFromDialog(seqCamData);
 		 }
-		 else if (event.getPropertyName().equals("SEQ_SAVEMEAS")) {
-			 firePropertyChange("SEQ_SAVEMEAS", false, true);
-		 }
+
 		 else if (event.getPropertyName().equals("SEQ_CLOSE")) {
 			tabsPane.setSelectedIndex(0);
-			infosTab.stackListComboBox.removeAllItems();
+			infosTab.expListComboBox.removeAllItems();
 		 }
 		 else if (event.getPropertyName().equals("SEARCH_CLOSED")) {
-			int index = infosTab.stackListComboBox.getSelectedIndex();
+			int index = infosTab.expListComboBox.getSelectedIndex();
 			if (index < 0)
 				index = 0;
 			infosTab.disableChangeFile = true;
@@ -121,8 +115,8 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 				 addSequenceCamToCombo(name);
 			}
 			openTab.selectedNames.clear();
-			if (infosTab.stackListComboBox.getItemCount() > 0) {
-				infosTab.stackListComboBox.setSelectedIndex(index);
+			if (infosTab.expListComboBox.getItemCount() > 0) {
+				infosTab.expListComboBox.setSelectedIndex(index);
 				infosTab.updateBrowseInterface();
 				infosTab.disableChangeFile = false;
 				openSequenceCamFromCombo();
@@ -130,79 +124,72 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		 }
 	}
 	
-	private void checkIfLoadingNotFinished() {
-		if (parent0.isRunning) {
-			parent0.isInterrupted = true;
-			while (parent0.isRunning) {
-				try {
-					wait(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
 	private void openSequenceCamFromCombo() {
-		createSequenceCamFromString((String) infosTab.stackListComboBox.getSelectedItem());
-		firePropertyChange("SEQ_OPENED", false, true);
+		createSequenceCamFromString((String) infosTab.expListComboBox.getSelectedItem());
+		openTab.loadMeasuresAndKymos();
 		tabsPane.setSelectedIndex(1);
 	}
 	
 	void addSequenceCamToCombo(String strItem) {
-		int nitems = infosTab.stackListComboBox.getItemCount();
+		int nitems = infosTab.expListComboBox.getItemCount();
 		boolean alreadystored = false;
 		for (int i=0; i < nitems; i++) {
-			if (strItem.equalsIgnoreCase(infosTab.stackListComboBox.getItemAt(i))) {
+			if (strItem.equalsIgnoreCase(infosTab.expListComboBox.getItemAt(i))) {
 				alreadystored = true;
 				break;
 			}
 		}
 		if(!alreadystored) 
-			infosTab.stackListComboBox.addItem(strItem);
+			infosTab.expListComboBox.addItem(strItem);
 	}
 	
-	void addSequenceCamToComboAndLoadData() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+	void addSequenceCamToCombo() {
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		String strItem = seqCamData.getFileName();
 		if (strItem != null) {
 			addSequenceCamToCombo(strItem);
-			infosTab.stackListComboBox.setSelectedItem(strItem);
-			updateViewerForSequenceCam();
-			firePropertyChange("SEQ_OPENED", false, true);
+			infosTab.expListComboBox.setSelectedItem(strItem);
+			updateViewerForSequenceCam(seqCamData);
+			openTab.loadMeasuresAndKymos();
+			XMLPreferences guiPrefs = parent0.getPreferences("gui");
+			guiPrefs.put("lastUsedPath", strItem);
 		}
 	}
 	
 	boolean createSequenceCamFromString (String filename) {
-		closeTab.closeAll();
-		
+		SequenceCamData seqCamData = openSequenceCamDataFromExpList(filename);
+		boolean flag = (seqCamData != null);
+		if (flag) {
+			browseTab.endFrameJSpinner.setValue((int)seqCamData.analysisEnd);
+			parent0.addSequence(seqCamData.seq);
+			seqCamData.seq.getFirstViewer().addListener( parent0 );
+			updateViewerForSequenceCam(seqCamData);
+		}
+		return flag;
+	}
+	
+	private SequenceCamData openSequenceCamDataFromExpList(String filename ) {
 		int position = parent0.expList.getPositionOfCamFileName(filename);
 		if (position < 0) {
 			position = parent0.expList.addNewExperiment();
 		}
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(position);
-		String path = seqCamData.loadSequence(filename);
-		if (path != null) {
-			seqCamData.setParentDirectoryAsFileName() ;
-			browseTab.endFrameJSpinner.setValue((int)seqCamData.analysisEnd);
-			XMLPreferences guiPrefs = parent0.getPreferences("gui");
-			guiPrefs.put("lastUsedPath", path);
-			parent0.addSequence(seqCamData.seq);
-			seqCamData.seq.getFirstViewer().addListener( parent0 );
-			updateViewerForSequenceCam();
-		}
-		return (path != null);
-		
+		parent0.currentIndex = position;
+		Experiment exp = parent0.expList.getExperiment(position);
+		return exp.openSequenceCamData(filename);
 	}
 	
-	private void updateViewerForSequenceCam() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+	private void updateViewerForSequenceCam(SequenceCamData seqCamData) {
 		Viewer v = seqCamData.seq.getFirstViewer();
 		if (v != null) {
 			Rectangle rectv = v.getBoundsInternal();
 			Rectangle rect0 = parent0.mainFrame.getBoundsInternal();
 			rectv.setLocation(rect0.x+ rect0.width, rect0.y);
 			v.setBounds(rectv);
+			v.toFront();
+			v.requestFocus();
 		}
 	}
+	
+
 	
 }

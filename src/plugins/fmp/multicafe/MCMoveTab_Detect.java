@@ -104,7 +104,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 		
 		thresholdedImageCheckBox.addItemListener(new ItemListener() {
 		      public void itemStateChanged(ItemEvent e) {
-		    	  SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		    	  SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		    	  if (thresholdedImageCheckBox.isSelected()) {
 						if (ov == null)
 							ov = new OverlayThreshold(seqCamData);
@@ -138,7 +138,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	}
 	
 	public void updateOverlay () {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		if (seqCamData == null)
 			return;
 		if (ov == null) 
@@ -153,14 +153,14 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	}
 	
 	public void removeOverlay() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		seqCamData.seq.removeOverlay(ov);
 	}
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdSpinner) {
-			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 			seqCamData.cages.detect.threshold = Integer.parseInt(thresholdSpinner.getValue().toString());
 			updateOverlay();
 		}
@@ -176,7 +176,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 		detect.limitLow 		= (int) objectLowsizeSpinner.getValue();
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
-		trackAllFliesThread.seqCamData 	= parent0.expList.getSeqCamData(parent0.currentExp);;		
+		trackAllFliesThread.seqCamData 	= parent0.expList.getSeqCamData(parent0.currentIndex);;		
 		trackAllFliesThread.stopFlag 	= false;
 		trackAllFliesThread.detect 		= detect;
 		trackAllFliesThread.viewInternalImages = viewsCheckBox.isSelected();
@@ -184,7 +184,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	}
 	
 	private void cleanPreviousDetections() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		seqCamData.cages.flyPositionsList.clear();
 		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: list) {
@@ -227,7 +227,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	}
 	
 	void loadRef () {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		String path = seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
 		File inputfile = new File(path);
 		BufferedImage image = ImageUtil.load(inputfile, true);
@@ -243,7 +243,7 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	}
 	
 	void saveRef () {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		String path = seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
 		File outputfile = new File(path);
 		RenderedImage image = ImageUtil.toRGBImage(seqCamData.refImage);

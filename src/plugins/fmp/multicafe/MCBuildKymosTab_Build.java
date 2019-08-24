@@ -76,15 +76,15 @@ public class MCBuildKymosTab_Build extends JPanel {
 	// -----------------------------------
 	
 	private void kymosBuildStart() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (seqCamData == null) 
 			return;
 		if (seqKymos != null)
 			seqKymos.seq.close();
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
-		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (seqCamData);
+		parent0.sequencePane.browseTab.getAnalyzeFrameAndStepFromDialog (seqCamData);
 		seqKymos = new SequenceKymos();
 		seqKymos.updateCapillariesFromCamData(seqCamData);
 		setStartButton(false);
@@ -115,8 +115,8 @@ public class MCBuildKymosTab_Build extends JPanel {
 	
 	private void kymosBuildKymographs() {
 				
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		buildKymographsThread = null;
 		if (seqKymos != null && seqKymos.seq != null)
 			seqKymos.seq.close();

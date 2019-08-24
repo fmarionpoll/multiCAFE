@@ -76,8 +76,8 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (evt.getPropertyName().equals("EXPORT_MOVEDATA")) {
 			Path directory = Paths.get(seqCamData.getFileName(0)).getParent();
 			Path subpath = directory.getName(directory.getNameCount()-1);
@@ -144,8 +144,8 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 			options.lastExp = nfiles - 1;
 		}
 		else {
-			options.firstExp = parent0.currentExp;
-			options.lastExp = parent0.currentExp;
+			options.firstExp = parent0.currentIndex;
+			options.lastExp = parent0.currentIndex;
 		}
 		options.expList = parent0.expList;
 	}

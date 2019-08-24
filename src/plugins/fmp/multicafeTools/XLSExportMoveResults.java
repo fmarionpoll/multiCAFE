@@ -33,15 +33,16 @@ public class XLSExportMoveResults extends XLSExport {
 			int col_end = 0;
 			int iSeries = 0;
 
-			options.experimentList.readInfosFromAllExperiments();
-			expAll = options.experimentList.getStartAndEndFromAllExperiments();
-			expAll.step = options.experimentList.experimentList.get(0).seqCamData.analysisStep;
+			options.expList.readInfosFromAllExperiments();
+			expAll = options.expList.getStartAndEndFromAllExperiments();
+			expAll.step = options.expList.experimentList.get(0).seqCamData.analysisStep;
 			
 			progress.setMessage( "Load measures...");
-			progress.setLength(options.experimentList.experimentList.size());
+			progress.setLength(options.expList.experimentList.size());
 
-			for (Experiment exp: options.experimentList.experimentList) 
+			for (int index = options.firstExp; index <= options.lastExp; index++) 
 			{
+				Experiment exp = options.expList.experimentList.get(index);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 			
 				if (options.xyCenter)  	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportItems.XYCENTER);
@@ -113,7 +114,7 @@ public class XLSExportMoveResults extends XLSExport {
 		Point pt = new Point(col0, 0);
 
 		if (options.collateSeries) {
-			pt.x = options.experimentList.getStackColumnPosition(exp, col0);
+			pt.x = options.expList.getStackColumnPosition(exp, col0);
 		}
 		
 		pt = writeGlobalInfos(exp, sheet, pt, options.transpose, xlsExportOption);

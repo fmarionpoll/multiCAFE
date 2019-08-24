@@ -15,7 +15,7 @@ import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
-public class MCSequenceTab_Browse extends JPanel {
+public class MCSequenceTab_Analysis extends JPanel {
 	/**
 	 * 
 	 */
@@ -43,13 +43,13 @@ public class MCSequenceTab_Browse extends JPanel {
 
 	}
 		
-	void setBrowseItems (SequenceCamData seq) {
+	void setAnalyzeFrameAndStepToDialog (SequenceCamData seq) {
 		endFrameJSpinner.setValue((int) seq.analysisEnd);
 		startFrameJSpinner.setValue((int) seq.analysisStart);
 		analyzeStepJSpinner.setValue(seq.analysisStep);
 	}
 	
-	void getAnalyzeFrameAndStep (SequenceCamData seq) {
+	void getAnalyzeFrameAndStepFromDialog (SequenceCamData seq) {
 		seq.analysisStart 	= (int) startFrameJSpinner.getValue();
 		seq.analysisEnd 	= (int) endFrameJSpinner.getValue();
 		seq.analysisStep 	= (int) analyzeStepJSpinner.getValue();

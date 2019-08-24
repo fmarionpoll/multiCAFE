@@ -13,7 +13,6 @@ import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
-import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
 public class MCBuildKymosPane extends JPanel implements PropertyChangeListener {
@@ -73,7 +72,7 @@ public class MCBuildKymosPane extends JPanel implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent event) {
 		 if (event.getPropertyName().equals("KYMOS_OPEN") 
 					|| event.getPropertyName().equals("KYMOS_CREATE")) {
-			SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+			SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 			optionsTab.viewKymosCheckBox.setSelected(true);
 				optionsTab.transferCapillaryNamesToComboBox(seqKymos.capillaries.capillariesArrayList);
 				tabsPane.setSelectedIndex(2);

@@ -50,8 +50,8 @@ public class MCCapillariesTab_File extends JPanel {
 	}
 	
 	boolean loadCapillaryTrack() {	
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);boolean flag = false;
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);boolean flag = false;
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		flag = seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory());
@@ -70,12 +70,12 @@ public class MCCapillariesTab_File extends JPanel {
 	}
 	
 	boolean saveCapillaryTrack() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		parent0.capillariesPane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
 		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
 		parent0.capillariesPane.buildarrayTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
-		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (seqCamData);
+		parent0.sequencePane.browseTab.getAnalyzeFrameAndStepFromDialog (seqCamData);
 		seqKymos.updateCapillariesFromCamData(seqCamData);
 		return seqKymos.xmlSaveCapillaryTrack(seqCamData.getDirectory());
 	}
