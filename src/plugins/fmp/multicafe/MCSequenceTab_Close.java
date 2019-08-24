@@ -37,6 +37,9 @@ public class MCSequenceTab_Close  extends JPanel {
 	
 	void saveAndClose(Experiment exp) {
 		if (exp != null) {
+			SequenceCamData seqCamData = exp.seqCamData;
+			seqCamData.seq.close();
+			System.out.println("close and save seqCamdata document ="+ seqCamData.getFileName());
 			checkIfLoadingNotFinished(exp);
 			SequenceKymos seqKymos = exp.seqKymos;			
 			if (seqKymos != null 
@@ -45,14 +48,12 @@ public class MCSequenceTab_Close  extends JPanel {
 				parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
 				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
 				if (parent0.capillariesPane.capold.isChanged(seqKymos.capillaries)) {
-					parent0.capillariesPane.saveCapillaryTrack();
-					parent0.kymographsPane.fileTab.saveKymosMeasures();
+					parent0.capillariesPane.saveCapillaryTrack(exp);
+					parent0.kymographsPane.fileTab.saveKymosMeasures(exp);
 					parent0.movePane.saveDefaultCages();
 				}
 				seqKymos.seq.close();
 			}
-			SequenceCamData seqCamData = exp.seqCamData;
-			seqCamData.seq.close();
 		}
 		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
@@ -65,7 +66,7 @@ public class MCSequenceTab_Close  extends JPanel {
 			seqKymos.isInterrupted_loadImages = true;
 			while (seqKymos.isRunning_loadImages) {
 				try {
-					wait(100);
+					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

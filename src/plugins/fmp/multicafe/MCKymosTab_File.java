@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
@@ -50,7 +51,8 @@ public class MCKymosTab_File  extends JPanel {
 		
 		saveMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				saveKymosMeasures();
+				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				saveKymosMeasures(exp);
 				firePropertyChange("MEASURES_SAVE", false, true);
 			}});	
 	}
@@ -77,14 +79,14 @@ public class MCKymosTab_File  extends JPanel {
 		return flag;
 	}
 	
-	void saveKymosMeasures() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		SequenceKymos seqk = parent0.expList.getSeqKymos(parent0.currentIndex);
-		if (seqk != null) {
-			seqk.getAnalysisParametersFromCamData(seqCamData);
-			seqk.roisSaveEdits();
+	void saveKymosMeasures(Experiment exp) {
+		SequenceCamData seqCamData = exp.seqCamData;
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		if (seqKymos != null) {
+			seqKymos.getAnalysisParametersFromCamData(seqCamData);
+			seqKymos.roisSaveEdits();
 			String name = seqCamData.getDirectory()+ File.separator + "capillarytrack.xml";
-			seqk.xmlSaveCapillaryTrack(name);
+			seqKymos.xmlSaveCapillaryTrack(name);
 		}
 	}
 }

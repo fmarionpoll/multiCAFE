@@ -25,7 +25,7 @@ import plugins.fmp.multicafeTools.ImageTransformTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class MCKymosPane extends JPanel implements PropertyChangeListener, ChangeListener {
+public class MCKymosPane extends JPanel implements PropertyChangeListener {
 	/**
 	 * 
 	 */
@@ -67,10 +67,7 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		graphsTab.init(capLayout, parent0);
 		graphsTab.addPropertyChangeListener(this);
 		tabsPane.addTab("Graphs", null, graphsTab, "Display results as a graph");
-		
-		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		tabsPane.addChangeListener(this);
-		
+				
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));
 		limitsTab.transformForLevelsComboBox.setSelectedItem(TransformOp.G2MINUS_RB);
 		tabsPane.setSelectedIndex(0);
@@ -87,14 +84,7 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
-		if (arg0.getPropertyName().equals("KYMOS_OK")) {
-			tabbedCapillariesAndKymosSelected();
-			firePropertyChange( "KYMOS_OK", false, true);
-		}
-		else if (arg0.getPropertyName().equals("KYMOS_SAVE")) {
-			tabsPane.setSelectedIndex(2);
-		}
-		else if (arg0.getPropertyName().equals("MEASURES_OPEN")) {
+		if (arg0.getPropertyName().equals("MEASURES_OPEN")) {
 			firePropertyChange("MEASURES_OPEN", false, true);
 		}
 		else if (arg0.getPropertyName().equals("KYMO_DISPLAY_FILTERED1")) {
@@ -108,24 +98,7 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		}
 	}
 
-	void tabbedCapillariesAndKymosSelected() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		if (seqCamData == null)
-			return;
-		int iselected = tabsPane.getSelectedIndex();
-		if (iselected == 0) {
-			Viewer v = seqCamData.seq.getFirstViewer();
-			v.toFront();
-		} else if (iselected == 1) {
-			parent0.buildKymosPane.optionsTab.displayUpdateOnSwingThread();
-		}
-	}
-	
-	@Override
-	public void stateChanged(ChangeEvent event) {
-		if (event.getSource() == tabsPane)
-			tabbedCapillariesAndKymosSelected();
-	}
+
 	
 	void kymosBuildFiltered(int zChannelSource, int zChannelDestination, TransformOp transformop, int spanDiff) {
 		if (tImg == null) 

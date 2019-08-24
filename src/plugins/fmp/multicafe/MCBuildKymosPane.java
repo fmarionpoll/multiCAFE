@@ -10,12 +10,16 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
+import icy.gui.viewer.Viewer;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
-public class MCBuildKymosPane extends JPanel implements PropertyChangeListener {
+public class MCBuildKymosPane extends JPanel implements PropertyChangeListener, ChangeListener {
 
 	
 	/**
@@ -54,6 +58,7 @@ public class MCBuildKymosPane extends JPanel implements PropertyChangeListener {
 		fileTab.addPropertyChangeListener(this);
 		tabsPane.addTab("Load/Save", null, fileTab, "Load/Save xml file with capillaries descriptors");
 
+		tabsPane.addChangeListener(this);
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));
 		
@@ -78,11 +83,30 @@ public class MCBuildKymosPane extends JPanel implements PropertyChangeListener {
 				tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("KYMOS_OK")) {
-			tabsPane.setSelectedIndex(4);
+			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("KYMOS_SAVE")) {
-			tabsPane.setSelectedIndex(4);
+			tabsPane.setSelectedIndex(2);
 		}
+	}
+	
+	void tabbedCapillariesAndKymosSelected() {
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		if (seqCamData == null)
+			return;
+		int iselected = tabsPane.getSelectedIndex();
+		if (iselected == 0) {
+			Viewer v = seqCamData.seq.getFirstViewer();
+			v.toFront();
+		} else if (iselected == 1) {
+			parent0.buildKymosPane.optionsTab.displayUpdateOnSwingThread();
+		}
+	}
+	
+	@Override
+	public void stateChanged(ChangeEvent event) {
+		if (event.getSource() == tabsPane)
+			tabbedCapillariesAndKymosSelected();
 	}
 
 }

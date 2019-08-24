@@ -102,7 +102,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 		else if (arg0.getPropertyName() .equals("EXPORT_TO_EXCEL")) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-				kymographsPane.fileTab.saveKymosMeasures();
+				Experiment exp = expList.getExperiment(currentIndex);
+				kymographsPane.fileTab.saveKymosMeasures(exp);
 			}});
 		}
 	} 
@@ -111,16 +112,19 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		ProgressFrame progress = new ProgressFrame("Load capillaries & kymographs");
 		Experiment exp = expList.getExperiment(currentIndex);
 		SequenceCamData seqCamData = exp.seqCamData;
+		System.out.println("load seqCamdata document ="+ seqCamData.getFileName());
 		
 		if (loadCapillaries) {
 			progress.setMessage("1/3 - load capillaries and measures");
 			System.out.println("loadCapillaryTrack");
 			exp.loadCapillaryTrack();
 			System.out.println("loadCapillaryTrack done - update dialogs");
-			sequencePane.browseTab.setAnalyzeFrameAndStepToDialog(seqCamData);
-			sequencePane.infosTab.setCapillariesInfosToDialog(exp.seqKymos.capillaries);
-			capillariesPane.infosTab.setCapillariesInfosToDialog(exp.seqKymos.capillaries);
-			capillariesPane.infosTab.visibleCheckBox.setSelected(true);
+			SwingUtilities.invokeLater(new Runnable() { public void run() {
+				sequencePane.browseTab.setAnalyzeFrameAndStepToDialog(seqCamData);
+				sequencePane.infosTab.setCapillariesInfosToDialog(exp.seqKymos.capillaries);
+				capillariesPane.infosTab.setCapillariesInfosToDialog(exp.seqKymos.capillaries);
+				capillariesPane.infosTab.visibleCheckBox.setSelected(true);
+				}});
 		}
 
 		if (loadKymographs) {
@@ -136,12 +140,14 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (loadCages) {
 			progress.setMessage("3/3 - load cages");
 			exp.loadDrosotrack();
-			movePane.graphicsTab.moveCheckbox.setEnabled(true);
-			movePane.graphicsTab.displayResultsButton.setEnabled(true);
-			if (seqCamData.cages != null && seqCamData.cages.flyPositionsList.size() > 0) {
-				double threshold = seqCamData.cages.flyPositionsList.get(0).threshold;
-				movePane.graphicsTab.aliveThresholdSpinner.setValue(threshold);
-			}
+			SwingUtilities.invokeLater(new Runnable() { public void run() {
+				movePane.graphicsTab.moveCheckbox.setEnabled(true);
+				movePane.graphicsTab.displayResultsButton.setEnabled(true);
+				if (seqCamData.cages != null && seqCamData.cages.flyPositionsList.size() > 0) {
+					double threshold = seqCamData.cages.flyPositionsList.get(0).threshold;
+					movePane.graphicsTab.aliveThresholdSpinner.setValue(threshold);
+				}
+			}});
 		}
 
 		progress.close();

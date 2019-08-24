@@ -16,6 +16,7 @@ import javax.swing.event.ChangeListener;
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillaries;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
@@ -89,7 +90,8 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
 		}			  
 		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) {
-			fileTab.saveCapillaryTrack();
+			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			fileTab.saveCapillaryTrack(exp);
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) {
@@ -122,10 +124,9 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 		parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 	}
 	
-	boolean saveCapillaryTrack() {
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
-		getCapillariesInfos(seqKymos.capillaries);
-		return fileTab.saveCapillaryTrack();
+	boolean saveCapillaryTrack(Experiment exp) {
+		getCapillariesInfos(exp.seqKymos.capillaries);
+		return fileTab.saveCapillaryTrack(exp);
 	}
 	
 	void getCapillariesInfos(Capillaries cap) {

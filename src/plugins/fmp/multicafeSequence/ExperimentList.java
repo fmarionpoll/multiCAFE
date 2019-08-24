@@ -146,6 +146,8 @@ public class ExperimentList {
 		if (filename != null) {
 			for (int i=0; i< experimentList.size(); i++) {
 				Experiment exp =  experimentList.get(i);
+				if (exp.seqCamData == null)
+					continue;
 				if (filename .contains(exp.seqCamData.getFileName())) {
 					position = i;
 					break;

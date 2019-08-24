@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
@@ -69,9 +70,9 @@ public class MCCapillariesTab_File extends JPanel {
 		return flag;
 	}
 	
-	boolean saveCapillaryTrack() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+	boolean saveCapillaryTrack(Experiment exp) {
+		SequenceCamData seqCamData = exp.seqCamData;
+		SequenceKymos seqKymos = exp.seqKymos;
 		parent0.capillariesPane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
 		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
 		parent0.capillariesPane.buildarrayTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
