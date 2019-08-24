@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JCheckBox;
@@ -21,6 +20,9 @@ import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.roi.ROI;
 import plugins.fmp.multicafeSequence.Capillaries;
+import plugins.fmp.multicafeSequence.SequenceCamData;
+
+
 
 public class MCCapillariesTab_Infos extends JPanel {
 	/**
@@ -81,8 +83,8 @@ public class MCCapillariesTab_Infos extends JPanel {
 
 	
 	private void roisDisplayLine(boolean isVisible) {
-		ArrayList<Viewer>vList =  parent0.seqCamData.seq.getViewers();
-		Viewer v = vList.get(0);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		Viewer v = seqCamData.seq.getFirstViewer();
 		IcyCanvas canvas = v.getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
 		if (layers == null)

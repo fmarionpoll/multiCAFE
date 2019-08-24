@@ -18,6 +18,8 @@ import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.fmp.multicafeTools.ImageTransformTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
@@ -93,13 +95,10 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (arg0.getPropertyName().equals("MEASURES_OPEN")) {
-			if (parent0.seqKymos != null) 		
-				firePropertyChange("MEASURES_OPEN", false, true);
+			firePropertyChange("MEASURES_OPEN", false, true);
 		}
 		else if (arg0.getPropertyName().equals("KYMO_DISPLAY_FILTERED1")) {
-			if (parent0.seqKymos != null) {		
-				firePropertyChange("KYMO_DISPLAYFILTERED", false, true);
-			}
+			firePropertyChange("KYMO_DISPLAYFILTERED", false, true);
 		}
 		else if (arg0.getPropertyName().equals("KYMO_DETECT_TOP")) {
 			firePropertyChange("MEASURETOP_OK", false, true);
@@ -110,11 +109,12 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 	}
 
 	void tabbedCapillariesAndKymosSelected() {
-		if (parent0.seqCamData == null)
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		if (seqCamData == null)
 			return;
 		int iselected = tabsPane.getSelectedIndex();
 		if (iselected == 0) {
-			Viewer v = parent0.seqCamData.seq.getFirstViewer();
+			Viewer v = seqCamData.seq.getFirstViewer();
 			v.toFront();
 		} else if (iselected == 1) {
 			parent0.buildKymosPane.optionsTab.displayUpdateOnSwingThread();
@@ -131,34 +131,36 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener, Chang
 		if (tImg == null) 
 			tImg = new ImageTransformTools();
 		tImg.setSpanDiff(spanDiff);
-		int nimages = parent0.seqKymos.seq.getSizeT();
-		parent0.seqKymos.seq.beginUpdate();
-		tImg.setSequence(parent0.seqKymos);
-		parent0.seqKymos.transferAnalysisParametersToCapillaries();
-		Capillaries capillaries = parent0.seqKymos.capillaries;
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		int nimages = seqKymos.seq.getSizeT();
+		seqKymos.seq.beginUpdate();
+		tImg.setSequence(seqKymos);
+		seqKymos.transferAnalysisParametersToCapillaries();
+		Capillaries capillaries = seqKymos.capillaries;
 		if (capillaries.capillariesArrayList.size() != nimages) {
-			SequenceKymosUtils.transferCamDataROIStoKymo(parent0.seqCamData, parent0.seqKymos);
+			SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
 		}
 		
 		for (int t= 0; t < nimages; t++) {
 			Capillary cap = capillaries.capillariesArrayList.get(t);
 			cap.indexImage = t;
-			IcyBufferedImage img = parent0.seqKymos.seq.getImage(t, zChannelSource);
+			IcyBufferedImage img = seqKymos.seq.getImage(t, zChannelSource);
 			IcyBufferedImage img2 = tImg.transformImage (img, transformop);
 			img2 = tImg.transformImage(img2, TransformOp.RTOGB);
 			
-			if (parent0.seqKymos.seq.getSizeZ(0) < (zChannelDestination+1)) 
-				parent0.seqKymos.seq.addImage(t, img2);
+			if (seqKymos.seq.getSizeZ(0) < (zChannelDestination+1)) 
+				seqKymos.seq.addImage(t, img2);
 			else
-				parent0.seqKymos.seq.setImage(t, zChannelDestination, img2);
+				seqKymos.seq.setImage(t, zChannelDestination, img2);
 		}
 		
 		if (zChannelDestination == 1)
-			parent0.seqKymos.capillaries.limitsOptions.transformForLevels = transformop;
+			seqKymos.capillaries.limitsOptions.transformForLevels = transformop;
 		else
-			parent0.seqKymos.capillaries.gulpsOptions.transformForGulps = transformop;
-		parent0.seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
-		parent0.seqKymos.seq.dataChanged();
-		parent0.seqKymos.seq.endUpdate();
+			seqKymos.capillaries.gulpsOptions.transformForGulps = transformop;
+		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
+		seqKymos.seq.dataChanged();
+		seqKymos.seq.endUpdate();
 	}
 }

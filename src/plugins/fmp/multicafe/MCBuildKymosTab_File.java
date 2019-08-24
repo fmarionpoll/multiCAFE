@@ -25,6 +25,7 @@ import icy.image.IcyBufferedImage;
 import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
@@ -51,11 +52,14 @@ public class MCBuildKymosTab_File extends JPanel {
 	
 	private void defineActionListeners() {	
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			parent0.seqKymos.loadListOfKymographsFromCapillaries(parent0.seqCamData.getDirectory());
+			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+			SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+			seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory());
 			firePropertyChange("KYMOS_OPEN", false, true);	
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			String path = parent0.seqCamData.getDirectory() + File.separator + "results";
+			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+			String path = seqCamData.getDirectory() + File.separator + "results";
 			saveKymographFiles(path);
 			firePropertyChange("KYMOS_SAVE", false, true);
 		}});
@@ -63,8 +67,10 @@ public class MCBuildKymosTab_File extends JPanel {
 
 	void saveKymographFiles(String directory) {
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
 		if (directory == null) 
-			directory = parent0.seqCamData.getDirectory()+ File.separator+"results";
+			directory = seqCamData.getDirectory()+ File.separator+"results";
 		try {
 			Files.createDirectories(Paths.get(directory));
 		} catch (IOException e1) {
@@ -77,13 +83,13 @@ public class MCBuildKymosTab_File extends JPanel {
 		int returnedval = f.showSaveDialog(null);
 		if (returnedval == JFileChooser.APPROVE_OPTION) { 
 			outputpath = f.getSelectedFile().getAbsolutePath();		
-			for (int t = 0; t < parent0.seqKymos.seq.getSizeT(); t++) {
-				Capillary cap = parent0.seqKymos.capillaries.capillariesArrayList.get(t);
+			for (int t = 0; t < seqKymos.seq.getSizeT(); t++) {
+				Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
 				progress.setMessage( "Save kymograph file : " + cap.getName());
 				cap.filenameTIFF = outputpath + File.separator + cap.getName() + ".tiff";
 				
 				final File file = new File (cap.filenameTIFF);
-				IcyBufferedImage image = parent0.seqKymos.seq.getImage(t, 0);
+				IcyBufferedImage image = seqKymos.seq.getImage(t, 0);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
 						try {
 							Saver.saveImage(image, file, true);
@@ -99,8 +105,8 @@ public class MCBuildKymosTab_File extends JPanel {
 	
 	boolean loadDefaultKymos() {		
 		boolean flag = false;
-
-		SequenceKymos seqk = parent0.seqKymos;
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceKymos seqk = parent0.expList.getSeqKymos(parent0.currentExp);
 		if (seqk == null || seqk.capillaries == null) {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
@@ -119,7 +125,7 @@ public class MCBuildKymosTab_File extends JPanel {
 			}
 		}
 		
-		List<String> myList = seqk.loadListOfKymographsFromCapillaries(parent0.seqCamData.getDirectory());
+		List<String> myList = seqk.loadListOfKymographsFromCapillaries(seqCamData.getDirectory());
 		if (seqk.isInterrupted_loadImages) {
 			seqk.isInterrupted_loadImages = false;
 			return false;

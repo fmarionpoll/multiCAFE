@@ -16,8 +16,8 @@ import javax.swing.JTabbedPane;
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
-import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.ExperimentList;
+import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.XLSExportCapillaryResults;
 import plugins.fmp.multicafeTools.XLSExportMoveResults;
@@ -76,15 +76,17 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
 		if (evt.getPropertyName().equals("EXPORT_MOVEDATA")) {
-			Path directory = Paths.get(parent0.seqCamData.getFileName(0)).getParent();
+			Path directory = Paths.get(seqCamData.getFileName(0)).getParent();
 			Path subpath = directory.getName(directory.getNameCount()-1);
 			String tentativeName = subpath.toString()+"_move.xlsx";
 			String file = MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
 			if (file != null) {
 				final String filename = file;
-				parent0.capillariesPane.getCapillariesInfos(parent0.seqKymos.capillaries);
-				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
+				parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
+				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 					XLSExportMoveResults xlsExport = new XLSExportMoveResults();
 					xlsExport.exportToFile(filename, getMoveOptions());
@@ -92,15 +94,15 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 			}
 		}
 		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
-			String filename0 = parent0.seqCamData.getFileName(0);
+			String filename0 = seqCamData.getFileName(0);
 			Path directory = Paths.get(filename0).getParent();
 			Path subpath = directory.getName(directory.getNameCount()-1);
 			String tentativeName = subpath.toString()+"_feeding.xlsx";
 			String file = MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
 			if (file != null) {
 				final String filename = file;
-				parent0.capillariesPane.getCapillariesInfos(parent0.seqKymos.capillaries);
-				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
+				parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
+				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 					XLSExportCapillaryResults xlsExport = new XLSExportCapillaryResults();
 					xlsExport.exportToFile(filename, getCapillariesOptions());
@@ -133,24 +135,19 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 		else {
 			options.transpose 	= optionsTab.transposeCheckBox.isSelected();
 		}
-		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
-		options.experimentList 	= new ExperimentList ();
 		options.collateSeries 	= optionsTab.collateSeriesCheckBox.isSelected();
 		options.absoluteTime	= optionsTab.absoluteTimeCheckBox.isSelected();
-		
+		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
 		if (optionsTab.exportAllFilesCheckBox.isSelected()) {
-			int nfiles = parent0.sequencePane.infosTab.stackListComboBox.getItemCount();
-			for (int i=0; i< nfiles; i++) {
-				Experiment exp = new Experiment ();
-				exp.filename = parent0.sequencePane.infosTab.stackListComboBox.getItemAt(i);
-				options.experimentList.experimentList.add(exp);
-			}
+			int nfiles = parent0.expList.experimentList.size();
+			options.firstExp = 0;
+			options.lastExp = nfiles - 1;
 		}
 		else {
-			Experiment exp = new Experiment();
-			exp.filename = parent0.seqCamData.getFileName();
-			options.experimentList.experimentList.add(exp);
+			options.firstExp = parent0.currentExp;
+			options.lastExp = parent0.currentExp;
 		}
+		options.expList = parent0.expList;
 	}
 	
 	private XLSExportOptions getCapillariesOptions() {

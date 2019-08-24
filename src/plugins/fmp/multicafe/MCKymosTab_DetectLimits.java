@@ -15,6 +15,8 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.DetectLimits;
 import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
@@ -56,7 +58,8 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	private void defineActionListeners() {
 		transformForLevelsComboBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				if (parent0.seqCamData != null) {
+				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+				if (seqCamData != null) {
 					kymosDisplayFiltered1();
 					firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
 				}
@@ -73,7 +76,7 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 				options.firstImage 				= parent0.buildKymosPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
 
 				DetectLimits detect = new DetectLimits();
-				detect.detectCapillaryLevels(options, parent0.seqKymos);
+				detect.detectCapillaryLevels(options, parent0.expList.getSeqKymos(parent0.currentExp));
 				firePropertyChange("KYMO_DETECT_TOP", false, true);
 			}});	
 		
@@ -99,11 +102,12 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 	}
 		
 	void kymosDisplayFiltered1() {
-		if (parent0.seqKymos == null)
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		if (seqKymos == null)
 			return;
 		TransformOp transform = (TransformOp) transformForLevelsComboBox.getSelectedItem();
-		for (int t=0; t < parent0.seqKymos.seq.getSizeT(); t++) {
-			Capillary cap = parent0.seqKymos.capillaries.capillariesArrayList.get(t);
+		for (int t=0; t < seqKymos.seq.getSizeT(); t++) {
+			Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
 			getInfosFromDialog(cap);		
 		}
 		parent0.kymographsPane.kymosBuildFiltered(0, 1, transform, getSpanDiffTop());

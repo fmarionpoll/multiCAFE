@@ -20,6 +20,8 @@ import icy.gui.frame.progress.AnnounceFrame;
 import icy.gui.util.GuiUtil;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
+import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
@@ -70,7 +72,8 @@ public class MCMoveTab_BuildROIs extends JPanel {
 	}
 	
 	void updateFromSequence() {
-		int nrois = parent0.seqCamData.cages.cageLimitROIList.size();	
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		int nrois = seqCamData.cages.cageLimitROIList.size();	
 		if (nrois > 0) {
 			nbcagesTextField.setValue(nrois);
 			nbcages = nrois;
@@ -78,22 +81,23 @@ public class MCMoveTab_BuildROIs extends JPanel {
 	}
 
 	private void create2DPolygon() {
-		
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
 		final String dummyname = "perimeter_enclosing_capillaries";
-		ArrayList<ROI2D> listRois = parent0.seqCamData.seq.getROI2Ds();
+		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName() .equals(dummyname))
 				return;
 		}
 
-		Rectangle rect = parent0.seqCamData.seq.getBounds2D();
+		Rectangle rect = seqCamData.seq.getBounds2D();
 		List<Point2D> points = new ArrayList<Point2D>();
 		int rectleft = rect.x + rect.width /6;
 		int rectright = rect.x + rect.width*5 /6;
-		if (parent0.seqKymos.capillaries.capillariesArrayList.size() > 0) {
-			Rectangle bound0 = parent0.seqKymos.capillaries.capillariesArrayList.get(0).capillaryRoi.getBounds();
-			int last = parent0.seqKymos.capillaries.capillariesArrayList.size() - 1;
-			Rectangle bound1 = parent0.seqKymos.capillaries.capillariesArrayList.get(last).capillaryRoi.getBounds();
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		if (seqKymos.capillaries.capillariesArrayList.size() > 0) {
+			Rectangle bound0 = seqKymos.capillaries.capillariesArrayList.get(0).capillaryRoi.getBounds();
+			int last = seqKymos.capillaries.capillariesArrayList.size() - 1;
+			Rectangle bound1 = seqKymos.capillaries.capillariesArrayList.get(last).capillaryRoi.getBounds();
 			rectleft = bound0.x;
 			rectright = bound1.x + bound1.width;
 			int diff = (rectright - rectleft)*2/60;
@@ -108,8 +112,8 @@ public class MCMoveTab_BuildROIs extends JPanel {
 		points.add(new Point2D.Double(rectleft, rect.y + rect.height - 4 ));
 		ROI2DPolygon roi = new ROI2DPolygon(points);
 		roi.setName(dummyname);
-		parent0.seqCamData.seq.addROI(roi);
-		parent0.seqCamData.seq.setSelectedROI(roi);
+		seqCamData.seq.addROI(roi);
+		seqCamData.seq.setSelectedROI(roi);
 	}
 		
 	private void addROISCreatedFromSelectedPolygon() {
@@ -120,19 +124,20 @@ public class MCMoveTab_BuildROIs extends JPanel {
 			width_interval = (int) width_intervalTextField.getValue();
 		}catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
 
-		ROI2D roi = parent0.seqCamData.seq.getSelectedROI2D();
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		ROI2D roi = seqCamData.seq.getSelectedROI2D();
 		if ( ! ( roi instanceof ROI2DPolygon ) ) {
 			new AnnounceFrame("The frame for the cages must be a ROI2D POLYGON");
 			return;
 		}
 		Polygon roiPolygon = MulticafeTools.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
-		parent0.seqCamData.seq.removeROI(roi);
+		seqCamData.seq.removeROI(roi);
 
 		// generate cage frames
 		int span = nbcages*width_cage + (nbcages-1)*width_interval;
 		String cageRoot = "cage";
 		int iRoot = -1;
-		for (ROI iRoi: parent0.seqCamData.seq.getROIs()) {
+		for (ROI iRoi: seqCamData.seq.getROIs()) {
 			if (iRoi.getName().contains(cageRoot)) {
 				String left = iRoi.getName().substring(4);
 				int item = Integer.parseInt(left);
@@ -169,10 +174,10 @@ public class MCMoveTab_BuildROIs extends JPanel {
 			ROI2DPolygon roiP = new ROI2DPolygon (points);
 			roiP.setName(cageRoot+String.format("%03d", iRoot));
 			iRoot++;
-			parent0.seqCamData.seq.addROI(roiP);
+			seqCamData.seq.addROI(roiP);
 		}
 
-		parent0.seqCamData.cages.getCagesFromSequence(parent0.seqCamData);
+		seqCamData.cages.fromROISToCages(seqCamData);
 	}
 
 }

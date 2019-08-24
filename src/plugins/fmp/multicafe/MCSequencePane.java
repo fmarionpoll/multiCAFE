@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
+import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
@@ -75,22 +76,32 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("SEQ_OPEN")) {
+			ProgressFrame progress = new ProgressFrame("Open sequence...");
+			checkIfLoadingNotFinished();
 			openSequenceCamFromCombo(); 
+			progress.close();
 		}
 		else if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
+			ProgressFrame progress = new ProgressFrame("Open file...");
+			checkIfLoadingNotFinished();
 			if (createSequenceCamFromString(null)) {
 				infosTab.stackListComboBox.removeAllItems();
 				addSequenceCamToComboAndLoadData();
 			}
+			progress.close();
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
+			ProgressFrame progress = new ProgressFrame("Add file...");
+			checkIfLoadingNotFinished();
 			if (createSequenceCamFromString(null)) {
 				addSequenceCamToComboAndLoadData();
 			}
+			progress.close();
 		 }
 		 else if (event.getPropertyName().equals("UPDATE")) {
-			browseTab.getAnalyzeFrameAndStep(parent0.seqCamData);
-			Viewer v =parent0.seqCamData.seq.getFirstViewer();
+			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+			browseTab.getAnalyzeFrameAndStep(seqCamData);
+			Viewer v = seqCamData.seq.getFirstViewer();
 			v.toFront();
 			v.requestFocus();
 		 }
@@ -119,11 +130,20 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		 }
 	}
 	
+	private void checkIfLoadingNotFinished() {
+		if (parent0.isRunning) {
+			parent0.isInterrupted = true;
+			while (parent0.isRunning) {
+				try {
+					wait(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 	private void openSequenceCamFromCombo() {
-		String filename = (String) infosTab.stackListComboBox.getSelectedItem();
-		createSequenceCamFromString(filename);
-		updateViewerForSequenceCam();
-
+		createSequenceCamFromString((String) infosTab.stackListComboBox.getSelectedItem());
 		firePropertyChange("SEQ_OPENED", false, true);
 		tabsPane.setSelectedIndex(1);
 	}
@@ -142,7 +162,8 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	}
 	
 	void addSequenceCamToComboAndLoadData() {
-		String strItem = parent0.seqCamData.getFileName();
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		String strItem = seqCamData.getFileName();
 		if (strItem != null) {
 			addSequenceCamToCombo(strItem);
 			infosTab.stackListComboBox.setSelectedItem(strItem);
@@ -153,21 +174,29 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	
 	boolean createSequenceCamFromString (String filename) {
 		closeTab.closeAll();
-		parent0.seqCamData = new SequenceCamData();
-		String path = parent0.seqCamData.loadSequence(filename);
+		
+		int position = parent0.expList.getPositionOfCamFileName(filename);
+		if (position < 0) {
+			position = parent0.expList.addNewExperiment();
+		}
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(position);
+		String path = seqCamData.loadSequence(filename);
 		if (path != null) {
-			parent0.seqCamData.setParentDirectoryAsFileName() ;
-			browseTab.endFrameJSpinner.setValue((int)parent0.seqCamData.analysisEnd);
+			seqCamData.setParentDirectoryAsFileName() ;
+			browseTab.endFrameJSpinner.setValue((int)seqCamData.analysisEnd);
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", path);
-			parent0.addSequence(parent0.seqCamData.seq);
-			parent0.seqCamData.seq.getFirstViewer().addListener( parent0 );
+			parent0.addSequence(seqCamData.seq);
+			seqCamData.seq.getFirstViewer().addListener( parent0 );
+			updateViewerForSequenceCam();
 		}
 		return (path != null);
+		
 	}
 	
 	private void updateViewerForSequenceCam() {
-		Viewer v = parent0.seqCamData.seq.getFirstViewer();
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		Viewer v = seqCamData.seq.getFirstViewer();
 		if (v != null) {
 			Rectangle rectv = v.getBoundsInternal();
 			Rectangle rect0 = parent0.mainFrame.getBoundsInternal();

@@ -13,6 +13,8 @@ import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 
 public class MCBuildKymosPane extends JPanel implements PropertyChangeListener {
 
@@ -71,17 +73,17 @@ public class MCBuildKymosPane extends JPanel implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent event) {
 		 if (event.getPropertyName().equals("KYMOS_OPEN") 
 					|| event.getPropertyName().equals("KYMOS_CREATE")) {
-					optionsTab.viewKymosCheckBox.setSelected(true);
-					optionsTab.transferCapillaryNamesToComboBox(parent0.seqKymos.capillaries.capillariesArrayList);
-					tabsPane.setSelectedIndex(2);
-				}
-				else if (event.getPropertyName().equals("KYMOS_OK")) {
-					tabsPane.setSelectedIndex(4);
-				}
-				else if (event.getPropertyName().equals("KYMOS_SAVE")) {
-					tabsPane.setSelectedIndex(4);
-				}
-		
+			SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+			optionsTab.viewKymosCheckBox.setSelected(true);
+				optionsTab.transferCapillaryNamesToComboBox(seqKymos.capillaries.capillariesArrayList);
+				tabsPane.setSelectedIndex(2);
+		}
+		else if (event.getPropertyName().equals("KYMOS_OK")) {
+			tabsPane.setSelectedIndex(4);
+		}
+		else if (event.getPropertyName().equals("KYMOS_SAVE")) {
+			tabsPane.setSelectedIndex(4);
+		}
 	}
 
 }

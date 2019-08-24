@@ -20,6 +20,7 @@ import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI2D;
 import icy.type.collection.array.Array1DUtil;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.Line2DPlus;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DLine;
@@ -61,15 +62,15 @@ public class MCCapillariesTab_Adjust extends JPanel {
 	
 	// -------------------------------------------------------
 	private void roisCenterLinestoAllCapillaries() {
-		
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
 		refLineUpper = roiRefLineUpper.getLine();
 		refLineLower = roiRefLineLower.getLine(); 
 		
 		int chan = 0;
 		int jitter = (int) jitterJSpinner.getValue();
-		int t = parent0.seqCamData.currentFrame;
-		parent0.seqCamData.seq.setPositionT(t);
-		IcyBufferedImage vinputImage = parent0.seqCamData.seq.getImage(t, 0, chan) ;
+		int t = seqCamData.currentFrame;
+		seqCamData.seq.setPositionT(t);
+		IcyBufferedImage vinputImage = seqCamData.seq.getImage(t, 0, chan) ;
 		if (vinputImage == null) {
 			System.out.println("An error occurred while reading image: " + t );
 			return;
@@ -78,7 +79,7 @@ public class MCCapillariesTab_Adjust extends JPanel {
 		double [] sourceValues = Array1DUtil.arrayToDoubleArray(vinputImage.getDataXY(0), vinputImage.isSignedDataType());
 		
 		// loop through all lines
-		List <ROI2D> capillaryRois = ROI2DUtilities.getListofCapillariesFromSequence(parent0.seqCamData);
+		List <ROI2D> capillaryRois = ROI2DUtilities.getListofCapillariesFromSequence(seqCamData);
 		for (ROI2D roi: capillaryRois) {
 			if (roi instanceof ROI2DLine) {
 				Line2D line = roisCenterLinetoCapillary(sourceValues, xwidth, (ROI2DLine) roi, jitter);
@@ -196,19 +197,19 @@ public class MCCapillariesTab_Adjust extends JPanel {
 	}
 
 	void roisDisplayrefBar(boolean display) {
-
-		if (parent0.seqCamData == null)
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		if (seqCamData == null)
 			return;
 		
 		if (display)
 		{
 			// take as ref the whole image otherwise, we won't see the lines if the use has not defined any capillaries
-			int seqheight = parent0.seqCamData.seq.getHeight();
-			int seqwidth = parent0.seqCamData.seq.getWidth();
+			int seqheight = seqCamData.seq.getHeight();
+			int seqwidth = seqCamData.seq.getWidth();
 			refLineUpper = new Line2D.Double (0, seqheight/3, seqwidth, seqheight/3);
 			refLineLower = new Line2D.Double (0, 2*seqheight/3, seqwidth, 2*seqheight/3);
 			
-			List <ROI2D> capillaryRois = ROI2DUtilities.getListofCapillariesFromSequence(parent0.seqCamData);
+			List <ROI2D> capillaryRois = ROI2DUtilities.getListofCapillariesFromSequence(seqCamData);
 			Rectangle extRect = new Rectangle (capillaryRois.get(0).getBounds());
 			for (ROI2D roi: capillaryRois) {
 				Rectangle rect = roi.getBounds();
@@ -227,13 +228,13 @@ public class MCCapillariesTab_Adjust extends JPanel {
 			roiRefLineLower.setName("refBarLower");
 			roiRefLineLower.setColor(Color.YELLOW);
 			
-			parent0.seqCamData.seq.addROI(roiRefLineUpper);
-			parent0.seqCamData.seq.addROI(roiRefLineLower);
+			seqCamData.seq.addROI(roiRefLineUpper);
+			seqCamData.seq.addROI(roiRefLineLower);
 		}
 		else 
 		{
-			parent0.seqCamData.seq.removeROI(roiRefLineUpper);
-			parent0.seqCamData.seq.removeROI(roiRefLineLower);
+			seqCamData.seq.removeROI(roiRefLineUpper);
+			seqCamData.seq.removeROI(roiRefLineLower);
 		}
 	}
 }

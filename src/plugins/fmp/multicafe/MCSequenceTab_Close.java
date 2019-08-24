@@ -9,6 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
 public class MCSequenceTab_Close  extends JPanel {
@@ -33,18 +35,19 @@ public class MCSequenceTab_Close  extends JPanel {
 	}
 		
 	void closeAll() {
-		if (parent0.seqKymos != null && parent0.seqKymos.seq != null) {
-			parent0.seqKymos.seq.close();
-			parent0.seqKymos = null;
-		}
+		if (parent0.currentExp < 0)
+			return;
+		
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		seqKymos.seq.close();
+
 		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
 		parent0.buildKymosPane.optionsTab.kymographNamesComboBox.removeAllItems();
 
-		if (parent0.seqCamData != null) {
-			parent0.seqCamData.seq.close();
-			parent0.seqCamData = null;
-		}
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		seqCamData.seq.close();
+		
 		parent0.kymographsPane.graphsTab.closeAll();
 	}
 

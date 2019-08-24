@@ -131,11 +131,8 @@ public class DetectFlies  implements Runnable {
 				progressBar.updatePositionAndTimeLeft(t);
 
 				// load next image and compute threshold
-//				IcyBufferedImage currentImage = seqCamData.getImage(t, 0);
 				IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(seqCamData.getImageFromForwardBuffer(t));
 				seqCamData.currentFrame = t;
-//				viewer.setPositionT(t);
-//				viewer.setTitle(seqCamData.getDecoratedImageName(t));
 				
 				IcyBufferedImage negativeImage = seqCamData.subtractImages (seqCamData.refImage, currentImage);
 				if (seqNegative != null)
@@ -180,7 +177,7 @@ public class DetectFlies  implements Runnable {
 		}
 
 		//	 copy created ROIs to inputSequence
-		System.out.println("Copying results to input sequence");
+		System.out.println("Copy results to input sequence");
 		try {
 			seqCamData.seq.beginUpdate();
 			seqCamData.cages = cages;

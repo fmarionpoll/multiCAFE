@@ -25,5 +25,8 @@ public class XLSExportOptions {
 	public boolean 	absoluteTime	= false;
 	public boolean 	collateSeries	= false;
 	
-	public ExperimentList experimentList = new ExperimentList ();
+	public int 		firstExp 		= -1;
+	public int 		lastExp 		= -1;
+	public ExperimentList expList 	= null;
+	
 }

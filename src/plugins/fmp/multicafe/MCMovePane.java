@@ -15,6 +15,7 @@ import javax.swing.event.ChangeListener;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
 
@@ -91,15 +92,17 @@ public class MCMovePane extends JPanel implements PropertyChangeListener {
 	}
 
 	boolean loadDefaultCages() {
-		String path = parent0.seqCamData.getDirectory();
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		String path = seqCamData.getDirectory();
 		boolean flag = filesTab.cageRoisOpen(path+File.separator+"drosotrack.xml");
 		return flag;
 	}
 	
 	boolean saveDefaultCages() {
-		String directory = parent0.seqCamData.getDirectory();
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		String directory = seqCamData.getDirectory();
 		String filename = directory + File.separator+"drosotrack.xml";
-		return parent0.seqCamData.cages.xmlWriteCagesToFileNoQuestion(filename);
+		return seqCamData.cages.xmlWriteCagesToFileNoQuestion(filename);
 	}
 }
 

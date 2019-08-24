@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 
@@ -49,31 +50,34 @@ public class MCCapillariesTab_File extends JPanel {
 	}
 	
 	boolean loadCapillaryTrack() {	
-		boolean flag = false;
-		if (parent0.seqKymos == null)
-			parent0.seqKymos = new SequenceKymos();
-		flag = parent0.seqKymos.xmlLoadCapillaryTrack(parent0.seqCamData.getDirectory());
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);boolean flag = false;
+		if (seqKymos == null)
+			seqKymos = new SequenceKymos();
+		flag = seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory());
 		
 		if (flag) {
-			SequenceKymosUtils.transferKymoCapillariesToCamData (parent0.seqCamData, parent0.seqKymos);	
+			SequenceKymosUtils.transferKymoCapillariesToCamData (seqCamData, seqKymos);	
 		} else {
-			String filename = parent0.seqCamData.getDirectory() + File.separator + "roislines.xml";
-			flag = parent0.seqCamData.xmlReadROIs(filename);
+			String filename = seqCamData.getDirectory() + File.separator + "roislines.xml";
+			flag = seqCamData.xmlReadROIs(filename);
 			if (flag) {
-				parent0.seqKymos.xmlReadRoiLineParameters(filename);
-				SequenceKymosUtils.transferCamDataROIStoKymo(parent0.seqCamData, parent0.seqKymos);
+				seqKymos.xmlReadRoiLineParameters(filename);
+				SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
 			}
 		}
 		return flag;
 	}
 	
 	boolean saveCapillaryTrack() {
-		parent0.capillariesPane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
-		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
-		parent0.capillariesPane.buildarrayTab.getCapillariesInfosFromDialog(parent0.seqKymos.capillaries);
-		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (parent0.seqCamData);
-		parent0.seqKymos.updateCapillariesFromCamData(parent0.seqCamData);
-		return parent0.seqKymos.xmlSaveCapillaryTrack(parent0.seqCamData.getDirectory());
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		parent0.capillariesPane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
+		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
+		parent0.capillariesPane.buildarrayTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
+		parent0.sequencePane.browseTab.getAnalyzeFrameAndStep (seqCamData);
+		seqKymos.updateCapillariesFromCamData(seqCamData);
+		return seqKymos.xmlSaveCapillaryTrack(seqCamData.getDirectory());
 	}
 
 }

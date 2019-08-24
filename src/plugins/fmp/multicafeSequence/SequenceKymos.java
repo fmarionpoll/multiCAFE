@@ -163,10 +163,12 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	public void transferMeasuresToKymosRois() {
+		List<ROI> all = new ArrayList<ROI>();
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			List<ROI> listOfRois = cap.transferMeasuresToROIs();
-			seq.addROIs(listOfRois, false);
+			all.addAll(listOfRois);
 		}
+		seq.addROIs(all, false);
 	}
 	
 	// ----------------------------

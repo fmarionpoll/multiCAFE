@@ -13,7 +13,7 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
-
+import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
@@ -56,9 +56,11 @@ public class MCKymosTab_File  extends JPanel {
 	}
 
 	boolean loadKymosMeasures() {
-		String directory = parent0.seqCamData.getDirectory();
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		String directory = seqCamData.getDirectory();
 		boolean flag = true;
-		SequenceKymos seqk = parent0.seqKymos;
+		SequenceKymos seqk = seqKymos;
 		if (seqk != null ) {
 			seqk.xmlLoadCapillaryTrack(directory);
 		}
@@ -66,8 +68,8 @@ public class MCKymosTab_File  extends JPanel {
 	}
 	
 	boolean transferMeasuresToROIs() {
+		SequenceKymos seqk = parent0.expList.getSeqKymos(parent0.currentExp);
 		boolean flag = true;
-		SequenceKymos seqk = parent0.seqKymos;
 		if (seqk != null && seqk.seq != null) {
 			seqk.seq.removeAllROI();
 			seqk.transferMeasuresToKymosRois();
@@ -76,12 +78,12 @@ public class MCKymosTab_File  extends JPanel {
 	}
 	
 	void saveKymosMeasures() {
-		SequenceKymos seqk = parent0.seqKymos;
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceKymos seqk = parent0.expList.getSeqKymos(parent0.currentExp);
 		if (seqk != null) {
-			seqk.getAnalysisParametersFromCamData(parent0.seqCamData);
+			seqk.getAnalysisParametersFromCamData(seqCamData);
 			seqk.roisSaveEdits();
-			//SequenceKymosUtils.saveKymosMeasures(parent0.seqKymos, parent0.seqCamData.getDirectory());
-			String name = parent0.seqCamData.getDirectory()+ File.separator + "capillarytrack.xml";
+			String name = seqCamData.getDirectory()+ File.separator + "capillarytrack.xml";
 			seqk.xmlSaveCapillaryTrack(name);
 		}
 	}

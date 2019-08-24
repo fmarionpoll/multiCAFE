@@ -27,6 +27,11 @@ public class Experiment {
 	public Experiment 		nextExperiment 				= null;		// pointer to chain this experiment to another one after
 	
 	
+	public Experiment() {
+		seqCamData = new SequenceCamData();
+		seqKymos   = new SequenceKymos();
+	}
+	
 	public boolean openSequenceAndMeasures() {
 		seqCamData = new SequenceCamData();
 		if (null == seqCamData.loadSequence(filename))

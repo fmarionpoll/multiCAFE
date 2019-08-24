@@ -8,10 +8,10 @@ import icy.gui.frame.progress.ProgressFrame;
 
 public class ExperimentList {
 	
-	public List<Experiment> experimentList = null;
+	public List<Experiment> experimentList = new ArrayList<Experiment> ();
 	
 	public ExperimentList () {
-		experimentList = new ArrayList<Experiment> ();
+	
 	}
 	
 	public Experiment getStartAndEndFromAllExperiments() {
@@ -141,4 +141,32 @@ public class ExperimentList {
 		}
 		return col0;
 	}
+
+	public int getPositionOfCamFileName(String filename) {
+		int position = -1;
+		 
+		for (int i=0; i< experimentList.size(); i++) {
+			Experiment exp =  experimentList.get(i);
+			if (filename .contains(exp.seqCamData.getFileName())) {
+				position = i;
+				break;
+			}
+		}
+		return position;
+	}
+
+	public SequenceCamData getSeqCamData(int i) {
+		return experimentList.get(i).seqCamData;
+	}
+	
+	public SequenceKymos getSeqKymos(int i) {
+		return experimentList.get(i).seqKymos;
+	}
+	
+	public int addNewExperiment () {
+		Experiment exp = new Experiment();
+		experimentList.add(exp);
+		return experimentList.size()-1;
+	}
+
 }

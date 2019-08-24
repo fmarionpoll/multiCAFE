@@ -83,26 +83,28 @@ public class MCSequenceTab_Infos  extends JPanel {
 	
 	private void defineActionListeners() {
 		stackListComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (stackListComboBox.getItemCount() == 0 || parent0.seqCamData == null || disableChangeFile)
+			if (stackListComboBox.getItemCount() == 0 || disableChangeFile)
 				return;
+			updateCombos();
+			parent0.capillariesPane.infosTab.updateCombos();
+			// TODO save capillaries, measures, etc here?
+			String oldtext = parent0.expList.getSeqCamData(parent0.currentExp).getFileName();
 			String newtext = (String) stackListComboBox.getSelectedItem();
-			String oldtext = parent0.seqCamData.getFileName();
 			if (!newtext.equals(oldtext)) {
+				parent0.previousExp = parent0.currentExp;
+				parent0.currentExp = parent0.expList.getPositionOfCamFileName(newtext);
 				firePropertyChange("SEQ_OPEN", false, true);
 			}
+			updateBrowseInterface();
 		} } );
 		
 		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			updateCombos();
-			parent0.capillariesPane.infosTab.updateCombos();
 			if ( stackListComboBox.getSelectedIndex() < (stackListComboBox.getItemCount() -1)) {
 				stackListComboBox.setSelectedIndex(stackListComboBox.getSelectedIndex()+1);
 			}
 		} } );
 		
 		previousButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			updateCombos();
-			parent0.capillariesPane.infosTab.updateCombos();
 			if (stackListComboBox.getSelectedIndex() > 0) {
 				stackListComboBox.setSelectedIndex(stackListComboBox.getSelectedIndex()-1);
 			}
@@ -164,7 +166,9 @@ public class MCSequenceTab_Infos  extends JPanel {
 	void updateCombos () {
 		addItem(boxID_JCombo, (String) boxID_JCombo.getSelectedItem());
 		addItem(experimentJCombo, (String) experimentJCombo.getSelectedItem());
+		addItem(commentJCombo, (String) commentJCombo.getSelectedItem());
 	}
+	
 
 }
 

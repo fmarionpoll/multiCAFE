@@ -12,6 +12,7 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
 
@@ -42,29 +43,32 @@ public class MCMoveTab_File extends JPanel {
 	
 		openROIsButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				parent0.seqCamData.cages.xmlReadCagesFromFile(parent0.seqCamData);
+				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+				seqCamData.cages.xmlReadCagesFromFile(seqCamData);
 				firePropertyChange("LOAD_DATA", false, true);	
 			}});
 		
 		saveROIsButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				parent0.seqCamData.storeAnalysisParametersToCages();
-				parent0.seqCamData.xmlWriteDrosoTrackDefault();
+				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+				seqCamData.storeAnalysisParametersToCages();
+				seqCamData.xmlWriteDrosoTrackDefault();
 			}});
 	}
 
 	boolean cageRoisOpen(String csFileName) {
 		
 		boolean flag = false;
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
 		if (csFileName == null)
-			flag = parent0.seqCamData.xmlReadDrosoTrackDefault();
+			flag = seqCamData.xmlReadDrosoTrackDefault();
 		else
-			flag = parent0.seqCamData.xmlReadDrosoTrack(csFileName);
+			flag = seqCamData.xmlReadDrosoTrack(csFileName);
 		return flag;
 	}
 	
 	boolean cageRoisSave() {
-		
-		return parent0.seqCamData.cages.xmlWriteCagesToFile("drosotrack.xml", parent0.seqCamData.getDirectory());
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		return seqCamData.cages.xmlWriteCagesToFile("drosotrack.xml", seqCamData.getDirectory());
 	}
 }

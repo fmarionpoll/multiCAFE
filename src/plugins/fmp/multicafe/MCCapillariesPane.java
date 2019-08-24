@@ -15,6 +15,8 @@ import javax.swing.event.ChangeListener;
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillaries;
+import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 
 
@@ -98,25 +100,28 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	boolean loadCapillaryTrack() {
-		boolean flag = fileTab.loadCapillaryTrack();
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);boolean flag = fileTab.loadCapillaryTrack();
 		if (flag) {
-			infosTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
-			buildarrayTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
-			parent0.sequencePane.infosTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
+			infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+			buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+			parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 		}
 		return flag;
 	}
 	
 	private void setCapillariesInfosToDialogs() {
-		SequenceKymosUtils.transferCamDataROIStoKymo(parent0.seqCamData, parent0.seqKymos);
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
 		
-		infosTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
-		buildarrayTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
-		parent0.sequencePane.infosTab.setCapillariesInfosToDialog(parent0.seqKymos.capillaries);
+		infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+		buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+		parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 	}
 	
 	boolean saveCapillaryTrack() {
-		getCapillariesInfos(parent0.seqKymos.capillaries);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		getCapillariesInfos(seqKymos.capillaries);
 		return fileTab.saveCapillaryTrack();
 	}
 	

@@ -25,6 +25,8 @@ import icy.image.IcyBufferedImage;
 import icy.main.Icy;
 import icy.roi.ROI;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.MulticafeTools;
 
 
@@ -124,8 +126,9 @@ public class MCBuildKymosTab_Options extends JPanel {
 	}
 	
 	private void roisDisplay(String filter, boolean visible) {
-		ArrayList<Viewer>vList =  parent0.seqKymos.seq.getViewers();
-		IcyCanvas canvas = vList.get(0).getCanvas();
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		Viewer v= seqKymos.seq.getFirstViewer();
+		IcyCanvas canvas = v.getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
 		if (layers != null) {	
 			for (Layer layer: layers) {
@@ -140,22 +143,24 @@ public class MCBuildKymosTab_Options extends JPanel {
 	}
 
 	void displayON() {
-		if (parent0.seqKymos == null ||parent0.seqKymos.seq == null ) {
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentExp);
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		if (seqKymos == null || seqKymos.seq == null ) {
 			System.out.println("displayON() skipped");
 			return;
 		}
 		
-		ArrayList<Viewer>vList = parent0.seqKymos.seq.getViewers();
+		ArrayList<Viewer>vList = seqKymos.seq.getViewers();
 		if (vList.size() == 0) {
-			Rectangle rectMaster = parent0.seqCamData.seq.getFirstViewer().getBounds();
+			Rectangle rectMaster = seqCamData.seq.getFirstViewer().getBounds();
 			int deltax = 5 + rectMaster.width;
 			int deltay = 5;
 
-			Viewer v = new Viewer(parent0.seqKymos.seq, true);
+			Viewer v = new Viewer(seqKymos.seq, true);
 			v.addListener(parent0);
 			Rectangle rectDataView = v.getBounds();
 			rectDataView.height = rectMaster.height;
-			IcyBufferedImage img = parent0.seqKymos.seq.getFirstImage();
+			IcyBufferedImage img = seqKymos.seq.getFirstImage();
 			rectDataView.width = 100;
 			if (img != null) {
 				rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
@@ -177,9 +182,10 @@ public class MCBuildKymosTab_Options extends JPanel {
 	}
 	
 	void displayOFF() {
-		if (parent0.seqKymos == null) 
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
+		if (seqKymos == null) 
 			return;
-		ArrayList<Viewer>vList =  parent0.seqKymos.seq.getViewers();
+		ArrayList<Viewer>vList =  seqKymos.seq.getViewers();
 		if (vList.size() > 0) {
 			for (Viewer v: vList) 
 				v.close();
@@ -218,16 +224,17 @@ public class MCBuildKymosTab_Options extends JPanel {
 	}
 
 	void selectKymograph(int isel) {
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentExp);
 		int icurrent = kymographNamesComboBox.getSelectedIndex();
 		if (isel < 0)
 			isel = 0;
-		if (isel >= parent0.seqKymos.seq.getSizeT() )
-			isel = parent0.seqKymos.seq.getSizeT() -1;
+		if (isel >= seqKymos.seq.getSizeT() )
+			isel = seqKymos.seq.getSizeT() -1;
 		if (icurrent != isel) {
-			parent0.seqKymos.validateRoisAtT(icurrent);
+			seqKymos.validateRoisAtT(icurrent);
 			kymographNamesComboBox.setSelectedIndex(isel);
 		}
-		Viewer v = parent0.seqKymos.seq.getFirstViewer();
+		Viewer v = seqKymos.seq.getFirstViewer();
 		if (v != null)
 			v.setPositionT(isel);
 	}

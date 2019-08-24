@@ -36,18 +36,19 @@ public class XLSExportCapillaryResults extends XLSExport {
 			int col_end = 1;
 			int iSeries = 0;
 			
-			options.experimentList.readInfosFromAllExperiments();
+			options.expList.readInfosFromAllExperiments();
 			if (options.collateSeries)
-				options.experimentList.chainExperiments();
+				options.expList.chainExperiments();
 			
-			expAll 		= options.experimentList.getStartAndEndFromAllExperiments();
-			expAll.step = options.experimentList.experimentList.get(0).seqCamData.analysisStep;
+			expAll 		= options.expList.getStartAndEndFromAllExperiments();
+			expAll.step = options.expList.experimentList.get(0).seqCamData.analysisStep;
 			
 			progress.setMessage("Load measures...");
-			progress.setLength(options.experimentList.experimentList.size());
+			progress.setLength(options.expList.experimentList.size());
 			
-			for (Experiment exp: options.experimentList.experimentList) 
+			for (int index = options.firstExp; index <= options.lastExp; index++) 
 			{
+				Experiment exp = options.expList.experimentList.get(index);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				
 				if (options.topLevel) 		col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVEL);
@@ -259,7 +260,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 		
 		Point pt = new Point(col0, 0);
 		if (options.collateSeries) {
-			pt.x = options.experimentList.getStackColumnPosition(exp, col0);
+			pt.x = options.expList.getStackColumnPosition(exp, col0);
 		}
 		
 		pt = writeSeriesInfos(exp, sheet, xlsExportOption, pt, options.transpose, charSeries);
@@ -299,8 +300,8 @@ public class XLSExportCapillaryResults extends XLSExport {
 			referenceFileTimeImageLastMinutes = expAll.fileTimeImageLastMinutes;
 		}
 		else {
-			referenceFileTimeImageFirstMinutes = options.experimentList.getFirstMinute(exp);
-			referenceFileTimeImageLastMinutes = options.experimentList.getLastMinute(exp);
+			referenceFileTimeImageFirstMinutes = options.expList.getFirstMinute(exp);
+			referenceFileTimeImageLastMinutes = options.expList.getLastMinute(exp);
 		}
 			
 		pt.x =0;
