@@ -65,8 +65,8 @@ public class XYMultiChart extends IcyFrame  {
 		flagMaxMinSet = false;
 //		System.out.println("nb of series "+kymographArrayList.size());
 		int nimages = kymoseq.seq.getSizeT();
-		int kmax = kymoseq.capillaries.grouping;
-		int startFrame = (int) kymoseq.capillaries.analysisStart;
+		int kmax = kymoseq.capillaries.desc.grouping;
+		int startFrame = (int) kymoseq.capillaries.desc.analysisStart;
 		
 		for (int t=0; t< nimages; t+= kmax) {
 			XYSeriesCollection xyDataset = new XYSeriesCollection();
@@ -127,9 +127,9 @@ public class XYMultiChart extends IcyFrame  {
 		flagMaxMinSet = false;
 		XYSeriesCollection xyDataset = null;
 		XYSeriesCollection xyDataset2 = null;
-		int kmax = kymoseq.capillaries.grouping;
+		int kmax = kymoseq.capillaries.desc.grouping;
 		int nimages = kymoseq.seq.getSizeT();
-		int startFrame = (int) kymoseq.capillaries.analysisStart;
+		int startFrame = (int) kymoseq.capillaries.desc.analysisStart;
 		
 		for (int t=0; t< nimages; t+= kmax, ixy++) {
 			if (ixy >= xyDataSetList.size())

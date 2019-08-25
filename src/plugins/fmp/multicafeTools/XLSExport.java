@@ -45,13 +45,13 @@ public class XLSExport {
 		int colseries = pt.x;
 		
 		Path path = Paths.get(exp.seqCamData.getFileName());
-		String boxID = exp.seqKymos.capillaries.boxID;
-		String experiment = exp.seqKymos.capillaries.experiment;
-		String comment = exp.seqKymos.capillaries.comment;
-		String stimulusL = exp.seqKymos.capillaries.stimulusL;
-		String stimulusR = exp.seqKymos.capillaries.stimulusR;
-		String concentrationL = exp.seqKymos.capillaries.concentrationL;
-		String concentrationR = exp.seqKymos.capillaries.concentrationR;
+		String boxID = exp.seqKymos.capillaries.desc.boxID;
+		String experiment = exp.seqKymos.capillaries.desc.experiment;
+		String comment = exp.seqKymos.capillaries.desc.comment;
+		String stimulusL = exp.seqKymos.capillaries.desc.stimulusL;
+		String stimulusR = exp.seqKymos.capillaries.desc.stimulusR;
+		String concentrationL = exp.seqKymos.capillaries.desc.concentrationL;
+		String concentrationR = exp.seqKymos.capillaries.desc.concentrationR;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String date = df.format(exp.fileTimeImageFirst.toMillis());	
 		String name0 = path.toString();

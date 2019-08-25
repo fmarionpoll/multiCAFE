@@ -35,7 +35,6 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	MCCapillariesTab_Adjust 	adjustTab 		= new MCCapillariesTab_Adjust();
 	MCCapillariesTab_Infos		infosTab		= new MCCapillariesTab_Infos();
 
-	Capillaries capold = new Capillaries();
 	private MultiCAFE parent0 = null;
 
 	
@@ -118,7 +117,7 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
-		
+		seqKymos.capillaries.desc_old.copy(seqKymos.capillaries.desc);
 		infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 		buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 		parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
@@ -142,7 +141,5 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
         adjustTab.roisDisplayrefBar(selectedIndex == 1);
         infosTab.visibleCheckBox.setSelected(selectedIndex == 2);
 	}
-	
-
 
 }

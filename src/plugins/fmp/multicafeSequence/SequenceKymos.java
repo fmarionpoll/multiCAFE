@@ -174,9 +174,9 @@ public class SequenceKymos extends SequenceCamData  {
 	// ----------------------------
 	
 	public void getAnalysisParametersFromCamData (SequenceCamData vSequence) {		
-		capillaries.analysisStart = vSequence.analysisStart; 
-		capillaries.analysisEnd  = vSequence.analysisEnd;
-		capillaries.analysisStep = vSequence.analysisStep;
+		capillaries.desc.analysisStart = vSequence.analysisStart; 
+		capillaries.desc.analysisEnd  = vSequence.analysisEnd;
+		capillaries.desc.analysisStep = vSequence.analysisStep;
 	}
 	
 	public void updateCapillariesFromCamData(SequenceCamData seqCam) {
@@ -186,15 +186,15 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	public void transferAnalysisParametersToCapillaries () {
-		capillaries.analysisStart = analysisStart;
-		capillaries.analysisEnd = analysisEnd;
-		capillaries.analysisStep = analysisStep;
+		capillaries.desc.analysisStart = analysisStart;
+		capillaries.desc.analysisEnd = analysisEnd;
+		capillaries.desc.analysisStep = analysisStep;
 	}
 	
 	private void transferCapillariesToAnalysisParameters () {
-		analysisStart = capillaries.analysisStart;
-		analysisEnd = capillaries.analysisEnd;
-		analysisStep = capillaries.analysisStep;
+		analysisStart = capillaries.desc.analysisStart;
+		analysisEnd = capillaries.desc.analysisEnd;
+		analysisStep = capillaries.desc.analysisStep;
 	}
 	
 	public List <String> loadListOfKymographsFromCapillaries(String dir) {

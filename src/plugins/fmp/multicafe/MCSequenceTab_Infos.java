@@ -136,16 +136,16 @@ public class MCSequenceTab_Infos  extends JPanel {
 	
 	void setCapillariesInfosToDialog(Capillaries cap) {
 
-		addItem(boxID_JCombo, cap.boxID);
-		addItem(experimentJCombo, cap.experiment);
-		addItem(commentJCombo, cap.comment);
+		addItem(boxID_JCombo, cap.desc.boxID);
+		addItem(experimentJCombo, cap.desc.experiment);
+		addItem(commentJCombo, cap.desc.comment);
 	}
 
 	void getCapillariesInfosFromDialog(Capillaries cap) {
 
-		cap.boxID = (String) boxID_JCombo.getSelectedItem();
-		cap.experiment = (String) experimentJCombo.getSelectedItem();
-		cap.comment = (String) commentJCombo.getSelectedItem();
+		cap.desc.boxID = (String) boxID_JCombo.getSelectedItem();
+		cap.desc.experiment = (String) experimentJCombo.getSelectedItem();
+		cap.desc.comment = (String) commentJCombo.getSelectedItem();
 	}
 	
 	private void addItem(JComboBox<String> combo, String text) {

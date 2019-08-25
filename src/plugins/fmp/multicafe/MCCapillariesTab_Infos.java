@@ -102,12 +102,12 @@ public class MCCapillariesTab_Infos extends JPanel {
 	// set/ get
 	
 	void setCapillariesInfosToDialog(Capillaries cap) {
-		capillaryVolumeTextField.setValue( cap.volume);
-		capillaryPixelsTextField.setValue( cap.pixels);
-		addItem(stimulusRJCombo, cap.stimulusR);
-		addItem(concentrationRJCombo, cap.concentrationR);
-		addItem(stimulusLJCombo, cap.stimulusL);
-		addItem(concentrationLJCombo, cap.concentrationL);
+		capillaryVolumeTextField.setValue( cap.desc.volume);
+		capillaryPixelsTextField.setValue( cap.desc.pixels);
+		addItem(stimulusRJCombo, cap.desc.stimulusR);
+		addItem(concentrationRJCombo, cap.desc.concentrationR);
+		addItem(stimulusLJCombo, cap.desc.stimulusL);
+		addItem(concentrationLJCombo, cap.desc.concentrationL);
 	}
 
 	
@@ -120,12 +120,12 @@ public class MCCapillariesTab_Infos extends JPanel {
 	}
 	
 	void getCapillariesInfosFromDialog(Capillaries cap) {
-		cap.volume = getCapillaryVolume();
-		cap.pixels = getCapillaryPixelLength();
-		cap.stimulusR = (String) stimulusRJCombo.getSelectedItem();
-		cap.concentrationR = (String) concentrationRJCombo.getSelectedItem();
-		cap.stimulusL = (String) stimulusLJCombo.getSelectedItem();
-		cap.concentrationL = (String) concentrationLJCombo.getSelectedItem();
+		cap.desc.volume = getCapillaryVolume();
+		cap.desc.pixels = getCapillaryPixelLength();
+		cap.desc.stimulusR = (String) stimulusRJCombo.getSelectedItem();
+		cap.desc.concentrationR = (String) concentrationRJCombo.getSelectedItem();
+		cap.desc.stimulusL = (String) stimulusLJCombo.getSelectedItem();
+		cap.desc.concentrationL = (String) concentrationLJCombo.getSelectedItem();
 	}
 	
 	private void addItem(JComboBox<String> combo, String text) {

@@ -204,9 +204,9 @@ public class MulticafeSequence extends EzPlug {
 
 			flag = vkymos.capillaries.xmlLoadCapillaries(csFileName);
 			
-			vSequence.analysisStart = vkymos.capillaries.analysisStart;
-			vSequence.analysisEnd = vkymos.capillaries.analysisEnd;
-			vSequence.analysisStep = vkymos.capillaries.analysisStep;
+			vSequence.analysisStart = vkymos.capillaries.desc.analysisStart;
+			vSequence.analysisEnd = vkymos.capillaries.desc.analysisEnd;
+			vSequence.analysisStep = vkymos.capillaries.desc.analysisStep;
 		}
 		return flag;
 	}

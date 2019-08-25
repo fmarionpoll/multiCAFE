@@ -38,21 +38,22 @@ public class MCSequenceTab_Close  extends JPanel {
 	void saveAndClose(Experiment exp) {
 		if (exp != null) {
 			SequenceCamData seqCamData = exp.seqCamData;
-			seqCamData.seq.close();
+			SequenceKymos seqKymos = exp.seqKymos;	
 			System.out.println("close and save seqCamdata document ="+ seqCamData.getFileName());
 			checkIfLoadingNotFinished(exp);
-			SequenceKymos seqKymos = exp.seqKymos;			
+			seqKymos.seq.getFirstViewer().close();
 			if (seqKymos != null 
 					&& seqKymos.capillaries != null 
 					&& seqKymos.capillaries.capillariesArrayList.size() > 0) {
 				parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
 				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
-				if (parent0.capillariesPane.capold.isChanged(seqKymos.capillaries)) {
+				if (seqKymos.capillaries.desc.isChanged(seqKymos.capillaries.desc_old)) {
 					parent0.capillariesPane.saveCapillaryTrack(exp);
 					parent0.kymographsPane.fileTab.saveKymosMeasures(exp);
-					parent0.movePane.saveDefaultCages();
+					parent0.movePane.saveDefaultCages(exp);
 				}
 				seqKymos.seq.close();
+				seqCamData.seq.close();
 			}
 		}
 		parent0.movePane.graphicsTab.closeAll();
@@ -77,12 +78,12 @@ public class MCSequenceTab_Close  extends JPanel {
 	void closeAll() {
 		if (parent0.currentIndex < 0)
 			return;
+		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		seqKymos.seq.close();
 		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
 		parent0.buildKymosPane.optionsTab.kymographNamesComboBox.removeAllItems();
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		seqCamData.seq.close();
 	}
 

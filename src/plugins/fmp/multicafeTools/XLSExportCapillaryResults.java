@@ -111,7 +111,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 		
 		List <XLSCapillaryResults> resultsList = new ArrayList <XLSCapillaryResults> ();	
 		Capillaries capillaries = exp.seqKymos.capillaries;
-		double scalingFactorToPhysicalUnits = capillaries.volume / exp.seqKymos.capillaries.pixels;
+		double scalingFactorToPhysicalUnits = capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
 		
 		for (int t=0; t < capillaries.capillariesArrayList.size(); t++) {
 			Capillary cap = capillaries.capillariesArrayList.get(t);
@@ -190,7 +190,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 			default:
 				return lastValue;
 			}
-			double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.volume / exp.seqKymos.capillaries.pixels;
+			double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
 			double valuePreviousSeries = results.data.get(results.data.size()-1) * scalingFactorToPhysicalUnits;
 			lastValue = lastValue + valuePreviousSeries;
 			return lastValue;
@@ -280,7 +280,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, boolean transpose, 
 			String charSeries, List <XLSCapillaryResults> dataArrayList) {
 		
-		double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.volume / exp.seqKymos.capillaries.pixels;
+		double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
 		
 		int col0 = pt.x;
 		int row0 = pt.y;
