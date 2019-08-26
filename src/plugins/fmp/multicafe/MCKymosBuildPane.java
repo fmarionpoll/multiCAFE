@@ -26,8 +26,7 @@ public class MCKymosBuildPane extends JPanel implements PropertyChangeListener, 
 	 */
 	private static final long serialVersionUID = 1122367183829360097L;
 
-	JTabbedPane 				tabsPane 		= new JTabbedPane();
-
+	JTabbedPane 			tabsPane 		= new JTabbedPane();
 	MCKymosBuildTab_Create 	buildkymosTab 	= new MCKymosBuildTab_Create();
 	MCKymosBuildTab_Options optionsTab 		= new MCKymosBuildTab_Options();
 	MCKymosBuildTab_File 	fileTab 		= new MCKymosBuildTab_File();
@@ -69,15 +68,18 @@ public class MCKymosBuildPane extends JPanel implements PropertyChangeListener, 
 		});
 	}
 
-
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
-		 if (event.getPropertyName().equals("KYMOS_OPEN") 
-					|| event.getPropertyName().equals("KYMOS_CREATE")) {
+		if (event.getPropertyName().equals("KYMOS_OPEN")) {
+			optionsTab.viewKymosCheckBox.setSelected(true);
+			tabsPane.setSelectedIndex(2);
+		}
+		else if (event.getPropertyName().equals("KYMOS_CREATE")) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 			optionsTab.viewKymosCheckBox.setSelected(true);
-				optionsTab.transferCapillaryNamesToComboBox(exp.seqKymos.capillaries.capillariesArrayList);
-				tabsPane.setSelectedIndex(2);
+			optionsTab.transferCapillaryNamesToComboBox(exp.seqKymos.capillaries.capillariesArrayList);
+			tabsPane.setSelectedIndex(2);
+		
 		}
 		else if (event.getPropertyName().equals("KYMOS_OK")) {
 			tabsPane.setSelectedIndex(2);

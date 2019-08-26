@@ -53,7 +53,7 @@ public class MCKymosBuildTab_File extends JPanel {
 	private void defineActionListeners() {	
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-			exp.seqKymos.loadListOfKymographsFromCapillaries(exp.seqCamData.getDirectory());
+			loadDefaultKymos(exp);
 			firePropertyChange("KYMOS_OPEN", false, true);	
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
@@ -102,9 +102,8 @@ public class MCKymosBuildTab_File extends JPanel {
 		progress.close();
 	}
 	
-	boolean loadDefaultKymos() {		
+	boolean loadDefaultKymos(Experiment exp) {		
 		boolean flag = false;
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null || seqKymos.capillaries == null) {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");

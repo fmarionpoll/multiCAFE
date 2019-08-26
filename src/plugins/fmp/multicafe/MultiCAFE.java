@@ -34,7 +34,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	MCSequencePane 				sequencePane 		= new MCSequencePane();
 	MCCapillariesPane 			capillariesPane 	= new MCCapillariesPane();
 	MCKymosBuildPane			buildKymosPane		= new MCKymosBuildPane();
-	MCKymosAnalyzePane 				kymographsPane 		= new MCKymosAnalyzePane();
+	MCKymosAnalyzePane 			kymographsPane 		= new MCKymosAnalyzePane();
 	MCMovePane 					movePane 			= new MCMovePane();
 	MCExcelPane					excelPane			= new MCExcelPane();
 	
@@ -117,7 +117,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (loadCapillaries) {
 			progress.setMessage("1/3 - load capillaries and measures");
 			System.out.println("loadCapillaryTrack");
-			exp.loadCapillaryTrack();
+			kymographsPane.fileTab.loadKymosMeasures(exp);
 			System.out.println("loadCapillaryTrack done - update dialogs");
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
 				sequencePane.browseTab.setAnalyzeFrameAndStepToDialog(seqCamData);
@@ -129,7 +129,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 
 		if (loadKymographs) {
 			progress.setMessage("2/3 - load kymographs");
-			exp.loadKymographs();	
+			buildKymosPane.optionsTab.viewKymosCheckBox.setSelected(true);
+			buildKymosPane.fileTab.loadDefaultKymos(exp);
 			if (sequencePane.openTab.graphsCheckBox.isSelected())
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
 				    	kymographsPane.graphsTab.xyDisplayGraphs();

@@ -2,6 +2,7 @@ package plugins.fmp.multicafeSequence;
 
 
 
+import java.util.Iterator;
 import java.util.List;
 import icy.roi.ROI2D;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
@@ -22,8 +23,10 @@ public class SequenceKymosUtils {
 			System.out.println("seqkymos null - return");
 			return;
 		}
-		if (seqKymos.capillaries == null)
+		if (seqKymos.capillaries == null) {
 			seqKymos.capillaries = new Capillaries();
+			System.out.println("Error in SequenceKymosUtils:transferCamDataROIstoKymo = seqkymos.capillaries was null");
+		}
 		
 		// rois not in cap? add
 		List<ROI2D> listROISCap = ROI2DUtilities.getListofCapillariesFromSequence(seqCams);
@@ -40,7 +43,9 @@ public class SequenceKymosUtils {
 		}
 		
 		// cap with no corresponding roi? remove
-		for (Capillary cap: seqKymos.capillaries.capillariesArrayList) {
+		Iterator<Capillary> iterator = seqKymos.capillaries.capillariesArrayList.iterator();
+		while(iterator.hasNext()) {
+			Capillary cap = iterator.next();
 			boolean found = false;
 			for (ROI2D roi:listROISCap) {
 				if (roi.getName().equals(cap.capillaryRoi.getName())) {
@@ -49,7 +54,7 @@ public class SequenceKymosUtils {
 				}
 			}
 			if (!found)
-				seqKymos.capillaries.capillariesArrayList.remove(cap);
+				iterator.remove();
 		}
 	}
 	

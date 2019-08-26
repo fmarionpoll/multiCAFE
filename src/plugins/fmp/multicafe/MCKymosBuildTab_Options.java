@@ -169,7 +169,7 @@ public class MCKymosBuildTab_Options extends JPanel {
 			if (rectDataView.width > desktopwidth) {
 				int height = img.getSizeY() * desktopwidth / rectDataView.width;
 				int width = img.getSizeX() * height / rectDataView.height;
-				rectDataView.setSize(width, height);
+				rectDataView.setSize(width, height *3 /2);
 				rectDataView.x = 0;
 				rectDataView.y = rectMaster.y + rectMaster.height;
 			} else {

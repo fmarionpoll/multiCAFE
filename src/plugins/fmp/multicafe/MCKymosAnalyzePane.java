@@ -28,13 +28,13 @@ public class MCKymosAnalyzePane extends JPanel implements PropertyChangeListener
 	 * 
 	 */
 	private static final long serialVersionUID = -7339633966002954720L;
-	private JTabbedPane 	tabsPane 	= new JTabbedPane();
-	MCKymosAnalyzeTab_File 		fileTab 	= new MCKymosAnalyzeTab_File();
-	MCKymosAnalyzeTab_DetectLimits limitsTab 	= new MCKymosAnalyzeTab_DetectLimits();
+	private JTabbedPane 			tabsPane 	= new JTabbedPane();
+	MCKymosAnalyzeTab_File 			fileTab 	= new MCKymosAnalyzeTab_File();
+	MCKymosAnalyzeTab_DetectLimits 	limitsTab 	= new MCKymosAnalyzeTab_DetectLimits();
 	MCKymosAnalyzeTab_DetectGulps 	gulpsTab 	= new MCKymosAnalyzeTab_DetectGulps();
 	MCKymosAnalyzeTab_Graphs 		graphsTab 	= new MCKymosAnalyzeTab_Graphs();
-	ImageTransformTools 	tImg = null;
-	private MultiCAFE 		parent0 = null;
+	ImageTransformTools 			tImg 		= null;
+	private MultiCAFE 				parent0 	= null;
 
 	
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
