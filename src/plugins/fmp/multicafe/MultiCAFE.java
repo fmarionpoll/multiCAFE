@@ -33,12 +33,11 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	
 	MCSequencePane 				sequencePane 		= new MCSequencePane();
 	MCCapillariesPane 			capillariesPane 	= new MCCapillariesPane();
-	MCBuildKymosPane			buildKymosPane		= new MCBuildKymosPane();
-	MCKymosPane 				kymographsPane 		= new MCKymosPane();
+	MCKymosBuildPane			buildKymosPane		= new MCKymosBuildPane();
+	MCKymosAnalyzePane 				kymographsPane 		= new MCKymosAnalyzePane();
 	MCMovePane 					movePane 			= new MCMovePane();
 	MCExcelPane					excelPane			= new MCExcelPane();
 	
-
 	//-------------------------------------------------------------------
 	
 	@Override

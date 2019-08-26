@@ -14,6 +14,7 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
@@ -21,7 +22,7 @@ import plugins.fmp.multicafeTools.BuildKymographs;
 import plugins.fmp.multicafeTools.EnumStatusComputation;
 
 
-public class MCBuildKymosTab_Build extends JPanel { 
+public class MCKymosBuildTab_Create extends JPanel { 
 
 	/**
 	 * 
@@ -80,8 +81,10 @@ public class MCBuildKymosTab_Build extends JPanel {
 		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (seqCamData == null) 
 			return;
-		if (seqKymos != null)
+		if (seqKymos != null) {
+			seqKymos.seq.removeAllROI();
 			seqKymos.seq.close();
+		}
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		parent0.sequencePane.browseTab.getAnalyzeFrameAndStepFromDialog (seqCamData);
@@ -115,21 +118,20 @@ public class MCBuildKymosTab_Build extends JPanel {
 	
 	private void kymosBuildKymographs() {
 				
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		buildKymographsThread = null;
-		if (seqKymos != null && seqKymos.seq != null)
-			seqKymos.seq.close();
-		seqKymos = new SequenceKymos();
-		SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
+		if (exp.seqKymos != null && exp.seqKymos.seq != null)
+			exp.seqKymos.seq.close();
+		exp.seqKymos = new SequenceKymos();
+		SequenceKymosUtils.transferCamDataROIStoKymo(exp.seqCamData, exp.seqKymos);
 		
 		// start building kymos in a separate thread
 		buildKymographsThread = new BuildKymographs();
-		buildKymographsThread.options.seqCamData 	= seqCamData;
-		buildKymographsThread.options.seqKymos		= seqKymos;
-		buildKymographsThread.options.analyzeStep 	= seqCamData.analysisStep;
-		buildKymographsThread.options.startFrame 	= (int) seqCamData.analysisStart;
-		buildKymographsThread.options.endFrame 		= (int) seqCamData.analysisEnd;
+		buildKymographsThread.options.seqCamData 	= exp.seqCamData;
+		buildKymographsThread.options.seqKymos		= exp.seqKymos;
+		buildKymographsThread.options.analyzeStep 	= exp.seqCamData.analysisStep;
+		buildKymographsThread.options.startFrame 	= (int) exp.seqCamData.analysisStart;
+		buildKymographsThread.options.endFrame 		= (int) exp.seqCamData.analysisEnd;
 		buildKymographsThread.options.diskRadius 	= (int) diskRadiusSpinner.getValue();
 		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected();
 		buildKymographsThread.options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();

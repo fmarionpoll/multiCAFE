@@ -31,7 +31,7 @@ import plugins.fmp.multicafeTools.MulticafeTools;
 
 
 
-public class MCBuildKymosTab_Options extends JPanel {
+public class MCKymosBuildTab_Options extends JPanel {
 	/**
 	 * 
 	 */

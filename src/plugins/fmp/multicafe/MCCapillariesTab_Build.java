@@ -22,8 +22,8 @@ import icy.gui.frame.progress.AnnounceFrame;
 import icy.gui.util.GuiUtil;
 import icy.roi.ROI2D;
 import plugins.fmp.multicafeSequence.Capillaries;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
-import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DLine;
@@ -74,9 +74,8 @@ public class MCCapillariesTab_Build extends JPanel {
 			}});
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				roisGenerateFromPolygon();
-				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
-				SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
+				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				SequenceKymosUtils.transferCamDataROIStoKymo(exp.seqCamData, exp.seqKymos);
 				firePropertyChange("CAPILLARIES_NEW", false, true);
 			}});
 		selectRegularButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 

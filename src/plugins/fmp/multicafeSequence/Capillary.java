@@ -333,7 +333,8 @@ public class Capillary implements XMLPersistent  {
 	    	XMLUtil.setElementIntValue(nodeMeta, ID_NPOINTS, data.npoints);
 	    	for (int i=0; i< data.npoints; i++) {
 	    		Element elmt = XMLUtil.setElement(nodeMeta, ID_N+i);
-	    		XMLUtil.setAttributeDoubleValue(elmt, ID_X, data.xpoints[i]);
+	    		if (i==0)
+	    			XMLUtil.setAttributeDoubleValue(elmt, ID_X, data.xpoints[i]);
 	    		XMLUtil.setAttributeDoubleValue(elmt, ID_Y, data.ypoints[i]);
 	    	}
 	    }
@@ -348,7 +349,10 @@ public class Capillary implements XMLPersistent  {
 	    	double[] ypoints = new double [npoints];
 	    	for (int i=0; i< npoints; i++) {
 	    		Element elmt = XMLUtil.getElement(nodeMeta, ID_N+i);
-	    		xpoints[i] = XMLUtil.getAttributeDoubleValue(elmt, ID_X, 0);
+	    		if (i ==0)
+	    			xpoints[i] = XMLUtil.getAttributeDoubleValue(elmt, ID_X, 0);
+	    		else
+	    			xpoints[i] = i+xpoints[0];
 	    		ypoints[i] = XMLUtil.getAttributeDoubleValue(elmt, ID_Y, 0);
     		}
 	    	data = new Polyline2D(xpoints, ypoints, npoints);

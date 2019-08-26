@@ -15,7 +15,6 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
 public class MCSequenceTab_Close  extends JPanel {
-
 	/**
 	 * 
 	 */
@@ -23,11 +22,11 @@ public class MCSequenceTab_Close  extends JPanel {
 	private JButton		closeAllButton			= new JButton("Close views");
 	private MultiCAFE parent0 = null;
 	
+	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0  = parent0;
 		add( GuiUtil.besidesPanel(closeAllButton, new JLabel(" ")));
-		
 		closeAllButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				closeAll();
@@ -41,7 +40,6 @@ public class MCSequenceTab_Close  extends JPanel {
 			SequenceKymos seqKymos = exp.seqKymos;	
 			System.out.println("close and save seqCamdata document ="+ seqCamData.getFileName());
 			checkIfLoadingNotFinished(exp);
-			seqKymos.seq.getFirstViewer().close();
 			if (seqKymos != null 
 					&& seqKymos.capillaries != null 
 					&& seqKymos.capillaries.capillariesArrayList.size() > 0) {
@@ -52,7 +50,9 @@ public class MCSequenceTab_Close  extends JPanel {
 					parent0.kymographsPane.fileTab.saveKymosMeasures(exp);
 					parent0.movePane.saveDefaultCages(exp);
 				}
+				seqKymos.seq.removeAllROI();
 				seqKymos.seq.close();
+				seqCamData.seq.removeAllROI();
 				seqCamData.seq.close();
 			}
 		}
@@ -80,10 +80,12 @@ public class MCSequenceTab_Close  extends JPanel {
 			return;
 		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
 		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		seqKymos.seq.removeAllROI();
 		seqKymos.seq.close();
 		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
 		parent0.buildKymosPane.optionsTab.kymographNamesComboBox.removeAllItems();
+		seqCamData.seq.removeAllROI();
 		seqCamData.seq.close();
 	}
 

@@ -3,6 +3,7 @@ package plugins.fmp.multicafe;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -22,13 +23,12 @@ import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class MCKymosTab_DetectLimits  extends JPanel {
+public class MCKymosAnalyzeTab_DetectLimits  extends JPanel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6329863521455897561L;
-	
 	private JComboBox<String> 	directionComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JCheckBox	detectAllCheckBox 		= new JCheckBox ("all", true);
 	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
@@ -41,7 +41,6 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 			TransformOp.R2MINUS_GB, TransformOp.G2MINUS_RB, TransformOp.B2MINUS_RG, TransformOp.RGB,
 			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, 
 			TransformOp.H_HSB, TransformOp.S_HSB, TransformOp.B_HSB	});
-	
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -106,9 +105,9 @@ public class MCKymosTab_DetectLimits  extends JPanel {
 		if (seqKymos == null)
 			return;
 		TransformOp transform = (TransformOp) transformForLevelsComboBox.getSelectedItem();
+		List<Capillary> capList = seqKymos.capillaries.capillariesArrayList;
 		for (int t=0; t < seqKymos.seq.getSizeT(); t++) {
-			Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
-			getInfosFromDialog(cap);		
+			getInfosFromDialog(capList.get(t));		
 		}
 		parent0.kymographsPane.kymosBuildFiltered(0, 1, transform, getSpanDiffTop());
 	}

@@ -124,7 +124,6 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	boolean saveCapillaryTrack(Experiment exp) {
-		getCapillariesInfos(exp.seqKymos.capillaries);
 		return fileTab.saveCapillaryTrack(exp);
 	}
 	

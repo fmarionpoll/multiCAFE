@@ -271,7 +271,9 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	}
 	
 	private void closeSequence() {	
+		seqKymos.seq.removeAllROI();
 		seqKymos.seq.close();
+		seqCamData.seq.removeAllROI();
 		seqCamData.seq.close();
 		seqCamData = null;
 		seqKymos = null;

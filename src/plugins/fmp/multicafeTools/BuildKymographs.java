@@ -34,7 +34,6 @@ public class BuildKymographs implements Runnable
 	
 	@Override
 	public void run() {
-
 		if (options.seqCamData == null || options.seqKymos == null)
 			return;
 		System.out.println("start buildkymographsThreads");
@@ -44,7 +43,7 @@ public class BuildKymographs implements Runnable
 		if ((options.endFrame >= (int) options.seqCamData.nTotalFrames) || (options.endFrame < 0)) 
 			options.endFrame = (int) options.seqCamData.nTotalFrames-1;
 		if (options.seqCamData.bufferThread == null) {	
-			options.seqCamData.prefetchForwardThread_START(200); 
+			options.seqCamData.prefetchForwardThread_START(50); 
 		}
 		
 		int nbframes = options.endFrame - options.startFrame +1;
@@ -68,7 +67,7 @@ public class BuildKymographs implements Runnable
 			roiList = options.seqCamData.seq.getROIs();
 			options.seqCamData.seq.removeAllROI();
 			visuUpdater = new BuildVisuUpdater(options.seqCamData);
-			thread = new Thread(null, visuUpdater, "visuUpdater Thread");
+			thread = new Thread(null, visuUpdater, "+++visuUpdater");
 			thread.start();
 		}
 		
@@ -110,8 +109,11 @@ public class BuildKymographs implements Runnable
 		options.seqKymos.seq.removeAllImages();
 		options.seqKymos.seq.setVirtual(false); 
 		if (options.updateViewerDuringComputation) {
+			if (thread != null)
+				thread.interrupt();
 			if (thread != null && thread.isAlive()) {
 				visuUpdater.isInterrupted = true;
+				thread.interrupt();
 				try {
 					thread.join();
 				} catch (InterruptedException e1) {
@@ -140,7 +142,7 @@ public class BuildKymographs implements Runnable
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
 		
-		options.seqCamData.prefetchForwardThread_STOP(); //RESTART(); 
+		options.seqCamData.prefetchForwardThread_STOP(); 
 		threadRunning = false;
 	}
 	

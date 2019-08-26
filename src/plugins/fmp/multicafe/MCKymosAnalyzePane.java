@@ -22,21 +22,20 @@ import plugins.fmp.multicafeTools.ImageTransformTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class MCKymosPane extends JPanel implements PropertyChangeListener {
+public class MCKymosAnalyzePane extends JPanel implements PropertyChangeListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7339633966002954720L;
-	
 	private JTabbedPane 	tabsPane 	= new JTabbedPane();
-	MCKymosTab_File 		fileTab 	= new MCKymosTab_File();
-	MCKymosTab_DetectLimits limitsTab 	= new MCKymosTab_DetectLimits();
-	MCKymosTab_DetectGulps 	gulpsTab 	= new MCKymosTab_DetectGulps();
-	MCKymosTab_Graphs 		graphsTab 	= new MCKymosTab_Graphs();
-	
-	ImageTransformTools tImg = null;
-	private MultiCAFE parent0 = null;
+	MCKymosAnalyzeTab_File 		fileTab 	= new MCKymosAnalyzeTab_File();
+	MCKymosAnalyzeTab_DetectLimits limitsTab 	= new MCKymosAnalyzeTab_DetectLimits();
+	MCKymosAnalyzeTab_DetectGulps 	gulpsTab 	= new MCKymosAnalyzeTab_DetectGulps();
+	MCKymosAnalyzeTab_Graphs 		graphsTab 	= new MCKymosAnalyzeTab_Graphs();
+	ImageTransformTools 	tImg = null;
+	private MultiCAFE 		parent0 = null;
 
+	
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		
 		this.parent0 = parent0;
@@ -95,8 +94,6 @@ public class MCKymosPane extends JPanel implements PropertyChangeListener {
 		}
 	}
 
-
-	
 	void kymosBuildFiltered(int zChannelSource, int zChannelDestination, TransformOp transformop, int spanDiff) {
 		if (tImg == null) 
 			tImg = new ImageTransformTools();

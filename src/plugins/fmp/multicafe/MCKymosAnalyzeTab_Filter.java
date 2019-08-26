@@ -16,7 +16,7 @@ import icy.image.IcyBufferedImageUtil;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
-public class MCKymosTab_Filter  extends JPanel {
+public class MCKymosAnalyzeTab_Filter  extends JPanel {
 
 	/**
 	 * 

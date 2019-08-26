@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Line2D;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -26,7 +27,7 @@ import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 
-public class MCKymosTab_DetectGulps extends JPanel {
+public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 
 	/**
 	 * 
@@ -42,7 +43,6 @@ public class MCKymosTab_DetectGulps extends JPanel {
 	private JSpinner 		detectGulpsThresholdSpinner		= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
 	private JButton 		detectGulpsButton 				= new JButton("Detect");
 	private ROI2DLine		roiThreshold 					= new ROI2DLine ();
-
 	private MultiCAFE 		parent0;
 	
 	
@@ -102,10 +102,9 @@ public class MCKymosTab_DetectGulps extends JPanel {
 		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
 		if (seqKymos == null)
 			return;
- 
+		List<Capillary> capList = seqKymos.capillaries.capillariesArrayList;
 		for (int t=0; t < seqKymos.seq.getSizeT(); t++) {
-			Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
-			getInfosFromDialog(cap);		
+			getInfosFromDialog(capList.get(t));		
 		}
 		
 		TransformOp transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
@@ -125,7 +124,6 @@ public class MCKymosTab_DetectGulps extends JPanel {
 		
 	}
 
-	
 	void setInfos(Capillary cap) {
 		DetectGulps_Options options = cap.gulpsOptions;
 		detectGulpsThresholdSpinner.setValue(options.detectGulpsThreshold);

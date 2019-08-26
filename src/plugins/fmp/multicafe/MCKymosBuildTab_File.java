@@ -25,11 +25,12 @@ import icy.image.IcyBufferedImage;
 import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
-public class MCBuildKymosTab_File extends JPanel {
+public class MCKymosBuildTab_File extends JPanel {
 
 	/**
 	 * 
@@ -52,9 +53,8 @@ public class MCBuildKymosTab_File extends JPanel {
 	
 	private void defineActionListeners() {	
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-			SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
-			seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory());
+			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			exp.seqKymos.loadListOfKymographsFromCapillaries(exp.seqCamData.getDirectory());
 			firePropertyChange("KYMOS_OPEN", false, true);	
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
@@ -106,41 +106,41 @@ public class MCBuildKymosTab_File extends JPanel {
 	boolean loadDefaultKymos() {		
 		boolean flag = false;
 		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		SequenceKymos seqk = parent0.expList.getSeqKymos(parent0.currentIndex);
-		if (seqk == null || seqk.capillaries == null) {
+		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		if (seqKymos == null || seqKymos.capillaries == null) {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
 		
-		if (seqk.isRunning_loadImages) {
-			seqk.isInterrupted_loadImages = true;
+		if (seqKymos.isRunning_loadImages) {
+			seqKymos.isInterrupted_loadImages = true;
 			for (int i= 0; i < 10; i++) {
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				if (!seqk.isRunning_loadImages)
+				if (!seqKymos.isRunning_loadImages)
 					break;
 			}
 		}
 		
-		List<String> myList = seqk.loadListOfKymographsFromCapillaries(seqCamData.getDirectory());
-		if (seqk.isInterrupted_loadImages) {
-			seqk.isInterrupted_loadImages = false;
+		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory());
+		if (seqKymos.isInterrupted_loadImages) {
+			seqKymos.isInterrupted_loadImages = false;
 			return false;
 		}
 		
-		flag = seqk.loadImagesFromList(myList, true);
-		if (seqk.isInterrupted_loadImages) {
-			seqk.isInterrupted_loadImages = false;
+		flag = seqKymos.loadImagesFromList(myList, true);
+		if (seqKymos.isInterrupted_loadImages) {
+			seqKymos.isInterrupted_loadImages = false;
 			return false;
 		}
 
 		if (flag) {
 			SwingUtilities.invokeLater(new Runnable() {
 			    public void run() {
-	        	parent0.buildKymosPane.optionsTab.transferCapillaryNamesToComboBox(seqk.capillaries.capillariesArrayList);
+	        	parent0.buildKymosPane.optionsTab.transferCapillaryNamesToComboBox(seqKymos.capillaries.capillariesArrayList);
 				parent0.buildKymosPane.optionsTab.viewKymosCheckBox.setSelected(true);
 			    }
 			});
