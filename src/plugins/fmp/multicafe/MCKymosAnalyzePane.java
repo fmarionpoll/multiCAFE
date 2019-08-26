@@ -15,6 +15,7 @@ import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
@@ -98,8 +99,9 @@ public class MCKymosAnalyzePane extends JPanel implements PropertyChangeListener
 		if (tImg == null) 
 			tImg = new ImageTransformTools();
 		tImg.setSpanDiff(spanDiff);
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceCamData seqCamData = exp.seqCamData;
+		SequenceKymos seqKymos = exp.seqKymos;
 		int nimages = seqKymos.seq.getSizeT();
 		seqKymos.seq.beginUpdate();
 		tImg.setSequence(seqKymos);

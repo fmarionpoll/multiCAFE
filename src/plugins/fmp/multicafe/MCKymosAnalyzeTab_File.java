@@ -67,7 +67,8 @@ public class MCKymosAnalyzeTab_File  extends JPanel {
 	}
 	
 	boolean transferMeasuresToROIs() {
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceKymos seqKymos = exp.seqKymos;
 		boolean flag = true;
 		if (seqKymos != null && seqKymos.seq != null) {
 			seqKymos.seq.removeAllROI();

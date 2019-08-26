@@ -15,7 +15,6 @@ import javax.swing.SwingConstants;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.fmp.multicafeTools.BuildKymographs;
@@ -23,20 +22,16 @@ import plugins.fmp.multicafeTools.EnumStatusComputation;
 
 
 public class MCKymosBuildTab_Create extends JPanel { 
-
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1771360416354320887L;
-	
 	JButton 				kymoStartComputationButton 	= new JButton("Start");
 	JButton 				kymosStopComputationButton 	= new JButton("Stop");
 	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
 	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
 	JCheckBox				updateViewerCheckBox 		= new JCheckBox("update viewer", true);
-	
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
-	
 	private MultiCAFE 		parent0						= null;
 	private BuildKymographs	buildKymographsThread 		= null;
 	private Thread 			thread 						= null;
@@ -77,22 +72,21 @@ public class MCKymosBuildTab_Create extends JPanel {
 	// -----------------------------------
 	
 	private void kymosBuildStart() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
-		if (seqCamData == null) 
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		if (exp.seqCamData == null) 
 			return;
-		if (seqKymos != null) {
-			seqKymos.seq.removeAllROI();
-			seqKymos.seq.close();
+		if (exp.seqKymos != null) {
+			exp.seqKymos.seq.removeAllROI();
+			exp.seqKymos.seq.close();
 		}
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
-		parent0.sequencePane.browseTab.getAnalyzeFrameAndStepFromDialog (seqCamData);
-		seqKymos = new SequenceKymos();
-		seqKymos.updateCapillariesFromCamData(seqCamData);
+		parent0.sequencePane.browseTab.getAnalyzeFrameAndStepFromDialog (exp.seqCamData);
+		exp.seqKymos = new SequenceKymos();
+		exp.seqKymos.updateCapillariesFromCamData(exp.seqCamData);
 		setStartButton(false);
 		kymosBuildKymographs();	
-		Viewer v = seqCamData.seq.getFirstViewer();
+		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		v.toFront();
 	}
 	

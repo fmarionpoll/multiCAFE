@@ -20,8 +20,7 @@ import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.roi.ROI;
 import plugins.fmp.multicafeSequence.Capillaries;
-import plugins.fmp.multicafeSequence.SequenceCamData;
-
+import plugins.fmp.multicafeSequence.Experiment;
 
 
 public class MCCapillariesTab_Infos extends JPanel {
@@ -83,8 +82,8 @@ public class MCCapillariesTab_Infos extends JPanel {
 
 	
 	private void roisDisplayLine(boolean isVisible) {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		Viewer v = seqCamData.seq.getFirstViewer();
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		IcyCanvas canvas = v.getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
 		if (layers == null)

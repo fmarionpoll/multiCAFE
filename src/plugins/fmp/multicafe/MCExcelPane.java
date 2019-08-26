@@ -16,8 +16,7 @@ import javax.swing.JTabbedPane;
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
-import plugins.fmp.multicafeSequence.SequenceCamData;
-import plugins.fmp.multicafeSequence.SequenceKymos;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.XLSExportCapillaryResults;
 import plugins.fmp.multicafeTools.XLSExportMoveResults;
@@ -76,17 +75,17 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+
 		if (evt.getPropertyName().equals("EXPORT_MOVEDATA")) {
-			Path directory = Paths.get(seqCamData.getFileName(0)).getParent();
+			Path directory = Paths.get(exp.seqCamData.getFileName(0)).getParent();
 			Path subpath = directory.getName(directory.getNameCount()-1);
 			String tentativeName = subpath.toString()+"_move.xlsx";
 			String file = MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
 			if (file != null) {
 				final String filename = file;
-				parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
-				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
+				parent0.capillariesPane.getCapillariesInfos(exp.seqKymos.capillaries);
+				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(exp.seqKymos.capillaries);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 					XLSExportMoveResults xlsExport = new XLSExportMoveResults();
 					xlsExport.exportToFile(filename, getMoveOptions());
@@ -94,15 +93,15 @@ public class MCExcelPane  extends JPanel implements PropertyChangeListener {
 			}
 		}
 		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
-			String filename0 = seqCamData.getFileName(0);
+			String filename0 = exp.seqCamData.getFileName(0);
 			Path directory = Paths.get(filename0).getParent();
 			Path subpath = directory.getName(directory.getNameCount()-1);
 			String tentativeName = subpath.toString()+"_feeding.xlsx";
 			String file = MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
 			if (file != null) {
 				final String filename = file;
-				parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
-				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
+				parent0.capillariesPane.getCapillariesInfos(exp.seqKymos.capillaries);
+				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(exp.seqKymos.capillaries);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 					XLSExportCapillaryResults xlsExport = new XLSExportCapillaryResults();
 					xlsExport.exportToFile(filename, getCapillariesOptions());

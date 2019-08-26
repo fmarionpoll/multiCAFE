@@ -1,6 +1,5 @@
 package plugins.fmp.multicafe;
 
-
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ComponentAdapter;
@@ -16,8 +15,8 @@ import javax.swing.event.ChangeListener;
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
-import plugins.fmp.multicafeSequence.SequenceCamData;
-import plugins.fmp.multicafeSequence.SequenceKymos;
+import plugins.fmp.multicafeSequence.Experiment;
+
 
 public class MCKymosBuildPane extends JPanel implements PropertyChangeListener, ChangeListener {
 
@@ -42,10 +41,8 @@ public class MCKymosBuildPane extends JPanel implements PropertyChangeListener, 
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
-		
 		GridLayout capLayout = new GridLayout(3, 1);
 		
-
 		buildkymosTab.init(capLayout, parent0);
 		buildkymosTab.addPropertyChangeListener(this);
 		tabsPane.addTab("Build kymos", null, buildkymosTab, "Build kymographs from ROI lines placed over capillaries");
@@ -77,9 +74,9 @@ public class MCKymosBuildPane extends JPanel implements PropertyChangeListener, 
 	public void propertyChange(PropertyChangeEvent event) {
 		 if (event.getPropertyName().equals("KYMOS_OPEN") 
 					|| event.getPropertyName().equals("KYMOS_CREATE")) {
-			SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 			optionsTab.viewKymosCheckBox.setSelected(true);
-				optionsTab.transferCapillaryNamesToComboBox(seqKymos.capillaries.capillariesArrayList);
+				optionsTab.transferCapillaryNamesToComboBox(exp.seqKymos.capillaries.capillariesArrayList);
 				tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("KYMOS_OK")) {
@@ -91,12 +88,12 @@ public class MCKymosBuildPane extends JPanel implements PropertyChangeListener, 
 	}
 	
 	void tabbedCapillariesAndKymosSelected() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		if (seqCamData == null)
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		if (exp.seqCamData == null)
 			return;
 		int iselected = tabsPane.getSelectedIndex();
 		if (iselected == 0) {
-			Viewer v = seqCamData.seq.getFirstViewer();
+			Viewer v = exp.seqCamData.seq.getFirstViewer();
 			v.toFront();
 		} else if (iselected == 1) {
 			parent0.buildKymosPane.optionsTab.displayUpdateOnSwingThread();

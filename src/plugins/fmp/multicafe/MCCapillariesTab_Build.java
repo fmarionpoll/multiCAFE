@@ -122,7 +122,8 @@ public class MCCapillariesTab_Build extends JPanel {
 
 	// ---------------------------------
 	private void create2DPolygon() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceCamData seqCamData = exp.seqCamData;
 		final String dummyname = "perimeter_enclosing_capillaries";
 		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
@@ -143,7 +144,8 @@ public class MCCapillariesTab_Build extends JPanel {
 	}
 	
 	private void roisGenerateFromPolygon() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceCamData seqCamData = exp.seqCamData;
 		boolean statusGroup2Mode = false;
 		if (getGroupedBy2()) statusGroup2Mode = true;
 		// read values from text boxes

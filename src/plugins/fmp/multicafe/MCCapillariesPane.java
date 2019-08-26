@@ -102,7 +102,9 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	boolean loadCapillaryTrack() {
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);boolean flag = fileTab.loadCapillaryTrack();
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceKymos seqKymos = exp.seqKymos;
+		boolean flag = fileTab.loadCapillaryTrack();
 		if (flag) {
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
 				infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
@@ -114,8 +116,9 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	}
 	
 	private void setCapillariesInfosToDialogs() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceCamData seqCamData = exp.seqCamData;
+		SequenceKymos seqKymos = exp.seqKymos;
 		SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
 		seqKymos.capillaries.desc_old.copy(seqKymos.capillaries.desc);
 		infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);

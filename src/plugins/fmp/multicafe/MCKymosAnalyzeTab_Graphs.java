@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.XYMultiChart;
@@ -50,21 +50,21 @@ public class MCKymosAnalyzeTab_Graphs extends JPanel {
 	private void defineActionListeners() {
 		displayResultsButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 				displayResultsButton.setEnabled(false);
-				seqKymos.roisSaveEdits();
+				exp.seqKymos.roisSaveEdits();
 				xyDisplayGraphs();
 				displayResultsButton.setEnabled(true);
 			}});
 	}
 	
 	void xyDisplayGraphs() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		final Rectangle rectv = seqCamData.seq.getFirstViewer().getBounds();
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		final Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBounds();
 		Point ptRelative = new Point(0,rectv.height);
 		final int deltay = 230;
 
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		SequenceKymos seqKymos = exp.seqKymos;
 		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(seqKymos, EnumListType.topAndBottom)) {
 			topandbottomChart = xyDisplayGraphsItem("top + bottom levels", 
 					EnumListType.topAndBottom, 
@@ -92,15 +92,15 @@ public class MCKymosAnalyzeTab_Graphs extends JPanel {
 	}
 
 	private XYMultiChart xyDisplayGraphsItem(String title, EnumListType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) {	
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		if (iChart != null && iChart.mainChartPanel.isValid()) {
-			iChart.fetchNewData(seqKymos, option);
+			iChart.fetchNewData(exp.seqKymos, option);
 		}
 		else {
 			iChart = new XYMultiChart();
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
-			iChart.displayData(seqKymos, option);
+			iChart.displayData(exp.seqKymos, option);
 		}
 		iChart.mainChartFrame.toFront();
 		return iChart;

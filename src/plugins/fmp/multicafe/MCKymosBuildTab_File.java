@@ -26,7 +26,6 @@ import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
@@ -58,8 +57,8 @@ public class MCKymosBuildTab_File extends JPanel {
 			firePropertyChange("KYMOS_OPEN", false, true);	
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-			String path = seqCamData.getDirectory() + File.separator + "results";
+			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			String path = exp.seqCamData.getDirectory() + File.separator + "results";
 			saveKymographFiles(path);
 			firePropertyChange("KYMOS_SAVE", false, true);
 		}});
@@ -67,10 +66,10 @@ public class MCKymosBuildTab_File extends JPanel {
 
 	void saveKymographFiles(String directory) {
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceKymos seqKymos = exp.seqKymos;
 		if (directory == null) 
-			directory = seqCamData.getDirectory()+ File.separator+"results";
+			directory = exp.seqCamData.getDirectory()+ File.separator+"results";
 		try {
 			Files.createDirectories(Paths.get(directory));
 		} catch (IOException e1) {
@@ -105,8 +104,8 @@ public class MCKymosBuildTab_File extends JPanel {
 	
 	boolean loadDefaultKymos() {		
 		boolean flag = false;
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null || seqKymos.capillaries == null) {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
@@ -125,7 +124,7 @@ public class MCKymosBuildTab_File extends JPanel {
 			}
 		}
 		
-		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory());
+		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(exp.seqCamData.getDirectory());
 		if (seqKymos.isInterrupted_loadImages) {
 			seqKymos.isInterrupted_loadImages = false;
 			return false;

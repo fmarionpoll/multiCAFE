@@ -20,6 +20,7 @@ import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI2D;
 import icy.type.collection.array.Array1DUtil;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.Line2DPlus;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
@@ -62,7 +63,8 @@ public class MCCapillariesTab_Adjust extends JPanel {
 	
 	// -------------------------------------------------------
 	private void roisCenterLinestoAllCapillaries() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceCamData seqCamData = exp.seqCamData;
 		refLineUpper = roiRefLineUpper.getLine();
 		refLineLower = roiRefLineLower.getLine(); 
 		
@@ -197,7 +199,8 @@ public class MCCapillariesTab_Adjust extends JPanel {
 	}
 
 	void roisDisplayrefBar(boolean display) {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData == null)
 			return;
 		

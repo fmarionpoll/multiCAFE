@@ -97,9 +97,9 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 			progress.close();
 		 }
 		 else if (event.getPropertyName().equals("UPDATE")) {
-			SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-			updateViewerForSequenceCam(seqCamData);
-			browseTab.getAnalyzeFrameAndStepFromDialog(seqCamData);
+			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			updateViewerForSequenceCam(exp.seqCamData);
+			browseTab.getAnalyzeFrameAndStepFromDialog(exp.seqCamData);
 		 }
 
 		 else if (event.getPropertyName().equals("SEQ_CLOSE")) {
@@ -144,12 +144,12 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	}
 	
 	void addSequenceCamToCombo() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		String strItem = seqCamData.getFileName();
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		String strItem = exp.seqCamData.getFileName();
 		if (strItem != null) {
 			addSequenceCamToCombo(strItem);
 			infosTab.expListComboBox.setSelectedItem(strItem);
-			updateViewerForSequenceCam(seqCamData);
+			updateViewerForSequenceCam(exp.seqCamData);
 			openTab.loadMeasuresAndKymos();
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", strItem);

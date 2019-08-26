@@ -93,7 +93,8 @@ public class MCSequenceTab_Infos  extends JPanel {
 			updateCombos();
 			parent0.capillariesPane.infosTab.updateCombos();
 			// TODO save capillaries, measures, etc here?
-			String oldtext = parent0.expList.getSeqCamData(parent0.currentIndex).getFileName();
+			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			String oldtext = exp.seqCamData.getFileName();
 			String newtext = (String) expListComboBox.getSelectedItem();
 			if (!newtext.equals(oldtext)) {
 				parent0.previousIndex = parent0.currentIndex;

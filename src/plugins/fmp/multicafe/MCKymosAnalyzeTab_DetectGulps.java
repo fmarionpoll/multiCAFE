@@ -21,6 +21,7 @@ import javax.swing.event.ChangeListener;
 import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.DetectGulps;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
@@ -86,10 +87,10 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 		
 		detectGulpsThresholdSpinner.addChangeListener(new ChangeListener() {
 			@Override public void stateChanged(ChangeEvent arg0) {
-				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
-				if (seqKymos != null && viewGulpsThresholdCheckBox.isSelected()) {
+				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				if (exp.seqKymos != null && viewGulpsThresholdCheckBox.isSelected()) {
 					int thresholdValue = (int) detectGulpsThresholdSpinner.getValue();
-					roiDisplayThreshold(true, seqKymos, thresholdValue);
+					roiDisplayThreshold(true, exp.seqKymos, thresholdValue);
 					if (detectAllGulpsCheckBox.isSelected())
 						roisDisplayAllThresholds(viewGulpsThresholdCheckBox.isSelected());
 				}
@@ -99,7 +100,8 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 	// get/set
 		
 	void kymosDisplayFiltered2() {
-		SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
 		List<Capillary> capList = seqKymos.capillaries.capillariesArrayList;
@@ -120,7 +122,8 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 		options.computeDiffnAndDetect	= detectGulps;
 		
 		DetectGulps detect = new DetectGulps();
-		detect.detectGulps(options, parent0.expList.getSeqKymos(parent0.currentIndex));
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		detect.detectGulps(options, exp.seqKymos);
 		
 	}
 
@@ -139,12 +142,12 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 	}
 	
 	void roisDisplayAllThresholds(boolean display) {
-		final SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
-		if (seqKymos == null)
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		if (exp.seqKymos == null)
 			return;
 		ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
 				final int thresholdValue = (int) detectGulpsThresholdSpinner.getValue();
-				roiDisplayThreshold(display, seqKymos, thresholdValue);
+				roiDisplayThreshold(display, exp.seqKymos, thresholdValue);
 			}});
 	}
 	

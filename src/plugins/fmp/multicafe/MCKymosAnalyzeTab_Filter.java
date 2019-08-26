@@ -14,6 +14,7 @@ import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.type.collection.array.Array1DUtil;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
 public class MCKymosAnalyzeTab_Filter  extends JPanel {
@@ -38,7 +39,8 @@ public class MCKymosAnalyzeTab_Filter  extends JPanel {
 	private void defineActionListeners() {
 		startButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				SequenceKymos seqKymos = parent0.expList.getSeqKymos(parent0.currentIndex);
+				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				SequenceKymos seqKymos = exp.seqKymos;
 				int span = getSpan();
 				int c = 1;
 				for (int t=0; t < seqKymos.seq.getSizeT(); t++) {

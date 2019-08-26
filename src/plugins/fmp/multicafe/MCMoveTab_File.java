@@ -12,7 +12,7 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
-import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.Experiment;
 
 
 
@@ -43,32 +43,32 @@ public class MCMoveTab_File extends JPanel {
 	
 		openROIsButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-				seqCamData.cages.xmlReadCagesFromFile(seqCamData);
+				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				exp.seqCamData.cages.xmlReadCagesFromFile(exp.seqCamData);
 				firePropertyChange("LOAD_DATA", false, true);	
 			}});
 		
 		saveROIsButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-				seqCamData.storeAnalysisParametersToCages();
-				seqCamData.xmlWriteDrosoTrackDefault();
+				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				exp.seqCamData.storeAnalysisParametersToCages();
+				exp.seqCamData.xmlWriteDrosoTrackDefault();
 			}});
 	}
 
 	boolean cageRoisOpen(String csFileName) {
 		
 		boolean flag = false;
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		if (csFileName == null)
-			flag = seqCamData.xmlReadDrosoTrackDefault();
+			flag = exp.seqCamData.xmlReadDrosoTrackDefault();
 		else
-			flag = seqCamData.xmlReadDrosoTrack(csFileName);
+			flag = exp.seqCamData.xmlReadDrosoTrack(csFileName);
 		return flag;
 	}
 	
 	boolean cageRoisSave() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		return seqCamData.cages.xmlWriteCagesToFile("drosotrack.xml", seqCamData.getDirectory());
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		return exp.seqCamData.cages.xmlWriteCagesToFile("drosotrack.xml", exp.seqCamData.getDirectory());
 	}
 }

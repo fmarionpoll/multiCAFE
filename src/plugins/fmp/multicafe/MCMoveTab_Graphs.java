@@ -14,7 +14,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import icy.gui.util.GuiUtil;
-import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.YPosMultiChart;
@@ -60,8 +60,8 @@ public class MCMoveTab_Graphs extends JPanel {
 	}
 
 	private void xyDisplayGraphs() {
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		final Rectangle rectv = seqCamData.seq.getFirstViewer().getBounds();
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		final Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBounds();
 		Point ptRelative = new Point(0,30);
 		final int deltay = 230;
 	
@@ -77,7 +77,7 @@ public class MCMoveTab_Graphs extends JPanel {
 		}
 		if (aliveCheckbox.isSelected()) {
 			double threshold = (double) aliveThresholdSpinner.getValue();		
-			for (XYTaSeries posSeries: seqCamData.cages.flyPositionsList) {
+			for (XYTaSeries posSeries: exp.seqCamData.cages.flyPositionsList) {
 				posSeries.threshold = threshold;
 				posSeries.getDoubleArrayList(EnumListType.isalive);
 			}
@@ -94,8 +94,8 @@ public class MCMoveTab_Graphs extends JPanel {
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		}
-		SequenceCamData seqCamData = parent0.expList.getSeqCamData(parent0.currentIndex);
-		iChart.displayData(seqCamData.cages.flyPositionsList, option);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		iChart.displayData(exp.seqCamData.cages.flyPositionsList, option);
 		iChart.mainChartFrame.toFront();
 		return iChart;
 	}
