@@ -91,6 +91,7 @@ public class SequenceKymos extends SequenceCamData  {
 			hasChanged = false;
 		}
 	}
+	
 	public void validateRoisAtT(int t) {
 		List<ROI2D> listRois = seq.getROI2Ds();
 		int width = seq.getWidth();
@@ -184,7 +185,7 @@ public class SequenceKymos extends SequenceCamData  {
 		transferAnalysisParametersToCapillaries();
 		return;
 	}
-	
+		
 	public void transferAnalysisParametersToCapillaries () {
 		capillaries.desc.analysisStart = analysisStart;
 		capillaries.desc.analysisEnd = analysisEnd;

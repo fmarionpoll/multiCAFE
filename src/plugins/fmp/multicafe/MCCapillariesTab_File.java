@@ -50,10 +50,9 @@ public class MCCapillariesTab_File extends JPanel {
 
 	}
 	
-	boolean loadCapillaryTrack() {	
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+	boolean loadCapillaryTrack(Experiment exp) {	
 		SequenceCamData seqCamData = exp.seqCamData;
-		SequenceKymos seqKymos =exp.seqKymos;
+		SequenceKymos seqKymos = exp.seqKymos;
 		boolean flag = false;
 		if (seqKymos == null) {
 			exp.seqKymos = new SequenceKymos();
@@ -68,7 +67,6 @@ public class MCCapillariesTab_File extends JPanel {
 			flag = seqCamData.xmlReadROIs(filename);
 			if (flag) {
 				seqKymos.xmlReadRoiLineParameters(filename);
-				SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
 			}
 		}
 		return flag;

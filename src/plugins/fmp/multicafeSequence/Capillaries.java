@@ -240,6 +240,7 @@ public class Capillaries {
 	
 	public boolean xmlLoadCapillaries(String csFileName) {
 		if (csFileName != null)  {
+			System.out.println("xmlloadCapillaryTrack "+csFileName);			
 			final Document doc = XMLUtil.loadDocument(csFileName);
 			if (doc != null) {
 				int version = xmlLoadCapillaryParametersv1(doc);
@@ -254,6 +255,7 @@ public class Capillaries {
 				default:
 					return false;
 				}
+				System.out.println("xmlloadCapillaryTrack done");			
 				return true;
 			}
 		}

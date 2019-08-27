@@ -51,7 +51,7 @@ public class SequenceCamData  {
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
 	
-	public List <String>  			listFiles 				= new ArrayList<String>();
+	public 	  List <String>  		listFiles 				= new ArrayList<String>();
 	protected String 				csFileName 				= null;
 	protected String				directory 				= null;
 	

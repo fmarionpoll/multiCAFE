@@ -83,7 +83,8 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) {
-			fileTab.loadCapillaryTrack();
+			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			fileTab.loadCapillaryTrack(exp);
 		  	setCapillariesInfosToDialogs();
 		  	tabsPane.setSelectedIndex(2);
 		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
@@ -104,12 +105,14 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	boolean loadCapillaryTrack() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		SequenceKymos seqKymos = exp.seqKymos;
-		boolean flag = fileTab.loadCapillaryTrack();
+		boolean flag = fileTab.loadCapillaryTrack(exp);
 		if (flag) {
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
 				infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+				infosTab.visibleCheckBox.setSelected(true);
 				buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 				parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+				parent0.sequencePane.browseTab.setAnalyzeFrameAndStepToDialog(exp.seqCamData);
 			}});
 		}
 		return flag;

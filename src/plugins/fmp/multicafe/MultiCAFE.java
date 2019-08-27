@@ -29,7 +29,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	
 	ExperimentList				expList 			= new ExperimentList();
 	int							currentIndex		= -1;
-	int							previousIndex		= -1;
 	
 	MCSequencePane 				sequencePane 		= new MCSequencePane();
 	MCCapillariesPane 			capillariesPane 	= new MCCapillariesPane();
@@ -109,28 +108,20 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	} 
 
 	public void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
-		ProgressFrame progress = new ProgressFrame("Load capillaries & kymographs");
 		Experiment exp = expList.getExperiment(currentIndex);
 		SequenceCamData seqCamData = exp.seqCamData;
-		System.out.println("load seqCamdata document ="+ seqCamData.getFileName());
 		
 		if (loadCapillaries) {
-			progress.setMessage("1/3 - load capillaries and measures");
-			System.out.println("loadCapillaryTrack");
-			kymographsPane.fileTab.loadKymosMeasures(exp);
-			System.out.println("loadCapillaryTrack done - update dialogs");
-			SwingUtilities.invokeLater(new Runnable() { public void run() {
-				sequencePane.browseTab.setAnalyzeFrameAndStepToDialog(seqCamData);
-				sequencePane.infosTab.setCapillariesInfosToDialog(exp.seqKymos.capillaries);
-				capillariesPane.infosTab.setCapillariesInfosToDialog(exp.seqKymos.capillaries);
-				capillariesPane.infosTab.visibleCheckBox.setSelected(true);
-				}});
+			ProgressFrame progress = new ProgressFrame("load capillarytrack.xml");
+			capillariesPane.loadCapillaryTrack();
+			progress.close();
 		}
 
 		if (loadKymographs) {
-			progress.setMessage("2/3 - load kymographs");
+			ProgressFrame progress = new ProgressFrame("load kymograph *.tiff");
 			buildKymosPane.optionsTab.viewKymosCheckBox.setSelected(true);
 			buildKymosPane.fileTab.loadDefaultKymos(exp);
+			progress.close();
 			if (sequencePane.openTab.graphsCheckBox.isSelected())
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
 				    	kymographsPane.graphsTab.xyDisplayGraphs();
@@ -138,8 +129,9 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 		
 		if (loadCages) {
-			progress.setMessage("3/3 - load cages");
+			ProgressFrame progress = new ProgressFrame("load drosotrack.xml");
 			exp.loadDrosotrack();
+			progress.close();
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
 				movePane.graphicsTab.moveCheckbox.setEnabled(true);
 				movePane.graphicsTab.displayResultsButton.setEnabled(true);
@@ -149,8 +141,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 				}
 			}});
 		}
-
-		progress.close();
 	}
 
 }
