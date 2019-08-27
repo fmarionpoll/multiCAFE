@@ -169,7 +169,7 @@ public class SequenceKymos extends SequenceCamData  {
 			List<ROI> listOfRois = cap.transferMeasuresToROIs();
 			all.addAll(listOfRois);
 		}
-		seq.addROIs(all, false);
+		ROI2DUtilities.addROIsToSequenceIfNotAlreadyPresent(all, seq);
 	}
 	
 	// ----------------------------

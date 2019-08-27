@@ -7,6 +7,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.nio.file.Paths;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -145,7 +146,7 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	
 	void addSequenceCamToCombo() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		String strItem = exp.seqCamData.getFileName();
+		String strItem = Paths.get(exp.seqCamData.getFileName()).toString();
 		if (strItem != null) {
 			addSequenceCamToCombo(strItem);
 			infosTab.expListComboBox.setSelectedItem(strItem);

@@ -91,19 +91,21 @@ public class MCSequenceTab_Infos  extends JPanel {
 		expListComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			if (expListComboBox.getItemCount() == 0 || disableChangeFile)
 				return;
-			updateCombos();
-			parent0.capillariesPane.infosTab.updateCombos();
 			// TODO save capillaries, measures, etc here?
 			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 			String oldtext = exp.seqCamData.getDirectory();
 			String newtext = (String) expListComboBox.getSelectedItem();
 			System.out.println("oldtext="+oldtext);
 			System.out.println("newtext="+newtext);
-			if (!newtext.equals(oldtext)) {
+			if (!newtext.contains(oldtext)) {
+				System.out.println("-->new combo selection");
+				updateCombos();
+				parent0.capillariesPane.infosTab.updateCombos();
 				parent0.currentIndex = parent0.expList.getPositionOfCamFileName(newtext);			
 				firePropertyChange("SEQ_OPEN", false, true);
+				updateBrowseInterface();
 			}
-			updateBrowseInterface();
+			
 		} } );
 		
 		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 

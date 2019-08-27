@@ -3,9 +3,11 @@ package plugins.fmp.multicafeTools;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import icy.roi.BooleanMask2D;
+import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
@@ -121,6 +123,22 @@ public class ROI2DUtilities  {
 		return intArray;
 	}
 	
+	public static void addROIsToSequenceIfNotAlreadyPresent(List<ROI> listRois, Sequence seq) {
+		List<ROI2D> seqList = seq.getROI2Ds(false);
+		for (ROI2D seqRoi: seqList) {
+			Iterator <ROI> iterator = listRois.iterator();
+			while(iterator.hasNext()) {
+				ROI roi = iterator.next();
+				if (roi instanceof ROI2D) {
+					if (seqRoi == roi)
+						iterator.remove();
+				}
+			}
+		}
+		seq.addROIs(listRois, false);
+	}
+
+
 	public static ROI2DPolyLine transfertDataArrayToRoi(List<Integer> intArray) {
 		Polyline2D line = new Polyline2D();
 		for (int i =0; i< intArray.size(); i++) {

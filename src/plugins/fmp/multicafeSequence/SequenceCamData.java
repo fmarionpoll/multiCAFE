@@ -29,6 +29,7 @@ import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ImageOperationsStruct;
 import plugins.fmp.multicafeTools.StringSorter;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
+import plugins.fmp.multicafeTools.ROI2DUtilities;
 
 
 public class SequenceCamData  {
@@ -106,11 +107,9 @@ public class SequenceCamData  {
 	
 	// -----------------------
 	
-	public static boolean acceptedFileType(String name) {
-		/* 
-		 * Returns true if 'name' includes one of the accepted types stored in the "accepted" list 
-		 */
-		if (name==null) return false;
+	public static boolean isAcceptedFileType(String name) {
+		if (name==null) 
+			return false;
 		for (int i=0; i< acceptedTypes.length; i++) {
 			if (name.endsWith(acceptedTypes[i]))
 				return true;
@@ -118,7 +117,7 @@ public class SequenceCamData  {
 		return false;
 	}	
 	
-	public static int acceptedFileType2(String name) {
+	public static int getCodeIfAcceptedFileType(String name) {
 		/* 
 		 * Returns accepted type (0-n) or -1 if not found 
 		 */
@@ -212,7 +211,7 @@ public class SequenceCamData  {
 		int count = rawlist.size();
 		List<String> outList = new ArrayList<String> (count);
 		for (String name: rawlist) {
-			int itype = acceptedFileType2(name);
+			int itype = getCodeIfAcceptedFileType(name);
 			if ( itype >= 0) {
 				if (filetype < 0)
 					filetype = itype;
@@ -226,7 +225,7 @@ public class SequenceCamData  {
 	public String[] keepOnlyAcceptedNamesFromArray(String[] rawlist) {
 		int count = rawlist.length;
 		for (int i=0; i< rawlist.length; i++) {
-			if ( !acceptedFileType(rawlist[i]) ) {
+			if ( !isAcceptedFileType(rawlist[i]) ) {
 				rawlist[i] = null;
 				count --;
 			}
@@ -479,9 +478,9 @@ public class SequenceCamData  {
 		if (csFileName != null)  {
 			final Document doc = XMLUtil.loadDocument(csFileName);
 			if (doc != null) {
-				//xmlReadCapillaryParameters(doc);
 				List<ROI> listOfROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
-				seq.addROIs(listOfROIs, false);
+//				seq.addROIs(listOfROIs, false);
+				ROI2DUtilities.addROIsToSequenceIfNotAlreadyPresent(listOfROIs, seq);
 				return true;
 			}
 		}

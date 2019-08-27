@@ -11,12 +11,6 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class SequenceKymosUtils {
 	
-	public static boolean 	isInterrupted 			= false;
-	public static boolean 	isRunning 				= false;
-	
-	static String 			extension 				= ".tiff";
-	
-	// -------------------------------------------------------
 
 	public static void transferCamDataROIStoKymo (SequenceCamData seqCams, SequenceKymos seqKymos) {
 		if (seqKymos == null) {
