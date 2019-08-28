@@ -38,7 +38,6 @@ public class MCSequenceTab_Close  extends JPanel {
 		if (exp != null) {
 			SequenceCamData seqCamData = exp.seqCamData;
 			SequenceKymos seqKymos = exp.seqKymos;	
-			System.out.println("close and save seqCamdata document ="+ seqCamData.getFileName());
 			checkIfLoadingNotFinished(exp);
 			if (seqKymos != null && seqKymos.seq != null) {
 				seqKymos.seq.removeAllROI();
