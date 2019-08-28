@@ -5,8 +5,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -32,7 +30,7 @@ public class MCSequenceTab_Infos  extends JPanel {
 	private JComboBox<String> 	experimentJCombo 	= new JComboBox<String>();
 	private JButton  			previousButton		= new JButton("<");
 	private JButton				nextButton			= new JButton(">");
-	JComboBox<String> 			expListComboBox	= new ComboBoxWide();
+	ComboBoxWide		 		expListComboBox		= new ComboBoxWide();
 	boolean 					disableChangeFile 	= false;
 	private MultiCAFE 			parent0 			= null;
 	
@@ -71,41 +69,25 @@ public class MCSequenceTab_Infos  extends JPanel {
 		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
 		expListComboBox.setRenderer(renderer);
 
-		expListComboBox.addItemListener(new ItemListener() {
-	        public void itemStateChanged(ItemEvent arg0) {
-	        	if (arg0.getStateChange() == ItemEvent.DESELECTED) {
-	        		ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-	        			System.out.println("close currentIndex="+parent0.currentIndex);
-		        		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		        		parent0.sequencePane.closeTab.saveAndClose(exp);
-	        		}});
-	        	}
-	        	else if (arg0.getStateChange () == ItemEvent.SELECTED) {
-	        		updateBrowseInterface();
-	        	}
-	        }
-	    });
 	}
 	
 	private void defineActionListeners() {
 		expListComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			if (expListComboBox.getItemCount() == 0 || disableChangeFile)
 				return;
-			// TODO save capillaries, measures, etc here?
 			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 			String oldtext = exp.seqCamData.getDirectory();
 			String newtext = (String) expListComboBox.getSelectedItem();
-			System.out.println("oldtext="+oldtext);
-			System.out.println("newtext="+newtext);
 			if (!newtext.contains(oldtext)) {
-				System.out.println("-->new combo selection");
+        		ThreadUtil.bgRun( new Runnable() { @Override public void run() {
+	        		parent0.sequencePane.closeTab.saveAndClose(exp);
+        		}});
 				updateCombos();
 				parent0.capillariesPane.infosTab.updateCombos();
 				parent0.currentIndex = parent0.expList.getPositionOfCamFileName(newtext);			
 				firePropertyChange("SEQ_OPEN", false, true);
 				updateBrowseInterface();
 			}
-			
 		} } );
 		
 		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 

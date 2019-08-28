@@ -17,6 +17,7 @@ public class ComboBoxWide extends JComboBox<String>{
 	private static final long serialVersionUID = 1L;
 
 	public ComboBoxWide() { 
+		super();
 	} 
 	
 	public ComboBoxWide(final Object items[]){ 
