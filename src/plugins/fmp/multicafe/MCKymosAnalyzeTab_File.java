@@ -44,7 +44,7 @@ public class MCKymosAnalyzeTab_File  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 				if (loadKymosMeasures(exp)) {
-					transferMeasuresToROIs(exp);
+					transferCapillariesToROIs(exp);
 					firePropertyChange("MEASURES_OPEN", false, true);
 				}
 			}}); 
@@ -52,6 +52,7 @@ public class MCKymosAnalyzeTab_File  extends JPanel {
 		saveMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				transferRoisToMeasures(exp);
 				saveKymosMeasures(exp);
 				firePropertyChange("MEASURES_SAVE", false, true);
 			}});	
@@ -66,12 +67,11 @@ public class MCKymosAnalyzeTab_File  extends JPanel {
 		return flag;
 	}
 	
-	boolean transferMeasuresToROIs(Experiment exp) {
+	boolean transferRoisToMeasures(Experiment exp) {
 		SequenceKymos seqKymos = exp.seqKymos;
 		boolean flag = true;
 		if (seqKymos != null && seqKymos.seq != null) {
-			seqKymos.seq.removeAllROI();
-			seqKymos.transferMeasuresToKymosRois();
+			seqKymos.transferKymosRoisToMeasures();
 		}
 		return flag;
 	}

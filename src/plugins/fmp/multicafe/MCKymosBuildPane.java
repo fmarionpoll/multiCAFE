@@ -85,7 +85,7 @@ public class MCKymosBuildPane extends JPanel implements PropertyChangeListener, 
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("KYMOS_SAVE")) {
-			tabsPane.setSelectedIndex(2);
+			tabsPane.setSelectedIndex(1);
 		}
 	}
 	

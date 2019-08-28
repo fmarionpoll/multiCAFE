@@ -132,6 +132,10 @@ public class ROI2DUtilities  {
 				if (roi instanceof ROI2D) {
 					if (seqRoi == roi)
 						iterator.remove();
+					else if (seqRoi.getName().equals (roi.getName() )) {
+						seqRoi.copyFrom(roi);
+						iterator.remove();
+					}
 				}
 			}
 		}

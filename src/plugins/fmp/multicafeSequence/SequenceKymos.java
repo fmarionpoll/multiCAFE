@@ -109,7 +109,7 @@ public class SequenceKymos extends SequenceCamData  {
 				ROI2DUtilities.interpolateMissingPointsAlongXAxis ((ROI2DPolyLine) roi, width);
 				continue;
 			}
-			if (roi.getName().contains("derivative"))
+			if (roi.getName().contains("deriv"))
 				continue;
 				
 			// if gulp not found - add an index to it	
@@ -235,7 +235,6 @@ public class SequenceKymos extends SequenceCamData  {
 			return flag;
 		
 		if (adjustImagesSize) {
-			System.out.println("adjust images size");
 			List <File> filesArray = new ArrayList<File> (myListOfFileNames.size());
 			for (String name : myListOfFileNames)
 				filesArray.add(new File(name));
@@ -251,14 +250,12 @@ public class SequenceKymos extends SequenceCamData  {
 			}
 		}
 		
-		System.out.println("load sequence of images");
 		loadSequenceFromList(myListOfFileNames, true);
 		if (isInterrupted_loadImages) {
 			isRunning_loadImages = false;
 			return false;
 		}
 
-		System.out.println("transfer measures to kymosgraphs as rois");
 		setParentDirectoryAsFileName();
 		status = EnumStatus.KYMOGRAPH;
 		transferMeasuresToKymosRois();
