@@ -32,6 +32,7 @@ public class MCKymosAnalyzePane extends JPanel implements PropertyChangeListener
 	MCKymosAnalyzeTab_File 			fileTab 	= new MCKymosAnalyzeTab_File();
 	MCKymosAnalyzeTab_DetectLimits 	limitsTab 	= new MCKymosAnalyzeTab_DetectLimits();
 	MCKymosAnalyzeTab_DetectGulps 	gulpsTab 	= new MCKymosAnalyzeTab_DetectGulps();
+	MCKymosAnalyzeTab_Edit			editTab		= new MCKymosAnalyzeTab_Edit();
 	MCKymosAnalyzeTab_Graphs 		graphsTab 	= new MCKymosAnalyzeTab_Graphs();
 	ImageTransformTools 			tImg 		= null;
 	private MultiCAFE 				parent0 	= null;
@@ -56,6 +57,10 @@ public class MCKymosAnalyzePane extends JPanel implements PropertyChangeListener
 		gulpsTab.init(capLayout, parent0);	
 		tabsPane.addTab("Gulps", null, gulpsTab, "Detect gulps");
 		gulpsTab.addPropertyChangeListener(this);
+		
+		editTab.init(capLayout, parent0);
+		editTab.addPropertyChangeListener(this);
+		tabsPane.addTab("Edit", null, editTab, "Edit Rois / measures");
 		
 		graphsTab.init(capLayout, parent0);
 		graphsTab.addPropertyChangeListener(this);

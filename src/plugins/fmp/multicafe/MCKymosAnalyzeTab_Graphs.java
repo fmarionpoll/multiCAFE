@@ -36,25 +36,23 @@ public class MCKymosAnalyzeTab_Graphs extends JPanel {
 	private JCheckBox 	consumptionCheckbox 	= new JCheckBox("consumption", false);
 	private JCheckBox 	deltaCheckbox 			= new JCheckBox("delta (Vt - Vt-1)", false);
 	
-	private JButton displayResultsButton 		= new JButton("Display results");
+	private JButton 	displayFeedingActivitiesButton 	= new JButton("Display results");
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		add(GuiUtil.besidesPanel(limitsCheckbox, derivativeCheckbox, consumptionCheckbox, deltaCheckbox));
-		add(GuiUtil.besidesPanel(displayResultsButton, new JLabel(" "))); 
+		add(GuiUtil.besidesPanel(displayFeedingActivitiesButton, new JLabel(" "))); 
 		defineActionListeners();
 	}
 	
 	private void defineActionListeners() {
-		displayResultsButton.addActionListener(new ActionListener () { 
+		displayFeedingActivitiesButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-				displayResultsButton.setEnabled(false);
 				exp.seqKymos.roisSaveEdits();
 				xyDisplayGraphs();
-				displayResultsButton.setEnabled(true);
 			}});
 	}
 	
