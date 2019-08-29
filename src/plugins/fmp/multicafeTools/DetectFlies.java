@@ -131,7 +131,10 @@ public class DetectFlies  implements Runnable {
 				progressBar.updatePositionAndTimeLeft(t);
 
 				// load next image and compute threshold
-				IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(seqCamData.getImageFromForwardBuffer(t));
+				IcyBufferedImage img = seqCamData.getImageFromForwardBuffer(t);
+				if (img == null)
+					continue;
+				IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(img);
 				seqCamData.currentFrame = t;
 				
 				IcyBufferedImage negativeImage = seqCamData.subtractImages (seqCamData.refImage, currentImage);

@@ -568,21 +568,18 @@ public class SequenceCamData  {
 		
 		if (img == null) {
 			File f = new File(listFiles.get(t));
+			BufferedImage bufImg = null;
 			try {
-				BufferedImage bufImg = ImageIO.read(f);
-				img = IcyBufferedImage.createFrom(bufImg);
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				bufImg = ImageIO.read(f);
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			if (img == null) {
+			if (bufImg == null) {
 				System.out.println("failed to preload and to read image "+t);
-			}
+				return null;
+			} 
+			img = IcyBufferedImage.createFrom(bufImg);
 			bufferThread.tcurrent = t;
 			currentFrame = t;
 		}

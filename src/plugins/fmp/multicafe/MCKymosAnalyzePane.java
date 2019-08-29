@@ -57,14 +57,14 @@ public class MCKymosAnalyzePane extends JPanel implements PropertyChangeListener
 		tabsPane.addTab("Gulps", null, gulpsTab, "Detect gulps");
 		gulpsTab.addPropertyChangeListener(this);
 		
-		fileTab.init(capLayout, parent0);
-		fileTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Load/Save", null, fileTab, "Load/Save kymographs");
-		
 		graphsTab.init(capLayout, parent0);
 		graphsTab.addPropertyChangeListener(this);
 		tabsPane.addTab("Graphs", null, graphsTab, "Display results as a graph");
-				
+		
+		fileTab.init(capLayout, parent0);
+		fileTab.addPropertyChangeListener(this);
+		tabsPane.addTab("Load/Save", null, fileTab, "Load/Save kymographs");
+						
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));
 		limitsTab.transformForLevelsComboBox.setSelectedItem(TransformOp.G2MINUS_RB);
 		tabsPane.setSelectedIndex(0);
