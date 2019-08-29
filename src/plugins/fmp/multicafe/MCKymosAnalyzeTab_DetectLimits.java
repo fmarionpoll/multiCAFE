@@ -29,7 +29,7 @@ public class MCKymosAnalyzeTab_DetectLimits  extends JPanel {
 	 */
 	private static final long serialVersionUID = -6329863521455897561L;
 	private JComboBox<String> 	directionComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
-	private JCheckBox	detectAllCheckBox 		= new JCheckBox ("all", true);
+	private JCheckBox	detectAllCheckBox 		= new JCheckBox ("all images", true);
 	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
 	private JButton		displayTransform1Button	= new JButton("Display");
 	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
@@ -48,7 +48,7 @@ public class MCKymosAnalyzeTab_DetectLimits  extends JPanel {
 		((JLabel) directionComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
 		add( GuiUtil.besidesPanel(directionComboBox, thresholdSpinner, transformForLevelsComboBox, displayTransform1Button )); 
 		add( GuiUtil.besidesPanel(new JLabel("span ", SwingConstants.RIGHT), spanTopSpinner, new JLabel(" "), new JLabel(" ")));
-		add( GuiUtil.besidesPanel( detectButton,  detectAllCheckBox, new JLabel(" ")));
+		add( GuiUtil.besidesPanel( detectButton,  detectAllCheckBox, new JLabel(" "), new JLabel(" ")));
 		
 		defineActionListeners();
 	}
