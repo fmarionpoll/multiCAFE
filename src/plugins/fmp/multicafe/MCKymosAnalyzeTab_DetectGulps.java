@@ -35,7 +35,7 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 	 */
 	private static final long 	serialVersionUID 				= -5590697762090397890L;
 	
-	JCheckBox				detectAllGulpsCheckBox 			= new JCheckBox ("all", true);
+	JCheckBox				detectAllGulpsCheckBox 			= new JCheckBox ("all images", true);
 	JCheckBox				viewGulpsThresholdCheckBox 		= new JCheckBox ("view threshold", false);
 	JComboBox<TransformOp> 	transformForGulpsComboBox 		= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
 	
@@ -51,8 +51,8 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		add( GuiUtil.besidesPanel( new JLabel("threshold ", SwingConstants.RIGHT), detectGulpsThresholdSpinner, transformForGulpsComboBox, displayTransform2Button));
-		add( GuiUtil.besidesPanel( new JLabel(" "), viewGulpsThresholdCheckBox, new JLabel("span ", SwingConstants.RIGHT), spanTransf2Spinner));
-		add( GuiUtil.besidesPanel( detectGulpsButton, detectAllGulpsCheckBox, new JLabel(" ") ));
+		add( GuiUtil.besidesPanel( new JLabel("span ", SwingConstants.RIGHT), spanTransf2Spinner, new JLabel(" "), viewGulpsThresholdCheckBox));
+		add( GuiUtil.besidesPanel( detectGulpsButton, detectAllGulpsCheckBox, new JLabel(" ") , new JLabel(" ")));
 
 		transformForGulpsComboBox.setSelectedItem(TransformOp.XDIFFN);
 		defineListeners();

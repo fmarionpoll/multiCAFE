@@ -1,6 +1,8 @@
 package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
+import java.awt.ComponentOrientation;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -65,7 +67,18 @@ public class MCSequenceTab_Open extends JPanel {
 		
 		add( GuiUtil.besidesPanel(openButton, addButton));
 		add( GuiUtil.besidesPanel(searchButton, closeButton));
-		add( GuiUtil.besidesPanel(capillariesCheckBox, kymographsCheckBox, cagesCheckBox, measuresCheckBox, graphsCheckBox));
+		JPanel panel = new JPanel();
+		FlowLayout layout = new FlowLayout();
+		layout.setVgap(0);
+		panel.setLayout(layout);
+		panel.add(capillariesCheckBox);
+		panel.add(kymographsCheckBox);
+		panel.add(cagesCheckBox);
+		panel.add(measuresCheckBox);
+		panel.add(graphsCheckBox);
+		panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		add( GuiUtil.besidesPanel(panel));
+//		add( GuiUtil.besidesPanel(capillariesCheckBox, kymographsCheckBox, cagesCheckBox, measuresCheckBox, graphsCheckBox));
 		
 		searchButton.addActionListener(new ActionListener()  {
             @Override
