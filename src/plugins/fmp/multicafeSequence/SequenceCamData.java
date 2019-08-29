@@ -1,5 +1,6 @@
  package plugins.fmp.multicafeSequence;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -149,8 +150,7 @@ public class SequenceCamData  {
 	public IcyBufferedImage getImageAndSubtractReference(int t, TransformOp transformop) {
 		IcyBufferedImage ibufImage = getImage(t, 0);
 		switch (transformop) {
-			case REF_PREVIOUS: // subtract image n-analysisStep 
-				{
+			case REF_PREVIOUS: {	// subtract image n-analysisStep 
 				int t0 = t-analysisStep;
 				if (t0 <0)
 					t0 = 0;
@@ -158,7 +158,7 @@ public class SequenceCamData  {
 				ibufImage = subtractImages (ibufImage, ibufImage0);
 				}	
 				break;
-			case REF_T0: // subtract reference image
+			case REF_T0: 			// subtract reference image
 			case REF:
 				if (refImage == null)
 					refImage = getImage((int) analysisStart, 0);
@@ -479,7 +479,6 @@ public class SequenceCamData  {
 			final Document doc = XMLUtil.loadDocument(csFileName);
 			if (doc != null) {
 				List<ROI> listOfROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
-//				seq.addROIs(listOfROIs, false);
 				ROI2DUtilities.addROIsToSequenceIfNotAlreadyPresent(listOfROIs, seq);
 				return true;
 			}
@@ -570,9 +569,19 @@ public class SequenceCamData  {
 		if (img == null) {
 			File f = new File(listFiles.get(t));
 			try {
-				img = IcyBufferedImage.createFrom(ImageIO.read(f));
+				BufferedImage bufImg = ImageIO.read(f);
+				img = IcyBufferedImage.createFrom(bufImg);
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			}
+			if (img == null) {
+				System.out.println("failed to preload and to read image "+t);
 			}
 			bufferThread.tcurrent = t;
 			currentFrame = t;
