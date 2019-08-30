@@ -46,8 +46,8 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 	private ROI2DLine		roiThreshold 					= new ROI2DLine ();
 	private MultiCAFE 		parent0;
 	private JCheckBox		partCheckBox 					= new JCheckBox ("detect from", false);
-	private JSpinner		startSpinner					= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
-	private JSpinner		endSpinner						= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
+	JSpinner		startSpinner					= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
+	JSpinner		endSpinner						= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {

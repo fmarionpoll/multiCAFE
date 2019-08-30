@@ -137,4 +137,11 @@ public class MCKymosAnalyzePane extends JPanel implements PropertyChangeListener
 		seqKymos.seq.dataChanged();
 		seqKymos.seq.endUpdate();
 	}
+	
+	void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
+		limitsTab.startSpinner.setValue((int)seqCamData.analysisStart);
+		limitsTab.endSpinner.setValue((int)seqCamData.analysisEnd);
+		gulpsTab.startSpinner.setValue((int)seqCamData.analysisStart);
+		gulpsTab.endSpinner.setValue((int)seqCamData.analysisEnd);
+	}
 }

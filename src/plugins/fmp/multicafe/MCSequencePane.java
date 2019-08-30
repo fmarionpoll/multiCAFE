@@ -17,6 +17,7 @@ import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
+import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 
@@ -84,7 +85,9 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		}
 		else if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
 			ProgressFrame progress = new ProgressFrame("Open file...");
-			if (createSequenceCamFromString(null)) {
+			SequenceCamData seqCamData = parent0.openSequenceCam(null);
+			parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
+			if (seqCamData != null) {
 				infosTab.expListComboBox.removeAllItems();
 				addSequenceCamToCombo();
 			}
@@ -92,7 +95,9 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
 			ProgressFrame progress = new ProgressFrame("Add file...");
-			if (createSequenceCamFromString(null)) {
+			SequenceCamData seqCamData = parent0.openSequenceCam(null);
+			parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
+			if (seqCamData != null) {
 				addSequenceCamToCombo();
 			}
 			progress.close();
@@ -126,12 +131,13 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 	}
 	
 	private void openSequenceCamFromCombo() {
-		createSequenceCamFromString((String) infosTab.expListComboBox.getSelectedItem());
-		openTab.loadMeasuresAndKymos();
+		SequenceCamData seqCamData = parent0.openSequenceCam((String) infosTab.expListComboBox.getSelectedItem());
+		parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
+		loadMeasuresAndKymos();
 		tabsPane.setSelectedIndex(1);
 	}
 	
-	void addSequenceCamToCombo(String strItem) {
+	private void addSequenceCamToCombo(String strItem) {
 		int nitems = infosTab.expListComboBox.getItemCount();
 		boolean alreadystored = false;
 		for (int i=0; i < nitems; i++) {
@@ -151,35 +157,13 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 			addSequenceCamToCombo(strItem);
 			infosTab.expListComboBox.setSelectedItem(strItem);
 			updateViewerForSequenceCam(exp.seqCamData);
-			openTab.loadMeasuresAndKymos();
+			loadMeasuresAndKymos();
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", strItem);
 		}
 	}
-	
-	boolean createSequenceCamFromString (String filename) {
-		SequenceCamData seqCamData = openSequenceCamDataFromExpList(filename);
-		boolean flag = (seqCamData != null);
-		if (flag) {
-			browseTab.endFrameJSpinner.setValue((int)seqCamData.analysisEnd);
-			parent0.addSequence(seqCamData.seq);
-			seqCamData.seq.getFirstViewer().addListener( parent0 );
-			updateViewerForSequenceCam(seqCamData);
-		}
-		return flag;
-	}
-	
-	private SequenceCamData openSequenceCamDataFromExpList(String filename ) {
-		int position = parent0.expList.getPositionOfCamFileName(filename);
-		if (position < 0) {
-			position = parent0.expList.addNewExperiment();
-		}
-		parent0.currentIndex = position;
-		Experiment exp = parent0.expList.getExperiment(position);
-		return exp.openSequenceCamData(filename);
-	}
-	
-	private void updateViewerForSequenceCam(SequenceCamData seqCamData) {
+			
+	void updateViewerForSequenceCam(SequenceCamData seqCamData) {
 		Viewer v = seqCamData.seq.getFirstViewer();
 		if (v != null) {
 			Rectangle rectv = v.getBoundsInternal();
@@ -191,6 +175,19 @@ public class MCSequencePane extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
+	void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
+		browseTab.endFrameJSpinner.setValue((int)seqCamData.analysisEnd);
+		updateViewerForSequenceCam(seqCamData);
+	}
 
-	
+	void loadMeasuresAndKymos() {
+		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
+			parent0.loadPreviousMeasures(
+					openTab.isCheckedLoadPreviousProfiles(), 
+					openTab.isCheckedLoadKymographs(),
+					openTab.isCheckedLoadCages(),
+					openTab.isCheckedLoadMeasures());
+		}});
+
+	}
 }

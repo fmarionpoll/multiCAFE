@@ -42,8 +42,8 @@ public class MCKymosAnalyzeTab_DetectLimits  extends JPanel {
 			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, 
 			TransformOp.H_HSB, TransformOp.S_HSB, TransformOp.B_HSB	});
 	private JCheckBox		partCheckBox 		= new JCheckBox ("detect from", false);
-	private JSpinner		startSpinner		= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
-	private JSpinner		endSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
+	JSpinner		startSpinner		= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
+	JSpinner		endSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {

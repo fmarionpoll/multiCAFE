@@ -156,18 +156,6 @@ public class ExperimentList {
 		}
 		return position;
 	}
-
-//	public SequenceCamData getSeqCamData(int index) {
-//		if (index < 0)
-//			return null;
-//		return experimentList.get(index).seqCamData;
-//	}
-//	
-//	public SequenceKymos getSeqKymos(int index) {
-//		if (index < 0)
-//			return null;
-//		return experimentList.get(index).seqKymos;
-//	}
 	
 	public Experiment getExperiment(int index) {
 		if (index < 0)

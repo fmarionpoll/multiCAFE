@@ -259,15 +259,4 @@ public class MCSequenceTab_Open extends JPanel {
 			((DefaultListModel<String>) directoriesJList.getModel()).addElement(fileName);
 	}
 	
-	void loadMeasuresAndKymos() {
-		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
-			parent0.loadPreviousMeasures(
-					isCheckedLoadPreviousProfiles(), 
-					isCheckedLoadKymographs(),
-					isCheckedLoadCages(),
-					isCheckedLoadMeasures());
-		}});
-
-}
-
 }

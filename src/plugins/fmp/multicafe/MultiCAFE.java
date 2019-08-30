@@ -106,8 +106,28 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			}});
 		}
 	} 
+	
+	SequenceCamData openSequenceCam(String filename) {
+		currentIndex = expList.getPositionOfCamFileName(filename);
+		if (currentIndex < 0) 
+			currentIndex = expList.addNewExperiment();
+		Experiment exp = expList.getExperiment(currentIndex);
+		SequenceCamData seqCamData = exp.openSequenceCamData(filename);
+		if (seqCamData.seq != null) {
+			addSequence(seqCamData.seq);
+			seqCamData.seq.getFirstViewer().addListener( this );
+		}
+		return seqCamData;
+	}
+	
+	void updateDialogsAfterOpeningSequenceCam(SequenceCamData seqCamData) {
+		if (seqCamData == null)
+			return;
+		sequencePane.transferSequenceCamDataToDialogs(seqCamData);
+		kymographsPane.transferSequenceCamDataToDialogs(seqCamData);		
+	}
 
-	public void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
+	void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
 		Experiment exp = expList.getExperiment(currentIndex);
 		SequenceCamData seqCamData = exp.seqCamData;
 		
