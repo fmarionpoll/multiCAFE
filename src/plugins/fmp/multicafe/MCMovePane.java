@@ -54,14 +54,14 @@ public class MCMovePane extends JPanel implements PropertyChangeListener {
 		detectTab.init(capLayout, parent0);
 		detectTab.addPropertyChangeListener(this);
 		tabsPane.addTab("Detect", null, detectTab, "Detect flies position");
-
-		filesTab.init(capLayout, parent0);
-		filesTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Load/Save", null, filesTab, "Load/save cages and flies position");
 		
 		graphicsTab.init(capLayout, parent0);		
 		graphicsTab.addPropertyChangeListener(this);
 		tabsPane.addTab("Graphs", null, graphicsTab, "Display results as graphics");
+
+		filesTab.init(capLayout, parent0);
+		filesTab.addPropertyChangeListener(this);
+		tabsPane.addTab("Load/Save", null, filesTab, "Load/save cages and flies position");
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));

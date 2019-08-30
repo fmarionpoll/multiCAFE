@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,15 +41,29 @@ public class MCKymosAnalyzeTab_DetectLimits  extends JPanel {
 			TransformOp.R2MINUS_GB, TransformOp.G2MINUS_RB, TransformOp.B2MINUS_RG, TransformOp.RGB,
 			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, 
 			TransformOp.H_HSB, TransformOp.S_HSB, TransformOp.B_HSB	});
+	private JCheckBox		partCheckBox 		= new JCheckBox ("detect from", false);
+	private JSpinner		startSpinner		= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
+	private JSpinner		endSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
+		
 		((JLabel) directionComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
-		add( GuiUtil.besidesPanel(directionComboBox, thresholdSpinner, transformForLevelsComboBox, displayTransform1Button )); 
-		add( GuiUtil.besidesPanel(new JLabel("span ", SwingConstants.RIGHT), spanTopSpinner, new JLabel(" "), new JLabel(" ")));
-		add( GuiUtil.besidesPanel( detectButton,  detectAllCheckBox, new JLabel(" "), new JLabel(" ")));
+		add( GuiUtil.besidesPanel(directionComboBox, thresholdSpinner, transformForLevelsComboBox, displayTransform1Button ));
+		
+		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		((FlowLayout)panel1.getLayout()).setVgap(0);	
+		panel1.add(partCheckBox);
+		panel1.add(startSpinner);
+		panel1.add(new JLabel("to"));
+		panel1.add(endSpinner);
+		add( panel1);
+		
+		detectAllCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
+		detectAllCheckBox.setHorizontalTextPosition(SwingConstants.LEFT);
+		add( GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "), detectAllCheckBox, detectButton));
 		
 		defineActionListeners();
 	}

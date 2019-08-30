@@ -155,7 +155,8 @@ public class MCMoveTab_Detect extends JPanel implements ChangeListener {
 	
 	public void removeOverlay() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		exp.seqCamData.seq.removeOverlay(ov);
+		if (exp.seqCamData != null && exp.seqCamData.seq != null)
+			exp.seqCamData.seq.removeOverlay(ov);
 	}
 
 	@Override

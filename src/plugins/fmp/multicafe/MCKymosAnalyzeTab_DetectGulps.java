@@ -1,6 +1,7 @@
 package plugins.fmp.multicafe;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,14 +30,13 @@ import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 
 public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
-
 	/**
 	 * 
 	 */
 	private static final long 	serialVersionUID 				= -5590697762090397890L;
 	
 	JCheckBox				detectAllGulpsCheckBox 			= new JCheckBox ("all images", true);
-	JCheckBox				viewGulpsThresholdCheckBox 		= new JCheckBox ("view threshold", false);
+	JCheckBox				viewGulpsThresholdCheckBox 		= new JCheckBox ("(view) threshold", false);
 	JComboBox<TransformOp> 	transformForGulpsComboBox 		= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
 	
 	private JButton			displayTransform2Button			= new JButton("Display");
@@ -45,14 +45,27 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 	private JButton 		detectGulpsButton 				= new JButton("Detect");
 	private ROI2DLine		roiThreshold 					= new ROI2DLine ();
 	private MultiCAFE 		parent0;
+	private JCheckBox		partCheckBox 					= new JCheckBox ("detect from", false);
+	private JSpinner		startSpinner					= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
+	private JSpinner		endSpinner						= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
-		add( GuiUtil.besidesPanel( new JLabel("threshold ", SwingConstants.RIGHT), detectGulpsThresholdSpinner, transformForGulpsComboBox, displayTransform2Button));
-		add( GuiUtil.besidesPanel( new JLabel("span ", SwingConstants.RIGHT), spanTransf2Spinner, new JLabel(" "), viewGulpsThresholdCheckBox));
-		add( GuiUtil.besidesPanel( detectGulpsButton, detectAllGulpsCheckBox, new JLabel(" ") , new JLabel(" ")));
+		add( GuiUtil.besidesPanel( viewGulpsThresholdCheckBox, detectGulpsThresholdSpinner, transformForGulpsComboBox, displayTransform2Button));
+		
+		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		((FlowLayout)panel1.getLayout()).setVgap(0);
+		panel1.add(partCheckBox);
+		panel1.add(startSpinner);
+		panel1.add(new JLabel("to"));
+		panel1.add(endSpinner);
+		add( panel1);
+		
+		detectAllGulpsCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
+		detectAllGulpsCheckBox.setHorizontalTextPosition(SwingConstants.LEFT);
+		add( GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "),  detectAllGulpsCheckBox, detectGulpsButton));
 
 		transformForGulpsComboBox.setSelectedItem(TransformOp.XDIFFN);
 		defineListeners();

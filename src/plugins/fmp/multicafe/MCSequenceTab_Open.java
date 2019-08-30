@@ -78,7 +78,7 @@ public class MCSequenceTab_Open extends JPanel {
 		panel.add(graphsCheckBox);
 		panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		add( GuiUtil.besidesPanel(panel));
-//		add( GuiUtil.besidesPanel(capillariesCheckBox, kymographsCheckBox, cagesCheckBox, measuresCheckBox, graphsCheckBox));
+
 		
 		searchButton.addActionListener(new ActionListener()  {
             @Override
