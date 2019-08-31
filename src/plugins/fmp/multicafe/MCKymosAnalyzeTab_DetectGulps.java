@@ -38,16 +38,16 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 	JCheckBox				detectAllGulpsCheckBox 			= new JCheckBox ("all images", true);
 	JCheckBox				viewGulpsThresholdCheckBox 		= new JCheckBox ("(view) threshold", false);
 	JComboBox<TransformOp> 	transformForGulpsComboBox 		= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
+	JSpinner				startSpinner					= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
+	JSpinner				endSpinner						= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	
+	private JCheckBox		partCheckBox 					= new JCheckBox ("detect from", false);
 	private JButton			displayTransform2Button			= new JButton("Display");
 	private JSpinner		spanTransf2Spinner				= new JSpinner(new SpinnerNumberModel(3, 0, 500, 1));
 	private JSpinner 		detectGulpsThresholdSpinner		= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
 	private JButton 		detectGulpsButton 				= new JButton("Detect");
 	private ROI2DLine		roiThreshold 					= new ROI2DLine ();
 	private MultiCAFE 		parent0;
-	private JCheckBox		partCheckBox 					= new JCheckBox ("detect from", false);
-	JSpinner		startSpinner					= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
-	JSpinner		endSpinner						= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -133,6 +133,9 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 		options.detectAllGulps 			= detectAllGulpsCheckBox.isSelected();
 		options.firstkymo 				= parent0.buildKymosPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
 		options.computeDiffnAndDetect	= detectGulps;
+		options.analyzePartOnly		= partCheckBox.isSelected();
+		options.startPixel			= (int) startSpinner.getValue();
+		options.endPixel			= (int) endSpinner.getValue();
 		
 		DetectGulps detect = new DetectGulps();
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);

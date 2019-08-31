@@ -14,6 +14,10 @@ public class DetectGulps_Options implements XMLPersistent {
 	public boolean 		detectAllGulps 			= true;
 	public boolean		computeDiffnAndDetect	= true;
 	public int			firstkymo 				= 0;
+	public 	boolean 	analyzePartOnly			= false;
+	public 	int 		startPixel 				= -1;
+	public 	int 		endPixel 				= -1;
+	
 	
 	public void copy(DetectGulps_Options destination) {
 		destination.detectGulpsThreshold 	= detectGulpsThreshold;

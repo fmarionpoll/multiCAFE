@@ -15,6 +15,9 @@ public class DetectLimits_Options implements XMLPersistent {
 	public 	boolean		directionUp				= true;
 	public 	int			detectLevelThreshold 	= 35;
 	public 	TransformOp	transformForLevels 		= TransformOp.R2MINUS_GB;
+	public 	boolean 	analyzePartOnly			= false;
+	public 	int 		startPixel 				= -1;
+	public 	int 		endPixel 				= -1;
 
 	
 	void copy(DetectLimits_Options destination) {

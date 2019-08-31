@@ -294,8 +294,11 @@ public class Capillaries {
 	public void copy (Capillaries cap) {
 		desc.copy(cap.desc);
 		capillariesArrayList.clear();
-		for (Capillary ccap: cap.capillariesArrayList)
-			capillariesArrayList.add(ccap);
+		for (Capillary ccap: cap.capillariesArrayList) {
+			Capillary capi = new Capillary();
+			capi.copy(ccap);
+			capillariesArrayList.add(capi);
+		}
 	}
 	
 	public boolean isChanged (Capillaries cap) {	

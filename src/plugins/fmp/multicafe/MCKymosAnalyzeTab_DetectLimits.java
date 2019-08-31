@@ -28,6 +28,14 @@ public class MCKymosAnalyzeTab_DetectLimits  extends JPanel {
 	/**
 	 * 
 	 */
+	JSpinner			startSpinner			= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
+	JSpinner			endSpinner				= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
+	JComboBox<TransformOp> transformForLevelsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
+			TransformOp.R_RGB, TransformOp.G_RGB, TransformOp.B_RGB, 
+			TransformOp.R2MINUS_GB, TransformOp.G2MINUS_RB, TransformOp.B2MINUS_RG, TransformOp.RGB,
+			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, 
+			TransformOp.H_HSB, TransformOp.S_HSB, TransformOp.B_HSB	});
+
 	private static final long serialVersionUID = -6329863521455897561L;
 	private JComboBox<String> 	directionComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JCheckBox	detectAllCheckBox 		= new JCheckBox ("all images", true);
@@ -36,14 +44,7 @@ public class MCKymosAnalyzeTab_DetectLimits  extends JPanel {
 	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
 	private JButton 	detectButton 			= new JButton("Detect");
 	private MultiCAFE 	parent0 				= null;
-	JComboBox<TransformOp> transformForLevelsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
-			TransformOp.R_RGB, TransformOp.G_RGB, TransformOp.B_RGB, 
-			TransformOp.R2MINUS_GB, TransformOp.G2MINUS_RB, TransformOp.B2MINUS_RG, TransformOp.RGB,
-			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, 
-			TransformOp.H_HSB, TransformOp.S_HSB, TransformOp.B_HSB	});
-	private JCheckBox		partCheckBox 		= new JCheckBox ("detect from", false);
-	JSpinner		startSpinner		= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
-	JSpinner		endSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
+	private JCheckBox	partCheckBox 			= new JCheckBox ("detect from", false);
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -81,15 +82,20 @@ public class MCKymosAnalyzeTab_DetectLimits  extends JPanel {
 		detectButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				kymosDisplayFiltered1();
+				
+				Experiment exp 				= parent0.expList.getExperiment(parent0.currentIndex);
+				
 				DetectLimits_Options options= new DetectLimits_Options();
 				options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 				options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 				options.detectLevelThreshold= (int) getDetectLevelThreshold();
 				options.detectAllImages 	= detectAllCheckBox.isSelected();
 				options.firstImage 			= parent0.buildKymosPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
-
+				options.analyzePartOnly		= partCheckBox.isSelected();
+				options.startPixel			= (int) startSpinner.getValue();
+				options.endPixel			= (int) endSpinner.getValue();
+				
 				DetectLimits detect 		= new DetectLimits();
-				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 				detect.detectCapillaryLevels(options, exp.seqKymos);
 				firePropertyChange("KYMO_DETECT_TOP", false, true);
 			}});	

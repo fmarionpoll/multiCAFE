@@ -359,5 +359,20 @@ public class Capillary implements XMLPersistent  {
 	    }
 	    return data;
 	}
+
+	public void copy(Capillary cap) {
+		indexImage 				= cap.indexImage;
+		capillaryName 			= cap.capillaryName;
+		version 				= cap.version;
+		capillaryRoi 			= cap.capillaryRoi;
+		filenameTIFF			= cap.filenameTIFF;
+		limitsOptions			= cap.limitsOptions;
+		gulpsOptions			= cap.gulpsOptions;
+		ptsTop  				= (Polyline2D) cap.ptsTop.clone(); 
+		ptsBottom 				= (Polyline2D) cap.ptsBottom.clone(); 
+		ptsDerivative 			= (Polyline2D) cap.ptsDerivative.clone(); 
+		gulpsRois 				= new ArrayList <ROI> ();
+		gulpsRois.addAll(cap.gulpsRois); 
+	}
 	
 }

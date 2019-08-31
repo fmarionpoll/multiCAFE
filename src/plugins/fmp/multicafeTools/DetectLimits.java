@@ -16,7 +16,7 @@ public class DetectLimits {
 	
 	public void detectCapillaryLevels(DetectLimits_Options options, SequenceKymos seqkymo) {
 		// send some info
-		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
+		ProgressChrono progressBar = new ProgressChrono("Detection of upper/lower capillary limits started");
 		progressBar.initStuff(seqkymo.seq.getSizeT() );
 		
 		int jitter = 10;
