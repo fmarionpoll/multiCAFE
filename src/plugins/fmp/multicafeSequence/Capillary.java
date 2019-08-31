@@ -46,21 +46,21 @@ public class Capillary implements XMLPersistent  {
 	public List <double []> 			tabValuesList 			= null;
 	public IcyBufferedImage 			bufImage 				= null;
 	
-	private final static String ID_META 		= "metaMC";
-	private final static String ID_ROI 			= "roiMC";
-	private final static String ID_GULPS 		= "gulpsMC";
-	private final static String ID_INDEXIMAGE 	= "indexImageMC";
-	private final static String ID_NAME 		= "nameMC";
-	private final static String ID_NAMETIFF 	= "filenameTIFF";
-	private final static String ID_TOPLEVEL 	= "toplevel";	
-	private final static String ID_BOTTOMLEVEL 	= "bottomlevel";	
-	private final static String ID_DERIVATIVE 	= "derivedvalues";	
-	private final static String ID_VERSION		= "version"; 
-	private final static String ID_VERSIONNUM	= "1.0.0"; 
-	private final static String ID_NPOINTS		= "npoints";
-	private final static String ID_N			= "n";
-	private final static String ID_X			= "x";
-	private final static String ID_Y			= "y";
+	private final String ID_META 		= "metaMC";
+	private final String ID_ROI 			= "roiMC";
+	private final String ID_GULPS 		= "gulpsMC";
+	private final String ID_INDEXIMAGE 	= "indexImageMC";
+	private final String ID_NAME 		= "nameMC";
+	private final String ID_NAMETIFF 	= "filenameTIFF";
+	public final String ID_TOPLEVEL 	= "toplevel";	
+	public final String ID_BOTTOMLEVEL 	= "bottomlevel";	
+	private final String ID_DERIVATIVE 	= "derivedvalues";	
+	private final String ID_VERSION		= "version"; 
+	private final String ID_VERSIONNUM	= "1.0.0"; 
+	private final String ID_NPOINTS		= "npoints";
+	private final String ID_N			= "n";
+	private final String ID_X			= "x";
+	private final String ID_Y			= "y";
 	    
 	// ----------------------------------------------------
 	
@@ -76,6 +76,21 @@ public class Capillary implements XMLPersistent  {
 	public Capillary() {
 	}
 
+	public void copy(Capillary cap) {
+		indexImage 				= cap.indexImage;
+		capillaryName 			= cap.capillaryName;
+		version 				= cap.version;
+		capillaryRoi 			= cap.capillaryRoi;
+		filenameTIFF			= cap.filenameTIFF;
+		limitsOptions			= cap.limitsOptions;
+		gulpsOptions			= cap.gulpsOptions;
+		ptsTop  				= (Polyline2D) cap.ptsTop.clone(); 
+		ptsBottom 				= (Polyline2D) cap.ptsBottom.clone(); 
+		ptsDerivative 			= (Polyline2D) cap.ptsDerivative.clone(); 
+		gulpsRois 				= new ArrayList <ROI> ();
+		gulpsRois.addAll(cap.gulpsRois); 
+	}
+	
 	public String getName() {
 		return capillaryName;
 	}
@@ -208,10 +223,8 @@ public class Capillary implements XMLPersistent  {
 			}
 		}
 	}
-	
-	// ---------------------
-	
-	private ROI2D transferPolyline2DToROI(String name, Polyline2D polyline) {
+		
+	public ROI2D transferPolyline2DToROI(String name, Polyline2D polyline) {
 		ROI2D roi = new ROI2DPolyLine(polyline); 
 		if (indexImage >= 0) {
 			roi.setT(indexImage);
@@ -360,19 +373,5 @@ public class Capillary implements XMLPersistent  {
 	    return data;
 	}
 
-	public void copy(Capillary cap) {
-		indexImage 				= cap.indexImage;
-		capillaryName 			= cap.capillaryName;
-		version 				= cap.version;
-		capillaryRoi 			= cap.capillaryRoi;
-		filenameTIFF			= cap.filenameTIFF;
-		limitsOptions			= cap.limitsOptions;
-		gulpsOptions			= cap.gulpsOptions;
-		ptsTop  				= (Polyline2D) cap.ptsTop.clone(); 
-		ptsBottom 				= (Polyline2D) cap.ptsBottom.clone(); 
-		ptsDerivative 			= (Polyline2D) cap.ptsDerivative.clone(); 
-		gulpsRois 				= new ArrayList <ROI> ();
-		gulpsRois.addAll(cap.gulpsRois); 
-	}
 	
 }

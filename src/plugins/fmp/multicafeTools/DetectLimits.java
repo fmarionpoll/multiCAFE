@@ -31,53 +31,70 @@ public class DetectLimits {
 		for (int t=tfirst; t <= tlast; t++) {
 			progressBar.updatePositionAndTimeLeft(t);
 			seqkymo.removeROIsAtT(t);
-			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(t);
-			cap.ptsTop = null;
-			cap.ptsBottom = null;
-			cap.ptsDerivative = null;
-			cap.gulpsRois = null;
 			limitTop = new ArrayList<Point2D>();
 			limitBottom = new ArrayList<Point2D>();
-			
-			options.copy(cap.limitsOptions); 
+ 
 			IcyBufferedImage image = null;
 			int c = 0;
 			image = seqkymo.seq.getImage(t, 1);
 			Object dataArray = image.getDataXY(c);
 			double[] tabValues = Array1DUtil.arrayToDoubleArray(dataArray, image.isSignedDataType());
 			
+			int startPixel = 0;
+			int endPixel = image.getSizeX()-1;
 			int xwidth = image.getSizeX();
 			int yheight = image.getSizeY();
+			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(t);
+			cap.ptsDerivative = null;
+			cap.gulpsRois = null;
+			options.copy(cap.limitsOptions);
+			if (options.analyzePartOnly) {
+				startPixel = options.startPixel;
+				endPixel = options.endPixel;
+			} else {
+				cap.ptsTop = null;
+				cap.ptsBottom = null;
+			}
 			int oldiytop = 0;		// assume that curve goes from left to right with jitter 
 			int oldiybottom = yheight-1;
 			boolean flagtop = true;
 			boolean flagbottom = true; 
 
 			// scan each image column
-			for (int ix = 0; ix < xwidth; ix++) {
+			for (int ix = startPixel; ix < endPixel; ix++) {
 				if (flagtop)
-					detectTop(ix, oldiytop, jitter, tabValues, cap, xwidth, yheight, options);
+					detectTop(ix, oldiytop, jitter, tabValues, xwidth, yheight, options);
 				
 				if (flagbottom) 
-					detectBottom(ix, oldiybottom, jitter, tabValues, cap, xwidth, yheight, options);
+					detectBottom(ix, oldiybottom, jitter, tabValues, xwidth, yheight, options);
 			}
 			
 			if (flagtop) {
-				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);
-				roiTopTrack.setName(cap.getLast2ofCapillaryName()+"_toplevel");
-				roiTopTrack.setStroke(1);
-				roiTopTrack.setT(t);
-				seqkymo.seq.addROI(roiTopTrack);
-				cap.ptsTop = roiTopTrack.getPolyline2D();
+				if (options.analyzePartOnly) {
+					Polyline2DUtil.InsertYPointsIntoArray(limitTop, cap.ptsTop, startPixel, endPixel);
+					seqkymo.seq.addROI(cap.transferPolyline2DToROI(cap.ID_TOPLEVEL, cap.ptsTop));
+				} else {
+					ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);
+					roiTopTrack.setName(cap.getLast2ofCapillaryName()+"_toplevel");
+					roiTopTrack.setStroke(1);
+					roiTopTrack.setT(t);
+					seqkymo.seq.addROI(roiTopTrack);
+					cap.ptsTop = roiTopTrack.getPolyline2D();
+				}
 			}
 			
 			if (flagbottom) {
-				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine (limitBottom);
-				roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
-				roiBottomTrack.setStroke(1);
-				roiBottomTrack.setT(t);
-				seqkymo.seq.addROI(roiBottomTrack);
-				cap.ptsBottom = roiBottomTrack.getPolyline2D();
+				if (options.analyzePartOnly) {
+					Polyline2DUtil.InsertYPointsIntoArray(limitBottom, cap.ptsBottom, startPixel, endPixel);
+					seqkymo.seq.addROI(cap.transferPolyline2DToROI(cap.ID_BOTTOMLEVEL, cap.ptsBottom));
+				} else {
+					ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine (limitBottom);
+					roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
+					roiBottomTrack.setStroke(1);
+					roiBottomTrack.setT(t);
+					seqkymo.seq.addROI(roiBottomTrack);
+					cap.ptsBottom = roiBottomTrack.getPolyline2D();
+				}
 			}
 		}
 		seqkymo.seq.endUpdate();
@@ -87,7 +104,7 @@ public class DetectLimits {
 		progressBar.close();
 	}
 	
-	void detectTop(int ix, int oldiytop, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, DetectLimits_Options options) {
+	void detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
 		boolean found = false;
 		double x = ix;
 		double y = 0;
@@ -116,7 +133,7 @@ public class DetectLimits {
 		limitTop.add(new Point2D.Double (x, y));
 	}
 	
-	void detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, Capillary cap, int xwidth, int yheight, DetectLimits_Options options) {
+	void detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
 		// set flags for internal loop (part of the row)
 		boolean found = false;
 		double x = ix;
