@@ -479,7 +479,7 @@ public class SequenceCamData  {
 			final Document doc = XMLUtil.loadDocument(csFileName);
 			if (doc != null) {
 				List<ROI> listOfROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
-				ROI2DUtilities.addROIsToSequenceIfNotAlreadyPresent(listOfROIs, seq);
+				ROI2DUtilities.addROIsToSequenceNoDuplicate(listOfROIs, seq);
 				return true;
 			}
 		}

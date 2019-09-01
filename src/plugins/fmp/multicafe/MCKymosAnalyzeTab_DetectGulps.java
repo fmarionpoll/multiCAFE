@@ -20,7 +20,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import icy.gui.util.GuiUtil;
-import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
@@ -77,14 +76,14 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				kymosDisplayFiltered2();
 				kymosDetectGulps(false);
-				roisDisplayAllThresholds(viewGulpsThresholdCheckBox.isSelected());
+				displayThresholdAsROI(viewGulpsThresholdCheckBox.isSelected());
 			}});
 		
 		detectGulpsButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				kymosDisplayFiltered2();
 				kymosDetectGulps(true);
-				roisDisplayAllThresholds(viewGulpsThresholdCheckBox.isSelected());
+				displayThresholdAsROI(viewGulpsThresholdCheckBox.isSelected());
 			}});
 		
 		displayTransform2Button.addActionListener(new ActionListener () { 
@@ -95,17 +94,14 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 		
 		viewGulpsThresholdCheckBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
-				roisDisplayAllThresholds(viewGulpsThresholdCheckBox.isSelected());
+				displayThresholdAsROI(viewGulpsThresholdCheckBox.isSelected());
 			}});
 		
 		detectGulpsThresholdSpinner.addChangeListener(new ChangeListener() {
 			@Override public void stateChanged(ChangeEvent arg0) {
 				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 				if (exp.seqKymos != null && viewGulpsThresholdCheckBox.isSelected()) {
-					int thresholdValue = (int) detectGulpsThresholdSpinner.getValue();
-					roiDisplayThreshold(true, exp.seqKymos, thresholdValue);
-					if (detectAllGulpsCheckBox.isSelected())
-						roisDisplayAllThresholds(viewGulpsThresholdCheckBox.isSelected());
+					displayThresholdAsROI(true);
 				}
 			}});
 	}
@@ -133,9 +129,9 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 		options.detectAllGulps 			= detectAllGulpsCheckBox.isSelected();
 		options.firstkymo 				= parent0.buildKymosPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
 		options.computeDiffnAndDetect	= detectGulps;
-		options.analyzePartOnly		= partCheckBox.isSelected();
-		options.startPixel			= (int) startSpinner.getValue();
-		options.endPixel			= (int) endSpinner.getValue();
+		options.analyzePartOnly			= partCheckBox.isSelected();
+		options.startPixel				= (int) startSpinner.getValue();
+		options.endPixel				= (int) endSpinner.getValue();
 		
 		DetectGulps detect = new DetectGulps();
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
@@ -157,35 +153,26 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 		options.detectAllGulps = detectAllGulpsCheckBox.isSelected();
 	}
 	
-	void roisDisplayAllThresholds(boolean display) {
+	void displayThresholdAsROI(boolean display) {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		if (exp.seqKymos == null)
 			return;
-		ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
-				final int thresholdValue = (int) detectGulpsThresholdSpinner.getValue();
-				roiDisplayThreshold(display, exp.seqKymos, thresholdValue);
-			}});
-	}
-	
-	void roiDisplayThreshold(boolean display, SequenceKymos seq, int thresholdValue) {
 		if (display)
 		{
-			if (!seq.seq.contains(roiThreshold)) {
+			if (!exp.seqKymos.seq.contains(roiThreshold)) {
 				roiThreshold.setName("derivativeThresh");
 				roiThreshold.setColor(Color.ORANGE);
 				roiThreshold.setStroke(1);
 				roiThreshold.setOpacity((float) 0.2);
-				seq.seq.addROI(roiThreshold);
+				exp.seqKymos.seq.addROI(roiThreshold);
 			}
-			//int seqheight = seq.seq.getHeight()/2;
-			//double value = seqheight - thresholdValue;
-			double value = thresholdValue;
-			Line2D refLineUpper = new Line2D.Double (0, value, seq.seq.getWidth(), value);
+			double value = (double) detectGulpsThresholdSpinner.getValue();
+			Line2D refLineUpper = new Line2D.Double (0, value, exp.seqKymos.seq.getWidth(), value);
 			roiThreshold.setLine(refLineUpper);
 		}
 		else 
 		{
-			seq.seq.removeROI(roiThreshold);
+			exp.seqKymos.seq.removeROI(roiThreshold);
 		}
 	}
 

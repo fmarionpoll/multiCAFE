@@ -1,5 +1,6 @@
 package plugins.fmp.multicafeTools;
 
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +22,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class ROI2DUtilities  {
 	
-	public static List<ROI2D> getListofCapillariesFromSequence (SequenceCamData seqCamData) {
+	public static List<ROI2D> getCapillariesFromSequence (SequenceCamData seqCamData) {
 		if (seqCamData == null)
 			 return null;
 		
@@ -37,7 +38,7 @@ public class ROI2DUtilities  {
 		return capillaryRois;
 	}
 	
-	public static List<ROI2D> getListofGulpsFromSequence (SequenceCamData seqCamData) {
+	public static List<ROI2D> getGulpsFromSequence (SequenceCamData seqCamData) {
 		if (seqCamData == null)
 			 return null;
 		
@@ -53,7 +54,7 @@ public class ROI2DUtilities  {
 		return gulpRois;
 	}
 	
-	public static List<ROI2D> getListofCagesFromSequence (SequenceCamData seqCamData) {
+	public static List<ROI2D> getCagesFromSequence (SequenceCamData seqCamData) {
 		if (seqCamData == null)
 			 return null;
 		
@@ -70,7 +71,7 @@ public class ROI2DUtilities  {
 		return cageLimitROIList;
 	}
 	
-	public static List<BooleanMask2D> getMask2DFromRoiList (List<ROI2D> roiList) {
+	public static List<BooleanMask2D> getMask2DFromROIs (List<ROI2D> roiList) {
 		List<BooleanMask2D> cageMaskList = new ArrayList<BooleanMask2D>();
 		for ( ROI2D roi : roiList ) {
 			cageMaskList.add(roi.getBooleanMask2D( 0 , 0, 1, true ));
@@ -114,7 +115,7 @@ public class ROI2DUtilities  {
 		return true;
 	}
 
-	private static List<Integer> transferRoiToDataArray(ROI2DPolyLine roiLine) {
+	private static List<Integer> transferROIToDataArray(ROI2DPolyLine roiLine) {
 		Polyline2D line = roiLine.getPolyline2D();
 		List<Integer> intArray = new ArrayList<Integer> (line.npoints);
 		for (int i=0; i< line.npoints; i++) {
@@ -123,7 +124,7 @@ public class ROI2DUtilities  {
 		return intArray;
 	}
 	
-	public static void addROIsToSequenceIfNotAlreadyPresent(List<ROI> listRois, Sequence seq) {
+	public static void addROIsToSequenceNoDuplicate(List<ROI> listRois, Sequence seq) {
 		List<ROI2D> seqList = seq.getROI2Ds(false);
 		for (ROI2D seqRoi: seqList) {
 			Iterator <ROI> iterator = listRois.iterator();
@@ -142,8 +143,7 @@ public class ROI2DUtilities  {
 		seq.addROIs(listRois, false);
 	}
 
-
-	public static ROI2DPolyLine transfertDataArrayToRoi(List<Integer> intArray) {
+	public static ROI2DPolyLine transfertDataArrayToROI(List<Integer> intArray) {
 		Polyline2D line = new Polyline2D();
 		for (int i =0; i< intArray.size(); i++) {
 			Point2D pt = new Point2D.Double(i, intArray.get(i));
@@ -152,32 +152,32 @@ public class ROI2DUtilities  {
 		return new ROI2DPolyLine(line);
 	}
 	
-	public static List<Integer> copyFirstRoiMatchingFilterToDataArray (SequenceKymos seqKymos, String filter) {
+	public static List<Integer> copyFirstROIMatchingFilterToDataArray (SequenceKymos seqKymos, String filter) {
 		List<ROI2D> listRois = seqKymos.seq.getROI2Ds();
 		int width = seqKymos.seq.getWidth();
 		for (ROI2D roi: listRois) {
 			if (roi.getName().contains(filter)) { 
 				interpolateMissingPointsAlongXAxis ((ROI2DPolyLine)roi, width);
-				return transferRoiToDataArray((ROI2DPolyLine)roi);
+				return transferROIToDataArray((ROI2DPolyLine)roi);
 			}
 		}
 		return null;
 	}
 	
-	public static void addRoisMatchingFilterToCumSumDataArray (Sequence seq, String filter, List<Integer> cumSumArray) {
+	public static void addROIsMatchingFilterToCumSumDataArray (Sequence seq, String filter, List<Integer> cumSumArray) {
 		List<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName().contains(filter)) 
-				addRoitoCumulatedSumArray((ROI2DPolyLine) roi, cumSumArray);
+				addROItoCumulatedSumArray((ROI2DPolyLine) roi, cumSumArray);
 		}
 		return ;
 	}
 	
-	public static void addRoitoCumulatedSumArray(ROI2DPolyLine roi, List<Integer> sumArrayList) {
+	public static void addROItoCumulatedSumArray(ROI2DPolyLine roi, List<Integer> sumArrayList) {
 		Polyline2D roiline = roi.getPolyline2D();
 		int width =(int) roiline.xpoints[roiline.npoints-1] - (int) roiline.xpoints[0] +1; 
 		interpolateMissingPointsAlongXAxis (roi, width);
-		List<Integer> intArray = transferRoiToDataArray(roi);
+		List<Integer> intArray = transferROIToDataArray(roi);
 		Polyline2D line = roi.getPolyline2D();
 		int jstart = (int) line.xpoints[0];
 
@@ -188,6 +188,20 @@ public class ROI2DUtilities  {
 			previousY = val;
 			for (int j = jstart+i; j< sumArrayList.size(); j++) {
 				sumArrayList.set(j, sumArrayList.get(j) +deltaY);
+			}
+		}
+	}
+
+	public static void removeROIsWithinPixelInterval(List<ROI> gulpsRois, int startPixel, int endPixel) {
+		Iterator <ROI> iterator = gulpsRois.iterator();
+		while (iterator.hasNext()) {
+			ROI roi = iterator.next();
+			// if roi.first >= startpixel && roi.first <= endpixel
+			if (roi instanceof ROI2D) {
+				Rectangle rect = ((ROI2D) roi).getBounds();
+				if (rect.x >= startPixel && rect.x <= endPixel) {
+					iterator.remove();
+				}
 			}
 		}
 	}

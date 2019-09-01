@@ -333,8 +333,8 @@ public class DetectFlies  implements Runnable {
 		nbframes = (endFrame - startFrame +1)/analyzeStep +1;
 		
 		cages.clear();
-		cages.cageLimitROIList = ROI2DUtilities.getListofCagesFromSequence(seqCamData);
-		cageMaskList = ROI2DUtilities.getMask2DFromRoiList(cages.cageLimitROIList);
+		cages.cageLimitROIList = ROI2DUtilities.getCagesFromSequence(seqCamData);
+		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageLimitROIList);
 		Collections.sort(cages.cageLimitROIList, new MulticafeTools.ROI2DNameComparator());
 		
 		rectangleAllCages = null;

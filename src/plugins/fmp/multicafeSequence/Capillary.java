@@ -40,14 +40,14 @@ public class Capillary implements XMLPersistent  {
 	public Polyline2D 					ptsTop  				= null; 
 	public Polyline2D 					ptsBottom 				= null; 
 	public Polyline2D 					ptsDerivative 			= null; 
-	public Collection<ROI> 				gulpsRois 				= null; 
+	public List<ROI> 					gulpsRois 				= null; 
 	
 	public List<ArrayList<int[]>> 		masksList 				= null;
 	public List <double []> 			tabValuesList 			= null;
 	public IcyBufferedImage 			bufImage 				= null;
 	
 	private final String ID_META 		= "metaMC";
-	private final String ID_ROI 			= "roiMC";
+	private final String ID_ROI 		= "roiMC";
 	private final String ID_GULPS 		= "gulpsMC";
 	private final String ID_INDEXIMAGE 	= "indexImageMC";
 	private final String ID_NAME 		= "nameMC";
@@ -241,7 +241,7 @@ public class Capillary implements XMLPersistent  {
 			return null;
 		List<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(ptsTop.npoints, 0));
 		for (ROI roi: gulpsRois) {
-			ROI2DUtilities.addRoitoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
+			ROI2DUtilities.addROItoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
 		}
 		return arrayInt;
 	}
