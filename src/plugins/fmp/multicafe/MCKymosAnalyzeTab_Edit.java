@@ -19,22 +19,22 @@ import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
+
 public class MCKymosAnalyzeTab_Edit  extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2580935598417087197L;
 	private MultiCAFE 	parent0;
-	private JComboBox<String> roiTypeCombo = new JComboBox<String> (new String[] {" upper level", "lower level", "derivative", "gulps" });
+	private ROI2DPolyLine roiselected 	= null;
+	private boolean[] 	isInside		= null;
 	
+	private JComboBox<String> roiTypeCombo = new JComboBox<String> (new String[] {" upper level", "lower level", "derivative", "gulps" });
 	private JButton 	selectButton 	= new JButton("Select points");
 	private JButton 	deleteButton 	= new JButton("Delete");
 	private JButton		replaceButton	= new JButton("Replace");
 	private JButton		moveButton		= new JButton("Move vertically");
 	
-//	private List<ROI> roiselected		= new ArrayList<ROI> ();
-	private ROI2DPolyLine roiselected 	= null;
-	private boolean[] 	isInside		= null;
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);	
