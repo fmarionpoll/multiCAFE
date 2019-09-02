@@ -1,6 +1,8 @@
 package plugins.fmp.multicafe;
 
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -8,6 +10,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import icy.gui.util.GuiUtil;
+import icy.roi.ROI2D;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 
 public class MCKymosAnalyzeTab_Edit  extends JPanel {
 	/**
@@ -29,6 +33,27 @@ public class MCKymosAnalyzeTab_Edit  extends JPanel {
 		add(GuiUtil.besidesPanel(new JLabel("Source:"), new JLabel(" "), selectButton, deleteButton));
 		add(GuiUtil.besidesPanel(roiTypeCombo, new JLabel(" "), new JLabel(" "), moveButton));
 		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "), new JLabel(" "), replaceButton));
+		
+		selectButton.setEnabled(false);
+		moveButton.setEnabled(false);
+		replaceButton.setEnabled(false);
+		
+		defineListeners();
+	}
+	
+	private void defineListeners() {
+
+		deleteButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				deletePointsIncluded();
+			}});
 	}
 
+	void deletePointsIncluded() {
+		SequenceKymos seqKymos = parent0.expList.getExperiment(parent0.currentIndex).seqKymos;
+		ROI2D roi = seqKymos.seq.getSelectedROI2D();
+		if (roi == null)
+			return;
+		
+	}
 }
