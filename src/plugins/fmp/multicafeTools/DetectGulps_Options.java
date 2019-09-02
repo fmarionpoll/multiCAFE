@@ -12,7 +12,8 @@ public class DetectGulps_Options implements XMLPersistent {
 	public int 			detectGulpsThreshold	= 90;
 	public TransformOp 	transformForGulps 		= TransformOp.XDIFFN;
 	public boolean 		detectAllGulps 			= true;
-	public boolean		computeDiffnAndDetect	= true;
+	public boolean		buildGulps				= true;
+	public boolean		buildDerivative			= true;
 	public int			firstkymo 				= 0;
 	public 	boolean 	analyzePartOnly			= false;
 	public 	int 		startPixel 				= -1;
@@ -31,7 +32,9 @@ public class DetectGulps_Options implements XMLPersistent {
 	    if (nodeMeta != null)
 	    {
 	    	detectAllGulps = XMLUtil.getElementBooleanValue(nodeMeta, "detectAllGulps", detectAllGulps);
-	    	computeDiffnAndDetect = XMLUtil.getElementBooleanValue(nodeMeta, "computeDiffnAndDetect", computeDiffnAndDetect);
+	    	buildGulps = XMLUtil.getElementBooleanValue(nodeMeta, "buildGulps", buildGulps);
+	    	buildDerivative = XMLUtil.getElementBooleanValue(nodeMeta, "buildDerivative", buildDerivative);
+	    	
 	    	transformForGulps = TransformOp.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transformForGulps.toString()));       
 	    }
         return true;
@@ -44,7 +47,9 @@ public class DetectGulps_Options implements XMLPersistent {
 	    if (nodeMeta != null)
 	    {
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "detectAllGulps", detectAllGulps);
-	    	XMLUtil.setElementBooleanValue(nodeMeta, "computeDiffnAndDetect", computeDiffnAndDetect);
+	    	XMLUtil.setElementBooleanValue(nodeMeta, "buildGulps", buildGulps);
+	    	XMLUtil.setElementBooleanValue(nodeMeta, "buildDerivative", buildDerivative);
+	    	
 	    	XMLUtil.setElementValue(nodeMeta, "Transform", transformForGulps.toString());       
 	    }
         return true;

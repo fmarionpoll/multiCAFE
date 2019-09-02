@@ -1,11 +1,9 @@
 package plugins.fmp.multicafe;
 
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Line2D;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -16,8 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillary;
@@ -26,7 +22,7 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.DetectGulps;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
-import plugins.kernel.roi.roi2d.ROI2DLine;
+
 
 public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 	/**
@@ -35,27 +31,29 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 	private static final long 	serialVersionUID 				= -5590697762090397890L;
 	
 	JCheckBox				detectAllGulpsCheckBox 			= new JCheckBox ("all images", true);
-	JCheckBox				viewGulpsThresholdCheckBox 		= new JCheckBox ("(view) threshold", false);
 	JComboBox<TransformOp> 	transformForGulpsComboBox 		= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
 	JSpinner				startSpinner					= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
 	JSpinner				endSpinner						= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
+	JCheckBox				buildDerivativeCheckBox 		= new JCheckBox ("build derivative", true);
+	JCheckBox				detectGulpsCheckBox 			= new JCheckBox ("detect gulps", true);
 	
 	private JCheckBox		partCheckBox 					= new JCheckBox ("detect from", false);
 	private JButton			displayTransform2Button			= new JButton("Display");
 	private JSpinner		spanTransf2Spinner				= new JSpinner(new SpinnerNumberModel(3, 0, 500, 1));
 	private JSpinner 		detectGulpsThresholdSpinner		= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
 	private JButton 		detectGulpsButton 				= new JButton("Detect");
-	private ROI2DLine		roiThreshold 					= new ROI2DLine ();
 	private MultiCAFE 		parent0;
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
-		add( GuiUtil.besidesPanel( viewGulpsThresholdCheckBox, detectGulpsThresholdSpinner, transformForGulpsComboBox, displayTransform2Button));
+		add( GuiUtil.besidesPanel(new JLabel("threshold", SwingConstants.RIGHT), detectGulpsThresholdSpinner, transformForGulpsComboBox, displayTransform2Button));
 		
 		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		((FlowLayout)panel1.getLayout()).setVgap(0);
+		panel1.add(buildDerivativeCheckBox);
+		panel1.add(detectGulpsCheckBox);
 		panel1.add(partCheckBox);
 		panel1.add(startSpinner);
 		panel1.add(new JLabel("to"));
@@ -76,14 +74,12 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				kymosDisplayFiltered2();
 				kymosDetectGulps(false);
-				displayThresholdAsROI(viewGulpsThresholdCheckBox.isSelected());
 			}});
 		
 		detectGulpsButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				kymosDisplayFiltered2();
 				kymosDetectGulps(true);
-				displayThresholdAsROI(viewGulpsThresholdCheckBox.isSelected());
 			}});
 		
 		displayTransform2Button.addActionListener(new ActionListener () { 
@@ -92,18 +88,6 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 				parent0.buildKymosPane.optionsTab.viewKymosCheckBox.setSelected(true);
 			}});
 		
-		viewGulpsThresholdCheckBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
-				displayThresholdAsROI(viewGulpsThresholdCheckBox.isSelected());
-			}});
-		
-		detectGulpsThresholdSpinner.addChangeListener(new ChangeListener() {
-			@Override public void stateChanged(ChangeEvent arg0) {
-				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-				if (exp.seqKymos != null && viewGulpsThresholdCheckBox.isSelected()) {
-					displayThresholdAsROI(true);
-				}
-			}});
 	}
 
 	// get/set
@@ -128,7 +112,10 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 		options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps 			= detectAllGulpsCheckBox.isSelected();
 		options.firstkymo 				= parent0.buildKymosPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
-		options.computeDiffnAndDetect	= detectGulps;
+		options.buildGulps				= detectGulpsCheckBox.isSelected();
+		if (!detectGulps)
+			options.buildGulps = false;
+		options.buildDerivative			= buildDerivativeCheckBox.isSelected();
 		options.analyzePartOnly			= partCheckBox.isSelected();
 		options.startPixel				= (int) startSpinner.getValue();
 		options.endPixel				= (int) endSpinner.getValue();
@@ -153,27 +140,5 @@ public class MCKymosAnalyzeTab_DetectGulps extends JPanel {
 		options.detectAllGulps = detectAllGulpsCheckBox.isSelected();
 	}
 	
-	void displayThresholdAsROI(boolean display) {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		if (exp.seqKymos == null)
-			return;
-		if (display)
-		{
-			if (!exp.seqKymos.seq.contains(roiThreshold)) {
-				roiThreshold.setName("derivativeThresh");
-				roiThreshold.setColor(Color.ORANGE);
-				roiThreshold.setStroke(1);
-				roiThreshold.setOpacity((float) 0.2);
-				exp.seqKymos.seq.addROI(roiThreshold);
-			}
-			double value = (double) detectGulpsThresholdSpinner.getValue();
-			Line2D refLineUpper = new Line2D.Double (0, value, exp.seqKymos.seq.getWidth(), value);
-			roiThreshold.setLine(refLineUpper);
-		}
-		else 
-		{
-			exp.seqKymos.seq.removeROI(roiThreshold);
-		}
-	}
 
 }

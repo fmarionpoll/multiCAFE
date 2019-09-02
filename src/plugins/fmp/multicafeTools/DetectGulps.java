@@ -39,11 +39,13 @@ public class DetectGulps {
 			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(indexkymo);
 			cap.gulpsOptions.copy(options);
 			
-			topLevelArray = cap.getIntegerArrayFromPolyline2D(cap.ptsTop);
-			seqkymo.removeRoisContainingString(indexkymo, "derivative");
-			getDerivativeProfile(indexkymo, cap, jitter);	
+			if (options.buildDerivative) {
+				topLevelArray = cap.getIntegerArrayFromPolyline2D(cap.ptsTop);
+				seqkymo.removeRoisContainingString(indexkymo, "derivative");
+				getDerivativeProfile(indexkymo, cap, jitter);	
+			}
 			
-			if (options.computeDiffnAndDetect) {
+			if (options.buildGulps) {
 				seqkymo.removeRoisContainingString(indexkymo, "gulp");
 				getGulps(indexkymo, cap);
 			}
