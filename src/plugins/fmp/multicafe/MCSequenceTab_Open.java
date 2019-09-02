@@ -28,7 +28,6 @@ import icy.gui.frame.IcyFrame;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import icy.preferences.XMLPreferences;
-import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeTools.MulticafeTools;
 
 

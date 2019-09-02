@@ -79,12 +79,6 @@ public class ROI2DUtilities  {
 		return cageMaskList;
 	}
 	
-	public static void removeROIsFromSequence (SequenceCamData seqCamData, List<ROI2D> roiList) {
-		for ( ROI2D roi : roiList ) {
-			seqCamData.seq.removeROI(roi);
-		}
-	}
-	
 	public static boolean interpolateMissingPointsAlongXAxis (ROI2DPolyLine roiLine, int roiLine_nintervals) {
 		// interpolate points so that each x step has a value	
 		// assume that points are ordered along x

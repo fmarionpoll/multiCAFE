@@ -290,6 +290,8 @@ public class Capillaries {
 			}
 		}
 	}
+
+	// ---------------------------------
 	
 	public void copy (Capillaries cap) {
 		desc.copy(cap.desc);

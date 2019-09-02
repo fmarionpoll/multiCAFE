@@ -54,7 +54,7 @@ public class Capillary implements XMLPersistent  {
 	private final String ID_NAMETIFF 	= "filenameTIFF";
 	public final String ID_TOPLEVEL 	= "toplevel";	
 	public final String ID_BOTTOMLEVEL 	= "bottomlevel";	
-	private final String ID_DERIVATIVE 	= "derivedvalues";	
+	public final String ID_DERIVATIVE 	= "derivedvalues";	
 	private final String ID_VERSION		= "version"; 
 	private final String ID_VERSIONNUM	= "1.0.0"; 
 	private final String ID_NPOINTS		= "npoints";
