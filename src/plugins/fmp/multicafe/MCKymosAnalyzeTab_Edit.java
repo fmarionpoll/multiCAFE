@@ -75,7 +75,10 @@ public class MCKymosAnalyzeTab_Edit  extends JPanel {
 		
 		Polyline2D polyline = null;
 		String sourceData = (String) roiTypeCombo.getSelectedItem();
-		if (sourceData .contains("upper"))
+		if (sourceData .contains("gulp")) {
+			selectGulps();
+			return;
+		} else if (sourceData .contains("upper"))
 			polyline = cap.ptsTop;
 		else if (sourceData.contains("lower"))
 			polyline = cap.ptsBottom;
@@ -102,6 +105,14 @@ public class MCKymosAnalyzeTab_Edit  extends JPanel {
 		}
 	}
 	
+	void selectGulps() {
+		
+	}
+	
+	void deleteGulps() {
+		
+	}
+	
 	void deletePointsIncluded() {
 		SequenceKymos seqKymos = parent0.expList.getExperiment(parent0.currentIndex).seqKymos;
 		int t= seqKymos.currentFrame;
@@ -112,7 +123,10 @@ public class MCKymosAnalyzeTab_Edit  extends JPanel {
 		
 		Polyline2D polyline = null;
 		String sourceData = (String) roiTypeCombo.getSelectedItem();
-		if (sourceData .contains("upper")) {
+		if (sourceData .contains("gulp")) {
+			deleteGulps();
+			return;
+		} else if (sourceData .contains("upper")) {
 			polyline = cap.ptsTop;
 		} else if (sourceData.contains("lower")) {
 			polyline = cap.ptsBottom;
