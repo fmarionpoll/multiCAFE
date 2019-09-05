@@ -170,7 +170,7 @@ public class Capillaries {
 
 	// ---------------------------------
 	
-	public int xmlReadCapillaryParametersv0 (Document doc) {
+	public int xmlLoadCapillaryParametersv0 (Document doc) {
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return -1;
@@ -248,7 +248,7 @@ public class Capillaries {
 					xmlLoadCapillariesv1(doc);
 					break;
 				case 0: // old xml storage structure
-					xmlReadCapillaryParametersv0(doc);
+					xmlLoadCapillaryParametersv0(doc);
 					xmlLoadCapillariesv0(doc, csFileName);
 					break;
 				default:

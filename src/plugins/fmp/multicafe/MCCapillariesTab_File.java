@@ -42,12 +42,16 @@ public class MCCapillariesTab_File extends JPanel {
 	
 	private void defineActionListeners() {	
 		openButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			firePropertyChange("CAPILLARIES_NEW", false, true);
+			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			loadCapillaryTrack(exp);
+		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
 		}}); 
+		
 		saveButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			saveCapillaryTrack(exp);
 			firePropertyChange("CAP_ROIS_SAVE", false, true);
 		}});	
-
 	}
 	
 	boolean loadCapillaryTrack(Experiment exp) {	
@@ -73,9 +77,12 @@ public class MCCapillariesTab_File extends JPanel {
 	}
 	
 	boolean saveCapillaryTrack(Experiment exp) {
+		// TODO save proper analysis intervals
+		// TODO saving measures erase parameters collected & saved here
 		SequenceCamData seqCamData = exp.seqCamData;
 		SequenceKymos seqKymos = exp.seqKymos;
 		parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
+		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
 		parent0.sequencePane.browseTab.getAnalyzeFrameAndStepFromDialog (seqCamData);
 		seqKymos.updateCapillariesFromCamData(seqCamData);
 		return seqKymos.xmlSaveCapillaryTrack(seqCamData.getDirectory());

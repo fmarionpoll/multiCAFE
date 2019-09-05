@@ -57,7 +57,7 @@ public class SequenceCamData  {
 	protected String 				csFileName 				= null;
 	protected String				directory 				= null;
 	
-	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif"};
+	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif", "avi"};
 	protected ArrayList <TaggedImage> imgPrefetchArray 		= null;
 	
 
@@ -86,7 +86,7 @@ public class SequenceCamData  {
 		listFiles.clear();
 		for (String cs: listNames)
 			listFiles.add(cs);
-		if (loadSequenceFromList(listFiles, true)) {
+		if (loadSequenceFromList(listFiles, true) != null) {
 			Path path = Paths.get(listFiles.get(0));
 			String dir = path.getName(path.getNameCount()-2).toString();
 			if (dir != null)
@@ -98,7 +98,7 @@ public class SequenceCamData  {
 		listFiles.clear();
 		for (String cs: listNames)
 			listFiles.add(cs);
-		if (loadSequenceFromList(listFiles, testLR)) {
+		if (loadSequenceFromList(listFiles, testLR) != null) {
 			Path path = Paths.get(listFiles.get(0));
 			String dir = path.getName(path.getNameCount()-2).toString();
 			if (dir != null)
@@ -292,8 +292,7 @@ public class SequenceCamData  {
 	public String loadSequence(String textPath) {
 		if (textPath == null) 
 			return loadSequenceFromDialog(null); 
-		File filepath = new File(textPath); 
-		
+		File filepath = new File(textPath); 	
 	    directory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
 		if (directory != null ) {
 			List<String> list = new ArrayList<String> ();
@@ -308,23 +307,27 @@ public class SequenceCamData  {
 			if (list.size() == 0)
 				return null;
 			else {
+				list = keepOnlyAcceptedNamesFromList(list, 0);	
 				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi"))
 					seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
 				else {
-					loadSequenceFromList2(list);
+					if (list.get(0).contains("avi"))
+						seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
+					else
+						seq = loadSequenceFromList2(list);
 				}
 			}
 		}
 		return directory;
 	}
 	
-	private void loadSequenceFromList2(List<String> list) {
+	private Sequence loadSequenceFromList2(List<String> list) {
 		status = EnumStatus.FAILURE;
 		list = keepOnlyAcceptedNamesFromList(list, 0);	
-		loadSequenceFromList(list, true);
+		return loadSequenceFromList(list, true);
 	}
 	
-	private void loadSequenceFromListAndDirectory(String [] list, String directory) {
+	private Sequence loadSequenceFromListAndDirectory(String [] list, String directory) {
 		status = EnumStatus.FAILURE;
 		list = keepOnlyAcceptedNamesFromArray(list);
 		list = StringSorter.sortNumerically(list);
@@ -334,18 +337,19 @@ public class SequenceCamData  {
 				listFiles.add(directory + File.separator + list[i]);
 		}
 		nTotalFrames = list.length;	
-		loadSequenceFromList(listFiles, true);
+		return loadSequenceFromList(listFiles, true);
 	}
 	
-	protected boolean loadSequenceFromList(List<String> myListOfFilesNames, boolean testFilenameDecoratedwithLR) {
+	protected Sequence loadSequenceFromList(List<String> myListOfFilesNames, boolean testFilenameDecoratedwithLR) {
+		seq = null;
 		if (testFilenameDecoratedwithLR && isLinexLRFileNames(myListOfFilesNames)) {
 			listFiles = convertLinexLRFileNames(myListOfFilesNames);
 		} else {
 			listFiles = myListOfFilesNames;
 		}
-		boolean flag = false;
+
 		List<Sequence> lseq = Loader.loadSequences(null, listFiles, 0, false, false, false, true);
-		if ((flag = (lseq.size() > 0))) {
+		if (lseq.size() > 0) {
 			seq = lseq.get(0);
 			if (lseq.size() > 1) {
 				seq = lseq.get(0);	
@@ -363,7 +367,7 @@ public class SequenceCamData  {
 			status = EnumStatus.FILESTACK;	
 			initAnalysisParameters();
 		}
-		return flag;
+		return seq;
 	}
 	
 	private void initAnalysisParameters() {

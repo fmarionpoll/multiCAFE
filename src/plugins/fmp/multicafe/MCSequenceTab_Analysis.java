@@ -33,6 +33,7 @@ public class MCSequenceTab_Analysis extends JPanel {
 				new JLabel("start ", SwingConstants.RIGHT), startFrameJSpinner, 
 				new JLabel("step ", SwingConstants.RIGHT) , analyzeStepJSpinner 				
 				));
+		
 		add(GuiUtil.besidesPanel( 
 				new JLabel("end ", SwingConstants.RIGHT), endFrameJSpinner, 
 				new JLabel(" "), updateButton ));

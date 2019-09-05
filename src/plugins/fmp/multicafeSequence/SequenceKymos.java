@@ -397,7 +397,7 @@ public class SequenceKymos extends SequenceCamData  {
 		if (pathname != null)  {
 			final Document doc = XMLUtil.loadDocument(pathname);
 			if (doc != null) { 
-				int version = capillaries.xmlReadCapillaryParametersv0(doc);
+				int version = capillaries.xmlLoadCapillaryParametersv0(doc);
 				return (version >= 0); 
 			}
 		}

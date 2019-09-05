@@ -117,6 +117,7 @@ public class MCCapillariesTab_Build extends JPanel {
 	
 	Capillaries getCapillariesInfosFromDialog(Capillaries cap) {
 		cap.desc.grouping = getGroupedBy2() ? 2: 1;
+		cap.desc.ncapillaries = (int) nbcapillariesJSpinner.getValue();
 		return cap;
 	}
 

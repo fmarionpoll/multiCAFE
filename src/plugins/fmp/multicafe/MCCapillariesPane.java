@@ -83,15 +83,11 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-			fileTab.loadCapillaryTrack(exp);
-		  	setCapillariesInfosToDialogs();
+			setCapillariesInfosToDialogs();
 		  	tabsPane.setSelectedIndex(2);
 		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
 		}			  
 		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-			fileTab.saveCapillaryTrack(exp);
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) {
@@ -136,7 +132,6 @@ public class MCCapillariesPane extends JPanel implements PropertyChangeListener,
 	void getCapillariesInfos(Capillaries cap) {
 		infosTab.getCapillariesInfosFromDialog(cap);
 		buildarrayTab.getCapillariesInfosFromDialog(cap);
-		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(cap);
 	}
 
 	@Override
