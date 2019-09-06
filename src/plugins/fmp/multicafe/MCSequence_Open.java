@@ -31,7 +31,7 @@ import icy.preferences.XMLPreferences;
 import plugins.fmp.multicafeTools.MulticafeTools;
 
 
-public class MCSequenceTab_Open extends JPanel {
+public class MCSequence_Open extends JPanel {
 	/**
 	 * 
 	 */

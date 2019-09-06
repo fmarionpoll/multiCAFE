@@ -18,7 +18,7 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
 
-public class MCKymosAnalyzeTab_File  extends JPanel {
+public class MCKymosAnalyze_File  extends JPanel {
 	/**
 	 * 
 	 */

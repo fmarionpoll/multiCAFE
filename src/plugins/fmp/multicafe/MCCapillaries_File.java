@@ -19,7 +19,7 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 
 
-public class MCCapillariesTab_File extends JPanel {
+public class MCCapillaries_File extends JPanel {
 	/**
 	 * 
 	 */

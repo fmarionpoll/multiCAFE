@@ -19,7 +19,7 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeTools.ComboBoxWide;
 import plugins.fmp.multicafeTools.ComboBoxWithIndexTextRenderer;
 
-public class MCSequenceTab_Infos  extends JPanel {
+public class MCSequence_Infos  extends JPanel {
 	/**
 	 * 
 	 */

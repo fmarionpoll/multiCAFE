@@ -20,7 +20,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
 
-public class MCMovePane extends JPanel implements PropertyChangeListener {
+public class MCMove_ extends JPanel implements PropertyChangeListener {
 	
 	/**
 	 * 
@@ -28,10 +28,10 @@ public class MCMovePane extends JPanel implements PropertyChangeListener {
 	private static final long serialVersionUID = 3457738144388946607L;
 	
 	private JTabbedPane 		tabsPane	= new JTabbedPane();
-	private MCMoveTab_BuildROIs buildROIsTab= new MCMoveTab_BuildROIs();
-	private MCMoveTab_Detect 	detectTab 	= new MCMoveTab_Detect();
-	private MCMoveTab_File 		filesTab 	= new MCMoveTab_File();
-	MCMoveTab_Graphs 			graphicsTab = new MCMoveTab_Graphs();
+	private MCMove_BuildROIs buildROIsTab= new MCMove_BuildROIs();
+	private MCMove_Detect 	detectTab 	= new MCMove_Detect();
+	private MCMove_File 		filesTab 	= new MCMove_File();
+	MCMove_Graphs 			graphicsTab = new MCMove_Graphs();
 	
 	MultiCAFE parent0 = null;
 

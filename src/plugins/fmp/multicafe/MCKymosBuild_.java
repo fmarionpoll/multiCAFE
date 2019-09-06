@@ -18,7 +18,7 @@ import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafeSequence.Experiment;
 
 
-public class MCKymosBuildPane extends JPanel implements PropertyChangeListener, ChangeListener {
+public class MCKymosBuild_ extends JPanel implements PropertyChangeListener, ChangeListener {
 
 	
 	/**
@@ -27,9 +27,9 @@ public class MCKymosBuildPane extends JPanel implements PropertyChangeListener, 
 	private static final long serialVersionUID = 1122367183829360097L;
 
 	JTabbedPane 			tabsPane 		= new JTabbedPane();
-	MCKymosBuildTab_Create 	buildkymosTab 	= new MCKymosBuildTab_Create();
-	MCKymosBuildTab_Options optionsTab 		= new MCKymosBuildTab_Options();
-	MCKymosBuildTab_File 	fileTab 		= new MCKymosBuildTab_File();
+	MCKymosBuild_Create 	buildkymosTab 	= new MCKymosBuild_Create();
+	MCKymosBuild_Options optionsTab 		= new MCKymosBuild_Options();
+	MCKymosBuild_File 	fileTab 		= new MCKymosBuild_File();
 	
 	private MultiCAFE parent0 = null;
 

@@ -30,12 +30,12 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	ExperimentList				expList 			= new ExperimentList();
 	int							currentIndex		= -1;
 	
-	MCSequencePane 				sequencePane 		= new MCSequencePane();
-	MCCapillariesPane 			capillariesPane 	= new MCCapillariesPane();
-	MCKymosBuildPane			buildKymosPane		= new MCKymosBuildPane();
-	MCKymosAnalyzePane 			kymographsPane 		= new MCKymosAnalyzePane();
-	MCMovePane 					movePane 			= new MCMovePane();
-	MCExcelPane					excelPane			= new MCExcelPane();
+	MCSequence_ 				sequencePane 		= new MCSequence_();
+	MCCapillaries_ 			capillariesPane 	= new MCCapillaries_();
+	MCKymosBuild_			buildKymosPane		= new MCKymosBuild_();
+	MCKymosAnalyze_ 			kymographsPane 		= new MCKymosAnalyze_();
+	MCMove_ 					movePane 			= new MCMove_();
+	MCExcel_					excelPane			= new MCExcel_();
 	
 	//-------------------------------------------------------------------
 	

@@ -14,7 +14,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
-public class MCSequenceTab_Close  extends JPanel {
+public class MCSequence_Close  extends JPanel {
 	/**
 	 * 
 	 */

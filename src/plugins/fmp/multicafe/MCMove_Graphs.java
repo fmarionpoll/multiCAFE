@@ -20,7 +20,7 @@ import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.YPosMultiChart;
 
 
-public class MCMoveTab_Graphs extends JPanel {
+public class MCMove_Graphs extends JPanel {
 
 	/**
 	 * 

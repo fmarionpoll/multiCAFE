@@ -36,7 +36,7 @@ import plugins.fmp.multicafeTools.OverlayThreshold;
 
 
 
-public class MCMoveTab_Detect extends JPanel implements ChangeListener {
+public class MCMove_Detect extends JPanel implements ChangeListener {
 	/**
 	 * 
 	 */

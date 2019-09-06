@@ -22,17 +22,17 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
-public class MCSequencePane extends JPanel implements PropertyChangeListener {
+public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6826269677524125173L;
 	
 	private JTabbedPane 	tabsPane 	= new JTabbedPane();
-	MCSequenceTab_Open 		openTab 	= new MCSequenceTab_Open();
-	MCSequenceTab_Infos		infosTab	= new MCSequenceTab_Infos();
-	MCSequenceTab_Analysis	browseTab 	= new MCSequenceTab_Analysis();
-	MCSequenceTab_Close 	closeTab 	= new MCSequenceTab_Close();
+	MCSequence_Open 		openTab 	= new MCSequence_Open();
+	MCSequence_Infos		infosTab	= new MCSequence_Infos();
+	MCSequence_Analysis	browseTab 	= new MCSequence_Analysis();
+	MCSequence_Close 	closeTab 	= new MCSequence_Close();
 	private MultiCAFE 		parent0 	= null;
 	
 	

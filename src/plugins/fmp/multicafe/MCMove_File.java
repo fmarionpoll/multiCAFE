@@ -16,7 +16,7 @@ import plugins.fmp.multicafeSequence.Experiment;
 
 
 
-public class MCMoveTab_File extends JPanel {
+public class MCMove_File extends JPanel {
 	/**
 	 * 
 	 */

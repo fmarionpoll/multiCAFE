@@ -27,7 +27,7 @@ import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 
 
-public class MCCapillariesTab_Adjust extends JPanel {
+public class MCCapillaries_Adjust extends JPanel {
 	/**
 	 * 
 	 */

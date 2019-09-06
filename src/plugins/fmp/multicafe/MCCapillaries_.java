@@ -23,17 +23,17 @@ import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 
 
 
-public class MCCapillariesPane extends JPanel implements PropertyChangeListener, ChangeListener {
+public class MCCapillaries_ extends JPanel implements PropertyChangeListener, ChangeListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 853047648249832145L;
 	
 	JTabbedPane 				tabsPane 		= new JTabbedPane();
-	MCCapillariesTab_Build 		buildarrayTab 	= new MCCapillariesTab_Build();
-	MCCapillariesTab_File 		fileTab 		= new MCCapillariesTab_File();
-	MCCapillariesTab_Adjust 	adjustTab 		= new MCCapillariesTab_Adjust();
-	MCCapillariesTab_Infos		infosTab		= new MCCapillariesTab_Infos();
+	MCCapillaries_Build 		buildarrayTab 	= new MCCapillaries_Build();
+	MCCapillaries_File 		fileTab 		= new MCCapillaries_File();
+	MCCapillaries_Adjust 	adjustTab 		= new MCCapillaries_Adjust();
+	MCCapillaries_Infos		infosTab		= new MCCapillaries_Infos();
 
 	private MultiCAFE parent0 = null;
 

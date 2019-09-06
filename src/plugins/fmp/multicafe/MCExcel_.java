@@ -23,16 +23,16 @@ import plugins.fmp.multicafeTools.XLSExportMoveResults;
 import plugins.fmp.multicafeTools.XLSExportOptions;
 
 
-public class MCExcelPane  extends JPanel implements PropertyChangeListener {
+public class MCExcel_  extends JPanel implements PropertyChangeListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4296207607692017074L;
 	private JTabbedPane 		tabsPane 		= new JTabbedPane();
-	private MCExcelTab_Options	optionsTab		= new MCExcelTab_Options();
-	private MCExcelTab_Kymos	kymosTab		= new MCExcelTab_Kymos();
-	private MCExcelTab_Move 	moveTab  		= new MCExcelTab_Move();
+	private MCExcel_Options	optionsTab		= new MCExcel_Options();
+	private MCExcel_Kymos	kymosTab		= new MCExcel_Kymos();
+	private MCExcel_Move 	moveTab  		= new MCExcel_Move();
 	
 	private MultiCAFE parent0 = null;
 

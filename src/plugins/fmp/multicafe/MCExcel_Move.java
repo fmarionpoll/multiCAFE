@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import icy.gui.util.GuiUtil;
 
 
-public class MCExcelTab_Move  extends JPanel {
+public class MCExcel_Move  extends JPanel {
 
 	/**
 	 * 

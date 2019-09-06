@@ -12,7 +12,7 @@ import javax.swing.SpinnerNumberModel;
 
 import icy.gui.util.GuiUtil;
 
-public class MCExcelTab_Options extends JPanel {
+public class MCExcel_Options extends JPanel {
 
 	/**
 	 * 

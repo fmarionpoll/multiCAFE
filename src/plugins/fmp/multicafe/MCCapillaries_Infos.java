@@ -23,7 +23,7 @@ import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Experiment;
 
 
-public class MCCapillariesTab_Infos extends JPanel {
+public class MCCapillaries_Infos extends JPanel {
 	/**
 	 * 
 	 */
