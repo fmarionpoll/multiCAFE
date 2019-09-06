@@ -176,7 +176,6 @@ public class MCKymosAnalyze_Edit  extends JPanel {
 		}
 		ROI2D newRoi = cap.transferPolyline2DToROI(name, polyline);
 		seqKymos.seq.addROI(newRoi);
-		seqKymos.validateRoisAtT(t);
 	}
 	
 	int getPointsWithinROI(Polyline2D polyline, ROI2D roi) {

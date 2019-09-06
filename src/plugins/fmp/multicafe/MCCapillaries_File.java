@@ -77,8 +77,6 @@ public class MCCapillaries_File extends JPanel {
 	}
 	
 	boolean saveCapillaryTrack(Experiment exp) {
-		// TODO save proper analysis intervals
-		// TODO saving measures erase parameters collected & saved here
 		SequenceCamData seqCamData = exp.seqCamData;
 		SequenceKymos seqKymos = exp.seqKymos;
 		parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
