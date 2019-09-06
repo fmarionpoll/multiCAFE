@@ -225,6 +225,9 @@ public class Capillary implements XMLPersistent  {
 	}
 		
 	public ROI2D transferPolyline2DToROI(String name, Polyline2D polyline) {
+		if (polyline == null)
+			return null;
+		
 		ROI2D roi = new ROI2DPolyLine(polyline); 
 		if (indexImage >= 0) {
 			roi.setT(indexImage);

@@ -79,6 +79,7 @@ public class Cages {
 			if (doc != null) {
 				xmlLoadCages(doc);
 				fromCagesToROIs(seq);
+				fromDetectedFliesToROIs(seq);
 				return true;
 			}
 		}
