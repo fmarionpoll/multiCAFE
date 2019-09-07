@@ -22,20 +22,17 @@ import plugins.fmp.multicafeSequence.XYTaSeries;
 
 public class XLSExportCapillaryResults extends XLSExport {
 
-	
-	public void exportToFile(String filename, XLSExportOptions opt) {
-		
+	public void exportToFile(String filename, XLSExportOptions opt) {	
 		System.out.println("XLS capillary measures output");
 		options = opt;
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
-		
 		try { 
 			XSSFWorkbook workbook = new XSSFWorkbook(); 
 			workbook.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+			
 			int col_max = 1;
 			int col_end = 1;
 			int iSeries = 0;
-			
 			options.expList.readInfosFromAllExperiments();
 			if (options.collateSeries)
 				options.expList.chainExperiments();
@@ -46,8 +43,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 			progress.setMessage("Load measures...");
 			progress.setLength(options.expList.experimentList.size());
 			
-			for (int index = options.firstExp; index <= options.lastExp; index++) 
-			{
+			for (int index = options.firstExp; index <= options.lastExp; index++) {
 				Experiment exp = options.expList.experimentList.get(index);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				

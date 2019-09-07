@@ -33,6 +33,12 @@ public class Experiment {
 		seqKymos   = new SequenceKymos();
 	}
 	
+	public Experiment(String filename) {
+		seqCamData = new SequenceCamData();
+		seqKymos   = new SequenceKymos();
+		this.filename = filename;
+	}
+	
 	public boolean openSequenceAndMeasures() {
 		seqCamData = new SequenceCamData();
 		if (null == seqCamData.loadSequence(filename))

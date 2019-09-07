@@ -16,6 +16,7 @@ import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeTools.ComboBoxWide;
 import plugins.fmp.multicafeTools.ComboBoxWithIndexTextRenderer;
 
@@ -91,7 +92,7 @@ public class MCSequence_Infos  extends JPanel {
 		} } );
 		
 		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if ( expListComboBox.getSelectedIndex() < (expListComboBox.getItemCount() -1)) {
+			if (expListComboBox.getSelectedIndex() < (expListComboBox.getItemCount() -1)) {
 				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()+1);
 			}
 		} } );
@@ -163,6 +164,13 @@ public class MCSequence_Infos  extends JPanel {
 		addItem(commentJCombo, (String) commentJCombo.getSelectedItem());
 	}
 	
+	void transferExperimentNamesToExpList(ExperimentList expList) {
+		int nitems = expListComboBox.getItemCount();
+		for (int i=0; i< nitems; i++) {
+			String filename = expListComboBox.getItemAt(i);
+			expList.addNewExperiment(filename);
+		}
+	}
 
 }
 

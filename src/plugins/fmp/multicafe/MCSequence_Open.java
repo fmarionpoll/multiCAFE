@@ -38,7 +38,7 @@ public class MCSequence_Open extends JPanel {
 	private static final long serialVersionUID = 6565346204580890307L;
 	private JButton 	openButton				= new JButton("Open...");
 	private JButton 	addButton				= new JButton("Add...");
-	private JButton		searchButton 				= new JButton("Search for files...");
+	private JButton		searchButton 			= new JButton("Search for files...");
 	private JButton		closeButton				= new JButton("Close search dialog");
 	private JCheckBox	capillariesCheckBox		= new JCheckBox("capillaries", true);
 	private JCheckBox	cagesCheckBox			= new JCheckBox("cages", true);

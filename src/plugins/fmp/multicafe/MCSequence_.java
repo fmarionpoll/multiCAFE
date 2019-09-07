@@ -163,7 +163,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			guiPrefs.put("lastUsedPath", strItem);
 		}
 	}
-			
+				
 	void updateViewerForSequenceCam(SequenceCamData seqCamData) {
 		Viewer v = seqCamData.seq.getFirstViewer();
 		if (v != null) {

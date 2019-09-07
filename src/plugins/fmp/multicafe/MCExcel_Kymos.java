@@ -28,9 +28,7 @@ public class MCExcel_Kymos extends JPanel  {
 	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R", true);
 	JCheckBox 	derivativeCheckBox  = new JCheckBox("derivative", false);
 	JCheckBox	t0CheckBox			= new JCheckBox("t-t0", true);
-	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty");
-//	JCheckBox 	combineCheckBox 	= new JCheckBox("combine runs", true);
-	
+	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty");	
 	
 	void init(GridLayout capLayout) {	
 		setLayout(capLayout);

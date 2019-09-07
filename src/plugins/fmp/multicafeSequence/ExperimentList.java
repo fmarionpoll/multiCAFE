@@ -22,8 +22,7 @@ public class ExperimentList {
 		expglobal.fileTimeImageFirst = exp0.fileTimeImageFirst;
 		expglobal.fileTimeImageLast = exp0.fileTimeImageLast;
 		
-		for (Experiment exp: experimentList) 
-		{
+		for (Experiment exp: experimentList) {
 			if (expglobal.fileTimeImageFirst.compareTo(exp.fileTimeImageFirst) > 0) 
 				expglobal.fileTimeImageFirst = exp.fileTimeImageFirst;
 			if (expglobal.fileTimeImageLast .compareTo(exp.fileTimeImageLast) <0)
@@ -46,8 +45,7 @@ public class ExperimentList {
 		progress.setLength(experimentList.size());
 		
 		boolean flag = true;
-		for (Experiment exp: experimentList) 
-		{
+		for (Experiment exp: experimentList) {
 			boolean ok = exp.openSequenceAndMeasures();
 			flag &= ok;
 			progress.incPosition();
@@ -62,7 +60,6 @@ public class ExperimentList {
 			for (Experiment expi: experimentList) {
 				if (expi == exp)
 					continue;
-				
 				if (expi.boxID .equals(exp.boxID)) {
 					// if before, insert eventually
 					if (expi.fileTimeImageLastMinutes < exp.fileTimeImageFirstMinute) {
@@ -167,6 +164,25 @@ public class ExperimentList {
 		Experiment exp = new Experiment();
 		experimentList.add(exp);
 		return experimentList.size()-1;
+	}
+	
+	public int addNewExperiment (String filename) {
+		boolean exists = false;
+		int index = -1;
+		for (int i=0; i < experimentList.size(); i++) {
+			Experiment exp = experimentList.get(i);
+			if (filename.contains(exp.filename)) {
+				exists = true;
+				index = i;
+				break;
+			}
+		}
+		if (!exists) {
+			Experiment exp = new Experiment(filename);
+			experimentList.add(exp);
+			index = experimentList.size()-1;
+		}
+		return index;
 	}
 
 }

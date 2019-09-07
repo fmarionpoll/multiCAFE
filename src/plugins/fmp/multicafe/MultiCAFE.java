@@ -31,8 +31,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	int							currentIndex		= -1;
 	
 	MCSequence_ 				sequencePane 		= new MCSequence_();
-	MCCapillaries_ 			capillariesPane 	= new MCCapillaries_();
-	MCKymosBuild_			buildKymosPane		= new MCKymosBuild_();
+	MCCapillaries_ 				capillariesPane 	= new MCCapillaries_();
+	MCKymosBuild_				buildKymosPane		= new MCKymosBuild_();
 	MCKymosAnalyze_ 			kymographsPane 		= new MCKymosAnalyze_();
 	MCMove_ 					movePane 			= new MCMove_();
 	MCExcel_					excelPane			= new MCExcel_();
