@@ -15,7 +15,7 @@ public class Experiment {
 	public FileTime			fileTimeImageFirst;
 	public FileTime			fileTimeImageLast;
 	public long				fileTimeImageFirstMinute 	= 0;
-	public long				fileTimeImageLastMinutes 	= 0;
+	public long				fileTimeImageLastMinute 	= 0;
 	public int				number_of_frames 			= 0;
 	
 	public int 				startFrame 					= 0;
@@ -46,7 +46,7 @@ public class Experiment {
 		fileTimeImageFirst = seqCamData.getImageModifiedTime(0);
 		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
-		fileTimeImageLastMinutes = fileTimeImageLast.toMillis()/60000;
+		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
 
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
@@ -55,6 +55,27 @@ public class Experiment {
 		boxID = seqKymos.capillaries.desc.boxID;
 
 		seqCamData.xmlReadDrosoTrackDefault();
+		return true;
+	}
+	
+	public boolean openSequenceAndMeasures(boolean loadCapillaryTrack, boolean loadDrosoTrack) {
+		seqCamData = new SequenceCamData();
+		if (null == seqCamData.loadSequence(filename))
+			return false;
+		fileTimeImageFirst = seqCamData.getImageModifiedTime(0);
+		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
+		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
+		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
+		if (seqKymos == null)
+			seqKymos = new SequenceKymos();
+		if (loadCapillaryTrack) {
+			if (!seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory())) 
+				return false;
+			boxID = seqKymos.capillaries.desc.boxID;
+		}
+		
+		if (loadDrosoTrack)
+			seqCamData.xmlReadDrosoTrackDefault();
 		return true;
 	}
 	
@@ -67,7 +88,7 @@ public class Experiment {
 		fileTimeImageFirst = seqCamData.getImageModifiedTime(0);
 		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
-		fileTimeImageLastMinutes = fileTimeImageLast.toMillis()/60000;
+		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
 		return seqCamData;
 	}
 	

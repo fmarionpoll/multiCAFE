@@ -216,7 +216,7 @@ public class XLSExportMoveResults extends XLSExport {
 		FileTime imageTime = exp.seqCamData.getImageModifiedTime(startFrame);
 		long imageTimeMinutes = imageTime.toMillis()/ 60000;
 		if (options.absoluteTime && (col0 ==0)) {
-			imageTimeMinutes = expAll.fileTimeImageLastMinutes;
+			imageTimeMinutes = expAll.fileTimeImageLastMinute;
 			long diff = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinute, step)/ step;
 			imageTimeMinutes = expAll.fileTimeImageFirstMinute;
 			pt.x = col0;

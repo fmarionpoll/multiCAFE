@@ -33,7 +33,7 @@ public class XLSExportCapillaryResults extends XLSExport {
 			int col_max = 1;
 			int col_end = 1;
 			int iSeries = 0;
-			options.expList.readInfosFromAllExperiments();
+			options.expList.readInfosFromAllExperiments(true, false);
 			if (options.collateSeries)
 				options.expList.chainExperiments();
 			
@@ -290,19 +290,19 @@ public class XLSExportCapillaryResults extends XLSExport {
 		long imageTimeMinutes = imageTime.toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = 0;
 		long referenceFileTimeImageLastMinutes = 0;
-		
 		if (options.absoluteTime) {
 			referenceFileTimeImageFirstMinutes = expAll.fileTimeImageFirstMinute;
-			referenceFileTimeImageLastMinutes = expAll.fileTimeImageLastMinutes;
+			referenceFileTimeImageLastMinutes = expAll.fileTimeImageLastMinute;
 		}
 		else {
-			referenceFileTimeImageFirstMinutes = options.expList.getFirstMinute(exp);
-			referenceFileTimeImageLastMinutes = options.expList.getLastMinute(exp);
+			// TODO check if this is ok (before: call to compute time first/time last
+			referenceFileTimeImageFirstMinutes = exp.fileTimeImageFirstMinute;
+			referenceFileTimeImageLastMinutes = exp.fileTimeImageLastMinute;
 		}
 			
 		pt.x =0;
-		imageTimeMinutes = referenceFileTimeImageLastMinutes;
-		long diff = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step)/ step;
+		long tspanMinutes = referenceFileTimeImageLastMinutes-referenceFileTimeImageFirstMinutes;
+		long diff = getnearest(tspanMinutes, step)/ step;
 		imageTimeMinutes = referenceFileTimeImageFirstMinutes;
 		for (int i = 0; i<= diff; i++) {
 			long diff2 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);

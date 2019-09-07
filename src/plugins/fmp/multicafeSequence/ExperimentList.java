@@ -35,7 +35,7 @@ public class ExperimentList {
 		}
 		
 		expglobal.fileTimeImageFirstMinute = expglobal.fileTimeImageFirst.toMillis()/60000;
-		expglobal.fileTimeImageLastMinutes = expglobal.fileTimeImageLast.toMillis()/60000;
+		expglobal.fileTimeImageLastMinute = expglobal.fileTimeImageLast.toMillis()/60000;
 		progress.close();
 		return expglobal;
 	}
@@ -46,8 +46,19 @@ public class ExperimentList {
 		
 		boolean flag = true;
 		for (Experiment exp: experimentList) {
-			boolean ok = exp.openSequenceAndMeasures();
-			flag &= ok;
+			flag &= exp.openSequenceAndMeasures();
+			progress.incPosition();
+		}
+		progress.close();
+		return flag;
+	}
+	
+	public boolean readInfosFromAllExperiments(boolean loadCapillaryTrack, boolean loadDrosoTrack) {
+		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
+		progress.setLength(experimentList.size());
+		boolean flag = true;
+		for (Experiment exp: experimentList) {
+			flag &= exp.openSequenceAndMeasures(loadCapillaryTrack, loadDrosoTrack);
 			progress.incPosition();
 		}
 		progress.close();
@@ -62,10 +73,10 @@ public class ExperimentList {
 					continue;
 				if (expi.boxID .equals(exp.boxID)) {
 					// if before, insert eventually
-					if (expi.fileTimeImageLastMinutes < exp.fileTimeImageFirstMinute) {
+					if (expi.fileTimeImageLastMinute < exp.fileTimeImageFirstMinute) {
 						if (exp.previousExperiment == null)
 							exp.previousExperiment = expi;
-						else if (expi.fileTimeImageLastMinutes > exp.previousExperiment.fileTimeImageLastMinutes ) {
+						else if (expi.fileTimeImageLastMinute > exp.previousExperiment.fileTimeImageLastMinute ) {
 							(exp.previousExperiment).nextExperiment = expi;
 							expi.previousExperiment = exp.previousExperiment;
 							expi.nextExperiment = exp;
@@ -74,7 +85,7 @@ public class ExperimentList {
 						continue;
 					}
 					// if after, insert eventually
-					if (expi.fileTimeImageFirstMinute > exp.fileTimeImageLastMinutes) {
+					if (expi.fileTimeImageFirstMinute > exp.fileTimeImageLastMinute) {
 						if (exp.nextExperiment == null)
 							exp.nextExperiment = expi;
 						else if (expi.fileTimeImageFirstMinute < exp.nextExperiment.fileTimeImageFirstMinute ) {
@@ -94,29 +105,29 @@ public class ExperimentList {
 		return flagOK;
 	}
 	
-	public long getFirstMinute(Experiment exp) {
-		long firstMinute = exp.fileTimeImageFirstMinute;
-		for (Experiment expi: experimentList) {
-			if (!expi.boxID .equals(exp.boxID))
-				continue;
-			// if before, change
-			if (expi.fileTimeImageFirstMinute < firstMinute) 
-				firstMinute = expi.fileTimeImageFirstMinute;
-		}				
-		return firstMinute;
-	}
-	
-	public long getLastMinute(Experiment exp) {	
-		long lastMinute = exp.fileTimeImageLastMinutes;
-		for (Experiment expi: experimentList) {
-			if (!expi.boxID .equals(exp.boxID))
-				continue;
-			// if before, change
-			if (expi.fileTimeImageLastMinutes > lastMinute) 
-				lastMinute = expi.fileTimeImageLastMinutes;
-		}			
-		return lastMinute;
-	}
+//	public long getFirstMinute(Experiment exp) {
+//		long firstMinute = exp.fileTimeImageFirstMinute;
+//		for (Experiment expi: experimentList) {
+//			if (!expi.boxID .equals(exp.boxID))
+//				continue;
+//			// if before, change
+//			if (expi.fileTimeImageFirstMinute < firstMinute) 
+//				firstMinute = expi.fileTimeImageFirstMinute;
+//		}				
+//		return firstMinute;
+//	}
+//	
+//	public long getLastMinute(Experiment exp) {	
+//		long lastMinute = exp.fileTimeImageLastMinute;
+//		for (Experiment expi: experimentList) {
+//			if (!expi.boxID .equals(exp.boxID))
+//				continue;
+//			// if before, change
+//			if (expi.fileTimeImageLastMinute > lastMinute) 
+//				lastMinute = expi.fileTimeImageLastMinute;
+//		}			
+//		return lastMinute;
+//	}
 	
 	public int getStackColumnPosition (Experiment exp, int col0) {
 		boolean found = false;
