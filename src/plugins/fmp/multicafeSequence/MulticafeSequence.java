@@ -162,14 +162,14 @@ public class MulticafeSequence extends EzPlug {
 			vSequence.seq.close();		
 		vSequence = new SequenceCamData();
 		
-		String path = vSequence.loadSequenceFromDialog(null);
-		if (path != null) {
+		boolean flag = (vSequence.loadSequenceFromDialog(null) == null);
+		if (flag) {
 			XMLPreferences guiPrefs = getPreferences("gui");
-			guiPrefs.put("lastUsedPath", path);
+			guiPrefs.put("lastUsedPath", vSequence.directory);
 			addSequence(vSequence.seq);
 			initSequenceParameters(vSequence);
 		}
-		return (path != null);
+		return flag;
 	}
 	
 	private void initSequenceParameters(SequenceCamData seq) {

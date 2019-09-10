@@ -62,11 +62,11 @@ public class BuildKymographs implements Runnable
 		int ipixelcolumn = 0;
 		workImage = options.seqCamData.seq.getImage(options.startFrame, 0); 
 		Thread thread = null;
-		BuildVisuUpdater visuUpdater = null;
+		ViewerUpdater visuUpdater = null;
 		if (options.updateViewerDuringComputation) {
 			roiList = options.seqCamData.seq.getROIs();
 			options.seqCamData.seq.removeAllROI();
-			visuUpdater = new BuildVisuUpdater(options.seqCamData);
+			visuUpdater = new ViewerUpdater(options.seqCamData, 200);
 			thread = new Thread(null, visuUpdater, "+++visuUpdater");
 			thread.start();
 		}
@@ -79,7 +79,7 @@ public class BuildKymographs implements Runnable
 		
 		options.seqCamData.seq.beginUpdate();
 		for (int t = options.startFrame ; t <= options.endFrame && !stopFlag; t += options.analyzeStep, ipixelcolumn++ ) {
-			progressBar.updatePositionAndTimeLeft(t);
+			progressBar.updatePosition(t);
 			if (!getImageAndUpdateViewer (t))
 				continue;
 			if (options.doRegistration ) 

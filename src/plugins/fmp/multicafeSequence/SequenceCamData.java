@@ -264,7 +264,7 @@ public class SequenceCamData  {
 	
 	// --------------------------
 	
-	public String loadSequenceFromDialog(String path) {
+	public Sequence loadSequenceFromDialog(String path) {
 		LoaderDialog dialog = new LoaderDialog(false);
 		if (path != null) 
 			dialog.setCurrentDirectory(new File(path));
@@ -275,7 +275,7 @@ public class SequenceCamData  {
 	    directory = selectedFiles[0].isDirectory() ? selectedFiles[0].getAbsolutePath() : selectedFiles[0].getParentFile().getAbsolutePath();
 		if (directory != null ) {
 			if (selectedFiles.length == 1) {
-				loadSequence(selectedFiles[0].getAbsolutePath());
+				seq = loadSequence(selectedFiles[0].getAbsolutePath());
 			}
 			else {
 				String [] list = new String [selectedFiles.length];
@@ -283,13 +283,13 @@ public class SequenceCamData  {
 					if (!selectedFiles[i].getName().toLowerCase().contains(".avi"))
 						list[i] = selectedFiles[i].getAbsolutePath();
 				}
-				loadSequenceFromListAndDirectory(list, directory);
+				seq = loadSequenceFromListAndDirectory(list, directory);
 			}
 		}
-		return directory;
+		return seq;
 	}
 	
-	public String loadSequence(String textPath) {
+	public Sequence loadSequence(String textPath) {
 		if (textPath == null) 
 			return loadSequenceFromDialog(null); 
 		File filepath = new File(textPath); 	
@@ -311,22 +311,18 @@ public class SequenceCamData  {
 				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi"))
 					seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
 				else {
-					if (list.get(0).contains("avi"))
+					if (list.get(0).contains("avi")) {
 						seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
-					else
-						seq = loadSequenceFromList2(list);
+					} else {
+						status = EnumStatus.FAILURE;
+						seq = loadSequenceFromList(list, true);
+					}
 				}
 			}
 		}
-		return directory;
+		return seq;
 	}
-	
-	private Sequence loadSequenceFromList2(List<String> list) {
-		status = EnumStatus.FAILURE;
-		list = keepOnlyAcceptedNamesFromList(list, 0);	
-		return loadSequenceFromList(list, true);
-	}
-	
+
 	private Sequence loadSequenceFromListAndDirectory(String [] list, String directory) {
 		status = EnumStatus.FAILURE;
 		list = keepOnlyAcceptedNamesFromArray(list);

@@ -34,6 +34,14 @@ public class ProgressChrono extends ProgressFrame {
 		setMessage( "Processing: " + pos + "% - Estimated time left: " + (int) timeleft + " s");
 	}
 	
+	public void updatePosition (int currentframe) {
+		int pos = (int)(100d * (double)currentframe / nbframes);
+		setPosition( currentframe );
+		int nbSeconds =  (int) (chrono.getNanos() / 1000000000f);
+		double timeleft = ((double)nbSeconds)* (100d-pos) /pos;
+		setMessage( "Processing frame " + currentframe + " / " + nbframes + " - Estimated time left: " + (int) timeleft + " s");
+	}
+	
 	public int getSecondsSinceStart() {
 		int nbSeconds =  (int) (chrono.getNanos() / 1000000000f);
 		return (nbSeconds-t0);

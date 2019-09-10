@@ -29,7 +29,6 @@ public class XLSExportCapillaryResults extends XLSExport {
 		try { 
 			XSSFWorkbook workbook = new XSSFWorkbook(); 
 			workbook.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-			
 			int col_max = 1;
 			int col_end = 1;
 			int iSeries = 0;

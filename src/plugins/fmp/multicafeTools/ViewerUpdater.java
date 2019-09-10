@@ -4,16 +4,26 @@ import icy.gui.viewer.Viewer;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 
-public class BuildVisuUpdater implements Runnable {
+public class ViewerUpdater implements Runnable {
 
-	Viewer viewer = null;
-	SequenceCamData seqCamData = null;
-	boolean isInterrupted = false;
+	Viewer 			viewer 			= null;
+	SequenceCamData seqCamData 		= null;
+	boolean 		isInterrupted 	= false;
+	int				milliSleep		= 200;
 	
-	BuildVisuUpdater (SequenceCamData seq) {
+	
+	ViewerUpdater (SequenceCamData seq) {
 		this.seqCamData = seq;
 		viewer = seqCamData.seq.getFirstViewer();
 		isInterrupted = false;
+		milliSleep = 200;
+	}
+	
+	ViewerUpdater (SequenceCamData seq, int milliSleep) {
+		this.seqCamData = seq;
+		viewer = seqCamData.seq.getFirstViewer();
+		isInterrupted = false;
+		this.milliSleep = milliSleep;
 	}
 	
 	@Override
@@ -22,7 +32,7 @@ public class BuildVisuUpdater implements Runnable {
 			int posT = seqCamData.currentFrame;
 			viewer.setPositionT(posT);
 			//viewer.setTitle(seqCamData.getDecoratedImageName(posT));
-			ThreadUtil.sleep(200);
+			ThreadUtil.sleep(milliSleep);
 		}
 	}
 }

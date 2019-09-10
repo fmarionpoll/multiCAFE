@@ -108,11 +108,21 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	} 
 	
 	SequenceCamData openSequenceCam(String filename) {
+		Experiment exp = null;
+		SequenceCamData seqCamData = null; 
 		currentIndex = expList.getPositionOfCamFileName(filename);
-		if (currentIndex < 0) 
-			currentIndex = expList.addNewExperiment();
-		Experiment exp = expList.getExperiment(currentIndex);
-		SequenceCamData seqCamData = exp.openSequenceCamData(filename);
+		if (currentIndex < 0) {
+			seqCamData = new SequenceCamData();
+			if (null != seqCamData.loadSequence(filename)) {
+				exp = new Experiment(seqCamData);
+				currentIndex = expList.addExperiment(exp);
+			}
+			
+		} else {
+			exp = expList.getExperiment(currentIndex);
+			seqCamData = exp.openSequenceCamData(filename);
+		}
+		
 		if (seqCamData.seq != null) {
 			addSequence(seqCamData.seq);
 			seqCamData.seq.getFirstViewer().addListener( this );

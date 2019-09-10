@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import icy.gui.util.GuiUtil;
+import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
@@ -58,7 +59,10 @@ public class MCKymosAnalyze_Graphs extends JPanel {
 	
 	void xyDisplayGraphs() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		final Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBounds();
+		Viewer v = exp.seqCamData.seq.getFirstViewer();
+		if (exp == null || v == null)
+			return;
+		final Rectangle rectv = v.getBounds();
 		Point ptRelative = new Point(0,rectv.height);
 		final int deltay = 230;
 

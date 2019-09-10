@@ -100,9 +100,9 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	
 	boolean loadCapillaryTrack() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		SequenceKymos seqKymos = exp.seqKymos;
 		boolean flag = fileTab.loadCapillaryTrack(exp);
 		if (flag) {
+			SequenceKymos seqKymos = exp.seqKymos;
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
 				infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 				infosTab.visibleCheckBox.setSelected(true);

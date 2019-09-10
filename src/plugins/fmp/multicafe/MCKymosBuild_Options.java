@@ -152,7 +152,10 @@ public class MCKymosBuild_Options extends JPanel {
 		
 		ArrayList<Viewer>vList = seqKymos.seq.getViewers();
 		if (vList.size() == 0) {
-			Rectangle rectMaster = exp.seqCamData.seq.getFirstViewer().getBounds();
+			Viewer viewer = exp.seqCamData.seq.getFirstViewer();
+			if (viewer == null)
+				return;
+			Rectangle rectMaster = viewer.getBounds();
 			int deltax = 5 + rectMaster.width;
 			int deltay = 5;
 

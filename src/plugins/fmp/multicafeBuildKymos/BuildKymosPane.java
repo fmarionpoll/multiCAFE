@@ -26,13 +26,11 @@ import icy.gui.viewer.ViewerEvent;
 import icy.gui.viewer.ViewerListener;
 import icy.gui.viewer.ViewerEvent.ViewerEventType;
 import icy.image.IcyBufferedImage;
-import icy.preferences.XMLPreferences;
 import icy.sequence.DimensionId;
 import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
 
 import plugins.fmp.multicafeSequence.Capillary;
-import plugins.fmp.multicafeSequence.EnumStatus;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.fmp.multicafeSequence.SequenceCamData;
@@ -103,7 +101,6 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 				((DefaultListModel<String>) parent0.listFilesPane.xmlFilesJList.getModel()).removeElement(oo);
 			}
 			else {
-			
 				stopComputationButton.setEnabled(true);
 				startComputationButton.setEnabled(false);
 				
@@ -179,15 +176,8 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 		seqCamData = new SequenceCamData();
 		seqCamData.loadSequence(csdummy);
 		seqCamData.setFileName(csdummy);
-		if (seqCamData.status == EnumStatus.FAILURE) {
-			XMLPreferences guiPrefs = parent0.getPreferences("gui");
-			String lastUsedPath = guiPrefs.get("lastUsedPath", "");
-			String path = seqCamData.loadSequenceFromDialog(lastUsedPath);
-			if (path.isEmpty())
-				return false;
-			seqCamData.setFileName(path);
-			guiPrefs.put("lastUsedPath", path);
-		}
+		if (seqCamData.seq == null) 
+			return false;
 		System.out.println("sequence openened: "+ seqCamData.getFileName());
 		return true;
 	}
@@ -195,15 +185,30 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	private void loadRois(String oo) {
 		System.out.println("read capillaries info for: "+ oo);
 		String filename = seqCamData.getFileName();
-		if (filename != null) {
+		if (filename == null)
+		return;
+		
+		String directory = seqCamData.getDirectory();
+		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
-			if (!oo .contains("capillarytrack") && oo.contains(".xml")) {
-				seqCamData.xmlReadROIs(oo);
-				seqKymos.xmlReadRoiLineParameters(oo);
+		boolean flag = seqKymos.xmlLoadCapillaryTrack(directory);
+		if (flag) {
+			SequenceKymosUtils.transferKymoCapillariesToCamData (seqCamData, seqKymos);	
+		} else {
+			String filename2 = seqCamData.getDirectory() + File.separator + "roislines.xml";
+			flag = seqCamData.xmlReadROIs(filename2);
+			if (flag) {
+				seqKymos.xmlReadRoiLineParameters(filename2);
 			}
-			SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
 		}
-		seqKymos.xmlSaveCapillaryTrack(seqCamData.getDirectory());
+//			seqKymos = new SequenceKymos();
+//			if (!oo .contains("capillarytrack") && oo.contains(".xml")) {
+//				seqCamData.xmlReadROIs(oo);
+//				seqKymos.xmlReadRoiLineParameters(oo);
+//			}
+//			SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
+		
+		//seqKymos.xmlSaveCapillaryTrack(seqCamData.getDirectory());
 	}
 
 	private void initInputSequenceViewer () {

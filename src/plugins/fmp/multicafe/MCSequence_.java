@@ -87,8 +87,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		else if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
 			ProgressFrame progress = new ProgressFrame("Open file...");
 			SequenceCamData seqCamData = parent0.openSequenceCam(null);
-			parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 			if (seqCamData != null) {
+				parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 				infosTab.expListComboBox.removeAllItems();
 				addSequenceCamToCombo();
 			}
@@ -97,8 +97,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
 			ProgressFrame progress = new ProgressFrame("Add file...");
 			SequenceCamData seqCamData = parent0.openSequenceCam(null);
-			parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 			if (seqCamData != null) {
+				parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 				addSequenceCamToCombo();
 			}
 			progress.close();

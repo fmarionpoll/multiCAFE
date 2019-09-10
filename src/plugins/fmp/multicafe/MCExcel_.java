@@ -38,14 +38,14 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		this.parent0 = parent0;
-		GridLayout capLayout = new GridLayout(3, 2);
 		
 		PopupPanel capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
-
+		GridLayout capLayout = new GridLayout(3, 2);
+		
 		optionsTab.init(capLayout);
 		tabsPane.addTab("Common options", null, optionsTab, "Define common options");
 		optionsTab.addPropertyChangeListener(this);
@@ -136,7 +136,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.absoluteTime	= optionsTab.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
 		if (optionsTab.exportAllFilesCheckBox.isSelected()) {
-			parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+			//parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
 			int nfiles = parent0.expList.experimentList.size();
 			options.firstExp = 0;
 			options.lastExp = nfiles - 1;

@@ -39,6 +39,17 @@ public class Experiment {
 		this.filename = filename;
 	}
 	
+	public Experiment(SequenceCamData seq) {
+		seqCamData = seq;
+		seqKymos   = new SequenceKymos();
+		
+		seqCamData.setParentDirectoryAsFileName() ;
+		fileTimeImageFirst = seqCamData.getImageModifiedTime(0);
+		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
+		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
+		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
+	}
+	
 	public boolean openSequenceAndMeasures() {
 		seqCamData = new SequenceCamData();
 		if (null == seqCamData.loadSequence(filename))

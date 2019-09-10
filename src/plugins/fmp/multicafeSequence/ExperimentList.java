@@ -104,31 +104,7 @@ public class ExperimentList {
 		}
 		return flagOK;
 	}
-	
-//	public long getFirstMinute(Experiment exp) {
-//		long firstMinute = exp.fileTimeImageFirstMinute;
-//		for (Experiment expi: experimentList) {
-//			if (!expi.boxID .equals(exp.boxID))
-//				continue;
-//			// if before, change
-//			if (expi.fileTimeImageFirstMinute < firstMinute) 
-//				firstMinute = expi.fileTimeImageFirstMinute;
-//		}				
-//		return firstMinute;
-//	}
-//	
-//	public long getLastMinute(Experiment exp) {	
-//		long lastMinute = exp.fileTimeImageLastMinute;
-//		for (Experiment expi: experimentList) {
-//			if (!expi.boxID .equals(exp.boxID))
-//				continue;
-//			// if before, change
-//			if (expi.fileTimeImageLastMinute > lastMinute) 
-//				lastMinute = expi.fileTimeImageLastMinute;
-//		}			
-//		return lastMinute;
-//	}
-	
+		
 	public int getStackColumnPosition (Experiment exp, int col0) {
 		boolean found = false;
 		for (Experiment expi: experimentList) {
@@ -177,6 +153,11 @@ public class ExperimentList {
 		return experimentList.size()-1;
 	}
 	
+	public int addExperiment (Experiment exp) {
+		experimentList.add(exp);
+		return experimentList.size()-1;
+	}
+
 	public int addNewExperiment (String filename) {
 		boolean exists = false;
 		int index = -1;
@@ -195,5 +176,4 @@ public class ExperimentList {
 		}
 		return index;
 	}
-
 }

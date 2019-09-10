@@ -152,7 +152,6 @@ public class MCCapillaries_Infos extends JPanel {
 	void updateCombos() {
 		addItem(stimulusRJCombo, (String) stimulusRJCombo.getSelectedItem());
 		addItem(concentrationRJCombo, (String) concentrationRJCombo.getSelectedItem());
-		
 		addItem(stimulusLJCombo, (String) stimulusLJCombo.getSelectedItem());
 		addItem(concentrationLJCombo, (String) concentrationLJCombo.getSelectedItem());
 	}
