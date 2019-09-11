@@ -118,6 +118,22 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		return options;
 	}
 	
+	private XLSExportOptions getCapillariesOptions() {
+		XLSExportOptions options = new XLSExportOptions();
+		
+		options.topLevel 		= kymosTab.topLevelCheckBox.isSelected(); 
+		options.topLevelDelta 	= kymosTab.topLevelDCheckBox.isSelected(); 	
+		options.bottomLevel 	= kymosTab.bottomLevelCheckBox.isSelected(); 
+		options.derivative 		= kymosTab.derivativeCheckBox.isSelected(); 
+		options.consumption 	= kymosTab.consumptionCheckBox.isSelected(); 
+		options.sum 			= kymosTab.sumCheckBox.isSelected(); 
+		options.t0 				= kymosTab.t0CheckBox.isSelected();
+		options.onlyalive 		= kymosTab.onlyaliveCheckBox.isSelected();
+
+		getCommonOptions(options);
+		return options;
+	}
+	
 	private void getCommonOptions(XLSExportOptions options) {
 		options.pivot 			= optionsTab.pivotCheckBox.isSelected();
 		if (options.pivot) {
@@ -136,7 +152,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.absoluteTime	= optionsTab.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
 		if (optionsTab.exportAllFilesCheckBox.isSelected()) {
-			//parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+			parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
 			int nfiles = parent0.expList.experimentList.size();
 			options.firstExp = 0;
 			options.lastExp = nfiles - 1;
@@ -146,21 +162,5 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 			options.lastExp = parent0.currentIndex;
 		}
 		options.expList = parent0.expList;
-	}
-	
-	private XLSExportOptions getCapillariesOptions() {
-		XLSExportOptions options = new XLSExportOptions();
-		
-		options.topLevel 		= kymosTab.topLevelCheckBox.isSelected(); 
-		options.topLevelDelta 	= kymosTab.topLevelDCheckBox.isSelected(); 	
-		options.bottomLevel 	= kymosTab.bottomLevelCheckBox.isSelected(); 
-		options.derivative 		= kymosTab.derivativeCheckBox.isSelected(); 
-		options.consumption 	= kymosTab.consumptionCheckBox.isSelected(); 
-		options.sum 			= kymosTab.sumCheckBox.isSelected(); 
-		options.t0 				= kymosTab.t0CheckBox.isSelected();
-		options.onlyalive 		= kymosTab.onlyaliveCheckBox.isSelected();
-
-		getCommonOptions(options);
-		return options;
 	}
 }
