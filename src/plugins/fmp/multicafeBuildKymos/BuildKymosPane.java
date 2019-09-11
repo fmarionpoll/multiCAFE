@@ -13,8 +13,11 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
@@ -45,6 +48,9 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	private static final long serialVersionUID 	= -1610357726091762089L;
 	public JButton 					startComputationButton 	= new JButton("Start");
 	public JButton 					stopComputationButton 	= new JButton("Stop");
+	private JSpinner 				analyzeStepJSpinner 	= new JSpinner(new SpinnerNumberModel(1, 1, 10000, 1));
+	private JSpinner 				diskRadiusSpinner 		= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
+	private JCheckBox 				doRegistrationCheckBox 	= new JCheckBox("registration", false);
 	
 	SequenceCamData 				seqCamData 				= null;
 	SequenceKymos					seqKymos				= null;
@@ -52,9 +58,8 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	private BuildKymographs 		buildKymographsThread 	= null;
 	private Viewer 					viewer1 				= null;
 	private Thread 					thread 					= null;
-	private int						analyzeStep 			= 1; 
+	 
 	// TODO:  textbox? add checkbox for registration
-	private int 					diskRadius 				= 5;
 	private BuildKymographsBatch 	parent0 				= null;
 	private List<String> 			discardedNames			= new ArrayList <String> ();
 	
@@ -64,6 +69,12 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 
 		final JPanel kymographsPanel = GuiUtil.generatePanel("KYMOGRAPHS");
 		mainPanel.add(GuiUtil.besidesPanel(kymographsPanel));
+		
+		kymographsPanel.add(GuiUtil.besidesPanel(
+				new JLabel("area around ROIs ", SwingConstants.RIGHT), diskRadiusSpinner, 
+				new JLabel("step ", SwingConstants.RIGHT) , analyzeStepJSpinner,
+				doRegistrationCheckBox
+				));
 		kymographsPanel.add(GuiUtil.besidesPanel(startComputationButton, stopComputationButton));
 		JLabel startLabel = new JLabel("start "); 
 		startLabel.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -125,11 +136,11 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 		// build kymograph
 		buildKymographsThread = new BuildKymographs();
 		buildKymographsThread.options.seqCamData  	= seqCamData;
-		buildKymographsThread.options.analyzeStep 	= analyzeStep;
+		buildKymographsThread.options.analyzeStep 	= (int) analyzeStepJSpinner.getValue();
 		buildKymographsThread.options.startFrame 	= (int) seqCamData.analysisStart;
 		buildKymographsThread.options.endFrame 		= (int) seqCamData.analysisEnd;
-		buildKymographsThread.options.diskRadius 	= diskRadius;
-		buildKymographsThread.options.doRegistration= false; // doRegistrationCheckBox.isSelected();
+		buildKymographsThread.options.diskRadius 	= (int) diskRadiusSpinner.getValue();
+		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected();
 		buildKymographsThread.options.seqKymos		= seqKymos;
 		
 		thread = new Thread(buildKymographsThread);
@@ -201,14 +212,6 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 				seqKymos.xmlReadRoiLineParameters(filename2);
 			}
 		}
-//			seqKymos = new SequenceKymos();
-//			if (!oo .contains("capillarytrack") && oo.contains(".xml")) {
-//				seqCamData.xmlReadROIs(oo);
-//				seqKymos.xmlReadRoiLineParameters(oo);
-//			}
-//			SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
-		
-		//seqKymos.xmlSaveCapillaryTrack(seqCamData.getDirectory());
 	}
 
 	private void initInputSequenceViewer () {
@@ -239,7 +242,7 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	private void startstopBufferingThread() {
 		if (seqCamData == null)
 			return;
-		seqCamData.analysisStep = analyzeStep;
+		seqCamData.analysisStep = (int) analyzeStepJSpinner.getValue();
 	}
 
 	private void saveComputation() {

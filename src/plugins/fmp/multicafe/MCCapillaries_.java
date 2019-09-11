@@ -29,8 +29,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	 */
 	private static final long serialVersionUID = 853047648249832145L;
 	
-	JTabbedPane 				tabsPane 		= new JTabbedPane();
-	MCCapillaries_Build 		buildarrayTab 	= new MCCapillaries_Build();
+	JTabbedPane 			tabsPane 		= new JTabbedPane();
+	MCCapillaries_Build 	buildarrayTab 	= new MCCapillaries_Build();
 	MCCapillaries_File 		fileTab 		= new MCCapillaries_File();
 	MCCapillaries_Adjust 	adjustTab 		= new MCCapillaries_Adjust();
 	MCCapillaries_Infos		infosTab		= new MCCapillaries_Infos();
@@ -108,7 +108,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 				infosTab.visibleCheckBox.setSelected(true);
 				buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 				parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
-				parent0.sequencePane.browseTab.setAnalyzeFrameAndStepToDialog(exp.seqCamData);
+				parent0.sequencePane.intervalsTab.setAnalyzeFrameAndStepToDialog(exp.seqCamData);
 			}});
 		}
 		return flag;

@@ -31,8 +31,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private JTabbedPane 	tabsPane 	= new JTabbedPane();
 	MCSequence_Open 		openTab 	= new MCSequence_Open();
 	MCSequence_Infos		infosTab	= new MCSequence_Infos();
-	MCSequence_Analysis	browseTab 	= new MCSequence_Analysis();
-	MCSequence_Close 	closeTab 	= new MCSequence_Close();
+	MCSequence_Intervals	intervalsTab = new MCSequence_Intervals();
+	MCSequence_Close 		closeTab 	= new MCSequence_Close();
 	private MultiCAFE 		parent0 	= null;
 	
 	
@@ -55,9 +55,9 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Infos", null, infosTab, "Define infos for this experiment/box");
 		infosTab.addPropertyChangeListener(this);
 		
-		browseTab.init(capLayout);
-		tabsPane.addTab("Browse", null, browseTab, "Browse stack and adjust analysis parameters");
-		browseTab.addPropertyChangeListener(this);
+		intervalsTab.init(capLayout);
+		tabsPane.addTab("Intervals", null, intervalsTab, "Browse and analysis parameters");
+		intervalsTab.addPropertyChangeListener(this);
 
 		closeTab.init(capLayout, parent0);
 		tabsPane.addTab("Close", null, closeTab, "Close file and associated windows");
@@ -106,7 +106,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		 else if (event.getPropertyName().equals("UPDATE")) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 			updateViewerForSequenceCam(exp.seqCamData);
-			browseTab.getAnalyzeFrameAndStepFromDialog(exp.seqCamData);
+			intervalsTab.getAnalyzeFrameAndStepFromDialog(exp.seqCamData);
 		 }
 
 		 else if (event.getPropertyName().equals("SEQ_CLOSE")) {
@@ -177,7 +177,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
-		browseTab.endFrameJSpinner.setValue((int)seqCamData.analysisEnd);
+		intervalsTab.endFrameJSpinner.setValue((int)seqCamData.analysisEnd);
 		updateViewerForSequenceCam(seqCamData);
 	}
 

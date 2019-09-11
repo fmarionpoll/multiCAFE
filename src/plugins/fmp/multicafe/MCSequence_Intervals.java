@@ -15,7 +15,7 @@ import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
-public class MCSequence_Analysis extends JPanel {
+public class MCSequence_Intervals extends JPanel {
 	/**
 	 * 
 	 */

@@ -93,7 +93,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if (arg0.getPropertyName().equals("CAPILLARIES_OPEN")) {
 			Experiment exp = expList.getExperiment(currentIndex);
-			sequencePane.browseTab.setAnalyzeFrameAndStepToDialog(exp.seqCamData);
+			sequencePane.intervalsTab.setAnalyzeFrameAndStepToDialog(exp.seqCamData);
 		}
 		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
 			buildKymosPane.optionsTab.displayUpdateOnSwingThread();

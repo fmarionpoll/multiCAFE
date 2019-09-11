@@ -90,7 +90,7 @@ public class MCKymosAnalyze_File  extends JPanel {
 		if (seqKymos != null) {
 			parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
 			parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
-			parent0.sequencePane.browseTab.getAnalyzeFrameAndStepFromDialog (exp.seqCamData);
+			parent0.sequencePane.intervalsTab.getAnalyzeFrameAndStepFromDialog (exp.seqCamData);
 			seqKymos.updateCapillariesFromCamData(exp.seqCamData);
 //			seqKymos.getAnalysisParametersFromCamData(exp.seqCamData);
 			seqKymos.roisSaveEdits();

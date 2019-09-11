@@ -80,7 +80,7 @@ public class MCCapillaries_File extends JPanel {
 		SequenceKymos seqKymos = exp.seqKymos;
 		parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
 		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
-		parent0.sequencePane.browseTab.getAnalyzeFrameAndStepFromDialog (seqCamData);
+		parent0.sequencePane.intervalsTab.getAnalyzeFrameAndStepFromDialog (seqCamData);
 		seqKymos.updateCapillariesFromCamData(seqCamData);
 		return seqKymos.xmlSaveCapillaryTrack(seqCamData.getDirectory());
 	}

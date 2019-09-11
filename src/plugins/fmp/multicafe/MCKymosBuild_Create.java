@@ -81,7 +81,7 @@ public class MCKymosBuild_Create extends JPanel {
 		}
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
-		parent0.sequencePane.browseTab.getAnalyzeFrameAndStepFromDialog (exp.seqCamData);
+		parent0.sequencePane.intervalsTab.getAnalyzeFrameAndStepFromDialog (exp.seqCamData);
 		exp.seqKymos = new SequenceKymos();
 		exp.seqKymos.updateCapillariesFromCamData(exp.seqCamData);
 		setStartButton(false);
