@@ -8,7 +8,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -74,46 +73,47 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-
 		if (evt.getPropertyName().equals("EXPORT_MOVEDATA")) {
-			Path directory = Paths.get(exp.seqCamData.getFileName(0)).getParent();
-			Path subpath = directory.getName(directory.getNameCount()-1);
-			String tentativeName = subpath.toString()+"_move.xlsx";
-			String file = MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
+			String file = defineXlsFileName(exp);
 			if (file != null) {
-				final String filename = file;
-				parent0.capillariesPane.getCapillariesInfos(exp.seqKymos.capillaries);
-				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(exp.seqKymos.capillaries);
+				updateParametersCurrentExperiment(exp);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 					XLSExportMoveResults xlsExport = new XLSExportMoveResults();
-					xlsExport.exportToFile(filename, getMoveOptions());
+					xlsExport.exportToFile(file, getMoveOptions());
 				}});
 			}
 		}
 		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
-			String filename0 = exp.seqCamData.getFileName(0);
-			Path directory = Paths.get(filename0).getParent();
-			Path subpath = directory.getName(directory.getNameCount()-1);
-			String tentativeName = subpath.toString()+"_feeding.xlsx";
-			String file = MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
+			String file = defineXlsFileName(exp);
 			if (file != null) {
-				final String filename = file;
-				parent0.capillariesPane.getCapillariesInfos(exp.seqKymos.capillaries);
-				parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(exp.seqKymos.capillaries);
+				updateParametersCurrentExperiment(exp);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 					XLSExportCapillaryResults xlsExport = new XLSExportCapillaryResults();
-					xlsExport.exportToFile(filename, getCapillariesOptions());
+					xlsExport.exportToFile(file, getCapillariesOptions());
 				}});
 				firePropertyChange("EXPORT_TO_EXCEL", false, true);	
 			}
 		}
 	}
 	
+	private String defineXlsFileName(Experiment exp) {
+		String filename0 = exp.seqCamData.getFileName(0);
+		Path directory = Paths.get(filename0).getParent();
+		Path subpath = directory.getName(directory.getNameCount()-1);
+		String tentativeName = subpath.toString()+"_feeding.xlsx";
+		return MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
+	}
+	
+	private void updateParametersCurrentExperiment(Experiment exp) {
+		parent0.capillariesPane.getCapillariesInfos(exp.seqKymos.capillaries);
+		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(exp.seqKymos.capillaries);
+	}
+	
 	private XLSExportOptions getMoveOptions() {
 		XLSExportOptions options = new XLSExportOptions();
-		options.xyCenter = moveTab.xyCenterCheckBox.isSelected(); 
-		options.distance = moveTab.distanceCheckBox.isSelected();
-		options.alive = moveTab.aliveCheckBox.isSelected(); 
+		options.xyCenter 		= moveTab.xyCenterCheckBox.isSelected(); 
+		options.distance 		= moveTab.distanceCheckBox.isSelected();
+		options.alive 			= moveTab.aliveCheckBox.isSelected(); 
 		getCommonOptions(options);
 		return options;
 	}
@@ -137,12 +137,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	private void getCommonOptions(XLSExportOptions options) {
 		options.pivot 			= optionsTab.pivotCheckBox.isSelected();
 		if (options.pivot) {
-			options.transpose = true;
-			try {
-				optionsTab.pivotBinStep.commitEdit();
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			options.transpose 	= true;
 			options.pivotBinStep = (int) optionsTab.pivotBinStep.getValue();
 		}
 		else {
@@ -153,14 +148,14 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
 		if (optionsTab.exportAllFilesCheckBox.isSelected()) {
 			parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
-			int nfiles = parent0.expList.experimentList.size();
-			options.firstExp = 0;
-			options.lastExp = nfiles - 1;
+			int nfiles 			= parent0.expList.experimentList.size();
+			options.firstExp 	= 0;
+			options.lastExp 	= nfiles - 1;
 		}
 		else {
-			options.firstExp = parent0.currentIndex;
-			options.lastExp = parent0.currentIndex;
+			options.firstExp 	= parent0.currentIndex;
+			options.lastExp 	= parent0.currentIndex;
 		}
-		options.expList = parent0.expList;
+		options.expList 		= parent0.expList;
 	}
 }

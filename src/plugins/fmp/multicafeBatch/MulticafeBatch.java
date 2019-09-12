@@ -1,4 +1,4 @@
-package plugins.fmp.multicafeBuildKymos;
+package plugins.fmp.multicafeBatch;
 
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
@@ -13,7 +13,7 @@ import icy.gui.util.GuiUtil;
 import icy.plugin.abstract_.PluginActionable;
 
 
-public class BuildKymographsBatch  extends PluginActionable implements ChangeListener, PropertyChangeListener {
+public class MulticafeBatch  extends PluginActionable implements ChangeListener, PropertyChangeListener {
 
 	IcyFrame 		mainFrame 			= new IcyFrame("Build kymographs 27-07-06-2019", true, true, true, true);
 	BuildKymosListFilesPane 	listFilesPane 		= new BuildKymosListFilesPane();

@@ -1,4 +1,4 @@
-package plugins.fmp.multicafeBuildKymos;
+package plugins.fmp.multicafeBatch;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -41,10 +41,10 @@ public class BuildKymosListFilesPane extends JPanel implements PropertyChangeLis
 	public JButton 		clearAllButton			= new JButton("Clear all");
 	public JList<String> xmlFilesJList			= new JList<String>(new DefaultListModel<String>());
 	
-	private BuildKymographsBatch parent0 		= null;
+	private MulticafeBatch parent0 		= null;
 	
 	
-	public void init (JPanel mainPanel, String string, BuildKymographsBatch parent0) {
+	public void init (JPanel mainPanel, String string, MulticafeBatch parent0) {
 		this.parent0 = parent0;
 		final JPanel sourcePanel = GuiUtil.generatePanel("SOURCE");
 		mainPanel.add(GuiUtil.besidesPanel(sourcePanel));

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Experiment {
 	
-	public String			filename 					= null;
+	public String			experimentFileName			= null;
 	public SequenceCamData 	seqCamData 					= null;
 	public SequenceKymos 	seqKymos					= null;
 	
@@ -36,7 +36,7 @@ public class Experiment {
 	public Experiment(String filename) {
 		seqCamData = new SequenceCamData();
 		seqKymos   = new SequenceKymos();
-		this.filename = filename;
+		this.experimentFileName = filename;
 	}
 	
 	public Experiment(SequenceCamData seq) {
@@ -52,7 +52,7 @@ public class Experiment {
 	
 	public boolean openSequenceAndMeasures() {
 		seqCamData = new SequenceCamData();
-		if (null == seqCamData.loadSequence(filename))
+		if (null == seqCamData.loadSequence(experimentFileName))
 			return false;
 		fileTimeImageFirst = seqCamData.getImageModifiedTime(0);
 		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
@@ -70,9 +70,12 @@ public class Experiment {
 	}
 	
 	public boolean openSequenceAndMeasures(boolean loadCapillaryTrack, boolean loadDrosoTrack) {
-		seqCamData = new SequenceCamData();
-		if (null == seqCamData.loadSequence(filename))
+		if (seqCamData == null) {
+			seqCamData = new SequenceCamData();
+		}
+		if (null == seqCamData.loadSequence(experimentFileName))
 			return false;
+		
 		fileTimeImageFirst = seqCamData.getImageModifiedTime(0);
 		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
@@ -91,7 +94,7 @@ public class Experiment {
 	}
 	
 	public SequenceCamData openSequenceCamData(String filename) {
-		this.filename = filename;
+		this.experimentFileName = filename;
 		seqCamData = new SequenceCamData();
 		if (null == seqCamData.loadSequence(filename))
 			return null;

@@ -153,7 +153,11 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	void addSequenceCamToCombo() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		String strItem = Paths.get(exp.seqCamData.getFileName()).toString();
+		String filename = exp.seqCamData.getFileName();
+		if (filename == null) {
+			return;
+		}
+		String strItem = Paths.get(filename).toString();
 		if (strItem != null) {
 			addSequenceCamToCombo(strItem);
 			infosTab.expListComboBox.setSelectedItem(strItem);

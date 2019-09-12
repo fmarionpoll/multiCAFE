@@ -163,7 +163,12 @@ public class ExperimentList {
 		int index = -1;
 		for (int i=0; i < experimentList.size(); i++) {
 			Experiment exp = experimentList.get(i);
-			if (filename.contains(exp.filename)) {
+			if (exp.experimentFileName == null) {
+				if (exp.seqCamData != null) {
+					exp.experimentFileName = exp.seqCamData.getFileName();
+				}
+			}
+			if (exp.experimentFileName != null && filename.contains(exp.experimentFileName)) {
 				exists = true;
 				index = i;
 				break;
@@ -176,4 +181,5 @@ public class ExperimentList {
 		}
 		return index;
 	}
+	
 }

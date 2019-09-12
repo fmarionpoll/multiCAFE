@@ -1,4 +1,4 @@
-package plugins.fmp.multicafeBuildKymos;
+package plugins.fmp.multicafeBatch;
 
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -60,11 +60,11 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 	private Thread 					thread 					= null;
 	 
 	// TODO:  textbox? add checkbox for registration
-	private BuildKymographsBatch 	parent0 				= null;
+	private MulticafeBatch 	parent0 				= null;
 	private List<String> 			discardedNames			= new ArrayList <String> ();
 	
 	
-	public void init (JPanel mainPanel, String string, BuildKymographsBatch parent0) {
+	public void init (JPanel mainPanel, String string, MulticafeBatch parent0) {
 		this.parent0 = parent0;
 
 		final JPanel kymographsPanel = GuiUtil.generatePanel("KYMOGRAPHS");
