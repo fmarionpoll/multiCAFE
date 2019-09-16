@@ -23,17 +23,17 @@ import plugins.fmp.multicafeTools.ImageTransformTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class MCKymosAnalyze_ extends JPanel implements PropertyChangeListener {
+public class MCKymosDetect_ extends JPanel implements PropertyChangeListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7339633966002954720L;
 	private JTabbedPane 			tabsPane 	= new JTabbedPane();
-	MCKymosAnalyze_File 			fileTab 	= new MCKymosAnalyze_File();
-	MCKymosAnalyze_DetectLimits 	limitsTab 	= new MCKymosAnalyze_DetectLimits();
-	MCKymosAnalyze_DetectGulps 	gulpsTab 	= new MCKymosAnalyze_DetectGulps();
-	MCKymosAnalyze_Edit			editTab		= new MCKymosAnalyze_Edit();
-	MCKymosAnalyze_Graphs 		graphsTab 	= new MCKymosAnalyze_Graphs();
+	MCKymosDetect_File 			fileTab 	= new MCKymosDetect_File();
+	MCKymosDetect_Levels 	limitsTab 	= new MCKymosDetect_Levels();
+	MCKymosDetect_Gulps 	gulpsTab 	= new MCKymosDetect_Gulps();
+	MCKymosDetect_Edit			editTab		= new MCKymosDetect_Edit();
+	MCKymosDetect_Graphs 		graphsTab 	= new MCKymosDetect_Graphs();
 	ImageTransformTools 			tImg 		= null;
 	private MultiCAFE 				parent0 	= null;
 

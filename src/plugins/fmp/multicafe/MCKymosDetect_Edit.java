@@ -20,7 +20,7 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
-public class MCKymosAnalyze_Edit  extends JPanel {
+public class MCKymosDetect_Edit  extends JPanel {
 	/**
 	 * 
 	 */

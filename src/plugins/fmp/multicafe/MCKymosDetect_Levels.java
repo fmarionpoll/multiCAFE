@@ -23,7 +23,7 @@ import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class MCKymosAnalyze_DetectLimits  extends JPanel {
+public class MCKymosDetect_Levels  extends JPanel {
 
 	/**
 	 * 
