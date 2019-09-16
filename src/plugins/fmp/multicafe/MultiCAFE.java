@@ -94,8 +94,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			sequencePane.intervalsTab.setAnalyzeFrameAndStepToDialog(exp.seqCamData);
 		}
 		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
-			buildKymosPane.optionsTab.displayUpdateOnSwingThread();
-			buildKymosPane.optionsTab.viewKymosCheckBox.setSelected(true);
+			buildKymosPane.displayTab.displayUpdateOnSwingThread();
+			buildKymosPane.displayTab.viewKymosCheckBox.setSelected(true);
 		}
 		else if (arg0.getPropertyName() .equals("EXPORT_TO_EXCEL")) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
@@ -147,7 +147,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 
 		if (loadKymographs) {
 			ProgressFrame progress = new ProgressFrame("load kymograph *.tiff");
-			buildKymosPane.optionsTab.viewKymosCheckBox.setSelected(true);
+			buildKymosPane.displayTab.viewKymosCheckBox.setSelected(true);
 			buildKymosPane.fileTab.loadDefaultKymos(exp);
 			progress.close();
 			if (sequencePane.openTab.graphsCheckBox.isSelected())

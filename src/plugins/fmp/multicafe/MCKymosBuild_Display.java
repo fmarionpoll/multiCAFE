@@ -31,7 +31,7 @@ import plugins.fmp.multicafeTools.MulticafeTools;
 
 
 
-public class MCKymosBuild_Options extends JPanel {
+public class MCKymosBuild_Display extends JPanel {
 	/**
 	 * 
 	 */
@@ -82,7 +82,7 @@ public class MCKymosBuild_Options extends JPanel {
 		
 		viewDerivativeCheckbox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-			roisDisplay("derivative", viewDerivativeCheckbox.isSelected());
+			roisDisplay("deriv", viewDerivativeCheckbox.isSelected());
 		} } );
 
 		viewGulpsCheckbox.addActionListener(new ActionListener () { 
@@ -229,6 +229,9 @@ public class MCKymosBuild_Options extends JPanel {
 	void selectKymograph(int isel) {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		SequenceKymos seqKymos = exp.seqKymos;
+		if (seqKymos == null || seqKymos.seq == null)
+			return;
+		
 		int icurrent = kymographNamesComboBox.getSelectedIndex();
 		if (isel < 0)
 			isel = 0;

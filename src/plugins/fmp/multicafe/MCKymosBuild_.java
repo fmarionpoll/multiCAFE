@@ -28,8 +28,8 @@ public class MCKymosBuild_ extends JPanel implements PropertyChangeListener, Cha
 
 	JTabbedPane 			tabsPane 		= new JTabbedPane();
 	MCKymosBuild_Create 	buildkymosTab 	= new MCKymosBuild_Create();
-	MCKymosBuild_Options optionsTab 		= new MCKymosBuild_Options();
-	MCKymosBuild_File 	fileTab 		= new MCKymosBuild_File();
+	MCKymosBuild_Display	displayTab 		= new MCKymosBuild_Display();
+	MCKymosBuild_File 		fileTab 		= new MCKymosBuild_File();
 	
 	private MultiCAFE parent0 = null;
 
@@ -46,9 +46,9 @@ public class MCKymosBuild_ extends JPanel implements PropertyChangeListener, Cha
 		buildkymosTab.addPropertyChangeListener(this);
 		tabsPane.addTab("Build kymos", null, buildkymosTab, "Build kymographs from ROI lines placed over capillaries");
 		
-		optionsTab.init(capLayout, parent0);
-		optionsTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Display", null, optionsTab, "Display options of data & kymographs");
+		displayTab.init(capLayout, parent0);
+		displayTab.addPropertyChangeListener(this);
+		tabsPane.addTab("Display", null, displayTab, "Display options of data & kymographs");
 
 		fileTab.init(capLayout, parent0);
 		fileTab.addPropertyChangeListener(this);
@@ -71,13 +71,13 @@ public class MCKymosBuild_ extends JPanel implements PropertyChangeListener, Cha
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("KYMOS_OPEN")) {
-			optionsTab.viewKymosCheckBox.setSelected(true);
+			displayTab.viewKymosCheckBox.setSelected(true);
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("KYMOS_CREATE")) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-			optionsTab.viewKymosCheckBox.setSelected(true);
-			optionsTab.transferCapillaryNamesToComboBox(exp.seqKymos.capillaries.capillariesArrayList);
+			displayTab.viewKymosCheckBox.setSelected(true);
+			displayTab.transferCapillaryNamesToComboBox(exp.seqKymos.capillaries.capillariesArrayList);
 			tabsPane.setSelectedIndex(2);
 		
 		}
@@ -98,7 +98,7 @@ public class MCKymosBuild_ extends JPanel implements PropertyChangeListener, Cha
 			Viewer v = exp.seqCamData.seq.getFirstViewer();
 			v.toFront();
 		} else if (iselected == 1) {
-			parent0.buildKymosPane.optionsTab.displayUpdateOnSwingThread();
+			parent0.buildKymosPane.displayTab.displayUpdateOnSwingThread();
 		}
 	}
 	

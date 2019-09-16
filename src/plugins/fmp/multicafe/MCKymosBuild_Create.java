@@ -99,8 +99,8 @@ public class MCKymosBuild_Create extends JPanel {
 				e1.printStackTrace();
 			}
 		}
-		parent0.buildKymosPane.optionsTab.viewKymosCheckBox.setSelected(true);
-		parent0.buildKymosPane.optionsTab.displayViews (true);
+		parent0.buildKymosPane.displayTab.viewKymosCheckBox.setSelected(true);
+		parent0.buildKymosPane.displayTab.displayViews (true);
 	}
 	
 	private void resetUserInterface() {

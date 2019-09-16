@@ -50,7 +50,7 @@ public class MCSequence_Close  extends JPanel {
 		}
 		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
-		parent0.buildKymosPane.optionsTab.kymographNamesComboBox.removeAllItems();
+		parent0.buildKymosPane.displayTab.kymographNamesComboBox.removeAllItems();
 	}
 	
 	private void checkIfLoadingNotFinished(Experiment exp) {
@@ -77,7 +77,7 @@ public class MCSequence_Close  extends JPanel {
 		seqKymos.seq.close();
 		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
-		parent0.buildKymosPane.optionsTab.kymographNamesComboBox.removeAllItems();
+		parent0.buildKymosPane.displayTab.kymographNamesComboBox.removeAllItems();
 		seqCamData.seq.removeAllROI();
 		seqCamData.seq.close();
 	}

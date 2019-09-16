@@ -90,7 +90,7 @@ public class MCKymosAnalyze_DetectLimits  extends JPanel {
 				options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 				options.detectLevelThreshold= (int) getDetectLevelThreshold();
 				options.detectAllImages 	= detectAllCheckBox.isSelected();
-				options.firstImage 			= parent0.buildKymosPane.optionsTab.kymographNamesComboBox.getSelectedIndex();
+				options.firstImage 			= parent0.buildKymosPane.displayTab.kymographNamesComboBox.getSelectedIndex();
 				options.analyzePartOnly		= partCheckBox.isSelected();
 				options.startPixel			= (int) startSpinner.getValue();
 				options.endPixel			= (int) endSpinner.getValue();
