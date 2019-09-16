@@ -15,7 +15,6 @@ public class DetectLimits {
 	List<Point2D> limitBottom =null;
 	
 	public void detectCapillaryLevels(DetectLimits_Options options, SequenceKymos seqkymo) {
-		// send some info
 		ProgressChrono progressBar = new ProgressChrono("Detection of upper/lower capillary limits started");
 		progressBar.initStuff(seqkymo.seq.getSizeT() );
 		
@@ -98,9 +97,6 @@ public class DetectLimits {
 			}
 		}
 		seqkymo.seq.endUpdate();
-
-		// send some info
-		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
 	}
 	

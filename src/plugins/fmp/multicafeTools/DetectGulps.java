@@ -17,8 +17,7 @@ public class DetectGulps {
 	private List <Integer> 		topLevelArray 	= null;
 	private SequenceKymos 		seqkymo 		= null;
 	
-	public void detectGulps(DetectGulps_Options options, SequenceKymos seqkymo) {	
-		
+	public void detectGulps(DetectGulps_Options options, SequenceKymos seqkymo) {			
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
 		progressBar.initStuff(seqkymo.seq.getSizeT() );
 		
@@ -51,13 +50,10 @@ public class DetectGulps {
 			}
 		}
 		seqkymo.seq.endUpdate();
-
-		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
 	}	
 
-	private void getDerivativeProfile(int indexkymo, Capillary cap, int jitter) {
-		
+	private void getDerivativeProfile(int indexkymo, Capillary cap, int jitter) {	
 		int z = seqkymo.seq.getSizeZ() -1;
 		IcyBufferedImage image = seqkymo.seq.getImage(indexkymo, z, 0);
 		List<Point2D> listOfMaxPoints = new ArrayList<>();

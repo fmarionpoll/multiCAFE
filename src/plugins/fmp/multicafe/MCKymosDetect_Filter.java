@@ -57,7 +57,6 @@ public class MCKymosDetect_Filter  extends JPanel {
 		IcyBufferedImage image = null;
 		image = kymographSeq.seq.getImage(t, 0, c);
 		double [] tabValues = Array1DUtil.arrayToDoubleArray(image.getDataXY(0), image.isSignedDataType()); 
-		
 		int xwidth = image.getSizeX();
 		int yheight = image.getSizeY();
 		double[] col0 = new double[yheight];

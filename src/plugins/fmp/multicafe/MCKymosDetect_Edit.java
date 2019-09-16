@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -14,6 +15,7 @@ import javax.swing.JPanel;
 import icy.gui.util.GuiUtil;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
+import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequenceKymos;
@@ -28,6 +30,7 @@ public class MCKymosDetect_Edit  extends JPanel {
 	private MultiCAFE 	parent0;
 	private ROI2DPolyLine roiselected 	= null;
 	private boolean[] 	isInside		= null;
+	private ArrayList<ROI> listGulpsSelected = null;
 	
 	private JComboBox<String> roiTypeCombo = new JComboBox<String> (new String[] {" upper level", "lower level", "derivative", "gulps" });
 	private JButton 	selectButton 	= new JButton("Select points");
@@ -62,21 +65,21 @@ public class MCKymosDetect_Edit  extends JPanel {
 
 	void selectPointsIncluded() {
 		SequenceKymos seqKymos = parent0.expList.getExperiment(parent0.currentIndex).seqKymos;
-		int t= seqKymos.currentFrame;
-		Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
+		if (seqKymos == null)
+			return;
+		Capillary cap = seqKymos.capillaries.capillariesArrayList.get(seqKymos.currentFrame);
 		ROI2D roi = seqKymos.seq.getSelectedROI2D();
 		if (roi == null)
 			return;
 		String name = roi.getName();
 		if (name.contains("level") || name.contains("deriv") || name.contains("gulp"))
 			return;
-		roi.setColor(Color.BLUE);
 		roi.setSelected(true);
 		
 		Polyline2D polyline = null;
 		String sourceData = (String) roiTypeCombo.getSelectedItem();
 		if (sourceData .contains("gulp")) {
-			selectGulps();
+			selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
 			return;
 		} else if (sourceData .contains("upper"))
 			polyline = cap.ptsTop;
@@ -105,12 +108,30 @@ public class MCKymosDetect_Edit  extends JPanel {
 		}
 	}
 	
-	void selectGulps() {
+	void selectGulpsWithinRoi(ROI2D roiReference, Sequence seq, int t) {
+		List <ROI> allRois = seq.getROIs();
+		listGulpsSelected = new ArrayList<ROI>();
+		for (ROI roi: allRois) {
+			roi.setSelected(false);
+			if (!(roi instanceof ROI2D))
+				continue;
+			if (((ROI2D) roi).getT() != t)
+				continue;
+			if (roi.getName().contains("gulp")) {
+				listGulpsSelected.add(roi);
+				roi.setSelected(true);
+			}
+		}
 		
 	}
 	
-	void deleteGulps() {
-		
+	void deleteGulps(Sequence seq) {
+		if (seq == null || listGulpsSelected == null)
+			return;
+		for (ROI roi: listGulpsSelected) {
+			seq.removeROI(roi);
+		}
+		listGulpsSelected = null;
 	}
 	
 	void deletePointsIncluded() {
@@ -124,7 +145,8 @@ public class MCKymosDetect_Edit  extends JPanel {
 		Polyline2D polyline = null;
 		String sourceData = (String) roiTypeCombo.getSelectedItem();
 		if (sourceData .contains("gulp")) {
-			deleteGulps();
+			selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
+			deleteGulps(seqKymos.seq);
 			return;
 		} else if (sourceData .contains("upper")) {
 			polyline = cap.ptsTop;

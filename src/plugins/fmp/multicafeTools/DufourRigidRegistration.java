@@ -491,8 +491,6 @@ public class DufourRigidRegistration {
             }
             
             translation.scale(1.0 / n);
-//            System.out.println("[Rigid Registration] Translation: " + StringUtil.toString(translation.x, 2) + " / " + StringUtil.toString(translation.y, 2));
-            
             if (translation.lengthSquared() != 0)
             {
                 change = true;
@@ -612,8 +610,6 @@ public class DufourRigidRegistration {
             }
             
             angle /= n;
- //           System.out.println("[Rigid Registration] Angle: " + angle);
-            
             if (angle != 0.0)
             {
                 change = true;
