@@ -96,6 +96,8 @@ public class BuildKymosListFilesPane extends JPanel implements PropertyChangeLis
 		XMLPreferences guiPrefs = parent0.getPreferences("gui");
 		String lastUsedPathString = guiPrefs.get("lastUsedPath", "");
 		File dir = MulticafeTools.chooseDirectory(lastUsedPathString);
+		if (dir == null) 
+			return;
 		lastUsedPathString = dir.getAbsolutePath();
 		guiPrefs.put("lastUsedPath", lastUsedPathString);
 		Path pdir = Paths.get(lastUsedPathString);
