@@ -124,6 +124,7 @@ public class MulticafeSequence extends EzPlug {
 	
 	private void closeAll() {
 		vSequence.seq.close();
+		vSequence.seq.closed();
 		groupLoadFiles.setFoldedState(false);
 		groupViewMode.setFoldedState(true);
 		groupClose.setFoldedState(true);
@@ -158,8 +159,10 @@ public class MulticafeSequence extends EzPlug {
 	}
 		
 	public boolean sequenceOpenFile() {
-		if (vSequence != null)
-			vSequence.seq.close();		
+		if (vSequence != null) {
+			vSequence.seq.close();	
+			vSequence.seq.closed();	
+		}
 		vSequence = new SequenceCamData();
 		
 		boolean flag = (vSequence.loadSequenceFromDialog(null) == null);

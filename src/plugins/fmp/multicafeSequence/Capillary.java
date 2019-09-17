@@ -375,6 +375,14 @@ public class Capillary implements XMLPersistent  {
 	    }
 	    return data;
 	}
+	
+	public void addGulp(ROI2DPolyLine roiTrack, int indexpixel, int indexkymo) {
+		roiTrack.setColor(Color.red);
+		roiTrack.setStroke(1);
+		roiTrack.setName(getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
+		roiTrack.setT(indexkymo);	
+		gulpsRois.add(roiTrack);
+	}
 
 	
 }

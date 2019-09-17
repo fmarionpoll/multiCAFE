@@ -20,7 +20,7 @@ public class MCSequence_Close  extends JPanel {
 	 */
 	private static final long serialVersionUID = -7576474358794296471L;
 	private JButton		closeAllButton			= new JButton("Close views");
-	private MultiCAFE parent0 = null;
+	private MultiCAFE 	parent0 				= null;
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -42,10 +42,12 @@ public class MCSequence_Close  extends JPanel {
 			if (seqKymos != null && seqKymos.seq != null) {
 				seqKymos.seq.removeAllROI();
 				seqKymos.seq.close();
+				seqKymos.seq.closed();
 			}
 			if (seqCamData != null && seqCamData.seq != null) {
 				seqCamData.seq.removeAllROI();
 				seqCamData.seq.close();
+				seqCamData.seq.closed();
 			}
 		}
 		parent0.movePane.graphicsTab.closeAll();
@@ -75,11 +77,13 @@ public class MCSequence_Close  extends JPanel {
 		SequenceKymos seqKymos = exp.seqKymos;
 		seqKymos.seq.removeAllROI();
 		seqKymos.seq.close();
+		seqKymos.seq.closed();
 		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
 		parent0.buildKymosPane.displayTab.kymographNamesComboBox.removeAllItems();
 		seqCamData.seq.removeAllROI();
 		seqCamData.seq.close();
+		seqCamData.seq.closed();
 	}
 
 }

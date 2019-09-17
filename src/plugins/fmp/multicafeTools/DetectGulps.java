@@ -37,13 +37,11 @@ public class DetectGulps {
 			progressBar.updatePositionAndTimeLeft(indexkymo);
 			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(indexkymo);
 			cap.gulpsOptions.copy(options);
-			
 			if (options.buildDerivative) {
 				topLevelArray = cap.getIntegerArrayFromPolyline2D(cap.ptsTop);
 				seqkymo.removeRoisContainingString(indexkymo, "derivative");
 				getDerivativeProfile(indexkymo, cap, jitter);	
 			}
-			
 			if (options.buildGulps) {
 				seqkymo.removeRoisContainingString(indexkymo, "gulp");
 				getGulps(indexkymo, cap);
@@ -70,10 +68,8 @@ public class DetectGulps {
 				low = 0;
 			if (high >= yheight) 
 				high = yheight-1;
-
 			int max = kymoImageValues [ix + low*xwidth];
-			for (iy = low+1; iy < high; iy++) 
-			{
+			for (iy = low+1; iy < high; iy++) {
 				int val = kymoImageValues [ix  + iy*xwidth];
 				if (max < val) 
 					max = val;
@@ -118,12 +114,8 @@ public class DetectGulps {
 			if (gulpPoints.size() > 0) {
 				Point2D prevPt = gulpPoints.get(gulpPoints.size() -1);
 				if ((int) prevPt.getX() !=  (indexpixel-1)) {
-					roiTrack.setColor(Color.red);
-					roiTrack.setStroke(1);
-					roiTrack.setName(cap.getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
 					roiTrack.setPoints(gulpPoints);
-					roiTrack.setT(indexkymo);
-					cap.gulpsRois.add(roiTrack);
+					cap.addGulp(roiTrack, indexpixel, indexkymo);
 					
 					roiTrack = new ROI2DPolyLine ();
 					gulpPoints = new ArrayList<>();
@@ -137,12 +129,10 @@ public class DetectGulps {
 
 		if (gulpPoints.size() > 0) {
 			roiTrack.setPoints(gulpPoints);
-			roiTrack.setColor(Color.red);
-			roiTrack.setStroke(1);
-			roiTrack.setT(indexkymo);
-			roiTrack.setName(cap.getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
-			cap.gulpsRois.add(roiTrack);
+			cap.addGulp(roiTrack, indexpixel, indexkymo);
 		}
 		seqkymo.seq.addROIs(cap.gulpsRois, false);
 	}
 }
+
+

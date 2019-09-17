@@ -80,16 +80,19 @@ public class DetectFlies  implements Runnable {
 		System.out.println("Computation finished.");
 		if (seqNegative  != null) {
 			seqNegative.seq.close();
+			seqNegative.seq.closed();
 			seqNegative = null;
 		}
 		
 		if (seqPositive != null ) {
 			seqPositive.seq.close();
+			seqPositive.seq.closed();
 			seqPositive = null;
 		}
 		
 		if (!buildBackground && seqReference != null ) {
 			seqReference.seq.close();
+			seqReference.seq.closed();
 			seqReference = null;
 		}
 	}
@@ -254,11 +257,13 @@ public class DetectFlies  implements Runnable {
 	private void displayDetectViewer () {
 		if (seqPositive != null ) {
 			seqPositive.seq.close();
+			seqPositive.seq.closed();
 			seqPositive=null;
 		}
 		
 		if (seqNegative != null ) {
 			seqNegative.seq.close();
+			seqNegative.seq.closed();
 			seqNegative = null;
 		}
 		seqNegative = new SequenceCamData();
@@ -284,6 +289,7 @@ public class DetectFlies  implements Runnable {
 	private void displayRefViewers () {
 		if (seqPositive != null ) {
 			seqPositive.seq.close();
+			seqPositive.seq.closed();
 			seqPositive = null;
 		}
 		seqPositive = new SequenceCamData();
@@ -292,6 +298,7 @@ public class DetectFlies  implements Runnable {
 		
 		if (seqReference != null ) {
 			seqReference.seq.close();
+			seqReference.seq.closed();
 			seqReference=null;
 		}
 		seqReference = new SequenceCamData();
