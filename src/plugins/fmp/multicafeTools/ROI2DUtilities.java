@@ -87,14 +87,19 @@ public class ROI2DUtilities  {
 		// exit if the length of the segment is the same 
 		if (roiLine_npoints == roiLine_nintervals)
 			return true;
-		else if (roiLine_npoints > roiLine_nintervals)
-			return false;
+		// clip extra points
+		if (roiLine_npoints > roiLine_nintervals)
+			roiLine_npoints = roiLine_nintervals;
 		
 		List<Point2D> pts = new ArrayList <Point2D>(roiLine_npoints);
 		double ylast = line.ypoints[roiLine_npoints-1];
 		for (int i=1; i< roiLine_npoints; i++) {			
 			int xfirst = (int) line.xpoints[i-1];
+			if (xfirst < 0)
+				xfirst = 0;
 			int xlast = (int) line.xpoints[i];
+			if (xlast > roiLine_nintervals -1)
+				xlast = roiLine_nintervals -1;
 			double yfirst = line.ypoints[i-1];
 			ylast = line.ypoints[i]; 
 			for (int j = xfirst; j< xlast; j++) {
