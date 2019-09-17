@@ -62,6 +62,10 @@ public class DetectLimits {
 				int ytop = detectTop(ix, oldiytop, jitter, tabValues, xwidth, yheight, options);
 				int ybottom = detectBottom(ix, oldiybottom, jitter, tabValues, xwidth, yheight, options);
 				
+				if (ybottom <= ytop) {
+					ybottom = oldiybottom;
+					ytop = oldiytop;
+				}
 				limitTop.add(new Point2D.Double(ix, ytop));
 				limitBottom.add(new Point2D.Double(ix, ybottom));
 				
@@ -119,7 +123,7 @@ public class DetectLimits {
 			}
 		}
 		if (!found) {
-			oldiytop = 0;
+			oldiytop = yheight-1; // 0;
 		}
 		return y;
 	}
@@ -145,7 +149,7 @@ public class DetectLimits {
 			}
 		}
 		if (!found) {
-			oldiybottom = yheight - 1;
+			oldiybottom = 0; //yheight - 1;
 		}
 		return y;
 	}
