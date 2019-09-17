@@ -108,7 +108,7 @@ public class ROI2DUtilities  {
 				pts.add(pt);
 			}
 		}
-		Point2D pt = new Point2D.Double(line.xpoints[roiLine_npoints-1], ylast);
+		Point2D pt = new Point2D.Double(roiLine_npoints-1, ylast);
 		pts.add(pt);
 		roiLine.setPoints(pts);
 		return true;

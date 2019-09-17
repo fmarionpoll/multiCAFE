@@ -38,7 +38,8 @@ public class MCSequence_Close  extends JPanel {
 		if (exp != null) {
 			SequenceCamData seqCamData = exp.seqCamData;
 			SequenceKymos seqKymos = exp.seqKymos;	
-			checkIfLoadingNotFinished(exp);
+			stopLoadingImages(exp);
+			parent0.capillariesPane.fileTab.saveCapillaryTrack(exp);
 			if (seqKymos != null && seqKymos.seq != null) {
 				seqKymos.seq.removeAllROI();
 				seqKymos.seq.close();
@@ -55,7 +56,7 @@ public class MCSequence_Close  extends JPanel {
 		parent0.buildKymosPane.displayTab.kymographNamesComboBox.removeAllItems();
 	}
 	
-	private void checkIfLoadingNotFinished(Experiment exp) {
+	private void stopLoadingImages(Experiment exp) {
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos.isRunning_loadImages) {
 			seqKymos.isInterrupted_loadImages = true;

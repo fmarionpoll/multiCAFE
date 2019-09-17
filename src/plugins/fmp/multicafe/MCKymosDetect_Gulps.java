@@ -122,8 +122,8 @@ public class MCKymosDetect_Gulps extends JPanel {
 		
 		DetectGulps detect = new DetectGulps();
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		exp.seqKymos.transferKymosRoisToMeasures();
 		detect.detectGulps(options, exp.seqKymos);
-		
 	}
 
 	void setInfos(Capillary cap) {

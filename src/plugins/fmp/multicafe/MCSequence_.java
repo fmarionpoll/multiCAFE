@@ -76,7 +76,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		});
 	}
 	
-
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("SEQ_OPEN")) {
