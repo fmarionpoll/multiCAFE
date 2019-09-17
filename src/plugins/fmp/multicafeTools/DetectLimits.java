@@ -56,54 +56,49 @@ public class DetectLimits {
 			}
 			int oldiytop = 0;		// assume that curve goes from left to right with jitter 
 			int oldiybottom = yheight-1;
-			boolean flagtop = true;
-			boolean flagbottom = true; 
 
 			// scan each image column
 			for (int ix = startPixel; ix < endPixel; ix++) {
-				if (flagtop)
-					detectTop(ix, oldiytop, jitter, tabValues, xwidth, yheight, options);
+				int ytop = detectTop(ix, oldiytop, jitter, tabValues, xwidth, yheight, options);
+				int ybottom = detectBottom(ix, oldiybottom, jitter, tabValues, xwidth, yheight, options);
 				
-				if (flagbottom) 
-					detectBottom(ix, oldiybottom, jitter, tabValues, xwidth, yheight, options);
+				limitTop.add(new Point2D.Double(ix, ytop));
+				limitBottom.add(new Point2D.Double(ix, ybottom));
+				
+				oldiytop = ytop;		// assume that curve goes from left to right with jitter 
+				oldiybottom = ybottom;
 			}
 			
-			if (flagtop) {
-				if (options.analyzePartOnly) {
-					Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop, startPixel, endPixel);
-					seqkymo.seq.addROI(cap.transferPolyline2DToROI(cap.ID_TOPLEVEL, cap.ptsTop));
-				} else {
-					ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);
-					roiTopTrack.setName(cap.getLast2ofCapillaryName()+"_toplevel");
-					roiTopTrack.setStroke(1);
-					roiTopTrack.setT(t);
-					seqkymo.seq.addROI(roiTopTrack);
-					cap.ptsTop = roiTopTrack.getPolyline2D();
-				}
+			if (options.analyzePartOnly) {
+				Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop, startPixel, endPixel);
+				seqkymo.seq.addROI(cap.transferPolyline2DToROI(cap.ID_TOPLEVEL, cap.ptsTop));
+				
+				Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom, startPixel, endPixel);
+				seqkymo.seq.addROI(cap.transferPolyline2DToROI(cap.ID_BOTTOMLEVEL, cap.ptsBottom));
+			} else {
+				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);
+				roiTopTrack.setName(cap.getLast2ofCapillaryName()+"_toplevel");
+				roiTopTrack.setStroke(1);
+				roiTopTrack.setT(t);
+				seqkymo.seq.addROI(roiTopTrack);
+				cap.ptsTop = roiTopTrack.getPolyline2D();
+
+				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine (limitBottom);
+				roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
+				roiBottomTrack.setStroke(1);
+				roiBottomTrack.setT(t);
+				seqkymo.seq.addROI(roiBottomTrack);
+				cap.ptsBottom = roiBottomTrack.getPolyline2D();
 			}
-			
-			if (flagbottom) {
-				if (options.analyzePartOnly) {
-					Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom, startPixel, endPixel);
-					seqkymo.seq.addROI(cap.transferPolyline2DToROI(cap.ID_BOTTOMLEVEL, cap.ptsBottom));
-				} else {
-					ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine (limitBottom);
-					roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
-					roiBottomTrack.setStroke(1);
-					roiBottomTrack.setT(t);
-					seqkymo.seq.addROI(roiBottomTrack);
-					cap.ptsBottom = roiBottomTrack.getPolyline2D();
-				}
-			}
+		
 		}
 		seqkymo.seq.endUpdate();
 		progressBar.close();
 	}
 	
-	void detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
+	int detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
 		boolean found = false;
-		double x = ix;
-		double y = 0;
+		int y = 0;
 		oldiytop -= jitter;
 		if (oldiytop < 0) 
 			oldiytop = 0;
@@ -116,7 +111,7 @@ public class DetectLimits {
 			else 
 				flag = tabValues [ix + iy* xwidth] < options.detectLevelThreshold;
 
-			if( flag) {
+			if (flag) {
 				y = iy;
 				found = true;
 				oldiytop = iy;
@@ -126,14 +121,13 @@ public class DetectLimits {
 		if (!found) {
 			oldiytop = 0;
 		}
-		limitTop.add(new Point2D.Double (x, y));
+		return y;
 	}
 	
-	void detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
+	int detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
 		// set flags for internal loop (part of the row)
 		boolean found = false;
-		double x = ix;
-		double y = 0;
+		int y = 0;
 		oldiybottom = yheight - 1;
 
 		// for each line, go from left to right - starting from the last position found minus "jitter" (set to 10)
@@ -153,7 +147,7 @@ public class DetectLimits {
 		if (!found) {
 			oldiybottom = yheight - 1;
 		}
-		limitBottom.add(new Point2D.Double (x, y));
+		return y;
 	}
 	
 }

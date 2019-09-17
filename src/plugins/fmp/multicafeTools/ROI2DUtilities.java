@@ -80,10 +80,13 @@ public class ROI2DUtilities  {
 	}
 	
 	public static boolean interpolateMissingPointsAlongXAxis (ROI2DPolyLine roiLine, int roiLine_nintervals) {
+		if (roiLine_nintervals <= 0)
+			return false;
 		// interpolate points so that each x step has a value	
 		// assume that points are ordered along x
 		Polyline2D line = roiLine.getPolyline2D();
 		int roiLine_npoints = line.npoints;
+		
 		// exit if the length of the segment is the same 
 		if (roiLine_npoints == roiLine_nintervals)
 			return true;
@@ -108,7 +111,7 @@ public class ROI2DUtilities  {
 				pts.add(pt);
 			}
 		}
-		Point2D pt = new Point2D.Double(roiLine_npoints-1, ylast);
+		Point2D pt = new Point2D.Double(line.xpoints[roiLine_npoints-1], ylast);
 		pts.add(pt);
 		roiLine.setPoints(pts);
 		return true;
@@ -175,7 +178,8 @@ public class ROI2DUtilities  {
 	public static void addROItoCumulatedSumArray(ROI2DPolyLine roi, List<Integer> sumArrayList) {
 		Polyline2D roiline = roi.getPolyline2D();
 		int width =(int) roiline.xpoints[roiline.npoints-1] - (int) roiline.xpoints[0] +1; 
-		interpolateMissingPointsAlongXAxis (roi, width);
+		if (!interpolateMissingPointsAlongXAxis (roi, width))
+			return;
 		List<Integer> intArray = transferROIToDataArray(roi);
 		Polyline2D line = roi.getPolyline2D();
 		int jstart = (int) line.xpoints[0];
