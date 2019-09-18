@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
-import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
@@ -79,40 +78,38 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("SEQ_OPEN")) {
-			ProgressFrame progress = new ProgressFrame("Open sequence...");
 			openSequenceCamFromCombo(); 
-			progress.close();
-		}
+		} 
 		else if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
-			ProgressFrame progress = new ProgressFrame("Open file...");
 			SequenceCamData seqCamData = parent0.openSequenceCam(null);
 			if (seqCamData != null) {
 				parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 				infosTab.expListComboBox.removeAllItems();
 				addSequenceCamToCombo();
 			}
-			progress.close();
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
-			ProgressFrame progress = new ProgressFrame("Add file...");
+			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 			SequenceCamData seqCamData = parent0.openSequenceCam(null);
 			if (seqCamData != null) {
-				parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 				addSequenceCamToCombo();
+				parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
+				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
+	        		parent0.sequencePane.closeTab.saveAndClose(exp);
+	    		}});
 			}
-			progress.close();
-		 }
-		 else if (event.getPropertyName().equals("UPDATE")) {
+		}
+		else if (event.getPropertyName().equals("UPDATE")) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 			updateViewerForSequenceCam(exp.seqCamData);
 			intervalsTab.getAnalyzeFrameAndStepFromDialog(exp.seqCamData);
-		 }
+		}
 
-		 else if (event.getPropertyName().equals("SEQ_CLOSE")) {
+		else if (event.getPropertyName().equals("SEQ_CLOSE")) {
 			tabsPane.setSelectedIndex(0);
 			infosTab.expListComboBox.removeAllItems();
-		 }
-		 else if (event.getPropertyName().equals("SEARCH_CLOSED")) {
+		}
+		else if (event.getPropertyName().equals("SEARCH_CLOSED")) {
 			int index = infosTab.expListComboBox.getSelectedIndex();
 			if (index < 0)
 				index = 0;
@@ -127,7 +124,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				infosTab.disableChangeFile = false;
 				openSequenceCamFromCombo();
 			}
-		 }
+		}
 	}
 	
 	private void openSequenceCamFromCombo() {
@@ -137,17 +134,25 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		tabsPane.setSelectedIndex(1);
 	}
 	
-	private void addSequenceCamToCombo(String strItem) {
+	private int addSequenceCamToCombo(String strItem) {
+		int item = findIndexItemInCombo(strItem);
+		if(item < 0) { 
+			infosTab.expListComboBox.addItem(strItem);
+			item = findIndexItemInCombo(strItem);
+		}
+		return item;
+	}
+	
+	private int findIndexItemInCombo(String strItem) {
 		int nitems = infosTab.expListComboBox.getItemCount();
-		boolean alreadystored = false;
+		int item = -1;
 		for (int i=0; i < nitems; i++) {
 			if (strItem.equalsIgnoreCase(infosTab.expListComboBox.getItemAt(i))) {
-				alreadystored = true;
+				item = i;
 				break;
 			}
 		}
-		if(!alreadystored) 
-			infosTab.expListComboBox.addItem(strItem);
+		return item;
 	}
 	
 	void addSequenceCamToCombo() {
@@ -160,8 +165,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		if (strItem != null) {
 			addSequenceCamToCombo(strItem);
 			infosTab.expListComboBox.setSelectedItem(strItem);
-			updateViewerForSequenceCam(exp.seqCamData);
-			loadMeasuresAndKymos();
+//			updateViewerForSequenceCam(exp.seqCamData);
+//			loadMeasuresAndKymos();
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", strItem);
 		}
