@@ -36,7 +36,7 @@ public class BuildKymographs implements Runnable
 	public void run() {
 		if (options.seqCamData == null || options.seqKymos == null)
 			return;
-		System.out.println("start buildkymographsThreads");
+		System.out.println("start buildkymographsThread");
 		
 		if (options.startFrame < 0) 
 			options.startFrame = 0;
@@ -149,7 +149,8 @@ public class BuildKymographs implements Runnable
 	// -------------------------------------------
 	
 	private boolean getImageAndUpdateViewer(int t) {	
-		workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImageFromForwardBuffer(t));
+		//workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImageFromForwardBuffer(t));
+		workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImage(t, 0));
 		if (workImage == null) {
 			System.out.println("workImage null");
 			return false;

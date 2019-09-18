@@ -30,7 +30,7 @@ public class MCKymosDetect_Edit  extends JPanel {
 	private boolean[] 			isInside		= null;
 	private ArrayList<ROI> 		listGulpsSelected = null;
 	private JComboBox<String> 	roiTypeCombo 	= new JComboBox<String> (new String[] 
-			{" upper level", "lower level", "upper & lower levels", "derivative", "gulps" });
+			{" top level", "bottom level", "top & bottom levels", "derivative", "gulps" });
 	private JButton 			deleteButton 	= new JButton("Delete");
 
 	
@@ -89,13 +89,13 @@ public class MCKymosDetect_Edit  extends JPanel {
 		if (optionSelected .contains("gulp")) {
 			selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
 			deleteGulps(seqKymos.seq);
-		} else if (optionSelected .contains("upper") && optionSelected .contains("upper")) {
-			deletePointsOfPolyLine(roi, "upper", t, seqKymos);
-			deletePointsOfPolyLine(roi, "lower", t, seqKymos);
-		} else if (optionSelected .contains("upper")) {
-			deletePointsOfPolyLine(roi, "upper", t, seqKymos);
-		} else if (optionSelected.contains("lower")) {
-			deletePointsOfPolyLine(roi, "lower", t, seqKymos);
+		} else if (optionSelected .contains("top") && optionSelected .contains("bottom")) {
+			deletePointsOfPolyLine(roi, "top", t, seqKymos);
+			deletePointsOfPolyLine(roi, "bottom", t, seqKymos);
+		} else if (optionSelected .contains("top")) {
+			deletePointsOfPolyLine(roi, "top", t, seqKymos);
+		} else if (optionSelected.contains("bottom")) {
+			deletePointsOfPolyLine(roi, "bottom", t, seqKymos);
 		} else if (optionSelected.contains("deriv")) {
 			deletePointsOfPolyLine(roi, "deriv", t, seqKymos);
 		}
@@ -105,9 +105,9 @@ public class MCKymosDetect_Edit  extends JPanel {
 		Polyline2D polyline = null;
 		Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
 		
-		if (optionSelected .contains("upper")) {
+		if (optionSelected .contains("top")) {
 			polyline = cap.ptsTop;
-		} else if (optionSelected.contains("lower")) {
+		} else if (optionSelected.contains("bottom")) {
 			polyline = cap.ptsBottom;
 		} else if (optionSelected.contains("deriv")) {
 			polyline = cap.ptsDerivative;
@@ -130,10 +130,10 @@ public class MCKymosDetect_Edit  extends JPanel {
 			polyline = null;
 		}
 		String name = null;
-		if (optionSelected .contains("upper")) {
+		if (optionSelected .contains("top")) {
 			cap.ptsTop = polyline;
 			name = cap.ID_TOPLEVEL;
-		} else if (optionSelected.contains("lower")) {
+		} else if (optionSelected.contains("bottom")) {
 			cap.ptsBottom = polyline;
 			name = cap.ID_BOTTOMLEVEL;
 		} else if (optionSelected.contains("deriv")) {
