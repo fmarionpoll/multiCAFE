@@ -1,6 +1,5 @@
 package plugins.fmp.multicafe;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +18,7 @@ import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.kernel.roi.roi2d.ROI2DPolyLine;
+
 
 
 public class MCKymosDetect_Edit  extends JPanel {
@@ -27,102 +26,47 @@ public class MCKymosDetect_Edit  extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 2580935598417087197L;
-	private MultiCAFE 	parent0;
-	private ROI2DPolyLine roiselected 	= null;
-	private boolean[] 	isInside		= null;
-	private ArrayList<ROI> listGulpsSelected = null;
-	
-	private JComboBox<String> roiTypeCombo = new JComboBox<String> (new String[] {" upper level", "lower level", "derivative", "gulps" });
-	private JButton 	selectButton 	= new JButton("Select points");
-	private JButton 	deleteButton 	= new JButton("Delete");
-	private JButton		replaceButton	= new JButton("Replace");
-	private JButton		moveButton		= new JButton("Move vertically");
+	private MultiCAFE 			parent0;
+	private boolean[] 			isInside		= null;
+	private ArrayList<ROI> 		listGulpsSelected = null;
+	private JComboBox<String> 	roiTypeCombo 	= new JComboBox<String> (new String[] 
+			{" upper level", "lower level", "upper & lower levels", "derivative", "gulps" });
+	private JButton 			deleteButton 	= new JButton("Delete");
+
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);	
 		this.parent0 = parent0;
-		add(GuiUtil.besidesPanel(new JLabel("Source:"), new JLabel(" "), selectButton, deleteButton));
-		add(GuiUtil.besidesPanel(roiTypeCombo, new JLabel(" "), new JLabel(" "), moveButton));
-		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "), new JLabel(" "), replaceButton));
-
-		moveButton.setEnabled(false);
-		replaceButton.setEnabled(false);
+		add(GuiUtil.besidesPanel(new JLabel("Source:"), new JLabel(" "), new JLabel(" "), deleteButton));
+		add(GuiUtil.besidesPanel(roiTypeCombo, new JLabel(" "), new JLabel(" "), new JLabel(" ")));
+		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "), new JLabel(" "), new JLabel(" ")));
 		
 		defineListeners();
 	}
 	
 	private void defineListeners() {
-		selectButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
-				selectPointsIncluded();
-			}});
 		deleteButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
+				parent0.expList.getExperiment(parent0.currentIndex).seqKymos.transferKymosRoisToMeasures();
 				deletePointsIncluded();
 			}});
 	}
 
-	void selectPointsIncluded() {
-		SequenceKymos seqKymos = parent0.expList.getExperiment(parent0.currentIndex).seqKymos;
-		if (seqKymos == null)
-			return;
-		Capillary cap = seqKymos.capillaries.capillariesArrayList.get(seqKymos.currentFrame);
-		ROI2D roi = seqKymos.seq.getSelectedROI2D();
-		if (roi == null)
-			return;
-		String name = roi.getName();
-		if (name.contains("level") || name.contains("deriv") || name.contains("gulp"))
-			return;
-		roi.setSelected(true);
-		
-		Polyline2D polyline = null;
-		String sourceData = (String) roiTypeCombo.getSelectedItem();
-		if (sourceData .contains("gulp")) {
-			selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
-			return;
-		} else if (sourceData .contains("upper"))
-			polyline = cap.ptsTop;
-		else if (sourceData.contains("lower"))
-			polyline = cap.ptsBottom;
-		else if (sourceData.contains("deriv"))
-			polyline = cap.ptsDerivative;
-		
-		int npointsInside = getPointsWithinROI(polyline, roi);
-		if (npointsInside > 0) {
-			double [] xpoints = new double [npointsInside];
-			double [] ypoints = new double [npointsInside];
-			int index = 0;
-			for (int i=0; i < polyline.npoints; i++) {
-				if (isInside[i]) {
-					xpoints[index] = polyline.xpoints[i];
-					ypoints[index] = polyline.ypoints[i];
-					index++;
-				}
-			}
-			roiselected = new ROI2DPolyLine(new Polyline2D(xpoints, ypoints, npointsInside));
-			roiselected.setColor(Color.BLUE);
-			roiselected.setName("selected");
-			seqKymos.seq.addROI(roiselected);
-			roiselected.setSelected(true);
-		}
-	}
-	
 	void selectGulpsWithinRoi(ROI2D roiReference, Sequence seq, int t) {
 		List <ROI> allRois = seq.getROIs();
 		listGulpsSelected = new ArrayList<ROI>();
 		for (ROI roi: allRois) {
 			roi.setSelected(false);
-			if (!(roi instanceof ROI2D))
-				continue;
-			if (((ROI2D) roi).getT() != t)
-				continue;
-			if (roi.getName().contains("gulp")) {
-				listGulpsSelected.add(roi);
-				roi.setSelected(true);
+			if (roi instanceof ROI2D) {
+				if (((ROI2D) roi).getT() != t)
+					continue;
+				if (roi.getName().contains("gulp")) {
+					listGulpsSelected.add(roi);
+					roi.setSelected(true);
+				}
 			}
 		}
-		
 	}
 	
 	void deleteGulps(Sequence seq) {
@@ -137,22 +81,35 @@ public class MCKymosDetect_Edit  extends JPanel {
 	void deletePointsIncluded() {
 		SequenceKymos seqKymos = parent0.expList.getExperiment(parent0.currentIndex).seqKymos;
 		int t= seqKymos.currentFrame;
-		Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
 		ROI2D roi = seqKymos.seq.getSelectedROI2D();
 		if (roi == null)
 			return;
 		
-		Polyline2D polyline = null;
-		String sourceData = (String) roiTypeCombo.getSelectedItem();
-		if (sourceData .contains("gulp")) {
+		String optionSelected = (String) roiTypeCombo.getSelectedItem();
+		if (optionSelected .contains("gulp")) {
 			selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
 			deleteGulps(seqKymos.seq);
-			return;
-		} else if (sourceData .contains("upper")) {
+		} else if (optionSelected .contains("upper") && optionSelected .contains("upper")) {
+			deletePointsOfPolyLine(roi, "upper", t, seqKymos);
+			deletePointsOfPolyLine(roi, "lower", t, seqKymos);
+		} else if (optionSelected .contains("upper")) {
+			deletePointsOfPolyLine(roi, "upper", t, seqKymos);
+		} else if (optionSelected.contains("lower")) {
+			deletePointsOfPolyLine(roi, "lower", t, seqKymos);
+		} else if (optionSelected.contains("deriv")) {
+			deletePointsOfPolyLine(roi, "deriv", t, seqKymos);
+		}
+	}
+	
+	void deletePointsOfPolyLine(ROI2D roi, String optionSelected, int t, SequenceKymos seqKymos) {
+		Polyline2D polyline = null;
+		Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
+		
+		if (optionSelected .contains("upper")) {
 			polyline = cap.ptsTop;
-		} else if (sourceData.contains("lower")) {
+		} else if (optionSelected.contains("lower")) {
 			polyline = cap.ptsBottom;
-		} else if (sourceData.contains("deriv")) {
+		} else if (optionSelected.contains("deriv")) {
 			polyline = cap.ptsDerivative;
 		}
 		
@@ -173,18 +130,17 @@ public class MCKymosDetect_Edit  extends JPanel {
 			polyline = null;
 		}
 		String name = null;
-		if (sourceData .contains("upper")) {
+		if (optionSelected .contains("upper")) {
 			cap.ptsTop = polyline;
 			name = cap.ID_TOPLEVEL;
-		} else if (sourceData.contains("lower")) {
+		} else if (optionSelected.contains("lower")) {
 			cap.ptsBottom = polyline;
 			name = cap.ID_BOTTOMLEVEL;
-		} else if (sourceData.contains("deriv")) {
+		} else if (optionSelected.contains("deriv")) {
 			cap.ptsDerivative = polyline;
 			name = cap.ID_DERIVATIVE;
 		}
-		
-		seqKymos.seq.removeROI(roi);
+
 		List<ROI> allRois = seqKymos.seq.getROIs();
 		for (ROI roii: allRois) {
 			if (roii.getName().contains("selected"))
