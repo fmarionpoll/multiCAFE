@@ -1,14 +1,14 @@
 package plugins.fmp.multicafeTools;
 
 import icy.gui.frame.progress.ProgressFrame;
-import icy.system.profile.Chronometer;
 
 public class ProgressChrono extends ProgressFrame {
 
-	Chronometer chrono = null;
 	private int nbframes;
 	private int t0;
-	
+	long startTimeInNs;
+	String descriptionString;
+    	
 	
 	public ProgressChrono(String message) {
 		super(message);
@@ -16,8 +16,9 @@ public class ProgressChrono extends ProgressFrame {
 	}
 
 	public void startChrono() {
-		chrono = new Chronometer("Tracking computation" );
-		t0 =  (int) (chrono.getNanos() / 1000000000f);
+		this.descriptionString = "Tracking computation";
+        startTimeInNs = System.nanoTime();
+		t0 =  (int) (getNanos() / 1000000000f);
 	}
 	
 	public void initStuff(int nbframes) {
@@ -29,7 +30,7 @@ public class ProgressChrono extends ProgressFrame {
 	public void updatePositionAndTimeLeft (int currentframe) {
 		int pos = (int)(100d * (double)currentframe / nbframes);
 		setPosition( currentframe );
-		int nbSeconds =  (int) (chrono.getNanos() / 1000000000f);
+		int nbSeconds =  (int) (getNanos() / 1000000000f);
 		double timeleft = ((double)nbSeconds)* (100d-pos) /pos;
 		setMessage( "Processing: " + pos + "% - Estimated time left: " + (int) timeleft + " s");
 	}
@@ -37,13 +38,19 @@ public class ProgressChrono extends ProgressFrame {
 	public void updatePosition (int currentframe) {
 		int pos = (int)(100d * (double)currentframe / nbframes);
 		setPosition( currentframe );
-		int nbSeconds =  (int) (chrono.getNanos() / 1000000000f);
+		int nbSeconds =  (int) (getNanos() / 1000000000f);
 		double timeleft = ((double)nbSeconds)* (100d-pos) /pos;
 		setMessage( "Processing frame " + currentframe + " / " + nbframes + " - Estimated time left: " + (int) timeleft + " s");
 	}
 	
 	public int getSecondsSinceStart() {
-		int nbSeconds =  (int) (chrono.getNanos() / 1000000000f);
+		int nbSeconds =  (int) (getNanos() / 1000000000f);
 		return (nbSeconds-t0);
 	}
+	
+	public long getNanos()
+    {
+        return System.nanoTime() - startTimeInNs;
+    }
+
 }
