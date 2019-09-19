@@ -16,6 +16,5 @@ public class BuildKymographs_Options {
 	public boolean 			doRegistration 		= false;
 	public ArrayList<ROI2D> listROIStoBuildKymos= new ArrayList<ROI2D> ();
 	public boolean			updateViewerDuringComputation = false;
-	public boolean			usePrefetch			= true;
 	
 }
