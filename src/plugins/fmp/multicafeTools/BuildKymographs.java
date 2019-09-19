@@ -42,9 +42,6 @@ public class BuildKymographs implements Runnable
 			options.startFrame = 0;
 		if ((options.endFrame >= (int) options.seqCamData.nTotalFrames) || (options.endFrame < 0)) 
 			options.endFrame = (int) options.seqCamData.nTotalFrames-1;
-		if (options.seqCamData.bufferThread == null) {	
-			options.seqCamData.prefetchForwardThread_START(50); 
-		}
 		
 		int nbframes = options.endFrame - options.startFrame +1;
 		ProgressChrono progressBar = new ProgressChrono("Processing started");
@@ -54,7 +51,6 @@ public class BuildKymographs implements Runnable
 
 		initArraysToBuildKymographImages();
 		if (options.seqKymos.capillaries.capillariesArrayList.size() < 1) {
-			options.seqCamData.prefetchForwardThread_STOP(); //RESTART(); 
 			return;
 		}
 		
@@ -142,19 +138,15 @@ public class BuildKymographs implements Runnable
 		System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 		progressBar.close();
 		
-		options.seqCamData.prefetchForwardThread_STOP(); 
 		threadRunning = false;
 	}
 	
 	// -------------------------------------------
 	
 	private boolean getImageAndUpdateViewer(int t) {	
-		if (options.usePrefetch)
-			workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImageFromForwardBuffer(t));
-		else
-			workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImage(t, 0));
+		workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImage(t, 0));
 		if (workImage == null) {
-			System.out.println("workImage null");
+			System.out.println("workImage null at "+t);
 			return false;
 		}
 		return true;

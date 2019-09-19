@@ -62,9 +62,7 @@ public class DetectFlies  implements Runnable {
 	@Override
 	public void run() {
 		threadRunning = true;
-		if (seqCamData.bufferThread == null) {	
-			seqCamData.prefetchForwardThread_START(100); 
-		}
+
 		// create arrays for storing position and init their value to zero
 		initParametersForDetection();
 		System.out.println("Computation over frames: " + startFrame + " - " + endFrame );
@@ -134,7 +132,7 @@ public class DetectFlies  implements Runnable {
 				progressBar.updatePositionAndTimeLeft(t);
 
 				// load next image and compute threshold
-				IcyBufferedImage img = seqCamData.getImageFromForwardBuffer(t);
+				IcyBufferedImage img = seqCamData.getImage(t, 0);
 				if (img == null)
 					continue;
 				IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(img);
@@ -196,7 +194,6 @@ public class DetectFlies  implements Runnable {
 		finally
 		{
 			seqCamData.seq.endUpdate();
-			seqCamData.prefetchForwardThread_RESTART(); 
 		}
 	}
 

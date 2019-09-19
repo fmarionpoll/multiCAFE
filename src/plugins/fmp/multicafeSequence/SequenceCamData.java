@@ -1,6 +1,6 @@
  package plugins.fmp.multicafeSequence;
 
-import java.awt.image.BufferedImage;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
@@ -23,7 +22,6 @@ import icy.math.ArrayMath;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
-import icy.system.thread.ThreadUtil;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 
@@ -47,7 +45,6 @@ public class SequenceCamData  {
 	public Cages					cages 					= new Cages();
 		
 	// image cache
-	public PreFetchForwardThread 	bufferThread 			= null;
 	public IcyBufferedImage 		cacheTransformedImage 	= null;
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
@@ -517,141 +514,5 @@ public class SequenceCamData  {
 		}
 	}
 		
-	// --------------------------
 	
-	public void prefetchForwardThread_START (int numberOfImageForBuffer) {
-		prefetchForwardThread_STOP();
-		if (numberOfImageForBuffer <= 0) 
-			return;
-		bufferThread = new PreFetchForwardThread(numberOfImageForBuffer);
-		bufferThread.setName("+++Prefetch_Data");
-		bufferThread.setPriority(Thread.NORM_PRIORITY);
-		bufferThread.start();
-	}
-	
-	public void prefetchForwardThread_RESTART () {
-		int depth = bufferThread.getFenetre();
-		prefetchForwardThread_STOP();
-		
-		bufferThread = new PreFetchForwardThread(depth);
-		bufferThread.setName("+++Prefetch_Data");
-		bufferThread.setPriority(Thread.NORM_PRIORITY);
-		bufferThread.start();
-	}
-	
-	public void prefetchForwardThread_STOP() {
-		if (bufferThread != null && bufferThread.isAlive()) {
-			bufferThread.interrupt();
-			try {
-				bufferThread.join();
-			}
-			catch (final InterruptedException e1) { e1.printStackTrace(); }
-		}
-		bufferThread = null;
-	}
-	
-	public IcyBufferedImage getImageFromForwardBuffer(int t) {
-		IcyBufferedImage img = bufferThread.getImageAt(t);
-		
-		if (img == null) {
-//			System.out.println("read - " + t);
-			File f = new File(listFiles.get(t));
-			BufferedImage bufImg = null;
-			try {
-				bufImg = ImageIO.read(f);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			if (bufImg == null) {
-				System.out.println("failed to preload and to read image "+t);
-				return null;
-			} 
-			img = IcyBufferedImage.createFrom(bufImg);
-			bufferThread.tcurrent = t;
-			currentFrame = t;
-		}
-		return img;
-	}
-	
-	public class PreFetchForwardThread extends Thread {
-		/**
-		 * pre-fetch files / companion to SequenceCamData
-		 */
-		private int 					fenetre 			= 10; //200; // 100;
-		int 							tnext 				= (int) (analysisStart - analysisStep);
-		volatile int 					tcurrent 				= -1;
-		volatile ArrayList <TaggedImage> imgPrefetchArray 		= null;
-		volatile int					treading = -1;
-
-		public IcyBufferedImage getImageAt(int t) {
-			IcyBufferedImage img = null;
-			for (int j=0; j< 5; j++) {
-				if (treading == t)
-					ThreadUtil.sleep(100);
-				for (int i = 0; i < imgPrefetchArray.size(); i++) {
-					if (imgPrefetchArray.get(i).t == t) {
-						if (imgPrefetchArray.get(i).img == null)
-							break;
-						img = IcyBufferedImage.createFrom(imgPrefetchArray.get(i).img);
-						tcurrent = t;
-						break;
-					}
-				}
-				if (img != null)
-					break;
-			}
-			return img;
-		}
-		
-		public PreFetchForwardThread() {
-		}
-
-		public PreFetchForwardThread(int depth) {
-			fenetre = depth;			
-			imgPrefetchArray = new ArrayList <TaggedImage> (depth);
-			for (int i=0; i < depth; i++)
-				imgPrefetchArray.add(new TaggedImage());
-			tnext = (int) (analysisStart);
-		}
-		
-		public int getFenetre () {
-			return fenetre;
-		}
-		
-		@Override
-		public void run() {
-			try {
-				while (!isInterrupted()) {
-					ThreadUtil.sleep(100);
-					for (int i = 0; i < imgPrefetchArray.size(); i++) {
-						int t = imgPrefetchArray.get(i).t;
-						if (t < 0) {
-							t = tnext;
-							if (t < listFiles.size()) {
-								treading = t;
-								TaggedImage timg = imgPrefetchArray.get(i);
-								File f = new File(listFiles.get(t));
-//								System.out.println("fetch - " + t);
-								try {
-									timg.img = ImageIO.read(f);
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-								timg.t = t;
-								tnext = t + analysisStep;
-								treading = -1;
-							}
-						}
-						else if (t < (tcurrent-analysisStep)) {
-							imgPrefetchArray.get(i).t = -1;
-						}
-						if (isInterrupted())
-							return;
-					}
-				}			
-			}
-			catch (final Exception e) 
-			{ e.printStackTrace(); }
-		}
-	}
 }

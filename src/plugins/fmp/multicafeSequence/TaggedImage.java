@@ -1,9 +1,9 @@
 package plugins.fmp.multicafeSequence;
 
-import java.awt.image.BufferedImage;
+import icy.image.IcyBufferedImage;
 
 
 public class TaggedImage {
-	BufferedImage 	img 	= null;
-	int 			t 		= -1;
+	IcyBufferedImage	img 	= null;
+	int 				t 		= -1;
 }
