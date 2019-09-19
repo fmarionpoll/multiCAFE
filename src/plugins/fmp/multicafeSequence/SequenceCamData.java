@@ -53,12 +53,12 @@ public class SequenceCamData  {
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
 	
-	public 	  List <String>  		listFiles 				= new ArrayList<String>();
+	volatile public List <String>	listFiles 				= new ArrayList<String>();
 	protected String 				csFileName 				= null;
 	protected String				directory 				= null;
 	
 	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif", "avi"};
-	protected ArrayList <TaggedImage> imgPrefetchArray 		= null;
+
 	
 
 	
@@ -551,27 +551,14 @@ public class SequenceCamData  {
 	}
 	
 	public IcyBufferedImage getImageFromForwardBuffer(int t) {
-		IcyBufferedImage img = null;
-		for (int j=0; j< 5; j++) {
-			for (int i = 0; i < imgPrefetchArray.size(); i++) {
-				if (imgPrefetchArray.get(i).t == t) {
-					if (imgPrefetchArray.get(i).img == null)
-						break;
-					img = IcyBufferedImage.createFrom(imgPrefetchArray.get(i).img);
-					bufferThread.tcurrent = t;
-					break;
-				}
-			}
-			if (img != null)
-				break;
-		}
+		IcyBufferedImage img = bufferThread.getImageAt(t);
 		
 		if (img == null) {
+//			System.out.println("read - " + t);
 			File f = new File(listFiles.get(t));
 			BufferedImage bufImg = null;
 			try {
 				bufImg = ImageIO.read(f);
-				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -590,11 +577,32 @@ public class SequenceCamData  {
 		/**
 		 * pre-fetch files / companion to SequenceCamData
 		 */
-		private int fenetre = 10; //200; // 100;
-		int tnext = (int) (analysisStart - analysisStep);
-		volatile int tcurrent = -1;
-		
+		private int 					fenetre 			= 10; //200; // 100;
+		int 							tnext 				= (int) (analysisStart - analysisStep);
+		volatile int 					tcurrent 				= -1;
+		volatile ArrayList <TaggedImage> imgPrefetchArray 		= null;
+		volatile int					treading = -1;
 
+		public IcyBufferedImage getImageAt(int t) {
+			IcyBufferedImage img = null;
+			for (int j=0; j< 5; j++) {
+				if (treading == t)
+					ThreadUtil.sleep(100);
+				for (int i = 0; i < imgPrefetchArray.size(); i++) {
+					if (imgPrefetchArray.get(i).t == t) {
+						if (imgPrefetchArray.get(i).img == null)
+							break;
+						img = IcyBufferedImage.createFrom(imgPrefetchArray.get(i).img);
+						tcurrent = t;
+						break;
+					}
+				}
+				if (img != null)
+					break;
+			}
+			return img;
+		}
+		
 		public PreFetchForwardThread() {
 		}
 
@@ -620,8 +628,10 @@ public class SequenceCamData  {
 						if (t < 0) {
 							t = tnext;
 							if (t < listFiles.size()) {
+								treading = t;
 								TaggedImage timg = imgPrefetchArray.get(i);
 								File f = new File(listFiles.get(t));
+//								System.out.println("fetch - " + t);
 								try {
 									timg.img = ImageIO.read(f);
 								} catch (IOException e) {
@@ -629,6 +639,7 @@ public class SequenceCamData  {
 								}
 								timg.t = t;
 								tnext = t + analysisStep;
+								treading = -1;
 							}
 						}
 						else if (t < (tcurrent-analysisStep)) {

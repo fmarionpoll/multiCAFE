@@ -31,6 +31,7 @@ public class MCKymosBuild_Create extends JPanel {
 	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
 	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
 	JCheckBox				updateViewerCheckBox 		= new JCheckBox("update viewer", true);
+	JCheckBox				usePrefetchCheckBox					= new JCheckBox("use prefetch buffer", true);
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE 		parent0						= null;
 	private BuildKymographs	buildKymographsThread 		= null;
@@ -49,6 +50,7 @@ public class MCKymosBuild_Create extends JPanel {
 				updateViewerCheckBox, 
 				doRegistrationCheckBox
 				));
+		add(GuiUtil.besidesPanel(usePrefetchCheckBox, new JLabel(" "), new JLabel(" "), new JLabel(" ")));
 		defineActionListeners();
 	}
 	
@@ -129,6 +131,7 @@ public class MCKymosBuild_Create extends JPanel {
 		buildKymographsThread.options.diskRadius 	= (int) diskRadiusSpinner.getValue();
 		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected();
 		buildKymographsThread.options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
+		buildKymographsThread.options.usePrefetch 	= usePrefetchCheckBox.isSelected();
 		
 		thread = new Thread(null, buildKymographsThread, "+++buildkymos");
 		thread.start();

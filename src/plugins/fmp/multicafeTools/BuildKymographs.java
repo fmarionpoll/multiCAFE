@@ -149,8 +149,10 @@ public class BuildKymographs implements Runnable
 	// -------------------------------------------
 	
 	private boolean getImageAndUpdateViewer(int t) {	
-		//workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImageFromForwardBuffer(t));
-		workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImage(t, 0));
+		if (options.usePrefetch)
+			workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImageFromForwardBuffer(t));
+		else
+			workImage = IcyBufferedImageUtil.getCopy(options.seqCamData.getImage(t, 0));
 		if (workImage == null) {
 			System.out.println("workImage null");
 			return false;

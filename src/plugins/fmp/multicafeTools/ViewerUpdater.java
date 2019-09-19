@@ -31,7 +31,6 @@ public class ViewerUpdater implements Runnable {
 		while (!isInterrupted) {
 			int posT = seqCamData.currentFrame;
 			viewer.setPositionT(posT);
-			//viewer.setTitle(seqCamData.getDecoratedImageName(posT));
 			ThreadUtil.sleep(milliSleep);
 		}
 	}
