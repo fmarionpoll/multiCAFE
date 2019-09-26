@@ -195,7 +195,7 @@ public class ROI2DUtilities  {
 		}
 	}
 
-	public static void removeROIsWithinPixelInterval(List<ROI> gulpsRois, int startPixel, int endPixel) {
+	public static void removeROIsWithinInterval(List<ROI> gulpsRois, int startPixel, int endPixel) {
 		Iterator <ROI> iterator = gulpsRois.iterator();
 		while (iterator.hasNext()) {
 			ROI roi = iterator.next();

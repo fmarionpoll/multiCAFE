@@ -96,7 +96,7 @@ public class DetectGulps {
 		int start = 1;
 		int end = topLevelArray.size();
 		if (options.analyzePartOnly) {
-			ROI2DUtilities.removeROIsWithinPixelInterval(cap.gulpsRois, options.startPixel, options.endPixel);
+			ROI2DUtilities.removeROIsWithinInterval(cap.gulpsRois, options.startPixel, options.endPixel);
 			start = options.startPixel;
 			end = options.endPixel;
 		} else {
@@ -119,10 +119,8 @@ public class DetectGulps {
 					
 					roiTrack = new ROI2DPolyLine ();
 					gulpPoints = new ArrayList<>();
-					singlePoint = new Point2D.Double (indexpixel-1, topLevelArray.get(indexpixel-1));
-					gulpPoints.add(singlePoint);
 				}
-			} 
+			}
 			singlePoint = new Point2D.Double (indexpixel, topLevelArray.get(indexpixel));
 			gulpPoints.add(singlePoint);
 		}
