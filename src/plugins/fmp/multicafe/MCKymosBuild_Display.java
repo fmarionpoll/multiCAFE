@@ -144,6 +144,8 @@ public class MCKymosBuild_Display extends JPanel {
 
 	void displayON() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		if (exp == null)
+			return;
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null || seqKymos.seq == null ) {
 			System.out.println("displayON() skipped");
