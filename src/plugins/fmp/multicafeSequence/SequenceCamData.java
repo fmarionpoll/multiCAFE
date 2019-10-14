@@ -22,6 +22,7 @@ import icy.math.ArrayMath;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
+import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 
@@ -351,6 +352,9 @@ public class SequenceCamData  {
 				for (int t = 0; t < tmax; t++) {
 					for (int i=0; i < lseq.size(); i++) {
 						IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
+						System.out.println("file "+ bufImg.getDataType_());
+//						if (bufImg.getDataType_() != DataType.UBYTE)
+//							IcyBufferedImageUtil.convertToType(bufImg, DataType.UBYTE, true);
 						seq.setImage(tseq, 0, bufImg);
 						tseq++;
 					}

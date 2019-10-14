@@ -318,15 +318,15 @@ public class SequenceKymos extends SequenceCamData  {
 				continue;
 			
 			progress.setMessage("adjust image "+files.get(i));
-			IcyBufferedImage ibufImage = null;
+			IcyBufferedImage ibufImage1 = null;
 			try {
-				ibufImage = Loader.loadImage(files.get(i).getAbsolutePath());
+				ibufImage1 = Loader.loadImage(files.get(i).getAbsolutePath());
 			} catch (UnsupportedFormatException | IOException e) {
 				e.printStackTrace();
 			}
 			
-			IcyBufferedImage ibufImage2 = new IcyBufferedImage(imageWidthMax, imageHeightMax, ibufImage.getSizeC(), ibufImage.getDataType_());
-			transferImage1To2(ibufImage, ibufImage2);
+			IcyBufferedImage ibufImage2 = new IcyBufferedImage(imageWidthMax, imageHeightMax, ibufImage1.getSizeC(), ibufImage1.getDataType_());
+			transferImage1To2(ibufImage1, ibufImage2);
 			try {
 				Saver.saveImage(ibufImage2, files.get(i), true);
 			} catch (FormatException | IOException e) {
