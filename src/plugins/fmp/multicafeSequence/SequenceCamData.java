@@ -22,7 +22,6 @@ import icy.math.ArrayMath;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
-import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 

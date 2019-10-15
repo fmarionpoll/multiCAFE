@@ -72,27 +72,28 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		if (exp == null) 
+			return;
+		String file = defineXlsFileName(exp);
+		if (file == null)
+			return;
+		
 		if (evt.getPropertyName().equals("EXPORT_MOVEDATA")) {
-			String file = defineXlsFileName(exp);
-			if (file != null) {
-				updateParametersCurrentExperiment(exp);
-				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-					XLSExportMoveResults xlsExport = new XLSExportMoveResults();
-					xlsExport.exportToFile(file, getMoveOptions());
-				}});
-			}
+			updateParametersCurrentExperiment(exp);
+			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
+				XLSExportMoveResults xlsExport = new XLSExportMoveResults();
+				xlsExport.exportToFile(file, getMoveOptions());
+			}});
 		}
 		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
-			String file = defineXlsFileName(exp);
-			if (file != null) {
-				updateParametersCurrentExperiment(exp);
-				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-					XLSExportCapillaryResults xlsExport = new XLSExportCapillaryResults();
-					xlsExport.exportToFile(file, getCapillariesOptions());
-				}});
-				firePropertyChange("EXPORT_TO_EXCEL", false, true);	
-			}
+			updateParametersCurrentExperiment(exp);
+			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
+				XLSExportCapillaryResults xlsExport = new XLSExportCapillaryResults();
+				xlsExport.exportToFile(file, getCapillariesOptions());
+			}});
+			firePropertyChange("EXPORT_TO_EXCEL", false, true);	
 		}
 	}
 	
