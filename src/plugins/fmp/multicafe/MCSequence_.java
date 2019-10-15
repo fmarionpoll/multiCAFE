@@ -86,6 +86,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 				infosTab.expListComboBox.removeAllItems();
 				addSequenceCamToCombo();
+				loadMeasuresAndKymos();
+				tabsPane.setSelectedIndex(1);
 			}
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {

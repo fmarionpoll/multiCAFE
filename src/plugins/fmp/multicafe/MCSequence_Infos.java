@@ -165,8 +165,7 @@ public class MCSequence_Infos  extends JPanel {
 	}
 	
 	void transferExperimentNamesToExpList(ExperimentList expList) {
-		int nitems = expListComboBox.getItemCount();
-		for (int i=0; i< nitems; i++) {
+		for (int i=0; i< expListComboBox.getItemCount(); i++) {
 			String filename = expListComboBox.getItemAt(i);
 			expList.addNewExperiment(filename);
 		}

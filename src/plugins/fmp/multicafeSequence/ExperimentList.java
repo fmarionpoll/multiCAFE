@@ -1,6 +1,7 @@
 package plugins.fmp.multicafeSequence;
 
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,6 +162,9 @@ public class ExperimentList {
 	public int addNewExperiment (String filename) {
 		boolean exists = false;
 		int index = -1;
+		File f0 = new File(filename);
+		String parent0 = f0.getAbsoluteFile().getParent();
+		
 		for (int i=0; i < experimentList.size(); i++) {
 			Experiment exp = experimentList.get(i);
 			if (exp.experimentFileName == null) {
@@ -168,10 +172,16 @@ public class ExperimentList {
 					exp.experimentFileName = exp.seqCamData.getFileName();
 				}
 			}
-			if (exp.experimentFileName != null && filename.contains(exp.experimentFileName)) {
-				exists = true;
-				index = i;
-				break;
+			
+			if (exp.experimentFileName != null) {
+				File f = new File(exp.experimentFileName);
+				String parent = f.getAbsoluteFile().getParent();
+				
+				if ( parent.contains(parent0)) {
+					exists = true;
+					index = i;
+					break;
+				}
 			}
 		}
 		if (!exists) {

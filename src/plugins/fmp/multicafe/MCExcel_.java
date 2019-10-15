@@ -76,11 +76,11 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		if (exp == null) 
 			return;
-		String file = defineXlsFileName(exp);
-		if (file == null)
-			return;
 		
 		if (evt.getPropertyName().equals("EXPORT_MOVEDATA")) {
+			String file = defineXlsFileName(exp);
+			if (file == null)
+				return;
 			updateParametersCurrentExperiment(exp);
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				XLSExportMoveResults xlsExport = new XLSExportMoveResults();
@@ -88,6 +88,9 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 			}});
 		}
 		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
+			String file = defineXlsFileName(exp);
+			if (file == null)
+				return;
 			updateParametersCurrentExperiment(exp);
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				XLSExportCapillaryResults xlsExport = new XLSExportCapillaryResults();
@@ -148,7 +151,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.absoluteTime	= optionsTab.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
 		if (optionsTab.exportAllFilesCheckBox.isSelected()) {
-//			parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+			parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
 			int nfiles 			= parent0.expList.experimentList.size();
 			options.firstExp 	= 0;
 			options.lastExp 	= nfiles - 1;
