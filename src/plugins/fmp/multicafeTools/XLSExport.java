@@ -235,14 +235,16 @@ public class XLSExport {
 
 		String num = name.substring(4, 5);
 		int numFromName = Integer.parseInt(num);
-		String side = name.substring(5, 6);
-		if (side != null) {
-			if (side .equals("R")) {
-				numFromName = numFromName* 2;
-				numFromName += 1;
+		if( name.length() > 5) {
+			String side = name.substring(5, 6);
+			if (side != null) {
+				if (side .equals("R")) {
+					numFromName = numFromName* 2;
+					numFromName += 1;
+				}
+				else if (side .equals("L"))
+					numFromName = numFromName* 2;
 			}
-			else if (side .equals("L"))
-				numFromName = numFromName* 2;
 		}
 		return numFromName;
 	}
