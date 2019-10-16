@@ -96,7 +96,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 				XLSExportCapillaryResults xlsExport = new XLSExportCapillaryResults();
 				xlsExport.exportToFile(file, getCapillariesOptions());
 			}});
-			firePropertyChange("EXPORT_TO_EXCEL", false, true);	
+			firePropertyChange("SAVE_KYMOSMEASURES", false, true);	
 		}
 	}
 	

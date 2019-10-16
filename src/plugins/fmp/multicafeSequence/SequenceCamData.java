@@ -40,6 +40,12 @@ public class SequenceCamData  {
 	public int 						analysisStep 			= 1;
 	public int 						currentFrame 			= 0;
 	public int						nTotalFrames 			= 0;
+	
+//	public int 		ncapillaries		= 0;
+//	public double 	volume 				= 5.;
+//	public int 		pixels 				= 5;
+//	public int		grouping 			= 2;
+	
 
 	public EnumStatus 				status					= EnumStatus.REGULAR;		
 	public Cages					cages 					= new Cages();

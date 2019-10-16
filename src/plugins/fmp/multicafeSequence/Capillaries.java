@@ -238,6 +238,19 @@ public class Capillaries {
 		return false;
 	}
 	
+	public boolean xmlSaveCapillaries_Measures(String csFile, SequenceKymos seq) {
+		if (csFile != null) {
+			final Document doc = XMLUtil.createDocument(true);
+			if (doc != null) {
+				xmlSaveCapillaryParametersv1 (doc, seq);
+				xmlSaveCapillariesv1(doc, seq);
+				XMLUtil.saveDocument(doc, csFile);
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public boolean xmlLoadCapillaries(String csFileName) {
 		if (csFileName != null)  {		
 			final Document doc = XMLUtil.loadDocument(csFileName);

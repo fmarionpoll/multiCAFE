@@ -40,6 +40,8 @@ public class MCSequence_Close  extends JPanel {
 			SequenceKymos seqKymos = exp.seqKymos;	
 			stopLoadingImages(exp);
 			parent0.capillariesPane.fileTab.saveCapillaryTrack(exp);
+			parent0.kymographsPane.fileTab.saveKymosMeasures(exp);
+			
 			if (seqKymos != null && seqKymos.seq != null) {
 				seqKymos.seq.removeAllROI();
 				seqKymos.seq.close();

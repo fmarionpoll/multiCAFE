@@ -41,7 +41,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 public class SequenceKymos extends SequenceCamData  {	
-	public Capillaries 		capillaries 			= new Capillaries();
+	public  Capillaries 	capillaries 			= new Capillaries();
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;
 
@@ -368,10 +368,10 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	// ----------------------------------
 	
-	public boolean xmlLoadCapillaryTrack(String pathname) {
+	public boolean xmlLoadCapillaries(String pathname) {
 		File tempfile = new File(pathname);
 		if (tempfile.isDirectory()) {
-			pathname = pathname + File.separator + "capillarytrack.xml";
+			pathname = pathname + File.separator + "capillaries.xml";
 			tempfile = new File(pathname);
 		}
 		if (!tempfile.isFile())
@@ -386,13 +386,41 @@ public class SequenceKymos extends SequenceCamData  {
 		return flag;
 	}
 	
-	public boolean xmlSaveCapillaryTrack(String pathname) {
+	public boolean xmlLoadKymos_Measures(String pathname) {
+		File tempfile = new File(pathname);
+		if (tempfile.isDirectory()) {
+			pathname = pathname + File.separator + "kymos_measures.xml";
+			tempfile = new File(pathname);
+		}
+		if (!tempfile.isFile())
+			return false;
+		boolean flag = capillaries.xmlLoadCapillaries(pathname);
+		if (flag) {
+			Path pathfilename = Paths.get(pathname);
+			directory = pathfilename.getParent().toString();
+			transferCapillariesToAnalysisParameters ();
+			loadListOfKymographsFromCapillaries(getDirectory());
+		}
+		return flag;
+	}
+	
+	public boolean xmlSaveCapillaries(String pathname) {
 		boolean flag = false;
 		File tempfile = new File(pathname);
 		if (tempfile.isDirectory()) {
-			pathname = pathname + File.separator + "capillarytrack.xml";
+			pathname = pathname + File.separator + "capillaries.xml";
 		}
 		flag = capillaries.xmlSaveCapillaries(pathname, this);
+		return flag;
+	}
+	
+	public boolean xmlSaveKymos_Measures(String pathname) {
+		boolean flag = false;
+		File tempfile = new File(pathname);
+		if (tempfile.isDirectory()) {
+			pathname = pathname + File.separator + "kymos_measures.xml";
+		}
+		flag = capillaries.xmlSaveCapillaries_Measures(pathname, this);
 		return flag;
 	}
 	

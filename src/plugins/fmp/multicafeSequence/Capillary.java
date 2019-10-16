@@ -253,12 +253,16 @@ public class Capillary implements XMLPersistent  {
 	
 	@Override
 	public boolean loadFromXML(Node node) {
-		boolean result = true;
-		result |= loadMetaDataFromXML(node);	
+		boolean result = loadMetaDataFromXML(node);	
 		result |= (ptsDerivative = loadPolyline2DFromXML(node, ID_DERIVATIVE)) != null;
 		result |= (ptsTop = loadPolyline2DFromXML(node, ID_TOPLEVEL)) != null;
 		result |= (ptsBottom = loadPolyline2DFromXML(node, ID_BOTTOMLEVEL))!= null;
 		result |= (gulpsRois = loadROIsFromXML(node)) != null;
+		return result;
+	}
+	
+	public boolean loadFromXML_CapillaryOnly(Node node) {
+		boolean result = loadMetaDataFromXML(node);	
 		return result;
 	}
 
@@ -273,6 +277,24 @@ public class Capillary implements XMLPersistent  {
 			savePolyline2DToXML(node, ID_BOTTOMLEVEL, ptsBottom);
 		if (gulpsRois != null)
 			saveROIsToXML(node, gulpsRois);
+        return true;
+	}
+	
+	public boolean saveToXML_(Node node) {
+		saveMetaDataToXML(node);
+		if (ptsDerivative != null)
+			savePolyline2DToXML(node, ID_DERIVATIVE, ptsDerivative);
+		if (ptsTop != null)
+			savePolyline2DToXML(node, ID_TOPLEVEL, ptsTop);
+		if (ptsBottom != null)
+			savePolyline2DToXML(node, ID_BOTTOMLEVEL, ptsBottom);
+		if (gulpsRois != null)
+			saveROIsToXML(node, gulpsRois);
+        return true;
+	}
+	
+	public boolean saveToXML_CapillaryOnly(Node node) {
+		saveMetaDataToXML(node);
         return true;
 	}
 	
@@ -305,8 +327,6 @@ public class Capillary implements XMLPersistent  {
 	        	XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);
 	        }
 	        saveROIToXML(nodeMeta, capillaryRoi); 
-	        limitsOptions.saveToXML(nodeMeta);
-	        gulpsOptions.saveToXML(nodeMeta);
 	    }
 	}
 

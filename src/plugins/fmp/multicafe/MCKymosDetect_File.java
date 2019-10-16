@@ -4,12 +4,12 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
@@ -62,7 +62,16 @@ public class MCKymosDetect_File  extends JPanel {
 		String directory = exp.seqCamData.getDirectory();
 		boolean flag = true;
 		if (exp.seqKymos != null ) {
-			exp.seqKymos.xmlLoadCapillaryTrack(directory);
+			boolean readOK = exp.seqKymos.xmlLoadKymos_Measures(directory);
+			if (readOK) {
+				SequenceKymos seqKymos = exp.seqKymos;
+				SwingUtilities.invokeLater(new Runnable() { public void run() {
+//					parent0.capillariesPane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+//					parent0.capillariesPane.buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+					parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+					parent0.sequencePane.intervalsTab.setAnalyzeFrameAndStepToDialog(exp.seqCamData);
+				}});
+			}
 		}
 		return flag;
 	}
@@ -92,10 +101,8 @@ public class MCKymosDetect_File  extends JPanel {
 			parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
 			parent0.sequencePane.intervalsTab.getAnalyzeFrameAndStepFromDialog (exp.seqCamData);
 			seqKymos.updateCapillariesFromCamData(exp.seqCamData);
-//			seqKymos.getAnalysisParametersFromCamData(exp.seqCamData);
 			seqKymos.roisSaveEdits();
-			String name = exp.seqCamData.getDirectory()+ File.separator + "capillarytrack.xml";
-			seqKymos.xmlSaveCapillaryTrack(name);
+			seqKymos.xmlSaveKymos_Measures(exp.seqCamData.getDirectory());
 		}
 	}
 }

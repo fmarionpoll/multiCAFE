@@ -43,7 +43,7 @@ public class MCCapillaries_File extends JPanel {
 	private void defineActionListeners() {	
 		openButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-			loadCapillaryTrack(exp);
+			loadCapillaryTrack_File(exp);
 		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
 		}}); 
 		
@@ -54,7 +54,7 @@ public class MCCapillaries_File extends JPanel {
 		}});	
 	}
 	
-	boolean loadCapillaryTrack(Experiment exp) {	
+	boolean loadCapillaryTrack_File(Experiment exp) {	
 		SequenceCamData seqCamData = exp.seqCamData;
 		SequenceKymos seqKymos = exp.seqKymos;
 		boolean flag = false;
@@ -62,7 +62,7 @@ public class MCCapillaries_File extends JPanel {
 			exp.seqKymos = new SequenceKymos();
 			seqKymos = exp.seqKymos;
 		}
-		flag = seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory());
+		flag = seqKymos.xmlLoadCapillaries(seqCamData.getDirectory());
 		if (flag) {
 			SequenceKymosUtils.transferKymoCapillariesToCamData (seqCamData, seqKymos);	
 		} else {
@@ -82,7 +82,7 @@ public class MCCapillaries_File extends JPanel {
 		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
 		parent0.sequencePane.intervalsTab.getAnalyzeFrameAndStepFromDialog (seqCamData);
 		seqKymos.updateCapillariesFromCamData(seqCamData);
-		return seqKymos.xmlSaveCapillaryTrack(seqCamData.getDirectory());
+		return seqKymos.xmlSaveCapillaries(seqCamData.getDirectory());
 	}
 
 }

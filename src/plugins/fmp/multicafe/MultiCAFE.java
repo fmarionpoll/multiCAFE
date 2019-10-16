@@ -24,7 +24,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 					mainFrame 			= new IcyFrame("MultiCAFE analysis 15-oct-2019", true, true, true, true);
+	IcyFrame 					mainFrame 			= new IcyFrame("MultiCAFE analysis 16-oct-2019", true, true, true, true);
 	ExperimentList				expList 			= new ExperimentList();
 	int							currentIndex		= -1;
 	
@@ -97,7 +97,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			buildKymosPane.displayTab.displayUpdateOnSwingThread();
 			buildKymosPane.displayTab.viewKymosCheckBox.setSelected(true);
 		}
-		else if (arg0.getPropertyName() .equals("EXPORT_TO_EXCEL")) {
+		else if (arg0.getPropertyName() .equals("SAVE_KYMOSMEASURES")) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				Experiment exp = expList.getExperiment(currentIndex);
 				kymographsPane.fileTab.saveKymosMeasures(exp);
@@ -142,8 +142,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		SequenceCamData seqCamData = exp.seqCamData;
 		
 		if (loadCapillaries) {
-			ProgressFrame progress = new ProgressFrame("load capillarytrack.xml");
-			capillariesPane.loadCapillaryTrack();
+			ProgressFrame progress = new ProgressFrame("load capillarytrack_measures.xml");
+			kymographsPane.fileTab.loadKymosMeasures(exp);
 			progress.close();
 		}
 

@@ -69,7 +69,7 @@ public class Experiment {
 
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
-		if (!seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory())) 
+		if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 			return false;
 		boxID = seqKymos.capillaries.desc.boxID;
 
@@ -91,7 +91,7 @@ public class Experiment {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		if (loadCapillaryTrack) {
-			if (!seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory())) 
+			if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 				return false;
 			boxID = seqKymos.capillaries.desc.boxID;
 		}
@@ -118,7 +118,7 @@ public class Experiment {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		if (seqKymos.capillaries.capillariesArrayList.size() == 0) {
-			if (!seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory())) 
+			if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 				return false;
 			boxID = seqKymos.capillaries.desc.boxID;
 		}
@@ -134,7 +134,7 @@ public class Experiment {
 	public boolean loadCapillaryTrack() {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
-		if (!seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory())) 
+		if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 			return false;
 		boxID = seqKymos.capillaries.desc.boxID;
 		// TODO

@@ -202,7 +202,7 @@ public class BuildKymosPane  extends JPanel implements ActionListener, ViewerLis
 		String directory = seqCamData.getDirectory();
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
-		boolean flag = seqKymos.xmlLoadCapillaryTrack(directory);
+		boolean flag = seqKymos.xmlLoadKymos_Measures(directory);
 		if (flag) {
 			SequenceKymosUtils.transferKymoCapillariesToCamData (seqCamData, seqKymos);	
 		} else {
