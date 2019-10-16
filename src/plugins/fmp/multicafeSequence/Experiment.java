@@ -1,6 +1,7 @@
 package plugins.fmp.multicafeSequence;
 
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
@@ -36,7 +37,14 @@ public class Experiment {
 	public Experiment(String filename) {
 		seqCamData = new SequenceCamData();
 		seqKymos   = new SequenceKymos();
-		this.experimentFileName = filename;
+		
+		File f = new File(filename);
+		String parent = f.getAbsolutePath();
+		if (!f.isDirectory()) {
+			Path path = Paths.get(parent);
+			parent = path.getParent().toString();
+		}
+		this.experimentFileName = parent;
 	}
 	
 	public Experiment(SequenceCamData seq) {

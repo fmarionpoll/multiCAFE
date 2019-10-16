@@ -2,6 +2,8 @@ package plugins.fmp.multicafeSequence;
 
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -162,22 +164,18 @@ public class ExperimentList {
 	public int addNewExperiment (String filename) {
 		boolean exists = false;
 		int index = -1;
-		File f0 = new File(filename);
-		String parent0 = f0.getAbsoluteFile().getName();
-		
+		String parent0 = getDirectoryName(filename);
+				
 		for (int i=0; i < experimentList.size(); i++) {
 			Experiment exp = experimentList.get(i);
-			if (exp.experimentFileName == null) {
-				if (exp.seqCamData != null) {
-					exp.experimentFileName = exp.seqCamData.getFileName();
-				}
+			if (exp.experimentFileName == null && exp.seqCamData != null) {
+				exp.experimentFileName = exp.seqCamData.getFileName();
 			}
 			
-			if (exp.experimentFileName != null) {
-				File f = new File(exp.experimentFileName);
-				String parent = f.getAbsoluteFile().getName();
-				
-				if ( parent.contains(parent0)) {
+			if (exp.experimentFileName != null) {	
+				String parent = getDirectoryName(exp.experimentFileName);
+				exp.experimentFileName = parent;		
+				if (parent.contains(parent0)) {
 					exists = true;
 					index = i;
 					break;
@@ -190,6 +188,16 @@ public class ExperimentList {
 			index = experimentList.size()-1;
 		}
 		return index;
+	}
+	
+	String getDirectoryName(String filename) {
+		File f0 = new File(filename);
+		String parent0 = f0.getAbsolutePath();
+		if (!f0.isDirectory()) {
+			Path path = Paths.get(parent0);
+			parent0 = path.getParent().toString();
+		}
+		return parent0;
 	}
 	
 }
