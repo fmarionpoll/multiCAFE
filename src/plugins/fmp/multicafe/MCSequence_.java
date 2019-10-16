@@ -85,20 +85,22 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			if (seqCamData != null) {
 				parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 				infosTab.expListComboBox.removeAllItems();
-				addSequenceCamToCombo();
-				loadMeasuresAndKymos();
-				tabsPane.setSelectedIndex(1);
+				if (addSequenceCamToCombo()) {
+					loadMeasuresAndKymos();
+					tabsPane.setSelectedIndex(1);
+				}
 			}
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 			SequenceCamData seqCamData = parent0.openSequenceCam(null);
 			if (seqCamData != null) {
-				addSequenceCamToCombo();
-				parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
-				ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-	        		parent0.sequencePane.closeTab.saveAndClose(exp);
-	    		}});
+				if (addSequenceCamToCombo()) {
+					parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
+					ThreadUtil.bgRun( new Runnable() { @Override public void run() {
+		        		parent0.sequencePane.closeTab.saveAndClose(exp);
+		    		}});
+				}
 			}
 		}
 		else if (event.getPropertyName().equals("UPDATE")) {
@@ -157,21 +159,21 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		return item;
 	}
 	
-	void addSequenceCamToCombo() {
+	boolean addSequenceCamToCombo() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		if (exp == null)
+			return false;
 		String filename = exp.seqCamData.getFileName();
-		if (filename == null) {
-			return;
-		}
+		if (filename == null) 
+			return false;
 		String strItem = Paths.get(filename).toString();
 		if (strItem != null) {
 			addSequenceCamToCombo(strItem);
 			infosTab.expListComboBox.setSelectedItem(strItem);
-//			updateViewerForSequenceCam(exp.seqCamData);
-//			loadMeasuresAndKymos();
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", strItem);
 		}
+		return true;
 	}
 				
 	void updateViewerForSequenceCam(SequenceCamData seqCamData) {

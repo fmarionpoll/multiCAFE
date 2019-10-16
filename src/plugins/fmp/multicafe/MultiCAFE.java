@@ -137,6 +137,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 
 	void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
 		Experiment exp = expList.getExperiment(currentIndex);
+		if (exp == null)
+			return;
 		SequenceCamData seqCamData = exp.seqCamData;
 		
 		if (loadCapillaries) {

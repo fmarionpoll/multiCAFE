@@ -163,7 +163,7 @@ public class ExperimentList {
 		boolean exists = false;
 		int index = -1;
 		File f0 = new File(filename);
-		String parent0 = f0.getAbsoluteFile().getParent();
+		String parent0 = f0.getAbsoluteFile().getName();
 		
 		for (int i=0; i < experimentList.size(); i++) {
 			Experiment exp = experimentList.get(i);
@@ -175,7 +175,7 @@ public class ExperimentList {
 			
 			if (exp.experimentFileName != null) {
 				File f = new File(exp.experimentFileName);
-				String parent = f.getAbsoluteFile().getParent();
+				String parent = f.getAbsoluteFile().getName();
 				
 				if ( parent.contains(parent0)) {
 					exists = true;
