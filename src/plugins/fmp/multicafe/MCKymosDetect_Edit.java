@@ -17,6 +17,7 @@ import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.CapillaryLimits;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
@@ -102,17 +103,17 @@ public class MCKymosDetect_Edit  extends JPanel {
 	}
 	
 	void deletePointsOfPolyLine(ROI2D roi, String optionSelected, int t, SequenceKymos seqKymos) {
-		Polyline2D polyline = null;
 		Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
+		CapillaryLimits caplimits = null;
 		
 		if (optionSelected .contains("top")) {
-			polyline = cap.ptsTop;
+			caplimits = cap.ptsTop;
 		} else if (optionSelected.contains("bottom")) {
-			polyline = cap.ptsBottom;
+			caplimits = cap.ptsBottom;
 		} else if (optionSelected.contains("deriv")) {
-			polyline = cap.ptsDerivative;
+			caplimits = cap.ptsDerivative;
 		}
-		
+		Polyline2D polyline = caplimits.polyline;
 		int npointsOutside = polyline.npoints - getPointsWithinROI(polyline, roi);
 		if (npointsOutside > 0) {
 			double [] xpoints = new double [npointsOutside];
@@ -125,22 +126,13 @@ public class MCKymosDetect_Edit  extends JPanel {
 					index++;
 				}
 			}
-			polyline = new Polyline2D(xpoints, ypoints, npointsOutside);	
+			caplimits.polyline = new Polyline2D(xpoints, ypoints, npointsOutside);	
 		} else {
-			polyline = null;
+			caplimits.polyline = null;
 		}
+		
 		String name = null;
-		if (optionSelected .contains("top")) {
-			cap.ptsTop = polyline;
-			name = cap.ID_TOPLEVEL;
-		} else if (optionSelected.contains("bottom")) {
-			cap.ptsBottom = polyline;
-			name = cap.ID_BOTTOMLEVEL;
-		} else if (optionSelected.contains("deriv")) {
-			cap.ptsDerivative = polyline;
-			name = cap.ID_DERIVATIVE;
-		}
-
+		polyline = caplimits.polyline;
 		List<ROI> allRois = seqKymos.seq.getROIs();
 		for (ROI roii: allRois) {
 			if (roii.getName().contains("selected"))
@@ -152,7 +144,7 @@ public class MCKymosDetect_Edit  extends JPanel {
 			if (roii.getName().contains(name))
 				seqKymos.seq.removeROI(roii);
 		}
-		ROI2D newRoi = cap.transferPolyline2DToROI(name, polyline);
+		ROI2D newRoi = caplimits.transferPolyline2DToROI();
 		seqKymos.seq.addROI(newRoi);
 	}
 	

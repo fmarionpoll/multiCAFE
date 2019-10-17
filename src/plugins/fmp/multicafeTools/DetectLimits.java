@@ -74,25 +74,25 @@ public class DetectLimits {
 			}
 			
 			if (options.analyzePartOnly) {
-				Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop, startPixel, endPixel);
-				seqkymo.seq.addROI(cap.transferPolyline2DToROI(cap.ID_TOPLEVEL, cap.ptsTop));
+				Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop.polyline, startPixel, endPixel);
+				seqkymo.seq.addROI(cap.ptsTop.transferPolyline2DToROI());
 				
-				Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom, startPixel, endPixel);
-				seqkymo.seq.addROI(cap.transferPolyline2DToROI(cap.ID_BOTTOMLEVEL, cap.ptsBottom));
+				Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom.polyline, startPixel, endPixel);
+				seqkymo.seq.addROI(cap.ptsBottom.transferPolyline2DToROI());
 			} else {
 				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);
 				roiTopTrack.setName(cap.getLast2ofCapillaryName()+"_toplevel");
 				roiTopTrack.setStroke(1);
 				roiTopTrack.setT(t);
 				seqkymo.seq.addROI(roiTopTrack);
-				cap.ptsTop = roiTopTrack.getPolyline2D();
+				cap.ptsTop.polyline = roiTopTrack.getPolyline2D();
 
 				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine (limitBottom);
 				roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
 				roiBottomTrack.setStroke(1);
 				roiBottomTrack.setT(t);
 				seqkymo.seq.addROI(roiBottomTrack);
-				cap.ptsBottom = roiBottomTrack.getPolyline2D();
+				cap.ptsBottom.polyline = roiBottomTrack.getPolyline2D();
 			}
 		
 		}

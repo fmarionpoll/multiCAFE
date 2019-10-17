@@ -38,7 +38,7 @@ public class DetectGulps {
 			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(indexkymo);
 			cap.gulpsOptions.copy(options);
 			if (options.buildDerivative) {
-				topLevelArray = cap.getIntegerArrayFromPolyline2D(cap.ptsTop);
+				topLevelArray = cap.ptsTop.getIntegerArrayFromPolyline2D();
 				seqkymo.removeRoisContainingString(indexkymo, "derivative");
 				getDerivativeProfile(indexkymo, cap, jitter);	
 			}
@@ -85,7 +85,7 @@ public class DetectGulps {
 		roiDerivative.setT(indexkymo);
 		seqkymo.seq.addROI(roiDerivative, false);
 		
-		cap.ptsDerivative = roiDerivative.getPolyline2D();
+		cap.ptsDerivative.polyline = roiDerivative.getPolyline2D();
 	}
 
 	private void getGulps(int indexkymo, Capillary cap) {
@@ -107,7 +107,7 @@ public class DetectGulps {
 		List<Point2D> gulpPoints = new ArrayList<>();
 		Point2D.Double singlePoint = null;
 		for (indexpixel = start; indexpixel < end; indexpixel++) {
-			int max = (int) cap.ptsDerivative.ypoints[indexpixel-1];
+			int max = (int) cap.ptsDerivative.polyline.ypoints[indexpixel-1];
 			if (max < cap.gulpsOptions.detectGulpsThreshold)
 				continue;
 			
