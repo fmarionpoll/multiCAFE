@@ -2,7 +2,6 @@ package plugins.fmp.multicafeSequence;
 
 
 import java.awt.Color;
-import java.awt.geom.Point2D;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +79,6 @@ public class Capillary implements XMLPersistent  {
 		ptsTop.copy(cap.ptsTop); 
 		ptsBottom.copy(cap.ptsBottom); 
 		ptsDerivative.copy(cap.ptsDerivative); 
-		
 	}
 	
 	public String getName() {
@@ -104,31 +102,6 @@ public class Capillary implements XMLPersistent  {
 		else 
 			newname = name;
 		return newname;
-	}
-	
-	public List<Integer> getIntegerArrayFromPointArray(List<Point2D> ptsList) {
-		if (ptsList == null)
-			return null;
-		List<Integer> arrayInt = new ArrayList<Integer> ();
-		for (Point2D pt: ptsList) {
-			int value = (int) pt.getY();
-			arrayInt.add(value);
-		}
-		return arrayInt;
-	}
-	
-	public List<Point2D> getPointArrayFromIntegerArray(List<Integer> data) {
-		if (data == null)
-			return null;
-		List<Point2D> ptsList = null;
-		if (data.size() > 0) {
-			ptsList = new ArrayList<Point2D>(data.size());
-			for (int i=0; i < data.size(); i++) {
-				Point2D pt = new Point2D.Double((double) i, (double) data.get(i));
-				ptsList.add(pt);
-			}
-		}
-		return ptsList;
 	}
 	
 	public boolean isThereAnyMeasuresDone(EnumListType option) {
@@ -173,15 +146,10 @@ public class Capillary implements XMLPersistent  {
 	
 	public List<ROI> transferMeasuresToROIs() {
 		List<ROI> listrois = new ArrayList<ROI> ();
-		if (ptsTop != null) 
-			ptsTop.transferMeasuresToROIs(listrois);
-		if (ptsBottom != null) 
-			ptsBottom.transferMeasuresToROIs(listrois);
-		if (gulpsRois != null)	
-			listrois.addAll(gulpsRois.rois);
-		if (ptsDerivative != null) {
-			ptsDerivative.transferMeasuresToROIs(listrois, Color.yellow, 1.);
-		}
+		ptsTop.transferMeasuresToROIs(listrois);
+		ptsBottom.transferMeasuresToROIs(listrois);
+		listrois.addAll(gulpsRois.rois);
+		ptsDerivative.transferMeasuresToROIs(listrois, Color.yellow, 1.);
 		return listrois;
 	}
 	
@@ -192,24 +160,6 @@ public class Capillary implements XMLPersistent  {
 		ptsDerivative.transferROIsToMeasures(listRois);
 	}
 
-/*
-//	public ROI2D transferPolyline2DToROI(String name, Polyline2D polyline) {
-//		if (polyline == null)
-//			return null;
-//		
-//		ROI2D roi = new ROI2DPolyLine(polyline); 
-//		if (indexImage >= 0) {
-//			roi.setT(indexImage);
-//			roi.setName(getLast2ofCapillaryName()+"_"+name);
-//		}
-//		else
-//			roi.setName(name);
-//		return roi;
-//	}
-*/
-	
-	// ---------------------
-	
 	@Override
 	public boolean loadFromXML(Node node) {
 		boolean result = loadMetaDataFromXML(node);	
