@@ -208,8 +208,6 @@ public class Capillary implements XMLPersistent  {
 //	}
 */
 	
-
-	
 	// ---------------------
 	
 	@Override

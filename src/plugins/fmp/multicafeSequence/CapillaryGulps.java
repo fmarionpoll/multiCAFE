@@ -13,11 +13,13 @@ import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
+
 public class CapillaryGulps  implements XMLPersistent  {
 	
 	private final String ID_GULPS = "gulpsMC";
 	public List<ROI> rois = null; 
 
+	// -------------------------------
 	
 	public void copy(Capillary cap) {
 		rois = new ArrayList <ROI> ();

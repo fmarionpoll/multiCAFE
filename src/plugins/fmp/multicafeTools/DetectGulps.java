@@ -91,16 +91,16 @@ public class DetectGulps {
 	private void getGulps(int indexkymo, Capillary cap) {
 		int indexpixel = 0;
 		if (cap.gulpsRois == null)
-			cap.gulpsRois = new ArrayList <> ();
+			cap.gulpsRois.rois = new ArrayList <> ();
 
 		int start = 1;
 		int end = topLevelArray.size();
 		if (options.analyzePartOnly) {
-			ROI2DUtilities.removeROIsWithinInterval(cap.gulpsRois, options.startPixel, options.endPixel);
+			ROI2DUtilities.removeROIsWithinInterval(cap.gulpsRois.rois, options.startPixel, options.endPixel);
 			start = options.startPixel;
 			end = options.endPixel;
 		} else {
-			cap.gulpsRois.clear();
+			cap.gulpsRois.rois.clear();
 		}
 
 		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
@@ -115,7 +115,7 @@ public class DetectGulps {
 				Point2D prevPt = gulpPoints.get(gulpPoints.size() -1);
 				if ((int) prevPt.getX() !=  (indexpixel-1)) {
 					roiTrack.setPoints(gulpPoints);
-					cap.addGulp(roiTrack, indexpixel, indexkymo);
+					cap.gulpsRois.addGulp(roiTrack, indexkymo, cap.getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
 					
 					roiTrack = new ROI2DPolyLine ();
 					gulpPoints = new ArrayList<>();
@@ -127,9 +127,10 @@ public class DetectGulps {
 
 		if (gulpPoints.size() > 0) {
 			roiTrack.setPoints(gulpPoints);
-			cap.addGulp(roiTrack, indexpixel, indexkymo);
+			cap.gulpsRois.addGulp(roiTrack, indexkymo, cap.getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
+			
 		}
-		seqkymo.seq.addROIs(cap.gulpsRois, false);
+		seqkymo.seq.addROIs(cap.gulpsRois.rois, false);
 	}
 }
 
