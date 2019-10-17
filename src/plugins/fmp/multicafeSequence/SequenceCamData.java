@@ -40,17 +40,10 @@ public class SequenceCamData  {
 	public int 						analysisStep 			= 1;
 	public int 						currentFrame 			= 0;
 	public int						nTotalFrames 			= 0;
-	
-//	public int 		ncapillaries		= 0;
-//	public double 	volume 				= 5.;
-//	public int 		pixels 				= 5;
-//	public int		grouping 			= 2;
-	
 
 	public EnumStatus 				status					= EnumStatus.REGULAR;		
 	public Cages					cages 					= new Cages();
-		
-	// image cache
+
 	public IcyBufferedImage 		cacheTransformedImage 	= null;
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
@@ -60,10 +53,8 @@ public class SequenceCamData  {
 	protected String 				csFileName 				= null;
 	protected String				directory 				= null;
 	
-	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif", "avi"};
-
-	
-
+	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif", "avi"};  
+	// TODO: accept mpeg mv4?
 	
 	// ----------------------------------------
 	
@@ -500,7 +491,7 @@ public class SequenceCamData  {
 		FileTime fileTime;
 		try { fileTime = Files.getLastModifiedTime(path); }
 		catch (IOException e) {
-			System.err.println("Cannot get the last modified time - "+e+ "image "+ t+ " -- file "+ name);
+			System.err.println("Cannot get the last modified time - " + e + "image "+ t+ " -- file "+ name);
 			return null;
 		}
 		return fileTime;

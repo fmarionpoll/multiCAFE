@@ -3,7 +3,6 @@ package plugins.fmp.multicafeSequence;
 public class CapillariesDescription {
 	public double 	volume 				= 5.;
 	public int 		pixels 				= 5;
-	public int		grouping 			= 2;
 	public String 	sourceName 			= null;
 	public long 	analysisStart 		= 0;
 	public long 	analysisEnd 		= 0;
@@ -12,28 +11,27 @@ public class CapillariesDescription {
 	public String 	boxID				= new String("boxID");
 	public String	experiment			= new String("experiment");
 	public String 	comment				= new String("...");
+	
+	public int		grouping 			= 2;
 	public String 	stimulusR			= new String("stimulusR");
 	public String 	concentrationR		= new String("xmMR");
 	public String 	stimulusL			= new String("stimulusL");
 	public String 	concentrationL		= new String("xmML");
-	
-	public int 		ncapillaries		= 0;
 
 	public void copy (CapillariesDescription desc) {
-		volume = desc.volume;
-		pixels = desc.pixels;
-		grouping = desc.grouping;
-		analysisStart = desc.analysisStart;
-		analysisEnd = desc.analysisEnd;
-		analysisStep = desc.analysisStep;
-		stimulusR = desc.stimulusR;
-		stimulusL = desc.stimulusL;
-		concentrationR = desc.concentrationR;
-		concentrationL = desc.concentrationL;
-		boxID = desc.boxID;
-		experiment = desc.experiment;
-		comment = desc.comment;
-		ncapillaries = desc.ncapillaries;
+		volume 			= desc.volume;
+		pixels 			= desc.pixels;
+		grouping 		= desc.grouping;
+		analysisStart 	= desc.analysisStart;
+		analysisEnd 	= desc.analysisEnd;
+		analysisStep 	= desc.analysisStep;
+		stimulusR 		= desc.stimulusR;
+		stimulusL 		= desc.stimulusL;
+		concentrationR 	= desc.concentrationR;
+		concentrationL 	= desc.concentrationL;
+		boxID 			= desc.boxID;
+		experiment 		= desc.experiment;
+		comment 		= desc.comment;
 	}
 	
 	public boolean isChanged (CapillariesDescription desc) {
@@ -50,7 +48,6 @@ public class CapillariesDescription {
 		flag = (boxID != null && !boxID .equals(desc.boxID)) || flag;
 		flag = (experiment != null && !experiment .equals(desc.experiment)) || flag;
 		flag = (comment != null && !comment .equals(desc.comment)) || flag;
-		flag = (ncapillaries != desc.ncapillaries) || flag;
 		return flag;
 	}
 	

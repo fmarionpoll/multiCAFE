@@ -86,9 +86,7 @@ public class MCCapillaries_Build extends JPanel {
 	}
 	
 	// set/ get	
-	private void setNbCapillaries(int nrois) {
-		nbcapillariesJSpinner.setValue(nrois);
-	}
+
 	private int getNbCapillaries( ) {
 		return (int) nbcapillariesJSpinner.getValue();
 	}
@@ -111,13 +109,12 @@ public class MCCapillaries_Build extends JPanel {
 	}
 	
 	void setCapillariesInfosToDialog(Capillaries cap) {
-		setNbCapillaries(cap.capillariesArrayList.size());
+		nbcapillariesJSpinner.setValue(cap.capillariesArrayList.size());
 		setGroupedBy2(cap.desc.grouping == 2);
 	}
 	
 	Capillaries getCapillariesInfosFromDialog(Capillaries cap) {
 		cap.desc.grouping = getGroupedBy2() ? 2: 1;
-		cap.desc.ncapillaries = (int) nbcapillariesJSpinner.getValue();
 		return cap;
 	}
 

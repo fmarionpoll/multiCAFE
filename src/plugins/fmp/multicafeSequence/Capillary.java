@@ -28,23 +28,25 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Capillary implements XMLPersistent  {
 
-	public int							indexImage 				= -1;
-	private String						capillaryName 			= null;
-	public String 						version 				= null;
-	public ROI2DShape 					capillaryRoi 			= null;	// the capillary (source)
-	public String						filenameTIFF			= null;
+	public int							indexImage 		= -1;
+	private String						capillaryName 	= null;
+	public String 						version 		= null;
+	public ROI2DShape 					capillaryRoi 	= null;	// the capillary (source)
+	public String						filenameTIFF	= null;
+	public String 						stimulus		= new String("stimulus");
+	public String 						concentration	= new String("xmM");
+
+	public DetectLimits_Options 		limitsOptions	= new DetectLimits_Options();
+	public DetectGulps_Options 			gulpsOptions	= new DetectGulps_Options();
 	
-	public DetectLimits_Options 		limitsOptions			= new DetectLimits_Options();
-	public DetectGulps_Options 			gulpsOptions			= new DetectGulps_Options();
+	public Polyline2D 					ptsTop  		= null; 
+	public Polyline2D 					ptsBottom 		= null; 
+	public Polyline2D 					ptsDerivative 	= null; 
+	public List<ROI> 					gulpsRois 		= null; 
 	
-	public Polyline2D 					ptsTop  				= null; 
-	public Polyline2D 					ptsBottom 				= null; 
-	public Polyline2D 					ptsDerivative 			= null; 
-	public List<ROI> 					gulpsRois 				= null; 
-	
-	public List<ArrayList<int[]>> 		masksList 				= null;
-	public List <double []> 			tabValuesList 			= null;
-	public IcyBufferedImage 			bufImage 				= null;
+	public List<ArrayList<int[]>> 		masksList 		= null;
+	public List <double []> 			tabValuesList 	= null;
+	public IcyBufferedImage 			bufImage 		= null;
 	
 	private final String ID_META 		= "metaMC";
 	private final String ID_ROI 		= "roiMC";
@@ -52,9 +54,11 @@ public class Capillary implements XMLPersistent  {
 	private final String ID_INDEXIMAGE 	= "indexImageMC";
 	private final String ID_NAME 		= "nameMC";
 	private final String ID_NAMETIFF 	= "filenameTIFF";
-	public final String ID_TOPLEVEL 	= "toplevel";	
-	public final String ID_BOTTOMLEVEL 	= "bottomlevel";	
-	public final String ID_DERIVATIVE 	= "derivedvalues";	
+	
+	public  final String ID_TOPLEVEL 	= "toplevel";	
+	public  final String ID_BOTTOMLEVEL = "bottomlevel";	
+	public  final String ID_DERIVATIVE 	= "derivedvalues";	
+	
 	private final String ID_VERSION		= "version"; 
 	private final String ID_VERSIONNUM	= "1.0.0"; 
 	private final String ID_NPOINTS		= "npoints";

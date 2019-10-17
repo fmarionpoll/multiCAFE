@@ -28,6 +28,7 @@ public class Experiment {
 	public Experiment 		previousExperiment			= null;		// pointer to chain this experiment to another one before
 	public Experiment 		nextExperiment 				= null;		// pointer to chain this experiment to another one after
 	
+	// ----------------------------------
 	
 	public Experiment() {
 		seqCamData = new SequenceCamData();
