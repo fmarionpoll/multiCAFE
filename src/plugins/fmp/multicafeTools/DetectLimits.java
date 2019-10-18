@@ -7,6 +7,7 @@ import java.util.List;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.CapillaryLimits;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
@@ -27,7 +28,7 @@ public class DetectLimits {
 		}
 		seqkymo.seq.beginUpdate();
 				
-		for (int t=tfirst; t <= tlast; t++) {
+		for (int t = tfirst; t <= tlast; t++) {
 			progressBar.updatePositionAndTimeLeft(t);
 			seqkymo.removeROIsAtT(t);
 			limitTop = new ArrayList<Point2D>();
@@ -85,14 +86,14 @@ public class DetectLimits {
 				roiTopTrack.setStroke(1);
 				roiTopTrack.setT(t);
 				seqkymo.seq.addROI(roiTopTrack);
-				cap.ptsTop.polyline = roiTopTrack.getPolyline2D();
+				cap.ptsTop = new CapillaryLimits( "toplevel", t-tfirst, roiTopTrack.getPolyline2D());
 
 				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine (limitBottom);
 				roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
 				roiBottomTrack.setStroke(1);
 				roiBottomTrack.setT(t);
 				seqkymo.seq.addROI(roiBottomTrack);
-				cap.ptsBottom.polyline = roiBottomTrack.getPolyline2D();
+				cap.ptsBottom = new CapillaryLimits( "bottomlevel", t-tfirst, roiBottomTrack.getPolyline2D());
 			}
 		
 		}

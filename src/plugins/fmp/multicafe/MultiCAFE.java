@@ -141,6 +141,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
 		
+		capillariesPane.loadCapillaries_();
+		
 		if (loadCapillaries) {
 			ProgressFrame progress = new ProgressFrame("load capillarytrack_measures.xml");
 			kymographsPane.fileTab.loadKymosMeasures(exp);

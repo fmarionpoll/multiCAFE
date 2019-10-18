@@ -33,6 +33,12 @@ public class CapillaryLimits  implements XMLPersistent  {
 		this.indexImage = indexImage;
 	}
 	
+	public CapillaryLimits(String name, int indexImage, Polyline2D polyline) {
+		this.name = name;
+		this.indexImage = indexImage;
+		this.polyline = polyline;
+	}
+	
 	public int getNpoints() {
 		return polyline.npoints;
 	}
@@ -107,6 +113,7 @@ public class CapillaryLimits  implements XMLPersistent  {
 		
 		ROI2D roi = new ROI2DPolyLine(polyline); 
 		roi.setName(name);
+		roi.setT(indexImage);
 		return roi;
 	}
 	

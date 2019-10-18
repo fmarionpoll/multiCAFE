@@ -153,11 +153,15 @@ public class Capillary implements XMLPersistent  {
 		return listrois;
 	}
 	
-	public void transferROIsToMeasures(List<ROI> listRois) {	
-		gulpsRois.transferROIsToMeasures(listRois);
-		ptsTop.transferROIsToMeasures(listRois);
-		ptsBottom.transferROIsToMeasures(listRois);
-		ptsDerivative.transferROIsToMeasures(listRois);
+	public void transferROIsToMeasures(List<ROI> listRois) {
+		if (ptsTop != null)
+			ptsTop.transferROIsToMeasures(listRois);
+		if (ptsBottom != null)
+			ptsBottom.transferROIsToMeasures(listRois);
+		if (gulpsRois != null)
+			gulpsRois.transferROIsToMeasures(listRois);
+		if (ptsDerivative != null)
+			ptsDerivative.transferROIsToMeasures(listRois);
 	}
 
 	@Override
@@ -178,22 +182,17 @@ public class Capillary implements XMLPersistent  {
 	@Override
 	public boolean saveToXML(Node node) {
 		saveMetaDataToXML(node);
-		ptsDerivative.savePolyline2DToXML(node);
-		ptsTop.savePolyline2DToXML(node);
-		ptsBottom.savePolyline2DToXML(node);
-		gulpsRois.saveToXML(node);
+		if (ptsDerivative != null)
+			ptsDerivative.savePolyline2DToXML(node);
+		if (ptsTop != null)
+			ptsTop.savePolyline2DToXML(node);
+		if (ptsBottom != null)
+			ptsBottom.savePolyline2DToXML(node);
+		if (gulpsRois != null)
+			gulpsRois.saveToXML(node);
         return true;
 	}
-	
-	public boolean saveToXML_(Node node) {
-		saveMetaDataToXML(node);
-		ptsDerivative.savePolyline2DToXML(node);
-		ptsTop.savePolyline2DToXML(node);
-		ptsBottom.savePolyline2DToXML(node);
-		gulpsRois.saveToXML(node);
-        return true;
-	}
-	
+		
 	public boolean saveToXML_CapillaryOnly(Node node) {
 		saveMetaDataToXML(node);
         return true;
