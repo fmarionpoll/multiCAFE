@@ -98,9 +98,9 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 
 	}
 	
-	boolean loadCapillaryTrackMeasures_() {
+	boolean loadCapillaries_() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		boolean flag = fileTab.loadCapillaryTrack_File(exp);
+		boolean flag = fileTab.loadCapillaries_File(exp);
 		if (flag) {
 			SequenceKymos seqKymos = exp.seqKymos;
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
@@ -126,7 +126,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	}
 	
 	boolean saveCapillaryTrack(Experiment exp) {
-		return fileTab.saveCapillaryTrack(exp);
+		return fileTab.saveCapillaries(exp);
 	}
 	
 	void getCapillariesInfos(Capillaries cap) {

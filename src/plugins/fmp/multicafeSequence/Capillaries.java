@@ -258,6 +258,7 @@ public class Capillaries {
 				int version = xmlLoadCapillaryParametersv1(doc);
 				switch (version) {
 				case 1: // current xml storage structure
+					xmlLoadCapillaryParametersv1 (doc);
 					xmlLoadCapillariesv1(doc);
 					break;
 				case 0: // old xml storage structure
