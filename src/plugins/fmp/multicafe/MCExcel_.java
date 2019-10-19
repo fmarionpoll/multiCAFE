@@ -16,6 +16,7 @@ import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.XLSExportCapillaryResults;
 import plugins.fmp.multicafeTools.XLSExportMoveResults;
@@ -150,9 +151,12 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.collateSeries 	= optionsTab.collateSeriesCheckBox.isSelected();
 		options.absoluteTime	= optionsTab.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
+		options.expList = new ExperimentList(); 
+		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(options.expList);
+		int nfiles 			= options.expList.experimentList.size();
+		System.out.println("nfiles ="+nfiles);
+		
 		if (optionsTab.exportAllFilesCheckBox.isSelected()) {
-			parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
-			int nfiles 			= parent0.expList.experimentList.size();
 			options.firstExp 	= 0;
 			options.lastExp 	= nfiles - 1;
 		}
@@ -160,6 +164,5 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 			options.firstExp 	= parent0.currentIndex;
 			options.lastExp 	= parent0.currentIndex;
 		}
-		options.expList 		= parent0.expList;
 	}
 }

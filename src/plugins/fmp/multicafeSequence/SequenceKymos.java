@@ -386,6 +386,24 @@ public class SequenceKymos extends SequenceCamData  {
 		return flag;
 	}
 	
+	public boolean xmlLoadCapillaryTrack(String pathname) {
+		File tempfile = new File(pathname);
+		if (tempfile.isDirectory()) {
+			pathname = pathname + File.separator + "capillarytrack.xml";
+			tempfile = new File(pathname);
+		}
+		if (!tempfile.isFile())
+			return false;
+		boolean flag = capillaries.xmlLoadCapillaries(pathname);
+		if (flag) {
+			Path pathfilename = Paths.get(pathname);
+			directory = pathfilename.getParent().toString();
+			transferCapillariesToAnalysisParameters ();
+			loadListOfKymographsFromCapillaries(getDirectory());
+		}
+		return flag;
+	}
+	
 	public boolean xmlLoadKymos_Measures(String pathname) {
 		File tempfile = new File(pathname);
 		if (tempfile.isDirectory()) {

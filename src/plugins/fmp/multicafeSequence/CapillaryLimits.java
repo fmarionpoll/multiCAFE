@@ -57,17 +57,19 @@ public class CapillaryLimits  implements XMLPersistent  {
 		return datai;
 	}
 	
-	public List<ROI> transferMeasuresToROIs(List<ROI> listrois) {
+	public List<ROI> addToROIs(List<ROI> listrois, int indexImage) {
+		this.indexImage = indexImage;
 		if (polyline != null) 
 			listrois.add(transferPolyline2DToROI());
 		return listrois;
 	}
 	
-	public List<ROI> transferMeasuresToROIs(List<ROI> listrois, Color color, double stroke) {
+	public List<ROI> addToROIs(List<ROI> listrois, Color color, double stroke, int indexImage) {
 		if (polyline != null) { 
 			ROI2D derivativeRoi = transferPolyline2DToROI();
 			derivativeRoi.setColor(color);
 			derivativeRoi.setStroke(stroke);
+			derivativeRoi.setT(indexImage);
 			listrois.add(derivativeRoi);
 		}
 		return listrois;

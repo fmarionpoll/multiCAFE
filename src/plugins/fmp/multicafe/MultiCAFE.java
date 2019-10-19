@@ -140,7 +140,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
-		
 		capillariesPane.loadCapillaries_();
 		
 		if (loadCapillaries) {

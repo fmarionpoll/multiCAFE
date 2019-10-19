@@ -83,4 +83,10 @@ public class CapillaryGulps  implements XMLPersistent  {
 		roi.setT(indexkymo);	
 		rois.add(roi);
 	}
+	
+	public List<ROI> addToROIs(List<ROI> listrois, int indexImage) {
+		if (rois != null) 
+			listrois.addAll(rois);
+		return listrois;
+	}
 }
