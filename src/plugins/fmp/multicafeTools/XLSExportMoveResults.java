@@ -29,19 +29,19 @@ public class XLSExportMoveResults extends XLSExport {
 		try { 
 			XSSFWorkbook workbook = new XSSFWorkbook(); 
 			workbook.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-			int col_max = 0;
+			int col_max = 1;
 			int col_end = 0;
 			int iSeries = 0;
-
-			options.expList.readInfosFromAllExperiments();
+			options.expList.readInfosFromAllExperiments(true, true);
+			if (options.collateSeries)
+				options.expList.chainExperiments();
 			expAll = options.expList.getStartAndEndFromAllExperiments();
 			expAll.step = options.expList.experimentList.get(0).seqCamData.analysisStep;
 			
 			progress.setMessage( "Load measures...");
 			progress.setLength(options.expList.experimentList.size());
 
-			for (int index = options.firstExp; index <= options.lastExp; index++) 
-			{
+			for (int index = options.firstExp; index <= options.lastExp; index++) {
 				Experiment exp = options.expList.experimentList.get(index);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 			
@@ -57,7 +57,6 @@ public class XLSExportMoveResults extends XLSExport {
 			
 			if (options.transpose && options.pivot) { 
 				progress.setMessage( "Build pivot tables... ");
-				
 				String sourceSheetName = null;
 				if (options.alive) 
 					sourceSheetName = EnumXLSExportItems.ISALIVE.toString();
@@ -82,9 +81,7 @@ public class XLSExportMoveResults extends XLSExport {
 	}
 	
 	private static List <ArrayList<Double>> getDataFromCages(Experiment exp, EnumXLSExportItems option) {
-
 		List<ArrayList<Double>> arrayList = new ArrayList <ArrayList <Double>> ();
-		
 		for (XYTaSeries posxyt: exp.seqCamData.cages.flyPositionsList) {
 			switch (option) {
 			case DISTANCE: 
@@ -104,19 +101,14 @@ public class XLSExportMoveResults extends XLSExport {
 	}
 
 	public int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, int col0, String charSeries, EnumXLSExportItems xlsExportOption) {
-
 		List <ArrayList<Double >> arrayList = getDataFromCages(exp, xlsExportOption);
-
 		XSSFSheet sheet = workBook.getSheet(xlsExportOption.toString());
 		if (sheet == null) 
 			sheet = workBook.createSheet(xlsExportOption.toString());
-		
 		Point pt = new Point(col0, 0);
-
 		if (options.collateSeries) {
 			pt.x = options.expList.getStackColumnPosition(exp, col0);
 		}
-		
 		pt = writeGlobalInfos(exp, sheet, pt, options.transpose, xlsExportOption);
 		pt = writeHeader(exp, sheet, pt, xlsExportOption, options.transpose, charSeries);
 		pt = writeData(exp, sheet, pt, xlsExportOption, arrayList, options.transpose, charSeries);
@@ -124,9 +116,7 @@ public class XLSExportMoveResults extends XLSExport {
 	}
 	
 	private Point writeGlobalInfos(Experiment exp, XSSFSheet sheet, Point pt, boolean transpose, EnumXLSExportItems option) {
-		
 		int col0 = pt.x;
-		
 		XLSUtils.setValue(sheet, pt, transpose, "expt");
 		pt.x++;
 		XLSUtils.setValue(sheet, pt, transpose, "name");
@@ -154,21 +144,18 @@ public class XLSExportMoveResults extends XLSExport {
 		default:
 			break;
 		}
-
 		pt.x=col0;
 		pt.y++;
 		return pt;
 	}
 
 	private Point writeHeader (Experiment exp, XSSFSheet sheet, Point pt, EnumXLSExportItems xlsExportOption, boolean transpose, String charSeries) {
-		
 		int col0 = pt.x;
 		// TODO: check if this is ok
 //		pt = writeGenericHeader(exp, sheet, xlsExportOption, pt, transpose, charSeries);
 		if (exp.previousExperiment == null)
 			writeExperimentDescriptors(exp, charSeries, sheet, pt, transpose);
-		
-		
+	
 		switch (xlsExportOption) {
 		case DISTANCE:
 			for (XYTaSeries posxyt: exp.seqCamData.cages.flyPositionsList) {
@@ -177,7 +164,6 @@ public class XLSExportMoveResults extends XLSExport {
 				pt.x++;
 			}
 			break;
-			
 		case ISALIVE:
 			for (XYTaSeries posxyt: exp.seqCamData.cages.flyPositionsList) {
 				String name0 = posxyt.getName();
@@ -203,8 +189,8 @@ public class XLSExportMoveResults extends XLSExport {
 		return pt;
 	}
 	
-	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt, EnumXLSExportItems option, List <ArrayList<Double >> dataArrayList, boolean transpose, String charSeries) {
-	
+	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt, EnumXLSExportItems option, 
+								List <ArrayList<Double >> dataArrayList, boolean transpose, String charSeries) {
 		int col0 = pt.x;
 		int row0 = pt.y;
 		if (charSeries == null)
@@ -212,7 +198,6 @@ public class XLSExportMoveResults extends XLSExport {
 		int startFrame 	= (int) exp.seqCamData.analysisStart;
 		int endFrame 	= (int) exp.seqCamData.analysisEnd;
 		int step 		= expAll.step;
-		
 		FileTime imageTime = exp.seqCamData.getImageModifiedTime(startFrame);
 		long imageTimeMinutes = imageTime.toMillis()/ 60000;
 		if (options.absoluteTime && (col0 ==0)) {
@@ -234,20 +219,17 @@ public class XLSExportMoveResults extends XLSExport {
 //		}
 		
 		for (int currentFrame=startFrame; currentFrame< endFrame; currentFrame+= step  * options.pivotBinStep) {
-			
 			pt.x = col0;
- 
 			long diff0 = (currentFrame - startFrame)/step;
 			imageTime = exp.seqCamData.getImageModifiedTime(currentFrame);
 			imageTimeMinutes = imageTime.toMillis()/ 60000;
-
-			if (options.absoluteTime) {
-				long diff = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinute, step);
-				pt.y = (int) (diff/step + row0);
-				diff0 = diff; //getnearest(imageTimeMinutes-exp.fileTimeImageFirst.toMillis()/60000, step);
-			} else {
+//			if (options.absoluteTime) {
+//				long diff = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinute, step);
+//				pt.y = (int) (diff/step + row0);
+//				diff0 = diff; //getnearest(imageTimeMinutes-exp.fileTimeImageFirst.toMillis()/60000, step);
+//			} else {
 				pt.y = (int) diff0 + row0;
-			}
+//			}
 			//XLSUtils.setValue(sheet, pt, transpose, "t"+diff0);
 			pt.x++;
 			XLSUtils.setValue(sheet, pt, transpose, imageTimeMinutes);
@@ -269,8 +251,7 @@ public class XLSExportMoveResults extends XLSExport {
 				}
 				break;
 			case ISALIVE:
-				for (int idataArray=0; idataArray < dataArrayList.size(); idataArray++ ) 
-				{
+				for (int idataArray=0; idataArray < dataArrayList.size(); idataArray++ ) {
 					Double value = dataArrayList.get(idataArray).get(t);
 					if (value > 0) {
 						XLSUtils.setValue(sheet, pt, transpose, value );
@@ -285,12 +266,10 @@ public class XLSExportMoveResults extends XLSExport {
 
 			case XYCENTER:
 			default:
-				for (int iDataArray=0; iDataArray < dataArrayList.size(); iDataArray++ ) 
-				{
+				for (int iDataArray=0; iDataArray < dataArrayList.size(); iDataArray++ ) {
 					int iarray = t*2;
 					XLSUtils.setValue(sheet, pt, transpose, dataArrayList.get(iDataArray).get(iarray));
 					pt.x++;
-
 					XLSUtils.setValue(sheet, pt, transpose, dataArrayList.get(iDataArray).get(iarray+1));
 					pt.x++;
 				}

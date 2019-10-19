@@ -46,7 +46,6 @@ public class ExperimentList {
 	public boolean readInfosFromAllExperiments() {
 		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
 		progress.setLength(experimentList.size());
-		
 		boolean flag = true;
 		for (Experiment exp: experimentList) {
 			flag &= exp.openSequenceAndMeasures();

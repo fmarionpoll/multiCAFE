@@ -67,7 +67,6 @@ public class Experiment {
 		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
-
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
