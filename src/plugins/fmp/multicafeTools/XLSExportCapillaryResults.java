@@ -287,16 +287,11 @@ public class XLSExportCapillaryResults extends XLSExport {
 
 		FileTime imageTime = exp.seqCamData.getImageModifiedTime(startFrame);
 		long imageTimeMinutes = imageTime.toMillis()/ 60000;
-		long referenceFileTimeImageFirstMinutes = 0;
-		long referenceFileTimeImageLastMinutes = 0;
+		long referenceFileTimeImageFirstMinutes = exp.fileTimeImageFirstMinute;
+		long referenceFileTimeImageLastMinutes = exp.fileTimeImageLastMinute;
 		if (options.absoluteTime) {
 			referenceFileTimeImageFirstMinutes = expAll.fileTimeImageFirstMinute;
 			referenceFileTimeImageLastMinutes = expAll.fileTimeImageLastMinute;
-		}
-		else {
-			// TODO check if this is ok (before: call to compute time first/time last
-			referenceFileTimeImageFirstMinutes = exp.fileTimeImageFirstMinute;
-			referenceFileTimeImageLastMinutes = exp.fileTimeImageLastMinute;
 		}
 			
 		pt.x =0;
@@ -316,9 +311,9 @@ public class XLSExportCapillaryResults extends XLSExport {
 
 			imageTime = exp.seqCamData.getImageModifiedTime(currentFrame);
 			imageTimeMinutes = imageTime.toMillis()/ 60000;
-
-			long diff_current = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
-			pt.y = (int) (diff_current/step + row0);
+//			long diff_current = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
+//			pt.y = (int) (diff_current/step + row0);
+			pt.y = (int) ((currentFrame - startFrame)/step + row0);
 
 			XLSUtils.setValue(sheet, pt, transpose, imageTimeMinutes);
 			pt.x++;
@@ -380,7 +375,6 @@ public class XLSExportCapillaryResults extends XLSExport {
 				break;
 			}
 		}
-		//pt.x = columnOfNextSeries(exp, option, col0);
 		return pt;
 	}
 		

@@ -144,23 +144,18 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		if (options.pivot) {
 			options.transpose 	= true;
 			options.pivotBinStep = (int) optionsTab.pivotBinStep.getValue();
-		}
-		else {
+		} else {
 			options.transpose 	= optionsTab.transposeCheckBox.isSelected();
 		}
 		options.collateSeries 	= optionsTab.collateSeriesCheckBox.isSelected();
 		options.absoluteTime	= optionsTab.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
 		options.expList = new ExperimentList(); 
-		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(options.expList);
-		int nfiles 			= options.expList.experimentList.size();
-		System.out.println("nfiles ="+nfiles);
-		
+		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(options.expList);		
 		if (optionsTab.exportAllFilesCheckBox.isSelected()) {
 			options.firstExp 	= 0;
-			options.lastExp 	= nfiles - 1;
-		}
-		else {
+			options.lastExp 	= options.expList.experimentList.size() - 1;
+		} else {
 			options.firstExp 	= parent0.currentIndex;
 			options.lastExp 	= parent0.currentIndex;
 		}
