@@ -8,6 +8,8 @@ import java.util.List;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.CapillaryGulps;
+import plugins.fmp.multicafeSequence.CapillaryLimits;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
@@ -85,13 +87,15 @@ public class DetectGulps {
 		roiDerivative.setT(indexkymo);
 		seqkymo.seq.addROI(roiDerivative, false);
 		
-		cap.ptsDerivative.polyline = roiDerivative.getPolyline2D();
+		cap.ptsDerivative = new CapillaryLimits(roiDerivative.getName(), indexkymo, roiDerivative.getPolyline2D());
 	}
 
 	private void getGulps(int indexkymo, Capillary cap) {
 		int indexpixel = 0;
-		if (cap.gulpsRois == null)
+		if (cap.gulpsRois == null) {
+			cap.gulpsRois = new CapillaryGulps();
 			cap.gulpsRois.rois = new ArrayList <> ();
+		}
 
 		int start = 1;
 		int end = topLevelArray.size();

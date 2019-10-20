@@ -22,7 +22,7 @@ public class Capillary implements XMLPersistent  {
 
 	public  final String ID_TOPLEVEL 	= "toplevel";	
 	public  final String ID_BOTTOMLEVEL = "bottomlevel";	
-	public  final String ID_DERIVATIVE 	= "derivedvalues";	
+	public  final String ID_DERIVATIVE 	= "derivative";	
 	private final String ID_META 		= "metaMC";
 	private final String ID_ROI 		= "roiMC";
 	private final String ID_INDEXIMAGE 	= "indexImageMC";
@@ -108,10 +108,10 @@ public class Capillary implements XMLPersistent  {
 		boolean yes = false;
 		switch (option) {
 		case derivedValues:
-			yes= ptsDerivative.isThereAnyMeasuresDone();
+			yes= (ptsDerivative != null && ptsDerivative.isThereAnyMeasuresDone());
 			break;
 		case cumSum:
-			yes= gulpsRois.isThereAnyMeasuresDone();
+			yes= (gulpsRois!= null && gulpsRois.isThereAnyMeasuresDone());
 			break;
 		case bottomLevel:
 			yes= ptsBottom.isThereAnyMeasuresDone();
@@ -128,10 +128,12 @@ public class Capillary implements XMLPersistent  {
 		List<Integer> datai = null;
 		switch (option) {
 		case derivedValues:
-			datai = ptsDerivative.getMeasures();
+			if (ptsDerivative != null)
+				datai = ptsDerivative.getMeasures();
 			break;
 		case cumSum:
-			datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
+			if (gulpsRois != null)
+				datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
 			break;
 		case bottomLevel:
 			datai = ptsBottom.getMeasures();
@@ -182,12 +184,12 @@ public class Capillary implements XMLPersistent  {
 	@Override
 	public boolean saveToXML(Node node) {
 		saveMetaDataToXML(node);
-		if (ptsDerivative != null)
-			ptsDerivative.savePolyline2DToXML(node);
 		if (ptsTop != null)
-			ptsTop.savePolyline2DToXML(node);
+			ptsTop.savePolyline2DToXML(node, ID_TOPLEVEL);
 		if (ptsBottom != null)
-			ptsBottom.savePolyline2DToXML(node);
+			ptsBottom.savePolyline2DToXML(node, ID_BOTTOMLEVEL);
+		if (ptsDerivative != null)
+			ptsDerivative.savePolyline2DToXML(node, ID_DERIVATIVE);
 		if (gulpsRois != null)
 			gulpsRois.saveToXML(node);
         return true;
