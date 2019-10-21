@@ -114,10 +114,12 @@ public class Experiment {
 		return seqCamData;
 	}
 	
+	// TODO call it loadKymographs_Images if possible  
 	public boolean loadKymographs() {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		if (seqKymos.capillaries.capillariesArrayList.size() == 0) {
+			// TODO check if it is ok to load only the list of capillaries here
 			if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 				return false;
 			boxID = seqKymos.capillaries.desc.boxID;
@@ -131,13 +133,12 @@ public class Experiment {
 		return seqCamData.xmlReadDrosoTrackDefault();
 	}
 	
-	public boolean loadCapillaryTrack() {
+	public boolean loadKymos_Measures() {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 			return false;
 		boxID = seqKymos.capillaries.desc.boxID;
-		// TODO
 		return true;
 	}
 	

@@ -230,6 +230,25 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	// -------------------------
+	public boolean loadMeasuresFromList(List <String> myListOfFileNames) {
+		isRunning_loadImages = true;
+		boolean flag = (myListOfFileNames.size() > 0);
+		if (!flag)
+			return flag;
+		// where do we load capillariesDescription?
+		
+		loadSequenceFromList(myListOfFileNames, true);
+		if (isInterrupted_loadImages) {
+			isRunning_loadImages = false;
+			return false;
+		}
+
+		setParentDirectoryAsFileName();
+		status = EnumStatus.KYMOGRAPH;
+		transferMeasuresToKymosRois();
+		isRunning_loadImages = false;
+		return flag;
+	}
 	
 	public boolean loadImagesFromList(List <String> myListOfFileNames, boolean adjustImagesSize) {
 		isRunning_loadImages = true;
@@ -389,7 +408,7 @@ public class SequenceKymos extends SequenceCamData  {
 	public boolean xmlLoadKymos_Measures(String pathname) {
 		File tempfile = new File(pathname);
 		if (tempfile.isDirectory()) {
-			pathname = pathname + File.separator + "kymos_measures.xml";
+			pathname = pathname + File.separator + "capillarytrack.xml";
 			tempfile = new File(pathname);
 		}
 		if (!tempfile.isFile())
@@ -410,7 +429,7 @@ public class SequenceKymos extends SequenceCamData  {
 		if (tempfile.isDirectory()) {
 			pathname = pathname + File.separator + "capillarytrack.xml";
 		}
-		flag = capillaries.xmlSaveCapillaries(pathname, this);
+		flag = capillaries.xmlSaveCapillaries_Only(pathname, this);
 		return flag;
 	}
 	
@@ -420,17 +439,15 @@ public class SequenceKymos extends SequenceCamData  {
 		if (tempfile.isDirectory()) {
 			pathname = pathname + File.separator + "kymos_measures.xml";
 		}
-		flag = capillaries.xmlSaveCapillaries_Measures(pathname, this);
+		flag = capillaries.xmlSaveCapillaries_And_Measures(pathname, this);
 		return flag;
 	}
 	
 	public boolean xmlReadRoiLineParameters(String pathname) {
 		if (pathname != null)  {
 			final Document doc = XMLUtil.loadDocument(pathname);
-			if (doc != null) { 
-				int version = capillaries.xmlLoadCapillaryParametersv0(doc);
-				return (version >= 0); 
-			}
+			if (doc != null) 
+				return capillaries.desc.xmlLoadCapillaryDescription(doc); 
 		}
 		return false;
 	}

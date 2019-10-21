@@ -200,7 +200,7 @@ public class Capillary implements XMLPersistent  {
         return true;
 	}
 	
-	private boolean loadMetaDataFromXML(Node node) {
+	boolean loadMetaDataFromXML(Node node) {
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
 	    if (nodeMeta == null)	// nothing to load
             return true;
@@ -216,7 +216,7 @@ public class Capillary implements XMLPersistent  {
 	    return true;
 	}
 	
-	private void saveMetaDataToXML(Node node) {
+	void saveMetaDataToXML(Node node) {
 	    final Node nodeMeta = XMLUtil.setElement(node, ID_META);
 	    if (nodeMeta != null) {
 	    	if (version == null)
