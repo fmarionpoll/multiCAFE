@@ -131,7 +131,6 @@ public class MCKymosDetect_Edit  extends JPanel {
 			caplimits.polyline = null;
 		}
 		
-		String name = null;
 		polyline = caplimits.polyline;
 		List<ROI> allRois = seqKymos.seq.getROIs();
 		for (ROI roii: allRois) {
@@ -141,7 +140,7 @@ public class MCKymosDetect_Edit  extends JPanel {
 				continue;
 			if (((ROI2D) roii).getT() != t)
 				continue;
-			if (roii.getName().contains(name))
+			if (roii.getName().contains(caplimits.name))
 				seqKymos.seq.removeROI(roii);
 		}
 		ROI2D newRoi = caplimits.transferPolyline2DToROI();

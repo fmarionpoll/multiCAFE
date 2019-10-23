@@ -437,7 +437,7 @@ public class SequenceKymos extends SequenceCamData  {
 		boolean flag = false;
 		File tempfile = new File(pathname);
 		if (tempfile.isDirectory()) {
-			pathname = pathname + File.separator + "kymos_measures.xml";
+			pathname = pathname + File.separator + "capillarytrack.xml";
 		}
 		flag = capillaries.xmlSaveCapillaries_And_Measures(pathname, this);
 		return flag;
