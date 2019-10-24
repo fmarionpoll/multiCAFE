@@ -434,13 +434,11 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	public boolean xmlSaveKymos_Measures(String pathname) {
-		boolean flag = false;
-		File tempfile = new File(pathname);
-		if (tempfile.isDirectory()) {
-			pathname = pathname + File.separator + "capillarytrack.xml";
-		}
-		flag = capillaries.xmlSaveCapillaries_And_Measures(pathname, this);
-		return flag;
+		File f = new File(pathname);
+		if (!f.isDirectory())
+			pathname = Paths.get(pathname).getParent().toString();
+		String directoryFull = pathname +File.separator +"results" + File.separator;
+		return capillaries.xmlSaveCapillaries_Measures(directoryFull, this);
 	}
 	
 	public boolean xmlReadRoiLineParameters(String pathname) {

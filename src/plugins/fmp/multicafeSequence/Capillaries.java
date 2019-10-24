@@ -80,26 +80,39 @@ public class Capillaries {
 		return false;
 	}
 	
-	public boolean xmlSaveCapillaries_And_Measures(String csFile, SequenceKymos seq) {
-		if (csFile != null) {
-			final Document doc = XMLUtil.createDocument(true);
-			if (doc != null) {
-				desc.xmlSaveCapillaryDescription (doc, seq);
-				xmlSaveListOfCapillaries(doc, seq);
-				XMLUtil.saveDocument(doc, csFile);
-				
-				String directoryFull = Paths.get(csFile).getParent().toString() +File.separator +"results" + File.separator;
-				for (Capillary cap: capillariesArrayList) {
-					String tempname = directoryFull+cap.getName()+ ".xml";
-					final Document capdoc = XMLUtil.createDocument(true);
-					cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
-					XMLUtil.saveDocument(capdoc, tempname);
-				}
-				return true;
+	public boolean xmlSaveCapillaries_Measures(String pathname, SequenceKymos seq) {
+		if (pathname != null) {
+			for (Capillary cap: capillariesArrayList) {
+				String tempname = pathname+cap.getName()+ ".xml";
+				final Document capdoc = XMLUtil.createDocument(true);
+				cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
+				XMLUtil.saveDocument(capdoc, tempname);
 			}
+			return true;
 		}
 		return false;
 	}
+	
+//	public boolean xmlSaveCapillaries_And_Measures(String csFile, SequenceKymos seq) {
+//		if (csFile != null) {
+//			final Document doc = XMLUtil.createDocument(true);
+//			if (doc != null) {
+//				desc.xmlSaveCapillaryDescription (doc, seq);
+//				xmlSaveListOfCapillaries(doc, seq);
+//				XMLUtil.saveDocument(doc, csFile);
+//				
+//				String directoryFull = Paths.get(csFile).getParent().toString() +File.separator +"results" + File.separator;
+//				for (Capillary cap: capillariesArrayList) {
+//					String tempname = directoryFull+cap.getName()+ ".xml";
+//					final Document capdoc = XMLUtil.createDocument(true);
+//					cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
+//					XMLUtil.saveDocument(capdoc, tempname);
+//				}
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 	
 	public boolean xmlLoadCapillaries(String csFileName) { 
 		if (csFileName != null)  {		

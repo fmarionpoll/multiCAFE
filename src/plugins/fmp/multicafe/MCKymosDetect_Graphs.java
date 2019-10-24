@@ -63,7 +63,7 @@ public class MCKymosDetect_Graphs extends JPanel {
 		if (exp == null || v == null)
 			return;
 		final Rectangle rectv = v.getBounds();
-		Point ptRelative = new Point(0, 40); //rectv.height);
+		Point ptRelative = new Point(0, 35); //rectv.height);
 		final int deltay = 230;
 
 		SequenceKymos seqKymos = exp.seqKymos;
