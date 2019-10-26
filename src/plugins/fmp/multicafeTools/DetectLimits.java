@@ -75,10 +75,10 @@ public class DetectLimits {
 			}
 			
 			if (options.analyzePartOnly) {
-				Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop.polyline, startPixel, endPixel);
+				Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop.polyline, startPixel, endPixel-1);
 				seqkymo.seq.addROI(cap.ptsTop.transferPolyline2DToROI());
 				
-				Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom.polyline, startPixel, endPixel);
+				Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom.polyline, startPixel, endPixel-1);
 				seqkymo.seq.addROI(cap.ptsBottom.transferPolyline2DToROI());
 			} else {
 				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);
