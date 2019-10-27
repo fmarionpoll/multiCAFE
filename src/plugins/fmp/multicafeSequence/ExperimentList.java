@@ -57,11 +57,15 @@ public class ExperimentList {
 	
 	public boolean readInfosFromAllExperiments(boolean loadCapillaryTrack, boolean loadDrosoTrack) {
 		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
-		progress.setLength(experimentList.size());
+		int nexpts = experimentList.size();
+		int index = 1;
+		progress.setLength(nexpts);
 		boolean flag = true;
 		for (Experiment exp: experimentList) {
+			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
 			flag &= exp.openSequenceAndMeasures(loadCapillaryTrack, loadDrosoTrack);
 			progress.incPosition();
+			index++;
 		}
 		progress.close();
 		return flag;
@@ -99,7 +103,7 @@ public class ExperimentList {
 						continue;
 					}
 					// it should never arrive here
-					System.out.println("error in chainExperiments");
+					System.out.println("error in chaining "+ exp.experimentFileName +" with ->" + expi.experimentFileName);
 					flagOK = false;
 				}
 			}

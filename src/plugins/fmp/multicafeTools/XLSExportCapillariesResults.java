@@ -38,12 +38,12 @@ public class XLSExportCapillariesResults extends XLSExport {
 				options.expList.chainExperiments();
 			expAll 		= options.expList.getStartAndEndFromAllExperiments();
 			expAll.step = options.expList.experimentList.get(0).seqCamData.analysisStep;
-			
-			progress.setMessage("Load measures...");
-			progress.setLength(options.expList.experimentList.size());
+			int nbexpts = options.expList.experimentList.size();
+			progress.setLength(nbexpts);
 			
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
 				Experiment exp = options.expList.experimentList.get(index);
+				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				if (options.topLevel) 		col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVEL);
 				if (options.topLevelDelta) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVELDELTA);
