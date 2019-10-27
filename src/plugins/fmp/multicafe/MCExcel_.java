@@ -141,12 +141,10 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	
 	private void getCommonOptions(XLSExportOptions options) {
 		options.pivot 			= optionsTab.pivotCheckBox.isSelected();
-		if (options.pivot) {
-			options.transpose 	= true;
-			options.pivotBinStep = (int) optionsTab.pivotBinStep.getValue();
-		} else {
+		options.transpose 	= true;
+		if (!options.pivot) 
 			options.transpose 	= optionsTab.transposeCheckBox.isSelected();
-		}
+		options.pivotBinStep = (int) optionsTab.pivotBinStep.getValue();
 		options.collateSeries 	= optionsTab.collateSeriesCheckBox.isSelected();
 		options.absoluteTime	= optionsTab.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();

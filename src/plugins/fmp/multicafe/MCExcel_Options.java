@@ -41,14 +41,9 @@ public class MCExcel_Options extends JPanel {
 		    public void actionPerformed(ActionEvent event) {
 		        JCheckBox cb = (JCheckBox) event.getSource();
 		        boolean isSelected = cb.isSelected();
-		        pivotBinStep.setEnabled(isSelected);
-		        pivotStepText.setEnabled(isSelected);
 		        if (isSelected)
 		        	transposeCheckBox.setSelected(true);
 		    }});
-		
-		pivotBinStep.setEnabled(false);
-		pivotStepText.setEnabled(false);
 	}
 
 }

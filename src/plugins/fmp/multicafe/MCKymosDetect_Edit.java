@@ -39,10 +39,7 @@ public class MCKymosDetect_Edit  extends JPanel {
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);	
 		this.parent0 = parent0;
-		add(GuiUtil.besidesPanel(new JLabel("Source:"), new JLabel(" "), new JLabel(" "), deleteButton));
-		add(GuiUtil.besidesPanel(roiTypeCombo, new JLabel(" "), new JLabel(" "), new JLabel(" ")));
-		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "), new JLabel(" "), new JLabel(" ")));
-		
+		add(GuiUtil.besidesPanel(new JLabel("Source:"), roiTypeCombo, new JLabel(" "), deleteButton));
 		defineListeners();
 	}
 	
