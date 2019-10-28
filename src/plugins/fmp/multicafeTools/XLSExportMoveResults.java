@@ -33,9 +33,8 @@ public class XLSExportMoveResults extends XLSExport {
 			int col_end = 0;
 			int iSeries = 0;
 			options.expList.readInfosFromAllExperiments(true, true);
-			if (options.collateSeries)
-				options.expList.chainExperiments();
-			expAll = options.expList.getStartAndEndFromAllExperiments();
+			options.expList.chainExperiments(options);
+			expAll = options.expList.getStartAndEndFromAllExperiments(options);
 			expAll.step = options.expList.experimentList.get(0).seqCamData.analysisStep;
 			
 			progress.setMessage( "Load measures...");
@@ -198,7 +197,7 @@ public class XLSExportMoveResults extends XLSExport {
 		int startFrame 	= (int) exp.seqCamData.analysisStart;
 		int endFrame 	= (int) exp.seqCamData.analysisEnd;
 		int step 		= expAll.step;
-		FileTime imageTime = exp.seqCamData.getImageModifiedTime(startFrame);
+		FileTime imageTime = exp.seqCamData.getImageFileTime(startFrame);
 		long imageTimeMinutes = imageTime.toMillis()/ 60000;
 		if (options.absoluteTime && (col0 ==0)) {
 			imageTimeMinutes = expAll.fileTimeImageLastMinute;
@@ -221,7 +220,7 @@ public class XLSExportMoveResults extends XLSExport {
 		for (int currentFrame=startFrame; currentFrame< endFrame; currentFrame+= step  * options.pivotBinStep) {
 			pt.x = col0;
 			long diff0 = (currentFrame - startFrame)/step;
-			imageTime = exp.seqCamData.getImageModifiedTime(currentFrame);
+			imageTime = exp.seqCamData.getImageFileTime(currentFrame);
 			imageTimeMinutes = imageTime.toMillis()/ 60000;
 //			if (options.absoluteTime) {
 //				long diff = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinute, step);

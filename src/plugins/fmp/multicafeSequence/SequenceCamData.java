@@ -485,7 +485,7 @@ public class SequenceCamData  {
 	
 	// --------------------------
 
-	public FileTime getImageModifiedTime (int t) {
+	public FileTime getImageFileTime (int t) {
 		String name = getFileName(t);
 		Path path = Paths.get(name);
 		FileTime fileTime;

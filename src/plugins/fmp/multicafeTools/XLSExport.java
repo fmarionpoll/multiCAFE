@@ -53,7 +53,7 @@ public class XLSExport {
 		String concentrationL = exp.seqKymos.capillaries.desc.concentrationL;
 		String concentrationR = exp.seqKymos.capillaries.desc.concentrationR;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		String date = df.format(exp.fileTimeImageFirst.toMillis());	
+		String date = df.format(exp.getFileTimeImageFirst(false).toMillis());	
 		String name0 = path.toString();
 		String name1 = getSubName(path, 2);
 		String cam = "-"; 
@@ -173,7 +173,6 @@ public class XLSExport {
 		pt.y++;
 		return pt.y;
 	}
-	
 	
 	protected int getCageFromCapillaryName(String name) {
 		if (!name .contains("line"))

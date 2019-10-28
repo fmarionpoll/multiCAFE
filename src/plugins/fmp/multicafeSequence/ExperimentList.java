@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icy.gui.frame.progress.ProgressFrame;
+import plugins.fmp.multicafeTools.XLSExportOptions;
 
 public class ExperimentList {
 	
@@ -16,29 +17,39 @@ public class ExperimentList {
 	public ExperimentList () {
 	}
 	
-	public Experiment getStartAndEndFromAllExperiments() {
+	public Experiment getStartAndEndFromAllExperiments(XLSExportOptions options) {
 		ProgressFrame progress = new ProgressFrame("Get time start and time end across all experiments");
 		progress.setLength(experimentList.size());
 
 		Experiment expglobal = new Experiment();
 		Experiment exp0 = experimentList.get(0);
-		expglobal.fileTimeImageFirst = exp0.fileTimeImageFirst;
-		expglobal.fileTimeImageLast = exp0.fileTimeImageLast;
-		
-		for (Experiment exp: experimentList) {
-			if (expglobal.fileTimeImageFirst.compareTo(exp.fileTimeImageFirst) > 0) 
-				expglobal.fileTimeImageFirst = exp.fileTimeImageFirst;
-			if (expglobal.fileTimeImageLast .compareTo(exp.fileTimeImageLast) <0)
-				expglobal.fileTimeImageLast = exp.fileTimeImageLast;
-			if (expglobal.number_of_frames < exp.seqCamData.seq.getSizeT())
-				expglobal.number_of_frames = exp.seqCamData.seq.getSizeT();
-			if (exp.seqCamData.analysisEnd > exp.seqCamData.seq.getSizeT()-1)
-				exp.seqCamData.analysisEnd = exp.seqCamData.seq.getSizeT()-1;
-			progress.incPosition();
+		if (options.absoluteTime) {
+			expglobal.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
+			expglobal.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
+			for (Experiment exp: experimentList) {
+				if (expglobal.getFileTimeImageFirst(false).compareTo(exp.getFileTimeImageFirst(true)) > 0) 
+					expglobal.setFileTimeImageFirst(exp.getFileTimeImageFirst(true));
+				if (expglobal.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
+						expglobal.setFileTimeImageLast(exp.getFileTimeImageLast(true));
+				progress.incPosition();
+			}
+			expglobal.fileTimeImageFirstMinute = expglobal.getFileTimeImageFirst(false).toMillis()/60000;
+			expglobal.fileTimeImageLastMinute = expglobal.getFileTimeImageLast(false).toMillis()/60000;
+		} else {
+			expglobal.fileTimeImageFirstMinute = 0;
+			long last = exp0.getFileTimeImageLast(true).toMillis();
+			long first = exp0.getFileTimeImageFirst(true).toMillis();
+			expglobal.fileTimeImageLastMinute = ( last - first) /60000;
+			for (Experiment exp: experimentList) {
+				last = exp.getFileTimeImageLast(true).toMillis();
+				first = exp.getFileTimeImageFirst(true).toMillis();
+				long diff = ( last - first) /60000;
+				if (expglobal.fileTimeImageLastMinute < diff) 
+					expglobal.fileTimeImageLastMinute = diff;
+				progress.incPosition();
+			}
 		}
 		
-		expglobal.fileTimeImageFirstMinute = expglobal.fileTimeImageFirst.toMillis()/60000;
-		expglobal.fileTimeImageLastMinute = expglobal.fileTimeImageLast.toMillis()/60000;
 		progress.close();
 		return expglobal;
 	}
@@ -71,44 +82,47 @@ public class ExperimentList {
 		return flag;
 	}
 	
-	public boolean chainExperiments() {
-		boolean flagOK = true;
+	public void chainExperiments(XLSExportOptions options) {
+		if (!options.collateSeries)
+			return;
+		
 		for (Experiment exp: experimentList) {
 			for (Experiment expi: experimentList) {
 				if (expi == exp)
 					continue;
-				if (expi.boxID .equals(exp.boxID)) {
-					// if before, insert eventually
-					if (expi.fileTimeImageLastMinute < exp.fileTimeImageFirstMinute) {
-						if (exp.previousExperiment == null)
-							exp.previousExperiment = expi;
-						else if (expi.fileTimeImageLastMinute > exp.previousExperiment.fileTimeImageLastMinute ) {
-							(exp.previousExperiment).nextExperiment = expi;
-							expi.previousExperiment = exp.previousExperiment;
-							expi.nextExperiment = exp;
-							exp.previousExperiment = expi;
-						}
-						continue;
+				if (!expi.boxID .equals(exp.boxID))
+					continue;
+				
+				// if before, insert eventually
+				if (expi.fileTimeImageLastMinute < exp.fileTimeImageFirstMinute) {
+					if (exp.previousExperiment == null)
+						exp.previousExperiment = expi;
+					else if (expi.fileTimeImageLastMinute > exp.previousExperiment.fileTimeImageLastMinute ) {
+						(exp.previousExperiment).nextExperiment = expi;
+						expi.previousExperiment = exp.previousExperiment;
+						expi.nextExperiment = exp;
+						exp.previousExperiment = expi;
 					}
-					// if after, insert eventually
-					if (expi.fileTimeImageFirstMinute > exp.fileTimeImageLastMinute) {
-						if (exp.nextExperiment == null)
-							exp.nextExperiment = expi;
-						else if (expi.fileTimeImageFirstMinute < exp.nextExperiment.fileTimeImageFirstMinute ) {
-							(exp.nextExperiment).previousExperiment = expi;
-							expi.nextExperiment = (exp.nextExperiment);
-							expi.previousExperiment = exp;
-							exp.nextExperiment = expi;
-						}
-						continue;
-					}
-					// it should never arrive here
-					System.out.println("error in chaining "+ exp.experimentFileName +" with ->" + expi.experimentFileName);
-					flagOK = false;
+					continue;
 				}
+				
+				// if after, insert eventually
+				if (expi.fileTimeImageFirstMinute > exp.fileTimeImageLastMinute) {
+					if (exp.nextExperiment == null)
+						exp.nextExperiment = expi;
+					else if (expi.fileTimeImageFirstMinute < exp.nextExperiment.fileTimeImageFirstMinute ) {
+						(exp.nextExperiment).previousExperiment = expi;
+						expi.nextExperiment = (exp.nextExperiment);
+						expi.previousExperiment = exp;
+						exp.nextExperiment = expi;
+					}
+					continue;
+				}
+				// it should never arrive here
+				System.out.println("error in chaining "+ exp.experimentFileName +" with ->" + expi.experimentFileName);
 			}
 		}
-		return flagOK;
+
 	}
 		
 	public int getStackColumnPosition (Experiment exp, int col0) {

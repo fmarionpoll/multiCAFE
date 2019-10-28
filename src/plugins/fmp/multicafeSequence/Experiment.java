@@ -13,8 +13,8 @@ public class Experiment {
 	public SequenceCamData 	seqCamData 					= null;
 	public SequenceKymos 	seqKymos					= null;
 	
-	public FileTime			fileTimeImageFirst;
-	public FileTime			fileTimeImageLast;
+	private FileTime		fileTimeImageFirst;
+	private FileTime		fileTimeImageLast;
 	public long				fileTimeImageFirstMinute 	= 0;
 	public long				fileTimeImageLastMinute 	= 0;
 	public int				number_of_frames 			= 0;
@@ -27,6 +27,7 @@ public class Experiment {
 	public int				col							= -1;
 	public Experiment 		previousExperiment			= null;		// pointer to chain this experiment to another one before
 	public Experiment 		nextExperiment 				= null;		// pointer to chain this experiment to another one after
+	
 	
 	// ----------------------------------
 	
@@ -53,8 +54,8 @@ public class Experiment {
 		seqKymos   = new SequenceKymos();
 		
 		seqCamData.setParentDirectoryAsFileName() ;
-		fileTimeImageFirst = seqCamData.getImageModifiedTime(0);
-		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
+		fileTimeImageFirst = seqCamData.getImageFileTime(0);
+		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
 	}
@@ -63,10 +64,11 @@ public class Experiment {
 		seqCamData = new SequenceCamData();
 		if (null == seqCamData.loadSequence(experimentFileName))
 			return false;
-		fileTimeImageFirst = seqCamData.getImageModifiedTime(0);
-		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
+		fileTimeImageFirst = seqCamData.getImageFileTime(0);
+		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
+		
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
@@ -84,8 +86,8 @@ public class Experiment {
 		if (null == seqCamData.loadSequence(experimentFileName))
 			return false;
 		
-		fileTimeImageFirst = seqCamData.getImageModifiedTime(0);
-		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
+		fileTimeImageFirst = seqCamData.getImageFileTime(0);
+		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
 		if (seqKymos == null)
@@ -107,8 +109,8 @@ public class Experiment {
 		if (null == seqCamData.loadSequence(filename))
 			return null;
 		seqCamData.setParentDirectoryAsFileName() ;
-		fileTimeImageFirst = seqCamData.getImageModifiedTime(0);
-		fileTimeImageLast = seqCamData.getImageModifiedTime(seqCamData.seq.getSizeT()-1);
+		fileTimeImageFirst = seqCamData.getImageFileTime(0);
+		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
 		return seqCamData;
@@ -153,5 +155,27 @@ public class Experiment {
 		if (path.getNameCount() >= subnameIndex)
 			name = path.getName(path.getNameCount() -subnameIndex).toString();
 		return name;
+	}
+
+	public FileTime getFileTimeImageFirst(boolean globalValue) {
+		FileTime filetime = fileTimeImageFirst;
+		if (globalValue && previousExperiment != null)
+			filetime = previousExperiment.getFileTimeImageFirst(globalValue);
+		return filetime;
+	}
+		
+	public void setFileTimeImageFirst(FileTime fileTimeImageFirst) {
+		this.fileTimeImageFirst = fileTimeImageFirst;
+	}
+	
+	public FileTime getFileTimeImageLast(boolean globalValue) {
+		FileTime filetime = fileTimeImageLast;
+		if (globalValue && nextExperiment != null)
+			filetime = nextExperiment.getFileTimeImageLast(globalValue);
+		return filetime;
+	}
+	
+	public void setFileTimeImageLast(FileTime fileTimeImageLast) {
+		this.fileTimeImageLast = fileTimeImageLast;
 	}
 }

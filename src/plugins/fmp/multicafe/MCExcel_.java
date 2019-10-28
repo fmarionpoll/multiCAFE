@@ -127,7 +127,6 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		XLSExportOptions options = new XLSExportOptions();
 		
 		options.topLevel 		= kymosTab.topLevelCheckBox.isSelected(); 
-		options.topLevelDelta 	= kymosTab.topLevelDCheckBox.isSelected(); 	
 		options.bottomLevel 	= kymosTab.bottomLevelCheckBox.isSelected(); 
 		options.derivative 		= kymosTab.derivativeCheckBox.isSelected(); 
 		options.consumption 	= kymosTab.consumptionCheckBox.isSelected(); 

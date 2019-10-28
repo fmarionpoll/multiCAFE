@@ -3,7 +3,6 @@ package plugins.fmp.multicafeTools;
 import java.awt.Point;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +24,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 	public void exportToFile(String filename, XLSExportOptions opt) {	
 		System.out.println("XLS capillary measures output");
 		options = opt;
-		ProgressFrame progress = new ProgressFrame("Export data to Excel");
-		
+
 		try { 
 			XSSFWorkbook workbook = new XSSFWorkbook(); 
 			workbook.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
@@ -34,11 +32,11 @@ public class XLSExportCapillariesResults extends XLSExport {
 			int col_end = 1;
 			int iSeries = 0;
 			options.expList.readInfosFromAllExperiments(true, false);
-			if (options.collateSeries)
-				options.expList.chainExperiments();
-			expAll 		= options.expList.getStartAndEndFromAllExperiments();
+			options.expList.chainExperiments(options);
+			expAll 		= options.expList.getStartAndEndFromAllExperiments(options);
 			expAll.step = options.expList.experimentList.get(0).seqCamData.analysisStep;
 			int nbexpts = options.expList.experimentList.size();
+			ProgressFrame progress = new ProgressFrame("Export data to Excel");
 			progress.setLength(nbexpts);
 			
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
@@ -46,13 +44,11 @@ public class XLSExportCapillariesResults extends XLSExport {
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				if (options.topLevel) 		col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVEL);
-				if (options.topLevelDelta) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVELDELTA);
 				if (options.bottomLevel) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.BOTTOMLEVEL);		
 				if (options.derivative) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.DERIVEDVALUES);	
 				if (options.consumption) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.SUMGULPS);
 				if (options.sum) {		
 					if (options.topLevel) 		col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVEL_LR);
-					if (options.topLevelDelta) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVELDELTA_LR);
 					if (options.consumption) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.SUMGULPS_LR);
 				}
 				if (col_end > col_max)
@@ -65,8 +61,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 				progress.setMessage( "Build pivot tables... ");
 				
 				String sourceSheetName = null;
-				if (options.topLevel) sourceSheetName = EnumXLSExportItems.TOPLEVEL.toString();
-				else if (options.topLevelDelta) sourceSheetName = EnumXLSExportItems.TOPLEVELDELTA.toString();
+				if (options.topLevel) 			sourceSheetName = EnumXLSExportItems.TOPLEVEL.toString();
 				else if (options.bottomLevel)  	sourceSheetName = EnumXLSExportItems.BOTTOMLEVEL.toString();
 				else if (options.derivative) 	sourceSheetName = EnumXLSExportItems.DERIVEDVALUES.toString();	
 				else if (options.consumption) 	sourceSheetName = EnumXLSExportItems.SUMGULPS.toString();
@@ -74,18 +69,16 @@ public class XLSExportCapillariesResults extends XLSExport {
 				if (sourceSheetName != null)
 					xlsCreatePivotTables(workbook, sourceSheetName);
 			}
-			
 			progress.setMessage( "Save Excel file to disk... ");
 			FileOutputStream fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
 	        fileOut.close();
 	        workbook.close();
+	        progress.close();
 	        
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		progress.close();
 		System.out.println("XLS output finished");
 	}
 	
@@ -133,7 +126,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			case TOPLEVEL_LR:
 				if (optiont0) {
 					if (options.collateSeries && exp.previousExperiment != null) {
-						double dvalue = getLastValueOfPreviousExp(exp.seqKymos.getFileName(t), exp.previousExperiment, xlsoption, optiont0);
+						double dvalue = getLastValueOfPreviousExp(cap.getName(), exp.previousExperiment, xlsoption, optiont0);
 						int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
 						results.data = exp.seqKymos.subtractT0AndAddConstant(cap.getMeasures(EnumListType.topLevel), addedValue);
 					}
@@ -154,10 +147,11 @@ public class XLSExportCapillariesResults extends XLSExport {
 	private double getLastValueOfPreviousExp(String capName, Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {
 		double lastValue = 0;
 		if (exp.previousExperiment != null)
-			lastValue =  getLastValueOfPreviousExp( capName,  exp.previousExperiment, xlsoption, optiont0);
-		Capillaries capillaries = exp.seqKymos.capillaries;
+			lastValue =  getLastValueOfPreviousExp(capName,  exp.previousExperiment, xlsoption, optiont0);
 		
-		for (int t=0; t< exp.seqKymos.seq.getSizeT(); t++) {
+		Capillaries capillaries = exp.seqKymos.capillaries;
+		int tmax = capillaries.capillariesArrayList.size();
+		for (int t=0; t< tmax; t++) {
 			Capillary cap = capillaries.capillariesArrayList.get(t);			
 			if (!cap.getName().equals(capName))
 				continue;
@@ -233,8 +227,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 			array.remove(i);
 	}
 	
-	private int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, String title, 
-			EnumXLSExportItems xlsExportOption, int col0, String charSeries, List <XLSCapillaryResults> arrayList) {
+	private int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, String title, EnumXLSExportItems xlsExportOption, 
+									int col0, String charSeries, List <XLSCapillaryResults> arrayList) {
 			
 		XSSFSheet sheet = workBook.getSheet(title);
 		if (sheet == null) {
@@ -268,10 +262,10 @@ public class XLSExportCapillariesResults extends XLSExport {
 		int startFrame 	= (int) exp.seqCamData.analysisStart;
 		int endFrame 	= (int) exp.seqCamData.analysisEnd;
 		int step 		= expAll.step * options.pivotBinStep;
-		FileTime imageTime = exp.seqCamData.getImageModifiedTime(startFrame);
-		long imageTimeMinutes = imageTime.toMillis()/ 60000;
-		long referenceFileTimeImageFirstMinutes = exp.fileTimeImageFirstMinute;
-		long referenceFileTimeImageLastMinutes = exp.fileTimeImageLastMinute;
+		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
+		
+		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
+		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;
 		if (options.absoluteTime) {
 			referenceFileTimeImageFirstMinutes = expAll.fileTimeImageFirstMinute;
 			referenceFileTimeImageLastMinutes = expAll.fileTimeImageLastMinute;
@@ -290,9 +284,10 @@ public class XLSExportCapillariesResults extends XLSExport {
 		
 		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  options.pivotBinStep) {	
 			pt.x = col0;
-			imageTime = exp.seqCamData.getImageModifiedTime(currentFrame);
-			imageTimeMinutes = imageTime.toMillis()/ 60000;
-			pt.y = (int) ((currentFrame - startFrame)/step + row0);
+			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;
+			long diff3 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
+			pt.y = (int) (diff3/step + row0);
+			//pt.y = (int) ((imageTimeMinutes -  referenceFileTimeImageFirstMinutes)/step + row0);
 			XLSUtils.setValue(sheet, pt, transpose, imageTimeMinutes);
 			pt.x++;
 			if (exp.seqCamData.isFileStack())
