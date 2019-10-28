@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -196,40 +195,35 @@ public class XLSExportMoveResults extends XLSExport {
 			charSeries = "t";
 		int startFrame 	= (int) exp.seqCamData.analysisStart;
 		int endFrame 	= (int) exp.seqCamData.analysisEnd;
-		int step 		= expAll.step;
-		FileTime imageTime = exp.seqCamData.getImageFileTime(startFrame);
-		long imageTimeMinutes = imageTime.toMillis()/ 60000;
-		if (options.absoluteTime && (col0 ==0)) {
-			imageTimeMinutes = expAll.fileTimeImageLastMinute;
-			long diff = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinute, step)/ step;
-			imageTimeMinutes = expAll.fileTimeImageFirstMinute;
-			pt.x = col0;
-			for (int i = 0; i<= diff; i++) {
-				long diff2 = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinute, step);
-				pt.y = (int) (diff2/step + row0); 
-				XLSUtils.setValue(sheet, pt, transpose, "t"+diff2);
-				imageTimeMinutes += step;
-			}
+		int step 		= expAll.step * options.pivotBinStep;
+		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
+		
+		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
+		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;
+		if (options.absoluteTime) {
+			referenceFileTimeImageFirstMinutes = expAll.fileTimeImageFirstMinute;
+			referenceFileTimeImageLastMinutes = expAll.fileTimeImageLastMinute;
+		}
+			
+		pt.x =0;
+		long tspanMinutes = referenceFileTimeImageLastMinutes-referenceFileTimeImageFirstMinutes;
+		long diff = getnearest(tspanMinutes, step)/ step;
+		long firstImageTimeMinutes = exp.getFileTimeImageFirst(false).toMillis()/60000;;
+		long diff2 = getnearest(firstImageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
+		pt.y = (int) (diff2/step + row0); 
+		int row_y0 = pt.y;
+		for (int i = 0; i<= diff; i++) {
+			diff2 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
+			XLSUtils.setValue(sheet, pt, transpose, "t"+diff2);
+			imageTimeMinutes += step ;
+			pt.y++;
 		}
 		
-//		if (dataArrayList.size() == 0) {
-//			pt.x = columnOfNextSeries(exp, option, col0);
-//			return pt;
-//		}
-		
+		pt.y = row_y0 -1;
 		for (int currentFrame=startFrame; currentFrame< endFrame; currentFrame+= step  * options.pivotBinStep) {
 			pt.x = col0;
-			long diff0 = (currentFrame - startFrame)/step;
-			imageTime = exp.seqCamData.getImageFileTime(currentFrame);
-			imageTimeMinutes = imageTime.toMillis()/ 60000;
-//			if (options.absoluteTime) {
-//				long diff = getnearest(imageTimeMinutes-expAll.fileTimeImageFirstMinute, step);
-//				pt.y = (int) (diff/step + row0);
-//				diff0 = diff; //getnearest(imageTimeMinutes-exp.fileTimeImageFirst.toMillis()/60000, step);
-//			} else {
-				pt.y = (int) diff0 + row0;
-//			}
-			//XLSUtils.setValue(sheet, pt, transpose, "t"+diff0);
+			pt.y++;
+			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;
 			pt.x++;
 			XLSUtils.setValue(sheet, pt, transpose, imageTimeMinutes);
 			pt.x++;
