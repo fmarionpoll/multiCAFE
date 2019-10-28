@@ -274,20 +274,22 @@ public class XLSExportCapillariesResults extends XLSExport {
 		pt.x =0;
 		long tspanMinutes = referenceFileTimeImageLastMinutes-referenceFileTimeImageFirstMinutes;
 		long diff = getnearest(tspanMinutes, step)/ step;
-		imageTimeMinutes = referenceFileTimeImageFirstMinutes;
+		long firstImageTimeMinutes = exp.getFileTimeImageFirst(false).toMillis()/60000;;
+		long diff2 = getnearest(firstImageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
+		pt.y = (int) (diff2/step + row0); 
+		int row_y0 = pt.y;
 		for (int i = 0; i<= diff; i++) {
-			long diff2 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
-			pt.y = (int) (diff2/step + row0); 
+			diff2 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
 			XLSUtils.setValue(sheet, pt, transpose, "t"+diff2);
 			imageTimeMinutes += step ;
+			pt.y++;
 		}
 		
+		pt.y = row_y0 -1;
 		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  options.pivotBinStep) {	
 			pt.x = col0;
+			pt.y++;
 			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;
-			long diff3 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
-			pt.y = (int) (diff3/step + row0);
-			//pt.y = (int) ((imageTimeMinutes -  referenceFileTimeImageFirstMinutes)/step + row0);
 			XLSUtils.setValue(sheet, pt, transpose, imageTimeMinutes);
 			pt.x++;
 			if (exp.seqCamData.isFileStack())
