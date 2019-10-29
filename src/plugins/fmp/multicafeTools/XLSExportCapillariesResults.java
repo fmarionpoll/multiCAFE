@@ -31,7 +31,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			int col_max = 1;
 			int col_end = 1;
 			int iSeries = 0;
-			options.expList.readInfosFromAllExperiments(true, false);
+			options.expList.readInfosFromAllExperiments(true, true);
 			options.expList.chainExperiments(options);
 			expAll 		= options.expList.getStartAndEndFromAllExperiments(options);
 			expAll.step = options.expList.experimentList.get(0).seqCamData.analysisStep;
@@ -182,7 +182,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 	}
 	
 	private void trimDeadsFromArrayList(Experiment exp, List <XLSCapillaryResults> resultsArrayList) {
-		for (XYTaSeries flypos: exp.seqCamData.cages.flyPositionsList) {
+ 		for (XYTaSeries flypos: exp.seqCamData.cages.flyPositionsList) {
 			String cagenumberString = flypos.roi.getName().substring(4);
 			int cagenumber = Integer.parseInt(cagenumberString);
 			if (cagenumber == 0 || cagenumber == 9)
