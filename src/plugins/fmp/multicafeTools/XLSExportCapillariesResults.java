@@ -41,6 +41,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
 				Experiment exp = options.expList.experimentList.get(index);
+				
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				if (options.topLevel) 		col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVEL);
@@ -252,18 +253,17 @@ public class XLSExportCapillariesResults extends XLSExport {
 		return pt;
 	}
 		
-	private Point writeData (	Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, boolean transpose, 
+	private Point writeData (	Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt_main, boolean transpose, 
 								String charSeries, List <XLSCapillaryResults> dataArrayList) {
 		double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
-		int col0 = pt.x;
-		int row0 = pt.y;
+		int col0 = pt_main.x;
+		int row0 = pt_main.y;
 		if (charSeries == null)
 			charSeries = "t";
 		int startFrame 	= (int) exp.seqCamData.analysisStart;
 		int endFrame 	= (int) exp.seqCamData.analysisEnd;
 		int step 		= expAll.step * options.pivotBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
-		
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
 		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;
 		if (options.absoluteTime) {
@@ -271,34 +271,34 @@ public class XLSExportCapillariesResults extends XLSExport {
 			referenceFileTimeImageLastMinutes = expAll.fileTimeImageLastMinute;
 		}
 			
-		pt.x =0;
+		pt_main.x =0;
 		long tspanMinutes = referenceFileTimeImageLastMinutes-referenceFileTimeImageFirstMinutes;
 		long diff = getnearest(tspanMinutes, step)/ step;
 		long firstImageTimeMinutes = exp.getFileTimeImageFirst(false).toMillis()/60000;;
 		long diff2 = getnearest(firstImageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
-		pt.y = (int) (diff2/step + row0); 
-		int row_y0 = pt.y;
+		pt_main.y = (int) (diff2/step + row0); 
+		int row_y0 = pt_main.y;
 		for (int i = 0; i<= diff; i++) {
 			diff2 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
-			XLSUtils.setValue(sheet, pt, transpose, "t"+diff2);
+			XLSUtils.setValue(sheet, pt_main, transpose, "t"+diff2);
 			imageTimeMinutes += step ;
-			pt.y++;
+			pt_main.y++;
 		}
 		
-		pt.y = row_y0 -1;
+		pt_main.y = row_y0 -1;
 		double valueL = 0.;
 		double valueR = 0.;
 		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  options.pivotBinStep) {	
-			pt.x = col0;
-			pt.y++;
+			pt_main.x = col0;
+			pt_main.y++;
 			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;
-			XLSUtils.setValue(sheet, pt, transpose, imageTimeMinutes);
-			pt.x++;
+			XLSUtils.setValue(sheet, pt_main, transpose, imageTimeMinutes);
+			pt_main.x++;
 			if (exp.seqCamData.isFileStack())
-				XLSUtils.setValue(sheet, pt, transpose, getShortenedName(exp.seqCamData, currentFrame) );
-			pt.x++;
+				XLSUtils.setValue(sheet, pt_main, transpose, getShortenedName(exp.seqCamData, currentFrame) );
+			pt_main.x++;
 			
-			int colseries = pt.x;
+			int colseries = pt_main.x;
 			switch (option) {
 			case TOPLEVEL_LR:
 			case TOPLEVELDELTA_LR:
@@ -306,15 +306,15 @@ public class XLSExportCapillariesResults extends XLSExport {
 				for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
 					int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
 					if (colL >= 0)
-						pt.x = colseries + colL;			
+						pt_main.x = colseries + colL;			
 					List<Integer> dataL = dataArrayList.get(idataArray).data ;
 					List<Integer> dataR = dataArrayList.get(idataArray+1).data;
 					if (dataL != null && dataR != null) {
 						int j = currentFrame - startFrame;
 						if (j < dataL.size() && j < dataR.size()) {
 							valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
-							XLSUtils.setValue(sheet, pt, transpose, valueL);
-							Point pt0 = new Point(pt);
+							XLSUtils.setValue(sheet, pt_main, transpose, valueL);
+							Point pt0 = new Point(pt_main);
 							pt0.x ++;
 							int colR = getColFromKymoFileName(dataArrayList.get(idataArray+1).name);
 							if (colR >= 0)
@@ -323,24 +323,24 @@ public class XLSExportCapillariesResults extends XLSExport {
 							XLSUtils.setValue(sheet, pt0, transpose, valueR);
 						}
 					}
-					pt.x++;
-					pt.x++;
+					pt_main.x++;
+					pt_main.x++;
 				}
 				break;
 			default:
 				for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
 					int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
 					if (col >= 0)
-						pt.x = colseries + col;			
+						pt_main.x = colseries + col;			
 					List<Integer> data = dataArrayList.get(idataArray).data;
 					if (data != null) {
 						int j = currentFrame - startFrame;
 						if (j < data.size()) {
 							valueL = data.get(j)*scalingFactorToPhysicalUnits;
-							XLSUtils.setValue(sheet, pt, transpose, valueL);
+							XLSUtils.setValue(sheet, pt_main, transpose, valueL);
 						}
 					}
-					pt.x++;
+					pt_main.x++;
 				}
 				break;
 			}
@@ -348,10 +348,15 @@ public class XLSExportCapillariesResults extends XLSExport {
 		
 		// pad remaining cells with the last value
 		if (options.collateSeries && exp.nextExperiment != null) {
-			pt.x = col0;
-			Point padpt = new Point(pt);
+			Point padpt = new Point(pt_main);
+			padpt.x = col0;
+			
 			int startpad = endFrame;
-			int endpad = endFrame+10;
+			long startofnextFile = exp.nextExperiment.fileTimeImageFirstMinute;
+			long diff4 = getnearest(startofnextFile-referenceFileTimeImageFirstMinutes, step);
+			int lastrow = (int) (diff4/step + row0); 
+			
+			int endpad = (int) diff4; //endFrame+10;
 			
 			for (int currentFrame=startpad; currentFrame < endpad; currentFrame+=  options.pivotBinStep) {	
 				padpt.x = col0;
@@ -359,7 +364,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 				XLSUtils.setValue(sheet, padpt, transpose, 0);
 				padpt.x++;
 				if (exp.seqCamData.isFileStack())
-					XLSUtils.setValue(sheet, padpt, transpose, getShortenedName(exp.seqCamData, currentFrame) );
+					XLSUtils.setValue(sheet, padpt, transpose, "xxx" );
 				padpt.x++;
 				
 				int colseries = padpt.x;
@@ -377,14 +382,17 @@ public class XLSExportCapillariesResults extends XLSExport {
 							int j = endFrame-1;
 							if (j < dataL.size() && j < dataR.size()) {
 								valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
-								XLSUtils.setValue(sheet, padpt, transpose, valueL);
+								//XLSUtils.setValue(sheet, padpt, transpose, valueL);
+								XLSUtils.setValue(sheet, padpt, transpose, "xxxL");
+								
 								Point pt0 = new Point(padpt);
 								pt0.x ++;
 								int colR = getColFromKymoFileName(dataArrayList.get(idataArray+1).name);
 								if (colR >= 0)
 									pt0.x = colseries + colR;
 								valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
-								XLSUtils.setValue(sheet, pt0, transpose, valueR);
+								//XLSUtils.setValue(sheet, pt0, transpose, valueR);
+								XLSUtils.setValue(sheet, padpt, transpose, "xxxR");
 							}
 						}
 						padpt.x++;
@@ -401,7 +409,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 							int j = endFrame-1;
 							if (j < data.size()) {
 								valueL = data.get(j)*scalingFactorToPhysicalUnits;
-								XLSUtils.setValue(sheet, padpt, transpose, valueL);
+								//XLSUtils.setValue(sheet, padpt, transpose, valueL);
+								XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
 							}
 						}
 						padpt.x++;
@@ -411,7 +420,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			}
 		}
 		
-		return pt;
+		return pt_main;
 	}
 		
 }

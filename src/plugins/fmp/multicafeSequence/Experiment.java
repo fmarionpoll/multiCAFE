@@ -20,8 +20,8 @@ public class Experiment {
 	public int				number_of_frames 			= 0;
 	
 	public int 				startFrame 					= 0;
-	public int 				step 						= 1;
 	public int 				endFrame 					= 0;
+	public int 				step 						= 1;
 	
 	public String			boxID 						= null;
 	public int				col							= -1;
