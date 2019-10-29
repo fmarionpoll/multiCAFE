@@ -361,8 +361,10 @@ public class XLSExportCapillariesResults extends XLSExport {
 			for (int currentFrame=startpad; currentFrame < endpad; currentFrame+=  options.pivotBinStep) {	
 				padpt.x = col0;
 				padpt.y++;
+				// dummy (spacer)
 				XLSUtils.setValue(sheet, padpt, transpose, 0);
 				padpt.x++;
+				// dummy (spacer)
 				if (exp.seqCamData.isFileStack())
 					XLSUtils.setValue(sheet, padpt, transpose, "xxx" );
 				padpt.x++;
@@ -373,26 +375,28 @@ public class XLSExportCapillariesResults extends XLSExport {
 				case TOPLEVELDELTA_LR:
 				case SUMGULPS_LR:
 					for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
-						int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
-						if (colL >= 0)
-							padpt.x = colseries + colL;			
-						List<Integer> dataL = dataArrayList.get(idataArray).data ;
-						List<Integer> dataR = dataArrayList.get(idataArray+1).data;
-						if (dataL != null && dataR != null) {
-							int j = endFrame-1;
-							if (j < dataL.size() && j < dataR.size()) {
-								valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
-								//XLSUtils.setValue(sheet, padpt, transpose, valueL);
-								XLSUtils.setValue(sheet, padpt, transpose, "xxxL");
-								
-								Point pt0 = new Point(padpt);
-								pt0.x ++;
-								int colR = getColFromKymoFileName(dataArrayList.get(idataArray+1).name);
-								if (colR >= 0)
-									pt0.x = colseries + colR;
-								valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
-								//XLSUtils.setValue(sheet, pt0, transpose, valueR);
-								XLSUtils.setValue(sheet, padpt, transpose, "xxxR");
+						if (!isAliveInNextBout(exp.nextExperiment, idataArray)) {
+							int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
+							if (colL >= 0)
+								padpt.x = colseries + colL;			
+							List<Integer> dataL = dataArrayList.get(idataArray).data ;
+							List<Integer> dataR = dataArrayList.get(idataArray+1).data;
+							if (dataL != null && dataR != null) {
+								int j = endFrame-1;
+								if (j < dataL.size() && j < dataR.size()) {
+									valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
+									//XLSUtils.setValue(sheet, padpt, transpose, valueL);
+									XLSUtils.setValue(sheet, padpt, transpose, "xxxL");
+									
+									Point pt0 = new Point(padpt);
+									pt0.x ++;
+									int colR = getColFromKymoFileName(dataArrayList.get(idataArray+1).name);
+									if (colR >= 0)
+										pt0.x = colseries + colR;
+									valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
+									//XLSUtils.setValue(sheet, pt0, transpose, valueR);
+									XLSUtils.setValue(sheet, padpt, transpose, "xxxR");
+								}
 							}
 						}
 						padpt.x++;
@@ -401,16 +405,18 @@ public class XLSExportCapillariesResults extends XLSExport {
 					break;
 				default:
 					for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
-						int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
-						if (col >= 0)
-							padpt.x = colseries + col;			
-						List<Integer> data = dataArrayList.get(idataArray).data;
-						if (data != null) {
-							int j = endFrame-1;
-							if (j < data.size()) {
-								valueL = data.get(j)*scalingFactorToPhysicalUnits;
-								//XLSUtils.setValue(sheet, padpt, transpose, valueL);
-								XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
+						if (!isAliveInNextBout(exp.nextExperiment, idataArray)) {
+							int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
+							if (col >= 0)
+								padpt.x = colseries + col;			
+							List<Integer> data = dataArrayList.get(idataArray).data;
+							if (data != null) {
+								int j = endFrame-1;
+								if (j < data.size()) {
+									valueL = data.get(j)*scalingFactorToPhysicalUnits;
+									//XLSUtils.setValue(sheet, padpt, transpose, valueL);
+									XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
+								}
 							}
 						}
 						padpt.x++;
