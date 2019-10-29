@@ -31,7 +31,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			int col_max = 1;
 			int col_end = 1;
 			int iSeries = 0;
-			options.expList.readInfosFromAllExperiments(true, true);
+			options.expList.readInfosFromAllExperiments(true, options.onlyalive);
 			options.expList.chainExperiments(options);
 			expAll 		= options.expList.getStartAndEndFromAllExperiments(options);
 			expAll.step = options.expList.experimentList.get(0).seqCamData.analysisStep;
@@ -286,6 +286,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 		}
 		
 		pt.y = row_y0 -1;
+		double valueL = 0.;
+		double valueR = 0.;
 		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  options.pivotBinStep) {	
 			pt.x = col0;
 			pt.y++;
@@ -310,15 +312,15 @@ public class XLSExportCapillariesResults extends XLSExport {
 					if (dataL != null && dataR != null) {
 						int j = currentFrame - startFrame;
 						if (j < dataL.size() && j < dataR.size()) {
-							double value = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
-							XLSUtils.setValue(sheet, pt, transpose, value);
+							valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
+							XLSUtils.setValue(sheet, pt, transpose, valueL);
 							Point pt0 = new Point(pt);
 							pt0.x ++;
 							int colR = getColFromKymoFileName(dataArrayList.get(idataArray+1).name);
 							if (colR >= 0)
 								pt0.x = colseries + colR;
-							value = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/value;
-							XLSUtils.setValue(sheet, pt0, transpose, value);
+							valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
+							XLSUtils.setValue(sheet, pt0, transpose, valueR);
 						}
 					}
 					pt.x++;
@@ -334,8 +336,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 					if (data != null) {
 						int j = currentFrame - startFrame;
 						if (j < data.size()) {
-							double value = data.get(j)*scalingFactorToPhysicalUnits;
-							XLSUtils.setValue(sheet, pt, transpose, value);
+							valueL = data.get(j)*scalingFactorToPhysicalUnits;
+							XLSUtils.setValue(sheet, pt, transpose, valueL);
 						}
 					}
 					pt.x++;
@@ -343,6 +345,72 @@ public class XLSExportCapillariesResults extends XLSExport {
 				break;
 			}
 		}
+		
+		// pad remaining cells with the last value
+		if (options.collateSeries && exp.nextExperiment != null) {
+			pt.x = col0;
+			Point padpt = new Point(pt);
+			int startpad = endFrame;
+			int endpad = endFrame+10;
+			
+			for (int currentFrame=startpad; currentFrame < endpad; currentFrame+=  options.pivotBinStep) {	
+				padpt.x = col0;
+				padpt.y++;
+				XLSUtils.setValue(sheet, padpt, transpose, 0);
+				padpt.x++;
+				if (exp.seqCamData.isFileStack())
+					XLSUtils.setValue(sheet, padpt, transpose, getShortenedName(exp.seqCamData, currentFrame) );
+				padpt.x++;
+				
+				int colseries = padpt.x;
+				switch (option) {
+				case TOPLEVEL_LR:
+				case TOPLEVELDELTA_LR:
+				case SUMGULPS_LR:
+					for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
+						int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
+						if (colL >= 0)
+							padpt.x = colseries + colL;			
+						List<Integer> dataL = dataArrayList.get(idataArray).data ;
+						List<Integer> dataR = dataArrayList.get(idataArray+1).data;
+						if (dataL != null && dataR != null) {
+							int j = endFrame-1;
+							if (j < dataL.size() && j < dataR.size()) {
+								valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
+								XLSUtils.setValue(sheet, padpt, transpose, valueL);
+								Point pt0 = new Point(padpt);
+								pt0.x ++;
+								int colR = getColFromKymoFileName(dataArrayList.get(idataArray+1).name);
+								if (colR >= 0)
+									pt0.x = colseries + colR;
+								valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
+								XLSUtils.setValue(sheet, pt0, transpose, valueR);
+							}
+						}
+						padpt.x++;
+						padpt.x++;
+					}
+					break;
+				default:
+					for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
+						int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
+						if (col >= 0)
+							padpt.x = colseries + col;			
+						List<Integer> data = dataArrayList.get(idataArray).data;
+						if (data != null) {
+							int j = endFrame-1;
+							if (j < data.size()) {
+								valueL = data.get(j)*scalingFactorToPhysicalUnits;
+								XLSUtils.setValue(sheet, padpt, transpose, valueL);
+							}
+						}
+						padpt.x++;
+					}
+					break;
+				}
+			}
+		}
+		
 		return pt;
 	}
 		
