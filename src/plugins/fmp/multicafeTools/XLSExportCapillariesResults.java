@@ -288,7 +288,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 		pt_main.y = row_y0 -1;
 		double valueL = 0.;
 		double valueR = 0.;
-		System.out.println("startFrame="+startFrame+" endFrame="+endFrame);
 		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  options.pivotBinStep) {	
 			pt_main.x = col0;
 			pt_main.y++;
@@ -351,23 +350,23 @@ public class XLSExportCapillariesResults extends XLSExport {
 		if (options.collateSeries && exp.nextExperiment != null) {
 			Point padpt = new Point(pt_main);
 			padpt.x = col0;
+			int end1 = (int) (exp.fileTimeImageLastMinute- referenceFileTimeImageFirstMinutes);
+			int start2 = (int) (exp.nextExperiment.fileTimeImageFirstMinute- referenceFileTimeImageFirstMinutes);
+
+//			long diff4 = getnearest(exp.fileTimeImageLastMinute-exp.nextExperiment.fileTimeImageFirstMinute, step); 
+//			int start1 = (int) (exp.fileTimeImageFirstMinute- referenceFileTimeImageFirstMinutes);
+//			int end2 = (int) (exp.nextExperiment.fileTimeImageLastMinute- referenceFileTimeImageFirstMinutes);
 			
-			int startpad = endFrame;
-			long startofnextFile = exp.nextExperiment.fileTimeImageFirstMinute;
-			long diff4 = getnearest(startofnextFile-referenceFileTimeImageFirstMinutes, step);
-			int lastrow = (int) (diff4/step + row0); 
-			
-			int endpad = (int) diff4; //endFrame+10;
-			System.out.println("startpad="+startpad+" endpad="+endpad);
-			for (int currentFrame=startpad; currentFrame < endpad; currentFrame+=  options.pivotBinStep) {	
+			//System.out.println("start="+start1+" -> end="+end1 + " --- " +"next="+start2+" -> end2="+end2 + "=> pad with "+diff4);
+			for (int currentFrame=end1; currentFrame <= start2; currentFrame+=  options.pivotBinStep) {	
 				padpt.x = col0;
 				padpt.y++;
 				// dummy (spacer)
-				XLSUtils.setValue(sheet, padpt, transpose, "xxx");
+				XLSUtils.setValue(sheet, padpt, transpose, "xxxT");
 				padpt.x++;
 				// dummy (spacer)
 				if (exp.seqCamData.isFileStack())
-					XLSUtils.setValue(sheet, padpt, transpose, "xxx" );
+					XLSUtils.setValue(sheet, padpt, transpose, "xxxF" );
 				padpt.x++;
 				
 				int colseries = padpt.x;
@@ -386,8 +385,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 								int j = endFrame-1;
 								if (j < dataL.size() && j < dataR.size()) {
 									valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
-									//XLSUtils.setValue(sheet, padpt, transpose, valueL);
-									XLSUtils.setValue(sheet, padpt, transpose, "xxxL");
+									XLSUtils.setValue(sheet, padpt, transpose, valueL);
+									//XLSUtils.setValue(sheet, padpt, transpose, "xxxL");
 									
 									Point pt0 = new Point(padpt);
 									pt0.x ++;
@@ -395,8 +394,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 									if (colR >= 0)
 										pt0.x = colseries + colR;
 									valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
-									//XLSUtils.setValue(sheet, pt0, transpose, valueR);
-									XLSUtils.setValue(sheet, padpt, transpose, "xxxR");
+									XLSUtils.setValue(sheet, pt0, transpose, valueR);
+									//XLSUtils.setValue(sheet, padpt, transpose, "xxxR");
 								}
 							}
 						}
@@ -415,8 +414,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 								int j = endFrame-1;
 								if (j < data.size()) {
 									valueL = data.get(j)*scalingFactorToPhysicalUnits;
-									//XLSUtils.setValue(sheet, padpt, transpose, valueL);
-									XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
+									XLSUtils.setValue(sheet, padpt, transpose, valueL);
+									//XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
 								}
 							}
 						}
