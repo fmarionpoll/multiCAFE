@@ -288,6 +288,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		pt_main.y = row_y0 -1;
 		double valueL = 0.;
 		double valueR = 0.;
+		System.out.println("startFrame="+startFrame+" endFrame="+endFrame);
 		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  options.pivotBinStep) {	
 			pt_main.x = col0;
 			pt_main.y++;
@@ -357,12 +358,12 @@ public class XLSExportCapillariesResults extends XLSExport {
 			int lastrow = (int) (diff4/step + row0); 
 			
 			int endpad = (int) diff4; //endFrame+10;
-			
+			System.out.println("startpad="+startpad+" endpad="+endpad);
 			for (int currentFrame=startpad; currentFrame < endpad; currentFrame+=  options.pivotBinStep) {	
 				padpt.x = col0;
 				padpt.y++;
 				// dummy (spacer)
-				XLSUtils.setValue(sheet, padpt, transpose, 0);
+				XLSUtils.setValue(sheet, padpt, transpose, "xxx");
 				padpt.x++;
 				// dummy (spacer)
 				if (exp.seqCamData.isFileStack())
@@ -375,8 +376,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 				case TOPLEVELDELTA_LR:
 				case SUMGULPS_LR:
 					for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
-						if (!isAliveInNextBout(exp.nextExperiment, idataArray)) {
-							int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
+						int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
+						if (isAliveInNextBout(exp.nextExperiment, colL/2)) {
 							if (colL >= 0)
 								padpt.x = colseries + colL;			
 							List<Integer> dataL = dataArrayList.get(idataArray).data ;
@@ -405,8 +406,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 					break;
 				default:
 					for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
-						if (!isAliveInNextBout(exp.nextExperiment, idataArray)) {
-							int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
+						int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
+						if (isAliveInNextBout(exp.nextExperiment, col/2)) {
 							if (col >= 0)
 								padpt.x = colseries + col;			
 							List<Integer> data = dataArrayList.get(idataArray).data;
