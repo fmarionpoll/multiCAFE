@@ -106,7 +106,7 @@ public class MCMove_Detect extends JPanel implements ChangeListener {
 		thresholdedImageCheckBox.addItemListener(new ItemListener() {
 		      public void itemStateChanged(ItemEvent e) {
 		    	  Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		  		if (thresholdedImageCheckBox.isSelected()) {
+		  		if (thresholdedImageCheckBox.isSelected() && exp != null) {
 						if (ov == null)
 							ov = new OverlayThreshold(exp.seqCamData);
 						exp.seqCamData.seq.addOverlay(ov);
