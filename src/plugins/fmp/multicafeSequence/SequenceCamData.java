@@ -465,7 +465,8 @@ public class SequenceCamData  {
 	}
 	
 	public boolean xmlWriteDrosoTrackDefault() {
-		return cages.xmlWriteCagesToFile("drosotrack.xml", getDirectory());
+		//return cages.xmlWriteCagesToFile("drosotrack.xml", getDirectory());
+		return cages.xmlWriteCagesToFileNoQuestion("drosotrack.xml");
 	}
 	
 	// ---------------------------
