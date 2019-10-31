@@ -155,7 +155,7 @@ public class MCMove_Detect extends JPanel implements ChangeListener {
 	
 	public void removeOverlay() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		if (exp.seqCamData != null && exp.seqCamData.seq != null)
+		if (exp != null && exp.seqCamData != null && exp.seqCamData.seq != null)
 			exp.seqCamData.seq.removeOverlay(ov);
 	}
 
