@@ -95,7 +95,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	boolean loadDefaultCages(Experiment exp) {
 		SequenceCamData seqCamData = exp.seqCamData;
 		String path = seqCamData.getDirectory();
-		boolean flag = filesTab.cageRoisOpen(path+File.separator+"drosotrack.xml");
+		boolean flag = filesTab.loadCages(path+File.separator+"drosotrack.xml");
 		return flag;
 	}
 	

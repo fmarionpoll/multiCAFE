@@ -355,9 +355,9 @@ public class XLSExportCapillariesResults extends XLSExport {
 
 //			long diff4 = getnearest(exp.fileTimeImageLastMinute-exp.nextExperiment.fileTimeImageFirstMinute, step); 
 //			int start1 = (int) (exp.fileTimeImageFirstMinute- referenceFileTimeImageFirstMinutes);
-//			int end2 = (int) (exp.nextExperiment.fileTimeImageLastMinute- referenceFileTimeImageFirstMinutes);
+//			int end2 = (int) (exp.nextExperiment.fileTimeImageLastMinute- referenceFileTimeImageFirstMinutes);		
+//			System.out.println("start="+start1+" -> end="+end1 + " --- " +"next="+start2+" -> end2="+end2 + "=> pad with "+diff4);
 			
-			//System.out.println("start="+start1+" -> end="+end1 + " --- " +"next="+start2+" -> end2="+end2 + "=> pad with "+diff4);
 			for (int currentFrame=end1; currentFrame <= start2; currentFrame+=  options.pivotBinStep) {	
 				padpt.x = col0;
 				padpt.y++;
@@ -395,7 +395,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 										pt0.x = colseries + colR;
 									valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
 									XLSUtils.setValue(sheet, pt0, transpose, valueR);
-									//XLSUtils.setValue(sheet, padpt, transpose, "xxxR");
+									//XLSUtils.setValue(sheet, pt0, transpose, "xxxR");
 								}
 							}
 						}

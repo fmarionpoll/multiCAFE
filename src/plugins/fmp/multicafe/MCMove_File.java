@@ -22,8 +22,8 @@ public class MCMove_File extends JPanel {
 	 */
 	private static final long serialVersionUID = -5257698990389571518L;
 
-	private JButton	openROIsButton			= new JButton("Load...");
-	private JButton	saveROIsButton			= new JButton("Save...");
+	private JButton	openCagesButton			= new JButton("Load...");
+	private JButton	saveCagesButton			= new JButton("Save...");
 	private MultiCAFE parent0;
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -34,21 +34,21 @@ public class MCMove_File extends JPanel {
 		loadsaveText1.setHorizontalAlignment(SwingConstants.RIGHT); 
 		loadsaveText1.setFont(FontUtil.setStyle(loadsaveText1.getFont(), Font.ITALIC));
 		JLabel emptyText1	= new JLabel (" ");
-		add(GuiUtil.besidesPanel( emptyText1, loadsaveText1, openROIsButton, saveROIsButton));
+		add(GuiUtil.besidesPanel( emptyText1, loadsaveText1, openCagesButton, saveCagesButton));
 		
 		defineActionListeners();
 	}
 	
 	private void defineActionListeners() {
 	
-		openROIsButton.addActionListener(new ActionListener () {
+		openCagesButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 				exp.seqCamData.cages.xmlReadCagesFromFile(exp.seqCamData);
 				firePropertyChange("LOAD_DATA", false, true);	
 			}});
 		
-		saveROIsButton.addActionListener(new ActionListener () {
+		saveCagesButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 				exp.seqCamData.storeAnalysisParametersToCages();
@@ -56,7 +56,7 @@ public class MCMove_File extends JPanel {
 			}});
 	}
 
-	boolean cageRoisOpen(String csFileName) {
+	boolean loadCages(String csFileName) {
 		
 		boolean flag = false;
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
@@ -67,8 +67,7 @@ public class MCMove_File extends JPanel {
 		return flag;
 	}
 	
-	boolean cageRoisSave() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+	boolean saveCages(Experiment exp) {
 		return exp.seqCamData.cages.xmlWriteCagesToFile("drosotrack.xml", exp.seqCamData.getDirectory());
 	}
 }
