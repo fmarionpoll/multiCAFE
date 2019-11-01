@@ -100,8 +100,8 @@ public class Cages {
 		xmlLoadCagesLimits(node);
 		xmlLoadFlyPositions(node);
 		xmlLoadDetectedFlies(node);
-		
 		transferV0DataToCages();
+		
 		Element xmlVal = XMLUtil.getElement(node, "Cages");
 		if (xmlVal != null) {
 			int ncages = XMLUtil.getAttributeIntValue(xmlVal, "n_cages", 0);
@@ -134,9 +134,6 @@ public class Cages {
 			return false;
 
 		detect.saveToXML(node);
-//		xmlSaveCagesLimits(node);
-//		xmlSaveFlyPositions(node);
-//		xmlSaveDetectedFlies(node);
 		xmlSaveCageList(node);
 		return true;
 	}
@@ -154,20 +151,6 @@ public class Cages {
 		}
 		return true;
 	}
-
-//	private boolean xmlSaveCagesLimits(Node node) {
-//		if (node == null)
-//			return false;
-//		Element xmlVal = XMLUtil.addElement(node, "Cage_Limits");
-//		XMLUtil.setAttributeIntValue(xmlVal, "nb_items", cageLimitROIList.size());
-//		int i=0;
-//		for (ROI roi: cageLimitROIList) {
-//			Element subnode = XMLUtil.addElement(xmlVal, "cage"+i);
-//			roi.saveToXML(subnode);
-//			i++;
-//		}
-//		return true;
-//	}
 	
 	private boolean xmlLoadCagesLimits(Node node) {
 		if (node == null)
@@ -187,19 +170,6 @@ public class Cages {
 		return true;
 	}
 	
-//	private boolean xmlSaveFlyPositions(Node node) {
-//		if (node == null)
-//			return false;
-//		Element xmlVal = XMLUtil.addElement(node, "Fly_Detected");
-//		XMLUtil.setAttributeIntValue(xmlVal, "nb_items", flyPositionsList.size());
-//		int i=0;
-//		for (XYTaSeries pos: flyPositionsList) {
-//			Element subnode = XMLUtil.addElement(xmlVal, "cage"+i);
-//			pos.saveToXML(subnode);
-//			i++;
-//		}
-//		return true;
-//	}
 	
 	private boolean xmlLoadFlyPositions(Node node) {
 		if (node == null)
@@ -235,6 +205,7 @@ public class Cages {
 //		return true;
 //	}
 	
+	
 	private boolean xmlLoadDetectedFlies(Node node) {
 		if (node == null)
 			return false;
@@ -253,6 +224,7 @@ public class Cages {
 		return true;
 	}
 	
+	
 	public void fromCagesToROIs(SequenceCamData seq) {
 		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
 		for (ROI2D roi: list) {
@@ -262,8 +234,14 @@ public class Cages {
 				continue;
 			seq.seq.removeROI(roi);
 		}
+		
+		cageLimitROIList.clear();
+		for (Cage cage: cageList) {
+			cageLimitROIList.add(cage.cageLimitROI);
+		}
 		seq.seq.addROIs(cageLimitROIList, true);
 	}
+	
 	
 	public void fromROIsToCages(SequenceCamData seq) {
 		cageLimitROIList.clear();
@@ -276,7 +254,22 @@ public class Cages {
 			cageLimitROIList.add(roi);
 		}
 		Collections.sort(cageLimitROIList, new MulticafeTools.ROI2DNameComparator());
+		for (ROI2D roi: cageLimitROIList) {
+			for (Cage cage: cageList) {
+				if (roi.getName().equals(cage.cageLimitROI.getName())) {
+					cage.cageLimitROI.copyFrom(roi);
+					roi = null;
+					break;
+				}
+			}
+			if (roi != null) {
+				Cage cage = new Cage();
+				cage.cageLimitROI = roi;
+				cageList.add(cage);
+			}
+		}
 	}
+	
 
 	public void fromDetectedFliesToROIs(SequenceCamData seq) {
 		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
@@ -290,6 +283,7 @@ public class Cages {
 		}
 		seq.seq.addROIs(detectedFliesList, true);
 	}
+	
 	
 	public void fromROIstoDetectedFlies(SequenceCamData seq) {
 		detectedFliesList.clear();
