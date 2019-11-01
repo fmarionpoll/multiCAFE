@@ -14,6 +14,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.fmp.multicafeTools.EnumListType;
@@ -77,7 +78,8 @@ public class MCMove_Graphs extends JPanel {
 		}
 		if (aliveCheckbox.isSelected()) {
 			double threshold = (double) aliveThresholdSpinner.getValue();		
-			for (XYTaSeries posSeries: exp.seqCamData.cages.flyPositionsList) {
+			for (Cage cage: exp.seqCamData.cages.cageList) {
+				XYTaSeries posSeries = cage.flyPositions;
 				posSeries.threshold = threshold;
 				posSeries.getDoubleArrayList(EnumListType.isalive);
 			}
@@ -95,7 +97,7 @@ public class MCMove_Graphs extends JPanel {
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		}
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		iChart.displayData(exp.seqCamData.cages.flyPositionsList, option);
+		iChart.displayData(exp.seqCamData.cages.cageList, option);
 		iChart.mainChartFrame.toFront();
 		return iChart;
 	}

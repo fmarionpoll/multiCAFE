@@ -28,10 +28,10 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	private static final long serialVersionUID = 3457738144388946607L;
 	
 	private JTabbedPane 		tabsPane	= new JTabbedPane();
-	private MCMove_BuildROIs buildROIsTab= new MCMove_BuildROIs();
-	private MCMove_Detect 	detectTab 	= new MCMove_Detect();
-	private MCMove_File 		filesTab 	= new MCMove_File();
-	MCMove_Graphs 			graphicsTab = new MCMove_Graphs();
+	private MCMove_BuildROIs 	buildROIsTab= new MCMove_BuildROIs();
+	private MCMove_Detect 		detectTab 	= new MCMove_Detect();
+	MCMove_File 				fileTab 	= new MCMove_File();
+	MCMove_Graphs 				graphicsTab = new MCMove_Graphs();
 	
 	MultiCAFE parent0 = null;
 
@@ -59,9 +59,9 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 		graphicsTab.addPropertyChangeListener(this);
 		tabsPane.addTab("Graphs", null, graphicsTab, "Display results as graphics");
 
-		filesTab.init(capLayout, parent0);
-		filesTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Load/Save", null, filesTab, "Load/save cages and flies position");
+		fileTab.init(capLayout, parent0);
+		fileTab.addPropertyChangeListener(this);
+		tabsPane.addTab("Load/Save", null, fileTab, "Load/save cages and flies position");
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));
@@ -95,7 +95,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	boolean loadDefaultCages(Experiment exp) {
 		SequenceCamData seqCamData = exp.seqCamData;
 		String path = seqCamData.getDirectory();
-		boolean flag = filesTab.loadCages(path+File.separator+"drosotrack.xml");
+		boolean flag = fileTab.loadCages(path+File.separator+"drosotrack.xml");
 		return flag;
 	}
 	

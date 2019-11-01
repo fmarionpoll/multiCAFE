@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import icy.gui.frame.progress.ProgressFrame;
+import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
@@ -183,7 +184,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 	}
 	
 	private void trimDeadsFromArrayList(Experiment exp, List <XLSCapillaryResults> resultsArrayList) {
- 		for (XYTaSeries flypos: exp.seqCamData.cages.flyPositionsList) {
+ 		for (Cage cage: exp.seqCamData.cages.cageList) {
+			XYTaSeries flypos = cage.flyPositions;		
 			String cagenumberString = flypos.roi.getName().substring(4);
 			int cagenumber = Integer.parseInt(cagenumberString);
 			if (cagenumber == 0 || cagenumber == 9)
@@ -203,7 +205,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 	private boolean isAliveInNextBout(Experiment exp, int cagenumber) {
 		boolean isalive = false;
 		if (exp != null) {
-			for (XYTaSeries flypos: exp.seqCamData.cages.flyPositionsList) {
+			for (Cage cage: exp.seqCamData.cages.cageList) {
+				XYTaSeries flypos = cage.flyPositions;		
 				String cagenumberString = flypos.roi.getName().substring(4);
 				if (Integer.parseInt(cagenumberString) != cagenumber)
 					continue;

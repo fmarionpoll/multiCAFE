@@ -19,6 +19,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.XYTaSeries;
 
 
@@ -48,22 +49,23 @@ public class YPosMultiChart extends IcyFrame {
 		pt = new Point(rectv.x + deltapt.x, rectv.y + deltapt.y);
 	}
 	
-	public void displayData(List<XYTaSeries> flyPositionsList, EnumListType option) {
+	public void displayData(List<Cage> cageList, EnumListType option) {
 
 		if (xyDataSetList == null)
-			displayNewData(flyPositionsList, option);
+			displayNewData(cageList, option);
 		else
-			fetchNewData(flyPositionsList, option);
+			fetchNewData(cageList, option);
 	}
 	
-	private void displayNewData(List<XYTaSeries> flyPositionsList, EnumListType option) {
+	private void displayNewData(List<Cage> cageList, EnumListType option) {
 
 		xyDataSetList = new ArrayList <XYSeriesCollection>();
 		MinMaxDouble valMinMax = new MinMaxDouble();
 		int count = 0;
 		
-		for (XYTaSeries posSeries: flyPositionsList) 
+		for (Cage cage: cageList) 
 		{
+			XYTaSeries posSeries = cage.flyPositions;
 			YPosMultiChartStructure struct = getDataSet(posSeries, option);
 			XYSeriesCollection xyDataset = struct.xyDataset;
 			if (count == 0)
@@ -90,10 +92,11 @@ public class YPosMultiChart extends IcyFrame {
 		mainChartFrame.setVisible(true);
 	}
 	
-	private void fetchNewData (List<XYTaSeries> flyPositionsList, EnumListType option) {
+	private void fetchNewData (List<Cage> cageList, EnumListType option) {
 
-		for (XYTaSeries positionxyt: flyPositionsList) 
+		for (Cage cage: cageList) 
 		{
+			XYTaSeries positionxyt = cage.flyPositions;
 			String name = positionxyt.roi.getName();
 			for (XYSeriesCollection xySeriesList: xyDataSetList) {
 				int countseries = xySeriesList.getSeriesCount();

@@ -66,8 +66,6 @@ public class MCKymosDetect_File  extends JPanel {
 			if (readOK) {
 				SequenceKymos seqKymos = exp.seqKymos;
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
-//					parent0.capillariesPane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
-//					parent0.capillariesPane.buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 					parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 					parent0.sequencePane.intervalsTab.setAnalyzeFrameAndStepToDialog(exp.seqCamData);
 				}});
@@ -97,10 +95,10 @@ public class MCKymosDetect_File  extends JPanel {
 	void saveKymosMeasures(Experiment exp) {
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos != null) {
-			parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
-			parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
-			parent0.sequencePane.intervalsTab.getAnalyzeFrameAndStepFromDialog (exp.seqCamData);
-			seqKymos.updateCapillariesFromCamData(exp.seqCamData);
+//			parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
+//			parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
+//			parent0.sequencePane.intervalsTab.getAnalyzeFrameAndStepFromDialog (exp.seqCamData);
+//			seqKymos.updateCapillariesFromCamData(exp.seqCamData);
 			seqKymos.roisSaveEdits();
 			seqKymos.xmlSaveKymos_Measures(exp.seqCamData.getDirectory());
 		}

@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.SwingUtilities;
@@ -16,9 +15,8 @@ import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
-import icy.roi.ROI2D;
 import icy.type.collection.array.Array1DUtil;
-
+import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Cages;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.XYTaSeries;
@@ -99,15 +97,16 @@ public class DetectFlies  implements Runnable {
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
 		progressBar.initStuff(endFrame-startFrame+1);
 		
-		int nbcages = cages.cageLimitROIList.size();
+		int nbcages = cages.cageList.size();
 		ROI2DRectangle [] tempRectROI = new ROI2DRectangle [nbcages];
 		//int minCapacity = (endFrame - startFrame + 1) / analyzeStep;		
 		for (int i=0; i < nbcages; i++) {
 			tempRectROI[i] = new ROI2DRectangle(0, 0, 10, 10);
 			tempRectROI[i].setName("fly_"+i);
 			seqCamData.seq.addROI(tempRectROI[i]);
-			XYTaSeries positions = new XYTaSeries(cages.cageLimitROIList.get(i));
-			cages.flyPositionsList.add(positions);
+			Cage cage = cages.cageList.get(i);
+			XYTaSeries positions = new XYTaSeries(cage.cageLimitROI);
+			cage.flyPositions = positions;
 		}
 
 		// create array for the results - 1 point = 1 slice
@@ -144,7 +143,7 @@ public class DetectFlies  implements Runnable {
 				ROI2DArea roiAll = findFly (negativeImage, seqCamData.cages.detect.threshold, detect.ichanselected, detect.btrackWhite );
 
 				// ------------------------ loop over all the cages of the stack
-				for ( int iroi = 0; iroi < cages.cageLimitROIList.size(); iroi++ ) {		
+				for ( int iroi = 0; iroi < cages.cageList.size(); iroi++ ) {		
 					BooleanMask2D bestMask = findLargestComponent(roiAll, iroi);
 					ROI2DArea flyROI = null;
 					if ( bestMask != null ) {
@@ -165,12 +164,13 @@ public class DetectFlies  implements Runnable {
 					
 					// compute center and distance (square of)
 					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
+					Cage cage = cages.cageList.get(iroi);
 					if (it > 0) {
-						double distance = flyPosition.distance(cages.flyPositionsList.get(iroi).getPoint(it-1));
+						double distance = flyPosition.distance(cage.flyPositions.getPoint(it-1));
 						if (distance > detect.jitter)
-							cages.flyPositionsList.get(iroi).lastTimeAlive = t;
+							cage.flyPositions.lastTimeAlive = t;
 					}
-					cages.flyPositionsList.get(iroi).add(flyPosition, t);
+					cage.flyPositions.add(flyPosition, t);
 				}
 			}
 		} finally {
@@ -185,7 +185,7 @@ public class DetectFlies  implements Runnable {
 		try {
 			seqCamData.seq.beginUpdate();
 			seqCamData.cages = cages;
-			int nrois = cages.cageLimitROIList.size();
+			int nrois = cages.cageList.size();
 			int it = 0;
 			for ( int t = startFrame ; t <= lastFrameAnalyzed ; t  += analyzeStep, it++ )
 				for (int iroi=0; iroi < nrois; iroi++) 
@@ -337,13 +337,11 @@ public class DetectFlies  implements Runnable {
 		nbframes = (endFrame - startFrame +1)/analyzeStep +1;
 		
 		cages.clear();
-		cages.cageLimitROIList = ROI2DUtilities.getCagesFromSequence(seqCamData);
-		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageLimitROIList);
-		Collections.sort(cages.cageLimitROIList, new MulticafeTools.ROI2DNameComparator());
-		
+		cages.cageList = ROI2DUtilities.getCagesFromSequence(seqCamData);
+		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageList);
 		rectangleAllCages = null;
-		for ( ROI2D roi: cages.cageLimitROIList) {
-			Rectangle rect = roi.getBounds();
+		for (Cage cage: cages.cageList) {
+			Rectangle rect = cage.cageLimitROI.getBounds();
 			if (rectangleAllCages == null)
 				rectangleAllCages = new Rectangle(rect);
 			else
@@ -357,7 +355,7 @@ public class DetectFlies  implements Runnable {
 		seqCamData.refImage = IcyBufferedImageUtil.getCopy(seqCamData.getImage(startFrame, 0));
 		initParametersForDetection();
 		initialflyRemoved.clear();
-		for (int i=0; i < cages.cageLimitROIList.size(); i++)
+		for (int i=0; i < cages.cageList.size(); i++)
 			initialflyRemoved.add(false);
 		
 		viewer = seqCamData.seq.getFirstViewer();
@@ -380,7 +378,7 @@ public class DetectFlies  implements Runnable {
 				seqPositive.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(positiveImage, rectangleAllCages));
 			ROI2DArea roiAll = findFly (positiveImage, seqCamData.cages.detect.threshold, detect.ichanselected, detect.btrackWhite );
 
-			for ( int iroi = 1; iroi < cages.cageLimitROIList.size()-1; iroi++ ) {
+			for ( int iroi = 1; iroi < cages.cageList.size()-1; iroi++ ) {
 				BooleanMask2D bestMask = findLargestComponent(roiAll, iroi);		
 				if ( bestMask != null ) {
 					ROI2DArea flyROI = new ROI2DArea( bestMask );
@@ -395,7 +393,7 @@ public class DetectFlies  implements Runnable {
 					}
 				}
 			}
-			if (nfliesRemoved == cages.cageLimitROIList.size())
+			if (nfliesRemoved == cages.cageList.size())
 				break;
 		}
 		progress.close();
@@ -403,7 +401,7 @@ public class DetectFlies  implements Runnable {
 
 	private BooleanMask2D findLargestComponent(ROI2DArea roiAll, int iroi) {
 		
-		ROI cageLimitROI = cages.cageLimitROIList.get(iroi);
+		ROI cageLimitROI = cages.cageList.get(iroi).cageLimitROI;
 		if ( cageLimitROI == null )
 			return null;
 		

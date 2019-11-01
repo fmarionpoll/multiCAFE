@@ -36,26 +36,11 @@ public class MCSequence_Close  extends JPanel {
 	
 	void saveAndClose(Experiment exp) {
 		if (exp != null) {
-			SequenceCamData seqCamData = exp.seqCamData;
-			SequenceKymos seqKymos = exp.seqKymos;	
-			stopLoadingImages(exp);
 			parent0.capillariesPane.fileTab.saveCapillaries(exp);
 			parent0.kymographsPane.fileTab.saveKymosMeasures(exp);
-			
-			if (seqKymos != null && seqKymos.seq != null) {
-				seqKymos.seq.removeAllROI();
-				seqKymos.seq.close();
-				seqKymos.seq.closed();
-			}
-			if (seqCamData != null && seqCamData.seq != null) {
-				seqCamData.seq.removeAllROI();
-				seqCamData.seq.close();
-				seqCamData.seq.closed();
-			}
+			parent0.movePane.fileTab.saveCages(exp);
 		}
-		parent0.movePane.graphicsTab.closeAll();
-		parent0.kymographsPane.graphsTab.closeAll();
-		parent0.buildKymosPane.displayTab.kymographNamesComboBox.removeAllItems();
+		closeExp(exp);
 	}
 	
 	private void stopLoadingImages(Experiment exp) {
@@ -76,17 +61,29 @@ public class MCSequence_Close  extends JPanel {
 		if (parent0.currentIndex < 0)
 			return;
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		SequenceCamData seqCamData = exp.seqCamData;
-		SequenceKymos seqKymos = exp.seqKymos;
-		seqKymos.seq.removeAllROI();
-		seqKymos.seq.close();
-		seqKymos.seq.closed();
+		closeExp(exp);
+	}
+	
+	void closeExp(Experiment exp) {
+		if (exp != null) {
+			stopLoadingImages(exp);
+			SequenceKymos seqKymos = exp.seqKymos;
+			if (seqKymos != null && seqKymos.seq != null) {
+				seqKymos.seq.removeAllROI();
+				seqKymos.seq.close();
+				seqKymos.seq.closed();
+			}
+			SequenceCamData seqCamData = exp.seqCamData;
+			if (seqCamData != null && seqCamData.seq != null) {
+				seqCamData.seq.removeAllROI();
+				seqCamData.seq.close();
+				seqCamData.seq.closed();
+			}
+		}
+		
 		parent0.movePane.graphicsTab.closeAll();
 		parent0.kymographsPane.graphsTab.closeAll();
 		parent0.buildKymosPane.displayTab.kymographNamesComboBox.removeAllItems();
-		seqCamData.seq.removeAllROI();
-		seqCamData.seq.close();
-		seqCamData.seq.closed();
 	}
 
 }

@@ -14,6 +14,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import icy.gui.frame.progress.ProgressFrame;
+import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.XYTaSeries;
 
@@ -80,7 +81,8 @@ public class XLSExportMoveResults extends XLSExport {
 	
 	private static List <ArrayList<Double>> getDataFromCages(Experiment exp, EnumXLSExportItems option) {
 		List<ArrayList<Double>> arrayList = new ArrayList <ArrayList <Double>> ();
-		for (XYTaSeries posxyt: exp.seqCamData.cages.flyPositionsList) {
+		for (Cage cage: exp.seqCamData.cages.cageList) {
+			XYTaSeries posxyt = cage.flyPositions;
 			switch (option) {
 			case DISTANCE: 
 				arrayList.add((ArrayList<Double>) posxyt.getDoubleArrayList(EnumListType.distance));
@@ -128,7 +130,7 @@ public class XLSExportMoveResults extends XLSExport {
 		Point pt1 = pt;
 		XLSUtils.setValue(sheet, pt, transpose, "n_cages");
 		pt1.x++;
-		XLSUtils.setValue(sheet, pt, transpose, exp.seqCamData.cages.flyPositionsList.size());
+		XLSUtils.setValue(sheet, pt, transpose, exp.seqCamData.cages.cageList.size());
 		switch (option) {
 		case DISTANCE:
 			break;
@@ -156,14 +158,16 @@ public class XLSExportMoveResults extends XLSExport {
 	
 		switch (xlsExportOption) {
 		case DISTANCE:
-			for (XYTaSeries posxyt: exp.seqCamData.cages.flyPositionsList) {
+			for (Cage cage: exp.seqCamData.cages.cageList) {
+				XYTaSeries posxyt = cage.flyPositions;
 				String name0 = posxyt.getName();
 				XLSUtils.setValue(sheet, pt, transpose, name0);
 				pt.x++;
 			}
 			break;
 		case ISALIVE:
-			for (XYTaSeries posxyt: exp.seqCamData.cages.flyPositionsList) {
+			for (Cage cage: exp.seqCamData.cages.cageList) {
+				XYTaSeries posxyt = cage.flyPositions;
 				String name0 = posxyt.getName();
 				XLSUtils.setValue(sheet, pt, transpose, name0);
 				pt.x++;
@@ -173,7 +177,8 @@ public class XLSExportMoveResults extends XLSExport {
 			break;
 		case XYCENTER:
 		default:
-			for (XYTaSeries posxyt: exp.seqCamData.cages.flyPositionsList) {
+			for (Cage cage: exp.seqCamData.cages.cageList) {
+				XYTaSeries posxyt = cage.flyPositions;
 				String name0 = posxyt.getName();
 				XLSUtils.setValue(sheet, pt, transpose, name0+".x");
 				pt.x++;
@@ -275,7 +280,7 @@ public class XLSExportMoveResults extends XLSExport {
 
 	private int columnOfNextSeries(Experiment exp, EnumXLSExportItems option, int currentcolumn) {
 		int n = 2;
-		int value = currentcolumn + exp.seqCamData.cages.cageLimitROIList.size() * n + 3;
+		int value = currentcolumn + exp.seqCamData.cages.cageList.size() * n + 3;
 		return value;
 	}
 	

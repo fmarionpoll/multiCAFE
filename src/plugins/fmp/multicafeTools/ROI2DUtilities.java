@@ -12,6 +12,7 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
+import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DLine;
@@ -54,27 +55,31 @@ public class ROI2DUtilities  {
 		return gulpRois;
 	}
 	
-	public static List<ROI2D> getCagesFromSequence (SequenceCamData seqCamData) {
+	public static List<Cage> getCagesFromSequence (SequenceCamData seqCamData) {
 		if (seqCamData == null)
 			 return null;
 		
 		List<ROI2D> roiList = seqCamData.seq.getROI2Ds();
 		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
-		List<ROI2D> cageLimitROIList = new ArrayList<ROI2D>();
+		List<Cage> cageList = new ArrayList<Cage>();
 		for ( ROI2D roi : roiList ) {
 			String csName = roi.getName();
 			if (( csName.contains( "cage") 
 				|| csName.contains("Polygon2D")) 
-				&& ( roi instanceof ROI2DPolygon ))
-				cageLimitROIList.add(roi);
+				&& ( roi instanceof ROI2DPolygon )) {
+				Cage cage = new Cage();
+				cage.cageLimitROI = roi;
+				cageList.add(cage);
+			}
 		}
-		return cageLimitROIList;
+		return cageList;
 	}
 	
-	public static List<BooleanMask2D> getMask2DFromROIs (List<ROI2D> roiList) {
+	public static List<BooleanMask2D> getMask2DFromROIs (List<Cage> cageList) {
 		List<BooleanMask2D> cageMaskList = new ArrayList<BooleanMask2D>();
-		for ( ROI2D roi : roiList ) {
-			cageMaskList.add(roi.getBooleanMask2D( 0 , 0, 1, true ));
+		for (Cage cage : cageList ) {
+			
+			cageMaskList.add(cage.cageLimitROI.getBooleanMask2D( 0 , 0, 1, true ));
 		}
 		return cageMaskList;
 	}

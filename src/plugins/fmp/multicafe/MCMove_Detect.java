@@ -28,8 +28,10 @@ import icy.image.IcyBufferedImageUtil;
 import icy.image.ImageUtil;
 import icy.roi.ROI2D;
 import icy.system.thread.ThreadUtil;
+import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
+import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.fmp.multicafeTools.DetectFlies;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.OverlayThreshold;
@@ -189,7 +191,9 @@ public class MCMove_Detect extends JPanel implements ChangeListener {
 	private void cleanPreviousDetections() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		SequenceCamData seqCamData = exp.seqCamData;
-		seqCamData.cages.flyPositionsList.clear();
+		for (Cage cage: seqCamData.cages.cageList) {
+			cage.flyPositions = new XYTaSeries();
+		}
 		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: list) {
 			if (roi.getName().contains("det")) {

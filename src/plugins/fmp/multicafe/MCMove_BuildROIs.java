@@ -73,7 +73,7 @@ public class MCMove_BuildROIs extends JPanel {
 	
 	void updateFromSequence() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		int nrois = exp.seqCamData.cages.cageLimitROIList.size();	
+		int nrois = exp.seqCamData.cages.cageList.size();	
 		if (nrois > 0) {
 			nbcagesTextField.setValue(nrois);
 			nbcages = nrois;
@@ -177,7 +177,7 @@ public class MCMove_BuildROIs extends JPanel {
 			seqCamData.seq.addROI(roiP);
 		}
 
-		seqCamData.cages.fromROISToCages(seqCamData);
+		seqCamData.cages.fromROIsToCages(seqCamData);
 	}
 
 }

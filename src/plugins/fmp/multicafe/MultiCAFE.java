@@ -24,7 +24,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 					mainFrame 			= new IcyFrame("MultiCAFE analysis 27-oct-2019", true, true, true, true);
+	IcyFrame 					mainFrame 			= new IcyFrame("MultiCAFE analysis 01-Nov-2019", true, true, true, true);
 	ExperimentList				expList 			= new ExperimentList();
 	int							currentIndex		= -1;
 	
@@ -139,17 +139,18 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		Experiment exp = expList.getExperiment(currentIndex);
 		if (exp == null)
 			return;
-		SequenceCamData seqCamData = exp.seqCamData;
+		ProgressFrame progress = new ProgressFrame("load capillarytrack.xml");
 		capillariesPane.loadCapillaries_();
+		progress.close();
 		
 		if (loadCapillaries) {
-			ProgressFrame progress = new ProgressFrame("load capillarytrack_measures.xml");
+			progress = new ProgressFrame("load capillarytrack_measures.xml");
 			kymographsPane.fileTab.loadKymosMeasures(exp);
 			progress.close();
 		}
 
 		if (loadKymographs) {
-			ProgressFrame progress = new ProgressFrame("load kymograph *.tiff");
+			progress = new ProgressFrame("load kymograph *.tiff");
 			buildKymosPane.displayTab.viewKymosCheckBox.setSelected(true);
 			buildKymosPane.fileTab.loadDefaultKymos(exp);
 			progress.close();
@@ -160,18 +161,15 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 		
 		if (loadCages) {
-			ProgressFrame progress = new ProgressFrame("load drosotrack.xml");
+			progress = new ProgressFrame("load drosotrack.xml");
 			exp.loadDrosotrack();
 			progress.close();
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
 				movePane.graphicsTab.moveCheckbox.setEnabled(true);
 				movePane.graphicsTab.displayResultsButton.setEnabled(true);
-				if (seqCamData.cages != null && seqCamData.cages.flyPositionsList.size() > 0) {
-					double threshold = seqCamData.cages.flyPositionsList.get(0).threshold;
-					movePane.graphicsTab.aliveThresholdSpinner.setValue(threshold);
-				}
 			}});
 		}
+		progress.close();
 	}
 
 }
