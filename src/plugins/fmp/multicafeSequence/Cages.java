@@ -3,6 +3,7 @@ package plugins.fmp.multicafeSequence;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -254,6 +255,26 @@ public class Cages {
 			cageLimitROIList.add(roi);
 		}
 		Collections.sort(cageLimitROIList, new MulticafeTools.ROI2DNameComparator());
+		
+		// remove cages with no names like in the list
+		Iterator<Cage> iterator = cageList.iterator();
+		while (iterator.hasNext()) {
+			Cage cage = iterator.next();
+			boolean found = false;
+			for (ROI2D roi: cageLimitROIList) {
+				if (roi.getName().equals(cage.cageLimitROI.getName())) {
+					cage.cageLimitROI.copyFrom(roi);
+					roi = null;
+					found = true;
+					break;
+				}
+			}
+			if (!found ) {
+				iterator.remove();
+			}
+		}
+				
+		// copy names that are equal and create new ones
 		for (ROI2D roi: cageLimitROIList) {
 			for (Cage cage: cageList) {
 				if (roi.getName().equals(cage.cageLimitROI.getName())) {
