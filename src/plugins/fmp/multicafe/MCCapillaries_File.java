@@ -57,12 +57,12 @@ public class MCCapillaries_File extends JPanel {
 	boolean loadCapillaries_File(Experiment exp) {	
 		SequenceCamData seqCamData = exp.seqCamData;
 		SequenceKymos seqKymos = exp.seqKymos;
-		boolean flag = false;
 		if (seqKymos == null) {
 			exp.seqKymos = new SequenceKymos();
 			seqKymos = exp.seqKymos;
 		}
 		
+		boolean flag = false;
 		if (flag = seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory())) {
 			SequenceKymosUtils.transferKymoCapillariesToCamData (seqCamData, seqKymos);
 			return true;

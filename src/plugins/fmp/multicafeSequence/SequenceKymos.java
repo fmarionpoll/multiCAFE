@@ -386,14 +386,29 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	// ----------------------------------
+	private String getCorrectPath(String pathname) {
+		Path path = Paths.get(pathname);
+		if (path.toFile().isDirectory()) {
+			pathname = pathname + File.separator + "capillarytrack.xml";
+			path = Paths.get(pathname);
+		}
+		if (!path.toFile().isFile())
+			return null;
+		return pathname;
+	}
+	
+	private String buildCorrectPath(String pathname) {
+		Path path = Paths.get(pathname);
+		if (path.toFile().isDirectory()) {
+			pathname = pathname + File.separator + "capillarytrack.xml";
+			path = Paths.get(pathname);
+		}
+		return pathname;
+	}
 	
 	public boolean xmlLoadCapillaryTrack(String pathname) {
-		File tempfile = new File(pathname);
-		if (tempfile.isDirectory()) {
-			pathname = pathname + File.separator + "capillarytrack.xml";
-			tempfile = new File(pathname);
-		}
-		if (!tempfile.isFile())
+		pathname =getCorrectPath(pathname);
+		if (pathname == null)
 			return false;
 		boolean flag = capillaries.xmlLoadCapillaries(pathname);
 		if (flag) {
@@ -406,12 +421,8 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	public boolean xmlLoadKymos_Measures(String pathname) {
-		File tempfile = new File(pathname);
-		if (tempfile.isDirectory()) {
-			pathname = pathname + File.separator + "capillarytrack.xml";
-			tempfile = new File(pathname);
-		}
-		if (!tempfile.isFile())
+		pathname =getCorrectPath(pathname);
+		if (pathname == null)
 			return false;
 		boolean flag = capillaries.xmlLoadCapillaries(pathname);
 		if (flag) {
@@ -424,13 +435,8 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	public boolean xmlSaveCapillaries(String pathname) {
-		boolean flag = false;
-		File tempfile = new File(pathname);
-		if (tempfile.isDirectory()) {
-			pathname = pathname + File.separator + "capillarytrack.xml";
-		}
-		flag = capillaries.xmlSaveCapillaries_Only(pathname, this);
-		return flag;
+		pathname = buildCorrectPath(pathname);
+		return capillaries.xmlSaveCapillaries_Only(pathname, this);
 	}
 	
 	public boolean xmlSaveKymos_Measures(String pathname) {

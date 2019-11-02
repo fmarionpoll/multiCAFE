@@ -148,10 +148,14 @@ public class Capillary implements XMLPersistent  {
 	
 	public List<ROI> transferMeasuresToROIs() {
 		List<ROI> listrois = new ArrayList<ROI> ();
-		ptsTop.addToROIs(listrois, indexImage);
-		ptsBottom.addToROIs(listrois, indexImage);
-		gulpsRois.addToROIs(listrois, indexImage);
-		ptsDerivative.addToROIs(listrois, Color.yellow, 1., indexImage);
+		if (ptsTop != null)
+			ptsTop.addToROIs(listrois, indexImage);
+		if (ptsBottom != null)
+			ptsBottom.addToROIs(listrois, indexImage);
+		if (gulpsRois != null)
+			gulpsRois.addToROIs(listrois, indexImage);
+		if (ptsDerivative != null)
+			ptsDerivative.addToROIs(listrois, Color.yellow, 1., indexImage);
 		return listrois;
 	}
 	
