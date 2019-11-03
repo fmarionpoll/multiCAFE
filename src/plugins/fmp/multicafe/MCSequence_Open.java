@@ -40,10 +40,10 @@ public class MCSequence_Open extends JPanel {
 	private JButton 	addButton				= new JButton("Add...");
 	private JButton		searchButton 			= new JButton("Search for files...");
 	private JButton		closeButton				= new JButton("Close search dialog");
-	private JCheckBox	capillariesCheckBox		= new JCheckBox("capillaries", true);
-	private JCheckBox	cagesCheckBox			= new JCheckBox("cages", true);
+	JCheckBox	capillariesCheckBox		= new JCheckBox("capillaries", true);
+	JCheckBox	cagesCheckBox			= new JCheckBox("cages", true);
+	JCheckBox	measuresCheckBox		= new JCheckBox("measures", true);
 	private JCheckBox	kymographsCheckBox		= new JCheckBox("kymographs", true);
-	private JCheckBox	measuresCheckBox		= new JCheckBox("measures", true);
 	JCheckBox			graphsCheckBox			= new JCheckBox("graphs", true);
 
 	private JTextField 	filterTextField 		= new JTextField("capillarytrack");

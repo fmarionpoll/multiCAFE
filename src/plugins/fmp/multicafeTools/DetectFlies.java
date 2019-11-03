@@ -116,7 +116,7 @@ public class DetectFlies  implements Runnable {
 		try {
 			viewer = seqCamData.seq.getFirstViewer();	
 			seqCamData.seq.beginUpdate();
-			
+						
 			if (viewInternalImages) {
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
@@ -141,7 +141,8 @@ public class DetectFlies  implements Runnable {
 				if (seqNegative != null)
 					seqNegative.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(negativeImage, rectangleAllCages));
 				ROI2DArea roiAll = findFly (negativeImage, seqCamData.cages.detect.threshold, detect.ichanselected, detect.btrackWhite );
-
+				//seqNegative.seq.removeAllROI();
+				
 				// ------------------------ loop over all the cages of the stack
 				for ( int iroi = 0; iroi < cages.cageList.size(); iroi++ ) {		
 					BooleanMask2D bestMask = findLargestComponent(roiAll, iroi);
@@ -149,28 +150,25 @@ public class DetectFlies  implements Runnable {
 					if ( bestMask != null ) {
 						flyROI = new ROI2DArea( bestMask );
 						flyROI.setName("det"+iroi +" " + t );
+						flyROI.setT( t );
+						resultFlyPositionArrayList[it][iroi] = flyROI;
+//						seqNegative.seq.addROI(flyROI);
+						
+						// tempRPOI
+						Rectangle2D rect = flyROI.getBounds2D();
+						tempRectROI[iroi].setRectangle(rect);
+						
+						// compute center and distance (square of)
+						Cage cage = cages.cageList.get(iroi);
+						Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
+						int npoints = cage.flyPositions.pointsList.size();
+						cage.flyPositions.add(flyPosition, t);
+						if (it > 0 && npoints > 0) {
+							double distance = flyPosition.distance(cage.flyPositions.getPoint(npoints-1));
+							if (distance > detect.jitter)
+								cage.flyPositions.lastTimeAlive = t;
+						}
 					}
-					else {
-						Point2D pt = new Point2D.Double(-1,-1);
-						flyROI = new ROI2DArea(pt);
-						flyROI.setName("failed det"+iroi +" " + t );
-					}
-					flyROI.setT( t );
-					resultFlyPositionArrayList[it][iroi] = flyROI;
-
-					// tempRPOI
-					Rectangle2D rect = flyROI.getBounds2D();
-					tempRectROI[iroi].setRectangle(rect);
-					
-					// compute center and distance (square of)
-					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-					Cage cage = cages.cageList.get(iroi);
-					if (it > 0) {
-						double distance = flyPosition.distance(cage.flyPositions.getPoint(it-1));
-						if (distance > detect.jitter)
-							cage.flyPositions.lastTimeAlive = t;
-					}
-					cage.flyPositions.add(flyPosition, t);
 				}
 			}
 		} finally {

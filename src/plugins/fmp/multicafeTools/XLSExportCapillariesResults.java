@@ -206,8 +206,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		boolean isalive = false;
 		if (exp != null) {
 			for (Cage cage: exp.seqCamData.cages.cageList) {
-				XYTaSeries flypos = cage.flyPositions;		
-				String cagenumberString = flypos.roi.getName().substring(4);
+				String cagenumberString =  cage.cageLimitROI.getName().substring(4);
 				if (Integer.parseInt(cagenumberString) != cagenumber)
 					continue;
 				
