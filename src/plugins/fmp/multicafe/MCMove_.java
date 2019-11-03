@@ -29,7 +29,8 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	
 	private JTabbedPane 		tabsPane	= new JTabbedPane();
 	private MCMove_BuildROIs 	buildROIsTab= new MCMove_BuildROIs();
-	private MCMove_Detect 		detectTab 	= new MCMove_Detect();
+	private MCMove_Detect1 	detectTab1 	= new MCMove_Detect1();
+	private MCMove_Detect2 	detectTab2 	= new MCMove_Detect2();
 	MCMove_File 				fileTab 	= new MCMove_File();
 	MCMove_Graphs 				graphicsTab = new MCMove_Graphs();
 	
@@ -51,9 +52,13 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 		buildROIsTab.addPropertyChangeListener(this);
 		tabsPane.addTab("Cages", null, buildROIsTab, "Define cages using ROI polygons placed over each cage");
 
-		detectTab.init(capLayout, parent0);
-		detectTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Detect", null, detectTab, "Detect flies position");
+		detectTab1.init(capLayout, parent0);
+		detectTab1.addPropertyChangeListener(this);
+		tabsPane.addTab("Detect1", null, detectTab1, "Detect flies position using thresholding on image overlay");
+		
+		detectTab2.init(capLayout, parent0);
+		detectTab2.addPropertyChangeListener(this);
+		tabsPane.addTab("Detect2", null, detectTab2, "Detect flies position using background substraction");
 		
 		graphicsTab.init(capLayout, parent0);		
 		graphicsTab.addPropertyChangeListener(this);
@@ -71,7 +76,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 			@Override 
 	        public void stateChanged(ChangeEvent e) {
 	            int itab = tabsPane.getSelectedIndex();
-	            detectTab.thresholdedImageCheckBox.setSelected(itab == 1);
+	            detectTab2.thresholdedImageCheckBox.setSelected(itab == 1);
 	        }
 	    });
 		

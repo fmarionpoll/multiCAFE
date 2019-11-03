@@ -23,7 +23,7 @@ import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
-public class DetectFlies  implements Runnable {
+public class DetectFlies2  implements Runnable {
 	
 	private List<BooleanMask2D> cageMaskList 	= new ArrayList<BooleanMask2D>();
 	private List<Boolean>		initialflyRemoved = new ArrayList<Boolean> ();
@@ -140,8 +140,7 @@ public class DetectFlies  implements Runnable {
 				IcyBufferedImage negativeImage = seqCamData.subtractImages (seqCamData.refImage, currentImage);
 				if (seqNegative != null)
 					seqNegative.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(negativeImage, rectangleAllCages));
-				ROI2DArea roiAll = findFly (negativeImage, seqCamData.cages.detect.threshold, detect.ichanselected, detect.btrackWhite );
-				//seqNegative.seq.removeAllROI();
+				ROI2DArea roiAll = findFly (negativeImage, detect);
 				
 				// ------------------------ loop over all the cages of the stack
 				for ( int iroi = 0; iroi < cages.cageList.size(); iroi++ ) {		
@@ -154,7 +153,7 @@ public class DetectFlies  implements Runnable {
 						resultFlyPositionArrayList[it][iroi] = flyROI;
 //						seqNegative.seq.addROI(flyROI);
 						
-						// tempRPOI
+						// tempROI
 						Rectangle2D rect = flyROI.getBounds2D();
 						tempRectROI[iroi].setRectangle(rect);
 						
@@ -195,8 +194,10 @@ public class DetectFlies  implements Runnable {
 		}
 	}
 
-	private ROI2DArea findFly(IcyBufferedImage img, int threshold , int chan, boolean white ) {
-
+	private ROI2DArea findFly(IcyBufferedImage img, DetectFlies_Options detect ) {
+		int threshold = detect.threshold;
+		int chan = detect.ichanselected;
+		boolean white = detect.btrackWhite;
 		if (img == null)
 			return null;
 
@@ -374,7 +375,7 @@ public class DetectFlies  implements Runnable {
 			IcyBufferedImage positiveImage = seqCamData.subtractImages (currentImage, seqCamData.refImage);
 			if (seqPositive != null)
 				seqPositive.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(positiveImage, rectangleAllCages));
-			ROI2DArea roiAll = findFly (positiveImage, seqCamData.cages.detect.threshold, detect.ichanselected, detect.btrackWhite );
+			ROI2DArea roiAll = findFly (positiveImage, detect );
 
 			for ( int iroi = 1; iroi < cages.cageList.size()-1; iroi++ ) {
 				BooleanMask2D bestMask = findLargestComponent(roiAll, iroi);		

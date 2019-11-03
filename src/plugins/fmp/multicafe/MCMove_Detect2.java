@@ -32,13 +32,13 @@ import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.XYTaSeries;
-import plugins.fmp.multicafeTools.DetectFlies;
+import plugins.fmp.multicafeTools.DetectFlies2;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.OverlayThreshold;
 
 
 
-public class MCMove_Detect extends JPanel implements ChangeListener {
+public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	/**
 	 * 
 	 */
@@ -60,8 +60,8 @@ public class MCMove_Detect extends JPanel implements ChangeListener {
 	private JButton 	loadButton 	= new JButton("Load...");
 	private JButton 	saveButton 	= new JButton("Save...");
 	
-	private OverlayThreshold 		ov = null;
-	private DetectFlies 	trackAllFliesThread = null;
+	private OverlayThreshold ov = null;
+	private DetectFlies2 	detectFlies2Thread = null;
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -76,7 +76,6 @@ public class MCMove_Detect extends JPanel implements ChangeListener {
 		FlowLayout layout1 = (FlowLayout) panel.getLayout();
 		layout1.setVgap(0);
 		panel.validate();
-		
 		add( GuiUtil.besidesPanel(buildBackgroundButton,  panel));
 
 		JPanel dummyPanel = new JPanel();
@@ -106,17 +105,17 @@ public class MCMove_Detect extends JPanel implements ChangeListener {
 	private void defineActionListeners() {
 		
 		thresholdedImageCheckBox.addItemListener(new ItemListener() {
-		      public void itemStateChanged(ItemEvent e) {
-		    	  Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		  		if (thresholdedImageCheckBox.isSelected() && exp != null) {
-						if (ov == null)
-							ov = new OverlayThreshold(exp.seqCamData);
+			public void itemStateChanged(ItemEvent e) {
+				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		    	if (thresholdedImageCheckBox.isSelected() && exp != null) {
+		    		if (ov == null)
+		    			ov = new OverlayThreshold(exp.seqCamData);
 						exp.seqCamData.seq.addOverlay(ov);
 						updateOverlay();
 					}
 					else
 						removeOverlay();
-		      }});
+		    }});
 
 		startComputationButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
@@ -171,7 +170,7 @@ public class MCMove_Detect extends JPanel implements ChangeListener {
 	}
 	
 	private boolean initTrackParameters() {
-		if (trackAllFliesThread == null)
+		if (detectFlies2Thread == null)
 			return false;
 		DetectFlies_Options detect = new DetectFlies_Options();
 		detect.btrackWhite 		= true;
@@ -180,11 +179,12 @@ public class MCMove_Detect extends JPanel implements ChangeListener {
 		detect.limitLow 		= (int) objectLowsizeSpinner.getValue();
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
+		
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);		
-		trackAllFliesThread.seqCamData 	= exp.seqCamData;;		
-		trackAllFliesThread.stopFlag 	= false;
-		trackAllFliesThread.detect 		= detect;
-		trackAllFliesThread.viewInternalImages = viewsCheckBox.isSelected();
+		detectFlies2Thread.seqCamData 	= exp.seqCamData;;		
+		detectFlies2Thread.stopFlag 	= false;
+		detectFlies2Thread.detect 		= detect;
+		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();
 		return true;
 	}
 	
@@ -203,35 +203,35 @@ public class MCMove_Detect extends JPanel implements ChangeListener {
 	}
 
 	void builBackgroundImage() {
-		if (trackAllFliesThread == null)
-			trackAllFliesThread = new DetectFlies();
-		if (trackAllFliesThread.threadRunning) {
+		if (detectFlies2Thread == null)
+			detectFlies2Thread = new DetectFlies2();
+		if (detectFlies2Thread.threadRunning) {
 			stopComputation();
 			return;
 		}
 		initTrackParameters();
-		trackAllFliesThread.buildBackground	= true;
-		trackAllFliesThread.detectFlies		= false;
-		ThreadUtil.bgRun(trackAllFliesThread);
+		detectFlies2Thread.buildBackground	= true;
+		detectFlies2Thread.detectFlies		= false;
+		ThreadUtil.bgRun(detectFlies2Thread);
 	}
 	
 	void startComputation() {
-		if (trackAllFliesThread == null)
-			trackAllFliesThread = new DetectFlies();		
-		if (trackAllFliesThread.threadRunning) {
+		if (detectFlies2Thread == null)
+			detectFlies2Thread = new DetectFlies2();		
+		if (detectFlies2Thread.threadRunning) {
 			stopComputation();
 			return;
 		}	
 		initTrackParameters();
 		cleanPreviousDetections();
-		trackAllFliesThread.buildBackground	= false;
-		trackAllFliesThread.detectFlies		= true;
-		ThreadUtil.bgRun(trackAllFliesThread);
+		detectFlies2Thread.buildBackground	= false;
+		detectFlies2Thread.detectFlies		= true;
+		ThreadUtil.bgRun(detectFlies2Thread);
 	}
 	
 	void stopComputation() {
-		if (trackAllFliesThread != null)
-			trackAllFliesThread.stopFlag = true;
+		if (detectFlies2Thread != null)
+			detectFlies2Thread.stopFlag = true;
 	}
 	
 	void loadRef () {
@@ -245,10 +245,10 @@ public class MCMove_Detect extends JPanel implements ChangeListener {
 			return;
 		}
 		seqCamData.refImage=  IcyBufferedImage.createFrom(image);
-		if (trackAllFliesThread != null && trackAllFliesThread.rectangleAllCages != null && trackAllFliesThread.seqReference != null)
-			trackAllFliesThread.seqReference.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(
+		if (detectFlies2Thread != null && detectFlies2Thread.rectangleAllCages != null && detectFlies2Thread.seqReference != null)
+			detectFlies2Thread.seqReference.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(
 					seqCamData.refImage, 
-					trackAllFliesThread.rectangleAllCages));
+					detectFlies2Thread.rectangleAllCages));
 	}
 	
 	void saveRef () {

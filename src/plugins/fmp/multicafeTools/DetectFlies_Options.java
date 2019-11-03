@@ -17,10 +17,15 @@ public class DetectFlies_Options implements XMLPersistent {
 	public int  	limitLow;
 	public int  	limitUp;
 	public int 		jitter = 10;
-	public TransformOp transformop; 
+	public TransformOp transformop2; 
+	
 	public long 	analysisStart = 0;
 	public long 	analysisEnd = 0;
 	public int 		analysisStep = 1;
+	
+	public TransformOp transformop1; 
+	public int		videoChannel = 0;
+	public boolean 	backgroundSubstraction = false;
 
 	
 	@Override
@@ -38,11 +43,16 @@ public class DetectFlies_Options implements XMLPersistent {
 		limitLow =  XMLUtil.getElementIntValue(xmlVal, "limitLow", -1);
 		limitUp =  XMLUtil.getElementIntValue(xmlVal, "limitUp", -1);
 		jitter =  XMLUtil.getElementIntValue(xmlVal, "jitter", 10); 
-		String op = XMLUtil.getElementValue(xmlVal, "transformOp", null);
-		transformop = TransformOp.findByText(op);
+		String op2 = XMLUtil.getElementValue(xmlVal, "transformOp", null);
+		transformop2 = TransformOp.findByText(op2);
+		String op1 = XMLUtil.getElementValue(xmlVal, "transformOp1", null);
+		transformop1 = TransformOp.findByText(op1);
 		analysisStart =  XMLUtil.getAttributeLongValue(xmlVal, "start", 0);
 		analysisEnd = XMLUtil.getAttributeLongValue(xmlVal, "end", 0);
 		analysisStep = XMLUtil.getAttributeIntValue(xmlVal, "step", 1);
+		
+		videoChannel = XMLUtil.getAttributeIntValue(xmlVal, "videoChannel", 0);
+
 		return true;
 	}
 	
@@ -59,13 +69,19 @@ public class DetectFlies_Options implements XMLPersistent {
 		XMLUtil.setElementIntValue(xmlVal, "limitLow", limitLow);
 		XMLUtil.setElementIntValue(xmlVal, "limitUp", limitUp);
 		XMLUtil.setElementIntValue(xmlVal, "jitter", jitter); 
-		if (transformop != null) {
-			String transform = transformop.toString();
-			XMLUtil.setElementValue(xmlVal, "transformOp", transform);
+		if (transformop2 != null) {
+			String transform2 = transformop2.toString();
+			XMLUtil.setElementValue(xmlVal, "transformOp", transform2);
+		}
+		if (transformop1 != null) {
+			String transform1 = transformop1.toString();
+			XMLUtil.setElementValue(xmlVal, "transformOp1", transform1);
 		}
 		XMLUtil.setAttributeLongValue(xmlVal, "start", analysisStart);
 		XMLUtil.setAttributeLongValue(xmlVal, "end", analysisEnd); 
 		XMLUtil.setAttributeIntValue(xmlVal, "step", analysisStep); 
+		XMLUtil.setAttributeIntValue(xmlVal, "videoChannel", videoChannel);
+
 		return true;
 	}
 	
