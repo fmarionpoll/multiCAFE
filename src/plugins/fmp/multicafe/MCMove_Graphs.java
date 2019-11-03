@@ -53,9 +53,7 @@ public class MCMove_Graphs extends JPanel {
 	private void defineActionListeners() {
 		displayResultsButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				displayResultsButton.setEnabled(false);
 				xyDisplayGraphs();
-				displayResultsButton.setEnabled(true);
 				firePropertyChange("DISPLAY_RESULTS", false, true);
 			}});
 	}

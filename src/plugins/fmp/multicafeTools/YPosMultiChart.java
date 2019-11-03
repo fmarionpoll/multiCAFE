@@ -62,18 +62,19 @@ public class YPosMultiChart extends IcyFrame {
 		xyDataSetList = new ArrayList <XYSeriesCollection>();
 		MinMaxDouble valMinMax = new MinMaxDouble();
 		int count = 0;
-		
 		for (Cage cage: cageList) 
 		{
 			XYTaSeries posSeries = cage.flyPositions;
-			YPosMultiChartStructure struct = getDataSet(posSeries, option);
-			XYSeriesCollection xyDataset = struct.xyDataset;
-			if (count == 0)
-				valMinMax = struct.minmax;
-			else
-				valMinMax.getMaxMin(struct.minmax);
-			count++;
-			xyDataSetList.add(xyDataset);
+			if (posSeries != null) {	
+				YPosMultiChartStructure struct = getDataSet(posSeries, option);
+				XYSeriesCollection xyDataset = struct.xyDataset;
+				if (count == 0)
+					valMinMax = struct.minmax;
+				else
+					valMinMax.getMaxMin(struct.minmax);
+				xyDataSetList.add(xyDataset);
+				count++;
+			}
 		}
 		cleanChartsPanel(chartsInMainChartPanel);
 		

@@ -45,7 +45,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	private MultiCAFE parent0;
 	
 	private JButton 	buildBackgroundButton 	= new JButton("Build background / Stop");
-	
 	private JButton 	startComputationButton 	= new JButton("Detect flies / Stop");
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(100, 0, 255, 10));
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 255, 1));
@@ -53,9 +52,8 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object <");
 	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
-	public 	JCheckBox 	thresholdedImageCheckBox= new JCheckBox("overlay", true);
+	public 	JCheckBox 	imageOverlayCheckBox	= new JCheckBox("overlay", true);
 	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
-	
 	private JButton 	loadButton 	= new JButton("Load...");
 	private JButton 	saveButton 	= new JButton("Save...");
 	
@@ -78,7 +76,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		add( GuiUtil.besidesPanel(buildBackgroundButton,  panel));
 
 		JPanel dummyPanel = new JPanel();
-		dummyPanel.add( GuiUtil.besidesPanel(viewsCheckBox, thresholdedImageCheckBox ) );
+		dummyPanel.add( GuiUtil.besidesPanel(viewsCheckBox, imageOverlayCheckBox ) );
 		FlowLayout layout = (FlowLayout) dummyPanel.getLayout();
 		layout.setVgap(0);
 		dummyPanel.validate();
@@ -103,10 +101,10 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	
 	private void defineActionListeners() {
 		
-		thresholdedImageCheckBox.addItemListener(new ItemListener() {
+		imageOverlayCheckBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		    	if (thresholdedImageCheckBox.isSelected() && exp != null) {
+		    	if (imageOverlayCheckBox.isSelected() && exp != null) {
 		    		if (ov == null)
 		    			ov = new OverlayThreshold(exp.seqCamData);
 						exp.seqCamData.seq.addOverlay(ov);
@@ -177,14 +175,16 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
 		detect.threshold		= (int) thresholdSpinner.getValue();
+		Experiment exp 			= parent0.expList.getExperiment(parent0.currentIndex);
+		detect.seqCamData 		= exp.seqCamData;	
+		detect.initParametersForDetection();
 		
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		if (detectFlies2Thread == null)
 			detectFlies2Thread = new DetectFlies2();
-		detectFlies2Thread.seqCamData 	= exp.seqCamData;;		
 		detectFlies2Thread.stopFlag 	= false;
 		detectFlies2Thread.detect 		= detect;
 		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();
+	
 		return true;
 	}
 	
@@ -246,8 +246,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		}
 		seqCamData.refImage=  IcyBufferedImage.createFrom(image);
 		initTrackParameters();
-		if (detectFlies2Thread.rectangleAllCages == null)
-			detectFlies2Thread.initParametersForDetection();
+		
 		detectFlies2Thread.displayRefViewers();
 		
 	}

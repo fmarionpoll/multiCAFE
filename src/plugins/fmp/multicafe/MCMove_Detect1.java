@@ -147,18 +147,18 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		if (detectFlies1Thread == null)
 			return false;
 		DetectFlies_Options detect = new DetectFlies_Options();
-		detect.btrackWhite 		= true;
+		detect.btrackWhite 		= whiteMiceCheckBox.isSelected();
 		detect.blimitLow 		= objectLowsizeCheckBox.isSelected();
 		detect.blimitUp 		= objectUpsizeCheckBox.isSelected();
 		detect.limitLow 		= (int) objectLowsizeSpinner.getValue();
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
 		detect.videoChannel 	= colorChannelComboBox.getSelectedIndex();
-		detect.transformop1		= (TransformOp) backgroundComboBox.getSelectedItem();
+		detect.transformop		= (TransformOp) backgroundComboBox.getSelectedItem();
 		detect.threshold		= (int) thresholdSpinner.getValue();
+		Experiment exp 			= parent0.expList.getExperiment(parent0.currentIndex);		
+		detect.seqCamData 		= exp.seqCamData;
 		
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);		
-		detectFlies1Thread.seqCamData 	= exp.seqCamData;;		
 		detectFlies1Thread.stopFlag 	= false;
 		detectFlies1Thread.detect 		= detect;
 

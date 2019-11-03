@@ -450,9 +450,9 @@ public class SequenceCamData  {
 	// --------------------------
 	
 	public void storeAnalysisParametersToCages() {
-		cages.detect.analysisEnd = analysisEnd;
-		cages.detect.analysisStart = analysisStart;
-		cages.detect.analysisStep = analysisStep;
+		cages.detect.startFrame = (int) analysisEnd;
+		cages.detect.endFrame = (int) analysisStart;
+		cages.detect.analyzeStep = analysisStep;
 	}
 	
 	public boolean xmlReadDrosoTrackDefault() {
@@ -460,12 +460,10 @@ public class SequenceCamData  {
 	}
 	
 	public boolean xmlReadDrosoTrack(String filename) {
-		boolean flag = cages.xmlReadCagesFromFileNoQuestion(filename, this);
-		return flag;
+		return cages.xmlReadCagesFromFileNoQuestion(filename, this);
 	}
 	
 	public boolean xmlWriteDrosoTrackDefault() {
-		//return cages.xmlWriteCagesToFile("drosotrack.xml", getDirectory());
 		return cages.xmlWriteCagesToFileNoQuestion("drosotrack.xml");
 	}
 	

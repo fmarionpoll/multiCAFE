@@ -76,7 +76,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 			@Override 
 	        public void stateChanged(ChangeEvent e) {
 	            int itab = tabsPane.getSelectedIndex();
-	            detectTab2.thresholdedImageCheckBox.setSelected(itab == 1);
+	            detectTab2.imageOverlayCheckBox.setSelected(itab == 1);
 	        }
 	    });
 		
