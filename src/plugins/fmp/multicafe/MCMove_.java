@@ -58,7 +58,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 		
 		detectTab2.init(capLayout, parent0);
 		detectTab2.addPropertyChangeListener(this);
-		tabsPane.addTab("Detect2", null, detectTab2, "Detect flies position using background substraction");
+		tabsPane.addTab("Detect2", null, detectTab2, "Detect flies position using background subtraction");
 		
 		graphicsTab.init(capLayout, parent0);		
 		graphicsTab.addPropertyChangeListener(this);

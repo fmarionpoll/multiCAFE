@@ -72,7 +72,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		JLabel videochannel = new JLabel("video channel ");
 		videochannel.setHorizontalAlignment(SwingConstants.RIGHT);
 		colorChannelComboBox.setSelectedIndex(1);
-		JLabel backgroundsubtraction = new JLabel("bkgnd substraction ");
+		JLabel backgroundsubtraction = new JLabel("bkgnd subtraction ");
 		backgroundsubtraction.setHorizontalAlignment(SwingConstants.RIGHT);
 		add( GuiUtil.besidesPanel( videochannel, colorChannelComboBox, backgroundsubtraction, backgroundComboBox));
 		
