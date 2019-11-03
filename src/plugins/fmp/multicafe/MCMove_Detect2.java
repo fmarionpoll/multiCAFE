@@ -24,7 +24,6 @@ import javax.swing.event.ChangeListener;
 
 import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
-import icy.image.IcyBufferedImageUtil;
 import icy.image.ImageUtil;
 import icy.roi.ROI2D;
 import icy.system.thread.ThreadUtil;
@@ -60,8 +59,8 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	private JButton 	loadButton 	= new JButton("Load...");
 	private JButton 	saveButton 	= new JButton("Save...");
 	
-	private OverlayThreshold ov = null;
-	private DetectFlies2 	detectFlies2Thread = null;
+	private OverlayThreshold ov 				= null;
+	private DetectFlies2 	detectFlies2Thread 	= null;
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -170,8 +169,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	}
 	
 	private boolean initTrackParameters() {
-		if (detectFlies2Thread == null)
-			return false;
 		DetectFlies_Options detect = new DetectFlies_Options();
 		detect.btrackWhite 		= true;
 		detect.blimitLow 		= objectLowsizeCheckBox.isSelected();
@@ -179,8 +176,11 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		detect.limitLow 		= (int) objectLowsizeSpinner.getValue();
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
+		detect.threshold		= (int) thresholdSpinner.getValue();
 		
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);		
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		if (detectFlies2Thread == null)
+			detectFlies2Thread = new DetectFlies2();
 		detectFlies2Thread.seqCamData 	= exp.seqCamData;;		
 		detectFlies2Thread.stopFlag 	= false;
 		detectFlies2Thread.detect 		= detect;
@@ -245,10 +245,11 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 			return;
 		}
 		seqCamData.refImage=  IcyBufferedImage.createFrom(image);
-		if (detectFlies2Thread != null && detectFlies2Thread.rectangleAllCages != null && detectFlies2Thread.seqReference != null)
-			detectFlies2Thread.seqReference.seq.setImage(0,  0, IcyBufferedImageUtil.getSubImage(
-					seqCamData.refImage, 
-					detectFlies2Thread.rectangleAllCages));
+		initTrackParameters();
+		if (detectFlies2Thread.rectangleAllCages == null)
+			detectFlies2Thread.initParametersForDetection();
+		detectFlies2Thread.displayRefViewers();
+		
 	}
 	
 	void saveRef () {

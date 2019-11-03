@@ -147,6 +147,7 @@ public class DetectFlies1 implements Runnable {
 			seqCamData.seq.endUpdate();
 		}
 		System.out.println("Computation finished.");
+		threadRunning = false;
 	}
 	
 	private void initParametersForDetection() {
@@ -172,7 +173,7 @@ public class DetectFlies1 implements Runnable {
 
 	private ROI2DArea findFly(IcyBufferedImage img, DetectFlies_Options detect ) {
 		int threshold = detect.threshold;
-		int chan = detect.ichanselected;
+		int chan = detect.videoChannel;
 		boolean white = detect.btrackWhite;
 		if (img == null)
 			return null;

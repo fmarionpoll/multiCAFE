@@ -155,6 +155,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		detect.jitter 			= (int) jitterTextField.getValue();
 		detect.videoChannel 	= colorChannelComboBox.getSelectedIndex();
 		detect.transformop1		= (TransformOp) backgroundComboBox.getSelectedItem();
+		detect.threshold		= (int) thresholdSpinner.getValue();
 		
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);		
 		detectFlies1Thread.seqCamData 	= exp.seqCamData;;		
