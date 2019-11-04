@@ -152,8 +152,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 			lastValue =  getLastValueOfPreviousExp(capName,  exp.previousExperiment, xlsoption, optiont0);
 		
 		Capillaries capillaries = exp.seqKymos.capillaries;
-		int tmax = capillaries.capillariesArrayList.size();
-		for (int t=0; t< tmax; t++) {
+		int ncapillaries = capillaries.capillariesArrayList.size();
+		for (int t=0; t< ncapillaries; t++) {
 			Capillary cap = capillaries.capillariesArrayList.get(t);			
 			if (!cap.getName().equals(capName))
 				continue;
@@ -176,7 +176,17 @@ public class XLSExportCapillariesResults extends XLSExport {
 				return lastValue;
 			}
 			double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
-			double valuePreviousSeries = results.data.get(results.data.size()-1) * scalingFactorToPhysicalUnits;
+			int previousValue = 0; 
+			if (results.data == null) {
+				System.out.println("previous data series of capillary "+t+ "is not defined");
+			} else {
+				int indexprevious = results.data.size()-1;
+				if (indexprevious < 0)
+					System.out.println("size of data series of capillary "+t+ "is less than 1");
+				else
+					previousValue = results.data.get(indexprevious);
+			}
+			double valuePreviousSeries = previousValue * scalingFactorToPhysicalUnits;
 			lastValue = lastValue + valuePreviousSeries;
 			break;
 		}
