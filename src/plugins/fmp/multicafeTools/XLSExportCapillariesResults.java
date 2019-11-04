@@ -178,7 +178,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
 			int previousValue = 0; 
 			if (results.data == null) {
-				System.out.println("previous data series of capillary "+t+ "is not defined");
+				System.out.println("previous data series of capillary "+t+ "is not defined - file: "+exp.seqCamData.getDirectory());
 			} else {
 				int indexprevious = results.data.size()-1;
 				if (indexprevious < 0)

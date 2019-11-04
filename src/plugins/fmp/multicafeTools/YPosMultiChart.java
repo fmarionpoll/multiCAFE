@@ -116,49 +116,51 @@ public class YPosMultiChart extends IcyFrame {
 	private MinMaxDouble addPointsToXYSeries(XYTaSeries positionxyt, EnumListType option, XYSeries seriesXY) {
 		int itmax = positionxyt.pointsList.size();
 		MinMaxDouble minmax =null;
-		switch (option) {
-		case distance:
-			{
-				double previousY = positionxyt.pointsList.get(0).point.getY();
-				for ( int it = 0; it < itmax;  it++)
+		if (itmax > 0) {
+			switch (option) {
+			case distance:
 				{
-					double currentY = positionxyt.pointsList.get(it).point.getY();
-					double ypos = currentY - previousY;
-					double t = positionxyt.pointsList.get(it).time;
-					seriesXY.add( t, ypos );
-					previousY = currentY;
+					double previousY = positionxyt.pointsList.get(0).point.getY();
+					for ( int it = 0; it < itmax;  it++)
+					{
+						double currentY = positionxyt.pointsList.get(it).point.getY();
+						double ypos = currentY - previousY;
+						double t = positionxyt.pointsList.get(it).time;
+						seriesXY.add( t, ypos );
+						previousY = currentY;
+					}
+					Rectangle rect = positionxyt.roi.getBounds();
+					double length_diagonal = Math.sqrt((rect.height*rect.height) + (rect.width*rect.width));
+					minmax = new MinMaxDouble(0.0, length_diagonal);
 				}
-				Rectangle rect = positionxyt.roi.getBounds();
-				double length_diagonal = Math.sqrt((rect.height*rect.height) + (rect.width*rect.width));
-				minmax = new MinMaxDouble(0.0, length_diagonal);
-			}
-			break;
-			
-		case isalive:
-			for ( int it = 0; it < itmax;  it++)
-			{
-				boolean alive = positionxyt.pointsList.get(it).alive;
-				double ypos = alive? 1.0: 0.0;
-				double t = positionxyt.pointsList.get(it).time;
-				seriesXY.add( t, ypos );
-			}
-			minmax = new MinMaxDouble(0., 1.2);
-			break;
-			
-		default:
-		case xyPosition:
-			{
-				Rectangle rect = positionxyt.roi.getBounds();
-				double yOrigin = rect.getY()+rect.getHeight();	
-				for ( int it = 0; it < itmax;  it++)
-				{
-					Point2D point = positionxyt.pointsList.get(it).point;
-					double ypos = yOrigin - point.getY();
-					double t = positionxyt.pointsList.get(it).time;
-					seriesXY.add( t, ypos );
-				}
-				minmax = new MinMaxDouble(0., rect.height * 1.2);
 				break;
+				
+			case isalive:
+				for ( int it = 0; it < itmax;  it++)
+				{
+					boolean alive = positionxyt.pointsList.get(it).alive;
+					double ypos = alive? 1.0: 0.0;
+					double t = positionxyt.pointsList.get(it).time;
+					seriesXY.add( t, ypos );
+				}
+				minmax = new MinMaxDouble(0., 1.2);
+				break;
+				
+			default:
+			case xyPosition:
+				{
+					Rectangle rect = positionxyt.roi.getBounds();
+					double yOrigin = rect.getY()+rect.getHeight();	
+					for ( int it = 0; it < itmax;  it++)
+					{
+						Point2D point = positionxyt.pointsList.get(it).point;
+						double ypos = yOrigin - point.getY();
+						double t = positionxyt.pointsList.get(it).time;
+						seriesXY.add( t, ypos );
+					}
+					minmax = new MinMaxDouble(0., rect.height * 1.2);
+					break;
+				}
 			}
 		}
 		return minmax;

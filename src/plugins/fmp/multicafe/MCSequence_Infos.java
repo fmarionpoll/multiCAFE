@@ -81,7 +81,7 @@ public class MCSequence_Infos  extends JPanel {
 			String newtext = (String) expListComboBox.getSelectedItem();
 			if (!newtext.contains(oldtext)) {
         		ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-	        		parent0.sequencePane.closeTab.saveAndClose(exp);
+	        		parent0.sequencePane.closeTab.closeExp(exp); //saveAndClose(exp);
         		}});
 				updateCombos();
 				parent0.capillariesPane.infosTab.updateCombos();

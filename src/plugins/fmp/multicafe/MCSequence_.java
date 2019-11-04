@@ -98,7 +98,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				if (addSequenceCamToCombo()) {
 					parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 					ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-		        		parent0.sequencePane.closeTab.saveAndClose(exp);
+		        		parent0.sequencePane.closeTab.closeExp(exp); //saveAndClose(exp);
 		    		}});
 				}
 			}

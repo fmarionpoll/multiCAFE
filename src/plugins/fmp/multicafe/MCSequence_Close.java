@@ -34,17 +34,17 @@ public class MCSequence_Close  extends JPanel {
 			}});
 	}
 	
-	void saveAndClose(Experiment exp) {
-		if (exp != null) {
-			if (parent0.sequencePane.openTab.capillariesCheckBox.isSelected())
-				parent0.capillariesPane.fileTab.saveCapillaries(exp);
-			if (parent0.sequencePane.openTab.measuresCheckBox.isSelected())
-				parent0.kymographsPane.fileTab.saveKymosMeasures(exp);
-			if (parent0.sequencePane.openTab.cagesCheckBox.isSelected())
-				parent0.movePane.fileTab.saveCages(exp);
-		}
-		closeExp(exp);
-	}
+//	void saveAndClose(Experiment exp) {
+////		if (exp != null) {
+////			if (parent0.sequencePane.openTab.capillariesCheckBox.isSelected())
+////				parent0.capillariesPane.fileTab.saveCapillaries(exp);
+////			if (parent0.sequencePane.openTab.measuresCheckBox.isSelected())
+////				parent0.kymographsPane.fileTab.saveKymosMeasures(exp);
+////			if (parent0.sequencePane.openTab.cagesCheckBox.isSelected())
+////				parent0.movePane.fileTab.saveCages(exp);
+////		}
+//		closeExp(exp);
+//	}
 	
 	private void stopLoadingImages(Experiment exp) {
 		SequenceKymos seqKymos = exp.seqKymos;
