@@ -203,7 +203,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			
 			for (XLSCapillaryResults capillaryResult : resultsArrayList) {
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
-					if (!isAliveInNextBout(exp.nextExperiment, cagenumber)) {
+					if (!isAlive(exp.nextExperiment, cagenumber)) {
 						int ilastalive = flypos.getLastIntervalAlive();
 						trimArrayLength(capillaryResult.data, ilastalive);
 					}
@@ -212,16 +212,15 @@ public class XLSExportCapillariesResults extends XLSExport {
 		}		
 	}
 	
-	private boolean isAliveInNextBout(Experiment exp, int cagenumber) {
+	private boolean isAlive(Experiment exp, int cagenumber) {
 		boolean isalive = false;
 		if (exp != null) {
 			for (Cage cage: exp.seqCamData.cages.cageList) {
-				String cagenumberString =  cage.cageLimitROI.getName().substring(4);
-				if (Integer.parseInt(cagenumberString) != cagenumber)
-					continue;
-				
-				isalive = true;
-				break;
+				String cagenumberString = cage.cageLimitROI.getName().substring(4);
+				if (Integer.parseInt(cagenumberString) == cagenumber && cage.flyPositions.lastTimeAlive > 0) {
+					isalive = true;
+					break;
+				}
 			}
 		}
 		return isalive;
@@ -388,7 +387,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 				case SUMGULPS_LR:
 					for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
 						int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
-						if (isAliveInNextBout(exp.nextExperiment, colL/2)) {
+						if (isAlive(exp.nextExperiment, colL/2)) {
 							if (colL >= 0)
 								padpt.x = colseries + colL;			
 							List<Integer> dataL = dataArrayList.get(idataArray).data ;
@@ -416,9 +415,10 @@ public class XLSExportCapillariesResults extends XLSExport {
 				default:
 					for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
 						int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
-						if (isAliveInNextBout(exp.nextExperiment, col/2)) {
-							if (col >= 0)
-								padpt.x = colseries + col;	
+						padpt.x = colseries + col;	
+						XLSUtils.setValue(sheet, padpt, transpose, "XXX_cage"+col/2+"_colseries"+colseries);
+						
+						if (isAlive(exp.nextExperiment, col/2)) {
 							XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
 							List<Integer> data = dataArrayList.get(idataArray).data;
 							if (data != null) {
@@ -433,7 +433,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 								System.out.println("skip because data is null");
 							}
 						}
-						padpt.x++;
+
 					}
 					break;
 				}
