@@ -129,6 +129,7 @@ public class XLSExport {
 			pt.y++;
 			// rois
 			XLSUtils.setValue(sheet, pt, transpose, exp.seqKymos.getFileName(t));
+			XLSUtils.setValue(sheet, pt, transpose, "XXX");
 			pt.y++;
 		}
 		pt.x = col0;

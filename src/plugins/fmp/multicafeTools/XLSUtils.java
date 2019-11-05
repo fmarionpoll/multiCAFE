@@ -20,7 +20,46 @@ public class XLSUtils {
 	public static void setValue (XSSFSheet sheet, Point pt, boolean transpose, double value) {
 		getCell(sheet, pt, transpose).setCellValue(value);
 	}
-		
+	
+	/*
+	// from ICYSpreadSheet.jjava and Workbooks.java in workbooks from adufour
+	public static void setBackgroundColor (XSSFSheet sheet, Point pt, boolean transpose, Color color) {
+		XSSFCell cell = getCell(sheet, pt, transpose);
+		XSSFColor newColor = new XSSFColor(color);
+	     
+	    // look for an existing style
+	    boolean styleExists = false;
+	    try
+	    {
+	        int numStyles = book.getNumCellStyles();
+	        for (int i = 0; i < numStyles; i++)
+	        {
+	            XSSFCellStyle cellStyle = (XSSFCellStyle) book.getCellStyleAt(i);
+	             
+	            if (cellStyle.getFillForegroundXSSFColor() == newColor)
+	            {
+	                cell.setCellStyle(cellStyle);
+	                styleExists = true;
+	                break;
+	            }
+	        }
+	    }
+	    catch (IllegalStateException e)
+	    {
+	        styleExists = false;
+	    }
+	     
+	    if (!styleExists)
+	    {
+	        XSSFCellStyle newStyle = (XSSFCellStyle) book.createCellStyle();
+	        newStyle.setFillForegroundColor(newColor);
+	        cell.setCellStyle(newStyle);
+	    }
+ 
+	 cell.getCellStyle().setFillPattern(CellStyle.SOLID_FOREGROUND);
+	}
+	*/
+	
 	public static double getValueDouble (XSSFSheet sheet, Point pt, boolean transpose) {
 		return getCell(sheet, pt, transpose).getNumericCellValue();
 	}
