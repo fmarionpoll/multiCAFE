@@ -217,8 +217,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 		if (exp != null) {
 			for (Cage cage: exp.seqCamData.cages.cageList) {
 				String cagenumberString = cage.cageLimitROI.getName().substring(4);
-				if (Integer.parseInt(cagenumberString) == cagenumber && cage.flyPositions.lastTimeAlive > 0) {
-					isalive = true;
+				if (Integer.parseInt(cagenumberString) == cagenumber) {
+					isalive = (cage.flyPositions.lastTimeAlive > 0);
 					break;
 				}
 			}
@@ -299,7 +299,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 		pt_main.y = row_y0 -1;
 		double valueL = 0.;
 		double valueR = 0.;
-		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  options.pivotBinStep) {	
+		int currentFrame = 0;
+		for (currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  options.pivotBinStep) {	
 			pt_main.x = col0;
 			pt_main.y++;
 			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;
@@ -361,15 +362,9 @@ public class XLSExportCapillariesResults extends XLSExport {
 		if (options.collateSeries && exp.nextExperiment != null) {
 			Point padpt = new Point(pt_main);
 			padpt.x = col0;
-			int end1 = (int) (exp.fileTimeImageLastMinute- referenceFileTimeImageFirstMinutes);
 			int start2 = (int) (exp.nextExperiment.fileTimeImageFirstMinute- referenceFileTimeImageFirstMinutes);
-
-//			long diff4 = getnearest(exp.fileTimeImageLastMinute-exp.nextExperiment.fileTimeImageFirstMinute, step); 
-//			int start1 = (int) (exp.fileTimeImageFirstMinute- referenceFileTimeImageFirstMinutes);
-//			int end2 = (int) (exp.nextExperiment.fileTimeImageLastMinute- referenceFileTimeImageFirstMinutes);		
-//			System.out.println("start="+start1+" -> end="+end1 + " --- " +"next="+start2+" -> end2="+end2 + "=> pad with "+diff4);
 			
-			for (int currentFrame=end1; currentFrame <= start2; currentFrame+=  options.pivotBinStep) {	
+			for (int nextFrame=currentFrame; nextFrame <= start2; nextFrame+=  options.pivotBinStep) {	
 				padpt.x = col0;
 				padpt.y++;
 				// dummy (spacer)
@@ -393,7 +388,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 							List<Integer> dataL = dataArrayList.get(idataArray).data ;
 							List<Integer> dataR = dataArrayList.get(idataArray+1).data;
 							if (dataL != null && dataR != null) {
-								int j = endFrame-startFrame -1;
+								int j = currentFrame;
 								if (j < dataL.size() && j < dataR.size()) {
 									valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
 									XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
@@ -416,13 +411,13 @@ public class XLSExportCapillariesResults extends XLSExport {
 					for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
 						int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
 						padpt.x = colseries + col;	
-						XLSUtils.setValue(sheet, padpt, transpose, "XXX_cage"+col/2+"_colseries"+colseries);
+						XLSUtils.setValue(sheet, padpt, transpose, "XXX_cage"+col/2+"_colseries"+colseries +" startframe="+startFrame+ "end="+endFrame);
 						
 						if (isAlive(exp.nextExperiment, col/2)) {
 							XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
 							List<Integer> data = dataArrayList.get(idataArray).data;
 							if (data != null) {
-								int j = endFrame-startFrame -1;
+								int j = currentFrame;
 								if (j < data.size()) {
 									valueL = data.get(j)*scalingFactorToPhysicalUnits;
 									XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxx-");
