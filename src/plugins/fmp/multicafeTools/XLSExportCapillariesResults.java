@@ -218,7 +218,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			for (Cage cage: exp.seqCamData.cages.cageList) {
 				String cagenumberString = cage.cageLimitROI.getName().substring(4);
 				if (Integer.parseInt(cagenumberString) == cagenumber) {
-					isalive = (cage.flyPositions.lastTimeAlive > 0);
+					isalive = (cage.flyPositions.getLastIntervalAlive() > 0);
 					break;
 				}
 			}

@@ -89,6 +89,7 @@ public class XYTaSeries implements XMLPersistent {
 		
 		Element node_lastime = XMLUtil.addElement(node, "lastTimeAlive");
 		XMLUtil.setAttributeIntValue(node_lastime, "tlast", lastTimeAlive);
+		lastIntervalAlive = getLastIntervalAlive();
 		XMLUtil.setAttributeIntValue(node_lastime, "ilast", lastIntervalAlive);
 		
 		Element node_position_list = XMLUtil.addElement(node, "PositionsList");
