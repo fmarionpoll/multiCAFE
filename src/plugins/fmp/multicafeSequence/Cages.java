@@ -98,20 +98,22 @@ public class Cages {
 		cageList.clear();
 		detect.loadFromXML(node);
 		
-		xmlLoadCagesLimits(node);
-		xmlLoadFlyPositions(node);
-		xmlLoadDetectedFlies(node);
-		transferV0DataToCages();
-		
-		Element xmlVal = XMLUtil.getElement(node, "Cages");
-		if (xmlVal != null) {
-			int ncages = XMLUtil.getAttributeIntValue(xmlVal, "n_cages", 0);
-			if (ncages > 0)
-				cageList.clear();
-			for (int index = 0; index < ncages; index++) {
-				Cage cage = new Cage();
-				cage.xmlLoadCage(xmlVal, index);
-				cageList.add(cage);
+		if (xmlLoadCagesLimits(node)) {
+			xmlLoadFlyPositions(node);
+			xmlLoadDetectedFlies(node);
+			transferV0DataToCages();
+		}
+		else {
+			Element xmlVal = XMLUtil.getElement(node, "Cages");
+			if (xmlVal != null) {
+				int ncages = XMLUtil.getAttributeIntValue(xmlVal, "n_cages", 0);
+				if (ncages > 0)
+					cageList.clear();
+				for (int index = 0; index < ncages; index++) {
+					Cage cage = new Cage();
+					cage.xmlLoadCage(xmlVal, index);
+					cageList.add(cage);
+				}
 			}
 		}
 		return true;

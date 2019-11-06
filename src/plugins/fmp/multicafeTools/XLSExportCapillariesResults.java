@@ -264,7 +264,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		return pt;
 	}
 		
-	private Point writeData (	Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt_main, boolean transpose, 
+	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt_main, boolean transpose, 
 								String charSeries, List <XLSCapillaryResults> dataArrayList) {
 		double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
 		int col0 = pt_main.x;
@@ -388,7 +388,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 							List<Integer> dataL = dataArrayList.get(idataArray).data ;
 							List<Integer> dataR = dataArrayList.get(idataArray+1).data;
 							if (dataL != null && dataR != null) {
-								int j = currentFrame;
+								int j = dataL.size()-1; //currentFrame;
 								if (j < dataL.size() && j < dataR.size()) {
 									valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
 									XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
@@ -410,14 +410,12 @@ public class XLSExportCapillariesResults extends XLSExport {
 				default:
 					for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
 						int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
-						padpt.x = colseries + col;	
-						XLSUtils.setValue(sheet, padpt, transpose, "XXX_cage"+col/2+"_colseries"+colseries +" startframe="+startFrame+ "end="+endFrame);
-						
+						padpt.x = colseries + col;		
 						if (isAlive(exp.nextExperiment, col/2)) {
 							XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
 							List<Integer> data = dataArrayList.get(idataArray).data;
 							if (data != null) {
-								int j = currentFrame;
+								int j = data.size()-1; //currentFrame;
 								if (j < data.size()) {
 									valueL = data.get(j)*scalingFactorToPhysicalUnits;
 									XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxx-");
@@ -428,7 +426,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 								System.out.println("skip because data is null");
 							}
 						}
-
 					}
 					break;
 				}
