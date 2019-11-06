@@ -205,6 +205,9 @@ public class XLSExportCapillariesResults extends XLSExport {
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
 					if (!isAlive(exp.nextExperiment, cagenumber)) {
 						int ilastalive = flypos.getLastIntervalAlive();
+						double bin = (exp.fileTimeImageLastMinute-exp.fileTimeImageFirstMinute)/(double)exp.number_of_frames;
+						int interval = (int) (flypos.lastTimeAlive / bin) ;
+						System.out.println("isalive ilastalive="+ilastalive + "lastTimealive="+flypos.lastTimeAlive+ " interval computed="+interval);
 						trimArrayLength(capillaryResult.data, ilastalive);
 					}
 				}
@@ -432,7 +435,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 				
 			}
 		}
-		
 		return pt_main;
 	}
 		
