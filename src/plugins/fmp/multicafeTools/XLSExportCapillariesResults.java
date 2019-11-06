@@ -204,11 +204,11 @@ public class XLSExportCapillariesResults extends XLSExport {
 			for (XLSCapillaryResults capillaryResult : resultsArrayList) {
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
 					if (!isAlive(exp.nextExperiment, cagenumber)) {
-						int ilastalive = flypos.getLastIntervalAlive();
-						double bin = (exp.fileTimeImageLastMinute-exp.fileTimeImageFirstMinute)/(double)exp.number_of_frames;
-						int interval = (int) (flypos.lastTimeAlive / bin) ;
-						System.out.println("isalive ilastalive="+ilastalive + "lastTimealive="+flypos.lastTimeAlive+ " interval computed="+interval);
-						trimArrayLength(capillaryResult.data, ilastalive);
+						flypos.getLastIntervalAlive();
+//						double bin = (exp.fileTimeImageLastMinute-exp.fileTimeImageFirstMinute)/(double)exp.number_of_frames;
+//						int interval = (int) (flypos.lastTimeAlive / bin) ;
+//						System.out.println("isalive ilastalive="+ilastalive + " lastTimealive="+flypos.lastTimeAlive+ " bin="+bin+ " interval computed="+interval);
+						trimArrayLength(capillaryResult.data, flypos.lastTimeAlive);
 					}
 				}
 			}
@@ -391,7 +391,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 							List<Integer> dataL = dataArrayList.get(idataArray).data ;
 							List<Integer> dataR = dataArrayList.get(idataArray+1).data;
 							if (dataL != null && dataR != null) {
-								int j = dataL.size()-1; //currentFrame;
+								int j = dataL.size()-1; 
 								if (j < dataL.size() && j < dataR.size()) {
 									valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
 									XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
@@ -418,7 +418,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 							XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
 							List<Integer> data = dataArrayList.get(idataArray).data;
 							if (data != null) {
-								int j = data.size()-1; //currentFrame;
+								int j = data.size()-1; 
 								if (j < data.size()) {
 									valueL = data.get(j)*scalingFactorToPhysicalUnits;
 									XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxx-");
