@@ -203,7 +203,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			
 			for (XLSCapillaryResults capillaryResult : resultsArrayList) {
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
-					if (!isAlive(exp.nextExperiment, cagenumber)) {
+					if (!exp.isAliveInCage(cagenumber)) {
 						flypos.getLastIntervalAlive();
 						trimArrayLength(capillaryResult.data, flypos.lastTimeAlive);
 					}
@@ -212,19 +212,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 		}		
 	}
 	
-	private boolean isAlive(Experiment exp, int cagenumber) {
-		boolean isalive = false;
-		if (exp != null) {
-			for (Cage cage: exp.seqCamData.cages.cageList) {
-				String cagenumberString = cage.cageLimitROI.getName().substring(4);
-				if (Integer.parseInt(cagenumberString) == cagenumber) {
-					isalive = (cage.flyPositions.getLastIntervalAlive() > 0);
-					break;
-				}
-			}
-		}
-		return isalive;
-	}
 	
 	private void trimArrayLength (List<Integer> array, int ilastalive) {
 		if (array == null)
@@ -382,7 +369,13 @@ public class XLSExportCapillariesResults extends XLSExport {
 				case SUMGULPS_LR:
 					for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
 						int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
-						if (exp.nextExperiment != null && isAlive(exp.nextExperiment, colL/2)) {
+						boolean flag = true;
+						if (colL >1 && colL < 18) {
+							flag = exp.nextExperiment.isAliveInCage(colL/2); 
+						} else {
+							flag = exp.nextExperiment.isCagePresent(colL/2);
+						}
+						if (flag) {
 							if (colL >= 0)
 								padpt.x = colseries + colL;			
 							List<Integer> dataL = dataArrayList.get(idataArray).data ;
@@ -409,9 +402,15 @@ public class XLSExportCapillariesResults extends XLSExport {
 					break;
 				default:
 					for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
-						int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
+						int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);						
 						padpt.x = colseries + col;		
-						if (exp.nextExperiment != null && isAlive(exp.nextExperiment, col/2)) {
+						boolean flag = true;
+						if (col >1 && col < 18) {
+							flag = exp.nextExperiment.isAliveInCage(col/2); 
+						} else {
+							flag = exp.nextExperiment.isCagePresent(col/2);
+						}
+						if (flag) {
 							XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
 							List<Integer> data = dataArrayList.get(idataArray).data;
 							if (data != null) {

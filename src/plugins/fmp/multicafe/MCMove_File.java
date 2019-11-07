@@ -46,7 +46,8 @@ public class MCMove_File extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 				exp.seqCamData.cages.xmlReadCagesFromFile(exp.seqCamData);
-				firePropertyChange("LOAD_DATA", false, true);	
+				firePropertyChange("LOAD_DATA", false, true);
+				parent0.movePane.tabsPane.setSelectedIndex(3);
 			}});
 		
 		saveCagesButton.addActionListener(new ActionListener () {

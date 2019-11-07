@@ -178,4 +178,31 @@ public class Experiment {
 	public void setFileTimeImageLast(FileTime fileTimeImageLast) {
 		this.fileTimeImageLast = fileTimeImageLast;
 	}
+	
+	// -----------------------
+	
+	public boolean isAliveInCage(int cagenumber) {
+		boolean isalive = false;
+		for (Cage cage: seqCamData.cages.cageList) {
+			String cagenumberString = cage.cageLimitROI.getName().substring(4);
+			if (Integer.parseInt(cagenumberString) == cagenumber) {
+				isalive = (cage.flyPositions.getLastIntervalAlive() > 0);
+				break;
+			}
+		}
+		return isalive;
+	}
+	
+	public boolean isCagePresent(int cagenumber) {
+		boolean isavailable = false;
+		for (Cage cage: seqCamData.cages.cageList) {
+			String cagenumberString = cage.cageLimitROI.getName().substring(4);
+			if (Integer.parseInt(cagenumberString) == cagenumber) {
+				isavailable = true;
+				break;
+			}
+		}
+		return isavailable;
+	}
+	
 }

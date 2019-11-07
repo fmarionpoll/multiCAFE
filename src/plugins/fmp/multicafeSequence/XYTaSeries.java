@@ -136,12 +136,14 @@ public class XYTaSeries implements XMLPersistent {
 	private List<Double> getDistanceBetweenPoints() {
 		ArrayList<Double> dataArray = new ArrayList<Double>();
 		dataArray.ensureCapacity(pointsList.size());
-		Point2D previous = new Point2D.Double();
-		previous = pointsList.get(0).point;
-		for (XYTaValue pos: pointsList) {
-			double distance = pos.point.distance(previous); 
-			dataArray.add(distance);
-			previous = pos.point;
+		if (pointsList.size() > 0) {
+			Point2D previous = new Point2D.Double();
+			previous = pointsList.get(0).point;
+			for (XYTaValue pos: pointsList) {
+				double distance = pos.point.distance(previous); 
+				dataArray.add(distance);
+				previous = pos.point;
+			}
 		}
 		return dataArray;
 	}
