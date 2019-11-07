@@ -203,10 +203,10 @@ public class XLSExportCapillariesResults extends XLSExport {
 			
 			for (XLSCapillaryResults capillaryResult : resultsArrayList) {
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
-					if (!exp.isAliveInCage(cagenumber)) {
+//					if (!exp.isFlyAlive(cagenumber)) {
 						flypos.getLastIntervalAlive();
 						trimArrayLength(capillaryResult.data, flypos.lastTimeAlive);
-					}
+//					}
 				}
 			}
 		}		
@@ -371,9 +371,9 @@ public class XLSExportCapillariesResults extends XLSExport {
 						int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
 						boolean flag = true;
 						if (colL >1 && colL < 18) {
-							flag = exp.nextExperiment.isAliveInCage(colL/2); 
+							flag = exp.nextExperiment.isFlyAlive(colL/2); 
 						} else {
-							flag = exp.nextExperiment.isCagePresent(colL/2);
+							flag = exp.nextExperiment.isDataAvailable(colL/2);
 						}
 						if (flag) {
 							if (colL >= 0)
@@ -406,9 +406,9 @@ public class XLSExportCapillariesResults extends XLSExport {
 						padpt.x = colseries + col;		
 						boolean flag = true;
 						if (col >1 && col < 18) {
-							flag = exp.nextExperiment.isAliveInCage(col/2); 
+							flag = exp.nextExperiment.isFlyAlive(col/2); 
 						} else {
-							flag = exp.nextExperiment.isCagePresent(col/2);
+							flag = exp.nextExperiment.isDataAvailable(col/2);
 						}
 						if (flag) {
 							XLSUtils.setValue(sheet, padpt, transpose, "xxx-");

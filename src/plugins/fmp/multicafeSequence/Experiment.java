@@ -181,7 +181,7 @@ public class Experiment {
 	
 	// -----------------------
 	
-	public boolean isAliveInCage(int cagenumber) {
+	public boolean isFlyAlive(int cagenumber) {
 		boolean isalive = false;
 		for (Cage cage: seqCamData.cages.cageList) {
 			String cagenumberString = cage.cageLimitROI.getName().substring(4);
@@ -193,7 +193,7 @@ public class Experiment {
 		return isalive;
 	}
 	
-	public boolean isCagePresent(int cagenumber) {
+	public boolean isDataAvailable(int cagenumber) {
 		boolean isavailable = false;
 		for (Cage cage: seqCamData.cages.cageList) {
 			String cagenumberString = cage.cageLimitROI.getName().substring(4);
