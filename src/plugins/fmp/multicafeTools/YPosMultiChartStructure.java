@@ -7,8 +7,8 @@ public class YPosMultiChartStructure {
 	public XYSeriesCollection xyDataset = null;
 
 	public YPosMultiChartStructure () {
-		
 	}
+	
 	public YPosMultiChartStructure (MinMaxDouble minmax, XYSeriesCollection xyDataset) {
 		this.minmax = minmax;
 		this.xyDataset = xyDataset;

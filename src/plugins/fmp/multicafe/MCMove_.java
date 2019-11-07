@@ -27,10 +27,10 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = 3457738144388946607L;
 	
-	private JTabbedPane 		tabsPane	= new JTabbedPane();
+	JTabbedPane 				tabsPane	= new JTabbedPane();
 	private MCMove_BuildROIs 	buildROIsTab= new MCMove_BuildROIs();
-	private MCMove_Detect1 	detectTab1 	= new MCMove_Detect1();
-	private MCMove_Detect2 	detectTab2 	= new MCMove_Detect2();
+	private MCMove_Detect1 		detectTab1 	= new MCMove_Detect1();
+	private MCMove_Detect2 		detectTab2 	= new MCMove_Detect2();
 	MCMove_File 				fileTab 	= new MCMove_File();
 	MCMove_Graphs 				graphicsTab = new MCMove_Graphs();
 	

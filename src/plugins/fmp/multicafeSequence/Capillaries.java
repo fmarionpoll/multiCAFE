@@ -33,29 +33,6 @@ public class Capillaries {
 	private final static String ID_LISTOFCAPILLARIES = "List_of_capillaries";
 	private final static String ID_CAPILLARY_ = "capillary_";
 
-	
-	// ------------------------------------------------------------
-	
-
-
-//	public boolean xmlSaveCapillariesv1(Document doc, SequenceKymos seq) {
-//		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
-//		if (node == null)
-//			return false;
-//		XMLUtil.setElementIntValue(node, "version", 1);
-//		Node nodecaps = XMLUtil.setElement(node, ID_LISTOFCAPILLARIES);
-//		XMLUtil.setElementIntValue(nodecaps, ID_NCAPILLARIES, seq.capillaries.capillariesArrayList.size());
-//		int i= 0;
-//		for (Capillary cap: seq.capillaries.capillariesArrayList) {
-//			Node nodecapillary = XMLUtil.setElement(node, ID_CAPILLARY_+i);
-//			cap.saveToXML(nodecapillary);
-//			i++;
-//		}
-//		return true;
-//	}
-	
-
-	
 		// ---------------------------------
 	
 	public boolean xmlWriteROIsAndData(String name, SequenceKymos seq) {
@@ -92,27 +69,6 @@ public class Capillaries {
 		}
 		return false;
 	}
-	
-//	public boolean xmlSaveCapillaries_And_Measures(String csFile, SequenceKymos seq) {
-//		if (csFile != null) {
-//			final Document doc = XMLUtil.createDocument(true);
-//			if (doc != null) {
-//				desc.xmlSaveCapillaryDescription (doc, seq);
-//				xmlSaveListOfCapillaries(doc, seq);
-//				XMLUtil.saveDocument(doc, csFile);
-//				
-//				String directoryFull = Paths.get(csFile).getParent().toString() +File.separator +"results" + File.separator;
-//				for (Capillary cap: capillariesArrayList) {
-//					String tempname = directoryFull+cap.getName()+ ".xml";
-//					final Document capdoc = XMLUtil.createDocument(true);
-//					cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
-//					XMLUtil.saveDocument(capdoc, tempname);
-//				}
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
 	
 	public boolean xmlLoadCapillaries(String csFileName) { 
 		if (csFileName != null)  {		

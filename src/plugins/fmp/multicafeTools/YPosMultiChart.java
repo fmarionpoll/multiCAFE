@@ -58,7 +58,7 @@ public class YPosMultiChart extends IcyFrame {
 		int count = 0;
 		for (Cage cage: cageList) {
 			XYTaSeries posSeries = cage.flyPositions;
-			if (posSeries != null) {	
+			if (posSeries != null && posSeries.pointsList.size() > 0) {	
 				YPosMultiChartStructure struct = getDataSet(posSeries, option);
 				XYSeriesCollection xyDataset = struct.xyDataset;
 				valMinMax = struct.minmax;

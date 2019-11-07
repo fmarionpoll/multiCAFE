@@ -139,18 +139,18 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		Experiment exp = expList.getExperiment(currentIndex);
 		if (exp == null)
 			return;
-		ProgressFrame progress = new ProgressFrame("load capillarytrack.xml");
+		ProgressFrame progress = new ProgressFrame("load descriptors");
 		capillariesPane.loadCapillaries_();
 		progress.close();
 		
 		if (loadCapillaries) {
-			progress = new ProgressFrame("load capillarytrack_measures.xml");
+			progress = new ProgressFrame("load capillary measures");
 			kymographsPane.fileTab.loadKymosMeasures(exp);
 			progress.close();
 		}
 
 		if (loadKymographs) {
-			progress = new ProgressFrame("load kymograph *.tiff");
+			progress = new ProgressFrame("load kymographs");
 			buildKymosPane.displayTab.viewKymosCheckBox.setSelected(true);
 			buildKymosPane.fileTab.loadDefaultKymos(exp);
 			progress.close();
@@ -161,7 +161,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 		
 		if (loadCages) {
-			progress = new ProgressFrame("load drosotrack.xml");
+			progress = new ProgressFrame("load fly positions");
 			exp.loadDrosotrack();
 			progress.close();
 			SwingUtilities.invokeLater(new Runnable() { public void run() {

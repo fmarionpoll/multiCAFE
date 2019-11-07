@@ -54,6 +54,7 @@ public class MCMove_File extends JPanel {
 				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 				exp.seqCamData.storeAnalysisParametersToCages();
 				saveCages(exp);
+				parent0.movePane.tabsPane.setSelectedIndex(3);
 			}});
 	}
 

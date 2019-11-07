@@ -16,10 +16,10 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
@@ -46,7 +46,7 @@ public class MCSequence_Open extends JPanel {
 	JCheckBox			measuresCheckBox		= new JCheckBox("measures", true);
 	JCheckBox			graphsCheckBox			= new JCheckBox("graphs", true);
 
-	private JTextField 	filterTextField 		= new JTextField("capillarytrack");
+	private JComboBox<String> filterCombo		= new JComboBox <String>(new String[] { "capillarytrack", "multicafe", "roisline"} );
 	private JButton 	findButton				= new JButton("Select root directory and search...");
 	private JButton 	clearSelectedButton		= new JButton("Clear selected");
 	private JButton 	clearAllButton			= new JButton("Clear all");
@@ -138,7 +138,7 @@ public class MCSequence_Open extends JPanel {
 		mainFrame.setLayout(new BorderLayout());
 		mainFrame.add(mainPanel, BorderLayout.CENTER);
 		
-		mainPanel.add(GuiUtil.besidesPanel(findButton, filterTextField));
+		mainPanel.add(GuiUtil.besidesPanel(findButton, filterCombo));
 		
 		directoriesJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		directoriesJList.setLayoutOrientation(JList.VERTICAL);
@@ -164,7 +164,7 @@ public class MCSequence_Open extends JPanel {
 		findButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0)  {	
-    			final String pattern = filterTextField.getText();
+    			final String pattern = (String) filterCombo.getSelectedItem();
     			if (isSearchRunning) 
     				return;
     	      	SwingUtilities.invokeLater(new Runnable() { public void run() {
