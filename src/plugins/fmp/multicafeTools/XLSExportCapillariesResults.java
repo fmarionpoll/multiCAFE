@@ -205,9 +205,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
 					if (!isAlive(exp.nextExperiment, cagenumber)) {
 						flypos.getLastIntervalAlive();
-//						double bin = (exp.fileTimeImageLastMinute-exp.fileTimeImageFirstMinute)/(double)exp.number_of_frames;
-//						int interval = (int) (flypos.lastTimeAlive / bin) ;
-//						System.out.println("isalive ilastalive="+ilastalive + " lastTimealive="+flypos.lastTimeAlive+ " bin="+bin+ " interval computed="+interval);
 						trimArrayLength(capillaryResult.data, flypos.lastTimeAlive);
 					}
 				}
@@ -385,7 +382,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 				case SUMGULPS_LR:
 					for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
 						int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
-						if (isAlive(exp.nextExperiment, colL/2)) {
+						if (exp.nextExperiment != null && isAlive(exp.nextExperiment, colL/2)) {
 							if (colL >= 0)
 								padpt.x = colseries + colL;			
 							List<Integer> dataL = dataArrayList.get(idataArray).data ;
@@ -414,7 +411,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 					for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
 						int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
 						padpt.x = colseries + col;		
-						if (isAlive(exp.nextExperiment, col/2)) {
+						if (exp.nextExperiment != null && isAlive(exp.nextExperiment, col/2)) {
 							XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
 							List<Integer> data = dataArrayList.get(idataArray).data;
 							if (data != null) {
