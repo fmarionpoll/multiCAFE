@@ -201,17 +201,18 @@ public class XLSExportCapillariesResults extends XLSExport {
 			if (cagenumber == 0 || cagenumber == 9)
 				continue;
 			
+			if (options.collateSeries && exp.nextExperiment != null) {
+				if(exp.nextExperiment.isFlyAlive(cagenumber))
+					continue; 
+			}
 			for (XLSCapillaryResults capillaryResult : resultsArrayList) {
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
-//					if (!exp.isFlyAlive(cagenumber)) {
-						flypos.getLastIntervalAlive();
-						trimArrayLength(capillaryResult.data, flypos.lastTimeAlive);
-//					}
+					flypos.getLastIntervalAlive();
+					trimArrayLength(capillaryResult.data, flypos.lastTimeAlive);
 				}
 			}
 		}		
 	}
-	
 	
 	private void trimArrayLength (List<Integer> array, int ilastalive) {
 		if (array == null)
@@ -221,14 +222,12 @@ public class XLSExportCapillariesResults extends XLSExport {
 			ilastalive = 0;
 		if (ilastalive > (arraysize-1))
 			ilastalive = arraysize-1;
-
 		for (int i=array.size()-1; i> ilastalive; i--)
 			array.remove(i);
 	}
 	
 	private int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, String title, EnumXLSExportItems xlsExportOption, 
 									int col0, String charSeries, List <XLSCapillaryResults> arrayList) {
-			
 		XSSFSheet sheet = workBook.getSheet(title);
 		if (sheet == null) {
 			sheet = workBook.createSheet(title);
