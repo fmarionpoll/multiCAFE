@@ -271,6 +271,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		pt_main.x =0;
 		long tspanMinutes = referenceFileTimeImageLastMinutes-referenceFileTimeImageFirstMinutes;
 		long diff = getnearest(tspanMinutes, step)/ step;
+		
 		long firstImageTimeMinutes = exp.getFileTimeImageFirst(false).toMillis()/60000;;
 		long diff2 = getnearest(firstImageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
 		pt_main.y = (int) (diff2/step + row0); 
@@ -286,6 +287,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 		double valueL = 0.;
 		double valueR = 0.;
 		int currentFrame = 0;
+		
+//		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame );
 		for (currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  options.pivotBinStep) {	
 			pt_main.x = col0;
 			pt_main.y++;
@@ -348,18 +351,13 @@ public class XLSExportCapillariesResults extends XLSExport {
 		if (options.collateSeries && exp.nextExperiment != null) {
 			Point padpt = new Point(pt_main);
 			padpt.x = col0;
-			int start2 = (int) (exp.nextExperiment.fileTimeImageFirstMinute- referenceFileTimeImageFirstMinutes);
-			System.out.println(" padd "+exp.experimentFileName + " to " + exp.nextExperiment.experimentFileName);
-			System.out.println(" currentFrame=" + currentFrame +" start2="+start2 );
-			// TODO
-			
-			for (int nextFrame=currentFrame; nextFrame <= start2; nextFrame+=  options.pivotBinStep) {	
+			int startNextExpt = (int) (exp.nextExperiment.fileTimeImageFirstMinute- exp.fileTimeImageFirstMinute);
+//			System.out.println( "pad to " + exp.nextExperiment.experimentFileName +" from currentFrame=" + currentFrame +" startNextExpt="+startNextExpt );
+			for (int nextFrame=currentFrame; nextFrame <= startNextExpt; nextFrame+=  options.pivotBinStep) {	
 				padpt.x = col0;
 				padpt.y++;
-				// dummy (spacer)
 				XLSUtils.setValue(sheet, padpt, transpose, "xxxT");
 				padpt.x++;
-				// dummy (spacer)
 				if (exp.seqCamData.isFileStack())
 					XLSUtils.setValue(sheet, padpt, transpose, "xxxF" );
 				padpt.x++;

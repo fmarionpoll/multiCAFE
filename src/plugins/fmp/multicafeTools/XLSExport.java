@@ -39,8 +39,9 @@ public class XLSExport {
 	protected Point writeExperimentDescriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, boolean transpose) {	
 		int row = pt.y;
 		int col0 = pt.x;
-
+		XLSUtils.setValue(sheet, pt, transpose, "..");
 		pt.x++;
+		XLSUtils.setValue(sheet, pt, transpose, "..");
 		pt.x++;
 		int colseries = pt.x;
 		
