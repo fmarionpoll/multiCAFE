@@ -349,6 +349,9 @@ public class XLSExportCapillariesResults extends XLSExport {
 			Point padpt = new Point(pt_main);
 			padpt.x = col0;
 			int start2 = (int) (exp.nextExperiment.fileTimeImageFirstMinute- referenceFileTimeImageFirstMinutes);
+			System.out.println(" padd "+exp.experimentFileName + " to " + exp.nextExperiment.experimentFileName);
+			System.out.println(" currentFrame=" + currentFrame +" start2="+start2 );
+			// TODO
 			
 			for (int nextFrame=currentFrame; nextFrame <= start2; nextFrame+=  options.pivotBinStep) {	
 				padpt.x = col0;
