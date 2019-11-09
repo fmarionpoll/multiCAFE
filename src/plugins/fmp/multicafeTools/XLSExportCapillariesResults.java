@@ -369,6 +369,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 				case SUMGULPS_LR:
 					for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
 						int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
+						padpt.x = colseries + colL;
 						boolean flag = true;
 						if (colL >1 && colL < 18) {
 							flag = exp.nextExperiment.isFlyAlive(colL/2); 
@@ -381,23 +382,17 @@ public class XLSExportCapillariesResults extends XLSExport {
 							List<Integer> dataL = dataArrayList.get(idataArray).data ;
 							List<Integer> dataR = dataArrayList.get(idataArray+1).data;
 							if (dataL != null && dataR != null) {
-								int j = dataL.size()-1; 
-								if (j < dataL.size() && j < dataR.size()) {
-									valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
-									XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
-									
-									Point pt0 = new Point(padpt);
-									pt0.x ++;
-									int colR = getColFromKymoFileName(dataArrayList.get(idataArray+1).name);
-									if (colR >= 0)
-										pt0.x = colseries + colR;
-									valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
-									XLSUtils.setValue(sheet, pt0, transpose, valueR); // "xxxR");
-								}
+								int j = dataL.size()-1;
+								int k = dataR.size()-1;
+								if (j != k)
+									System.out.println("j and k are different "+j+ " and "+k+ " respectively");
+								valueL = (dataL.get(j)+dataR.get(k))*scalingFactorToPhysicalUnits;
+								XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
+								padpt.x ++;
+								valueR = (dataL.get(j)-dataR.get(k))*scalingFactorToPhysicalUnits/valueL;
+								XLSUtils.setValue(sheet, padpt, transpose, valueR); // "xxxR");
 							}
 						}
-						padpt.x++;
-						padpt.x++;
 					}
 					break;
 				default:
@@ -415,12 +410,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 							List<Integer> data = dataArrayList.get(idataArray).data;
 							if (data != null) {
 								int j = data.size()-1; 
-								if (j < data.size()) {
-									valueL = data.get(j)*scalingFactorToPhysicalUnits;
-									XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxx-");
-								} else {
-									System.out.println("skip data at col"+col);
-								}
+								valueL = data.get(j)*scalingFactorToPhysicalUnits;
+								XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxx-");
 							} else {
 								System.out.println("skip because data is null");
 							}
@@ -428,7 +419,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 					}
 					break;
 				}
-				
 			}
 		}
 		return pt_main;
