@@ -313,13 +313,10 @@ public class XLSExportCapillariesResults extends XLSExport {
 					if (dataL != null && dataR != null) {
 						int j = currentFrame - startFrame;
 						if (j < dataL.size() && j < dataR.size()) {
-							valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
-							XLSUtils.setValue(sheet, pt_main, transpose, valueL);
 							Point pt0 = new Point(pt_main);
+							valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
+							XLSUtils.setValue(sheet, pt0, transpose, valueL);
 							pt0.x ++;
-							int colR = getColFromKymoFileName(dataArrayList.get(idataArray+1).name);
-							if (colR >= 0)
-								pt0.x = colseries + colR;
 							valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
 							XLSUtils.setValue(sheet, pt0, transpose, valueR);
 						}
@@ -385,7 +382,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 								int j = dataL.size()-1;
 								int k = dataR.size()-1;
 								if (j != k)
-									System.out.println("j and k are different "+j+ " and "+k+ " respectively");
+									System.out.println("idataArray=" + idataArray+" j="+j+ " k="+k+ " difference="+ (j-k));
 								valueL = (dataL.get(j)+dataR.get(k))*scalingFactorToPhysicalUnits;
 								XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
 								padpt.x ++;
