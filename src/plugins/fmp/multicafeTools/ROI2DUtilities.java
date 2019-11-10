@@ -93,8 +93,9 @@ public class ROI2DUtilities  {
 		int roiLine_npoints = line.npoints;
 		
 		// exit if the length of the segment is the same 
-		if (roiLine_npoints == roiLine_nintervals)
+		if (roiLine_npoints == roiLine_nintervals) {
 			return true;
+		}
 		// clip extra points
 		if (roiLine_npoints > roiLine_nintervals)
 			roiLine_npoints = roiLine_nintervals;

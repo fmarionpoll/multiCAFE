@@ -2,11 +2,7 @@ package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,13 +10,9 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
-import icy.canvas.IcyCanvas;
-import icy.canvas.Layer;
 import icy.gui.util.GuiUtil;
-import icy.gui.viewer.Viewer;
-import icy.roi.ROI;
 import plugins.fmp.multicafeSequence.Capillaries;
-import plugins.fmp.multicafeSequence.Experiment;
+
 
 
 public class MCCapillaries_Infos extends JPanel {
@@ -29,7 +21,7 @@ public class MCCapillaries_Infos extends JPanel {
 	 */
 	private static final long serialVersionUID = 4950182090521600937L;
 
-	JCheckBox					visibleCheckBox				= new JCheckBox("ROIs visible", true);
+//	JCheckBox					visibleCheckBox				= new JCheckBox("ROIs visible", true);
 	private JSpinner 			capillaryVolumeTextField	= new JSpinner(new SpinnerNumberModel(5., 0., 100., 1.));
 	private JSpinner 			capillaryPixelsTextField	= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
 	private JComboBox<String> 	stimulusRJCombo				= new JComboBox<String>();
@@ -37,13 +29,12 @@ public class MCCapillaries_Infos extends JPanel {
 	private JComboBox<String> 	stimulusLJCombo				= new JComboBox<String>();
 	private JComboBox<String> 	concentrationLJCombo 		= new JComboBox<String>();
 	
-	private MultiCAFE parent0;
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout) {
 		setLayout(capLayout);
 		
 		add( GuiUtil.besidesPanel(
-				visibleCheckBox,
+				new JLabel(" "), //visibleCheckBox,
 				new JLabel("volume (µl) ", SwingConstants.RIGHT), 
 				capillaryVolumeTextField,  
 				new JLabel("length (pixels) ", SwingConstants.RIGHT), 
@@ -61,17 +52,8 @@ public class MCCapillaries_Infos extends JPanel {
 		concentrationRJCombo.setEditable(true);
 		stimulusLJCombo.setEditable(true);
 		concentrationLJCombo.setEditable(true);	
-		
-		this.parent0 = parent0;
-		defineActionListeners();
 	}
-			
-	private void defineActionListeners() {
-		visibleCheckBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			roisDisplayLine(visibleCheckBox.isSelected());
-		} } );
-	}
-			
+				
 	private JPanel createComboPanel(String text, JComboBox<String> combo) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
@@ -80,24 +62,6 @@ public class MCCapillaries_Infos extends JPanel {
 		return panel;
 	}
 
-	
-	private void roisDisplayLine(boolean isVisible) {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		Viewer v = exp.seqCamData.seq.getFirstViewer();
-		IcyCanvas canvas = v.getCanvas();
-		List<Layer> layers = canvas.getLayers(false);
-		if (layers == null)
-			return;
-		for (Layer layer: layers) {
-			ROI roi = layer.getAttachedROI();
-			if (roi == null)
-				continue;
-			String cs = roi.getName();
-			if (cs.contains("line"))  
-				layer.setVisible(isVisible);
-		}
-	}
-		
 	// set/ get
 	
 	void setCapillariesInfosToDialog(Capillaries cap) {
@@ -109,7 +73,6 @@ public class MCCapillaries_Infos extends JPanel {
 		addItem(concentrationLJCombo, cap.desc.concentrationL);
 	}
 
-	
 	private double getCapillaryVolume() {
 		return (double) capillaryVolumeTextField.getValue();
 	}

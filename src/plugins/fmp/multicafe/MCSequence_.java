@@ -31,6 +31,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	MCSequence_Open 		openTab 	= new MCSequence_Open();
 	MCSequence_Infos		infosTab	= new MCSequence_Infos();
 	MCSequence_Intervals	intervalsTab = new MCSequence_Intervals();
+	MCSequence_Display		displayTab 	= new MCSequence_Display();
 	MCSequence_Close 		closeTab 	= new MCSequence_Close();
 	private MultiCAFE 		parent0 	= null;
 	
@@ -57,6 +58,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		intervalsTab.init(capLayout);
 		tabsPane.addTab("Intervals", null, intervalsTab, "Browse and analysis parameters");
 		intervalsTab.addPropertyChangeListener(this);
+
+		displayTab.init(capLayout, parent0);
+		tabsPane.addTab("Dsiplay", null, intervalsTab, "Display ROIs");
+		displayTab.addPropertyChangeListener(this);
 
 		closeTab.init(capLayout, parent0);
 		tabsPane.addTab("Close", null, closeTab, "Close file and associated windows");

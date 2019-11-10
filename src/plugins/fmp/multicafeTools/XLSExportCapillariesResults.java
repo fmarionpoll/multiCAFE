@@ -277,8 +277,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 		pt_main.y = (int) (diff2/step + row0); 
 		int row_y0 = pt_main.y;
 		for (int i = 0; i<= diff; i++) {
-			diff2 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
-			XLSUtils.setValue(sheet, pt_main, transpose, "t"+diff2);
+			long diff3 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
+			XLSUtils.setValue(sheet, pt_main, transpose, "t"+diff3);
 			imageTimeMinutes += step ;
 			pt_main.y++;
 		}

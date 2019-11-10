@@ -57,7 +57,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		adjustTab.addPropertyChangeListener(parent0);
 		tabsPane.addTab("Adjust", null, adjustTab, "Adjust ROIS position to the capillaries");
 
-		infosTab.init(capLayout, parent0);
+		infosTab.init(capLayout);
 		infosTab.addPropertyChangeListener(this);
 		tabsPane.addTab("Infos", null, infosTab, "Define pixel conversion unit of images and capillaries content");
 
@@ -91,7 +91,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) {
-			infosTab.visibleCheckBox.setSelected(true);
+			parent0.sequencePane.displayTab.viewCapillariesCheckBox.setSelected(true);
 			firePropertyChange("CAPILLARIES_NEW", false, true);
 			tabsPane.setSelectedIndex(2);
 		}
@@ -105,7 +105,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			SequenceKymos seqKymos = exp.seqKymos;
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
 				infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
-				infosTab.visibleCheckBox.setSelected(true);
+				parent0.sequencePane.displayTab.viewCapillariesCheckBox.setSelected(true);
 				buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 				parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 				parent0.sequencePane.intervalsTab.setAnalyzeFrameAndStepToDialog(exp.seqCamData);
@@ -139,7 +139,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		JTabbedPane tabbedPane = (JTabbedPane) arg0.getSource();
         int selectedIndex = tabbedPane.getSelectedIndex();
         adjustTab.roisDisplayrefBar(selectedIndex == 1);
-        infosTab.visibleCheckBox.setSelected(selectedIndex == 2);
+        parent0.sequencePane.displayTab.viewCapillariesCheckBox.setSelected(selectedIndex == 2);
 	}
 
 }
