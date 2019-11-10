@@ -145,6 +145,8 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 			options.transpose 	= optionsTab.transposeCheckBox.isSelected();
 		options.pivotBinStep = (int) optionsTab.pivotBinStep.getValue();
 		options.collateSeries 	= optionsTab.collateSeriesCheckBox.isSelected();
+		options.padIntervals 	= optionsTab.padIntervalsCheckBox.isSelected();
+		
 		options.absoluteTime	= optionsTab.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
 		options.expList = new ExperimentList(); 

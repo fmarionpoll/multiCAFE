@@ -345,7 +345,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		}
 		
 		// pad remaining cells with the last value
-		if (options.collateSeries && exp.nextExperiment != null) {
+		if (options.collateSeries && options.padIntervals && exp.nextExperiment != null) {
 			Point padpt = new Point(pt_main);
 			padpt.x = col0;
 			int startNextExpt = (int) (exp.nextExperiment.fileTimeImageFirstMinute- exp.fileTimeImageFirstMinute);

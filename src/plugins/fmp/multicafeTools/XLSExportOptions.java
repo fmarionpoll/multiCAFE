@@ -23,6 +23,7 @@ public class XLSExportOptions {
 	public boolean 	exportAllFiles 	= true;
 	public boolean 	absoluteTime	= false;
 	public boolean 	collateSeries	= false;
+	public boolean  padIntervals	= true;
 	
 	public int 		firstExp 		= -1;
 	public int 		lastExp 		= -1;

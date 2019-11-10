@@ -25,6 +25,7 @@ public class MCExcel_Options extends JPanel {
 	JCheckBox 	exportAllFilesCheckBox 	= new JCheckBox("all experiments", true);
 	JCheckBox	absoluteTimeCheckBox 	= new JCheckBox("absolute time", false);
 	JCheckBox   collateSeriesCheckBox	= new JCheckBox("collate series", false);
+	JCheckBox   padIntervalsCheckBox	= new JCheckBox("pad intervals", false);
 	JSpinner 	pivotBinStep			= new JSpinner(new SpinnerNumberModel(1, 0, 500, 1));
 	JLabel		pivotStepText			= new JLabel("binning step");
 	
@@ -32,9 +33,9 @@ public class MCExcel_Options extends JPanel {
 	void init(GridLayout capLayout) {	
 		setLayout(capLayout);
 		
-		add(GuiUtil.besidesPanel( exportAllFilesCheckBox, transposeCheckBox, new JLabel(" "), new JLabel(" ")));
+		add(GuiUtil.besidesPanel( exportAllFilesCheckBox, transposeCheckBox, pivotCheckBox, new JLabel(" ")));
 		add(GuiUtil.besidesPanel( collateSeriesCheckBox, pivotCheckBox, new JLabel(" "), new JLabel(" ") )); 
-		add(GuiUtil.besidesPanel( absoluteTimeCheckBox, pivotStepText, pivotBinStep, new JLabel(" "))); 
+		add(GuiUtil.besidesPanel( absoluteTimeCheckBox, padIntervalsCheckBox, pivotBinStep, new JLabel(" "))); 
 		
 		pivotCheckBox.addActionListener(new ActionListener() {
 		    @Override
@@ -44,6 +45,15 @@ public class MCExcel_Options extends JPanel {
 		        if (isSelected)
 		        	transposeCheckBox.setSelected(true);
 		    }});
+		
+		   collateSeriesCheckBox.addActionListener(new ActionListener() {
+			    @Override
+			    public void actionPerformed(ActionEvent event) {
+			        JCheckBox cb = (JCheckBox) event.getSource();
+			        boolean isSelected = cb.isSelected();
+			        padIntervalsCheckBox.setEnabled(isSelected);
+			    }});
+		
 	}
 
 }
