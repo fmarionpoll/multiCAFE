@@ -60,7 +60,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		intervalsTab.addPropertyChangeListener(this);
 
 		displayTab.init(capLayout, parent0);
-		tabsPane.addTab("Dsiplay", null, intervalsTab, "Display ROIs");
+		tabsPane.addTab("Display", null, displayTab, "Display ROIs");
 		displayTab.addPropertyChangeListener(this);
 
 		closeTab.init(capLayout, parent0);
