@@ -1,7 +1,6 @@
 package plugins.fmp.multicafeTools;
 
 import java.awt.Point;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ public class XLSExportMoveResults extends XLSExport {
 		
 		System.out.println("XLS move output");
 		options = opt;
-		ProgressFrame progress = new ProgressFrame("Export data to Excel");
 		
 		try { 
 			XSSFWorkbook workbook = new XSSFWorkbook(); 
@@ -36,12 +34,14 @@ public class XLSExportMoveResults extends XLSExport {
 			options.expList.chainExperiments(options);
 			expAll = options.expList.getStartAndEndFromAllExperiments(options);
 			expAll.step = options.expList.experimentList.get(0).seqCamData.analysisStep;
-			
-			progress.setMessage( "Load measures...");
-			progress.setLength(options.expList.experimentList.size());
+			int nbexpts = options.expList.experimentList.size();
+			ProgressFrame progress = new ProgressFrame("Export data to Excel");
+			progress.setLength(nbexpts);
 
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
 				Experiment exp = options.expList.experimentList.get(index);
+				
+				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 			
 				if (options.xyCenter)  	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportItems.XYCENTER);
@@ -71,11 +71,12 @@ public class XLSExportMoveResults extends XLSExport {
 			workbook.write(fileOut);
 	        fileOut.close();
 	        workbook.close();
+	        progress.close();
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		progress.close();
 		System.out.println("XLS output finished");
 	}
 	
@@ -101,20 +102,27 @@ public class XLSExportMoveResults extends XLSExport {
 	}
 
 	public int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, int col0, String charSeries, EnumXLSExportItems xlsExportOption) {
-		List <ArrayList<Double >> arrayList = getDataFromCages(exp, xlsExportOption);
 		XSSFSheet sheet = workBook.getSheet(xlsExportOption.toString());
-		if (sheet == null) 
+		if (sheet == null) {
 			sheet = workBook.createSheet(xlsExportOption.toString());
+			outputFieldHeaders(sheet, options.transpose);
+		}
 		Point pt = new Point(col0, 0);
 		if (options.collateSeries) {
 			pt.x = options.expList.getStackColumnPosition(exp, col0);
 		}
-		pt = writeGlobalInfos(exp, sheet, pt, options.transpose, xlsExportOption);
-		pt = writeHeader(exp, sheet, pt, xlsExportOption, options.transpose, charSeries);
+//		pt = writeGlobalInfos(exp, sheet, pt, options.transpose, xlsExportOption);
+//		pt = writeHeader(exp, sheet, pt, xlsExportOption, options.transpose, charSeries);
+		if (exp.previousExperiment == null)
+			writeExperimentDescriptors(exp, charSeries, sheet, pt, options.transpose);
+		else
+			pt.y += 17;
+		
+		List <ArrayList<Double >> arrayList = getDataFromCages(exp, xlsExportOption);
 		pt = writeData(exp, sheet, pt, xlsExportOption, arrayList, options.transpose, charSeries);
 		return pt.x;
 	}
-	
+/*	
 	private Point writeGlobalInfos(Experiment exp, XSSFSheet sheet, Point pt, boolean transpose, EnumXLSExportItems option) {
 		int col0 = pt.x;
 		XLSUtils.setValue(sheet, pt, transpose, "expt");
@@ -191,18 +199,18 @@ public class XLSExportMoveResults extends XLSExport {
 		pt.y++;
 		return pt;
 	}
-	
-	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt, EnumXLSExportItems option, 
+*/	
+
+	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportItems option, 
 								List <ArrayList<Double >> dataArrayList, boolean transpose, String charSeries) {
-		int col0 = pt.x;
-		int row0 = pt.y;
+		int col0 = pt_main.x;
+		int row0 = pt_main.y;
 		if (charSeries == null)
 			charSeries = "t";
 		int startFrame 	= (int) exp.seqCamData.analysisStart;
 		int endFrame 	= (int) exp.seqCamData.analysisEnd;
 		int step 		= expAll.step * options.pivotBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
-		
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
 		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;
 		if (options.absoluteTime) {
@@ -210,79 +218,91 @@ public class XLSExportMoveResults extends XLSExport {
 			referenceFileTimeImageLastMinutes = expAll.fileTimeImageLastMinute;
 		}
 			
-		pt.x =0;
+		pt_main.x =0;
 		long tspanMinutes = referenceFileTimeImageLastMinutes-referenceFileTimeImageFirstMinutes;
 		long diff = getnearest(tspanMinutes, step)/ step;
+		
 		long firstImageTimeMinutes = exp.getFileTimeImageFirst(false).toMillis()/60000;;
 		long diff2 = getnearest(firstImageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
-		pt.y = (int) (diff2/step + row0); 
-		int row_y0 = pt.y;
+		pt_main.y = (int) (diff2/step + row0); 
+		int row_y0 = pt_main.y;
 		for (int i = 0; i<= diff; i++) {
-			diff2 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
-			XLSUtils.setValue(sheet, pt, transpose, "t"+diff2);
+			long diff3 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
+			XLSUtils.setValue(sheet, pt_main, transpose, "t"+diff3);
 			imageTimeMinutes += step ;
-			pt.y++;
+			pt_main.y++;
 		}
 		
-		pt.y = row_y0 -1;
-		for (int currentFrame=startFrame; currentFrame< endFrame; currentFrame+= step  * options.pivotBinStep) {
-			pt.x = col0;
-			pt.y++;
+		pt_main.y = row_y0 -1;
+		int currentFrame = 0;
+//		int t = 0;
+		
+		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame);
+		for (currentFrame=startFrame; currentFrame< endFrame; currentFrame+= step  * options.pivotBinStep, t++) {
+			pt_main.x = col0;
+			pt_main.y++;
 			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;
-			pt.x++;
-			XLSUtils.setValue(sheet, pt, transpose, imageTimeMinutes);
-			pt.x++;
-			if (exp.seqCamData.isFileStack()) {
-				XLSUtils.setValue(sheet, pt, transpose, getShortenedName(exp.seqCamData, currentFrame) );
-			}
-			pt.x++;
+			XLSUtils.setValue(sheet, pt_main, transpose, imageTimeMinutes);
+			pt_main.x++;
+			if (exp.seqCamData.isFileStack()) 
+				XLSUtils.setValue(sheet, pt_main, transpose, getShortenedName(exp.seqCamData, currentFrame) );
+			pt_main.x++;
 			
-			int t = (currentFrame - startFrame)/step;
+			int colseries = pt_main.x;
 			switch (option) {
 			case DISTANCE:
-				for (int idataArray=0; idataArray < dataArrayList.size(); idataArray++ ) 
-				{
-					XLSUtils.setValue(sheet, pt, transpose, dataArrayList.get(idataArray).get(t));
-					pt.x++;
-					XLSUtils.setValue(sheet, pt, transpose, dataArrayList.get(idataArray).get(t));
-					pt.x++;
+				for (int idataArray=0; idataArray < dataArrayList.size(); idataArray++ ) {
+					int col = getColFromCageName(exp.seqCamData.cages.cageList.get(idataArray)) * 2;
+					if (col >= 0)
+						pt_main.x = colseries + col;			
+					XLSUtils.setValue(sheet, pt_main, transpose, dataArrayList.get(idataArray).get(t));
+					pt_main.x++;
+					XLSUtils.setValue(sheet, pt_main, transpose, dataArrayList.get(idataArray).get(t));
+					pt_main.x++;
 				}
 				break;
 			case ISALIVE:
 				for (int idataArray=0; idataArray < dataArrayList.size(); idataArray++ ) {
+					int col = getColFromCageName(exp.seqCamData.cages.cageList.get(idataArray))*2;
+					if (col >= 0)
+						pt_main.x = colseries + col;			
 					Double value = dataArrayList.get(idataArray).get(t);
 					if (value > 0) {
-						XLSUtils.setValue(sheet, pt, transpose, value );
-						pt.x++;
-						XLSUtils.setValue(sheet, pt, transpose, value);
-						pt.x++;
+						XLSUtils.setValue(sheet, pt_main, transpose, value );
+						pt_main.x++;
+						XLSUtils.setValue(sheet, pt_main, transpose, value);
+						pt_main.x++;
 					}
 					else
-						pt.x += 2;
+						pt_main.x += 2;
 				}
 				break;
 
 			case XYCENTER:
 			default:
-				for (int iDataArray=0; iDataArray < dataArrayList.size(); iDataArray++ ) {
+				for (int idataArray=0; idataArray < dataArrayList.size(); idataArray++ ) {
+					int col = getColFromCageName(exp.seqCamData.cages.cageList.get(idataArray)) * 2;
+					if (col >= 0)
+						pt_main.x = colseries + col;			
 					int iarray = t*2;
-					XLSUtils.setValue(sheet, pt, transpose, dataArrayList.get(iDataArray).get(iarray));
-					pt.x++;
-					XLSUtils.setValue(sheet, pt, transpose, dataArrayList.get(iDataArray).get(iarray+1));
-					pt.x++;
+					XLSUtils.setValue(sheet, pt_main, transpose, dataArrayList.get(idataArray).get(iarray));
+					pt_main.x++;
+					XLSUtils.setValue(sheet, pt_main, transpose, dataArrayList.get(idataArray).get(iarray+1));
+					pt_main.x++;
 				}
 				break;
 			}
 		} 
-		pt.x = columnOfNextSeries(exp, option, col0);
-		return pt;
+//		pt_main.x = columnOfNextSeries(exp, option, col0);
+		return pt_main;
 	}
 
+	/*
 	private int columnOfNextSeries(Experiment exp, EnumXLSExportItems option, int currentcolumn) {
 		int n = 2;
 		int value = currentcolumn + exp.seqCamData.cages.cageList.size() * n + 3;
 		return value;
 	}
-	
+	*/
 	
 }

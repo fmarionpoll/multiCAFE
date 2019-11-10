@@ -29,7 +29,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -4296207607692017074L;
-	private JTabbedPane 		tabsPane 		= new JTabbedPane();
+	private JTabbedPane 	tabsPane 		= new JTabbedPane();
 	private MCExcel_Options	optionsTab		= new MCExcel_Options();
 	private MCExcel_Kymos	kymosTab		= new MCExcel_Kymos();
 	private MCExcel_Move 	moveTab  		= new MCExcel_Move();
@@ -79,7 +79,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 			return;
 		
 		if (evt.getPropertyName().equals("EXPORT_MOVEDATA")) {
-			String file = defineXlsFileName(exp);
+			String file = defineXlsFileName(exp, "_move.xlsx");
 			if (file == null)
 				return;
 			updateParametersCurrentExperiment(exp);
@@ -89,7 +89,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 			}});
 		}
 		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
-			String file = defineXlsFileName(exp);
+			String file = defineXlsFileName(exp, "_feeding.xlsx");
 			if (file == null)
 				return;
 			updateParametersCurrentExperiment(exp);
@@ -101,11 +101,11 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
-	private String defineXlsFileName(Experiment exp) {
+	private String defineXlsFileName(Experiment exp, String pattern) {
 		String filename0 = exp.seqCamData.getFileName(0);
 		Path directory = Paths.get(filename0).getParent();
 		Path subpath = directory.getName(directory.getNameCount()-1);
-		String tentativeName = subpath.toString()+"_feeding.xlsx";
+		String tentativeName = subpath.toString()+ pattern;
 		return MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
 	}
 	

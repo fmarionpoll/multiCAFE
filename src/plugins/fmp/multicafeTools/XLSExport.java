@@ -16,6 +16,7 @@ import org.apache.poi.xssf.usermodel.XSSFPivotTable;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
@@ -229,7 +230,7 @@ public class XLSExport {
 		xlsCreatePivotTable(workBook, "pivot_n", fromWorkbook, DataConsolidateFunction.COUNT);
 	}
 	
-	public int getColFromKymoFileName(String name) {
+	protected int getColFromKymoFileName(String name) {
 		if (!name .contains("line"))
 			return -1;
 
@@ -246,6 +247,16 @@ public class XLSExport {
 					numFromName = numFromName* 2;
 			}
 		}
+		return numFromName;
+	}
+	
+	protected int getColFromCageName(Cage cage) {
+		String name = cage.cageLimitROI.getName();
+		if (!name .contains("cage"))
+			return -1;
+		
+		String num = name.substring(4, name.length());
+		int numFromName = Integer.parseInt(num);
 		return numFromName;
 	}
 	
