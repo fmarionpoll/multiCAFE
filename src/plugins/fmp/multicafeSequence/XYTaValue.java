@@ -26,7 +26,7 @@ public class XYTaValue implements XMLPersistent {
 		this.time = time;
 		this.alive = alive;
 	}
-
+	
 	@Override
 	public boolean loadFromXML(Node node) {
 		if (node == null)

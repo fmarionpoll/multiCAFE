@@ -1,10 +1,9 @@
 package plugins.fmp.multicafeTools;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.ss.usermodel.Row;
@@ -14,8 +13,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafeSequence.Cage;
+import plugins.fmp.multicafeSequence.Cages;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.XYTaSeries;
+
 
 public class XLSExportMoveResults extends XLSExport {
 
@@ -79,27 +79,6 @@ public class XLSExportMoveResults extends XLSExport {
 		
 		System.out.println("XLS output finished");
 	}
-	
-	private static List <ArrayList<Double>> getDataFromCages(Experiment exp, EnumXLSExportItems option) {
-		List<ArrayList<Double>> arrayList = new ArrayList <ArrayList <Double>> ();
-		for (Cage cage: exp.seqCamData.cages.cageList) {
-			XYTaSeries posxyt = cage.flyPositions;
-			switch (option) {
-			case DISTANCE: 
-				arrayList.add((ArrayList<Double>) posxyt.getDoubleArrayList(EnumListType.distance));
-				break;
-			case ISALIVE:
-				arrayList.add((ArrayList<Double>) posxyt.getDoubleArrayList(EnumListType.isalive));
-				// TODO add threshold to cleanup data?
-				break;
-			case XYCENTER:
-			default:
-				arrayList.add((ArrayList<Double>) posxyt.getDoubleArrayList(EnumListType.xyPosition));
-				break;
-			}
-		}
-		return arrayList;
-	}
 
 	public int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, int col0, String charSeries, EnumXLSExportItems xlsExportOption) {
 		XSSFSheet sheet = workBook.getSheet(xlsExportOption.toString());
@@ -118,8 +97,7 @@ public class XLSExportMoveResults extends XLSExport {
 		else
 			pt.y += 17;
 		
-		List <ArrayList<Double >> arrayList = getDataFromCages(exp, xlsExportOption);
-		pt = writeData(exp, sheet, pt, xlsExportOption, arrayList, options.transpose, charSeries);
+		pt = writeData(exp, sheet, pt, xlsExportOption, options.transpose, charSeries);
 		return pt.x;
 	}
 /*	
@@ -201,8 +179,7 @@ public class XLSExportMoveResults extends XLSExport {
 	}
 */	
 
-	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportItems option, 
-								List <ArrayList<Double >> dataArrayList, boolean transpose, String charSeries) {
+	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportItems option, boolean transpose, String charSeries) {
 		int col0 = pt_main.x;
 		int row0 = pt_main.y;
 		if (charSeries == null)
@@ -235,10 +212,11 @@ public class XLSExportMoveResults extends XLSExport {
 		
 		pt_main.y = row_y0 -1;
 		int currentFrame = 0;
-//		int t = 0;
+		int previousIndex = 0;
+		int currentIndex = 0;
 		
 		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame);
-		for (currentFrame=startFrame; currentFrame< endFrame; currentFrame+= step  * options.pivotBinStep, t++) {
+		for (currentFrame=startFrame; currentFrame< endFrame; currentFrame+= options.pivotBinStep) {
 			pt_main.x = col0;
 			pt_main.y++;
 			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;
@@ -249,24 +227,28 @@ public class XLSExportMoveResults extends XLSExport {
 			pt_main.x++;
 			
 			int colseries = pt_main.x;
+			Cages cages = exp.seqCamData.cages;
+			currentIndex = currentFrame - startFrame;
 			switch (option) {
 			case DISTANCE:
-				for (int idataArray=0; idataArray < dataArrayList.size(); idataArray++ ) {
-					int col = getColFromCageName(exp.seqCamData.cages.cageList.get(idataArray)) * 2;
+				for (Cage cage: cages.cageList ) {
+					int col = getColFromCageName(cage) * 2;
 					if (col >= 0)
-						pt_main.x = colseries + col;			
-					XLSUtils.setValue(sheet, pt_main, transpose, dataArrayList.get(idataArray).get(t));
+						pt_main.x = colseries + col;
+					Double value = cage.flyPositions.getSimpleDistanceBetween2Points(previousIndex, currentIndex);
+					XLSUtils.setValue(sheet, pt_main, transpose, value);
 					pt_main.x++;
-					XLSUtils.setValue(sheet, pt_main, transpose, dataArrayList.get(idataArray).get(t));
+					XLSUtils.setValue(sheet, pt_main, transpose, value);
 					pt_main.x++;
 				}
 				break;
+				
 			case ISALIVE:
-				for (int idataArray=0; idataArray < dataArrayList.size(); idataArray++ ) {
-					int col = getColFromCageName(exp.seqCamData.cages.cageList.get(idataArray))*2;
+				for (Cage cage: cages.cageList ) {
+					int col = getColFromCageName(cage)*2;
 					if (col >= 0)
-						pt_main.x = colseries + col;			
-					Double value = dataArrayList.get(idataArray).get(t);
+						pt_main.x = colseries + col;
+					int value = cage.flyPositions.isAliveAt(currentIndex);
 					if (value > 0) {
 						XLSUtils.setValue(sheet, pt_main, transpose, value );
 						pt_main.x++;
@@ -280,29 +262,20 @@ public class XLSExportMoveResults extends XLSExport {
 
 			case XYCENTER:
 			default:
-				for (int idataArray=0; idataArray < dataArrayList.size(); idataArray++ ) {
-					int col = getColFromCageName(exp.seqCamData.cages.cageList.get(idataArray)) * 2;
+				for (Cage cage: cages.cageList ) {
+					int col = getColFromCageName(cage)*2;
 					if (col >= 0)
 						pt_main.x = colseries + col;			
-					int iarray = t*2;
-					XLSUtils.setValue(sheet, pt_main, transpose, dataArrayList.get(idataArray).get(iarray));
+					Point2D point = cage.flyPositions.getPointAt(currentIndex);
+					XLSUtils.setValue(sheet, pt_main, transpose, point.getX());
 					pt_main.x++;
-					XLSUtils.setValue(sheet, pt_main, transpose, dataArrayList.get(idataArray).get(iarray+1));
+					XLSUtils.setValue(sheet, pt_main, transpose, point.getY());
 					pt_main.x++;
 				}
 				break;
 			}
+			previousIndex = currentIndex;
 		} 
-//		pt_main.x = columnOfNextSeries(exp, option, col0);
 		return pt_main;
 	}
-
-	/*
-	private int columnOfNextSeries(Experiment exp, EnumXLSExportItems option, int currentcolumn) {
-		int n = 2;
-		int value = currentcolumn + exp.seqCamData.cages.cageList.size() * n + 3;
-		return value;
-	}
-	*/
-	
 }

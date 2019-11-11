@@ -106,7 +106,6 @@ public class XYTaSeries implements XMLPersistent {
 	}
 	
 	public List<Double> getDoubleArrayList (EnumListType option) {
-		
 		if (pointsList.size() == 0)
 			return null;
 		List<Double> datai = null;
@@ -196,5 +195,52 @@ public class XYTaSeries implements XMLPersistent {
 		if (lastIntervalAlive >= 0)
 			return lastIntervalAlive;
 		return computeLastIntervalAlive();
+	}
+	
+	public int getTimeBinSize () {
+		return pointsList.get(1).time - pointsList.get(0).time;
+	}
+	
+	public Point2D getPointAt (int timeIndex) {
+		if (pointsList.size() < 1)
+			return null;
+		int delta = getTimeBinSize();
+		int indexXYTarray = timeIndex / delta;
+		Point2D previous = new Point2D.Double();
+		previous = pointsList.get(indexXYTarray).point;
+		return previous;
+	}
+	
+	public Double getIntegratedDistanceBetween2Points(int firstTimeIndex, int secondTimeIndex) {
+		Double distance=0.;
+		int index1 = firstTimeIndex / getTimeBinSize();
+		int index2 = secondTimeIndex / getTimeBinSize();
+		
+		Point2D previous = new Point2D.Double();
+		previous = pointsList.get(index1).point;
+		for (int index = index1; index <= index2; index++) {
+			XYTaValue pos = pointsList.get(index);
+			distance += pos.point.distance(previous); 
+			previous = pos.point;
+		}
+		return distance;
+	}
+	
+	public Double getSimpleDistanceBetween2Points(int firstTimeIndex, int secondTimeIndex) {
+		int index1 = firstTimeIndex / getTimeBinSize();
+		int index2 = secondTimeIndex / getTimeBinSize();
+		
+		Point2D previous = new Point2D.Double();
+		previous = pointsList.get(index1).point;
+		XYTaValue pos = pointsList.get(index2);
+		Double distance = pos.point.distance(previous); 
+		return distance;
+	}
+	
+	public int isAliveAt(int timeIndex) {
+		getLastIntervalAlive();
+		int index = timeIndex / getTimeBinSize();
+		XYTaValue pos = pointsList.get(index);
+		return (pos.alive ? 1: 0); 
 	}
 }
