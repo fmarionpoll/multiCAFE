@@ -122,16 +122,19 @@ public class MCSequence_Infos  extends JPanel {
 		
 	// set/ get
 	
-	void setCapillariesInfosToDialog(Capillaries cap) {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		
+	void setExperimentsInfosToDialog(Experiment exp, Capillaries cap) {
+		if (exp.boxID .equals(".."))
+			exp.boxID = cap.desc.old_boxID;
 		addItem(boxID_JCombo, exp.boxID);
+		if (exp.experiment.equals(".."))
+			exp.experiment = cap.desc.old_experiment;
 		addItem(experimentJCombo, exp.experiment);
+		if (exp.comment .equals(".."))
+			exp.comment = cap.desc.old_comment;
 		addItem(commentJCombo, exp.comment);
 	}
 
-	void getCapillariesInfosFromDialog(Capillaries cap) {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+	void getExperimentInfosFromDialog(Experiment exp) {
 		exp.boxID = (String) boxID_JCombo.getSelectedItem();
 		exp.experiment = (String) experimentJCombo.getSelectedItem();
 		exp.comment = (String) commentJCombo.getSelectedItem();

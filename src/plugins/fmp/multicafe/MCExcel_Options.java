@@ -29,7 +29,7 @@ public class MCExcel_Options extends JPanel {
 	
 	JCheckBox	absoluteTimeCheckBox 	= new JCheckBox("absolute time", false);
 	JCheckBox	pivotCheckBox 			= new JCheckBox("pivot", false);
-	JSpinner 	pivotBinStep			= new JSpinner(new SpinnerNumberModel(60, 1, 10000, 10));
+	JSpinner 	pivotBinStep			= new JSpinner(new SpinnerNumberModel(1, 1, 10000, 10));
 	JLabel		pivotStepText			= new JLabel("binning step: ", SwingConstants.RIGHT);
 	
 	

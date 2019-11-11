@@ -15,9 +15,9 @@ public class CapillariesDescription {
 	public long 	analysisEnd 		= 0;
 	public int 		analysisStep 		= 1;
 	
-	public String 	old_boxID			= new String("boxID");
-	public String	old_experiment		= new String("experiment");
-	public String 	old_comment			= new String("...");
+	public String 	old_boxID			= new String("..");
+	public String	old_experiment		= new String("..");
+	public String 	old_comment			= new String("..");
 	
 	public int		grouping 			= 2;
 	public String 	stimulusR			= new String("stimulusR");
@@ -48,6 +48,7 @@ public class CapillariesDescription {
 	private final static String ID_BOXID = "boxID";
 	private final static String ID_EXPT = "expt";
 	private final static String ID_COMMENT = "comment";
+	private final static String ID_NOPE = "..";
 
 	
 
@@ -158,9 +159,9 @@ public class CapillariesDescription {
 		
 		xmlVal = XMLUtil.getElement(xmlElement, ID_EXPERIMENT);
 		if (xmlVal != null) {
-			old_boxID 		= XMLUtil.getAttributeValue(xmlVal, ID_BOXID, ID_BOXID);
-			old_experiment 	= XMLUtil.getAttributeValue(xmlVal, ID_EXPT, "experiment");
-			old_comment 	= XMLUtil.getAttributeValue(xmlVal, ID_COMMENT, ".");
+			old_boxID 		= XMLUtil.getAttributeValue(xmlVal, ID_BOXID, ID_NOPE);
+			old_experiment 	= XMLUtil.getAttributeValue(xmlVal, ID_EXPT, ID_NOPE);
+			old_comment 	= XMLUtil.getAttributeValue(xmlVal, ID_COMMENT,ID_NOPE);
 		}
 		return true;
 	}
@@ -195,9 +196,9 @@ public class CapillariesDescription {
 		
 		xmlVal = XMLUtil.getElement(xmlElement, ID_EXPERIMENT);
 		if (xmlVal != null) {
-			old_boxID 		= XMLUtil.getAttributeValue(xmlVal, ID_BOXID, ID_BOXID);
-			old_experiment 	= XMLUtil.getAttributeValue(xmlVal, ID_EXPT, "experiment");
-			old_comment 	= XMLUtil.getAttributeValue(xmlVal, ID_COMMENT, ".");
+			old_boxID 		= XMLUtil.getElementValue(xmlVal, ID_BOXID, ID_NOPE);
+			old_experiment 	= XMLUtil.getElementValue(xmlVal, ID_EXPT, ID_NOPE);
+			old_comment 	= XMLUtil.getElementValue(xmlVal, ID_COMMENT, ID_NOPE);
 		}
 		
 		return true;

@@ -111,7 +111,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	
 	private void updateParametersCurrentExperiment(Experiment exp) {
 		parent0.capillariesPane.getCapillariesInfos(exp.seqKymos.capillaries);
-		parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(exp.seqKymos.capillaries);
+		parent0.sequencePane.infosTab.getExperimentInfosFromDialog(exp);
 	}
 	
 	private XLSExportOptions getMoveOptions() {
@@ -141,7 +141,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	
 	private void getCommonOptions(XLSExportOptions options) {
 		options.pivot 			= optionsTab.pivotCheckBox.isSelected();
-		options.transpose 	= true;
+		options.transpose 		= true;
 		if (!options.pivot) 
 			options.transpose 	= optionsTab.transposeCheckBox.isSelected();
 		options.pivotBinStep = (int) optionsTab.pivotBinStep.getValue();

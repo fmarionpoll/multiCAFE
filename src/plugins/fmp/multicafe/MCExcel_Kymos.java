@@ -21,9 +21,7 @@ public class MCExcel_Kymos extends JPanel  {
 
 	JButton 	exportToXLSButton 	= new JButton("save XLS");
 	JCheckBox 	topLevelCheckBox 	= new JCheckBox("top", true);
-	JCheckBox 	topLevelDeltaCheckBox 	= new JCheckBox("delta top", true);
-
-
+	JCheckBox 	topLevelDeltaCheckBox 	= new JCheckBox("delta top", false);
 	
 	JCheckBox 	bottomLevelCheckBox = new JCheckBox("bottom", false);
 	JCheckBox 	consumptionCheckBox = new JCheckBox("gulps", false);

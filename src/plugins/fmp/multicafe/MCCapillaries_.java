@@ -107,8 +107,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 				infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 				parent0.sequencePane.displayTab.viewCapillariesCheckBox.setSelected(true);
 				buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
-				parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
-				parent0.sequencePane.intervalsTab.setAnalyzeFrameAndStepToDialog(exp.seqCamData);
+				parent0.sequencePane.infosTab.setExperimentsInfosToDialog(exp, seqKymos.capillaries);
+				parent0.sequencePane.intervalsTab.setAnalyzeFrameAndStepToDialog(exp);
 			}});
 		}
 		return flag;
@@ -122,7 +122,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		seqKymos.capillaries.desc_old.copy(seqKymos.capillaries.desc);
 		infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 		buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
-		parent0.sequencePane.infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
+		parent0.sequencePane.infosTab.setExperimentsInfosToDialog(exp, seqKymos.capillaries);
 	}
 	
 	boolean saveCapillaryTrack(Experiment exp) {

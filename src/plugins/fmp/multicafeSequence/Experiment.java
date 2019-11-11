@@ -28,9 +28,9 @@ public class Experiment {
 	public int 				endFrame 					= 0;
 	public int 				step 						= 1;
 	
-	public String			boxID 						= null;
-	public String			experiment					= new String("experiment");
-	public String 			comment						= new String("...");
+	public String			boxID 						= new String("..");
+	public String			experiment					= new String("..");
+	public String 			comment						= new String("..");
 	
 	public int				col							= -1;
 	public Experiment 		previousExperiment			= null;		// pointer to chain this experiment to another one before
@@ -73,7 +73,6 @@ public class Experiment {
 	public Experiment(SequenceCamData seq) {
 		seqCamData = seq;
 		seqKymos   = new SequenceKymos();
-		
 		seqCamData.setParentDirectoryAsFileName() ;
 		fileTimeImageFirst = seqCamData.getImageFileTime(0);
 		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
@@ -96,6 +95,7 @@ public class Experiment {
 			return false;
 
 		seqCamData.xmlReadDrosoTrackDefault();
+		
 		return true;
 	}
 	
@@ -117,7 +117,7 @@ public class Experiment {
 			if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 				return false;
 		}
-		if (!flag) {
+		if (!flag || boxID .equals ("..")) {
 			boxID= seqKymos.capillaries.desc.old_boxID;
 			experiment= seqKymos.capillaries.desc.old_experiment;
 			comment= seqKymos.capillaries.desc.old_comment;
@@ -159,9 +159,9 @@ public class Experiment {
 			startFrame 	= XMLUtil.getElementIntValue(node, ID_STARTFRAME, startFrame);
 			endFrame 	= XMLUtil.getElementIntValue(node, ID_ENDFRAME, endFrame);
 			step 		= XMLUtil.getElementIntValue(node, ID_STEP, step);
-			boxID 		= XMLUtil.getElementValue(node, ID_BOXID, boxID);
-	        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, experiment);
-	        comment 	= XMLUtil.getElementValue(node, ID_COMMENT, comment);
+			boxID 		= XMLUtil.getElementValue(node, ID_BOXID, "..");
+	        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
+	        comment 	= XMLUtil.getElementValue(node, ID_COMMENT, "..");
 		}
 		return true;
 	}

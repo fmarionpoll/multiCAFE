@@ -12,6 +12,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
@@ -44,16 +45,25 @@ public class MCSequence_Intervals extends JPanel {
 
 	}
 		
-	void setAnalyzeFrameAndStepToDialog (SequenceCamData seq) {
+	void setAnalyzeFrameAndStepToDialog (Experiment exp) {
+		SequenceCamData seq = exp.seqCamData;
+		
 		endFrameJSpinner.setValue((int) seq.analysisEnd);
 		startFrameJSpinner.setValue((int) seq.analysisStart);
-		analyzeStepJSpinner.setValue(seq.analysisStep);
+		exp.startFrame = (int) seq.analysisStart;
+		exp.endFrame = (int) seq.analysisEnd;
+		analyzeStepJSpinner.setValue(exp.step);
 	}
 	
-	void getAnalyzeFrameAndStepFromDialog (SequenceCamData seq) {
+	void getAnalyzeFrameAndStepFromDialog (Experiment exp) {		
+		exp.startFrame 	= (int) startFrameJSpinner.getValue();
+		exp.endFrame 	= (int) endFrameJSpinner.getValue();
+		exp.step 		= (int) analyzeStepJSpinner.getValue();
+		SequenceCamData seq = exp.seqCamData;
 		seq.analysisStart 	= (int) startFrameJSpinner.getValue();
 		seq.analysisEnd 	= (int) endFrameJSpinner.getValue();
 		seq.analysisStep 	= (int) analyzeStepJSpinner.getValue();
+
 	}
 
 }

@@ -91,7 +91,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if (arg0.getPropertyName().equals("CAPILLARIES_OPEN")) {
 			Experiment exp = expList.getExperiment(currentIndex);
-			sequencePane.intervalsTab.setAnalyzeFrameAndStepToDialog(exp.seqCamData);
+			sequencePane.intervalsTab.setAnalyzeFrameAndStepToDialog(exp);
 		}
 		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
 			buildKymosPane.displayTab.displayUpdateOnSwingThread();
@@ -113,13 +113,16 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			seqCamData = new SequenceCamData();
 			if (null != seqCamData.loadSequence(filename)) {
 				exp = new Experiment(seqCamData);
+				exp.xmlLoadExperiment();
 				currentIndex = expList.addExperiment(exp);
 			}
 			
 		} else {
 			exp = expList.getExperiment(currentIndex);
+			exp.xmlLoadExperiment();
 			seqCamData = exp.openSequenceCamData(filename);
 		}
+		
 		
 		if (seqCamData.seq != null) {
 			addSequence(seqCamData.seq);
