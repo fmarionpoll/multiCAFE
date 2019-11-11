@@ -21,6 +21,8 @@ public class MCExcel_Kymos extends JPanel  {
 
 	JButton 	exportToXLSButton 	= new JButton("save XLS");
 	JCheckBox 	topLevelCheckBox 	= new JCheckBox("top", true);
+	JCheckBox 	topLevelDeltaCheckBox 	= new JCheckBox("delta top", true);
+
 
 	
 	JCheckBox 	bottomLevelCheckBox = new JCheckBox("bottom", false);
@@ -32,7 +34,7 @@ public class MCExcel_Kymos extends JPanel  {
 	
 	void init(GridLayout capLayout) {	
 		setLayout(capLayout);
-		add(GuiUtil.besidesPanel( topLevelCheckBox, bottomLevelCheckBox, consumptionCheckBox, new JLabel(" ")));
+		add(GuiUtil.besidesPanel( topLevelCheckBox, topLevelDeltaCheckBox, consumptionCheckBox, bottomLevelCheckBox));
 		add(GuiUtil.besidesPanel( t0CheckBox, sumCheckBox, new JLabel(" "), new JLabel(" "))); 
 		add(GuiUtil.besidesPanel( onlyaliveCheckBox, new JLabel(" "), new JLabel(" "), exportToXLSButton)); 
 		defineActionListeners();

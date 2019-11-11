@@ -46,11 +46,13 @@ public class XLSExportCapillariesResults extends XLSExport {
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				if (options.topLevel) 		col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVEL);
+				if (options.topLevelDelta) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVELDELTA);
 				if (options.bottomLevel) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.BOTTOMLEVEL);		
 				if (options.derivative) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.DERIVEDVALUES);	
 				if (options.consumption) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.SUMGULPS);
 				if (options.sum) {		
 					if (options.topLevel) 		col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVEL_LR);
+					if (options.topLevelDelta) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVELDELTA_LR);
 					if (options.consumption) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.SUMGULPS_LR);
 				}
 				if (col_end > col_max)
@@ -64,6 +66,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 				
 				String sourceSheetName = null;
 				if (options.topLevel) 			sourceSheetName = EnumXLSExportItems.TOPLEVEL.toString();
+				else if (options.topLevelDelta) sourceSheetName = EnumXLSExportItems.TOPLEVELDELTA.toString();
 				else if (options.bottomLevel)  	sourceSheetName = EnumXLSExportItems.BOTTOMLEVEL.toString();
 				else if (options.derivative) 	sourceSheetName = EnumXLSExportItems.DERIVEDVALUES.toString();	
 				else if (options.consumption) 	sourceSheetName = EnumXLSExportItems.SUMGULPS.toString();
@@ -104,6 +107,20 @@ public class XLSExportCapillariesResults extends XLSExport {
 			XLSCapillaryResults results = new XLSCapillaryResults();
 			results.name = cap.capillaryRoi.getName(); 
 			switch (xlsoption) {
+			case TOPLEVEL:
+			case TOPLEVEL_LR:
+				if (optiont0) {
+					if (options.collateSeries && exp.previousExperiment != null) {
+						double dvalue = getLastValueOfPreviousExp(cap.getName(), exp.previousExperiment, xlsoption, optiont0);
+						int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
+						results.data = exp.seqKymos.subtractT0AndAddConstant(cap.getMeasures(EnumListType.topLevel), addedValue);
+					}
+					else
+						results.data = exp.seqKymos.subtractT0(cap.getMeasures(EnumListType.topLevel));
+				}
+				else
+					results.data = cap.getMeasures(EnumListType.topLevel);
+				break;
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:
 				results.data = exp.seqKymos.subtractTi(cap.getMeasures(EnumListType.topLevel));
@@ -123,20 +140,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 				break;
 			case BOTTOMLEVEL:
 				results.data = cap.getMeasures(EnumListType.bottomLevel);
-				break;
-			case TOPLEVEL:
-			case TOPLEVEL_LR:
-				if (optiont0) {
-					if (options.collateSeries && exp.previousExperiment != null) {
-						double dvalue = getLastValueOfPreviousExp(cap.getName(), exp.previousExperiment, xlsoption, optiont0);
-						int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
-						results.data = exp.seqKymos.subtractT0AndAddConstant(cap.getMeasures(EnumListType.topLevel), addedValue);
-					}
-					else
-						results.data = exp.seqKymos.subtractT0(cap.getMeasures(EnumListType.topLevel));
-				}
-				else
-					results.data = cap.getMeasures(EnumListType.topLevel);
 				break;
 			default:
 				break;
@@ -171,6 +174,13 @@ public class XLSExportCapillariesResults extends XLSExport {
 					results.data = exp.seqKymos.subtractT0(cap.getMeasures(EnumListType.topLevel));
 				else
 					results.data = cap.getMeasures(EnumListType.topLevel);
+				break;
+			case TOPLEVELDELTA:
+			case TOPLEVELDELTA_LR:
+				results.data = exp.seqKymos.subtractTi(cap.getMeasures(EnumListType.topLevel));
+				break;
+			case DERIVEDVALUES:
+				results.data = cap.getMeasures(EnumListType.derivedValues);
 				break;
 			default:
 				return lastValue;
@@ -284,8 +294,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 		}
 		
 		pt_main.y = row_y0 -1;
-		double valueL = 0.;
-		double valueR = 0.;
+//		double valueL = 0.;
+//		double valueR = 0.;
 		int currentFrame = 0;
 		
 //		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame );
@@ -314,10 +324,10 @@ public class XLSExportCapillariesResults extends XLSExport {
 						int j = currentFrame - startFrame;
 						if (j < dataL.size() && j < dataR.size()) {
 							Point pt0 = new Point(pt_main);
-							valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
+							double valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
 							XLSUtils.setValue(sheet, pt0, transpose, valueL);
 							pt0.x ++;
-							valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
+							double valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
 							XLSUtils.setValue(sheet, pt0, transpose, valueR);
 						}
 					}
@@ -334,8 +344,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 					if (data != null) {
 						int j = currentFrame - startFrame;
 						if (j < data.size()) {
-							valueL = data.get(j)*scalingFactorToPhysicalUnits;
-							XLSUtils.setValue(sheet, pt_main, transpose, valueL);
+							double value = data.get(j)*scalingFactorToPhysicalUnits;
+							XLSUtils.setValue(sheet, pt_main, transpose, value);
 						}
 					}
 					pt_main.x++;
@@ -383,10 +393,10 @@ public class XLSExportCapillariesResults extends XLSExport {
 								int k = dataR.size()-1;
 								if (j != k)
 									System.out.println("idataArray=" + idataArray+" j="+j+ " k="+k+ " difference="+ (j-k));
-								valueL = (dataL.get(j)+dataR.get(k))*scalingFactorToPhysicalUnits;
+								double valueL = (dataL.get(j)+dataR.get(k))*scalingFactorToPhysicalUnits;
 								XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
 								padpt.x ++;
-								valueR = (dataL.get(j)-dataR.get(k))*scalingFactorToPhysicalUnits/valueL;
+								double valueR = (dataL.get(j)-dataR.get(k))*scalingFactorToPhysicalUnits/valueL;
 								XLSUtils.setValue(sheet, padpt, transpose, valueR); // "xxxR");
 							}
 						}
@@ -407,8 +417,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 							List<Integer> data = dataArrayList.get(idataArray).data;
 							if (data != null) {
 								int j = data.size()-1; 
-								valueL = data.get(j)*scalingFactorToPhysicalUnits;
-								XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxx-");
+								double value = data.get(j)*scalingFactorToPhysicalUnits;
+								XLSUtils.setValue(sheet, padpt, transpose, value); // "xxx-");
 							} else {
 								System.out.println("skip because data is null");
 							}

@@ -8,7 +8,8 @@ public class XLSExportOptions {
 	public boolean 	distance 		= false;
 	public boolean 	alive 			= true;
 	
-	public boolean 	topLevel 		= true; 
+	public boolean 	topLevel 		= true;
+	public boolean  topLevelDelta   = false;
 	public boolean 	bottomLevel 	= false; 
 	public boolean 	derivative 		= false; 
 	public boolean 	consumption 	= false; 
@@ -28,5 +29,4 @@ public class XLSExportOptions {
 	public int 		firstExp 		= -1;
 	public int 		lastExp 		= -1;
 	public ExperimentList expList 	= null;
-	
 }
