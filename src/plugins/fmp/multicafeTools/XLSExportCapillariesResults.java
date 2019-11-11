@@ -35,7 +35,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			options.expList.readInfosFromAllExperiments(true, options.onlyalive);
 			options.expList.chainExperiments(options);
 			expAll 		= options.expList.getStartAndEndFromAllExperiments(options);
-			expAll.step = options.expList.experimentList.get(0).seqCamData.analysisStep;
+			expAll.step = options.expList.experimentList.get(0).step;
 			int nbexpts = options.expList.experimentList.size();
 			ProgressFrame progress = new ProgressFrame("Export data to Excel");
 			progress.setLength(nbexpts);
@@ -88,7 +88,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 	}
 	
 	private int getDataAndExport(Experiment exp, XSSFWorkbook workbook, int col0, String charSeries, EnumXLSExportItems datatype) {	
-		List <XLSCapillaryResults> arrayList = getDataFromCapillaryMeasures(exp, datatype, options.t0);	
+		List <XLSCapillaryResults> arrayList = getDataFromCapillaryMeasures(exp, datatype, options.t0);		
 		int colmax = xlsExportToWorkbook(exp, workbook, datatype.toString(), datatype, col0, charSeries, arrayList);
 		if (options.onlyalive) {
 			trimDeadsFromArrayList(exp, arrayList);
@@ -269,7 +269,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			charSeries = "t";
 		int startFrame 	= (int) exp.seqCamData.analysisStart;
 		int endFrame 	= (int) exp.seqCamData.analysisEnd;
-		int step 		= expAll.step * options.pivotBinStep;
+		int step 		= exp.step * options.pivotBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
 		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;
@@ -282,7 +282,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		long tspanMinutes = referenceFileTimeImageLastMinutes-referenceFileTimeImageFirstMinutes;
 		long diff = getnearest(tspanMinutes, step)/ step;
 		
-		long firstImageTimeMinutes = exp.getFileTimeImageFirst(false).toMillis()/60000;;
+		long firstImageTimeMinutes = exp.getFileTimeImageFirst(false).toMillis()/60000;
 		long diff2 = getnearest(firstImageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
 		pt_main.y = (int) (diff2/step + row0); 
 		int row_y0 = pt_main.y;
@@ -294,10 +294,10 @@ public class XLSExportCapillariesResults extends XLSExport {
 		}
 		
 		pt_main.y = row_y0 -1;
-		int currentFrame = 0;
+		int lastFrame = 0;
 		
-//		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame );
-		for (currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  options.pivotBinStep) {	
+		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame + " row=" + (row_y0+1));
+		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  step*options.pivotBinStep) {	
 			pt_main.x = col0;
 			pt_main.y++;
 			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;
@@ -319,7 +319,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 					List<Integer> dataL = dataArrayList.get(idataArray).data ;
 					List<Integer> dataR = dataArrayList.get(idataArray+1).data;
 					if (dataL != null && dataR != null) {
-						int j = currentFrame - startFrame;
+						int j = (currentFrame - startFrame)/step;
 						if (j < dataL.size() && j < dataR.size()) {
 							Point pt0 = new Point(pt_main);
 							double valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
@@ -340,27 +340,34 @@ public class XLSExportCapillariesResults extends XLSExport {
 						pt_main.x = colseries + col;			
 					List<Integer> data = dataArrayList.get(idataArray).data;
 					if (data != null) {
-						int j = currentFrame - startFrame;
+						int j = (currentFrame - startFrame)/step;
 						if (j < data.size()) {
 							double value = data.get(j)*scalingFactorToPhysicalUnits;
 							XLSUtils.setValue(sheet, pt_main, transpose, value);
+						} else {
+							System.out.println("attempt to output value with index ("+ j + ") higher than data size ("+ data.size()+")");
 						}
 					}
 					pt_main.x++;
 				}
 				break;
 			}
+			lastFrame = currentFrame;
 		}
+		System.out.println("lastFrame reached =" + lastFrame+ " row=" + pt_main.y);
+		
 		
 		// pad remaining cells with the last value
 		if (options.collateSeries && options.padIntervals && exp.nextExperiment != null) {
 			Point padpt = new Point(pt_main);
 			padpt.x = col0;
 			int startNextExpt = (int) (exp.nextExperiment.fileTimeImageFirstMinute- exp.fileTimeImageFirstMinute);
-//			System.out.println( "pad to " + exp.nextExperiment.experimentFileName +" from currentFrame=" + currentFrame +" startNextExpt="+startNextExpt );
-			for (int nextFrame=currentFrame; nextFrame <= startNextExpt; nextFrame+=  options.pivotBinStep) {	
+			lastFrame += step;
+			System.out.println( "pad to " + exp.nextExperiment.experimentFileName +" lastFrame=" + lastFrame +" startNextExpt="+startNextExpt + " row="+ (padpt.y +1));
+			for (int nextFrame= lastFrame; nextFrame <= startNextExpt; nextFrame+=  step*options.pivotBinStep) {	
 				padpt.x = col0;
 				padpt.y++;
+				
 				XLSUtils.setValue(sheet, padpt, transpose, "xxxT");
 				padpt.x++;
 				if (exp.seqCamData.isFileStack())
@@ -389,8 +396,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 							if (dataL != null && dataR != null) {
 								int j = dataL.size()-1;
 								int k = dataR.size()-1;
-								if (j != k)
-									System.out.println("idataArray=" + idataArray+" j="+j+ " k="+k+ " difference="+ (j-k));
+//								if (j != k)
+//									System.out.println("idataArray=" + idataArray+" j="+j+ " k="+k+ " difference="+ (j-k));
 								double valueL = (dataL.get(j)+dataR.get(k))*scalingFactorToPhysicalUnits;
 								XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
 								padpt.x ++;

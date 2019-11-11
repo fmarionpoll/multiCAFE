@@ -71,4 +71,5 @@ public class SequenceKymosUtils {
 				seqCams.seq.addROI(cap.capillaryRoi);
 		}
 	}
+	
 }

@@ -253,7 +253,5 @@ public class Capillary implements XMLPersistent  {
         return null;
 	}
 	
-
-
 	
 }

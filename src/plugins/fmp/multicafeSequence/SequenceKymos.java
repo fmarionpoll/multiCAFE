@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -44,10 +43,6 @@ public class SequenceKymos extends SequenceCamData  {
 	public  Capillaries 	capillaries 			= new Capillaries();
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;
-
-	public 	LocalDateTime	startDate				= null;
-	public 	LocalDateTime	endDate					= null;
-	public 	long			minutesBetweenImages	= 1;
 	public 	OverlayThreshold thresholdOverlay 		= null;
 	public 	OverlayTrapMouse trapOverlay 			= null;
 	

@@ -27,13 +27,14 @@ public class Capillaries {
 	public DetectLimits_Options limitsOptions		= new DetectLimits_Options();
 	public DetectGulps_Options 	gulpsOptions		= new DetectGulps_Options();
 	
-	
 	private final static String ID_CAPILLARYTRACK = "capillaryTrack";
 	private final static String ID_NCAPILLARIES = "N_capillaries";
 	private final static String ID_LISTOFCAPILLARIES = "List_of_capillaries";
 	private final static String ID_CAPILLARY_ = "capillary_";
 
 		// ---------------------------------
+	
+	
 	
 	public boolean xmlWriteROIsAndData(String name, SequenceKymos seq) {
 		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");

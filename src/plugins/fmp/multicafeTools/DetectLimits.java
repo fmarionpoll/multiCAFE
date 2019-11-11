@@ -20,23 +20,23 @@ public class DetectLimits {
 		progressBar.initStuff(seqkymo.seq.getSizeT() );
 		
 		int jitter = 10;
-		int tfirst = 0;
-		int tlast = seqkymo.seq.getSizeT() -1;
+		int kymofirst = 0;
+		int kymolast = seqkymo.seq.getSizeT() -1;
 		if (! options.detectAllImages) {
-			tfirst = options.firstImage;
-			tlast = tfirst;
+			kymofirst = options.firstImage;
+			kymolast = kymofirst;
 		}
 		seqkymo.seq.beginUpdate();
 				
-		for (int t = tfirst; t <= tlast; t++) {
-			progressBar.updatePositionAndTimeLeft(t);
-			seqkymo.removeROIsAtT(t);
+		for (int kymo = kymofirst; kymo <= kymolast; kymo++) {
+			progressBar.updatePositionAndTimeLeft(kymo);
+			seqkymo.removeROIsAtT(kymo);
 			limitTop = new ArrayList<Point2D>();
 			limitBottom = new ArrayList<Point2D>();
  
 			IcyBufferedImage image = null;
 			int c = 0;
-			image = seqkymo.seq.getImage(t, 1);
+			image = seqkymo.seq.getImage(kymo, 1);
 			Object dataArray = image.getDataXY(c);
 			double[] tabValues = Array1DUtil.arrayToDoubleArray(dataArray, image.isSignedDataType());
 			
@@ -44,7 +44,7 @@ public class DetectLimits {
 			int endPixel = image.getSizeX()-1;
 			int xwidth = image.getSizeX();
 			int yheight = image.getSizeY();
-			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(t);
+			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(kymo);
 			cap.ptsDerivative = null;
 			cap.gulpsRois = null;
 			options.copy(cap.limitsOptions);
@@ -84,16 +84,16 @@ public class DetectLimits {
 				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);
 				roiTopTrack.setName(cap.getLast2ofCapillaryName()+"_toplevel");
 				roiTopTrack.setStroke(1);
-				roiTopTrack.setT(t);
+				roiTopTrack.setT(kymo);
 				seqkymo.seq.addROI(roiTopTrack);
-				cap.ptsTop = new CapillaryLimits( "toplevel", t-tfirst, roiTopTrack.getPolyline2D());
+				cap.ptsTop = new CapillaryLimits( "toplevel", kymo-kymofirst, roiTopTrack.getPolyline2D());
 
 				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine (limitBottom);
 				roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
 				roiBottomTrack.setStroke(1);
-				roiBottomTrack.setT(t);
+				roiBottomTrack.setT(kymo);
 				seqkymo.seq.addROI(roiBottomTrack);
-				cap.ptsBottom = new CapillaryLimits( "bottomlevel", t-tfirst, roiBottomTrack.getPolyline2D());
+				cap.ptsBottom = new CapillaryLimits( "bottomlevel", kymo-kymofirst, roiBottomTrack.getPolyline2D());
 			}
 		
 		}

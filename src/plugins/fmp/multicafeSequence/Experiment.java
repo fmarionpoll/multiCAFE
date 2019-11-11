@@ -74,20 +74,14 @@ public class Experiment {
 		seqCamData = seq;
 		seqKymos   = new SequenceKymos();
 		seqCamData.setParentDirectoryAsFileName() ;
-		fileTimeImageFirst = seqCamData.getImageFileTime(0);
-		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
-		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
-		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
+		loadFileIntervalsFromSeqCamData();
 	}
 	
 	public boolean openSequenceAndMeasures() {
 		seqCamData = new SequenceCamData();
 		if (null == seqCamData.loadSequence(experimentFileName))
 			return false;
-		fileTimeImageFirst = seqCamData.getImageFileTime(0);
-		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
-		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
-		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
+		loadFileIntervalsFromSeqCamData();
 		
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
@@ -107,10 +101,7 @@ public class Experiment {
 		if (null == seqCamData.loadSequence(experimentFileName))
 			return false;
 		
-		fileTimeImageFirst = seqCamData.getImageFileTime(0);
-		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
-		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
-		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
+		loadFileIntervalsFromSeqCamData();
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		if (loadCapillaryTrack) {
@@ -118,9 +109,9 @@ public class Experiment {
 				return false;
 		}
 		if (!flag || boxID .equals ("..")) {
-			boxID= seqKymos.capillaries.desc.old_boxID;
-			experiment= seqKymos.capillaries.desc.old_experiment;
-			comment= seqKymos.capillaries.desc.old_comment;
+			boxID = seqKymos.capillaries.desc.old_boxID;
+			experiment = seqKymos.capillaries.desc.old_experiment;
+			comment = seqKymos.capillaries.desc.old_comment;
 		}
 		
 		if (loadDrosoTrack)
@@ -134,11 +125,15 @@ public class Experiment {
 		if (null == seqCamData.loadSequence(filename))
 			return null;
 		seqCamData.setParentDirectoryAsFileName() ;
+		loadFileIntervalsFromSeqCamData();
+		return seqCamData;
+	}
+	
+	private void loadFileIntervalsFromSeqCamData() {
 		fileTimeImageFirst = seqCamData.getImageFileTime(0);
 		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
-		return seqCamData;
 	}
 	
 	// TODO call it loadKymographs_Images if possible 
