@@ -294,8 +294,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 		}
 		
 		pt_main.y = row_y0 -1;
-//		double valueL = 0.;
-//		double valueR = 0.;
 		int currentFrame = 0;
 		
 //		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame );

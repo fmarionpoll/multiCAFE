@@ -7,6 +7,11 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.List;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+
+import icy.util.XMLUtil;
+
 public class Experiment {
 	
 	public String			experimentFileName			= null;
@@ -24,9 +29,25 @@ public class Experiment {
 	public int 				step 						= 1;
 	
 	public String			boxID 						= null;
+	public String			experiment					= new String("experiment");
+	public String 			comment						= new String("...");
+	
 	public int				col							= -1;
 	public Experiment 		previousExperiment			= null;		// pointer to chain this experiment to another one before
 	public Experiment 		nextExperiment 				= null;		// pointer to chain this experiment to another one after
+	
+	private final String ID_VERSION		= "version"; 
+	private final String ID_VERSIONNUM	= "1.0.0"; 
+	private final String ID_TIMEFIRSTIMAGE	= "fileTimeImageFirstMinute"; 
+	private final String ID_TIMELASTIMAGE = "fileTimeImageLastMinute";
+	private final String ID_NFRAMES = "number_of_frames";
+	private final String ID_STARTFRAME = "startFrame";
+	private final String ID_ENDFRAME = "endFrame";
+	private final String ID_STEP = "step";
+	private final String ID_BOXID = "boxID";
+	private final String ID_EXPERIMENT = "experiment";
+	private final String ID_COMMENT = "comment";
+	private final String ID_MCEXPERIMENT = "MCexperiment";
 	
 	
 	// ----------------------------------
@@ -73,13 +94,13 @@ public class Experiment {
 			seqKymos = new SequenceKymos();
 		if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 			return false;
-		boxID = seqKymos.capillaries.desc.boxID;
 
 		seqCamData.xmlReadDrosoTrackDefault();
 		return true;
 	}
 	
 	public boolean openSequenceAndMeasures(boolean loadCapillaryTrack, boolean loadDrosoTrack) {
+		boolean flag = xmlLoadExperiment ();
 		if (seqCamData == null) {
 			seqCamData = new SequenceCamData();
 		}
@@ -95,7 +116,11 @@ public class Experiment {
 		if (loadCapillaryTrack) {
 			if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 				return false;
-			boxID = seqKymos.capillaries.desc.boxID;
+		}
+		if (!flag) {
+			boxID= seqKymos.capillaries.desc.old_boxID;
+			experiment= seqKymos.capillaries.desc.old_experiment;
+			comment= seqKymos.capillaries.desc.old_comment;
 		}
 		
 		if (loadDrosoTrack)
@@ -116,15 +141,64 @@ public class Experiment {
 		return seqCamData;
 	}
 	
-	// TODO call it loadKymographs_Images if possible  
-	public boolean loadKymographs() {
+	// TODO call it loadKymographs_Images if possible 
+	
+	public boolean xmlLoadExperiment () {
+		String csFileName = seqCamData.getDirectory() + File.separator + "results" + File.separator + "MCexperiment.xml";
+		final Document doc = XMLUtil.loadDocument(csFileName);
+		if (doc != null) {
+			Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_MCEXPERIMENT);
+			if (node == null)
+				return false;
+			String version = XMLUtil.getElementValue(node, ID_VERSION, ID_VERSIONNUM);
+			if (!version .equals(ID_VERSIONNUM))
+				return false;
+			fileTimeImageFirstMinute = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
+			fileTimeImageLastMinute = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
+			number_of_frames 		= XMLUtil.getElementIntValue(node, ID_NFRAMES, number_of_frames);
+			startFrame 	= XMLUtil.getElementIntValue(node, ID_STARTFRAME, startFrame);
+			endFrame 	= XMLUtil.getElementIntValue(node, ID_ENDFRAME, endFrame);
+			step 		= XMLUtil.getElementIntValue(node, ID_STEP, step);
+			boxID 		= XMLUtil.getElementValue(node, ID_BOXID, boxID);
+	        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, experiment);
+	        comment 	= XMLUtil.getElementValue(node, ID_COMMENT, comment);
+		}
+		return true;
+	}
+	
+	public boolean xmlSaveExperiment () {
+		String csFileName = seqCamData.getDirectory() + File.separator + "results" + File.separator + "MCexperiment.xml";
+		final Document doc = XMLUtil.createDocument(true);
+		
+		if (doc != null) {
+			Node xmlRoot = XMLUtil.getRootElement(doc, true);
+			Node node = XMLUtil.setElement(xmlRoot, ID_MCEXPERIMENT);
+			if (node == null)
+				return false;
+			
+			XMLUtil.setElementValue(node, ID_VERSION, ID_VERSIONNUM);
+			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
+			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
+			XMLUtil.setElementIntValue(node, ID_NFRAMES, number_of_frames);
+			XMLUtil.setElementIntValue(node, ID_STARTFRAME, startFrame);
+			XMLUtil.setElementIntValue(node, ID_ENDFRAME, endFrame);
+			XMLUtil.setElementIntValue(node, ID_STEP, step);
+			XMLUtil.setElementValue(node, ID_BOXID, boxID);
+	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
+	        XMLUtil.setElementValue(node, ID_COMMENT, comment);
+	        
+	        XMLUtil.saveDocument(doc, csFileName);
+		}
+		return true;
+	}
+	
+ 	public boolean loadKymographs() {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		if (seqKymos.capillaries.capillariesArrayList.size() == 0) {
 			// TODO check if it is ok to load only the list of capillaries here
 			if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
-				return false;
-			boxID = seqKymos.capillaries.desc.boxID;
+				return false;;
 		}
 		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory());
 		boolean flag = seqKymos.loadImagesFromList(myList, true);
@@ -140,9 +214,10 @@ public class Experiment {
 			seqKymos = new SequenceKymos();
 		if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 			return false;
-		boxID = seqKymos.capillaries.desc.boxID;
 		return true;
 	}
+	
+	// ----------------------------------
 	
 	protected String getBoxIdentificatorFromFilePath () {
 		Path path = Paths.get(seqCamData.getFileName());

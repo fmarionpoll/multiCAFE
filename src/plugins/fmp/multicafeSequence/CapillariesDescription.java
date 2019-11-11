@@ -15,9 +15,9 @@ public class CapillariesDescription {
 	public long 	analysisEnd 		= 0;
 	public int 		analysisStep 		= 1;
 	
-	public String 	boxID				= new String("boxID");
-	public String	experiment			= new String("experiment");
-	public String 	comment				= new String("...");
+	public String 	old_boxID			= new String("boxID");
+	public String	old_experiment		= new String("experiment");
+	public String 	old_comment			= new String("...");
 	
 	public int		grouping 			= 2;
 	public String 	stimulusR			= new String("stimulusR");
@@ -62,9 +62,6 @@ public class CapillariesDescription {
 		stimulusL 		= desc.stimulusL;
 		concentrationR 	= desc.concentrationR;
 		concentrationL 	= desc.concentrationL;
-		boxID 			= desc.boxID;
-		experiment 		= desc.experiment;
-		comment 		= desc.comment;
 	}
 	
 	public boolean isChanged (CapillariesDescription desc) {
@@ -78,9 +75,6 @@ public class CapillariesDescription {
 		flag = (concentrationR != null && !concentrationR .equals(desc.concentrationR)) || flag;
 		flag = (stimulusL != null && !stimulusL .equals(desc.stimulusL)) || flag;
 		flag = (concentrationL != null && !concentrationL .equals(desc.concentrationL)) || flag;
-		flag = (boxID != null && !boxID .equals(desc.boxID)) || flag;
-		flag = (experiment != null && !experiment .equals(desc.experiment)) || flag;
-		flag = (comment != null && !comment .equals(desc.comment)) || flag;
 		return flag;
 	}
 	
@@ -108,11 +102,6 @@ public class CapillariesDescription {
 		XMLUtil.setElementValue(xmlVal, ID_CONCR, concentrationR);
 		XMLUtil.setElementValue(xmlVal, ID_STIML, stimulusL);
 		XMLUtil.setElementValue(xmlVal, ID_CONCL, concentrationL);
-
-		xmlVal = XMLUtil.addElement(xmlElement, ID_EXPERIMENT);
-		XMLUtil.setElementValue(xmlVal, ID_BOXID, boxID);
-		XMLUtil.setElementValue(xmlVal, ID_EXPT, experiment);
-		XMLUtil.setElementValue(xmlVal, ID_COMMENT, comment);
 
 		return true;
 	}
@@ -169,9 +158,9 @@ public class CapillariesDescription {
 		
 		xmlVal = XMLUtil.getElement(xmlElement, ID_EXPERIMENT);
 		if (xmlVal != null) {
-			boxID 		= XMLUtil.getAttributeValue(xmlVal, ID_BOXID, ID_BOXID);
-			experiment 	= XMLUtil.getAttributeValue(xmlVal, ID_EXPT, "experiment");
-			comment 	= XMLUtil.getAttributeValue(xmlVal, ID_COMMENT, ".");
+			old_boxID 		= XMLUtil.getAttributeValue(xmlVal, ID_BOXID, ID_BOXID);
+			old_experiment 	= XMLUtil.getAttributeValue(xmlVal, ID_EXPT, "experiment");
+			old_comment 	= XMLUtil.getAttributeValue(xmlVal, ID_COMMENT, ".");
 		}
 		return true;
 	}
@@ -206,10 +195,11 @@ public class CapillariesDescription {
 		
 		xmlVal = XMLUtil.getElement(xmlElement, ID_EXPERIMENT);
 		if (xmlVal != null) {
-			boxID 			= XMLUtil.getElementValue(xmlVal, ID_BOXID, ID_BOXID);
-			experiment 		= XMLUtil.getElementValue(xmlVal, ID_EXPT, "experiment");
-			comment 		= XMLUtil.getElementValue(xmlVal, ID_COMMENT, ".");
+			old_boxID 		= XMLUtil.getAttributeValue(xmlVal, ID_BOXID, ID_BOXID);
+			old_experiment 	= XMLUtil.getAttributeValue(xmlVal, ID_EXPT, "experiment");
+			old_comment 	= XMLUtil.getAttributeValue(xmlVal, ID_COMMENT, ".");
 		}
+		
 		return true;
 	}
 	

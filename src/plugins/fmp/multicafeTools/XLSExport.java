@@ -47,9 +47,9 @@ public class XLSExport {
 		int colseries = pt.x;
 		
 		Path path = Paths.get(exp.seqCamData.getFileName());
-		String boxID = exp.seqKymos.capillaries.desc.boxID;
-		String experiment = exp.seqKymos.capillaries.desc.experiment;
-		String comment = exp.seqKymos.capillaries.desc.comment;
+		String boxID = exp.boxID;
+		String experiment = exp.experiment;
+		String comment = exp.comment;
 		String stimulusL = exp.seqKymos.capillaries.desc.stimulusL;
 		String stimulusR = exp.seqKymos.capillaries.desc.stimulusR;
 		String concentrationL = exp.seqKymos.capillaries.desc.concentrationL;

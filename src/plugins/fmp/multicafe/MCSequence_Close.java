@@ -69,6 +69,8 @@ public class MCSequence_Close  extends JPanel {
 	
 	void closeExp(Experiment exp) {
 		if (exp != null) {
+			exp.xmlSaveExperiment();
+			
 			stopLoadingImages(exp);
 			SequenceKymos seqKymos = exp.seqKymos;
 			if (seqKymos != null && seqKymos.seq != null) {

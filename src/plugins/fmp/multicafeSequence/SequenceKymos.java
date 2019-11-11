@@ -51,8 +51,8 @@ public class SequenceKymos extends SequenceCamData  {
 	public 	OverlayThreshold thresholdOverlay 		= null;
 	public 	OverlayTrapMouse trapOverlay 			= null;
 	
-	public boolean isRunning_loadImages = false;
-	public boolean isInterrupted_loadImages = false;
+	public boolean 			isRunning_loadImages 	= false;
+	public boolean 			isInterrupted_loadImages = false;
 	
 	// -----------------------------------------------------
 	
