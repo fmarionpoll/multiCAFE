@@ -59,7 +59,7 @@ public class DetectLimits {
 			int oldiybottom = yheight-1;
 
 			// scan each image column
-			for (int ix = startPixel; ix < endPixel; ix++) {
+			for (int ix = startPixel; ix <= endPixel; ix++) {
 				int ytop = detectTop(ix, oldiytop, jitter, tabValues, xwidth, yheight, options);
 				int ybottom = detectBottom(ix, oldiybottom, jitter, tabValues, xwidth, yheight, options);
 				
@@ -75,10 +75,10 @@ public class DetectLimits {
 			}
 			
 			if (options.analyzePartOnly) {
-				Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop.polyline, startPixel, endPixel-1);
+				Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop.polyline, startPixel, endPixel);
 				seqkymo.seq.addROI(cap.ptsTop.transferPolyline2DToROI());
 				
-				Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom.polyline, startPixel, endPixel-1);
+				Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom.polyline, startPixel, endPixel);
 				seqkymo.seq.addROI(cap.ptsBottom.transferPolyline2DToROI());
 			} else {
 				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);
