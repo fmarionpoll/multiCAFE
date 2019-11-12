@@ -25,6 +25,7 @@ public class MCSequence_Display  extends JPanel {
 	private static final long serialVersionUID = 8137492850312895195L;
 	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries ROIs", true);
 	JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages ROIs", true);
+	JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position ROIs", true);
 
 	private MultiCAFE parent0 = null;
 
@@ -35,7 +36,7 @@ public class MCSequence_Display  extends JPanel {
 	
 		add(GuiUtil.besidesPanel( viewCapillariesCheckBox));
 		add(GuiUtil.besidesPanel( viewCagesCheckbox));
-		
+		add(GuiUtil.besidesPanel( viewFlyCheckbox));
 		defineActionListeners();
 	}
 	
@@ -46,6 +47,10 @@ public class MCSequence_Display  extends JPanel {
 		
 		viewCagesCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			roisDisplayLine(viewCagesCheckbox.isSelected(), "cage");
+		} } );
+		
+		viewFlyCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+			roisDisplayLine(viewCagesCheckbox.isSelected(), "det");
 		} } );
 	}
 	
