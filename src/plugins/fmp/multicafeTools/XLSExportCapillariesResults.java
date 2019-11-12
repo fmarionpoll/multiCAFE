@@ -218,7 +218,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 			for (XLSCapillaryResults capillaryResult : resultsArrayList) {
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
 					flypos.getLastIntervalAlive();
-					trimArrayLength(capillaryResult.data, flypos.lastTimeAlive);
+					int ilastalive = flypos.lastTimeAlive/ exp.step;
+					trimArrayLength(capillaryResult.data, ilastalive);
 				}
 			}
 		}		
@@ -296,7 +297,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		pt_main.y = row_y0 -1;
 		int lastFrame = 0;
 		
-		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame + " row=" + (row_y0+1));
+//		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame + " row=" + (row_y0+1));
 		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  step*options.pivotBinStep) {	
 			pt_main.x = col0;
 			pt_main.y++;
@@ -344,8 +345,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 						if (j < data.size()) {
 							double value = data.get(j)*scalingFactorToPhysicalUnits;
 							XLSUtils.setValue(sheet, pt_main, transpose, value);
-						} else {
-							System.out.println("attempt to output value with index ("+ j + ") higher than data size ("+ data.size()+")");
 						}
 					}
 					pt_main.x++;
@@ -354,7 +353,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			}
 			lastFrame = currentFrame;
 		}
-		System.out.println("lastFrame reached =" + lastFrame+ " row=" + pt_main.y);
+//		System.out.println("lastFrame reached =" + lastFrame+ " row=" + pt_main.y);
 		
 		
 		// pad remaining cells with the last value
@@ -363,7 +362,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			padpt.x = col0;
 			int startNextExpt = (int) (exp.nextExperiment.fileTimeImageFirstMinute- exp.fileTimeImageFirstMinute);
 			lastFrame += step;
-			System.out.println( "pad to " + exp.nextExperiment.experimentFileName +" lastFrame=" + lastFrame +" startNextExpt="+startNextExpt + " row="+ (padpt.y +1));
+//			System.out.println( "pad to " + exp.nextExperiment.experimentFileName +" lastFrame=" + lastFrame +" startNextExpt="+startNextExpt + " row="+ (padpt.y +1));
 			for (int nextFrame= lastFrame; nextFrame <= startNextExpt; nextFrame+=  step*options.pivotBinStep) {	
 				padpt.x = col0;
 				padpt.y++;
