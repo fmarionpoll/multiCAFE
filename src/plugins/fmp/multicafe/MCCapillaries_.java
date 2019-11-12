@@ -125,7 +125,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		parent0.sequencePane.infosTab.setExperimentsInfosToDialog(exp, seqKymos.capillaries);
 	}
 	
-	boolean saveCapillaryTrack(Experiment exp) {
+	boolean saveCapillaries(Experiment exp) {
 		return fileTab.saveCapillaries(exp);
 	}
 	

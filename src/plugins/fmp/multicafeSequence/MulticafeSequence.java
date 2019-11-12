@@ -191,22 +191,31 @@ public class MulticafeSequence extends EzPlug {
 	
 	private boolean loadDefaultCapillaries() {
 		String path = vSequence.getDirectory();
-		return capillaryRoisOpen(path+File.separator+"capillarytrack.xml");
+		boolean flag = capillaryRoisOpen(path+File.separator+"results"+ File.separator+ "MCcapillaries.xml");
+		if (!flag)
+			flag = capillaryRoisOpen(path+File.separator+"capillarytrack.xml");
+		return flag;
 	}
 	
 	private boolean loadDefaultCages() {
 		String path = vSequence.getDirectory();
-		return capillaryRoisOpen(path+File.separator+"drosotrack.xml");
+		boolean flag = capillaryRoisOpen(path+File.separator+"results"+ File.separator+ "MCdrosopositions.xml");
+		if (!flag)
+			flag = capillaryRoisOpen(path+File.separator+"drosotrack.xml");
+		return flag;
 	}
 	
 	public boolean capillaryRoisOpen(String csFileName) {
 		boolean flag = false;
 		if (vkymos != null && vkymos.capillaries != null) {
-			if (csFileName == null)
-				csFileName = vkymos.getDirectory() + File.separator + "capillaryTrack.xml";
-
-			flag = vkymos.capillaries.xmlLoadCapillaries(csFileName);
-			
+			if (csFileName == null) {
+				csFileName = vkymos.getDirectory() +File.separator+"results"+ File.separator+ "MCcapillaries.xml";
+				flag = vkymos.capillaries.xmlLoadCapillaries(csFileName);
+				if (!flag) {
+					csFileName = vkymos.getDirectory() + File.separator + "capillaryTrack.xml";
+					flag = vkymos.capillaries.xmlLoadCapillaries(csFileName);
+				}
+			}
 			vSequence.analysisStart = vkymos.capillaries.desc.analysisStart;
 			vSequence.analysisEnd = vkymos.capillaries.desc.analysisEnd;
 			vSequence.analysisStep = vkymos.capillaries.desc.analysisStep;

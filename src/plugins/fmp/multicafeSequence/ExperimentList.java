@@ -66,7 +66,7 @@ public class ExperimentList {
 		return flag;
 	}
 	
-	public boolean readInfosFromAllExperiments(boolean loadCapillaryTrack, boolean loadDrosoTrack) {
+	public boolean readInfosFromAllExperiments(boolean loadCapillaries, boolean loadDrosoTrack) {
 		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
 		int nexpts = experimentList.size();
 		int index = 1;
@@ -74,7 +74,7 @@ public class ExperimentList {
 		boolean flag = true;
 		for (Experiment exp: experimentList) {
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
-			flag &= exp.openSequenceAndMeasures(loadCapillaryTrack, loadDrosoTrack);
+			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			exp.xmlLoadExperiment();
 //			int oldstep = exp.step;
 			int image_size = exp.seqKymos.seq.getSizeX();

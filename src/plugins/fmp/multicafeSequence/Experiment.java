@@ -93,7 +93,7 @@ public class Experiment {
 		return true;
 	}
 	
-	public boolean openSequenceAndMeasures(boolean loadCapillaryTrack, boolean loadDrosoTrack) {
+	public boolean openSequenceAndMeasures(boolean loadCapillaries, boolean loadDrosoPositions) {
 		boolean flag = xmlLoadExperiment ();
 		if (seqCamData == null) {
 			seqCamData = new SequenceCamData();
@@ -104,7 +104,7 @@ public class Experiment {
 		loadFileIntervalsFromSeqCamData();
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
-		if (loadCapillaryTrack) {
+		if (loadCapillaries) {
 			if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 				return false;
 		}
@@ -114,7 +114,7 @@ public class Experiment {
 			comment = seqKymos.capillaries.desc.old_comment;
 		}
 		
-		if (loadDrosoTrack)
+		if (loadDrosoPositions)
 			seqCamData.xmlReadDrosoTrackDefault();
 		return true;
 	}

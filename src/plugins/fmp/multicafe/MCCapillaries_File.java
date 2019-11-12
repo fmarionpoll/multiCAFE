@@ -63,7 +63,7 @@ public class MCCapillaries_File extends JPanel {
 		}
 		
 		boolean flag = false;
-		if (flag = seqKymos.xmlLoadCapillaryTrack(seqCamData.getDirectory())) {
+		if (flag = seqKymos.xmlLoadMCcapillaries(seqCamData.getDirectory())) {
 			SequenceKymosUtils.transferKymoCapillariesToCamData (seqCamData, seqKymos);
 			return true;
 		}
@@ -82,7 +82,7 @@ public class MCCapillaries_File extends JPanel {
 		parent0.sequencePane.infosTab.getExperimentInfosFromDialog(exp);
 		parent0.sequencePane.intervalsTab.getAnalyzeFrameAndStepFromDialog (exp);
 		seqKymos.updateCapillariesFromCamData(seqCamData);
-		return seqKymos.xmlSaveCapillaries(seqCamData.getDirectory());
+		return seqKymos.xmlSaveMCcapillaries(seqCamData.getDirectory());
 	}
 
 }

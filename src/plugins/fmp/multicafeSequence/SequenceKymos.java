@@ -198,7 +198,9 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	public List <String> loadListOfKymographsFromCapillaries(String dir) {
 		isRunning_loadImages = true;
-		String directoryFull = dir +File.separator +"results" + File.separator;	
+		String directoryFull = dir +File.separator ;
+		if (!dir .contains("results"))
+			directoryFull = dir +File.separator +"results" + File.separator;	
 		List<String> myListOfFileNames = new ArrayList<String>(capillaries.capillariesArrayList.size());
 		Collections.sort(capillaries.capillariesArrayList, new MulticafeTools.CapillaryIndexImageComparator());
 		for (Capillary cap: capillaries.capillariesArrayList) {
@@ -381,11 +383,18 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	// ----------------------------------
-	private String getCorrectPath(String pathname) {
-		Path path = Paths.get(pathname);
+	private String getCorrectPath(String cspathname) {
+		Path path = Paths.get(cspathname);
+		String pathname = cspathname;
 		if (path.toFile().isDirectory()) {
-			pathname = pathname + File.separator + "capillarytrack.xml";
+			pathname = cspathname + File.separator + "results" + File.separator + "MCcapillaries.xml";
 			path = Paths.get(pathname);
+			if (path.toFile().isFile())
+				return pathname;
+			else {
+				pathname = cspathname + File.separator + "capillarytrack.xml";
+				path = Paths.get(pathname);
+			}
 		}
 		if (!path.toFile().isFile())
 			return null;
@@ -395,14 +404,14 @@ public class SequenceKymos extends SequenceCamData  {
 	private String buildCorrectPath(String pathname) {
 		Path path = Paths.get(pathname);
 		if (path.toFile().isDirectory()) {
-			pathname = pathname + File.separator + "capillarytrack.xml";
+			pathname = pathname + File.separator + "results" + File.separator + "MCcapillaries.xml";
 			path = Paths.get(pathname);
 		}
 		return pathname;
 	}
 	
-	public boolean xmlLoadCapillaryTrack(String pathname) {
-		pathname =getCorrectPath(pathname);
+	public boolean xmlLoadMCcapillaries(String pathname) {
+		pathname = getCorrectPath(pathname);
 		if (pathname == null)
 			return false;
 		boolean flag = capillaries.xmlLoadCapillaries(pathname);
@@ -416,7 +425,7 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	public boolean xmlLoadKymos_Measures(String pathname) {
-		pathname =getCorrectPath(pathname);
+		pathname = getCorrectPath(pathname);
 		if (pathname == null)
 			return false;
 		boolean flag = capillaries.xmlLoadCapillaries(pathname);
@@ -429,7 +438,7 @@ public class SequenceKymos extends SequenceCamData  {
 		return flag;
 	}
 	
-	public boolean xmlSaveCapillaries(String pathname) {
+	public boolean xmlSaveMCcapillaries(String pathname) {
 		pathname = buildCorrectPath(pathname);
 		return capillaries.xmlSaveCapillaries_Only(pathname, this);
 	}

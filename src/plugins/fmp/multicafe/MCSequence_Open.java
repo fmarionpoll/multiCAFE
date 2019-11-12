@@ -46,7 +46,7 @@ public class MCSequence_Open extends JPanel {
 	JCheckBox			measuresCheckBox		= new JCheckBox("measures", true);
 	JCheckBox			graphsCheckBox			= new JCheckBox("graphs", true);
 
-	private JComboBox<String> filterCombo		= new JComboBox <String>(new String[] { "capillarytrack", "multicafe", "roisline", "grabs"} );
+	private JComboBox<String> filterCombo		= new JComboBox <String>(new String[] { "capillarytrack", "multicafe", "roisline", "grabs", "MCcapillaries"} );
 	private JButton 	findButton				= new JButton("Select root directory and search...");
 	private JButton 	clearSelectedButton		= new JButton("Clear selected");
 	private JButton 	clearAllButton			= new JButton("Clear all");
@@ -209,7 +209,6 @@ public class MCSequence_Open extends JPanel {
 	}
 		
 	private void addNamesToSelectedList(List<String> stringList) {
-		
 		for (String name : stringList) {
 			String directory = Paths.get(name).getParent().toString();
 			selectedNames.add(directory);
