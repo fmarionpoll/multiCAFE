@@ -15,6 +15,7 @@ import javax.swing.SwingConstants;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.fmp.multicafeTools.BuildKymographs;
@@ -29,6 +30,7 @@ public class MCKymosBuild_Create extends JPanel {
 	JButton 				kymoStartComputationButton 	= new JButton("Start");
 	JButton 				kymosStopComputationButton 	= new JButton("Stop");
 	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
+	JSpinner 				analyzeStepJSpinner 	= new JSpinner(new SpinnerNumberModel(1, 1, 10000, 1));
 	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
 	JCheckBox				updateViewerCheckBox 		= new JCheckBox("update viewer", true);
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
@@ -49,6 +51,7 @@ public class MCKymosBuild_Create extends JPanel {
 				updateViewerCheckBox, 
 				doRegistrationCheckBox
 				));
+		add(GuiUtil.besidesPanel(new JLabel("step ", SwingConstants.RIGHT) , analyzeStepJSpinner, new JLabel (" "), new JLabel (" ")));
 		defineActionListeners();
 	}
 	
@@ -63,6 +66,18 @@ public class MCKymosBuild_Create extends JPanel {
 			kymosBuildStop();
 		}});	
 	}
+	
+	void setBuildKymosParametersToDialog (Experiment exp) {
+		analyzeStepJSpinner.setValue(exp.step);
+	}
+	
+	void getBuildKymosParametersFromDialog (Experiment exp) {
+		exp.step 		= (int) analyzeStepJSpinner.getValue();
+		SequenceCamData seq = exp.seqCamData;
+		seq.analysisStep 	= (int) analyzeStepJSpinner.getValue();
+	}
+	
+		
 	
 	private void setStartButton(boolean enableStart) {
 		kymoStartComputationButton.setEnabled(enableStart );
@@ -81,7 +96,8 @@ public class MCKymosBuild_Create extends JPanel {
 		}
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
-		parent0.sequencePane.intervalsTab.getAnalyzeFrameAndStepFromDialog (exp);
+		parent0.sequencePane.intervalsTab.getAnalyzeFrameFromDialog (exp);
+		getBuildKymosParametersFromDialog (exp);
 		exp.seqKymos = new SequenceKymos();
 		exp.seqKymos.updateCapillariesFromCamData(exp.seqCamData);
 		setStartButton(false);

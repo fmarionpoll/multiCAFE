@@ -67,7 +67,8 @@ public class MCKymosDetect_File  extends JPanel {
 				SequenceKymos seqKymos = exp.seqKymos;
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
 					parent0.sequencePane.infosTab.setExperimentsInfosToDialog(exp, seqKymos.capillaries);
-					parent0.sequencePane.intervalsTab.setAnalyzeFrameAndStepToDialog(exp);
+					parent0.sequencePane.intervalsTab.setAnalyzeFrameToDialog(exp);
+					parent0.buildKymosPane.createTab.setBuildKymosParametersToDialog(exp);
 				}});
 			}
 		}

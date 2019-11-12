@@ -24,7 +24,6 @@ public class MCSequence_Intervals extends JPanel {
 	
 	private JSpinner 	startFrameJSpinner		= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
 	JSpinner 			endFrameJSpinner		= new JSpinner(new SpinnerNumberModel(99999999, 0, 99999999, 1));
-	private JSpinner 	analyzeStepJSpinner 	= new JSpinner(new SpinnerNumberModel(1, 1, 10000, 1));
 	private JButton 	updateButton 			= new JButton("Update");
 	
 	
@@ -32,8 +31,7 @@ public class MCSequence_Intervals extends JPanel {
 		setLayout(capLayout);	
 		add(GuiUtil.besidesPanel( 
 				new JLabel("start ", SwingConstants.RIGHT), startFrameJSpinner, 
-				new JLabel("step ", SwingConstants.RIGHT) , analyzeStepJSpinner 				
-				));
+				new JLabel(" "), new JLabel(" ")));
 		
 		add(GuiUtil.besidesPanel( 
 				new JLabel("end ", SwingConstants.RIGHT), endFrameJSpinner, 
@@ -45,25 +43,22 @@ public class MCSequence_Intervals extends JPanel {
 
 	}
 		
-	void setAnalyzeFrameAndStepToDialog (Experiment exp) {
+	void setAnalyzeFrameToDialog (Experiment exp) {
 		SequenceCamData seq = exp.seqCamData;
 		
 		endFrameJSpinner.setValue((int) seq.analysisEnd);
 		startFrameJSpinner.setValue((int) seq.analysisStart);
 		exp.startFrame = (int) seq.analysisStart;
 		exp.endFrame = (int) seq.analysisEnd;
-		analyzeStepJSpinner.setValue(exp.step);
+		
 	}
 	
-	void getAnalyzeFrameAndStepFromDialog (Experiment exp) {		
+	void getAnalyzeFrameFromDialog (Experiment exp) {		
 		exp.startFrame 	= (int) startFrameJSpinner.getValue();
 		exp.endFrame 	= (int) endFrameJSpinner.getValue();
-		exp.step 		= (int) analyzeStepJSpinner.getValue();
 		SequenceCamData seq = exp.seqCamData;
 		seq.analysisStart 	= (int) startFrameJSpinner.getValue();
 		seq.analysisEnd 	= (int) endFrameJSpinner.getValue();
-		seq.analysisStep 	= (int) analyzeStepJSpinner.getValue();
-
 	}
 
 }

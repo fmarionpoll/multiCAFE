@@ -70,7 +70,8 @@ public class MCSequence_Close  extends JPanel {
 	void closeExp(Experiment exp) {
 		if (exp != null) {
 			parent0.sequencePane.infosTab.getExperimentInfosFromDialog(exp);
-			parent0.sequencePane.intervalsTab.getAnalyzeFrameAndStepFromDialog (exp);
+			parent0.sequencePane.intervalsTab.getAnalyzeFrameFromDialog (exp);
+			parent0.buildKymosPane.createTab.getBuildKymosParametersFromDialog(exp);
 			exp.xmlSaveExperiment();
 			
 			stopLoadingImages(exp);

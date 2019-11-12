@@ -27,7 +27,7 @@ public class MCKymosBuild_ extends JPanel implements PropertyChangeListener, Cha
 	private static final long serialVersionUID = 1122367183829360097L;
 
 	JTabbedPane 			tabsPane 		= new JTabbedPane();
-	MCKymosBuild_Create 	buildkymosTab 	= new MCKymosBuild_Create();
+	MCKymosBuild_Create 	createTab 		= new MCKymosBuild_Create();
 	MCKymosBuild_Display	displayTab 		= new MCKymosBuild_Display();
 	MCKymosBuild_File 		fileTab 		= new MCKymosBuild_File();
 	
@@ -42,9 +42,9 @@ public class MCKymosBuild_ extends JPanel implements PropertyChangeListener, Cha
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 		GridLayout capLayout = new GridLayout(3, 1);
 		
-		buildkymosTab.init(capLayout, parent0);
-		buildkymosTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Build kymos", null, buildkymosTab, "Build kymographs from ROI lines placed over capillaries");
+		createTab.init(capLayout, parent0);
+		createTab.addPropertyChangeListener(this);
+		tabsPane.addTab("Build kymos", null, createTab, "Build kymographs from ROI lines placed over capillaries");
 		
 		displayTab.init(capLayout, parent0);
 		displayTab.addPropertyChangeListener(this);
