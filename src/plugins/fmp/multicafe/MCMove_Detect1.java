@@ -156,7 +156,10 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		detect.videoChannel 	= colorChannelComboBox.getSelectedIndex();
 		detect.transformop		= (TransformOp) backgroundComboBox.getSelectedItem();
 		detect.threshold		= (int) thresholdSpinner.getValue();
-		Experiment exp 			= parent0.expList.getExperiment(parent0.currentIndex);		
+		Experiment exp 			= parent0.expList.getExperiment(parent0.currentIndex);	
+		exp.seqCamData.analysisStep = exp.step;
+		exp.seqCamData.analysisStart = exp.startFrame;
+		exp.seqCamData.analysisEnd = exp.endFrame;
 		detect.seqCamData 		= exp.seqCamData;
 		
 		detectFlies1Thread.stopFlag 	= false;

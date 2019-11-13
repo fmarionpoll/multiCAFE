@@ -14,6 +14,7 @@ import icy.canvas.Layer;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.roi.ROI;
+import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Experiment;
 
 
@@ -42,33 +43,38 @@ public class MCSequence_Display  extends JPanel {
 	
 	private void defineActionListeners() {
 		viewCapillariesCheckBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			roisDisplayLine(viewCapillariesCheckBox.isSelected(), "line");
+			displayROIsCategory(viewCapillariesCheckBox.isSelected(), "line");
 		} } );
 		
 		viewCagesCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			roisDisplayLine(viewCagesCheckbox.isSelected(), "cage");
+			displayROIsCategory(viewCagesCheckbox.isSelected(), "cage");
 		} } );
 		
 		viewFlyCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			roisDisplayLine(viewCagesCheckbox.isSelected(), "det");
+			displayROIsCategory(viewFlyCheckbox.isSelected(), "det");
 		} } );
 	}
 	
-	private void roisDisplayLine(boolean isVisible, String pattern) {
+	private void displayROIsCategory(boolean isVisible, String pattern) {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		IcyCanvas canvas = v.getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
 		if (layers == null)
 			return;
-		for (Layer layer: layers) {
-			ROI roi = layer.getAttachedROI();
-			if (roi == null)
-				continue;
-			String cs = roi.getName();
-			if (cs.contains(pattern))  
-				layer.setVisible(isVisible);
-		}
+		ThreadUtil.bgRun(new Runnable() {
+			@Override
+			public void run() {
+				for (Layer layer: layers) {
+					ROI roi = layer.getAttachedROI();
+					if (roi == null)
+						continue;
+					String cs = roi.getName();
+					if (cs.contains(pattern))  
+						layer.setVisible(isVisible);
+				}
+			}
+		});
 	}
 
 }

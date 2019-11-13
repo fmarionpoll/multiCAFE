@@ -176,6 +176,9 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		detect.jitter 			= (int) jitterTextField.getValue();
 		detect.threshold		= (int) thresholdSpinner.getValue();
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentIndex);
+		exp.seqCamData.analysisStep = exp.step;
+		exp.seqCamData.analysisStart = exp.startFrame;
+		exp.seqCamData.analysisEnd = exp.endFrame;
 		detect.seqCamData 		= exp.seqCamData;	
 		detect.initParametersForDetection();
 		
@@ -184,7 +187,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		detectFlies2Thread.stopFlag 	= false;
 		detectFlies2Thread.detect 		= detect;
 		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();
-	
+
 		return true;
 	}
 	
