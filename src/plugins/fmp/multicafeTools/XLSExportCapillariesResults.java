@@ -270,7 +270,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			charSeries = "t";
 		int startFrame 	= (int) exp.seqCamData.analysisStart;
 		int endFrame 	= (int) exp.seqCamData.analysisEnd;
-		int step 		= exp.step * options.pivotBinStep;
+		int fullstep 		= exp.step * options.pivotBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
 		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;
@@ -281,16 +281,16 @@ public class XLSExportCapillariesResults extends XLSExport {
 			
 		pt_main.x =0;
 		long tspanMinutes = referenceFileTimeImageLastMinutes-referenceFileTimeImageFirstMinutes;
-		long diff = getnearest(tspanMinutes, step)/ step;
+		long diff = getnearest(tspanMinutes, fullstep)/ fullstep;
 		
 		long firstImageTimeMinutes = exp.getFileTimeImageFirst(false).toMillis()/60000;
-		long diff2 = getnearest(firstImageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
-		pt_main.y = (int) (diff2/step + row0); 
+		long diff2 = getnearest(firstImageTimeMinutes-referenceFileTimeImageFirstMinutes, fullstep);
+		pt_main.y = (int) (diff2/fullstep + row0); 
 		int row_y0 = pt_main.y;
 		for (int i = 0; i<= diff; i++) {
-			long diff3 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, step);
+			long diff3 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, fullstep);
 			XLSUtils.setValue(sheet, pt_main, transpose, "t"+diff3);
-			imageTimeMinutes += step ;
+			imageTimeMinutes += fullstep ;
 			pt_main.y++;
 		}
 		
@@ -298,7 +298,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		int lastFrame = 0;
 		
 //		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame + " row=" + (row_y0+1));
-		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  step*options.pivotBinStep) {	
+		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+=  fullstep) {	
 			pt_main.x = col0;
 			pt_main.y++;
 			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;
@@ -320,7 +320,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 					List<Integer> dataL = dataArrayList.get(idataArray).data ;
 					List<Integer> dataR = dataArrayList.get(idataArray+1).data;
 					if (dataL != null && dataR != null) {
-						int j = (currentFrame - startFrame)/step;
+						int j = (currentFrame - startFrame)/fullstep;
 						if (j < dataL.size() && j < dataR.size()) {
 							Point pt0 = new Point(pt_main);
 							double valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
@@ -341,7 +341,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 						pt_main.x = colseries + col;			
 					List<Integer> data = dataArrayList.get(idataArray).data;
 					if (data != null) {
-						int j = (currentFrame - startFrame)/step;
+						int j = (currentFrame - startFrame)/fullstep;
 						if (j < data.size()) {
 							double value = data.get(j)*scalingFactorToPhysicalUnits;
 							XLSUtils.setValue(sheet, pt_main, transpose, value);
@@ -361,9 +361,9 @@ public class XLSExportCapillariesResults extends XLSExport {
 			Point padpt = new Point(pt_main);
 			padpt.x = col0;
 			int startNextExpt = (int) (exp.nextExperiment.fileTimeImageFirstMinute- exp.fileTimeImageFirstMinute);
-			lastFrame += step;
+			lastFrame += fullstep;
 //			System.out.println( "pad to " + exp.nextExperiment.experimentFileName +" lastFrame=" + lastFrame +" startNextExpt="+startNextExpt + " row="+ (padpt.y +1));
-			for (int nextFrame= lastFrame; nextFrame <= startNextExpt; nextFrame+=  step*options.pivotBinStep) {	
+			for (int nextFrame= lastFrame; nextFrame <= startNextExpt; nextFrame+=  fullstep*options.pivotBinStep) {	
 				padpt.x = col0;
 				padpt.y++;
 				
