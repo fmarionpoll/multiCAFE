@@ -130,10 +130,9 @@ public class CapillaryLimits  implements XMLPersistent  {
 	public List<Integer> getIntegerArrayFromPolyline2D() {
 		if (polyline == null)
 			return null;
-		double [] array = polyline.ypoints;
-		List<Integer> arrayInt = new ArrayList<Integer>(array.length);
-		for (int i=0; i< array.length; i++)
-			arrayInt.add((int) array[i]);
+		List<Integer> arrayInt = new ArrayList<Integer>(polyline.ypoints.length);
+		for (double i: polyline.ypoints)
+			arrayInt.add((int) i);
 		return arrayInt;
 	}
 	
