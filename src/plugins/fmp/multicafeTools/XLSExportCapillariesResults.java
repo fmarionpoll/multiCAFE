@@ -340,7 +340,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			}
 			lastFrame = currentFrame;
 		}
-//		System.out.println("lastFrame reached =" + lastFrame+ " row=" + pt_main.y);
+		System.out.println("lastFrame reached =" + lastFrame+ " row=" + pt_main.y);
 		
 		
 		// pad remaining cells with the last value
@@ -349,7 +349,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			padpt.x = col0;
 			int startNextExpt = (int) (exp.nextExperiment.fileTimeImageFirstMinute- exp.fileTimeImageFirstMinute);
 			lastFrame += fullstep;
-//			System.out.println( "pad to " + exp.nextExperiment.experimentFileName +" lastFrame=" + lastFrame +" startNextExpt="+startNextExpt + " row="+ (padpt.y +1));
+			System.out.println( "pad to " + exp.nextExperiment.experimentFileName +" lastFrame=" + lastFrame +" startNextExpt="+startNextExpt + " row="+ (padpt.y +1));
 			for (int nextFrame= lastFrame; nextFrame <= startNextExpt; nextFrame+=  fullstep) {	
 				padpt.x = col0;
 				padpt.y++;
@@ -382,8 +382,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 							if (dataL != null && dataR != null) {
 								int j = dataL.size()-1;
 								int k = dataR.size()-1;
-//								if (j != k)
-//									System.out.println("idataArray=" + idataArray+" j="+j+ " k="+k+ " difference="+ (j-k));
 								double valueL = (dataL.get(j)+dataR.get(k))*scalingFactorToPhysicalUnits;
 								XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
 								padpt.x ++;
