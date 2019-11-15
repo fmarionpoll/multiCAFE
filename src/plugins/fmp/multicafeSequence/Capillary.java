@@ -147,27 +147,75 @@ public class Capillary implements XMLPersistent  {
 	}
 	
 	public int getLastMeasure(EnumListType option) {
-		int datai = 0;
+		int lastMeasure = 0;
 		switch (option) {
 		case derivedValues:
 			if (ptsDerivative != null)
-				datai = ptsDerivative.getLastMeasure();
+				lastMeasure = ptsDerivative.getLastMeasure();
 			break;
 		case cumSum:
 			if (gulpsRois != null) {
-				List<Integer> ddatai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
-				datai = ddatai.get(ddatai.size()-1);
+				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
+				lastMeasure = datai.get(datai.size()-1);
 			}
 			break;
 		case bottomLevel:
-			datai = ptsBottom.getLastMeasure();
+			lastMeasure = ptsBottom.getLastMeasure();
 			break;
 		case topLevel:
 		default:
-			datai = ptsTop.getLastMeasure();
+			lastMeasure = ptsTop.getLastMeasure();
 			break;
 		}
-		return datai;
+		return lastMeasure;
+	}
+	
+	public int getLastDeltaMeasure(EnumListType option) {
+		int lastMeasure = 0;
+		switch (option) {
+		case derivedValues:
+			if (ptsDerivative != null)
+				lastMeasure = ptsDerivative.getLastDeltaMeasure();
+			break;
+		case cumSum:
+			if (gulpsRois != null) {
+				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
+				lastMeasure = datai.get(datai.size()-1) - datai.get(datai.size()-2);
+			}
+			break;
+		case bottomLevel:
+			lastMeasure = ptsBottom.getLastDeltaMeasure();
+			break;
+		case topLevel:
+		default:
+			lastMeasure = ptsTop.getLastDeltaMeasure();
+			break;
+		}
+		return lastMeasure;
+	}
+	
+	public int getT0Measure(EnumListType option) {
+		int t0Measure = 0;
+		switch (option) {
+		case derivedValues:
+			if (ptsDerivative != null)
+				t0Measure = ptsDerivative.getT0Measure();
+			break;
+		case cumSum:
+			if (gulpsRois != null) {
+				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
+				t0Measure = datai.get(0);
+			}
+			break;
+		case bottomLevel:
+			t0Measure = ptsBottom.getT0Measure();
+			break;
+		case topLevel:
+		default:
+			t0Measure = ptsTop.getT0Measure();
+			break;
+		}
+		return t0Measure;
 	}
 	
 	public List<ROI> transferMeasuresToROIs() {

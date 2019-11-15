@@ -68,6 +68,21 @@ public class CapillaryLimits  implements XMLPersistent  {
 		return ivalue;
 	}
 	
+	public int getT0Measure() {	
+		if (polyline == null)
+			return 0;
+		int ivalue = (int) polyline.ypoints[0];
+		return ivalue;
+	}
+	
+	public int getLastDeltaMeasure() {	
+		if (polyline == null)
+			return 0;
+		int lastitem = polyline.ypoints.length - 1;
+		int ivalue = (int) (polyline.ypoints[lastitem] - polyline.ypoints[lastitem-1]);
+		return ivalue;
+	}
+	
 	public List<ROI> addToROIs(List<ROI> listrois, int indexImage) {
 		this.indexImage = indexImage;
 		if (polyline != null) 

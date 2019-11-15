@@ -101,7 +101,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 		List <XLSCapillaryResults> resultsList = new ArrayList <XLSCapillaryResults> ();	
 		Capillaries capillaries = exp.seqKymos.capillaries;
 		double scalingFactorToPhysicalUnits = capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
-		System.out.println("main scalingFactorToPhysicalUnits ="+scalingFactorToPhysicalUnits);
+//		System.out.println("main scalingFactorToPhysicalUnits ="+scalingFactorToPhysicalUnits);
+		System.out.println("Master experiment ="+ exp.experimentFileName);
 		
 		for (int indexcapillary=0; indexcapillary < capillaries.capillariesArrayList.size(); indexcapillary++) {
 			Capillary cap = capillaries.capillariesArrayList.get(indexcapillary);
@@ -155,60 +156,35 @@ public class XLSExportCapillariesResults extends XLSExport {
 		double valuePreviousSeries = 0.;
 		if (exp.previousExperiment != null)
 			valuePreviousSeries = getLastPhysicalValue_Of_PreviousChain_Of_Exp(capName,  exp.previousExperiment, xlsoption, optiont0);
-		
+		System.out.println("-> previous experiment ="+ exp.experimentFileName);
 		Capillaries capillaries = exp.seqKymos.capillaries;
 		for (Capillary cap : capillaries.capillariesArrayList) {
 			if (cap.getName().equals(capName)) {
-//				XLSCapillaryResults results = new XLSCapillaryResults();
-//				results.name = cap.getName();
 				int lastValue = 0;
-				// TODO: implement "getLastMeasure()"
 				switch (xlsoption) {
 				case SUMGULPS:
 				case SUMGULPS_LR:
-//					results.data = cap.getMeasures(EnumListType.cumSum);
 					lastValue = cap.getLastMeasure(EnumListType.cumSum);
 					break;
 				case TOPLEVELDELTA:
-				case TOPLEVELDELTA_LR: {
-					XLSCapillaryResults results = new XLSCapillaryResults();
-					results.data = exp.seqKymos.subtractTi(cap.getMeasures(EnumListType.topLevel));
-					lastValue = results.data.get(results.data.size()-1);
-				}
+				case TOPLEVELDELTA_LR: 
+					lastValue = cap.getLastDeltaMeasure(EnumListType.topLevel);
 					break;
 				case DERIVEDVALUES:
-//					results.data = cap.getMeasures(EnumListType.derivedValues);
 					lastValue = cap.getLastMeasure(EnumListType.derivedValues);
 					break;
 				default:
 				case TOPLEVEL:
 				case TOPLEVEL_LR:
-					if (optiont0) { 
-						XLSCapillaryResults results = new XLSCapillaryResults();
-						results.data = exp.seqKymos.subtractT0(cap.getMeasures(EnumListType.topLevel));
-						lastValue = results.data.get(results.data.size()-1);
-					}
+					if (optiont0)
+						lastValue = cap.getLastMeasure(EnumListType.topLevel) -cap.getT0Measure(EnumListType.topLevel);
 					else
-//						results.data = cap.getMeasures(EnumListType.topLevel);
 						lastValue = cap.getLastMeasure(EnumListType.topLevel);
 					break;
 				}
 				
 				double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
-				System.out.println("other scalingFactorToPhysicalUnits ="+scalingFactorToPhysicalUnits);
-
-//				int previousValue = 0; 
-//				if (results.data == null) {
-//				if (lastValue == 0) {
-//					System.out.println("previous data series of capillary "+cap.getName()+ "is not defined - file: "+exp.seqCamData.getDirectory());
-//				} else {
-//					int indexprevious = results.data.size()-1;
-//					if (indexprevious < 0)
-//						System.out.println("size of data series of capillary "+cap.getName()+ "is less than 1");
-//					else
-//						previousValue = results.data.get(indexprevious);
-//					previousValue = lastValue;
-//				}
+//				System.out.println("other scalingFactorToPhysicalUnits ="+scalingFactorToPhysicalUnits);
 				valuePreviousSeries += (lastValue * scalingFactorToPhysicalUnits);
 				break;
 			}
