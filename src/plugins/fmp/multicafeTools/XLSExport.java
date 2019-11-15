@@ -72,24 +72,18 @@ public class XLSExport {
 			int col = getColFromKymoFileName(name);
 			if (col >= 0) 
 				pt.x = colseries + col;
-			pt.y = row;
+			pt.y = row;		
 			
-			// path
 			XLSUtils.setValue(sheet, pt, transpose, name0);
 			pt.y++;
-			
-			// date
 			XLSUtils.setValue(sheet, pt, transpose, date);
 			pt.y++;
-			
 			XLSUtils.setValue(sheet, pt, transpose, boxID);
 			pt.y++;
 			XLSUtils.setValue(sheet, pt, transpose, experiment);
 			pt.y++;
 			XLSUtils.setValue(sheet, pt, transpose, comment);
 			pt.y++;
-
-			// stimulus, conc
 			String letter = name.substring(name.length() - 1);
 			if (letter .equals("L")) 	XLSUtils.setValue(sheet, pt, transpose, stimulusL);
 			else						XLSUtils.setValue(sheet, pt, transpose, stimulusR);
@@ -97,36 +91,27 @@ public class XLSExport {
 			if (letter .equals("L")) 	XLSUtils.setValue(sheet, pt, transpose, concentrationL);
 			else 						XLSUtils.setValue(sheet, pt, transpose, concentrationR);
 			pt.y++;
-			
-			// cam
 			XLSUtils.setValue(sheet, pt, transpose, cam);
 			pt.y++;
-			// cap
 			XLSUtils.setValue(sheet, pt, transpose, letter);
 			pt.y++;
-			// cage
 			int i = getCageFromCapillaryName(name);
 			XLSUtils.setValue(sheet, pt, transpose, i);
 			pt.y++;
-			// cageID
 			XLSUtils.setValue(sheet, pt, transpose, charSeries+i);
 			pt.y++;
-			// nflies
 			int j = 1;
 			if (i < 1 || i > 8)
 				j = 0;
 			XLSUtils.setValue(sheet, pt, transpose, j);
 			pt.y++;
-			// dum1
+			// dum-s
 			XLSUtils.setValue(sheet, pt, transpose, name1);
 			pt.y++;
-			// dum2
 			XLSUtils.setValue(sheet, pt, transpose, name11);
 			pt.y++;
-			// dum3
 			XLSUtils.setValue(sheet, pt, transpose, name111);
 			pt.y++;
-			// dum4
 			XLSUtils.setValue(sheet, pt, transpose, sheetName);
 			pt.y++;
 			// rois

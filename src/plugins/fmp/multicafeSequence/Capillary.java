@@ -146,6 +146,30 @@ public class Capillary implements XMLPersistent  {
 		return datai;
 	}
 	
+	public int getLastMeasure(EnumListType option) {
+		int datai = 0;
+		switch (option) {
+		case derivedValues:
+			if (ptsDerivative != null)
+				datai = ptsDerivative.getLastMeasure();
+			break;
+		case cumSum:
+			if (gulpsRois != null) {
+				List<Integer> ddatai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
+				datai = ddatai.get(ddatai.size()-1);
+			}
+			break;
+		case bottomLevel:
+			datai = ptsBottom.getLastMeasure();
+			break;
+		case topLevel:
+		default:
+			datai = ptsTop.getLastMeasure();
+			break;
+		}
+		return datai;
+	}
+	
 	public List<ROI> transferMeasuresToROIs() {
 		List<ROI> listrois = new ArrayList<ROI> ();
 		if (ptsTop != null)

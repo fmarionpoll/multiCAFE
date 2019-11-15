@@ -96,11 +96,8 @@ public class MCKymosDetect_File  extends JPanel {
 	void saveKymosMeasures(Experiment exp) {
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos != null) {
-//			parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
-//			parent0.sequencePane.infosTab.getCapillariesInfosFromDialog(seqKymos.capillaries);
-//			parent0.sequencePane.intervalsTab.getAnalyzeFrameAndStepFromDialog (exp.seqCamData);
-//			seqKymos.updateCapillariesFromCamData(exp.seqCamData);
 			seqKymos.roisSaveEdits();
+			seqKymos.xmlSaveMCcapillaries(exp.seqCamData.getDirectory());
 			seqKymos.xmlSaveKymos_Measures(exp.seqCamData.getDirectory());
 		}
 	}

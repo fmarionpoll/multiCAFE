@@ -60,6 +60,14 @@ public class CapillaryLimits  implements XMLPersistent  {
 		return datai;
 	}
 	
+	public int getLastMeasure() {	
+		if (polyline == null)
+			return 0;
+		int lastitem = polyline.ypoints.length - 1;
+		int ivalue = (int) polyline.ypoints[lastitem];
+		return ivalue;
+	}
+	
 	public List<ROI> addToROIs(List<ROI> listrois, int indexImage) {
 		this.indexImage = indexImage;
 		if (polyline != null) 
