@@ -32,9 +32,7 @@ public class Capillaries {
 	private final static String ID_LISTOFCAPILLARIES = "List_of_capillaries";
 	private final static String ID_CAPILLARY_ = "capillary_";
 
-		// ---------------------------------
-	
-	
+	// ---------------------------------
 	
 	public boolean xmlWriteROIsAndData(String name, SequenceKymos seq) {
 		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");
@@ -95,7 +93,6 @@ public class Capillaries {
 		return false;
 	}
 	
-	// ----------------------------------
 	private boolean xmlSaveListOfCapillaries(Document doc, SequenceKymos seq) {
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
@@ -172,8 +169,6 @@ public class Capillaries {
 			cap.loadFromXML(node);
 		}
 	}
-
-	// ---------------------------------
 	
 	public void copy (Capillaries cap) {
 		desc.copy(cap.desc);

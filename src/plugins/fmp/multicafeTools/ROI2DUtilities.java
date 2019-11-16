@@ -84,40 +84,36 @@ public class ROI2DUtilities  {
 		return cageMaskList;
 	}
 	
-	public static boolean interpolateMissingPointsAlongXAxis (ROI2DPolyLine roiLine, int roiLine_nintervals) {
-		if (roiLine_nintervals <= 0)
+	public static boolean interpolateMissingPointsAlongXAxis (ROI2DPolyLine roiLine, int nintervals) {
+		if (nintervals <= 0)
 			return false;
 		// interpolate points so that each x step has a value	
 		// assume that points are ordered along x
-		Polyline2D line = roiLine.getPolyline2D();
-		int roiLine_npoints = line.npoints;
-		
-		// exit if the length of the segment is the same 
-		if (roiLine_npoints == roiLine_nintervals) {
-			return true;
-		}
+		Polyline2D polyline = roiLine.getPolyline2D();
+		int roiLine_npoints = polyline.npoints;
+
 		// clip extra points
-		if (roiLine_npoints > roiLine_nintervals)
-			roiLine_npoints = roiLine_nintervals;
-		
+		if (roiLine_npoints > nintervals)
+			roiLine_npoints = nintervals;
+				
 		List<Point2D> pts = new ArrayList <Point2D>(roiLine_npoints);
-		double ylast = line.ypoints[roiLine_npoints-1];
+		double ylast = polyline.ypoints[roiLine_npoints-1];
 		for (int i=1; i< roiLine_npoints; i++) {			
-			int xfirst = (int) line.xpoints[i-1];
+			int xfirst = (int) polyline.xpoints[i-1];
 			if (xfirst < 0)
 				xfirst = 0;
-			int xlast = (int) line.xpoints[i];
-			if (xlast > roiLine_nintervals -1)
-				xlast = roiLine_nintervals -1;
-			double yfirst = line.ypoints[i-1];
-			ylast = line.ypoints[i]; 
+			int xlast = (int) polyline.xpoints[i];
+			if (xlast > nintervals -1)
+				xlast = nintervals -1;
+			double yfirst = polyline.ypoints[i-1];
+			ylast = polyline.ypoints[i]; 
 			for (int j = xfirst; j< xlast; j++) {
 				int val = (int) (yfirst + (ylast-yfirst)*(j-xfirst)/(xlast-xfirst));
 				Point2D pt = new Point2D.Double(j, val);
 				pts.add(pt);
 			}
 		}
-		Point2D pt = new Point2D.Double(line.xpoints[roiLine_npoints-1], ylast);
+		Point2D pt = new Point2D.Double(polyline.xpoints[roiLine_npoints-1], ylast);
 		pts.add(pt);
 		roiLine.setPoints(pts);
 		return true;
