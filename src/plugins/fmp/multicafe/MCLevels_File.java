@@ -18,7 +18,7 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
 
-public class MCKymosDetect_File  extends JPanel {
+public class MCLevels_File  extends JPanel {
 	/**
 	 * 
 	 */

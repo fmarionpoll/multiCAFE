@@ -22,7 +22,7 @@ import plugins.fmp.multicafeTools.BuildKymographs;
 import plugins.fmp.multicafeTools.EnumStatusComputation;
 
 
-public class MCKymosBuild_Create extends JPanel { 
+public class MCKymos_Create extends JPanel { 
 	/**
 	 * 
 	 */

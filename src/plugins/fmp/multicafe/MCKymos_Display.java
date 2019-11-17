@@ -31,7 +31,7 @@ import plugins.fmp.multicafeTools.MulticafeTools;
 
 
 
-public class MCKymosBuild_Display extends JPanel {
+public class MCKymos_Display extends JPanel {
 	/**
 	 * 
 	 */

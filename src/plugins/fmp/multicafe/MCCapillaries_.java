@@ -30,7 +30,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	private static final long serialVersionUID = 853047648249832145L;
 	
 	JTabbedPane 			tabsPane 		= new JTabbedPane();
-	MCCapillaries_Build 	buildarrayTab 	= new MCCapillaries_Build();
+	MCCapillaries_Create 	buildarrayTab 	= new MCCapillaries_Create();
 	MCCapillaries_File 		fileTab 		= new MCCapillaries_File();
 	MCCapillaries_Adjust 	adjustTab 		= new MCCapillaries_Adjust();
 	MCCapillaries_Infos		infosTab		= new MCCapillaries_Infos();

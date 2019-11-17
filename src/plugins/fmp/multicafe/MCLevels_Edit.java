@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import icy.roi.ROI;
@@ -18,11 +19,12 @@ import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.CapillaryLimits;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
 
-public class MCKymosDetect_Edit  extends JPanel {
+public class MCLevels_Edit  extends JPanel {
 	/**
 	 * 
 	 */
@@ -33,13 +35,15 @@ public class MCKymosDetect_Edit  extends JPanel {
 	private JComboBox<String> 	roiTypeCombo 	= new JComboBox<String> (new String[] 
 			{" top level", "bottom level", "top & bottom levels", "derivative", "gulps" });
 	private JButton 			deleteButton 	= new JButton("Delete");
+	private JButton 			adjustButton 	= new JButton("Adjust dimensions");
 
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);	
 		this.parent0 = parent0;
-		add(GuiUtil.besidesPanel(new JLabel("Source:"), roiTypeCombo, new JLabel(" "), deleteButton));
+		add(GuiUtil.besidesPanel(adjustButton, new JLabel(" "), new JLabel("Source ", SwingConstants.RIGHT), roiTypeCombo));
+		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "), new JLabel(" "),  deleteButton));
 		defineListeners();
 	}
 	
@@ -48,6 +52,10 @@ public class MCKymosDetect_Edit  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				parent0.expList.getExperiment(parent0.currentIndex).seqKymos.transferKymosRoisToMeasures();
 				deletePointsIncluded();
+			}});
+		adjustButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				adjustDimensions();
 			}});
 	}
 
@@ -152,6 +160,13 @@ public class MCKymosDetect_Edit  extends JPanel {
 			npointsInside += isInside[i]? 1: 0;
 		}
 		return npointsInside;
+	}
+	
+	void adjustDimensions () {
+		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		SequenceKymos seqKymos = exp.seqKymos;
+		
+		
 	}
 	
 }

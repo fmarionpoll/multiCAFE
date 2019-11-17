@@ -20,7 +20,7 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.XYMultiChart;
 
-public class MCKymosDetect_Graphs extends JPanel {
+public class MCLevels_Graphs extends JPanel {
 
 	/**
 	 * 

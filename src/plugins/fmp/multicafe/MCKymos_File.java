@@ -29,7 +29,7 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
-public class MCKymosBuild_File extends JPanel {
+public class MCKymos_File extends JPanel {
 
 	/**
 	 * 

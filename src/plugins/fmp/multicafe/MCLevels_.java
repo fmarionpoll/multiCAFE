@@ -23,19 +23,19 @@ import plugins.fmp.multicafeTools.ImageTransformTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class MCKymosDetect_ extends JPanel implements PropertyChangeListener {
+public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7339633966002954720L;
-	private JTabbedPane 	tabsPane 	= new JTabbedPane();
-	MCKymosDetect_File 		fileTab 	= new MCKymosDetect_File();
-	MCKymosDetect_Levels 	limitsTab 	= new MCKymosDetect_Levels();
-	MCKymosDetect_Gulps 	gulpsTab 	= new MCKymosDetect_Gulps();
-	MCKymosDetect_Edit		editTab		= new MCKymosDetect_Edit();
-	MCKymosDetect_Graphs 	graphsTab 	= new MCKymosDetect_Graphs();
-	ImageTransformTools 	tImg 		= null;
-	private MultiCAFE 		parent0 	= null;
+	private JTabbedPane tabsPane 	= new JTabbedPane();
+	MCLevels_File 		fileTab 	= new MCLevels_File();
+	MCLevels_Limits 	limitsTab 	= new MCLevels_Limits();
+	MCLevels_Gulps 		gulpsTab 	= new MCLevels_Gulps();
+	MCLevels_Edit		editTab		= new MCLevels_Edit();
+	MCLevels_Graphs 	graphsTab 	= new MCLevels_Graphs();
+	ImageTransformTools tImg 		= null;
+	private MultiCAFE 	parent0 	= null;
 
 	
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
@@ -52,7 +52,7 @@ public class MCKymosDetect_ extends JPanel implements PropertyChangeListener {
 		
 		limitsTab.init(capLayout, parent0);
 		limitsTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Liquid", null, limitsTab, "Find limits of the columns of liquid");
+		tabsPane.addTab("Limits", null, limitsTab, "Find limits of the columns of liquid");
 		
 		gulpsTab.init(capLayout, parent0);	
 		tabsPane.addTab("Gulps", null, gulpsTab, "Detect gulps");

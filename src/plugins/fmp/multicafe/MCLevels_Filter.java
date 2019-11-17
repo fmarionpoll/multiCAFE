@@ -17,7 +17,7 @@ import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
-public class MCKymosDetect_Filter  extends JPanel {
+public class MCLevels_Filter  extends JPanel {
 
 	/**
 	 * 
