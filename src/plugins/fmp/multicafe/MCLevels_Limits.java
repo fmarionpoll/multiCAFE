@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -13,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillary;
@@ -38,18 +38,24 @@ public class MCLevels_Limits  extends JPanel {
 
 	private static final long serialVersionUID = -6329863521455897561L;
 	private JComboBox<String> 	directionComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
-	private JCheckBox	detectAllCheckBox 		= new JCheckBox ("all images", true);
+	private JCheckBox	allImagesCheckBox 		= new JCheckBox ("all images", true);
 	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
 	private JButton		displayTransform1Button	= new JButton("Display");
 	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
 	private JButton 	detectButton 			= new JButton("Detect");
 	private MultiCAFE 	parent0 				= null;
 	private JCheckBox	partCheckBox 			= new JCheckBox ("detect from", false);
+	JCheckBox			ALLCheckBox 				= new JCheckBox("ALL series", false);
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
+//		allImagesCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
+//		allImagesCheckBox.setHorizontalTextPosition(SwingConstants.LEFT);
+		add( GuiUtil.besidesPanel(detectButton, allImagesCheckBox, new JLabel(" "), ALLCheckBox));
+		ALLCheckBox.setForeground(Color.RED);
+		ALLCheckBox.setEnabled(false);
 		
 		((JLabel) directionComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
 		add( GuiUtil.besidesPanel(directionComboBox, thresholdSpinner, transformForLevelsComboBox, displayTransform1Button ));
@@ -61,10 +67,6 @@ public class MCLevels_Limits  extends JPanel {
 		panel1.add(new JLabel("to"));
 		panel1.add(endSpinner);
 		add( panel1);
-		
-		detectAllCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
-		detectAllCheckBox.setHorizontalTextPosition(SwingConstants.LEFT);
-		add( GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "), detectAllCheckBox, detectButton));
 		
 		defineActionListeners();
 	}
@@ -89,7 +91,7 @@ public class MCLevels_Limits  extends JPanel {
 				options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 				options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 				options.detectLevelThreshold= (int) getDetectLevelThreshold();
-				options.detectAllImages 	= detectAllCheckBox.isSelected();
+				options.detectAllImages 	= allImagesCheckBox.isSelected();
 				options.firstImage 			= parent0.kymosPane.displayTab.kymographNamesComboBox.getSelectedIndex();
 				options.analyzePartOnly		= partCheckBox.isSelected();
 				options.startPixel			= (int) startSpinner.getValue();
@@ -141,7 +143,7 @@ public class MCLevels_Limits  extends JPanel {
 		directionComboBox.setSelectedIndex(index);
 		setDetectLevelThreshold(options.detectLevelThreshold);
 		thresholdSpinner.setValue(options.detectLevelThreshold);
-		detectAllCheckBox.setSelected(options.detectAllImages);
+		allImagesCheckBox.setSelected(options.detectAllImages);
 	}
 	
 	void getInfosFromDialog(Capillary cap) {
@@ -150,6 +152,6 @@ public class MCLevels_Limits  extends JPanel {
 		options.transformForLevels = (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
 		options.detectLevelThreshold = getDetectLevelThreshold();
-		options.detectAllImages = detectAllCheckBox.isSelected();
+		options.detectAllImages = allImagesCheckBox.isSelected();
 	}
 }

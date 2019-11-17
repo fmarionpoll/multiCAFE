@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -51,8 +52,9 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 	private JCheckBox objectUpsizeCheckBox 	= new JCheckBox("object < ");
 	private JSpinner objectUpsizeSpinner	= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
 	private JCheckBox whiteMiceCheckBox 	= new JCheckBox("white object");
-	private JCheckBox thresholdedImageCheckBox = new JCheckBox("overlay");
-
+	private JCheckBox overlayCheckBox = new JCheckBox("overlay");
+	private JCheckBox ALLCheckBox = new JCheckBox("ALL series", false);
+	
 	private OverlayThreshold 	ov 					= null;
 	private DetectFlies1 		detectFlies1Thread 	= null;
 
@@ -63,7 +65,10 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		this.parent0 = parent0;
 		
 		JPanel dummyPanel = new JPanel();
-		dummyPanel.add( GuiUtil.besidesPanel(whiteMiceCheckBox, thresholdedImageCheckBox) );
+		dummyPanel.add( GuiUtil.besidesPanel(whiteMiceCheckBox, overlayCheckBox, ALLCheckBox) );
+		ALLCheckBox.setForeground(Color.RED);
+		ALLCheckBox.setEnabled(false);
+		
 		FlowLayout layout = (FlowLayout) dummyPanel.getLayout();
 		layout.setVgap(0);
 		dummyPanel.validate();
@@ -91,18 +96,17 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 	}
 	
 	private void defineActionListeners() {
-		
-		thresholdedImageCheckBox.addItemListener(new ItemListener() {
+		overlayCheckBox.addItemListener(new ItemListener() {
 		      public void itemStateChanged(ItemEvent e) {
-		    	  Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		  		if (thresholdedImageCheckBox.isSelected() && exp != null) {
-						if (ov == null)
-							ov = new OverlayThreshold(exp.seqCamData);
-						exp.seqCamData.seq.addOverlay(ov);
-						updateOverlay();
-					}
-					else
-						removeOverlay();
+	    	  	Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+	  			if (overlayCheckBox.isSelected() && exp != null) {
+					if (ov == null)
+						ov = new OverlayThreshold(exp.seqCamData);
+					exp.seqCamData.seq.addOverlay(ov);
+					updateOverlay();
+				}
+				else
+					removeOverlay();
 		      }});
 
 		startComputationButton.addActionListener(new ActionListener () {

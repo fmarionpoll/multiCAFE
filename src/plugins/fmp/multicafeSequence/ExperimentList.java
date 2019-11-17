@@ -76,11 +76,9 @@ public class ExperimentList {
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			exp.xmlLoadExperiment();
-//			int oldstep = exp.step;
 			int image_size = exp.seqKymos.seq.getSizeX();
 			if (image_size != 0)
 				exp.step = exp.seqCamData.nTotalFrames / image_size;
-//			System.out.println("old step="+ oldstep + " recomputed step=" + exp.step);
 			progress.incPosition();
 			index++;
 		}
@@ -144,7 +142,6 @@ public class ExperimentList {
 			col0 = exp.col;
 				break;
 		}
-		
 		if (!found) {
 			exp.col = col0;
 		}

@@ -74,6 +74,7 @@ public class Experiment {
 		seqCamData = seq;
 		seqKymos   = new SequenceKymos();
 		seqCamData.setParentDirectoryAsFileName() ;
+		experimentFileName = seqCamData.getDirectory();
 		loadFileIntervalsFromSeqCamData();
 	}
 	
@@ -89,7 +90,6 @@ public class Experiment {
 			return false;
 
 		seqCamData.xmlReadDrosoTrackDefault();
-		
 		return true;
 	}
 	
@@ -129,7 +129,7 @@ public class Experiment {
 		return seqCamData;
 	}
 	
-	private void loadFileIntervalsFromSeqCamData() {
+	public void loadFileIntervalsFromSeqCamData() {
 		fileTimeImageFirst = seqCamData.getImageFileTime(0);
 		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;

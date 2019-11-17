@@ -96,7 +96,8 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		int iselected = tabsPane.getSelectedIndex();
 		if (iselected == 0) {
 			Viewer v = exp.seqCamData.seq.getFirstViewer();
-			v.toFront();
+			if (v != null)
+				v.toFront();
 		} else if (iselected == 1) {
 			parent0.kymosPane.displayTab.displayUpdateOnSwingThread();
 		}

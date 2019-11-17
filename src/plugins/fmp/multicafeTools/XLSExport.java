@@ -27,6 +27,7 @@ public class XLSExport {
 	protected Experiment 		expAll 		= null;
 	int							nintervals	= 0;
 
+	
 	public long getnearest(long value, int step) {
 		long diff0 = (value /step)*step;
 		long diff1 = diff0 + step;

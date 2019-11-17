@@ -30,7 +30,8 @@ public class ViewerUpdater implements Runnable {
 	public void run() {
 		while (!isInterrupted) {
 			int posT = seqCamData.currentFrame;
-			viewer.setPositionT(posT);
+			if (viewer != null)
+				viewer.setPositionT(posT);
 			ThreadUtil.sleep(milliSleep);
 		}
 	}
