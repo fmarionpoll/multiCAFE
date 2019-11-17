@@ -275,4 +275,16 @@ public class Experiment {
 		return isavailable;
 	}
 	
+	public boolean checkStepConsistency() {
+		int imageWidth = seqKymos.seq.getSizeT(); //TODO: this is not correct - it is the nb of capillaries
+		// todo load image?
+		int len = (endFrame - startFrame + 1) / step;
+		boolean isOK = true;
+		if (len != imageWidth) {
+			isOK = false;
+			step = (endFrame - startFrame + 1)/imageWidth;
+		}
+		return isOK;
+	}
+	
 }

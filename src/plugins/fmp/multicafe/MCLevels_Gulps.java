@@ -85,7 +85,7 @@ public class MCLevels_Gulps extends JPanel {
 		displayTransform2Button.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				kymosDisplayFiltered2();
-				parent0.buildKymosPane.displayTab.viewKymosCheckBox.setSelected(true);
+				parent0.kymosPane.displayTab.viewKymosCheckBox.setSelected(true);
 			}});
 		
 	}
@@ -103,7 +103,7 @@ public class MCLevels_Gulps extends JPanel {
 		}
 		
 		TransformOp transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
-		parent0.kymographsPane.kymosBuildFiltered(0, 2, transform, (int) spanTransf2Spinner.getValue());
+		parent0.levelsPane.kymosBuildFiltered(0, 2, transform, (int) spanTransf2Spinner.getValue());
 	}
 	
 	void kymosDetectGulps(boolean detectGulps) {
@@ -111,7 +111,7 @@ public class MCLevels_Gulps extends JPanel {
 		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
 		options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps 			= detectAllGulpsCheckBox.isSelected();
-		options.firstkymo 				= parent0.buildKymosPane.displayTab.kymographNamesComboBox.getSelectedIndex();
+		options.firstkymo 				= parent0.kymosPane.displayTab.kymographNamesComboBox.getSelectedIndex();
 		options.buildGulps				= detectGulpsCheckBox.isSelected();
 		if (!detectGulps)
 			options.buildGulps = false;

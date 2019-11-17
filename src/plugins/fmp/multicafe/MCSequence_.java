@@ -112,7 +112,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 			updateViewerForSequenceCam(exp.seqCamData);
 			intervalsTab.getAnalyzeFrameFromDialog(exp);
-			parent0.buildKymosPane.createTab.getBuildKymosParametersFromDialog(exp);
+			parent0.kymosPane.createTab.getBuildKymosParametersFromDialog(exp);
 		}
 
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) {

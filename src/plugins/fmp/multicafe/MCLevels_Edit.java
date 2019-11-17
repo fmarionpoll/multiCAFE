@@ -164,8 +164,10 @@ public class MCLevels_Edit  extends JPanel {
 	
 	void adjustDimensions () {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		SequenceKymos seqKymos = exp.seqKymos;
-		
+		if (!exp.checkStepConsistency()) {
+			parent0.kymosPane.createTab.setBuildKymosParametersToDialog(exp);
+			parent0.capillariesPane.saveCapillaries(exp);
+		}
 		
 	}
 	

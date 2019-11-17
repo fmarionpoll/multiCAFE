@@ -15,7 +15,6 @@ import javax.swing.SwingConstants;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.fmp.multicafeTools.BuildKymographs;
@@ -30,7 +29,7 @@ public class MCKymos_Create extends JPanel {
 	JButton 				kymoStartComputationButton 	= new JButton("Start");
 	JButton 				kymosStopComputationButton 	= new JButton("Stop");
 	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
-	JSpinner 				analyzeStepJSpinner 	= new JSpinner(new SpinnerNumberModel(1, 1, 10000, 1));
+	JSpinner 				stepJSpinner 				= new JSpinner(new SpinnerNumberModel(1, 1, 10000, 1));
 	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
 	JCheckBox				updateViewerCheckBox 		= new JCheckBox("update viewer", true);
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
@@ -51,7 +50,7 @@ public class MCKymos_Create extends JPanel {
 				updateViewerCheckBox, 
 				doRegistrationCheckBox
 				));
-		add(GuiUtil.besidesPanel(new JLabel("step ", SwingConstants.RIGHT) , analyzeStepJSpinner, new JLabel (" "), new JLabel (" ")));
+		add(GuiUtil.besidesPanel(new JLabel("step ", SwingConstants.RIGHT), stepJSpinner, new JLabel (" "), new JLabel (" ")));
 		defineActionListeners();
 	}
 	
@@ -68,16 +67,13 @@ public class MCKymos_Create extends JPanel {
 	}
 	
 	void setBuildKymosParametersToDialog (Experiment exp) {
-		analyzeStepJSpinner.setValue(exp.step);
+		stepJSpinner.setValue(exp.step);
 	}
 	
 	void getBuildKymosParametersFromDialog (Experiment exp) {
-		exp.step 		= (int) analyzeStepJSpinner.getValue();
-		SequenceCamData seq = exp.seqCamData;
-		seq.analysisStep 	= (int) analyzeStepJSpinner.getValue();
+		exp.step 		= (int) stepJSpinner.getValue();
+		exp.seqCamData.analysisStep 	= (int) stepJSpinner.getValue();
 	}
-	
-		
 	
 	private void setStartButton(boolean enableStart) {
 		kymoStartComputationButton.setEnabled(enableStart );
@@ -94,7 +90,6 @@ public class MCKymos_Create extends JPanel {
 			exp.seqKymos.seq.removeAllROI();
 			exp.seqKymos.seq.close();
 		}
-		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		parent0.sequencePane.intervalsTab.getAnalyzeFrameFromDialog (exp);
 		getBuildKymosParametersFromDialog (exp);
@@ -115,8 +110,8 @@ public class MCKymos_Create extends JPanel {
 				e1.printStackTrace();
 			}
 		}
-		parent0.buildKymosPane.displayTab.viewKymosCheckBox.setSelected(true);
-		parent0.buildKymosPane.displayTab.displayViews (true);
+		parent0.kymosPane.displayTab.viewKymosCheckBox.setSelected(true);
+		parent0.kymosPane.displayTab.displayViews (true);
 	}
 	
 	private void resetUserInterface() {
@@ -126,8 +121,7 @@ public class MCKymos_Create extends JPanel {
 		firePropertyChange( "KYMOS_OK", false, true);
 	}
 	
-	private void kymosBuildKymographs() {
-				
+	private void kymosBuildKymographs() {	
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		buildKymographsThread = null;
 		if (exp.seqKymos != null && exp.seqKymos.seq != null)

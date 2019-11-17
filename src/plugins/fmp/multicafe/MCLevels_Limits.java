@@ -90,7 +90,7 @@ public class MCLevels_Limits  extends JPanel {
 				options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 				options.detectLevelThreshold= (int) getDetectLevelThreshold();
 				options.detectAllImages 	= detectAllCheckBox.isSelected();
-				options.firstImage 			= parent0.buildKymosPane.displayTab.kymographNamesComboBox.getSelectedIndex();
+				options.firstImage 			= parent0.kymosPane.displayTab.kymographNamesComboBox.getSelectedIndex();
 				options.analyzePartOnly		= partCheckBox.isSelected();
 				options.startPixel			= (int) startSpinner.getValue();
 				options.endPixel			= (int) endSpinner.getValue();
@@ -130,7 +130,7 @@ public class MCLevels_Limits  extends JPanel {
 		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) {
 			getInfosFromDialog(capList.get(t));		
 		}
-		parent0.kymographsPane.kymosBuildFiltered(0, 1, transform, getSpanDiffTop());
+		parent0.levelsPane.kymosBuildFiltered(0, 1, transform, getSpanDiffTop());
 	}
 	
 	void setInfosToDialog(Capillary cap) {

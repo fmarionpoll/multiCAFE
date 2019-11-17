@@ -98,7 +98,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			Viewer v = exp.seqCamData.seq.getFirstViewer();
 			v.toFront();
 		} else if (iselected == 1) {
-			parent0.buildKymosPane.displayTab.displayUpdateOnSwingThread();
+			parent0.kymosPane.displayTab.displayUpdateOnSwingThread();
 		}
 	}
 	

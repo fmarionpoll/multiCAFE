@@ -24,16 +24,16 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 					mainFrame 			= new IcyFrame("MultiCAFE analysis 16-Nov-2019", true, true, true, true);
-	ExperimentList				expList 			= new ExperimentList();
-	int							currentIndex		= -1;
+	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE analysis 16-Nov-2019", true, true, true, true);
+	ExperimentList	expList 		= new ExperimentList();
+	int				currentIndex	= -1;
 	
-	MCSequence_ 				sequencePane 		= new MCSequence_();
-	MCCapillaries_ 				capillariesPane 	= new MCCapillaries_();
-	MCKymos_				buildKymosPane		= new MCKymos_();
-	MCLevels_ 				kymographsPane 		= new MCLevels_();
-	MCMove_ 					movePane 			= new MCMove_();
-	MCExcel_					excelPane			= new MCExcel_();
+	MCSequence_ 	sequencePane 	= new MCSequence_();
+	MCCapillaries_ 	capillariesPane	= new MCCapillaries_();
+	MCKymos_		kymosPane		= new MCKymos_();
+	MCLevels_ 		levelsPane 		= new MCLevels_();
+	MCMove_ 		movePane 		= new MCMove_();
+	MCExcel_		excelPane		= new MCExcel_();
 	
 	//-------------------------------------------------------------------
 	
@@ -49,11 +49,11 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		capillariesPane.init(mainPanel, "CAPILLARIES", this);
 		capillariesPane.addPropertyChangeListener(this);	
 		
-		buildKymosPane.init(mainPanel, "KYMOGRAPHS", this);
-		buildKymosPane.addPropertyChangeListener(this);
+		kymosPane.init(mainPanel, "KYMOGRAPHS", this);
+		kymosPane.addPropertyChangeListener(this);
 		
-		kymographsPane.init(mainPanel, "MEASURE TOP LEVEL & GULPS", this);
-		kymographsPane.addPropertyChangeListener(this);
+		levelsPane.init(mainPanel, "MEASURE TOP LEVEL & GULPS", this);
+		levelsPane.addPropertyChangeListener(this);
 		
 		movePane.init(mainPanel, "DETECT FLIES", this);
 		movePane.addPropertyChangeListener(this);
@@ -92,16 +92,16 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (arg0.getPropertyName().equals("CAPILLARIES_OPEN")) {
 			Experiment exp = expList.getExperiment(currentIndex);
 			sequencePane.intervalsTab.setAnalyzeFrameToDialog(exp);
-			buildKymosPane.createTab.setBuildKymosParametersToDialog(exp);
+			kymosPane.createTab.setBuildKymosParametersToDialog(exp);
 		}
 		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
-			buildKymosPane.displayTab.displayUpdateOnSwingThread();
-			buildKymosPane.displayTab.viewKymosCheckBox.setSelected(true);
+			kymosPane.displayTab.displayUpdateOnSwingThread();
+			kymosPane.displayTab.viewKymosCheckBox.setSelected(true);
 		}
 		else if (arg0.getPropertyName() .equals("SAVE_KYMOSMEASURES")) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				Experiment exp = expList.getExperiment(currentIndex);
-				kymographsPane.fileTab.saveKymosMeasures(exp);
+				levelsPane.fileTab.saveKymosMeasures(exp);
 			}});
 		}
 	} 
@@ -136,7 +136,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (seqCamData == null)
 			return;
 		sequencePane.transferSequenceCamDataToDialogs(seqCamData);
-		kymographsPane.transferSequenceCamDataToDialogs(seqCamData);		
+		levelsPane.transferSequenceCamDataToDialogs(seqCamData);		
 	}
 
 	void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
@@ -149,18 +149,18 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		
 		if (loadCapillaries) {
 			progress = new ProgressFrame("load capillary measures");
-			kymographsPane.fileTab.loadKymosMeasures(exp);
+			levelsPane.fileTab.loadKymosMeasures(exp);
 			progress.close();
 		}
 
 		if (loadKymographs) {
 			progress = new ProgressFrame("load kymographs");
-			buildKymosPane.displayTab.viewKymosCheckBox.setSelected(true);
-			buildKymosPane.fileTab.loadDefaultKymos(exp);
+			kymosPane.displayTab.viewKymosCheckBox.setSelected(true);
+			kymosPane.fileTab.loadDefaultKymos(exp);
 			progress.close();
 			if (sequencePane.openTab.graphsCheckBox.isSelected())
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
-				    	kymographsPane.graphsTab.xyDisplayGraphs();
+				    	levelsPane.graphsTab.xyDisplayGraphs();
 				}});
 		}
 		
