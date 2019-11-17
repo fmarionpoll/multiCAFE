@@ -48,6 +48,9 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	public boolean 			isRunning_loadImages 	= false;
 	public boolean 			isInterrupted_loadImages = false;
+	public int 				imageWidthMax 			= 0;
+	public int 				imageHeightMax 			= 0;
+	
 	
 	// -----------------------------------------------------
 	
@@ -283,8 +286,8 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	List<Rectangle> getMaxSizeofTiffFiles(List<File> files) {
-		int imageWidthMax = 0;
-		int imageHeightMax = 0;
+		imageWidthMax = 0;
+		imageHeightMax = 0;
 		List<Rectangle> rectList = new ArrayList<Rectangle>(files.size());
 		
 		ProgressFrame progress = new ProgressFrame("Read kymographs width and height");
@@ -322,9 +325,6 @@ public class SequenceKymos extends SequenceCamData  {
 	void adjustImagesToMaxSize(List<File> files, List<Rectangle> rectList) {
 		ProgressFrame progress = new ProgressFrame("Make kymographs the same width and height");
 		progress.setLength(files.size());
-		Rectangle rect = rectList.get(rectList.size()-1);
-		int imageWidthMax = rect.width;
-		int imageHeightMax = rect.height;
 		
 		for (int i= 0; i < files.size(); i++) {
 			if (isInterrupted_loadImages) {

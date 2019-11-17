@@ -166,8 +166,18 @@ public class MCLevels_Edit  extends JPanel {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		if (!exp.checkStepConsistency()) {
 			parent0.kymosPane.createTab.setBuildKymosParametersToDialog(exp);
-			parent0.capillariesPane.saveCapillaries(exp);
 		}
+		
+		int imageSize = exp.seqKymos.imageWidthMax;
+		for (Capillary cap: exp.seqKymos.capillaries.capillariesArrayList) {
+			cap.ptsTop.adjustToImageWidth(imageSize);
+			cap.ptsBottom.adjustToImageWidth(imageSize);
+			cap.ptsDerivative.adjustToImageWidth(imageSize);
+			cap.gulpsRois = null;
+			// TODO: deal with gulps.. (simply remove?)
+		}
+		exp.seqKymos.seq.removeAllROI();
+		exp.seqKymos.transferMeasuresToKymosRois();
 		
 	}
 	

@@ -92,10 +92,10 @@ public class CapillaryLimits  implements XMLPersistent  {
 	
 	public List<ROI> addToROIs(List<ROI> listrois, Color color, double stroke, int indexImage) {
 		if (polyline != null) { 
+			this.indexImage = indexImage;
 			ROI2D roi = transferPolyline2DToROI();
 			roi.setColor(color);
 			roi.setStroke(stroke);
-			roi.setT(indexImage);
 			roi.setName(name);
 			listrois.add(roi);
 		}
@@ -184,6 +184,38 @@ public class CapillaryLimits  implements XMLPersistent  {
 	    		XMLUtil.setAttributeDoubleValue(elmt, ID_Y, polyline.ypoints[i]);
 	    	}
 	    }
+	}
+	
+	public void adjustToImageWidth(int imageSize) {
+		if ( polyline.npoints == imageSize)
+			return;
+		else if (polyline.npoints > imageSize) {
+			double [] xpoints = new double[imageSize];
+			double [] ypoints = new double [imageSize];
+			for (int i=0; i< imageSize; i++) {
+				int j = i * polyline.npoints / imageSize;
+				xpoints[i] = i;
+				ypoints[i] = polyline.ypoints[j];
+			}
+			polyline = new Polyline2D (xpoints, ypoints, imageSize);
+		}
+		else { // imageSize > polyline.npoints
+			double [] xpoints = new double[imageSize];
+			double [] ypoints = new double [imageSize];
+			for (int j=0; j< polyline.npoints; j++) {
+				int i0 = j * imageSize / polyline.npoints;
+				int i1 = (j +1) * imageSize / polyline.npoints;
+				double y0 = polyline.ypoints[j];
+				double y1 = y0;
+				if ((j+1) < polyline.npoints)
+					y1 = polyline.ypoints[j+1]; 
+				for (int i = i0; i< i1; i++) {
+					xpoints[i] = i;
+					ypoints[i] = y0 + (y1-y0) * (i-i0)/(i1-i0);
+				}
+			}
+			polyline = new Polyline2D (xpoints, ypoints, imageSize);
+		}
 	}
 
 
