@@ -172,7 +172,8 @@ public class MCSequence_Infos  extends JPanel {
 		int nitems = expListComboBox.getItemCount();
 		for (int i=0; i< nitems; i++) {
 			String filename = expListComboBox.getItemAt(i);
-			expList.addNewExperiment(filename);
+			Experiment exp = expList.addNewExperiment(filename);
+			exp.xmlLoadExperiment();
 		}
 	}
 

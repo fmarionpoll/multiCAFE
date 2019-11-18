@@ -18,14 +18,13 @@ import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.ExperimentList;
-
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.fmp.multicafeTools.BuildKymographs;
 import plugins.fmp.multicafeTools.BuildKymographs_series;
 import plugins.fmp.multicafeTools.BuildKymographs_Options;
 import plugins.fmp.multicafeTools.EnumStatusComputation;
+import plugins.fmp.multicafeTools.ProgressChrono;
 
 
 public class MCKymos_Create extends JPanel { 
@@ -35,6 +34,7 @@ public class MCKymos_Create extends JPanel {
 	private static final long serialVersionUID = 1771360416354320887L;
 	JButton 				kymoStartComputationButton 	= new JButton("Start");
 	JButton 				kymosStopComputationButton 	= new JButton("Stop");
+	JButton					updateStepButton			= new JButton("Save step");
 	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
 	JSpinner 				stepJSpinner 				= new JSpinner(new SpinnerNumberModel(1, 1, 10000, 1));
 	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
@@ -61,9 +61,8 @@ public class MCKymos_Create extends JPanel {
 				updateViewerCheckBox, 
 				doRegistrationCheckBox
 				));
-		add(GuiUtil.besidesPanel(new JLabel("step ", SwingConstants.RIGHT), stepJSpinner, new JLabel (" "), ALLCheckBox));
-		ALLCheckBox.setForeground(Color.RED);
-//		ALLCheckBox.setEnabled(false);
+		add(GuiUtil.besidesPanel(new JLabel("step ", SwingConstants.RIGHT), stepJSpinner, updateStepButton, ALLCheckBox));
+
 		
 		defineActionListeners();
 	}
@@ -83,7 +82,22 @@ public class MCKymos_Create extends JPanel {
 					kymosBuildStop();
 				else
 					series_kymosBuildStop();
-		}});	
+		}});
+		
+		updateStepButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				updateStepInXMLExperiments((int) stepJSpinner.getValue());
+		}});
+		
+		ALLCheckBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) {
+				Color color = Color.BLACK;
+				if (ALLCheckBox.isSelected()) 
+					color = Color.RED;
+				ALLCheckBox.setForeground(color);
+				kymoStartComputationButton.setForeground(color);
+				updateStepButton.setForeground(color);
+		}});
 	}
 	
 	void setBuildKymosParametersToDialog (Experiment exp) {
@@ -184,8 +198,8 @@ public class MCKymos_Create extends JPanel {
 		buildKymographsThread2 = new BuildKymographs_series();
 		
 		BuildKymographs_Options options = buildKymographsThread2.options;
-		options.expList = new ExperimentList(); 
-		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(options.expList);
+		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+		options.expList = parent0.expList; 
 		options.index0 = 0;
 		options.index1 = options.expList.experimentList.size();
 		options.index = 0;
@@ -196,6 +210,10 @@ public class MCKymos_Create extends JPanel {
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		setStartButton(false);
+		
+		Experiment exp = parent0.expList.experimentList.get(parent0.currentIndex);
+		exp.seqCamData.seq.close();
+		exp.seqKymos.seq.close();
 		series_kymosBuildKymographs();	
 	}
 	
@@ -243,6 +261,25 @@ public class MCKymos_Create extends JPanel {
 		waitcompletionThread.start();
 	}
 	
-	
+	private void updateStepInXMLExperiments(int step ) {
+		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+		int i0 = 0;
+		int i1 = parent0.expList.experimentList.size();
+		if (!ALLCheckBox.isSelected()) {
+			i0 = parent0.currentIndex;
+			i1 = i0+1;
+		}
+		ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
+		progressBar.initStuff(i1);
+		progressBar.setMessageFirstPart("Processing XML MCexperiment ");
+		
+		for (int index = i0; index < i1; index++) {
+			progressBar.updatePosition(index);
+			Experiment exp = parent0.expList.experimentList.get(index);
+			exp.step =step;
+			exp.xmlSaveExperiment();
+		}
+		progressBar.close();
+	}
 
 }

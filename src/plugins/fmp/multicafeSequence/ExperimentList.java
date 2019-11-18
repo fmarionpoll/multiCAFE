@@ -170,10 +170,10 @@ public class ExperimentList {
 		return experimentList.get(index);
 	}
 	
-	public int addNewExperiment () {
+	public Experiment addNewExperiment () {
 		Experiment exp = new Experiment();
 		experimentList.add(exp);
-		return experimentList.size()-1;
+		return exp;
 	}
 	
 	public int addExperiment (Experiment exp) {
@@ -181,14 +181,14 @@ public class ExperimentList {
 		return experimentList.size()-1;
 	}
 
-	public int addNewExperiment (String filename) {
+	public Experiment addNewExperiment (String filename) {
 		boolean exists = false;
-		int index = -1;
 		String parent0 = getDirectoryName(filename);
+		Experiment exp = null;
 				
 		for (int i=0; i < experimentList.size(); i++) {
-			Experiment exp = experimentList.get(i);
-			if (exp.experimentFileName == null && exp.seqCamData != null) {
+			exp = experimentList.get(i);
+			if (exp.experimentFileName == null	&& exp.seqCamData != null) {
 				exp.experimentFileName = exp.seqCamData.getFileName();
 			}
 			
@@ -197,17 +197,15 @@ public class ExperimentList {
 				exp.experimentFileName = parent;		
 				if (parent.contains(parent0)) {
 					exists = true;
-					index = i;
 					break;
 				}
 			}
 		}
 		if (!exists) {
-			Experiment exp = new Experiment(filename);
+			exp = new Experiment(filename);
 			experimentList.add(exp);
-			index = experimentList.size()-1;
 		}
-		return index;
+		return exp;
 	}
 	
 	String getDirectoryName(String filename) {

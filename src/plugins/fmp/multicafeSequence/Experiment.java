@@ -10,6 +10,8 @@ import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+
+
 import icy.util.XMLUtil;
 
 public class Experiment {
@@ -46,7 +48,7 @@ public class Experiment {
 	private final String ID_STEP = "step";
 	private final String ID_BOXID = "boxID";
 	private final String ID_EXPERIMENT = "experiment";
-	private final String ID_EXPTFILENAME = "experimentFileName";
+	private final String ID_EXPTFILENAME = "exptFileName";
 	private final String ID_COMMENT = "comment";
 	private final String ID_MCEXPERIMENT = "MCexperiment";
 	
@@ -140,7 +142,10 @@ public class Experiment {
 	// TODO call it loadKymographs_Images if possible 
 	
 	public boolean xmlLoadExperiment () {
-		String csFileName = seqCamData.getDirectory() + File.separator + "results" + File.separator + "MCexperiment.xml";
+		String directory = experimentFileName;
+		if (directory == null)
+			directory = seqCamData.getDirectory();
+		String csFileName = directory+ File.separator + "results" + File.separator + "MCexperiment.xml";
 		final Document doc = XMLUtil.loadDocument(csFileName);
 		if (doc != null) {
 			Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_MCEXPERIMENT);
@@ -158,16 +163,15 @@ public class Experiment {
 			boxID 		= XMLUtil.getElementValue(node, ID_BOXID, "..");
 	        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
 	        comment 	= XMLUtil.getElementValue(node, ID_COMMENT, "..");
-	        experimentFileName = XMLUtil.getElementValue(node, ID_EXPTFILENAME, "");
+//	        String exptName = XMLUtil.getElementValue(node, ID_EXPTFILENAME, null);
+//	        if (exptName != null)
+//	        	experimentFileName = exptName;
 		}
 		return true;
 	}
 	
 	public boolean xmlSaveExperiment () {
-		String csFileName = seqCamData.getDirectory() + File.separator + "results" + File.separator + "MCexperiment.xml";
-		System.out.println("MCexp to be saved at: "+csFileName);
 		final Document doc = XMLUtil.createDocument(true);
-		
 		if (doc != null) {
 			Node xmlRoot = XMLUtil.getRootElement(doc, true);
 			Node node = XMLUtil.setElement(xmlRoot, ID_MCEXPERIMENT);
@@ -184,8 +188,11 @@ public class Experiment {
 			XMLUtil.setElementValue(node, ID_BOXID, boxID);
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
 	        XMLUtil.setElementValue(node, ID_COMMENT, comment);
+	        if (experimentFileName == null ) 
+	        	experimentFileName = seqCamData.getDirectory();
 	        XMLUtil.setElementValue(node, ID_EXPTFILENAME, experimentFileName);
-	        
+
+	        String csFileName = experimentFileName + File.separator + "results" + File.separator + "MCexperiment.xml";
 	        XMLUtil.saveDocument(doc, csFileName);
 		}
 		return true;

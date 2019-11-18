@@ -8,6 +8,7 @@ public class ProgressChrono extends ProgressFrame {
 	private int t0;
 	long startTimeInNs;
 	String descriptionString;
+	String message = new String ("Processing frame ");
     	
 	
 	public ProgressChrono(String message) {
@@ -40,7 +41,7 @@ public class ProgressChrono extends ProgressFrame {
 		setPosition( currentframe );
 		int nbSeconds =  (int) (getNanos() / 1000000000f);
 		double timeleft = ((double)nbSeconds)* (100d-pos) /pos;
-		setMessage( "Processing frame " + currentframe + " / " + nbframes + " - Estimated time left: " + (int) timeleft + " s");
+		setMessage( message + currentframe + " / " + nbframes + " - Estimated time left: " + (int) timeleft + " s");
 	}
 	
 	public int getSecondsSinceStart() {
@@ -48,8 +49,11 @@ public class ProgressChrono extends ProgressFrame {
 		return (nbSeconds-t0);
 	}
 	
-	public long getNanos()
-    {
+	public void setMessageFirstPart(String text) {
+		message = text;
+	}
+	
+	public long getNanos() {
         return System.nanoTime() - startTimeInNs;
     }
 

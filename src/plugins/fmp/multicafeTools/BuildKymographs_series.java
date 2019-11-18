@@ -21,7 +21,6 @@ import icy.type.collection.array.Array1DUtil;
 import loci.formats.FormatException;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.nchenouard.kymographtracker.Util;
 import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
@@ -48,6 +47,7 @@ public class BuildKymographs_series implements Runnable {
 			int nbexp = options.expList.experimentList.size();
 			ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
 			progressBar.initStuff(nbexp);
+			progressBar.setMessageFirstPart("Processing series ");
 			int i= 1;
 			for (Experiment exp: options.expList.experimentList) {
 				System.out.println(exp.experimentFileName);
@@ -59,7 +59,6 @@ public class BuildKymographs_series implements Runnable {
 				exp.step = options.analyzeStep;
 				if (computeKymo()) {
 					saveComputation(exp);
-					exp.xmlSaveExperiment();
 				}
 				closeViewer(exp);
 				i++;
@@ -69,11 +68,10 @@ public class BuildKymographs_series implements Runnable {
 		}
 		
 		private void series_loadExperimentData(Experiment exp) {
-			exp.seqCamData.loadSequence(exp.experimentFileName) ;
 			exp.xmlLoadExperiment();
+			exp.seqCamData.loadSequence(exp.experimentFileName) ;
 			exp.seqKymos.updateCapillariesFromCamData(exp.seqCamData);
 			exp.seqKymos.xmlLoadMCcapillaries(exp.experimentFileName);
-			SequenceKymosUtils.transferKymoCapillariesToCamData (exp.seqCamData, exp.seqKymos);
 		}
 		
 		private void closeViewer (Experiment exp) {
