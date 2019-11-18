@@ -5,12 +5,6 @@ import java.awt.GridLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -19,16 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
-import icy.file.Saver;
-import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
-import icy.image.IcyBufferedImage;
 
-import loci.formats.FormatException;
-import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 
@@ -56,7 +44,7 @@ public class MCKymos_Create extends JPanel {
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE 		parent0						= null;
 	private BuildKymographs	buildKymographsThread 		= null;
-	private BuildKymographs_series	buildKymographsThread2 		= null;
+	private BuildKymographs_series	buildKymographsThread2 = null;
 	private Thread 			thread 						= null;
 
 
@@ -75,7 +63,7 @@ public class MCKymos_Create extends JPanel {
 				));
 		add(GuiUtil.besidesPanel(new JLabel("step ", SwingConstants.RIGHT), stepJSpinner, new JLabel (" "), ALLCheckBox));
 		ALLCheckBox.setForeground(Color.RED);
-		ALLCheckBox.setEnabled(false);
+//		ALLCheckBox.setEnabled(false);
 		
 		defineActionListeners();
 	}
@@ -199,7 +187,7 @@ public class MCKymos_Create extends JPanel {
 		options.expList = new ExperimentList(); 
 		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(options.expList);
 		options.index0 = 0;
-		options.index1 = buildKymographsThread.options.expList.experimentList.size();
+		options.index1 = options.expList.experimentList.size();
 		options.index = 0;
 		options.analyzeStep = (int) stepJSpinner.getValue();
 		options.diskRadius 	= (int) diskRadiusSpinner.getValue();
@@ -214,7 +202,7 @@ public class MCKymos_Create extends JPanel {
 	
 	private void series_kymosBuildStop() {	
 		if (thread != null && thread.isAlive()) {
-			buildKymographsThread.stopFlag = true;
+			buildKymographsThread2.stopFlag = true;
 			try {
 				thread.join();
 			} catch (InterruptedException e1) {
@@ -239,73 +227,22 @@ public class MCKymos_Create extends JPanel {
 			return;
 		}
 		
-		// start building kymos in a separate thread
-
-		
-		thread = new Thread(null, buildKymographsThread, "+++buildkymos");
+		thread = new Thread(null, buildKymographsThread2, "+++buildkymos");
 		thread.start();
-		
-		Thread waitcompletionThread = new Thread(null, new Runnable() { public void run() {
-			try { 
-				thread.join();
-			}
-			catch(Exception e){;} 
-			finally { 
-				series_kymosBuildStop();
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						if (buildKymographsThread.options.index < buildKymographsThread.options.index1) {
-							buildKymographsThread.options.loopRunning = true;
-							series_saveComputation();
-							buildKymographsThread.options.index++;
-							kymoStartComputationButton.setEnabled(true);
-							if (!buildKymographsThread.stopFlag)
-								kymoStartComputationButton.doClick();
-						} 
-						else {
-							buildKymographsThread.options.loopRunning = false;
-							//series_loadExperimentData(parent0.currentIndex);
-							buildKymographsThread.options.expList = null;
-							series_resetUserInterface();
-						}
-					}});
-				
-			}
-		}}, "+++waitforcompletion");
+		Thread waitcompletionThread = new Thread(null, new Runnable() {
+			public void run() {
+				try{ 
+					thread.join();
+					}
+				catch(Exception e){;} 
+				finally { 
+					series_kymosBuildStop();
+					series_resetUserInterface();
+				}
+			}}, "+++waitforcompletion");
 		waitcompletionThread.start();
 	}
 	
-	private void series_saveComputation() {
-		Experiment exp = buildKymographsThread.options.expList.getExperiment(buildKymographsThread.options.index);
-		Path dir = Paths.get(exp.seqCamData.getDirectory());
-		dir = dir.resolve("results");
-		String directory = dir.toAbsolutePath().toString();
-		if (Files.notExists(dir))  {
-			try {
-				Files.createDirectory(dir);
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Creating directory failed: "+ directory);
-				return;
-			}
-		}
-
-		ProgressFrame progress = new ProgressFrame("Save kymographs");		
-		for (int t = 0; t < exp.seqKymos.seq.getSizeT(); t++) {
-			Capillary cap = exp.seqKymos.capillaries.capillariesArrayList.get(t);
-			progress.setMessage( "Save kymograph file : " + cap.getName());	
-			String filename = directory + File.separator + cap.getName() + ".tiff";
-			File file = new File (filename);
-			IcyBufferedImage image = exp.seqKymos.seq.getImage(t, 0);
-			try {
-				Saver.saveImage(image, file, true);
-			} catch (FormatException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		progress.close();
-	}
+	
 
 }

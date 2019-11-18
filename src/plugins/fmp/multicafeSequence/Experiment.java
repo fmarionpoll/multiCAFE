@@ -36,7 +36,7 @@ public class Experiment {
 	public Experiment 		previousExperiment			= null;		// pointer to chain this experiment to another one before
 	public Experiment 		nextExperiment 				= null;		// pointer to chain this experiment to another one after
 	
-	private final String ID_VERSION		= "version"; 
+	private final String ID_VERSION	= "version"; 
 	private final String ID_VERSIONNUM	= "1.0.0"; 
 	private final String ID_TIMEFIRSTIMAGE	= "fileTimeImageFirstMinute"; 
 	private final String ID_TIMELASTIMAGE = "fileTimeImageLastMinute";
@@ -46,6 +46,7 @@ public class Experiment {
 	private final String ID_STEP = "step";
 	private final String ID_BOXID = "boxID";
 	private final String ID_EXPERIMENT = "experiment";
+	private final String ID_EXPTFILENAME = "experimentFileName";
 	private final String ID_COMMENT = "comment";
 	private final String ID_MCEXPERIMENT = "MCexperiment";
 	
@@ -157,12 +158,14 @@ public class Experiment {
 			boxID 		= XMLUtil.getElementValue(node, ID_BOXID, "..");
 	        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
 	        comment 	= XMLUtil.getElementValue(node, ID_COMMENT, "..");
+	        experimentFileName = XMLUtil.getElementValue(node, ID_EXPTFILENAME, "");
 		}
 		return true;
 	}
 	
 	public boolean xmlSaveExperiment () {
 		String csFileName = seqCamData.getDirectory() + File.separator + "results" + File.separator + "MCexperiment.xml";
+		System.out.println("MCexp to be saved at: "+csFileName);
 		final Document doc = XMLUtil.createDocument(true);
 		
 		if (doc != null) {
@@ -181,6 +184,7 @@ public class Experiment {
 			XMLUtil.setElementValue(node, ID_BOXID, boxID);
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
 	        XMLUtil.setElementValue(node, ID_COMMENT, comment);
+	        XMLUtil.setElementValue(node, ID_EXPTFILENAME, experimentFileName);
 	        
 	        XMLUtil.saveDocument(doc, csFileName);
 		}
