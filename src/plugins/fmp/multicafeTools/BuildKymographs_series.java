@@ -47,7 +47,7 @@ public class BuildKymographs_series implements Runnable {
 			int nbexp = options.expList.experimentList.size();
 			ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
 			progressBar.initStuff(nbexp);
-			progressBar.setMessageFirstPart("Processing series ");
+			progressBar.setMessageFirstPart("Analyze series ");
 			int i= 1;
 			for (Experiment exp: options.expList.experimentList) {
 				System.out.println(exp.experimentFileName);

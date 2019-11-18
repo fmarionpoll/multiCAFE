@@ -211,9 +211,9 @@ public class MCKymos_Create extends JPanel {
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		setStartButton(false);
 		
-		Experiment exp = parent0.expList.experimentList.get(parent0.currentIndex);
-		exp.seqCamData.seq.close();
-		exp.seqKymos.seq.close();
+//		Experiment exp = parent0.expList.experimentList.get(parent0.currentIndex);
+//		exp.seqCamData.seq.close();
+//		exp.seqKymos.seq.close();
 		series_kymosBuildKymographs();	
 	}
 	
