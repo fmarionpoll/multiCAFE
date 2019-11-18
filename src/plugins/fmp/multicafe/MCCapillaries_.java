@@ -106,10 +106,10 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
 				infosTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 				parent0.sequencePane.displayTab.viewCapillariesCheckBox.setSelected(true);
-				buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 				parent0.sequencePane.infosTab.setExperimentsInfosToDialog(exp, seqKymos.capillaries);
 				parent0.sequencePane.intervalsTab.setAnalyzeFrameToDialog(exp);
 				parent0.kymosPane.createTab.setBuildKymosParametersToDialog(exp);
+				buildarrayTab.setCapillariesInfosToDialog(seqKymos.capillaries);
 			}});
 		}
 		return flag;

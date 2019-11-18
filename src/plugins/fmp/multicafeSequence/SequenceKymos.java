@@ -230,6 +230,7 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	// -------------------------
+	
 	public boolean loadMeasuresFromList(List <String> myListOfFileNames) {
 		isRunning_loadImages = true;
 		boolean flag = (myListOfFileNames.size() > 0);
@@ -383,6 +384,7 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	// ----------------------------------
+	
 	private String getCorrectPath(String cspathname) {
 		Path path = Paths.get(cspathname);
 		String pathname = cspathname;

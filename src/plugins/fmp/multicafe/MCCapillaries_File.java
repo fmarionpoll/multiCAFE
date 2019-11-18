@@ -61,17 +61,14 @@ public class MCCapillaries_File extends JPanel {
 			exp.seqKymos = new SequenceKymos();
 			seqKymos = exp.seqKymos;
 		}
-		
 		boolean flag = false;
 		if (flag = seqKymos.xmlLoadMCcapillaries(seqCamData.getDirectory())) {
 			SequenceKymosUtils.transferKymoCapillariesToCamData (seqCamData, seqKymos);
 			return true;
 		}
-		
 		String filename = seqCamData.getDirectory() + File.separator + "roislines.xml";
 		if (flag = seqCamData.xmlReadROIs(filename)) 
 			seqKymos.xmlReadRoiLineParameters(filename);
-	
 		return flag;
 	}
 	

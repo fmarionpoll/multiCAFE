@@ -35,6 +35,8 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 import plugins.fmp.multicafeTools.BuildKymographs;
+import plugins.fmp.multicafeTools.BuildKymographs_series;
+import plugins.fmp.multicafeTools.BuildKymographs_Options;
 import plugins.fmp.multicafeTools.EnumStatusComputation;
 
 
@@ -54,13 +56,9 @@ public class MCKymos_Create extends JPanel {
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE 		parent0						= null;
 	private BuildKymographs	buildKymographsThread 		= null;
+	private BuildKymographs_series	buildKymographsThread2 		= null;
 	private Thread 			thread 						= null;
-	int index0 = 0;
-	int index1 = 0;
-	int index= 0;
-	int indexold = 0;
-	boolean loopRunning = false;
-	ExperimentList expList = null;
+
 
 
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -116,7 +114,6 @@ public class MCKymos_Create extends JPanel {
 	
 	//------------------------------------
 	
-
 	private void kymosBuildStart() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 		if (exp.seqCamData == null) 
@@ -166,14 +163,15 @@ public class MCKymos_Create extends JPanel {
 		
 		// start building kymos in a separate thread
 		buildKymographsThread = new BuildKymographs();
-		buildKymographsThread.options.seqCamData 	= exp.seqCamData;
-		buildKymographsThread.options.seqKymos		= exp.seqKymos;
-		buildKymographsThread.options.analyzeStep 	= exp.seqCamData.analysisStep;
-		buildKymographsThread.options.startFrame 	= (int) exp.seqCamData.analysisStart;
-		buildKymographsThread.options.endFrame 		= (int) exp.seqCamData.analysisEnd;
-		buildKymographsThread.options.diskRadius 	= (int) diskRadiusSpinner.getValue();
-		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected();
-		buildKymographsThread.options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
+		BuildKymographs_Options options = buildKymographsThread.options;	
+		options.seqCamData 	= exp.seqCamData;
+		options.seqKymos	= exp.seqKymos;
+		options.analyzeStep = exp.seqCamData.analysisStep;
+		options.startFrame 	= (int) exp.seqCamData.analysisStart;
+		options.endFrame 	= (int) exp.seqCamData.analysisEnd;
+		options.diskRadius 	= (int) diskRadiusSpinner.getValue();
+		options.doRegistration= doRegistrationCheckBox.isSelected();
+		options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
 		
 		thread = new Thread(null, buildKymographsThread, "+++buildkymos");
 		thread.start();
@@ -195,69 +193,24 @@ public class MCKymos_Create extends JPanel {
 	// -----------------------------------
 	
 	private void series_kymosBuildStart() {
-		if (expList == null) {
-			expList = new ExperimentList(); 
-			parent0.sequencePane.infosTab.transferExperimentNamesToExpList(expList);
-			index0 = 0;
-			index1 = expList.experimentList.size();
-			index = 0;
-		}	
-		Experiment exp = series_loadExperimentData(index);	
-		if (exp != null) {
-//			initInputSequenceViewer(exp);
-			series_launchCalculation(exp);
-		}
-	}
-	
-	/*
-	private void initInputSequenceViewer (Experiment exp) {
-		ThreadUtil.invoke (new Runnable() {
-			@Override
-			public void run() {
-				viewer1 = new Viewer(exp.seqCamData.seq, true);
-			}
-		}, true);
-		if (viewer1 == null) {
-			viewer1 = exp.seqCamData.seq.getFirstViewer(); 
-			if (!viewer1.isInitialized()) {
-				try {
-					Thread.sleep(1000);
-					if (!viewer1.isInitialized())
-						System.out.println("Viewer still not initialized after 1 s waiting");
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		Rectangle rectv = viewer1.getBoundsInternal();
-		Rectangle rect0 = parent0.mainFrame.getBoundsInternal();
-		rectv.setLocation(rect0.x+ rect0.width, rect0.y);
-		viewer1.setBounds(rectv);
-	}
-*/
-	
-	private Experiment series_loadExperimentData(int indexExp) {
-		Experiment exp = expList.getExperiment(index);
-		if (null != exp.seqCamData.loadSequence(exp.experimentFileName)) {
-			exp.loadFileIntervalsFromSeqCamData();
-			if (exp.seqKymos != null) {
-				exp.seqKymos.seq.removeAllROI();
-				exp.seqKymos.seq.close();
-			}
-			return exp;
-		}
-		else
-			return null;
-	}
-	
-	private void series_launchCalculation (Experiment exp) {
+		buildKymographsThread2 = new BuildKymographs_series();
+		
+		BuildKymographs_Options options = buildKymographsThread2.options;
+		options.expList = new ExperimentList(); 
+		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(options.expList);
+		options.index0 = 0;
+		options.index1 = buildKymographsThread.options.expList.experimentList.size();
+		options.index = 0;
+		options.analyzeStep = (int) stepJSpinner.getValue();
+		options.diskRadius 	= (int) diskRadiusSpinner.getValue();
+		options.doRegistration= doRegistrationCheckBox.isSelected();
+		options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
+		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
-		getBuildKymosParametersFromDialog (exp);
-		exp.seqKymos = new SequenceKymos();
-		exp.seqKymos.updateCapillariesFromCamData(exp.seqCamData);
 		setStartButton(false);
 		series_kymosBuildKymographs();	
 	}
+	
 	
 	private void series_kymosBuildStop() {	
 		if (thread != null && thread.isAlive()) {
@@ -280,27 +233,14 @@ public class MCKymos_Create extends JPanel {
 	}
 	
 	private void series_kymosBuildKymographs() {	
-		if (expList == null) {
+		BuildKymographs_Options options = buildKymographsThread2.options;
+		if (options.expList == null) {
 			System.out.println("expList is null - operation aborted");
 			return;
 		}
-		Experiment exp = expList.getExperiment(index);
-		buildKymographsThread = null;
-		if (exp.seqKymos != null && exp.seqKymos.seq != null)
-			exp.seqKymos.seq.close();
-		exp.seqKymos = new SequenceKymos();
-		SequenceKymosUtils.transferCamDataROIStoKymo(exp.seqCamData, exp.seqKymos);
 		
 		// start building kymos in a separate thread
-		buildKymographsThread = new BuildKymographs();
-		buildKymographsThread.options.seqCamData 	= exp.seqCamData;
-		buildKymographsThread.options.seqKymos		= exp.seqKymos;
-		buildKymographsThread.options.analyzeStep 	= exp.seqCamData.analysisStep;
-		buildKymographsThread.options.startFrame 	= (int) exp.seqCamData.analysisStart;
-		buildKymographsThread.options.endFrame 		= (int) exp.seqCamData.analysisEnd;
-		buildKymographsThread.options.diskRadius 	= (int) diskRadiusSpinner.getValue();
-		buildKymographsThread.options.doRegistration= doRegistrationCheckBox.isSelected();
-		buildKymographsThread.options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
+
 		
 		thread = new Thread(null, buildKymographsThread, "+++buildkymos");
 		thread.start();
@@ -314,18 +254,18 @@ public class MCKymos_Create extends JPanel {
 				series_kymosBuildStop();
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
-						if (index < index1) {
-							loopRunning = true;
+						if (buildKymographsThread.options.index < buildKymographsThread.options.index1) {
+							buildKymographsThread.options.loopRunning = true;
 							series_saveComputation();
-							index++;
+							buildKymographsThread.options.index++;
 							kymoStartComputationButton.setEnabled(true);
 							if (!buildKymographsThread.stopFlag)
 								kymoStartComputationButton.doClick();
 						} 
 						else {
-							loopRunning = false;
-							series_loadExperimentData(parent0.currentIndex);
-							expList = null;
+							buildKymographsThread.options.loopRunning = false;
+							//series_loadExperimentData(parent0.currentIndex);
+							buildKymographsThread.options.expList = null;
 							series_resetUserInterface();
 						}
 					}});
@@ -336,7 +276,7 @@ public class MCKymos_Create extends JPanel {
 	}
 	
 	private void series_saveComputation() {
-		Experiment exp = expList.getExperiment(index);
+		Experiment exp = buildKymographsThread.options.expList.getExperiment(buildKymographsThread.options.index);
 		Path dir = Paths.get(exp.seqCamData.getDirectory());
 		dir = dir.resolve("results");
 		String directory = dir.toAbsolutePath().toString();

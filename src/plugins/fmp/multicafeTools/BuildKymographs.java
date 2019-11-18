@@ -18,8 +18,7 @@ import plugins.nchenouard.kymographtracker.Util;
 import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 
  
-public class BuildKymographs implements Runnable 
-{
+public class BuildKymographs implements Runnable {
 	public BuildKymographs_Options 	options 			= new BuildKymographs_Options();
 	public boolean 					stopFlag 			= false;
 	public boolean 					threadRunning 		= false;
