@@ -20,6 +20,7 @@ import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeTools.DetectLimits;
 import plugins.fmp.multicafeTools.DetectLimits_Options;
+import plugins.fmp.multicafeTools.ProgressChrono;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
@@ -45,17 +46,13 @@ public class MCLevels_Limits  extends JPanel {
 	private JButton 	detectButton 			= new JButton("Detect");
 	private MultiCAFE 	parent0 				= null;
 	private JCheckBox	partCheckBox 			= new JCheckBox ("detect from", false);
-	JCheckBox			ALLCheckBox 				= new JCheckBox("ALL series", false);
+	JCheckBox			ALLCheckBox 			= new JCheckBox("ALL series", false);
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
-//		allImagesCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
-//		allImagesCheckBox.setHorizontalTextPosition(SwingConstants.LEFT);
 		add( GuiUtil.besidesPanel(detectButton, allImagesCheckBox, new JLabel(" "), ALLCheckBox));
-		ALLCheckBox.setForeground(Color.RED);
-		ALLCheckBox.setEnabled(false);
 		
 		((JLabel) directionComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
 		add( GuiUtil.besidesPanel(directionComboBox, thresholdSpinner, transformForLevelsComboBox, displayTransform1Button ));
@@ -76,37 +73,67 @@ public class MCLevels_Limits  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
 				if (exp != null && exp.seqCamData != null) {
-					kymosDisplayFiltered1();
+					kymosDisplayFiltered1(exp);
 					firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
 				}
 			}});
 		
 		detectButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				kymosDisplayFiltered1();
+				int i0 = parent0.currentIndex;
+				int i1 = i0;
+				if (ALLCheckBox.isSelected()) {
+					parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+					i0 = 0;
+					i1 = parent0.expList.experimentList.size()-1;
+				}
+				ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
+				progressBar.initStuff(i1-i0+1);
+				progressBar.setMessageFirstPart("Analyze series ");
 				
-				Experiment exp 				= parent0.expList.getExperiment(parent0.currentIndex);
-				
-				DetectLimits_Options options= new DetectLimits_Options();
-				options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
-				options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
-				options.detectLevelThreshold= (int) getDetectLevelThreshold();
-				options.detectAllImages 	= allImagesCheckBox.isSelected();
-				options.firstImage 			= parent0.kymosPane.displayTab.kymographNamesComboBox.getSelectedIndex();
-				options.analyzePartOnly		= partCheckBox.isSelected();
-				options.startPixel			= (int) startSpinner.getValue();
-				options.endPixel			= (int) endSpinner.getValue();
-				
-				DetectLimits detect 		= new DetectLimits();
-				detect.detectCapillaryLevels(options, exp.seqKymos);
+				for (int index = i0; index <= i1; index++) {
+					progressBar.updatePosition(index-i0);
+					Experiment exp 				= parent0.expList.getExperiment(index);
+					kymosDisplayFiltered1(exp);
+					DetectLimits_Options options= new DetectLimits_Options();
+					options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
+					options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
+					options.detectLevelThreshold= (int) getDetectLevelThreshold();
+					options.detectAllImages 	= allImagesCheckBox.isSelected();
+					options.firstImage 			= parent0.kymosPane.displayTab.kymographNamesComboBox.getSelectedIndex();
+					options.analyzePartOnly		= partCheckBox.isSelected();
+					options.startPixel			= (int) startSpinner.getValue();
+					options.endPixel			= (int) endSpinner.getValue();
+					
+					DetectLimits detect 		= new DetectLimits();
+					// load data & load kymos
+					exp.loadExperimentData();
+					// load kymos
+					detect.detectCapillaryLevels(options, exp.seqKymos);
+					if (ALLCheckBox.isSelected()) {
+						exp.seqKymos.saveKymosMeasures();
+					}
+				}
+				progressBar.close();
 				firePropertyChange("KYMO_DETECT_TOP", false, true);
 			}});	
 		
 		displayTransform1Button.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				kymosDisplayFiltered1();
+				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				kymosDisplayFiltered1(exp);
 				firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
 			}});
+		
+		ALLCheckBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) {
+				Color color = Color.BLACK;
+				if (ALLCheckBox.isSelected()) 
+					color = Color.RED;
+				ALLCheckBox.setForeground(color);
+				detectButton.setForeground(color);
+		}});
+
 	}
 	
 	// -------------------------------------------------
@@ -123,8 +150,7 @@ public class MCLevels_Limits  extends JPanel {
 		return (int) spanTopSpinner.getValue() ;
 	}
 		
-	void kymosDisplayFiltered1() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+	void kymosDisplayFiltered1(Experiment exp) {
 		if (exp.seqKymos == null)
 			return;
 		TransformOp transform = (TransformOp) transformForLevelsComboBox.getSelectedItem();

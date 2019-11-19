@@ -66,8 +66,6 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		
 		JPanel dummyPanel = new JPanel();
 		dummyPanel.add( GuiUtil.besidesPanel(whiteMiceCheckBox, overlayCheckBox, ALLCheckBox) );
-		ALLCheckBox.setForeground(Color.RED);
-		ALLCheckBox.setEnabled(false);
 		
 		FlowLayout layout = (FlowLayout) dummyPanel.getLayout();
 		layout.setVgap(0);
@@ -114,6 +112,15 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 				startComputation();
 			}});
 		
+		ALLCheckBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) {
+				Color color = Color.BLACK;
+				if (ALLCheckBox.isSelected()) 
+					color = Color.RED;
+				ALLCheckBox.setForeground(color);
+				startComputationButton.setForeground(color);
+		}});
+
 	}
 	
 	public void updateOverlay () {

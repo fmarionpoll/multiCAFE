@@ -15,12 +15,8 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
-import icy.gui.viewer.Viewer;
 
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.fmp.multicafeSequence.SequenceKymosUtils;
-import plugins.fmp.multicafeTools.BuildKymographs;
 import plugins.fmp.multicafeTools.BuildKymographs_series;
 import plugins.fmp.multicafeTools.BuildKymographs_Options;
 import plugins.fmp.multicafeTools.EnumStatusComputation;
@@ -43,7 +39,6 @@ public class MCKymos_Create extends JPanel {
 	
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE 		parent0						= null;
-	private BuildKymographs	buildKymographsThread 		= null;
 	private BuildKymographs_series	buildKymographsThread2 = null;
 	private Thread 			thread 						= null;
 
@@ -70,18 +65,12 @@ public class MCKymos_Create extends JPanel {
 	private void defineActionListeners() {
 		kymoStartComputationButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				if (!ALLCheckBox.isSelected())
-					kymosBuildStart();
-				else
-					series_kymosBuildStart();
+				series_kymosBuildStart();
 		}});
 		
 		kymosStopComputationButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				if (!ALLCheckBox.isSelected())
-					kymosBuildStop();
-				else
-					series_kymosBuildStop();
+				series_kymosBuildStop();
 		}});
 		
 		updateStepButton.addActionListener(new ActionListener () { 
@@ -114,95 +103,21 @@ public class MCKymos_Create extends JPanel {
 		kymosStopComputationButton.setEnabled(!enableStart);
 	}
 	
-	//------------------------------------
-	
-	private void kymosBuildStart() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		if (exp.seqCamData == null) 
-			return;
-		if (exp.seqKymos != null) {
-			exp.seqKymos.seq.removeAllROI();
-			exp.seqKymos.seq.close();
-		}
-		sComputation = EnumStatusComputation.STOP_COMPUTATION;
-		parent0.sequencePane.intervalsTab.getAnalyzeFrameFromDialog (exp);
-		getBuildKymosParametersFromDialog (exp);
-		exp.seqKymos = new SequenceKymos();
-		exp.seqKymos.updateCapillariesFromCamData(exp.seqCamData);
-		setStartButton(false);
-		kymosBuildKymographs();	
-		Viewer v = exp.seqCamData.seq.getFirstViewer();
-		v.toFront();
-	}
-	
-	private void kymosBuildStop() {	
-		if (thread != null && thread.isAlive()) {
-			buildKymographsThread.stopFlag = true;
-			try {
-				thread.join();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-		}
-		parent0.kymosPane.displayTab.viewKymosCheckBox.setSelected(true);
-		parent0.kymosPane.displayTab.displayViews (true);
-	}
-	
-	private void resetUserInterface() {
-		sComputation = EnumStatusComputation.START_COMPUTATION;
-		firePropertyChange( "KYMOS_CREATE", false, true);
-		setStartButton(true);
-		firePropertyChange( "KYMOS_OK", false, true);
-	}
-	
-	private void kymosBuildKymographs() {	
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
-		buildKymographsThread = null;
-		if (exp.seqKymos != null && exp.seqKymos.seq != null)
-			exp.seqKymos.seq.close();
-		exp.seqKymos = new SequenceKymos();
-		SequenceKymosUtils.transferCamDataROIStoKymo(exp.seqCamData, exp.seqKymos);
-		
-		// start building kymos in a separate thread
-		buildKymographsThread = new BuildKymographs();
-		BuildKymographs_Options options = buildKymographsThread.options;	
-		options.seqCamData 	= exp.seqCamData;
-		options.seqKymos	= exp.seqKymos;
-		options.analyzeStep = exp.seqCamData.analysisStep;
-		options.startFrame 	= (int) exp.seqCamData.analysisStart;
-		options.endFrame 	= (int) exp.seqCamData.analysisEnd;
-		options.diskRadius 	= (int) diskRadiusSpinner.getValue();
-		options.doRegistration= doRegistrationCheckBox.isSelected();
-		options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
-		
-		thread = new Thread(null, buildKymographsThread, "+++buildkymos");
-		thread.start();
-		
-		Thread waitcompletionThread = new Thread(null, new Runnable() {
-			public void run() {
-				try{ 
-					thread.join();
-					}
-				catch(Exception e){;} 
-				finally { 
-					kymosBuildStop();
-					resetUserInterface();
-				}
-			}}, "+++waitforcompletion");
-		waitcompletionThread.start();
-	}
-
 	// -----------------------------------
 	
 	private void series_kymosBuildStart() {
-		buildKymographsThread2 = new BuildKymographs_series();
-		
+		buildKymographsThread2 = new BuildKymographs_series();	
 		BuildKymographs_Options options = buildKymographsThread2.options;
-		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+		if (!ALLCheckBox.isSelected()) {
+			options.index0 = parent0.currentIndex;
+			options.index1 = options.index0 +1;
+		}
+		else {
+			parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+			options.index0 = 0;
+			options.index1 = parent0.expList.experimentList.size();
+		}
 		options.expList = parent0.expList; 
-		options.index0 = 0;
-		options.index1 = options.expList.experimentList.size();
-		options.index = 0;
 		options.analyzeStep = (int) stepJSpinner.getValue();
 		options.diskRadius 	= (int) diskRadiusSpinner.getValue();
 		options.doRegistration= doRegistrationCheckBox.isSelected();
@@ -210,13 +125,8 @@ public class MCKymos_Create extends JPanel {
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		setStartButton(false);
-		
-//		Experiment exp = parent0.expList.experimentList.get(parent0.currentIndex);
-//		exp.seqCamData.seq.close();
-//		exp.seqKymos.seq.close();
 		series_kymosBuildKymographs();	
 	}
-	
 	
 	private void series_kymosBuildStop() {	
 		if (thread != null && thread.isAlive()) {
@@ -249,7 +159,7 @@ public class MCKymos_Create extends JPanel {
 		thread.start();
 		Thread waitcompletionThread = new Thread(null, new Runnable() {
 			public void run() {
-				try{ 
+				try { 
 					thread.join();
 					}
 				catch(Exception e){;} 

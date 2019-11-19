@@ -551,4 +551,9 @@ public class SequenceKymos extends SequenceCamData  {
 		}
 	}
 	
+	public void saveKymosMeasures() {
+		roisSaveEdits();
+		xmlSaveMCcapillaries(getDirectory());
+		xmlSaveKymos_Measures(getDirectory());
+	}
 }

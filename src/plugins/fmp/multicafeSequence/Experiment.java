@@ -300,4 +300,11 @@ public class Experiment {
 		return isOK;
 	}
 	
+	public void loadExperimentData() {
+		xmlLoadExperiment();
+		seqCamData.loadSequence(experimentFileName) ;
+		seqKymos.updateCapillariesFromCamData(seqCamData);
+		seqKymos.xmlLoadMCcapillaries(experimentFileName);
+	}
+	
 }

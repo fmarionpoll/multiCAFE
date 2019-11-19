@@ -44,15 +44,15 @@ public class BuildKymographs_series implements Runnable {
 		@Override
 		public void run() {
 			threadRunning = true;
-			int nbexp = options.expList.experimentList.size();
+			int nbexp = options.index1 - options.index0;
 			ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
 			progressBar.initStuff(nbexp);
 			progressBar.setMessageFirstPart("Analyze series ");
-			int i= 1;
-			for (Experiment exp: options.expList.experimentList) {
+			for (int index = options.index0; index < options.index1; index++) {
+				Experiment exp = options.expList.experimentList.get(index);
 				System.out.println(exp.experimentFileName);
-				progressBar.updatePosition(i);
-				series_loadExperimentData(exp);
+				progressBar.updatePosition(index-options.index0);
+				exp.loadExperimentData();
 				initViewer(exp);
 				options.seqCamData = exp.seqCamData;
 				options.seqKymos = exp.seqKymos;
@@ -61,18 +61,12 @@ public class BuildKymographs_series implements Runnable {
 					saveComputation(exp);
 				}
 				closeViewer(exp);
-				i++;
 			}
 			progressBar.close();
 			threadRunning = false;
 		}
 		
-		private void series_loadExperimentData(Experiment exp) {
-			exp.xmlLoadExperiment();
-			exp.seqCamData.loadSequence(exp.experimentFileName) ;
-			exp.seqKymos.updateCapillariesFromCamData(exp.seqCamData);
-			exp.seqKymos.xmlLoadMCcapillaries(exp.experimentFileName);
-		}
+
 		
 		private void closeViewer (Experiment exp) {
 			exp.seqCamData.seq.close();
