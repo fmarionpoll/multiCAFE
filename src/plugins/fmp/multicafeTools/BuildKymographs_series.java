@@ -122,6 +122,8 @@ public class BuildKymographs_series implements Runnable {
 					e.printStackTrace();
 				}
 			}
+			
+			exp.xmlSaveExperiment();
 			progress.close();
 		}
 		
