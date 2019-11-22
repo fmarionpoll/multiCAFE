@@ -62,7 +62,6 @@ public class DetectLimits {
 			for (int ix = startPixel; ix <= endPixel; ix++) {
 				int ytop = detectTop(ix, oldiytop, jitter, tabValues, xwidth, yheight, options);
 				int ybottom = detectBottom(ix, oldiybottom, jitter, tabValues, xwidth, yheight, options);
-				
 				if (ybottom <= ytop) {
 					ybottom = oldiybottom;
 					ytop = oldiytop;
