@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -233,6 +234,12 @@ public class XLSExportCapillariesResults extends XLSExport {
 		if (options.collateSeries) {
 			pt.x = options.expList.getStackColumnPosition(exp, col0);
 		}
+
+		style = workBook.createCellStyle();
+	    font = workBook.createFont();
+	    font.setColor(HSSFColor.HSSFColorPredefined.RED.getIndex());
+	    style.setFont(font);
+		
 		pt = writeSeriesInfos(exp, sheet, xlsExportOption, pt, options.transpose, charSeries);
 		pt = writeData(exp, sheet, xlsExportOption, pt, options.transpose, charSeries, arrayList);
 		return pt.x;
@@ -351,15 +358,18 @@ public class XLSExportCapillariesResults extends XLSExport {
 //			System.out.println( "endThisExpt=" + endThisExpt +" startNextExpt="+startNextExpt + " row="+ (padpt.y +1));
 //			System.out.println( "i.e.  index t=" + lastFrame/fullstep +" to="+startNextExpt/fullstep);
 			exp.nextExperiment.loadKymos_Measures();
-			
-			for (int nextFrame= lastFrame; nextFrame < startNextExpt; nextFrame+= fullstep) {	
+						
+			for (int nextFrame= lastFrame; nextFrame <= startNextExpt; nextFrame+= fullstep, padpt.y++) {	
 				padpt.x = col0;
-				padpt.y++;
+//				padpt.y++;
 				
 				XLSUtils.setValue(sheet, padpt, transpose, "xxxT");
+				XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);
 				padpt.x++;
-				if (exp.seqCamData.isFileStack())
+				if (exp.seqCamData.isFileStack()) {
 					XLSUtils.setValue(sheet, padpt, transpose, "xxxF" );
+					XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);	
+				}
 				padpt.x++;
 				
 				int colseries = padpt.x;
@@ -386,9 +396,13 @@ public class XLSExportCapillariesResults extends XLSExport {
 								int k = dataR.size()-1;
 								double valueL = (dataL.get(j)+dataR.get(k))*scalingFactorToPhysicalUnits;
 								XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
+								XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);
+								
 								padpt.x ++;
 								double valueR = (dataL.get(j)-dataR.get(k))*scalingFactorToPhysicalUnits/valueL;
 								XLSUtils.setValue(sheet, padpt, transpose, valueR); // "xxxR");
+								XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);
+								
 							}
 						}
 					}
@@ -406,11 +420,13 @@ public class XLSExportCapillariesResults extends XLSExport {
 
 						if (flag) {
 							XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
+							XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);
 							List<Integer> data = dataArrayList.get(idataArray).data;
 							if (data != null) {
 								int j = data.size()-1; 
 								double value = data.get(j)*scalingFactorToPhysicalUnits;
 								XLSUtils.setValue(sheet, padpt, transpose, value); // "xxx-");
+								XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);
 							} else {
 								System.out.println("skip because data is null");
 							}

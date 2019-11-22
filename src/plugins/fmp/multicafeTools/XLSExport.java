@@ -12,6 +12,8 @@ import org.apache.poi.ss.util.AreaReference;
 import org.apache.poi.ss.util.CellAddress;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFPivotTable;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -26,6 +28,8 @@ public class XLSExport {
 	protected XLSExportOptions 	options 	= null;
 	protected Experiment 		expAll 		= null;
 	int							nintervals	= 0;
+	XSSFCellStyle 				style = null;
+    XSSFFont 					font = null;
 
 	
 	public long getnearest(long value, int step) {
