@@ -10,9 +10,10 @@ import java.util.List;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-
-
+import icy.image.IcyBufferedImage;
 import icy.util.XMLUtil;
+import plugins.fmp.multicafeTools.ImageTransformTools;
+import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class Experiment {
 	
@@ -38,6 +39,8 @@ public class Experiment {
 	public Experiment 		previousExperiment			= null;		// pointer to chain this experiment to another one before
 	public Experiment 		nextExperiment 				= null;		// pointer to chain this experiment to another one after
 	
+	ImageTransformTools 	tImg 						= null;
+
 	private final String ID_VERSION	= "version"; 
 	private final String ID_VERSIONNUM	= "1.0.0"; 
 	private final String ID_TIMEFIRSTIMAGE	= "fileTimeImageFirstMinute"; 
@@ -305,6 +308,50 @@ public class Experiment {
 		seqCamData.loadSequence(experimentFileName) ;
 		seqKymos.updateCapillariesFromCamData(seqCamData);
 		seqKymos.xmlLoadMCcapillaries(experimentFileName);
+	}
+	
+	public void saveExperimentMeasures() {
+		if (seqKymos != null) {
+			seqKymos.roisSaveEdits();
+			seqKymos.xmlSaveMCcapillaries(seqCamData.getDirectory());
+			seqKymos.xmlSaveKymos_Measures(seqCamData.getDirectory());
+		}
+	}
+	
+	public void kymosBuildFiltered(int zChannelSource, int zChannelDestination, TransformOp transformop, int spanDiff) {
+		if (tImg == null) 
+			tImg = new ImageTransformTools();
+		tImg.setSpanDiff(spanDiff);
+		
+		int nimages = seqKymos.seq.getSizeT();
+		seqKymos.seq.beginUpdate();
+		tImg.setSequence(seqKymos);
+		seqKymos.transferAnalysisParametersToCapillaries();
+		Capillaries capillaries = seqKymos.capillaries;
+		if (capillaries.capillariesArrayList.size() != nimages) {
+			SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
+		}
+		
+		for (int t= 0; t < nimages; t++) {
+			Capillary cap = capillaries.capillariesArrayList.get(t);
+			cap.indexImage = t;
+			IcyBufferedImage img = seqKymos.seq.getImage(t, zChannelSource);
+			IcyBufferedImage img2 = tImg.transformImage (img, transformop);
+			img2 = tImg.transformImage(img2, TransformOp.RTOGB);
+			
+			if (seqKymos.seq.getSizeZ(0) < (zChannelDestination+1)) 
+				seqKymos.seq.addImage(t, img2);
+			else
+				seqKymos.seq.setImage(t, zChannelDestination, img2);
+		}
+		
+		if (zChannelDestination == 1)
+			seqKymos.capillaries.limitsOptions.transformForLevels = transformop;
+		else
+			seqKymos.capillaries.gulpsOptions.transformForGulps = transformop;
+		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
+		seqKymos.seq.dataChanged();
+		seqKymos.seq.endUpdate();
 	}
 	
 }

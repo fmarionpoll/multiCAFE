@@ -94,11 +94,6 @@ public class MCLevels_File  extends JPanel {
 	}
 	
 	void saveKymosMeasures(Experiment exp) {
-		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqKymos != null) {
-			seqKymos.roisSaveEdits();
-			seqKymos.xmlSaveMCcapillaries(exp.seqCamData.getDirectory());
-			seqKymos.xmlSaveKymos_Measures(exp.seqCamData.getDirectory());
-		}
+		exp.saveExperimentMeasures();
 	}
 }

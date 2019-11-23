@@ -103,7 +103,7 @@ public class MCLevels_DetectGulps extends JPanel {
 		}
 		
 		TransformOp transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
-		parent0.levelsPane.kymosBuildFiltered(0, 2, transform, (int) spanTransf2Spinner.getValue());
+		exp.kymosBuildFiltered(0, 2, transform, (int) spanTransf2Spinner.getValue());
 	}
 	
 	void kymosDetectGulps(boolean detectGulps) {

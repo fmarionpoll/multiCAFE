@@ -41,18 +41,18 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 		@Override
 		public void run() {
 			threadRunning = true;
-			int nbexp = options.expList.index1 - options.expList.index0;
+			int nbexp = options.expList.index1 - options.expList.index0 +1;
 			ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
 			progressBar.initStuff(nbexp);
 			progressBar.setMessageFirstPart("Analyze series ");
-			for (int index = options.expList.index0; index < options.expList.index1; index++) {
+			for (int index = options.expList.index0; index <= options.expList.index1; index++) {
 				if (stopFlag)
 					break;
 				Experiment exp = options.expList.experimentList.get(index);
 				System.out.println(exp.experimentFileName);
 				progressBar.updatePosition(index-options.expList.index0);
 				exp.loadExperimentData();
-				initViewer(exp);
+				initViewerCamData(exp);
 				options.seqCamData = exp.seqCamData;
 				options.seqKymos = exp.seqKymos;
 				exp.step = options.analyzeStep;

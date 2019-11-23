@@ -48,7 +48,6 @@ public class MCLevels_DetectLimits  extends JPanel {
 	JCheckBox			ALLCheckBox 			= new JCheckBox("ALL series", false);
 	DetectLimits_series detectLimitsThread 		= null;
 	private Thread 		thread 					= null;
-	boolean				isRunning				= false;
 
 	
 	
@@ -84,7 +83,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 		
 		detectButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				if (thread != null && thread.isAlive()) {
+				if (thread == null || !thread.isAlive()) {
 					series_detectLimitsStart();
 				}
 				else {
@@ -133,7 +132,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) {
 			getInfosFromDialog(capList.get(t));		
 		}
-		parent0.levelsPane.kymosBuildFiltered(0, 1, transform, getSpanDiffTop());
+		exp.kymosBuildFiltered(0, 1, transform, getSpanDiffTop());
 	}
 	
 	void setInfosToDialog(Capillary cap) {
@@ -177,6 +176,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 		options.analyzePartOnly		= partCheckBox.isSelected();
 		options.startPixel			= (int) startSpinner.getValue();
 		options.endPixel			= (int) endSpinner.getValue();
+		options.spanDiffTop			= getSpanDiffTop();
 			
 		thread = new Thread(null, detectLimitsThread, "+++buildkymos");
 		thread.start();
