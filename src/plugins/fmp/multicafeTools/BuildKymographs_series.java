@@ -10,12 +10,10 @@ import java.util.List;
 
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
-import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.roi.ROI;
 import icy.sequence.Sequence;
-import icy.system.thread.ThreadUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import loci.formats.FormatException;
@@ -27,7 +25,7 @@ import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 
 
 
-public class BuildKymographs_series implements Runnable {
+public class BuildKymographs_series extends Build_series implements Runnable {
 		public BuildKymographs_Options 	options 			= new BuildKymographs_Options();
 		public boolean 					stopFlag 			= false;
 		public boolean 					threadRunning 		= false;
@@ -38,20 +36,21 @@ public class BuildKymographs_series implements Runnable {
 		private int 					imagewidth =1;
 		private ArrayList<double []> 	sourceValuesList 	= null;
 		private List<ROI> 				roiList 			= null;
-		Viewer viewer1 = null;
 		
 		
 		@Override
 		public void run() {
 			threadRunning = true;
-			int nbexp = options.index1 - options.index0;
+			int nbexp = options.expList.index1 - options.expList.index0;
 			ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
 			progressBar.initStuff(nbexp);
 			progressBar.setMessageFirstPart("Analyze series ");
-			for (int index = options.index0; index < options.index1; index++) {
+			for (int index = options.expList.index0; index < options.expList.index1; index++) {
+				if (stopFlag)
+					break;
 				Experiment exp = options.expList.experimentList.get(index);
 				System.out.println(exp.experimentFileName);
-				progressBar.updatePosition(index-options.index0);
+				progressBar.updatePosition(index-options.expList.index0);
 				exp.loadExperimentData();
 				initViewer(exp);
 				options.seqCamData = exp.seqCamData;
@@ -65,35 +64,7 @@ public class BuildKymographs_series implements Runnable {
 			progressBar.close();
 			threadRunning = false;
 		}
-		
-
-		
-		private void closeViewer (Experiment exp) {
-			exp.seqCamData.seq.close();
-			exp.seqKymos.seq.close();
-		}
-		
-		private void initViewer (Experiment exp) {
-			ThreadUtil.invoke (new Runnable() {
-				@Override
-				public void run() {
-					viewer1 = new Viewer(exp.seqCamData.seq, true);
-				}
-			}, true);
-			if (viewer1 == null) {
-				viewer1 = exp.seqCamData.seq.getFirstViewer(); 
-				if (!viewer1.isInitialized()) {
-					try {
-						Thread.sleep(1000);
-						if (!viewer1.isInitialized())
-							System.out.println("Viewer still not initialized after 1 s waiting");
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		
+				
 		private void saveComputation(Experiment exp) {			
 			Path dir = Paths.get(exp.seqCamData.getDirectory());
 			dir = dir.resolve("results");

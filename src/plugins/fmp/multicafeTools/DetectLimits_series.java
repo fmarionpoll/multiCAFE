@@ -4,18 +4,82 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.CapillaryLimits;
+import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
-public class DetectLimits {
-	List<Point2D> limitTop =null;
-	List<Point2D> limitBottom =null;
+public class DetectLimits_series extends Build_series implements Runnable {
+	List<Point2D> 				limitTop 		= null;
+	List<Point2D> 				limitBottom 	= null;
+	public boolean 				stopFlag 		= false;
+	public boolean 				threadRunning 	= false;
+	public DetectLimits_Options options 		= new DetectLimits_Options();
+
 	
-	public void detectCapillaryLevels(DetectLimits_Options options, SequenceKymos seqkymo) {
+	@Override
+	public void run() {
+		threadRunning = true;
+		ExperimentList expList = options.expList;
+		int nbexp = expList.index1 - expList.index0;
+		ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
+		progressBar.initStuff(nbexp);
+		progressBar.setMessageFirstPart("Analyze series ");
+		for (int index = expList.index0; index < expList.index1; index++) {
+			if (stopFlag)
+				break;
+			Experiment exp = expList.experimentList.get(index);
+			System.out.println(exp.experimentFileName);
+			progressBar.updatePosition(index-expList.index0);
+			exp.loadExperimentData();
+			initViewer(exp);
+			detectCapillaryLevels(options, exp.seqKymos);
+			saveComputation(exp);
+			closeViewer(exp);
+		}
+		progressBar.close();
+		threadRunning = false;
+	}
+
+	private void saveComputation(Experiment exp) {			
+//		Path dir = Paths.get(exp.seqCamData.getDirectory());
+//		dir = dir.resolve("results");
+//		String directory = dir.toAbsolutePath().toString();
+//		if (Files.notExists(dir))  {
+//			try {
+//				Files.createDirectory(dir);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//				System.out.println("Creating directory failed: "+ directory);
+//				return;
+//			}
+//		}
+//		ProgressFrame progress = new ProgressFrame("Save kymographs");		
+//		for (int t = 0; t < exp.seqKymos.seq.getSizeT(); t++) {
+//			Capillary cap = exp.seqKymos.capillaries.capillariesArrayList.get(t);
+//			progress.setMessage( "Save kymograph file : " + cap.getName());	
+//			String filename = directory + File.separator + cap.getName() + ".tiff";
+//			File file = new File (filename);
+//			IcyBufferedImage image = exp.seqKymos.seq.getImage(t, 0);
+//			try {
+//				Saver.saveImage(image, file, true);
+//			} catch (FormatException e) {
+//				e.printStackTrace();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		exp.xmlSaveExperiment();
+//		progress.close();
+	}
+	
+	private void detectCapillaryLevels(DetectLimits_Options options, SequenceKymos seqkymo) {
 		ProgressChrono progressBar = new ProgressChrono("Detection of upper/lower capillary limits started");
 		progressBar.initStuff(seqkymo.seq.getSizeT() );
 		
@@ -100,7 +164,7 @@ public class DetectLimits {
 		progressBar.close();
 	}
 	
-	int detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
+	private int detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
 		boolean found = false;
 		int y = 0;
 		oldiytop -= jitter;
@@ -128,7 +192,7 @@ public class DetectLimits {
 		return y;
 	}
 	
-	int detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
+	private int detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
 		// set flags for internal loop (part of the row)
 		boolean found = false;
 		int y = 0;
@@ -153,5 +217,6 @@ public class DetectLimits {
 		}
 		return y;
 	}
+
 	
 }

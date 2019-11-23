@@ -57,7 +57,6 @@ public class MCKymos_Create extends JPanel {
 				doRegistrationCheckBox
 				));
 		add(GuiUtil.besidesPanel(new JLabel("step ", SwingConstants.RIGHT), stepJSpinner, updateStepButton, ALLCheckBox));
-
 		
 		defineActionListeners();
 	}
@@ -108,15 +107,16 @@ public class MCKymos_Create extends JPanel {
 	private void series_kymosBuildStart() {
 		buildKymographsThread2 = new BuildKymographs_series();	
 		BuildKymographs_Options options = buildKymographsThread2.options;
-		if (!ALLCheckBox.isSelected()) {
-			options.index0 = parent0.currentIndex;
-			options.index1 = options.index0 +1;
+		
+		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+		options.expList = parent0.expList; 
+		options.expList.index0 = parent0.currentIndex;
+		options.expList.index1 = options.expList.index0;
+		if (ALLCheckBox.isSelected()) {
+			options.expList.index0 = 0;
+			options.expList.index1 = parent0.expList.experimentList.size()-1;
 		}
-		else {
-			parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
-			options.index0 = 0;
-			options.index1 = parent0.expList.experimentList.size();
-		}
+		
 		options.expList = parent0.expList; 
 		options.analyzeStep = (int) stepJSpinner.getValue();
 		options.diskRadius 	= (int) diskRadiusSpinner.getValue();

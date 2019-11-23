@@ -18,9 +18,8 @@ import javax.swing.SpinnerNumberModel;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeTools.DetectLimits;
 import plugins.fmp.multicafeTools.DetectLimits_Options;
-import plugins.fmp.multicafeTools.ProgressChrono;
+import plugins.fmp.multicafeTools.DetectLimits_series;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
@@ -47,6 +46,11 @@ public class MCLevels_DetectLimits  extends JPanel {
 	private MultiCAFE 	parent0 				= null;
 	private JCheckBox	partCheckBox 			= new JCheckBox ("detect from", false);
 	JCheckBox			ALLCheckBox 			= new JCheckBox("ALL series", false);
+	DetectLimits_series detectLimitsThread 		= null;
+	private Thread 		thread 					= null;
+	boolean				isRunning				= false;
+
+	
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -80,42 +84,13 @@ public class MCLevels_DetectLimits  extends JPanel {
 		
 		detectButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				int i0 = parent0.currentIndex;
-				int i1 = i0;
-				if (ALLCheckBox.isSelected()) {
-					parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
-					i0 = 0;
-					i1 = parent0.expList.experimentList.size()-1;
+				if (thread != null && thread.isAlive()) {
+					series_detectLimitsStart();
 				}
-				ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
-				progressBar.initStuff(i1-i0+1);
-				progressBar.setMessageFirstPart("Analyze series ");
-				
-				for (int index = i0; index <= i1; index++) {
-					progressBar.updatePosition(index-i0);
-					Experiment exp 				= parent0.expList.getExperiment(index);
-					kymosDisplayFiltered1(exp);
-					DetectLimits_Options options= new DetectLimits_Options();
-					options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
-					options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
-					options.detectLevelThreshold= (int) getDetectLevelThreshold();
-					options.detectAllImages 	= allImagesCheckBox.isSelected();
-					options.firstImage 			= parent0.kymosPane.displayTab.kymographNamesComboBox.getSelectedIndex();
-					options.analyzePartOnly		= partCheckBox.isSelected();
-					options.startPixel			= (int) startSpinner.getValue();
-					options.endPixel			= (int) endSpinner.getValue();
-					
-					DetectLimits detect 		= new DetectLimits();
-					// load data & load kymos
-					exp.loadExperimentData();
-					// load kymos
-					detect.detectCapillaryLevels(options, exp.seqKymos);
-					if (ALLCheckBox.isSelected()) {
-						exp.seqKymos.saveKymosMeasures();
-					}
+				else {
+					series_detectLimitsStop();
+					firePropertyChange("KYMO_DETECT_TOP", false, true);
 				}
-				progressBar.close();
-				firePropertyChange("KYMO_DETECT_TOP", false, true);
 			}});	
 		
 		displayTransform1Button.addActionListener(new ActionListener () { 
@@ -179,5 +154,56 @@ public class MCLevels_DetectLimits  extends JPanel {
 		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
 		options.detectLevelThreshold = getDetectLevelThreshold();
 		options.detectAllImages = allImagesCheckBox.isSelected();
+	}
+	
+	void series_detectLimitsStart() {
+		detectLimitsThread = new DetectLimits_series();
+		DetectLimits_Options options= detectLimitsThread.options;
+		
+		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+		options.expList = parent0.expList; 
+		options.expList.index0 = parent0.currentIndex;
+		options.expList.index1 = options.expList.index0;
+		if (ALLCheckBox.isSelected()) {
+			options.expList.index0 = 0;
+			options.expList.index1 = parent0.expList.experimentList.size()-1;
+		}
+			
+		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
+		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
+		options.detectLevelThreshold= (int) getDetectLevelThreshold();
+		options.detectAllImages 	= allImagesCheckBox.isSelected();
+		options.firstImage 			= parent0.kymosPane.displayTab.kymographNamesComboBox.getSelectedIndex();
+		options.analyzePartOnly		= partCheckBox.isSelected();
+		options.startPixel			= (int) startSpinner.getValue();
+		options.endPixel			= (int) endSpinner.getValue();
+			
+		thread = new Thread(null, detectLimitsThread, "+++buildkymos");
+		thread.start();
+		Thread waitcompletionThread = new Thread(null, new Runnable() {
+			public void run() {
+				try { 
+					thread.join();
+					}
+				catch(Exception e){;} 
+				finally { 
+					series_detectLimitsStop();
+					//series_resetUserInterface();
+				}
+			}}, "+++waitforcompletion");
+		waitcompletionThread.start();
+	}
+	
+	private void series_detectLimitsStop() {	
+		if (thread != null && thread.isAlive()) {
+			detectLimitsThread.stopFlag = true;
+			try {
+				thread.join();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		}
+		parent0.kymosPane.displayTab.viewKymosCheckBox.setSelected(true);
+		parent0.kymosPane.displayTab.displayViews (true);
 	}
 }

@@ -9,7 +9,7 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 
 public class BuildKymographs_Options {
 	public int 				analyzeStep 		= 1;
-	public int 				startFrame 			= 1;
+	public int 				startFrame 			= 0;
 	public int				endFrame 			= 99999999;
 	public SequenceCamData 	seqCamData 			= null;
 	public SequenceKymos	seqKymos			= null;
@@ -19,9 +19,5 @@ public class BuildKymographs_Options {
 	public boolean			updateViewerDuringComputation = false;
 	public ExperimentList	expList;
 	
-	public int index0 = 0;
-	public int index1 = 0;
-	public int index= 0;
-	public int indexold = 0;
-	public boolean loopRunning = false;	
+	public boolean 			loopRunning 		= false;	
 }
