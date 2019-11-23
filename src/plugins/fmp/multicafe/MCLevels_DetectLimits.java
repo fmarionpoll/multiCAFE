@@ -24,7 +24,7 @@ import plugins.fmp.multicafeTools.ProgressChrono;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class MCLevels_Limits  extends JPanel {
+public class MCLevels_DetectLimits  extends JPanel {
 
 	/**
 	 * 

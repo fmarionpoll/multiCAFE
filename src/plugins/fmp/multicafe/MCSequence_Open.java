@@ -66,6 +66,7 @@ public class MCSequence_Open extends JPanel {
 		
 		add( GuiUtil.besidesPanel(openButton, addButton));
 		add( GuiUtil.besidesPanel(searchButton, closeButton));
+		
 		JPanel panel = new JPanel();
 		FlowLayout layout = new FlowLayout();
 		layout.setVgap(0);
@@ -139,6 +140,7 @@ public class MCSequence_Open extends JPanel {
 		mainFrame.add(mainPanel, BorderLayout.CENTER);
 		
 		mainPanel.add(GuiUtil.besidesPanel(findButton, filterCombo));
+		filterCombo.setSelectedIndex(5);
 		
 		directoriesJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		directoriesJList.setLayoutOrientation(JList.VERTICAL);

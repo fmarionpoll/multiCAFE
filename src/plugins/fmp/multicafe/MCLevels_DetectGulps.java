@@ -24,7 +24,7 @@ import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class MCLevels_Gulps extends JPanel {
+public class MCLevels_DetectGulps extends JPanel {
 	/**
 	 * 
 	 */
