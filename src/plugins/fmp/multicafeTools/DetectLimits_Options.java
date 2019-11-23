@@ -4,6 +4,7 @@ import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class DetectLimits_Options implements XMLPersistent {
@@ -18,7 +19,11 @@ public class DetectLimits_Options implements XMLPersistent {
 	public 	boolean 	analyzePartOnly			= false;
 	public 	int 		startPixel 				= -1;
 	public 	int 		endPixel 				= -1;
+	public  int			spanDiffTop				= 3;
+	public ExperimentList expList				= null;
+	
 
+	// -----------------------
 	
 	void copy(DetectLimits_Options destination) {
 		destination.detectTop 				= detectTop; 
@@ -28,7 +33,6 @@ public class DetectLimits_Options implements XMLPersistent {
 		destination.detectLevelThreshold 	= detectLevelThreshold;
 		destination.detectAllImages 		= detectAllImages;
 	}
-
 
 	@Override
 	public boolean loadFromXML(Node node) {
@@ -44,7 +48,6 @@ public class DetectLimits_Options implements XMLPersistent {
 	    }
         return true;
 	}
-
 
 	@Override
 	public boolean saveToXML(Node node) {

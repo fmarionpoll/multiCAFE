@@ -10,15 +10,18 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 public class XLSUtils {
 
 	public static void setValue (XSSFSheet sheet, Point pt, boolean transpose, int ivalue) {
-		getCell(sheet, pt, transpose).setCellValue(ivalue);
+		XSSFCell cell = getCell(sheet, pt, transpose);
+		cell.setCellValue(ivalue);
 	}
 	
 	public static void setValue (XSSFSheet sheet, Point pt, boolean transpose, String string) {
-		getCell(sheet, pt, transpose).setCellValue(string);
+		XSSFCell cell = getCell(sheet, pt, transpose);
+		cell.setCellValue(string);
 	}
 		
 	public static void setValue (XSSFSheet sheet, Point pt, boolean transpose, double value) {
-		getCell(sheet, pt, transpose).setCellValue(value);
+		XSSFCell cell = getCell(sheet, pt, transpose);
+		cell.setCellValue(value);
 	}
 	
 	/*
