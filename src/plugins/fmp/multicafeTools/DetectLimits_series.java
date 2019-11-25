@@ -29,9 +29,10 @@ public class DetectLimits_series extends Build_series implements Runnable {
 	
 	@Override
 	public void run() {
+		stopFlag = false;
 		threadRunning = true;
 		ExperimentList expList = options.expList;
-		int nbexp = expList.index1 - expList.index0;
+		int nbexp = expList.index1 - expList.index0 +1;
 		ProgressChrono progressBar = new ProgressChrono("Detect limits");
 		progressBar.initStuff(nbexp);
 		progressBar.setMessageFirstPart("Analyze series ");
@@ -40,15 +41,15 @@ public class DetectLimits_series extends Build_series implements Runnable {
 				break;
 			Experiment exp = expList.experimentList.get(index);
 			System.out.println(exp.experimentFileName);
-			progressBar.updatePosition(index-expList.index0);
+			progressBar.updatePosition(index-expList.index0+1);
 			exp.loadExperimentData();
 			boolean flag = exp.loadKymographs();
 			if (flag) {
-				initViewerKymosData(exp);
+//				initViewerKymosData(exp);
 				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
 				detectCapillaryLevels(options, exp.seqKymos);
 				saveComputation(exp);
-				closeViewer(exp);
+//				closeViewer(exp);
 				}
 		}
 		progressBar.close();
@@ -74,8 +75,6 @@ public class DetectLimits_series extends Build_series implements Runnable {
 	}
 	
 	private void detectCapillaryLevels(DetectLimits_Options options, SequenceKymos seqkymo) {
-		ProgressChrono progressBar = new ProgressChrono("Detection of upper/lower capillary limits started");
-		progressBar.initStuff(seqkymo.seq.getSizeT() );
 		
 		int jitter = 10;
 		int kymofirst = 0;
@@ -87,7 +86,6 @@ public class DetectLimits_series extends Build_series implements Runnable {
 		seqkymo.seq.beginUpdate();
 				
 		for (int kymo = kymofirst; kymo <= kymolast; kymo++) {
-			progressBar.updatePositionAndTimeLeft(kymo);
 			seqkymo.removeROIsAtT(kymo);
 			limitTop = new ArrayList<Point2D>();
 			limitBottom = new ArrayList<Point2D>();
@@ -155,7 +153,6 @@ public class DetectLimits_series extends Build_series implements Runnable {
 		
 		}
 		seqkymo.seq.endUpdate();
-		progressBar.close();
 	}
 	
 	private int detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {

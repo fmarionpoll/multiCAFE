@@ -1,5 +1,7 @@
 package plugins.fmp.multicafeTools;
 
+import javax.swing.SwingUtilities;
+
 import icy.gui.viewer.Viewer;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Experiment;
@@ -22,6 +24,7 @@ public class Build_series {
 				viewer1 = new Viewer(exp.seqCamData.seq, true);
 			}
 		}, true);
+		
 		if (viewer1 == null) {
 			viewer1 = exp.seqCamData.seq.getFirstViewer(); 
 			if (!viewer1.isInitialized()) {
@@ -38,11 +41,14 @@ public class Build_series {
 	
 	void initViewerKymosData (Experiment exp) {
 		ThreadUtil.invoke (new Runnable() {
+//		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				viewer2 = new Viewer(exp.seqKymos.seq, true);
 			}
+//		});
 		}, true);
+		
 		if (viewer2 == null) {
 			viewer2 = exp.seqKymos.seq.getFirstViewer(); 
 			if (!viewer2.isInitialized()) {

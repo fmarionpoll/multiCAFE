@@ -88,7 +88,6 @@ public class MCLevels_DetectLimits  extends JPanel {
 				}
 				else {
 					series_detectLimitsStop();
-					firePropertyChange("KYMO_DETECT_TOP", false, true);
 				}
 			}});	
 		
@@ -156,9 +155,9 @@ public class MCLevels_DetectLimits  extends JPanel {
 	}
 	
 	void series_detectLimitsStart() {
+		detectButton.setText("(Detect)/STOP");
 		detectLimitsThread = new DetectLimits_series();
 		DetectLimits_Options options= detectLimitsThread.options;
-		
 		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.currentIndex;
@@ -167,7 +166,6 @@ public class MCLevels_DetectLimits  extends JPanel {
 			options.expList.index0 = 0;
 			options.expList.index1 = parent0.expList.experimentList.size()-1;
 		}
-			
 		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();
@@ -188,11 +186,11 @@ public class MCLevels_DetectLimits  extends JPanel {
 				catch(Exception e){;} 
 				finally { 
 					series_detectLimitsStop();
-					//series_resetUserInterface();
 				}
 			}}, "+++waitforcompletion");
 		waitcompletionThread.start();
 	}
+
 	
 	private void series_detectLimitsStop() {	
 		if (thread != null && thread.isAlive()) {
@@ -205,5 +203,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 		}
 		parent0.kymosPane.displayTab.viewKymosCheckBox.setSelected(true);
 		parent0.kymosPane.displayTab.displayViews (true);
+		firePropertyChange("KYMO_DETECT_TOP", false, true);
+		detectButton.setText("Detect");
 	}
 }
