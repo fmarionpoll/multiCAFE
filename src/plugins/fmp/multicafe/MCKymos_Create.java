@@ -108,9 +108,9 @@ public class MCKymos_Create extends JPanel {
 		buildKymographsThread2 = new BuildKymographs_series();	
 		BuildKymographs_Options options = buildKymographsThread2.options;
 		
-		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList, true);
 		options.expList = parent0.expList; 
-		options.expList.index0 = parent0.currentIndex;
+		options.expList.index0 = parent0.currentExperimentIndex;
 		options.expList.index1 = options.expList.index0;
 		if (ALLCheckBox.isSelected()) {
 			options.expList.index0 = 0;
@@ -172,11 +172,11 @@ public class MCKymos_Create extends JPanel {
 	}
 	
 	private void updateStepInXMLExperiments(int step ) {
-		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList, true);
 		int i0 = 0;
 		int i1 = parent0.expList.experimentList.size();
 		if (!ALLCheckBox.isSelected()) {
-			i0 = parent0.currentIndex;
+			i0 = parent0.currentExperimentIndex;
 			i1 = i0+1;
 		}
 		ProgressChrono progressBar = new ProgressChrono("Compute kymographs");

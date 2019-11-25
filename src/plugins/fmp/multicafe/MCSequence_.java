@@ -97,7 +97,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			}
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			SequenceCamData seqCamData = parent0.openSequenceCam(null);
 			if (seqCamData != null) {
 				if (addSequenceCamToCombo()) {
@@ -109,7 +109,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			}
 		}
 		else if (event.getPropertyName().equals("UPDATE")) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			updateViewerForSequenceCam(exp.seqCamData);
 			intervalsTab.getAnalyzeFrameFromDialog(exp);
 			parent0.kymosPane.createTab.getBuildKymosParametersFromDialog(exp);
@@ -166,7 +166,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	boolean addSequenceCamToCombo() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null)
 			return false;
 		String filename = exp.seqCamData.getFileName();

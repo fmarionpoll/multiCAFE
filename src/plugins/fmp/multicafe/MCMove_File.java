@@ -44,7 +44,7 @@ public class MCMove_File extends JPanel {
 	
 		openCagesButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				exp.seqCamData.cages.xmlReadCagesFromFile(exp.seqCamData);
 				firePropertyChange("LOAD_DATA", false, true);
 				parent0.movePane.tabsPane.setSelectedIndex(3);
@@ -52,7 +52,7 @@ public class MCMove_File extends JPanel {
 		
 		saveCagesButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				exp.seqCamData.storeAnalysisParametersToCages();
 				saveCages(exp);
 				parent0.movePane.tabsPane.setSelectedIndex(3);
@@ -62,7 +62,7 @@ public class MCMove_File extends JPanel {
 	boolean loadCages(String csFileName) {
 		
 		boolean flag = false;
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (csFileName == null)
 			flag = exp.seqCamData.xmlReadDrosoTrackDefault();
 		else

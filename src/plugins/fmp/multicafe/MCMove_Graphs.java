@@ -59,7 +59,7 @@ public class MCMove_Graphs extends JPanel {
 	}
 
 	private void xyDisplayGraphs() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		final Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBounds();
 		Point ptRelative = new Point(0,30);
 		final int deltay = 230;
@@ -94,7 +94,7 @@ public class MCMove_Graphs extends JPanel {
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		}
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		iChart.displayData(exp.seqCamData.cages.cageList, option);
 		iChart.mainChartFrame.toFront();
 		return iChart;

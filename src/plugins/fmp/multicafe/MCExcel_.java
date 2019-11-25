@@ -74,7 +74,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null) 
 			return;
 		
@@ -151,13 +151,13 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.absoluteTime	= optionsTab.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
 		options.expList = new ExperimentList(); 
-		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(options.expList);		
+		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(options.expList, true);		
 		if (optionsTab.exportAllFilesCheckBox.isSelected()) {
 			options.firstExp 	= 0;
 			options.lastExp 	= options.expList.experimentList.size() - 1;
 		} else {
-			options.firstExp 	= parent0.currentIndex;
-			options.lastExp 	= parent0.currentIndex;
+			options.firstExp 	= parent0.currentExperimentIndex;
+			options.lastExp 	= parent0.currentExperimentIndex;
 		}
 	}
 }

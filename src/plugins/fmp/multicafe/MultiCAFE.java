@@ -26,7 +26,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
 	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE analysis 16-Nov-2019", true, true, true, true);
 	ExperimentList	expList 		= new ExperimentList();
-	int				currentIndex	= -1;
+	int				currentExperimentIndex	= -1;
 	
 	MCSequence_ 	sequencePane 	= new MCSequence_();
 	MCCapillaries_ 	capillariesPane	= new MCCapillaries_();
@@ -71,7 +71,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	public void viewerChanged(ViewerEvent event) {
 		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) {
 			if (event.getDim() == DimensionId.T) {
-				Experiment exp = expList.experimentList.get(currentIndex);
+				Experiment exp = expList.experimentList.get(currentExperimentIndex);
 				Viewer v = event.getSource(); 
 				int id = v.getSequence().getId();
 				if (id == exp.seqCamData.seq.getId())
@@ -90,7 +90,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if (arg0.getPropertyName().equals("CAPILLARIES_OPEN")) {
-			Experiment exp = expList.getExperiment(currentIndex);
+			Experiment exp = expList.getExperiment(currentExperimentIndex);
 			sequencePane.intervalsTab.setAnalyzeFrameToDialog(exp);
 			kymosPane.createTab.setBuildKymosParametersToDialog(exp);
 		}
@@ -100,7 +100,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 		else if (arg0.getPropertyName() .equals("SAVE_KYMOSMEASURES")) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-				Experiment exp = expList.getExperiment(currentIndex);
+				Experiment exp = expList.getExperiment(currentExperimentIndex);
 				levelsPane.fileTab.saveKymosMeasures(exp);
 			}});
 		}
@@ -109,22 +109,26 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	SequenceCamData openSequenceCam(String filename) {
 		Experiment exp = null;
 		SequenceCamData seqCamData = null; 
-		currentIndex = expList.getPositionOfCamFileName(filename);
-		if (currentIndex < 0) {
+		currentExperimentIndex = expList.getPositionOfCamFileName(filename);
+		if (currentExperimentIndex < 0) {
 			seqCamData = new SequenceCamData();
 			if (null != seqCamData.loadSequence(filename)) {
 				exp = new Experiment(seqCamData);
 				exp.xmlLoadExperiment();
-				currentIndex = expList.addExperiment(exp);
+				currentExperimentIndex = expList.addExperiment(exp);
+//				int dummyindex = currentExperimentIndex = expList.getPositionOfCamFileName(filename);
+//				if (dummyindex != currentExperimentIndex) {
+//					System.out.println("currentExperimentIndex= "+ currentExperimentIndex 
+//							+" -> dummyindex= " +dummyindex);
+//					if (dummyindex >= 0) 
+//						currentExperimentIndex = dummyindex;
+//				}
 			}
-			
 		} else {
-			exp = expList.getExperiment(currentIndex);
+			exp = expList.getExperiment(currentExperimentIndex);
 			exp.xmlLoadExperiment();
 			seqCamData = exp.openSequenceCamData(filename);
-		}
-		
-		
+		}		
 		if (seqCamData.seq != null) {
 			addSequence(seqCamData.seq);
 			seqCamData.seq.getFirstViewer().addListener( this );
@@ -140,7 +144,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	}
 
 	void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
-		Experiment exp = expList.getExperiment(currentIndex);
+		Experiment exp = expList.getExperiment(currentExperimentIndex);
 		if (exp == null)
 			return;
 		ProgressFrame progress = new ProgressFrame("load descriptors");

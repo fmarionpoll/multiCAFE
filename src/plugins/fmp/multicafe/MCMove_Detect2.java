@@ -103,7 +103,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		
 		imageOverlayCheckBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
-				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		    	if (imageOverlayCheckBox.isSelected() && exp != null) {
 		    		if (ov == null)
 		    			ov = new OverlayThreshold(exp.seqCamData);
@@ -136,7 +136,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	}
 	
 	public void updateOverlay () {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData == null)
 			return;
@@ -152,7 +152,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	}
 	
 	public void removeOverlay() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp != null && exp.seqCamData != null && exp.seqCamData.seq != null)
 			exp.seqCamData.seq.removeOverlay(ov);
 	}
@@ -160,7 +160,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdSpinner) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			exp.seqCamData.cages.detect.threshold = (int) thresholdSpinner.getValue();
 			updateOverlay();
 		}
@@ -175,7 +175,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
 		detect.threshold		= (int) thresholdSpinner.getValue();
-		Experiment exp 			= parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		exp.seqCamData.analysisStep = exp.step;
 		exp.seqCamData.analysisStart = exp.startFrame;
 		exp.seqCamData.analysisEnd = exp.endFrame;
@@ -192,7 +192,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	}
 	
 	private void cleanPreviousDetections() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		SequenceCamData seqCamData = exp.seqCamData;
 		for (Cage cage: seqCamData.cages.cageList) {
 			cage.flyPositions = new XYTaSeries();
@@ -238,7 +238,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	}
 	
 	void loadRef () {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		SequenceCamData seqCamData = exp.seqCamData;
 		String path = seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
 		File inputfile = new File(path);
@@ -255,7 +255,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	}
 	
 	void saveRef () {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				String path = exp.seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
 		File outputfile = new File(path);
 		RenderedImage image = ImageUtil.toRGBImage(exp.seqCamData.refImage);

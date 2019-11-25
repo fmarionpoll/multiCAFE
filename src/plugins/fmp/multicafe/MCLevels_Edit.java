@@ -50,7 +50,7 @@ public class MCLevels_Edit  extends JPanel {
 	private void defineListeners() {
 		deleteButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				parent0.expList.getExperiment(parent0.currentIndex).seqKymos.transferKymosRoisToMeasures();
+				parent0.expList.getExperiment(parent0.currentExperimentIndex).seqKymos.transferKymosRoisToMeasures();
 				deletePointsIncluded();
 			}});
 		adjustButton.addActionListener(new ActionListener () { 
@@ -85,7 +85,7 @@ public class MCLevels_Edit  extends JPanel {
 	}
 	
 	void deletePointsIncluded() {
-		SequenceKymos seqKymos = parent0.expList.getExperiment(parent0.currentIndex).seqKymos;
+		SequenceKymos seqKymos = parent0.expList.getExperiment(parent0.currentExperimentIndex).seqKymos;
 		int t= seqKymos.currentFrame;
 		ROI2D roi = seqKymos.seq.getSelectedROI2D();
 		if (roi == null)
@@ -163,7 +163,7 @@ public class MCLevels_Edit  extends JPanel {
 	}
 	
 	void adjustDimensions () {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (!exp.checkStepConsistency()) {
 			parent0.kymosPane.createTab.setBuildKymosParametersToDialog(exp);
 		}

@@ -99,7 +99,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	}
 	
 	boolean loadCapillaries_() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		boolean flag = fileTab.loadCapillaries_File(exp);
 		if (flag) {
 			SequenceKymos seqKymos = exp.seqKymos;
@@ -116,7 +116,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	}
 	
 	private void setCapillariesInfosToDialogs() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		SequenceCamData seqCamData = exp.seqCamData;
 		SequenceKymos seqKymos = exp.seqKymos;
 		SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);

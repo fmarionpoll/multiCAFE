@@ -1,6 +1,5 @@
 package plugins.fmp.multicafeTools;
 
-import javax.swing.SwingUtilities;
 
 import icy.gui.viewer.Viewer;
 import icy.system.thread.ThreadUtil;

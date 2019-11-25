@@ -349,7 +349,6 @@ public class Experiment {
 			seqKymos.capillaries.limitsOptions.transformForLevels = transformop;
 		else
 			seqKymos.capillaries.gulpsOptions.transformForGulps = transformop;
-		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 		seqKymos.seq.dataChanged();
 		seqKymos.seq.endUpdate();
 	}

@@ -93,7 +93,7 @@ public class MCLevels_DetectGulps extends JPanel {
 	// get/set
 		
 	void kymosDisplayFiltered2() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
@@ -103,7 +103,9 @@ public class MCLevels_DetectGulps extends JPanel {
 		}
 		
 		TransformOp transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
-		exp.kymosBuildFiltered(0, 2, transform, (int) spanTransf2Spinner.getValue());
+		int zChannelDestination = 2;
+		exp.kymosBuildFiltered(0, zChannelDestination, transform, (int) spanTransf2Spinner.getValue());
+		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
 	void kymosDetectGulps(boolean detectGulps) {
@@ -121,7 +123,7 @@ public class MCLevels_DetectGulps extends JPanel {
 		options.endPixel				= (int) endSpinner.getValue();
 		
 		DetectGulps detect = new DetectGulps();
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		exp.seqKymos.transferKymosRoisToMeasures();
 		detect.detectGulps(options, exp.seqKymos);
 	}

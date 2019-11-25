@@ -61,9 +61,9 @@ public class MCSequence_Close  extends JPanel {
 	}
 	
 	void closeAll() {
-		if (parent0.currentIndex < 0)
+		if (parent0.currentExperimentIndex < 0)
 			return;
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		closeExp(exp);
 	}
 	

@@ -2,6 +2,7 @@ package plugins.fmp.multicafeSequence;
 
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -155,17 +156,31 @@ public class ExperimentList {
 	public int getPositionOfCamFileName(String filename) {
 		int position = -1;
 		if (filename != null) {
+			Path filepath = stripFilenameFromPath(filename);
 			for (int i=0; i< experimentList.size(); i++) {
 				Experiment exp =  experimentList.get(i);
 				if (exp.seqCamData == null)
 					continue;
-				if (filename .contains(exp.seqCamData.getFileName())) {
+				Path expfilepath = stripFilenameFromPath(exp.seqCamData.getFileName());
+				if (filepath.compareTo(expfilepath) == 0) {
 					position = i;
 					break;
 				}
 			}
 		}
 		return position;
+	}
+	
+	private Path stripFilenameFromPath(String filename) {
+		String pattern = "cam-.._...jpg";
+		if (filename.contains(pattern)) {
+			filename = filename.substring(0, filename.length() - pattern.length()-1);
+		}
+		Path filepath = Paths.get(filename);
+		if (Files.isRegularFile(filepath)) {
+			filepath = filepath.getParent();
+		}
+		return filepath;
 	}
 	
 	public Experiment getExperiment(int index) {

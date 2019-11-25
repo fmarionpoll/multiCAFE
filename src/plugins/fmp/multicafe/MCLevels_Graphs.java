@@ -51,14 +51,14 @@ public class MCLevels_Graphs extends JPanel {
 	private void defineActionListeners() {
 		displayFeedingActivitiesButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				exp.seqKymos.roisSaveEdits();
 				xyDisplayGraphs();
 			}});
 	}
 	
 	void xyDisplayGraphs() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		if (exp == null || v == null)
 			return;
@@ -94,7 +94,7 @@ public class MCLevels_Graphs extends JPanel {
 	}
 
 	private XYMultiChart xyDisplayGraphsItem(String title, EnumListType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) {	
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (iChart != null && iChart.mainChartPanel.isValid()) {
 			iChart.fetchNewData(exp.seqKymos, option);
 		}

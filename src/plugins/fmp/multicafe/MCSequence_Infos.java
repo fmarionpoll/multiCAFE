@@ -76,7 +76,7 @@ public class MCSequence_Infos  extends JPanel {
 		expListComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			if (expListComboBox.getItemCount() == 0 || disableChangeFile)
 				return;
-			Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			String oldtext = exp.seqCamData.getDirectory();
 			String newtext = (String) expListComboBox.getSelectedItem();
 			if (!newtext.contains(oldtext)) {
@@ -85,7 +85,7 @@ public class MCSequence_Infos  extends JPanel {
         		}});
 				updateCombos();
 				parent0.capillariesPane.infosTab.updateCombos();
-				parent0.currentIndex = parent0.expList.getPositionOfCamFileName(newtext);			
+				parent0.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);			
 				firePropertyChange("SEQ_OPEN", false, true);
 				updateBrowseInterface();
 			}
@@ -168,7 +168,9 @@ public class MCSequence_Infos  extends JPanel {
 		addItem(commentJCombo, (String) commentJCombo.getSelectedItem());
 	}
 	
-	void transferExperimentNamesToExpList(ExperimentList expList) {
+	void transferExperimentNamesToExpList(ExperimentList expList, boolean clearOldList) {
+		if (clearOldList)
+			expList.experimentList.clear();
 		int nitems = expListComboBox.getItemCount();
 		for (int i=0; i< nitems; i++) {
 			String filename = expListComboBox.getItemAt(i);

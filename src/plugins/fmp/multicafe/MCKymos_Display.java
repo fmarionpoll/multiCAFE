@@ -126,7 +126,7 @@ public class MCKymos_Display extends JPanel {
 	}
 	
 	private void roisDisplay(String filter, boolean visible) {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		Viewer v= exp.seqKymos.seq.getFirstViewer();
 		IcyCanvas canvas = v.getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
@@ -143,7 +143,7 @@ public class MCKymos_Display extends JPanel {
 	}
 
 	void displayON() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null)
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -187,7 +187,7 @@ public class MCKymos_Display extends JPanel {
 	}
 	
 	void displayOFF() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp.seqKymos == null) 
 			return;
 		ArrayList<Viewer>vList =  exp.seqKymos.seq.getViewers();
@@ -229,7 +229,7 @@ public class MCKymos_Display extends JPanel {
 	}
 
 	void selectKymograph(int isel) {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null || seqKymos.seq == null)
 			return;

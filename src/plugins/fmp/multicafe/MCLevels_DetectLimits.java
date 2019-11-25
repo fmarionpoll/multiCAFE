@@ -18,6 +18,7 @@ import javax.swing.SpinnerNumberModel;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.fmp.multicafeTools.DetectLimits_series;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
@@ -74,7 +75,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 	private void defineActionListeners() {
 		transformForLevelsComboBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null && exp.seqCamData != null) {
 					kymosDisplayFiltered1(exp);
 					firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
@@ -93,7 +94,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 		
 		displayTransform1Button.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentIndex);
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				kymosDisplayFiltered1(exp);
 				firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
 			}});
@@ -124,14 +125,17 @@ public class MCLevels_DetectLimits  extends JPanel {
 	}
 		
 	void kymosDisplayFiltered1(Experiment exp) {
-		if (exp.seqKymos == null)
+		SequenceKymos seqKymos = exp.seqKymos;
+		if (seqKymos == null)
 			return;
 		TransformOp transform = (TransformOp) transformForLevelsComboBox.getSelectedItem();
-		List<Capillary> capList = exp.seqKymos.capillaries.capillariesArrayList;
+		List<Capillary> capList = seqKymos.capillaries.capillariesArrayList;
 		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) {
 			getInfosFromDialog(capList.get(t));		
 		}
-		exp.kymosBuildFiltered(0, 1, transform, getSpanDiffTop());
+		int zChannelDestination = 1;
+		exp.kymosBuildFiltered(0, zChannelDestination, transform, getSpanDiffTop());
+		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
 	void setInfosToDialog(Capillary cap) {
@@ -157,10 +161,11 @@ public class MCLevels_DetectLimits  extends JPanel {
 	void series_detectLimitsStart() {
 		detectButton.setText("(Detect)/STOP");
 		detectLimitsThread = new DetectLimits_series();
+		
 		DetectLimits_Options options= detectLimitsThread.options;
-		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList);
+		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList, true);
 		options.expList = parent0.expList; 
-		options.expList.index0 = parent0.currentIndex;
+		options.expList.index0 = parent0.currentExperimentIndex;
 		options.expList.index1 = options.expList.index0;
 		if (ALLCheckBox.isSelected()) {
 			options.expList.index0 = 0;
