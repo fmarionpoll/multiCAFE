@@ -87,7 +87,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		} 
 		else if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
 			SequenceCamData seqCamData = parent0.openSequenceCam(null);
-			if (seqCamData != null) {
+			if (seqCamData != null && seqCamData.seq != null) {
 				parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 				infosTab.expListComboBox.removeAllItems();
 				if (addSequenceCamToCombo()) {

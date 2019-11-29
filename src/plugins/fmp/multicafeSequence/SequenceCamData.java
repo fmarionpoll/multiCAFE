@@ -302,6 +302,8 @@ public class SequenceCamData  {
 				return null;
 			else {
 				list = keepOnlyAcceptedNamesFromList(list, 0);	
+				if (list.size() == 0)
+					return null;
 				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi"))
 					seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
 				else {
