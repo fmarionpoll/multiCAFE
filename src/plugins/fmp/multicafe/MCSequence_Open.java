@@ -79,6 +79,7 @@ public class MCSequence_Open extends JPanel {
 		panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		add( GuiUtil.besidesPanel(panel));
 
+		filterCombo.setEditable(true);
 		
 		searchButton.addActionListener(new ActionListener()  {
             @Override

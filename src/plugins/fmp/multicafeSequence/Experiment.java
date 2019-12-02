@@ -291,9 +291,6 @@ public class Experiment {
 	
 	public boolean checkStepConsistency() {
 		int imageWidth = seqKymos.imageWidthMax; 
-		if (imageWidth == 0) {
-			
-		}
 		int len = (endFrame - startFrame + 1) / step;
 		boolean isOK = true;
 		if (len != imageWidth) {

@@ -161,7 +161,10 @@ public class ExperimentList {
 				Experiment exp =  experimentList.get(i);
 				if (exp.seqCamData == null)
 					continue;
-				Path expfilepath = stripFilenameFromPath(exp.seqCamData.getFileName());
+				String filename2 = exp.seqCamData.getFileName();
+				if (filename2 == null)
+					filename2 = exp.seqCamData.getDirectory();
+				Path expfilepath = stripFilenameFromPath(filename2);
 				if (filepath.compareTo(expfilepath) == 0) {
 					position = i;
 					break;
