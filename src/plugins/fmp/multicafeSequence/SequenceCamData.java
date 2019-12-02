@@ -22,6 +22,8 @@ import icy.math.ArrayMath;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
+import icy.sequence.SequenceEvent;
+import icy.sequence.SequenceListener;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 
@@ -31,7 +33,7 @@ import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 
 
-public class SequenceCamData  {
+public class SequenceCamData implements SequenceListener {
 	public Sequence					seq						= null;
 	public IcyBufferedImage 		refImage 				= null;
 	
@@ -513,6 +515,18 @@ public class SequenceCamData  {
 			&& roi.getName().contains(string))
 				seq.removeROI(roi);
 		}
+	}
+
+	@Override
+	public void sequenceChanged(SequenceEvent sequenceEvent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sequenceClosed(Sequence sequence) {
+		sequence.removeAllROI();
+		
 	}
 		
 	

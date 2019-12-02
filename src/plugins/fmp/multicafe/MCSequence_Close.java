@@ -34,32 +34,6 @@ public class MCSequence_Close  extends JPanel {
 			}});
 	}
 	
-//	void saveAndClose(Experiment exp) {
-////		if (exp != null) {
-////			if (parent0.sequencePane.openTab.capillariesCheckBox.isSelected())
-////				parent0.capillariesPane.fileTab.saveCapillaries(exp);
-////			if (parent0.sequencePane.openTab.measuresCheckBox.isSelected())
-////				parent0.kymographsPane.fileTab.saveKymosMeasures(exp);
-////			if (parent0.sequencePane.openTab.cagesCheckBox.isSelected())
-////				parent0.movePane.fileTab.saveCages(exp);
-////		}
-//		closeExp(exp);
-//	}
-	
-	private void stopLoadingImages(Experiment exp) {
-		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqKymos.isRunning_loadImages) {
-			seqKymos.isInterrupted_loadImages = true;
-			while (seqKymos.isRunning_loadImages) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	
 	void closeAll() {
 		if (parent0.currentExperimentIndex < 0)
 			return;
@@ -73,19 +47,16 @@ public class MCSequence_Close  extends JPanel {
 			parent0.sequencePane.intervalsTab.getAnalyzeFrameFromDialog (exp);
 			parent0.kymosPane.createTab.getBuildKymosParametersFromDialog(exp);
 			exp.xmlSaveExperiment();
-			
-			stopLoadingImages(exp);
+
 			SequenceKymos seqKymos = exp.seqKymos;
 			if (seqKymos != null && seqKymos.seq != null) {
 				seqKymos.seq.removeAllROI();
 				seqKymos.seq.close();
-				seqKymos.seq.closed();
 			}
 			SequenceCamData seqCamData = exp.seqCamData;
 			if (seqCamData != null && seqCamData.seq != null) {
 				seqCamData.seq.removeAllROI();
 				seqCamData.seq.close();
-				seqCamData.seq.closed();
 			}
 		}
 		

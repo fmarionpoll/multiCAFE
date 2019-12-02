@@ -221,6 +221,7 @@ public class SequenceKymos extends SequenceCamData  {
 			}
 		}
 		isRunning_loadImages = false;
+		isInterrupted_loadImages = false;
 		return myListOfFileNames;
 	}
 	
