@@ -323,7 +323,7 @@ public class Experiment {
 		int nimages = seqKymos.seq.getSizeT();
 		seqKymos.seq.beginUpdate();
 		tImg.setSequence(seqKymos);
-		seqKymos.transferAnalysisParametersToCapillaries();
+		seqKymos.setStartStopStepToCapillaries();
 		Capillaries capillaries = seqKymos.capillaries;
 		if (capillaries.capillariesArrayList.size() != nimages) {
 			SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);

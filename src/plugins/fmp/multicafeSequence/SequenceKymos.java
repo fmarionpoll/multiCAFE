@@ -180,20 +180,20 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	public void updateCapillariesFromCamData(SequenceCamData seqCam) {
 		SequenceKymosUtils.transferCamDataROIStoKymo(seqCam, this);
-		transferAnalysisParametersToCapillaries();
+		setStartStopStepToCapillaries();
 		analysisStart = capillaries.desc.analysisStart;
 		analysisEnd = capillaries.desc.analysisEnd;
 		analysisStep = capillaries.desc.analysisStep;
 		return;
 	}
 		
-	public void transferAnalysisParametersToCapillaries () {
+	public void setStartStopStepToCapillaries () {
 		capillaries.desc.analysisStart = analysisStart;
 		capillaries.desc.analysisEnd = analysisEnd;
 		capillaries.desc.analysisStep = analysisStep;
 	}
 	
-	private void transferCapillariesToAnalysisParameters () {
+	private void getStartStopStepFromCapillaries () {
 		analysisStart = capillaries.desc.analysisStart;
 		analysisEnd = capillaries.desc.analysisEnd;
 		analysisStep = capillaries.desc.analysisStep;
@@ -420,7 +420,21 @@ public class SequenceKymos extends SequenceCamData  {
 		if (flag) {
 			Path pathfilename = Paths.get(pathname);
 			directory = pathfilename.getParent().toString();
-			transferCapillariesToAnalysisParameters ();
+			getStartStopStepFromCapillaries ();
+			loadListOfKymographsFromCapillaries(getDirectory());
+		}
+		return flag;
+	}
+	
+	public boolean xmlLoadMCcapillaries(String pathname) {
+		pathname = getCorrectPath(pathname);
+		if (pathname == null)
+			return false;
+		boolean flag = capillaries.xmlLoadCapillaries(pathname);
+		if (flag) {
+			Path pathfilename = Paths.get(pathname);
+			directory = pathfilename.getParent().toString();
+			getStartStopStepFromCapillaries ();
 			loadListOfKymographsFromCapillaries(getDirectory());
 		}
 		return flag;
@@ -428,7 +442,9 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	public boolean xmlSaveMCcapillaries(String pathname) {
 		pathname = buildCorrectPath(pathname);
-		return capillaries.xmlSaveCapillaries_Only(pathname, this);
+		capillaries.xmlSaveCapillaries_Only(pathname, this);
+		boolean flag = capillaries.xmlSaveCapillaries_Measures(pathname);
+		return flag;
 	}
 	
 	public boolean xmlSaveKymos_Measures(String pathname) {
@@ -436,7 +452,7 @@ public class SequenceKymos extends SequenceCamData  {
 		if (!f.isDirectory())
 			pathname = Paths.get(pathname).getParent().toString();
 		String directoryFull = pathname +File.separator +"results" + File.separator;
-		return capillaries.xmlSaveCapillaries_Measures(directoryFull, this);
+		return capillaries.xmlSaveCapillaries_Measures(directoryFull);
 	}
 	
 	public boolean xmlReadRoiLineParameters(String pathname) {

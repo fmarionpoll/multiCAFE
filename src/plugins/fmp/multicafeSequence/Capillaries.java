@@ -56,7 +56,7 @@ public class Capillaries {
 		return false;
 	}
 	
-	public boolean xmlSaveCapillaries_Measures(String pathname, SequenceKymos seq) {
+	public boolean xmlSaveCapillaries_Measures(String pathname) {
 		if (pathname != null) {
 			for (Capillary cap: capillariesArrayList) {
 				String tempname = pathname+cap.getName()+ ".xml";
