@@ -45,18 +45,18 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 			ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
 			progressBar.initStuff(nbexp);
 			progressBar.setMessageFirstPart("Analyze series ");
-			for (int index = options.expList.index0; index <= options.expList.index1; index++) {
+			for (int exp_index = options.expList.index0; exp_index <= options.expList.index1; exp_index++) {
 				if (stopFlag)
 					break;
-				Experiment exp = options.expList.experimentList.get(index);
+				Experiment exp = options.expList.experimentList.get(exp_index);
 				System.out.println(exp.experimentFileName);
-				progressBar.updatePosition(index-options.expList.index0);
+				progressBar.updatePosition(exp_index-options.expList.index0);
 				exp.loadExperimentData();
 				initViewerCamData(exp);
 				options.seqCamData = exp.seqCamData;
 				options.seqKymos = exp.seqKymos;
 				exp.step = options.analyzeStep;
-				if (computeKymo()) {
+				if (computeKymo() && !stopFlag) {
 					saveComputation(exp);
 				}
 				closeViewer(exp);
@@ -144,7 +144,9 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 			}
 			
 			options.seqCamData.seq.beginUpdate();
-			for (int t = options.startFrame ; t <= options.endFrame && !stopFlag; t += options.analyzeStep, ipixelcolumn++ ) {
+			for (int t = options.startFrame ; t <= options.endFrame; t += options.analyzeStep, ipixelcolumn++ ) {
+				if (stopFlag)
+					break;
 				progressBar.updatePosition(t);
 				if (!getImageAndUpdateViewer (t))
 					continue;

@@ -79,7 +79,7 @@ public class CapillariesDescription {
 		return flag;
 	}
 	
-	boolean xmlSaveCapillaryDescription (Document doc, SequenceKymos seq) {
+	boolean xmlSaveCapillaryDescription (Document doc) {
 		Node node = XMLUtil.addElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return false;
@@ -94,9 +94,9 @@ public class CapillariesDescription {
 		XMLUtil.setElementIntValue(xmlVal, ID_NPIXELS, pixels);
 
 		xmlVal = XMLUtil.addElement(xmlElement, ID_ANALYSIS);
-		XMLUtil.setElementLongValue(xmlVal, ID_START, seq.analysisStart);
-		XMLUtil.setElementLongValue(xmlVal, ID_END, seq.analysisEnd); 
-		XMLUtil.setElementIntValue(xmlVal, ID_STEP, seq.analysisStep); 
+		XMLUtil.setElementLongValue(xmlVal, ID_START, analysisStart);
+		XMLUtil.setElementLongValue(xmlVal, ID_END, analysisEnd); 
+		XMLUtil.setElementIntValue(xmlVal, ID_STEP, analysisStep); 
 		
 		xmlVal = XMLUtil.addElement(xmlElement, ID_LRSTIMULUS);
 		XMLUtil.setElementValue(xmlVal, ID_STIMR, stimulusR);

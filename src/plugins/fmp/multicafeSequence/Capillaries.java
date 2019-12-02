@@ -40,15 +40,15 @@ public class Capillaries {
 		if (!csFile.contains(".xml")) {
 			csFile += ".xml";
 		}
-		return xmlSaveCapillaries_Only(csFile, seq);
+		return xmlSaveCapillaries_Only(csFile);
 	}
 	
-	public boolean xmlSaveCapillaries_Only(String csFile, SequenceKymos seq) {
+	public boolean xmlSaveCapillaries_Only(String csFile) {
 		if (csFile != null) {
 			final Document doc = XMLUtil.createDocument(true);
 			if (doc != null) {
-				desc.xmlSaveCapillaryDescription (doc, seq);
-				xmlSaveListOfCapillaries(doc, seq);
+				desc.xmlSaveCapillaryDescription (doc);
+				xmlSaveListOfCapillaries(doc);
 				XMLUtil.saveDocument(doc, csFile);
 				return true;
 			}
@@ -56,10 +56,11 @@ public class Capillaries {
 		return false;
 	}
 	
-	public boolean xmlSaveCapillaries_Measures(String pathname) {
-		if (pathname != null) {
+	public boolean xmlSaveCapillaries_Measures(String dataFilesPathname) {
+		if (dataFilesPathname != null) {
+			String directoryFull = dataFilesPathname +File.separator +"results" + File.separator;
 			for (Capillary cap: capillariesArrayList) {
-				String tempname = pathname+cap.getName()+ ".xml";
+				String tempname = directoryFull+cap.getName()+ ".xml";
 				final Document capdoc = XMLUtil.createDocument(true);
 				cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
 				XMLUtil.saveDocument(capdoc, tempname);
@@ -93,15 +94,15 @@ public class Capillaries {
 		return false;
 	}
 	
-	private boolean xmlSaveListOfCapillaries(Document doc, SequenceKymos seq) {
+	private boolean xmlSaveListOfCapillaries(Document doc) {
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return false;
 		XMLUtil.setElementIntValue(node, "version", 2);
 		Node nodecaps = XMLUtil.setElement(node, ID_LISTOFCAPILLARIES);
-		XMLUtil.setElementIntValue(nodecaps, ID_NCAPILLARIES, seq.capillaries.capillariesArrayList.size());
+		XMLUtil.setElementIntValue(nodecaps, ID_NCAPILLARIES, capillariesArrayList.size());
 		int i= 0;
-		for (Capillary cap: seq.capillaries.capillariesArrayList) {
+		for (Capillary cap: capillariesArrayList) {
 			Node nodecapillary = XMLUtil.setElement(node, ID_CAPILLARY_+i);
 			cap.saveMetaDataToXML(nodecapillary);
 			i++;
