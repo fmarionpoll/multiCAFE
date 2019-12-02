@@ -181,9 +181,7 @@ public class SequenceKymos extends SequenceCamData  {
 	public void updateCapillariesFromCamData(SequenceCamData seqCam) {
 		SequenceKymosUtils.transferCamDataROIStoKymo(seqCam, this);
 		setStartStopStepToCapillaries();
-		analysisStart = capillaries.desc.analysisStart;
-		analysisEnd = capillaries.desc.analysisEnd;
-		analysisStep = capillaries.desc.analysisStep;
+//		getStartStopStepFromCapillaries ();
 		return;
 	}
 		

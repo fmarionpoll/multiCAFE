@@ -116,11 +116,10 @@ public class MCKymos_Create extends JPanel {
 			options.expList.index0 = 0;
 			options.expList.index1 = parent0.expList.experimentList.size()-1;
 		}
-		
 		options.expList = parent0.expList; 
 		options.analyzeStep = (int) stepJSpinner.getValue();
 		options.diskRadius 	= (int) diskRadiusSpinner.getValue();
-		options.doRegistration= doRegistrationCheckBox.isSelected();
+		options.doRegistration = doRegistrationCheckBox.isSelected();
 		options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;

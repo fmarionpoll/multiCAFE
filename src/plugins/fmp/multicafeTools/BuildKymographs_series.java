@@ -48,8 +48,8 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 			for (int exp_index = options.expList.index0; exp_index <= options.expList.index1; exp_index++) {
 				if (stopFlag)
 					break;
-				Experiment exp = options.expList.experimentList.get(exp_index);
-				System.out.println(exp.experimentFileName);
+				Experiment exp = options.expList.getExperiment(exp_index);
+//				System.out.println(exp.experimentFileName);
 				progressBar.updatePosition(exp_index-options.expList.index0);
 				exp.loadExperimentData();
 				initViewerCamData(exp);

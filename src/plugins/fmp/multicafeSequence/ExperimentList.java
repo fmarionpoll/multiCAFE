@@ -189,6 +189,8 @@ public class ExperimentList {
 	public Experiment getExperiment(int index) {
 		if (index < 0)
 			return null;
+		if (index > experimentList.size() -1)
+			index = experimentList.size() -1;
 		return experimentList.get(index);
 	}
 	
