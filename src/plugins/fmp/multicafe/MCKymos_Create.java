@@ -41,6 +41,7 @@ public class MCKymos_Create extends JPanel {
 	private MultiCAFE 		parent0						= null;
 	private BuildKymographs_series	buildKymographsThread2 = null;
 	private Thread 			thread 						= null;
+	private int currentExp = -1;
 
 
 
@@ -124,6 +125,10 @@ public class MCKymos_Create extends JPanel {
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		setStartButton(false);
+		currentExp = parent0.currentExperimentIndex;
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		exp.seqKymos.seq.close();
+		exp.seqCamData.seq.close();
 		series_kymosBuildKymographs();	
 	}
 	

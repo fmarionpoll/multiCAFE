@@ -98,10 +98,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			SequenceCamData seqCamData = parent0.openSequenceCam(null);
-			if (seqCamData != null) {
+			exp.seqCamData = parent0.openSequenceCam(null);
+			if (exp.seqCamData != null) {
 				if (addSequenceCamToCombo()) {
-					parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
+					parent0.updateDialogsAfterOpeningSequenceCam(exp.seqCamData);
 					ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 		        		parent0.sequencePane.closeTab.closeExp(exp); //saveAndClose(exp);
 		    		}});
