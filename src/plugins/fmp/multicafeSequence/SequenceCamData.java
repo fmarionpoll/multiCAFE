@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -28,8 +29,13 @@ import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.ImageOperationsStruct;
+import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.StringSorter;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
+import plugins.kernel.roi.roi2d.ROI2DLine;
+import plugins.kernel.roi.roi2d.ROI2DPolyLine;
+import plugins.kernel.roi.roi2d.ROI2DPolygon;
+import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 
 
@@ -515,6 +521,49 @@ public class SequenceCamData implements SequenceListener {
 			&& roi.getName().contains(string))
 				seq.removeROI(roi);
 		}
+	}
+	
+	public List<ROI2D> getCapillaries () {
+		List<ROI2D> roiList = seq.getROI2Ds();
+		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
+		List<ROI2D> capillaryRois = new ArrayList<ROI2D>();
+		for ( ROI2D roi : roiList ) {
+			if (!(roi instanceof ROI2DShape) || !roi.getName().contains("line")) 
+				continue;
+			if (roi instanceof ROI2DLine || roi instanceof ROI2DPolyLine)
+				capillaryRois.add(roi);
+		}
+		return capillaryRois;
+	}
+	
+	public  List<ROI2D> getGulps () {
+		List<ROI2D> roiList = seq.getROI2Ds();
+		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
+		List<ROI2D> gulpRois = new ArrayList<ROI2D>();
+		for ( ROI2D roi : roiList ) {
+			if (!(roi instanceof ROI2DShape) || !roi.getName().contains("gulp")) 
+				continue;
+			if (roi instanceof ROI2DLine || roi instanceof ROI2DPolyLine)
+				gulpRois.add(roi);
+		}
+		return gulpRois;
+	}
+	
+	public List<Cage> getCages () {
+		List<ROI2D> roiList = seq.getROI2Ds();
+		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
+		List<Cage> cageList = new ArrayList<Cage>();
+		for ( ROI2D roi : roiList ) {
+			String csName = roi.getName();
+			if (( csName.contains( "cage") 
+				|| csName.contains("Polygon2D")) 
+				&& ( roi instanceof ROI2DPolygon )) {
+				Cage cage = new Cage();
+				cage.cageLimitROI = roi;
+				cageList.add(cage);
+			}
+		}
+		return cageList;
 	}
 
 	@Override

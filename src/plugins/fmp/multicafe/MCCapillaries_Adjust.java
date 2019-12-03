@@ -23,7 +23,6 @@ import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.Line2DPlus;
-import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 
 
@@ -81,7 +80,7 @@ public class MCCapillaries_Adjust extends JPanel {
 		double [] sourceValues = Array1DUtil.arrayToDoubleArray(vinputImage.getDataXY(0), vinputImage.isSignedDataType());
 		
 		// loop through all lines
-		List <ROI2D> capillaryRois = ROI2DUtilities.getCapillariesFromSequence(seqCamData);
+		List <ROI2D> capillaryRois = seqCamData.getCapillaries();
 		for (ROI2D roi: capillaryRois) {
 			if (roi instanceof ROI2DLine) {
 				Line2D line = roisCenterLinetoCapillary(sourceValues, xwidth, (ROI2DLine) roi, jitter);
@@ -212,7 +211,7 @@ public class MCCapillaries_Adjust extends JPanel {
 			refLineUpper = new Line2D.Double (0, seqheight/3, seqwidth, seqheight/3);
 			refLineLower = new Line2D.Double (0, 2*seqheight/3, seqwidth, 2*seqheight/3);
 			
-			List <ROI2D> capillaryRois = ROI2DUtilities.getCapillariesFromSequence(seqCamData);
+			List <ROI2D> capillaryRois = seqCamData.getCapillaries();
 			Rectangle extRect = new Rectangle (capillaryRois.get(0).getBounds());
 			for (ROI2D roi: capillaryRois) {
 				Rectangle rect = roi.getBounds();

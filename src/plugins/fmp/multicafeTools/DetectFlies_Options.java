@@ -205,7 +205,7 @@ public BooleanMask2D findLargestComponent(ROI2DArea roiAll, int iroi) {
 		nbframes = (endFrame - startFrame +1)/analyzeStep +1;
 		
 		seqCamData.cages.clear();
-		seqCamData.cages.cageList = ROI2DUtilities.getCagesFromSequence(seqCamData);
+		seqCamData.cages.cageList = seqCamData.getCages();
 		cages = seqCamData.cages;
 		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageList);
 		rectangleAllCages = null;

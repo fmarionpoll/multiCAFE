@@ -36,6 +36,7 @@ import plugins.fmp.multicafeTools.OverlayTrapMouse;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
+import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
 
@@ -179,10 +180,20 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	public void updateCapillariesFromCamData(SequenceCamData seqCam) {
-		SequenceKymosUtils.transferCamDataROIStoKymo(seqCam, this);
+//		SequenceKymosUtils.transferCamDataROIStoKymo(seqCam, this);
+		getCamDataROIS (seqCam);
 		setStartStopStepToCapillaries();
 //		getStartStopStepFromCapillaries ();
 		return;
+	}
+	
+	public void getCamDataROIS (SequenceCamData seqCam) {
+		capillaries = new Capillaries();
+		List<ROI2D> listROISCap = seqCam.getCapillaries();
+		for (ROI2D roi:listROISCap) {
+			capillaries.capillariesArrayList.add(new Capillary((ROI2DShape)roi));
+		}
+		
 	}
 		
 	public void setStartStopStepToCapillaries () {

@@ -3,7 +3,6 @@ package plugins.fmp.multicafeTools;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,67 +12,14 @@ import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
 import plugins.fmp.multicafeSequence.Cage;
-import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
-import plugins.kernel.roi.roi2d.ROI2DPolygon;
-import plugins.kernel.roi.roi2d.ROI2DShape;
+
 
 
 public class ROI2DUtilities  {
 	
-	public static List<ROI2D> getCapillariesFromSequence (SequenceCamData seqCamData) {
-		if (seqCamData == null)
-			 return null;
-		
-		List<ROI2D> roiList = seqCamData.seq.getROI2Ds();
-		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
-		List<ROI2D> capillaryRois = new ArrayList<ROI2D>();
-		for ( ROI2D roi : roiList ) {
-			if (!(roi instanceof ROI2DShape) || !roi.getName().contains("line")) 
-				continue;
-			if (roi instanceof ROI2DLine || roi instanceof ROI2DPolyLine)
-				capillaryRois.add(roi);
-		}
-		return capillaryRois;
-	}
-	
-	public static List<ROI2D> getGulpsFromSequence (SequenceCamData seqCamData) {
-		if (seqCamData == null)
-			 return null;
-		
-		List<ROI2D> roiList = seqCamData.seq.getROI2Ds();
-		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
-		List<ROI2D> gulpRois = new ArrayList<ROI2D>();
-		for ( ROI2D roi : roiList ) {
-			if (!(roi instanceof ROI2DShape) || !roi.getName().contains("gulp")) 
-				continue;
-			if (roi instanceof ROI2DLine || roi instanceof ROI2DPolyLine)
-				gulpRois.add(roi);
-		}
-		return gulpRois;
-	}
-	
-	public static List<Cage> getCagesFromSequence (SequenceCamData seqCamData) {
-		if (seqCamData == null)
-			 return null;
-		
-		List<ROI2D> roiList = seqCamData.seq.getROI2Ds();
-		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
-		List<Cage> cageList = new ArrayList<Cage>();
-		for ( ROI2D roi : roiList ) {
-			String csName = roi.getName();
-			if (( csName.contains( "cage") 
-				|| csName.contains("Polygon2D")) 
-				&& ( roi instanceof ROI2DPolygon )) {
-				Cage cage = new Cage();
-				cage.cageLimitROI = roi;
-				cageList.add(cage);
-			}
-		}
-		return cageList;
-	}
+
 	
 	public static List<BooleanMask2D> getMask2DFromROIs (List<Cage> cageList) {
 		List<BooleanMask2D> cageMaskList = new ArrayList<BooleanMask2D>();
