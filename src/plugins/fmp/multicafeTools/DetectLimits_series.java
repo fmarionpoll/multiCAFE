@@ -48,7 +48,7 @@ public class DetectLimits_series extends Build_series implements Runnable {
 				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
 				detectCapillaryLevels(options, exp.seqKymos);
 				saveComputation(exp);
-				}
+			}
 		}
 		progressBar.close();
 		threadRunning = false;

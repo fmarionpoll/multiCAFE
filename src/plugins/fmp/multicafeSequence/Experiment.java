@@ -307,6 +307,12 @@ public class Experiment {
 		seqKymos.xmlLoadMCcapillaries(experimentFileName);
 	}
 	
+	public void loadExperimentDataForBuildKymos() {
+		xmlLoadExperiment();
+		seqCamData.loadSequence(experimentFileName) ;
+		seqKymos.xmlLoadMCcapillariesOnly(experimentFileName);
+	}
+	
 	public void saveExperimentMeasures() {
 		if (seqKymos != null) {
 			seqKymos.roisSaveEdits();

@@ -51,7 +51,7 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 				Experiment exp = options.expList.getExperiment(exp_index);
 //				System.out.println(exp.experimentFileName);
 				progressBar.updatePosition(exp_index-options.expList.index0);
-				exp.loadExperimentData();
+				exp.loadExperimentDataForBuildKymos();
 				initViewerCamData(exp);
 				options.seqCamData = exp.seqCamData;
 				options.seqKymos = exp.seqKymos;

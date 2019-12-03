@@ -425,6 +425,14 @@ public class SequenceKymos extends SequenceCamData  {
 		return flag;
 	}
 	
+	public boolean xmlLoadMCcapillariesOnly(String pathname) {
+		pathname = getCorrectPath(pathname);
+		if (pathname == null)
+			return false;
+		boolean flag = capillaries.xmlLoadCapillaries(pathname);
+		return flag;
+	}
+	
 	public boolean xmlLoadMCcapillaries(String pathname) {
 		pathname = getCorrectPath(pathname);
 		if (pathname == null)
