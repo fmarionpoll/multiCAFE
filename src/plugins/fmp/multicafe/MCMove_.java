@@ -28,11 +28,11 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	private static final long serialVersionUID = 3457738144388946607L;
 	
 	JTabbedPane 				tabsPane	= new JTabbedPane();
-	private MCMove_BuildROIs 	buildROIsTab= new MCMove_BuildROIs();
-	private MCMove_Detect1 		detectTab1 	= new MCMove_Detect1();
-	private MCMove_Detect2 		detectTab2 	= new MCMove_Detect2();
-	MCMove_File 				fileTab 	= new MCMove_File();
-	MCMove_Graphs 				graphicsTab = new MCMove_Graphs();
+	private MCMove_BuildROIs 	tabBuildROIs= new MCMove_BuildROIs();
+	private MCMove_Detect1 		tabDetect1 	= new MCMove_Detect1();
+	private MCMove_Detect2 		tabDetect2 	= new MCMove_Detect2();
+	MCMove_File 				tabFile 	= new MCMove_File();
+	MCMove_Graphs 				tabGraphics = new MCMove_Graphs();
 	
 	MultiCAFE parent0 = null;
 
@@ -48,25 +48,25 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 		GridLayout capLayout = new GridLayout(4, 1);
 		
-		buildROIsTab.init(capLayout, parent0);
-		buildROIsTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Cages", null, buildROIsTab, "Define cages using ROI polygons placed over each cage");
+		tabBuildROIs.init(capLayout, parent0);
+		tabBuildROIs.addPropertyChangeListener(this);
+		tabsPane.addTab("Cages", null, tabBuildROIs, "Define cages using ROI polygons placed over each cage");
 
-		detectTab1.init(capLayout, parent0);
-		detectTab1.addPropertyChangeListener(this);
-		tabsPane.addTab("Detect1", null, detectTab1, "Detect flies position using thresholding on image overlay");
+		tabDetect1.init(capLayout, parent0);
+		tabDetect1.addPropertyChangeListener(this);
+		tabsPane.addTab("Detect1", null, tabDetect1, "Detect flies position using thresholding on image overlay");
 		
-		detectTab2.init(capLayout, parent0);
-		detectTab2.addPropertyChangeListener(this);
-		tabsPane.addTab("Detect2", null, detectTab2, "Detect flies position using background subtraction");
+		tabDetect2.init(capLayout, parent0);
+		tabDetect2.addPropertyChangeListener(this);
+		tabsPane.addTab("Detect2", null, tabDetect2, "Detect flies position using background subtraction");
 		
-		graphicsTab.init(capLayout, parent0);		
-		graphicsTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Graphs", null, graphicsTab, "Display results as graphics");
+		tabGraphics.init(capLayout, parent0);		
+		tabGraphics.addPropertyChangeListener(this);
+		tabsPane.addTab("Graphs", null, tabGraphics, "Display results as graphics");
 
-		fileTab.init(capLayout, parent0);
-		fileTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Load/Save", null, fileTab, "Load/save cages and flies position");
+		tabFile.init(capLayout, parent0);
+		tabFile.addPropertyChangeListener(this);
+		tabsPane.addTab("Load/Save", null, tabFile, "Load/save cages and flies position");
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));
@@ -76,7 +76,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 			@Override 
 	        public void stateChanged(ChangeEvent e) {
 	            int itab = tabsPane.getSelectedIndex();
-	            detectTab2.imageOverlayCheckBox.setSelected(itab == 1);
+	            tabDetect2.imageOverlayCheckBox.setSelected(itab == 1);
 	        }
 	    });
 		
@@ -93,14 +93,14 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals("LOAD_DATA")) {
-			buildROIsTab.updateFromSequence();
+			tabBuildROIs.updateFromSequence();
 		}
 	}
 
 	boolean loadDefaultCages(Experiment exp) {
 		SequenceCamData seqCamData = exp.seqCamData;
 		String path = seqCamData.getDirectory();
-		boolean flag = fileTab.loadCages(path+File.separator+"drosotrack.xml");
+		boolean flag = tabFile.loadCages(path+File.separator+"drosotrack.xml");
 		return flag;
 	}
 	

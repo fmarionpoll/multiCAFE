@@ -43,9 +43,9 @@ public class MCSequence_Close  extends JPanel {
 	
 	void closeExp(Experiment exp) {
 		if (exp != null) {
-			parent0.sequencePane.infosTab.getExperimentInfosFromDialog(exp);
-			parent0.sequencePane.intervalsTab.getAnalyzeFrameFromDialog (exp);
-			parent0.kymosPane.createTab.getBuildKymosParametersFromDialog(exp);
+			parent0.paneSequence.tabInfos.getExperimentInfosFromDialog(exp);
+			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog (exp);
+			parent0.paneKymos.tabCreate.getBuildKymosParametersFromDialog(exp);
 			exp.xmlSaveExperiment();
 
 			SequenceKymos seqKymos = exp.seqKymos;
@@ -60,9 +60,9 @@ public class MCSequence_Close  extends JPanel {
 			}
 		}
 		
-		parent0.movePane.graphicsTab.closeAll();
-		parent0.levelsPane.graphsTab.closeAll();
-		parent0.kymosPane.displayTab.kymographNamesComboBox.removeAllItems();
+		parent0.paneMove.tabGraphics.closeAll();
+		parent0.paneLevels.tabGraphs.closeAll();
+		parent0.paneKymos.tabDisplay.kymographNamesComboBox.removeAllItems();
 	}
 
 }

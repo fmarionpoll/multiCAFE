@@ -28,12 +28,12 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	ExperimentList	expList 		= new ExperimentList();
 	int				currentExperimentIndex	= -1;
 	
-	MCSequence_ 	sequencePane 	= new MCSequence_();
-	MCCapillaries_ 	capillariesPane	= new MCCapillaries_();
-	MCKymos_		kymosPane		= new MCKymos_();
-	MCLevels_ 		levelsPane 		= new MCLevels_();
-	MCMove_ 		movePane 		= new MCMove_();
-	MCExcel_		excelPane		= new MCExcel_();
+	MCSequence_ 	paneSequence 	= new MCSequence_();
+	MCCapillaries_ 	paneCapillaries	= new MCCapillaries_();
+	MCKymos_		paneKymos		= new MCKymos_();
+	MCLevels_ 		paneLevels 		= new MCLevels_();
+	MCMove_ 		paneMove 		= new MCMove_();
+	MCExcel_		paneExcel		= new MCExcel_();
 	
 	//-------------------------------------------------------------------
 	
@@ -43,23 +43,23 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		mainFrame.setLayout(new BorderLayout());
 		mainFrame.add(mainPanel, BorderLayout.CENTER);
 
-		sequencePane.init(mainPanel, "SOURCE DATA", this);
-		sequencePane.addPropertyChangeListener(this);
+		paneSequence.init(mainPanel, "SOURCE DATA", this);
+		paneSequence.addPropertyChangeListener(this);
 
-		capillariesPane.init(mainPanel, "CAPILLARIES", this);
-		capillariesPane.addPropertyChangeListener(this);	
+		paneCapillaries.init(mainPanel, "CAPILLARIES", this);
+		paneCapillaries.addPropertyChangeListener(this);	
 		
-		kymosPane.init(mainPanel, "KYMOGRAPHS", this);
-		kymosPane.addPropertyChangeListener(this);
+		paneKymos.init(mainPanel, "KYMOGRAPHS", this);
+		paneKymos.addPropertyChangeListener(this);
 		
-		levelsPane.init(mainPanel, "MEASURE TOP LEVEL & GULPS", this);
-		levelsPane.addPropertyChangeListener(this);
+		paneLevels.init(mainPanel, "MEASURE TOP LEVEL & GULPS", this);
+		paneLevels.addPropertyChangeListener(this);
 		
-		movePane.init(mainPanel, "DETECT FLIES", this);
-		movePane.addPropertyChangeListener(this);
+		paneMove.init(mainPanel, "DETECT FLIES", this);
+		paneMove.addPropertyChangeListener(this);
 		
-		excelPane.init(mainPanel, "MEASURES -> EXCEL FILE (XLSX)", this);
-		excelPane.addPropertyChangeListener(this);
+		paneExcel.init(mainPanel, "MEASURES -> EXCEL FILE (XLSX)", this);
+		paneExcel.addPropertyChangeListener(this);
 		
 		mainFrame.pack();
 		mainFrame.center();
@@ -91,17 +91,17 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if (arg0.getPropertyName().equals("CAPILLARIES_OPEN")) {
 			Experiment exp = expList.getExperiment(currentExperimentIndex);
-			sequencePane.intervalsTab.setAnalyzeFrameToDialog(exp);
-			kymosPane.createTab.setBuildKymosParametersToDialog(exp);
+			paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
+			paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
 		}
 		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
-			kymosPane.displayTab.displayUpdateOnSwingThread();
-			kymosPane.displayTab.viewKymosCheckBox.setSelected(true);
+			paneKymos.tabDisplay.displayUpdateOnSwingThread();
+			paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 		}
 		else if (arg0.getPropertyName() .equals("SAVE_KYMOSMEASURES")) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				Experiment exp = expList.getExperiment(currentExperimentIndex);
-				levelsPane.fileTab.saveKymosMeasures(exp);
+				paneLevels.tabFile.saveKymosMeasures(exp);
 			}});
 		}
 	} 
@@ -113,19 +113,21 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			exp = new Experiment();
 			currentExperimentIndex = expList.addExperiment(exp);
 			exp.seqCamData = new SequenceCamData();
-			if (null != exp.seqCamData.loadSequence(filename)) {
-				exp.xmlLoadExperiment();
-			}
 		} else {
 			if (currentExperimentIndex > expList.experimentList.size()-1)
 				currentExperimentIndex = expList.experimentList.size()-1;
 			exp = expList.getExperiment(currentExperimentIndex);
-			exp.xmlLoadExperiment();
-			exp.seqCamData = exp.openSequenceCamData(filename);
-		}		
+		}
+		
+		exp.xmlLoadExperiment();
+		exp.seqCamData = exp.openSequenceCamData(filename);
 		if (exp.seqCamData.seq != null) {
 			addSequence(exp.seqCamData.seq);
 			exp.seqCamData.seq.getFirstViewer().addListener( this );
+		}
+		else
+		{
+			System.out.println("seq of seqcamdata is null!");
 		}
 		return exp.seqCamData;
 	}
@@ -133,8 +135,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	void updateDialogsAfterOpeningSequenceCam(SequenceCamData seqCamData) {
 		if (seqCamData == null)
 			return;
-		sequencePane.transferSequenceCamDataToDialogs(seqCamData);
-		levelsPane.transferSequenceCamDataToDialogs(seqCamData);		
+		paneSequence.transferSequenceCamDataToDialogs(seqCamData);
+		paneLevels.transferSequenceCamDataToDialogs(seqCamData);		
 	}
 
 	void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
@@ -142,23 +144,23 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (exp == null)
 			return;
 		ProgressFrame progress = new ProgressFrame("load descriptors");
-		capillariesPane.loadCapillaries_();
+		paneCapillaries.loadCapillaries_();
 		progress.close();
 		
 		if (loadCapillaries) {
 			progress = new ProgressFrame("load capillary measures");
-			levelsPane.fileTab.loadKymosMeasures(exp);
+			paneLevels.tabFile.loadKymosMeasures(exp);
 			progress.close();
 		}
 
 		if (loadKymographs) {
 			progress = new ProgressFrame("load kymographs");
-			kymosPane.displayTab.viewKymosCheckBox.setSelected(true);
-			kymosPane.fileTab.loadDefaultKymos(exp);
+			paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
+			paneKymos.tabFile.loadDefaultKymos(exp);
 			progress.close();
-			if (sequencePane.openTab.graphsCheckBox.isSelected())
+			if (paneSequence.tabOpen.graphsCheckBox.isSelected())
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
-				    	levelsPane.graphsTab.xyDisplayGraphs();
+				    	paneLevels.tabGraphs.xyDisplayGraphs();
 				}});
 		}
 		
@@ -167,8 +169,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			exp.loadDrosotrack();
 			progress.close();
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
-				movePane.graphicsTab.moveCheckbox.setEnabled(true);
-				movePane.graphicsTab.displayResultsButton.setEnabled(true);
+				paneMove.tabGraphics.moveCheckbox.setEnabled(true);
+				paneMove.tabGraphics.displayResultsButton.setEnabled(true);
 			}});
 		}
 		progress.close();

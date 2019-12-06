@@ -26,10 +26,10 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 	 */
 	private static final long serialVersionUID = 1122367183829360097L;
 
-	JTabbedPane 			tabsPane 		= new JTabbedPane();
-	MCKymos_Create 	createTab 		= new MCKymos_Create();
-	MCKymos_Display	displayTab 		= new MCKymos_Display();
-	MCKymos_File 		fileTab 		= new MCKymos_File();
+	JTabbedPane 	tabsPane 		= new JTabbedPane();
+	MCKymos_Create 	tabCreate 		= new MCKymos_Create();
+	MCKymos_Display	tabDisplay 		= new MCKymos_Display();
+	MCKymos_File 	tabFile 		= new MCKymos_File();
 	
 	private MultiCAFE parent0 = null;
 
@@ -42,17 +42,17 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 		GridLayout capLayout = new GridLayout(3, 1);
 		
-		createTab.init(capLayout, parent0);
-		createTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Build kymos", null, createTab, "Build kymographs from ROI lines placed over capillaries");
+		tabCreate.init(capLayout, parent0);
+		tabCreate.addPropertyChangeListener(this);
+		tabsPane.addTab("Build kymos", null, tabCreate, "Build kymographs from ROI lines placed over capillaries");
 		
-		displayTab.init(capLayout, parent0);
-		displayTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Display", null, displayTab, "Display options of data & kymographs");
+		tabDisplay.init(capLayout, parent0);
+		tabDisplay.addPropertyChangeListener(this);
+		tabsPane.addTab("Display", null, tabDisplay, "Display options of data & kymographs");
 
-		fileTab.init(capLayout, parent0);
-		fileTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Load/Save", null, fileTab, "Load/Save xml file with capillaries descriptors");
+		tabFile.init(capLayout, parent0);
+		tabFile.addPropertyChangeListener(this);
+		tabsPane.addTab("Load/Save", null, tabFile, "Load/Save xml file with capillaries descriptors");
 
 		tabsPane.addChangeListener(this);
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -71,13 +71,13 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("KYMOS_OPEN")) {
-			displayTab.viewKymosCheckBox.setSelected(true);
+			tabDisplay.viewKymosCheckBox.setSelected(true);
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("KYMOS_CREATE")) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			displayTab.viewKymosCheckBox.setSelected(true);
-			displayTab.transferCapillaryNamesToComboBox(exp.seqKymos.capillaries.capillariesArrayList);
+			tabDisplay.viewKymosCheckBox.setSelected(true);
+			tabDisplay.transferCapillaryNamesToComboBox(exp.seqKymos.capillaries.capillariesArrayList);
 			tabsPane.setSelectedIndex(2);
 		
 		}
@@ -99,7 +99,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			if (v != null)
 				v.toFront();
 		} else if (iselected == 1) {
-			parent0.kymosPane.displayTab.displayUpdateOnSwingThread();
+			parent0.paneKymos.tabDisplay.displayUpdateOnSwingThread();
 		}
 	}
 	

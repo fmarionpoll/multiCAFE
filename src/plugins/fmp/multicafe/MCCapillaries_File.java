@@ -75,10 +75,10 @@ public class MCCapillaries_File extends JPanel {
 	boolean saveCapillaries(Experiment exp) {
 		SequenceCamData seqCamData = exp.seqCamData;
 		SequenceKymos seqKymos = exp.seqKymos;
-		parent0.capillariesPane.getCapillariesInfos(seqKymos.capillaries);
-		parent0.sequencePane.infosTab.getExperimentInfosFromDialog(exp);
-		parent0.sequencePane.intervalsTab.getAnalyzeFrameFromDialog (exp);
-		parent0.kymosPane.createTab.getBuildKymosParametersFromDialog(exp);
+		parent0.paneCapillaries.getCapillariesInfos(seqKymos.capillaries);
+		parent0.paneSequence.tabInfos.getExperimentInfosFromDialog(exp);
+		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog (exp);
+		parent0.paneKymos.tabCreate.getBuildKymosParametersFromDialog(exp);
 		seqKymos.updateCapillariesFromCamData(seqCamData);
 		return seqKymos.xmlSaveMCcapillaries(seqCamData.getDirectory());
 	}

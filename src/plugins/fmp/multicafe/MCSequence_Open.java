@@ -97,8 +97,8 @@ public class MCSequence_Open extends JPanel {
 		openButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-            	if(parent0.sequencePane.infosTab.expListComboBox.getItemCount() > 0 )
-            		parent0.sequencePane.closeTab.closeAll();
+            	if(parent0.paneSequence.tabInfos.expListComboBox.getItemCount() > 0 )
+            		parent0.paneSequence.tabClose.closeAll();
             	firePropertyChange("SEQ_OPENFILE", false, true);
             }});
 		addButton.addActionListener(new ActionListener()  {

@@ -165,7 +165,7 @@ public class MCLevels_Edit  extends JPanel {
 	void adjustDimensions () {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (!exp.checkStepConsistency()) {
-			parent0.kymosPane.createTab.setBuildKymosParametersToDialog(exp);
+			parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
 		}
 		
 		int imageSize = exp.seqKymos.imageWidthMax;

@@ -30,9 +30,9 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = -4296207607692017074L;
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
-	private MCExcel_Options	optionsTab		= new MCExcel_Options();
-	private MCExcel_Kymos	kymosTab		= new MCExcel_Kymos();
-	private MCExcel_Move 	moveTab  		= new MCExcel_Move();
+	private MCExcel_Options	tabOptions		= new MCExcel_Options();
+	private MCExcel_Kymos	tabKymos		= new MCExcel_Kymos();
+	private MCExcel_Move 	tabMove  		= new MCExcel_Move();
 	
 	private MultiCAFE parent0 = null;
 
@@ -46,17 +46,17 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 		GridLayout capLayout = new GridLayout(3, 2);
 		
-		optionsTab.init(capLayout);
-		tabsPane.addTab("Common options", null, optionsTab, "Define common options");
-		optionsTab.addPropertyChangeListener(this);
+		tabOptions.init(capLayout);
+		tabsPane.addTab("Common options", null, tabOptions, "Define common options");
+		tabOptions.addPropertyChangeListener(this);
 		
-		kymosTab.init(capLayout);
-		tabsPane.addTab("Capillaries", null, kymosTab, "Export capillary levels to file");
-		kymosTab.addPropertyChangeListener(this);
+		tabKymos.init(capLayout);
+		tabsPane.addTab("Capillaries", null, tabKymos, "Export capillary levels to file");
+		tabKymos.addPropertyChangeListener(this);
 		
-		moveTab.init(capLayout);
-		tabsPane.addTab("Move", null, moveTab, "Export fly positions to file");
-		moveTab.addPropertyChangeListener(this);
+		tabMove.init(capLayout);
+		tabsPane.addTab("Move", null, tabMove, "Export fly positions to file");
+		tabMove.addPropertyChangeListener(this);
 		
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));
 		tabsPane.setSelectedIndex(0);
@@ -110,15 +110,15 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	}
 	
 	private void updateParametersCurrentExperiment(Experiment exp) {
-		parent0.capillariesPane.getCapillariesInfos(exp.seqKymos.capillaries);
-		parent0.sequencePane.infosTab.getExperimentInfosFromDialog(exp);
+		parent0.paneCapillaries.getCapillariesInfos(exp.seqKymos.capillaries);
+		parent0.paneSequence.tabInfos.getExperimentInfosFromDialog(exp);
 	}
 	
 	private XLSExportOptions getMoveOptions() {
 		XLSExportOptions options = new XLSExportOptions();
-		options.xyCenter 		= moveTab.xyCenterCheckBox.isSelected(); 
-		options.distance 		= moveTab.distanceCheckBox.isSelected();
-		options.alive 			= moveTab.aliveCheckBox.isSelected(); 
+		options.xyCenter 		= tabMove.xyCenterCheckBox.isSelected(); 
+		options.distance 		= tabMove.distanceCheckBox.isSelected();
+		options.alive 			= tabMove.aliveCheckBox.isSelected(); 
 		getCommonOptions(options);
 		return options;
 	}
@@ -126,33 +126,33 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	private XLSExportOptions getCapillariesOptions() {
 		XLSExportOptions options = new XLSExportOptions();
 		
-		options.topLevel 		= kymosTab.topLevelCheckBox.isSelected(); 
-		options.topLevelDelta   = kymosTab.topLevelDeltaCheckBox.isSelected();
-		options.bottomLevel 	= kymosTab.bottomLevelCheckBox.isSelected(); 
-		options.derivative 		= kymosTab.derivativeCheckBox.isSelected(); 
-		options.consumption 	= kymosTab.consumptionCheckBox.isSelected(); 
-		options.sum 			= kymosTab.sumCheckBox.isSelected(); 
-		options.t0 				= kymosTab.t0CheckBox.isSelected();
-		options.onlyalive 		= kymosTab.onlyaliveCheckBox.isSelected();
+		options.topLevel 		= tabKymos.topLevelCheckBox.isSelected(); 
+		options.topLevelDelta   = tabKymos.topLevelDeltaCheckBox.isSelected();
+		options.bottomLevel 	= tabKymos.bottomLevelCheckBox.isSelected(); 
+		options.derivative 		= tabKymos.derivativeCheckBox.isSelected(); 
+		options.consumption 	= tabKymos.consumptionCheckBox.isSelected(); 
+		options.sum 			= tabKymos.sumCheckBox.isSelected(); 
+		options.t0 				= tabKymos.t0CheckBox.isSelected();
+		options.onlyalive 		= tabKymos.onlyaliveCheckBox.isSelected();
 
 		getCommonOptions(options);
 		return options;
 	}
 	
 	private void getCommonOptions(XLSExportOptions options) {
-		options.pivot 			= optionsTab.pivotCheckBox.isSelected();
+		options.pivot 			= tabOptions.pivotCheckBox.isSelected();
 		options.transpose 		= true;
 		if (!options.pivot) 
-			options.transpose 	= optionsTab.transposeCheckBox.isSelected();
-		options.pivotBinStep = (int) optionsTab.pivotBinStep.getValue();
-		options.collateSeries 	= optionsTab.collateSeriesCheckBox.isSelected();
-		options.padIntervals 	= optionsTab.padIntervalsCheckBox.isSelected();
+			options.transpose 	= tabOptions.transposeCheckBox.isSelected();
+		options.pivotBinStep = (int) tabOptions.pivotBinStep.getValue();
+		options.collateSeries 	= tabOptions.collateSeriesCheckBox.isSelected();
+		options.padIntervals 	= tabOptions.padIntervalsCheckBox.isSelected();
 		
-		options.absoluteTime	= optionsTab.absoluteTimeCheckBox.isSelected();
-		options.exportAllFiles 	= optionsTab.exportAllFilesCheckBox.isSelected();
+		options.absoluteTime	= tabOptions.absoluteTimeCheckBox.isSelected();
+		options.exportAllFiles 	= tabOptions.exportAllFilesCheckBox.isSelected();
 		options.expList = new ExperimentList(); 
-		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(options.expList, true);		
-		if (optionsTab.exportAllFilesCheckBox.isSelected()) {
+		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(options.expList, true);		
+		if (tabOptions.exportAllFilesCheckBox.isSelected()) {
 			options.firstExp 	= 0;
 			options.lastExp 	= options.expList.experimentList.size() - 1;
 		} else {

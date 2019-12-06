@@ -165,7 +165,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 		detectLimitsThread = new DetectLimits_series();
 		
 		DetectLimits_Options options= detectLimitsThread.options;
-		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList, true);
+		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, true);
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.currentExperimentIndex;
 		options.expList.index1 = options.expList.index0;
@@ -177,7 +177,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();
 		options.detectAllImages 	= allImagesCheckBox.isSelected();
-		options.firstImage 			= parent0.kymosPane.displayTab.kymographNamesComboBox.getSelectedIndex();
+		options.firstImage 			= parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
 		options.analyzePartOnly		= partCheckBox.isSelected();
 		options.startPixel			= (int) startSpinner.getValue();
 		options.endPixel			= (int) endSpinner.getValue();
@@ -208,8 +208,8 @@ public class MCLevels_DetectLimits  extends JPanel {
 				e1.printStackTrace();
 			}
 		}
-		parent0.kymosPane.displayTab.viewKymosCheckBox.setSelected(true);
-		parent0.kymosPane.displayTab.displayViews (true);
+		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
+		parent0.paneKymos.tabDisplay.displayViews (true);
 		firePropertyChange("KYMO_DETECT_TOP", false, true);
 		detectButton.setText("Detect");
 	}

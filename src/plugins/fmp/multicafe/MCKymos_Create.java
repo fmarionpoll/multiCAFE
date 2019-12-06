@@ -109,7 +109,7 @@ public class MCKymos_Create extends JPanel {
 		buildKymographsThread2 = new BuildKymographs_series();	
 		BuildKymographs_Options options = buildKymographsThread2.options;
 		
-		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList, true);
+		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, true);
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.currentExperimentIndex;
 		options.expList.index1 = options.expList.index0;
@@ -127,8 +127,8 @@ public class MCKymos_Create extends JPanel {
 		setStartButton(false);
 		currentExp = parent0.currentExperimentIndex;
 		Experiment exp = parent0.expList.getExperiment(currentExp);
-		exp.seqKymos.seq.close();
-		exp.seqCamData.seq.close();
+		parent0.paneSequence.tabClose.closeExp(exp);
+		
 		series_kymosBuildKymographs();	
 	}
 	
@@ -141,8 +141,8 @@ public class MCKymos_Create extends JPanel {
 				e1.printStackTrace();
 			}
 		}
-		parent0.kymosPane.displayTab.viewKymosCheckBox.setSelected(true);
-		parent0.kymosPane.displayTab.displayViews (true);
+		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
+		parent0.paneKymos.tabDisplay.displayViews (true);
 	}
 	
 	private void series_resetUserInterface() {
@@ -176,7 +176,7 @@ public class MCKymos_Create extends JPanel {
 	}
 	
 	private void updateStepInXMLExperiments(int step ) {
-		parent0.sequencePane.infosTab.transferExperimentNamesToExpList(parent0.expList, true);
+		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, true);
 		int i0 = 0;
 		int i1 = parent0.expList.experimentList.size();
 		if (!ALLCheckBox.isSelected()) {

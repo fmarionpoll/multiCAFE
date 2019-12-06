@@ -28,11 +28,11 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private static final long serialVersionUID = -6826269677524125173L;
 	
 	private JTabbedPane 	tabsPane 	= new JTabbedPane();
-	MCSequence_Open 		openTab 	= new MCSequence_Open();
-	MCSequence_Infos		infosTab	= new MCSequence_Infos();
-	MCSequence_Intervals	intervalsTab = new MCSequence_Intervals();
-	MCSequence_Display		displayTab 	= new MCSequence_Display();
-	MCSequence_Close 		closeTab 	= new MCSequence_Close();
+	MCSequence_Open 		tabOpen 	= new MCSequence_Open();
+	MCSequence_Infos		tabInfos	= new MCSequence_Infos();
+	MCSequence_Intervals	tabIntervals= new MCSequence_Intervals();
+	MCSequence_Display		tabDisplay 	= new MCSequence_Display();
+	MCSequence_Close 		tabClose 	= new MCSequence_Close();
 	private MultiCAFE 		parent0 	= null;
 	
 	
@@ -47,25 +47,25 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 		GridLayout capLayout = new GridLayout(3, 1);
 		
-		openTab.init(capLayout, parent0);
-		tabsPane.addTab("Open/Add", null, openTab, "Open one or several stacks of .jpg files");
-		openTab.addPropertyChangeListener(this);
+		tabOpen.init(capLayout, parent0);
+		tabsPane.addTab("Open/Add", null, tabOpen, "Open one or several stacks of .jpg files");
+		tabOpen.addPropertyChangeListener(this);
 		
-		infosTab.init(capLayout, parent0);
-		tabsPane.addTab("Infos", null, infosTab, "Define infos for this experiment/box");
-		infosTab.addPropertyChangeListener(this);
+		tabInfos.init(capLayout, parent0);
+		tabsPane.addTab("Infos", null, tabInfos, "Define infos for this experiment/box");
+		tabInfos.addPropertyChangeListener(this);
 		
-		intervalsTab.init(capLayout);
-		tabsPane.addTab("Intervals", null, intervalsTab, "Browse and analysis parameters");
-		intervalsTab.addPropertyChangeListener(this);
+		tabIntervals.init(capLayout);
+		tabsPane.addTab("Intervals", null, tabIntervals, "Browse and analysis parameters");
+		tabIntervals.addPropertyChangeListener(this);
 
-		displayTab.init(capLayout, parent0);
-		tabsPane.addTab("Display", null, displayTab, "Display ROIs");
-		displayTab.addPropertyChangeListener(this);
+		tabDisplay.init(capLayout, parent0);
+		tabsPane.addTab("Display", null, tabDisplay, "Display ROIs");
+		tabDisplay.addPropertyChangeListener(this);
 
-		closeTab.init(capLayout, parent0);
-		tabsPane.addTab("Close", null, closeTab, "Close file and associated windows");
-		closeTab.addPropertyChangeListener(this);
+		tabClose.init(capLayout, parent0);
+		tabsPane.addTab("Close", null, tabClose, "Close file and associated windows");
+		tabClose.addPropertyChangeListener(this);
 
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));
@@ -89,7 +89,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			SequenceCamData seqCamData = parent0.openSequenceCam(null);
 			if (seqCamData != null && seqCamData.seq != null) {
 				parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
-				infosTab.expListComboBox.removeAllItems();
+				tabInfos.expListComboBox.removeAllItems();
 				if (addSequenceCamToCombo()) {
 					loadMeasuresAndKymos();
 					tabsPane.setSelectedIndex(1);
@@ -103,7 +103,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				if (addSequenceCamToCombo()) {
 					parent0.updateDialogsAfterOpeningSequenceCam(exp.seqCamData);
 					ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-		        		parent0.sequencePane.closeTab.closeExp(exp); //saveAndClose(exp);
+		        		parent0.paneSequence.tabClose.closeExp(exp); //saveAndClose(exp);
 		    		}});
 				}
 			}
@@ -111,34 +111,34 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		else if (event.getPropertyName().equals("UPDATE")) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			updateViewerForSequenceCam(exp.seqCamData);
-			intervalsTab.getAnalyzeFrameFromDialog(exp);
-			parent0.kymosPane.createTab.getBuildKymosParametersFromDialog(exp);
+			tabIntervals.getAnalyzeFrameFromDialog(exp);
+			parent0.paneKymos.tabCreate.getBuildKymosParametersFromDialog(exp);
 		}
 
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) {
 			tabsPane.setSelectedIndex(0);
-			infosTab.expListComboBox.removeAllItems();
+			tabInfos.expListComboBox.removeAllItems();
 		}
 		else if (event.getPropertyName().equals("SEARCH_CLOSED")) {
-			int index = infosTab.expListComboBox.getSelectedIndex();
+			int index = tabInfos.expListComboBox.getSelectedIndex();
 			if (index < 0)
 				index = 0;
-			infosTab.disableChangeFile = true;
-			for (String name: openTab.selectedNames) {
+			tabInfos.disableChangeFile = true;
+			for (String name: tabOpen.selectedNames) {
 				 addSequenceCamToCombo(name);
 			}
-			openTab.selectedNames.clear();
-			if (infosTab.expListComboBox.getItemCount() > 0) {
-				infosTab.expListComboBox.setSelectedIndex(index);
-				infosTab.updateBrowseInterface();
-				infosTab.disableChangeFile = false;
+			tabOpen.selectedNames.clear();
+			if (tabInfos.expListComboBox.getItemCount() > 0) {
+				tabInfos.expListComboBox.setSelectedIndex(index);
+				tabInfos.updateBrowseInterface();
+				tabInfos.disableChangeFile = false;
 				openSequenceCamFromCombo();
 			}
 		}
 	}
 	
 	private void openSequenceCamFromCombo() {
-		SequenceCamData seqCamData = parent0.openSequenceCam((String) infosTab.expListComboBox.getSelectedItem());
+		SequenceCamData seqCamData = parent0.openSequenceCam((String) tabInfos.expListComboBox.getSelectedItem());
 		parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 		loadMeasuresAndKymos();
 		tabsPane.setSelectedIndex(1);
@@ -147,17 +147,17 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private int addSequenceCamToCombo(String strItem) {
 		int item = findIndexItemInCombo(strItem);
 		if(item < 0) { 
-			infosTab.expListComboBox.addItem(strItem);
+			tabInfos.expListComboBox.addItem(strItem);
 			item = findIndexItemInCombo(strItem);
 		}
 		return item;
 	}
 	
 	private int findIndexItemInCombo(String strItem) {
-		int nitems = infosTab.expListComboBox.getItemCount();
+		int nitems = tabInfos.expListComboBox.getItemCount();
 		int item = -1;
 		for (int i=0; i < nitems; i++) {
-			if (strItem.equalsIgnoreCase(infosTab.expListComboBox.getItemAt(i))) {
+			if (strItem.equalsIgnoreCase(tabInfos.expListComboBox.getItemAt(i))) {
 				item = i;
 				break;
 			}
@@ -175,7 +175,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		String strItem = Paths.get(filename).toString();
 		if (strItem != null) {
 			addSequenceCamToCombo(strItem);
-			infosTab.expListComboBox.setSelectedItem(strItem);
+			tabInfos.expListComboBox.setSelectedItem(strItem);
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", strItem);
 		}
@@ -195,17 +195,17 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
-		intervalsTab.endFrameJSpinner.setValue((int)seqCamData.analysisEnd);
+		tabIntervals.endFrameJSpinner.setValue((int)seqCamData.analysisEnd);
 		updateViewerForSequenceCam(seqCamData);
 	}
 
 	void loadMeasuresAndKymos() {
 		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
 			parent0.loadPreviousMeasures(
-					openTab.isCheckedLoadPreviousProfiles(), 
-					openTab.isCheckedLoadKymographs(),
-					openTab.isCheckedLoadCages(),
-					openTab.isCheckedLoadMeasures());
+					tabOpen.isCheckedLoadPreviousProfiles(), 
+					tabOpen.isCheckedLoadKymographs(),
+					tabOpen.isCheckedLoadCages(),
+					tabOpen.isCheckedLoadMeasures());
 		}});
 
 	}

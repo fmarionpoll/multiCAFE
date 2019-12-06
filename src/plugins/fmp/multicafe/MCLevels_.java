@@ -21,12 +21,12 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -7339633966002954720L;
-	private JTabbedPane 	tabsPane 	= new JTabbedPane();
-	MCLevels_File 			fileTab 	= new MCLevels_File();
-	MCLevels_DetectLimits 	detectLimitsTab = new MCLevels_DetectLimits();
-	MCLevels_DetectGulps 	detectGulpsTab 	= new MCLevels_DetectGulps();
-	MCLevels_Edit			editTab		= new MCLevels_Edit();
-	MCLevels_Graphs 		graphsTab 	= new MCLevels_Graphs();
+	private JTabbedPane 	tabsPane 		= new JTabbedPane();
+	MCLevels_File 			tabFile 		= new MCLevels_File();
+	MCLevels_DetectLimits 	tabDetectLimits = new MCLevels_DetectLimits();
+	MCLevels_DetectGulps 	tabDetectGulps 	= new MCLevels_DetectGulps();
+	MCLevels_Edit			tabEdit			= new MCLevels_Edit();
+	MCLevels_Graphs 		tabGraphs 		= new MCLevels_Graphs();
 
 	
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
@@ -39,28 +39,28 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 
 		GridLayout capLayout = new GridLayout(3, 1);
 		
-		detectLimitsTab.init(capLayout, parent0);
-		detectLimitsTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Limits", null, detectLimitsTab, "Find limits of the columns of liquid");
+		tabDetectLimits.init(capLayout, parent0);
+		tabDetectLimits.addPropertyChangeListener(this);
+		tabsPane.addTab("Limits", null, tabDetectLimits, "Find limits of the columns of liquid");
 		
-		detectGulpsTab.init(capLayout, parent0);	
-		tabsPane.addTab("Gulps", null, detectGulpsTab, "Detect gulps");
-		detectGulpsTab.addPropertyChangeListener(this);
+		tabDetectGulps.init(capLayout, parent0);	
+		tabsPane.addTab("Gulps", null, tabDetectGulps, "Detect gulps");
+		tabDetectGulps.addPropertyChangeListener(this);
 		
-		editTab.init(capLayout, parent0);
-		editTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Edit", null, editTab, "Edit Rois / measures");
+		tabEdit.init(capLayout, parent0);
+		tabEdit.addPropertyChangeListener(this);
+		tabsPane.addTab("Edit", null, tabEdit, "Edit Rois / measures");
 		
-		graphsTab.init(capLayout, parent0);
-		graphsTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Graphs", null, graphsTab, "Display results as a graph");
+		tabGraphs.init(capLayout, parent0);
+		tabGraphs.addPropertyChangeListener(this);
+		tabsPane.addTab("Graphs", null, tabGraphs, "Display results as a graph");
 		
-		fileTab.init(capLayout, parent0);
-		fileTab.addPropertyChangeListener(this);
-		tabsPane.addTab("Load/Save", null, fileTab, "Load/Save kymographs");
+		tabFile.init(capLayout, parent0);
+		tabFile.addPropertyChangeListener(this);
+		tabsPane.addTab("Load/Save", null, tabFile, "Load/Save kymographs");
 						
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));
-		detectLimitsTab.transformForLevelsComboBox.setSelectedItem(TransformOp.G2MINUS_RB);
+		tabDetectLimits.transformForLevelsComboBox.setSelectedItem(TransformOp.G2MINUS_RB);
 		tabsPane.setSelectedIndex(0);
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() {
@@ -90,9 +90,9 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
-		detectLimitsTab.startSpinner.setValue((int)seqCamData.analysisStart);
-		detectLimitsTab.endSpinner.setValue((int)seqCamData.analysisEnd);
-		detectGulpsTab.startSpinner.setValue((int)seqCamData.analysisStart);
-		detectGulpsTab.endSpinner.setValue((int)seqCamData.analysisEnd);
+		tabDetectLimits.startSpinner.setValue((int)seqCamData.analysisStart);
+		tabDetectLimits.endSpinner.setValue((int)seqCamData.analysisEnd);
+		tabDetectGulps.startSpinner.setValue((int)seqCamData.analysisStart);
+		tabDetectGulps.endSpinner.setValue((int)seqCamData.analysisEnd);
 	}
 }
