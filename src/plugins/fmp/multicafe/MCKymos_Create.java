@@ -109,7 +109,7 @@ public class MCKymos_Create extends JPanel {
 		buildKymographsThread2 = new BuildKymographs_series();	
 		BuildKymographs_Options options = buildKymographsThread2.options;
 		
-		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, true);
+		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, false);
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.currentExperimentIndex;
 		options.expList.index1 = options.expList.index0;
