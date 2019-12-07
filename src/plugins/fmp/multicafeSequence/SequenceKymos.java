@@ -188,7 +188,7 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	public void getCamDataROIS (SequenceCamData seqCam) {
-		capillaries = new Capillaries();
+		capillaries.capillariesArrayList.clear();
 		List<ROI2D> listROISCap = seqCam.getCapillaries();
 		for (ROI2D roi:listROISCap) {
 			capillaries.capillariesArrayList.add(new Capillary((ROI2DShape)roi));
@@ -246,7 +246,6 @@ public class SequenceKymos extends SequenceCamData  {
 		boolean flag = (myListOfFileNames.size() > 0);
 		if (!flag)
 			return flag;
-		// where do we load capillariesDescription?
 		
 		loadSequenceFromList(myListOfFileNames, true);
 		if (isInterrupted_loadImages) {

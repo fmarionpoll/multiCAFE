@@ -24,7 +24,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE analysis 16-Nov-2019", true, true, true, true);
+	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE analysis 07-Dec-2019", true, true, true, true);
 	ExperimentList	expList 		= new ExperimentList();
 	int				currentExperimentIndex	= -1;
 	
@@ -106,14 +106,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 	} 
 	
-	void openExperiment(Experiment exp) {
-		exp.xmlLoadExperiment();
-		exp.seqCamData = exp.openSequenceCamData(exp.experimentFileName);
-		addSequence(exp.seqCamData.seq);
-		exp.seqCamData.seq.getFirstViewer().addListener( this );
-		paneSequence.loadMeasuresAndKymos();
-	}
-	
 	SequenceCamData openSequenceCam(String filename) {
 		Experiment exp = null;
 		currentExperimentIndex = expList.getPositionOfCamFileName(filename);
@@ -127,7 +119,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			exp = expList.getExperiment(currentExperimentIndex);
 		}
 		
-		exp.xmlLoadExperiment();
 		exp.seqCamData = exp.openSequenceCamData(filename);
 		if (exp.seqCamData.seq != null) {
 			addSequence(exp.seqCamData.seq);

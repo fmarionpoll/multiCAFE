@@ -130,6 +130,9 @@ public class Experiment {
 		seqCamData = new SequenceCamData();
 		if (null == seqCamData.loadSequence(filename))
 			return null;
+		experimentFileName = filename;
+		xmlLoadExperiment();
+
 		seqCamData.setParentDirectoryAsFileName() ;
 		loadFileIntervalsFromSeqCamData();
 		return seqCamData;
@@ -166,9 +169,9 @@ public class Experiment {
 			boxID 		= XMLUtil.getElementValue(node, ID_BOXID, "..");
 	        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
 	        comment 	= XMLUtil.getElementValue(node, ID_COMMENT, "..");
-//	        String exptName = XMLUtil.getElementValue(node, ID_EXPTFILENAME, null);
-//	        if (exptName != null)
-//	        	experimentFileName = exptName;
+	        String exptName = XMLUtil.getElementValue(node, ID_EXPTFILENAME, null);
+	        if (exptName != null)
+	        	experimentFileName = exptName;
 		}
 		return true;
 	}

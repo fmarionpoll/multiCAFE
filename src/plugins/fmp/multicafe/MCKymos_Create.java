@@ -142,12 +142,13 @@ public class MCKymos_Create extends JPanel {
 			}
 		}
 		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
-		parent0.paneKymos.tabDisplay.displayViews (true);
+		series_resetUserInterface();
+//		parent0.paneKymos.tabDisplay.displayViews (true);
 	}
 	
 	private void series_resetUserInterface() {
 		Experiment exp = parent0.expList.getExperiment(currentExp);
-		parent0.openExperiment(exp);
+		parent0.paneSequence.openExperiment(exp);
 		sComputation = EnumStatusComputation.START_COMPUTATION;
 		firePropertyChange( "KYMOS_CREATE", false, true);
 		setStartButton(true);
@@ -170,7 +171,6 @@ public class MCKymos_Create extends JPanel {
 				catch(Exception e){;} 
 				finally { 
 					series_kymosBuildStop();
-					series_resetUserInterface();
 				}
 			}}, "+++waitforcompletion");
 		waitcompletionThread.start();

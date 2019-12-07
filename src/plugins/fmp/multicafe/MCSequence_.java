@@ -137,10 +137,23 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
+	void openExperiment(Experiment exp) {
+		exp.xmlLoadExperiment();
+		String filename = exp.experimentFileName;
+		exp.seqCamData = exp.openSequenceCamData(filename);
+		if (exp.seqCamData.seq != null) {
+			parent0.addSequence(exp.seqCamData.seq);
+		}
+		updateViewerForSequenceCam(exp.seqCamData);
+		loadMeasuresAndKymos();
+	}
+	
 	void openSequenceCamFromCombo() {
 		SequenceCamData seqCamData = parent0.openSequenceCam((String) tabInfos.expListComboBox.getSelectedItem());
 		parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
-		loadMeasuresAndKymos();
+		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
+			loadMeasuresAndKymos();
+		}});
 		tabsPane.setSelectedIndex(1);
 	}
 	
@@ -191,6 +204,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			v.setBounds(rectv);
 			v.toFront();
 			v.requestFocus();
+			v.addListener( parent0 );
 		}
 	}
 	
@@ -200,13 +214,15 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 
 	void loadMeasuresAndKymos() {
-		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
-			parent0.loadPreviousMeasures(
+		parent0.loadPreviousMeasures(
 					tabOpen.isCheckedLoadPreviousProfiles(), 
 					tabOpen.isCheckedLoadKymographs(),
 					tabOpen.isCheckedLoadCages(),
 					tabOpen.isCheckedLoadMeasures());
-		}});
-
+	}
+	
+	void getExperimentInfosFromDialog(Experiment exp) {
+		tabInfos.getExperimentInfosFromDialog(exp);
+		tabIntervals.getAnalyzeFrameFromDialog (exp);
 	}
 }
