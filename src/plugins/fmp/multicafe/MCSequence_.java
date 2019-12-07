@@ -137,7 +137,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
-	private void openSequenceCamFromCombo() {
+	void openSequenceCamFromCombo() {
 		SequenceCamData seqCamData = parent0.openSequenceCam((String) tabInfos.expListComboBox.getSelectedItem());
 		parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 		loadMeasuresAndKymos();

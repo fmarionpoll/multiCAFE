@@ -146,10 +146,11 @@ public class MCKymos_Create extends JPanel {
 	}
 	
 	private void series_resetUserInterface() {
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.openExperiment(exp);
 		sComputation = EnumStatusComputation.START_COMPUTATION;
 		firePropertyChange( "KYMOS_CREATE", false, true);
 		setStartButton(true);
-		firePropertyChange( "KYMOS_OK", false, true);
 	}
 	
 	private void series_kymosBuildKymographs() {	
