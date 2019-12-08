@@ -31,7 +31,7 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 		public boolean 					threadRunning 		= false;
 		
 		private IcyBufferedImage 		workImage 			= null; 
-		private Sequence 				seqForRegistration	= new Sequence();
+		private Sequence 				seqForRegistration	= null;
 		private DataType 				dataType 			= DataType.INT;
 		private int 					imagewidth =1;
 		private ArrayList<double []> 	sourceValuesList 	= null;
@@ -132,6 +132,7 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 				thread.start();
 			}
 			
+			seqForRegistration	= new Sequence();
 			seqForRegistration.addImage(0, workImage);
 			seqForRegistration.addImage(1, workImage);
 			int nbcapillaries = options.seqKymos.capillaries.capillariesArrayList.size();
