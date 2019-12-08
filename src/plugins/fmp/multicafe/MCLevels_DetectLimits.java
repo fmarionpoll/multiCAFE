@@ -49,6 +49,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 	JCheckBox			ALLCheckBox 			= new JCheckBox("ALL series", false);
 	DetectLimits_series detectLimitsThread 		= null;
 	private Thread 		thread 					= null;
+	private int 		currentExp 				= -1;
 
 	
 	
@@ -139,7 +140,6 @@ public class MCLevels_DetectLimits  extends JPanel {
 	}
 	
 	void setInfosToDialog(Capillary cap) {
-
 		DetectLimits_Options options = cap.limitsOptions;
 		transformForLevelsComboBox.setSelectedItem(options.transformForLevels);
 		int index =options.directionUp ? 0:1;
@@ -150,7 +150,6 @@ public class MCLevels_DetectLimits  extends JPanel {
 	}
 	
 	void getInfosFromDialog(Capillary cap) {
-
 		DetectLimits_Options options = cap.limitsOptions;
 		options.transformForLevels = (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
@@ -159,13 +158,16 @@ public class MCLevels_DetectLimits  extends JPanel {
 	}
 	
 	void series_detectLimitsStart() {
-		detectButton.setText("(Detect)/STOP");
+		detectButton.setText("(Detect)/Stop");
+		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, false);
 		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
 				parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
+		currentExp = parent0.currentExperimentIndex;
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.paneSequence.tabClose.closeExp(exp);
+
 		detectLimitsThread = new DetectLimits_series();
-		
 		DetectLimits_Options options= detectLimitsThread.options;
-		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, true);
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.currentExperimentIndex;
 		options.expList.index1 = options.expList.index0;
@@ -183,7 +185,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 		options.endPixel			= (int) endSpinner.getValue();
 		options.spanDiffTop			= getSpanDiffTop();
 			
-		thread = new Thread(null, detectLimitsThread, "+++buildkymos");
+		thread = new Thread(null, detectLimitsThread, "+++detect_levels");
 		thread.start();
 		Thread waitcompletionThread = new Thread(null, new Runnable() {
 			public void run() {
@@ -198,7 +200,6 @@ public class MCLevels_DetectLimits  extends JPanel {
 		waitcompletionThread.start();
 	}
 
-	
 	private void series_detectLimitsStop() {	
 		if (thread != null && thread.isAlive()) {
 			detectLimitsThread.stopFlag = true;
@@ -208,9 +209,16 @@ public class MCLevels_DetectLimits  extends JPanel {
 				e1.printStackTrace();
 			}
 		}
-		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
-		parent0.paneKymos.tabDisplay.displayViews (true);
+
+		series_resetUserInterface();
+	}
+	
+	private void series_resetUserInterface() {
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.paneSequence.openExperiment(exp);
 		firePropertyChange("KYMO_DETECT_TOP", false, true);
 		detectButton.setText("Detect");
+		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
+		parent0.paneKymos.tabDisplay.displayViews (true);
 	}
 }

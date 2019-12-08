@@ -41,7 +41,7 @@ public class MCKymos_Create extends JPanel {
 	private MultiCAFE 		parent0						= null;
 	private BuildKymographs_series	buildKymographsThread2 = null;
 	private Thread 			thread 						= null;
-	private int currentExp = -1;
+	private int 			currentExp 					= -1;
 
 
 
@@ -102,14 +102,17 @@ public class MCKymos_Create extends JPanel {
 		kymoStartComputationButton.setEnabled(enableStart );
 		kymosStopComputationButton.setEnabled(!enableStart);
 	}
-	
-	// -----------------------------------
-	
+		
 	private void series_kymosBuildStart() {
 		buildKymographsThread2 = new BuildKymographs_series();	
-		BuildKymographs_Options options = buildKymographsThread2.options;
-		
 		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, false);
+		sComputation = EnumStatusComputation.STOP_COMPUTATION;
+		setStartButton(false);
+		currentExp = parent0.currentExperimentIndex;
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.paneSequence.tabClose.closeExp(exp);
+		
+		BuildKymographs_Options options = buildKymographsThread2.options;
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.currentExperimentIndex;
 		options.expList.index1 = options.expList.index0;
@@ -122,36 +125,17 @@ public class MCKymos_Create extends JPanel {
 		options.diskRadius 	= (int) diskRadiusSpinner.getValue();
 		options.doRegistration = doRegistrationCheckBox.isSelected();
 		options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
-		
-		sComputation = EnumStatusComputation.STOP_COMPUTATION;
-		setStartButton(false);
-		currentExp = parent0.currentExperimentIndex;
-		Experiment exp = parent0.expList.getExperiment(currentExp);
-		parent0.paneSequence.tabClose.closeExp(exp);
-		
+	
 		series_kymosBuildKymographs();	
 	}
-	
-	private void series_kymosBuildStop() {	
-		if (thread != null && thread.isAlive()) {
-			buildKymographsThread2.stopFlag = true;
-			try {
-				thread.join();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
-		}
-		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
-		series_resetUserInterface();
-//		parent0.paneKymos.tabDisplay.displayViews (true);
-	}
-	
+		
 	private void series_resetUserInterface() {
 		Experiment exp = parent0.expList.getExperiment(currentExp);
 		parent0.paneSequence.openExperiment(exp);
 		sComputation = EnumStatusComputation.START_COMPUTATION;
 		firePropertyChange( "KYMOS_CREATE", false, true);
 		setStartButton(true);
+		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 	}
 	
 	private void series_kymosBuildKymographs() {	
@@ -174,6 +158,18 @@ public class MCKymos_Create extends JPanel {
 				}
 			}}, "+++waitforcompletion");
 		waitcompletionThread.start();
+	}
+	
+	private void series_kymosBuildStop() {	
+		if (thread != null && thread.isAlive()) {
+			buildKymographsThread2.stopFlag = true;
+			try {
+				thread.join();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		}
+		series_resetUserInterface();
 	}
 	
 	private void updateStepInXMLExperiments(int step ) {
