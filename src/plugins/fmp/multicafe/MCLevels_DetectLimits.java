@@ -179,7 +179,10 @@ public class MCLevels_DetectLimits  extends JPanel {
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();
 		options.detectAllImages 	= allImagesCheckBox.isSelected();
-		options.firstImage 			= parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
+		int first = parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
+		if (first <0)
+			first = 0;
+		options.firstImage = first;
 		options.analyzePartOnly		= partCheckBox.isSelected();
 		options.startPixel			= (int) startSpinner.getValue();
 		options.endPixel			= (int) endSpinner.getValue();
