@@ -162,8 +162,11 @@ public class ExperimentList {
 				if (exp.seqCamData == null)
 					continue;
 				String filename2 = exp.seqCamData.getFileName();
-				if (filename2 == null)
-					filename2 = exp.seqCamData.getDirectory();
+				if (filename2 == null) {
+					filename2 = exp.experimentFileName; 
+					if (filename2 == null)
+						filename2 = exp.seqCamData.getDirectory();
+				}
 				Path expfilepath = stripFilenameFromPath(filename2);
 				if (filepath.compareTo(expfilepath) == 0) {
 					position = i;

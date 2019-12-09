@@ -81,9 +81,6 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 		else if (arg0.getPropertyName().equals("KYMO_DISPLAY_FILTERED1")) {
 			firePropertyChange("KYMO_DISPLAYFILTERED", false, true);
 		}
-		else if (arg0.getPropertyName().equals("KYMO_DETECT_TOP")) {
-			firePropertyChange("MEASURETOP_OK", false, true);
-		}
 		else if (arg0.getPropertyName().equals("MEASURES_SAVE")) {
 			tabsPane.setSelectedIndex(0);
 		}

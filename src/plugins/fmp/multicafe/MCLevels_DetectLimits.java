@@ -219,7 +219,6 @@ public class MCLevels_DetectLimits  extends JPanel {
 	private void series_resetUserInterface() {
 		Experiment exp = parent0.expList.getExperiment(currentExp);
 		parent0.paneSequence.openExperiment(exp);
-		firePropertyChange("KYMO_DETECT_TOP", false, true);
 		detectButton.setText("Detect");
 		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 		parent0.paneKymos.tabDisplay.displayViews (true);
