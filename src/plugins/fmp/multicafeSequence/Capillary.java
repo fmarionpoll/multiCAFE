@@ -50,6 +50,7 @@ public class Capillary implements XMLPersistent  {
 	public List<ArrayList<int[]>> 		masksList 		= null;
 	public List <double []> 			tabValuesList 	= null;
 	public IcyBufferedImage 			bufImage 		= null;
+	public boolean						valid			= true;
 		    
 	// ----------------------------------------------------
 	

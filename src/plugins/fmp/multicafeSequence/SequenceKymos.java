@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -179,11 +180,50 @@ public class SequenceKymos extends SequenceCamData  {
 		capillaries.desc.analysisStep = vSequence.analysisStep;
 	}
 	
-	public void updateCapillariesFromCamData(SequenceCamData seqCam) {
+	public void setCapillariesFromCamData(SequenceCamData seqCam) {
 //		SequenceKymosUtils.transferCamDataROIStoKymo(seqCam, this);
 		getCamDataROIS (seqCam);
 		setStartStopStepToCapillaries();
 //		getStartStopStepFromCapillaries ();
+		return;
+	}
+	
+	public void updateCapillariesFromCamData(SequenceCamData seqCam) {
+		List<ROI2D> listROISCap = seqCam.getCapillaries();
+
+		for (Capillary cap: capillaries.capillariesArrayList) {
+			cap.valid = false;
+			String capName = cap.replace_LR_with_12(cap.capillaryRoi.getName());
+			
+			Iterator <ROI2D> iterator = listROISCap.iterator();
+			while(iterator.hasNext()) { 
+				ROI2D roi = iterator.next();
+				String roiName = cap.replace_LR_with_12(roi.getName());
+				if (roiName.equals (capName)) {
+					cap.capillaryRoi.copyFrom(roi);
+					cap.valid = true;
+				}
+				if (cap.valid) {
+					iterator.remove();
+					break;
+				}
+			}
+		}
+		
+		Iterator <Capillary> iterator = capillaries.capillariesArrayList.iterator();
+		while (iterator.hasNext()) {
+			Capillary cap = iterator.next();
+			if (!cap.valid )
+				iterator.remove();
+		}
+		
+		if (listROISCap.size() > 0) {
+			for (ROI2D roi: listROISCap) {
+				Capillary cap = new Capillary((ROI2DShape) roi);
+				capillaries.capillariesArrayList.add(cap);
+			}
+		}
+		setStartStopStepToCapillaries();
 		return;
 	}
 	

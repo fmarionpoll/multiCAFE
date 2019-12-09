@@ -306,7 +306,7 @@ public class Experiment {
 	public void loadExperimentData() {
 		xmlLoadExperiment();
 		seqCamData.loadSequence(experimentFileName) ;
-		seqKymos.updateCapillariesFromCamData(seqCamData);
+		seqKymos.setCapillariesFromCamData(seqCamData);
 		seqKymos.xmlLoadMCcapillaries(experimentFileName);
 	}
 	
