@@ -498,8 +498,8 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	public boolean xmlSaveMCcapillaries(String pathname) {
-		String MCcapillaries = buildCorrectPath(pathname);
-		capillaries.xmlSaveCapillaries_Only(MCcapillaries);
+		String pathnameMC = buildCorrectPath(pathname);
+		capillaries.xmlSaveCapillaries_Only(pathnameMC);
 		boolean flag = capillaries.xmlSaveCapillaries_Measures(pathname);
 		return flag;
 	}

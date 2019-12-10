@@ -20,21 +20,10 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Capillary implements XMLPersistent  {
 
-	public  final String ID_TOPLEVEL 	= "toplevel";	
-	public  final String ID_BOTTOMLEVEL = "bottomlevel";	
-	public  final String ID_DERIVATIVE 	= "derivative";	
-	private final String ID_META 		= "metaMC";
-	private final String ID_ROI 		= "roiMC";
-	private final String ID_INDEXIMAGE 	= "indexImageMC";
-	private final String ID_NAME 		= "nameMC";
-	private final String ID_NAMETIFF 	= "filenameTIFF";
-	private final String ID_VERSION		= "version"; 
-	private final String ID_VERSIONNUM	= "1.0.0"; 
-	
+	public ROI2DShape 					capillaryRoi 	= null;	// the capillary (source)
 	public int							indexImage 		= -1;
 	private String						capillaryName 	= null;
 	public String 						version 		= null;
-	public ROI2DShape 					capillaryRoi 	= null;	// the capillary (source)
 	public String						filenameTIFF	= null;
 	public String 						stimulus		= new String("stimulus");
 	public String 						concentration	= new String("xmM");
@@ -42,6 +31,9 @@ public class Capillary implements XMLPersistent  {
 	public DetectLimits_Options 		limitsOptions	= new DetectLimits_Options();
 	public DetectGulps_Options 			gulpsOptions	= new DetectGulps_Options();
 	
+	public  final String 				ID_TOPLEVEL 	= "toplevel";	
+	public  final String 				ID_BOTTOMLEVEL 	= "bottomlevel";	
+	public  final String 				ID_DERIVATIVE 	= "derivative";	
 	public CapillaryLimits				ptsTop  		= new CapillaryLimits(ID_TOPLEVEL, 0); 
 	public CapillaryLimits				ptsBottom 		= new CapillaryLimits(ID_BOTTOMLEVEL, 0); 
 	public CapillaryLimits				ptsDerivative 	= new CapillaryLimits(ID_DERIVATIVE, 0); 
@@ -51,7 +43,15 @@ public class Capillary implements XMLPersistent  {
 	public List <double []> 			tabValuesList 	= null;
 	public IcyBufferedImage 			bufImage 		= null;
 	public boolean						valid			= true;
-		    
+
+	private final String 				ID_META 		= "metaMC";
+	private final String 				ID_ROI 			= "roiMC";
+	private final String 				ID_INDEXIMAGE 	= "indexImageMC";
+	private final String 				ID_NAME 		= "nameMC";
+	private final String 				ID_NAMETIFF 	= "filenameTIFF";
+	private final String 				ID_VERSION		= "version"; 
+	private final String 				ID_VERSIONNUM	= "1.0.0"; 
+	
 	// ----------------------------------------------------
 	
 	Capillary(ROI2DShape roi) {
@@ -245,7 +245,7 @@ public class Capillary implements XMLPersistent  {
 
 	@Override
 	public boolean loadFromXML(Node node) {
-		boolean result = loadMetaDataFromXML(node);	
+		boolean result = loadFromXML_CapillaryOnly(node);	
 		result |= ptsDerivative.loadPolyline2DFromXML(node, ID_DERIVATIVE) > 0;
 		result |= ptsTop.loadPolyline2DFromXML(node, ID_TOPLEVEL) > 0;
 		result |= ptsBottom.loadPolyline2DFromXML(node, ID_BOTTOMLEVEL) > 0;
@@ -253,14 +253,9 @@ public class Capillary implements XMLPersistent  {
 		return result;
 	}
 	
-	public boolean loadFromXML_CapillaryOnly(Node node) {
-		boolean result = loadMetaDataFromXML(node);	
-		return result;
-	}
-
 	@Override
 	public boolean saveToXML(Node node) {
-		saveMetaDataToXML(node);
+		saveToXML_CapillaryOnly(node);
 		if (ptsTop != null)
 			ptsTop.savePolyline2DToXML(node, ID_TOPLEVEL);
 		if (ptsBottom != null)
@@ -272,12 +267,8 @@ public class Capillary implements XMLPersistent  {
         return true;
 	}
 		
-	public boolean saveToXML_CapillaryOnly(Node node) {
-		saveMetaDataToXML(node);
-        return true;
-	}
 	
-	boolean loadMetaDataFromXML(Node node) {
+	boolean loadFromXML_CapillaryOnly(Node node) {
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
 	    if (nodeMeta == null)	// nothing to load
             return true;
@@ -286,14 +277,14 @@ public class Capillary implements XMLPersistent  {
 	    	indexImage = XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        capillaryName = XMLUtil.getElementValue(nodeMeta, ID_NAME, capillaryName);
 	        filenameTIFF = XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);
-	        capillaryRoi = (ROI2DShape) loadROIFromXML(nodeMeta);
+	        capillaryRoi = (ROI2DShape) loadFromXML_ROI(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
 	        gulpsOptions.loadFromXML(nodeMeta);
 	    }
 	    return true;
 	}
 	
-	void saveMetaDataToXML(Node node) {
+	void saveToXML_CapillaryOnly(Node node) {
 	    final Node nodeMeta = XMLUtil.setElement(node, ID_META);
 	    if (nodeMeta != null) {
 	    	if (version == null)
@@ -305,19 +296,19 @@ public class Capillary implements XMLPersistent  {
 	        	String filename = Paths.get(filenameTIFF).getFileName().toString();
 	        	XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);
 	        }
-	        saveROIToXML(nodeMeta, capillaryRoi); 
+	        saveToXML_ROI(nodeMeta, capillaryRoi); 
 	    }
 	}
 
-	private void saveROIToXML(Node node, ROI roi) {
-		final Node nodeROI = XMLUtil.addElement(node, ID_ROI);
+	private void saveToXML_ROI(Node node, ROI roi) {
+		final Node nodeROI = XMLUtil.setElement(node, ID_ROI);
         if (!roi.saveToXML(nodeROI)) {
             XMLUtil.removeNode(node, nodeROI);
             System.err.println("Error: the roi " + roi.getName() + " was not correctly saved to XML !");
         }
 	}
  
-	private ROI loadROIFromXML(Node node) {
+	private ROI loadFromXML_ROI(Node node) {
 		final Node nodeROI = XMLUtil.getElement(node, ID_ROI);
         if (nodeROI != null) {
 			ROI roi = ROI.createFromXML(nodeROI);

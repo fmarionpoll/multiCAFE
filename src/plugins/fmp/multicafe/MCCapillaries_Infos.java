@@ -64,7 +64,7 @@ public class MCCapillaries_Infos extends JPanel {
 
 	// set/ get
 	
-	void setCapillariesInfosToDialog(Capillaries cap) {
+	void setDescriptors(Capillaries cap) {
 		capillaryVolumeTextField.setValue( cap.desc.volume);
 		capillaryPixelsTextField.setValue( cap.desc.pixels);
 		addItem(stimulusRJCombo, cap.desc.stimulusR);
@@ -81,7 +81,7 @@ public class MCCapillaries_Infos extends JPanel {
 		return (int) capillaryPixelsTextField.getValue(); 
 	}
 	
-	void getCapillariesInfosFromDialog(Capillaries cap) {
+	void getDescriptors(Capillaries cap) {
 		cap.desc.volume = getCapillaryVolume();
 		cap.desc.pixels = getCapillaryPixelLength();
 		cap.desc.stimulusR = (String) stimulusRJCombo.getSelectedItem();

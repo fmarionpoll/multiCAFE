@@ -104,12 +104,12 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		if (flag) {
 			SequenceKymos seqKymos = exp.seqKymos;
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
-				tabInfos.setCapillariesInfosToDialog(seqKymos.capillaries);
+				tabInfos.setDescriptors(seqKymos.capillaries);
 				parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
 				parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp, seqKymos.capillaries);
 				parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
 				parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
-				tabCreate.setCapillariesInfosToDialog(seqKymos.capillaries);
+				tabCreate.setGroupingAndNumber(seqKymos.capillaries);
 			}});
 		}
 		return flag;
@@ -121,8 +121,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		SequenceKymos seqKymos = exp.seqKymos;
 		SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
 		seqKymos.capillaries.desc_old.copy(seqKymos.capillaries.desc);
-		tabInfos.setCapillariesInfosToDialog(seqKymos.capillaries);
-		tabCreate.setCapillariesInfosToDialog(seqKymos.capillaries);
+		tabInfos.setDescriptors(seqKymos.capillaries);
+		tabCreate.setGroupingAndNumber(seqKymos.capillaries);
 		parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp, seqKymos.capillaries);
 	}
 	
@@ -131,8 +131,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	}
 	
 	void getCapillariesInfos(Capillaries cap) {
-		tabInfos.getCapillariesInfosFromDialog(cap);
-		tabCreate.getCapillariesInfosFromDialog(cap);
+		tabInfos.getDescriptors(cap);
+		tabCreate.getGrouping(cap);
 	}
 
 	@Override

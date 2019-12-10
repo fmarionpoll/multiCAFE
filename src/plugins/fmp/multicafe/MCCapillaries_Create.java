@@ -108,12 +108,12 @@ public class MCCapillaries_Create extends JPanel {
 		selectRegularButton.setSelected(!flag);
 	}
 	
-	void setCapillariesInfosToDialog(Capillaries cap) {
+	void setGroupingAndNumber(Capillaries cap) {
 		nbcapillariesJSpinner.setValue(cap.capillariesArrayList.size());
 		setGroupedBy2(cap.desc.grouping == 2);
 	}
 	
-	Capillaries getCapillariesInfosFromDialog(Capillaries cap) {
+	Capillaries getGrouping(Capillaries cap) {
 		cap.desc.grouping = getGroupedBy2() ? 2: 1;
 		return cap;
 	}

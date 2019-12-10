@@ -104,7 +104,7 @@ public class Capillaries {
 		int i= 0;
 		for (Capillary cap: capillariesArrayList) {
 			Node nodecapillary = XMLUtil.setElement(node, ID_CAPILLARY_+i);
-			cap.saveMetaDataToXML(nodecapillary);
+			cap.saveToXML_CapillaryOnly(nodecapillary);
 			i++;
 		}
 		return true;
