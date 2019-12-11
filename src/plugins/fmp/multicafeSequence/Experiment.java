@@ -266,6 +266,27 @@ public class Experiment {
 		this.fileTimeImageLast = fileTimeImageLast;
 	}
 	
+//	public long getLastImageTimeMinute(boolean globalValue) {
+//		long fileTimeLast = fileTimeImageLastMinute;
+//		if (globalValue && nextExperiment != null)
+//			fileTimeLast = nextExperiment.getLastImageTimeMinute(globalValue);
+//		return fileTimeLast;
+//	}
+//	
+//	public long getFirstImageTimeMinute(boolean globalValue) {
+//		long fileTimeFirst = fileTimeImageFirstMinute;
+//		if (globalValue && previousExperiment != null)
+//			fileTimeFirst = previousExperiment.getFirstImageTimeMinute(globalValue);
+//		return fileTimeFirst;
+//	}
+//	
+//	public long getImageTimeMinute(long t, boolean globalValue) {
+//		long fileTimeFirst = fileTimeImageFirstMinute;
+//		if (globalValue && previousExperiment != null)
+//			fileTimeFirst = previousExperiment.getFirstImageTimeMinute(globalValue);
+//		return fileTimeFirst + (t-startFrame);
+//	}
+	
 	// -----------------------
 	
 	public boolean isFlyAlive(int cagenumber) {

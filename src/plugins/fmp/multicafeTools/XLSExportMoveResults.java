@@ -31,7 +31,7 @@ public class XLSExportMoveResults extends XLSExport {
 			int col_end = 0;
 			int iSeries = 0;
 			options.expList.readInfosFromAllExperiments(true, true);
-			options.expList.chainExperiments(options);
+			options.expList.chainExperiments();
 			expAll = options.expList.getStartAndEndFromAllExperiments(options);
 			expAll.step = options.expList.experimentList.get(0).step;
 			int nbexpts = options.expList.experimentList.size();

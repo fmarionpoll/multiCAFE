@@ -51,7 +51,10 @@ public class XLSExport {
 		pt.x++;
 		int colseries = pt.x;
 		
-		Path path = Paths.get(exp.seqCamData.getFileName());
+		String filename = exp.seqCamData.getFileName();
+		if (filename == null)
+			filename = exp.seqCamData.getDirectory();
+		Path path = Paths.get(filename);
 		String boxID = exp.boxID;
 		String experiment = exp.experiment;
 		String comment = exp.comment;

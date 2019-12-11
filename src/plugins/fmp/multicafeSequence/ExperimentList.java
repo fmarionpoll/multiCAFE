@@ -27,8 +27,8 @@ public class ExperimentList {
 		progress.setLength(experimentList.size());
 
 		Experiment expglobal = new Experiment();
-		Experiment exp0 = experimentList.get(0);
 		if (options.absoluteTime) {
+			Experiment exp0 = experimentList.get(0);
 			expglobal.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
 			expglobal.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
 			for (Experiment exp: experimentList) {
@@ -40,14 +40,24 @@ public class ExperimentList {
 			}
 			expglobal.fileTimeImageFirstMinute = expglobal.getFileTimeImageFirst(false).toMillis()/60000;
 			expglobal.fileTimeImageLastMinute = expglobal.getFileTimeImageLast(false).toMillis()/60000;
-		} else {
+		} 
+		else {
 			expglobal.fileTimeImageFirstMinute = 0;
-			long last = exp0.getFileTimeImageLast(true).toMillis();
-			long first = exp0.getFileTimeImageFirst(true).toMillis();
-			expglobal.fileTimeImageLastMinute = ( last - first) /60000;
+			Experiment exp0 = experimentList.get(0);
+			long last = exp0.getFileTimeImageLast(options.collateSeries).toMillis();
+			long first = exp0.getFileTimeImageFirst(options.collateSeries).toMillis();
+			if (options.t0) {
+				last = last - first;
+				first = 0;
+			}
+			expglobal.fileTimeImageLastMinute = last;
 			for (Experiment exp: experimentList) {
-				last = exp.getFileTimeImageLast(true).toMillis();
-				first = exp.getFileTimeImageFirst(true).toMillis();
+				last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
+				first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
+				if (options.t0) {
+					last = last - first;
+					first = 0;
+				}
 				long diff = ( last - first) /60000;
 				if (expglobal.fileTimeImageLastMinute < diff) 
 					expglobal.fileTimeImageLastMinute = diff;
@@ -91,17 +101,13 @@ public class ExperimentList {
 		return flag;
 	}
 	
-	public void chainExperiments(XLSExportOptions options) {
-		if (!options.collateSeries)
-			return;
-		
+	public void chainExperiments() {
 		for (Experiment exp: experimentList) {
 			for (Experiment expi: experimentList) {
 				if (expi == exp)
 					continue;
 				if (!expi.boxID .equals(exp.boxID))
 					continue;
-				
 				// if before, insert eventually
 				if (expi.fileTimeImageLastMinute < exp.fileTimeImageFirstMinute) {
 					if (exp.previousExperiment == null)
@@ -114,7 +120,6 @@ public class ExperimentList {
 					}
 					continue;
 				}
-				
 				// if after, insert eventually
 				if (expi.fileTimeImageFirstMinute > exp.fileTimeImageLastMinute) {
 					if (exp.nextExperiment == null)
@@ -131,7 +136,6 @@ public class ExperimentList {
 				System.out.println("error in chaining "+ exp.experimentFileName +" with ->" + expi.experimentFileName);
 			}
 		}
-
 	}
 		
 	public int getStackColumnPosition (Experiment exp, int col0) {

@@ -496,6 +496,8 @@ public class SequenceCamData implements SequenceListener {
 
 	public FileTime getImageFileTime (int t) {
 		String name = getFileName(t);
+		if (name == null)
+			return null;
 		Path path = Paths.get(name);
 		FileTime fileTime;
 		try { fileTime = Files.getLastModifiedTime(path); }

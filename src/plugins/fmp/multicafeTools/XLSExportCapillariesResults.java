@@ -17,15 +17,18 @@ import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.XYTaSeries;
 
 
 
 public class XLSExportCapillariesResults extends XLSExport {
-
+	ExperimentList expList = null;
+	
 	public void exportToFile(String filename, XLSExportOptions opt) {	
 		System.out.println("XLS capillary measures output");
 		options = opt;
+		expList = options.expList;
 
 		try { 
 			XSSFWorkbook workbook = new XSSFWorkbook(); 
@@ -33,16 +36,17 @@ public class XLSExportCapillariesResults extends XLSExport {
 			int col_max = 1;
 			int col_end = 1;
 			int iSeries = 0;
-			options.expList.readInfosFromAllExperiments(true, options.onlyalive);
-			options.expList.chainExperiments(options);
-			expAll 		= options.expList.getStartAndEndFromAllExperiments(options);
-			expAll.step = options.expList.experimentList.get(0).step;
-			int nbexpts = options.expList.experimentList.size();
+			expList.readInfosFromAllExperiments(true, options.onlyalive);
+			if (options.collateSeries)
+				expList.chainExperiments();
+			expAll 		= expList.getStartAndEndFromAllExperiments(options);
+			expAll.step = expList.experimentList.get(0).step;
+			int nbexpts = expList.experimentList.size();
 			ProgressFrame progress = new ProgressFrame("Export data to Excel");
 			progress.setLength(nbexpts);
 			
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
-				Experiment exp = options.expList.experimentList.get(index);
+				Experiment exp = expList.experimentList.get(index);
 				
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
@@ -232,7 +236,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		}
 		Point pt = new Point(col0, 0);
 		if (options.collateSeries) {
-			pt.x = options.expList.getStackColumnPosition(exp, col0);
+			pt.x = expList.getStackColumnPosition(exp, col0);
 		}
 
 		style = workBook.createCellStyle();
@@ -254,7 +258,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 	}
 		
 	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt_main, boolean transpose, 
-								String charSeries, List <XLSCapillaryResults> dataArrayList) {
+		String charSeries, List <XLSCapillaryResults> dataArrayList) {
 		double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
 		int col0 = pt_main.x;
 		int row0 = pt_main.y;
@@ -270,7 +274,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			referenceFileTimeImageFirstMinutes = expAll.fileTimeImageFirstMinute;
 			referenceFileTimeImageLastMinutes = expAll.fileTimeImageLastMinute;
 		}
-			
+		
 		pt_main.x =0;
 		long tspanMinutes = referenceFileTimeImageLastMinutes-referenceFileTimeImageFirstMinutes;
 		long diff = getnearest(tspanMinutes, fullstep)/ fullstep;
@@ -299,12 +303,11 @@ public class XLSExportCapillariesResults extends XLSExport {
 			if (exp.seqCamData.isFileStack())
 				XLSUtils.setValue(sheet, pt_main, transpose, getShortenedName(exp.seqCamData, currentFrame) );
 			pt_main.x++;
-			
 			int colseries = pt_main.x;
 			switch (option) {
-			case TOPLEVEL_LR:
-			case TOPLEVELDELTA_LR:
-			case SUMGULPS_LR:
+				case TOPLEVEL_LR:
+				case TOPLEVELDELTA_LR:
+				case SUMGULPS_LR:
 				for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
 					int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
 					if (colL >= 0)
@@ -326,7 +329,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 					pt_main.x++;
 				}
 				break;
-			default:
+				default:
 				for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
 					int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
 					if (col >= 0)
@@ -346,7 +349,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			}
 			lastFrame = currentFrame;
 		}
-//		System.out.println("lastFrame reached =" + lastFrame+ " row=" + pt_main.y);
+		//System.out.println("lastFrame reached =" + lastFrame+ " row=" + pt_main.y);
 		
 		
 		// pad remaining cells with the last value
@@ -354,29 +357,29 @@ public class XLSExportCapillariesResults extends XLSExport {
 			Point padpt = new Point(pt_main);
 			padpt.x = col0;
 			int startNextExpt = (int) (((exp.nextExperiment.fileTimeImageFirstMinute- exp.fileTimeImageFirstMinute)/fullstep)*fullstep);
-//			int endThisExpt = (int) (((exp.fileTimeImageLastMinute- exp.fileTimeImageFirstMinute)/fullstep) * fullstep);		
-//			System.out.println( "endThisExpt=" + endThisExpt +" startNextExpt="+startNextExpt + " row="+ (padpt.y +1));
-//			System.out.println( "i.e.  index t=" + lastFrame/fullstep +" to="+startNextExpt/fullstep);
+			//int endThisExpt = (int) (((exp.fileTimeImageLastMinute- exp.fileTimeImageFirstMinute)/fullstep) * fullstep);		
+			//System.out.println( "endThisExpt=" + endThisExpt +" startNextExpt="+startNextExpt + " row="+ (padpt.y +1));
+			//System.out.println( "i.e.  index t=" + lastFrame/fullstep +" to="+startNextExpt/fullstep);
 			exp.nextExperiment.loadKymos_Measures();
-						
+				
 			for (int nextFrame= lastFrame; nextFrame <= startNextExpt; nextFrame+= fullstep, padpt.y++) {	
 				padpt.x = col0;
-//				padpt.y++;
+				//padpt.y++;
 				
 				XLSUtils.setValue(sheet, padpt, transpose, "xxxT");
 				XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);
 				padpt.x++;
 				if (exp.seqCamData.isFileStack()) {
-					XLSUtils.setValue(sheet, padpt, transpose, "xxxF" );
-					XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);	
+				XLSUtils.setValue(sheet, padpt, transpose, "xxxF" );
+				XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);	
 				}
 				padpt.x++;
 				
 				int colseries = padpt.x;
 				switch (option) {
-				case TOPLEVEL_LR:
-				case TOPLEVELDELTA_LR:
-				case SUMGULPS_LR:
+					case TOPLEVEL_LR:
+					case TOPLEVELDELTA_LR:
+					case SUMGULPS_LR:
 					for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
 						int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
 						padpt.x = colseries + colL;
@@ -407,7 +410,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 						}
 					}
 					break;
-				default:
+					default:
 					for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
 						int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);						
 						padpt.x = colseries + col;		
@@ -417,7 +420,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 						} else {
 							flag = exp.nextExperiment.isDataAvailable(col/2);
 						}
-
+					
 						if (flag) {
 							XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
 							XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);

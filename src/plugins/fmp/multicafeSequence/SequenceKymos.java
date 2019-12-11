@@ -190,17 +190,15 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	public void updateCapillariesFromCamData(SequenceCamData seqCam) {
 		List<ROI2D> listROISCap = seqCam.getCapillaries();
-
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			cap.valid = false;
 			String capName = cap.replace_LR_with_12(cap.capillaryRoi.getName());
-			
 			Iterator <ROI2D> iterator = listROISCap.iterator();
 			while(iterator.hasNext()) { 
 				ROI2D roi = iterator.next();
 				String roiName = cap.replace_LR_with_12(roi.getName());
 				if (roiName.equals (capName)) {
-					cap.capillaryRoi.copyFrom(roi);
+					cap.capillaryRoi = (ROI2DShape) roi;
 					cap.valid = true;
 				}
 				if (cap.valid) {
