@@ -75,7 +75,7 @@ public class MCCapillaries_Create extends JPanel {
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				roisGenerateFromPolygon();
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				SequenceKymosUtils.transferCamDataROIStoKymo(exp.seqCamData, exp.seqKymos);
+				SequenceKymosUtils.transferCamDataROIStoKymo(exp);
 				firePropertyChange("CAPILLARIES_NEW", false, true);
 			}});
 		selectRegularButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 

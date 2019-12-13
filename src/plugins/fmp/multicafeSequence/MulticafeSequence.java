@@ -2,7 +2,6 @@ package plugins.fmp.multicafeSequence;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,11 +111,6 @@ public class MulticafeSequence extends EzPlug {
 		if (!sequenceOpenFile())
 			return;
 		UpdateItemsFromSequence (vSequence);
-		
-		if (loadCapillaries.getValue())
-			loadDefaultCapillaries();
-		if (loadCages.getValue())
-			loadDefaultCages();
 
 		groupLoadFiles.setFoldedState(true);
 		groupViewMode.setFoldedState(false);
@@ -189,37 +183,6 @@ public class MulticafeSequence extends EzPlug {
 		step.setValue((int) vSequence.analysisStep);
 	}
 	
-	private boolean loadDefaultCapillaries() {
-		String path = vSequence.getDirectory();
-		boolean flag = capillaryRoisOpen(path+File.separator+"results"+ File.separator+ "MCcapillaries.xml");
-		if (!flag)
-			flag = capillaryRoisOpen(path+File.separator+"capillarytrack.xml");
-		return flag;
-	}
 	
-	private boolean loadDefaultCages() {
-		String path = vSequence.getDirectory();
-		boolean flag = capillaryRoisOpen(path+File.separator+"results"+ File.separator+ "MCdrosopositions.xml");
-		if (!flag)
-			flag = capillaryRoisOpen(path+File.separator+"drosotrack.xml");
-		return flag;
-	}
-	
-	public boolean capillaryRoisOpen(String csFileName) {
-		boolean flag = false;
-		if (vkymos != null && vkymos.capillaries != null) {
-			if (csFileName == null) {
-				csFileName = vkymos.getDirectory() +File.separator+"results"+ File.separator+ "MCcapillaries.xml";
-				flag = vkymos.capillaries.xmlLoadCapillaries(csFileName);
-				if (!flag) {
-					csFileName = vkymos.getDirectory() + File.separator + "capillaryTrack.xml";
-					flag = vkymos.capillaries.xmlLoadCapillaries(csFileName);
-				}
-			}
-			vSequence.analysisStart = vkymos.capillaries.desc.analysisStart;
-			vSequence.analysisEnd = vkymos.capillaries.desc.analysisEnd;
-			vSequence.analysisStep = vkymos.capillaries.desc.analysisStep;
-		}
-		return flag;
-	}
+
 }

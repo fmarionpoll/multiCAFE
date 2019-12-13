@@ -14,7 +14,6 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
-import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeTools.ComboBoxWide;
@@ -122,15 +121,15 @@ public class MCSequence_Infos  extends JPanel {
 		
 	// set/ get
 	
-	void setExperimentsInfosToDialog(Experiment exp, Capillaries cap) {
+	void setExperimentsInfosToDialog(Experiment exp) {
 		if (exp.boxID .equals(".."))
-			exp.boxID = cap.desc.old_boxID;
+			exp.boxID = exp.capillaries.desc.old_boxID;
 		addItem(boxID_JCombo, exp.boxID);
 		if (exp.experiment.equals(".."))
-			exp.experiment = cap.desc.old_experiment;
+			exp.experiment = exp.capillaries.desc.old_experiment;
 		addItem(experimentJCombo, exp.experiment);
 		if (exp.comment .equals(".."))
-			exp.comment = cap.desc.old_comment;
+			exp.comment = exp.capillaries.desc.old_comment;
 		addItem(commentJCombo, exp.comment);
 	}
 

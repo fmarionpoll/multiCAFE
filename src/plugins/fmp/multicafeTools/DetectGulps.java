@@ -10,6 +10,7 @@ import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.CapillaryGulps;
 import plugins.fmp.multicafeSequence.CapillaryLimits;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
@@ -19,12 +20,12 @@ public class DetectGulps {
 	private List <Integer> 		topLevelArray 	= null;
 	private SequenceKymos 		seqkymo 		= null;
 	
-	public void detectGulps(DetectGulps_Options options, SequenceKymos seqkymo) {			
+	public void detectGulps(DetectGulps_Options options, Experiment exp) {			
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
 		progressBar.initStuff(seqkymo.seq.getSizeT() );
 		
 		this.options = options;
-		this.seqkymo = seqkymo;
+		this.seqkymo = exp.seqKymos;
 		
 		int jitter = 5;
 		int firstkymo = 0;
@@ -37,7 +38,7 @@ public class DetectGulps {
 		seqkymo.seq.beginUpdate();
 		for (int indexkymo=firstkymo; indexkymo <= lastkymo; indexkymo++) {
 			progressBar.updatePositionAndTimeLeft(indexkymo);
-			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(indexkymo);
+			Capillary cap = exp.capillaries.capillariesArrayList.get(indexkymo);
 			cap.gulpsOptions.copy(options);
 			if (options.buildDerivative) {
 				topLevelArray = cap.ptsTop.getIntegerArrayFromPolyline2D();

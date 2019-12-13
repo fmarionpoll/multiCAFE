@@ -50,7 +50,8 @@ public class MCLevels_Edit  extends JPanel {
 	private void defineListeners() {
 		deleteButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				parent0.expList.getExperiment(parent0.currentExperimentIndex).seqKymos.transferKymosRoisToMeasures();
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				exp.seqKymos.transferKymosRoisToMeasures(exp.capillaries);
 				deletePointsIncluded();
 			}});
 		adjustButton.addActionListener(new ActionListener () { 
@@ -85,7 +86,8 @@ public class MCLevels_Edit  extends JPanel {
 	}
 	
 	void deletePointsIncluded() {
-		SequenceKymos seqKymos = parent0.expList.getExperiment(parent0.currentExperimentIndex).seqKymos;
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		SequenceKymos seqKymos = exp.seqKymos;
 		int t= seqKymos.currentFrame;
 		ROI2D roi = seqKymos.seq.getSelectedROI2D();
 		if (roi == null)
@@ -96,19 +98,19 @@ public class MCLevels_Edit  extends JPanel {
 			selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
 			deleteGulps(seqKymos.seq);
 		} else if (optionSelected .contains("top") && optionSelected .contains("bottom")) {
-			deletePointsOfPolyLine(roi, "top", t, seqKymos);
-			deletePointsOfPolyLine(roi, "bottom", t, seqKymos);
+			deletePointsOfPolyLine(roi, "top", t, exp);
+			deletePointsOfPolyLine(roi, "bottom", t, exp);
 		} else if (optionSelected .contains("top")) {
-			deletePointsOfPolyLine(roi, "top", t, seqKymos);
+			deletePointsOfPolyLine(roi, "top", t, exp);
 		} else if (optionSelected.contains("bottom")) {
-			deletePointsOfPolyLine(roi, "bottom", t, seqKymos);
+			deletePointsOfPolyLine(roi, "bottom", t, exp);
 		} else if (optionSelected.contains("deriv")) {
-			deletePointsOfPolyLine(roi, "deriv", t, seqKymos);
+			deletePointsOfPolyLine(roi, "deriv", t, exp);
 		}
 	}
 	
-	void deletePointsOfPolyLine(ROI2D roi, String optionSelected, int t, SequenceKymos seqKymos) {
-		Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
+	void deletePointsOfPolyLine(ROI2D roi, String optionSelected, int t, Experiment exp) {
+		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
 		CapillaryLimits caplimits = null;
 		
 		if (optionSelected .contains("top")) {
@@ -137,6 +139,7 @@ public class MCLevels_Edit  extends JPanel {
 		}
 		
 		polyline = caplimits.polyline;
+		SequenceKymos seqKymos = exp.seqKymos;
 		List<ROI> allRois = seqKymos.seq.getROIs();
 		for (ROI roii: allRois) {
 			if (roii.getName().contains("selected"))
@@ -169,7 +172,7 @@ public class MCLevels_Edit  extends JPanel {
 		}
 		
 		int imageSize = exp.seqKymos.imageWidthMax;
-		for (Capillary cap: exp.seqKymos.capillaries.capillariesArrayList) {
+		for (Capillary cap: exp.capillaries.capillariesArrayList) {
 			cap.ptsTop.adjustToImageWidth(imageSize);
 			cap.ptsBottom.adjustToImageWidth(imageSize);
 			cap.ptsDerivative.adjustToImageWidth(imageSize);
@@ -177,7 +180,7 @@ public class MCLevels_Edit  extends JPanel {
 			// TODO: deal with gulps.. (simply remove?)
 		}
 		exp.seqKymos.seq.removeAllROI();
-		exp.seqKymos.transferMeasuresToKymosRois();
+		exp.seqKymos.transferMeasuresToKymosRois(exp.capillaries);
 		
 	}
 	

@@ -46,6 +46,7 @@ public class SequenceCamData implements SequenceListener {
 	public long						analysisStart 			= 0;
 	public long 					analysisEnd				= 99999999;
 	public int 						analysisStep 			= 1;
+	
 	public int 						currentFrame 			= 0;
 	public int						nTotalFrames 			= 0;
 
@@ -584,6 +585,30 @@ public class SequenceCamData implements SequenceListener {
 	public void sequenceClosed(Sequence sequence) {
 		sequence.removeAllROI();
 		
+	}
+	
+	public void getAnalysisParametersFromCamData (Capillaries capillaries) {		
+		capillaries.desc.analysisStart = analysisStart; 
+		capillaries.desc.analysisEnd  = analysisEnd;
+		capillaries.desc.analysisStep = analysisStep;
+	}
+	
+	public void getCamDataROIS (Capillaries capillaries) {
+		capillaries.capillariesArrayList.clear();
+		List<ROI2D> listROISCap = getCapillaries();
+		for (ROI2D roi:listROISCap) {
+			capillaries.capillariesArrayList.add(new Capillary((ROI2DShape)roi));
+		}
+	}
+	
+	public void setCapillariesFromCamData(Capillaries capillaries) {
+		getCamDataROIS (capillaries);
+		getAnalysisParametersFromCamData(capillaries);
+		return;
+	}
+	
+	public IcyBufferedImage getImageCopy(int t) {	
+		return IcyBufferedImageUtil.getCopy(getImage(t, 0));
 	}
 		
 	

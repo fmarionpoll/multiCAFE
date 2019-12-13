@@ -104,8 +104,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 	
 	private List <XLSCapillaryResults> getDataFromCapillaryMeasures(Experiment exp, EnumXLSExportItems xlsoption, boolean optiont0) {	
 		List <XLSCapillaryResults> resultsList = new ArrayList <XLSCapillaryResults> ();	
-		Capillaries capillaries = exp.seqKymos.capillaries;
-		double scalingFactorToPhysicalUnits = capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
+		Capillaries capillaries = exp.capillaries;
+		double scalingFactorToPhysicalUnits = capillaries.desc.volume / exp.capillaries.desc.pixels;
 
 		
 		for (Capillary cap: capillaries.capillariesArrayList) {
@@ -159,7 +159,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		if (exp.previousExperiment != null)
 			valuePreviousSeries = getLastPhysicalValue_Of_PreviousChain_Of_Exp(capName,  exp.previousExperiment, xlsoption, optiont0);
 		
-		Capillaries capillaries = exp.seqKymos.capillaries;
+		Capillaries capillaries = exp.capillaries;
 		for (Capillary cap : capillaries.capillariesArrayList) {
 			if (cap.getName().equals(capName)) {
 				int lastValue = 0;
@@ -185,7 +185,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 					break;
 				}
 				
-				double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
+				double scalingFactorToPhysicalUnits = exp.capillaries.desc.volume / exp.capillaries.desc.pixels;
 				valuePreviousSeries += (lastValue * scalingFactorToPhysicalUnits);
 				break;
 			}
@@ -259,7 +259,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		
 	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt_main, boolean transpose, 
 		String charSeries, List <XLSCapillaryResults> dataArrayList) {
-		double scalingFactorToPhysicalUnits = exp.seqKymos.capillaries.desc.volume / exp.seqKymos.capillaries.desc.pixels;
+		double scalingFactorToPhysicalUnits = exp.capillaries.desc.volume / exp.capillaries.desc.pixels;
 		int col0 = pt_main.x;
 		int row0 = pt_main.y;
 		if (charSeries == null)

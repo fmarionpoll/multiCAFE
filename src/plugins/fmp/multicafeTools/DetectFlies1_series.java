@@ -10,7 +10,6 @@ import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
-import plugins.fmp.multicafeSequence.SequenceCamData;
 
 public class DetectFlies1_series implements Runnable {
 

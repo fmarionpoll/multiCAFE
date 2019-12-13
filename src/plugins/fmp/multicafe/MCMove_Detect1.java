@@ -32,6 +32,8 @@ import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.fmp.multicafeTools.OverlayThreshold;
 
+
+
 public class MCMove_Detect1 extends JPanel implements ChangeListener {
 
 	/**

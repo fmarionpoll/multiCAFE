@@ -83,10 +83,9 @@ public class MCKymos_File extends JPanel {
 		if (returnedval == JFileChooser.APPROVE_OPTION) { 
 			outputpath = f.getSelectedFile().getAbsolutePath();		
 			for (int t = 0; t < seqKymos.seq.getSizeT(); t++) {
-				Capillary cap = seqKymos.capillaries.capillariesArrayList.get(t);
+				Capillary cap = exp.capillaries.capillariesArrayList.get(t);
 				progress.setMessage( "Save kymograph file : " + cap.getName());
 				cap.filenameTIFF = outputpath + File.separator + cap.getName() + ".tiff";
-				
 				final File file = new File (cap.filenameTIFF);
 				IcyBufferedImage image = seqKymos.seq.getImage(t, 0);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
@@ -105,7 +104,7 @@ public class MCKymos_File extends JPanel {
 	boolean loadDefaultKymos(Experiment exp) {		
 		boolean flag = false;
 		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqKymos == null || seqKymos.capillaries == null) {
+		if (seqKymos == null || exp.capillaries == null) {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
@@ -123,7 +122,7 @@ public class MCKymos_File extends JPanel {
 			}
 		}
 		
-		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(exp.seqCamData.getDirectory());
+		List<String> myList = exp.seqKymos.loadListOfKymographsFromCapillaries(exp.seqCamData.getDirectory(), exp.capillaries);
 		if (seqKymos.isInterrupted_loadImages) {
 			seqKymos.isInterrupted_loadImages = false;
 			return false;
@@ -134,11 +133,13 @@ public class MCKymos_File extends JPanel {
 			seqKymos.isInterrupted_loadImages = false;
 			return false;
 		}
+		seqKymos.transferMeasuresToKymosRois(exp.capillaries);
+		
 
 		if (flag) {
 			SwingUtilities.invokeLater(new Runnable() {
 			    public void run() {
-	        	parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(seqKymos.capillaries.capillariesArrayList);
+	        	parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
 				parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 			    }
 			});

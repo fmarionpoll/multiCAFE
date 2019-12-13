@@ -110,7 +110,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	}
 	
 	private void updateParametersCurrentExperiment(Experiment exp) {
-		parent0.paneCapillaries.getCapillariesInfos(exp.seqKymos.capillaries);
+		parent0.paneCapillaries.getCapillariesInfos(exp);
 		parent0.paneSequence.tabInfos.getExperimentInfosFromDialog(exp);
 	}
 	

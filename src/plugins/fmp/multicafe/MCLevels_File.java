@@ -62,11 +62,10 @@ public class MCLevels_File  extends JPanel {
 		String directory = exp.seqCamData.getDirectory();
 		boolean flag = true;
 		if (exp.seqKymos != null ) {
-			boolean readOK = exp.seqKymos.xmlLoadKymos_Measures(directory);
+			boolean readOK = exp.xmlLoadKymos_Measures(directory);
 			if (readOK) {
-				SequenceKymos seqKymos = exp.seqKymos;
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
-					parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp, seqKymos.capillaries);
+					parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp);
 					parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
 					parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
 				}});
@@ -79,7 +78,7 @@ public class MCLevels_File  extends JPanel {
 		SequenceKymos seqKymos = exp.seqKymos;
 		boolean flag = true;
 		if (seqKymos != null && seqKymos.seq != null) {
-			seqKymos.transferKymosRoisToMeasures();
+			seqKymos.transferKymosRoisToMeasures(exp.capillaries);
 		}
 		return flag;
 	}
@@ -88,7 +87,7 @@ public class MCLevels_File  extends JPanel {
 		SequenceKymos seqKymos = exp.seqKymos;
 		boolean flag = true;
 		if (seqKymos != null && seqKymos.seq != null) {
-			seqKymos.transferMeasuresToKymosRois();
+			seqKymos.transferMeasuresToKymosRois(exp.capillaries);
 		}
 		return flag;
 	}

@@ -46,7 +46,7 @@ public class DetectLimits_series extends Build_series implements Runnable {
 			boolean flag = exp.loadKymographs();
 			if (flag) {
 				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
-				detectCapillaryLevels(exp.seqKymos);
+				detectCapillaryLevels(exp);
 				saveComputation(exp);
 			}
 		}
@@ -72,25 +72,25 @@ public class DetectLimits_series extends Build_series implements Runnable {
 		progress.close();
 	}
 	
-	private void detectCapillaryLevels(SequenceKymos seqkymo) {
-		
+	private void detectCapillaryLevels(Experiment exp) {
+		SequenceKymos seqKymos = exp.seqKymos;
 		int jitter = 10;
 		int kymofirst = 0;
-		int kymolast = seqkymo.seq.getSizeT() -1;
+		int kymolast = seqKymos.seq.getSizeT() -1;
 		if (! options.detectAllImages) {
 			kymofirst = options.firstImage;
 			kymolast = kymofirst;
 		}
-		seqkymo.seq.beginUpdate();
+		seqKymos.seq.beginUpdate();
 				
 		for (int kymo = kymofirst; kymo <= kymolast; kymo++) {
-			seqkymo.removeROIsAtT(kymo);
+			seqKymos.removeROIsAtT(kymo);
 			limitTop = new ArrayList<Point2D>();
 			limitBottom = new ArrayList<Point2D>();
  
 			IcyBufferedImage image = null;
 			int c = 0;
-			image = seqkymo.seq.getImage(kymo, 1);
+			image = seqKymos.seq.getImage(kymo, 1);
 			Object dataArray = image.getDataXY(c);
 			double[] tabValues = Array1DUtil.arrayToDoubleArray(dataArray, image.isSignedDataType());
 			
@@ -98,7 +98,7 @@ public class DetectLimits_series extends Build_series implements Runnable {
 			int endPixel = image.getSizeX()-1;
 			int xwidth = image.getSizeX();
 			int yheight = image.getSizeY();
-			Capillary cap = seqkymo.capillaries.capillariesArrayList.get(kymo);
+			Capillary cap = exp.capillaries.capillariesArrayList.get(kymo);
 			cap.ptsDerivative = null;
 			cap.gulpsRois = null;
 			options.copy(cap.limitsOptions);
@@ -126,31 +126,29 @@ public class DetectLimits_series extends Build_series implements Runnable {
 				oldiytop = ytop;		// assume that curve goes from left to right with jitter 
 				oldiybottom = ybottom;
 			}
-			
 			if (options.analyzePartOnly) {
 				Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop.polyline, startPixel, endPixel);
-				seqkymo.seq.addROI(cap.ptsTop.transferPolyline2DToROI());
+				seqKymos.seq.addROI(cap.ptsTop.transferPolyline2DToROI());
 				
 				Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom.polyline, startPixel, endPixel);
-				seqkymo.seq.addROI(cap.ptsBottom.transferPolyline2DToROI());
+				seqKymos.seq.addROI(cap.ptsBottom.transferPolyline2DToROI());
 			} else {
 				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);
 				roiTopTrack.setName(cap.getLast2ofCapillaryName()+"_toplevel");
 				roiTopTrack.setStroke(1);
 				roiTopTrack.setT(kymo);
-				seqkymo.seq.addROI(roiTopTrack);
+				seqKymos.seq.addROI(roiTopTrack);
 				cap.ptsTop = new CapillaryLimits( "toplevel", kymo-kymofirst, roiTopTrack.getPolyline2D());
 
 				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine (limitBottom);
 				roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
 				roiBottomTrack.setStroke(1);
 				roiBottomTrack.setT(kymo);
-				seqkymo.seq.addROI(roiBottomTrack);
+				seqKymos.seq.addROI(roiBottomTrack);
 				cap.ptsBottom = new CapillaryLimits( "bottomlevel", kymo-kymofirst, roiBottomTrack.getPolyline2D());
 			}
-		
 		}
-		seqkymo.seq.endUpdate();
+		seqKymos.seq.endUpdate();
 	}
 	
 	private int detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {

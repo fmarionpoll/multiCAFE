@@ -15,10 +15,7 @@ import javax.swing.event.ChangeListener;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
-import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceCamData;
-import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 
 
@@ -102,14 +99,13 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		boolean flag = tabFile.loadCapillaries_File(exp);
 		if (flag) {
-			SequenceKymos seqKymos = exp.seqKymos;
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
-				tabInfos.setDescriptors(seqKymos.capillaries);
+				tabInfos.setDescriptors(exp.capillaries);
 				parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
-				parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp, seqKymos.capillaries);
+				parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp);
 				parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
 				parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
-				tabCreate.setGroupingAndNumber(seqKymos.capillaries);
+				tabCreate.setGroupingAndNumber(exp.capillaries);
 			}});
 		}
 		return flag;
@@ -117,22 +113,20 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	
 	private void setCapillariesInfosToDialogs() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		SequenceCamData seqCamData = exp.seqCamData;
-		SequenceKymos seqKymos = exp.seqKymos;
-		SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
-		seqKymos.capillaries.desc_old.copy(seqKymos.capillaries.desc);
-		tabInfos.setDescriptors(seqKymos.capillaries);
-		tabCreate.setGroupingAndNumber(seqKymos.capillaries);
-		parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp, seqKymos.capillaries);
+		SequenceKymosUtils.transferCamDataROIStoKymo(exp);
+		exp.capillaries.desc_old.copy(exp.capillaries.desc);
+		tabInfos.setDescriptors(exp.capillaries);
+		tabCreate.setGroupingAndNumber(exp.capillaries);
+		parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp);
 	}
 	
 	boolean saveCapillaries(Experiment exp) {
 		return tabFile.saveCapillaries(exp);
 	}
 	
-	void getCapillariesInfos(Capillaries cap) {
-		tabInfos.getDescriptors(cap);
-		tabCreate.getGrouping(cap);
+	void getCapillariesInfos(Experiment exp) {
+		tabInfos.getDescriptors(exp.capillaries);
+		tabCreate.getGrouping(exp.capillaries);
 	}
 
 	@Override

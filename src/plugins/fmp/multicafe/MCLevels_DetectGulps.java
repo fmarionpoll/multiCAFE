@@ -97,7 +97,7 @@ public class MCLevels_DetectGulps extends JPanel {
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
-		List<Capillary> capList = seqKymos.capillaries.capillariesArrayList;
+		List<Capillary> capList = exp.capillaries.capillariesArrayList;
 		for (int t=0; t < seqKymos.seq.getSizeT(); t++) {
 			getInfosFromDialog(capList.get(t));		
 		}
@@ -124,8 +124,8 @@ public class MCLevels_DetectGulps extends JPanel {
 		
 		DetectGulps detect = new DetectGulps();
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		exp.seqKymos.transferKymosRoisToMeasures();
-		detect.detectGulps(options, exp.seqKymos);
+		exp.seqKymos.transferKymosRoisToMeasures(exp.capillaries);
+		detect.detectGulps(options, exp);
 	}
 
 	void setInfos(Capillary cap) {

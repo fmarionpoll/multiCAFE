@@ -93,10 +93,10 @@ public class MCMove_BuildROIs extends JPanel {
 		List<Point2D> points = new ArrayList<Point2D>();
 		int rectleft = rect.x + rect.width /6;
 		int rectright = rect.x + rect.width*5 /6;
-		if (exp.seqKymos.capillaries.capillariesArrayList.size() > 0) {
-			Rectangle bound0 = exp.seqKymos.capillaries.capillariesArrayList.get(0).capillaryRoi.getBounds();
-			int last = exp.seqKymos.capillaries.capillariesArrayList.size() - 1;
-			Rectangle bound1 = exp.seqKymos.capillaries.capillariesArrayList.get(last).capillaryRoi.getBounds();
+		if (exp.capillaries.capillariesArrayList.size() > 0) {
+			Rectangle bound0 = exp.capillaries.capillariesArrayList.get(0).capillaryRoi.getBounds();
+			int last = exp.capillaries.capillariesArrayList.size() - 1;
+			Rectangle bound1 = exp.capillaries.capillariesArrayList.get(last).capillaryRoi.getBounds();
 			rectleft = bound0.x;
 			rectright = bound1.x + bound1.width;
 			int diff = (rectright - rectleft)*2/60;

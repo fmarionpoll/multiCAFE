@@ -8,13 +8,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
-import org.w3c.dom.Document;
 import loci.formats.FormatException;
 import ome.xml.meta.OMEXMLMetadata;
 
@@ -29,7 +27,6 @@ import icy.sequence.MetaDataUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
-import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.OverlayThreshold;
@@ -37,12 +34,11 @@ import plugins.fmp.multicafeTools.OverlayTrapMouse;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
-import plugins.kernel.roi.roi2d.ROI2DShape;
+
 
 
 
 public class SequenceKymos extends SequenceCamData  {	
-	public  Capillaries 	capillaries 			= new Capillaries();
 	public 	boolean 		hasChanged 				= false;
 	public 	boolean 		bStatusChanged 			= false;
 	public 	OverlayThreshold thresholdOverlay 		= null;
@@ -76,18 +72,13 @@ public class SequenceKymos extends SequenceCamData  {
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
-	public String getDecoratedImageNameFromCapillary(int t) {
-		if (capillaries != null & capillaries.capillariesArrayList.size() > 0)
-			return capillaries.capillariesArrayList.get(t).capillaryRoi.getName() + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
-		return csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
-	}
 
 	// ----------------------------
 	
-	public void roisSaveEdits() {
+	public void roisSaveEdits(Capillaries capillaries) {
 		if (hasChanged) {
 			validateRois();
-			transferKymosRoisToMeasures();
+			transferKymosRoisToMeasures(capillaries);
 			hasChanged = false;
 		}
 	}
@@ -144,7 +135,7 @@ public class SequenceKymos extends SequenceCamData  {
 		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());
 	}
 
-	public void transferKymosRoisToMeasures() {
+	public void transferKymosRoisToMeasures(Capillaries capillaries) {
 		List<ROI> allRois = seq.getROIs();
 		for (int t=0; t< seq.getSizeT(); t++) {
 			List<ROI> roisAtT = new ArrayList<ROI> ();
@@ -163,7 +154,7 @@ public class SequenceKymos extends SequenceCamData  {
 		}
 	}
 	
-	public void transferMeasuresToKymosRois() {
+	public void transferMeasuresToKymosRois(Capillaries capillaries) {
 		List<ROI> all = new ArrayList<ROI>();
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			List<ROI> listOfRois = cap.transferMeasuresToROIs();
@@ -173,80 +164,21 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	// ----------------------------
-	
-	public void getAnalysisParametersFromCamData (SequenceCamData vSequence) {		
-		capillaries.desc.analysisStart = vSequence.analysisStart; 
-		capillaries.desc.analysisEnd  = vSequence.analysisEnd;
-		capillaries.desc.analysisStep = vSequence.analysisStep;
-	}
-	
-	public void setCapillariesFromCamData(SequenceCamData seqCam) {
-//		SequenceKymosUtils.transferCamDataROIStoKymo(seqCam, this);
-		getCamDataROIS (seqCam);
-		setStartStopStepToCapillaries();
-//		getStartStopStepFromCapillaries ();
-		return;
-	}
-	
-	public void updateCapillariesFromCamData(SequenceCamData seqCam) {
-		List<ROI2D> listROISCap = seqCam.getCapillaries();
-		for (Capillary cap: capillaries.capillariesArrayList) {
-			cap.valid = false;
-			String capName = cap.replace_LR_with_12(cap.capillaryRoi.getName());
-			Iterator <ROI2D> iterator = listROISCap.iterator();
-			while(iterator.hasNext()) { 
-				ROI2D roi = iterator.next();
-				String roiName = cap.replace_LR_with_12(roi.getName());
-				if (roiName.equals (capName)) {
-					cap.capillaryRoi = (ROI2DShape) roi;
-					cap.valid = true;
-				}
-				if (cap.valid) {
-					iterator.remove();
-					break;
-				}
-			}
-		}
-		
-		Iterator <Capillary> iterator = capillaries.capillariesArrayList.iterator();
-		while (iterator.hasNext()) {
-			Capillary cap = iterator.next();
-			if (!cap.valid )
-				iterator.remove();
-		}
-		
-		if (listROISCap.size() > 0) {
-			for (ROI2D roi: listROISCap) {
-				Capillary cap = new Capillary((ROI2DShape) roi);
-				capillaries.capillariesArrayList.add(cap);
-			}
-		}
-		setStartStopStepToCapillaries();
-		return;
-	}
-	
-	public void getCamDataROIS (SequenceCamData seqCam) {
-		capillaries.capillariesArrayList.clear();
-		List<ROI2D> listROISCap = seqCam.getCapillaries();
-		for (ROI2D roi:listROISCap) {
-			capillaries.capillariesArrayList.add(new Capillary((ROI2DShape)roi));
-		}
-		
-	}
-		
-	public void setStartStopStepToCapillaries () {
+
+			
+	void setStartStopStepToCapillaries (Capillaries capillaries) {
 		capillaries.desc.analysisStart = analysisStart;
 		capillaries.desc.analysisEnd = analysisEnd;
 		capillaries.desc.analysisStep = analysisStep;
 	}
 	
-	private void getStartStopStepFromCapillaries () {
+	void getStartStopStepFromCapillaries (Capillaries capillaries) {
 		analysisStart = capillaries.desc.analysisStart;
 		analysisEnd = capillaries.desc.analysisEnd;
 		analysisStep = capillaries.desc.analysisStep;
 	}
 	
-	public List <String> loadListOfKymographsFromCapillaries(String dir) {
+	public List <String> loadListOfKymographsFromCapillaries(String dir, Capillaries capillaries) {
 		isRunning_loadImages = true;
 		String directoryFull = dir +File.separator ;
 		if (!dir .contains("results"))
@@ -279,25 +211,6 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	// -------------------------
 	
-	public boolean loadMeasuresFromList(List <String> myListOfFileNames) {
-		isRunning_loadImages = true;
-		boolean flag = (myListOfFileNames.size() > 0);
-		if (!flag)
-			return flag;
-		
-		loadSequenceFromList(myListOfFileNames, true);
-		if (isInterrupted_loadImages) {
-			isRunning_loadImages = false;
-			return false;
-		}
-
-		setParentDirectoryAsFileName();
-		status = EnumStatus.KYMOGRAPH;
-		transferMeasuresToKymosRois();
-		isRunning_loadImages = false;
-		return flag;
-	}
-	
 	public boolean loadImagesFromList(List <String> myListOfFileNames, boolean adjustImagesSize) {
 		isRunning_loadImages = true;
 		boolean flag = (myListOfFileNames.size() > 0);
@@ -319,16 +232,13 @@ public class SequenceKymos extends SequenceCamData  {
 				return false;
 			}
 		}
-		
 		loadSequenceFromList(myListOfFileNames, true);
 		if (isInterrupted_loadImages) {
 			isRunning_loadImages = false;
 			return false;
 		}
-
 		setParentDirectoryAsFileName();
 		status = EnumStatus.KYMOGRAPH;
-		transferMeasuresToKymosRois();
 		isRunning_loadImages = false;
 		return flag;
 	}
@@ -432,7 +342,7 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	// ----------------------------------
 	
-	private String getCorrectPath(String cspathname) {
+	String getCorrectPath(String cspathname) {
 		Path path = Paths.get(cspathname);
 		String pathname = cspathname;
 		if (path.toFile().isDirectory()) {
@@ -450,7 +360,7 @@ public class SequenceKymos extends SequenceCamData  {
 		return pathname;
 	}
 	
-	private String buildCorrectPath(String pathname) {
+	String buildCorrectPath(String pathname) {
 		Path path = Paths.get(pathname);
 		if (path.toFile().isDirectory()) {
 			pathname = pathname + File.separator + "results" + File.separator + "MCcapillaries.xml";
@@ -459,64 +369,7 @@ public class SequenceKymos extends SequenceCamData  {
 		return pathname;
 	}
 	
-	public boolean xmlLoadKymos_Measures(String pathname) {
-		pathname = getCorrectPath(pathname);
-		if (pathname == null)
-			return false;
-		boolean flag = capillaries.xmlLoadCapillaries(pathname);
-		if (flag) {
-			Path pathfilename = Paths.get(pathname);
-			directory = pathfilename.getParent().toString();
-			getStartStopStepFromCapillaries ();
-			loadListOfKymographsFromCapillaries(getDirectory());
-		}
-		return flag;
-	}
 	
-	public boolean xmlLoadMCcapillariesOnly(String pathname) {
-		pathname = getCorrectPath(pathname);
-		if (pathname == null)
-			return false;
-		boolean flag = capillaries.xmlLoadCapillaries(pathname);
-		return flag;
-	}
-	
-	public boolean xmlLoadMCcapillaries(String pathname) {
-		pathname = getCorrectPath(pathname);
-		if (pathname == null)
-			return false;
-		boolean flag = capillaries.xmlLoadCapillaries(pathname);
-		if (flag) {
-			Path pathfilename = Paths.get(pathname);
-			directory = pathfilename.getParent().toString();
-			getStartStopStepFromCapillaries ();
-			loadListOfKymographsFromCapillaries(getDirectory());
-		}
-		return flag;
-	}
-	
-	public boolean xmlSaveMCcapillaries(String pathname) {
-		String pathnameMC = buildCorrectPath(pathname);
-		capillaries.xmlSaveCapillaries_Only(pathnameMC);
-		boolean flag = capillaries.xmlSaveCapillaries_Measures(pathname);
-		return flag;
-	}
-	
-	public boolean xmlSaveKymos_Measures(String pathname) {
-		File f = new File(pathname);
-		if (!f.isDirectory())
-			pathname = Paths.get(pathname).getParent().toString();
-		return capillaries.xmlSaveCapillaries_Measures(pathname);
-	}
-	
-	public boolean xmlReadRoiLineParameters(String pathname) {
-		if (pathname != null)  {
-			final Document doc = XMLUtil.loadDocument(pathname);
-			if (doc != null) 
-				return capillaries.desc.xmlLoadCapillaryDescription(doc); 
-		}
-		return false;
-	}
 
 	// ----------------------------
 
@@ -607,9 +460,9 @@ public class SequenceKymos extends SequenceCamData  {
 		}
 	}
 	
-	public void saveKymosMeasures() {
-		roisSaveEdits();
-		xmlSaveMCcapillaries(getDirectory());
-		xmlSaveKymos_Measures(getDirectory());
+	public void saveKymosMeasures(Experiment exp) {
+		roisSaveEdits(exp.capillaries);
+		exp.xmlSaveMCcapillaries(getDirectory());
+		exp.xmlSaveKymos_Measures(getDirectory());
 	}
 }

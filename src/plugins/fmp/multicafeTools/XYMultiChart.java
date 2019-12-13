@@ -19,6 +19,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 
 public class XYMultiChart extends IcyFrame  {
@@ -54,8 +55,9 @@ public class XYMultiChart extends IcyFrame  {
 		pt = new Point(rectv.x + deltapt.x, rectv.y + deltapt.y);
 	}
 	
-	public void displayData(SequenceKymos kymoseq, EnumListType option) {
+	public void displayData(Experiment exp, EnumListType option) {
 		xyChartList.clear();
+		SequenceKymos kymoseq = exp.seqKymos;
 		if (kymoseq == null || kymoseq.seq == null)
 			return;
 		ymax = 0;
@@ -64,8 +66,8 @@ public class XYMultiChart extends IcyFrame  {
 		xyDataSetList2.clear();
 		flagMaxMinSet = false;
 		int nimages = kymoseq.seq.getSizeT();
-		int kmax = kymoseq.capillaries.desc.grouping;
-		int startFrame = (int) kymoseq.capillaries.desc.analysisStart;
+		int kmax = exp.capillaries.desc.grouping;
+		int startFrame = (int) exp.capillaries.desc.analysisStart;
 		
 		for (int t=0; t< nimages; t+= kmax) {
 			XYSeriesCollection xyDataset = new XYSeriesCollection();
@@ -73,7 +75,7 @@ public class XYMultiChart extends IcyFrame  {
 			for (int k=0; k <kmax; k++) {
 				if ((t+k) >= nimages)
 					continue;
-				Capillary cap = kymoseq.capillaries.capillariesArrayList.get(t+k);
+				Capillary cap = exp.capillaries.capillariesArrayList.get(t+k);
 				EnumListType ooption = option;
 				if (option == EnumListType.topAndBottom)
 					ooption = EnumListType.topLevel;
@@ -118,17 +120,17 @@ public class XYMultiChart extends IcyFrame  {
 		mainChartFrame.setVisible(true);
 	}
 
-	public void fetchNewData(SequenceKymos kymoseq, EnumListType option) {
-		
+	public void fetchNewData(Experiment exp, EnumListType option) {
+		SequenceKymos kymoseq = exp.seqKymos;
 		int ixy = 0;
 		if (xyDataSetList == null || xyDataSetList.size() < 1)
 			return;
 		flagMaxMinSet = false;
 		XYSeriesCollection xyDataset = null;
 		XYSeriesCollection xyDataset2 = null;
-		int kmax = kymoseq.capillaries.desc.grouping;
+		int kmax = exp.capillaries.desc.grouping;
 		int nimages = kymoseq.seq.getSizeT();
-		int startFrame = (int) kymoseq.capillaries.desc.analysisStart;
+		int startFrame = (int) exp.capillaries.desc.analysisStart;
 		
 		for (int t=0; t< nimages; t+= kmax, ixy++) {
 			if (ixy >= xyDataSetList.size())
@@ -145,7 +147,7 @@ public class XYMultiChart extends IcyFrame  {
 			for (int k=0; k <kmax; k++) {
 				if ((t+k) >= nimages)
 					continue;
-				Capillary cap = kymoseq.capillaries.capillariesArrayList.get(t+k);
+				Capillary cap = exp.capillaries.capillariesArrayList.get(t+k);
 				List<Integer> results = cap.getMeasures(ooption);
 				if (option == EnumListType.topLevelDelta) {
 					results = kymoseq.subtractTi(results);

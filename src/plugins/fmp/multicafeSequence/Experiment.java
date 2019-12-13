@@ -5,21 +5,25 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
+import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import icy.image.IcyBufferedImage;
+import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ImageTransformTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
+import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Experiment {
 	
 	public String			experimentFileName			= null;
 	public SequenceCamData 	seqCamData 					= null;
 	public SequenceKymos 	seqKymos					= null;
+	public Capillaries 		capillaries 			= new Capillaries();
 	
 	private FileTime		fileTimeImageFirst;
 	private FileTime		fileTimeImageLast;
@@ -30,6 +34,9 @@ public class Experiment {
 	public int 				startFrame 					= 0;
 	public int 				endFrame 					= 0;
 	public int 				step 						= 1;
+	public long						analysisStart 			= 0;
+	public long 					analysisEnd				= 99999999;
+	public int 						analysisStep 			= 1;
 	
 	public String			boxID 						= new String("..");
 	public String			experiment					= new String("..");
@@ -92,7 +99,7 @@ public class Experiment {
 		
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
-		if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
+		if (!xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 			return false;
 
 		seqCamData.xmlReadDrosoTrackDefault();
@@ -111,13 +118,13 @@ public class Experiment {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		if (loadCapillaries) {
-			if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
+			if (!xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 				return false;
 		}
 		if (!flag || boxID .equals ("..")) {
-			boxID = seqKymos.capillaries.desc.old_boxID;
-			experiment = seqKymos.capillaries.desc.old_experiment;
-			comment = seqKymos.capillaries.desc.old_comment;
+			boxID = capillaries.desc.old_boxID;
+			experiment = capillaries.desc.old_experiment;
+			comment = capillaries.desc.old_comment;
 		}
 		
 		if (loadDrosoPositions)
@@ -207,13 +214,15 @@ public class Experiment {
  	public boolean loadKymographs() {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
-		if (seqKymos.capillaries.capillariesArrayList.size() == 0) {
+		if (capillaries.capillariesArrayList.size() == 0) {
 			// TODO check if it is ok to load only the list of capillaries here
-			if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
+			if (!xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 				return false;;
 		}
-		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory());
+		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory(), capillaries);
 		boolean flag = seqKymos.loadImagesFromList(myList, true);
+		seqKymos.transferMeasuresToKymosRois(capillaries);
+		
 		return flag;
 	}
 	
@@ -224,7 +233,7 @@ public class Experiment {
 	public boolean loadKymos_Measures() {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
-		if (!seqKymos.xmlLoadKymos_Measures(seqCamData.getDirectory())) 
+		if (!xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 			return false;
 		return true;
 	}
@@ -327,8 +336,8 @@ public class Experiment {
 	public void loadExperimentData() {
 		xmlLoadExperiment();
 		seqCamData.loadSequence(experimentFileName) ;
-		seqKymos.setCapillariesFromCamData(seqCamData);
-		seqKymos.xmlLoadMCcapillaries(experimentFileName);
+		seqCamData.setCapillariesFromCamData(capillaries);
+		xmlLoadMCcapillaries(experimentFileName);
 	}
 	
 	public void loadExperimentCamData() {
@@ -339,14 +348,14 @@ public class Experiment {
 	public void loadExperimentDataForBuildKymos() {
 		xmlLoadExperiment();
 		seqCamData.loadSequence(experimentFileName) ;
-		seqKymos.xmlLoadMCcapillariesOnly(experimentFileName);
+		xmlLoadMCcapillariesOnly(experimentFileName);
 	}
 	
 	public void saveExperimentMeasures() {
 		if (seqKymos != null) {
-			seqKymos.roisSaveEdits();
-			seqKymos.xmlSaveMCcapillaries(seqCamData.getDirectory());
-			seqKymos.xmlSaveKymos_Measures(seqCamData.getDirectory());
+			seqKymos.roisSaveEdits(capillaries);
+			xmlSaveMCcapillaries(seqCamData.getDirectory());
+			xmlSaveKymos_Measures(seqCamData.getDirectory());
 		}
 	}
 	
@@ -362,10 +371,9 @@ public class Experiment {
 		int nimages = seqKymos.seq.getSizeT();
 		seqKymos.seq.beginUpdate();
 		tImg.setSequence(seqKymos);
-		seqKymos.setStartStopStepToCapillaries();
-		Capillaries capillaries = seqKymos.capillaries;
+		seqKymos.setStartStopStepToCapillaries(capillaries);
 		if (capillaries.capillariesArrayList.size() != nimages) {
-			SequenceKymosUtils.transferCamDataROIStoKymo(seqCamData, seqKymos);
+			SequenceKymosUtils.transferCamDataROIStoKymo(this);
 		}
 		
 		for (int t= 0; t < nimages; t++) {
@@ -382,11 +390,131 @@ public class Experiment {
 		}
 		
 		if (zChannelDestination == 1)
-			seqKymos.capillaries.limitsOptions.transformForLevels = transformop;
+			capillaries.limitsOptions.transformForLevels = transformop;
 		else
-			seqKymos.capillaries.gulpsOptions.transformForGulps = transformop;
+			capillaries.gulpsOptions.transformForGulps = transformop;
 		seqKymos.seq.dataChanged();
 		seqKymos.seq.endUpdate();
+	}
+	
+	public boolean capillaryRoisOpen(String csFileName) {
+		boolean flag = false;
+		if (capillaries != null) {
+			if (csFileName == null) {
+				csFileName = seqKymos.getDirectory() +File.separator+"results"+ File.separator+ "MCcapillaries.xml";
+				flag = capillaries.xmlLoadCapillaries(csFileName);
+				if (!flag) {
+					csFileName = seqKymos.getDirectory() + File.separator + "capillaryTrack.xml";
+					flag = capillaries.xmlLoadCapillaries(csFileName);
+				}
+			}
+			analysisStart = capillaries.desc.analysisStart;
+			analysisEnd = capillaries.desc.analysisEnd;
+			analysisStep = capillaries.desc.analysisStep;
+		}
+		return flag;
+	}
+	
+	public boolean xmlLoadKymos_Measures(String pathname) {
+		pathname = seqKymos.getCorrectPath(pathname);
+		if (pathname == null)
+			return false;
+		boolean flag = capillaries.xmlLoadCapillaries(pathname);
+		if (flag) {
+			Path pathfilename = Paths.get(pathname);
+			seqKymos.directory = pathfilename.getParent().toString();
+			seqKymos.getStartStopStepFromCapillaries (capillaries);
+			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.getDirectory(), capillaries);
+		}
+		return flag;
+	}
+	
+	public boolean xmlLoadMCcapillariesOnly(String pathname) {
+		pathname = seqKymos.getCorrectPath(pathname);
+		if (pathname == null)
+			return false;
+		boolean flag = capillaries.xmlLoadCapillaries(pathname);
+		return flag;
+	}
+	
+	public boolean xmlLoadMCcapillaries(String pathname) {
+		pathname = seqKymos.getCorrectPath(pathname);
+		if (pathname == null)
+			return false;
+		boolean flag = capillaries.xmlLoadCapillaries(pathname);
+		if (flag) {
+			Path pathfilename = Paths.get(pathname);
+			seqKymos.directory = pathfilename.getParent().toString();
+			seqKymos.getStartStopStepFromCapillaries (capillaries);
+			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.getDirectory(), capillaries);
+		}
+		return flag;
+	}
+	
+	public boolean xmlSaveMCcapillaries(String pathname) {
+		String pathnameMC = seqKymos.buildCorrectPath(pathname);
+		capillaries.xmlSaveCapillaries_Only(pathnameMC);
+		boolean flag = capillaries.xmlSaveCapillaries_Measures(pathname);
+		return flag;
+	}
+	
+	public boolean xmlSaveKymos_Measures(String pathname) {
+		File f = new File(pathname);
+		if (!f.isDirectory())
+			pathname = Paths.get(pathname).getParent().toString();
+		return capillaries.xmlSaveCapillaries_Measures(pathname);
+	}
+	
+	public boolean xmlReadRoiLineParameters(String pathname) {
+		if (pathname != null)  {
+			final Document doc = XMLUtil.loadDocument(pathname);
+			if (doc != null) 
+				return capillaries.desc.xmlLoadCapillaryDescription(doc); 
+		}
+		return false;
+	}
+	
+	
+	public void updateCapillariesFromCamData() {
+		List<ROI2D> listROISCap = seqCamData.getCapillaries();
+		for (Capillary cap: capillaries.capillariesArrayList) {
+			cap.valid = false;
+			String capName = cap.replace_LR_with_12(cap.capillaryRoi.getName());
+			Iterator <ROI2D> iterator = listROISCap.iterator();
+			while(iterator.hasNext()) { 
+				ROI2D roi = iterator.next();
+				String roiName = cap.replace_LR_with_12(roi.getName());
+				if (roiName.equals (capName)) {
+					cap.capillaryRoi = (ROI2DShape) roi;
+					cap.valid = true;
+				}
+				if (cap.valid) {
+					iterator.remove();
+					break;
+				}
+			}
+		}
+		Iterator <Capillary> iterator = capillaries.capillariesArrayList.iterator();
+		while (iterator.hasNext()) {
+			Capillary cap = iterator.next();
+			if (!cap.valid )
+				iterator.remove();
+		}
+		
+		if (listROISCap.size() > 0) {
+			for (ROI2D roi: listROISCap) {
+				Capillary cap = new Capillary((ROI2DShape) roi);
+				capillaries.capillariesArrayList.add(cap);
+			}
+		}
+		seqKymos.setStartStopStepToCapillaries(capillaries);
+		return;
+	}
+	
+	public String getDecoratedImageNameFromCapillary(int t) {
+		if (capillaries != null & capillaries.capillariesArrayList.size() > 0)
+			return capillaries.capillariesArrayList.get(t).capillaryRoi.getName() + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
+		return seqKymos.csFileName + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
 	}
 	
 }

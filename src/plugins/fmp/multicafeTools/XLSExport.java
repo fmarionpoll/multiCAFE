@@ -58,10 +58,10 @@ public class XLSExport {
 		String boxID = exp.boxID;
 		String experiment = exp.experiment;
 		String comment = exp.comment;
-		String stimulusL = exp.seqKymos.capillaries.desc.stimulusL;
-		String stimulusR = exp.seqKymos.capillaries.desc.stimulusR;
-		String concentrationL = exp.seqKymos.capillaries.desc.concentrationL;
-		String concentrationR = exp.seqKymos.capillaries.desc.concentrationR;
+		String stimulusL = exp.capillaries.desc.stimulusL;
+		String stimulusR = exp.capillaries.desc.stimulusR;
+		String concentrationL = exp.capillaries.desc.concentrationL;
+		String concentrationR = exp.capillaries.desc.concentrationR;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String date = df.format(exp.getFileTimeImageFirst(false).toMillis());	
 		String name0 = path.toString();
@@ -72,7 +72,7 @@ public class XLSExport {
 		String name111 = getSubName(path, 4); 
 		String sheetName = sheet.getSheetName();
 		
-		List<Capillary> capList = exp.seqKymos.capillaries.capillariesArrayList;
+		List<Capillary> capList = exp.capillaries.capillariesArrayList;
 		
 		for (int t=0; t< capList.size(); t++) { 
 			Capillary cap = capList.get(t);

@@ -130,7 +130,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 		if (seqKymos == null)
 			return;
 		TransformOp transform = (TransformOp) transformForLevelsComboBox.getSelectedItem();
-		List<Capillary> capList = seqKymos.capillaries.capillariesArrayList;
+		List<Capillary> capList = exp.capillaries.capillariesArrayList;
 		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) {
 			getInfosFromDialog(capList.get(t));		
 		}
