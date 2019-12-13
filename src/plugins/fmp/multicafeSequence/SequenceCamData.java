@@ -567,6 +567,12 @@ public class SequenceCamData implements SequenceListener {
 		}
 		return cageList;
 	}
+	
+	public boolean saveFlyPositions() {
+		cages.fromROIsToCages(this);
+		String csFile = getDirectory() +File.separator + "drosotrack.xml";
+		return cages.xmlWriteCagesToFileNoQuestion(csFile);
+	}
 
 	@Override
 	public void sequenceChanged(SequenceEvent sequenceEvent) {

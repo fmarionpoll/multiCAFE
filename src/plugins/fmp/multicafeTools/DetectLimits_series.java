@@ -46,7 +46,7 @@ public class DetectLimits_series extends Build_series implements Runnable {
 			boolean flag = exp.loadKymographs();
 			if (flag) {
 				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
-				detectCapillaryLevels(options, exp.seqKymos);
+				detectCapillaryLevels(exp.seqKymos);
 				saveComputation(exp);
 			}
 		}
@@ -72,7 +72,7 @@ public class DetectLimits_series extends Build_series implements Runnable {
 		progress.close();
 	}
 	
-	private void detectCapillaryLevels(DetectLimits_Options options, SequenceKymos seqkymo) {
+	private void detectCapillaryLevels(SequenceKymos seqkymo) {
 		
 		int jitter = 10;
 		int kymofirst = 0;

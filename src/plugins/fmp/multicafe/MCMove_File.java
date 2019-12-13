@@ -4,7 +4,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -71,8 +70,6 @@ public class MCMove_File extends JPanel {
 	}
 	
 	boolean saveCages(Experiment exp) {
-		exp.seqCamData.cages.fromROIsToCages(exp.seqCamData);
-		String csFile = exp.seqCamData.getDirectory() +File.separator + "drosotrack.xml";
-		return exp.seqCamData.cages.xmlWriteCagesToFileNoQuestion(csFile);
+		return exp.saveFlyPositions();
 	}
 }

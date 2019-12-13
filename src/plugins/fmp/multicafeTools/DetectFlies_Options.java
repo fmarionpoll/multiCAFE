@@ -17,6 +17,7 @@ import icy.sequence.Sequence;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Cages;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
@@ -44,7 +45,8 @@ public class DetectFlies_Options implements XMLPersistent {
 	public int 		startFrame;
 	public int 		endFrame;
 	public int 		nbframes;
-	public SequenceCamData seqCamData = null;	
+	public SequenceCamData seqCamData = null;
+	public ExperimentList expList = null;
 	public Rectangle 	rectangleAllCages = null;
 	ROI2DRectangle [] 	tempRectROI;
 	ROI [][] 			resultFlyPositionArrayList;

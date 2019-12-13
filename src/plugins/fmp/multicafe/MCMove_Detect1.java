@@ -28,6 +28,7 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.fmp.multicafeTools.DetectFlies1;
+import plugins.fmp.multicafeTools.DetectFlies1_series;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.fmp.multicafeTools.OverlayThreshold;
@@ -56,7 +57,8 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 	private JCheckBox ALLCheckBox = new JCheckBox("ALL series", false);
 	
 	private OverlayThreshold 	ov 					= null;
-	private DetectFlies1 		detectFlies1Thread 	= null;
+	private DetectFlies1_series detectFlies1Thread 	= null;
+	private int 				currentExp 			= -1;
 
 	
 	
@@ -195,7 +197,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 	
 	void startComputation() {
 		if (detectFlies1Thread == null)
-			detectFlies1Thread = new DetectFlies1();		
+			detectFlies1Thread = new DetectFlies1_series();		
 		if (detectFlies1Thread.threadRunning) {
 			stopComputation();
 			return;

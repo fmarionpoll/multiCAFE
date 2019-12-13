@@ -331,6 +331,11 @@ public class Experiment {
 		seqKymos.xmlLoadMCcapillaries(experimentFileName);
 	}
 	
+	public void loadExperimentCamData() {
+		xmlLoadExperiment();
+		seqCamData.loadSequence(experimentFileName) ;
+	}
+	
 	public void loadExperimentDataForBuildKymos() {
 		xmlLoadExperiment();
 		seqCamData.loadSequence(experimentFileName) ;
@@ -343,6 +348,10 @@ public class Experiment {
 			seqKymos.xmlSaveMCcapillaries(seqCamData.getDirectory());
 			seqKymos.xmlSaveKymos_Measures(seqCamData.getDirectory());
 		}
+	}
+	
+	public boolean saveFlyPositions() {
+		return seqCamData.saveFlyPositions();
 	}
 	
 	public void kymosBuildFiltered(int zChannelSource, int zChannelDestination, TransformOp transformop, int spanDiff) {

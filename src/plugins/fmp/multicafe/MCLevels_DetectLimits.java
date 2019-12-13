@@ -46,7 +46,7 @@ public class MCLevels_DetectLimits  extends JPanel {
 	private JButton 	detectButton 			= new JButton("Detect");
 	private MultiCAFE 	parent0 				= null;
 	private JCheckBox	partCheckBox 			= new JCheckBox ("detect from", false);
-	JCheckBox			ALLCheckBox 			= new JCheckBox("ALL series", false);
+	private JCheckBox	ALLCheckBox 			= new JCheckBox("ALL series", false);
 	DetectLimits_series detectLimitsThread 		= null;
 	private Thread 		thread 					= null;
 	private int 		currentExp 				= -1;
