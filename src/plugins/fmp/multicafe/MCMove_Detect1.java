@@ -27,7 +27,6 @@ import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.XYTaSeries;
-import plugins.fmp.multicafeTools.DetectFlies1;
 import plugins.fmp.multicafeTools.DetectFlies1_series;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
