@@ -175,6 +175,14 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		exp.seqCamData.analysisStep = exp.step;
 		exp.seqCamData.analysisStart = exp.startFrame;
 		exp.seqCamData.analysisEnd = exp.endFrame;
+		detect.expList = parent0.expList; 
+		detect.expList.index0 = parent0.currentExperimentIndex;
+		detect.expList.index1 = detect.expList.index0;
+		if (ALLCheckBox.isSelected()) {
+			detect.expList.index0 = 0;
+			detect.expList.index1 = parent0.expList.experimentList.size()-1;
+		}
+		
 		detect.seqCamData 		= exp.seqCamData;
 		
 		detectFlies1Thread.stopFlag 	= false;

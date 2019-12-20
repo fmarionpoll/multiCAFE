@@ -90,8 +90,10 @@ public class DetectFlies1_series implements Runnable {
 				if (workImage == null)
 					continue;
 				detect.seqCamData.currentFrame = t;
-				viewerCamData.setPositionT(t);
-				viewerCamData.setTitle(detect.seqCamData.getDecoratedImageName(t));
+				if (viewerCamData != null) {
+					viewerCamData.setPositionT(t);
+					viewerCamData.setTitle(detect.seqCamData.getDecoratedImageName(t));
+				}
 				detect.findFlies (workImage, t, it);		
 			}
 		} finally {
