@@ -22,7 +22,7 @@ import javax.swing.event.ChangeListener;
 
 import icy.gui.util.GuiUtil;
 import icy.roi.ROI2D;
-import icy.system.thread.ThreadUtil;
+
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
@@ -59,9 +59,10 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 	
 	private OverlayThreshold 	ov 					= null;
 	private DetectFlies1_series detectFlies1Thread 	= null;
+	private Thread 				thread 				= null;
 	private int 				currentExp 			= -1;
 
-	
+	// -----------------------------------------------------
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
@@ -178,7 +179,6 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		
 		detectFlies1Thread.stopFlag 	= false;
 		detectFlies1Thread.detect 		= detect;
-
 		return true;
 	}
 	
@@ -197,17 +197,46 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 	}
 	
 	void startComputation() {
-		if (detectFlies1Thread == null)
-			detectFlies1Thread = new DetectFlies1_series();		
-		if (detectFlies1Thread.threadRunning) {
-			stopComputation();
-			return;
-		}	
+		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, false);
+		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
+				parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
+		currentExp = parent0.currentExperimentIndex;
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.paneSequence.tabClose.closeExp(exp);
+		
+		detectFlies1Thread = new DetectFlies1_series();		
+			
 		initTrackParameters();
 		cleanPreviousDetections();
 		detectFlies1Thread.buildBackground	= false;
 		detectFlies1Thread.detectFlies		= true;
-		ThreadUtil.bgRun(detectFlies1Thread);
+		
+		thread = new Thread(null, detectFlies1Thread, "+++detect_levels");
+		thread.start();
+		Thread waitcompletionThread = new Thread(null, new Runnable() {
+			public void run() {
+				try { 
+					thread.join();
+					}
+				catch(Exception e){;} 
+				finally { 
+					series_detectFliesStop();
+				}
+			}}, "+++waitforcompletion");
+		waitcompletionThread.start();
+	}
+	
+	private void series_detectFliesStop() {	
+		if (thread != null && thread.isAlive()) {
+			detectFlies1Thread.stopFlag = true;
+			try {
+				thread.join();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		}
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.paneSequence.openExperiment(exp);
 	}
 
 	void stopComputation() {

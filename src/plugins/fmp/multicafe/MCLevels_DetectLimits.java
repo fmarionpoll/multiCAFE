@@ -213,11 +213,6 @@ public class MCLevels_DetectLimits  extends JPanel {
 				e1.printStackTrace();
 			}
 		}
-
-		series_resetUserInterface();
-	}
-	
-	private void series_resetUserInterface() {
 		Experiment exp = parent0.expList.getExperiment(currentExp);
 		parent0.paneSequence.openExperiment(exp);
 		detectButton.setText("Detect");

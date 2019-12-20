@@ -128,16 +128,7 @@ public class MCKymos_Create extends JPanel {
 	
 		series_kymosBuildKymographs();	
 	}
-		
-	private void series_resetUserInterface() {
-		Experiment exp = parent0.expList.getExperiment(currentExp);
-		parent0.paneSequence.openExperiment(exp);
-		sComputation = EnumStatusComputation.START_COMPUTATION;
-		firePropertyChange( "KYMOS_CREATE", false, true);
-		setStartButton(true);
-		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
-	}
-	
+			
 	private void series_kymosBuildKymographs() {	
 		BuildKymographs_Options options = buildKymographsThread2.options;
 		if (options.expList == null) {
@@ -169,7 +160,12 @@ public class MCKymos_Create extends JPanel {
 				e1.printStackTrace();
 			}
 		}
-		series_resetUserInterface();
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.paneSequence.openExperiment(exp);
+		sComputation = EnumStatusComputation.START_COMPUTATION;
+		firePropertyChange( "KYMOS_CREATE", false, true);
+		setStartButton(true);
+		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 	}
 	
 	private void updateStepInXMLExperiments(int step ) {
