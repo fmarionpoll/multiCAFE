@@ -11,6 +11,8 @@ import icy.image.IcyBufferedImage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 
+
+
 public class DetectFlies1_series implements Runnable {
 
 	private Viewer 				viewerCamData;
@@ -21,6 +23,8 @@ public class DetectFlies1_series implements Runnable {
 	public DetectFlies_Options 	detect 			= new DetectFlies_Options();
 
 
+	// -----------------------------------------------------
+	
 	
 	@Override
 	public void run() {

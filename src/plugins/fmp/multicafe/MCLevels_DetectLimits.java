@@ -53,7 +53,8 @@ public class MCLevels_DetectLimits  extends JPanel {
 
 	
 	
-	
+	// -----------------------------------------------------
+		
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;

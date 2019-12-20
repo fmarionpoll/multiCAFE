@@ -52,6 +52,8 @@ public class DetectFlies_Options implements XMLPersistent {
 	ROI [][] 			resultFlyPositionArrayList;
 	
 	
+	// -----------------------------------------------------
+	
 	
 	@Override
 	public boolean loadFromXML(Node node) {
