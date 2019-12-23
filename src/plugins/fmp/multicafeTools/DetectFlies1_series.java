@@ -15,13 +15,12 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 
 public class DetectFlies1_series implements Runnable {
 
-	private Viewer 				viewerCamData;
+	private Viewer 				viewerCamData 	= null;
 	public boolean 				stopFlag 		= false;
 	public boolean 				threadRunning 	= false;
 	public boolean				buildBackground	= true;
 	public boolean				detectFlies		= true;
 	public DetectFlies_Options 	detect 			= new DetectFlies_Options();
-
 
 	// -----------------------------------------------------
 	
@@ -43,6 +42,7 @@ public class DetectFlies1_series implements Runnable {
 			exp.loadExperimentCamData();
 			detectFlies1(exp);
 			saveComputation(exp);
+			exp.seqCamData.seq.close();
 		}
 		progressBar.close();
 		threadRunning = false;
@@ -78,7 +78,8 @@ public class DetectFlies1_series implements Runnable {
 		progressBar.initStuff(detect.endFrame-detect.startFrame+1);
 		
 		try {
-			viewerCamData = detect.seqCamData.seq.getFirstViewer();	
+			viewerCamData = new Viewer(exp.seqCamData.seq, true);
+//			viewerCamData = detect.seqCamData.seq.getFirstViewer();	
 			detect.seqCamData.seq.beginUpdate();
 
 			// ----------------- loop over all images of the stack

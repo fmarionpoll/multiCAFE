@@ -159,7 +159,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			progress.close();
 			if (paneSequence.tabOpen.graphsCheckBox.isSelected())
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
-				    	paneLevels.tabGraphs.xyDisplayGraphs();
+				    	paneLevels.tabGraphs.xyDisplayGraphs(exp);
 				}});
 		}
 		

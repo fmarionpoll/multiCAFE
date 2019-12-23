@@ -44,7 +44,7 @@ public class CapillaryGulps  implements XMLPersistent  {
 		final Node nodeROIs = XMLUtil.setElement(node, ID_GULPS);
         if (nodeROIs != null){
         	flag = true;
-        	if (rois != null)
+        	if (rois != null && rois.size() > 0)
         		ROI.saveROIsToXML(nodeROIs, rois);
 	    }
         return flag;

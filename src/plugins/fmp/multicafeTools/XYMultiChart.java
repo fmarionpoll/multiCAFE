@@ -36,7 +36,7 @@ public class XYMultiChart extends IcyFrame  {
 	private int ymin = 0;
 	private List<XYSeriesCollection> 	xyDataSetList 	= new ArrayList <XYSeriesCollection>();
 	private List<XYSeriesCollection> 	xyDataSetList2 	= new ArrayList <XYSeriesCollection>();
-	private List<JFreeChart> 			xyChartList = new ArrayList <JFreeChart>();
+	private List<JFreeChart> 			xyChartList 	= new ArrayList <JFreeChart>();
 	private String title;
 
 	//----------------------------------------
@@ -68,7 +68,7 @@ public class XYMultiChart extends IcyFrame  {
 		int nimages = kymoseq.seq.getSizeT();
 		int kmax = exp.capillaries.desc.grouping;
 		int startFrame = (int) exp.capillaries.desc.analysisStart;
-		
+		// get data arrays to display
 		for (int t=0; t< nimages; t+= kmax) {
 			XYSeriesCollection xyDataset = new XYSeriesCollection();
 			XYSeriesCollection xyDataset2 = new XYSeriesCollection();
@@ -93,7 +93,7 @@ public class XYMultiChart extends IcyFrame  {
 			if (option == EnumListType.topAndBottom)
 				xyDataSetList2.add(xyDataset2);
 		}
-		
+		// display data in charts
 		for (int i=0; i< xyDataSetList.size(); i++) {	
 			XYSeriesCollection xyDataset = xyDataSetList.get(i);
 			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, true, true);
@@ -113,7 +113,6 @@ public class XYMultiChart extends IcyFrame  {
 			ChartPanel xyChartPanel = new ChartPanel(xyChart, 100, 200, 50, 100, 100, 200, false, false, true, true, true, true);
 			mainChartPanel.add(xyChartPanel);
 		}
-
 		mainChartFrame.pack();
 		mainChartFrame.setLocation(pt);
 		mainChartFrame.addToDesktopPane ();
@@ -131,7 +130,6 @@ public class XYMultiChart extends IcyFrame  {
 		int kmax = exp.capillaries.desc.grouping;
 		int nimages = kymoseq.seq.getSizeT();
 		int startFrame = (int) exp.capillaries.desc.analysisStart;
-		
 		for (int t=0; t< nimages; t+= kmax, ixy++) {
 			if (ixy >= xyDataSetList.size())
 				break;
@@ -159,13 +157,12 @@ public class XYMultiChart extends IcyFrame  {
 				xyDataset.addSeries( seriesXY );
 				getMaxMin();
 			}
-			
 			// save data into xyDataSetList
 			xyDataSetList.set(ixy, xyDataset);
 			if (option ==  EnumListType.topAndBottom)
 				xyDataSetList2.set(ixy, xyDataset2);
 		}
-
+		// create charts
 		for (int i=0; i< xyDataSetList.size(); i++) {	
 			xyDataset = xyDataSetList.get(i);
 			JFreeChart xyChart = xyChartList.get(i);

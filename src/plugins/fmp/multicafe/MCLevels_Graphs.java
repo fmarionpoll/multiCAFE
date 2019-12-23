@@ -36,63 +36,60 @@ public class MCLevels_Graphs extends JPanel {
 	private JCheckBox 	consumptionCheckbox 	= new JCheckBox("consumption", false);
 	private JCheckBox 	deltaCheckbox 			= new JCheckBox("delta (Vt - Vt-1)", false);
 	
-	private JButton 	displayFeedingActivitiesButton 	= new JButton("Display results");
+	private JButton 	displayResultsButton 	= new JButton("Display results");
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		add(GuiUtil.besidesPanel(limitsCheckbox, derivativeCheckbox, consumptionCheckbox, deltaCheckbox));
-		add(GuiUtil.besidesPanel(displayFeedingActivitiesButton, new JLabel(" "))); 
+		add(GuiUtil.besidesPanel(displayResultsButton, new JLabel(" "))); 
 		defineActionListeners();
 	}
 	
 	private void defineActionListeners() {
-		displayFeedingActivitiesButton.addActionListener(new ActionListener () { 
+		displayResultsButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				exp.seqKymos.roisSaveEdits(exp.capillaries);
-				xyDisplayGraphs();
+				xyDisplayGraphs(exp);
 			}});
 	}
 	
-	void xyDisplayGraphs() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+	void xyDisplayGraphs(Experiment exp) {
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
-		if (exp == null || v == null)
+		if (v == null)
 			return;
 		final Rectangle rectv = v.getBounds();
 		Point ptRelative = new Point(0, 35); //rectv.height);
 		final int deltay = 230;
-
 		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumListType.topAndBottom)) {
-			topandbottomChart = xyDisplayGraphsItem("top + bottom levels", 
+			topandbottomChart = xyDisplayGraphsItem(exp, "top + bottom levels", 
 					EnumListType.topAndBottom, 
 					topandbottomChart, rectv, ptRelative);
 			ptRelative.y += deltay;
 		}
 		if (deltaCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumListType.topLevelDelta)) {
-			deltaChart = xyDisplayGraphsItem("top delta t -(t-1)", 
+			deltaChart = xyDisplayGraphsItem(exp, "top delta t -(t-1)", 
 					EnumListType.topLevelDelta, 
 					deltaChart, rectv, ptRelative);
 			ptRelative.y += deltay;
 		}
 		if (derivativeCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumListType.derivedValues)) {
-			derivativeChart = xyDisplayGraphsItem("Derivative", 
+			derivativeChart = xyDisplayGraphsItem(exp, "Derivative", 
 					EnumListType.derivedValues, 
 					derivativeChart, rectv, ptRelative);
 			ptRelative.y += deltay; 
 		}
 		if (consumptionCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumListType.cumSum)) {
-			sumgulpsChart = xyDisplayGraphsItem("Cumulated gulps", 
+			sumgulpsChart = xyDisplayGraphsItem(exp, "Cumulated gulps", 
 					EnumListType.cumSum, 
 					sumgulpsChart, rectv, ptRelative);
 			ptRelative.y += deltay; 
 		}
 	}
 
-	private XYMultiChart xyDisplayGraphsItem(String title, EnumListType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) {	
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+	private XYMultiChart xyDisplayGraphsItem(Experiment exp, String title, EnumListType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) {	
 		if (iChart != null && iChart.mainChartPanel.isValid()) {
 			iChart.fetchNewData(exp, option);
 		}

@@ -131,7 +131,6 @@ public class ROI2DUtilities  {
 		List<Integer> intArray = transferROIToDataArray(roi);
 		Polyline2D line = roi.getPolyline2D();
 		int jstart = (int) line.xpoints[0];
-
 		int previousY = intArray.get(0);
 		for (int i=0; i< intArray.size(); i++) {
 			int val = intArray.get(i);

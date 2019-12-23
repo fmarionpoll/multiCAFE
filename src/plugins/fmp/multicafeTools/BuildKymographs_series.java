@@ -216,8 +216,6 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 		
 		// -------------------------------------------
 		
-		
-		
 		private boolean transferWorkImageToDoubleArrayList() {	
 			sourceValuesList = new ArrayList<double []>();
 			for (int chan = 0; chan < workImage.getSizeC(); chan++)  {
