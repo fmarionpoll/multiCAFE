@@ -125,7 +125,7 @@ public class MCLevels_DetectGulps extends JPanel {
 		DetectGulps detect = new DetectGulps();
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		exp.seqKymos.transferKymosRoisToMeasures(exp.capillaries);
-		detect.detectGulps(options, exp);
+		detect.detectGulps(exp, options);
 	}
 
 	void setInfos(Capillary cap) {

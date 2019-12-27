@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icy.image.IcyBufferedImage;
+
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
 import plugins.fmp.multicafeSequence.Capillary;
@@ -16,21 +17,17 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 public class DetectGulps {
-	
-	//private DetectGulps_Options options 		= null;
-	//private List <Integer> 		topLevelArray 	= null;
 	private SequenceKymos 		seqkymo 		= null;
 	
 	
-	public void detectGulps(DetectGulps_Options options, Experiment exp) {			
-		//this.options = options;
+	public void detectGulps(Experiment exp, DetectGulps_Options options) {			
 		this.seqkymo = exp.seqKymos;
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
 		progressBar.initStuff(seqkymo.seq.getSizeT() );
 		int jitter = 5;
 		int firstkymo = 0;
 		int lastkymo = seqkymo.seq.getSizeT() -1;
-		if (! options.detectAllGulps) {
+		if (!options.detectAllGulps) {
 			firstkymo = options.firstkymo;
 			lastkymo = firstkymo;
 		}
@@ -38,12 +35,13 @@ public class DetectGulps {
 		for (int indexkymo=firstkymo; indexkymo <= lastkymo; indexkymo++) {
 			progressBar.updatePositionAndTimeLeft(indexkymo);
 			Capillary cap = exp.capillaries.capillariesArrayList.get(indexkymo);
-			cap.gulpsOptions = options; //.copy(options);
+			cap.gulpsOptions = options;
 			if (options.buildDerivative) {
 				seqkymo.removeRoisContainingString(indexkymo, "derivative");
 				getDerivativeProfile(indexkymo, cap, jitter);	
 			}
 			if (options.buildGulps) {
+				cap.cleanGulps(options);
 				cap.getGulps(indexkymo, options);
 				if (cap.gulpsRois.rois.size() > 0)
 					seqkymo.seq.addROIs(cap.gulpsRois.rois, false);
@@ -88,7 +86,6 @@ public class DetectGulps {
 		seqkymo.seq.addROI(roiDerivative, false);
 		cap.ptsDerivative = new CapillaryLimits(roiDerivative.getName(), indexkymo, roiDerivative.getPolyline2D());
 	}
-	
 	
 }
 

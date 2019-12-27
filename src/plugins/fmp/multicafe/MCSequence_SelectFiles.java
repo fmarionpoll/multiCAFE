@@ -126,14 +126,12 @@ public class MCSequence_SelectFiles extends JPanel {
 	}
 
 	private void removeListofNamesFromList(List<String> selectedItems) {
-		System.out.println("removeListofNamesFromList");
 		for (String oo: selectedItems)
 	    	 ((DefaultListModel<String>) directoriesJList.getModel()).removeElement(oo);
 	}
 	
  	private void getListofFilesMatchingPattern(String pattern) {
- 		System.out.println("getlistofFilesMatchingPattern");
-		XMLPreferences guiPrefs = parent0.getPreferences("gui");
+ 		XMLPreferences guiPrefs = parent0.getPreferences("gui");
 		String lastUsedPathString = guiPrefs.get("lastUsedPath", "");
 		File dir = chooseDirectory(lastUsedPathString);
 		if (dir == null) {

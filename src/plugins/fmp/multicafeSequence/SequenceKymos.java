@@ -165,7 +165,6 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	// ----------------------------
 
-			
 	void setStartStopStepToCapillaries (Capillaries capillaries) {
 		capillaries.desc.analysisStart = analysisStart;
 		capillaries.desc.analysisEnd = analysisEnd;
