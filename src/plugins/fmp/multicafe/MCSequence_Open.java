@@ -34,7 +34,7 @@ public class MCSequence_Open extends JPanel implements PropertyChangeListener {
 	JCheckBox			graphsCheckBox			= new JCheckBox("graphs", true);
 	
 	public List<String> selectedNames 			= new ArrayList<String> ();
-	private SelectMultipleFiles dialog 			= null;
+	private MCSequence_SelectFiles dialog 			= null;
 	
 	
 	
@@ -60,7 +60,7 @@ public class MCSequence_Open extends JPanel implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent arg0) {
             	selectedNames = new ArrayList<String> ();
-            	dialog = new SelectMultipleFiles();
+            	dialog = new MCSequence_SelectFiles();
             	dialog.initialize(parent0);
             }});
 		closeButton.addActionListener(new ActionListener()  {

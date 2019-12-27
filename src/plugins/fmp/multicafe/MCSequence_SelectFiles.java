@@ -25,7 +25,7 @@ import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
 import icy.preferences.XMLPreferences;
 
-public class SelectMultipleFiles extends JPanel {
+public class MCSequence_SelectFiles extends JPanel {
 
 	/**
 	 * 
@@ -107,6 +107,8 @@ public class SelectMultipleFiles extends JPanel {
             	List<String> selectedItems = directoriesJList.getSelectedValuesList();
     			addNamesToSelectedList(selectedItems);
     			removeListofNamesFromList(selectedItems);
+    			firePropertyChange("SEARCH_CLOSED", false, true);
+    			close();
             }});
 		addAllButton.addActionListener(new ActionListener()  {
             @Override
