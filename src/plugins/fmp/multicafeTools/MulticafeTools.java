@@ -235,23 +235,6 @@ public class MulticafeTools  extends Plugin {
 		
 		return extFrame;
 	}
-
-	public static File chooseDirectory(String rootdirectory) {
-		File dummy_selected = null;
-		JFileChooser fc = new JFileChooser(); 
-		if (rootdirectory != null)
-			fc.setCurrentDirectory(new File(rootdirectory));
-	    fc.setDialogTitle("Select a root directory...");
-	    fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-	    fc.setAcceptAllFileFilterUsed(false);
-	    if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) { 
-	      dummy_selected = fc.getSelectedFile();
-	    }
-	    else {
-	      System.out.println("No directory selected ");
-	    }
-		return dummy_selected;
-	}
 	
 }
 
