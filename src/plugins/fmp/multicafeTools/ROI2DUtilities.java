@@ -30,27 +30,27 @@ public class ROI2DUtilities  {
 		return cageMaskList;
 	}
 	
-	public static boolean interpolateMissingPointsAlongXAxis (ROI2DPolyLine roiLine, int nintervals) {
+	public static void interpolateMissingPointsAlongXAxis (ROI2DPolyLine roiLine, int nintervals) {
 		if (nintervals <= 0)
-			return false;
+			return;
 		// interpolate points so that each x step has a value	
 		// assume that points are ordered along x
 		Polyline2D polyline = roiLine.getPolyline2D();
 		int roiLine_npoints = polyline.npoints;
-
-		// clip extra points
 		if (roiLine_npoints > nintervals)
 			roiLine_npoints = nintervals;
 				
 		List<Point2D> pts = new ArrayList <Point2D>(roiLine_npoints);
 		double ylast = polyline.ypoints[roiLine_npoints-1];
+		int xfirst0 = (int) polyline.xpoints[0];
+		
 		for (int i=1; i< roiLine_npoints; i++) {			
 			int xfirst = (int) polyline.xpoints[i-1];
 			if (xfirst < 0)
 				xfirst = 0;
 			int xlast = (int) polyline.xpoints[i];
-			if (xlast > nintervals -1)
-				xlast = nintervals -1;
+			if (xlast > xfirst0 + nintervals -1)
+				xlast = xfirst0 + nintervals -1;
 			double yfirst = polyline.ypoints[i-1];
 			ylast = polyline.ypoints[i]; 
 			for (int j = xfirst; j< xlast; j++) {
@@ -62,10 +62,9 @@ public class ROI2DUtilities  {
 		Point2D pt = new Point2D.Double(polyline.xpoints[roiLine_npoints-1], ylast);
 		pts.add(pt);
 		roiLine.setPoints(pts);
-		return true;
 	}
 
-	private static List<Integer> transferROIToDataArray(ROI2DPolyLine roiLine) {
+	private static List<Integer> transferROIYpointsToIntList(ROI2DPolyLine roiLine) {
 		Polyline2D line = roiLine.getPolyline2D();
 		List<Integer> intArray = new ArrayList<Integer> (line.npoints);
 		for (int i=0; i< line.npoints; i++) {
@@ -108,7 +107,7 @@ public class ROI2DUtilities  {
 		for (ROI2D roi: listRois) {
 			if (roi.getName().contains(filter)) { 
 				interpolateMissingPointsAlongXAxis ((ROI2DPolyLine)roi, width);
-				return transferROIToDataArray((ROI2DPolyLine)roi);
+				return transferROIYpointsToIntList((ROI2DPolyLine)roi);
 			}
 		}
 		return null;
@@ -126,13 +125,11 @@ public class ROI2DUtilities  {
 	public static void addROItoCumulatedSumArray(ROI2DPolyLine roi, List<Integer> sumArrayList) {
 		Polyline2D roiline = roi.getPolyline2D();
 		int width =(int) roiline.xpoints[roiline.npoints-1] - (int) roiline.xpoints[0] +1; 
-		if (!interpolateMissingPointsAlongXAxis (roi, width))
-			return;
-		List<Integer> intArray = transferROIToDataArray(roi);
-		Polyline2D line = roi.getPolyline2D();
-		int jstart = (int) line.xpoints[0];
+		interpolateMissingPointsAlongXAxis (roi, width);
+		List<Integer> intArray = transferROIYpointsToIntList(roi);
+		int jstart = (int) roiline.xpoints[0];
 		int previousY = intArray.get(0);
-		for (int i=0; i< intArray.size(); i++) {
+		for (int i=1; i< intArray.size(); i++) {
 			int val = intArray.get(i);
 			int deltaY = val - previousY;
 			previousY = val;
