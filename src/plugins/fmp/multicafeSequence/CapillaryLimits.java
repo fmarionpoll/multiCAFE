@@ -31,6 +31,7 @@ public class CapillaryLimits  implements XMLPersistent  {
 	
 	CapillaryLimits(String typename, int indexImage) {
 		this.typename = typename;
+		name = typename;
 		this.indexImage = indexImage;
 	}
 	
@@ -151,7 +152,7 @@ public class CapillaryLimits  implements XMLPersistent  {
 		int npoints = 0;
 		polyline = null;
 	    if (nodeMeta != null) {
-	    	name =  XMLUtil.getElementValue(nodeMeta, "name", "noname");
+	    	name =  XMLUtil.getElementValue(nodeMeta, "name", nodename);
 	    	int npoints1 = XMLUtil.getElementIntValue(nodeMeta, ID_NPOINTS, 0);
 	    	double[] xpoints = new double [npoints1];
 	    	double[] ypoints = new double [npoints1];

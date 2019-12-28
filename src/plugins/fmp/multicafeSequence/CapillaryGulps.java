@@ -69,7 +69,6 @@ public class CapillaryGulps  implements XMLPersistent  {
 		for (ROI roi: listRois) {		
 			String roiname = roi.getName();
 			if (roi instanceof ROI2DPolyLine ) {
-				//((ROI2DPolyLine) roi).setT(indexImage);
 				if (roiname .contains("gulp"))	
 					rois.add(roi);
 			}
