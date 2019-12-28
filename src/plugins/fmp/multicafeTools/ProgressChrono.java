@@ -22,7 +22,7 @@ public class ProgressChrono extends ProgressFrame {
 		t0 =  (int) (getNanos() / 1000000000f);
 	}
 	
-	public void initStuff(int nbframes) {
+	public void initChrono(int nbframes) {
 		this.nbframes = nbframes;
 		setLength(nbframes);
 		startChrono();

@@ -25,7 +25,7 @@ public class DetectFlies1 implements Runnable {
 		
 		System.out.println("Computation over frames: " + detect.startFrame + " - " + detect.endFrame );
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
-		progressBar.initStuff(detect.endFrame-detect.startFrame+1);
+		progressBar.initChrono(detect.endFrame-detect.startFrame+1);
 		
 		try {
 			viewerCamData = detect.seqCamData.seq.getFirstViewer();	

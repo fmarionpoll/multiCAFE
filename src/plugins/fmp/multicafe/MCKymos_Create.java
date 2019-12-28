@@ -177,7 +177,7 @@ public class MCKymos_Create extends JPanel {
 			i1 = i0+1;
 		}
 		ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
-		progressBar.initStuff(i1);
+		progressBar.initChrono(i1);
 		progressBar.setMessageFirstPart("Processing XML MCexperiment ");
 		
 		for (int index = i0; index < i1; index++) {

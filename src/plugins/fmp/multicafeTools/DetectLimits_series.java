@@ -34,16 +34,19 @@ public class DetectLimits_series extends Build_series implements Runnable {
 		ExperimentList expList = options.expList;
 		int nbexp = expList.index1 - expList.index0 +1;
 		ProgressChrono progressBar = new ProgressChrono("Detect limits");
-		progressBar.initStuff(nbexp);
+		progressBar.initChrono(nbexp);
 		progressBar.setMessageFirstPart("Analyze series ");
 		for (int index = expList.index0; index <= expList.index1; index++) {
 			if (stopFlag)
 				break;
 			Experiment exp = expList.experimentList.get(index);
-			System.out.println(exp.experimentFileName);
+//			System.out.println(exp.experimentFileName);
 			progressBar.updatePosition(index-expList.index0+1);
-			exp.loadExperimentData();
-			boolean flag = exp.loadKymographs();
+			boolean flag = true;
+			if (nbexp > 1) {
+				exp.loadExperimentData();
+				flag = exp.loadKymographs();
+			}
 			if (flag) {
 				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
 				detectCapillaryLevels(exp);

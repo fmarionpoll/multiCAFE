@@ -25,7 +25,6 @@ import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
 public class MCLevels_DetectLimits  extends JPanel {
-
 	/**
 	 * 
 	 */
@@ -165,16 +164,17 @@ public class MCLevels_DetectLimits  extends JPanel {
 				parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
 		currentExp = parent0.currentExperimentIndex;
 		Experiment exp = parent0.expList.getExperiment(currentExp);
-		parent0.paneSequence.tabClose.closeExp(exp);
-
+		
 		detectLimitsThread = new DetectLimits_series();
 		DetectLimits_Options options= detectLimitsThread.options;
 		options.expList = parent0.expList; 
-		options.expList.index0 = parent0.currentExperimentIndex;
-		options.expList.index1 = options.expList.index0;
 		if (ALLCheckBox.isSelected()) {
 			options.expList.index0 = 0;
 			options.expList.index1 = parent0.expList.experimentList.size()-1;
+			parent0.paneSequence.tabClose.closeExp(exp);
+		} else {
+			options.expList.index0 = parent0.currentExperimentIndex;
+			options.expList.index1 = options.expList.index0;
 		}
 		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
@@ -214,7 +214,9 @@ public class MCLevels_DetectLimits  extends JPanel {
 			}
 		}
 		Experiment exp = parent0.expList.getExperiment(currentExp);
-		parent0.paneSequence.openExperiment(exp);
+		if (ALLCheckBox.isSelected()) {
+			parent0.paneSequence.openExperiment(exp);
+		}
 		detectButton.setText("Detect");
 		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 		parent0.paneKymos.tabDisplay.displayViews (true);

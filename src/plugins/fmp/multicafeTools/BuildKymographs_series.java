@@ -109,7 +109,7 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 			
 			int nbframes = options.endFrame - options.startFrame +1;
 			ProgressChrono progressBar = new ProgressChrono("Processing started");
-			progressBar.initStuff(nbframes);
+			progressBar.initChrono(nbframes);
 			threadRunning = true;
 			stopFlag = false;
 

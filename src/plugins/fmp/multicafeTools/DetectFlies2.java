@@ -89,7 +89,7 @@ public class DetectFlies2  implements Runnable {
 
 	private void detectFlies () {
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
-		progressBar.initStuff(detect.endFrame-detect.startFrame+1);
+		progressBar.initChrono(detect.endFrame-detect.startFrame+1);
 		
 		detect.btrackWhite = true;
 		seqReference.seq.close();

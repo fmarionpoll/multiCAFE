@@ -31,7 +31,7 @@ public class DetectFlies1_series implements Runnable {
 		ExperimentList expList = detect.expList;
 		int nbexp = expList.index1 - expList.index0 +1;
 		ProgressChrono progressBar = new ProgressChrono("Detect limits");
-		progressBar.initStuff(nbexp);
+		progressBar.initChrono(nbexp);
 		progressBar.setMessageFirstPart("Analyze series ");
 		for (int index = expList.index0; index <= expList.index1; index++) {
 			if (stopFlag)
@@ -75,7 +75,7 @@ public class DetectFlies1_series implements Runnable {
 		
 		System.out.println("Computation over frames: " + detect.startFrame + " - " + detect.endFrame );
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
-		progressBar.initStuff(detect.endFrame-detect.startFrame+1);
+		progressBar.initChrono(detect.endFrame-detect.startFrame+1);
 		
 		try {
 			viewerCamData = new Viewer(exp.seqCamData.seq, true);

@@ -23,7 +23,7 @@ public class DetectGulps {
 	public void detectGulps(Experiment exp, DetectGulps_Options options) {			
 		this.seqkymo = exp.seqKymos;
 		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
-		progressBar.initStuff(seqkymo.seq.getSizeT() );
+		progressBar.initChrono(seqkymo.seq.getSizeT() );
 		int jitter = 5;
 		int firstkymo = 0;
 		int lastkymo = seqkymo.seq.getSizeT() -1;
