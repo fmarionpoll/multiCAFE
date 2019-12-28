@@ -42,6 +42,7 @@ public class DetectGulps {
 			}
 			if (options.buildGulps) {
 				cap.cleanGulps(options);
+				seqkymo.removeRoisContainingString(indexkymo, "gulp");
 				cap.getGulps(indexkymo, options);
 				if (cap.gulpsRois.rois.size() > 0)
 					seqkymo.seq.addROIs(cap.gulpsRois.rois, false);
