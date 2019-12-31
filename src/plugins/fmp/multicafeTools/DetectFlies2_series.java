@@ -2,6 +2,11 @@ package plugins.fmp.multicafeTools;
 
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +18,13 @@ import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.roi.BooleanMask2D;
 import icy.type.collection.array.Array1DUtil;
+import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
-public class DetectFlies2  implements Runnable {
+public class DetectFlies2_series  implements Runnable {
 	
 	private List<Boolean>		initialflyRemoved = new ArrayList<Boolean> ();
 	private Viewer 				viewerCamData;
@@ -49,11 +56,51 @@ public class DetectFlies2  implements Runnable {
 	@Override
 	public void run() {
 		threadRunning = true;
-
+		ExperimentList expList = detect.expList;
+		int nbexp = expList.index1 - expList.index0 +1;
+		ProgressChrono progressBar = new ProgressChrono("Detect limits");
+		progressBar.initChrono(nbexp);
+		progressBar.setMessageFirstPart("Analyze series ");
+		for (int index = expList.index0; index <= expList.index1; index++) {
+			if (stopFlag)
+				break;
+			Experiment exp = expList.experimentList.get(index);
+			System.out.println(exp.experimentFileName);
+			progressBar.updatePosition(index-expList.index0+1);
+			exp.loadExperimentCamData();
+			exp.seqCamData.xmlReadDrosoTrackDefault();
+			detectFlies2(exp);
+			saveComputation(exp);
+			exp.seqCamData.seq.close();
+		}
+		progressBar.close();
+		threadRunning = false;
+	}
+	
+	private void saveComputation(Experiment exp) {			
+		Path dir = Paths.get(exp.seqCamData.getDirectory());
+		dir = dir.resolve("results");
+		String directory = dir.toAbsolutePath().toString();
+		if (Files.notExists(dir))  {
+			try {
+				Files.createDirectory(dir);
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("Creating directory failed: "+ directory);
+				return;
+			}
+		}
+		ProgressFrame progress = new ProgressFrame("Save kymograph measures");		
+		exp.saveFlyPositions();
+		progress.close();
+	}
+	
+	private void detectFlies2(Experiment exp) {
 		// create arrays for storing position and init their value to zero
 		if (seqNegative == null) seqNegative 	= new SequenceCamData();
 		if (seqPositive == null) seqPositive 	= new SequenceCamData();
 		if (seqReference == null) seqReference	= new SequenceCamData();
+		detect.seqCamData = exp.seqCamData;
 		detect.initParametersForDetection();
 		System.out.println("Computation over frames: " + detect.startFrame + " - " + detect.endFrame );
 
@@ -100,14 +147,16 @@ public class DetectFlies2  implements Runnable {
 		
 		try {
 			viewerCamData = detect.seqCamData.seq.getFirstViewer();	
-			detect.seqCamData.seq.beginUpdate();
-						
+			detect.seqCamData.seq.beginUpdate();	
 			if (viewInternalImages) {
-				SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
+				try {
+					SwingUtilities.invokeAndWait(new Runnable() { public void run() {
 						displayDetectViewer();
-					}
-				});
+					}});
+				} catch (InvocationTargetException | InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			
 			// ----------------- loop over all images of the stack
@@ -163,20 +212,14 @@ public class DetectFlies2  implements Runnable {
 		Viewer vNegative = new Viewer(seqNegative.seq, false);
 		seqNegative.seq.setName("detectionImage");
 		seqNegative.seq.setImage(0,  0, detect.seqCamData.refImage);
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 		Point pt = viewerCamData.getLocation();
 		if (vNegative != null) {
 			vNegative.setLocation(pt);
 			vNegative.setVisible(true);
-		}
+		}	
 	}
 
 	public void displayRefViewers () {
-
 		if (seqPositive == null) seqPositive 	= new SequenceCamData();
 		if (seqReference == null) seqReference	= new SequenceCamData();
 		
@@ -195,12 +238,6 @@ public class DetectFlies2  implements Runnable {
 		Point pt = viewerCamData.getLocation();
 		int height = viewerCamData.getHeight();
 		pt.y += height;
-		
-//		try {
-//			Thread.sleep(100);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
 				
 		if (vPositive != null) {
 			vPositive.setVisible(true);
@@ -222,13 +259,14 @@ public class DetectFlies2  implements Runnable {
 			initialflyRemoved.add(false);
 		
 		viewerCamData = detect.seqCamData.seq.getFirstViewer();
-//		if (viewInternalImages) {	
-//			SwingUtilities.invokeLater(new Runnable() {
-//				public void run() {
-					displayRefViewers();
-//				}
-//			});
-//		}
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() { public void run() {
+				displayRefViewers();
+			}});
+		} catch (InvocationTargetException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		for (int t = detect.startFrame +1 ; t <= detect.endFrame && !stopFlag; t  += detect.analyzeStep ) {				
 			IcyBufferedImage currentImage = detect.seqCamData.getImage(t, 0);

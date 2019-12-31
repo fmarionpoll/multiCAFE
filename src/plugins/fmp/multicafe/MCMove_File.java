@@ -40,7 +40,6 @@ public class MCMove_File extends JPanel {
 	}
 	
 	private void defineActionListeners() {
-	
 		openCagesButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
@@ -58,8 +57,7 @@ public class MCMove_File extends JPanel {
 			}});
 	}
 
-	boolean loadCages(String csFileName) {
-		
+	boolean loadCages(String csFileName) {	
 		boolean flag = false;
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (csFileName == null)

@@ -1,9 +1,12 @@
 package plugins.fmp.multicafeTools;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import javax.swing.SwingUtilities;
 
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
@@ -13,9 +16,12 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 
 
 
+
 public class DetectFlies1_series implements Runnable {
 
 	private Viewer 				viewerCamData 	= null;
+	private OverlayThreshold 	ov 				= null;
+	
 	public boolean 				stopFlag 		= false;
 	public boolean 				threadRunning 	= false;
 	public boolean				buildBackground	= true;
@@ -40,6 +46,7 @@ public class DetectFlies1_series implements Runnable {
 			System.out.println(exp.experimentFileName);
 			progressBar.updatePosition(index-expList.index0+1);
 			exp.loadExperimentCamData();
+			exp.seqCamData.xmlReadDrosoTrackDefault();
 			detectFlies1(exp);
 			saveComputation(exp);
 			exp.seqCamData.seq.close();
@@ -67,7 +74,6 @@ public class DetectFlies1_series implements Runnable {
 	}
 	
 	private void detectFlies1(Experiment exp) {
-		
 		// create arrays for storing position and init their value to zero
 		detect.seqCamData = exp.seqCamData;
 		detect.initParametersForDetection();
@@ -78,7 +84,26 @@ public class DetectFlies1_series implements Runnable {
 		progressBar.initChrono(detect.endFrame-detect.startFrame+1);
 		
 		try {
-			viewerCamData = new Viewer(exp.seqCamData.seq, true);
+			SwingUtilities.invokeAndWait(new Runnable() { public void run() {
+				viewerCamData = new Viewer(exp.seqCamData.seq, true);
+				if (ov == null) 
+					ov = new OverlayThreshold(exp.seqCamData);
+				else {
+					detect.seqCamData.seq.removeOverlay(ov);
+					ov.setSequence(exp.seqCamData);
+				}
+				detect.seqCamData.seq.addOverlay(ov);	
+				ov.setThresholdSingle(detect.seqCamData.cages.detect.threshold);
+				ov.painterChanged();
+				
+			}});
+		} catch (InvocationTargetException | InterruptedException e) {
+				// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		try {
+			
 //			viewerCamData = detect.seqCamData.seq.getFirstViewer();	
 			detect.seqCamData.seq.beginUpdate();
 

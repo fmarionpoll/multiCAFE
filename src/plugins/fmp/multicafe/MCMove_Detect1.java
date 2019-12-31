@@ -54,13 +54,13 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 	private JCheckBox objectUpsizeCheckBox 	= new JCheckBox("object < ");
 	private JSpinner objectUpsizeSpinner	= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
 	private JCheckBox whiteMiceCheckBox 	= new JCheckBox("white object");
-	private JCheckBox overlayCheckBox = new JCheckBox("overlay");
-	private JCheckBox ALLCheckBox = new JCheckBox("ALL series", false);
+	private JCheckBox overlayCheckBox 		= new JCheckBox("overlay");
+	private JCheckBox ALLCheckBox 			= new JCheckBox("ALL series", false);
 	
-	private OverlayThreshold 	ov 					= null;
+	private OverlayThreshold 	ov 			= null;
 	private DetectFlies1_series detectFlies1Thread 	= null;
-	private Thread 				thread 				= null;
-	private int 				currentExp 			= -1;
+	private Thread 				thread 		= null;
+	private int 				currentExp 	= -1;
 
 	// -----------------------------------------------------
 	
@@ -69,7 +69,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		this.parent0 = parent0;
 		
 		JPanel dummyPanel = new JPanel();
-		dummyPanel.add( GuiUtil.besidesPanel(whiteMiceCheckBox, overlayCheckBox, ALLCheckBox) );
+		dummyPanel.add( GuiUtil.besidesPanel(ALLCheckBox, whiteMiceCheckBox, overlayCheckBox) );
 		
 		FlowLayout layout = (FlowLayout) dummyPanel.getLayout();
 		layout.setVgap(0);
@@ -182,9 +182,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 			detect.expList.index0 = 0;
 			detect.expList.index1 = parent0.expList.experimentList.size()-1;
 		}
-		
 		detect.seqCamData 		= exp.seqCamData;
-		
 		detectFlies1Thread.stopFlag 	= false;
 		detectFlies1Thread.detect 		= detect;
 		return true;
@@ -207,7 +205,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 	void startComputation() {
 		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, false);
 		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
-				parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
+			parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
 		currentExp = parent0.currentExperimentIndex;
 		Experiment exp = parent0.expList.getExperiment(currentExp);
 		parent0.paneSequence.tabClose.closeExp(exp);

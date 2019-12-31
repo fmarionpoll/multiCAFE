@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -31,7 +32,7 @@ import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.XYTaSeries;
-import plugins.fmp.multicafeTools.DetectFlies2;
+import plugins.fmp.multicafeTools.DetectFlies2_series;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.OverlayThreshold;
 
@@ -44,8 +45,8 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	private static final long serialVersionUID = -5257698990389571518L;
 	private MultiCAFE parent0;
 	
-	private JButton 	buildBackgroundButton 	= new JButton("Build background / Stop");
-	private JButton 	startComputationButton 	= new JButton("Detect flies / Stop");
+	private JButton 	buildBackgroundButton 	= new JButton("Build ref. / Stop");
+	private JButton 	startComputationButton 	= new JButton("    Detect flies / Stop    ");
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(100, 0, 255, 10));
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 255, 1));
 	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object >");
@@ -54,33 +55,51 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
 	public 	JCheckBox 	imageOverlayCheckBox	= new JCheckBox("overlay", true);
 	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
-	private JButton 	loadButton 	= new JButton("Load...");
-	private JButton 	saveButton 	= new JButton("Save...");
+	private JButton 	loadButton 				= new JButton("Load...");
+	private JButton 	saveButton 				= new JButton("Save...");
+	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
 	
 	private OverlayThreshold ov 				= null;
-	private DetectFlies2 	detectFlies2Thread 	= null;
+	private DetectFlies2_series 	detectFlies2Thread 	= null;
+	private int 			currentExp 			= -1;
+	private Thread 			thread 				= null;
+	
+
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 
-		JPanel panel = new JPanel();
-		panel.setLayout(new FlowLayout());
-		panel.add(new JLabel(" -->", SwingConstants.RIGHT), FlowLayout.LEFT); 
-		panel.add(loadButton);
-		panel.add(saveButton);
-		FlowLayout layout1 = (FlowLayout) panel.getLayout();
+//		JPanel panel3 = new JPanel();
+//		panel3.add(startComputationButton);
+//		panel3.add(ALLCheckBox);
+//		FlowLayout layout3 = (FlowLayout) panel3.getLayout();
+//		layout3.setVgap(0);
+//		panel3.validate();
+//		add( GuiUtil.besidesPanel(panel3,  new JLabel(" ")));
+		add( GuiUtil.besidesPanel(startComputationButton,  ALLCheckBox));
+		
+		JPanel panel1 = new JPanel();
+		JPanel panel0 = new JPanel();
+		panel0.setLayout(new FlowLayout());
+		panel0.add(loadButton);
+		panel0.add(saveButton);
+		FlowLayout layout1 = (FlowLayout) panel0.getLayout();
 		layout1.setVgap(0);
-		panel.validate();
-		add( GuiUtil.besidesPanel(buildBackgroundButton,  panel));
-
-		JPanel dummyPanel = new JPanel();
-		dummyPanel.add( GuiUtil.besidesPanel(viewsCheckBox, imageOverlayCheckBox ) );
-		FlowLayout layout = (FlowLayout) dummyPanel.getLayout();
-		layout.setVgap(0);
-		dummyPanel.validate();
-		add( GuiUtil.besidesPanel(startComputationButton,  dummyPanel));
+		panel0.validate();
+		panel1.add( buildBackgroundButton);
+		panel1.add(panel0);
+		FlowLayout layout11 = (FlowLayout) panel1.getLayout();
+		layout11.setVgap(0);
+		panel1.validate();
+		JPanel panel2 = new JPanel();
+		panel2.add(viewsCheckBox);
+		panel2.add(imageOverlayCheckBox);
+		FlowLayout layout2 = (FlowLayout) panel2.getLayout();
+		layout2.setVgap(0);
+		panel2.validate();
+		add( GuiUtil.besidesPanel(panel1,  panel2 ));
 		
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
 		add( GuiUtil.besidesPanel(new JLabel("threshold ", 
@@ -133,6 +152,15 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				loadRef();
 			}});
+		
+		ALLCheckBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) {
+				Color color = Color.BLACK;
+				if (ALLCheckBox.isSelected()) 
+					color = Color.RED;
+				ALLCheckBox.setForeground(color);
+				startComputationButton.setForeground(color);
+		}});
 	}
 	
 	public void updateOverlay () {
@@ -179,15 +207,21 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		exp.seqCamData.analysisStep = exp.step;
 		exp.seqCamData.analysisStart = exp.startFrame;
 		exp.seqCamData.analysisEnd = exp.endFrame;
+		detect.expList = parent0.expList; 
+		detect.expList.index0 = parent0.currentExperimentIndex;
+		detect.expList.index1 = detect.expList.index0;
+		if (ALLCheckBox.isSelected()) {
+			detect.expList.index0 = 0;
+			detect.expList.index1 = parent0.expList.experimentList.size()-1;
+		}
 		detect.seqCamData 		= exp.seqCamData;	
 		detect.initParametersForDetection();
 		
 		if (detectFlies2Thread == null)
-			detectFlies2Thread = new DetectFlies2();
+			detectFlies2Thread = new DetectFlies2_series();
 		detectFlies2Thread.stopFlag 	= false;
 		detectFlies2Thread.detect 		= detect;
 		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();
-
 		return true;
 	}
 	
@@ -207,7 +241,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 
 	void builBackgroundImage() {
 		if (detectFlies2Thread == null)
-			detectFlies2Thread = new DetectFlies2();
+			detectFlies2Thread = new DetectFlies2_series();
 		if (detectFlies2Thread.threadRunning) {
 			stopComputation();
 			return;
@@ -219,17 +253,45 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	}
 	
 	void startComputation() {
-		if (detectFlies2Thread == null)
-			detectFlies2Thread = new DetectFlies2();		
-		if (detectFlies2Thread.threadRunning) {
-			stopComputation();
-			return;
-		}	
+		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, false);
+		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
+			parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
+		currentExp = parent0.currentExperimentIndex;
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.paneSequence.tabClose.closeExp(exp);
+		
+		detectFlies2Thread = new DetectFlies2_series();		
 		initTrackParameters();
 		cleanPreviousDetections();
 		detectFlies2Thread.buildBackground	= false;
 		detectFlies2Thread.detectFlies		= true;
-		ThreadUtil.bgRun(detectFlies2Thread);
+		
+		thread = new Thread(null, detectFlies2Thread, "+++detect_levels");
+		thread.start();
+		Thread waitcompletionThread = new Thread(null, new Runnable() {
+			public void run() {
+				try { 
+					thread.join();
+					}
+				catch(Exception e){;} 
+				finally { 
+					series_detectFliesStop();
+				}
+			}}, "+++waitforcompletion");
+		waitcompletionThread.start();
+	}
+	
+	private void series_detectFliesStop() {	
+		if (thread != null && thread.isAlive()) {
+			detectFlies2Thread.stopFlag = true;
+			try {
+				thread.join();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+		}
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.paneSequence.openExperiment(exp);
 	}
 	
 	void stopComputation() {

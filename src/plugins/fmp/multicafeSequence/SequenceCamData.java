@@ -467,7 +467,10 @@ public class SequenceCamData implements SequenceListener {
 	}
 	
 	public boolean xmlReadDrosoTrackDefault() {
-		return cages.xmlReadCagesFromFileNoQuestion(getDirectory() + File.separator + "drosotrack.xml", this);
+		boolean flag = cages.xmlReadCagesFromFileNoQuestion(getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml", this);
+		if (!flag)
+			flag = cages.xmlReadCagesFromFileNoQuestion(getDirectory() + File.separator + "drosotrack.xml", this);
+		return flag;
 	}
 	
 	public boolean xmlReadDrosoTrack(String filename) {
@@ -475,7 +478,7 @@ public class SequenceCamData implements SequenceListener {
 	}
 	
 	public boolean xmlWriteDrosoTrackDefault() {
-		return cages.xmlWriteCagesToFileNoQuestion("drosotrack.xml");
+		return cages.xmlWriteCagesToFileNoQuestion(getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml");
 	}
 	
 	// ---------------------------
@@ -571,20 +574,18 @@ public class SequenceCamData implements SequenceListener {
 	
 	public boolean saveFlyPositions() {
 		cages.fromROIsToCages(this);
-		String csFile = getDirectory() +File.separator + "drosotrack.xml";
+		String csFile = getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml";
 		return cages.xmlWriteCagesToFileNoQuestion(csFile);
 	}
 
 	@Override
 	public void sequenceChanged(SequenceEvent sequenceEvent) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void sequenceClosed(Sequence sequence) {
 		sequence.removeAllROI();
-		
 	}
 	
 	public void getAnalysisParametersFromCamData (Capillaries capillaries) {		
