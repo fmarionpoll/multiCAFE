@@ -180,8 +180,11 @@ public class SequenceCamData implements SequenceListener {
 	}
 
 	public String getDecoratedImageName(int t) {
-		currentFrame = t;  
-		return csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
+		currentFrame = t; 
+		if (seq!= null)
+			return csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
+		else
+			return csFileName + "[]";
 	}
 	
 	public String getFileName(int t) {
@@ -451,6 +454,8 @@ public class SequenceCamData implements SequenceListener {
 	}
 	
 	public void setParentDirectoryAsFileName() {
+		if (seq == null)
+			return;
 		String directory = seq.getFilename();
 		Path path = Paths.get(directory);
 		String dirupup = path.getName(path.getNameCount()-2).toString();

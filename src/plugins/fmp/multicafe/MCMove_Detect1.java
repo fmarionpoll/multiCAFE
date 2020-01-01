@@ -245,10 +245,5 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		parent0.paneSequence.openExperiment(exp);
 	}
 
-	void stopComputation() {
-		if (detectFlies1Thread != null)
-			detectFlies1Thread.stopFlag = true;
-	}
-
 }
 

@@ -158,8 +158,6 @@ public BooleanMask2D findLargestComponent(ROI2DArea roiAll, int iroi) {
 	
 	public void findFlies (IcyBufferedImage workimage, int t, int it) {
 		ROI2DArea roiAll = findFly (workimage);
-
-		// ------------------------ loop over all the cages of the stack
 		for ( int iroi = 0; iroi < cages.cageList.size(); iroi++ ) {		
 			BooleanMask2D bestMask = findLargestComponent(roiAll, iroi);
 			ROI2DArea flyROI = null;

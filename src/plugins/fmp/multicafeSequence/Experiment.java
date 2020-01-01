@@ -1,6 +1,8 @@
 package plugins.fmp.multicafeSequence;
 
 
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,6 +14,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import icy.image.IcyBufferedImage;
+import icy.image.ImageUtil;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ImageTransformTools;
@@ -516,5 +519,26 @@ public class Experiment {
 			return capillaries.capillariesArrayList.get(t).capillaryRoi.getName() + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
 		return seqKymos.csFileName + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
 	}
+	
+	public boolean loadReferenceImage() {
+		String path = seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
+		File inputfile = new File(path);
+		BufferedImage image = ImageUtil.load(inputfile, true);
+		if (image == null) {
+			System.out.println("image not loaded / not found");
+			return false;
+		}
+		seqCamData.refImage=  IcyBufferedImage.createFrom(image);
+		return true;
+	}
+	
+	public boolean saveReferenceImage() {
+		String path = seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
+		File outputfile = new File(path);
+		RenderedImage image = ImageUtil.toRGBImage(seqCamData.refImage);
+		return ImageUtil.save(image, "jpg", outputfile);
+	}
+
+	
 	
 }

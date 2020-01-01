@@ -7,9 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
-import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -24,8 +21,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import icy.gui.util.GuiUtil;
-import icy.image.IcyBufferedImage;
-import icy.image.ImageUtil;
 import icy.roi.ROI2D;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Cage;
@@ -71,13 +66,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 
-//		JPanel panel3 = new JPanel();
-//		panel3.add(startComputationButton);
-//		panel3.add(ALLCheckBox);
-//		FlowLayout layout3 = (FlowLayout) panel3.getLayout();
-//		layout3.setVgap(0);
-//		panel3.validate();
-//		add( GuiUtil.besidesPanel(panel3,  new JLabel(" ")));
 		add( GuiUtil.besidesPanel(startComputationButton,  ALLCheckBox));
 		
 		JPanel panel1 = new JPanel();
@@ -119,7 +107,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 	}
 	
 	private void defineActionListeners() {
-		
 		imageOverlayCheckBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
@@ -145,12 +132,14 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		
 		saveButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				saveRef();
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				exp.saveReferenceImage();
 			}});
 		
 		loadButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				loadRef();
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				exp.loadReferenceImage();
 			}});
 		
 		ALLCheckBox.addActionListener(new ActionListener () { 
@@ -243,7 +232,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		if (detectFlies2Thread == null)
 			detectFlies2Thread = new DetectFlies2_series();
 		if (detectFlies2Thread.threadRunning) {
-			stopComputation();
+			series_detectFliesStop();
 			return;
 		}
 		initTrackParameters();
@@ -294,36 +283,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		parent0.paneSequence.openExperiment(exp);
 	}
 	
-	void stopComputation() {
-		if (detectFlies2Thread != null)
-			detectFlies2Thread.stopFlag = true;
-	}
-	
-	void loadRef () {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		SequenceCamData seqCamData = exp.seqCamData;
-		String path = seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
-		File inputfile = new File(path);
-		BufferedImage image = ImageUtil.load(inputfile, true);
-		if (image == null) {
-			System.out.println("image not loaded / not found");
-			return;
-		}
-		seqCamData.refImage=  IcyBufferedImage.createFrom(image);
-		initTrackParameters();
-		
-		detectFlies2Thread.displayRefViewers();
-		
-	}
-	
-	void saveRef () {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				String path = exp.seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
-		File outputfile = new File(path);
-		RenderedImage image = ImageUtil.toRGBImage(exp.seqCamData.refImage);
-		boolean success = ImageUtil.save(image, "jpg", outputfile);
-		if (success)
-			System.out.println("successfully saved background.jpg image");
-	}
+
+
 
 }

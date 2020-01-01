@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 
 import javax.swing.SwingUtilities;
 
-import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import plugins.fmp.multicafeSequence.Experiment;
@@ -36,19 +35,20 @@ public class DetectFlies1_series implements Runnable {
 		threadRunning = true;
 		ExperimentList expList = detect.expList;
 		int nbexp = expList.index1 - expList.index0 +1;
-		ProgressChrono progressBar = new ProgressChrono("Detect limits");
+		ProgressChrono progressBar = new ProgressChrono("Detect flies");
 		progressBar.initChrono(nbexp);
 		progressBar.setMessageFirstPart("Analyze series ");
-		for (int index = expList.index0; index <= expList.index1; index++) {
-			if (stopFlag)
+		for (int index = expList.index0; index <= expList.index1 && !stopFlag; index++) {
+			if (stopFlag) 
 				break;
 			Experiment exp = expList.experimentList.get(index);
 			System.out.println(exp.experimentFileName);
 			progressBar.updatePosition(index-expList.index0+1);
 			exp.loadExperimentCamData();
 			exp.seqCamData.xmlReadDrosoTrackDefault();
-			detectFlies1(exp);
-			saveComputation(exp);
+			runDetectFlies(exp);
+			if (!stopFlag)
+				saveComputation(exp);
 			exp.seqCamData.seq.close();
 		}
 		progressBar.close();
@@ -68,21 +68,15 @@ public class DetectFlies1_series implements Runnable {
 				return;
 			}
 		}
-		ProgressFrame progress = new ProgressFrame("Save kymograph measures");		
 		exp.saveFlyPositions();
-		progress.close();
 	}
 	
-	private void detectFlies1(Experiment exp) {
-		// create arrays for storing position and init their value to zero
+	private void runDetectFlies(Experiment exp) {
 		detect.seqCamData = exp.seqCamData;
 		detect.initParametersForDetection();
 		detect.initTempRectROIs(detect.seqCamData.seq);
-		
-		System.out.println("Computation over frames: " + detect.startFrame + " - " + detect.endFrame );
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
 		progressBar.initChrono(detect.endFrame-detect.startFrame+1);
-		
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() { public void run() {
 				viewerCamData = new Viewer(exp.seqCamData.seq, true);
@@ -98,39 +92,29 @@ public class DetectFlies1_series implements Runnable {
 				
 			}});
 		} catch (InvocationTargetException | InterruptedException e) {
-				// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		
-		try {
-			
-//			viewerCamData = detect.seqCamData.seq.getFirstViewer();	
-			detect.seqCamData.seq.beginUpdate();
-
-			// ----------------- loop over all images of the stack
-			int it = 0;
-			for (int t = detect.startFrame ; t <= detect.endFrame && !stopFlag; t  += detect.analyzeStep, it++ ) {				
-				progressBar.updatePositionAndTimeLeft(t);
-				// load next image and compute threshold
-				IcyBufferedImage workImage = detect.seqCamData.getImageAndSubtractReference(t, detect.transformop); 
-				if (workImage == null)
-					continue;
-				detect.seqCamData.currentFrame = t;
-				if (viewerCamData != null) {
-					viewerCamData.setPositionT(t);
-					viewerCamData.setTitle(detect.seqCamData.getDecoratedImageName(t));
-				}
-				detect.findFlies (workImage, t, it);		
-			}
-		} finally {
-			progressBar.close();
-			detect.seqCamData.seq.endUpdate();
-			detect.removeTempRectROIs(detect.seqCamData.seq);
+		detect.seqCamData.seq.beginUpdate();
+		int it = 0;
+		for (int t = detect.startFrame ; t <= detect.endFrame; t  += detect.analyzeStep, it++ ) {				
+			if (stopFlag)
+				break;
+			progressBar.updatePositionAndTimeLeft(t);
+			IcyBufferedImage workImage = detect.seqCamData.getImageAndSubtractReference(t, detect.transformop); 
+			if (workImage == null)
+				continue;
+			detect.seqCamData.currentFrame = t;
+			viewerCamData.setPositionT(t);
+			viewerCamData.setTitle(detect.seqCamData.getDecoratedImageName(t));
+			detect.findFlies (workImage, t, it);
 		}
-
-		//	 copy created ROIs to inputSequence
-		detect.copyDetectedROIsToSequence(detect.seqCamData.seq);
-		threadRunning = false;
+	
+		detect.seqCamData.seq.endUpdate();
+		detect.removeTempRectROIs(detect.seqCamData.seq);
+		if (!stopFlag)
+			detect.copyDetectedROIsToSequence(detect.seqCamData.seq);
+		progressBar.close();
 	}
 	
 	
