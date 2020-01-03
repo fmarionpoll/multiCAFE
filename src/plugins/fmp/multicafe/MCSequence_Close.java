@@ -30,7 +30,7 @@ public class MCSequence_Close  extends JPanel {
 		closeAllButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				closeAll();
-				firePropertyChange("SEQ_CLOSE", false, true);
+				firePropertyChange("CLOSE_ALL", false, true);
 			}});
 	}
 	

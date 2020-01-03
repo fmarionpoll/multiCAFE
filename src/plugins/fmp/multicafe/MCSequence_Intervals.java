@@ -57,8 +57,10 @@ public class MCSequence_Intervals extends JPanel {
 		exp.startFrame 	= (int) startFrameJSpinner.getValue();
 		exp.endFrame 	= (int) endFrameJSpinner.getValue();
 		SequenceCamData seq = exp.seqCamData;
-		seq.analysisStart 	= (int) startFrameJSpinner.getValue();
-		seq.analysisEnd 	= (int) endFrameJSpinner.getValue();
+		if (seq != null) {
+			seq.analysisStart 	= (int) startFrameJSpinner.getValue();
+			seq.analysisEnd 	= (int) endFrameJSpinner.getValue();
+		}
 	}
 
 }

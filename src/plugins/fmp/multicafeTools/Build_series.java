@@ -40,12 +40,10 @@ public class Build_series {
 	
 	void initViewerKymosData (Experiment exp) {
 		ThreadUtil.invoke (new Runnable() {
-//		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				viewer2 = new Viewer(exp.seqKymos.seq, true);
 			}
-//		});
 		}, true);
 		
 		if (viewer2 == null) {

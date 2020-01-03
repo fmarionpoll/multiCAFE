@@ -116,8 +116,12 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		}
 
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) {
+			System.out.println("SEQ_CLOSE");
+		}
+		else if (event.getPropertyName().equals("CLOSE_ALL")) {
 			tabsPane.setSelectedIndex(0);
 			tabInfos.expListComboBox.removeAllItems();
+			tabInfos.expListComboBox.updateUI();
 		}
 		else if (event.getPropertyName().equals("SEARCH_CLOSED")) {
 			int index = tabInfos.expListComboBox.getSelectedIndex();

@@ -73,8 +73,10 @@ public class MCSequence_Infos  extends JPanel {
 	
 	private void defineActionListeners() {
 		expListComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (expListComboBox.getItemCount() == 0 || disableChangeFile)
+			if (expListComboBox.getItemCount() == 0 || disableChangeFile) {
+				updateBrowseInterface();
 				return;
+			}
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			String oldtext = exp.seqCamData.getDirectory();
 			String newtext = (String) expListComboBox.getSelectedItem();
