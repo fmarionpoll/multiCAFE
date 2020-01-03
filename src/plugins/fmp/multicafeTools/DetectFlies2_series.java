@@ -1,6 +1,7 @@
 package plugins.fmp.multicafeTools;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -108,18 +109,15 @@ public class DetectFlies2_series implements Runnable {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
 					viewerCamData = new Viewer(exp.seqCamData.seq, true);
-					if (ov == null)
-						ov = new OverlayThreshold(exp.seqCamData);
-					else {
-						detect.seqCamData.seq.removeOverlay(ov);
-						ov.setSequence(exp.seqCamData);
-					}
+					Rectangle rectv = viewerCamData.getBoundsInternal();
+					rectv.setLocation(detect.parent0Rect.x+ detect.parent0Rect.width, detect.parent0Rect.y);
+					viewerCamData.setBounds(rectv);
+					ov = new OverlayThreshold(exp.seqCamData);
 					detect.seqCamData.seq.addOverlay(ov);
 					ov.setThresholdSingle(detect.seqCamData.cages.detect.threshold);
 					ov.painterChanged();
 
-				}
-			});
+				}});
 		} catch (InvocationTargetException | InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -131,8 +129,7 @@ public class DetectFlies2_series implements Runnable {
 					SwingUtilities.invokeAndWait(new Runnable() {
 						public void run() {
 							buildBackgroundImage();
-						}
-					});
+						}});
 				} catch (InvocationTargetException | InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -190,8 +187,7 @@ public class DetectFlies2_series implements Runnable {
 					SwingUtilities.invokeAndWait(new Runnable() {
 						public void run() {
 							displayDetectViewer();
-						}
-					});
+						}});
 				} catch (InvocationTargetException | InterruptedException e) {
 					e.printStackTrace();
 				}

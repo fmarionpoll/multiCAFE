@@ -192,6 +192,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener {
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
 		detect.threshold		= (int) thresholdSpinner.getValue();
+		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		exp.seqCamData.analysisStep = exp.step;
 		exp.seqCamData.analysisStart = exp.startFrame;

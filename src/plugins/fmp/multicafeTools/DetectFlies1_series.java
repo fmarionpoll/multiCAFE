@@ -61,28 +61,21 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
     }
 
 	@Override
-	protected void done()
-    {
-		// this method is called when the background thread finishes execution 
-        try 
-        { 
-            int statusMsg = get(); 
-            System.out.println("iterations done: "+statusMsg);
-            if (!threadRunning || stopFlag) {
-            	firePropertyChange("thread_ended", null, null);
-            }
-            else {
-            	firePropertyChange("thread_done", null, statusMsg);
-            }
-        }  
-        catch (InterruptedException e)  
-        { 
-            e.printStackTrace(); 
-        }  
-        catch (ExecutionException e)  
-        { 
-            e.printStackTrace(); 
-        } 
+	protected void done() {
+		int statusMsg = 0;
+		try {
+			statusMsg = get();
+		} catch (InterruptedException | ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		System.out.println("iterations done: "+statusMsg);
+		if (!threadRunning || stopFlag) {
+			firePropertyChange("thread_ended", null, statusMsg);
+		}
+		else {
+			firePropertyChange("thread_done", null, statusMsg);
+		}
     }
 	
 	private void saveComputation(Experiment exp) {			
@@ -105,6 +98,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		detect.seqCamData = exp.seqCamData;
 		detect.initParametersForDetection();
 		detect.initTempRectROIs(detect.seqCamData.seq);
+		exp.cleanPreviousDetections();
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
 		progressBar.initChrono(detect.endFrame-detect.startFrame+1);
 		try {

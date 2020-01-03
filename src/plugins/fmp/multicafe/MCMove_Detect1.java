@@ -9,7 +9,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -23,12 +22,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import icy.gui.util.GuiUtil;
-import icy.roi.ROI2D;
 import icy.util.StringUtil;
-import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
-import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.fmp.multicafeTools.DetectFlies1_series;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
@@ -194,19 +190,6 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		return true;
 	}
 	
-	private void cleanPreviousDetections() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		SequenceCamData seqCamData = exp.seqCamData;
-		for (Cage cage: seqCamData.cages.cageList) {
-			cage.flyPositions = new XYTaSeries();
-		}
-		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
-		for (ROI2D roi: list) {
-			if (roi.getName().contains("det")) {
-				seqCamData.seq.removeROI(roi);
-			}
-		}
-	}
 	
 	void startComputation() {
 		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, false);
@@ -219,7 +202,6 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		detectFlies1Thread = new DetectFlies1_series();		
 			
 		initTrackParameters();
-		cleanPreviousDetections();
 		detectFlies1Thread.buildBackground	= false;
 		detectFlies1Thread.detectFlies		= true;
 		detectFlies1Thread.addPropertyChangeListener(this);

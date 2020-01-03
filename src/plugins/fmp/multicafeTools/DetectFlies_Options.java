@@ -102,15 +102,13 @@ public class DetectFlies_Options implements XMLPersistent {
 		return true;
 	}
 	
-public BooleanMask2D findLargestComponent(ROI2DArea roiAll, int iroi) {
+	public BooleanMask2D findLargestComponent(ROI2DArea roiAll, int iroi) {
 		ROI cageLimitROI = cages.cageList.get(iroi).cageLimitROI;
 		if ( cageLimitROI == null )
 			return null;
-		
 		BooleanMask2D cageMask = cageMaskList.get(iroi);
 		if (cageMask == null)
 			return null;
-		
 		ROI2DArea roi = new ROI2DArea(roiAll.getBooleanMask( true ).getIntersection( cageMask ) );
 		// find largest component in the threshold
 		int max = 0;
@@ -132,7 +130,6 @@ public BooleanMask2D findLargestComponent(ROI2DArea roiAll, int iroi) {
 	public ROI2DArea findFly(IcyBufferedImage img) {
 		if (img == null)
 			return null;
-
 		boolean[] mask = new boolean[ img.getSizeX() * img.getSizeY() ];
 		if (btrackWhite) {
 			byte[] arrayRed 	= img.getDataXYAsByte( 0);
@@ -167,10 +164,8 @@ public BooleanMask2D findLargestComponent(ROI2DArea roiAll, int iroi) {
 				flyROI.setName("det"+iroi +" " + t );
 				flyROI.setT( t );
 				resultFlyPositionArrayList[it][iroi] = flyROI;
-				
 				Rectangle2D rect = flyROI.getBounds2D();
 				tempRectROI[iroi].setRectangle(rect);
-				
 				Cage cage = cages.cageList.get(iroi);
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 				int npoints = cage.flyPositions.pointsList.size();
@@ -206,7 +201,6 @@ public BooleanMask2D findLargestComponent(ROI2DArea roiAll, int iroi) {
 		if ( seqCamData.seq.getSizeT() < endFrame+1 )
 			endFrame = (int) seqCamData.nTotalFrames - 1;
 		nbframes = (endFrame - startFrame +1)/analyzeStep +1;
-		
 		seqCamData.cages.clear();
 		seqCamData.cages.cageList = seqCamData.getCages();
 		cages = seqCamData.cages;
@@ -236,8 +230,7 @@ public BooleanMask2D findLargestComponent(ROI2DArea roiAll, int iroi) {
 				for (int iroi=0; iroi < nrois; iroi++) 
 					seqCamData.seq.addROI( resultFlyPositionArrayList[it][iroi] );
 		}
-		finally
-		{
+		finally {
 			seqCamData.seq.endUpdate();
 		}
 	}

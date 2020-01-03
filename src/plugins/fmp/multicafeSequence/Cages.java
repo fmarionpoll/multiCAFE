@@ -30,11 +30,11 @@ public class Cages {
 	
 
 	public void clear() {
+		detectedFliesList.clear();
 		flyPositionsList.clear();
 	}
 	
 	public boolean xmlWriteCagesToFile(String name, String directory) {
-
 		String csFile = MulticafeTools.saveFileAs(name, directory, "xml");
 		if (csFile == null)
 			return false;
@@ -59,7 +59,6 @@ public class Cages {
 	}
 		
 	public boolean xmlReadCagesFromFile(SequenceCamData seq) {
-
 		String [] filedummy = null;
 		String filename = seq.getFileName();
 		File file = new File(filename);
@@ -77,7 +76,6 @@ public class Cages {
 	}
 	
 	public boolean xmlReadCagesFromFileNoQuestion(String csFileName, SequenceCamData seq) {
-
 		if (csFileName != null)  {
 			final Document doc = XMLUtil.loadDocument(csFileName);
 			if (doc != null) {
@@ -97,7 +95,6 @@ public class Cages {
 			return false;
 		cageList.clear();
 		detect.loadFromXML(node);
-		
 		if (xmlLoadCagesLimits(node)) {
 			xmlLoadFlyPositions(node);
 			xmlLoadDetectedFlies(node);
@@ -173,7 +170,6 @@ public class Cages {
 		return true;
 	}
 	
-	
 	private boolean xmlLoadFlyPositions(Node node) {
 		if (node == null)
 			return false;
@@ -194,21 +190,6 @@ public class Cages {
 		return true;
 	}
 	
-//	private boolean xmlSaveDetectedFlies(Node node) {
-//		if (node == null)
-//			return false;
-//		Element xmlVal = XMLUtil.addElement(node, "Flies_detected");
-//		XMLUtil.setAttributeIntValue(xmlVal, "nb_items", detectedFliesList.size());
-//		int i=0;
-//		for (ROI roi: detectedFliesList) {
-//			Element subnode = XMLUtil.addElement(xmlVal, "det"+i);
-//			roi.saveToXML(subnode);
-//			i++;
-//		}
-//		return true;
-//	}
-	
-	
 	private boolean xmlLoadDetectedFlies(Node node) {
 		if (node == null)
 			return false;
@@ -227,7 +208,6 @@ public class Cages {
 		return true;
 	}
 	
-	
 	public void fromCagesToROIs(SequenceCamData seq) {
 		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
 		for (ROI2D roi: list) {
@@ -245,7 +225,6 @@ public class Cages {
 		seq.seq.addROIs(cageLimitROIList, true);
 	}
 	
-	
 	public void fromROIsToCages(SequenceCamData seq) {
 		cageLimitROIList.clear();
 		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
@@ -257,7 +236,6 @@ public class Cages {
 			cageLimitROIList.add(roi);
 		}
 		Collections.sort(cageLimitROIList, new MulticafeTools.ROI2DNameComparator());
-		
 		// remove cages with no names like in the list
 		Iterator<Cage> iterator = cageList.iterator();
 		while (iterator.hasNext()) {
@@ -274,8 +252,7 @@ public class Cages {
 			if (!found ) {
 				iterator.remove();
 			}
-		}
-				
+		}	
 		// copy names that are equal and create new ones
 		for (ROI2D roi: cageLimitROIList) {
 			for (Cage cage: cageList) {
@@ -293,7 +270,6 @@ public class Cages {
 		}
 	}
 	
-
 	public void fromDetectedFliesToROIs(SequenceCamData seq) {
 		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
 		detectedFliesList.clear();
@@ -306,7 +282,6 @@ public class Cages {
 		}
 		seq.seq.addROIs(detectedFliesList, true);
 	}
-	
 	
 	public void fromROIstoDetectedFlies(SequenceCamData seq) {
 		detectedFliesList.clear();
