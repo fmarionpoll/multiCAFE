@@ -95,7 +95,8 @@ public class MCKymos_Create extends JPanel {
 	
 	void getBuildKymosParametersFromDialog (Experiment exp) {
 		exp.step = (int) stepJSpinner.getValue();
-		exp.seqCamData.analysisStep = (int) stepJSpinner.getValue();
+		if (exp.seqCamData != null)
+			exp.seqCamData.analysisStep = (int) stepJSpinner.getValue();
 	}
 	
 	private void setStartButton(boolean enableStart) {

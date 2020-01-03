@@ -1,6 +1,7 @@
  package plugins.fmp.multicafeSequence;
 
 
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -17,6 +18,7 @@ import org.w3c.dom.Document;
 
 import icy.file.Loader;
 import icy.gui.dialog.LoaderDialog;
+import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.math.ArrayMath;
@@ -616,6 +618,5 @@ public class SequenceCamData implements SequenceListener {
 	public IcyBufferedImage getImageCopy(int t) {	
 		return IcyBufferedImageUtil.getCopy(getImage(t, 0));
 	}
-		
-	
+
 }

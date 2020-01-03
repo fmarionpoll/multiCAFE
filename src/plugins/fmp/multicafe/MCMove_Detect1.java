@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -22,7 +24,7 @@ import javax.swing.event.ChangeListener;
 
 import icy.gui.util.GuiUtil;
 import icy.roi.ROI2D;
-
+import icy.util.StringUtil;
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
@@ -34,7 +36,7 @@ import plugins.fmp.multicafeTools.OverlayThreshold;
 
 
 
-public class MCMove_Detect1 extends JPanel implements ChangeListener {
+public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyChangeListener {
 
 	/**
 	 * 
@@ -42,8 +44,8 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 	private static final long serialVersionUID = 6066671006689527651L;
 
 	private MultiCAFE parent0;
-	
-	private JButton startComputationButton 	= new JButton("Detect / Stop");
+	private String detectString = "Detect";
+	private JButton startComputationButton 	= new JButton(detectString);
 
 	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
 	private JComboBox<TransformOp> backgroundComboBox = new JComboBox<> (new TransformOp[]  {TransformOp.NONE, TransformOp.REF_PREVIOUS, TransformOp.REF_T0});
@@ -59,7 +61,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 	
 	private OverlayThreshold 	ov 			= null;
 	private DetectFlies1_series detectFlies1Thread 	= null;
-	private Thread 				thread 		= null;
+
 	private int 				currentExp 	= -1;
 
 	// -----------------------------------------------------
@@ -113,7 +115,10 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 
 		startComputationButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				startComputation();
+				if (startComputationButton.getText() .equals(detectString))
+					startComputation();
+				else
+					stopComputation();
 			}});
 		
 		ALLCheckBox.addActionListener(new ActionListener () { 
@@ -171,6 +176,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		detect.videoChannel 	= colorChannelComboBox.getSelectedIndex();
 		detect.transformop		= (TransformOp) backgroundComboBox.getSelectedItem();
 		detect.threshold		= (int) thresholdSpinner.getValue();
+		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);	
 		exp.seqCamData.analysisStep = exp.step;
 		exp.seqCamData.analysisStart = exp.startFrame;
@@ -216,33 +222,26 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener {
 		cleanPreviousDetections();
 		detectFlies1Thread.buildBackground	= false;
 		detectFlies1Thread.detectFlies		= true;
-		
-		thread = new Thread(null, detectFlies1Thread, "+++detect_levels");
-		thread.start();
-		Thread waitcompletionThread = new Thread(null, new Runnable() {
-			public void run() {
-				try { 
-					thread.join();
-					}
-				catch(Exception e){;} 
-				finally { 
-					series_detectFliesStop();
-				}
-			}}, "+++waitforcompletion");
-		waitcompletionThread.start();
+		detectFlies1Thread.addPropertyChangeListener(this);
+		detectFlies1Thread.execute();
+		startComputationButton.setText("STOP");
 	}
 	
-	private void series_detectFliesStop() {	
-		if (thread != null && thread.isAlive()) {
+	private void stopComputation() {	
+		if (detectFlies1Thread != null && !detectFlies1Thread.stopFlag) {
 			detectFlies1Thread.stopFlag = true;
-			try {
-				thread.join();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
 		}
-		Experiment exp = parent0.expList.getExperiment(currentExp);
-		parent0.paneSequence.openExperiment(exp);
+		
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
+			Experiment exp = parent0.expList.getExperiment(currentExp);
+			parent0.paneSequence.openExperiment(exp);
+			startComputationButton.setText(detectString);
+		 }
+		
 	}
 
 }
