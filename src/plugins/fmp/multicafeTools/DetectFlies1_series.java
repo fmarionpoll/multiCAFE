@@ -1,11 +1,7 @@
 package plugins.fmp.multicafeTools;
 
 import java.awt.Rectangle;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingUtilities;
@@ -31,6 +27,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 	public DetectFlies_Options 	detect 			= new DetectFlies_Options();
 
 	// -----------------------------------------------------
+	
 	@Override
 	protected Integer doInBackground() throws Exception
     {
@@ -41,7 +38,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		ProgressChrono progressBar = new ProgressChrono("Detect flies");
 		progressBar.initChrono(nbexp);
 		progressBar.setMessageFirstPart("Analyze series ");
-		for (int index = expList.index0; index <= expList.index1 && !stopFlag; index++, nbiterations++) {
+		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag) 
 				break;
 			Experiment exp = expList.experimentList.get(index);
@@ -52,7 +49,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			exp.seqCamData.xmlReadDrosoTrackDefault();
 			runDetectFlies(exp);
 			if (!stopFlag)
-				saveComputation(exp);
+				exp.saveComputation();
 			exp.seqCamData.seq.close();
 		}
 		progressBar.close();
@@ -66,7 +63,6 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		try {
 			statusMsg = get();
 		} catch (InterruptedException | ExecutionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		System.out.println("iterations done: "+statusMsg);
@@ -77,23 +73,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			firePropertyChange("thread_done", null, statusMsg);
 		}
     }
-	
-	private void saveComputation(Experiment exp) {			
-		Path dir = Paths.get(exp.seqCamData.getDirectory());
-		dir = dir.resolve("results");
-		String directory = dir.toAbsolutePath().toString();
-		if (Files.notExists(dir))  {
-			try {
-				Files.createDirectory(dir);
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Creating directory failed: "+ directory);
-				return;
-			}
-		}
-		exp.saveFlyPositions();
-	}
-	
+		
 	private void runDetectFlies(Experiment exp) {
 		detect.seqCamData = exp.seqCamData;
 		detect.initParametersForDetection();

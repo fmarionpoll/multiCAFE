@@ -4,6 +4,8 @@ package plugins.fmp.multicafeSequence;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
@@ -550,6 +552,22 @@ public class Experiment {
 				seqCamData.seq.removeROI(roi);
 			}
 		}
+	}
+	
+	public void saveComputation() {			
+		Path dir = Paths.get(seqCamData.getDirectory());
+		dir = dir.resolve("results");
+		String directory = dir.toAbsolutePath().toString();
+		if (Files.notExists(dir))  {
+			try {
+				Files.createDirectory(dir);
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("Creating directory failed: "+ directory);
+				return;
+			}
+		}
+		saveFlyPositions();
 	}
 	
 }
