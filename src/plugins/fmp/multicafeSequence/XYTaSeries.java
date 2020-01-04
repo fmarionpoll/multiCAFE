@@ -238,7 +238,6 @@ public class XYTaSeries implements XMLPersistent {
 		Double distance=0.;
 		int index1 = firstTimeIndex / getTimeBinSize();
 		int index2 = secondTimeIndex / getTimeBinSize();
-		
 		Point2D previous = new Point2D.Double();
 		previous = pointsList.get(index1).point;
 		for (int index = index1; index <= index2; index++) {
@@ -252,12 +251,23 @@ public class XYTaSeries implements XMLPersistent {
 	public Double getSimpleDistanceBetween2Points(int firstTimeIndex, int secondTimeIndex) {
 		if (pointsList.size() < 2)
 			return (double) 0;
-		
 		int index1 = firstTimeIndex / getTimeBinSize();
 		int index2 = secondTimeIndex / getTimeBinSize();
-		
 		Point2D previous = pointsList.get(findNearest(index1)).point;
 		XYTaValue pos = pointsList.get(findNearest(index2));
+		Double distance = pos.point.distance(previous); 
+		return distance;
+	}
+	
+	public Double getDistanceBetweenValidPoints(int firstTimeIndex, int secondTimeIndex) {
+		if (pointsList.size() < 2)
+			return (double) 0;
+		int index1 = findNearest(firstTimeIndex / getTimeBinSize());
+		int index2 = findNearest(secondTimeIndex / getTimeBinSize());
+		Point2D previous = getValidPointAtOrBefore(index1);
+		XYTaValue pos = pointsList.get(index2);
+		if (pos.point.getX() < 0 || previous.getX() < 0)
+			return (double) 0;
 		Double distance = pos.point.distance(previous); 
 		return distance;
 	}

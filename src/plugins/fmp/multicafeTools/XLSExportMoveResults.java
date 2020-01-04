@@ -137,7 +137,7 @@ public class XLSExportMoveResults extends XLSExport {
 		int previousIndex = 0;
 		int currentIndex = 0;
 		
-		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame);
+//		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame);
 		for (currentFrame=startFrame; currentFrame< endFrame; currentFrame+= options.pivotBinStep) {
 			pt_main.x = col0;
 			pt_main.y++;
@@ -157,7 +157,7 @@ public class XLSExportMoveResults extends XLSExport {
 					int col = getColFromCageName(cage) * 2;
 					if (col >= 0)
 						pt_main.x = colseries + col;
-					Double value = cage.flyPositions.getSimpleDistanceBetween2Points(previousIndex, currentIndex);
+					Double value = cage.flyPositions.getDistanceBetweenValidPoints(previousIndex, currentIndex);
 					XLSUtils.setValue(sheet, pt_main, transpose, value);
 					pt_main.x++;
 					XLSUtils.setValue(sheet, pt_main, transpose, value);
