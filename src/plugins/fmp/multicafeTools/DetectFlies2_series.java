@@ -137,7 +137,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		}
 
 		if (detectFlies)
-			runDetectFlies();
+			findFlies();
 
 		if (seqNegative != null) {
 			seqNegative.seq.close();
@@ -162,7 +162,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		}
 	}
 
-	private void runDetectFlies() {
+	private void findFlies() {
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
 		progressBar.initChrono(detect.endFrame - detect.startFrame + 1);
 

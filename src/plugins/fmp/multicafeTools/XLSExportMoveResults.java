@@ -188,10 +188,12 @@ public class XLSExportMoveResults extends XLSExport {
 					int col = getColFromCageName(cage)*2;
 					if (col >= 0)
 						pt_main.x = colseries + col;			
-					Point2D point = cage.flyPositions.getPointAt(currentIndex);
-					XLSUtils.setValue(sheet, pt_main, transpose, point.getX());
+					Point2D point = cage.flyPositions.getPointNearestTo(currentIndex);
+					if (point != null) 
+						XLSUtils.setValue(sheet, pt_main, transpose, point.getX());
 					pt_main.x++;
-					XLSUtils.setValue(sheet, pt_main, transpose, point.getY());
+					if (point != null) 
+						XLSUtils.setValue(sheet, pt_main, transpose, point.getY());
 					pt_main.x++;
 				}
 				break;
