@@ -159,6 +159,7 @@ public class DetectFlies_Options implements XMLPersistent {
 		for ( int iroi = 0; iroi < cages.cageList.size(); iroi++ ) {		
 			BooleanMask2D bestMask = findLargestComponent(roiAll, iroi);
 			ROI2DArea flyROI = null;
+			Cage cage = cages.cageList.get(iroi);
 			if ( bestMask != null ) {
 				flyROI = new ROI2DArea( bestMask );
 				flyROI.setName("det"+iroi +" " + t );
@@ -166,15 +167,21 @@ public class DetectFlies_Options implements XMLPersistent {
 				resultFlyPositionArrayList[it][iroi] = flyROI;
 				Rectangle2D rect = flyROI.getBounds2D();
 				tempRectROI[iroi].setRectangle(rect);
-				Cage cage = cages.cageList.get(iroi);
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 				int npoints = cage.flyPositions.pointsList.size();
 				cage.flyPositions.add(flyPosition, t);
 				if (it > 0 && npoints > 0) {
-					double distance = flyPosition.distance(cage.flyPositions.getPoint(npoints-1));
-					if (distance > jitter)
-						cage.flyPositions.lastTimeAlive = t;
+					Point2D prevPoint = cage.flyPositions.getValidPointAtOrBefore(npoints);
+					if (prevPoint.getX() >= 0) {
+						double distance = flyPosition.distance(prevPoint);
+						if (distance > jitter)
+							cage.flyPositions.lastTimeAlive = t;
+					}
 				}
+			}
+			else {
+				Point2D flyPosition = new Point2D.Double(-1, -1);
+				cage.flyPositions.add(flyPosition, t);
 			}
 		}
 	}

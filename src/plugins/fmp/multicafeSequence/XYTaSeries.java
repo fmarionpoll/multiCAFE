@@ -38,6 +38,18 @@ public class XYTaSeries implements XMLPersistent {
 		return pointsList.get(i).point;
 	}
 	
+	public Point2D getValidPointAtOrBefore(int index) {
+		Point2D point = new Point2D.Double(-1, -1);
+		for (int i = index; i>= 0; i--) {
+			XYTaValue xyVal = pointsList.get(i);
+			if (xyVal.point.getX() >= 0 && xyVal.point.getY() >= 0) {
+				point = xyVal.point;
+				break;
+			}	
+		}
+		return point;
+	}
+	
 	public int getTime(int i) {
 		return pointsList.get(i).time;
 	}
