@@ -120,13 +120,13 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 		
 		exp.seqCamData = exp.openSequenceCamData(filename);
-		if (exp.seqCamData.seq != null) {
+		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			addSequence(exp.seqCamData.seq);
 			exp.seqCamData.seq.getFirstViewer().addListener( this );
 		}
 		else
 		{
-			System.out.println("seq of seqcamdata is null!");
+			System.out.println("seqcamdata or seq of seqcamdata is null!");
 		}
 		return exp.seqCamData;
 	}
