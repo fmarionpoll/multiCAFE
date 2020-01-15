@@ -22,10 +22,10 @@ public class MCExcel_Options extends JPanel {
 	
 	JCheckBox 	exportAllFilesCheckBox 	= new JCheckBox("all experiments", true);
 	JCheckBox	transposeCheckBox 		= new JCheckBox("transpose", true);
-	JCheckBox 	aliveCheckBox 			= new JCheckBox("alive", true);
+	JCheckBox 	aliveCheckBox 			= new JCheckBox("alive", false);
 	
-	JCheckBox   collateSeriesCheckBox	= new JCheckBox("collate series", true);
-	JCheckBox   padIntervalsCheckBox	= new JCheckBox("pad intervals", true);
+	JCheckBox   collateSeriesCheckBox	= new JCheckBox("collate series", false);
+	JCheckBox   padIntervalsCheckBox	= new JCheckBox("pad intervals", false);
 	
 	JCheckBox	absoluteTimeCheckBox 	= new JCheckBox("absolute time", false);
 	JCheckBox	pivotCheckBox 			= new JCheckBox("pivot", false);

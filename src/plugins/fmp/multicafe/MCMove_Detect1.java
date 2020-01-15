@@ -9,7 +9,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -23,12 +22,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import icy.gui.util.GuiUtil;
-import icy.roi.ROI2D;
 import icy.util.StringUtil;
-import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
-import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.fmp.multicafeTools.DetectFlies1_series;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
@@ -44,7 +40,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	private static final long serialVersionUID = 6066671006689527651L;
 
 	private MultiCAFE parent0;
-	private String detectString = "Detect";
+	private String detectString 			= "Detect";
 	private JButton startComputationButton 	= new JButton(detectString);
 
 	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
@@ -59,10 +55,9 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	private JCheckBox overlayCheckBox 		= new JCheckBox("overlay");
 	private JCheckBox ALLCheckBox 			= new JCheckBox("ALL series", false);
 	
-	private OverlayThreshold 	ov 			= null;
+	private OverlayThreshold 	ov 					= null;
 	private DetectFlies1_series detectFlies1Thread 	= null;
-
-	private int 				currentExp 	= -1;
+	private int 				currentExp 			= -1;
 
 	// -----------------------------------------------------
 	
@@ -194,20 +189,6 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		return true;
 	}
 	
-	private void cleanPreviousDetections() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		SequenceCamData seqCamData = exp.seqCamData;
-		for (Cage cage: seqCamData.cages.cageList) {
-			cage.flyPositions = new XYTaSeries();
-		}
-		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
-		for (ROI2D roi: list) {
-			if (roi.getName().contains("det")) {
-				seqCamData.seq.removeROI(roi);
-			}
-		}
-	}
-	
 	void startComputation() {
 		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, false);
 		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
@@ -219,7 +200,6 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		detectFlies1Thread = new DetectFlies1_series();		
 			
 		initTrackParameters();
-		cleanPreviousDetections();
 		detectFlies1Thread.buildBackground	= false;
 		detectFlies1Thread.detectFlies		= true;
 		detectFlies1Thread.addPropertyChangeListener(this);
@@ -231,7 +211,6 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		if (detectFlies1Thread != null && !detectFlies1Thread.stopFlag) {
 			detectFlies1Thread.stopFlag = true;
 		}
-		
 	}
 
 	@Override
@@ -241,7 +220,6 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 			parent0.paneSequence.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
-		
 	}
 
 }

@@ -1,11 +1,7 @@
 package plugins.fmp.multicafeTools;
 
 import java.awt.Rectangle;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingUtilities;
@@ -31,6 +27,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 	public DetectFlies_Options 	detect 			= new DetectFlies_Options();
 
 	// -----------------------------------------------------
+	
 	@Override
 	protected Integer doInBackground() throws Exception
     {
@@ -41,7 +38,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		ProgressChrono progressBar = new ProgressChrono("Detect flies");
 		progressBar.initChrono(nbexp);
 		progressBar.setMessageFirstPart("Analyze series ");
-		for (int index = expList.index0; index <= expList.index1 && !stopFlag; index++, nbiterations++) {
+		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag) 
 				break;
 			Experiment exp = expList.experimentList.get(index);
@@ -52,7 +49,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			exp.seqCamData.xmlReadDrosoTrackDefault();
 			runDetectFlies(exp);
 			if (!stopFlag)
-				saveComputation(exp);
+				exp.saveComputation();
 			exp.seqCamData.seq.close();
 		}
 		progressBar.close();
@@ -61,50 +58,27 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
     }
 
 	@Override
-	protected void done()
-    {
-		// this method is called when the background thread finishes execution 
-        try 
-        { 
-            int statusMsg = get(); 
-            System.out.println("iterations done: "+statusMsg);
-            if (!threadRunning || stopFlag) {
-            	firePropertyChange("thread_ended", null, null);
-            }
-            else {
-            	firePropertyChange("thread_done", null, statusMsg);
-            }
-        }  
-        catch (InterruptedException e)  
-        { 
-            e.printStackTrace(); 
-        }  
-        catch (ExecutionException e)  
-        { 
-            e.printStackTrace(); 
-        } 
-    }
-	
-	private void saveComputation(Experiment exp) {			
-		Path dir = Paths.get(exp.seqCamData.getDirectory());
-		dir = dir.resolve("results");
-		String directory = dir.toAbsolutePath().toString();
-		if (Files.notExists(dir))  {
-			try {
-				Files.createDirectory(dir);
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Creating directory failed: "+ directory);
-				return;
-			}
+	protected void done() {
+		int statusMsg = 0;
+		try {
+			statusMsg = get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		} 
+		System.out.println("iterations done: "+statusMsg);
+		if (!threadRunning || stopFlag) {
+			firePropertyChange("thread_ended", null, statusMsg);
 		}
-		exp.saveFlyPositions();
-	}
-	
+		else {
+			firePropertyChange("thread_done", null, statusMsg);
+		}
+    }
+		
 	private void runDetectFlies(Experiment exp) {
 		detect.seqCamData = exp.seqCamData;
 		detect.initParametersForDetection();
 		detect.initTempRectROIs(detect.seqCamData.seq);
+		exp.cleanPreviousDetections();
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
 		progressBar.initChrono(detect.endFrame-detect.startFrame+1);
 		try {

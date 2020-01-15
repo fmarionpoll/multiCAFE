@@ -4,9 +4,12 @@ package plugins.fmp.multicafeSequence;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -539,6 +542,32 @@ public class Experiment {
 		return ImageUtil.save(image, "jpg", outputfile);
 	}
 
+	public 	void cleanPreviousDetections() {
+		for (Cage cage: seqCamData.cages.cageList) {
+			cage.flyPositions = new XYTaSeries();
+		}
+		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
+		for (ROI2D roi: list) {
+			if (roi.getName().contains("det")) {
+				seqCamData.seq.removeROI(roi);
+			}
+		}
+	}
 	
+	public void saveComputation() {			
+		Path dir = Paths.get(seqCamData.getDirectory());
+		dir = dir.resolve("results");
+		String directory = dir.toAbsolutePath().toString();
+		if (Files.notExists(dir))  {
+			try {
+				Files.createDirectory(dir);
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("Creating directory failed: "+ directory);
+				return;
+			}
+		}
+		saveFlyPositions();
+	}
 	
 }

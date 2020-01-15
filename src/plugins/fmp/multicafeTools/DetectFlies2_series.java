@@ -1,16 +1,15 @@
 package plugins.fmp.multicafeTools;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
@@ -23,7 +22,9 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 
-public class DetectFlies2_series implements Runnable {
+
+
+public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 	private List<Boolean> initialflyRemoved = new ArrayList<Boolean>();
 	private Viewer viewerCamData;
@@ -42,17 +43,12 @@ public class DetectFlies2_series implements Runnable {
 	public SequenceCamData seqReference = new SequenceCamData();
 	public boolean viewInternalImages = false;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Thread#run() parameters: vSequence detect
-	 *
-	 * change stopFlag to stop process
-	 */
-
+	// -----------------------------------------
+	
 	@Override
-	public void run() {
+	protected Integer doInBackground() throws Exception {
 		threadRunning = true;
+		int nbiterations = 0;
 		ExperimentList expList = detect.expList;
 		int nbexp = expList.index1 - expList.index0 + 1;
 		ProgressChrono progressBar = new ProgressChrono("Detect flies");
@@ -60,40 +56,43 @@ public class DetectFlies2_series implements Runnable {
 		progressBar.setMessageFirstPart("Analyze series ");
 		detect.btrackWhite = true;
 		
-		for (int index = expList.index0; index <= expList.index1 && !stopFlag; index++) {
+		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
+			if (stopFlag) 
+				break;
 			Experiment exp = expList.experimentList.get(index);
 			System.out.println(exp.experimentFileName);
 			progressBar.updatePosition(index - expList.index0 + 1);
 
 			exp.loadExperimentCamData();
 			exp.seqCamData.xmlReadDrosoTrackDefault();
-			detectFlies2(exp);
-			saveComputation(exp);
+			runDetectFlies(exp);
+			if (!stopFlag)
+				exp.saveComputation();
 			exp.seqCamData.seq.close();
 		}
 		progressBar.close();
 		threadRunning = false;
+		return nbiterations;
 	}
-
-	private void saveComputation(Experiment exp) {
-		Path dir = Paths.get(exp.seqCamData.getDirectory());
-		dir = dir.resolve("results");
-		String directory = dir.toAbsolutePath().toString();
-		if (Files.notExists(dir)) {
-			try {
-				Files.createDirectory(dir);
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Creating directory failed: " + directory);
-				return;
-			}
+	
+	@Override
+	protected void done() {
+		int statusMsg = 0;
+		try {
+			statusMsg = get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		} 
+		System.out.println("iterations done: "+statusMsg);
+		if (!threadRunning || stopFlag) {
+			firePropertyChange("thread_ended", null, statusMsg);
 		}
-		ProgressFrame progress = new ProgressFrame("Save flies positions detected");
-		exp.saveFlyPositions();
-		progress.close();
-	}
+		else {
+			firePropertyChange("thread_done", null, statusMsg);
+		}
+    }
 
-	private void detectFlies2(Experiment exp) {
+	private void runDetectFlies(Experiment exp) {
 		if (seqNegative == null)
 			seqNegative = new SequenceCamData();
 		if (seqPositive == null)
@@ -102,24 +101,22 @@ public class DetectFlies2_series implements Runnable {
 			seqReference = new SequenceCamData();
 		detect.seqCamData = exp.seqCamData;
 		detect.initParametersForDetection();
+		exp.cleanPreviousDetections();
 		System.out.println("Computation over frames: " + detect.startFrame + " - " + detect.endFrame);
 
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
 					viewerCamData = new Viewer(exp.seqCamData.seq, true);
-					if (ov == null)
-						ov = new OverlayThreshold(exp.seqCamData);
-					else {
-						detect.seqCamData.seq.removeOverlay(ov);
-						ov.setSequence(exp.seqCamData);
-					}
+					Rectangle rectv = viewerCamData.getBoundsInternal();
+					rectv.setLocation(detect.parent0Rect.x+ detect.parent0Rect.width, detect.parent0Rect.y);
+					viewerCamData.setBounds(rectv);
+					ov = new OverlayThreshold(exp.seqCamData);
 					detect.seqCamData.seq.addOverlay(ov);
 					ov.setThresholdSingle(detect.seqCamData.cages.detect.threshold);
 					ov.painterChanged();
 
-				}
-			});
+				}});
 		} catch (InvocationTargetException | InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -131,8 +128,7 @@ public class DetectFlies2_series implements Runnable {
 					SwingUtilities.invokeAndWait(new Runnable() {
 						public void run() {
 							buildBackgroundImage();
-						}
-					});
+						}});
 				} catch (InvocationTargetException | InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -141,7 +137,7 @@ public class DetectFlies2_series implements Runnable {
 		}
 
 		if (detectFlies)
-			runDetectFlies();
+			findFlies();
 
 		if (seqNegative != null) {
 			seqNegative.seq.close();
@@ -166,7 +162,7 @@ public class DetectFlies2_series implements Runnable {
 		}
 	}
 
-	private void runDetectFlies() {
+	private void findFlies() {
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
 		progressBar.initChrono(detect.endFrame - detect.startFrame + 1);
 
@@ -190,8 +186,7 @@ public class DetectFlies2_series implements Runnable {
 					SwingUtilities.invokeAndWait(new Runnable() {
 						public void run() {
 							displayDetectViewer();
-						}
-					});
+						}});
 				} catch (InvocationTargetException | InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -335,5 +330,7 @@ public class DetectFlies2_series implements Runnable {
 		}
 		progress.close();
 	}
+
+
 
 }
