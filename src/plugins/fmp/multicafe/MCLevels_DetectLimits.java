@@ -24,7 +24,7 @@ import plugins.fmp.multicafeTools.DetectLimits_series;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class MCLevels_DetectLimits  extends JPanel {
+public class MCLevels_DetectLimits extends JPanel {
 	/**
 	 * 
 	 */
