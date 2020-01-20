@@ -25,7 +25,7 @@ public class MCSpots_ extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = -2230724185086264742L;
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
-	MCSpots_1 				buildRef = new MCSpots_1();
+	MCSpots_1 				buildRef 		= new MCSpots_1();
 
 
 	
@@ -43,6 +43,7 @@ public class MCSpots_ extends JPanel implements PropertyChangeListener {
 		buildRef.addPropertyChangeListener(this);
 		tabsPane.addTab("Limits", null, buildRef, "Subtract first column");
 		
+		capPanel.add(GuiUtil.besidesPanel(tabsPane));
 		tabsPane.setSelectedIndex(0);
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() {

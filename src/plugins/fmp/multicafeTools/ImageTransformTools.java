@@ -6,7 +6,6 @@ import icy.image.IcyBufferedImageUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.SequenceCamData;
-import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class ImageTransformTools {
 
@@ -66,27 +65,75 @@ public class ImageTransformTools {
 			transformedImage = inputImage;
 			break;
 		
-		case R_RGB: 	transformedImage= functionRGB_keepOneChan(inputImage, 0); transformImage(transformedImage, TransformOp.RTOGB); break;
-		case G_RGB: 	transformedImage= functionRGB_keepOneChan(inputImage, 1); transformImage(transformedImage, TransformOp.RTOGB); break;
-		case B_RGB: 	transformedImage= functionRGB_keepOneChan(inputImage, 2); transformImage(transformedImage, TransformOp.RTOGB); break;
-		case RGB: 		transformedImage= functionRGB_grey (inputImage); transformImage(transformedImage, TransformOp.RTOGB); break;
+		case R_RGB: 	
+			transformedImage= functionRGB_keepOneChan(inputImage, 0); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
+		case G_RGB: 	
+			transformedImage= functionRGB_keepOneChan(inputImage, 1); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
+		case B_RGB: 	
+			transformedImage= functionRGB_keepOneChan(inputImage, 2); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
+		case RGB: 		
+			transformedImage= functionRGB_grey (inputImage); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
 		
-		case H_HSB: 	transformedImage= functionRGBtoHSB(inputImage, 0); transformImage(transformedImage, TransformOp.RTOGB); break;
-		case S_HSB: 	transformedImage= functionRGBtoHSB(inputImage, 1); transformImage(transformedImage, TransformOp.RTOGB); break;
-		case B_HSB: 	transformedImage= functionRGBtoHSB(inputImage, 2); transformImage(transformedImage, TransformOp.RTOGB); break;
+		case H_HSB: 	
+			transformedImage= functionRGBtoHSB(inputImage, 0); 
+			transformImage(transformedImage, TransformOp.RTOGB);
+			break;
+		case S_HSB: 	
+			transformedImage= functionRGBtoHSB(inputImage, 1); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
+		case B_HSB: 	
+			transformedImage= functionRGBtoHSB(inputImage, 2); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
 
-		case R2MINUS_GB: transformedImage= functionRGB_2C3MinusC1C2 (inputImage, 1, 2, 0); transformImage(transformedImage, TransformOp.RTOGB); break;
-		case G2MINUS_RB: transformedImage= functionRGB_2C3MinusC1C2 (inputImage, 0, 2, 1); transformImage(transformedImage, TransformOp.RTOGB); break;
-		case B2MINUS_RG: transformedImage= functionRGB_2C3MinusC1C2 (inputImage, 0, 1, 2); transformImage(transformedImage, TransformOp.RTOGB); break;
-		case GBMINUS_2R: transformedImage= functionRGB_C1C2minus2C3 (inputImage, 1, 2, 0); transformImage(transformedImage, TransformOp.RTOGB); break;
-		case RBMINUS_2G: transformedImage= functionRGB_C1C2minus2C3 (inputImage, 0, 2, 1); transformImage(transformedImage, TransformOp.RTOGB); break;
-		case RGMINUS_2B: transformedImage= functionRGB_C1C2minus2C3 (inputImage, 0, 1, 2); transformImage(transformedImage, TransformOp.RTOGB); break;
+		case R2MINUS_GB: 
+			transformedImage= functionRGB_2C3MinusC1C2 (inputImage, 1, 2, 0); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
+		case G2MINUS_RB: 
+			transformedImage= functionRGB_2C3MinusC1C2 (inputImage, 0, 2, 1); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
+		case B2MINUS_RG: 
+			transformedImage= functionRGB_2C3MinusC1C2 (inputImage, 0, 1, 2); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
+		case GBMINUS_2R: 
+			transformedImage= functionRGB_C1C2minus2C3 (inputImage, 1, 2, 0); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
+		case RBMINUS_2G: 
+			transformedImage= functionRGB_C1C2minus2C3 (inputImage, 0, 2, 1); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
+		case RGMINUS_2B: 
+			transformedImage= functionRGB_C1C2minus2C3 (inputImage, 0, 1, 2); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
 
-		case NORM_BRMINUSG: transformedImage= functionNormRGB_sumC1C2Minus2C3(inputImage, 1, 2, 0); transformImage(transformedImage, TransformOp.RTOGB); break;
-		case RTOGB: 	transformedImage= functionTransferRedToGreenAndBlue(inputImage); break;
+		case NORM_BRMINUSG: 
+			transformedImage= functionNormRGB_sumC1C2Minus2C3(inputImage, 1, 2, 0); 
+			transformImage(transformedImage, TransformOp.RTOGB); 
+			break;
+		case RTOGB: 	
+			transformedImage= functionTransferRedToGreenAndBlue(inputImage); 
+			break;
 			
-		case REF_T0: 	transformedImage= functionSubtractRef(inputImage); break;
-		case REF: 		transformedImage= functionSubtractRef(inputImage); break;
+		case REF_T0: 	
+			transformedImage= functionSubtractRef(inputImage); 
+			break;
+		case REF: 		
+			transformedImage= functionSubtractRef(inputImage); 
+			break;
 		case REF_PREVIOUS: 
 			int t = vinputSequence.currentFrame;
 			if (t>0){
@@ -94,13 +141,25 @@ public class ImageTransformTools {
 				transformedImage= functionSubtractRef(inputImage);} 
 			break;
 			
-		case XDIFFN: 	transformedImage= computeXDiffn (inputImage); break;
-		case YDIFFN: 	transformedImage= computeYDiffn (inputImage); break;		
-		case XYDIFFN: 	transformedImage= computeXYDiffn (inputImage); break;
+		case XDIFFN: 	
+			transformedImage= computeXDiffn (inputImage); 
+			break;
+		case YDIFFN: 	
+			transformedImage= computeYDiffn (inputImage); 
+			break;		
+		case XYDIFFN: 	
+			transformedImage= computeXYDiffn (inputImage); 
+			break;
 
-		case RGB_TO_HSV: transformedImage= functionRGBtoHSV(inputImage); break;
-		case RGB_TO_H1H2H3: transformedImage= functionRGBtoH1H2H3(inputImage); break;
-		case SUBFIRSTCOL: transformedImage= functionSubtractCol(inputImage, 0); break;
+		case RGB_TO_HSV: 
+			transformedImage= functionRGBtoHSV(inputImage); 
+			break;
+		case RGB_TO_H1H2H3: 
+			transformedImage= functionRGBtoH1H2H3(inputImage); 
+			break;
+		case SUBFIRSTCOL: 
+			transformedImage= functionSubtractCol(inputImage, 0); 
+			break;
 		}
 		
 		return transformedImage;
@@ -111,7 +170,28 @@ public class ImageTransformTools {
 	}
 	
 	private IcyBufferedImage functionSubtractCol(IcyBufferedImage sourceImage, int column) {
-		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 1, sourceImage.getDataType_());
+		int chan0 = 0;
+		int chan1 =  sourceImage.getSizeC();
+		int imageSizeX = sourceImage.getSizeX();
+		int imageSizeY = sourceImage.getSizeY();
+		IcyBufferedImage img2 = new IcyBufferedImage(imageSizeX, imageSizeY, chan1, sourceImage.getDataType_());
+		
+		for (int c=chan0; c < chan1; c++) {
+			int[] tabValues = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
+			int[] outValues = Array1DUtil.arrayToIntArray(img2.getDataXY(c), img2.isSignedDataType());			
+			for (int iy = 0; iy < imageSizeY; iy++) {	
+				int deltay = iy* imageSizeX;
+				int kx = column + deltay;
+				int refVal = tabValues [kx];
+				for (int ix =spanDiff; ix < imageSizeX -spanDiff; ix++) {
+					kx = ix + deltay;
+					int outVal = tabValues [kx] - refVal;
+					outValues [kx] = (int) Math.abs(outVal);
+				}
+			}
+			Array1DUtil.intArrayToSafeArray(outValues, img2.getDataXY(c), true, img2.isSignedDataType());
+			img2.setDataXY(c, img2.getDataXY(c));
+		}
 		return img2;
 	}
 	
