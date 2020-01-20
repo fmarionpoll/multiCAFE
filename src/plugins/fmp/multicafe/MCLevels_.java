@@ -22,7 +22,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = -7339633966002954720L;
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
-	MCLevels_File 			tabFile 		= new MCLevels_File();
+	public MCLevels_File 			tabFile 		= new MCLevels_File();
 	MCLevels_DetectLimits 	tabDetectLimits = new MCLevels_DetectLimits();
 	MCLevels_DetectGulps 	tabDetectGulps 	= new MCLevels_DetectGulps();
 	MCLevels_Edit			tabEdit			= new MCLevels_Edit();
@@ -86,7 +86,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
-	void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
+	public void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
 		tabDetectLimits.startSpinner.setValue((int)seqCamData.analysisStart);
 		tabDetectLimits.endSpinner.setValue((int)seqCamData.analysisEnd);
 		tabDetectGulps.startSpinner.setValue((int)seqCamData.analysisStart);

@@ -30,7 +30,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private JTabbedPane 	tabsPane 	= new JTabbedPane();
 	MCSequence_Open 		tabOpen 	= new MCSequence_Open();
 	MCSequence_Infos		tabInfos	= new MCSequence_Infos();
-	MCSequence_Intervals	tabIntervals= new MCSequence_Intervals();
+	public MCSequence_Intervals	tabIntervals= new MCSequence_Intervals();
 	MCSequence_Display		tabDisplay 	= new MCSequence_Display();
 	MCSequence_Close 		tabClose 	= new MCSequence_Close();
 	private MultiCAFE 		parent0 	= null;
@@ -212,7 +212,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
-	void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
+	public void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
 		tabIntervals.endFrameJSpinner.setValue((int)seqCamData.analysisEnd);
 		updateViewerForSequenceCam(seqCamData);
 	}

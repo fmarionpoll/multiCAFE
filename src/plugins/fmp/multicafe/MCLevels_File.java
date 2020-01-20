@@ -92,7 +92,7 @@ public class MCLevels_File  extends JPanel {
 		return flag;
 	}
 	
-	void saveKymosMeasures(Experiment exp) {
+	public void saveKymosMeasures(Experiment exp) {
 		exp.saveExperimentMeasures();
 	}
 }

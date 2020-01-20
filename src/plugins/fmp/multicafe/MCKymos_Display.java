@@ -40,7 +40,7 @@ public class MCKymos_Display extends JPanel {
 	JButton 	updateButton 			= new JButton("Update");
 	JButton  	previousButton		 	= new JButton("<");
 	JButton		nextButton				= new JButton(">");
-	JCheckBox 	viewKymosCheckBox 		= new JCheckBox("View kymos");
+	public JCheckBox 	viewKymosCheckBox 		= new JCheckBox("View kymos");
 	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillary ROIs", false);
 	JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("capillary levels", true);
 	JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative", true);
@@ -199,7 +199,7 @@ public class MCKymos_Display extends JPanel {
 		}
 	}
 	
-	void displayUpdateOnSwingThread() {		
+	public void displayUpdateOnSwingThread() {		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				displayUpdate();

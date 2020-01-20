@@ -1,6 +1,4 @@
-package plugins.fmp.multicafe;
-
-
+package plugins.fmp.multiSpots;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -14,6 +12,7 @@ import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafe.MultiCAFE;
 
 
 
@@ -29,7 +28,7 @@ public class MCSpots_ extends JPanel implements PropertyChangeListener {
 
 
 	
-	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
+	void init (JPanel mainPanel, String string, MultiSpots parent0) {
 		
 		PopupPanel capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();

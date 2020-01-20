@@ -89,7 +89,7 @@ public class MCKymos_Create extends JPanel {
 		}});
 	}
 	
-	void setBuildKymosParametersToDialog (Experiment exp) {
+	public void setBuildKymosParametersToDialog (Experiment exp) {
 		stepJSpinner.setValue(exp.step);
 	}
 	

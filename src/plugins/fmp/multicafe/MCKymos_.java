@@ -27,8 +27,8 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 	private static final long serialVersionUID = 1122367183829360097L;
 
 	JTabbedPane 	tabsPane 		= new JTabbedPane();
-	MCKymos_Create 	tabCreate 		= new MCKymos_Create();
-	MCKymos_Display	tabDisplay 		= new MCKymos_Display();
+	public MCKymos_Create 	tabCreate 		= new MCKymos_Create();
+	public MCKymos_Display	tabDisplay 		= new MCKymos_Display();
 	MCKymos_File 	tabFile 		= new MCKymos_File();
 	
 	private MultiCAFE parent0 = null;

@@ -43,7 +43,7 @@ public class MCSequence_Intervals extends JPanel {
 
 	}
 		
-	void setAnalyzeFrameToDialog (Experiment exp) {
+	public void setAnalyzeFrameToDialog (Experiment exp) {
 		SequenceCamData seq = exp.seqCamData;
 		
 		endFrameJSpinner.setValue((int) seq.analysisEnd);
