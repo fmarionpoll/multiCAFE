@@ -1,4 +1,4 @@
-package plugins.fmp.multiSpots;
+package plugins.fmp.multicafe;
 
 
 import java.awt.GridLayout;
@@ -9,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import icy.gui.util.GuiUtil;
-import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
@@ -21,12 +20,12 @@ public class MCSpots_1 extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -7614659720134775871L;
-	private MultiSpots 	parent0 				= null;
+	private MultiCAFE 	parent0 				= null;
 	private JButton 	subtractButton 			= new JButton("Subtract first column");
 	private JButton 	buildHistogramButton 	= new JButton("Build histogram");
 	
 	
-	void init(GridLayout capLayout, MultiSpots parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		add( GuiUtil.besidesPanel(subtractButton));

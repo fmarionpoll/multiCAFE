@@ -32,6 +32,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	MCCapillaries_ 	paneCapillaries	= new MCCapillaries_();
 	MCKymos_		paneKymos		= new MCKymos_();
 	MCLevels_ 		paneLevels 		= new MCLevels_();
+	MCSpots_		paneSpots		= new MCSpots_();
 	MCMove_ 		paneMove 		= new MCMove_();
 	MCExcel_		paneExcel		= new MCExcel_();
 	
@@ -55,7 +56,9 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		paneLevels.init(mainPanel, "MEASURE TOP LEVEL & GULPS", this);
 		paneLevels.addPropertyChangeListener(this);
 
-		
+		paneSpots.init(mainPanel, "MEASURE SPOTS", this);
+		paneSpots.addPropertyChangeListener(this);
+
 		paneMove.init(mainPanel, "DETECT FLIES", this);
 		paneMove.addPropertyChangeListener(this);
 		
