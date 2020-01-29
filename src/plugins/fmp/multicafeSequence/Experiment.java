@@ -387,7 +387,6 @@ public class Experiment {
 			cap.indexImage = t;
 			IcyBufferedImage img = seqKymos.seq.getImage(t, zChannelSource);
 			IcyBufferedImage img2 = tImg.transformImage (img, transformop);
-//			img2 = tImg.transformImage(img2, TransformOp.RTOGB);
 			if (seqKymos.seq.getSizeZ(0) < (zChannelDestination+1)) 
 				seqKymos.seq.addImage(t, img2);
 			else

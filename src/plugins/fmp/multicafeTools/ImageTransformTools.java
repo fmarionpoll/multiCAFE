@@ -423,7 +423,6 @@ public class ImageTransformTools {
 	}
 	
 	private IcyBufferedImage functionRGBtoHSB(IcyBufferedImage sourceImage, int xHSB) {
-
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		
 		double[] tabValuesR = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(0), sourceImage.isSignedDataType());
@@ -459,8 +458,7 @@ public class ImageTransformTools {
 		return img2;
 	}
 	
-	private IcyBufferedImage functionSubtractRef(IcyBufferedImage sourceImage) {
-		
+	private IcyBufferedImage functionSubtractRef(IcyBufferedImage sourceImage) {	
 		if (referenceImage == null)
 			referenceImage = vinputSequence.getImage(0, 0);
 		
@@ -485,7 +483,6 @@ public class ImageTransformTools {
 	}
 	
 	private IcyBufferedImage functionRGBtoHSV (IcyBufferedImage sourceImage) {
-		
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		
 		double[] tabValuesR = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(0), sourceImage.isSignedDataType());

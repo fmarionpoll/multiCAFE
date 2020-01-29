@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -40,8 +41,9 @@ public class MCSpots_1 extends JPanel {
 	private MultiCAFE 	parent0 				= null;
 	private JButton 	subtractButton 			= new JButton("Subtract first column");
 	private JButton 	buildHistogramButton 	= new JButton("Build histogram");
-	private double [][] stdXArray = null;
-	private double [][] stdYArray = null;
+	private JButton 	removeBackGroundButton 	= new JButton("Remove background");
+	private double [][] avgX = null;
+	private double [][] avgY = null;
 	IcyFrame mainChartFrame = null;
 	
 	
@@ -49,8 +51,8 @@ public class MCSpots_1 extends JPanel {
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
-		add( GuiUtil.besidesPanel(subtractButton));
-		add( GuiUtil.besidesPanel(buildHistogramButton));		
+		add( GuiUtil.besidesPanel(subtractButton, buildHistogramButton));	
+		add( GuiUtil.besidesPanel(removeBackGroundButton, new JLabel(" ")));
 		defineActionListeners();
 	}
 	
@@ -60,10 +62,17 @@ public class MCSpots_1 extends JPanel {
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				subtractFirstColumn(exp);
 			}});
+		
 		buildHistogramButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				buildHistogram(exp);
+			}});
+		
+		removeBackGroundButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				removeBackGround(exp);
 			}});
 	}
 	
@@ -74,10 +83,6 @@ public class MCSpots_1 extends JPanel {
 		if (seqKymos == null)
 			return;
 		TransformOp transform = TransformOp.SUBFIRSTCOL;
-//		List<Capillary> capList = exp.capillaries.capillariesArrayList;
-//		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) {
-//			getInfosFromDialog(capList.get(t));		
-//		}
 		int zChannelDestination = 1;
 		exp.kymosBuildFiltered(0, zChannelDestination, transform, 0);
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
@@ -87,19 +92,9 @@ public class MCSpots_1 extends JPanel {
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
-		
-		int imageIndex = 0;
+		int imageIndex = parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
 		getAverageXandYProfile (seqKymos, imageIndex);
-//		getSTDRBminus2G();
-		graphDisplay2Panels(exp, stdXArray, stdYArray);
-//		TransformOp transform = TransformOp.SUBFIRSTCOL;
-////		List<Capillary> capList = exp.capillaries.capillariesArrayList;
-////		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) {
-////			getInfosFromDialog(capList.get(t));		
-////		}
-//		int zChannelDestination = 1;
-//		exp.kymosBuildFiltered(0, zChannelDestination, transform, 0);
-//		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
+		graphDisplay2Panels(exp, avgX, avgY);
 	}
 	
 	private void getAverageXandYProfile (SequenceKymos seqKymos, int imageIndex) {
@@ -117,10 +112,10 @@ public class MCSpots_1 extends JPanel {
 		int nXpoints = (int) (refpoint[3].x - refpoint[0].x +1); 
 		double [][] sumXArray = new double [nXpoints][3];
 		double [][] countXArray = new double [nXpoints][3];
-		stdXArray = new double [nXpoints][4];
+		avgX = new double [nXpoints][4];
 		double [][] sumYArray = new double [nYpoints][3];
 		double [][] countYArray = new double [nYpoints][3];
-		stdYArray = new double [nYpoints][4];
+		avgY = new double [nYpoints][4];
 		
 		int z = 0;
 		IcyBufferedImage virtualImage = seqKymos.seq.getImage(imageIndex, z) ;
@@ -159,29 +154,49 @@ public class MCSpots_1 extends JPanel {
 			}
 		}
 		
-		// compute variance
+		// compute average
 		for (int chan = 0; chan <3; chan++) {
 			for (int ix = 0; ix < nXpoints; ix++) {
 				double n 		= countXArray[ix][chan];
-				stdXArray[ix][chan] = sumXArray[ix][chan]/n; 
+				avgX[ix][chan] = sumXArray[ix][chan]/n; 
 			}
 			
 			for (int iy = 0; iy < nYpoints; iy++) {
 				double n 		= countYArray[iy][chan];
-				stdYArray[iy][chan] = sumYArray[iy][chan]/n;
+				avgY[iy][chan] = sumYArray[iy][chan]/n;
 			}
 		}
 	}
+	
+	private void removeBackGround(Experiment exp) {
+		double [] avgColor = new double [3];
+		int width = exp.seqKymos.seq.getSizeX();
+		for (int chan = 0; chan <3; chan++) {
+			double sum = 0;
+			for (int ix = 0; ix < width; ix++) {
+				sum += avgX[ix][chan]; 
+			}
+			avgColor[chan] = sum/width;
+		}
+		// now either create a reference image with this color or write a new transform
+		TransformOp transform = TransformOp.SUBFIRSTCOL;
+		int zChannelDestination = 1;
+		exp.kymosBuildFiltered(0, zChannelDestination, transform, 0);
+		exp.seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
+	}
+	
 		
 	private void graphDisplay2Panels (Experiment exp, double [][] arrayX, double [][] arrayY) {
+		Point pt = null;
 		if (mainChartFrame != null) {
+			pt = mainChartFrame.getLocation();
 			mainChartFrame.removeAll();
 			mainChartFrame.close();
 		}
 
 		final JPanel mainPanel = new JPanel(); 
 		mainPanel.setLayout( new BoxLayout( mainPanel, BoxLayout.LINE_AXIS ) );
-		String localtitle = "Variance along X and Y";
+		String localtitle = "Average along X and Y";
 		mainChartFrame = GuiUtil.generateTitleFrame(localtitle, 
 				new JPanel(), new Dimension(1400, 800), true, true, true, true);	
 
@@ -208,11 +223,12 @@ public class MCSpots_1 extends JPanel {
 
 		mainChartFrame.add(mainPanel);
 		mainChartFrame.pack();
-		
-		SequenceKymos seqKymos = exp.seqKymos;
-		Viewer v = seqKymos.seq.getFirstViewer();
-		Rectangle rectv = v.getBounds();
-		Point pt = new Point((int) rectv.getX(), (int) rectv.getY()+30);
+		if (pt == null) {
+			SequenceKymos seqKymos = exp.seqKymos;
+			Viewer v = seqKymos.seq.getFirstViewer();
+			Rectangle rectv = v.getBounds();
+			pt = new Point((int) rectv.getX(), (int) rectv.getY()+30);
+		}
 		mainChartFrame.setLocation(pt);
 
 		mainChartFrame.setVisible(true);
