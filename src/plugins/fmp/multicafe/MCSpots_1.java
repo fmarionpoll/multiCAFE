@@ -89,7 +89,7 @@ public class MCSpots_1 extends JPanel {
 			return;
 		
 		int imageIndex = 0;
-		getSTD (seqKymos, imageIndex);
+		getAverageXandYProfile (seqKymos, imageIndex);
 //		getSTDRBminus2G();
 		graphDisplay2Panels(exp, stdXArray, stdYArray);
 //		TransformOp transform = TransformOp.SUBFIRSTCOL;
@@ -102,7 +102,7 @@ public class MCSpots_1 extends JPanel {
 //		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
-	private void getSTD (SequenceKymos seqKymos, int imageIndex) {
+	private void getAverageXandYProfile (SequenceKymos seqKymos, int imageIndex) {
 		int height = seqKymos.seq.getSizeY();
 		int width = seqKymos.seq.getSizeX();
 		Rectangle rect = new Rectangle(0, 0, width, height);
@@ -116,22 +116,22 @@ public class MCSpots_1 extends JPanel {
 		int nYpoints = (int) (refpoint[1].y - refpoint[0].y +1); 
 		int nXpoints = (int) (refpoint[3].x - refpoint[0].x +1); 
 		double [][] sumXArray = new double [nXpoints][3];
-		double [][] sum2XArray = new double [nXpoints][3];
 		double [][] countXArray = new double [nXpoints][3];
 		stdXArray = new double [nXpoints][4];
 		double [][] sumYArray = new double [nYpoints][3];
-		double [][] sum2YArray = new double [nYpoints][3];
 		double [][] countYArray = new double [nYpoints][3];
 		stdYArray = new double [nYpoints][4];
 		
+		int z = 0;
+		IcyBufferedImage virtualImage = seqKymos.seq.getImage(imageIndex, z) ;
+		
 		for (int chan= 0; chan< 3; chan++) {
-			IcyBufferedImage virtualImage = seqKymos.getImage(imageIndex, chan) ;
 			if (virtualImage == null) {
 				System.out.println("An error occurred while reading image: " + seqKymos.currentFrame );
 				return;
 			}
 			int widthImage = virtualImage.getSizeX();
-			double [] image1DArray = Array1DUtil.arrayToDoubleArray(virtualImage.getDataXY(0), virtualImage.isSignedDataType());
+			double [] image1DArray = Array1DUtil.arrayToDoubleArray(virtualImage.getDataXY(chan), virtualImage.isSignedDataType());
 			double deltaXUp 	= (refpoint[3].x - refpoint[0].x +1);
 			double deltaXDown 	= (refpoint[2].x - refpoint[1].x +1);
 			double deltaYUp 	= (refpoint[3].y - refpoint[0].y +1);
@@ -149,14 +149,11 @@ public class MCSpots_1 extends JPanel {
 					
 					int index = (int) x + ((int) y* widthImage);
 					double value = image1DArray[index];
-					double value2 = value*value;
 					
 					sumXArray[ix][chan] = sumXArray[ix][chan] + value;
-					sum2XArray[ix][chan] = sum2XArray[ix][chan] + value2;
 					countXArray[ix][chan] = countXArray[ix][chan] + 1;
 					
 					sumYArray[iy][chan] = sumYArray[iy][chan] + value;
-					sum2YArray[iy][chan] = sum2YArray[iy][chan] + value2;
 					countYArray[iy][chan] = countYArray[iy][chan] +1;
 				}
 			}
@@ -166,29 +163,16 @@ public class MCSpots_1 extends JPanel {
 		for (int chan = 0; chan <3; chan++) {
 			for (int ix = 0; ix < nXpoints; ix++) {
 				double n 		= countXArray[ix][chan];
-				double sum2 	= sum2XArray[ix][chan];
-				double sumsum 	= sumXArray[ix][chan];
-				sumsum 			= sumsum*sumXArray[ix][chan]/n;
-				stdXArray[ix][chan] = (sum2 - sumsum)/(n-1);
+				stdXArray[ix][chan] = sumXArray[ix][chan]/n; 
 			}
 			
 			for (int iy = 0; iy < nYpoints; iy++) {
 				double n 		= countYArray[iy][chan];
-				double sum2 	= sum2YArray[iy][chan];
-				double sumsum 	= sumYArray[iy][chan];
-				sumsum 			= sumsum*sumYArray[iy][chan]/n;
-				stdYArray[iy][chan] = (sum2 - sumsum)/(n-1);
+				stdYArray[iy][chan] = sumYArray[iy][chan]/n;
 			}
 		}
 	}
-	
-	private void getSTDRBminus2G() {	
-		for (int i=0; i < stdXArray.length; i++) 
-			stdXArray[i][3] = stdXArray [i][0]+stdXArray[i][2]-2*stdXArray[i][1];
-		for (int i=0; i < stdYArray.length; i++) 
-			stdYArray[i][3] = stdYArray[i][0]+stdYArray[i][2]-2*stdYArray[i][1];	
-	}
-	
+		
 	private void graphDisplay2Panels (Experiment exp, double [][] arrayX, double [][] arrayY) {
 		if (mainChartFrame != null) {
 			mainChartFrame.removeAll();
