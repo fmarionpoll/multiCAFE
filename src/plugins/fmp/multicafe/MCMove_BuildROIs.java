@@ -32,10 +32,13 @@ public class MCMove_BuildROIs extends JPanel {
 	private static final long serialVersionUID = -5257698990389571518L;
 	private JButton 	addPolygon2DButton 		= new JButton("Draw Polygon2D");
 	private JButton createROIsFromPolygonButton = new JButton("Create/add (from Polygon 2D)");
-	private JSpinner nbcagesTextField 	= new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));
-	private JSpinner width_cageTextField 	= new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));
-	private JSpinner width_intervalTextField = new JSpinner(new SpinnerNumberModel(2, 0, 10000, 1));
-	private int 	nbcages 				= 10;
+	private JSpinner nColumnsTextField 			= new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));
+	private JSpinner width_cageTextField 		= new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));
+	private JSpinner width_intervalTextField 	= new JSpinner(new SpinnerNumberModel(2, 0, 10000, 1));
+	private JSpinner nRowsTextField 			= new JSpinner(new SpinnerNumberModel(1, 0, 10000, 1));
+	
+	private int 	ncolumns 				= 10;
+	private int 	nrows 					= 1;
 	private int 	width_cage 				= 10;
 	private int 	width_interval 			= 2;
 
@@ -46,15 +49,16 @@ public class MCMove_BuildROIs extends JPanel {
 		this.parent0 = parent0;
 		
 		add( GuiUtil.besidesPanel(addPolygon2DButton, createROIsFromPolygonButton));
-		JLabel ncagesLabel = new JLabel("N cages ");
+		JLabel nColumnsLabel = new JLabel("N columns ");
+		JLabel nRowsLabel = new JLabel("N rows ");
 		JLabel cagewidthLabel = new JLabel("cage width ");
 		JLabel btwcagesLabel = new JLabel("between cages ");
-		ncagesLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		nColumnsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		cagewidthLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		btwcagesLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		add( GuiUtil.besidesPanel( ncagesLabel, nbcagesTextField, new JLabel(" "), new JLabel(" ")));
-		add( GuiUtil.besidesPanel( cagewidthLabel,  width_cageTextField, new JLabel(" "), new JLabel(" ")));
-		add( GuiUtil.besidesPanel( btwcagesLabel, width_intervalTextField, new JLabel(" "), new JLabel(" ") ));
+		nRowsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		add( GuiUtil.besidesPanel( cagewidthLabel,  width_cageTextField, nColumnsLabel, nColumnsTextField));
+		add( GuiUtil.besidesPanel( btwcagesLabel, width_intervalTextField, nRowsLabel, nRowsTextField));
 		
 		defineActionListeners();
 	}
@@ -75,8 +79,8 @@ public class MCMove_BuildROIs extends JPanel {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		int nrois = exp.seqCamData.cages.cageList.size();	
 		if (nrois > 0) {
-			nbcagesTextField.setValue(nrois);
-			nbcages = nrois;
+			nColumnsTextField.setValue(nrois);
+			ncolumns = nrois;
 		}
 	}
 
@@ -118,7 +122,8 @@ public class MCMove_BuildROIs extends JPanel {
 	private void addROISCreatedFromSelectedPolygon() {
 		// read values from text boxes
 		try { 
-			nbcages = (int) nbcagesTextField.getValue();
+			ncolumns = (int) nColumnsTextField.getValue();
+			nrows = (int) nRowsTextField.getValue();
 			width_cage = (int) width_cageTextField.getValue();
 			width_interval = (int) width_intervalTextField.getValue();
 		}catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
@@ -134,7 +139,6 @@ public class MCMove_BuildROIs extends JPanel {
 		seqCamData.seq.removeROI(roi);
 
 		// generate cage frames
-		int span = nbcages*width_cage + (nbcages-1)*width_interval;
 		String cageRoot = "cage";
 		int iRoot = -1;
 		for (ROI iRoi: seqCamData.seq.getROIs()) {
@@ -146,35 +150,73 @@ public class MCMove_BuildROIs extends JPanel {
 		}
 		iRoot++;
 
-		for (int i=0; i< nbcages; i++) {
-			List<Point2D> points = new ArrayList<>();
-			double span0 = (width_cage+ width_interval)*i;
-			double xup = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
-			double yup = roiPolygon.ypoints[0] +  (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * span0 /span;
-			Point2D.Double point0 = new Point2D.Double (xup, yup);
-			points.add(point0);
+		int spanx = ncolumns*width_cage + (ncolumns-1)*width_interval;
+		int spany = nrows*width_cage + (nrows-1)*width_interval;
+		
+		int span = ncolumns*width_cage + (ncolumns-1)*width_interval;
+		for (int i=0; i< ncolumns; i++) {
+			double spanx0 = (width_cage+ width_interval)*i;
+			double deltax0 = (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * spanx0 /spanx;
+			double spanx1 = spanx0 + width_cage ;
+			double deltax1 = (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) *spanx1 /spanx;
 
-			xup = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * span0 /span ;
-			yup = roiPolygon.ypoints[1] +  (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *span0 /span ;
-			Point2D.Double point1 = new Point2D.Double (xup, yup);
-			points.add(point1);
+			for (int j = 0; j < nrows; j++) {
+				List<Point2D> points = new ArrayList<>();
+				
+//				double spany0 = (width_cage+ width_interval)*j;
+//				double deltay0 = (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * spany0 /spany;
+//				double spany1 = spany0 + width_cage ;
+//				double deltay1 = (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *spany1 /spany;
+//				
+//				double xup = roiPolygon.xpoints[0] + deltax0;
+//				double yup = roiPolygon.ypoints[0] + deltay0;
+//				Point2D.Double point0 = new Point2D.Double (xup, yup);
+//				points.add(point0);
+//	
+//				xup = roiPolygon.xpoints[1] + deltax1;
+//				yup = roiPolygon.ypoints[1] + deltay0;
+//				Point2D.Double point1 = new Point2D.Double (xup, yup);
+//				points.add(point1);
+//	
+//				
+//				xup = roiPolygon.xpoints[1]+ deltax1;
+//				yup = roiPolygon.ypoints[1]+ deltay1;
+//				Point2D.Double point3 = new Point2D.Double (xup, yup);
+//				points.add(point3);
+//	
+//				xup = roiPolygon.xpoints[0]+ deltax0;
+//				yup = roiPolygon.ypoints[0]+ deltay1;
+//				Point2D.Double point4 = new Point2D.Double (xup, yup);
+//				points.add(point4);
+				
+				double span0 = (width_cage+ width_interval)*i;
+				double xup = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
+				double yup = roiPolygon.ypoints[0] +  (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * span0 /span;
+				Point2D.Double point0 = new Point2D.Double (xup, yup);
+				points.add(point0);
 
-			double span1 = span0 + width_cage ;
+				xup = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * span0 /span ;
+				yup = roiPolygon.ypoints[1] +  (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *span0 /span ;
+				Point2D.Double point1 = new Point2D.Double (xup, yup);
+				points.add(point1);
 
-			xup = roiPolygon.xpoints[1]+ (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) *span1 /span;
-			yup = roiPolygon.ypoints[1]+  (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *span1 /span;
-			Point2D.Double point4 = new Point2D.Double (xup, yup);
-			points.add(point4);
+				double span1 = span0 + width_cage ;
 
-			xup = roiPolygon.xpoints[0]+ (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) *span1 /span;
-			yup = roiPolygon.ypoints[0]+  (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) *span1 /span;
-			Point2D.Double point3 = new Point2D.Double (xup, yup);
-			points.add(point3);
+				xup = roiPolygon.xpoints[1]+ (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) *span1 /span;
+				yup = roiPolygon.ypoints[1]+  (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *span1 /span;
+				Point2D.Double point4 = new Point2D.Double (xup, yup);
+				points.add(point4);
 
-			ROI2DPolygon roiP = new ROI2DPolygon (points);
-			roiP.setName(cageRoot+String.format("%03d", iRoot));
-			iRoot++;
-			seqCamData.seq.addROI(roiP);
+				xup = roiPolygon.xpoints[0]+ (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) *span1 /span;
+				yup = roiPolygon.ypoints[0]+  (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) *span1 /span;
+				Point2D.Double point3 = new Point2D.Double (xup, yup);
+				points.add(point3);
+	
+				ROI2DPolygon roiP = new ROI2DPolygon (points);
+				roiP.setName(cageRoot+String.format("%03d", iRoot));
+				iRoot++;
+				seqCamData.seq.addROI(roiP);
+			}
 		}
 
 		seqCamData.cages.fromROIsToCages(seqCamData);

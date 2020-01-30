@@ -24,7 +24,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE analysis 05-Jan-2020", true, true, true, true);
+	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE analysis 30-Jan-2020", true, true, true, true);
 	ExperimentList	expList 		= new ExperimentList();
 	int				currentExperimentIndex	= -1;
 	
