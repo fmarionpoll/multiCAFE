@@ -1,6 +1,7 @@
 package plugins.fmp.multicafeSequence;
 
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -399,6 +400,13 @@ public class Experiment {
 			capillaries.gulpsOptions.transformForGulps = transformop;
 		seqKymos.seq.dataChanged();
 		seqKymos.seq.endUpdate();
+	}
+	
+	public void setReferenceImageWithConstant (Color color) {
+		if (tImg == null) 
+			tImg = new ImageTransformTools();
+		tImg.setSpanDiff(0);
+		build ref image from RGB
 	}
 	
 	public boolean capillaryRoisOpen(String csFileName) {
