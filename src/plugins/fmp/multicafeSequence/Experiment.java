@@ -1,7 +1,6 @@
 package plugins.fmp.multicafeSequence;
 
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -20,6 +19,8 @@ import org.w3c.dom.Node;
 import icy.image.IcyBufferedImage;
 import icy.image.ImageUtil;
 import icy.roi.ROI2D;
+import icy.sequence.Sequence;
+import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ImageTransformTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
@@ -402,11 +403,19 @@ public class Experiment {
 		seqKymos.seq.endUpdate();
 	}
 	
-	public void setReferenceImageWithConstant (Color color) {
+	public void setReferenceImageWithConstant (double [] pixel) {
 		if (tImg == null) 
 			tImg = new ImageTransformTools();
 		tImg.setSpanDiff(0);
-		build ref image from RGB
+		Sequence seq = seqKymos.seq;
+		tImg.referenceImage = new IcyBufferedImage(seq.getSizeX(), seq.getSizeY(), seq.getSizeC(), seq.getDataType_());
+		IcyBufferedImage result = tImg.referenceImage;
+		for (int c=0; c < seq.getSizeC(); c++) {
+			double [] doubleArray = Array1DUtil.arrayToDoubleArray(result.getDataXY(c), result.isSignedDataType());
+			Array1DUtil.fill(doubleArray, 0, doubleArray.length, pixel[c]);
+			Array1DUtil.doubleArrayToArray(doubleArray, result.getDataXY(c));
+		}
+		result.dataChanged();
 	}
 	
 	public boolean capillaryRoisOpen(String csFileName) {

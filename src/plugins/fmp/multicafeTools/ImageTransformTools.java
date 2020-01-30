@@ -33,7 +33,7 @@ public class ImageTransformTools {
 		}
 	}
 
-	private IcyBufferedImage 	referenceImage = null;
+	public IcyBufferedImage 	referenceImage = null;
 	private int 				spanDiff = 3;
 	private SequenceCamData 	vinputSequence 	= null;
 	
@@ -52,13 +52,11 @@ public class ImageTransformTools {
 	
 	public void setSequence (SequenceCamData vinputSeq) {
 		vinputSequence = vinputSeq;
-		referenceImage = vinputSequence.getImage(0, 0);
+//		referenceImage = vinputSequence.getImage(0, 0);
 	}
 		
 	public IcyBufferedImage transformImage (IcyBufferedImage inputImage, TransformOp transformop) {
-		
 		IcyBufferedImage transformedImage = null;
-		
 		switch (transformop) {
 		case NONE: 
 		case COLORARRAY1: /*System.out.println("transform image - " + transformop);*/
@@ -461,15 +459,12 @@ public class ImageTransformTools {
 	private IcyBufferedImage functionSubtractRef(IcyBufferedImage sourceImage) {	
 		if (referenceImage == null)
 			referenceImage = vinputSequence.getImage(0, 0);
-		
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getSizeX(), sourceImage.getSizeY(),sourceImage.getSizeC(), sourceImage.getDataType_());
 		
 		for (int c=0; c<sourceImage.getSizeC(); c++) {
-
 			int [] imgSourceInt = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(0), sourceImage.isSignedDataType());
 			int [] img2Int = Array1DUtil.arrayToIntArray(img2.getDataXY(0), img2.isSignedDataType());
-			int [] imgReferenceInt = Array1DUtil.arrayToIntArray(referenceImage.getDataXY(0), referenceImage.isSignedDataType());
-				
+			int [] imgReferenceInt = Array1DUtil.arrayToIntArray(referenceImage.getDataXY(0), referenceImage.isSignedDataType());	
 			for (int i=0; i< imgSourceInt.length; i++) {
 				int val = imgSourceInt[i] - imgReferenceInt[i];
 				if (val < 0) 

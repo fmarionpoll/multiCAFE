@@ -1,7 +1,5 @@
 package plugins.fmp.multicafe;
 
-
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -182,8 +180,7 @@ public class MCSpots_1 extends JPanel {
 		// now either create a reference image with this color or write a new transform
 		TransformOp transform = TransformOp.REF;
 		int zChannelDestination = 1;
-		Color color = avgColor;
-		exp.setReferenceImage(color);
+		exp.setReferenceImageWithConstant(avgColor);
 		exp.kymosBuildFiltered(0, zChannelDestination, transform, 0);
 		exp.seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
