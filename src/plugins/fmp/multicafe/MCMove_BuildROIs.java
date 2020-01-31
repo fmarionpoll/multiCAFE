@@ -149,66 +149,79 @@ public class MCMove_BuildROIs extends JPanel {
 			}
 		}
 		iRoot++;
-
-		int spanx = ncolumns*width_cage + (ncolumns-1)*width_interval;
-		int spany = nrows*width_cage + (nrows-1)*width_interval;
 		
-		int span = ncolumns*width_cage + (ncolumns-1)*width_interval;
-		for (int i=0; i< ncolumns; i++) {
-			double spanx0 = (width_cage+ width_interval)*i;
-			double deltax0 = (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * spanx0 /spanx;
-			double spanx1 = spanx0 + width_cage ;
-			double deltax1 = (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) *spanx1 /spanx;
-
-			for (int j = 0; j < nrows; j++) {
-				List<Point2D> points = new ArrayList<>();
-				
-//				double spany0 = (width_cage+ width_interval)*j;
-//				double deltay0 = (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * spany0 /spany;
-//				double spany1 = spany0 + width_cage ;
-//				double deltay1 = (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *spany1 /spany;
+//		int spanx = ncolumns*width_cage + (ncolumns-1)*width_interval;
+//		int spany = nrows*width_cage + (nrows-1)*width_interval;
+//		
+//		for (int i=0; i< ncolumns; i++) {
+//
+//			double spanx0 = (width_cage+ width_interval)*i /spanx;
+//			double spanx1 = (width_cage + (width_cage+ width_interval)*i) /spanx;
+//
+//			for (int j = 0; j < nrows; j++) {
+//				List<Point2D> points = new ArrayList<>();
 //				
-//				double xup = roiPolygon.xpoints[0] + deltax0;
-//				double yup = roiPolygon.ypoints[0] + deltay0;
+//				double spany0 = (width_cage+ width_interval)*j /spany;
+//				double spany1 = (width_cage + (width_cage+ width_interval)*j) /spany;
+//				
+//				double xup = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * spanx0 ;
+//				double yup = roiPolygon.ypoints[0] +  (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * spany0 ;
 //				Point2D.Double point0 = new Point2D.Double (xup, yup);
 //				points.add(point0);
-//	
-//				xup = roiPolygon.xpoints[1] + deltax1;
-//				yup = roiPolygon.ypoints[1] + deltay0;
+//
+//				xup = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * spanx0  ;
+//				yup = roiPolygon.ypoints[1] +  (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *spany0 ;
 //				Point2D.Double point1 = new Point2D.Double (xup, yup);
 //				points.add(point1);
-//	
-//				
-//				xup = roiPolygon.xpoints[1]+ deltax1;
-//				yup = roiPolygon.ypoints[1]+ deltay1;
+//
+//				xup = roiPolygon.xpoints[1]+ (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) *spanx1 ;
+//				yup = roiPolygon.ypoints[1]+  (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *spany1 ;
+//				Point2D.Double point4 = new Point2D.Double (xup, yup);
+//				points.add(point4);
+//
+//				xup = roiPolygon.xpoints[0]+ (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) *spanx1 ;
+//				yup = roiPolygon.ypoints[0]+  (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) *spany1 ;
 //				Point2D.Double point3 = new Point2D.Double (xup, yup);
 //				points.add(point3);
 //	
-//				xup = roiPolygon.xpoints[0]+ deltax0;
-//				yup = roiPolygon.ypoints[0]+ deltay1;
-//				Point2D.Double point4 = new Point2D.Double (xup, yup);
-//				points.add(point4);
+//				ROI2DPolygon roiP = new ROI2DPolygon (points);
+//				roiP.setName(cageRoot+String.format("%03d", iRoot));
+//				iRoot++;
+//				seqCamData.seq.addROI(roiP);
+//			}
+//		}
+		int spanx = ncolumns*width_cage + (ncolumns-1)*width_interval;
+		int spany = nrows*width_cage + (nrows-1)*width_interval;
+		
+		for (int i=0; i< ncolumns; i++) {
+
+			double spanx0 = (width_cage+ width_interval)*i;
+			double spanx1 = spanx0 + width_cage ;
+
+			for (int j = 0; j < nrows; j++) {
 				
-				double span0 = (width_cage+ width_interval)*i;
-				double xup = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
-				double yup = roiPolygon.ypoints[0] +  (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * span0 /span;
+				List<Point2D> points = new ArrayList<>();
+				double spany0 = (width_cage+ width_interval)*j;
+				double spany1 = spanx0 + width_cage ;
+
+				double xup = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) *spanx0 /spanx;
+				double yup = roiPolygon.ypoints[0] + (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) *spanx0 /spanx;
 				Point2D.Double point0 = new Point2D.Double (xup, yup);
 				points.add(point0);
 
-				xup = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * span0 /span ;
-				yup = roiPolygon.ypoints[1] +  (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *span0 /span ;
+				xup = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) *spanx0 /spanx ;
+				yup = roiPolygon.ypoints[1] + (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *spanx0 /spanx ;
 				Point2D.Double point1 = new Point2D.Double (xup, yup);
 				points.add(point1);
 
-				double span1 = span0 + width_cage ;
 
-				xup = roiPolygon.xpoints[1]+ (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) *span1 /span;
-				yup = roiPolygon.ypoints[1]+  (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *span1 /span;
+				xup = roiPolygon.xpoints[1]+ (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) *spanx1 /spanx;
+				yup = roiPolygon.ypoints[1]+ (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *spanx1 /spanx;
 				Point2D.Double point4 = new Point2D.Double (xup, yup);
 				points.add(point4);
 
-				xup = roiPolygon.xpoints[0]+ (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) *span1 /span;
-				yup = roiPolygon.ypoints[0]+  (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) *span1 /span;
+				xup = roiPolygon.xpoints[0]+ (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) *spanx1 /spanx;
+				yup = roiPolygon.ypoints[0]+ (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) *spanx1 /spanx;
 				Point2D.Double point3 = new Point2D.Double (xup, yup);
 				points.add(point3);
 	
