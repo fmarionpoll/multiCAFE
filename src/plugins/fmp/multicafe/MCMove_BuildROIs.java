@@ -150,80 +150,45 @@ public class MCMove_BuildROIs extends JPanel {
 		}
 		iRoot++;
 		
-
-//		int spanx = ncolumns*width_cage + (ncolumns-1)*width_interval;
-//		int spany = nrows*width_cage + (nrows-1)*width_interval;
-//		
-//		for (int i=0; i< ncolumns; i++) {
-//
-//			double spanx0 = (width_cage+ width_interval)*i;
-//			double spanx1 = spanx0 + width_cage ;
-//
-//			for (int j = 0; j < nrows; j++) {
-//				
-//				List<Point2D> points = new ArrayList<>();
-//				double spany0 = (width_cage+ width_interval)*j;
-//				double spany1 = spanx0 + width_cage ;
-//
-//				double xup = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) *spanx0 /spanx;
-//				double yup = roiPolygon.ypoints[0] + (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) *spanx0 /spanx;
-//				Point2D.Double point0 = new Point2D.Double (xup, yup);
-//				points.add(point0);
-//
-//				xup = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) *spanx0 /spanx ;
-//				yup = roiPolygon.ypoints[1] + (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *spanx0 /spanx ;
-//				Point2D.Double point1 = new Point2D.Double (xup, yup);
-//				points.add(point1);
-//
-//
-//				xup = roiPolygon.xpoints[1]+ (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) *spanx1 /spanx;
-//				yup = roiPolygon.ypoints[1]+ (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *spanx1 /spanx;
-//				Point2D.Double point4 = new Point2D.Double (xup, yup);
-//				points.add(point4);
-//
-//				xup = roiPolygon.xpoints[0]+ (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) *spanx1 /spanx;
-//				yup = roiPolygon.ypoints[0]+ (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) *spanx1 /spanx;
-//				Point2D.Double point3 = new Point2D.Double (xup, yup);
-//				points.add(point3);
-//	
-//				ROI2DPolygon roiP = new ROI2DPolygon (points);
-//				roiP.setName(cageRoot+String.format("%03d", iRoot));
-//				iRoot++;
-//				seqCamData.seq.addROI(roiP);
-//			}
-//		}
-		
-		
 		for (int i=0; i< ncolumns; i++) {
-
-			double x0 = roiPolygon.xpoints[0] + (roiPolygon.xpoints[1]- roiPolygon.xpoints[0])* i/ ncolumns;
-			double x1 = x0 + (roiPolygon.xpoints[3]- roiPolygon.xpoints[0])/ ncolumns;
-			double x3 = roiPolygon.xpoints[3] + (roiPolygon.xpoints[2]- roiPolygon.xpoints[3])* i/ ncolumns;
-			double x2 = x3 + (roiPolygon.xpoints[2]- roiPolygon.xpoints[1])/ ncolumns ;
+			double deltax = (roiPolygon.xpoints[3]- roiPolygon.xpoints[0]) / ncolumns;
+			double x0i = roiPolygon.xpoints[0] + deltax * i;
+			double x3i = x0i + deltax;
+			deltax = (roiPolygon.xpoints[2]- roiPolygon.xpoints[1]) / ncolumns;
+			double x1i = roiPolygon.xpoints[1] + deltax * i;
+			double x2i = x1i + deltax;
+			
+			double deltay = (roiPolygon.ypoints[3]- roiPolygon.ypoints[0]) / ncolumns ;
+			double y0i = roiPolygon.ypoints[0] + deltay * i;
+			double y3i = y0i + deltay;
+			deltay = (roiPolygon.ypoints[2]- roiPolygon.ypoints[1]) / ncolumns;
+			double y1i = roiPolygon.ypoints[1] + deltay * i;
+			double y2i = y1i + deltay;
 			
 			for (int j = 0; j < nrows; j++) {
 				
 				List<Point2D> points = new ArrayList<>();
-				x0 = x0 + (x3-x0)*j/nrows;
-				x1= x1 + (x2-x1)*j/nrows;
-				x2 = x1 + (x2-x1)/nrows;
-				x3 = x0 + (x3-x0)/nrows;
-						
-				double y0 = roiPolygon.ypoints[0] + (roiPolygon.ypoints[3]- roiPolygon.ypoints[0])* j/ nrows;
-				double y1 = roiPolygon.ypoints[1] + (roiPolygon.ypoints[2]- roiPolygon.ypoints[1])* j/ nrows;
-				double y3 = y0 + (roiPolygon.ypoints[3]- roiPolygon.ypoints[0])/ nrows;
-				double y2 = y1 + (roiPolygon.ypoints[2]- roiPolygon.ypoints[1])/ nrows ;
+				deltax = (x1i - x0i) / nrows;
+				double x0ij = x0i + deltax *j;
+				double x1ij = x0ij + deltax;
+				deltax = (x2i - x3i) / nrows;
+				double x3ij = x3i + deltax * j;
+				double x2ij = x3ij + deltax;
 				
-				Point2D.Double point0 = new Point2D.Double (x0, y0);
+				deltay = (y1i - y0i) / nrows;
+				double y0ij = y0i + deltay * j;
+				double y1ij = y0ij + deltay;
+				deltay = (y2i - y3i) / nrows;
+				double y3ij = y3i + deltay * j;
+				double y2ij = y3ij + deltay;
+				
+				Point2D.Double point0 = new Point2D.Double (x0ij, y0ij);
 				points.add(point0);
-
-				Point2D.Double point1 = new Point2D.Double (x1, y1);
+				Point2D.Double point1 = new Point2D.Double (x1ij, y1ij);
 				points.add(point1);
-
-				Point2D.Double point4 = new Point2D.Double (x2, y2);
-				points.add(point4);
-
-				Point2D.Double point3 = new Point2D.Double (x3, y3);
+				Point2D.Double point2 = new Point2D.Double (x2ij, y2ij);
+				points.add(point2);
+				Point2D.Double point3 = new Point2D.Double (x3ij, y3ij);
 				points.add(point3);
 	
 				ROI2DPolygon roiP = new ROI2DPolygon (points);
