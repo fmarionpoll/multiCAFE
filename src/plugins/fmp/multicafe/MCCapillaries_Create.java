@@ -1,7 +1,6 @@
 package plugins.fmp.multicafe;
 
 import java.awt.GridLayout;
-import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +20,7 @@ import javax.swing.SwingConstants;
 import icy.gui.frame.progress.AnnounceFrame;
 import icy.gui.util.GuiUtil;
 import icy.roi.ROI2D;
+import icy.type.geom.Polygon2D;
 import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
@@ -166,7 +166,7 @@ public class MCCapillaries_Create extends JPanel {
 			return;
 		}
 		
-		Polygon roiPolygon = MulticafeTools.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
+		Polygon2D roiPolygon = MulticafeTools.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
 			
 		// clear Rois from sequence
 		seqCamData.seq.removeROI(roi);
