@@ -2,6 +2,7 @@ package plugins.fmp.multicafeTools;
 
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -261,6 +262,20 @@ public class MulticafeTools  extends Plugin {
 		
 		Polygon2D result = new Polygon2D(xpoints, ypoints, npoints);
 		return result;
+	}
+	
+	public static Point2D lineIntersect(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+		double denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+		if (denom == 0.0) { // Lines are parallel.
+		     return null;
+		}
+		double ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3))/denom;
+		double ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3))/denom;
+		if (ua >= 0.0f && ua <= 1.0f && ub >= 0.0f && ub <= 1.0f) {
+		    // Get the intersection point.
+		    return new Point2D.Double ( (x1 + ua*(x2 - x1)), (y1 + ua*(y2 - y1)));
+			}
+		return null; 
 	}
 	
 }

@@ -184,29 +184,41 @@ public class MCMove_BuildROIs extends JPanel {
 				double y3ij = y3i + deltay_right * j;
 				double y2ij = y3ij + deltay_right;
 				
+				// shrink by
 				double xspacer_top =  (x3ij - x0ij) * width_interval / (width_cage + 2 * width_interval);				
 				double xspacer_bottom = (x2ij - x1ij) * width_interval / (width_cage + 2 * width_interval);
-				
-				x0ij += xspacer_top;
-				x3ij -= xspacer_top;
-				x1ij += xspacer_bottom;
-				x2ij -= xspacer_bottom;
-				
 				double yspacer_left =  (y1ij - y0ij) * width_interval / (width_cage + 2 * width_interval);				
 				double yspacer_right = (y2ij - y3ij) * width_interval / (width_cage + 2 * width_interval);
-				y0ij += yspacer_left;
-				y3ij += yspacer_right;
-				y1ij -= yspacer_left;
-				y2ij -= yspacer_right;
 				
+				// define intersection
 				List<Point2D> points = new ArrayList<>();
-				Point2D.Double point0 = new Point2D.Double (x0ij, y0ij);
+
+				Point2D point0 = MulticafeTools.lineIntersect(
+						x0ij + xspacer_top, 	y0ij, 
+						x1ij + xspacer_bottom, 	y1ij,  
+						x0ij, 					y0ij + yspacer_left, 
+						x3ij, 					y3ij + yspacer_right);
 				points.add(point0);
-				Point2D.Double point1 = new Point2D.Double (x1ij, y1ij);
+
+				Point2D point1 = MulticafeTools.lineIntersect(
+						x1ij, 					y1ij - yspacer_left, 
+						x2ij, 					y2ij - yspacer_right,  
+						x0ij + xspacer_top, 	y0ij, 
+						x1ij+ xspacer_bottom, 	y1ij);
 				points.add(point1);
-				Point2D.Double point2 = new Point2D.Double (x2ij, y2ij);
+
+				Point2D point2 = MulticafeTools.lineIntersect(
+						x1ij, 					y1ij - yspacer_left, 
+						x2ij, 					y2ij - yspacer_right, 
+						x3ij-xspacer_top, 		y3ij, 
+						x2ij-xspacer_bottom, 	y2ij);
 				points.add(point2);
-				Point2D.Double point3 = new Point2D.Double (x3ij, y3ij);
+
+				Point2D point3 = MulticafeTools.lineIntersect(
+						x0ij, 					y0ij + yspacer_left, 
+						x3ij, 					y3ij + yspacer_right, 
+						x3ij-xspacer_top, 		y3ij, 
+						x2ij-xspacer_bottom, 	y2ij);
 				points.add(point3);
 	
 				ROI2DPolygon roiP = new ROI2DPolygon (points);
