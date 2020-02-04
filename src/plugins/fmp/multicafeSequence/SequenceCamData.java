@@ -468,7 +468,7 @@ public class SequenceCamData implements SequenceListener {
 	public void storeAnalysisParametersToCages() {
 		cages.detect.startFrame = (int) analysisEnd;
 		cages.detect.endFrame = (int) analysisStart;
-		cages.detect.analyzeStep = analysisStep;
+		cages.detect.analyzeMoveStep = analysisStep;
 	}
 	
 	public boolean xmlReadDrosoTrackDefault() {

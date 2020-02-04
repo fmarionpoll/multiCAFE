@@ -98,7 +98,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		
 		detect.seqCamData.seq.beginUpdate();
 		int it = 0;
-		for (int t = detect.startFrame ; t <= detect.endFrame; t  += detect.analyzeStep, it++ ) {				
+		for (int t = detect.startFrame ; t <= detect.endFrame; t  += detect.analyzeMoveStep, it++ ) {				
 			if (stopFlag)
 				break;
 			progressBar.updatePositionAndTimeLeft(t);

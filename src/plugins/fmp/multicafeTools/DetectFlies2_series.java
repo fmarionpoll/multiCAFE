@@ -194,7 +194,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 			// ----------------- loop over all images of the stack
 			int it = 0;
-			for (int t = detect.startFrame; t <= detect.endFrame; t += detect.analyzeStep, it++) {
+			for (int t = detect.startFrame; t <= detect.endFrame; t += detect.analyzeMoveStep, it++) {
 				if (stopFlag)
 					break;
 				progressBar.updatePositionAndTimeLeft(t);
@@ -299,7 +299,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		viewerCamData = detect.seqCamData.seq.getFirstViewer();
 		displayRefViewers();
 
-		for (int t = detect.startFrame + 1; t <= detect.endFrame && !stopFlag; t += detect.analyzeStep) {
+		for (int t = detect.startFrame + 1; t <= detect.endFrame && !stopFlag; t += detect.analyzeMoveStep) {
 			IcyBufferedImage currentImage = detect.seqCamData.getImage(t, 0);
 			detect.seqCamData.currentFrame = t;
 			viewerCamData.setPositionT(t);
