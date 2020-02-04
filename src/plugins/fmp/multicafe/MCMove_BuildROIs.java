@@ -227,7 +227,6 @@ public class MCMove_BuildROIs extends JPanel {
 				seqCamData.seq.addROI(roiP);
 			}
 		}
-
 		seqCamData.cages.fromROIsToCages(seqCamData);
 	}
 
