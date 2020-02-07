@@ -53,6 +53,8 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 				initViewerCamData(exp);
 
 				exp.step = options.analyzeStep;
+				exp.analysisStart = options.startFrame;
+				exp.analysisEnd = options.endFrame;
 				if (computeKymo(exp) && !stopFlag) {
 					saveComputation(exp);
 				}

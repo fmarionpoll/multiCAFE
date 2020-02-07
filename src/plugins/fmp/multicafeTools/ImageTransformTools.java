@@ -187,7 +187,7 @@ public class ImageTransformTools {
 					outValues [kx] = (int) Math.abs(outVal);
 				}
 			}
-			Array1DUtil.intArrayToSafeArray(outValues, img2.getDataXY(c), true, img2.isSignedDataType());
+			Array1DUtil.intArrayToSafeArray(outValues, img2.getDataXY(c), sourceImage.isSignedDataType(), img2.isSignedDataType());
 			img2.setDataXY(c, img2.getDataXY(c));
 		}
 		return img2;
@@ -195,7 +195,8 @@ public class ImageTransformTools {
 	
 	// function proposed by François Rebaudo
 	private IcyBufferedImage functionNormRGB_sumC1C2Minus2C3 (IcyBufferedImage sourceImage, int Rlayer, int Glayer, int Blayer) {
- 
+		IcyBufferedImage img2 = new IcyBufferedImage (sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
+		
 		double[] Rn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(Rlayer), sourceImage.isSignedDataType());
 		double[] Gn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(Glayer), sourceImage.isSignedDataType());
 		double[] Bn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(Blayer), sourceImage.isSignedDataType());
@@ -206,9 +207,12 @@ public class ImageTransformTools {
 			ExG[i] = ((Gn[i] *2 / 255 / sum) - (Rn[i] / 255/sum) - (Bn [i] / 255/sum)) * 255;
 		}
 		
-		IcyBufferedImage img2 = new IcyBufferedImage (sourceImage.getWidth(), sourceImage.getHeight(), 1, sourceImage.getDataType_());
 		Array1DUtil.doubleArrayToSafeArray(ExG,  img2.getDataXY(0), false); //true);
 		img2.setDataXY(0, img2.getDataXY(0));
+		for (int c= 1; c<3; c++ ) {
+			img2.copyData(img2, 0, c);
+			img2.setDataXY(c, img2.getDataXY(c));
+		}
 		return img2;
 	}
 	
@@ -223,7 +227,7 @@ public class ImageTransformTools {
 	
 	private IcyBufferedImage functionRGB_2C3MinusC1C2 (IcyBufferedImage sourceImage, int addchan1, int addchan2, int subtractchan3) {
 		
-		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 1, sourceImage.getDataType_());
+		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		
 		double[] tabSubtract = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(subtractchan3), sourceImage.isSignedDataType());
 		double[] tabAdd1 = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(addchan1), sourceImage.isSignedDataType());
@@ -234,15 +238,18 @@ public class ImageTransformTools {
 			double val = tabSubtract[i]* 2 - tabAdd1[i] - tabAdd2[i] ;
 			tabResult [i] = val;
 		}
-		
 		Array1DUtil.doubleArrayToSafeArray(tabResult, img2.getDataXY(0), false); //  true);
 		img2.setDataXY(0, img2.getDataXY(0));
+		for (int c= 1; c<3; c++ ) {
+			img2.copyData(img2, 0, c);
+			img2.setDataXY(c, img2.getDataXY(c));
+		}
 		return img2; 
 	}
 	
 	private IcyBufferedImage functionRGB_C1C2minus2C3 (IcyBufferedImage sourceImage, int addchan1, int addchan2, int subtractchan3) {
 		
-		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 1, sourceImage.getDataType_());
+		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		if (sourceImage.getSizeC() < 3)
 			return null;
 		double[] tabSubtract = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(subtractchan3), sourceImage.isSignedDataType());
@@ -256,11 +263,14 @@ public class ImageTransformTools {
 		
 		Array1DUtil.doubleArrayToSafeArray(tabResult, img2.getDataXY(0), false); //  true);
 		img2.setDataXY(0, img2.getDataXY(0));
+		for (int c= 1; c<3; c++ ) {
+			img2.copyData(img2, 0, c);
+			img2.setDataXY(c, img2.getDataXY(c));
+		}
 		return img2;
 	}
 	
 	private IcyBufferedImage computeXDiffn(IcyBufferedImage sourceImage) {
-
 		int chan0 = 0;
 		int chan1 =  sourceImage.getSizeC();
 		int imageSizeX = sourceImage.getSizeX();
@@ -304,15 +314,13 @@ public class ImageTransformTools {
 	}
 	
 	private IcyBufferedImage computeYDiffn(IcyBufferedImage sourceImage) {
-
 		int chan0 = 0;
 		int chan1 =  sourceImage.getSizeC();
 		int imageSizeX = sourceImage.getSizeX();
 		int imageSizeY = sourceImage.getSizeY();
-		IcyBufferedImage img2 = new IcyBufferedImage(imageSizeX, imageSizeY, 1, sourceImage.getDataType_());
+		IcyBufferedImage img2 = new IcyBufferedImage(imageSizeX, imageSizeY, 3, sourceImage.getDataType_());
 		
 		for (int c=chan0; c < chan1; c++) {
-
 			int [] tabValues = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
 			int [] outValues = Array1DUtil.arrayToIntArray(img2.getDataXY(c), img2.isSignedDataType());			
 
@@ -396,14 +404,18 @@ public class ImageTransformTools {
 	}
 	
 	private IcyBufferedImage functionRGB_keepOneChan (IcyBufferedImage sourceImage, int keepChan) {
-		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 1, sourceImage.getDataType_());
+		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		img2.copyData(sourceImage, keepChan, 0);
 		img2.setDataXY(0, img2.getDataXY(0));
+		for (int c= 1; c<3; c++ ) {
+			img2.copyData(img2, 0, c);
+			img2.setDataXY(c, img2.getDataXY(c));
+		}
 		return img2;
 	}
 	
 	private IcyBufferedImage functionRGB_grey (IcyBufferedImage sourceImage) {
-		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 1, sourceImage.getDataType_());
+		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		int[] tabValuesR = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(0), sourceImage.isSignedDataType());
 		int[] tabValuesG = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(1), sourceImage.isSignedDataType());
 		int[] tabValuesB = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(2), sourceImage.isSignedDataType());
@@ -417,6 +429,10 @@ public class ImageTransformTools {
 		Object dataArray = img2.getDataXY(c);
 		Array1DUtil.intArrayToSafeArray(outValues0, dataArray, sourceImage.isSignedDataType(), img2.isSignedDataType());
 		img2.setDataXY(c, img2.getDataXY(c));
+		for (c= 1; c<3; c++ ) {
+			img2.copyData(img2, 0, c);
+			img2.setDataXY(c, img2.getDataXY(c));
+		}
 		return img2;
 	}
 	
@@ -528,7 +544,6 @@ public class ImageTransformTools {
 		// compute values
 		final double VMAX = 255.0;
 		for (int ky = 0; ky < tabValuesR.length; ky++) {
-
 			int r = (int) tabValuesR[ky];
 			int g = (int) tabValuesG[ky];
 			int b = (int) tabValuesB[ky];

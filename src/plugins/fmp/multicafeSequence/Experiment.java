@@ -163,9 +163,8 @@ public class Experiment {
 	// TODO call it loadKymographs_Images if possible 
 	
 	public boolean xmlLoadExperiment () {
-		String directory = experimentFileName;
-		if (directory == null)
-			directory = seqCamData.getDirectory();
+		String directory = seqCamData.getDirectory();
+		experimentFileName = directory;
 		String csFileName = directory+ File.separator + "results" + File.separator + "MCexperiment.xml";
 		final Document doc = XMLUtil.loadDocument(csFileName);
 		if (doc != null) {
@@ -184,9 +183,7 @@ public class Experiment {
 			boxID 		= XMLUtil.getElementValue(node, ID_BOXID, "..");
 	        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
 	        comment 	= XMLUtil.getElementValue(node, ID_COMMENT, "..");
-	        String exptName = XMLUtil.getElementValue(node, ID_EXPTFILENAME, null);
-	        if (exptName != null)
-	        	experimentFileName = exptName;
+//	        String exptName = XMLUtil.getElementValue(node, ID_EXPTFILENAME, null);
 		}
 		return true;
 	}
@@ -213,7 +210,8 @@ public class Experiment {
 	        	experimentFileName = seqCamData.getDirectory();
 	        XMLUtil.setElementValue(node, ID_EXPTFILENAME, experimentFileName);
 
-	        String csFileName = experimentFileName + File.separator + "results" + File.separator + "MCexperiment.xml";
+	        String directory = seqCamData.getDirectory();
+	        String csFileName = directory + File.separator + "results" + File.separator + "MCexperiment.xml";
 	        XMLUtil.saveDocument(doc, csFileName);
 		}
 		return true;
@@ -494,7 +492,6 @@ public class Experiment {
 		}
 		return false;
 	}
-	
 	
 	public void updateCapillariesFromCamData() {
 		List<ROI2D> listROISCap = seqCamData.getCapillaries();

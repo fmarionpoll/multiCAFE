@@ -45,7 +45,6 @@ public class MCSequence_Close  extends JPanel {
 		if (exp != null) {
 			parent0.paneSequence.tabInfos.getExperimentInfosFromDialog(exp);
 			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog (exp);
-			parent0.paneKymos.tabCreate.getBuildKymosParametersFromDialog(exp);
 			exp.xmlSaveExperiment();
 
 			SequenceKymos seqKymos = exp.seqKymos;

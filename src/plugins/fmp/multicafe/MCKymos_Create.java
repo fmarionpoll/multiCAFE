@@ -20,7 +20,6 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeTools.BuildKymographs_series;
 import plugins.fmp.multicafeTools.BuildKymographs_Options;
 import plugins.fmp.multicafeTools.EnumStatusComputation;
-import plugins.fmp.multicafeTools.ProgressChrono;
 
 
 public class MCKymos_Create extends JPanel { 
@@ -30,9 +29,7 @@ public class MCKymos_Create extends JPanel {
 	private static final long serialVersionUID = 1771360416354320887L;
 	JButton 				kymoStartComputationButton 	= new JButton("Start");
 	JButton 				kymosStopComputationButton 	= new JButton("Stop");
-	JButton					updateStepButton			= new JButton("Save step");
 	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
-	JSpinner 				stepJSpinner 				= new JSpinner(new SpinnerNumberModel(1, 1, 10000, 1));
 	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
 	JCheckBox				updateViewerCheckBox 		= new JCheckBox("update viewer", true);
 	JCheckBox				ALLCheckBox 				= new JCheckBox("ALL series", false);
@@ -57,7 +54,7 @@ public class MCKymos_Create extends JPanel {
 				updateViewerCheckBox, 
 				doRegistrationCheckBox
 				));
-		add(GuiUtil.besidesPanel(new JLabel("step ", SwingConstants.RIGHT), stepJSpinner, updateStepButton, ALLCheckBox));
+		add(GuiUtil.besidesPanel(new JLabel("step ", SwingConstants.RIGHT), new JLabel(" "), new JLabel(" "), ALLCheckBox));
 		
 		defineActionListeners();
 	}
@@ -72,12 +69,7 @@ public class MCKymos_Create extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				series_kymosBuildStop();
 		}});
-		
-		updateStepButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
-				updateStepInXMLExperiments((int) stepJSpinner.getValue());
-		}});
-		
+				
 		ALLCheckBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				Color color = Color.BLACK;
@@ -85,19 +77,14 @@ public class MCKymos_Create extends JPanel {
 					color = Color.RED;
 				ALLCheckBox.setForeground(color);
 				kymoStartComputationButton.setForeground(color);
-				updateStepButton.setForeground(color);
 		}});
 	}
 	
 	public void setBuildKymosParametersToDialog (Experiment exp) {
-		stepJSpinner.setValue(exp.step);
+		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog (exp);
 	}
 	
-	void getBuildKymosParametersFromDialog (Experiment exp) {
-		exp.step = (int) stepJSpinner.getValue();
-		if (exp.seqCamData != null)
-			exp.seqCamData.analysisStep = (int) stepJSpinner.getValue();
-	}
+
 	
 	private void setStartButton(boolean enableStart) {
 		kymoStartComputationButton.setEnabled(enableStart );
@@ -122,7 +109,10 @@ public class MCKymos_Create extends JPanel {
 			options.expList.index1 = parent0.expList.experimentList.size()-1;
 		}
 		options.expList = parent0.expList; 
-		options.analyzeStep = (int) stepJSpinner.getValue();
+		options.analyzeStep = exp.step;
+		options.startFrame = exp.startFrame;
+		options.endFrame = exp.endFrame;
+		
 		options.diskRadius 	= (int) diskRadiusSpinner.getValue();
 		options.doRegistration = doRegistrationCheckBox.isSelected();
 		options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
@@ -169,25 +159,25 @@ public class MCKymos_Create extends JPanel {
 		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 	}
 	
-	private void updateStepInXMLExperiments(int step ) {
-		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, true);
-		int i0 = 0;
-		int i1 = parent0.expList.experimentList.size();
-		if (!ALLCheckBox.isSelected()) {
-			i0 = parent0.currentExperimentIndex;
-			i1 = i0+1;
-		}
-		ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
-		progressBar.initChrono(i1);
-		progressBar.setMessageFirstPart("Processing XML MCexperiment ");
-		
-		for (int index = i0; index < i1; index++) {
-			progressBar.updatePosition(index);
-			Experiment exp = parent0.expList.experimentList.get(index);
-			exp.step =step;
-			exp.xmlSaveExperiment();
-		}
-		progressBar.close();
-	}
+//	private void updateStepInXMLExperiments(int step ) {
+//		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, true);
+//		int i0 = 0;
+//		int i1 = parent0.expList.experimentList.size();
+//		if (!ALLCheckBox.isSelected()) {
+//			i0 = parent0.currentExperimentIndex;
+//			i1 = i0+1;
+//		}
+//		ProgressChrono progressBar = new ProgressChrono("Compute kymographs");
+//		progressBar.initChrono(i1);
+//		progressBar.setMessageFirstPart("Processing XML MCexperiment ");
+//		
+//		for (int index = i0; index < i1; index++) {
+//			progressBar.updatePosition(index);
+//			Experiment exp = parent0.expList.experimentList.get(index);
+//			exp.step =step;
+//			exp.xmlSaveExperiment();
+//		}
+//		progressBar.close();
+//	}
 
 }
