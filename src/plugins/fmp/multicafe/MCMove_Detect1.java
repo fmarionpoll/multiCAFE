@@ -173,6 +173,8 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		detect.threshold		= (int) thresholdSpinner.getValue();
 		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);	
+		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
+		
 		exp.seqCamData.analysisStep = exp.step;
 		exp.seqCamData.analysisStart = exp.startFrame;
 		exp.seqCamData.analysisEnd = exp.endFrame;

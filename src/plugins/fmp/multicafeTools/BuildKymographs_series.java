@@ -48,7 +48,7 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 				if (stopFlag)
 					break;
 				Experiment exp = options.expList.getExperiment(exp_index);
-				progressBar.setMessage("Analyze series "+(exp_index+1)+"/"+nbexp);
+				progressBar.setMessage("Analyze series "+(exp_index)+"/"+nbexp);
 				exp.loadExperimentDataForBuildKymos();
 				initViewerCamData(exp);
 

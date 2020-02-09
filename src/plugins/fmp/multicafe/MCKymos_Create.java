@@ -54,7 +54,7 @@ public class MCKymos_Create extends JPanel {
 				updateViewerCheckBox, 
 				doRegistrationCheckBox
 				));
-		add(GuiUtil.besidesPanel(new JLabel("step ", SwingConstants.RIGHT), new JLabel(" "), new JLabel(" "), ALLCheckBox));
+		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "), new JLabel(" "), ALLCheckBox));
 		
 		defineActionListeners();
 	}
@@ -84,8 +84,6 @@ public class MCKymos_Create extends JPanel {
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog (exp);
 	}
 	
-
-	
 	private void setStartButton(boolean enableStart) {
 		kymoStartComputationButton.setEnabled(enableStart );
 		kymosStopComputationButton.setEnabled(!enableStart);
@@ -98,6 +96,7 @@ public class MCKymos_Create extends JPanel {
 		setStartButton(false);
 		currentExp = parent0.currentExperimentIndex;
 		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
 		BuildKymographs_Options options = buildKymographsThread2.options;
