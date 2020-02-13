@@ -159,7 +159,7 @@ public class MCLevels_DetectLimits extends JPanel {
 	
 	void series_detectLimitsStart() {
 		detectButton.setText("(Detect)/Stop");
-		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, false);
+		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, false);
 		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
 				parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
 		currentExp = parent0.currentExperimentIndex;

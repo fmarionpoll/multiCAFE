@@ -34,7 +34,7 @@ public class MCSequence_Open extends JPanel implements PropertyChangeListener {
 	JCheckBox			graphsCheckBox			= new JCheckBox("graphs", true);
 	
 	public List<String> selectedNames 			= new ArrayList<String> ();
-	private MCSequence_SelectFiles dialog 			= null;
+	private MCSequence_SelectFiles dialog 		= null;
 	
 	
 	
@@ -72,7 +72,7 @@ public class MCSequence_Open extends JPanel implements PropertyChangeListener {
 		openButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-            	if(parent0.paneSequence.tabInfos.expListComboBox.getItemCount() > 0 )
+            	if(parent0.paneSequence.expListComboBox.getItemCount() > 0 )
             		parent0.paneSequence.tabClose.closeAll();
             	firePropertyChange("SEQ_OPENFILE", false, true);
             }});

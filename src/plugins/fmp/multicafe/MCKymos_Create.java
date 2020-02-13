@@ -91,7 +91,7 @@ public class MCKymos_Create extends JPanel {
 		
 	private void series_kymosBuildStart() {
 		buildKymographsThread2 = new BuildKymographs_series();	
-		parent0.paneSequence.tabInfos.transferExperimentNamesToExpList(parent0.expList, false);
+		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, false);
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		setStartButton(false);
 		currentExp = parent0.currentExperimentIndex;

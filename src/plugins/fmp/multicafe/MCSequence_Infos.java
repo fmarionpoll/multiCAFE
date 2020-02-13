@@ -1,23 +1,17 @@
 package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.JButton;
+
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
-import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.ExperimentList;
-import plugins.fmp.multicafeTools.ComboBoxWide;
-import plugins.fmp.multicafeTools.ComboBoxWithIndexTextRenderer;
+
 
 public class MCSequence_Infos  extends JPanel {
 	/**
@@ -28,28 +22,13 @@ public class MCSequence_Infos  extends JPanel {
 	private JComboBox<String>	commentJCombo		= new JComboBox<String>();
 	private JComboBox<String> 	boxID_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	experimentJCombo 	= new JComboBox<String>();
-	private JButton  			previousButton		= new JButton("<");
-	private JButton				nextButton			= new JButton(">");
-	ComboBoxWide		 		expListComboBox		= new ComboBoxWide();
+
 	boolean 					disableChangeFile 	= false;
-	private MultiCAFE 			parent0 			= null;
 	
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout) {
 		setLayout(capLayout);
-		this.parent0 = parent0;
-		
-		JPanel k2Panel = new JPanel();
-		k2Panel.setLayout(new BorderLayout());
-		k2Panel.add(previousButton, BorderLayout.WEST); 
-		int bWidth = 30;
-		int height = 10;
-		previousButton.setPreferredSize(new Dimension(bWidth, height));
-		k2Panel.add(expListComboBox, BorderLayout.CENTER);
-		nextButton.setPreferredSize(new Dimension(bWidth, height)); 
-		k2Panel.add(nextButton, BorderLayout.EAST);
-		add(GuiUtil.besidesPanel( k2Panel));
-		
+
 		add( GuiUtil.besidesPanel(
 				createComboPanel("Experiment ", experimentJCombo),  
 				createComboPanel("  Box ID ",  boxID_JCombo)));
@@ -63,55 +42,9 @@ public class MCSequence_Infos  extends JPanel {
 		boxID_JCombo.setEditable(true);
 		experimentJCombo.setEditable(true);	
 		commentJCombo.setEditable(true);
-		
-		defineActionListeners();
-		
-		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
-		expListComboBox.setRenderer(renderer);
 
 	}
 	
-	private void defineActionListeners() {
-		expListComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (expListComboBox.getItemCount() == 0 || disableChangeFile) {
-				updateBrowseInterface();
-				return;
-			}
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			String oldtext = exp.seqCamData.getDirectory();
-			String newtext = (String) expListComboBox.getSelectedItem();
-			if (!newtext.contains(oldtext)) {
-        		ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-	        		parent0.paneSequence.tabClose.closeExp(exp); //saveAndClose(exp);
-        		}});
-				updateCombos();
-				parent0.paneCapillaries.tabInfos.updateCombos();
-				parent0.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);			
-				firePropertyChange("SEQ_OPEN", false, true);
-				updateBrowseInterface();
-			}
-		} } );
-		
-		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (expListComboBox.getSelectedIndex() < (expListComboBox.getItemCount() -1)) {
-				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()+1);
-			}
-		} } );
-		
-		previousButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (expListComboBox.getSelectedIndex() > 0) {
-				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()-1);
-			}
-		} } );
-	}
-	
-	void updateBrowseInterface() {
-		int isel = expListComboBox.getSelectedIndex();
-		boolean flag1 = (isel == 0? false: true);
-		boolean flag2 = (isel == (expListComboBox.getItemCount() -1)? false: true);
-		previousButton.setEnabled(flag1);
-		nextButton.setEnabled(flag2);
-	}
 	
 	private JPanel createComboPanel(String text, JComboBox<String> combo) {
 		JPanel panel = new JPanel();
@@ -167,17 +100,6 @@ public class MCSequence_Infos  extends JPanel {
 		addItem(boxID_JCombo, (String) boxID_JCombo.getSelectedItem());
 		addItem(experimentJCombo, (String) experimentJCombo.getSelectedItem());
 		addItem(commentJCombo, (String) commentJCombo.getSelectedItem());
-	}
-	
-	void transferExperimentNamesToExpList(ExperimentList expList, boolean clearOldList) {
-		if (clearOldList)
-			expList.experimentList.clear();
-		int nitems = expListComboBox.getItemCount();
-		for (int i=0; i< nitems; i++) {
-			String filename = expListComboBox.getItemAt(i);
-			Experiment exp = expList.addNewExperiment(filename);
-			exp.xmlLoadExperiment();
-		}
 	}
 
 }
