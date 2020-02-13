@@ -181,16 +181,9 @@ public class ExperimentList {
 		return position;
 	}
 	
-	private Path stripFilenameFromPath(String filename) {
-		x String pattern = "cam-.._...jpg"; // bug here - other pattern is Frame....-....jpg
-		if (filename.contains(pattern)) {
-			filename = filename.substring(0, filename.length() - pattern.length()-1);
-		}
-		Path filepath = Paths.get(filename);
-		if (Files.isRegularFile(filepath)) {
-			filepath = filepath.getParent();
-		}
-		return filepath;
+	private Path stripFilenameFromPath(String fileNameWithFullPath) {
+		Path path = Paths.get(fileNameWithFullPath);
+		return path.getParent();
 	}
 	
 	public Experiment getExperiment(int index) {
