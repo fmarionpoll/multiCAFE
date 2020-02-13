@@ -182,7 +182,7 @@ public class ExperimentList {
 	}
 	
 	private Path stripFilenameFromPath(String filename) {
-		String pattern = "cam-.._...jpg";
+		x String pattern = "cam-.._...jpg"; // bug here - other pattern is Frame....-....jpg
 		if (filename.contains(pattern)) {
 			filename = filename.substring(0, filename.length() - pattern.length()-1);
 		}
