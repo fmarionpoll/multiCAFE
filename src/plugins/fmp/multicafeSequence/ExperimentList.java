@@ -168,11 +168,14 @@ public class ExperimentList {
 				String filename2 = exp.seqCamData.getFileName();
 				if (filename2 == null) {
 					filename2 = exp.experimentFileName; 
-					if (filename2 == null)
+					if (filename2 == null) {
 						filename2 = exp.seqCamData.getDirectory();
+						if (filename2 == null)
+							continue;
+					}
 				}
-				Path expfilepath = stripFilenameFromPath(filename2);
-				if (filepath.compareTo(expfilepath) == 0) {
+				Path filepath2 = stripFilenameFromPath(filename2);
+				if (filepath.compareTo(filepath2) == 0) {
 					position = i;
 					break;
 				}
