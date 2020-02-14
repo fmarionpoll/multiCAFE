@@ -33,9 +33,9 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	private MCExcel_Options	tabOptions		= new MCExcel_Options();
 	private MCExcel_Kymos	tabKymos		= new MCExcel_Kymos();
 	private MCExcel_Move 	tabMove  		= new MCExcel_Move();
-	
 	private MultiCAFE parent0 = null;
 
+	
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		this.parent0 = parent0;
 		

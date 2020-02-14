@@ -31,7 +31,7 @@ public class Experiment {
 	public String			experimentFileName			= null;
 	public SequenceCamData 	seqCamData 					= null;
 	public SequenceKymos 	seqKymos					= null;
-	public Capillaries 		capillaries 			= new Capillaries();
+	public Capillaries 		capillaries 				= new Capillaries();
 	
 	private FileTime		fileTimeImageFirst;
 	private FileTime		fileTimeImageLast;
@@ -42,9 +42,9 @@ public class Experiment {
 	public int 				startFrame 					= 0;
 	public int 				endFrame 					= 0;
 	public int 				step 						= 1;
-	public long						analysisStart 			= 0;
-	public long 					analysisEnd				= 99999999;
-	public int 						analysisStep 			= 1;
+	public long				analysisStart 				= 0;
+	public long 			analysisEnd					= 99999999;
+	public int 				analysisStep 				= 1;
 	
 	public String			boxID 						= new String("..");
 	public String			experiment					= new String("..");
@@ -115,11 +115,11 @@ public class Experiment {
 	}
 	
 	public boolean openSequenceAndMeasures(boolean loadCapillaries, boolean loadDrosoPositions) {
-		#problem with experimentname not properly loaded when exporting to excel
-		boolean flag = xmlLoadExperiment ();
+		//#problem with experimentname not properly loaded when exporting to excel
 		if (seqCamData == null) {
 			seqCamData = new SequenceCamData();
 		}
+		boolean flag = xmlLoadExperiment ();
 		if (null == seqCamData.loadSequence(experimentFileName))
 			return false;
 		
@@ -164,28 +164,31 @@ public class Experiment {
 	// TODO call it loadKymographs_Images if possible 
 	
 	public boolean xmlLoadExperiment () {
-		String directory = seqCamData.getDirectory();
-		experimentFileName = directory;
-		String csFileName = directory+ File.separator + "results" + File.separator + "MCexperiment.xml";
-		final Document doc = XMLUtil.loadDocument(csFileName);
-		if (doc != null) {
-			Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_MCEXPERIMENT);
-			if (node == null)
-				return false;
-			String version = XMLUtil.getElementValue(node, ID_VERSION, ID_VERSIONNUM);
-			if (!version .equals(ID_VERSIONNUM))
-				return false;
-			fileTimeImageFirstMinute = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
-			fileTimeImageLastMinute = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
-			number_of_frames 		= XMLUtil.getElementIntValue(node, ID_NFRAMES, number_of_frames);
-			startFrame 	= XMLUtil.getElementIntValue(node, ID_STARTFRAME, startFrame);
-			endFrame 	= XMLUtil.getElementIntValue(node, ID_ENDFRAME, endFrame);
-			step 		= XMLUtil.getElementIntValue(node, ID_STEP, step);
-			boxID 		= XMLUtil.getElementValue(node, ID_BOXID, "..");
-	        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
-	        comment 	= XMLUtil.getElementValue(node, ID_COMMENT, "..");
-//	        String exptName = XMLUtil.getElementValue(node, ID_EXPTFILENAME, null);
+		if (experimentFileName == null) {
+			String directory = seqCamData.getDirectory();
+			experimentFileName = directory;
 		}
+		String csFileName = experimentFileName + File.separator + "results" + File.separator + "MCexperiment.xml";
+		final Document doc = XMLUtil.loadDocument(csFileName);
+		if (doc == null)
+			return false;
+		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_MCEXPERIMENT);
+		if (node == null)
+			return false;
+
+		String version = XMLUtil.getElementValue(node, ID_VERSION, ID_VERSIONNUM);
+		if (!version .equals(ID_VERSIONNUM))
+			return false;
+		fileTimeImageFirstMinute = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
+		fileTimeImageLastMinute = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
+		number_of_frames 		= XMLUtil.getElementIntValue(node, ID_NFRAMES, number_of_frames);
+		startFrame 	= XMLUtil.getElementIntValue(node, ID_STARTFRAME, startFrame);
+		endFrame 	= XMLUtil.getElementIntValue(node, ID_ENDFRAME, endFrame);
+		step 		= XMLUtil.getElementIntValue(node, ID_STEP, step);
+		boxID 		= XMLUtil.getElementValue(node, ID_BOXID, "..");
+        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
+        comment 	= XMLUtil.getElementValue(node, ID_COMMENT, "..");
+//	    String exptName = XMLUtil.getElementValue(node, ID_EXPTFILENAME, null);
 		return true;
 	}
 	
@@ -281,27 +284,6 @@ public class Experiment {
 	public void setFileTimeImageLast(FileTime fileTimeImageLast) {
 		this.fileTimeImageLast = fileTimeImageLast;
 	}
-	
-//	public long getLastImageTimeMinute(boolean globalValue) {
-//		long fileTimeLast = fileTimeImageLastMinute;
-//		if (globalValue && nextExperiment != null)
-//			fileTimeLast = nextExperiment.getLastImageTimeMinute(globalValue);
-//		return fileTimeLast;
-//	}
-//	
-//	public long getFirstImageTimeMinute(boolean globalValue) {
-//		long fileTimeFirst = fileTimeImageFirstMinute;
-//		if (globalValue && previousExperiment != null)
-//			fileTimeFirst = previousExperiment.getFirstImageTimeMinute(globalValue);
-//		return fileTimeFirst;
-//	}
-//	
-//	public long getImageTimeMinute(long t, boolean globalValue) {
-//		long fileTimeFirst = fileTimeImageFirstMinute;
-//		if (globalValue && previousExperiment != null)
-//			fileTimeFirst = previousExperiment.getFirstImageTimeMinute(globalValue);
-//		return fileTimeFirst + (t-startFrame);
-//	}
 	
 	// -----------------------
 	

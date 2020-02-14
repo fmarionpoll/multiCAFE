@@ -51,7 +51,7 @@ public class MCSequence_SelectFiles extends JPanel {
 		parent1 = parent0.paneSequence.tabOpen;
 		addPropertyChangeListener(parent1);
 
-		dialogFrame = new IcyFrame ("Dialog box to select files", true, true);
+		dialogFrame = new IcyFrame ("Select files", true, true);
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
 		dialogFrame.setLayout(new BorderLayout());
 		dialogFrame.add(mainPanel, BorderLayout.CENTER);

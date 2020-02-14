@@ -136,6 +136,8 @@ public class SequenceCamData implements SequenceListener {
 	}
 
 	public String getDirectory () {
+		if (directory == null)
+			directory = seq.getFilename();
 		return directory;
 	}
 	
