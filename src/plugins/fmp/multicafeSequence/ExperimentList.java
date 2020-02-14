@@ -2,7 +2,6 @@ package plugins.fmp.multicafeSequence;
 
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -89,6 +88,7 @@ public class ExperimentList {
 		boolean flag = true;
 		for (Experiment exp: experimentList) {
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
+			
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			exp.xmlLoadExperiment();
 			int image_size = exp.seqKymos.seq.getSizeX();
