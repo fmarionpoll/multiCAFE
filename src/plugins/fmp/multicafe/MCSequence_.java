@@ -34,16 +34,16 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = -6826269677524125173L;
 	
-	private JTabbedPane 		tabsPane 	= new JTabbedPane();
-	MCSequence_Open 			tabOpen 	= new MCSequence_Open();
-	MCSequence_Infos			tabInfos	= new MCSequence_Infos();
-	public MCSequence_Intervals	tabIntervals= new MCSequence_Intervals();
-	MCSequence_Display			tabDisplay 	= new MCSequence_Display();
-	MCSequence_Close 			tabClose 	= new MCSequence_Close();
-	private JButton  			previousButton		= new JButton("<");
-	private JButton				nextButton			= new JButton(">");
-	ComboBoxWide		 		expListComboBox		= new ComboBoxWide();
-	private MultiCAFE 			parent0 	= null;
+	private JTabbedPane 		tabsPane 		= new JTabbedPane();
+	MCSequence_Open 			tabOpen 		= new MCSequence_Open();
+	MCSequence_Infos			tabInfos		= new MCSequence_Infos();
+	public MCSequence_Intervals	tabIntervals	= new MCSequence_Intervals();
+	MCSequence_Display			tabDisplay 		= new MCSequence_Display();
+	MCSequence_Close 			tabClose 		= new MCSequence_Close();
+	private JButton  			previousButton	= new JButton("<");
+	private JButton				nextButton		= new JButton(">");
+	ComboBoxWide		 		expListComboBox	= new ComboBoxWide();
+	private MultiCAFE 			parent0 		= null;
 	
 	
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {

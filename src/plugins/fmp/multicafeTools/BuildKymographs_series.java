@@ -7,6 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.SwingWorker;
 
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
@@ -18,6 +21,7 @@ import icy.type.collection.array.Array1DUtil;
 import loci.formats.FormatException;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DShape;
@@ -26,10 +30,12 @@ import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 
 
 
-public class BuildKymographs_series extends Build_series implements Runnable {
+public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		public BuildKymographs_Options 	options 			= new BuildKymographs_Options();
 		public boolean 					stopFlag 			= false;
 		public boolean 					threadRunning 		= false;
+		public boolean					buildBackground		= true;
+		
 		
 		private IcyBufferedImage 		workImage 			= null; 
 		private Sequence 				seqForRegistration	= null;
@@ -38,19 +44,25 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 		private ArrayList<double []> 	sourceValuesList 	= null;
 		private List<ROI> 				roiList 			= null;
 		
-		
 		@Override
-		public void run() {
-			threadRunning = true;
-			int nbexp = options.expList.index1 - options.expList.index0 +1;
-			ProgressFrame progressBar = new ProgressFrame("Compute kymographs");
-			for (int exp_index = options.expList.index0; exp_index <= options.expList.index1; exp_index++) {
+		protected Integer doInBackground() throws Exception {
+	        threadRunning = true;
+	        int nbiterations = 0;
+			ExperimentList expList = options.expList;
+			int nbexp = expList.index1 - expList.index0 +1;
+			ProgressChrono progress = new ProgressChrono("Build kymographs");
+			progress.initChrono(nbexp);
+			progress.setMessageFirstPart("Analyze series ");
+			
+			for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 				if (stopFlag)
 					break;
-				Experiment exp = options.expList.getExperiment(exp_index);
-				progressBar.setMessage("Analyze series "+(exp_index)+"/"+nbexp);
+				Experiment exp = expList.experimentList.get(index);
+				System.out.println(exp.experimentFileName);
+				progress.updatePosition(index-expList.index0+1);
+				
 				exp.loadExperimentDataForBuildKymos();
-				initViewerCamData(exp);
+				Build_series.initViewerCamData(exp);
 
 				exp.step = options.analyzeStep;
 				exp.analysisStart = options.startFrame;
@@ -58,11 +70,29 @@ public class BuildKymographs_series extends Build_series implements Runnable {
 				if (computeKymo(exp) && !stopFlag) {
 					saveComputation(exp);
 				}
-				closeViewer(exp);
+				Build_series.closeViewer(exp);
 			}
-			progressBar.close();
+			progress.close();
 			threadRunning = false;
+			return nbiterations;
 		}
+		
+		@Override
+		protected void done() {
+			int statusMsg = 0;
+			try {
+				statusMsg = get();
+			} catch (InterruptedException | ExecutionException e) {
+				e.printStackTrace();
+			} 
+			System.out.println("iterations done: "+statusMsg);
+			if (!threadRunning || stopFlag) {
+				firePropertyChange("thread_ended", null, statusMsg);
+			}
+			else {
+				firePropertyChange("thread_done", null, statusMsg);
+			}
+	    }
 				
 		private void saveComputation(Experiment exp) {			
 			Path dir = Paths.get(exp.seqCamData.getDirectory());

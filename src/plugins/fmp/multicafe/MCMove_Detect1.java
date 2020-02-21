@@ -55,9 +55,9 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	private JCheckBox overlayCheckBox 		= new JCheckBox("overlay");
 	private JCheckBox ALLCheckBox 			= new JCheckBox("ALL series", false);
 	
-	private OverlayThreshold 	ov 					= null;
-	private DetectFlies1_series detectFlies1Thread 	= null;
-	private int 				currentExp 			= -1;
+	private OverlayThreshold 	ov 			= null;
+	private DetectFlies1_series thread 		= null;
+	private int 				currentExp 	= -1;
 
 	// -----------------------------------------------------
 	
@@ -124,7 +124,6 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 				ALLCheckBox.setForeground(color);
 				startComputationButton.setForeground(color);
 		}});
-
 	}
 	
 	public void updateOverlay () {
@@ -159,7 +158,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	}
 	
 	private boolean initTrackParameters() {
-		if (detectFlies1Thread == null)
+		if (thread == null)
 			return false;
 		DetectFlies_Options detect = new DetectFlies_Options();
 		detect.btrackWhite 		= whiteMiceCheckBox.isSelected();
@@ -185,9 +184,9 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 			detect.expList.index0 = 0;
 			detect.expList.index1 = parent0.expList.experimentList.size()-1;
 		}
-		detect.seqCamData 		= exp.seqCamData;
-		detectFlies1Thread.stopFlag 	= false;
-		detectFlies1Thread.detect 		= detect;
+		detect.seqCamData 	= exp.seqCamData;
+		thread.stopFlag 	= false;
+		thread.detect 		= detect;
 		return true;
 	}
 	
@@ -199,19 +198,19 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		Experiment exp = parent0.expList.getExperiment(currentExp);
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
-		detectFlies1Thread = new DetectFlies1_series();		
+		thread = new DetectFlies1_series();		
 			
 		initTrackParameters();
-		detectFlies1Thread.buildBackground	= false;
-		detectFlies1Thread.detectFlies		= true;
-		detectFlies1Thread.addPropertyChangeListener(this);
-		detectFlies1Thread.execute();
+		thread.buildBackground	= false;
+		thread.detectFlies		= true;
+		thread.addPropertyChangeListener(this);
+		thread.execute();
 		startComputationButton.setText("STOP");
 	}
 	
 	private void stopComputation() {	
-		if (detectFlies1Thread != null && !detectFlies1Thread.stopFlag) {
-			detectFlies1Thread.stopFlag = true;
+		if (thread != null && !thread.stopFlag) {
+			thread.stopFlag = true;
 		}
 	}
 

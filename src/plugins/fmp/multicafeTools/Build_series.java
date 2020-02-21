@@ -7,16 +7,16 @@ import plugins.fmp.multicafeSequence.Experiment;
 
 public class Build_series {
 
-	Viewer	viewer1 = null;
-	Viewer	viewer2 = null;
+	static 	Viewer	viewer1 = null;
+	static Viewer	viewer2 = null;
 
 
-	void closeViewer (Experiment exp) {
+	static public void closeViewer (Experiment exp) {
 		exp.seqCamData.seq.close();
 		exp.seqKymos.seq.close();
 	}
 	
-	void initViewerCamData (Experiment exp) {
+	static public void initViewerCamData (Experiment exp) {
 		ThreadUtil.invoke (new Runnable() {
 			@Override
 			public void run() {
@@ -38,7 +38,7 @@ public class Build_series {
 		}
 	}
 	
-	void initViewerKymosData (Experiment exp) {
+	static public void initViewerKymosData (Experiment exp) {
 		ThreadUtil.invoke (new Runnable() {
 			@Override
 			public void run() {

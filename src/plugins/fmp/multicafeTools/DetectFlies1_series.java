@@ -35,15 +35,16 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
         int nbiterations = 0;
 		ExperimentList expList = detect.expList;
 		int nbexp = expList.index1 - expList.index0 +1;
-		ProgressChrono progressBar = new ProgressChrono("Detect flies");
-		progressBar.initChrono(nbexp);
-		progressBar.setMessageFirstPart("Analyze series ");
+		ProgressChrono progress = new ProgressChrono("Detect flies");
+		progress.initChrono(nbexp);
+		progress.setMessageFirstPart("Analyze series ");
+		
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag) 
 				break;
 			Experiment exp = expList.experimentList.get(index);
 			System.out.println(exp.experimentFileName);
-			progressBar.updatePosition(index-expList.index0+1);
+			progress.updatePosition(index-expList.index0+1);
 			
 			exp.loadExperimentCamData();
 			exp.seqCamData.xmlReadDrosoTrackDefault();
@@ -52,7 +53,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 				exp.saveComputation();
 			exp.seqCamData.seq.close();
 		}
-		progressBar.close();
+		progress.close();
 		threadRunning = false;
 		return nbiterations;
     }
