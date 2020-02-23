@@ -7,6 +7,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.SwingWorker;
 
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
@@ -18,30 +21,31 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
-public class DetectLimits_series extends Build_series implements Runnable {
+public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 	List<Point2D> 				limitTop 		= null;
 	List<Point2D> 				limitBottom 	= null;
 	public boolean 				stopFlag 		= false;
 	public boolean 				threadRunning 	= false;
 	public DetectLimits_Options options 		= new DetectLimits_Options();
 	
-
 	
 	@Override
-	public void run() {
-		stopFlag = false;
+	protected Integer doInBackground() throws Exception {
 		threadRunning = true;
+        int nbiterations = 0;
 		ExperimentList expList = options.expList;
 		int nbexp = expList.index1 - expList.index0 +1;
-		ProgressChrono progressBar = new ProgressChrono("Detect limits");
-		progressBar.initChrono(nbexp);
-		progressBar.setMessageFirstPart("Analyze series ");
+		ProgressChrono progress = new ProgressChrono("Detect limits");
+		progress.initChrono(nbexp);
+		progress.setMessageFirstPart("Analyze series ");
+		
 		for (int index = expList.index0; index <= expList.index1; index++) {
 			if (stopFlag)
 				break;
 			Experiment exp = expList.experimentList.get(index);
-//			System.out.println(exp.experimentFileName);
-			progressBar.updatePosition(index-expList.index0+1);
+			System.out.println(exp.experimentFileName);
+			progress.updatePosition(index-expList.index0+1);
+			
 			boolean flag = true;
 			if (nbexp > 1) {
 				exp.loadExperimentData();
@@ -53,10 +57,27 @@ public class DetectLimits_series extends Build_series implements Runnable {
 				saveComputation(exp);
 			}
 		}
-		progressBar.close();
+		progress.close();
 		threadRunning = false;
+		return nbiterations;
 	}
 
+	@Override
+	protected void done() {
+		int statusMsg = 0;
+		try {
+			statusMsg = get();
+		} catch (InterruptedException | ExecutionException e) {
+			e.printStackTrace();
+		} 
+		if (!threadRunning || stopFlag) {
+			firePropertyChange("thread_ended", null, statusMsg);
+		}
+		else {
+			firePropertyChange("thread_done", null, statusMsg);
+		}
+    }
+	
 	private void saveComputation(Experiment exp) {			
 		Path dir = Paths.get(exp.seqCamData.getDirectory());
 		dir = dir.resolve("results");

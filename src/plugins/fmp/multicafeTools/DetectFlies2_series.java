@@ -83,7 +83,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		} 
-		System.out.println("iterations done: "+statusMsg);
+//		System.out.println("iterations done: "+statusMsg);
 		if (!threadRunning || stopFlag) {
 			firePropertyChange("thread_ended", null, statusMsg);
 		}

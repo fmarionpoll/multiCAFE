@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -16,6 +18,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import icy.gui.util.GuiUtil;
+import icy.util.StringUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
@@ -24,7 +27,7 @@ import plugins.fmp.multicafeTools.DetectLimits_series;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class MCLevels_DetectLimits extends JPanel {
+public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListener {
 	/**
 	 * 
 	 */
@@ -42,12 +45,13 @@ public class MCLevels_DetectLimits extends JPanel {
 	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
 	private JButton		displayTransform1Button	= new JButton("Display");
 	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
-	private JButton 	detectButton 			= new JButton("Detect");
-	private MultiCAFE 	parent0 				= null;
+	private String 		detectString 			= "Detect";
+	private JButton 	detectButton 			= new JButton(detectString);
 	private JCheckBox	partCheckBox 			= new JCheckBox ("detect from", false);
 	private JCheckBox	ALLCheckBox 			= new JCheckBox("ALL series", false);
-	DetectLimits_series detectLimitsThread 		= null;
-	private Thread 		thread 					= null;
+	
+	private MultiCAFE 	parent0 				= null;
+	private DetectLimits_series thread 			= null;
 	private int 		currentExp 				= -1;
 
 	
@@ -85,7 +89,7 @@ public class MCLevels_DetectLimits extends JPanel {
 		
 		detectButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				if (thread == null || !thread.isAlive()) {
+				if (detectButton.getText() .equals(detectString)) {
 					series_detectLimitsStart();
 				}
 				else {
@@ -157,16 +161,11 @@ public class MCLevels_DetectLimits extends JPanel {
 		options.detectAllImages = allImagesCheckBox.isSelected();
 	}
 	
-	void series_detectLimitsStart() {
-		detectButton.setText("(Detect)/Stop");
-		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, false);
-		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
-				parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
-		currentExp = parent0.currentExperimentIndex;
-		Experiment exp = parent0.expList.getExperiment(currentExp);
+	private boolean initBuildParameters(Experiment exp) {
+		if (thread == null)
+			return false;
 		
-		detectLimitsThread = new DetectLimits_series();
-		DetectLimits_Options options= detectLimitsThread.options;
+		DetectLimits_Options options= thread.options;
 		options.expList = parent0.expList; 
 		if (ALLCheckBox.isSelected()) {
 			options.expList.index0 = 0;
@@ -188,37 +187,39 @@ public class MCLevels_DetectLimits extends JPanel {
 		options.startPixel			= (int) startSpinner.getValue();
 		options.endPixel			= (int) endSpinner.getValue();
 		options.spanDiffTop			= getSpanDiffTop();
-			
-		thread = new Thread(null, detectLimitsThread, "+++detect_levels");
-		thread.start();
-		Thread waitcompletionThread = new Thread(null, new Runnable() {
-			public void run() {
-				try { 
-					thread.join();
-					}
-				catch(Exception e){;} 
-				finally { 
-					series_detectLimitsStop();
-				}
-			}}, "+++waitforcompletion");
-		waitcompletionThread.start();
+		return true;
+	}
+	
+	void series_detectLimitsStart() {
+		thread = new DetectLimits_series();
+		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
+		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
+				parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
+		currentExp = parent0.currentExperimentIndex;
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		
+		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
+		parent0.paneSequence.tabClose.closeExp(exp);
+		
+		initBuildParameters(exp);
+		
+		thread.addPropertyChangeListener(this);
+		thread.execute();
+		detectButton.setText("STOP");
 	}
 
 	private void series_detectLimitsStop() {	
-		if (thread != null && thread.isAlive()) {
-			detectLimitsThread.stopFlag = true;
-			try {
-				thread.join();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-			}
+		if (thread != null && !thread.stopFlag) {
+			thread.stopFlag = true;
 		}
-		Experiment exp = parent0.expList.getExperiment(currentExp);
-		if (ALLCheckBox.isSelected()) {
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
+			Experiment exp = parent0.expList.getExperiment(currentExp);
 			parent0.paneSequence.openExperiment(exp);
-		}
-		detectButton.setText("Detect");
-		parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
-		parent0.paneKymos.tabDisplay.displayViews (true);
+			detectButton.setText(detectString);
+		 }
 	}
 }

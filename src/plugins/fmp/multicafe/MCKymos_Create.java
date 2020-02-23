@@ -45,6 +45,8 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 
 
 
+	// -----------------------------------------------------
+	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);	
 		this.parent0 = parent0;
@@ -110,7 +112,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		
 	private void startComputation() {
 		thread = new BuildKymographs_series();	
-		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, false);
+		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
 			parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
 		currentExp = parent0.currentExperimentIndex;
@@ -142,7 +144,6 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 			parent0.paneSequence.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
-		
 	}
 	
 
