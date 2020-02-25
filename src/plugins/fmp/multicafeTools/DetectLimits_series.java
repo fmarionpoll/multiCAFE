@@ -1,7 +1,9 @@
 package plugins.fmp.multicafeTools;
 
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,15 +11,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import icy.gui.frame.progress.ProgressFrame;
+import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.CapillaryLimits;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
@@ -49,6 +54,7 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 			boolean flag = true;
 			if (nbexp > 1) {
 				exp.loadExperimentData();
+				displayCamData(exp);
 				flag = exp.loadKymographs();
 			}
 			if (flag) {
@@ -56,10 +62,36 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 				detectCapillaryLevels(exp);
 				saveComputation(exp);
 			}
+			
+			SequenceKymos seqKymos = exp.seqKymos;
+			if (seqKymos != null && seqKymos.seq != null) {
+				seqKymos.seq.removeAllROI();
+				seqKymos.seq.close();
+			}
+			SequenceCamData seqCamData = exp.seqCamData;
+			if (seqCamData != null && seqCamData.seq != null) {
+				seqCamData.seq.removeAllROI();
+				seqCamData.seq.close();
+			}
 		}
 		progress.close();
 		threadRunning = false;
 		return nbiterations;
+	}
+
+	protected void displayCamData(Experiment exp) {
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() { public void run() {
+				Viewer viewerCamData = exp.seqCamData.seq.getFirstViewer();
+				if (viewerCamData == null)
+					viewerCamData = new Viewer(exp.seqCamData.seq, true);
+				Rectangle rectv = viewerCamData.getBoundsInternal();
+				rectv.setLocation(options.parent0Rect.x+ options.parent0Rect.width, options.parent0Rect.y);
+				viewerCamData.setBounds(rectv);				
+			}});
+		} catch (InvocationTargetException | InterruptedException e) {
+			e.printStackTrace();
+		} 
 	}
 
 	@Override

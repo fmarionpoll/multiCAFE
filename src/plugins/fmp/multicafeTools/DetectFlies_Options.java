@@ -26,29 +26,29 @@ import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
 public class DetectFlies_Options implements XMLPersistent {
 	
-	public int 		threshold = -1;
-	public boolean 	btrackWhite = false;
-	public boolean  blimitLow = false;
-	public boolean  blimitUp = false;
+	public int 		threshold 				= -1;
+	public boolean 	btrackWhite 			= false;
+	public boolean  blimitLow 				= false;
+	public boolean  blimitUp 				= false;
 	public int  	limitLow;
 	public int  	limitUp;
-	public int 		jitter = 10;
+	public int 		jitter 					= 10;
 	
 	public TransformOp transformop; 
-	public int		videoChannel = 0;
-	public boolean 	backgroundSubstraction = false;
+	public int		videoChannel 			= 0;
+	public boolean 	backgroundSubstraction 	= false;
 
-	public Cages 	cages = null;
+	public Cages 	cages 					= null;
 	public List<BooleanMask2D> 	cageMaskList = new ArrayList<BooleanMask2D>();
 	
 	public int		analyzeMoveStep ;
 	public int 		startFrame;
 	public int 		endFrame;
 	public int 		nbframes;
-	public Rectangle parent0Rect = null;
-	public SequenceCamData seqCamData = null;
-	public ExperimentList expList = null;
-	public Rectangle 	rectangleAllCages = null;
+	public Rectangle parent0Rect 			= null;
+	public SequenceCamData seqCamData 		= null;
+	public ExperimentList expList 			= null;
+	public Rectangle 	rectangleAllCages 	= null;
 	ROI2DRectangle [] 	tempRectROI;
 	ROI [][] 			resultFlyPositionArrayList;
 	

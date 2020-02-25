@@ -1,5 +1,7 @@
 package plugins.fmp.multicafeTools;
 
+import java.awt.Rectangle;
+
 import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
@@ -20,6 +22,7 @@ public class DetectLimits_Options implements XMLPersistent {
 	public 	int 		startPixel 				= -1;
 	public 	int 		endPixel 				= -1;
 	public  int			spanDiffTop				= 3;
+	public Rectangle 	parent0Rect 			= null;
 	public ExperimentList expList				= null;
 	
 

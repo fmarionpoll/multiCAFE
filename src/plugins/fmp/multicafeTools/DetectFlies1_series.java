@@ -29,8 +29,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 	// -----------------------------------------------------
 	
 	@Override
-	protected Integer doInBackground() throws Exception
-    {
+	protected Integer doInBackground() throws Exception  {
         threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = detect.expList;

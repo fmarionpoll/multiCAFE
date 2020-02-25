@@ -187,20 +187,22 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		options.startPixel			= (int) startSpinner.getValue();
 		options.endPixel			= (int) endSpinner.getValue();
 		options.spanDiffTop			= getSpanDiffTop();
+		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
+		
 		return true;
 	}
 	
 	void series_detectLimitsStart() {
 		thread = new DetectLimits_series();
-		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
+		
 		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
-				parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
+			parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
 		currentExp = parent0.currentExperimentIndex;
 		Experiment exp = parent0.expList.getExperiment(currentExp);
-		
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
+		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		initBuildParameters(exp);
 		
 		thread.addPropertyChangeListener(this);
