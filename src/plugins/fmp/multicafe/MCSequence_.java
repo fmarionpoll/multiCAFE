@@ -13,6 +13,7 @@ import java.beans.PropertyChangeListener;
 import java.nio.file.Paths;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -48,47 +49,53 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		this.parent0 = parent0;
-		JPanel k2Panel = new JPanel();
 		
+		JPanel k2Panel = new JPanel();
 		k2Panel.setLayout(new BorderLayout());
-		k2Panel.add(previousButton, BorderLayout.WEST); 
+		k2Panel.add(new JLabel("Stack:"), BorderLayout.WEST); 
+		k2Panel.add(previousButton, BorderLayout.EAST); 
 		int bWidth = 30;
 		int height = 10;
 		previousButton.setPreferredSize(new Dimension(bWidth, height));
-		k2Panel.add(expListComboBox, BorderLayout.CENTER);
+		
+		JPanel k3Panel = new JPanel();
+		k3Panel.setLayout(new BorderLayout());
+		k3Panel.add(k2Panel, BorderLayout.WEST);
+		k3Panel.add(expListComboBox, BorderLayout.CENTER);
 		nextButton.setPreferredSize(new Dimension(bWidth, height)); 
-		k2Panel.add(nextButton, BorderLayout.EAST);
-		mainPanel.add(GuiUtil.besidesPanel(k2Panel));
+		k3Panel.add(nextButton, BorderLayout.EAST);
 		
 		PopupPanel capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
+			
 		capPopupPanel.expand();
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
-		GridLayout capLayout = new GridLayout(3, 1);
+		GridLayout tabsLayout = new GridLayout(3, 1);
 		
-		tabOpen.init(capLayout, parent0);
+		tabOpen.init(tabsLayout, parent0);
 		tabsPane.addTab("Open/Add", null, tabOpen, "Open one or several stacks of .jpg files");
 		tabOpen.addPropertyChangeListener(this);
 		
-		tabInfos.init(capLayout);
+		tabInfos.init(tabsLayout);
 		tabsPane.addTab("Infos", null, tabInfos, "Define infos for this experiment/box");
 		tabInfos.addPropertyChangeListener(this);
 		
-		tabIntervals.init(capLayout);
+		tabIntervals.init(tabsLayout);
 		tabsPane.addTab("Intervals", null, tabIntervals, "Browse and analysis parameters");
 		tabIntervals.addPropertyChangeListener(this);
 
-		tabDisplay.init(capLayout, parent0);
+		tabDisplay.init(tabsLayout, parent0);
 		tabsPane.addTab("Display", null, tabDisplay, "Display ROIs");
 		tabDisplay.addPropertyChangeListener(this);
 
-		tabClose.init(capLayout, parent0);
+		tabClose.init(tabsLayout, parent0);
 		tabsPane.addTab("Close", null, tabClose, "Close file and associated windows");
 		tabClose.addPropertyChangeListener(this);
 
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		capPanel.add(GuiUtil.besidesPanel(tabsPane));
+		capPanel.add(k3Panel, BorderLayout.PAGE_START);
+		capPanel.add(tabsPane, BorderLayout.PAGE_END);	
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() {
 			@Override
