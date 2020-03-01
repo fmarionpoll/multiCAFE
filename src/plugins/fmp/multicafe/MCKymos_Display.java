@@ -149,7 +149,7 @@ public class MCKymos_Display extends JPanel {
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null || seqKymos.seq == null ) {
-			System.out.println("displayON() skipped");
+//			System.out.println("displayON() skipped");
 			return;
 		}
 		

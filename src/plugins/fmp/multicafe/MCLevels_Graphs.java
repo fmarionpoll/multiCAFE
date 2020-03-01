@@ -61,7 +61,7 @@ public class MCLevels_Graphs extends JPanel {
 		if (v == null)
 			return;
 		final Rectangle rectv = v.getBounds();
-		Point ptRelative = new Point(0, 35); //rectv.height);
+		Point ptRelative = new Point(0, rectv.height); // 35);
 		final int deltay = 230;
 		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumListType.topAndBottom)) {
 			topandbottomChart = xyDisplayGraphsItem(exp, "top + bottom levels", 

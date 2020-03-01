@@ -111,18 +111,15 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		
 	private void startComputation() {
 		thread = new BuildKymographs_series();	
+		
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		parent0.paneSequence.tabClose.closeExp(exp);
-		
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
-		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		
-		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		parent0.paneSequence.tabClose.closeExp(exp);
-		
+		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		initBuildParameters(exp);
 		
+		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		thread.buildBackground	= false;
 		thread.addPropertyChangeListener(this);
 		thread.execute();

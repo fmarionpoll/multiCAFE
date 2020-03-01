@@ -44,19 +44,17 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 		progress.initChrono(nbexp);
 		progress.setMessageFirstPart("Analyze series ");
 		
-		for (int index = expList.index0; index <= expList.index1; index++) {
+		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag)
 				break;
 			Experiment exp = expList.experimentList.get(index);
 			System.out.println(exp.experimentFileName);
 			progress.updatePosition(index-expList.index0+1);
 			
-			boolean flag = true;
-			if (nbexp > 1) {
-				exp.loadExperimentData();
-				displayCamData(exp);
-				flag = exp.loadKymographs();
-			}
+			exp.loadExperimentData();
+			displayCamData(exp);
+			boolean flag = exp.loadKymographs();
+			
 			if (flag) {
 				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
 				detectCapillaryLevels(exp);
@@ -104,8 +102,7 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 		} 
 		if (!threadRunning || stopFlag) {
 			firePropertyChange("thread_ended", null, statusMsg);
-		}
-		else {
+		} else {
 			firePropertyChange("thread_done", null, statusMsg);
 		}
     }

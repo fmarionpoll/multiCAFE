@@ -48,7 +48,8 @@ public class Experiment {
 	
 	public String			boxID 						= new String("..");
 	public String			experiment					= new String("..");
-	public String 			comment						= new String("..");
+	public String 			comment1					= new String("..");
+	public String 			comment2					= new String("..");
 	
 	public int				col							= -1;
 	public Experiment 		previousExperiment			= null;		// pointer to chain this experiment to another one before
@@ -67,7 +68,8 @@ public class Experiment {
 	private final String ID_BOXID = "boxID";
 	private final String ID_EXPERIMENT = "experiment";
 	private final String ID_EXPTFILENAME = "exptFileName";
-	private final String ID_COMMENT = "comment";
+	private final String ID_COMMENT1 = "comment";
+	private final String ID_COMMENT2 = "comment2";
 	private final String ID_MCEXPERIMENT = "MCexperiment";
 	
 	
@@ -133,7 +135,8 @@ public class Experiment {
 		if (!flag || boxID .equals ("..")) {
 			boxID = capillaries.desc.old_boxID;
 			experiment = capillaries.desc.old_experiment;
-			comment = capillaries.desc.old_comment;
+			comment1 = capillaries.desc.old_comment1;
+			comment2 = capillaries.desc.old_comment2;
 		}
 		
 		if (loadDrosoPositions)
@@ -148,7 +151,6 @@ public class Experiment {
 			return null;
 		experimentFileName = filename;
 		xmlLoadExperiment();
-
 		seqCamData.setParentDirectoryAsFileName() ;
 		loadFileIntervalsFromSeqCamData();
 		return seqCamData;
@@ -187,7 +189,8 @@ public class Experiment {
 		step 		= XMLUtil.getElementIntValue(node, ID_STEP, step);
 		boxID 		= XMLUtil.getElementValue(node, ID_BOXID, "..");
         experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
-        comment 	= XMLUtil.getElementValue(node, ID_COMMENT, "..");
+        comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
+        comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
 //	    String exptName = XMLUtil.getElementValue(node, ID_EXPTFILENAME, null);
 		return true;
 	}
@@ -209,7 +212,9 @@ public class Experiment {
 			XMLUtil.setElementIntValue(node, ID_STEP, step);
 			XMLUtil.setElementValue(node, ID_BOXID, boxID);
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
-	        XMLUtil.setElementValue(node, ID_COMMENT, comment);
+	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
+	        XMLUtil.setElementValue(node, ID_COMMENT2, comment2);
+	        
 	        if (experimentFileName == null ) 
 	        	experimentFileName = seqCamData.getDirectory();
 	        XMLUtil.setElementValue(node, ID_EXPTFILENAME, experimentFileName);

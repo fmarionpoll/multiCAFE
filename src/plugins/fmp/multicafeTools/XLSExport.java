@@ -57,7 +57,8 @@ public class XLSExport {
 		Path path = Paths.get(filename);
 		String boxID = exp.boxID;
 		String experiment = exp.experiment;
-		String comment = exp.comment;
+		String comment1 = exp.comment1;
+		String comment2 = exp.comment2;
 		String stimulusL = exp.capillaries.desc.stimulusL;
 		String stimulusR = exp.capillaries.desc.stimulusR;
 		String concentrationL = exp.capillaries.desc.concentrationL;
@@ -90,7 +91,7 @@ public class XLSExport {
 			pt.y++;
 			XLSUtils.setValue(sheet, pt, transpose, experiment);
 			pt.y++;
-			XLSUtils.setValue(sheet, pt, transpose, comment);
+			XLSUtils.setValue(sheet, pt, transpose, comment1);
 			pt.y++;
 			String letter = name.substring(name.length() - 1);
 			if (letter .equals("L")) 	XLSUtils.setValue(sheet, pt, transpose, stimulusL);
@@ -122,8 +123,7 @@ public class XLSExport {
 			pt.y++;
 			XLSUtils.setValue(sheet, pt, transpose, sheetName);
 			pt.y++;
-			// rois
-//			XLSUtils.setValue(sheet, pt, transpose, exp.seqKymos.getFileName(t));
+			XLSUtils.setValue(sheet, pt, transpose, comment2);
 			pt.y++;
 		}
 		pt.x = col0;
@@ -140,7 +140,7 @@ public class XLSExport {
 		pt.y++;
 		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.EXPMT.toString());
 		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.COMMENT.toString());
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.COMMENT1.toString());
 		pt.y++;
 		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.STIM.toString());
 		pt.y++;
@@ -164,7 +164,7 @@ public class XLSExport {
 		pt.y++;
 		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DUM4.toString());
 		pt.y++;
-		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.ROIS.toString());
+		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.COMMENT2.toString());
 		pt.y++;
 		return pt.y;
 	}

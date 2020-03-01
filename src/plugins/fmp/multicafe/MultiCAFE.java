@@ -56,8 +56,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		paneLevels.init(mainPanel, "MEASURE TOP LEVEL & GULPS", this);
 		paneLevels.addPropertyChangeListener(this);
 
-		paneSpots.init(mainPanel, "MEASURE SPOTS", this);
-		paneSpots.addPropertyChangeListener(this);
+//		paneSpots.init(mainPanel, "MEASURE SPOTS", this);
+//		paneSpots.addPropertyChangeListener(this);
 
 		paneMove.init(mainPanel, "DETECT FLIES", this);
 		paneMove.addPropertyChangeListener(this);

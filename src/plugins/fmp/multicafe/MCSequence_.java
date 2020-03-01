@@ -108,6 +108,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		
 		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
 		expListComboBox.setRenderer(renderer);
+		expListComboBox.setPrototypeDisplayValue("text here");
 		
 		defineActionListeners();
 	}

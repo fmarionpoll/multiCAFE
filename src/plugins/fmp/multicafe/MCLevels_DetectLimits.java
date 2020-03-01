@@ -166,13 +166,11 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		
 		DetectLimits_Options options= thread.options;
 		options.expList = parent0.expList; 
+		options.expList.index0 = parent0.currentExperimentIndex;
+		options.expList.index1 = options.expList.index0;
 		if (ALLCheckBox.isSelected()) {
 			options.expList.index0 = 0;
 			options.expList.index1 = parent0.expList.experimentList.size()-1;
-			parent0.paneSequence.tabClose.closeExp(exp);
-		} else {
-			options.expList.index0 = parent0.currentExperimentIndex;
-			options.expList.index1 = options.expList.index0;
 		}
 		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
@@ -194,12 +192,11 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	void series_detectLimitsStart() {
 		thread = new DetectLimits_series();
 		
-		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
-		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		parent0.paneSequence.tabClose.closeExp(exp);
-		
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
+		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
+		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		initBuildParameters(exp);
 		
 		thread.addPropertyChangeListener(this);

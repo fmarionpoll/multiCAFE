@@ -3,10 +3,10 @@ package plugins.fmp.multicafeTools;
 
 public enum EnumXLSExperimentDescriptors {
 	DATE( "date"), 
-	BOXID("box_ID"), EXPMT("expmt"), COMMENT("comment"),
+	BOXID("box_ID"), EXPMT("expmt"), COMMENT1("comment1"),
 	STIM("stim"), CONC("conc"), CAM ("cam"), CAP ("cap"),
 	CAGE("cage"), NFLIES("nflies"), CAGEID ("cageID"),
-	DUM1("dum1"), DUM2("dum2"), DUM3 ("dum3"), DUM4("dum4"), ROIS("rois");
+	DUM1("dum1"), DUM2("dum2"), DUM3 ("dum3"), DUM4("dum4"), COMMENT2("comment2");
 	
 	private String label;
 	EnumXLSExperimentDescriptors (String label) { 
