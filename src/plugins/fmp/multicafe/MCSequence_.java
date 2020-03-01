@@ -52,7 +52,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		
 		JPanel k2Panel = new JPanel();
 		k2Panel.setLayout(new BorderLayout());
-		k2Panel.add(new JLabel("Images stack "), BorderLayout.WEST); 
+		k2Panel.add(new JLabel("Stack "), BorderLayout.WEST); 
 		k2Panel.add(previousButton, BorderLayout.EAST); 
 		int bWidth = 30;
 		int height = 10;
@@ -105,10 +105,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				parent0.mainFrame.repaint();
 			}
 		});
-		
+		//expListComboBox.setPrototypeDisplayValue("text here");
 		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
 		expListComboBox.setRenderer(renderer);
-		expListComboBox.setPrototypeDisplayValue("text here");
+		
 		
 		defineActionListeners();
 	}
