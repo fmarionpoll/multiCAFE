@@ -24,7 +24,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE analysis 22-Feb-2020", true, true, true, true);
+	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 01-March-2020", true, true, true, true);
 	ExperimentList	expList 		= new ExperimentList();
 	int				currentExperimentIndex	= -1;
 	
@@ -122,14 +122,11 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 				currentExperimentIndex = expList.experimentList.size()-1;
 			exp = expList.getExperiment(currentExperimentIndex);
 		}
-		
 		exp.seqCamData = exp.openSequenceCamData(filename);
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			addSequence(exp.seqCamData.seq);
 			exp.seqCamData.seq.getFirstViewer().addListener( this );
-		}
-		else
-		{
+		} else {
 			System.out.println("seqcamdata or seq of seqcamdata is null!");
 		}
 		return exp.seqCamData;

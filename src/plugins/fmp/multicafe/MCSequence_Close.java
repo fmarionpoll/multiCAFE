@@ -39,6 +39,8 @@ public class MCSequence_Close  extends JPanel {
 			return;
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		closeExp(exp);
+		parent0.expList.experimentList.clear();
+		parent0.currentExperimentIndex = -1;
 	}
 	
 	void closeExp(Experiment exp) {
@@ -58,7 +60,6 @@ public class MCSequence_Close  extends JPanel {
 				seqCamData.seq.close();
 			}
 		}
-		
 		parent0.paneMove.tabGraphics.closeAll();
 		parent0.paneLevels.tabGraphs.closeAll();
 		parent0.paneKymos.tabDisplay.kymographNamesComboBox.removeAllItems();

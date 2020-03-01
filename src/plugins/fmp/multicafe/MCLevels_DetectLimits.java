@@ -52,7 +52,6 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	
 	private MultiCAFE 	parent0 				= null;
 	private DetectLimits_series thread 			= null;
-	private int 		currentExp 				= -1;
 
 	
 	
@@ -195,10 +194,8 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	void series_detectLimitsStart() {
 		thread = new DetectLimits_series();
 		
-		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
-			parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
-		currentExp = parent0.currentExperimentIndex;
-		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
+		Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
@@ -219,7 +216,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
-			Experiment exp = parent0.expList.getExperiment(currentExp);
+			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
 			parent0.paneSequence.openExperiment(exp);
 			detectButton.setText(detectString);
 		 }

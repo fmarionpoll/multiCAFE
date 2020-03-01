@@ -57,7 +57,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	
 	private OverlayThreshold 	ov 			= null;
 	private DetectFlies1_series thread 		= null;
-	private int 				currentExp 	= -1;
+
 
 	// -----------------------------------------------------
 	
@@ -192,10 +192,8 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	
 	void startComputation() {
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
-		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
-			parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
-		currentExp = parent0.currentExperimentIndex;
-		Experiment exp = parent0.expList.getExperiment(currentExp);
+		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
+		Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
 		thread = new DetectFlies1_series();		
@@ -217,7 +215,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
-			Experiment exp = parent0.expList.getExperiment(currentExp);
+			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
 			parent0.paneSequence.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }

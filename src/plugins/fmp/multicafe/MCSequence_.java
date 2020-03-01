@@ -52,7 +52,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		
 		JPanel k2Panel = new JPanel();
 		k2Panel.setLayout(new BorderLayout());
-		k2Panel.add(new JLabel("Stack:"), BorderLayout.WEST); 
+		k2Panel.add(new JLabel("Images stack "), BorderLayout.WEST); 
 		k2Panel.add(previousButton, BorderLayout.EAST); 
 		int bWidth = 30;
 		int height = 10;
@@ -149,26 +149,14 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
-			SequenceCamData seqCamData = parent0.openSequenceCam(null);
-			if (seqCamData != null && seqCamData.seq != null) {
-				parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
-				expListComboBox.removeAllItems();
-				if (addSequenceCamToCombo()) {
-					loadMeasuresAndKymos();
-					tabsPane.setSelectedIndex(1);
-				}
-			}
+			openSeqCamData();
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			exp.seqCamData = parent0.openSequenceCam(null);
-			if (exp.seqCamData != null) {
-				if (addSequenceCamToCombo()) {
-					parent0.updateDialogsAfterOpeningSequenceCam(exp.seqCamData);
-					ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-		        		parent0.paneSequence.tabClose.closeExp(exp); //saveAndClose(exp);
-		    		}});
-				}
+			if (exp == null) {
+				openSeqCamData();
+			} else {
+				addSeqCamData();
 			}
 		}
 		else if (event.getPropertyName().equals("UPDATE")) {
@@ -200,6 +188,31 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				tabInfos.disableChangeFile = false;
 				openSequenceCamFromCombo();
 			}
+		}
+	}
+	
+	private void openSeqCamData() {
+		SequenceCamData seqCamData = parent0.openSequenceCam(null);
+		if (seqCamData != null && seqCamData.seq != null) {
+			parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
+			expListComboBox.removeAllItems();
+			if (addSequenceCamToCombo()) {
+				loadMeasuresAndKymos();
+				tabsPane.setSelectedIndex(1);
+			}
+		}
+	}
+	
+	private void addSeqCamData() {
+		Experiment exp0 = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		SequenceCamData seqCamData = parent0.openSequenceCam(null);
+		if (seqCamData != null) {
+			if (addSequenceCamToCombo()) {
+				parent0.updateDialogsAfterOpeningSequenceCam(exp0.seqCamData);
+				parent0.paneSequence.tabClose.closeExp(exp0);
+			}
+			loadMeasuresAndKymos();
+			tabsPane.setSelectedIndex(1);
 		}
 	}
 	

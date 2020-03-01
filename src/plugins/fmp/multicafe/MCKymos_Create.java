@@ -41,7 +41,6 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE 		parent0						= null;
 	private BuildKymographs_series thread 				= null;
-	private int 			currentExp 					= -1;
 
 
 
@@ -93,8 +92,8 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		
 		BuildKymographs_Options options = thread.options;
 		options.expList = parent0.expList; 
-		options.expList.index0 = currentExp;
-		options.expList.index1 = currentExp;
+		options.expList.index0 = parent0.currentExperimentIndex;
+		options.expList.index1 = options.expList.index0;
 		if (ALLCheckBox.isSelected()) {
 			options.expList.index0 = 0;
 			options.expList.index1 = parent0.expList.experimentList.size()-1;
@@ -112,13 +111,12 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		
 	private void startComputation() {
 		thread = new BuildKymographs_series();	
-		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
-			parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
-		currentExp = parent0.currentExperimentIndex;
-		Experiment exp = parent0.expList.getExperiment(currentExp);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
+		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
+		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		parent0.paneSequence.tabClose.closeExp(exp);
@@ -140,7 +138,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
-			Experiment exp = parent0.expList.getExperiment(currentExp);
+			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			parent0.paneSequence.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
