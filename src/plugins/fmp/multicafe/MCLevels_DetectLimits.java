@@ -47,8 +47,11 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
 	private String 		detectString 			= "Detect";
 	private JButton 	detectButton 			= new JButton(detectString);
-	private JCheckBox	partCheckBox 			= new JCheckBox ("detect from", false);
+	private JCheckBox	partCheckBox 			= new JCheckBox (" from", false);
 	private JCheckBox	ALLCheckBox 			= new JCheckBox("ALL series", false);
+	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
+	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
+	
 	
 	private MultiCAFE 	parent0 				= null;
 	private DetectLimits_series thread 			= null;
@@ -60,7 +63,16 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
-		add( GuiUtil.besidesPanel(detectButton, allImagesCheckBox, new JLabel(" "), ALLCheckBox));
+		JPanel panel00 = new JPanel();
+		((FlowLayout)panel00.getLayout()).setVgap(0);
+		panel00.add( GuiUtil.besidesPanel(detectButton, ALLCheckBox));
+		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		
+		((FlowLayout)panel0.getLayout()).setVgap(0);
+		panel0.add(allImagesCheckBox);
+		panel0.add(leftCheckBox);
+		panel0.add(rightCheckBox);
+		add( GuiUtil.besidesPanel(panel00, panel0 ));
 		
 		((JLabel) directionComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
 		add( GuiUtil.besidesPanel(directionComboBox, thresholdSpinner, transformForLevelsComboBox, displayTransform1Button ));

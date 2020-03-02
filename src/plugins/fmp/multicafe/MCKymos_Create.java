@@ -50,14 +50,13 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		setLayout(capLayout);	
 		this.parent0 = parent0;
 		add(GuiUtil.besidesPanel(
-				startComputationButton, new JLabel(" ")));
+				startComputationButton, ALLCheckBox));
 		add(GuiUtil.besidesPanel(
 				new JLabel("area around ROIs", SwingConstants.RIGHT), 
 				diskRadiusSpinner, 
 				updateViewerCheckBox, 
 				doRegistrationCheckBox
 				));
-		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "), new JLabel(" "), ALLCheckBox));
 		
 		defineActionListeners();
 	}
