@@ -13,6 +13,8 @@ public class DetectLimits_Options implements XMLPersistent {
 	
 			boolean 	detectTop 				= true;
 			boolean 	detectBottom 			= true;
+	public	boolean		detectL					= true;
+	public	boolean		detectR					= true;
 	public 	boolean 	detectAllImages 		= true;
 	public 	int			firstImage				= 0;
 	public 	boolean		directionUp				= true;

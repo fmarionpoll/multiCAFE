@@ -152,6 +152,11 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 			int xwidth = image.getSizeX();
 			int yheight = image.getSizeY();
 			Capillary cap = exp.capillaries.capillariesArrayList.get(kymo);
+			if (cap.getName().endsWith("2") && !options.detectR)
+				continue;
+			if (cap.getName().endsWith("1") && !options.detectL)
+				continue;
+			
 			cap.ptsDerivative = null;
 			cap.gulpsRois = null;
 			options.copy(cap.limitsOptions);

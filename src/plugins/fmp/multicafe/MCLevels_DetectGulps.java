@@ -48,6 +48,11 @@ public class MCLevels_DetectGulps extends JPanel {
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
+		
+		detectAllGulpsCheckBox.setHorizontalAlignment(SwingConstants.LEFT);
+		detectAllGulpsCheckBox.setHorizontalTextPosition(SwingConstants.RIGHT);
+		add( GuiUtil.besidesPanel(detectGulpsButton, detectAllGulpsCheckBox));
+		
 		add( GuiUtil.besidesPanel(new JLabel("threshold", SwingConstants.RIGHT), detectGulpsThresholdSpinner, transformForGulpsComboBox, displayTransform2Button));
 		
 		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -59,10 +64,6 @@ public class MCLevels_DetectGulps extends JPanel {
 		panel1.add(new JLabel("to"));
 		panel1.add(endSpinner);
 		add( panel1);
-		
-		detectAllGulpsCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
-		detectAllGulpsCheckBox.setHorizontalTextPosition(SwingConstants.LEFT);
-		add( GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "),  detectAllGulpsCheckBox, detectGulpsButton));
 
 		transformForGulpsComboBox.setSelectedItem(TransformOp.XDIFFN);
 		defineListeners();

@@ -63,16 +63,17 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
-		JPanel panel00 = new JPanel();
-		((FlowLayout)panel00.getLayout()).setVgap(0);
-		panel00.add( GuiUtil.besidesPanel(detectButton, ALLCheckBox));
-		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+//		JPanel panel00 = new JPanel();
+//		((FlowLayout)panel00.getLayout()).setVgap(0);
+//		panel00.add( GuiUtil.besidesPanel(detectButton, ALLCheckBox));
 		
+		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		((FlowLayout)panel0.getLayout()).setVgap(0);
+		panel0.add( ALLCheckBox);
 		panel0.add(allImagesCheckBox);
 		panel0.add(leftCheckBox);
 		panel0.add(rightCheckBox);
-		add( GuiUtil.besidesPanel(panel00, panel0 ));
+		add( GuiUtil.besidesPanel(detectButton, panel0 ));
 		
 		((JLabel) directionComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
 		add( GuiUtil.besidesPanel(directionComboBox, thresholdSpinner, transformForLevelsComboBox, displayTransform1Button ));
@@ -162,6 +163,8 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		setDetectLevelThreshold(options.detectLevelThreshold);
 		thresholdSpinner.setValue(options.detectLevelThreshold);
 		allImagesCheckBox.setSelected(options.detectAllImages);
+		leftCheckBox.setSelected(options.detectL);
+		rightCheckBox.setSelected(options.detectR);
 	}
 	
 	void getInfosFromDialog(Capillary cap) {
@@ -170,6 +173,8 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
 		options.detectLevelThreshold = getDetectLevelThreshold();
 		options.detectAllImages = allImagesCheckBox.isSelected();
+		options.detectL = leftCheckBox.isSelected();
+		options.detectR = rightCheckBox.isSelected();
 	}
 	
 	private boolean initBuildParameters(Experiment exp) {
