@@ -93,7 +93,7 @@ public class ExperimentList {
 			exp.xmlLoadExperiment();
 			int image_size = exp.seqKymos.seq.getSizeX();
 			if (image_size != 0)
-				exp.step = exp.seqCamData.nTotalFrames / image_size;
+				exp.stepFrame = exp.seqCamData.nTotalFrames / image_size;
 			progress.incPosition();
 			index++;
 		}

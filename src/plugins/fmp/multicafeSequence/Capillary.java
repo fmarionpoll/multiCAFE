@@ -30,7 +30,7 @@ public class Capillary implements XMLPersistent  {
 	public String						filenameTIFF	= null;
 	public String 						stimulus		= new String("stimulus");
 	public String 						concentration	= new String("xmM");
-
+	
 	public DetectLimits_Options 		limitsOptions	= new DetectLimits_Options();
 	public DetectGulps_Options 			gulpsOptions	= new DetectGulps_Options();
 	
@@ -283,6 +283,7 @@ public class Capillary implements XMLPersistent  {
 	        capillaryRoi = (ROI2DShape) loadFromXML_ROI(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
 	        gulpsOptions.loadFromXML(nodeMeta);
+	        
 	    }
 	    return true;
 	}

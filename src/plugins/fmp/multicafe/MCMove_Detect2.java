@@ -198,7 +198,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		
-		exp.seqCamData.analysisStep = exp.step;
+		exp.seqCamData.analysisStep = exp.stepFrame;
 		exp.seqCamData.analysisStart = exp.startFrame;
 		exp.seqCamData.analysisEnd = exp.endFrame;
 		detect.expList = parent0.expList; 

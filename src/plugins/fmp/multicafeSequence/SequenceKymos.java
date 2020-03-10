@@ -48,6 +48,7 @@ public class SequenceKymos extends SequenceCamData  {
 	public boolean 			isInterrupted_loadImages = false;
 	public int 				imageWidthMax 			= 0;
 	public int 				imageHeightMax 			= 0;
+	public int				step					= 1;
 	
 	
 	// -----------------------------------------------------
@@ -72,7 +73,6 @@ public class SequenceKymos extends SequenceCamData  {
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
-
 	// ----------------------------
 	
 	public void roisSaveEdits(Capillaries capillaries) {
@@ -368,8 +368,6 @@ public class SequenceKymos extends SequenceCamData  {
 		return pathname;
 	}
 	
-	
-
 	// ----------------------------
 
 	public List<Integer> subtractTi(List<Integer > array) {
@@ -464,4 +462,5 @@ public class SequenceKymos extends SequenceCamData  {
 		exp.xmlSaveMCcapillaries(getDirectory());
 		exp.xmlSaveKymos_Measures(getDirectory());
 	}
+
 }

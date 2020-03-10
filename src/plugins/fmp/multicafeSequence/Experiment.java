@@ -41,7 +41,7 @@ public class Experiment {
 	
 	public int 				startFrame 					= 0;
 	public int 				endFrame 					= 0;
-	public int 				step 						= 1;
+	public int 				stepFrame 					= 1;
 	public long				analysisStart 				= 0;
 	public long 			analysisEnd					= 99999999;
 	public int 				analysisStep 				= 1;
@@ -64,7 +64,7 @@ public class Experiment {
 	private final String ID_NFRAMES = "number_of_frames";
 	private final String ID_STARTFRAME = "startFrame";
 	private final String ID_ENDFRAME = "endFrame";
-	private final String ID_STEP = "step";
+	private final String ID_STEP = "stepFrame";
 	private final String ID_BOXID = "boxID";
 	private final String ID_EXPERIMENT = "experiment";
 	private final String ID_EXPTFILENAME = "exptFileName";
@@ -186,7 +186,7 @@ public class Experiment {
 		number_of_frames 		= XMLUtil.getElementIntValue(node, ID_NFRAMES, number_of_frames);
 		startFrame 	= XMLUtil.getElementIntValue(node, ID_STARTFRAME, startFrame);
 		endFrame 	= XMLUtil.getElementIntValue(node, ID_ENDFRAME, endFrame);
-		step 		= XMLUtil.getElementIntValue(node, ID_STEP, step);
+		stepFrame 	= XMLUtil.getElementIntValue(node, ID_STEP, stepFrame);
 		boxID 		= XMLUtil.getElementValue(node, ID_BOXID, "..");
         experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
         comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
@@ -209,7 +209,7 @@ public class Experiment {
 			XMLUtil.setElementIntValue(node, ID_NFRAMES, number_of_frames);
 			XMLUtil.setElementIntValue(node, ID_STARTFRAME, startFrame);
 			XMLUtil.setElementIntValue(node, ID_ENDFRAME, endFrame);
-			XMLUtil.setElementIntValue(node, ID_STEP, step);
+			XMLUtil.setElementIntValue(node, ID_STEP, stepFrame);
 			XMLUtil.setElementValue(node, ID_BOXID, boxID);
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
 	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
@@ -318,11 +318,11 @@ public class Experiment {
 	
 	public boolean checkStepConsistency() {
 		int imageWidth = seqKymos.imageWidthMax; 
-		int len = (endFrame - startFrame + 1) / step;
+		int len = (endFrame - startFrame + 1) / stepFrame;
 		boolean isOK = true;
 		if (len != imageWidth) {
 			isOK = false;
-			step = (endFrame - startFrame + 1)/imageWidth;
+			stepFrame = (endFrame - startFrame + 1)/imageWidth;
 		}
 		return isOK;
 	}

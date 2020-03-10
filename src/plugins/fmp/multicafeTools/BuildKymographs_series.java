@@ -64,7 +64,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				exp.loadExperimentDataForBuildKymos();
 				Build_series.initViewerCamData(exp);
 
-				exp.step = options.analyzeStep;
+				exp.stepFrame = options.analyzeStep;
 				exp.analysisStart = options.startFrame;
 				exp.analysisEnd = options.endFrame;
 				if (computeKymo(exp) && !stopFlag) {

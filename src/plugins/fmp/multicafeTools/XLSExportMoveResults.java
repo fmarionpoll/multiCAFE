@@ -33,7 +33,7 @@ public class XLSExportMoveResults extends XLSExport {
 			options.expList.readInfosFromAllExperiments(true, true);
 			options.expList.chainExperiments();
 			expAll = options.expList.getStartAndEndFromAllExperiments(options);
-			expAll.step = options.expList.experimentList.get(0).step;
+			expAll.stepFrame = options.expList.experimentList.get(0).stepFrame;
 			int nbexpts = options.expList.experimentList.size();
 			ProgressFrame progress = new ProgressFrame("Export data to Excel");
 			progress.setLength(nbexpts);
@@ -108,7 +108,7 @@ public class XLSExportMoveResults extends XLSExport {
 			charSeries = "t";
 		int startFrame 	= (int) exp.seqCamData.analysisStart;
 		int endFrame 	= (int) exp.seqCamData.analysisEnd;
-		int step 		= exp.step * options.pivotBinStep;
+		int step 		= exp.stepFrame * options.pivotBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
 		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;

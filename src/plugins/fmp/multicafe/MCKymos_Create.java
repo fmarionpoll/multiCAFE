@@ -98,7 +98,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 			options.expList.index1 = parent0.expList.experimentList.size()-1;
 		}
 		options.expList = parent0.expList; 
-		options.analyzeStep = exp.step;
+		options.analyzeStep = exp.stepFrame;
 		options.startFrame = exp.startFrame;
 		options.endFrame = exp.endFrame;
 		

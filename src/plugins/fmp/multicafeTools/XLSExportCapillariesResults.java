@@ -40,7 +40,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			if (options.collateSeries)
 				expList.chainExperiments();
 			expAll 		= expList.getStartAndEndFromAllExperiments(options);
-			expAll.step = expList.experimentList.get(0).step;
+			expAll.stepFrame = expList.experimentList.get(0).stepFrame;
 			int nbexpts = expList.experimentList.size();
 			ProgressFrame progress = new ProgressFrame("Export data to Excel");
 			progress.setLength(nbexpts);
@@ -208,7 +208,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			for (XLSCapillaryResults capillaryResult : resultsArrayList) {
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
 					flypos.getLastIntervalAlive();
-					int ilastalive = flypos.lastTimeAlive/ exp.step;
+					int ilastalive = flypos.lastTimeAlive/ exp.stepFrame;
 					trimArrayLength(capillaryResult.data, ilastalive);
 				}
 			}
@@ -266,7 +266,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			charSeries = "t";
 		int startFrame 	= (int) exp.seqCamData.analysisStart;
 		int endFrame 	= (int) exp.seqCamData.analysisEnd;
-		int fullstep 	= exp.step * options.pivotBinStep;
+		int fullstep 	= exp.stepFrame * options.pivotBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
 		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;
