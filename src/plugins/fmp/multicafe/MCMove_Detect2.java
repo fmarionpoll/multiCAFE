@@ -5,8 +5,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -25,10 +23,9 @@ import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
 import icy.util.StringUtil;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.DetectFlies2_series;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
-import plugins.fmp.multicafeTools.OverlayThreshold;
+
 
 
 
@@ -48,13 +45,13 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object <");
 	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
-	public 	JCheckBox 	imageOverlayCheckBox	= new JCheckBox("overlay", true);
+//	public 	JCheckBox 	imageOverlayCheckBox	= new JCheckBox("overlay", true);
 	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
 	private JButton 	loadButton 				= new JButton("Load...");
 	private JButton 	saveButton 				= new JButton("Save...");
 	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
 	
-	private OverlayThreshold 	ov 					= null;
+//	private OverlayThreshold 	ov 					= null;
 	private DetectFlies2_series detectFlies2Thread 	= null;
 	private int 				currentExp 			= -1;
 	
@@ -82,7 +79,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		panel1.validate();
 		JPanel panel2 = new JPanel();
 		panel2.add(viewsCheckBox);
-		panel2.add(imageOverlayCheckBox);
+//		panel2.add(imageOverlayCheckBox);
 		FlowLayout layout2 = (FlowLayout) panel2.getLayout();
 		layout2.setVgap(0);
 		panel2.validate();
@@ -106,18 +103,18 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	}
 	
 	private void defineActionListeners() {
-		imageOverlayCheckBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		    	if (imageOverlayCheckBox.isSelected() && exp != null) {
-		    		if (ov == null)
-		    			ov = new OverlayThreshold(exp.seqCamData);
-						exp.seqCamData.seq.addOverlay(ov);
-						updateOverlay();
-					}
-					else
-						removeOverlay();
-		    }});
+//		imageOverlayCheckBox.addItemListener(new ItemListener() {
+//			public void itemStateChanged(ItemEvent e) {
+//				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+//		    	if (imageOverlayCheckBox.isSelected() && exp != null) {
+//		    		if (ov == null)
+//		    			ov = new OverlayThreshold(exp.seqCamData);
+//						exp.seqCamData.seq.addOverlay(ov);
+//						updateOverlay();
+//					}
+//					else
+//						removeOverlay();
+//		    }});
 
 		startComputationButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
@@ -154,34 +151,34 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		}});
 	}
 	
-	public void updateOverlay () {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		SequenceCamData seqCamData = exp.seqCamData;
-		if (seqCamData == null)
-			return;
-		if (ov == null) 
-			ov = new OverlayThreshold(seqCamData);
-		else {
-			seqCamData.seq.removeOverlay(ov);
-			ov.setSequence(seqCamData);
-		}
-		seqCamData.seq.addOverlay(ov);	
-		ov.setThresholdSingle(seqCamData.cages.detect.threshold);
-		ov.painterChanged();
-	}
+//	public void updateOverlay () {
+//		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+//		SequenceCamData seqCamData = exp.seqCamData;
+//		if (seqCamData == null)
+//			return;
+//		if (ov == null) 
+//			ov = new OverlayThreshold(seqCamData);
+//		else {
+//			seqCamData.seq.removeOverlay(ov);
+//			ov.setSequence(seqCamData);
+//		}
+//		seqCamData.seq.addOverlay(ov);	
+//		ov.setThresholdSingle(seqCamData.cages.detect.threshold);
+//		ov.painterChanged();
+//	}
 	
-	public void removeOverlay() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp != null && exp.seqCamData != null && exp.seqCamData.seq != null)
-			exp.seqCamData.seq.removeOverlay(ov);
-	}
+//	public void removeOverlay() {
+//		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+//		if (exp != null && exp.seqCamData != null && exp.seqCamData.seq != null)
+//			exp.seqCamData.seq.removeOverlay(ov);
+//	}
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdSpinner) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			exp.seqCamData.cages.detect.threshold = (int) thresholdSpinner.getValue();
-			updateOverlay();
+//			updateOverlay();
 		}
 	}
 	

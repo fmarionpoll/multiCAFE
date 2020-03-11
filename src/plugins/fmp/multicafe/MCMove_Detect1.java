@@ -52,7 +52,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	private JCheckBox objectUpsizeCheckBox 	= new JCheckBox("object < ");
 	private JSpinner objectUpsizeSpinner	= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
 	private JCheckBox whiteMiceCheckBox 	= new JCheckBox("white object");
-	private JCheckBox overlayCheckBox 		= new JCheckBox("overlay");
+	JCheckBox overlayCheckBox 				= new JCheckBox("overlay");
 	private JCheckBox ALLCheckBox 			= new JCheckBox("ALL series", false);
 	
 	private OverlayThreshold 	ov 			= null;
