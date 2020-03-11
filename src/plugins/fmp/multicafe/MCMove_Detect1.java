@@ -177,6 +177,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		exp.seqCamData.analysisStep = exp.stepFrame;
 		exp.seqCamData.analysisStart = exp.startFrame;
 		exp.seqCamData.analysisEnd = exp.endFrame;
+		detect.analyzeMoveStep = exp.stepFrame;
 		detect.expList = parent0.expList; 
 		detect.expList.index0 = parent0.currentExperimentIndex;
 		detect.expList.index1 = detect.expList.index0;

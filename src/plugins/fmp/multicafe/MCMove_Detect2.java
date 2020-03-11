@@ -103,19 +103,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	}
 	
 	private void defineActionListeners() {
-//		imageOverlayCheckBox.addItemListener(new ItemListener() {
-//			public void itemStateChanged(ItemEvent e) {
-//				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-//		    	if (imageOverlayCheckBox.isSelected() && exp != null) {
-//		    		if (ov == null)
-//		    			ov = new OverlayThreshold(exp.seqCamData);
-//						exp.seqCamData.seq.addOverlay(ov);
-//						updateOverlay();
-//					}
-//					else
-//						removeOverlay();
-//		    }});
-
 		startComputationButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				if (startComputationButton.getText() .equals(detectString))
@@ -150,28 +137,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 				startComputationButton.setForeground(color);
 		}});
 	}
-	
-//	public void updateOverlay () {
-//		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-//		SequenceCamData seqCamData = exp.seqCamData;
-//		if (seqCamData == null)
-//			return;
-//		if (ov == null) 
-//			ov = new OverlayThreshold(seqCamData);
-//		else {
-//			seqCamData.seq.removeOverlay(ov);
-//			ov.setSequence(seqCamData);
-//		}
-//		seqCamData.seq.addOverlay(ov);	
-//		ov.setThresholdSingle(seqCamData.cages.detect.threshold);
-//		ov.painterChanged();
-//	}
-	
-//	public void removeOverlay() {
-//		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-//		if (exp != null && exp.seqCamData != null && exp.seqCamData.seq != null)
-//			exp.seqCamData.seq.removeOverlay(ov);
-//	}
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
@@ -198,6 +163,8 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		exp.seqCamData.analysisStep = exp.stepFrame;
 		exp.seqCamData.analysisStart = exp.startFrame;
 		exp.seqCamData.analysisEnd = exp.endFrame;
+		detect.analyzeMoveStep = exp.stepFrame;
+		
 		detect.expList = parent0.expList; 
 		detect.expList.index0 = parent0.currentExperimentIndex;
 		detect.expList.index1 = detect.expList.index0;

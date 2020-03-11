@@ -107,10 +107,15 @@ public class Experiment {
 	}
 	
 	public void close( ) {
-		if (seqCamData != null)
-			seqCamData.seq.close();
-		if (seqKymos != null)
+		if (seqKymos != null) {
 			seqKymos.seq.close();
+			seqKymos.seq.closed();
+		}
+		if (seqCamData != null) {
+			seqCamData.seq.close();
+			seqCamData.seq.closed();
+		}
+
 	}
 	
 	public void displayCamData(Rectangle parent0Rect) {
@@ -144,7 +149,7 @@ public class Experiment {
 	}
 	
 	public boolean openSequenceAndMeasures(boolean loadCapillaries, boolean loadDrosoPositions) {
-		//#problem with experimentname not properly loaded when exporting to excel
+		//#problem with experiment name not properly loaded when exporting to excel
 		if (seqCamData == null) {
 			seqCamData = new SequenceCamData();
 		}
