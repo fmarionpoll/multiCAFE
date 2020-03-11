@@ -46,24 +46,25 @@ public class MCSequence_Intervals extends JPanel {
 	}
 		
 	public void setAnalyzeFrameToDialog (Experiment exp) {
-		SequenceCamData seq = exp.seqCamData;
-		endFrameJSpinner.setValue((int) seq.analysisEnd);
-		startFrameJSpinner.setValue((int) seq.analysisStart);
-		stepJSpinner.setValue(seq.analysisStep);
-		exp.startFrame = (int) seq.analysisStart;
-		exp.endFrame = (int) seq.analysisEnd;
-		exp.stepFrame = (int) seq.analysisStep;		
+		endFrameJSpinner.setValue((int) exp.endFrame);
+		startFrameJSpinner.setValue((int) exp.startFrame);
+		stepJSpinner.setValue(exp.stepFrame);
+		copyExpIntervalsToSequence(exp);		
 	}
 	
 	void getAnalyzeFrameFromDialog (Experiment exp) {		
 		exp.startFrame 	= (int) startFrameJSpinner.getValue();
 		exp.endFrame 	= (int) endFrameJSpinner.getValue();
 		exp.stepFrame	= (int) stepJSpinner.getValue();
+		copyExpIntervalsToSequence(exp);
+	}
+	
+	void copyExpIntervalsToSequence(Experiment exp) {
 		SequenceCamData seq = exp.seqCamData;
 		if (seq != null) {
-			seq.analysisStart 	= (int) startFrameJSpinner.getValue();
-			seq.analysisEnd 	= (int) endFrameJSpinner.getValue();
-			seq.analysisStep 	= (int) stepJSpinner.getValue();
+			seq.analysisStart = exp.startFrame;
+			seq.analysisEnd = exp.endFrame;
+			seq.analysisStep = exp.stepFrame;
 		}
 	}
 

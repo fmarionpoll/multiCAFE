@@ -105,6 +105,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		options.diskRadius 	= (int) diskRadiusSpinner.getValue();
 		options.doRegistration = doRegistrationCheckBox.isSelected();
 		options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
+		options.parent0Rect = parent0.mainFrame.getBoundsInternal();
 		return true;
 	}
 		

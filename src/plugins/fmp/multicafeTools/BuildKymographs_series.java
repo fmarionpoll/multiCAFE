@@ -35,14 +35,15 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		public boolean 					stopFlag 			= false;
 		public boolean 					threadRunning 		= false;
 		public boolean					buildBackground		= true;
-		
-		
+
 		private IcyBufferedImage 		workImage 			= null; 
 		private Sequence 				seqForRegistration	= null;
 		private DataType 				dataType 			= DataType.INT;
 		private int 					imagewidth =1;
 		private ArrayList<double []> 	sourceValuesList 	= null;
 		private List<ROI> 				roiList 			= null;
+
+		
 		
 		@Override
 		protected Integer doInBackground() throws Exception {
@@ -62,15 +63,15 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				progress.updatePosition(index-expList.index0+1);
 				
 				exp.loadExperimentDataForBuildKymos();
-				Build_series.initViewerCamData(exp);
-
+				exp.displayCamData(options.parent0Rect);
+				
 				exp.stepFrame = options.analyzeStep;
 				exp.analysisStart = options.startFrame;
 				exp.analysisEnd = options.endFrame;
-				if (computeKymo(exp) && !stopFlag) {
+				if (computeKymo(exp)) 
 					saveComputation(exp);
-				}
-				Build_series.closeViewer(exp);
+				
+				exp.close();
 			}
 			progress.close();
 			threadRunning = false;
@@ -153,14 +154,9 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			int vinputSizeX = seqCamData.seq.getSizeX();		
 			int ipixelcolumn = 0;
 			workImage = seqCamData.seq.getImage(options.startFrame, 0); 
-			Thread thread = null;
-			ViewerUpdater visuUpdater = null;
 			if (options.updateViewerDuringComputation) {
 				roiList = seqCamData.seq.getROIs();
 				seqCamData.seq.removeAllROI();
-				visuUpdater = new ViewerUpdater(seqCamData, 200);
-				thread = new Thread(null, visuUpdater, "+++visuUpdater");
-				thread.start();
 			}
 			
 			seqForRegistration	= new Sequence();
@@ -208,17 +204,6 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			seqKymos.seq.removeAllImages();
 			seqKymos.seq.setVirtual(false); 
 			if (options.updateViewerDuringComputation) {
-				if (thread != null)
-					thread.interrupt();
-				if (thread != null && thread.isAlive()) {
-					visuUpdater.isInterrupted = true;
-					thread.interrupt();
-					try {
-						thread.join();
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
-				}
 				seqCamData.seq.addROIs(roiList, false);
 			}
 

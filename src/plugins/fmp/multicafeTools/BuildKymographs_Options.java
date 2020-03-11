@@ -1,5 +1,6 @@
 package plugins.fmp.multicafeTools;
 
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import icy.roi.ROI2D;
@@ -14,6 +15,7 @@ public class BuildKymographs_Options {
 	public ArrayList<ROI2D> listROIStoBuildKymos= new ArrayList<ROI2D> ();
 	public boolean			updateViewerDuringComputation = false;
 	public ExperimentList	expList;
+	public Rectangle 		parent0Rect 		= null;
 	
 	public boolean 			loopRunning 		= false;	
 }

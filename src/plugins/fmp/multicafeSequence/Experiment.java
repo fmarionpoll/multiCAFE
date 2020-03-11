@@ -1,10 +1,12 @@
 package plugins.fmp.multicafeSequence;
 
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,9 +15,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.SwingUtilities;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
+import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.ImageUtil;
 import icy.roi.ROI2D;
@@ -99,6 +104,28 @@ public class Experiment {
 		seqCamData.setParentDirectoryAsFileName() ;
 		experimentFileName = seqCamData.getDirectory();
 		loadFileIntervalsFromSeqCamData();
+	}
+	
+	public void close( ) {
+		if (seqCamData != null)
+			seqCamData.seq.close();
+		if (seqKymos != null)
+			seqKymos.seq.close();
+	}
+	
+	public void displayCamData(Rectangle parent0Rect) {
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() { public void run() {
+				Viewer viewerCamData = seqCamData.seq.getFirstViewer();
+				if (viewerCamData == null)
+					viewerCamData = new Viewer(seqCamData.seq, true);
+				Rectangle rectv = viewerCamData.getBoundsInternal();
+				rectv.setLocation(parent0Rect.x+ parent0Rect.width, parent0Rect.y);
+				viewerCamData.setBounds(rectv);				
+			}});
+		} catch (InvocationTargetException | InterruptedException e) {
+			e.printStackTrace();
+		} 
 	}
 	
 	public boolean openSequenceAndMeasures() {
