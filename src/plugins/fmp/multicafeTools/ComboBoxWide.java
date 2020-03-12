@@ -1,15 +1,13 @@
 package plugins.fmp.multicafeTools;
 
 import java.awt.Dimension;
-import java.util.Vector;
-
-import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import java.util.Vector;
+import javax.swing.ComboBoxModel;
 
-//got this workaround from the following bug: 
-//http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4618607 
 
-public class ComboBoxWide extends JComboBox<String>{ 
+
+public class ComboBoxWide extends JComboBox<String> { 
 
 	/**
 	 * 
@@ -50,3 +48,4 @@ public class ComboBoxWide extends JComboBox<String>{
 		return dim; 
 	} 
 }
+

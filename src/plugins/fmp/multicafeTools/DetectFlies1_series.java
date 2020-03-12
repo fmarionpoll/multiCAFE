@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
+import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import plugins.fmp.multicafeSequence.Experiment;
@@ -34,16 +35,14 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
         int nbiterations = 0;
 		ExperimentList expList = detect.expList;
 		int nbexp = expList.index1 - expList.index0 +1;
-		ProgressChrono progress = new ProgressChrono("Detect flies");
-		progress.initChrono(nbexp);
-		progress.setMessageFirstPart("Analyze series ");
+		ProgressFrame progress = new ProgressFrame("Detect flies");
 		
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag) 
 				break;
 			Experiment exp = expList.experimentList.get(index);
 			System.out.println(exp.experimentFileName);
-			progress.updatePosition(index-expList.index0+1);
+			progress.setMessage("Processing file: " + (index-expList.index0 +1) + ":" + nbexp);
 			
 			exp.loadExperimentCamData();
 			exp.seqCamData.xmlReadDrosoTrackDefault();
@@ -98,7 +97,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		
 		detect.seqCamData.seq.beginUpdate();
 		int it = 0;
-		for (int t = detect.startFrame ; t <= detect.endFrame; t  += detect.analyzeMoveStep, it++ ) {				
+		for (int t = detect.startFrame ; t <= detect.endFrame; t  += detect.stepFrame, it++ ) {				
 			if (stopFlag)
 				break;
 			progressBar.updatePositionAndTimeLeft(t);

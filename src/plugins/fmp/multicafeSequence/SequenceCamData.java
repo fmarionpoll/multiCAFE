@@ -23,8 +23,6 @@ import icy.math.ArrayMath;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
-import icy.sequence.SequenceEvent;
-import icy.sequence.SequenceListener;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 
@@ -39,7 +37,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 
 
-public class SequenceCamData implements SequenceListener {
+public class SequenceCamData {
 	public Sequence					seq						= null;
 	public IcyBufferedImage 		refImage 				= null;
 	
@@ -470,7 +468,7 @@ public class SequenceCamData implements SequenceListener {
 	public void storeAnalysisParametersToCages() {
 		cages.detect.startFrame = (int) analysisEnd;
 		cages.detect.endFrame = (int) analysisStart;
-		cages.detect.analyzeMoveStep = analysisStep;
+		cages.detect.stepFrame = analysisStep;
 	}
 	
 	public boolean xmlReadDrosoTrackDefault() {
@@ -585,15 +583,6 @@ public class SequenceCamData implements SequenceListener {
 		return cages.xmlWriteCagesToFileNoQuestion(csFile);
 	}
 
-	@Override
-	public void sequenceChanged(SequenceEvent sequenceEvent) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void sequenceClosed(Sequence sequence) {
-		sequence.removeAllROI();
-	}
 	
 	public void getAnalysisParametersFromCamData (Capillaries capillaries) {		
 		capillaries.desc.analysisStart = analysisStart; 

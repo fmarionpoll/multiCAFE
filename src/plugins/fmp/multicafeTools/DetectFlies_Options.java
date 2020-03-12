@@ -41,7 +41,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	public Cages 	cages 					= null;
 	public List<BooleanMask2D> 	cageMaskList = new ArrayList<BooleanMask2D>();
 	
-	public int		analyzeMoveStep ;
+	public int		stepFrame ;
 	public int 		startFrame;
 	public int 		endFrame;
 	public int 		nbframes;
@@ -74,7 +74,7 @@ public class DetectFlies_Options implements XMLPersistent {
 		transformop = TransformOp.findByText(op1);
 		startFrame =  XMLUtil.getAttributeIntValue(xmlVal, "start", 0);
 		endFrame = XMLUtil.getAttributeIntValue(xmlVal, "end", 0);
-		analyzeMoveStep = XMLUtil.getAttributeIntValue(xmlVal, "step", 1);
+		stepFrame = XMLUtil.getAttributeIntValue(xmlVal, "step", 1);
 		videoChannel = XMLUtil.getAttributeIntValue(xmlVal, "videoChannel", 0);
 		return true;
 	}
@@ -97,7 +97,7 @@ public class DetectFlies_Options implements XMLPersistent {
 		}
 		XMLUtil.setAttributeIntValue(xmlVal, "start", startFrame);
 		XMLUtil.setAttributeIntValue(xmlVal, "end", endFrame); 
-		XMLUtil.setAttributeIntValue(xmlVal, "step", analyzeMoveStep); 
+		XMLUtil.setAttributeIntValue(xmlVal, "step", stepFrame); 
 		XMLUtil.setAttributeIntValue(xmlVal, "videoChannel", videoChannel);
 		return true;
 	}
@@ -202,12 +202,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	}
 	
 	public void initParametersForDetection() {
-		analyzeMoveStep = seqCamData.analysisStep;
-		startFrame 	= (int) seqCamData.analysisStart;
-		endFrame 	= (int) seqCamData.analysisEnd;
-		if ( seqCamData.seq.getSizeT() < endFrame+1 )
-			endFrame = (int) seqCamData.nTotalFrames - 1;
-		nbframes = (endFrame - startFrame +1)/analyzeMoveStep +1;
+		nbframes = (endFrame - startFrame +1)/stepFrame +1;
 		seqCamData.cages.clear();
 		seqCamData.cages.cageList = seqCamData.getCages();
 		cages = seqCamData.cages;
@@ -233,7 +228,7 @@ public class DetectFlies_Options implements XMLPersistent {
 			seqCamData.cages = cages;
 			int nrois = cages.cageList.size();
 			int it = 0;
-			for ( int t = startFrame ; t <= endFrame ; t  += analyzeMoveStep, it++ )
+			for ( int t = startFrame ; t <= endFrame ; t  += stepFrame, it++ )
 				for (int iroi=0; iroi < nrois; iroi++) 
 					seqCamData.seq.addROI( resultFlyPositionArrayList[it][iroi] );
 		}

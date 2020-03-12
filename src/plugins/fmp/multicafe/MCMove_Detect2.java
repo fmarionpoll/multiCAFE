@@ -45,13 +45,11 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object <");
 	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
-//	public 	JCheckBox 	imageOverlayCheckBox	= new JCheckBox("overlay", true);
 	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
 	private JButton 	loadButton 				= new JButton("Load...");
 	private JButton 	saveButton 				= new JButton("Save...");
 	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
 	
-//	private OverlayThreshold 	ov 					= null;
 	private DetectFlies2_series detectFlies2Thread 	= null;
 	private int 				currentExp 			= -1;
 	
@@ -79,7 +77,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		panel1.validate();
 		JPanel panel2 = new JPanel();
 		panel2.add(viewsCheckBox);
-//		panel2.add(imageOverlayCheckBox);
 		FlowLayout layout2 = (FlowLayout) panel2.getLayout();
 		layout2.setVgap(0);
 		panel2.validate();
@@ -143,7 +140,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		if (e.getSource() == thresholdSpinner) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			exp.seqCamData.cages.detect.threshold = (int) thresholdSpinner.getValue();
-//			updateOverlay();
 		}
 	}
 	
@@ -163,7 +159,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		exp.seqCamData.analysisStep = exp.stepFrame;
 		exp.seqCamData.analysisStart = exp.startFrame;
 		exp.seqCamData.analysisEnd = exp.endFrame;
-		detect.analyzeMoveStep = exp.stepFrame;
+		detect.stepFrame = exp.stepFrame;
 		
 		detect.expList = parent0.expList; 
 		detect.expList.index0 = parent0.currentExperimentIndex;
