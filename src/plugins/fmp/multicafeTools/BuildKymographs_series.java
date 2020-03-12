@@ -51,23 +51,22 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 	        int nbiterations = 0;
 			ExperimentList expList = options.expList;
 			int nbexp = expList.index1 - expList.index0 +1;
-			ProgressChrono progress = new ProgressChrono("Build kymographs");
-			progress.initChrono(nbexp);
-			progress.setMessageFirstPart("Analyze series ");
+			ProgressFrame progress = new ProgressFrame("Build kymographs");
+
 			
 			for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 				if (stopFlag)
 					break;
 				Experiment exp = expList.experimentList.get(index);
 				System.out.println(exp.experimentFileName);
-				progress.updatePosition(index-expList.index0+1);
+				progress.setMessage("Processing file: " + (index-expList.index0 +1) + ":" + nbexp);
 				
 				exp.loadExperimentDataForBuildKymos();
 				exp.displayCamData(options.parent0Rect);
 				
 				exp.stepFrame = options.analyzeStep;
-				exp.analysisStart = options.startFrame;
-				exp.analysisEnd = options.endFrame;
+				exp.startFrame = options.startFrame;
+				exp.endFrame = options.endFrame;
 				if (computeKymo(exp)) 
 					saveComputation(exp);
 				
@@ -133,12 +132,10 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				return false;
 			System.out.println("start buildkymographsThread");
 			
-			if (options.startFrame < 0) 
-				options.startFrame = 0;
-			if ((options.endFrame >= (int) seqCamData.nTotalFrames) || (options.endFrame < 0)) 
-				options.endFrame = (int) seqCamData.nTotalFrames-1;
+			if ((exp.endFrame >= (int) seqCamData.nTotalFrames) || (options.endFrame < 0)) 
+				exp.endFrame = (int) seqCamData.nTotalFrames-1;
 			
-			int nbframes = options.endFrame - options.startFrame +1;
+			int nbframes = exp.endFrame - exp.startFrame +1;
 			ProgressChrono progressBar = new ProgressChrono("Processing started");
 			progressBar.initChrono(nbframes);
 			threadRunning = true;
@@ -170,7 +167,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			}
 			
 			seqCamData.seq.beginUpdate();
-			for (int t = options.startFrame ; t <= options.endFrame; t += options.analyzeStep, ipixelcolumn++ ) {
+			for (int t = exp.startFrame ; t <= exp.endFrame; t += exp.stepFrame, ipixelcolumn++ ) {
 				if (stopFlag)
 					break;
 				progressBar.updatePosition(t);

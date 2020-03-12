@@ -165,18 +165,6 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	// ----------------------------
 
-	void setStartStopStepToCapillaries (Capillaries capillaries) {
-		capillaries.desc.analysisStart = analysisStart;
-		capillaries.desc.analysisEnd = analysisEnd;
-		capillaries.desc.analysisStep = analysisStep;
-	}
-	
-	void getStartStopStepFromCapillaries (Capillaries capillaries) {
-		analysisStart = capillaries.desc.analysisStart;
-		analysisEnd = capillaries.desc.analysisEnd;
-		analysisStep = capillaries.desc.analysisStep;
-	}
-	
 	public List <String> loadListOfKymographsFromCapillaries(String dir, Capillaries capillaries) {
 		isRunning_loadImages = true;
 		String directoryFull = dir +File.separator ;

@@ -49,8 +49,7 @@ public class SequenceCamData {
 	public int						nTotalFrames 			= 0;
 
 	public EnumStatus 				status					= EnumStatus.REGULAR;		
-	public Cages					cages 					= new Cages();
-
+	
 	public IcyBufferedImage 		cacheTransformedImage 	= null;
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
@@ -463,28 +462,7 @@ public class SequenceCamData {
 		seq.setName(dirupup);
 	}
 	
-	// --------------------------
-	
-	public void storeAnalysisParametersToCages() {
-		cages.detect.startFrame = (int) analysisEnd;
-		cages.detect.endFrame = (int) analysisStart;
-		cages.detect.stepFrame = analysisStep;
-	}
-	
-	public boolean xmlReadDrosoTrackDefault() {
-		boolean flag = cages.xmlReadCagesFromFileNoQuestion(getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml", this);
-		if (!flag)
-			flag = cages.xmlReadCagesFromFileNoQuestion(getDirectory() + File.separator + "drosotrack.xml", this);
-		return flag;
-	}
-	
-	public boolean xmlReadDrosoTrack(String filename) {
-		return cages.xmlReadCagesFromFileNoQuestion(filename, this);
-	}
-	
-	public boolean xmlWriteDrosoTrackDefault() {
-		return cages.xmlWriteCagesToFileNoQuestion(getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml");
-	}
+
 	
 	// ---------------------------
 	
@@ -577,31 +555,12 @@ public class SequenceCamData {
 		return cageList;
 	}
 	
-	public boolean saveFlyPositions() {
-		cages.fromROIsToCages(this);
-		String csFile = getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml";
-		return cages.xmlWriteCagesToFileNoQuestion(csFile);
-	}
-
-	
-	public void getAnalysisParametersFromCamData (Capillaries capillaries) {		
-		capillaries.desc.analysisStart = analysisStart; 
-		capillaries.desc.analysisEnd  = analysisEnd;
-		capillaries.desc.analysisStep = analysisStep;
-	}
-	
 	public void getCamDataROIS (Capillaries capillaries) {
 		capillaries.capillariesArrayList.clear();
 		List<ROI2D> listROISCap = getCapillaries();
 		for (ROI2D roi:listROISCap) {
 			capillaries.capillariesArrayList.add(new Capillary((ROI2DShape)roi));
 		}
-	}
-	
-	public void setCapillariesFromCamData(Capillaries capillaries) {
-		getCamDataROIS (capillaries);
-		getAnalysisParametersFromCamData(capillaries);
-		return;
 	}
 	
 	public IcyBufferedImage getImageCopy(int t) {	

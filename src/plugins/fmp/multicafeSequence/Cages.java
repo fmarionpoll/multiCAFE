@@ -295,5 +295,11 @@ public class Cages {
 		}
 		Collections.sort(detectedFliesList, new MulticafeTools.ROI2DNameComparator());
 	}
+	
+	public void storeAnalysisParametersToCages(Experiment exp) {
+		detect.startFrame = (int) exp.endFrame;
+		detect.endFrame = (int) exp.startFrame;
+		detect.stepFrame = exp.stepFrame;
+	}
 
 }

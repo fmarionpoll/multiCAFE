@@ -133,10 +133,10 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	}
 	
 	void updateDialogsAfterOpeningSequenceCam(SequenceCamData seqCamData) {
-		if (seqCamData == null)
-			return;
-		paneSequence.transferSequenceCamDataToDialogs(seqCamData);
-		paneLevels.transferSequenceCamDataToDialogs(seqCamData);		
+		if (seqCamData != null) {
+			paneSequence.transferSequenceCamDataToDialogs(seqCamData);	
+			paneLevels.transferSequenceCamDataToDialogs(seqCamData);
+		}
 	}
 
 	void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {

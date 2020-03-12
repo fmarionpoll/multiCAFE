@@ -110,7 +110,6 @@ public class MulticafeSequence extends EzPlug {
 	private void openFile() {
 		if (!sequenceOpenFile())
 			return;
-		UpdateItemsFromSequence (vSequence);
 
 		groupLoadFiles.setFoldedState(true);
 		groupViewMode.setFoldedState(false);
@@ -164,24 +163,10 @@ public class MulticafeSequence extends EzPlug {
 			XMLPreferences guiPrefs = getPreferences("gui");
 			guiPrefs.put("lastUsedPath", vSequence.directory);
 			addSequence(vSequence.seq);
-			initSequenceParameters(vSequence);
 		}
 		return flag;
 	}
 	
-	private void initSequenceParameters(SequenceCamData seq) {
-		seq.analysisStart = 0;
-		seq.analysisEnd = seq.seq.getSizeT()-1;
-		seq.analysisStep = 1;
-	}
-	
-	public void UpdateItemsFromSequence (SequenceCamData vSequence) {
-		if (vSequence == null)
-			return;
-		end.setValue((int) vSequence.analysisEnd);
-		start.setValue((int) vSequence.analysisStart);
-		step.setValue((int) vSequence.analysisStep);
-	}
 	
 	
 

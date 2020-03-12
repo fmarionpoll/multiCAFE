@@ -13,7 +13,6 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
 public class MCSequence_Intervals extends JPanel {
@@ -48,24 +47,14 @@ public class MCSequence_Intervals extends JPanel {
 	public void setAnalyzeFrameToDialog (Experiment exp) {
 		endFrameJSpinner.setValue((int) exp.endFrame);
 		startFrameJSpinner.setValue((int) exp.startFrame);
-		stepJSpinner.setValue(exp.stepFrame);
-		copyExpIntervalsToSequence(exp);		
+		stepJSpinner.setValue(exp.stepFrame);		
 	}
 	
 	void getAnalyzeFrameFromDialog (Experiment exp) {		
 		exp.startFrame 	= (int) startFrameJSpinner.getValue();
 		exp.endFrame 	= (int) endFrameJSpinner.getValue();
 		exp.stepFrame	= (int) stepJSpinner.getValue();
-		copyExpIntervalsToSequence(exp);
 	}
 	
-	void copyExpIntervalsToSequence(Experiment exp) {
-		SequenceCamData seq = exp.seqCamData;
-		if (seq != null) {
-			seq.analysisStart = exp.startFrame;
-			seq.analysisEnd = exp.endFrame;
-			seq.analysisStep = exp.stepFrame;
-		}
-	}
 
 }

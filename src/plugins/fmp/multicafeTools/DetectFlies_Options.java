@@ -17,6 +17,7 @@ import icy.sequence.Sequence;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Cages;
+import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.XYTaSeries;
@@ -201,11 +202,11 @@ public class DetectFlies_Options implements XMLPersistent {
 		resultFlyPositionArrayList = new ROI[nbframes][nbcages];
 	}
 	
-	public void initParametersForDetection() {
+	public void initParametersForDetection(Experiment exp) {
 		nbframes = (endFrame - startFrame +1)/stepFrame +1;
-		seqCamData.cages.clear();
-		seqCamData.cages.cageList = seqCamData.getCages();
-		cages = seqCamData.cages;
+		exp.cages.clear();
+		exp.cages.cageList = seqCamData.getCages();
+		cages = exp.cages;
 		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageList);
 		rectangleAllCages = null;
 		for (Cage cage: cages.cageList) {
@@ -217,23 +218,23 @@ public class DetectFlies_Options implements XMLPersistent {
 		}
 	}
 	
-	public void removeTempRectROIs(Sequence seq) {
+	public void removeTempRectROIs() {
 		for (int i=0; i < tempRectROI.length; i++)
 			seqCamData.seq.removeROI(tempRectROI[i]);
 	}
 	
-	public void copyDetectedROIsToSequence(Sequence seq) {
+	public void copyDetectedROIsToSequence(Experiment exp) {
 		try {
-			seqCamData.seq.beginUpdate();
-			seqCamData.cages = cages;
+			exp.seqCamData.seq.beginUpdate();
+			exp.cages = cages;
 			int nrois = cages.cageList.size();
 			int it = 0;
 			for ( int t = startFrame ; t <= endFrame ; t  += stepFrame, it++ )
 				for (int iroi=0; iroi < nrois; iroi++) 
-					seqCamData.seq.addROI( resultFlyPositionArrayList[it][iroi] );
+					exp.seqCamData.seq.addROI( resultFlyPositionArrayList[it][iroi] );
 		}
 		finally {
-			seqCamData.seq.endUpdate();
+			exp.seqCamData.seq.endUpdate();
 		}
 	}
 	

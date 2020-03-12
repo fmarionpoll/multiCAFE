@@ -76,7 +76,7 @@ public class MCMove_Graphs extends JPanel {
 		}
 		if (aliveCheckbox.isSelected()) {
 			double threshold = (double) aliveThresholdSpinner.getValue();		
-			for (Cage cage: exp.seqCamData.cages.cageList) {
+			for (Cage cage: exp.cages.cageList) {
 				XYTaSeries posSeries = cage.flyPositions;
 				posSeries.threshold = threshold;
 				posSeries.getDoubleArrayList(EnumListType.isalive);
@@ -95,7 +95,7 @@ public class MCMove_Graphs extends JPanel {
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		}
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		iChart.displayData(exp.seqCamData.cages.cageList, option);
+		iChart.displayData(exp.cages.cageList, option);
 		iChart.mainChartFrame.toFront();
 		return iChart;
 	}

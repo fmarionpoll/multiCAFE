@@ -108,7 +108,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 		SequenceCamData seqCamData = exp.seqCamData;
 		String directory = seqCamData.getDirectory();
 		String filename = directory + File.separator+"drosotrack.xml";
-		return seqCamData.cages.xmlWriteCagesToFileNoQuestion(filename);
+		return exp.cages.xmlWriteCagesToFileNoQuestion(filename);
 	}
 }
 

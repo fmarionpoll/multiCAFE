@@ -37,7 +37,8 @@ public class Experiment {
 	public SequenceCamData 	seqCamData 					= null;
 	public SequenceKymos 	seqKymos					= null;
 	public Capillaries 		capillaries 				= new Capillaries();
-	
+	public Cages			cages 						= new Cages();
+
 	private FileTime		fileTimeImageFirst;
 	private FileTime		fileTimeImageLast;
 	public long				fileTimeImageFirstMinute 	= 0;
@@ -47,9 +48,9 @@ public class Experiment {
 	public int 				startFrame 					= 0;
 	public int 				endFrame 					= 0;
 	public int 				stepFrame 					= 1;
-	public long				analysisStart 				= 0;
-	public long 			analysisEnd					= 99999999;
-	public int 				analysisStep 				= 1;
+//	public long				analysisStart 				= 0;
+//	public long 			analysisEnd					= 99999999;
+//	public int 				analysisStep 				= 1;
 	
 	public String			boxID 						= new String("..");
 	public String			experiment					= new String("..");
@@ -144,7 +145,7 @@ public class Experiment {
 		if (!xmlLoadKymos_Measures(seqCamData.getDirectory())) 
 			return false;
 
-		seqCamData.xmlReadDrosoTrackDefault();
+		xmlReadDrosoTrackDefault();
 		return true;
 	}
 	
@@ -172,7 +173,7 @@ public class Experiment {
 		}
 		
 		if (loadDrosoPositions)
-			seqCamData.xmlReadDrosoTrackDefault();
+			xmlReadDrosoTrackDefault();
 		return true;
 	}
 	
@@ -274,7 +275,7 @@ public class Experiment {
 	}
 	
 	public boolean loadDrosotrack() {
-		return seqCamData.xmlReadDrosoTrackDefault();
+		return xmlReadDrosoTrackDefault();
 	}
 	
 	public boolean loadKymos_Measures() {
@@ -326,7 +327,7 @@ public class Experiment {
 	
 	public boolean isFlyAlive(int cagenumber) {
 		boolean isalive = false;
-		for (Cage cage: seqCamData.cages.cageList) {
+		for (Cage cage: cages.cageList) {
 			String cagenumberString = cage.cageLimitROI.getName().substring(4);
 			if (Integer.parseInt(cagenumberString) == cagenumber) {
 				isalive = (cage.flyPositions.getLastIntervalAlive() > 0);
@@ -338,7 +339,7 @@ public class Experiment {
 	
 	public boolean isDataAvailable(int cagenumber) {
 		boolean isavailable = false;
-		for (Cage cage: seqCamData.cages.cageList) {
+		for (Cage cage: cages.cageList) {
 			String cagenumberString = cage.cageLimitROI.getName().substring(4);
 			if (Integer.parseInt(cagenumberString) == cagenumber) {
 				isavailable = true;
@@ -362,7 +363,11 @@ public class Experiment {
 	public void loadExperimentData() {
 		xmlLoadExperiment();
 		seqCamData.loadSequence(experimentFileName) ;
-		seqCamData.setCapillariesFromCamData(capillaries);
+		seqCamData.getCamDataROIS (capillaries);
+		capillaries.desc.analysisStart = startFrame; 
+		capillaries.desc.analysisEnd  = endFrame;
+		capillaries.desc.analysisStep = stepFrame;
+
 		xmlLoadMCcapillaries(experimentFileName);
 	}
 	
@@ -384,11 +389,7 @@ public class Experiment {
 			xmlSaveKymos_Measures(seqCamData.getDirectory());
 		}
 	}
-	
-	public boolean saveFlyPositions() {
-		return seqCamData.saveFlyPositions();
-	}
-	
+		
 	public void kymosBuildFiltered(int zChannelSource, int zChannelDestination, TransformOp transformop, int spanDiff) {
 		if (tImg == null) 
 			tImg = new ImageTransformTools();
@@ -397,7 +398,7 @@ public class Experiment {
 		int nimages = seqKymos.seq.getSizeT();
 		seqKymos.seq.beginUpdate();
 		tImg.setSequence(seqKymos);
-		seqKymos.setStartStopStepToCapillaries(capillaries);
+		
 		if (capillaries.capillariesArrayList.size() != nimages) {
 			SequenceKymosUtils.transferCamDataROIStoKymo(this);
 		}
@@ -447,9 +448,9 @@ public class Experiment {
 					flag = capillaries.xmlLoadCapillaries(csFileName);
 				}
 			}
-			analysisStart = capillaries.desc.analysisStart;
-			analysisEnd = capillaries.desc.analysisEnd;
-			analysisStep = capillaries.desc.analysisStep;
+			startFrame = (int) capillaries.desc.analysisStart;
+			endFrame = (int) capillaries.desc.analysisEnd;
+			stepFrame = capillaries.desc.analysisStep;
 		}
 		return flag;
 	}
@@ -462,7 +463,6 @@ public class Experiment {
 		if (flag) {
 			Path pathfilename = Paths.get(pathname);
 			seqKymos.directory = pathfilename.getParent().toString();
-			seqKymos.getStartStopStepFromCapillaries (capillaries);
 			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.getDirectory(), capillaries);
 		}
 		return flag;
@@ -484,7 +484,6 @@ public class Experiment {
 		if (flag) {
 			Path pathfilename = Paths.get(pathname);
 			seqKymos.directory = pathfilename.getParent().toString();
-			seqKymos.getStartStopStepFromCapillaries (capillaries);
 			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.getDirectory(), capillaries);
 		}
 		return flag;
@@ -545,7 +544,7 @@ public class Experiment {
 				capillaries.capillariesArrayList.add(cap);
 			}
 		}
-		seqKymos.setStartStopStepToCapillaries(capillaries);
+		
 		return;
 	}
 	
@@ -575,7 +574,7 @@ public class Experiment {
 	}
 
 	public 	void cleanPreviousDetections() {
-		for (Cage cage: seqCamData.cages.cageList) {
+		for (Cage cage: cages.cageList) {
 			cage.flyPositions = new XYTaSeries();
 		}
 		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
@@ -602,4 +601,28 @@ public class Experiment {
 		saveFlyPositions();
 	}
 	
+	// --------------------------
+	
+	public boolean xmlReadDrosoTrackDefault() {
+		boolean flag = cages.xmlReadCagesFromFileNoQuestion(seqCamData.getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml", seqCamData);
+		if (!flag)
+			flag = cages.xmlReadCagesFromFileNoQuestion(seqCamData.getDirectory() + File.separator + "drosotrack.xml", seqCamData);
+		return flag;
+	}
+	
+	public boolean xmlReadDrosoTrack(String filename) {
+		return cages.xmlReadCagesFromFileNoQuestion(filename, seqCamData);
+	}
+	
+	public boolean xmlWriteDrosoTrackDefault() {
+		return cages.xmlWriteCagesToFileNoQuestion(seqCamData.getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml");
+	}
+	
+	public boolean saveFlyPositions() {
+		cages.fromROIsToCages(seqCamData);
+		String csFile = seqCamData.getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml";
+		return cages.xmlWriteCagesToFileNoQuestion(csFile);
+	}
+	
+
 }

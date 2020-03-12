@@ -139,7 +139,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdSpinner) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			exp.seqCamData.cages.detect.threshold = (int) thresholdSpinner.getValue();
+			exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
 		}
 	}
 	
@@ -156,10 +156,9 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		
-		exp.seqCamData.analysisStep = exp.stepFrame;
-		exp.seqCamData.analysisStart = exp.startFrame;
-		exp.seqCamData.analysisEnd = exp.endFrame;
 		detect.stepFrame = exp.stepFrame;
+		detect.startFrame = exp.startFrame;
+		detect.endFrame = exp.endFrame;
 		
 		detect.expList = parent0.expList; 
 		detect.expList.index0 = parent0.currentExperimentIndex;
@@ -168,8 +167,8 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 			detect.expList.index0 = 0;
 			detect.expList.index1 = parent0.expList.experimentList.size()-1;
 		}
-		detect.seqCamData 		= exp.seqCamData;	
-		detect.initParametersForDetection();
+		detect.seqCamData = exp.seqCamData;	
+		detect.initParametersForDetection(exp);
 		
 		if (detectFlies2Thread == null)
 			detectFlies2Thread = new DetectFlies2_series();

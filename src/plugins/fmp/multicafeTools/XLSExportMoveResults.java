@@ -106,8 +106,8 @@ public class XLSExportMoveResults extends XLSExport {
 		int row0 = pt_main.y;
 		if (charSeries == null)
 			charSeries = "t";
-		int startFrame 	= (int) exp.seqCamData.analysisStart;
-		int endFrame 	= (int) exp.seqCamData.analysisEnd;
+		int startFrame 	= (int) exp.startFrame;
+		int endFrame 	= (int) exp.endFrame;
 		int step 		= exp.stepFrame * options.pivotBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
@@ -149,7 +149,7 @@ public class XLSExportMoveResults extends XLSExport {
 			pt_main.x++;
 			
 			int colseries = pt_main.x;
-			Cages cages = exp.seqCamData.cages;
+			Cages cages = exp.cages;
 			currentIndex = currentFrame - startFrame;
 			switch (option) {
 			case DISTANCE:

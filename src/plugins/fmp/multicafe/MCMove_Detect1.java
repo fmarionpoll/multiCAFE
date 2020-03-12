@@ -138,7 +138,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 			ov.setSequence(seqCamData);
 		}
 		seqCamData.seq.addOverlay(ov);	
-		ov.setThresholdSingle(seqCamData.cages.detect.threshold);
+		ov.setThresholdSingle(exp.cages.detect.threshold);
 		ov.painterChanged();
 	}
 	
@@ -152,7 +152,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdSpinner) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			exp.seqCamData.cages.detect.threshold = (int) thresholdSpinner.getValue();
+			exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
 			updateOverlay();
 		}
 	}
@@ -174,9 +174,8 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);	
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		
-		exp.seqCamData.analysisStep = exp.stepFrame;
-		exp.seqCamData.analysisStart = exp.startFrame;
-		exp.seqCamData.analysisEnd = exp.endFrame;
+		detect.startFrame = exp.startFrame;
+		detect.endFrame = exp.endFrame;
 		detect.stepFrame = exp.stepFrame;
 		detect.expList = parent0.expList; 
 		detect.expList.index0 = parent0.currentExperimentIndex;

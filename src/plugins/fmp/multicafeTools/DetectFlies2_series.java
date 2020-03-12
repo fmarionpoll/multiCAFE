@@ -51,9 +51,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		int nbiterations = 0;
 		ExperimentList expList = detect.expList;
 		int nbexp = expList.index1 - expList.index0 + 1;
-		ProgressChrono progressBar = new ProgressChrono("Detect flies");
-		progressBar.initChrono(nbexp);
-		progressBar.setMessageFirstPart("Analyze series ");
+		ProgressFrame progress = new ProgressFrame("Detect flies");
 		detect.btrackWhite = true;
 		
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
@@ -61,16 +59,16 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 				break;
 			Experiment exp = expList.experimentList.get(index);
 			System.out.println(exp.experimentFileName);
-			progressBar.updatePosition(index - expList.index0 + 1);
+			progress.setMessage("Processing file: " + (index-expList.index0 +1) + ":" + nbexp);
 
 			exp.loadExperimentCamData();
-			exp.seqCamData.xmlReadDrosoTrackDefault();
+			exp.xmlReadDrosoTrackDefault();
 			runDetectFlies(exp);
 			if (!stopFlag)
 				exp.saveComputation();
 			exp.seqCamData.seq.close();
 		}
-		progressBar.close();
+		progress.close();
 		threadRunning = false;
 		return nbiterations;
 	}
@@ -100,7 +98,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		if (seqReference == null)
 			seqReference = new SequenceCamData();
 		detect.seqCamData = exp.seqCamData;
-		detect.initParametersForDetection();
+		detect.initParametersForDetection(exp);
 		exp.cleanPreviousDetections();
 		System.out.println("Computation over frames: " + detect.startFrame + " - " + detect.endFrame);
 
@@ -113,7 +111,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 					viewerCamData.setBounds(rectv);
 					ov = new OverlayThreshold(exp.seqCamData);
 					detect.seqCamData.seq.addOverlay(ov);
-					ov.setThresholdSingle(detect.seqCamData.cages.detect.threshold);
+					ov.setThresholdSingle(exp.cages.detect.threshold);
 					ov.painterChanged();
 
 				}});
@@ -127,7 +125,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 				try {
 					SwingUtilities.invokeAndWait(new Runnable() {
 						public void run() {
-							buildBackgroundImage();
+							buildBackgroundImage(exp);
 						}});
 				} catch (InvocationTargetException | InterruptedException e) {
 					e.printStackTrace();
@@ -137,7 +135,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		}
 
 		if (detectFlies)
-			findFlies();
+			findFlies(exp);
 
 		if (seqNegative != null) {
 			seqNegative.seq.close();
@@ -162,7 +160,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		}
 	}
 
-	private void findFlies() {
+	private void findFlies(Experiment exp) {
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
 		progressBar.initChrono(detect.endFrame - detect.startFrame + 1);
 
@@ -179,7 +177,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		detect.initTempRectROIs(seqNegative.seq);
 
 		try {
-			viewerCamData = detect.seqCamData.seq.getFirstViewer();
+			viewerCamData = exp.seqCamData.seq.getFirstViewer();
 			detect.seqCamData.seq.beginUpdate();
 			if (viewInternalImages) {
 				try {
@@ -214,7 +212,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		} finally {
 			detect.seqCamData.seq.endUpdate();
 			seqNegative.seq.close();
-			detect.copyDetectedROIsToSequence(detect.seqCamData.seq);
+			detect.copyDetectedROIsToSequence(exp);
 		}
 		progressBar.close();
 
@@ -287,11 +285,11 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		}
 	}
 
-	private void buildBackgroundImage() {
+	private void buildBackgroundImage(Experiment exp) {
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		int nfliesRemoved = 0;
 		detect.seqCamData.refImage = IcyBufferedImageUtil.getCopy(detect.seqCamData.getImage(detect.startFrame, 0));
-		detect.initParametersForDetection();
+		detect.initParametersForDetection(exp);
 		initialflyRemoved.clear();
 		for (int i = 0; i < detect.cages.cageList.size(); i++)
 			initialflyRemoved.add(false);

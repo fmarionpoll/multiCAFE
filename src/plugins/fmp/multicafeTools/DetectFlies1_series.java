@@ -45,7 +45,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + ":" + nbexp);
 			
 			exp.loadExperimentCamData();
-			exp.seqCamData.xmlReadDrosoTrackDefault();
+			exp.xmlReadDrosoTrackDefault();
 			runDetectFlies(exp);
 			if (!stopFlag)
 				exp.saveComputation();
@@ -75,7 +75,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		
 	private void runDetectFlies(Experiment exp) {
 		detect.seqCamData = exp.seqCamData;
-		detect.initParametersForDetection();
+		detect.initParametersForDetection(exp);
 		detect.initTempRectROIs(detect.seqCamData.seq);
 		exp.cleanPreviousDetections();
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
@@ -88,7 +88,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 				viewerCamData.setBounds(rectv);
 				ov = new OverlayThreshold(exp.seqCamData);
 				detect.seqCamData.seq.addOverlay(ov);	
-				ov.setThresholdSingle(detect.seqCamData.cages.detect.threshold);
+				ov.setThresholdSingle(exp.cages.detect.threshold);
 				ov.painterChanged();
 			}});
 		} catch (InvocationTargetException | InterruptedException e) {
@@ -111,9 +111,9 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		}
 	
 		detect.seqCamData.seq.endUpdate();
-		detect.removeTempRectROIs(detect.seqCamData.seq);
+		detect.removeTempRectROIs();
 		if (!stopFlag)
-			detect.copyDetectedROIsToSequence(detect.seqCamData.seq);
+			detect.copyDetectedROIsToSequence(exp);
 		progressBar.close();
 	}
 	

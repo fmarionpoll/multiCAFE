@@ -194,7 +194,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 	}
 	
 	private void trimDeadsFromArrayList(Experiment exp, List <XLSCapillaryResults> resultsArrayList) {
- 		for (Cage cage: exp.seqCamData.cages.cageList) {
+ 		for (Cage cage: exp.cages.cageList) {
 			XYTaSeries flypos = cage.flyPositions;		
 			String cagenumberString = flypos.roi.getName().substring(4);
 			int cagenumber = Integer.parseInt(cagenumberString);
@@ -264,8 +264,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 		int row0 = pt_main.y;
 		if (charSeries == null)
 			charSeries = "t";
-		int startFrame 	= (int) exp.seqCamData.analysisStart;
-		int endFrame 	= (int) exp.seqCamData.analysisEnd;
+		int startFrame 	= (int) exp.startFrame;
+		int endFrame 	= (int) exp.endFrame;
 		int fullstep 	= exp.stepFrame * options.pivotBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;

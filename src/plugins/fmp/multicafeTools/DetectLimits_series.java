@@ -35,16 +35,14 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
         int nbiterations = 0;
 		ExperimentList expList = options.expList;
 		int nbexp = expList.index1 - expList.index0 +1;
-		ProgressChrono progress = new ProgressChrono("Detect limits");
-		progress.initChrono(nbexp);
-		progress.setMessageFirstPart("Analyze series ");
+		ProgressFrame progress = new ProgressFrame("Detect limits");
 		
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag)
 				break;
 			Experiment exp = expList.experimentList.get(index);
 			System.out.println(exp.experimentFileName);
-			progress.updatePosition(index-expList.index0+1);
+			progress.setMessage("Processing file: " + (index-expList.index0 +1) + ":" + nbexp);
 			
 			exp.loadExperimentData();
 			exp.displayCamData(options.parent0Rect);
