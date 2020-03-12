@@ -39,7 +39,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		private IcyBufferedImage 		workImage 			= null; 
 		private Sequence 				seqForRegistration	= null;
 		private DataType 				dataType 			= DataType.INT;
-		private int 					imagewidth =1;
+		private int 					imagewidth 			= 1;
 		private ArrayList<double []> 	sourceValuesList 	= null;
 		private List<ROI> 				roiList 			= null;
 
@@ -59,7 +59,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 					break;
 				Experiment exp = expList.experimentList.get(index);
 				System.out.println(exp.experimentFileName);
-				progress.setMessage("Processing file: " + (index-expList.index0 +1) + ":" + nbexp);
+				progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 				
 				exp.loadExperimentDataForBuildKymos();
 				exp.displayCamData(options.parent0Rect);
