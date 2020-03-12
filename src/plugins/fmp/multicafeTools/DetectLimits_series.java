@@ -31,7 +31,8 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground() throws Exception {
-		threadRunning = true;
+		System.out.println("start detectLimits thread");
+        threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = options.expList;
 		int nbexp = expList.index1 - expList.index0 +1;
@@ -42,7 +43,7 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 				break;
 			Experiment exp = expList.experimentList.get(index);
 			System.out.println(exp.experimentFileName);
-			progress.setMessage("Processing file: " + (index-expList.index0 +1) + ":" + nbexp);
+			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
 			exp.loadExperimentData();
 			exp.displayCamData(options.parent0Rect);
@@ -52,8 +53,7 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 				detectCapillaryLevels(exp);
 				saveComputation(exp);
 			}
-
-			exp.close();
+			exp.seqKymos.seq.close();
 		}
 		progress.close();
 		threadRunning = false;

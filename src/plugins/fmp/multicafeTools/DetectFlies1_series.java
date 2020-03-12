@@ -31,6 +31,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground() throws Exception  {
+		System.out.println("start detect flies thread (v1)");
         threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = detect.expList;
@@ -42,7 +43,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 				break;
 			Experiment exp = expList.experimentList.get(index);
 			System.out.println(exp.experimentFileName);
-			progress.setMessage("Processing file: " + (index-expList.index0 +1) + ":" + nbexp);
+			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
 			exp.loadExperimentCamData();
 			exp.xmlReadDrosoTrackDefault();

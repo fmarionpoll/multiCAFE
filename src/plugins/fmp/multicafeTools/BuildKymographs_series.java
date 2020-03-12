@@ -47,9 +47,9 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		
 		@Override
 		protected Integer doInBackground() throws Exception {
-	        threadRunning = true;
 			System.out.println("start buildkymographsThread");
-	        int nbiterations = 0;
+	        threadRunning = true;
+			int nbiterations = 0;
 			ExperimentList expList = options.expList;
 			int nbexp = expList.index1 - expList.index0 +1;
 			ProgressFrame progress = new ProgressFrame("Build kymographs");
@@ -63,14 +63,12 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				
 				exp.loadExperimentDataForBuildKymos();
 				exp.displayCamData(options.parent0Rect);
-				
 				exp.stepFrame = options.analyzeStep;
 				exp.startFrame = options.startFrame;
 				exp.endFrame = options.endFrame;
 				if (computeKymo(exp)) 
 					saveComputation(exp);
-				
-				exp.close();
+				exp.seqCamData.seq.close();
 			}
 			progress.close();
 			threadRunning = false;
@@ -218,10 +216,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				cap.bufImage = null;
 			}
 			seqKymos.seq.setName(exp.getDecoratedImageNameFromCapillary(0));
-			
-			System.out.println("Elapsed time (s):" + progressBar.getSecondsSinceStart());
 			progressBar.close();
-			
 			return true;
 		}
 		
