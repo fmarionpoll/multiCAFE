@@ -48,11 +48,11 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		@Override
 		protected Integer doInBackground() throws Exception {
 	        threadRunning = true;
+			System.out.println("start buildkymographsThread");
 	        int nbiterations = 0;
 			ExperimentList expList = options.expList;
 			int nbexp = expList.index1 - expList.index0 +1;
 			ProgressFrame progress = new ProgressFrame("Build kymographs");
-
 			
 			for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 				if (stopFlag)
@@ -130,7 +130,6 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			SequenceKymos seqKymos = exp.seqKymos;
 			if (seqCamData == null || seqKymos == null)
 				return false;
-			System.out.println("start buildkymographsThread");
 			
 			if ((exp.endFrame >= (int) seqCamData.nTotalFrames) || (options.endFrame < 0)) 
 				exp.endFrame = (int) seqCamData.nTotalFrames-1;
