@@ -50,9 +50,6 @@ public class Experiment {
 	public int 				startFrame 					= 0;
 	public int 				endFrame 					= 0;
 	public int 				stepFrame 					= 1;
-//	public long				analysisStart 				= 0;
-//	public long 			analysisEnd					= 99999999;
-//	public int 				analysisStep 				= 1;
 	
 	public String			boxID 						= new String("..");
 	public String			experiment					= new String("..");

@@ -69,6 +69,8 @@ public class XYMultiChart extends IcyFrame  {
 		int kmax = exp.capillaries.desc.grouping;
 		int startFrame = (int) exp.capillaries.desc.analysisStart;
 		// get data arrays to display
+		// TODO 
+//		Collections.sort(exp.capillaries.capillariesArrayList, new Comparators.CapillaryNameComparator()); 
 		for (int t=0; t< nimages; t+= kmax) {
 			XYSeriesCollection xyDataset = new XYSeriesCollection();
 			XYSeriesCollection xyDataset2 = new XYSeriesCollection();
@@ -130,6 +132,7 @@ public class XYMultiChart extends IcyFrame  {
 		int kmax = exp.capillaries.desc.grouping;
 		int nimages = kymoseq.seq.getSizeT();
 		int startFrame = (int) exp.capillaries.desc.analysisStart;
+//		Collections.sort(exp.capillaries.capillariesArrayList, new Comparators.CapillaryNameComparator()); 
 		for (int t=0; t< nimages; t+= kmax, ixy++) {
 			if (ixy >= xyDataSetList.size())
 				break;

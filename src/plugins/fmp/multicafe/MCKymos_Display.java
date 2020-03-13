@@ -42,7 +42,6 @@ public class MCKymos_Display extends JPanel {
 	JButton  	previousButton		 	= new JButton("<");
 	JButton		nextButton				= new JButton(">");
 	public JCheckBox 	viewKymosCheckBox 		= new JCheckBox("View kymos");
-	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillary ROIs", false);
 	JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("capillary levels", true);
 	JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative", true);
 	JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps", true);
@@ -66,7 +65,7 @@ public class MCKymos_Display extends JPanel {
 		add(GuiUtil.besidesPanel( viewKymosCheckBox, k2Panel));
 		
 		add(GuiUtil.besidesPanel( viewLevelsCheckbox, viewGulpsCheckbox, updateButton));
-		add(GuiUtil.besidesPanel( viewDerivativeCheckbox, viewCapillariesCheckBox, new JLabel(" ")));
+		add(GuiUtil.besidesPanel( viewDerivativeCheckbox, new JLabel(" "), new JLabel(" ")));
 		
 		defineActionListeners();
 	}

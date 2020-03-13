@@ -53,7 +53,6 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 				detectCapillaryLevels(exp);
 				saveComputation(exp);
 			}
-			exp.seqKymos.seq.close();
 			exp.seqCamData.closeSequence();
 			exp.seqKymos.closeSequence();
 		}
