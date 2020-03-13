@@ -68,7 +68,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				exp.endFrame = options.endFrame;
 				if (computeKymo(exp)) 
 					saveComputation(exp);
-				exp.seqCamData.seq.close();
+				exp.seqCamData.closeSequence();
 			}
 			progress.close();
 			threadRunning = false;

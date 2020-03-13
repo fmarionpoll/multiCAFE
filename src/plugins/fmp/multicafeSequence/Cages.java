@@ -13,6 +13,7 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 import plugins.kernel.roi.roi2d.ROI2DShape;
+import plugins.fmp.multicafeTools.Comparators;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
@@ -235,7 +236,7 @@ public class Cages {
 				continue;
 			cageLimitROIList.add(roi);
 		}
-		Collections.sort(cageLimitROIList, new MulticafeTools.ROI2DNameComparator());
+		Collections.sort(cageLimitROIList, new Comparators.ROI2DNameComparator());
 		// remove cages with no names like in the list
 		Iterator<Cage> iterator = cageList.iterator();
 		while (iterator.hasNext()) {
@@ -293,7 +294,7 @@ public class Cages {
 				continue;
 			detectedFliesList.add(roi);
 		}
-		Collections.sort(detectedFliesList, new MulticafeTools.ROI2DNameComparator());
+		Collections.sort(detectedFliesList, new Comparators.ROI2DNameComparator());
 	}
 	
 	public void storeAnalysisParametersToCages(Experiment exp) {

@@ -51,13 +51,11 @@ public class MCSequence_Close  extends JPanel {
 
 			SequenceKymos seqKymos = exp.seqKymos;
 			if (seqKymos != null && seqKymos.seq != null) {
-				seqKymos.seq.removeAllROI();
-				seqKymos.seq.close();
+				seqKymos.closeSequence();
 			}
 			SequenceCamData seqCamData = exp.seqCamData;
 			if (seqCamData != null && seqCamData.seq != null) {
-				seqCamData.seq.removeAllROI();
-				seqCamData.seq.close();
+				seqCamData.closeSequence();
 			}
 		}
 		parent0.paneMove.tabGraphics.closeAll();

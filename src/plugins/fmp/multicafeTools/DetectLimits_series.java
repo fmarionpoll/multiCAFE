@@ -54,6 +54,8 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 				saveComputation(exp);
 			}
 			exp.seqKymos.seq.close();
+			exp.seqCamData.closeSequence();
+			exp.seqKymos.closeSequence();
 		}
 		progress.close();
 		threadRunning = false;

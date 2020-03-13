@@ -25,9 +25,8 @@ import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
-
+import plugins.fmp.multicafeTools.Comparators;
 import plugins.fmp.multicafeTools.ImageOperationsStruct;
-import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.StringSorter;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DLine;
@@ -462,12 +461,14 @@ public class SequenceCamData {
 		seq.setName(dirupup);
 	}
 	
-
-	
 	// ---------------------------
 	
+	public void closeSequence() {
+		seq.removeAllROI();
+		seq.close();
+	}
+
 	public boolean xmlReadROIs(String csFileName) {
-		
 		if (csFileName != null)  {
 			final Document doc = XMLUtil.loadDocument(csFileName);
 			if (doc != null) {
@@ -514,7 +515,7 @@ public class SequenceCamData {
 	
 	public List<ROI2D> getCapillaries () {
 		List<ROI2D> roiList = seq.getROI2Ds();
-		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
+		Collections.sort(roiList, new Comparators.ROI2DNameComparator());
 		List<ROI2D> capillaryRois = new ArrayList<ROI2D>();
 		for ( ROI2D roi : roiList ) {
 			if (!(roi instanceof ROI2DShape) || !roi.getName().contains("line")) 
@@ -527,7 +528,7 @@ public class SequenceCamData {
 	
 	public  List<ROI2D> getGulps () {
 		List<ROI2D> roiList = seq.getROI2Ds();
-		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
+		Collections.sort(roiList, new Comparators.ROI2DNameComparator());
 		List<ROI2D> gulpRois = new ArrayList<ROI2D>();
 		for ( ROI2D roi : roiList ) {
 			if (!(roi instanceof ROI2DShape) || !roi.getName().contains("gulp")) 
@@ -540,7 +541,7 @@ public class SequenceCamData {
 	
 	public List<Cage> getCages () {
 		List<ROI2D> roiList = seq.getROI2Ds();
-		Collections.sort(roiList, new MulticafeTools.ROI2DNameComparator());
+		Collections.sort(roiList, new Comparators.ROI2DNameComparator());
 		List<Cage> cageList = new ArrayList<Cage>();
 		for ( ROI2D roi : roiList ) {
 			String csName = roi.getName();

@@ -28,10 +28,10 @@ import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
 
-import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.OverlayThreshold;
 import plugins.fmp.multicafeTools.OverlayTrapMouse;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
+import plugins.fmp.multicafeTools.Comparators;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
@@ -109,7 +109,7 @@ public class SequenceKymos extends SequenceCamData  {
 			roi.setName("gulp"+String.format("%07d", (int) line.xpoints[0]));
 			roi.setColor(Color.red);
 		}
-		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());
+		Collections.sort(listRois, new Comparators.ROI2DNameComparator());
 	}
 	
 	public void validateRois() {
@@ -132,7 +132,7 @@ public class SequenceKymos extends SequenceCamData  {
 			roi.setName("gulp"+String.format("%07d", (int) line.xpoints[0]));
 			roi.setColor(Color.red);
 		}
-		Collections.sort(listRois, new MulticafeTools.ROI2DNameComparator());
+		Collections.sort(listRois, new Comparators.ROI2DNameComparator());
 	}
 
 	public void transferKymosRoisToMeasures(Capillaries capillaries) {
@@ -171,7 +171,7 @@ public class SequenceKymos extends SequenceCamData  {
 		if (!dir .contains("results"))
 			directoryFull = dir +File.separator +"results" + File.separator;	
 		List<String> myListOfFileNames = new ArrayList<String>(capillaries.capillariesArrayList.size());
-		Collections.sort(capillaries.capillariesArrayList, new MulticafeTools.CapillaryIndexImageComparator());
+		Collections.sort(capillaries.capillariesArrayList, new Comparators.CapillaryIndexImageComparator());
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			if (isInterrupted_loadImages)
 				break;

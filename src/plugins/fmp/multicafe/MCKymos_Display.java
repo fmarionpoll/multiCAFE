@@ -27,7 +27,8 @@ import icy.roi.ROI;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.fmp.multicafeTools.MulticafeTools;
+import plugins.fmp.multicafeTools.Comparators;
+
 
 
 
@@ -120,7 +121,7 @@ public class MCKymos_Display extends JPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				kymographNamesComboBox.removeAllItems();
-				Collections.sort(capillaryArrayList, new MulticafeTools.CapillaryNameComparator()); 
+				Collections.sort(capillaryArrayList, new Comparators.CapillaryNameComparator()); 
 				for (Capillary cap: capillaryArrayList) 
 					kymographNamesComboBox.addItem(cap.capillaryRoi.getName());	
 			}});

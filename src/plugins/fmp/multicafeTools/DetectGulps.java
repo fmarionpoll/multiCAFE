@@ -49,6 +49,7 @@ public class DetectGulps {
 			}
 		}
 		seqkymo.seq.endUpdate();
+		seqkymo.closeSequence();
 		progressBar.close();
 	}	
 

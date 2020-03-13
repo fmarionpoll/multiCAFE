@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
+import plugins.fmp.multicafeTools.Comparators;
 import plugins.fmp.multicafeTools.ImageTransformTools;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DShape;
@@ -109,12 +111,10 @@ public class Experiment {
 	
 	public void close( ) {
 		if (seqKymos != null) {
-			seqKymos.seq.close();
-			seqKymos.seq.closed();
+			seqKymos.closeSequence();
 		}
 		if (seqCamData != null) {
-			seqCamData.seq.close();
-			seqCamData.seq.closed();
+			seqCamData.closeSequence();
 		}
 
 	}
@@ -514,6 +514,7 @@ public class Experiment {
 	
 	public void updateCapillariesFromCamData() {
 		List<ROI2D> listROISCap = seqCamData.getCapillaries();
+		Collections.sort(listROISCap, new Comparators.ROI2DNameComparator());
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			cap.valid = false;
 			String capName = cap.replace_LR_with_12(cap.capillaryRoi.getName());
@@ -544,6 +545,7 @@ public class Experiment {
 				capillaries.capillariesArrayList.add(cap);
 			}
 		}
+		Collections.sort(capillaries.capillariesArrayList, new Comparators.CapillaryIndexImageComparator());
 		
 		return;
 	}
