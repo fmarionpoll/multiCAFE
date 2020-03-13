@@ -19,12 +19,9 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class ROI2DUtilities  {
 	
-
-	
 	public static List<BooleanMask2D> getMask2DFromROIs (List<Cage> cageList) {
 		List<BooleanMask2D> cageMaskList = new ArrayList<BooleanMask2D>();
 		for (Cage cage : cageList ) {
-			
 			cageMaskList.add(cage.cageLimitROI.getBooleanMask2D( 0 , 0, 1, true ));
 		}
 		return cageMaskList;
