@@ -221,7 +221,6 @@ public class Experiment {
         experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
         comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
         comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
-//	    String exptName = XMLUtil.getElementValue(node, ID_EXPTFILENAME, null);
 		return true;
 	}
 	
@@ -373,7 +372,7 @@ public class Experiment {
 		seqCamData.loadSequence(experimentFileName) ;
 	}
 	
-	public void loadExperimentDataForBuildKymos() {
+	public void loadExperimentDataToBuildKymos() {
 		xmlLoadExperiment();
 		seqCamData.loadSequence(experimentFileName) ;
 		xmlLoadMCcapillariesOnly(experimentFileName);

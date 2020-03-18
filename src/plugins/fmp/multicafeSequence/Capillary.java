@@ -149,6 +149,58 @@ public class Capillary implements XMLPersistent  {
 		}
 		return datai;
 	}
+		
+	public void cleanGulps(DetectGulps_Options options) {
+		if (gulpsRois == null) {
+			gulpsRois = new CapillaryGulps();
+			gulpsRois.rois = new ArrayList <> ();
+			return;
+		}
+		
+		if (options.analyzePartOnly) 
+			ROI2DUtilities.removeROIsWithinInterval(gulpsRois.rois, options.startPixel, options.endPixel);
+		else 
+			gulpsRois.rois.clear();
+	}
+	
+	public void getGulps(int indexkymo, DetectGulps_Options options) {
+		int indexpixel = 0;
+		int start = 1;
+		int end = ptsTop.polyline.npoints;
+		if (options.analyzePartOnly) {
+			start = options.startPixel;
+			end = options.endPixel;
+		} 
+		
+		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
+		List<Point2D> gulpPoints = new ArrayList<>();
+		for (indexpixel = start; indexpixel < end; indexpixel++) {
+			int derivativevalue = (int) ptsDerivative.polyline.ypoints[indexpixel-1];
+			if (derivativevalue < options.detectGulpsThreshold)
+				continue;
+			
+			if (gulpPoints.size() > 0) {
+				Point2D prevPt = gulpPoints.get(gulpPoints.size() -1);
+				if ((int) prevPt.getX() <  (indexpixel-1)) {
+					roiTrack.setPoints(gulpPoints);
+					gulpsRois.addGulp(roiTrack, indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
+					roiTrack = new ROI2DPolyLine ();
+					gulpPoints = new ArrayList<>();
+				}
+			}
+			if (gulpPoints.size() == 0)
+				gulpPoints.add(new Point2D.Double (indexpixel-1, ptsTop.polyline.ypoints[indexpixel-1]));
+			Point2D.Double detectedPoint = new Point2D.Double (indexpixel, ptsTop.polyline.ypoints[indexpixel]);
+			gulpPoints.add(detectedPoint);
+		}
+		
+		if (gulpPoints.size() > 1) {
+			roiTrack.setPoints(gulpPoints);
+			gulpsRois.addGulp(roiTrack, indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
+		}
+		if (gulpPoints.size() == 1)
+			System.out.print("only_1_point_detected");
+	}
 	
 	public int getLastMeasure(EnumListType option) {
 		int lastMeasure = 0;
@@ -246,6 +298,8 @@ public class Capillary implements XMLPersistent  {
 			ptsDerivative.transferROIsToMeasures(listRois);
 	}
 
+	// -------------------------------------------
+	
 	@Override
 	public boolean loadFromXML(Node node) {
 		boolean result = loadFromXML_CapillaryOnly(node);	
@@ -270,7 +324,6 @@ public class Capillary implements XMLPersistent  {
         return true;
 	}
 		
-	
 	boolean loadFromXML_CapillaryOnly(Node node) {
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
 	    if (nodeMeta == null)	// nothing to load
@@ -320,58 +373,6 @@ public class Capillary implements XMLPersistent  {
         }
         return null;
 	}
-	
-	public void cleanGulps(DetectGulps_Options options) {
-		if (gulpsRois == null) {
-			gulpsRois = new CapillaryGulps();
-			gulpsRois.rois = new ArrayList <> ();
-			return;
-		}
-		
-		if (options.analyzePartOnly) 
-			ROI2DUtilities.removeROIsWithinInterval(gulpsRois.rois, options.startPixel, options.endPixel);
-		else 
-			gulpsRois.rois.clear();
-	}
-	
-	public void getGulps(int indexkymo, DetectGulps_Options options) {
-		int indexpixel = 0;
-		int start = 1;
-		int end = ptsTop.polyline.npoints;
-		if (options.analyzePartOnly) {
-			start = options.startPixel;
-			end = options.endPixel;
-		} 
-		
-		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
-		List<Point2D> gulpPoints = new ArrayList<>();
-		for (indexpixel = start; indexpixel < end; indexpixel++) {
-			int derivativevalue = (int) ptsDerivative.polyline.ypoints[indexpixel-1];
-			if (derivativevalue < options.detectGulpsThreshold)
-				continue;
-			
-			if (gulpPoints.size() > 0) {
-				Point2D prevPt = gulpPoints.get(gulpPoints.size() -1);
-				if ((int) prevPt.getX() <  (indexpixel-1)) {
-					roiTrack.setPoints(gulpPoints);
-					gulpsRois.addGulp(roiTrack, indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
-					roiTrack = new ROI2DPolyLine ();
-					gulpPoints = new ArrayList<>();
-				}
-			}
-			if (gulpPoints.size() == 0)
-				gulpPoints.add(new Point2D.Double (indexpixel-1, ptsTop.polyline.ypoints[indexpixel-1]));
-			Point2D.Double detectedPoint = new Point2D.Double (indexpixel, ptsTop.polyline.ypoints[indexpixel]);
-			gulpPoints.add(detectedPoint);
-		}
-		
-		if (gulpPoints.size() > 1) {
-			roiTrack.setPoints(gulpPoints);
-			gulpsRois.addGulp(roiTrack, indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
-		}
-		if (gulpPoints.size() == 1)
-			System.out.print("only_1_point_detected");
-	}
-	
+
 	
 }

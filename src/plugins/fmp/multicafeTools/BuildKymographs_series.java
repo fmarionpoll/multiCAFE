@@ -61,7 +61,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				System.out.println(exp.experimentFileName);
 				progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 				
-				exp.loadExperimentDataForBuildKymos();
+				exp.loadExperimentDataToBuildKymos();
 				exp.displayCamData(options.parent0Rect);
 				exp.stepFrame = options.analyzeStep;
 				exp.startFrame = options.startFrame;
@@ -131,8 +131,8 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			
 			if ((exp.endFrame >= (int) seqCamData.nTotalFrames) || (options.endFrame < 0)) 
 				exp.endFrame = (int) seqCamData.nTotalFrames-1;
-			
 			int nbframes = exp.endFrame - exp.startFrame +1;
+			
 			ProgressChrono progressBar = new ProgressChrono("Processing started");
 			progressBar.initChrono(nbframes);
 			threadRunning = true;
@@ -238,7 +238,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			int numC = seqCamData.seq.getSizeC();
 			if (numC <= 0)
 				numC = 3;
-			double fimagewidth =  1 + (options.endFrame - options.startFrame )/options.analyzeStep;
+			double fimagewidth =  1 + (exp.endFrame - exp.startFrame )/options.analyzeStep;
 			imagewidth = (int) fimagewidth;
 			dataType = seqCamData.seq.getDataType_();
 			if (dataType.toString().equals("undefined"))
