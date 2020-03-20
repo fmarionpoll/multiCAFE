@@ -66,12 +66,12 @@ public class MCMove_Graphs extends JPanel {
 	
 		if (moveCheckbox.isSelected() ) {
 			ypositionsChart = displayYPos("flies Y positions", ypositionsChart, rectv, ptRelative, 
-					EnumListType.xyPosition);
+					exp, EnumListType.xyPosition);
 			ptRelative.y += deltay;
 		}
 		if (distanceCheckbox.isSelected()) {
 			distanceChart = displayYPos("distance between positions at t+1 and t", distanceChart, rectv, ptRelative,
-					EnumListType.distance);
+					exp, EnumListType.distance);
 			ptRelative.y += deltay;
 		}
 		if (aliveCheckbox.isSelected()) {
@@ -82,19 +82,18 @@ public class MCMove_Graphs extends JPanel {
 				posSeries.getDoubleArrayList(EnumListType.isalive);
 			}
 			aliveChart = displayYPos("flies alive", aliveChart, rectv, ptRelative,
-					EnumListType.isalive);	
+					exp, EnumListType.isalive);	
 			ptRelative.y += deltay;
 		}
 	}
 
 	
-	private YPosMultiChart displayYPos(String title, YPosMultiChart iChart, Rectangle rectv, Point ptRelative, EnumListType option) {
+	private YPosMultiChart displayYPos(String title, YPosMultiChart iChart, Rectangle rectv, Point ptRelative, Experiment exp, EnumListType option) {
 		if (iChart == null || !iChart.mainChartPanel.isValid()) {
 			iChart = new YPosMultiChart();
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		}
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		iChart.displayData(exp.cages.cageList, option);
 		iChart.mainChartFrame.toFront();
 		return iChart;

@@ -8,30 +8,24 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
-import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.EnumListType;
-import plugins.kernel.roi.roi2d.*;
+
+
 
 public class XYTaSeries implements XMLPersistent {
 	
-	public ROI2DPolygon 	roi;
 	public Double 			threshold 			= 50.;
 	public int 				lastTimeAlive 		= 0;
 	public int 				lastIntervalAlive 	= 0;
 	public ArrayList<XYTaValue> pointsList  = new ArrayList<XYTaValue>();
 
 	
-	public XYTaSeries(ROI2D roi) {
-		this.roi = (ROI2DPolygon) roi;
-	}
-	
 	public void ensureCapacity(int minCapacity) {
 		pointsList.ensureCapacity(minCapacity);
 	}
 	
 	public XYTaSeries() {
-		this.roi = new ROI2DPolygon();
 	}
 
 	public Point2D getPoint(int i) {
@@ -54,9 +48,6 @@ public class XYTaSeries implements XMLPersistent {
 		return pointsList.get(i).time;
 	}
 
-	public String getName() {
-		return roi.getName();
-	}
 	
 	public void add(Point2D point, int frame) {
 		XYTaValue pos = new XYTaValue(point, frame);
@@ -67,9 +58,6 @@ public class XYTaSeries implements XMLPersistent {
 	public boolean loadFromXML(Node node) {
 		if (node == null)
 			return false;
-		
-		Element node_roi = XMLUtil.getElement(node, "roi");
-		roi.loadFromXML(node_roi);
 		
 		Element node_lastime = XMLUtil.getElement(node, "lastTimeItMoved");
 		lastTimeAlive = XMLUtil.getAttributeIntValue(node_lastime, "tlast", -1);
@@ -95,9 +83,6 @@ public class XYTaSeries implements XMLPersistent {
 	public boolean saveToXML(Node node) {
 		if (node == null)
 			return false;
-		
-		Element node_roi = XMLUtil.addElement(node, "roi");
-		roi.saveToXML(node_roi);
 		
 		Element node_lastime = XMLUtil.addElement(node, "lastTimeAlive");
 		XMLUtil.setAttributeIntValue(node_lastime, "tlast", lastTimeAlive);

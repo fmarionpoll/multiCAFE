@@ -545,9 +545,10 @@ public class SequenceCamData {
 		List<Cage> cageList = new ArrayList<Cage>();
 		for ( ROI2D roi : roiList ) {
 			String csName = roi.getName();
+			if (!(roi instanceof ROI2DPolygon))
+				continue;
 			if (( csName.contains( "cage") 
-				|| csName.contains("Polygon2D")) 
-				&& ( roi instanceof ROI2DPolygon )) {
+				|| csName.contains("Polygon2D")) ) {
 				Cage cage = new Cage();
 				cage.cageLimitROI = roi;
 				cageList.add(cage);

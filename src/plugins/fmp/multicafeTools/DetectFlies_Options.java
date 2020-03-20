@@ -194,7 +194,7 @@ public class DetectFlies_Options implements XMLPersistent {
 			tempRectROI[i] = new ROI2DRectangle(0, 0, 10, 10);
 			tempRectROI[i].setName("fly_"+i);
 			Cage cage = cages.cageList.get(i);
-			XYTaSeries positions = new XYTaSeries(cage.cageLimitROI);
+			XYTaSeries positions = new XYTaSeries();
 			cage.flyPositions = positions;
 			seq.addROI(tempRectROI[i]);	
 		}
