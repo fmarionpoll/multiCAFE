@@ -165,7 +165,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			updateViewerForSequenceCam(exp.seqCamData);
 			tabIntervals.getAnalyzeFrameFromDialog(exp);
 		}
-
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) {
 			System.out.println("SEQ_CLOSE");
 		}
@@ -323,5 +322,11 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			Experiment exp = expList.addNewExperiment(filename);
 			exp.xmlLoadExperiment();
 		}
+	}
+
+	public Experiment getSelectedExperimentFromCombo() {
+		String newtext = (String) parent0.paneSequence.expListComboBox.getSelectedItem();
+		parent0.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);	
+		return parent0.expList.getExperiment(parent0.currentExperimentIndex);
 	}
 }

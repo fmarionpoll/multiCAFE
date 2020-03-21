@@ -2,6 +2,7 @@ package plugins.fmp.multicafeSequence;
 
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -186,6 +187,12 @@ public class ExperimentList {
 	
 	private Path stripFilenameFromPath(String fileNameWithFullPath) {
 		Path path = Paths.get(fileNameWithFullPath);
+		
+//		boolean exists =      Files.exists(path);        // Check if the file exists
+		boolean isDirectory = Files.isDirectory(path);   // Check if it's a directory
+//		boolean isFile =      Files.isRegularFile(path); // Check if it's a regular file
+		if (isDirectory)
+			return path;
 		return path.getParent();
 	}
 	

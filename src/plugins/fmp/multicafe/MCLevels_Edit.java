@@ -24,6 +24,7 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
 
+
 public class MCLevels_Edit  extends JPanel {
 	/**
 	 * 
@@ -50,13 +51,13 @@ public class MCLevels_Edit  extends JPanel {
 	private void defineListeners() {
 		deleteButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				exp.seqKymos.transferKymosRoisToMeasures(exp.capillaries);
-				deletePointsIncluded();
+				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
+				deletePointsIncluded(exp);
 			}});
 		adjustButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				adjustDimensions();
+				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
+				adjustDimensions(exp);
 			}});
 	}
 
@@ -85,41 +86,33 @@ public class MCLevels_Edit  extends JPanel {
 		listGulpsSelected = null;
 	}
 	
-	void deletePointsIncluded() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+	void deletePointsIncluded(Experiment exp) {
 		SequenceKymos seqKymos = exp.seqKymos;
 		int t= seqKymos.currentFrame;
 		ROI2D roi = seqKymos.seq.getSelectedROI2D();
 		if (roi == null)
 			return;
 		
+		seqKymos.transferKymosRoisToMeasures(exp.capillaries);
+		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
 		String optionSelected = (String) roiTypeCombo.getSelectedItem();
 		if (optionSelected .contains("gulp")) {
 			selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
 			deleteGulps(seqKymos.seq);
-		} else if (optionSelected .contains("top") && optionSelected .contains("bottom")) {
-			deletePointsOfPolyLine(roi, "top", t, exp);
-			deletePointsOfPolyLine(roi, "bottom", t, exp);
-		} else if (optionSelected .contains("top")) {
-			deletePointsOfPolyLine(roi, "top", t, exp);
-		} else if (optionSelected.contains("bottom")) {
-			deletePointsOfPolyLine(roi, "bottom", t, exp);
-		} else if (optionSelected.contains("deriv")) {
-			deletePointsOfPolyLine(roi, "deriv", t, exp);
 		}
+		if (optionSelected .contains("top")) 
+			removeMeasuresEnclosedInRoi(cap.ptsTop, roi);
+		if (optionSelected.contains("bottom"))
+			removeMeasuresEnclosedInRoi(cap.ptsBottom, roi);
+		if (optionSelected.contains("deriv"))
+			removeMeasuresEnclosedInRoi(cap.ptsDerivative, roi);
+		
+		seqKymos.removeROIsAtT(t);
+		List<ROI> listOfRois = cap.transferMeasuresToROIs();
+		seqKymos.seq.addROIs (listOfRois, false);
 	}
 	
-	void deletePointsOfPolyLine(ROI2D roi, String optionSelected, int t, Experiment exp) {
-		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-		CapillaryLimits caplimits = null;
-		
-		if (optionSelected .contains("top")) {
-			caplimits = cap.ptsTop;
-		} else if (optionSelected.contains("bottom")) {
-			caplimits = cap.ptsBottom;
-		} else if (optionSelected.contains("deriv")) {
-			caplimits = cap.ptsDerivative;
-		}
+	void removeMeasuresEnclosedInRoi(CapillaryLimits caplimits, ROI2D roi) {
 		Polyline2D polyline = caplimits.polyline;
 		int npointsOutside = polyline.npoints - getPointsWithinROI(polyline, roi);
 		if (npointsOutside > 0) {
@@ -137,22 +130,6 @@ public class MCLevels_Edit  extends JPanel {
 		} else {
 			caplimits.polyline = null;
 		}
-		
-		polyline = caplimits.polyline;
-		SequenceKymos seqKymos = exp.seqKymos;
-		List<ROI> allRois = seqKymos.seq.getROIs();
-		for (ROI roii: allRois) {
-			if (roii.getName().contains("selected"))
-				seqKymos.seq.removeROI(roii);
-			if (!(roii instanceof ROI2D))
-				continue;
-			if (((ROI2D) roii).getT() != t)
-				continue;
-			if (roii.getName().contains(caplimits.name))
-				seqKymos.seq.removeROI(roii);
-		}
-		ROI2D newRoi = caplimits.transferPolyline2DToROI();
-		seqKymos.seq.addROI(newRoi);
 	}
 	
 	int getPointsWithinROI(Polyline2D polyline, ROI2D roi) {
@@ -165,12 +142,10 @@ public class MCLevels_Edit  extends JPanel {
 		return npointsInside;
 	}
 	
-	void adjustDimensions () {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+	void adjustDimensions (Experiment exp) {
 		if (!exp.checkStepConsistency()) {
 			parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
 		}
-		
 		int imageSize = exp.seqKymos.imageWidthMax;
 		for (Capillary cap: exp.capillaries.capillariesArrayList) {
 			cap.ptsTop.adjustToImageWidth(imageSize);
@@ -181,7 +156,6 @@ public class MCLevels_Edit  extends JPanel {
 		}
 		exp.seqKymos.seq.removeAllROI();
 		exp.seqKymos.transferMeasuresToKymosRois(exp.capillaries);
-		
 	}
 	
 }

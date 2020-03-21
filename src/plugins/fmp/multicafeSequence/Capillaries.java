@@ -4,6 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -12,6 +13,7 @@ import org.w3c.dom.NodeList;
 
 import icy.roi.ROI;
 import icy.util.XMLUtil;
+import plugins.fmp.multicafeTools.Comparators;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.fmp.multicafeTools.MulticafeTools;
@@ -47,6 +49,7 @@ public class Capillaries {
 		if (csFile != null) {
 			final Document doc = XMLUtil.createDocument(true);
 			if (doc != null) {
+				Collections.sort(capillariesArrayList, new Comparators.CapillaryIndexImageComparator());
 				desc.xmlSaveCapillaryDescription (doc);
 				xmlSaveListOfCapillaries(doc);
 				XMLUtil.saveDocument(doc, csFile);
@@ -59,6 +62,7 @@ public class Capillaries {
 	public boolean xmlSaveCapillaries_Measures(String dataFilesPathname) {
 		if (dataFilesPathname != null) {
 			String directoryFull = dataFilesPathname +File.separator +"results" + File.separator;
+			Collections.sort(capillariesArrayList, new Comparators.CapillaryIndexImageComparator());
 			for (Capillary cap: capillariesArrayList) {
 				String tempname = directoryFull+cap.getName()+ ".xml";
 				final Document capdoc = XMLUtil.createDocument(true);
@@ -88,6 +92,7 @@ public class Capillaries {
 				default:
 					return false;
 				}		
+				Collections.sort(capillariesArrayList, new Comparators.CapillaryIndexImageComparator());
 				return true;
 			}
 		}
@@ -102,6 +107,7 @@ public class Capillaries {
 		Node nodecaps = XMLUtil.setElement(node, ID_LISTOFCAPILLARIES);
 		XMLUtil.setElementIntValue(nodecaps, ID_NCAPILLARIES, capillariesArrayList.size());
 		int i= 0;
+		Collections.sort(capillariesArrayList, new Comparators.CapillaryIndexImageComparator());
 		for (Capillary cap: capillariesArrayList) {
 			Node nodecapillary = XMLUtil.setElement(node, ID_CAPILLARY_+i);
 			cap.saveToXML_CapillaryOnly(nodecapillary);
