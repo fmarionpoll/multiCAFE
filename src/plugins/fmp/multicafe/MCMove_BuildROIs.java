@@ -77,15 +77,19 @@ public class MCMove_BuildROIs extends JPanel {
 	
 	void updateFromSequence() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		int nrois = exp.cages.cageList.size();	
-		if (nrois > 0) {
-			nColumnsTextField.setValue(nrois);
-			ncolumns = nrois;
+		if (exp != null) {
+			int nrois = exp.cages.cageList.size();	
+			if (nrois > 0) {
+				nColumnsTextField.setValue(nrois);
+				ncolumns = nrois;
+			}
 		}
 	}
 
 	private void create2DPolygon() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp == null)
+			return;
 		final String dummyname = "perimeter_enclosing_capillaries";
 		ArrayList<ROI2D> listRois = exp.seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
@@ -129,6 +133,8 @@ public class MCMove_BuildROIs extends JPanel {
 		}catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
 
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp == null)
+			return;
 		SequenceCamData seqCamData = exp.seqCamData;
 		ROI2D roi = seqCamData.seq.getSelectedROI2D();
 		if ( ! ( roi instanceof ROI2DPolygon ) ) {

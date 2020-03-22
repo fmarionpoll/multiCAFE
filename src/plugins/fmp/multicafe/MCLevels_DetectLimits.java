@@ -112,8 +112,10 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		displayTransform1Button.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				kymosDisplayFiltered1(exp);
-				firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
+				if (exp != null) { 
+					kymosDisplayFiltered1(exp);
+					firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
+				}
 			}});
 		
 		ALLCheckBox.addActionListener(new ActionListener () { 
@@ -207,10 +209,12 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	}
 	
 	void series_detectLimitsStart() {
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp == null)
+			return;
+		parent0.paneSequence.tabClose.closeExp(exp);
 		thread = new DetectLimits_series();
 		
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		parent0.paneSequence.tabClose.closeExp(exp);
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();

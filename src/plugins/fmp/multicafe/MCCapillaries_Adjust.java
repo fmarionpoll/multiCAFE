@@ -63,6 +63,8 @@ public class MCCapillaries_Adjust extends JPanel {
 	// -------------------------------------------------------
 	private void roisCenterLinestoAllCapillaries() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp == null) 
+			return;
 		SequenceCamData seqCamData = exp.seqCamData;
 		refLineUpper = roiRefLineUpper.getLine();
 		refLineLower = roiRefLineLower.getLine(); 
@@ -80,7 +82,7 @@ public class MCCapillaries_Adjust extends JPanel {
 		double [] sourceValues = Array1DUtil.arrayToDoubleArray(vinputImage.getDataXY(0), vinputImage.isSignedDataType());
 		
 		// loop through all lines
-		List <ROI2D> capillaryRois = seqCamData.getCapillaries();
+		List <ROI2D> capillaryRois = seqCamData.get2DLineORPolylineRoisContainingString ("line");
 		for (ROI2D roi: capillaryRois) {
 			if (roi instanceof ROI2DLine) {
 				Line2D line = roisCenterLinetoCapillary(sourceValues, xwidth, (ROI2DLine) roi, jitter);
@@ -199,6 +201,8 @@ public class MCCapillaries_Adjust extends JPanel {
 
 	void roisDisplayrefBar(boolean display) {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp == null)
+			return;
 		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData == null)
 			return;
@@ -211,7 +215,7 @@ public class MCCapillaries_Adjust extends JPanel {
 			refLineUpper = new Line2D.Double (0, seqheight/3, seqwidth, seqheight/3);
 			refLineLower = new Line2D.Double (0, 2*seqheight/3, seqwidth, 2*seqheight/3);
 			
-			List <ROI2D> capillaryRois = seqCamData.getCapillaries();
+			List <ROI2D> capillaryRois = seqCamData.get2DLineORPolylineRoisContainingString ("line");
 			Rectangle extRect = new Rectangle (capillaryRois.get(0).getBounds());
 			for (ROI2D roi: capillaryRois) {
 				Rectangle rect = roi.getBounds();

@@ -78,7 +78,7 @@ public class SequenceKymos extends SequenceCamData  {
 	public void roisSaveEdits(Capillaries capillaries) {
 		if (hasChanged) {
 			validateRois();
-			transferKymosRoisToMeasures(capillaries);
+			transferKymosRoisToCapillaries(capillaries);
 			hasChanged = false;
 		}
 	}
@@ -123,6 +123,22 @@ public class SequenceKymos extends SequenceCamData  {
 		//Collections.sort(listRois, new Comparators.ROI2DNameComparator());
 	}
 	
+	public void updateROIFromCapillaryMeasure(Capillary cap, CapillaryLimits caplimits) {
+		int t = cap.indexImage;
+		List<ROI2D> listRois = seq.getROI2Ds();
+		for (ROI2D roi: listRois) {
+			if (!(roi instanceof ROI2DPolyLine))
+				continue;
+			if (roi.getT() != t)
+				continue;
+			if (!roi.getName().contains(caplimits.name))
+				continue;
+			
+			((ROI2DPolyLine) roi).setPolyline2D(caplimits.polyline);
+			break;
+		}
+	}
+	
 	public void validateRois() {
 		List<ROI2D> listRois = seq.getROI2Ds();
 		int width = seq.getWidth();
@@ -146,7 +162,7 @@ public class SequenceKymos extends SequenceCamData  {
 		Collections.sort(listRois, new Comparators.ROI2DNameComparator());
 	}
 
-	public void transferKymosRoisToMeasures(Capillaries capillaries) {
+	public void transferKymosRoisToCapillaries(Capillaries capillaries) {
 		List<ROI> allRois = seq.getROIs();
 		for (int t=0; t< seq.getSizeT(); t++) {
 			List<ROI> roisAtT = new ArrayList<ROI> ();
@@ -164,7 +180,7 @@ public class SequenceKymos extends SequenceCamData  {
 		}
 	}
 	
-	public void transferMeasuresToKymosRois(Capillaries capillaries) {
+	public void transferCapillariesToKymosRois(Capillaries capillaries) {
 		List<ROI> all = new ArrayList<ROI>();
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			List<ROI> listOfRois = cap.transferMeasuresToROIs();
@@ -173,7 +189,7 @@ public class SequenceKymos extends SequenceCamData  {
 		ROI2DUtilities.addROIsToSequenceNoDuplicate(all, seq);
 	}
 	
-	public void saveKymosMeasures(Experiment exp) {
+	public void saveKymosCapillaries(Experiment exp) {
 		roisSaveEdits(exp.capillaries);
 		exp.xmlSaveMCcapillaries(getDirectory());
 		exp.xmlSaveKymos_Measures(getDirectory());

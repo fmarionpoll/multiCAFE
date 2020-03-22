@@ -40,11 +40,13 @@ public class MCLevels_Filter  extends JPanel {
 		startButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				SequenceKymos seqKymos = exp.seqKymos;
-				int span = getSpan();
-				int c = 1;
-				for (int t=0; t < seqKymos.seq.getSizeT(); t++) {
-					crossCorrelatePixels(seqKymos, t, span, c);
+				if (exp != null) {
+					SequenceKymos seqKymos = exp.seqKymos; 
+					int span = getSpan();
+					int c = 1;
+					for (int t=0; t < seqKymos.seq.getSizeT(); t++) {
+						crossCorrelatePixels(seqKymos, t, span, c);
+					}
 				}
 			}});
 	}

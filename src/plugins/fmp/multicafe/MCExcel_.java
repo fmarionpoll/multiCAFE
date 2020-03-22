@@ -72,8 +72,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		
+	public void propertyChange(PropertyChangeEvent evt) {	
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null) 
 			return;

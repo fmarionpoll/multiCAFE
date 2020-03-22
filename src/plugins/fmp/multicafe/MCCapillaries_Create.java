@@ -75,8 +75,10 @@ public class MCCapillaries_Create extends JPanel {
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				roisGenerateFromPolygon();
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				SequenceKymosUtils.transferCamDataROIStoKymo(exp);
-				firePropertyChange("CAPILLARIES_NEW", false, true);
+				if (exp != null) {
+					SequenceKymosUtils.transferCamDataROIStoKymo(exp);
+					firePropertyChange("CAPILLARIES_NEW", false, true);
+				}
 			}});
 		selectRegularButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				boolean status = false;
@@ -121,6 +123,8 @@ public class MCCapillaries_Create extends JPanel {
 	// ---------------------------------
 	private void create2DPolygon() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp == null)
+			return;
 		SequenceCamData seqCamData = exp.seqCamData;
 		final String dummyname = "perimeter_enclosing_capillaries";
 		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
@@ -143,6 +147,8 @@ public class MCCapillaries_Create extends JPanel {
 	
 	private void roisGenerateFromPolygon() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp == null)
+			return;
 		SequenceCamData seqCamData = exp.seqCamData;
 		boolean statusGroup2Mode = false;
 		if (getGroupedBy2()) statusGroup2Mode = true;

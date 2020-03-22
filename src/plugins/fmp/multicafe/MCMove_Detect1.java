@@ -128,18 +128,20 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	
 	public void updateOverlay () {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		SequenceCamData seqCamData = exp.seqCamData;
-		if (seqCamData == null)
-			return;
-		if (ov == null) 
-			ov = new OverlayThreshold(seqCamData);
-		else {
-			seqCamData.seq.removeOverlay(ov);
-			ov.setSequence(seqCamData);
+		if (exp != null) {
+			SequenceCamData seqCamData = exp.seqCamData;
+			if (seqCamData == null)
+				return;
+			if (ov == null) 
+				ov = new OverlayThreshold(seqCamData);
+			else {
+				seqCamData.seq.removeOverlay(ov);
+				ov.setSequence(seqCamData);
+			}
+			seqCamData.seq.addOverlay(ov);	
+			ov.setThresholdSingle(exp.cages.detect.threshold);
+			ov.painterChanged();
 		}
-		seqCamData.seq.addOverlay(ov);	
-		ov.setThresholdSingle(exp.cages.detect.threshold);
-		ov.painterChanged();
 	}
 	
 	public void removeOverlay() {
@@ -152,7 +154,8 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdSpinner) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
+			if (exp != null)
+				exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
 			updateOverlay();
 		}
 	}
@@ -172,11 +175,12 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		detect.threshold		= (int) thresholdSpinner.getValue();
 		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);	
-		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		
-		detect.startFrame = exp.startFrame;
-		detect.endFrame = exp.endFrame;
-		detect.stepFrame = exp.stepFrame;
+		if (exp != null) {
+			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
+			detect.startFrame = exp.startFrame;
+			detect.endFrame = exp.endFrame;
+			detect.stepFrame = exp.stepFrame;
+		}
 		detect.expList = parent0.expList; 
 		detect.expList.index0 = parent0.currentExperimentIndex;
 		detect.expList.index1 = detect.expList.index0;
@@ -194,7 +198,8 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
-		parent0.paneSequence.tabClose.closeExp(exp);
+		if (exp != null)
+			parent0.paneSequence.tabClose.closeExp(exp);
 		
 		thread = new DetectFlies1_series();		
 			
@@ -216,7 +221,8 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
 			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
-			parent0.paneSequence.openExperiment(exp);
+			if (exp != null)
+				parent0.paneSequence.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}

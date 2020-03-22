@@ -76,9 +76,11 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		}
 		else if (event.getPropertyName().equals("KYMOS_CREATE")) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			tabDisplay.viewKymosCheckBox.setSelected(true);
-			tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
-			tabsPane.setSelectedIndex(1);
+			if (exp != null) {
+				tabDisplay.viewKymosCheckBox.setSelected(true);
+				tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
+				tabsPane.setSelectedIndex(1);
+			}
 		}
 		else if (event.getPropertyName().equals("KYMOS_SAVE")) {
 			tabsPane.setSelectedIndex(1);

@@ -43,14 +43,18 @@ public class MCCapillaries_File extends JPanel {
 	private void defineActionListeners() {	
 		openButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			loadCapillaries_File(exp);
-		  	firePropertyChange("CAP_ROIS_OPEN", false, true);
+			if (exp != null) {
+				loadCapillaries_File(exp);
+				firePropertyChange("CAP_ROIS_OPEN", false, true);
+			}
 		}}); 
 		
 		saveButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			saveCapillaries(exp);
-			firePropertyChange("CAP_ROIS_SAVE", false, true);
+			if (exp != null) {
+				saveCapillaries(exp);
+				firePropertyChange("CAP_ROIS_SAVE", false, true);
+			}
 		}});	
 	}
 	

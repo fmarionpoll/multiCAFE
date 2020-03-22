@@ -186,11 +186,10 @@ public class ExperimentList {
 	}
 	
 	private Path stripFilenameFromPath(String fileNameWithFullPath) {
-		Path path = Paths.get(fileNameWithFullPath);
-		
+		Path path = Paths.get(fileNameWithFullPath);		
 //		boolean exists =      Files.exists(path);        // Check if the file exists
-		boolean isDirectory = Files.isDirectory(path);   // Check if it's a directory
 //		boolean isFile =      Files.isRegularFile(path); // Check if it's a regular file
+		boolean isDirectory = Files.isDirectory(path);   // Check if it's a directory
 		if (isDirectory)
 			return path;
 		return path.getParent();

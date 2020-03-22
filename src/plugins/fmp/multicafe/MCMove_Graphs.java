@@ -60,6 +60,8 @@ public class MCMove_Graphs extends JPanel {
 
 	private void xyDisplayGraphs() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp == null)
+			return;
 		final Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBounds();
 		Point ptRelative = new Point(0,30);
 		final int deltay = 230;

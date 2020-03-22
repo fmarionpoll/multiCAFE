@@ -106,14 +106,13 @@ public class Experiment {
 		loadFileIntervalsFromSeqCamData();
 	}
 	
-	public void close( ) {
+	public void close() {
 		if (seqKymos != null) {
 			seqKymos.closeSequence();
 		}
 		if (seqCamData != null) {
 			seqCamData.closeSequence();
 		}
-
 	}
 	
 	public void displayCamData(Rectangle parent0Rect) {
@@ -265,7 +264,7 @@ public class Experiment {
 		}
 		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory(), capillaries);
 		boolean flag = seqKymos.loadImagesFromList(myList, true);
-		seqKymos.transferMeasuresToKymosRois(capillaries);
+		seqKymos.transferCapillariesToKymosRois(capillaries);
 		
 		return flag;
 	}
@@ -509,7 +508,7 @@ public class Experiment {
 	}
 	
 	public void updateCapillariesFromCamData() {
-		List<ROI2D> listROISCap = seqCamData.getCapillaries();
+		List<ROI2D> listROISCap = seqCamData.get2DLineORPolylineRoisContainingString ("line");
 		Collections.sort(listROISCap, new Comparators.ROI2DNameComparator());
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			cap.valid = false;

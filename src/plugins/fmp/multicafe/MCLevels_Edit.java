@@ -93,23 +93,26 @@ public class MCLevels_Edit  extends JPanel {
 		if (roi == null)
 			return;
 		
-		seqKymos.transferKymosRoisToMeasures(exp.capillaries);
+		seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
 		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
 		String optionSelected = (String) roiTypeCombo.getSelectedItem();
 		if (optionSelected .contains("gulp")) {
 			selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
 			deleteGulps(seqKymos.seq);
+			seqKymos.removeROIsAtT(t);
+			List<ROI> listOfRois = cap.transferMeasuresToROIs();
+			seqKymos.seq.addROIs (listOfRois, false);
+		} else {
+			CapillaryLimits caplimits = null;
+			if (optionSelected .contains("top")) 
+				caplimits = cap.ptsTop;
+			if (optionSelected.contains("bottom"))
+				caplimits =cap.ptsBottom;
+			if (optionSelected.contains("deriv"))
+				caplimits =cap.ptsDerivative;
+			removeMeasuresEnclosedInRoi(caplimits, roi);
+			seqKymos.updateROIFromCapillaryMeasure(cap, caplimits);
 		}
-		if (optionSelected .contains("top")) 
-			removeMeasuresEnclosedInRoi(cap.ptsTop, roi);
-		if (optionSelected.contains("bottom"))
-			removeMeasuresEnclosedInRoi(cap.ptsBottom, roi);
-		if (optionSelected.contains("deriv"))
-			removeMeasuresEnclosedInRoi(cap.ptsDerivative, roi);
-		
-		seqKymos.removeROIsAtT(t);
-		List<ROI> listOfRois = cap.transferMeasuresToROIs();
-		seqKymos.seq.addROIs (listOfRois, false);
 	}
 	
 	void removeMeasuresEnclosedInRoi(CapillaryLimits caplimits, ROI2D roi) {
@@ -155,7 +158,7 @@ public class MCLevels_Edit  extends JPanel {
 			// TODO: deal with gulps.. (simply remove?)
 		}
 		exp.seqKymos.seq.removeAllROI();
-		exp.seqKymos.transferMeasuresToKymosRois(exp.capillaries);
+		exp.seqKymos.transferCapillariesToKymosRois(exp.capillaries);
 	}
 	
 }

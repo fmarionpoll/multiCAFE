@@ -120,6 +120,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				return;
 			}
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			if (exp == null)
+				return;
 			String oldtext = exp.seqCamData.getDirectory();
 			String newtext = (String) expListComboBox.getSelectedItem();
 			if (!newtext.contains(oldtext)) {
@@ -128,7 +130,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
         		}});
         		tabInfos.updateCombos();
 				parent0.paneCapillaries.tabInfos.updateCombos();
-				parent0.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);			
+				parent0.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);						
 				openSequenceCamFromCombo();
 				updateBrowseInterface();
 			}
@@ -162,8 +164,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		}
 		else if (event.getPropertyName().equals("UPDATE")) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			updateViewerForSequenceCam(exp.seqCamData);
-			tabIntervals.getAnalyzeFrameFromDialog(exp);
+			if (exp != null) {				
+				updateViewerForSequenceCam(exp.seqCamData);
+				tabIntervals.getAnalyzeFrameFromDialog(exp);
+			}
 		}
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) {
 			System.out.println("SEQ_CLOSE");
@@ -205,14 +209,16 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	private void addSeqCamData() {
 		Experiment exp0 = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		SequenceCamData seqCamData = parent0.openSequenceCam(null);
-		if (seqCamData != null) {
-			if (addSequenceCamToCombo()) {
-				parent0.updateDialogsAfterOpeningSequenceCam(exp0.seqCamData);
-				parent0.paneSequence.tabClose.closeExp(exp0);
+		if (exp0 != null) {
+			SequenceCamData seqCamData = parent0.openSequenceCam(null);
+			if (seqCamData != null) {
+				if (addSequenceCamToCombo()) {
+					parent0.updateDialogsAfterOpeningSequenceCam(exp0.seqCamData);
+					parent0.paneSequence.tabClose.closeExp(exp0);
+				}
+				loadMeasuresAndKymos();
+				tabsPane.setSelectedIndex(1);
 			}
-			loadMeasuresAndKymos();
-			tabsPane.setSelectedIndex(1);
 		}
 	}
 	

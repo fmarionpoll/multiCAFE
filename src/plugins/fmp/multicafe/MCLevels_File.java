@@ -43,7 +43,7 @@ public class MCLevels_File  extends JPanel {
 		loadMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				if (loadKymosMeasures(exp)) {
+				if (exp != null && loadKymosMeasures(exp)) {
 					transferCapillariesToROIs(exp);
 					firePropertyChange("MEASURES_OPEN", false, true);
 				}
@@ -52,8 +52,10 @@ public class MCLevels_File  extends JPanel {
 		saveMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				transferRoisToMeasures(exp);
-				saveKymosMeasures(exp);
+				if (exp != null) {
+					transferRoisToMeasures(exp);
+					saveKymosMeasures(exp);
+				}
 				firePropertyChange("MEASURES_SAVE", false, true);
 			}});	
 	}
@@ -78,7 +80,7 @@ public class MCLevels_File  extends JPanel {
 		SequenceKymos seqKymos = exp.seqKymos;
 		boolean flag = true;
 		if (seqKymos != null && seqKymos.seq != null) {
-			seqKymos.transferKymosRoisToMeasures(exp.capillaries);
+			seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
 		}
 		return flag;
 	}
@@ -87,7 +89,7 @@ public class MCLevels_File  extends JPanel {
 		SequenceKymos seqKymos = exp.seqKymos;
 		boolean flag = true;
 		if (seqKymos != null && seqKymos.seq != null) {
-			seqKymos.transferMeasuresToKymosRois(exp.capillaries);
+			seqKymos.transferCapillariesToKymosRois(exp.capillaries);
 		}
 		return flag;
 	}

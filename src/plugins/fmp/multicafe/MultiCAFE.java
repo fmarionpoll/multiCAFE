@@ -24,7 +24,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 20-March-2020", true, true, true, true);
+	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 22-March-2020", true, true, true, true);
 	ExperimentList	expList 		= new ExperimentList();
 	int				currentExperimentIndex	= -1;
 	
@@ -95,8 +95,10 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	public void propertyChange(PropertyChangeEvent arg0) {
 		if (arg0.getPropertyName().equals("CAPILLARIES_OPEN")) {
 			Experiment exp = expList.getExperiment(currentExperimentIndex);
-			paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
-			paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
+			if (exp != null) {
+				paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
+				paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
+			}
 		}
 		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
 			paneKymos.tabDisplay.displayUpdateOnSwingThread();
@@ -105,7 +107,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		else if (arg0.getPropertyName() .equals("SAVE_KYMOSMEASURES")) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				Experiment exp = expList.getExperiment(currentExperimentIndex);
-				paneLevels.tabFile.saveKymosMeasures(exp);
+				if (exp != null)
+					paneLevels.tabFile.saveKymosMeasures(exp);
 			}});
 		}
 	} 
@@ -121,6 +124,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			if (currentExperimentIndex > expList.experimentList.size()-1)
 				currentExperimentIndex = expList.experimentList.size()-1;
 			exp = expList.getExperiment(currentExperimentIndex);
+			if (exp == null)
+				return null;
 		}
 		exp.seqCamData = exp.openSequenceCamData(filename);
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
