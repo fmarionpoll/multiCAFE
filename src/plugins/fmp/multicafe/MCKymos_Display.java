@@ -27,7 +27,7 @@ import icy.roi.ROI;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.fmp.multicafeTools.Comparators;
+
 
 
 

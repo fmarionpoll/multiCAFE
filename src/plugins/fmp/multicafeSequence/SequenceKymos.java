@@ -131,10 +131,11 @@ public class SequenceKymos extends SequenceCamData  {
 				continue;
 			if (roi.getT() != t)
 				continue;
-			if (!roi.getName().contains(caplimits.name))
+			if (!roi.getName().contains(caplimits.typename))
 				continue;
 			
 			((ROI2DPolyLine) roi).setPolyline2D(caplimits.polyline);
+			roi.setName(caplimits.name);
 			break;
 		}
 	}

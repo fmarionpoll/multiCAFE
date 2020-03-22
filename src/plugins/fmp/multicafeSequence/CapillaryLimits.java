@@ -20,6 +20,7 @@ public class CapillaryLimits  implements XMLPersistent  {
 	public Polyline2D 	polyline = null;
 	public String 		typename = "notype";
 	public String		name = "noname";
+	public String 		header = null;
 	public int			indexImage = 0;
 	
 	private final String ID_NPOINTS		= "npoints";
@@ -118,7 +119,7 @@ public class CapillaryLimits  implements XMLPersistent  {
 	
 	@Override
 	public boolean loadFromXML(Node node) {
-		loadPolyline2DFromXML(node, typename);
+		loadPolyline2DFromXML(node, typename, header);
 		return false;
 	}
 
@@ -147,12 +148,16 @@ public class CapillaryLimits  implements XMLPersistent  {
 		return roi;
 	}
 	
-	int loadPolyline2DFromXML(Node node, String nodename) {
+	int loadPolyline2DFromXML(Node node, String nodename, String header) {
 		final Node nodeMeta = XMLUtil.getElement(node, nodename);
 		int npoints = 0;
 		polyline = null;
 	    if (nodeMeta != null) {
 	    	name =  XMLUtil.getElementValue(nodeMeta, "name", nodename);
+	    	if (!name.contains("_")) {
+	    		this.header = header;
+	    		name = header + name;
+	    	} 
 	    	int npoints1 = XMLUtil.getElementIntValue(nodeMeta, ID_NPOINTS, 0);
 	    	double[] xpoints = new double [npoints1];
 	    	double[] ypoints = new double [npoints1];

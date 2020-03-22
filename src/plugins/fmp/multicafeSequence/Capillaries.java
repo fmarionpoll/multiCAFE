@@ -167,7 +167,7 @@ public class Capillaries {
 		Path directorypath = Paths.get(csFileName).getParent();
 		String directory = directorypath + File.separator;
 		if (!directory .contains("results"))
-				directory = directory + "results"+File.separator;
+			directory = directory + "results"+File.separator;
 		for (Capillary cap: capillariesArrayList) {
 			String csFile = directory + cap.getName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);

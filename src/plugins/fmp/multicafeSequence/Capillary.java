@@ -305,9 +305,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	@Override
 	public boolean loadFromXML(Node node) {
 		boolean result = loadFromXML_CapillaryOnly(node);	
-		result |= ptsDerivative.loadPolyline2DFromXML(node, ID_DERIVATIVE) > 0;
-		result |= ptsTop.loadPolyline2DFromXML(node, ID_TOPLEVEL) > 0;
-		result |= ptsBottom.loadPolyline2DFromXML(node, ID_BOTTOMLEVEL) > 0;
+		String header = getLast2ofCapillaryName()+"_";
+		result |= ptsDerivative.loadPolyline2DFromXML(node, ID_DERIVATIVE, header) > 0;
+		result |= ptsTop.loadPolyline2DFromXML(node, ID_TOPLEVEL, header) > 0;
+		result |= ptsBottom.loadPolyline2DFromXML(node, ID_BOTTOMLEVEL, header) > 0;
 		result |= gulpsRois.loadFromXML(node);
 		return result;
 	}

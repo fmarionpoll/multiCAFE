@@ -165,14 +165,14 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 				roiTopTrack.setStroke(1);
 				roiTopTrack.setT(kymo);
 				seqKymos.seq.addROI(roiTopTrack);
-				cap.ptsTop = new CapillaryLimits( "toplevel", kymo-kymofirst, roiTopTrack.getPolyline2D());
+				cap.ptsTop = new CapillaryLimits(roiTopTrack.getName(), kymo-kymofirst, roiTopTrack.getPolyline2D());
 
 				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine (limitBottom);
 				roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
 				roiBottomTrack.setStroke(1);
 				roiBottomTrack.setT(kymo);
 				seqKymos.seq.addROI(roiBottomTrack);
-				cap.ptsBottom = new CapillaryLimits( "bottomlevel", kymo-kymofirst, roiBottomTrack.getPolyline2D());
+				cap.ptsBottom = new CapillaryLimits(roiBottomTrack.getName(), kymo-kymofirst, roiBottomTrack.getPolyline2D());
 			}
 		}
 		seqKymos.seq.endUpdate();
