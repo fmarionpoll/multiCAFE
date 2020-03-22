@@ -467,8 +467,7 @@ public class Experiment {
 		pathname = seqKymos.getCorrectPath(pathname);
 		if (pathname == null)
 			return false;
-		boolean flag = capillaries.xmlLoadCapillaries(pathname);
-		return flag;
+		return capillaries.xmlLoadCapillaries(pathname);
 	}
 	
 	public boolean xmlLoadMCcapillaries(String pathname) {
@@ -540,8 +539,7 @@ public class Experiment {
 				capillaries.capillariesArrayList.add(cap);
 			}
 		}
-		Collections.sort(capillaries.capillariesArrayList, new Comparators.CapillaryIndexImageComparator());
-		
+		Collections.sort(capillaries.capillariesArrayList);
 		return;
 	}
 	

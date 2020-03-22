@@ -21,11 +21,13 @@ import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
-public class Capillary implements XMLPersistent  {
+
+
+public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 
 	public ROI2DShape 					capillaryRoi 	= null;	// the capillary (source)
 	public int							indexImage 		= -1;
-	private String						capillaryName 	= null;
+	public String						capillaryName 	= null;
 	public String 						version 		= null;
 	public String						filenameTIFF	= null;
 	public String 						stimulus		= new String("stimulus");
@@ -374,5 +376,10 @@ public class Capillary implements XMLPersistent  {
         return null;
 	}
 
-	
+	@Override
+	public int compareTo(Capillary o) {
+		int compareValue = this.capillaryName.compareTo(o.capillaryName);
+		return compareValue;
+	}
+
 }

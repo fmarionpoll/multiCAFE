@@ -203,7 +203,7 @@ public class SequenceKymos extends SequenceCamData  {
 		if (!dir .contains("results"))
 			directoryFull = dir +File.separator +"results" + File.separator;	
 		List<String> myListOfFileNames = new ArrayList<String>(capillaries.capillariesArrayList.size());
-		Collections.sort(capillaries.capillariesArrayList, new Comparators.CapillaryIndexImageComparator());
+		Collections.sort(capillaries.capillariesArrayList);
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			if (isInterrupted_loadImages)
 				break;

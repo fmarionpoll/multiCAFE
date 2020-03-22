@@ -120,7 +120,7 @@ public class MCKymos_Display extends JPanel {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				kymographNamesComboBox.removeAllItems();
-				Collections.sort(capillaryArrayList, new Comparators.CapillaryNameComparator()); 
+				Collections.sort(capillaryArrayList); 
 				for (Capillary cap: capillaryArrayList) 
 					kymographNamesComboBox.addItem(cap.capillaryRoi.getName());	
 			}});
