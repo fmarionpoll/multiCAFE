@@ -88,7 +88,7 @@ public class MCLevels_Edit  extends JPanel {
 	
 	void deletePointsIncluded(Experiment exp) {
 		SequenceKymos seqKymos = exp.seqKymos;
-		int t= seqKymos.currentFrame;
+		int t = seqKymos.currentFrame;
 		ROI2D roi = seqKymos.seq.getSelectedROI2D();
 		if (roi == null)
 			return;
