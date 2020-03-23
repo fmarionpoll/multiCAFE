@@ -1,14 +1,17 @@
 package plugins.fmp.multicafeSequence;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
 import icy.roi.ROI;
+import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
@@ -17,24 +20,27 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 public class CapillaryGulps  implements XMLPersistent  {
 	
 	private final String ID_GULPS = "gulpsMC";
-	public List<ROI> rois = null; 
+	public List<ROI2D> rois = null; 
 
 	// -------------------------------
 	
-	public void copy(Capillary cap) {
-		rois = new ArrayList <ROI> ();
-		rois.addAll(cap.gulpsRois.rois);		
+	public void copy(CapillaryGulps capG) {
+		rois = new ArrayList <ROI2D> ();
+		rois.addAll(capG.rois);		
 	}
 	
 	@Override
 	public boolean loadFromXML(Node node) {
 		boolean flag = false;
 		final Node nodeROIs = XMLUtil.getElement(node, ID_GULPS);
-        rois = new ArrayList <ROI> ();
-        if (nodeROIs != null) {
-        	flag = true;
-        	rois = ROI.loadROIsFromXML(nodeROIs);
-	    }
+		if (nodeROIs != null) {
+			flag = true;
+			List<ROI> roislocal = ROI.loadROIsFromXML(nodeROIs);
+			for (ROI roislocal_i : roislocal) {
+        	   ROI2D roi = (ROI2D) roislocal_i;
+        	   rois.add(roi);
+           }
+		}
         return flag;
 	}
 
@@ -44,8 +50,12 @@ public class CapillaryGulps  implements XMLPersistent  {
 		final Node nodeROIs = XMLUtil.setElement(node, ID_GULPS);
         if (nodeROIs != null){
         	flag = true;
-        	if (rois != null && rois.size() > 0)
-        		ROI.saveROIsToXML(nodeROIs, rois);
+        	if (rois != null && rois.size() > 0) {
+        		List<ROI> roislocal = new ArrayList<ROI> (rois.size());
+        		for (ROI2D roi: rois)
+        			roislocal.add((ROI) roi);
+        		ROI.saveROIsToXML(nodeROIs, roislocal);
+        	}
 	    }
         return flag;
 	}
@@ -65,12 +75,12 @@ public class CapillaryGulps  implements XMLPersistent  {
 	}
 
 	public void transferROIsToMeasures(List<ROI> listRois) {	
-		rois = new ArrayList<ROI>();
+		rois = new ArrayList<ROI2D>();
 		for (ROI roi: listRois) {		
 			String roiname = roi.getName();
 			if (roi instanceof ROI2DPolyLine ) {
 				if (roiname .contains("gulp"))	
-					rois.add(roi);
+					rois.add( (ROI2D) roi);
 			}
 		}
 	}
@@ -83,9 +93,21 @@ public class CapillaryGulps  implements XMLPersistent  {
 		rois.add(roi);
 	}
 	
-	public List<ROI> addToROIs(List<ROI> listrois, int indexImage) {
+	public List<ROI2D> addToROIs(List<ROI2D> listrois, int indexImage) {
 		if (rois != null) 
 			listrois.addAll(rois);
 		return listrois;
+	}
+	
+	public void removeROIsWithinInterval(int startPixel, int endPixel) {
+		Iterator <ROI2D> iterator = rois.iterator();
+		while (iterator.hasNext()) {
+			ROI2D roi = iterator.next();
+			// if roi.first >= startpixel && roi.first <= endpixel	
+			Rectangle rect = ((ROI2D) roi).getBounds();
+			if (rect.x >= startPixel && rect.x <= endPixel) {
+				iterator.remove();
+			}
+		}
 	}
 }

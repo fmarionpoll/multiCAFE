@@ -1,16 +1,18 @@
 package plugins.fmp.multicafeTools;
 
-import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.w3c.dom.Document;
 
 import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
+import icy.util.XMLUtil;
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
@@ -18,6 +20,9 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 public class ROI2DUtilities  {
+	public static final String ID_ROI = "roi";
+	public static final String ID_CLASSNAME = "classname";
+    
 	
 	public static List<BooleanMask2D> getMask2DFromROIs (List<Cage> cageList) {
 		List<BooleanMask2D> cageMaskList = new ArrayList<BooleanMask2D>();
@@ -70,25 +75,34 @@ public class ROI2DUtilities  {
 		return intArray;
 	}
 	
-	public static void addROIsToSequenceNoDuplicate(List<ROI> listRois, Sequence seq) {
-		List<ROI2D> seqList = seq.getROI2Ds(false);
+	public static void mergeROIsListNoDuplicate(List<ROI2D> seqList, List<ROI2D> listRois, Sequence seq) {
+		if (seqList.isEmpty()) {
+			seqList.addAll(listRois);
+		}
 		for (ROI2D seqRoi: seqList) {
-			Iterator <ROI> iterator = listRois.iterator();
+			Iterator <ROI2D> iterator = listRois.iterator();
 			while(iterator.hasNext()) {
-				ROI roi = iterator.next();
-				if (roi instanceof ROI2D) {
-					if (seqRoi == roi)
-						iterator.remove();
-					else if (seqRoi.getName().equals (roi.getName() )) {
-						seqRoi.copyFrom(roi);
-						iterator.remove();
-					}
+				ROI2D roi = iterator.next();
+				if (seqRoi == roi)
+					iterator.remove();
+				else if (seqRoi.getName().equals (roi.getName() )) {
+					seqRoi.copyFrom(roi);
+					iterator.remove();
 				}
 			}
 		}
-		seq.addROIs(listRois, false);
 	}
-
+	
+	public static void removeROIsWithMissingChar(List<ROI2D> listRois, char character) {
+		Iterator <ROI2D> iterator = listRois.iterator();
+		while(iterator.hasNext()) {
+			ROI2D roi = iterator.next();
+			if (roi.getName().indexOf(character ) < 0) {
+				iterator.remove();
+			}
+		}
+	}
+	
 	public static ROI2DPolyLine transfertDataArrayToROI(List<Integer> intArray) {
 		Polyline2D line = new Polyline2D();
 		for (int i =0; i< intArray.size(); i++) {
@@ -136,18 +150,11 @@ public class ROI2DUtilities  {
 		}
 	}
 
-	public static void removeROIsWithinInterval(List<ROI> gulpsRois, int startPixel, int endPixel) {
-		Iterator <ROI> iterator = gulpsRois.iterator();
-		while (iterator.hasNext()) {
-			ROI roi = iterator.next();
-			// if roi.first >= startpixel && roi.first <= endpixel
-			if (roi instanceof ROI2D) {
-				Rectangle rect = ((ROI2D) roi).getBounds();
-				if (rect.x >= startPixel && rect.x <= endPixel) {
-					iterator.remove();
-				}
-			}
-		}
+	public static List<ROI2D> loadROIsFromXML(Document doc) {
+		List<ROI> localList = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
+		List<ROI2D> finalList = new ArrayList<ROI2D>(localList.size());
+		for (ROI roi: localList)
+			finalList.add((ROI2D) roi);
+		return finalList;		
 	}
-
 }

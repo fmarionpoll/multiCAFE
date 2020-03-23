@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe;
 
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +16,7 @@ import javax.swing.SwingConstants;
 import icy.gui.util.GuiUtil;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
+import icy.roi.ROIUtil;
 import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
 import plugins.fmp.multicafeSequence.Capillary;
@@ -32,19 +34,28 @@ public class MCLevels_Edit  extends JPanel {
 	private static final long serialVersionUID = 2580935598417087197L;
 	private MultiCAFE 			parent0;
 	private boolean[] 			isInside		= null;
-	private ArrayList<ROI> 		listGulpsSelected = null;
+//	private ArrayList<ROI> 		listGulpsSelected = null;
 	private JComboBox<String> 	roiTypeCombo 	= new JComboBox<String> (new String[] 
 			{" top level", "bottom level", "top & bottom levels", "derivative", "gulps" });
-	private JButton 			deleteButton 	= new JButton("Delete");
 	private JButton 			adjustButton 	= new JButton("Adjust dimensions");
+	private JButton 			deleteButton 	= new JButton("Replace with line");
+	private JButton 			cropButton 	= new JButton("Delete right part");
 
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);	
 		this.parent0 = parent0;
-		add(GuiUtil.besidesPanel(adjustButton, new JLabel(" "), new JLabel("Source ", SwingConstants.RIGHT), roiTypeCombo));
-		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "), new JLabel(" "),  deleteButton));
+		
+		JPanel panel1 = new JPanel();
+		panel1.setLayout(new BorderLayout());
+		panel1.add(new JLabel("Apply to ", SwingConstants.LEFT), BorderLayout.WEST); 
+		panel1.add(roiTypeCombo, BorderLayout.CENTER);
+		
+		add(GuiUtil.besidesPanel(panel1,  new JLabel(" "), new JLabel("from Rect/Polygon2D:")));
+		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "),   deleteButton));
+		add(GuiUtil.besidesPanel(adjustButton, new JLabel(" "),   cropButton));
+
 		defineListeners();
 	}
 	
@@ -59,11 +70,41 @@ public class MCLevels_Edit  extends JPanel {
 				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
 				adjustDimensions(exp);
 			}});
+		
+		cropButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
+				cropPointsToLeftLimit(exp);
+			}});
 	}
 
-	void selectGulpsWithinRoi(ROI2D roiReference, Sequence seq, int t) {
+	void cropPointsToLeftLimit(Experiment exp) {
+		SequenceKymos seqKymos = exp.seqKymos;
+		int t = seqKymos.currentFrame;
+		ROI2D roiRef = seqKymos.seq.getSelectedROI2D();
+		if (roiRef == null)
+			return;
+
+		roiRef.setT(t);
+		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
+		List<ROI2D> roiMeasures = cap.transferMeasuresToROIs();
+		List<ROI> roiClipped = new ArrayList<ROI>(roiMeasures.size());
+		for (ROI2D roi: roiMeasures) {
+			ROI roic = ROIUtil.subtract((ROI) roiRef, (ROI) roi);
+			roic.setName(roi.getName());
+			roiClipped.add (roic);
+		}
+		cap. transferROIsToMeasures(roiClipped);
+		
+		seqKymos.transferKymosRoisToCapillaries(exp.capillaries);		
+		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsTop);
+		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsBottom);
+		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsDerivative);
+	}
+		
+	List <ROI> selectGulpsWithinRoi(ROI2D roiReference, Sequence seq, int t) {
 		List <ROI> allRois = seq.getROIs();
-		listGulpsSelected = new ArrayList<ROI>();
+		List<ROI> listGulpsSelected = new ArrayList<ROI>();
 		for (ROI roi: allRois) {
 			roi.setSelected(false);
 			if (roi instanceof ROI2D) {
@@ -75,15 +116,16 @@ public class MCLevels_Edit  extends JPanel {
 				}
 			}
 		}
+		return listGulpsSelected;
 	}
 	
-	void deleteGulps(Sequence seq) {
+	void deleteGulps(SequenceKymos seqKymos, List <ROI> listGulpsSelected) {
+		Sequence seq = seqKymos.seq;
 		if (seq == null || listGulpsSelected == null)
 			return;
 		for (ROI roi: listGulpsSelected) {
 			seq.removeROI(roi);
 		}
-		listGulpsSelected = null;
 	}
 	
 	void deletePointsIncluded(Experiment exp) {
@@ -97,10 +139,10 @@ public class MCLevels_Edit  extends JPanel {
 		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
 		String optionSelected = (String) roiTypeCombo.getSelectedItem();
 		if (optionSelected .contains("gulp")) {
-			selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
-			deleteGulps(seqKymos.seq);
+			List<ROI> listGulpsSelected = selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
+			deleteGulps(seqKymos, listGulpsSelected);
 			seqKymos.removeROIsAtT(t);
-			List<ROI> listOfRois = cap.transferMeasuresToROIs();
+			List<ROI2D> listOfRois = cap.transferMeasuresToROIs();
 			seqKymos.seq.addROIs (listOfRois, false);
 		} else {
 			CapillaryLimits caplimits = null;

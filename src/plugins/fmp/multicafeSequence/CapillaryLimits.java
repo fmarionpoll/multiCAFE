@@ -85,14 +85,14 @@ public class CapillaryLimits  implements XMLPersistent  {
 		return ivalue;
 	}
 	
-	public List<ROI> addToROIs(List<ROI> listrois, int indexImage) {
+	public List<ROI2D> addToROIs(List<ROI2D> listrois, int indexImage) {
 		this.indexImage = indexImage;
 		if (polyline != null) 
 			listrois.add(transferPolyline2DToROI());
 		return listrois;
 	}
 	
-	public List<ROI> addToROIs(List<ROI> listrois, Color color, double stroke, int indexImage) {
+	public List<ROI2D> addToROIs(List<ROI2D> listrois, Color color, double stroke, int indexImage) {
 		if (polyline != null) { 
 			this.indexImage = indexImage;
 			ROI2D roi = transferPolyline2DToROI();
@@ -193,7 +193,7 @@ public class CapillaryLimits  implements XMLPersistent  {
 	}
 	
 	public void adjustToImageWidth(int imageSize) {
-		if ( polyline.npoints == imageSize)
+		if (polyline == null || polyline.npoints == imageSize)
 			return;
 		else if (polyline.npoints > imageSize) {
 			double [] xpoints = new double[imageSize];

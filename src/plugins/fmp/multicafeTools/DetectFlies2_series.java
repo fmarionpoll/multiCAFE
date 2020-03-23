@@ -139,24 +139,21 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			findFlies(exp);
 
 		if (seqNegative != null) {
-			seqNegative.seq.close();
-			seqNegative.seq.closed();
+			seqNegative.closeSequence();
 			seqNegative = null;
 		}
 
 		if (seqPositive != null) {
 			if (vPositive != null)
 				vPositive.close();
-			seqPositive.seq.close();
-			seqPositive.seq.closed();
+			seqPositive.closeSequence();
 			seqPositive = null;
 		}
 
 		if (!buildBackground && seqReference != null) {
 			if (vReference != null)
 				vReference.close();
-			seqReference.seq.close();
-			seqReference.seq.closed();
+			seqReference.closeSequence();
 			seqReference = null;
 		}
 	}
@@ -165,8 +162,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
 		progressBar.initChrono(detect.endFrame - detect.startFrame + 1);
 
-		seqReference.seq.close();
-		seqPositive.seq.close();
+		seqReference.closeSequence();
 		if (vPositive != null) {
 			vPositive.close();
 			vPositive = null;
@@ -212,7 +208,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			}
 		} finally {
 			detect.seqCamData.seq.endUpdate();
-			seqNegative.seq.close();
+			seqNegative.closeSequence();
 			detect.copyDetectedROIsToSequence(exp);
 		}
 		progressBar.close();

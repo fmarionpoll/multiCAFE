@@ -12,10 +12,10 @@ import org.w3c.dom.Node;
 import icy.file.xml.XMLPersistent;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
+import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.EnumListType;
-import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
@@ -72,15 +72,14 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	}
 
 	public void copy(Capillary cap) {
-		indexImage 				= cap.indexImage;
-		capillaryName 			= cap.capillaryName;
-		version 				= cap.version;
-		capillaryRoi 			= cap.capillaryRoi;
-		filenameTIFF			= cap.filenameTIFF;
-		limitsOptions			= cap.limitsOptions;
-		gulpsOptions			= cap.gulpsOptions;
-		
-		gulpsRois.rois		= new ArrayList <ROI> ();
+		indexImage 		= cap.indexImage;
+		capillaryName 	= cap.capillaryName;
+		version 		= cap.version;
+		capillaryRoi 	= cap.capillaryRoi;
+		filenameTIFF	= cap.filenameTIFF;
+		limitsOptions	= cap.limitsOptions;
+		gulpsOptions	= cap.gulpsOptions;
+		gulpsRois.rois	= new ArrayList <ROI2D> ();
 		gulpsRois.rois.addAll(cap.gulpsRois.rois);
 		ptsTop.copy(cap.ptsTop); 
 		ptsBottom.copy(cap.ptsBottom); 
@@ -158,9 +157,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			gulpsRois.rois = new ArrayList <> ();
 			return;
 		}
-		
 		if (options.analyzePartOnly) 
-			ROI2DUtilities.removeROIsWithinInterval(gulpsRois.rois, options.startPixel, options.endPixel);
+			gulpsRois.removeROIsWithinInterval(options.startPixel, options.endPixel);
 		else 
 			gulpsRois.rois.clear();
 	}
@@ -276,8 +274,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return t0Measure;
 	}
 	
-	public List<ROI> transferMeasuresToROIs() {
-		List<ROI> listrois = new ArrayList<ROI> ();
+	public List<ROI2D> transferMeasuresToROIs() {
+		List<ROI2D> listrois = new ArrayList<ROI2D> ();
 		if (ptsTop != null)
 			ptsTop.addToROIs(listrois, indexImage);
 		if (ptsBottom != null)
