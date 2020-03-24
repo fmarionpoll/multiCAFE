@@ -153,11 +153,20 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	
 	public void cropMeasures (int npoints) {
 		if (ptsTop.polyline != null)
-			ptsTop.polyline.npoints = npoints;
+			ptsTop.cropToNPoints(npoints);
 		if (ptsBottom.polyline != null)
-			ptsBottom.polyline.npoints = npoints;
+			ptsBottom.cropToNPoints(npoints);
 		if (ptsDerivative.polyline != null)
-			ptsDerivative.polyline.npoints = npoints;
+			ptsDerivative.cropToNPoints(npoints);
+	}
+	
+	public void restoreCroppedMeasures () {
+		if (ptsTop.polyline != null)
+			ptsTop.restoreNpoints();
+		if (ptsBottom.polyline != null)
+			ptsBottom.restoreNpoints();
+		if (ptsDerivative.polyline != null)
+			ptsDerivative.restoreNpoints();
 	}
 	
 	public void cleanGulps(DetectGulps_Options options) {
@@ -336,8 +345,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		
 	boolean loadFromXML_CapillaryOnly(Node node) {
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
-	    if (nodeMeta == null)	// nothing to load
-            return true;
 	    if (nodeMeta != null) {
 	    	version = XMLUtil.getElementValue(nodeMeta, ID_VERSION, ID_VERSIONNUM);
 	    	indexImage = XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
@@ -346,7 +353,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	        capillaryRoi = (ROI2DShape) loadFromXML_ROI(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
 	        gulpsOptions.loadFromXML(nodeMeta);
-	        
 	    }
 	    return true;
 	}

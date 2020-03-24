@@ -72,6 +72,7 @@ public class MCLevels_Edit  extends JPanel {
 				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
 				deletePointsIncluded(exp);
 			}});
+		
 		adjustButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
@@ -82,6 +83,12 @@ public class MCLevels_Edit  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
 				cropPointsToLeftLimit(exp);
+			}});
+		
+		restoreButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
+				restoreCroppedPoints(exp);
 			}});
 	}
 
@@ -116,6 +123,17 @@ public class MCLevels_Edit  extends JPanel {
 			break;
 		}
 		return lastX;
+	}
+	
+	void restoreCroppedPoints(Experiment exp) {
+		SequenceKymos seqKymos = exp.seqKymos;
+		int t = seqKymos.currentFrame;
+		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
+		cap.restoreCroppedMeasures();
+		
+		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsTop);
+		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsBottom);
+		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsDerivative);
 	}
 		
 	List <ROI> selectGulpsWithinRoi(ROI2D roiReference, Sequence seq, int t) {
