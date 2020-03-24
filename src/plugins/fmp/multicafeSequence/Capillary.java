@@ -150,7 +150,16 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		}
 		return datai;
 	}
-		
+	
+	public void cropMeasures (int npoints) {
+		if (ptsTop.polyline != null)
+			ptsTop.polyline.npoints = npoints;
+		if (ptsBottom.polyline != null)
+			ptsBottom.polyline.npoints = npoints;
+		if (ptsDerivative.polyline != null)
+			ptsDerivative.polyline.npoints = npoints;
+	}
+	
 	public void cleanGulps(DetectGulps_Options options) {
 		if (gulpsRois == null) {
 			gulpsRois = new CapillaryGulps();

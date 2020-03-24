@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,6 @@ import javax.swing.SwingConstants;
 import icy.gui.util.GuiUtil;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
-import icy.roi.ROIUtil;
 import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
 import plugins.fmp.multicafeSequence.Capillary;
@@ -38,8 +38,9 @@ public class MCLevels_Edit  extends JPanel {
 	private JComboBox<String> 	roiTypeCombo 	= new JComboBox<String> (new String[] 
 			{" top level", "bottom level", "top & bottom levels", "derivative", "gulps" });
 	private JButton 			adjustButton 	= new JButton("Adjust dimensions");
-	private JButton 			deleteButton 	= new JButton("Replace with line");
-	private JButton 			cropButton 	= new JButton("Delete right part");
+	private JButton 			deleteButton 	= new JButton("Cut & interpolate");
+	private JButton 			cropButton 		= new JButton("Crop from left");
+	private JButton 			restoreButton 	= new JButton("Restore");
 
 	
 	
@@ -54,7 +55,13 @@ public class MCLevels_Edit  extends JPanel {
 		
 		add(GuiUtil.besidesPanel(panel1,  new JLabel(" "), new JLabel("from Rect/Polygon2D:")));
 		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "),   deleteButton));
-		add(GuiUtil.besidesPanel(adjustButton, new JLabel(" "),   cropButton));
+		
+		JPanel panel2 = new JPanel();
+		panel2.setLayout(new BorderLayout());
+		panel2.add(cropButton, BorderLayout.CENTER); 
+		panel2.add(restoreButton, BorderLayout.EAST);
+		
+		add(GuiUtil.besidesPanel(adjustButton, new JLabel(" "),   panel2));
 
 		defineListeners();
 	}
@@ -85,21 +92,30 @@ public class MCLevels_Edit  extends JPanel {
 		if (roiRef == null)
 			return;
 
-		roiRef.setT(t);
 		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-		List<ROI2D> roiMeasures = cap.transferMeasuresToROIs();
-		List<ROI> roiClipped = new ArrayList<ROI>(roiMeasures.size());
-		for (ROI2D roi: roiMeasures) {
-			ROI roic = ROIUtil.subtract((ROI) roiRef, (ROI) roi);
-			roic.setName(roi.getName());
-			roiClipped.add (roic);
-		}
-		cap. transferROIsToMeasures(roiClipped);
-		
 		seqKymos.transferKymosRoisToCapillaries(exp.capillaries);		
+		
+		int lastX = findLastXLeftOfRoi(cap, roiRef);
+		cap.cropMeasures(lastX+1);
+		
 		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsTop);
 		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsBottom);
 		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsDerivative);
+	}
+	
+	int findLastXLeftOfRoi(Capillary cap, ROI2D roiRef) {
+		int lastX = -1;
+		Rectangle2D rectRef = roiRef.getBounds2D();
+		double xleft = rectRef.getX();
+		
+		Polyline2D polyline = cap.ptsTop.polyline;
+		for (int i=0; i < polyline.npoints; i++) {
+			if (polyline.xpoints[i] < xleft)
+				continue;
+			lastX = i-1;
+			break;
+		}
+		return lastX;
 	}
 		
 	List <ROI> selectGulpsWithinRoi(ROI2D roiReference, Sequence seq, int t) {
