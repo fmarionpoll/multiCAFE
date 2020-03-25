@@ -51,7 +51,7 @@ public class XLSExport {
 		pt.x++;
 		int colseries = pt.x;
 		
-		String filename = exp.seqCamData.getFileName();
+		String filename = exp.seqCamData.getSequenceFileName();
 		if (filename == null)
 			filename = exp.seqCamData.getDirectory();
 		Path path = Paths.get(filename);
@@ -64,13 +64,16 @@ public class XLSExport {
 		String concentrationL = exp.capillaries.desc.concentrationL;
 		String concentrationR = exp.capillaries.desc.concentrationR;
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		String date = df.format(exp.getFileTimeImageFirst(false).toMillis());	
+		String date = df.format(exp.getFileTimeImageFirst(false).toMillis());
+		int subpath_i = 2;
 		String name0 = path.toString();
-		String name1 = getSubName(path, 2);
+		if (name0 .contains("grabs"))
+			subpath_i++;
+		String name1 = exp.getSubName(path, subpath_i);
 		String cam = "-"; 
 		if (name1.length() >= 5) cam = name1.substring(0, 5); 
-		String name11 = getSubName(path, 3); 
-		String name111 = getSubName(path, 4); 
+		String name11 = exp.getSubName(path, subpath_i+1); 
+		String name111 = exp.getSubName(path, subpath_i+2); 
 		String sheetName = sheet.getSheetName();
 		
 		List<Capillary> capList = exp.capillaries.capillariesArrayList;
@@ -176,13 +179,6 @@ public class XLSExport {
 		String num = name.substring(4, 5);
 		int numFromName = Integer.parseInt(num);
 		return numFromName;
-	}
-	
-	protected String getSubName(Path path, int subnameIndex) {
-		String name = "-";
-		if (path.getNameCount() >= subnameIndex)
-			name = path.getName(path.getNameCount() -subnameIndex).toString();
-		return name;
 	}
 	
 	protected String getShortenedName(SequenceCamData seq, int t) {

@@ -91,10 +91,8 @@ public class SequenceKymos extends SequenceCamData  {
 				continue;
 			if (roi.getT() == -1)
 				roi.setT(t);
-			
 			if (roi.getT() != t)
 				continue;
-			
 			// interpolate missing points if necessary
 			if (roi.getName().contains("level") || roi.getName().contains("gulp")) {
 				ROI2DUtilities.interpolateMissingPointsAlongXAxis ((ROI2DPolyLine) roi, width);
@@ -102,7 +100,6 @@ public class SequenceKymos extends SequenceCamData  {
 			}
 			if (roi.getName().contains("deriv"))
 				continue;
-				
 			// if gulp not found - add an index to it	
 			ROI2DPolyLine roiLine = (ROI2DPolyLine) roi;
 			Polyline2D line = roiLine.getPolyline2D();
@@ -133,7 +130,6 @@ public class SequenceKymos extends SequenceCamData  {
 				continue;
 			if (!roi.getName().contains(caplimits.typename))
 				continue;
-			
 			((ROI2DPolyLine) roi).setPolyline2D(caplimits.polyline);
 			roi.setName(caplimits.name);
 			break;
@@ -153,7 +149,6 @@ public class SequenceKymos extends SequenceCamData  {
 			}
 			if (roi.getName().contains("derivative"))
 				continue;
-				
 			// if gulp not found - add an index to it	
 			ROI2DPolyLine roiLine = (ROI2DPolyLine) roi;
 			Polyline2D line = roiLine.getPolyline2D();
@@ -240,7 +235,6 @@ public class SequenceKymos extends SequenceCamData  {
 		boolean flag = (myListOfFileNames.size() > 0);
 		if (!flag)
 			return flag;
-		
 		if (adjustImagesSize) {
 			List <File> filesArray = new ArrayList<File> (myListOfFileNames.size());
 			for (String name : myListOfFileNames)
@@ -274,12 +268,10 @@ public class SequenceKymos extends SequenceCamData  {
 		
 		ProgressFrame progress = new ProgressFrame("Read kymographs width and height");
 		progress.setLength(files.size());
-		
 		for (int i= 0; i < files.size(); i++) {
 			if (isInterrupted_loadImages) {
 				return null;
 			}
-
 			String path = files.get(i).getPath();
 			OMEXMLMetadata metaData = null;
 			try {
@@ -293,7 +285,6 @@ public class SequenceKymos extends SequenceCamData  {
 				imageWidthMax = imageWidth;
 			if (imageHeight > imageHeightMax)
 				imageHeightMax = imageHeight;
-			
 			Rectangle rect = new Rectangle(0, 0, imageWidth, imageHeight);
 			rectList.add(rect);
 			progress.incPosition();
@@ -342,7 +333,6 @@ public class SequenceKymos extends SequenceCamData  {
         final int destSizeX 	= result.getSizeX();
         final DataType dataType = source.getDataType_();
         final boolean signed 	= dataType.isSigned();
-
         result.lockRaster();
         try {
             for (int ch = 0; ch < endC; ch++) {

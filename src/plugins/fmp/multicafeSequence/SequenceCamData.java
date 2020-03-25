@@ -87,9 +87,13 @@ public class SequenceCamData {
 			listFiles.add(cs);
 		if (loadSequenceFromList(listFiles, true) != null) {
 			Path path = Paths.get(listFiles.get(0));
-			String dir = path.getName(path.getNameCount()-2).toString();
-			if (dir != null)
+			int iback = 2;
+			String dir = path.getName(path.getNameCount()-iback).toString();
+			if (dir != null) {
+				if (dir.equals("grabs"))
+					dir = path.getName(path.getNameCount()-3).toString();
 				seq.setName(dir);
+			}
 		}
 	}
 	
@@ -100,8 +104,11 @@ public class SequenceCamData {
 		if (loadSequenceFromList(listFiles, testLR) != null) {
 			Path path = Paths.get(listFiles.get(0));
 			String dir = path.getName(path.getNameCount()-2).toString();
-			if (dir != null)
+			if (dir != null) {
+				if (dir.equals("grabs"))
+					dir = path.getName(path.getNameCount()-3).toString();
 				seq.setName(dir);
+			}
 		}
 	}
 	
@@ -441,14 +448,18 @@ public class SequenceCamData {
 	      FileUtils.getFile(pathDestination));
 	}
 	
-	public String getFileName() {
+	public String getSequenceFileName() {
 		if (seq != null)
 			return seq.getFilename();
 		return null;	
 	}
 	
-	public void setFileName(String name) {
+	public void setCSFileName(String name) {
 		csFileName = name;		
+	}
+	
+	public String getCSFileName() {
+		return csFileName;		
 	}
 	
 	public void setParentDirectoryAsFileName() {
@@ -457,7 +468,9 @@ public class SequenceCamData {
 		String directory = seq.getFilename();
 		Path path = Paths.get(directory);
 		String dirupup = path.getName(path.getNameCount()-2).toString();
-		setFileName(dirupup);
+		if (dirupup.equals("grabs"))
+			dirupup = path.getName(path.getNameCount()-3).toString();
+		setCSFileName(dirupup);
 		seq.setName(dirupup);
 	}
 	
@@ -468,9 +481,9 @@ public class SequenceCamData {
 		seq.close();
 	}
 
-	public boolean xmlReadROIs(String csFileName) {
-		if (csFileName != null)  {
-			final Document doc = XMLUtil.loadDocument(csFileName);
+	public boolean xmlReadROIs(String fileName) {
+		if (fileName != null)  {
+			final Document doc = XMLUtil.loadDocument(fileName);
 			if (doc != null) {
 				List<ROI2D> seqRoisList = seq.getROI2Ds(false);
 				List<ROI2D> newRoisList = ROI2DUtilities.loadROIsFromXML(doc);

@@ -283,13 +283,7 @@ public class Experiment {
 	
 	// ----------------------------------
 	
-	protected String getBoxIdentificatorFromFilePath () {
-		Path path = Paths.get(seqCamData.getFileName());
-		String name = getSubName(path, 2); 
-		return name;
-	}
-	
-	protected String getSubName(Path path, int subnameIndex) {
+	public String getSubName(Path path, int subnameIndex) {
 		String name = "-";
 		if (path.getNameCount() >= subnameIndex)
 			name = path.getName(path.getNameCount() -subnameIndex).toString();

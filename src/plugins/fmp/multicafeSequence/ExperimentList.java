@@ -166,7 +166,7 @@ public class ExperimentList {
 				Experiment exp =  experimentList.get(i);
 				if (exp.seqCamData == null)
 					continue;
-				String filename2 = exp.seqCamData.getFileName();
+				String filename2 = exp.seqCamData.getSequenceFileName();
 				if (filename2 == null) {
 					filename2 = exp.experimentFileName; 
 					if (filename2 == null) {
@@ -222,7 +222,7 @@ public class ExperimentList {
 		for (int i=0; i < experimentList.size(); i++) {
 			exp = experimentList.get(i);
 			if (exp.experimentFileName == null	&& exp.seqCamData != null) {
-				exp.experimentFileName = exp.seqCamData.getFileName();
+				exp.experimentFileName = exp.seqCamData.getSequenceFileName();
 			}
 			
 			if (exp.experimentFileName != null) {	

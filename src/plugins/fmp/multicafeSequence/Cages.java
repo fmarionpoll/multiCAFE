@@ -61,7 +61,7 @@ public class Cages {
 		
 	public boolean xmlReadCagesFromFile(SequenceCamData seq) {
 		String [] filedummy = null;
-		String filename = seq.getFileName();
+		String filename = seq.getSequenceFileName();
 		File file = new File(filename);
 		String directory = file.getParentFile().getAbsolutePath();
 		filedummy = MulticafeTools.selectFiles(directory, "xml");
