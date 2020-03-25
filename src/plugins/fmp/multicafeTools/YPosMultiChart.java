@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -72,7 +73,9 @@ public class YPosMultiChart extends IcyFrame {
 			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, true, true);
 			xyChart.setAntiAlias( true );
 			xyChart.setTextAntiAlias( true );
-			xyChart.getXYPlot().getRangeAxis(0).setRange(valMinMax.min, valMinMax.max);
+			ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
+			yAxis.setRange(valMinMax.min, valMinMax.max);
+			yAxis.setTickLabelsVisible(false);
 			ChartPanel xyChartPanel = new ChartPanel(xyChart, 100, 200, 50, 100, 100, 200, false, false, true, true, true, true);
 			mainChartPanel.add(xyChartPanel);
 		}

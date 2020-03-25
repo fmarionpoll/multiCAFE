@@ -90,64 +90,19 @@ public class XYMultiChart extends IcyFrame  {
 		}
 	}
 	
-	public void displayData(Experiment exp, EnumListType option) {
-		xyChartList.clear();
+	private void fetchDataArrays(Experiment exp, EnumListType option, List<XYSeriesCollection> xyList1, List<XYSeriesCollection> xyList2) {
 		SequenceKymos kymoseq = exp.seqKymos;
-		if (kymoseq == null || kymoseq.seq == null)
-			return;
-		ymax = 0;
-		ymin = 0;
-		xyDataSetList.clear();
-		xyDataSetList2.clear();
-		flagMaxMinSet = false;
-		// get data arrays to display
-		getDataArrays(exp, option, xyDataSetList, xyDataSetList2);
-		
-		// display data in charts
-		for (int i=0; i< xyDataSetList.size(); i++) {	
-			XYSeriesCollection xyDataset = xyDataSetList.get(i);
-			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, false, false);
-			xyChart.setAntiAlias( true );
-			xyChart.setTextAntiAlias( true );
-			// set Y range from 0 to max 
-			ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
-			yAxis.setRange(globalYMin, globalYMax);
-			//if (i > 0)
-				yAxis.setTickLabelsVisible(false);
-			xyChart.getXYPlot().getDomainAxis(0).setRange(0, globalXMax);
-			if (option == EnumListType.topAndBottom) {
-				XYSeriesCollection xyDataset2 = xyDataSetList2.get(i);
-				xyChart.getXYPlot().setDataset(1, xyDataset2);
-			}
-			if (option == EnumListType.topLevel || option == EnumListType.bottomLevel || option == EnumListType.topAndBottom) {
-				xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
-			}
-			xyChartList.add(xyChart);
-			ChartPanel xyChartPanel = new ChartPanel(xyChart, 100, 200, 50, 100, 100, 200, false, false, true, true, true, true);
-			mainChartPanel.add(xyChartPanel);
-		}
-		mainChartFrame.pack();
-		mainChartFrame.setLocation(pt);
-		mainChartFrame.addToDesktopPane ();
-		mainChartFrame.setVisible(true);
-	}
-
-	public void fetchNewData(Experiment exp, EnumListType option) {
-		SequenceKymos kymoseq = exp.seqKymos;
-		int ixy = 0;
-		if (xyDataSetList == null || xyDataSetList.size() < 1)
-			return;
-		flagMaxMinSet = false;
-		XYSeriesCollection xyDataset = null;
-		XYSeriesCollection xyDataset2 = null;
-		int kmax = exp.capillaries.desc.grouping;
 		int nimages = kymoseq.seq.getSizeT();
 		int startFrame = (int) exp.capillaries.desc.analysisStart;
-//		Collections.sort(exp.capillaries.capillariesArrayList, new Comparators.CapillaryNameComparator()); 
+		int kmax = exp.capillaries.desc.grouping;
+		
+		int ixy = 0;		
+		
 		for (int t=0; t< nimages; t+= kmax, ixy++) {
 			if (ixy >= xyDataSetList.size())
 				break;
-			xyDataset = xyDataSetList.get(ixy);
+			XYSeriesCollection xyDataset = xyDataSetList.get(ixy);
+			XYSeriesCollection xyDataset2 = null;
 			xyDataset.removeAllSeries();
 			EnumListType ooption = option;
 			if (option == EnumListType.topAndBottom) {
@@ -176,21 +131,67 @@ public class XYMultiChart extends IcyFrame  {
 			if (option ==  EnumListType.topAndBottom)
 				xyDataSetList2.set(ixy, xyDataset2);
 		}
-		// create charts
+	}
+	
+	public void displayData(Experiment exp, EnumListType option) {
+		xyChartList.clear();
+		SequenceKymos kymoseq = exp.seqKymos;
+		if (kymoseq == null || kymoseq.seq == null)
+			return;
+		ymax = 0;
+		ymin = 0;
+		xyDataSetList.clear();
+		xyDataSetList2.clear();
+		flagMaxMinSet = false;
+		getDataArrays(exp, option, xyDataSetList, xyDataSetList2);
+		
+		// display charts
 		for (int i=0; i< xyDataSetList.size(); i++) {	
-			xyDataset = xyDataSetList.get(i);
+			XYSeriesCollection xyDataset = xyDataSetList.get(i);
+			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, false, false);
+			xyChart.setAntiAlias( true );
+			xyChart.setTextAntiAlias( true );
+			// set Y range from 0 to max 
+			ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
+			yAxis.setRange(globalYMin, globalYMax);
+			yAxis.setTickLabelsVisible(false);
+			ValueAxis xAxis = xyChart.getXYPlot().getDomainAxis(0);
+			xAxis.setRange(0, globalXMax);
+			if (option == EnumListType.topAndBottom) {
+				XYSeriesCollection xyDataset2 = xyDataSetList2.get(i);
+				xyChart.getXYPlot().setDataset(1, xyDataset2);
+			}
+			if (option == EnumListType.topLevel || option == EnumListType.bottomLevel || option == EnumListType.topAndBottom) {
+				xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
+			}
+			xyChartList.add(xyChart);
+			ChartPanel xyChartPanel = new ChartPanel(xyChart, 100, 200, 50, 100, 100, 200, false, false, true, true, true, true);
+			mainChartPanel.add(xyChartPanel);
+		}
+		mainChartFrame.pack();
+		mainChartFrame.setLocation(pt);
+		mainChartFrame.addToDesktopPane ();
+		mainChartFrame.setVisible(true);
+	}
+
+	public void fetchNewData(Experiment exp, EnumListType option) {
+		if (xyDataSetList == null || xyDataSetList.size() < 1)
+			return;
+		flagMaxMinSet = false;
+		fetchDataArrays(exp,  option,  xyDataSetList, xyDataSetList2);
+		
+		// display charts
+		for (int i=0; i< xyDataSetList.size(); i++) {	
+			XYSeriesCollection xyDataset = xyDataSetList.get(i);
 			JFreeChart xyChart = xyChartList.get(i);
 			xyChart.getXYPlot().setDataset(0, xyDataset);
 			xyChart.getXYPlot().getRangeAxis(0).setRange(globalYMin, globalYMax);
-			
 			if (option ==  EnumListType.topAndBottom) {
-				xyDataset2 = xyDataSetList2.get(i);
+				XYSeriesCollection xyDataset2 = xyDataSetList2.get(i);
 				xyChart.getXYPlot().setDataset(1, xyDataset2);
 			}
-			// invert Y scale if raw levels
 			if (option == EnumListType.topLevel || option == EnumListType.bottomLevel || option == EnumListType.topAndBottom) {
-					xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
-
+				xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
 			}
 		}
 	}
