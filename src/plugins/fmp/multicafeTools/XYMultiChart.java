@@ -12,12 +12,14 @@ import javax.swing.JPanel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
+
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
@@ -31,9 +33,11 @@ public class XYMultiChart extends IcyFrame  {
 	private boolean flagMaxMinSet = false;
 	private int globalYMax = 0;
 	private int globalYMin = 0;
+	private int globalXMax = 0;
 
 	private int ymax = 0;
 	private int ymin = 0;
+	private int xmax = 0;
 	private List<XYSeriesCollection> 	xyDataSetList 	= new ArrayList <XYSeriesCollection>();
 	private List<XYSeriesCollection> 	xyDataSetList2 	= new ArrayList <XYSeriesCollection>();
 	private List<JFreeChart> 			xyChartList 	= new ArrayList <JFreeChart>();
@@ -55,22 +59,11 @@ public class XYMultiChart extends IcyFrame  {
 		pt = new Point(rectv.x + deltapt.x, rectv.y + deltapt.y);
 	}
 	
-	public void displayData(Experiment exp, EnumListType option) {
-		xyChartList.clear();
+	private void getDataArrays(Experiment exp, EnumListType option, List<XYSeriesCollection> xyList1, List<XYSeriesCollection> xyList2) {
 		SequenceKymos kymoseq = exp.seqKymos;
-		if (kymoseq == null || kymoseq.seq == null)
-			return;
-		ymax = 0;
-		ymin = 0;
-		xyDataSetList.clear();
-		xyDataSetList2.clear();
-		flagMaxMinSet = false;
 		int nimages = kymoseq.seq.getSizeT();
-		int kmax = exp.capillaries.desc.grouping;
 		int startFrame = (int) exp.capillaries.desc.analysisStart;
-		// get data arrays to display
-		// TODO 
-//		Collections.sort(exp.capillaries.capillariesArrayList, new Comparators.CapillaryNameComparator()); 
+		int kmax = exp.capillaries.desc.grouping;
 		for (int t=0; t< nimages; t+= kmax) {
 			XYSeriesCollection xyDataset = new XYSeriesCollection();
 			XYSeriesCollection xyDataset2 = new XYSeriesCollection();
@@ -91,23 +84,41 @@ public class XYMultiChart extends IcyFrame  {
 				xyDataset.addSeries( seriesXY );
 				getMaxMin();
 			}
-			xyDataSetList.add(xyDataset);
+			xyList1.add(xyDataset);
 			if (option == EnumListType.topAndBottom)
-				xyDataSetList2.add(xyDataset2);
+				xyList2.add(xyDataset2);
 		}
+	}
+	
+	public void displayData(Experiment exp, EnumListType option) {
+		xyChartList.clear();
+		SequenceKymos kymoseq = exp.seqKymos;
+		if (kymoseq == null || kymoseq.seq == null)
+			return;
+		ymax = 0;
+		ymin = 0;
+		xyDataSetList.clear();
+		xyDataSetList2.clear();
+		flagMaxMinSet = false;
+		// get data arrays to display
+		getDataArrays(exp, option, xyDataSetList, xyDataSetList2);
+		
 		// display data in charts
 		for (int i=0; i< xyDataSetList.size(); i++) {	
 			XYSeriesCollection xyDataset = xyDataSetList.get(i);
-			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, true, true);
+			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, false, false);
 			xyChart.setAntiAlias( true );
 			xyChart.setTextAntiAlias( true );
 			// set Y range from 0 to max 
-			xyChart.getXYPlot().getRangeAxis(0).setRange(globalYMin, globalYMax);
+			ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
+			yAxis.setRange(globalYMin, globalYMax);
+			//if (i > 0)
+				yAxis.setTickLabelsVisible(false);
+			xyChart.getXYPlot().getDomainAxis(0).setRange(0, globalXMax);
 			if (option == EnumListType.topAndBottom) {
 				XYSeriesCollection xyDataset2 = xyDataSetList2.get(i);
 				xyChart.getXYPlot().setDataset(1, xyDataset2);
 			}
-			
 			if (option == EnumListType.topLevel || option == EnumListType.bottomLevel || option == EnumListType.topAndBottom) {
 				xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
 			}
@@ -188,11 +199,13 @@ public class XYMultiChart extends IcyFrame  {
 		if (!flagMaxMinSet) {
 			globalYMax = ymax;
 			globalYMin = ymin;
+			globalXMax = xmax;
 			flagMaxMinSet = true;
 		}
 		else {
 			if (globalYMax < ymax) globalYMax = ymax;
 			if (globalYMin >= ymin) globalYMin = ymin;
+			if (globalXMax < xmax) globalXMax = xmax;
 		}
 	}
 
@@ -201,6 +214,7 @@ public class XYMultiChart extends IcyFrame  {
 		if (data != null) {
 			int npoints = data.size();
 			if (npoints != 0) {
+				xmax = npoints;
 				int x = 0;
 				ymax = data.get(0);
 				ymin = ymax;
@@ -216,8 +230,7 @@ public class XYMultiChart extends IcyFrame  {
 		return seriesXY;
 	}
 
-	private void appendDataToXYSeries(XYSeries seriesXY, List<Integer> data, int startFrame ) {
-		
+	private void appendDataToXYSeries(XYSeries seriesXY, List<Integer> data, int startFrame ) {	
 		if (data == null)
 			return;
 		int npoints = data.size();
