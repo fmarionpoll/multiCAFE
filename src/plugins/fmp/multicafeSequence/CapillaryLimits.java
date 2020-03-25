@@ -167,21 +167,26 @@ public class CapillaryLimits  implements XMLPersistent  {
 	int loadPolyline2DFromXML(Node node, String nodename, String header) {
 		final Node nodeMeta = XMLUtil.getElement(node, nodename);
 		int npoints = 0;
-		if (nodeMeta != null) {
-			polyline = null;
-		    npoints = loadPolyline2DFromXML(nodeMeta, nodename, polyline);
+		polyline = null;
+	    if (nodeMeta != null) {
+	    	name =  XMLUtil.getElementValue(nodeMeta, "name", nodename);
+	    	if (!name.contains("_")) {
+	    		this.header = header;
+	    		name = header + name;
+	    	} 
+	    	polyline = loadPolyline2DFromXML(nodeMeta);
+		    if (polyline != null)
+		    	npoints = polyline.npoints;
 	    }
-
 		final Node nodeMeta_old = XMLUtil.getElement(node, nodename+"old");
 		if (nodeMeta_old != null) {
-			polyline_old = null;
-		    loadPolyline2DFromXML(nodeMeta_old, nodename, polyline_old);
+			polyline_old = loadPolyline2DFromXML(nodeMeta_old);
 	    }
 	    return npoints;
 	}
-	
-	int loadPolyline2DFromXML(Node nodeMeta, String nodename, Polyline2D line) {
-    	name =  XMLUtil.getElementValue(nodeMeta, "name", nodename);
+
+	Polyline2D loadPolyline2DFromXML(Node nodeMeta) {
+		Polyline2D line = null;
     	int npoints1 = XMLUtil.getElementIntValue(nodeMeta, ID_NPOINTS, 0);
     	if (npoints1 > 0) {
 	    	double[] xpoints = new double [npoints1];
@@ -196,23 +201,24 @@ public class CapillaryLimits  implements XMLPersistent  {
 			}
 	    	line = new Polyline2D(xpoints, ypoints, npoints1);
     	}
-    	return npoints1;
+    	return line;
     }
 	
 	void savePolyline2DToXML(Node node, String nodename) {
 		if (polyline == null)
 			return;
 		final Node nodeMeta = XMLUtil.setElement(node, nodename);
-	    if (nodeMeta != null)
-	    	savePolyline2DtoXML(nodeMeta, name, polyline);
+	    if (nodeMeta != null) {
+	    	XMLUtil.setElementValue(nodeMeta, "name", name);
+	    	savePolyline2DtoXML(nodeMeta, polyline);
+	    }
 	    final Node nodeMeta_old = XMLUtil.setElement(node, nodename+"old");
 	    if (polyline_old != null && polyline_old.npoints != polyline.npoints) 
-	    	savePolyline2DtoXML(nodeMeta_old, name, polyline_old);
+	    	savePolyline2DtoXML(nodeMeta_old,  polyline_old);
 	}
 	
-	void savePolyline2DtoXML(Node nodeMeta, String name, Polyline2D line) {
-		XMLUtil.setElementValue(nodeMeta, "name", name);
-    	XMLUtil.setElementIntValue(nodeMeta, ID_NPOINTS, line.npoints);
+	void savePolyline2DtoXML(Node nodeMeta, Polyline2D line) {
+		XMLUtil.setElementIntValue(nodeMeta, ID_NPOINTS, line.npoints);
     	for (int i=0; i< line.npoints; i++) {
     		Element elmt = XMLUtil.setElement(nodeMeta, ID_N+i);
     		if (i==0)

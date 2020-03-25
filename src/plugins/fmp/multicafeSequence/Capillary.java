@@ -345,7 +345,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		
 	boolean loadFromXML_CapillaryOnly(Node node) {
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
-	    if (nodeMeta != null) {
+	    boolean flag = (nodeMeta != null); 
+	    if (flag) {
+	    	
 	    	version = XMLUtil.getElementValue(nodeMeta, ID_VERSION, ID_VERSIONNUM);
 	    	indexImage = XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        capillaryName = XMLUtil.getElementValue(nodeMeta, ID_NAME, capillaryName);
@@ -354,7 +356,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	        limitsOptions.loadFromXML(nodeMeta);
 	        gulpsOptions.loadFromXML(nodeMeta);
 	    }
-	    return true;
+	    return flag;
 	}
 	
 	void saveToXML_CapillaryOnly(Node node) {
