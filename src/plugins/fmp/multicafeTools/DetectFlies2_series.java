@@ -64,6 +64,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 			exp.loadExperimentCamData();
 			exp.xmlReadDrosoTrackDefault();
+			
 			runDetectFlies(exp);
 			if (!stopFlag)
 				exp.saveComputation();
@@ -98,8 +99,9 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			seqPositive = new SequenceCamData();
 		if (seqReference == null)
 			seqReference = new SequenceCamData();
-		detect.seqCamData = exp.seqCamData;
+		
 		detect.initParametersForDetection(exp);
+		detect.threshold = detect.thresholdDiff;
 		exp.cleanPreviousDetections();
 		System.out.println("Computation over frames: " + detect.startFrame + " - " + detect.endFrame);
 
@@ -121,8 +123,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		}
 
 		if (buildBackground || detect.seqCamData.refImage == null) {
-			boolean flag = exp.loadReferenceImage();
-			if (!flag) {
+			if (!exp.loadReferenceImage()) {
 				try {
 					SwingUtilities.invokeAndWait(new Runnable() {
 						public void run() {
@@ -138,6 +139,10 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		if (detectFlies)
 			findFlies(exp);
 
+		closeViewersAndSequences ();
+	}
+	
+	private void closeViewersAndSequences () {
 		if (seqNegative != null) {
 			seqNegative.closeSequence();
 			seqNegative = null;
@@ -285,8 +290,9 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 	private void buildBackgroundImage(Experiment exp) {
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		int nfliesRemoved = 0;
-		detect.seqCamData.refImage = IcyBufferedImageUtil.getCopy(detect.seqCamData.getImage(detect.startFrame, 0));
 		detect.initParametersForDetection(exp);
+		
+		detect.seqCamData.refImage = IcyBufferedImageUtil.getCopy(detect.seqCamData.getImage(detect.startFrame, 0));
 		initialflyRemoved.clear();
 		for (int i = 0; i < detect.cages.cageList.size(); i++)
 			initialflyRemoved.add(false);
@@ -302,7 +308,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 			IcyBufferedImage positiveImage = detect.seqCamData.subtractImages(currentImage, detect.seqCamData.refImage);
 			seqPositive.seq.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, detect.rectangleAllCages));
-			ROI2DArea roiAll = detect.findFly(positiveImage);
+			ROI2DArea roiAll = detect.findFly(positiveImage, detect.thresholdBckgnd);
 
 			for (int iroi = 1; iroi < detect.cages.cageList.size() - 1; iroi++) {
 				BooleanMask2D bestMask = detect.findLargestComponent(roiAll, iroi);
@@ -325,7 +331,6 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		}
 		progress.close();
 	}
-
 
 
 }

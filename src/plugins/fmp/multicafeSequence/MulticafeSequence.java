@@ -165,7 +165,5 @@ public class MulticafeSequence extends EzPlug {
 		return flag;
 	}
 	
-	
-	
 
 }

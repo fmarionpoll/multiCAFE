@@ -32,6 +32,7 @@ public class CapillaryGulps  implements XMLPersistent  {
 	@Override
 	public boolean loadFromXML(Node node) {
 		boolean flag = false;
+		rois = new ArrayList <ROI2D> ();
 		final Node nodeROIs = XMLUtil.getElement(node, ID_GULPS);
 		if (nodeROIs != null) {
 			flag = true;

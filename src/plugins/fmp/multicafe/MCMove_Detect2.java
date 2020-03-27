@@ -39,7 +39,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	private JButton 	buildBackgroundButton 	= new JButton("Build ref. / Stop");
 	private String 		detectString 			= "Detect";
 	private JButton 	startComputationButton 	= new JButton(detectString);
-	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(100, 0, 255, 10));
+	private JSpinner 	thresholdDiffSpinner	= new JSpinner(new SpinnerNumberModel(100, 0, 255, 10));
 	private JSpinner 	thresholdBckgSpinner	= new JSpinner(new SpinnerNumberModel(40, 0, 255, 10));
 	
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 255, 1));
@@ -82,7 +82,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
 		add( GuiUtil.besidesPanel(new JLabel("threshold ", 
 				SwingConstants.RIGHT), 
-				thresholdSpinner, 
+				thresholdDiffSpinner, 
 				objectLowsizeCheckBox, 
 				objectLowsizeSpinner));
 		
@@ -93,7 +93,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 				objectUpsizeSpinner) );
 		
 		defineActionListeners();
-		thresholdSpinner.addChangeListener(this);
+		thresholdDiffSpinner.addChangeListener(this);
 	}
 	
 	private void defineActionListeners() {
@@ -136,10 +136,10 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		if (e.getSource() == thresholdSpinner) {
+		if (e.getSource() == thresholdDiffSpinner) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			if (exp != null)
-				exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
+				exp.cages.detect.threshold = (int) thresholdDiffSpinner.getValue();
 		}
 	}
 	
@@ -151,7 +151,8 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		detect.limitLow 		= (int) objectLowsizeSpinner.getValue();
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
-		detect.threshold		= (int) thresholdSpinner.getValue();
+		detect.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
+		detect.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();
 		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp != null) {
@@ -167,13 +168,12 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 			detect.expList.index0 = 0;
 			detect.expList.index1 = parent0.expList.experimentList.size()-1;
 		}
-		detect.seqCamData = exp.seqCamData;	
 		detect.initParametersForDetection(exp);
 		
 		if (detectFlies2Thread == null)
 			detectFlies2Thread = new DetectFlies2_series();
-		detectFlies2Thread.stopFlag 	= false;
-		detectFlies2Thread.detect 		= detect;
+		detectFlies2Thread.stopFlag = false;
+		detectFlies2Thread.detect 	= detect;
 		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();
 		return true;
 	}

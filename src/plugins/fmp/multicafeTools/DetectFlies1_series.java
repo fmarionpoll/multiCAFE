@@ -75,7 +75,6 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
     }
 		
 	private void runDetectFlies(Experiment exp) {
-		detect.seqCamData = exp.seqCamData;
 		detect.initParametersForDetection(exp);
 		detect.initTempRectROIs(detect.seqCamData.seq);
 		exp.cleanPreviousDetections();

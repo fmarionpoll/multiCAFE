@@ -239,12 +239,14 @@ public class MCKymos_Display extends JPanel {
 		if (seqKymos == null || seqKymos.seq == null)
 			return;
 		
-		int icurrent = kymographNamesComboBox.getSelectedIndex();
 		if (isel < 0)
 			isel = 0;
 		if (isel >= seqKymos.seq.getSizeT() )
 			isel = seqKymos.seq.getSizeT() -1;
+		
+		int icurrent = kymographNamesComboBox.getSelectedIndex();
 		if (icurrent != isel) {
+			seqKymos.currentFrame = isel;
 			seqKymos.validateRoisAtT(icurrent);
 			kymographNamesComboBox.setSelectedIndex(isel);
 		}

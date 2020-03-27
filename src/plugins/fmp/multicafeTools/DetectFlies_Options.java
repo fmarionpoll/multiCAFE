@@ -28,6 +28,8 @@ import plugins.kernel.roi.roi2d.ROI2DRectangle;
 public class DetectFlies_Options implements XMLPersistent {
 	
 	public int 		threshold 				= -1;
+	public int		thresholdBckgnd			= 40;
+	public int		thresholdDiff			= 100;
 	public boolean 	btrackWhite 			= false;
 	public boolean  blimitLow 				= false;
 	public boolean  blimitUp 				= false;
@@ -128,7 +130,7 @@ public class DetectFlies_Options implements XMLPersistent {
 		return bestMask;
 	}
 	
-	public ROI2DArea findFly(IcyBufferedImage img) {
+	public ROI2DArea findFly(IcyBufferedImage img, int threshold) {
 		if (img == null)
 			return null;
 		boolean[] mask = new boolean[ img.getSizeX() * img.getSizeY() ];
@@ -156,7 +158,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	}
 	
 	public void findFlies (IcyBufferedImage workimage, int t, int it) {
-		ROI2DArea roiAll = findFly (workimage);
+		ROI2DArea roiAll = findFly (workimage, threshold);
 		for ( int iroi = 0; iroi < cages.cageList.size(); iroi++ ) {		
 			BooleanMask2D bestMask = findLargestComponent(roiAll, iroi);
 			ROI2DArea flyROI = null;
@@ -203,6 +205,8 @@ public class DetectFlies_Options implements XMLPersistent {
 	}
 	
 	public void initParametersForDetection(Experiment exp) {
+		seqCamData = exp.seqCamData;
+		
 		nbframes = (endFrame - startFrame +1)/stepFrame +1;
 		exp.cages.clear();
 		exp.cages.cageList = seqCamData.getCages();
