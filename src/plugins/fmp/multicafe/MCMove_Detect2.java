@@ -69,27 +69,15 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		layout1.setVgap(0);
 		panel1.add( buildBackgroundButton);
 		
-		JPanel panel0 = new JPanel();
-		panel0.setLayout(new FlowLayout());
-		panel0.add(loadButton);
-		panel0.add(saveButton);
-		FlowLayout layout0 = (FlowLayout) panel0.getLayout();
-		layout0.setVgap(0);
-		panel0.validate();
-		panel1.add(panel0);
+		panel1.add(loadButton);
+		panel1.add(saveButton);
 		
+		panel1.add(new JLabel("threshold for bckgnd "));
+		panel1.add(thresholdBckgSpinner);
+		panel1.add(viewsCheckBox);
 		panel1.validate();
 		
-		JPanel panel2 = new JPanel();
-		FlowLayout layout2 = (FlowLayout) panel2.getLayout();
-		panel2.setLayout(layout2);
-		panel2.add(new JLabel("threshold for bckgnd "));
-		panel2.add(thresholdBckgSpinner);
-		panel2.add(viewsCheckBox);
-		layout2.setVgap(0);
-		panel2.validate();
-		
-		add( GuiUtil.besidesPanel(panel1,  panel2 ));
+		add( GuiUtil.besidesPanel(panel1));
 		
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
 		add( GuiUtil.besidesPanel(new JLabel("threshold ", 
