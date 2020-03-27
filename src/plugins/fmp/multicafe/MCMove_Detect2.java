@@ -40,6 +40,8 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	private String 		detectString 			= "Detect";
 	private JButton 	startComputationButton 	= new JButton(detectString);
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(100, 0, 255, 10));
+	private JSpinner 	thresholdBckgSpinner	= new JSpinner(new SpinnerNumberModel(40, 0, 255, 10));
+	
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 255, 1));
 	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object >");
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
@@ -63,23 +65,30 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		add( GuiUtil.besidesPanel(startComputationButton,  ALLCheckBox));
 		
 		JPanel panel1 = new JPanel();
+		FlowLayout layout1 = (FlowLayout) panel1.getLayout();
+		layout1.setVgap(0);
+		panel1.add( buildBackgroundButton);
+		
 		JPanel panel0 = new JPanel();
 		panel0.setLayout(new FlowLayout());
 		panel0.add(loadButton);
 		panel0.add(saveButton);
-		FlowLayout layout1 = (FlowLayout) panel0.getLayout();
-		layout1.setVgap(0);
+		FlowLayout layout0 = (FlowLayout) panel0.getLayout();
+		layout0.setVgap(0);
 		panel0.validate();
-		panel1.add( buildBackgroundButton);
 		panel1.add(panel0);
-		FlowLayout layout11 = (FlowLayout) panel1.getLayout();
-		layout11.setVgap(0);
+		
 		panel1.validate();
+		
 		JPanel panel2 = new JPanel();
-		panel2.add(viewsCheckBox);
 		FlowLayout layout2 = (FlowLayout) panel2.getLayout();
+		panel2.setLayout(layout2);
+		panel2.add(new JLabel("threshold for bckgnd "));
+		panel2.add(thresholdBckgSpinner);
+		panel2.add(viewsCheckBox);
 		layout2.setVgap(0);
 		panel2.validate();
+		
 		add( GuiUtil.besidesPanel(panel1,  panel2 ));
 		
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
