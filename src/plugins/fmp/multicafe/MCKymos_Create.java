@@ -91,17 +91,20 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		
 		BuildKymographs_Options options = thread.options;
 		options.expList = parent0.expList; 
-		options.expList.index0 = parent0.currentExperimentIndex;
-		options.expList.index1 = options.expList.index0;
 		if (ALLCheckBox.isSelected()) {
 			options.expList.index0 = 0;
 			options.expList.index1 = parent0.expList.experimentList.size()-1;
+		} else {
+			options.expList.index0 = parent0.currentExperimentIndex;
+			options.expList.index1 = options.expList.index0;
 		}
 		options.expList = parent0.expList; 
-		options.analyzeStep = exp.stepFrame;
-		options.startFrame = exp.startFrame;
-		options.endFrame = exp.endFrame;
 		
+		options.analyzeStep = parent0.paneSequence.tabIntervals.getAnalysisStep();
+		options.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
+		options.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
+		options.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();
+				
 		options.diskRadius 	= (int) diskRadiusSpinner.getValue();
 		options.doRegistration = doRegistrationCheckBox.isSelected();
 		options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();

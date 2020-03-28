@@ -27,7 +27,6 @@ public class DetectLimits_Options implements XMLPersistent {
 	public Rectangle 	parent0Rect 			= null;
 	public ExperimentList expList				= null;
 	
-
 	// -----------------------
 	
 	void copy(DetectLimits_Options destination) {

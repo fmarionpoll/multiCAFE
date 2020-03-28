@@ -109,7 +109,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
 		expListComboBox.setRenderer(renderer);
 		
-		
 		defineActionListeners();
 	}
 	
@@ -160,13 +159,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				openSeqCamData();
 			} else {
 				addSeqCamData();
-			}
-		}
-		else if (event.getPropertyName().equals("UPDATE")) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			if (exp != null) {				
-				updateViewerForSequenceCam(exp.seqCamData);
-				tabIntervals.getAnalyzeFrameFromDialog(exp);
 			}
 		}
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) {
@@ -294,7 +286,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	public void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
-		tabIntervals.endFrameJSpinner.setValue((int)seqCamData.analysisEnd);
+		tabIntervals.setEndFrameToDialog((int)seqCamData.analysisEnd);
 		updateViewerForSequenceCam(seqCamData);
 	}
 

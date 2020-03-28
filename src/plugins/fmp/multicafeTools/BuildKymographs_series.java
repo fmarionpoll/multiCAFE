@@ -43,7 +43,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		private ArrayList<double []> 	sourceValuesList 	= null;
 		private List<ROI> 				roiList 			= null;
 
-		
+		// ------------------------------
 		
 		@Override
 		protected Integer doInBackground() throws Exception {
@@ -64,8 +64,13 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				exp.loadExperimentDataToBuildKymos();
 				exp.displayCamData(options.parent0Rect);
 				exp.stepFrame = options.analyzeStep;
-				exp.startFrame = options.startFrame;
-				exp.endFrame = options.endFrame;
+				if (options.isFrameFixed) {
+					exp.startFrame = options.startFrame;
+					exp.endFrame = options.endFrame;
+				} else {
+					exp.startFrame = 0;
+					exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
+				}
 				if (computeKymo(exp)) 
 					saveComputation(exp);
 				exp.seqCamData.closeSequence();

@@ -49,7 +49,7 @@ public class Experiment {
 	
 	public int 				startFrame 					= 0;
 	public int 				endFrame 					= 0;
-	public int 				stepFrame 					= 1;
+	public int 				stepFrame 					= 1;					
 	
 	public String			boxID 						= new String("..");
 	public String			experiment					= new String("..");

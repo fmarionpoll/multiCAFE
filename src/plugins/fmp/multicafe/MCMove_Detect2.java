@@ -68,10 +68,8 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		FlowLayout layout1 = (FlowLayout) panel1.getLayout();
 		layout1.setVgap(0);
 		panel1.add( buildBackgroundButton);
-		
 		panel1.add(loadButton);
 		panel1.add(saveButton);
-		
 		panel1.add(new JLabel("threshold for bckgnd "));
 		panel1.add(thresholdBckgSpinner);
 		panel1.add(viewsCheckBox);

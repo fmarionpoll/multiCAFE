@@ -51,8 +51,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	private JCheckBox	ALLCheckBox 			= new JCheckBox("ALL series", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
-	
-	
+
 	private MultiCAFE 	parent0 				= null;
 	private DetectLimits_series thread 			= null;
 
@@ -63,9 +62,6 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
-//		JPanel panel00 = new JPanel();
-//		((FlowLayout)panel00.getLayout()).setVgap(0);
-//		panel00.add( GuiUtil.besidesPanel(detectButton, ALLCheckBox));
 		
 		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		((FlowLayout)panel0.getLayout()).setVgap(0);
