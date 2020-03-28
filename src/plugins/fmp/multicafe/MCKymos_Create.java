@@ -100,7 +100,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		}
 		options.expList = parent0.expList; 
 		
-		options.analyzeStep = parent0.paneSequence.tabIntervals.getAnalysisStep();
+		options.stepFrame = parent0.paneSequence.tabIntervals.getStepFrame();
 		options.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
 		options.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
 		options.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();

@@ -177,10 +177,12 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);	
 		if (exp != null) {
 			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-			detect.startFrame = exp.startFrame;
-			detect.endFrame = exp.endFrame;
-			detect.stepFrame = exp.stepFrame;
 		}
+		detect.stepFrame = parent0.paneSequence.tabIntervals.getStepFrame();
+		detect.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
+		detect.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
+		detect.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();
+		
 		detect.expList = parent0.expList; 
 		detect.expList.index0 = parent0.currentExperimentIndex;
 		detect.expList.index1 = detect.expList.index0;

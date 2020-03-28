@@ -47,6 +47,14 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			
 			exp.loadExperimentCamData();
 			exp.xmlReadDrosoTrackDefault();
+			exp.stepFrame = detect.stepFrame;
+			if (detect.isFrameFixed) {
+				exp.startFrame = detect.startFrame;
+				exp.endFrame = detect.endFrame;
+			} else {
+				exp.startFrame = 0;
+				exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
+			}
 			runDetectFlies(exp);
 			if (!stopFlag)
 				exp.saveComputation();
@@ -65,7 +73,6 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		} 
-//		System.out.println("iterations done: "+statusMsg);
 		if (!threadRunning || stopFlag) {
 			firePropertyChange("thread_ended", null, statusMsg);
 		}
@@ -95,22 +102,22 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			e.printStackTrace();
 		} 
 		
-		detect.seqCamData.seq.beginUpdate();
+		exp.seqCamData.seq.beginUpdate();
 		int it = 0;
-		for (int t = detect.startFrame ; t <= detect.endFrame; t  += detect.stepFrame, it++ ) {				
+		for (int t = exp.startFrame ; t <= exp.endFrame; t  += exp.stepFrame, it++ ) {				
 			if (stopFlag)
 				break;
 			progressBar.updatePositionAndTimeLeft(t);
-			IcyBufferedImage workImage = detect.seqCamData.getImageAndSubtractReference(t, detect.transformop); 
+			IcyBufferedImage workImage = exp.seqCamData.getImageAndSubtractReference(t, detect.transformop); 
 			if (workImage == null)
 				continue;
-			detect.seqCamData.currentFrame = t;
+			exp.seqCamData.currentFrame = t;
 			viewerCamData.setPositionT(t);
-			viewerCamData.setTitle(detect.seqCamData.getDecoratedImageName(t));
+			viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t));
 			detect.findFlies (workImage, t, it);
 		}
 	
-		detect.seqCamData.seq.endUpdate();
+		exp.seqCamData.seq.endUpdate();
 		detect.removeTempRectROIs();
 		if (!stopFlag)
 			detect.copyDetectedROIsToSequence(exp);

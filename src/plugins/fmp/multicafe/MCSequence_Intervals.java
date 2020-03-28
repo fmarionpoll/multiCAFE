@@ -22,9 +22,9 @@ public class MCSequence_Intervals extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -5739112045358747277L;
-	JSpinner 	startAnalysisJSpinner	= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
-	JSpinner 	endAnalysisJSpinner		= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
-	JSpinner 	stepAnalysisJSpinner	= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
+	JSpinner 	startFrameJSpinner	= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
+	JSpinner 	endFrameJSpinner		= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
+	JSpinner 	stepFrameJSpinner	= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	JRadioButton  isFixedFrame			= new JRadioButton("keep the same intervals for all experiment", false);
 	JRadioButton  isFloatingFrame		= new JRadioButton("analyze complete files", true);
 		
@@ -36,11 +36,11 @@ public class MCSequence_Intervals extends JPanel {
 		FlowLayout layout1 = (FlowLayout) panel1.getLayout();
 		layout1.setVgap(0);
 		panel1.add(new JLabel("Analyze from ", SwingConstants.RIGHT));
-		panel1.add(startAnalysisJSpinner);
+		panel1.add(startFrameJSpinner);
 		panel1.add(new JLabel(" to "));
-		panel1.add(endAnalysisJSpinner);
+		panel1.add(endFrameJSpinner);
 		panel1.add(new JLabel(" step "));
-		panel1.add(stepAnalysisJSpinner );
+		panel1.add(stepFrameJSpinner );
 		add(GuiUtil.besidesPanel(panel1));
 		
 		JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -55,40 +55,40 @@ public class MCSequence_Intervals extends JPanel {
 		add(GuiUtil.besidesPanel(panel2));
 		
 		defineActionListeners();
-		startAnalysisJSpinner.setEnabled(false); 
-		endAnalysisJSpinner.setEnabled(false);
+		startFrameJSpinner.setEnabled(false); 
+		endFrameJSpinner.setEnabled(false);
 	}
 	
 	
 	private void defineActionListeners() {
 		isFixedFrame.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
-				startAnalysisJSpinner.setEnabled(true); 
-				endAnalysisJSpinner.setEnabled(true);
+				startFrameJSpinner.setEnabled(true); 
+				endFrameJSpinner.setEnabled(true);
 			}});
 		isFloatingFrame.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
-				startAnalysisJSpinner.setEnabled(false); 
-				endAnalysisJSpinner.setEnabled(false);
+				startFrameJSpinner.setEnabled(false); 
+				endFrameJSpinner.setEnabled(false);
 			}});
 	}
 		
 	public void setAnalyzeFrameToDialog (Experiment exp) {
-		startAnalysisJSpinner.setValue((int) exp.startFrame);
-		endAnalysisJSpinner.setValue((int) exp.endFrame);
-		stepAnalysisJSpinner.setValue(exp.stepFrame);		
+		startFrameJSpinner.setValue((int) exp.startFrame);
+		endFrameJSpinner.setValue((int) exp.endFrame);
+		stepFrameJSpinner.setValue(exp.stepFrame);		
 	}
 	
 	void getAnalyzeFrameFromDialog (Experiment exp) {		
-		exp.startFrame 	= (int) startAnalysisJSpinner.getValue();
-		exp.endFrame 	= (int) endAnalysisJSpinner.getValue();
-		exp.stepFrame	= (int) stepAnalysisJSpinner.getValue();
+		exp.startFrame 	= (int) startFrameJSpinner.getValue();
+		exp.endFrame 	= (int) endFrameJSpinner.getValue();
+		exp.stepFrame	= (int) stepFrameJSpinner.getValue();
 	}
 	
 	public void setEndFrameToDialog (int end) {
-		endAnalysisJSpinner.setValue(end);		
+		endFrameJSpinner.setValue(end);		
 	}
 	
-	int getAnalysisStep() {
-		return (int) stepAnalysisJSpinner.getValue();
+	int getStepFrame() {
+		return (int) stepFrameJSpinner.getValue();
 	}
 	
 	boolean getIsFixedFrame() {
@@ -96,10 +96,10 @@ public class MCSequence_Intervals extends JPanel {
 	}
 	
 	int getStartFrame() {
-		return (int) startAnalysisJSpinner.getValue();
+		return (int) startFrameJSpinner.getValue();
 	}
 	
 	int getEndFrame() {
-		return (int) endAnalysisJSpinner.getValue();
+		return (int) endFrameJSpinner.getValue();
 	}
 }

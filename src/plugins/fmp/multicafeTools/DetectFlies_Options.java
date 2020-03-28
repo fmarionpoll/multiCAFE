@@ -47,6 +47,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	public int		stepFrame ;
 	public int 		startFrame;
 	public int 		endFrame;
+	public boolean	isFrameFixed			= false;
 	public int 		nbframes;
 	public Rectangle parent0Rect 			= null;
 	public SequenceCamData seqCamData 		= null;

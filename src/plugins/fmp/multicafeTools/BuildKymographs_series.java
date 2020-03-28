@@ -63,7 +63,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				
 				exp.loadExperimentDataToBuildKymos();
 				exp.displayCamData(options.parent0Rect);
-				exp.stepFrame = options.analyzeStep;
+				exp.stepFrame = options.stepFrame;
 				if (options.isFrameFixed) {
 					exp.startFrame = options.startFrame;
 					exp.endFrame = options.endFrame;
@@ -243,7 +243,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			int numC = seqCamData.seq.getSizeC();
 			if (numC <= 0)
 				numC = 3;
-			double fimagewidth =  1 + (exp.endFrame - exp.startFrame )/options.analyzeStep;
+			double fimagewidth =  1 + (exp.endFrame - exp.startFrame )/options.stepFrame;
 			imagewidth = (int) fimagewidth;
 			dataType = seqCamData.seq.getDataType_();
 			if (dataType.toString().equals("undefined"))
