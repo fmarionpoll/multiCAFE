@@ -153,12 +153,13 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		detect.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();
 		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp != null) {
-		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-			detect.stepFrame = exp.stepFrame;
-			detect.startFrame = exp.startFrame;
-			detect.endFrame = exp.endFrame;
-		}
+		if (exp != null) 
+			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
+		detect.stepFrame = parent0.paneSequence.tabIntervals.getStepFrame();
+		detect.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
+		detect.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
+		detect.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();
+
 		detect.expList = parent0.expList; 
 		detect.expList.index0 = parent0.currentExperimentIndex;
 		detect.expList.index1 = detect.expList.index0;

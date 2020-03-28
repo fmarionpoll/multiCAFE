@@ -67,6 +67,8 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				if (options.isFrameFixed) {
 					exp.startFrame = options.startFrame;
 					exp.endFrame = options.endFrame;
+					if (exp.endFrame > (exp.seqCamData.seq.getSizeT() - 1))
+						exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
 				} else {
 					exp.startFrame = 0;
 					exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;

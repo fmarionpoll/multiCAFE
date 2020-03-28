@@ -51,6 +51,8 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			if (detect.isFrameFixed) {
 				exp.startFrame = detect.startFrame;
 				exp.endFrame = detect.endFrame;
+				if (exp.endFrame > (exp.seqCamData.seq.getSizeT() - 1))
+					exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
 			} else {
 				exp.startFrame = 0;
 				exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
@@ -83,7 +85,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		
 	private void runDetectFlies(Experiment exp) {
 		detect.initParametersForDetection(exp);
-		detect.initTempRectROIs(detect.seqCamData.seq);
+		detect.initTempRectROIs(exp.seqCamData.seq);
 		exp.cleanPreviousDetections();
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
 		progressBar.initChrono(detect.endFrame-detect.startFrame+1);
@@ -94,7 +96,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 				rectv.setLocation(detect.parent0Rect.x+ detect.parent0Rect.width, detect.parent0Rect.y);
 				viewerCamData.setBounds(rectv);
 				ov = new OverlayThreshold(exp.seqCamData);
-				detect.seqCamData.seq.addOverlay(ov);	
+				exp.seqCamData.seq.addOverlay(ov);	
 				ov.setThresholdSingle(exp.cages.detect.threshold);
 				ov.painterChanged();
 			}});
@@ -118,7 +120,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		}
 	
 		exp.seqCamData.seq.endUpdate();
-		detect.removeTempRectROIs();
+		detect.removeTempRectROIs(exp);
 		if (!stopFlag)
 			detect.copyDetectedROIsToSequence(exp);
 		progressBar.close();

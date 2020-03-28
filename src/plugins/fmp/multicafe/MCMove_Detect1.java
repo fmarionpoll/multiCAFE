@@ -45,7 +45,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 
 	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
 	private JComboBox<TransformOp> backgroundComboBox = new JComboBox<> (new TransformOp[]  {TransformOp.NONE, TransformOp.REF_PREVIOUS, TransformOp.REF_T0});
-	private JSpinner thresholdSpinner		= new JSpinner(new SpinnerNumberModel(100, 0, 255, 10));
+	private JSpinner thresholdSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 10));
 	private JSpinner jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 255, 1));
 	private JCheckBox objectLowsizeCheckBox = new JCheckBox("object > ");
 	private JSpinner objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
@@ -175,9 +175,8 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		detect.threshold		= (int) thresholdSpinner.getValue();
 		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);	
-		if (exp != null) {
+		if (exp != null)
 			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		}
 		detect.stepFrame = parent0.paneSequence.tabIntervals.getStepFrame();
 		detect.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
 		detect.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
@@ -190,7 +189,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 			detect.expList.index0 = 0;
 			detect.expList.index1 = parent0.expList.experimentList.size()-1;
 		}
-		detect.seqCamData 	= exp.seqCamData;
+
 		thread.stopFlag 	= false;
 		thread.detect 		= detect;
 		return true;
