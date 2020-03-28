@@ -47,8 +47,7 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 			
 			exp.loadExperimentData();
 			exp.displayCamData(options.parent0Rect);
-			boolean flag = exp.loadKymographs();
-			if (flag) {
+			if ( exp.loadKymographs()) {
 				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
 				detectCapillaryLevels(exp);
 				saveComputation(exp);

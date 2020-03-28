@@ -186,7 +186,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		if (ALLCheckBox.isSelected()) {
 			options.expList.index0 = 0;
 			options.expList.index1 = parent0.expList.experimentList.size()-1;
-		}
+		}	
 		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();
