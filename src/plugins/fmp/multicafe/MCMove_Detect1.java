@@ -174,9 +174,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		detect.transformop		= (TransformOp) backgroundComboBox.getSelectedItem();
 		detect.threshold		= (int) thresholdSpinner.getValue();
 		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
-		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);	
-		if (exp != null)
-			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
+
 		detect.stepFrame = parent0.paneSequence.tabIntervals.getStepFrame();
 		detect.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
 		detect.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
@@ -196,15 +194,16 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	}
 	
 	void startComputation() {
-		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
-		if (exp != null)
-			parent0.paneSequence.tabClose.closeExp(exp);
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp == null) 
+			return;
+		parent0.paneSequence.tabClose.closeExp(exp);
 		
 		thread = new DetectFlies1_series();		
-			
+		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
 		initTrackParameters();
+		
 		thread.buildBackground	= false;
 		thread.detectFlies		= true;
 		thread.addPropertyChangeListener(this);

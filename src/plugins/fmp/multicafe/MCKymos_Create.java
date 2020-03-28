@@ -42,8 +42,6 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 	private MultiCAFE 		parent0						= null;
 	private BuildKymographs_series thread 				= null;
 
-
-
 	// -----------------------------------------------------
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -84,7 +82,6 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog (exp);
 	}
 	
-	
 	private boolean initBuildParameters(Experiment exp) {
 		if (thread == null)
 			return false;
@@ -113,15 +110,14 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 	}
 		
 	private void startComputation() {
-		thread = new BuildKymographs_series();	
-		
+		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null) 
 			return;
 		parent0.paneSequence.tabClose.closeExp(exp);
+		
+		thread = new BuildKymographs_series();	
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
-		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		initBuildParameters(exp);
 		
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;

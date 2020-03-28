@@ -49,12 +49,11 @@ public class DetectFlies_Options implements XMLPersistent {
 	public boolean	isFrameFixed			= false;
 	public int 		nbframes;
 	public Rectangle parent0Rect 			= null;
-//	public SequenceCamData seqCamData 		= null;
+
 	public ExperimentList expList 			= null;
 	public Rectangle 	rectangleAllCages 	= null;
 	ROI2DRectangle [] 	tempRectROI;
 	ROI [][] 			resultFlyPositionArrayList;
-	
 	
 	// -----------------------------------------------------
 	

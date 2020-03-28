@@ -191,13 +191,12 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	}
 	
 	void startComputation() {
-		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
-		if (parent0.currentExperimentIndex >= parent0.expList.experimentList.size())
-			parent0.currentExperimentIndex = parent0.expList.experimentList.size()-1;
+		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		currentExp = parent0.currentExperimentIndex;
 		Experiment exp = parent0.expList.getExperiment(currentExp);
-		if (exp != null)
-			parent0.paneSequence.tabClose.closeExp(exp);
+		if (exp == null)
+			return;
+		parent0.paneSequence.tabClose.closeExp(exp);
 		
 		detectFlies2Thread = new DetectFlies2_series();		
 		initTrackParameters();

@@ -112,8 +112,6 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		detect.initParametersForDetection(exp);
 		detect.threshold = detect.thresholdDiff;
 		exp.cleanPreviousDetections();
-		System.out.println("Computation over frames: " + detect.startFrame + " - " + detect.endFrame);
-
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
@@ -130,7 +128,6 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		} catch (InvocationTargetException | InterruptedException e) {
 			e.printStackTrace();
 		}
-
 		if (buildBackground || exp.seqCamData.refImage == null) {
 			if (!exp.loadReferenceImage()) {
 				try {
@@ -144,10 +141,8 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 				exp.saveReferenceImage();
 			}
 		}
-
 		if (detectFlies)
 			findFlies(exp);
-
 		closeViewersAndSequences ();
 	}
 	
@@ -156,14 +151,12 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			seqNegative.closeSequence();
 			seqNegative = null;
 		}
-
 		if (seqPositive != null) {
 			if (vPositive != null)
 				vPositive.close();
 			seqPositive.closeSequence();
 			seqPositive = null;
 		}
-
 		if (!buildBackground && seqReference != null) {
 			if (vReference != null)
 				vReference.close();
