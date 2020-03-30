@@ -199,7 +199,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			for (int t = exp.startFrame; t <= exp.endFrame; t += exp.stepFrame, it++) {
 				if (stopFlag)
 					break;
-				progressBar.updatePositionAndTimeLeft(t);
+				progressBar.updatePosition(t);
 				IcyBufferedImage workImage = exp.seqCamData.getImage(t, 0);
 				if (workImage == null)
 					continue;

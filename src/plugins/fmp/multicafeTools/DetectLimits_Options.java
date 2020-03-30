@@ -16,8 +16,8 @@ public class DetectLimits_Options implements XMLPersistent {
 			
 	public	boolean		detectL					= true;
 	public	boolean		detectR					= true;
-	public 	boolean 	detectAllImages 		= true;
-	public 	int			firstImage				= 0;
+	public 	boolean 	detectAllKymos 			= true;
+	public 	int			firstKymo				= 0;
 	public 	boolean		directionUp				= true;
 	public 	int			detectLevelThreshold 	= 35;
 	public 	TransformOp	transformForLevels 		= TransformOp.R2MINUS_GB;
@@ -36,7 +36,7 @@ public class DetectLimits_Options implements XMLPersistent {
 		destination.transformForLevels 		= transformForLevels;
 		destination.directionUp 			= directionUp;
 		destination.detectLevelThreshold 	= detectLevelThreshold;
-		destination.detectAllImages 		= detectAllImages;
+		destination.detectAllKymos 			= detectAllKymos;
 	}
 
 	@Override
@@ -45,9 +45,9 @@ public class DetectLimits_Options implements XMLPersistent {
 	    if (nodeMeta != null) {
 	    	detectTop = XMLUtil.getElementBooleanValue(nodeMeta, "detectTop", detectTop);
 	    	detectBottom = XMLUtil.getElementBooleanValue(nodeMeta, "detectBottom", detectBottom);
-	    	detectAllImages = XMLUtil.getElementBooleanValue(nodeMeta, "detectAllImages", detectAllImages);
+	    	detectAllKymos = XMLUtil.getElementBooleanValue(nodeMeta, "detectAllImages", detectAllKymos);
 	    	directionUp = XMLUtil.getElementBooleanValue(nodeMeta, "directionUp", directionUp);
-	    	firstImage = XMLUtil.getElementIntValue(nodeMeta, "firstImage", firstImage);
+	    	firstKymo = XMLUtil.getElementIntValue(nodeMeta, "firstImage", firstKymo);
 	    	detectLevelThreshold = XMLUtil.getElementIntValue(nodeMeta, "detectLevelThreshold", detectLevelThreshold);
 	    	transformForLevels = TransformOp.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transformForLevels.toString()));       
 	    }
@@ -60,9 +60,9 @@ public class DetectLimits_Options implements XMLPersistent {
 	    if (nodeMeta != null) {
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "detectTop", detectTop);
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "detectBottom", detectBottom);
-	    	XMLUtil.setElementBooleanValue(nodeMeta, "detectAllImages", detectAllImages);
+	    	XMLUtil.setElementBooleanValue(nodeMeta, "detectAllImages", detectAllKymos);
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "directionUp", directionUp);
-	    	XMLUtil.setElementIntValue(nodeMeta, "firstImage", firstImage);
+	    	XMLUtil.setElementIntValue(nodeMeta, "firstImage", firstKymo);
 	    	XMLUtil.setElementIntValue(nodeMeta, "detectLevelThreshold", detectLevelThreshold);
 	        XMLUtil.setElementValue(nodeMeta, "Transform", transformForLevels.toString());       
 	    }

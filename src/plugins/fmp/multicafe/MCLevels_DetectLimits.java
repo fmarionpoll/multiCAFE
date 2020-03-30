@@ -41,19 +41,20 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 
 	private static final long serialVersionUID = -6329863521455897561L;
 	private JComboBox<String> 	directionComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
-	private JCheckBox	allImagesCheckBox 		= new JCheckBox ("all images", true);
+	private JCheckBox	allKymosCheckBox 		= new JCheckBox ("all images", true);
 	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
 	private JButton		displayTransform1Button	= new JButton("Display");
 	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
 	private String 		detectString 			= "Detect";
 	private JButton 	detectButton 			= new JButton(detectString);
 	private JCheckBox	partCheckBox 			= new JCheckBox (" from", false);
-	private JCheckBox	ALLCheckBox 			= new JCheckBox("ALL series", false);
+	private JCheckBox	allSeriesCheckBox 			= new JCheckBox("ALL series", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
 
 	private MultiCAFE 	parent0 				= null;
 	private DetectLimits_series thread 			= null;
+	private int indexCurrentKymo 				= 0;
 
 	
 	
@@ -65,8 +66,8 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		
 		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		((FlowLayout)panel0.getLayout()).setVgap(0);
-		panel0.add( ALLCheckBox);
-		panel0.add(allImagesCheckBox);
+		panel0.add( allSeriesCheckBox);
+		panel0.add(allKymosCheckBox);
 		panel0.add(leftCheckBox);
 		panel0.add(rightCheckBox);
 		add( GuiUtil.besidesPanel(detectButton, panel0 ));
@@ -114,12 +115,12 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 				}
 			}});
 		
-		ALLCheckBox.addActionListener(new ActionListener () { 
+		allSeriesCheckBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				Color color = Color.BLACK;
-				if (ALLCheckBox.isSelected()) 
+				if (allSeriesCheckBox.isSelected()) 
 					color = Color.RED;
-				ALLCheckBox.setForeground(color);
+				allSeriesCheckBox.setForeground(color);
 				detectButton.setForeground(color);
 		}});
 
@@ -160,7 +161,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		directionComboBox.setSelectedIndex(index);
 		setDetectLevelThreshold(options.detectLevelThreshold);
 		thresholdSpinner.setValue(options.detectLevelThreshold);
-		allImagesCheckBox.setSelected(options.detectAllImages);
+		allKymosCheckBox.setSelected(options.detectAllKymos);
 		leftCheckBox.setSelected(options.detectL);
 		rightCheckBox.setSelected(options.detectR);
 	}
@@ -170,7 +171,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		options.transformForLevels = (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
 		options.detectLevelThreshold = getDetectLevelThreshold();
-		options.detectAllImages = allImagesCheckBox.isSelected();
+		options.detectAllKymos = allKymosCheckBox.isSelected();
 		options.detectL = leftCheckBox.isSelected();
 		options.detectR = rightCheckBox.isSelected();
 	}
@@ -181,30 +182,32 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		
 		DetectLimits_Options options= thread.options;
 		options.expList = parent0.expList; 
-		options.expList.index0 = parent0.currentExperimentIndex;
-		options.expList.index1 = options.expList.index0;
-		if (ALLCheckBox.isSelected()) {
+		if (allSeriesCheckBox.isSelected()) {
 			options.expList.index0 = 0;
 			options.expList.index1 = parent0.expList.experimentList.size()-1;
-		}	
+		} else {
+			options.expList.index0 = parent0.currentExperimentIndex;
+			options.expList.index1 = parent0.currentExperimentIndex;
+		}
 		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();
-		options.detectAllImages 	= allImagesCheckBox.isSelected();
-		int first = parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
-		if (first <0)
-			first = 0;
-		options.firstImage = first;
+		options.detectAllKymos 		= allKymosCheckBox.isSelected();
+		if (!allKymosCheckBox.isSelected())
+			options.firstKymo = exp.seqKymos.currentFrame;
+		else 
+			options.firstKymo = 0;
+		indexCurrentKymo = options.firstKymo;
 		options.analyzePartOnly		= partCheckBox.isSelected();
-		options.startPixel			= (int) startSpinner.getValue();
-		options.endPixel			= (int) endSpinner.getValue();
+		options.startPixel			= (int) startSpinner.getValue() / exp.stepFrame;
+		options.endPixel			= (int) endSpinner.getValue() / exp.stepFrame;
 		options.spanDiffTop			= getSpanDiffTop();
 		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
-		
 		return true;
 	}
 	
 	void series_detectLimitsStart() {
+		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null)
 			return;
@@ -213,7 +216,6 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		initBuildParameters(exp);
 		
 		thread.addPropertyChangeListener(this);
@@ -233,6 +235,8 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
 			parent0.paneSequence.openExperiment(exp);
 			detectButton.setText(detectString);
+//			if (!allKymosCheckBox.isSelected())
+//				parent0.paneKymos.tabDisplay.kymographNamesComboBox.setSelectedIndex(indexCurrentKymo);
 		 }
 	}
 }

@@ -179,16 +179,18 @@ public class MCLevels_Edit  extends JPanel {
 			List<ROI2D> listOfRois = cap.transferMeasuresToROIs();
 			seqKymos.seq.addROIs (listOfRois, false);
 		} else {
-			CapillaryLimits caplimits = null;
 			if (optionSelected .contains("top")) 
-				caplimits = cap.ptsTop;
+				removeAndUpdate(seqKymos, cap, cap.ptsTop, roi);
 			if (optionSelected.contains("bottom"))
-				caplimits =cap.ptsBottom;
+				removeAndUpdate(seqKymos, cap, cap.ptsBottom, roi);
 			if (optionSelected.contains("deriv"))
-				caplimits =cap.ptsDerivative;
-			removeMeasuresEnclosedInRoi(caplimits, roi);
-			seqKymos.updateROIFromCapillaryMeasure(cap, caplimits);
+				removeAndUpdate(seqKymos, cap, cap.ptsDerivative, roi);
 		}
+	}
+	
+	private void removeAndUpdate(SequenceKymos seqKymos, Capillary cap, CapillaryLimits caplimits, ROI2D roi) {
+		removeMeasuresEnclosedInRoi(caplimits, roi);
+		seqKymos.updateROIFromCapillaryMeasure(cap, caplimits);
 	}
 	
 	void removeMeasuresEnclosedInRoi(CapillaryLimits caplimits, ROI2D roi) {

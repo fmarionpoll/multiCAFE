@@ -246,10 +246,10 @@ public class MCKymos_Display extends JPanel {
 		
 		int icurrent = kymographNamesComboBox.getSelectedIndex();
 		if (icurrent != isel) {
-			seqKymos.currentFrame = isel;
 			seqKymos.validateRoisAtT(icurrent);
 			kymographNamesComboBox.setSelectedIndex(isel);
 		}
+		seqKymos.currentFrame = isel;
 		Viewer v = seqKymos.seq.getFirstViewer();
 		if (v != null)
 			v.setPositionT(isel);

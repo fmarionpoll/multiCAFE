@@ -98,8 +98,8 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 		int jitter = 10;
 		int kymofirst = 0;
 		int kymolast = seqKymos.seq.getSizeT() -1;
-		if (! options.detectAllImages) {
-			kymofirst = options.firstImage;
+		if (! options.detectAllKymos) {
+			kymofirst = options.firstKymo;
 			kymolast = kymofirst;
 		}
 		seqKymos.seq.beginUpdate();
