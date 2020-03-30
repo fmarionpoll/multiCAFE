@@ -54,7 +54,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 
 	private MultiCAFE 	parent0 				= null;
 	private DetectLimits_series thread 			= null;
-	private int indexCurrentKymo 				= 0;
+//	private int indexCurrentKymo 				= 0;
 
 	
 	
@@ -197,7 +197,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 			options.firstKymo = exp.seqKymos.currentFrame;
 		else 
 			options.firstKymo = 0;
-		indexCurrentKymo = options.firstKymo;
+//		indexCurrentKymo = options.firstKymo;
 		options.analyzePartOnly		= partCheckBox.isSelected();
 		options.startPixel			= (int) startSpinner.getValue() / exp.stepFrame;
 		options.endPixel			= (int) endSpinner.getValue() / exp.stepFrame;
@@ -236,7 +236,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 			parent0.paneSequence.openExperiment(exp);
 			detectButton.setText(detectString);
 //			if (!allKymosCheckBox.isSelected())
-//				parent0.paneKymos.tabDisplay.kymographNamesComboBox.setSelectedIndex(indexCurrentKymo);
+//				parent0.paneKymos.tabDisplay.selectKymograph(indexCurrentKymo);
 		 }
 	}
 }
