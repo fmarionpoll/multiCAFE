@@ -21,9 +21,12 @@ import icy.canvas.IcyCanvas;
 import icy.canvas.Layer;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
+import icy.gui.viewer.ViewerEvent;
+import icy.gui.viewer.ViewerListener;
 import icy.image.IcyBufferedImage;
 import icy.main.Icy;
 import icy.roi.ROI;
+
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceKymos;
@@ -32,7 +35,7 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
 
-public class MCKymos_Display extends JPanel {
+public class MCKymos_Display extends JPanel implements ViewerListener {
 	/**
 	 * 
 	 */
@@ -41,7 +44,7 @@ public class MCKymos_Display extends JPanel {
 	JButton 	updateButton 			= new JButton("Update");
 	JButton  	previousButton		 	= new JButton("<");
 	JButton		nextButton				= new JButton(">");
-	public JCheckBox 	viewKymosCheckBox 		= new JCheckBox("View kymos");
+	public JCheckBox viewKymosCheckBox	= new JCheckBox("View kymos");
 	JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("capillary levels", true);
 	JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative", true);
 	JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps", true);
@@ -151,7 +154,6 @@ public class MCKymos_Display extends JPanel {
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null || seqKymos.seq == null ) {
-//			System.out.println("displayON() skipped");
 			return;
 		}
 		
@@ -165,7 +167,7 @@ public class MCKymos_Display extends JPanel {
 			int deltay = 5;
 
 			Viewer v = new Viewer(seqKymos.seq, true);
-			v.addListener(parent0);
+			v.addListener(this);
 			Rectangle rectDataView = v.getBounds();
 			rectDataView.height = rectMaster.height;
 			IcyBufferedImage img = seqKymos.seq.getFirstImage();
@@ -251,8 +253,29 @@ public class MCKymos_Display extends JPanel {
 		}
 		seqKymos.currentFrame = isel;
 		Viewer v = seqKymos.seq.getFirstViewer();
-		if (v != null)
+		if (v != null && v.getPositionT() != isel)
 			v.setPositionT(isel);
+		String name = exp.seqCamData.getCSFileName() +": " + (String) kymographNamesComboBox.getSelectedItem();
+		v.setTitle(name);
+	}
+
+	@Override
+	public void viewerChanged(ViewerEvent event) {
+		if ( event.getType() == ViewerEvent.ViewerEventType.POSITION_CHANGED ) {
+			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			if (exp == null) 
+				return;
+
+			Viewer v = exp.seqKymos.seq.getFirstViewer();
+			int t = v.getPositionT();
+			selectKymograph(t);
+		}
+		
+	}
+
+	@Override
+	public void viewerClosed(Viewer viewer) {
+		viewer.removeListener(this);
 	}
 
 }

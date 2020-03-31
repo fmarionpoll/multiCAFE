@@ -127,21 +127,19 @@ public class MCKymos_File extends JPanel {
 					break;
 			}
 		}
-		
 		List<String> myList = exp.seqKymos.loadListOfKymographsFromCapillaries(exp.seqCamData.getDirectory(), exp.capillaries);
 		if (seqKymos.isInterrupted_loadImages) {
 			seqKymos.isInterrupted_loadImages = false;
 			return false;
 		}
-		
+	
 		flag = seqKymos.loadImagesFromList(myList, true);
 		if (seqKymos.isInterrupted_loadImages) {
 			seqKymos.isInterrupted_loadImages = false;
 			return false;
 		}
-		seqKymos.transferCapillariesToKymosRois(exp.capillaries);
-		
 
+		seqKymos.transferCapillariesToKymosRois(exp.capillaries);
 		if (flag) {
 			SwingUtilities.invokeLater(new Runnable() {
 			    public void run() {

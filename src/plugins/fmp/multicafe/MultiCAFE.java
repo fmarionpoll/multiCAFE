@@ -81,10 +81,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 				int t = v.getPositionT();
 				if (id == exp.seqCamData.seq.getId())
 					v.setTitle(exp.seqCamData.getDecoratedImageName(t));
-				else {
-					String name = exp.seqCamData.getCSFileName() +": " + (String) paneKymos.tabDisplay. kymographNamesComboBox.getSelectedItem();
-					v.setTitle(name);
-				}
 			}
 		}
 	}
