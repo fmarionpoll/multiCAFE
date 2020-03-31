@@ -103,7 +103,7 @@ public class MCLevels_Edit  extends JPanel {
 		seqKymos.transferKymosRoisToCapillaries(exp.capillaries);		
 		
 		int lastX = findLastXLeftOfRoi(cap, roiRef);
-		cap.cropMeasures(lastX+1);
+		cap.cropMeasuresToNPoints(lastX+1);
 		
 		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsTop);
 		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsBottom);

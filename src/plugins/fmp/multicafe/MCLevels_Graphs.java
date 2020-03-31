@@ -92,15 +92,12 @@ public class MCLevels_Graphs extends JPanel {
 	}
 
 	private XYMultiChart xyDisplayGraphsItem(Experiment exp, String title, EnumListType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) {	
-		if (iChart != null && iChart.mainChartPanel.isValid()) {
-			iChart.fetchNewData(exp, option);
-		}
-		else {
-			iChart = new XYMultiChart();
-			iChart.createPanel(title);
-			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
-			iChart.displayData(exp, option);
-		}
+		if (iChart != null) 
+			iChart.mainChartFrame.dispose();
+		iChart = new XYMultiChart();
+		iChart.createPanel(title);
+		iChart.setLocationRelativeToRectangle(rectv, ptRelative);
+		iChart.displayData(exp, option);
 		iChart.mainChartFrame.toFront();
 		return iChart;
 	}

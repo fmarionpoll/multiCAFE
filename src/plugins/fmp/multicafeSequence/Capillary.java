@@ -151,7 +151,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return datai;
 	}
 	
-	public void cropMeasures (int npoints) {
+	public void cropMeasuresToNPoints (int npoints) {
 		if (ptsTop.polyline != null)
 			ptsTop.cropToNPoints(npoints);
 		if (ptsBottom.polyline != null)
