@@ -47,7 +47,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 			
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
 				Experiment exp = expList.experimentList.get(index);
-				
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				if (options.topLevel) 		col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVEL);
@@ -68,7 +67,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 			
 			if (options.transpose && options.pivot) {
 				progress.setMessage( "Build pivot tables... ");
-				
 				String sourceSheetName = null;
 				if (options.topLevel) 			sourceSheetName = EnumXLSExportItems.TOPLEVEL.toString();
 				else if (options.topLevelDelta) sourceSheetName = EnumXLSExportItems.TOPLEVELDELTA.toString();
@@ -163,27 +161,26 @@ public class XLSExportCapillariesResults extends XLSExport {
 			if (cap.getName().equals(capName)) {
 				int lastValue = 0;
 				switch (xlsoption) {
-				case SUMGULPS:
-				case SUMGULPS_LR:
-					lastValue = cap.getLastMeasure(EnumListType.cumSum);
-					break;
-				case TOPLEVELDELTA:
-				case TOPLEVELDELTA_LR: 
-					lastValue = cap.getLastDeltaMeasure(EnumListType.topLevel);
-					break;
-				case DERIVEDVALUES:
-					lastValue = cap.getLastMeasure(EnumListType.derivedValues);
-					break;
-				default:
-				case TOPLEVEL:
-				case TOPLEVEL_LR:
-					if (optiont0)
-						lastValue = cap.getLastMeasure(EnumListType.topLevel) -cap.getT0Measure(EnumListType.topLevel);
-					else
-						lastValue = cap.getLastMeasure(EnumListType.topLevel);
-					break;
+					case SUMGULPS:
+					case SUMGULPS_LR:
+						lastValue = cap.getLastMeasure(EnumListType.cumSum);
+						break;
+					case TOPLEVELDELTA:
+					case TOPLEVELDELTA_LR: 
+						lastValue = cap.getLastDeltaMeasure(EnumListType.topLevel);
+						break;
+					case DERIVEDVALUES:
+						lastValue = cap.getLastMeasure(EnumListType.derivedValues);
+						break;
+					default:
+					case TOPLEVEL:
+					case TOPLEVEL_LR:
+						if (optiont0)
+							lastValue = cap.getLastMeasure(EnumListType.topLevel) -cap.getT0Measure(EnumListType.topLevel);
+						else
+							lastValue = cap.getLastMeasure(EnumListType.topLevel);
+						break;
 				}
-				
 				double scalingFactorToPhysicalUnits = exp.capillaries.desc.volume / exp.capillaries.desc.pixels;
 				valuePreviousSeries += (lastValue * scalingFactorToPhysicalUnits);
 				break;
@@ -233,14 +230,12 @@ public class XLSExportCapillariesResults extends XLSExport {
 			outputFieldHeaders(sheet, options.transpose);
 		}
 		Point pt = new Point(col0, 0);
-		if (options.collateSeries) {
+		if (options.collateSeries) 
 			pt.x = expList.getStackColumnPosition(exp, col0);
-		}
-
-		style = workBook.createCellStyle();
+		xssfCellStyle = workBook.createCellStyle();
 	    font = workBook.createFont();
 	    font.setColor(HSSFColor.HSSFColorPredefined.RED.getIndex());
-	    style.setFont(font);
+	    xssfCellStyle.setFont(font);
 		
 		pt = writeSeriesInfos(exp, sheet, xlsExportOption, pt, options.transpose, charSeries);
 		pt = writeData(exp, sheet, xlsExportOption, pt, options.transpose, charSeries, arrayList);
@@ -263,7 +258,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			charSeries = "t";
 		int startFrame 	= (int) exp.startFrame;
 		int endFrame 	= (int) exp.endFrame;
-		int fullstep 	= exp.stepFrame * options.pivotBinStep;
+		int fullstep 	= exp.stepFrame * options.buildExcelBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
 		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;
@@ -289,121 +284,123 @@ public class XLSExportCapillariesResults extends XLSExport {
 		
 		pt_main.y = row_y0 -1;
 		int lastFrame = 0;
-		
-		//System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame + " row=" + (row_y0+1) + " fullstep=" + fullstep);
 		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+= fullstep) {	
 			pt_main.x = col0;
 			pt_main.y++;
 			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;
 			XLSUtils.setValue(sheet, pt_main, transpose, imageTimeMinutes);
 			pt_main.x++;
-//			if (exp.seqCamData.isFileStack())
-//				XLSUtils.setValue(sheet, pt_main, transpose, getShortenedName(exp.seqCamData, currentFrame) );
 			pt_main.x++;
 			int colseries = pt_main.x;
+			int j = (currentFrame - startFrame)/exp.stepFrame;
 			switch (option) {
 				case TOPLEVEL_LR:
 				case TOPLEVELDELTA_LR:
 				case SUMGULPS_LR:
-				for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
-					int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
-					if (colL >= 0)
-						pt_main.x = colseries + colL;			
-					List<Integer> dataL = dataArrayList.get(idataArray).data ;
-					List<Integer> dataR = dataArrayList.get(idataArray+1).data;
-					if (dataL != null && dataR != null) {
-						int j = (currentFrame - startFrame)/fullstep * options.pivotBinStep;
-						if (j < dataL.size() && j < dataR.size()) {
+					for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
+						XLSCapillaryResults dataListL = dataArrayList.get(idataArray);
+						int colL = getColFromKymoFileName(dataListL.name);
+						if (j < dataListL.data.size()) {
+							double dataL = dataListL.data.get(j) ;
+							int colR = colL;
+							XLSCapillaryResults dataListR = null;
+							double dataR = 0.0;
+							if (idataArray < dataArrayList.size()-1) {
+								dataListR = dataArrayList.get(idataArray+1);
+								colR = getColFromKymoFileName(dataListR.name);
+								if (colR == colL +1)
+									if (j < dataListR.data.size())
+										dataR = dataListR.data.get(j);
+								else
+									idataArray--;
+							}
+							if (colL >= 0)
+								pt_main.x = colseries + colL;
 							Point pt0 = new Point(pt_main);
-							double valueL = (dataL.get(j)+dataR.get(j))*scalingFactorToPhysicalUnits;
+							double valueL = (dataL+dataR)*scalingFactorToPhysicalUnits;
 							XLSUtils.setValue(sheet, pt0, transpose, valueL);
 							pt0.x ++;
-							double valueR = (dataL.get(j)-dataR.get(j))*scalingFactorToPhysicalUnits/valueL;
+							double valueR = (dataL-dataR)*scalingFactorToPhysicalUnits/valueL;
 							XLSUtils.setValue(sheet, pt0, transpose, valueR);
 						}
 					}
-					pt_main.x++;
-					pt_main.x++;
-				}
+					pt_main.x += 2;
 				break;
 				default:
-				for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
-					int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
-					if (col >= 0)
-						pt_main.x = colseries + col;			
-					List<Integer> data = dataArrayList.get(idataArray).data;
-					if (data != null) {
-						int datasize = data.size();
-						int j = (currentFrame - startFrame)/fullstep* options.pivotBinStep;
-						if (j < datasize) {
-							double value = data.get(j)*scalingFactorToPhysicalUnits;
-							XLSUtils.setValue(sheet, pt_main, transpose, value);
+					for (int idataArray=0; idataArray< dataArrayList.size(); idataArray++) {
+						int col = getColFromKymoFileName(dataArrayList.get(idataArray).name);
+						if (col >= 0)
+							pt_main.x = colseries + col;			
+						List<Integer> data = dataArrayList.get(idataArray).data;
+						if (data != null) {
+							int datasize = data.size();
+							if (j < datasize) {
+								double value = data.get(j)*scalingFactorToPhysicalUnits;
+								XLSUtils.setValue(sheet, pt_main, transpose, value);
+							}
 						}
 					}
-					pt_main.x++;
-				}
+					pt_main.x ++;
 				break;
 			}
 			lastFrame = currentFrame;
-		}
-		//System.out.println("lastFrame reached =" + lastFrame+ " row=" + pt_main.y);
-		
+		}		
 		
 		// pad remaining cells with the last value
 		if (options.collateSeries && options.padIntervals && exp.nextExperiment != null) {
 			Point padpt = new Point(pt_main);
 			padpt.x = col0;
 			int startNextExpt = (int) (((exp.nextExperiment.fileTimeImageFirstMinute- exp.fileTimeImageFirstMinute)/fullstep)*fullstep);
-			//int endThisExpt = (int) (((exp.fileTimeImageLastMinute- exp.fileTimeImageFirstMinute)/fullstep) * fullstep);		
-			//System.out.println( "endThisExpt=" + endThisExpt +" startNextExpt="+startNextExpt + " row="+ (padpt.y +1));
-			//System.out.println( "i.e.  index t=" + lastFrame/fullstep +" to="+startNextExpt/fullstep);
 			exp.nextExperiment.loadKymos_Measures();
 				
 			for (int nextFrame= lastFrame; nextFrame <= startNextExpt; nextFrame+= fullstep, padpt.y++) {	
 				padpt.x = col0;
-				//padpt.y++;
-				
 				XLSUtils.setValue(sheet, padpt, transpose, "xxxT");
-				XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);
+				XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle);
 				padpt.x++;
 				if (exp.seqCamData.isFileStack()) {
-				XLSUtils.setValue(sheet, padpt, transpose, "xxxF" );
-				XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);	
+					XLSUtils.setValue(sheet, padpt, transpose, "xxxF" );
+					XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle);	
 				}
 				padpt.x++;
-				
 				int colseries = padpt.x;
 				switch (option) {
 					case TOPLEVEL_LR:
 					case TOPLEVELDELTA_LR:
 					case SUMGULPS_LR:
 					for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
-						int colL = getColFromKymoFileName(dataArrayList.get(idataArray).name);
-						padpt.x = colseries + colL;
+						XLSCapillaryResults dataListL = dataArrayList.get(idataArray);
+						int colL2 = getColFromKymoFileName(dataListL.name);
+						padpt.x = colseries + colL2;
 						boolean flag = true;
-						if (colL >1 && colL < 18) {
-							flag = exp.nextExperiment.isFlyAlive(colL/2); 
+						if (colL2 >1 && colL2 < 18) {
+							flag = exp.nextExperiment.isFlyAlive(colL2/2); 
 						} else {
-							flag = exp.nextExperiment.isDataAvailable(colL/2);
+							flag = exp.nextExperiment.isDataAvailable(colL2/2);
 						}
 						if (flag) {
-							if (colL >= 0)
-								padpt.x = colseries + colL;			
-							List<Integer> dataL = dataArrayList.get(idataArray).data ;
-							List<Integer> dataR = dataArrayList.get(idataArray+1).data;
-							if (dataL != null && dataR != null) {
-								int j = dataL.size()-1;
-								int k = dataR.size()-1;
-								double valueL = (dataL.get(j)+dataR.get(k))*scalingFactorToPhysicalUnits;
-								XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
-								XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);
-								
-								padpt.x ++;
-								double valueR = (dataL.get(j)-dataR.get(k))*scalingFactorToPhysicalUnits/valueL;
-								XLSUtils.setValue(sheet, padpt, transpose, valueR); // "xxxR");
-								XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);
-								
+							if (colL2 >= 0)
+								padpt.x = colseries + colL2;			
+							int lastL = dataListL.data.size()-1;
+							double dataL = dataListL.data.get(lastL);
+							double dataR = 0;
+							if (idataArray < dataArrayList.size()-1) {
+								XLSCapillaryResults dataListR = dataArrayList.get(idataArray+1);
+								int colR = getColFromKymoFileName(dataListR.name);
+								if (colR == colL2 +1) {
+									int lastR = dataListR.data.size()-1;
+									dataR = dataListR.data.get(lastR)*scalingFactorToPhysicalUnits;
+								}
+								else
+									idataArray--;
 							}
+							double valueL = (dataL+dataR)*scalingFactorToPhysicalUnits;
+							XLSUtils.setValue(sheet, padpt, transpose, valueL); // "xxxL");
+							XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle);
+							padpt.x ++;
+							double valueR = (dataL-dataR)*scalingFactorToPhysicalUnits/valueL;
+							XLSUtils.setValue(sheet, padpt, transpose, valueR); // "xxxR");
+							XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle);
 						}
 					}
 					break;
@@ -417,19 +414,17 @@ public class XLSExportCapillariesResults extends XLSExport {
 						} else {
 							flag = exp.nextExperiment.isDataAvailable(col/2);
 						}
-					
 						if (flag) {
 							XLSUtils.setValue(sheet, padpt, transpose, "xxx-");
-							XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);
+							XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle);
 							List<Integer> data = dataArrayList.get(idataArray).data;
 							if (data != null) {
 								int j = data.size()-1; 
 								double value = data.get(j)*scalingFactorToPhysicalUnits;
 								XLSUtils.setValue(sheet, padpt, transpose, value); // "xxx-");
-								XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(style);
-							} else {
+								XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle);
+							} else 
 								System.out.println("skip because data is null");
-							}
 						}
 					}
 					break;

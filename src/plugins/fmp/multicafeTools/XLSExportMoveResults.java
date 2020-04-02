@@ -108,7 +108,7 @@ public class XLSExportMoveResults extends XLSExport {
 			charSeries = "t";
 		int startFrame 	= (int) exp.startFrame;
 		int endFrame 	= (int) exp.endFrame;
-		int step 		= exp.stepFrame * options.pivotBinStep;
+		int step 		= exp.stepFrame * options.buildExcelBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
 		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;
@@ -138,7 +138,7 @@ public class XLSExportMoveResults extends XLSExport {
 		int currentIndex = 0;
 		
 //		System.out.println("output "+exp.experimentFileName +" startFrame=" + startFrame +" endFrame="+endFrame);
-		for (currentFrame=startFrame; currentFrame< endFrame; currentFrame+= options.pivotBinStep) {
+		for (currentFrame=startFrame; currentFrame< endFrame; currentFrame+= options.buildExcelBinStep) {
 			pt_main.x = col0;
 			pt_main.y++;
 			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;

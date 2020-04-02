@@ -23,7 +23,7 @@ public class XLSUtils {
 		XSSFCell cell = getCell(sheet, pt, transpose);
 		cell.setCellValue(value);
 	}
-	
+		
 	/*
 	// from ICYSpreadSheet.jjava and Workbooks.java in workbooks from adufour
 	public static void setBackgroundColor (XSSFSheet sheet, Point pt, boolean transpose, Color color) {

@@ -20,7 +20,7 @@ public class XLSExportOptions {
 	public boolean 	transpose 		= false;
 	public boolean 	duplicateSeries = true;
 	public boolean 	pivot 			= false;
-	public int		pivotBinStep	= 1;
+	public int		buildExcelBinStep	= 1;
 	public boolean 	exportAllFiles 	= true;
 	public boolean 	absoluteTime	= false;
 	public boolean 	collateSeries	= false;

@@ -28,8 +28,8 @@ public class XLSExport {
 	protected XLSExportOptions 	options 	= null;
 	protected Experiment 		expAll 		= null;
 	int							nintervals	= 0;
-	XSSFCellStyle 				style = null;
-    XSSFFont 					font = null;
+	XSSFCellStyle 				xssfCellStyle 	= null;
+    XSSFFont 					font 		= null;
 
 	
 	public long getnearest(long value, int step) {
