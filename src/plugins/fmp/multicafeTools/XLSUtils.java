@@ -38,7 +38,6 @@ public class XLSUtils {
 	        for (int i = 0; i < numStyles; i++)
 	        {
 	            XSSFCellStyle cellStyle = (XSSFCellStyle) book.getCellStyleAt(i);
-	             
 	            if (cellStyle.getFillForegroundXSSFColor() == newColor)
 	            {
 	                cell.setCellStyle(cellStyle);

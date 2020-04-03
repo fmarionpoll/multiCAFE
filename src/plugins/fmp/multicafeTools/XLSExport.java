@@ -25,11 +25,13 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 public class XLSExport {
 
-	protected XLSExportOptions 	options 	= null;
-	protected Experiment 		expAll 		= null;
-	int							nintervals	= 0;
-	XSSFCellStyle 				xssfCellStyle 	= null;
-    XSSFFont 					font 		= null;
+	protected XLSExportOptions 	options 			= null;
+	protected Experiment 		expAll 				= null;
+	int							nintervals			= 0;
+	XSSFCellStyle 				xssfCellStyle_red 	= null;
+	XSSFCellStyle 				xssfCellStyle_blue 	= null;
+    XSSFFont 					font_red 			= null;
+    XSSFFont 					font_blue 			= null;
 
 	
 	public long getnearest(long value, int step) {
@@ -239,6 +241,12 @@ public class XLSExport {
 		return numFromName;
 	}
 	
+	protected int getCageIndexFromKymoFileName(String name) {
+		if (!name .contains("line"))
+			return -1;
+		return Integer.parseInt(name.substring(4, 5));
+	}
+	
 	protected int getColFromCageName(Cage cage) {
 		String name = cage.cageLimitROI.getName();
 		if (!name .contains("cage"))
@@ -247,6 +255,13 @@ public class XLSExport {
 		String num = name.substring(4, name.length());
 		int numFromName = Integer.parseInt(num);
 		return numFromName;
+	}
+	
+	protected Point getCellXCoordinateFromDataName(XLSCapillaryResults xlsResults, Point pt_main, int colseries) {
+		int col = getColFromKymoFileName(xlsResults.name);
+		if (col >= 0)
+			pt_main.x = colseries + col;
+		return pt_main;
 	}
 	
 }
