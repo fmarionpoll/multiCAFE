@@ -342,9 +342,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 						double value = xlsData.getAt(indexData, scalingFactorToPhysicalUnits);
 						if (!Double.isNaN(value )) 
 							XLSUtils.setValue(sheet, getCellXCoordinateFromDataName(xlsData, pt_main, colseries), transpose, value);
-						else if (options.collateSeries && options.padIntervals && exp.nextExperiment != null) {
-							outputMissingData(sheet, getCellXCoordinateFromDataName(xlsData, pt_main, colseries), transpose, exp, xlsData, scalingFactorToPhysicalUnits);
-						}
+//						else if (options.collateSeries && options.padIntervals && exp.nextExperiment != null) 
+//							outputMissingData(sheet, getCellXCoordinateFromDataName(xlsData, pt_main, colseries), transpose, exp, xlsData, scalingFactorToPhysicalUnits);
 					}
 					pt_main.x ++;
 				break;
@@ -418,7 +417,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 					default:
 						for (XLSCapillaryResults xlsData: dataArrayList) {
 							outputMissingData(sheet, getCellXCoordinateFromDataName(xlsData, padpt, colseries), transpose, exp, xlsData, scalingFactorToPhysicalUnits);
-							padpt.x ++;
 						}
 						break;
 				}
@@ -429,12 +427,13 @@ public class XLSExportCapillariesResults extends XLSExport {
 	
 	private void outputMissingData(XSSFSheet sheet, Point ptadp, boolean transpose, Experiment exp, XLSCapillaryResults xlsData, double scalingFactorToPhysicalUnits) {
 		int cage = getCageIndexFromKymoFileName(xlsData.name);
-		int col = getColFromKymoFileName(xlsData.name);
+//		int col = getColFromKymoFileName(xlsData.name);
+//		System.out.println(xlsData.name + " -> col="+col + " cage="+cage+" pt.x="+ptadp.x);
 		boolean flag = false;
 		if (cage >0 && cage < 9)
-			flag = exp.nextExperiment.isFlyAlive(col); 
+			flag = exp.nextExperiment.isFlyAlive(cage); 
 		else 
-			flag = exp.nextExperiment.isDataAvailable(col);
+			flag = exp.nextExperiment.isDataAvailable(cage);
 		if (flag) {
 			double value = xlsData.getLast(scalingFactorToPhysicalUnits);
 			if (!Double.isNaN(value )) {
