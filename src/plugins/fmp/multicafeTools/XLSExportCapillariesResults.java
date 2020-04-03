@@ -65,18 +65,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 				progress.incPosition();
 			}
 			
-			if (options.transpose && options.pivot) {
-				progress.setMessage( "Build pivot tables... ");
-				String sourceSheetName = null;
-				if (options.topLevel) 			sourceSheetName = EnumXLSExportItems.TOPLEVEL.toString();
-				else if (options.topLevelDelta) sourceSheetName = EnumXLSExportItems.TOPLEVELDELTA.toString();
-				else if (options.bottomLevel)  	sourceSheetName = EnumXLSExportItems.BOTTOMLEVEL.toString();
-				else if (options.derivative) 	sourceSheetName = EnumXLSExportItems.DERIVEDVALUES.toString();	
-				else if (options.consumption) 	sourceSheetName = EnumXLSExportItems.SUMGULPS.toString();
-				else if (options.sum) 			sourceSheetName = EnumXLSExportItems.TOPLEVEL_LR.toString();
-				if (sourceSheetName != null)
-					xlsCreatePivotTables(workbook, sourceSheetName);
-			}
 			progress.setMessage( "Save Excel file to disk... ");
 			FileOutputStream fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
@@ -91,9 +79,11 @@ public class XLSExportCapillariesResults extends XLSExport {
 	}
 	
 	private int getDataAndExport(Experiment exp, XSSFWorkbook workbook, int col0, String charSeries, EnumXLSExportItems datatype) {	
-		List <XLSCapillaryResults> resultsArrayList = getDataFromCapillaryMeasures(exp, datatype, options.t0);		
+		List <XLSCapillaryResults> resultsArrayList = getDataFromCapillaryMeasures(exp, datatype, options.t0);
+		options.trim_alive = false;
 		int colmax = xlsExportToWorkbook(exp, workbook, datatype.toString(), datatype, col0, charSeries, resultsArrayList);
 		if (options.onlyalive) {
+			options.trim_alive = true;
 			trimDeadsFromArrayList(exp, resultsArrayList);
 			xlsExportToWorkbook(exp, workbook, datatype.toString()+"_alive", datatype, col0, charSeries, resultsArrayList);
 		}
@@ -219,7 +209,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 			ilastalive = 0;
 		if (ilastalive > (arraysize-1))
 			ilastalive = arraysize-1;
-		for (int i=array.size()-1; i> ilastalive; i--)
+		for (int i=array.size()-1; i>= ilastalive; i--)
 			array.remove(i);
 	}
 	
@@ -243,20 +233,21 @@ public class XLSExportCapillariesResults extends XLSExport {
 	    font_blue.setColor(HSSFColor.HSSFColorPredefined.BLUE.getIndex());
 	    xssfCellStyle_blue.setFont(font_blue);
 		
-		pt = writeSeriesInfos(exp, sheet, xlsExportOption, pt, options.transpose, charSeries);
-		pt = writeData(exp, sheet, xlsExportOption, pt, options.transpose, charSeries, arrayList);
+		pt = writeSeriesInfos(exp, sheet, xlsExportOption, pt, options, charSeries);
+		pt = writeData(exp, sheet, xlsExportOption, pt, options, charSeries, arrayList);
 		return pt.x;
 	}
 	
-	private Point writeSeriesInfos (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, boolean transpose, String charSeries) {	
+	private Point writeSeriesInfos (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, XLSExportOptions options, String charSeries) {	
 		if (exp.previousExperiment == null)
-			writeExperimentDescriptors(exp, charSeries, sheet, pt, transpose);
+			writeExperimentDescriptors(exp, charSeries, sheet, pt, options);
 		else
 			pt.y += 17;  // n descriptor columns = 17
 		return pt;
 	}
 		
-	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt_main, boolean transpose, String charSeries, List <XLSCapillaryResults> dataArrayList) {
+	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt_main, XLSExportOptions options, String charSeries, List <XLSCapillaryResults> dataArrayList) {
+		boolean transpose = options.transpose;
 		double scalingFactorToPhysicalUnits = exp.capillaries.desc.volume / exp.capillaries.desc.pixels;
 		int col0 = pt_main.x;
 		int row0 = pt_main.y;
@@ -342,8 +333,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 						double value = xlsData.getAt(indexData, scalingFactorToPhysicalUnits);
 						if (!Double.isNaN(value )) 
 							XLSUtils.setValue(sheet, getCellXCoordinateFromDataName(xlsData, pt_main, colseries), transpose, value);
-//						else if (options.collateSeries && options.padIntervals && exp.nextExperiment != null) 
-//							outputMissingData(sheet, getCellXCoordinateFromDataName(xlsData, pt_main, colseries), transpose, exp, xlsData, scalingFactorToPhysicalUnits);
+						else if (options.collateSeries && options.padIntervals && exp.nextExperiment != null) 
+							outputMissingData(sheet, getCellXCoordinateFromDataName(xlsData, pt_main, colseries), options, exp, xlsData, scalingFactorToPhysicalUnits);
 					}
 					pt_main.x ++;
 				break;
@@ -415,9 +406,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 						}
 						break;
 					default:
-						for (XLSCapillaryResults xlsData: dataArrayList) {
-							outputMissingData(sheet, getCellXCoordinateFromDataName(xlsData, padpt, colseries), transpose, exp, xlsData, scalingFactorToPhysicalUnits);
-						}
+						for (XLSCapillaryResults xlsData: dataArrayList) 
+							outputMissingData(sheet, getCellXCoordinateFromDataName(xlsData, padpt, colseries), options, exp, xlsData, scalingFactorToPhysicalUnits);
 						break;
 				}
 			}
@@ -425,20 +415,19 @@ public class XLSExportCapillariesResults extends XLSExport {
 		return pt_main;
 	}
 	
-	private void outputMissingData(XSSFSheet sheet, Point ptadp, boolean transpose, Experiment exp, XLSCapillaryResults xlsData, double scalingFactorToPhysicalUnits) {
+	private void outputMissingData(XSSFSheet sheet, Point ptadp, XLSExportOptions options, Experiment exp, XLSCapillaryResults xlsData, double scalingFactorToPhysicalUnits) {
 		int cage = getCageIndexFromKymoFileName(xlsData.name);
-//		int col = getColFromKymoFileName(xlsData.name);
-//		System.out.println(xlsData.name + " -> col="+col + " cage="+cage+" pt.x="+ptadp.x);
-		boolean flag = false;
-		if (cage >0 && cage < 9)
-			flag = exp.nextExperiment.isFlyAlive(cage); 
-		else 
+		boolean flag = options.trim_alive;
+		if (cage >0 && cage < 9 && options.trim_alive) {
+			flag = exp.nextExperiment.isFlyAlive(cage);
+		} else { 
 			flag = exp.nextExperiment.isDataAvailable(cage);
+		}
 		if (flag) {
 			double value = xlsData.getLast(scalingFactorToPhysicalUnits);
 			if (!Double.isNaN(value )) {
-				XLSUtils.setValue(sheet, ptadp, transpose, value);
-				XLSUtils.getCell(sheet, ptadp, transpose).setCellStyle(xssfCellStyle_red);
+				XLSUtils.setValue(sheet, ptadp, options.transpose, value);
+				XLSUtils.getCell(sheet, ptadp, options.transpose).setCellStyle(xssfCellStyle_red);
 			}
 		}
 	}

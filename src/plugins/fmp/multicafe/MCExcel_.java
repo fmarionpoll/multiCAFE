@@ -124,7 +124,6 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	
 	private XLSExportOptions getCapillariesOptions() {
 		XLSExportOptions options = new XLSExportOptions();
-		
 		options.topLevel 		= tabKymos.topLevelCheckBox.isSelected(); 
 		options.topLevelDelta   = tabKymos.topLevelDeltaCheckBox.isSelected();
 		options.bottomLevel 	= tabKymos.bottomLevelCheckBox.isSelected(); 
@@ -133,16 +132,12 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.sum 			= tabKymos.sumCheckBox.isSelected(); 
 		options.t0 				= tabKymos.t0CheckBox.isSelected();
 		options.onlyalive 		= tabKymos.onlyaliveCheckBox.isSelected();
-
 		getCommonOptions(options);
 		return options;
 	}
 	
 	private void getCommonOptions(XLSExportOptions options) {
-		options.pivot 			= tabOptions.pivotCheckBox.isSelected();
-		options.transpose 		= true;
-		if (!options.pivot) 
-			options.transpose 	= tabOptions.transposeCheckBox.isSelected();
+		options.transpose 	= tabOptions.transposeCheckBox.isSelected();
 		options.buildExcelBinStep = (int) tabOptions.pivotBinStep.getValue();
 		options.collateSeries 	= tabOptions.collateSeriesCheckBox.isSelected();
 		options.padIntervals 	= tabOptions.padIntervalsCheckBox.isSelected();

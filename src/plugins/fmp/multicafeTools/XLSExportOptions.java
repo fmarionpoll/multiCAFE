@@ -19,7 +19,6 @@ public class XLSExportOptions {
 
 	public boolean 	transpose 		= false;
 	public boolean 	duplicateSeries = true;
-	public boolean 	pivot 			= false;
 	public int		buildExcelBinStep	= 1;
 	public boolean 	exportAllFiles 	= true;
 	public boolean 	absoluteTime	= false;
@@ -29,4 +28,6 @@ public class XLSExportOptions {
 	public int 		firstExp 		= -1;
 	public int 		lastExp 		= -1;
 	public ExperimentList expList 	= null;
+	// internal parameter
+	public	boolean	trim_alive		= false;
 }

@@ -6,22 +6,16 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import org.apache.poi.ss.SpreadsheetVersion;
-import org.apache.poi.ss.usermodel.DataConsolidateFunction;
-import org.apache.poi.ss.util.AreaReference;
-import org.apache.poi.ss.util.CellAddress;
-import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFPivotTable;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
+
+
 
 public class XLSExport {
 
@@ -33,7 +27,8 @@ public class XLSExport {
     XSSFFont 					font_red 			= null;
     XSSFFont 					font_blue 			= null;
 
-	
+	// -------------------------------------------------
+    
 	public long getnearest(long value, int step) {
 		long diff0 = (value /step)*step;
 		long diff1 = diff0 + step;
@@ -44,7 +39,8 @@ public class XLSExport {
 		return value;
 	}
 		
-	protected Point writeExperimentDescriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, boolean transpose) {	
+	protected Point writeExperimentDescriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, XLSExportOptions options) {
+		boolean transpose = options.transpose;
 		int row = pt.y;
 		int col0 = pt.x;
 		XLSUtils.setValue(sheet, pt, transpose, "..");
@@ -185,40 +181,6 @@ public class XLSExport {
 	
 	protected String getShortenedName(SequenceCamData seq, int t) {
 		return seq.getFileNameNoPath(t);
-	}
-
-	protected void xlsCreatePivotTable(XSSFWorkbook workBook, String workBookName, String fromWorkbook, DataConsolidateFunction function) {
-		XSSFSheet pivotSheet = workBook.createSheet(workBookName);
-        XSSFSheet sourceSheet = workBook.getSheet(fromWorkbook);
-
-        int lastRowNum = sourceSheet.getLastRowNum();
-        int lastColumnNum = sourceSheet.getRow(0).getLastCellNum();
-        CellAddress lastcell = new CellAddress (lastRowNum, lastColumnNum-1);
-        String address = "A1:"+lastcell.toString();
-        AreaReference source = new AreaReference(address, SpreadsheetVersion.EXCEL2007);
-        CellReference position = new CellReference(0, 0);
-        XSSFPivotTable pivotTable = pivotSheet.createPivotTable(source, position, sourceSheet);
-
-        boolean flag = false;	// ugly trick: switch mode when flag = true, ie when column "roi" has been found
-        for (int i = 0; i< lastColumnNum; i++) {
-        	XSSFCell cell = XLSUtils.getCell(sourceSheet, 0, i);
-        	String text = cell.getStringCellValue();
-        	if( !flag) {
-        		flag = text.contains("roi");  // ugly trick here
-        		if (text.contains(EnumXLSExperimentDescriptors.CAP.toString()))
-        			pivotTable.addRowLabel(i);
-        		if (text.contains(EnumXLSExperimentDescriptors.NFLIES.toString()))
-        			pivotTable.addRowLabel(i);
-        		continue;
-        	}
-        	pivotTable.addColumnLabel(function, i, text);
-        }
-	}
-
-	protected void xlsCreatePivotTables(XSSFWorkbook workBook, String fromWorkbook) {
-		xlsCreatePivotTable(workBook, "pivot_avg", fromWorkbook, DataConsolidateFunction.AVERAGE);
-		xlsCreatePivotTable(workBook, "pivot_std", fromWorkbook, DataConsolidateFunction.STD_DEV);
-		xlsCreatePivotTable(workBook, "pivot_n", fromWorkbook, DataConsolidateFunction.COUNT);
 	}
 	
 	protected int getColFromKymoFileName(String name) {

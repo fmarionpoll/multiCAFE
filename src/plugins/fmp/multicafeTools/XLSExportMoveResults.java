@@ -53,19 +53,7 @@ public class XLSExportMoveResults extends XLSExport {
 				iSeries++;
 				progress.incPosition();
 			}
-			
-			if (options.transpose && options.pivot) { 
-				progress.setMessage( "Build pivot tables... ");
-				String sourceSheetName = null;
-				if (options.alive) 
-					sourceSheetName = EnumXLSExportItems.ISALIVE.toString();
-				else if (options.xyCenter) 
-					sourceSheetName = EnumXLSExportItems.XYCENTER.toString();
-				else if (options.distance) 
-					sourceSheetName = EnumXLSExportItems.DISTANCE.toString();
-				xlsCreatePivotTables(workbook, sourceSheetName);
-			}
-			
+						
 			progress.setMessage( "Save Excel file to disk... ");
 			FileOutputStream fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
@@ -93,7 +81,7 @@ public class XLSExportMoveResults extends XLSExport {
 //		pt = writeGlobalInfos(exp, sheet, pt, options.transpose, xlsExportOption);
 //		pt = writeHeader(exp, sheet, pt, xlsExportOption, options.transpose, charSeries);
 		if (exp.previousExperiment == null)
-			writeExperimentDescriptors(exp, charSeries, sheet, pt, options.transpose);
+			writeExperimentDescriptors(exp, charSeries, sheet, pt, options);
 		else
 			pt.y += 17;
 		
