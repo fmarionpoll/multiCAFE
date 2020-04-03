@@ -316,18 +316,16 @@ public class XLSExportCapillariesResults extends XLSExport {
 							}
 							if (colL >= 0)
 								pt_main.x = colseries + colL;
-							Point pt0 = new Point(pt_main);
 							double valueL = (dataL+dataR)*scalingFactorToPhysicalUnits;
 							if (!Double.isNaN(valueL ))
-								XLSUtils.setValue(sheet, pt0, transpose, valueL);
-							pt0.x ++;
+								XLSUtils.setValue(sheet, pt_main, transpose, valueL);
+							pt_main.x ++;
 							double valueR = (dataL-dataR)*scalingFactorToPhysicalUnits/valueL;
 							if (!Double.isNaN(valueR))
-								XLSUtils.setValue(sheet, pt0, transpose, valueR);
+								XLSUtils.setValue(sheet, pt_main, transpose, valueR);
 						}
 					}
-					pt_main.x += 2;
-				break;
+					break;
 				default:
 					for (XLSCapillaryResults xlsData: dataArrayList) {
 						double value = xlsData.getAt(indexData, scalingFactorToPhysicalUnits);
@@ -371,34 +369,38 @@ public class XLSExportCapillariesResults extends XLSExport {
 							XLSCapillaryResults dataListL = dataArrayList.get(idataArray);
 							int colL2 = getColFromKymoFileName(dataListL.name);
 							padpt.x = colseries + colL2;
-							boolean flag = true;
-							if (colL2 >1 && colL2 < 18) {
-								flag = exp.nextExperiment.isFlyAlive(colL2/2); 
+							int lastL = dataListL.data.size()-1;
+							double dataL = 0;
+							double dataR = 0;
+							if (lastL >=0)
+								dataL = dataListL.data.get(lastL)*scalingFactorToPhysicalUnits;
+							
+							int cage = getCageIndexFromKymoFileName(dataListL.name);
+							boolean flag = options.trim_alive;
+							if (colL2 >1 && colL2 < 18  && options.trim_alive) {
+								flag = exp.nextExperiment.isFlyAlive(cage); 
 							} else {
-								flag = exp.nextExperiment.isDataAvailable(colL2/2);
+								flag = exp.nextExperiment.isDataAvailable(cage);
 							}
-							if (flag) {
-								if (colL2 >= 0)
-									padpt.x = colseries + colL2;			
-								int lastL = dataListL.data.size()-1;
-								double dataL = dataListL.data.get(lastL);
-								double dataR = 0;
+							if (flag) {			
 								if (idataArray < dataArrayList.size()-1) {
 									XLSCapillaryResults dataListR = dataArrayList.get(idataArray+1);
 									int colR = getColFromKymoFileName(dataListR.name);
 									if (colR == colL2 +1) {
 										int lastR = dataListR.data.size()-1;
-										dataR = dataListR.data.get(lastR)*scalingFactorToPhysicalUnits;
+										if(lastR >= 0)
+											dataR = dataListR.data.get(lastR)*scalingFactorToPhysicalUnits;
 									}
 									else
 										idataArray--;
 								}
-								double valueL = (dataL+dataR)*scalingFactorToPhysicalUnits;
+								
+								double valueL = (dataL+dataR);
 								if (!Double.isNaN(valueL ))
 									XLSUtils.setValue(sheet, padpt, transpose, valueL);
 								XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle_red);
 								padpt.x ++;
-								double valueR = (dataL-dataR)*scalingFactorToPhysicalUnits/valueL;
+								double valueR = (dataL-dataR)/valueL;
 								if (!Double.isNaN(valueR))
 									XLSUtils.setValue(sheet, padpt, transpose, valueR); 
 								XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle_red);
