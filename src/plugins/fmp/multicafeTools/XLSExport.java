@@ -203,7 +203,7 @@ public class XLSExport {
 		return numFromName;
 	}
 	
-	protected int getCageIndexFromKymoFileName(String name) {
+	protected int getCageFromKymoFileName(String name) {
 		if (!name .contains("line"))
 			return -1;
 		return Integer.parseInt(name.substring(4, 5));

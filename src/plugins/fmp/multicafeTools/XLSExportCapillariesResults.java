@@ -295,23 +295,29 @@ public class XLSExportCapillariesResults extends XLSExport {
 				case SUMGULPS_LR:
 					for (int indexDataArrayList=0; indexDataArrayList< dataArrayList.size()-1; indexDataArrayList+=2) {
 						XLSCapillaryResults xlsDataL = dataArrayList.get(indexDataArrayList);
+						int cageL = getCageFromKymoFileName(xlsDataL.name);
 						int colL = getColFromKymoFileName(xlsDataL.name);
+						int colR = colL;
+						int cageR = cageL;
+						double dataL = 0;
+						double dataR = 0;
 						if (indexData < xlsDataL.data.size()) {
-							double dataL = xlsDataL.data.get(indexData) ;
-							int colR = colL;
-							XLSCapillaryResults dataListR = null;
-							double dataR = 0.0;
+							dataL = xlsDataL.data.get(indexData) ;
+							XLSCapillaryResults xlsDataR = null;
 							if (indexDataArrayList < dataArrayList.size()-1) {
-								dataListR = dataArrayList.get(indexDataArrayList+1);
-								colR = getColFromKymoFileName(dataListR.name);
-								if (colR == colL +1)
-									if (indexData < dataListR.data.size())
-										dataR = dataListR.data.get(indexData);
-								else
+								xlsDataR = dataArrayList.get(indexDataArrayList+1);
+								colR = getColFromKymoFileName(xlsDataR.name);
+								cageR = getCageFromKymoFileName(xlsDataR.name);
+								
+								if (cageL == cageR && colR == (colL +1)) {
+									if (indexData < xlsDataR.data.size())
+										dataR = xlsDataR.data.get(indexData);
+								} else {
 									indexDataArrayList--;
+									colL = cageL*2;
+								}
 							}
-							if (colL >= 0)
-								pt_main.x = colseries + colL;
+							pt_main.x = colseries + colL;
 							double valueL = (dataL+dataR)*scalingFactorToPhysicalUnits;
 							if (!Double.isNaN(valueL ))
 								XLSUtils.setValue(sheet, pt_main, transpose, valueL);
@@ -337,7 +343,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 		}		
 		
 		// pad remaining cells with the last value
-		// TODO suppress this?
 		if (options.collateSeries && options.padIntervals && exp.nextExperiment != null) {
 			Point padpt = new Point(pt_main);
 			padpt.x = col0;
@@ -371,7 +376,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 							if (lastL >=0)
 								dataL = dataListL.data.get(lastL)*scalingFactorToPhysicalUnits;
 							
-							int cage = getCageIndexFromKymoFileName(dataListL.name);
+							int cage = getCageFromKymoFileName(dataListL.name);
 							boolean flag = options.trim_alive;
 							if (colL2 >1 && colL2 < 18  && options.trim_alive) {
 								flag = exp.nextExperiment.isFlyAlive(cage); 
@@ -415,7 +420,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 	}
 	
 	private void outputMissingData(XSSFSheet sheet, Point ptadp, XLSExportOptions options, Experiment exp, XLSCapillaryResults xlsData, double scalingFactorToPhysicalUnits) {
-		int cage = getCageIndexFromKymoFileName(xlsData.name);
+		int cage = getCageFromKymoFileName(xlsData.name);
 		boolean flag = options.trim_alive;
 		if (cage >0 && cage < 9 && options.trim_alive) {
 			flag = exp.nextExperiment.isFlyAlive(cage);
