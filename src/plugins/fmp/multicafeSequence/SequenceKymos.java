@@ -397,6 +397,18 @@ public class SequenceKymos extends SequenceCamData  {
 		return array;
 	}
 	
+	public List<Integer> subtractTdelta(List<Integer > array, int delta) {
+		if (array == null)
+			return null;
+		for (int index=0; index < array.size(); index++) {
+			int value = 0;
+			if (index+delta < array.size()) 
+				value = array.get(index+delta) - array.get(index);
+			array.set(index, value);
+		}
+		return array;
+	}
+	
 	public List<Integer> subtractT0 (List<Integer> array) {
 		if (array == null)
 			return null;

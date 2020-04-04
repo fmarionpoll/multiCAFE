@@ -114,7 +114,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 				break;
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:
-				results.data = exp.seqKymos.subtractTi(cap.getMeasures(EnumListType.topLevel));
+				results.data = exp.seqKymos.subtractTdelta(cap.getMeasures(EnumListType.topLevel), options.buildExcelBinStep);
 				break;
 			case DERIVEDVALUES:
 				results.data = cap.getMeasures(EnumListType.derivedValues);
@@ -126,9 +126,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 					int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
 					results.data = exp.seqKymos.addConstant(cap.getMeasures(EnumListType.cumSum), addedValue);
 				}
-				else {
+				else 
 					results.data = cap.getMeasures(EnumListType.cumSum);
-				}
 				break;
 			case BOTTOMLEVEL:
 				results.data = cap.getMeasures(EnumListType.bottomLevel);
@@ -186,11 +185,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 			int cagenumber = Integer.parseInt(cagenumberString);
 			if (cagenumber == 0 || cagenumber == 9)
 				continue;
-			
-			if (options.collateSeries && exp.nextExperiment != null) {
-				if(exp.nextExperiment.isFlyAlive(cagenumber))
+			if (options.collateSeries && exp.nextExperiment != null && exp.nextExperiment.isFlyAlive(cagenumber))
 					continue; 
-			}
 			for (XLSCapillaryResults capillaryResult : resultsArrayList) {
 				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
 					flypos.getLastIntervalAlive();
@@ -414,6 +410,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 				}
 			}
 		}
+		pt_main.x++;
 		return pt_main;
 	}
 	
