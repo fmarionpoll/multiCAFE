@@ -251,6 +251,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 			charSeries = "t";
 		int startFrame 	= (int) exp.startFrame;
 		int endFrame 	= (int) exp.endFrame;
+		if (endFrame > exp.seqCamData.seq.getSizeT()-1)
+			endFrame = exp.seqCamData.seq.getSizeT()-1;
 		int fullstep 	= exp.stepFrame * options.buildExcelBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
