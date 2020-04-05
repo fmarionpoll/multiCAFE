@@ -41,7 +41,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag) 
 				break;
-			Experiment exp = expList.experimentList.get(index);
+			Experiment exp = expList.getExperiment(index);
 			System.out.println(exp.experimentFileName);
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			

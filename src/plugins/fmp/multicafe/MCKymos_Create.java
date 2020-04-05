@@ -90,7 +90,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		options.expList = parent0.expList; 
 		if (ALLCheckBox.isSelected()) {
 			options.expList.index0 = 0;
-			options.expList.index1 = parent0.expList.experimentList.size()-1;
+			options.expList.index1 = parent0.expList.getSize()-1;
 		} else {
 			options.expList.index0 = parent0.currentExperimentIndex;
 			options.expList.index1 = options.expList.index0;

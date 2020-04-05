@@ -129,11 +129,20 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 			}});
 	}
 	
+	public void displayRoisAccordingToUserSelection() {
+		roisDisplay("deriv", viewDerivativeCheckbox.isSelected());
+		roisDisplay("gulp", viewGulpsCheckbox.isSelected());
+		roisDisplay("level", viewLevelsCheckbox.isSelected());
+
+	}
+	
 	private void roisDisplay(String filter, boolean visible) {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null) 
-			return;
+			return;		
 		Viewer v= exp.seqKymos.seq.getFirstViewer();
+		if (v == null)
+			return;
 		IcyCanvas canvas = v.getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
 		if (layers != null) {	
@@ -253,10 +262,13 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 		}
 		seqKymos.currentFrame = isel;
 		Viewer v = seqKymos.seq.getFirstViewer();
-		if (v != null && v.getPositionT() != isel)
-			v.setPositionT(isel);
-		String name = exp.seqCamData.getCSFileName() +": " + (String) kymographNamesComboBox.getSelectedItem();
-		v.setTitle(name);
+		if (v != null) {
+			if( v.getPositionT() != isel)
+				v.setPositionT(isel);
+			String name = exp.seqCamData.getCSFileName() +": " + (String) kymographNamesComboBox.getSelectedItem();
+			v.setTitle(name);
+			parent0.paneKymos.tabDisplay.displayRoisAccordingToUserSelection();
+		}
 	}
 
 	@Override

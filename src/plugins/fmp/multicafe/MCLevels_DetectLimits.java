@@ -21,6 +21,7 @@ import icy.gui.util.GuiUtil;
 import icy.util.StringUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.DetectLimits_Options;
 import plugins.fmp.multicafeTools.DetectLimits_series;
@@ -181,10 +182,11 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 			return false;
 		
 		DetectLimits_Options options= thread.options;
-		options.expList = parent0.expList; 
+		options.expList = new ExperimentList(); 
+		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		if (allSeriesCheckBox.isSelected()) {
 			options.expList.index0 = 0;
-			options.expList.index1 = parent0.expList.experimentList.size()-1;
+			options.expList.index1 = options.expList.getSize()-1;
 		} else {
 			options.expList.index0 = parent0.currentExperimentIndex;
 			options.expList.index1 = parent0.currentExperimentIndex;

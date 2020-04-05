@@ -40,13 +40,13 @@ public class XLSExportCapillariesResults extends XLSExport {
 			if (options.collateSeries)
 				expList.chainExperiments();
 			expAll 		= expList.getStartAndEndFromAllExperiments(options);
-			expAll.stepFrame = expList.experimentList.get(0).stepFrame;
-			int nbexpts = expList.experimentList.size();
+			expAll.stepFrame = expList.getExperiment(0).stepFrame;
+			int nbexpts = expList.getSize();
 			ProgressFrame progress = new ProgressFrame("Export data to Excel");
 			progress.setLength(nbexpts);
 			
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
-				Experiment exp = expList.experimentList.get(index);
+				Experiment exp = expList.getExperiment(index);
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				if (options.topLevel) 		col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVEL);

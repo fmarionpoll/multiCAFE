@@ -10,8 +10,7 @@ import javax.swing.JPanel;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceCamData;
-import plugins.fmp.multicafeSequence.SequenceKymos;
+
 
 
 public class MCSequence_Close  extends JPanel {
@@ -40,7 +39,7 @@ public class MCSequence_Close  extends JPanel {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp != null)
 			closeExp(exp);
-		parent0.expList.experimentList.clear();
+		parent0.expList.clear();
 		parent0.currentExperimentIndex = -1;
 	}
 	
@@ -49,15 +48,7 @@ public class MCSequence_Close  extends JPanel {
 			parent0.paneSequence.tabInfos.getExperimentInfosFromDialog(exp);
 			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog (exp);
 			exp.xmlSaveExperiment();
-
-			SequenceKymos seqKymos = exp.seqKymos;
-			if (seqKymos != null && seqKymos.seq != null) {
-				seqKymos.closeSequence();
-			}
-			SequenceCamData seqCamData = exp.seqCamData;
-			if (seqCamData != null && seqCamData.seq != null) {
-				seqCamData.closeSequence();
-			}
+			exp.closeSequences();
 		}
 		parent0.paneMove.tabGraphics.closeAll();
 		parent0.paneLevels.tabGraphs.closeAll();

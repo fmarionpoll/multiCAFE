@@ -33,13 +33,13 @@ public class XLSExportMoveResults extends XLSExport {
 			options.expList.readInfosFromAllExperiments(true, true);
 			options.expList.chainExperiments();
 			expAll = options.expList.getStartAndEndFromAllExperiments(options);
-			expAll.stepFrame = options.expList.experimentList.get(0).stepFrame;
-			int nbexpts = options.expList.experimentList.size();
+			expAll.stepFrame = options.expList.getExperiment(0).stepFrame;
+			int nbexpts = options.expList.getSize();
 			ProgressFrame progress = new ProgressFrame("Export data to Excel");
 			progress.setLength(nbexpts);
 
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
-				Experiment exp = options.expList.experimentList.get(index);
+				Experiment exp = options.expList.getExperiment(index);
 				
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);

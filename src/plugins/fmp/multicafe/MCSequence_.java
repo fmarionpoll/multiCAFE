@@ -313,7 +313,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	void transferExperimentNamesToExpList(ExperimentList expList, boolean clearOldList) {
 		if (clearOldList)
-			expList.experimentList.clear();
+			expList.clear();
 		int nitems = expListComboBox.getItemCount();
 		for (int i=0; i< nitems; i++) {
 			String filename = expListComboBox.getItemAt(i);

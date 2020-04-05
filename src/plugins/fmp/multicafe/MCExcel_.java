@@ -148,7 +148,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		if (tabOptions.exportAllFilesCheckBox.isSelected()) {
 			options.firstExp 	= 0;
-			options.lastExp 	= options.expList.experimentList.size() - 1;
+			options.lastExp 	= options.expList.getSize() - 1;
 		} else {
 			options.firstExp 	= parent0.currentExperimentIndex;
 			options.lastExp 	= parent0.currentExperimentIndex;

@@ -24,7 +24,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 4-April-2020", true, true, true, true);
+	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 5-April-2020", true, true, true, true);
 	ExperimentList	expList 		= new ExperimentList();
 	int				currentExperimentIndex	= -1;
 	
@@ -75,7 +75,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	public void viewerChanged(ViewerEvent event) {
 		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) {
 			if (event.getDim() == DimensionId.T) {
-				Experiment exp = expList.experimentList.get(currentExperimentIndex);
+				Experiment exp = expList.getExperiment(currentExperimentIndex);
 				Viewer v = event.getSource(); 
 				int id = v.getSequence().getId();
 				int t = v.getPositionT();
@@ -120,8 +120,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			currentExperimentIndex = expList.addExperiment(exp);
 			exp.seqCamData = new SequenceCamData();
 		} else {
-			if (currentExperimentIndex > expList.experimentList.size()-1)
-				currentExperimentIndex = expList.experimentList.size()-1;
+			if (currentExperimentIndex > expList.getSize()-1)
+				currentExperimentIndex = expList.getSize()-1;
 			exp = expList.getExperiment(currentExperimentIndex);
 			if (exp == null)
 				return null;

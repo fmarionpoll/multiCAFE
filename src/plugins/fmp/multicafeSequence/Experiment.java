@@ -38,6 +38,7 @@ public class Experiment {
 	public String			experimentFileName			= null;
 	public SequenceCamData 	seqCamData 					= null;
 	public SequenceKymos 	seqKymos					= null;
+	public Sequence 		seqBackgroundImage			= null;
 	public Capillaries 		capillaries 				= new Capillaries();
 	public Cages			cages 						= new Cages();
 
@@ -106,12 +107,15 @@ public class Experiment {
 		loadFileIntervalsFromSeqCamData();
 	}
 	
-	public void close() {
+	public void closeSequences() {
 		if (seqKymos != null) {
 			seqKymos.closeSequence();
 		}
 		if (seqCamData != null) {
 			seqCamData.closeSequence();
+		}
+		if (seqBackgroundImage != null) {
+			seqBackgroundImage.close();
 		}
 	}
 	
@@ -551,7 +555,9 @@ public class Experiment {
 			System.out.println("image not loaded / not found");
 			return false;
 		}
-		seqCamData.refImage=  IcyBufferedImage.createFrom(image);
+		seqCamData.refImage =  IcyBufferedImage.createFrom(image);
+		seqBackgroundImage = new Sequence(seqCamData.refImage);
+		seqBackgroundImage.setName("referenceImage");
 		return true;
 	}
 	

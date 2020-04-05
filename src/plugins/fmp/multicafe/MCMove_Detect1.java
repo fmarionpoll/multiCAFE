@@ -24,6 +24,7 @@ import javax.swing.event.ChangeListener;
 import icy.gui.util.GuiUtil;
 import icy.util.StringUtil;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.DetectFlies1_series;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
@@ -57,7 +58,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	
 	private OverlayThreshold 	ov 			= null;
 	private DetectFlies1_series thread 		= null;
-
+	private int 				currentExp 	= -1;
 
 	// -----------------------------------------------------
 	
@@ -180,22 +181,25 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		detect.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
 		detect.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();
 		
-		detect.expList = parent0.expList; 
-		detect.expList.index0 = parent0.currentExperimentIndex;
-		detect.expList.index1 = detect.expList.index0;
+		detect.expList = new ExperimentList(); 
+		parent0.paneSequence.transferExperimentNamesToExpList(detect.expList, true);		
 		if (ALLCheckBox.isSelected()) {
 			detect.expList.index0 = 0;
-			detect.expList.index1 = parent0.expList.experimentList.size()-1;
+			detect.expList.index1 = detect.expList.getSize()-1;
+		} else {
+			detect.expList.index0 = parent0.currentExperimentIndex;
+			detect.expList.index1 = detect.expList.index0;
 		}
-
+		
 		thread.stopFlag 	= false;
 		thread.detect 		= detect;
 		return true;
 	}
 	
 	void startComputation() {
-		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		currentExp = parent0.paneSequence.expListComboBox.getSelectedIndex();
+		parent0.currentExperimentIndex = currentExp;
+		Experiment exp = parent0.expList.getExperiment(currentExp);
 		if (exp == null) 
 			return;
 		parent0.paneSequence.tabClose.closeExp(exp);
@@ -220,7 +224,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
-			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
+			Experiment exp = parent0.expList.getExperiment(currentExp);
 			if (exp != null)
 				parent0.paneSequence.openExperiment(exp);
 			startComputationButton.setText(detectString);

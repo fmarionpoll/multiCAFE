@@ -166,7 +166,7 @@ public class DetectFlies_Options implements XMLPersistent {
 				flyROI = new ROI2DArea( bestMask );
 				flyROI.setName("det"+iroi +" " + t );
 				flyROI.setT( t );
-				resultFlyPositionArrayList[it][iroi] = flyROI;
+				resultFlyPositionArrayList[iroi][it] = flyROI;
 				Rectangle2D rect = flyROI.getBounds2D();
 				tempRectROI[iroi].setRectangle(rect);
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
@@ -200,11 +200,10 @@ public class DetectFlies_Options implements XMLPersistent {
 			seq.addROI(tempRectROI[i]);	
 		}
 		// create array for the results - 1 point = 1 slice
-		resultFlyPositionArrayList = new ROI[nbframes][nbcages];
+		resultFlyPositionArrayList = new ROI[nbcages][nbframes];
 	}
 	
 	public void initParametersForDetection(Experiment exp) {
-		
 		nbframes = (exp.endFrame - exp.startFrame +1)/stepFrame +1;
 		exp.cages.clear();
 		exp.cages.cageList = exp.seqCamData.getCages();
@@ -230,10 +229,11 @@ public class DetectFlies_Options implements XMLPersistent {
 			exp.seqCamData.seq.beginUpdate();
 			exp.cages = cages;
 			int nrois = cages.cageList.size();
-			int it = 0;
-			for ( int t = startFrame ; t <= endFrame ; t  += stepFrame, it++ )
-				for (int iroi=0; iroi < nrois; iroi++) 
-					exp.seqCamData.seq.addROI( resultFlyPositionArrayList[it][iroi] );
+			for (int iroi=0; iroi < nrois; iroi++) {
+				for ( int it = 0; it < resultFlyPositionArrayList[iroi].length ; it++ ) {
+					exp.seqCamData.seq.addROI( resultFlyPositionArrayList[iroi][it] );
+				}
+			}
 		}
 		finally {
 			exp.seqCamData.seq.endUpdate();

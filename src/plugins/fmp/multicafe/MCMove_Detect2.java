@@ -3,6 +3,7 @@ package plugins.fmp.multicafe;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -19,10 +20,12 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import icy.gui.dialog.MessageDialog;
 import icy.gui.util.GuiUtil;
-import icy.system.thread.ThreadUtil;
+import icy.gui.viewer.Viewer;
 import icy.util.StringUtil;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeTools.DetectFlies2_series;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
 
@@ -53,7 +56,8 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
 	
 	private DetectFlies2_series detectFlies2Thread 	= null;
-	private int 				currentExp 			= -1;
+	private int 		currentExp 				= -1;
+	
 	
 
 	// ----------------------------------------------------
@@ -74,7 +78,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		panel1.add(thresholdBckgSpinner);
 		panel1.add(viewsCheckBox);
 		panel1.validate();
-		
 		add( GuiUtil.besidesPanel(panel1));
 		
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -118,8 +121,17 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		loadButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				if (exp != null)
-					exp.loadReferenceImage();
+				if (exp != null) { 
+					boolean flag = exp.loadReferenceImage(); 
+					if (flag) {
+						Viewer v = new Viewer(exp.seqBackgroundImage, true);
+						Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBoundsInternal();
+						v.setBounds(rectv);
+					} else {
+						 MessageDialog.showDialog("Reference file not found on disk",
+	                                MessageDialog.ERROR_MESSAGE);
+					}
+				}
 			}});
 		
 		ALLCheckBox.addActionListener(new ActionListener () { 
@@ -142,6 +154,8 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	}
 	
 	private boolean initTrackParameters() {
+		if (detectFlies2Thread == null)
+			return false;
 		DetectFlies_Options detect = new DetectFlies_Options();
 		detect.btrackWhite 		= true;
 		detect.blimitLow 		= objectLowsizeCheckBox.isSelected();
@@ -152,25 +166,27 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		detect.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
 		detect.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();
 		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
-		Experiment exp 			= parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp != null) 
-			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
+		
 		detect.stepFrame = parent0.paneSequence.tabIntervals.getStepFrame();
 		detect.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
 		detect.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
 		detect.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();
 
-		detect.expList = parent0.expList; 
-		detect.expList.index0 = parent0.currentExperimentIndex;
-		detect.expList.index1 = detect.expList.index0;
+		detect.expList = new ExperimentList(); 
+		parent0.paneSequence.transferExperimentNamesToExpList(detect.expList, true);		
 		if (ALLCheckBox.isSelected()) {
 			detect.expList.index0 = 0;
-			detect.expList.index1 = parent0.expList.experimentList.size()-1;
+			detect.expList.index1 = detect.expList.getSize()-1;
+		} else {
+			detect.expList.index0 = parent0.currentExperimentIndex;
+			detect.expList.index1 = detect.expList.index0;
 		}
+		
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp != null) 
+			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		detect.initParametersForDetection(exp);
 		
-		if (detectFlies2Thread == null)
-			detectFlies2Thread = new DetectFlies2_series();
 		detectFlies2Thread.stopFlag = false;
 		detectFlies2Thread.detect 	= detect;
 		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();
@@ -178,16 +194,25 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	}
 	
 	void builBackgroundImage() {
+		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
+		currentExp = parent0.currentExperimentIndex;
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		if (exp == null)
+			return;
+		parent0.paneSequence.tabClose.closeExp(exp);
 		if (detectFlies2Thread == null)
 			detectFlies2Thread = new DetectFlies2_series();
 		if (detectFlies2Thread.threadRunning) {
 			stopComputation();
 			return;
 		}
+
 		initTrackParameters();
 		detectFlies2Thread.buildBackground	= true;
 		detectFlies2Thread.detectFlies		= false;
-		ThreadUtil.bgRun(detectFlies2Thread);
+		detectFlies2Thread.addPropertyChangeListener(this);
+		detectFlies2Thread.execute();
+		startComputationButton.setText("STOP");
 	}
 	
 	void startComputation() {
