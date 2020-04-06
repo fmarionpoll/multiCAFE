@@ -292,8 +292,11 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 		viewerCamData = exp.seqCamData.seq.getFirstViewer();
 		displayRefViewers(exp);
-
-		for (int t = exp.startFrame + 1; t <= exp.endFrame && !stopFlag; t += exp.stepFrame) {
+		int limit = 50 * exp.stepFrame;
+		if (limit > exp.endFrame)
+			limit = exp.endFrame;
+		
+		for (int t = exp.startFrame + 1; t <= limit && !stopFlag; t += exp.stepFrame) {
 			IcyBufferedImage currentImage = exp.seqCamData.getImage(t, 0);
 			exp.seqCamData.currentFrame = t;
 			viewerCamData.setPositionT(t);
