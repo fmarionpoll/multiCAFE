@@ -548,13 +548,17 @@ public class Experiment {
 	}
 	
 	public boolean loadReferenceImage() {
+		BufferedImage image = null;
 		String path = seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
 		File inputfile = new File(path);
-		BufferedImage image = ImageUtil.load(inputfile, true);
+		boolean exists = inputfile.exists();
+		if (!exists) 
+			return false;	
+		image = ImageUtil.load(inputfile, true);
 		if (image == null) {
 			System.out.println("image not loaded / not found");
 			return false;
-		}
+		}			
 		seqCamData.refImage =  IcyBufferedImage.createFrom(image);
 		seqBackgroundImage = new Sequence(seqCamData.refImage);
 		seqBackgroundImage.setName("referenceImage");

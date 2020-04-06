@@ -95,8 +95,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 //		System.out.println("iterations done: "+statusMsg);
 		if (!threadRunning || stopFlag) {
 			firePropertyChange("thread_ended", null, statusMsg);
-		}
-		else {
+		} else {
 			firePropertyChange("thread_done", null, statusMsg);
 		}
     }
