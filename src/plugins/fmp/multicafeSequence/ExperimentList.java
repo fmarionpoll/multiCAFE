@@ -14,9 +14,9 @@ import plugins.fmp.multicafeTools.XLSExportOptions;
 public class ExperimentList {
 	
 	protected List<Experiment> experimentList = new ArrayList<Experiment> ();
-	public int index0 = 0;
-	public int index1 = 0;
-
+	public 	int index0 = 0;
+	public 	int index1 = 0;
+	public	int	maxSizeOfCapillaryArrays = 0;
 	
 
 	public ExperimentList () {
@@ -68,33 +68,23 @@ public class ExperimentList {
 		progress.close();
 		return expglobal;
 	}
-	
-	public boolean readInfosFromAllExperiments() {
-		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
-		progress.setLength(experimentList.size());
-		boolean flag = true;
-		for (Experiment exp: experimentList) {
-			flag &= exp.openSequenceAndMeasures();
-			progress.incPosition();
-		}
-		progress.close();
-		return flag;
-	}
-	
+		
 	public boolean readInfosFromAllExperiments(boolean loadCapillaries, boolean loadDrosoTrack) {
 		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
 		int nexpts = experimentList.size();
 		int index = 1;
+		maxSizeOfCapillaryArrays = 0;
 		progress.setLength(nexpts);
 		boolean flag = true;
 		for (Experiment exp: experimentList) {
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
-			
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			exp.xmlLoadExperiment();
 			int image_size = exp.seqKymos.seq.getSizeX();
 			if (image_size != 0)
 				exp.stepFrame = exp.seqCamData.nTotalFrames / image_size;
+			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())
+				maxSizeOfCapillaryArrays = exp.capillaries.capillariesArrayList.size();
 			progress.incPosition();
 			index++;
 		}

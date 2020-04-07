@@ -31,15 +31,14 @@ public class XLSExportCapillariesResults extends XLSExport {
 		expList = options.expList;
 
 		try { 
-			XSSFWorkbook workbook = new XSSFWorkbook(); 
-			workbook.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-			int col_max = 1;
-			int col_end = 1;
+			XSSFWorkbook workbook = xlsInitWorkbook();
+		    
+			int column = 1;
 			int iSeries = 0;
 			expList.readInfosFromAllExperiments(true, options.onlyalive);
 			if (options.collateSeries)
 				expList.chainExperiments();
-			expAll 		= expList.getStartAndEndFromAllExperiments(options);
+			expAll = expList.getStartAndEndFromAllExperiments(options);
 			expAll.stepFrame = expList.getExperiment(0).stepFrame;
 			int nbexpts = expList.getSize();
 			ProgressFrame progress = new ProgressFrame("Export data to Excel");
@@ -49,18 +48,19 @@ public class XLSExportCapillariesResults extends XLSExport {
 				Experiment exp = expList.getExperiment(index);
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
-				if (options.topLevel) 		col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVEL);
-				if (options.topLevelDelta) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVELDELTA);
-				if (options.bottomLevel) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.BOTTOMLEVEL);		
-				if (options.derivative) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.DERIVEDVALUES);	
-				if (options.consumption) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.SUMGULPS);
+				if (options.topLevel) 		getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.TOPLEVEL);
+				if (options.topLevelDelta) 	getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.TOPLEVELDELTA);
+				if (options.bottomLevel) 	getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.BOTTOMLEVEL);		
+				if (options.derivative) 	getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.DERIVEDVALUES);	
+				if (options.consumption) 	getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.SUMGULPS);
 				if (options.sum) {		
-					if (options.topLevel) 		col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVEL_LR);
-					if (options.topLevelDelta) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.TOPLEVELDELTA_LR);
-					if (options.consumption) 	col_end = getDataAndExport(exp, workbook, col_max, charSeries, EnumXLSExportItems.SUMGULPS_LR);
+					if (options.topLevel) 		getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.TOPLEVEL_LR);
+					if (options.topLevelDelta) 	getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.TOPLEVELDELTA_LR);
+					if (options.consumption) 	getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.SUMGULPS_LR);
 				}
-				if (col_end > col_max)
-					col_max = col_end;
+				
+				if (!options.collateSeries || exp.previousExperiment == null)
+					column += expList.maxSizeOfCapillaryArrays +2;
 				iSeries++;
 				progress.incPosition();
 			}
@@ -211,23 +211,27 @@ public class XLSExportCapillariesResults extends XLSExport {
 			array.remove(i);
 	}
 	
+	private XSSFWorkbook xlsInitWorkbook() {
+		XSSFWorkbook workbook = new XSSFWorkbook(); 
+		workbook.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		xssfCellStyle_red = workbook.createCellStyle();
+	    font_red = workbook.createFont();
+	    font_red.setColor(HSSFColor.HSSFColorPredefined.RED.getIndex());
+	    xssfCellStyle_red.setFont(font_red);
+	    
+		xssfCellStyle_blue = workbook.createCellStyle();
+	    font_blue = workbook.createFont();
+	    font_blue.setColor(HSSFColor.HSSFColorPredefined.BLUE.getIndex());
+	    xssfCellStyle_blue.setFont(font_blue);
+	    return workbook;
+	}
+	
 	private XSSFSheet xlsInitSheet(XSSFWorkbook workBook, String title) {
 		XSSFSheet sheet = workBook.getSheet(title);
 		if (sheet == null) {
 			sheet = workBook.createSheet(title);
 			outputFieldHeaders(sheet, options.transpose);
 		}
-		
-		xssfCellStyle_red = workBook.createCellStyle();
-	    font_red = workBook.createFont();
-	    font_red.setColor(HSSFColor.HSSFColorPredefined.RED.getIndex());
-	    xssfCellStyle_red.setFont(font_red);
-	    
-		xssfCellStyle_blue = workBook.createCellStyle();
-	    font_blue = workBook.createFont();
-	    font_blue.setColor(HSSFColor.HSSFColorPredefined.BLUE.getIndex());
-	    xssfCellStyle_blue.setFont(font_blue);
-		
 		return sheet;
 	}
 	

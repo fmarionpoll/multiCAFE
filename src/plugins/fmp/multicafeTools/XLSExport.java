@@ -48,6 +48,11 @@ public class XLSExport {
 		XLSUtils.setValue(sheet, pt, transpose, "..");
 		pt.x++;
 		int colseries = pt.x;
+		for (int i = 0; i < 18; i++) {
+			XLSUtils.setValue(sheet, pt, transpose, "--");
+			pt.x++;
+		}
+		pt.x = colseries;
 		
 		String filename = exp.seqCamData.getSequenceFileName();
 		if (filename == null)
