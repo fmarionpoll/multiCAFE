@@ -77,7 +77,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Open/Add", null, tabOpen, "Open one or several stacks of .jpg files");
 		tabOpen.addPropertyChangeListener(this);
 		
-		tabInfos.init(tabsLayout);
+		tabInfos.init(tabsLayout, parent0);
 		tabsPane.addTab("Infos", null, tabInfos, "Define infos for this experiment/box");
 		tabInfos.addPropertyChangeListener(this);
 		

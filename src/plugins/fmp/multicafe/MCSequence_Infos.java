@@ -2,7 +2,8 @@ package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -23,11 +24,12 @@ public class MCSequence_Infos  extends JPanel {
 	private JComboBox<String>	comment2JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	boxID_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	experimentJCombo 	= new JComboBox<String>();
-
+	private MultiCAFE 			parent0 			= null;
 	boolean 					disableChangeFile 	= false;
 	
 	
-	void init(GridLayout capLayout) {
+	void init(GridLayout capLayout, MultiCAFE parent0) {
+		this.parent0 = parent0;
 		setLayout(capLayout);
 
 		add( GuiUtil.besidesPanel(
@@ -51,8 +53,9 @@ public class MCSequence_Infos  extends JPanel {
 		
 		comment1JCombo.setEditable(true);
 		comment2JCombo.setEditable(true);
+		
+		defineActionListeners();
 	}
-	
 	
 	private JPanel createComboPanel(String text, JComboBox<String> combo) {
 		JPanel panel = new JPanel();
@@ -60,6 +63,25 @@ public class MCSequence_Infos  extends JPanel {
 		panel.add(new JLabel(text, SwingConstants.RIGHT), BorderLayout.WEST); 
 		panel.add(combo, BorderLayout.CENTER);
 		return panel;
+	}
+	
+	private void defineActionListeners() {
+		boxID_JCombo.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+			String newtext = (String) boxID_JCombo.getSelectedItem();
+			int nexpts = parent0.expList.getSize();
+			if (nexpts > 0) {
+				for (int i = 0; i < nexpts; i++) {
+					Experiment exp = parent0.expList.getExperiment(i);
+					if (newtext.equals(exp.boxID)) {
+						addItem(experimentJCombo, exp.experiment);
+						addItem(comment1JCombo, exp.comment1);
+						addItem(comment2JCombo, exp.comment2);
+						parent0.paneCapillaries.tabInfos.setAllDescriptors(exp.capillaries);
+						break;
+					}
+				}
+			}
+		} } );
 	}
 		
 	// set/ get

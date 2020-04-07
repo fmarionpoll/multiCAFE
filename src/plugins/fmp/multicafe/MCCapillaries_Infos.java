@@ -64,9 +64,13 @@ public class MCCapillaries_Infos extends JPanel {
 
 	// set/ get
 	
-	void setDescriptors(Capillaries cap) {
+	void setAllDescriptors(Capillaries cap) {
 		capillaryVolumeTextField.setValue( cap.desc.volume);
 		capillaryPixelsTextField.setValue( cap.desc.pixels);
+		setTextDescriptors(cap);
+	}
+	
+	void setTextDescriptors(Capillaries cap) {
 		addItem(stimulusRJCombo, cap.desc.stimulusR);
 		addItem(concentrationRJCombo, cap.desc.concentrationR);
 		addItem(stimulusLJCombo, cap.desc.stimulusL);

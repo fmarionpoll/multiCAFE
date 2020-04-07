@@ -234,6 +234,7 @@ public class Cages {
 				continue;
 			if (!roi.getName().contains("cage"))
 				continue;
+			roi.setSelected(false);
 			cageLimitROIList.add(roi);
 		}
 		Collections.sort(cageLimitROIList, new Comparators.ROI2DNameComparator());

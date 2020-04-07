@@ -102,7 +102,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		boolean flag = tabFile.loadCapillaries_File(exp);
 		if (flag) {
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
-				tabInfos.setDescriptors(exp.capillaries);
+				tabInfos.setAllDescriptors(exp.capillaries);
 				parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
 				parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp);
 				parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
@@ -118,7 +118,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		if (exp != null) {
 			SequenceKymosUtils.transferCamDataROIStoKymo(exp);
 			exp.capillaries.desc_old.copy(exp.capillaries.desc);
-			tabInfos.setDescriptors(exp.capillaries);
+			tabInfos.setAllDescriptors(exp.capillaries);
 			tabCreate.setGroupingAndNumber(exp.capillaries);
 			parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp);
 		}

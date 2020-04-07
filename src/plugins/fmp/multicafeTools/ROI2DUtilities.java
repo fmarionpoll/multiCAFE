@@ -33,7 +33,7 @@ public class ROI2DUtilities  {
 	}
 	
 	public static void interpolateMissingPointsAlongXAxis (ROI2DPolyLine roiLine, int nintervals) {
-		if (nintervals <= 0)
+		if (nintervals <= 1)
 			return;
 		// interpolate points so that each x step has a value	
 		// assume that points are ordered along x
@@ -41,7 +41,7 @@ public class ROI2DUtilities  {
 		int roiLine_npoints = polyline.npoints;
 		if (roiLine_npoints > nintervals)
 			roiLine_npoints = nintervals;
-				
+
 		List<Point2D> pts = new ArrayList <Point2D>(roiLine_npoints);
 		double ylast = polyline.ypoints[roiLine_npoints-1];
 		int xfirst0 = (int) polyline.xpoints[0];
