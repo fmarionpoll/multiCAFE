@@ -1,6 +1,6 @@
 package plugins.fmp.multicafeTools;
 
-public enum EnumXLSExportItems {
+public enum EnumXLSExportType {
 	TOPLEVEL ("toplevel"), 
 	BOTTOMLEVEL ("bottomlevel"), 
 	DERIVEDVALUES ("derivative"), 
@@ -15,7 +15,7 @@ public enum EnumXLSExportItems {
 	
 	private String label;
 	
-	EnumXLSExportItems (String label) { 
+	EnumXLSExportType (String label) { 
 		this.label = label;
 	}
 	
@@ -23,8 +23,8 @@ public enum EnumXLSExportItems {
 		return label;
 	}
 	
-	public static EnumXLSExportItems findByText(String abbr){
-	    for(EnumXLSExportItems v : values()) { 
+	public static EnumXLSExportType findByText(String abbr){
+	    for(EnumXLSExportType v : values()) { 
 	    	if( v.toString().equals(abbr)) { 
 	    		return v; 
     		}  

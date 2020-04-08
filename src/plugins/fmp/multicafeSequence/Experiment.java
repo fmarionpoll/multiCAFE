@@ -150,7 +150,6 @@ public class Experiment {
 	}
 	
 	public boolean openSequenceAndMeasures(boolean loadCapillaries, boolean loadDrosoPositions) {
-		//#problem with experiment name not properly loaded when exporting to excel
 		if (seqCamData == null) {
 			seqCamData = new SequenceCamData();
 		}

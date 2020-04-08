@@ -190,4 +190,22 @@ public class Capillaries {
 		return desc.isChanged(cap.desc);
 	}
 
+	public boolean isPresent(Capillary capnew) {
+		boolean flag = false;
+		for (Capillary cap: capillariesArrayList) {
+			if (cap.capillaryName.contentEquals(capnew.capillaryName)) {
+				flag = true;
+				break;
+			}
+		}
+		return flag;
+	}
+
+	public void mergeLists(Capillaries caplist) {
+		for (Capillary capm : caplist.capillariesArrayList ) {
+			if (!isPresent(capm))
+				capillariesArrayList.add(capm);
+		}
+	}
+	
 }

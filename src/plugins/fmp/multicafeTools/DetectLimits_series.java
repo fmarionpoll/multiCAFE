@@ -153,10 +153,10 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 				oldiybottom = ybottom;
 			}
 			if (options.analyzePartOnly) {
-				Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop.ppolyline, startPixel, endPixel);
+				Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop.polylineLimit, startPixel, endPixel);
 				seqKymos.seq.addROI(cap.ptsTop.transferPolyline2DToROI());
 				
-				Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom.ppolyline, startPixel, endPixel);
+				Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom.polylineLimit, startPixel, endPixel);
 				seqKymos.seq.addROI(cap.ptsBottom.transferPolyline2DToROI());
 			} else {
 				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);

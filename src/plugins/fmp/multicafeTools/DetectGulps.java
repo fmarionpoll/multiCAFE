@@ -62,7 +62,7 @@ public class DetectGulps {
 		int yheight = image.getSizeY();
 		int ix = 0;
 		int iy = 0;
-		Polyline2D 	polyline = cap.ptsTop.ppolyline;
+		Polyline2D 	polyline = cap.ptsTop.polylineLimit;
 		for (ix = 1; ix < polyline.npoints; ix++) {
 			// for each point of topLevelArray, define a bracket of rows to look at ("jitter" = 10)
 			int low = (int) polyline.ypoints[ix]- jitter;

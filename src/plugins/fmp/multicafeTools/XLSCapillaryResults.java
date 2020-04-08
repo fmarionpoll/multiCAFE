@@ -4,8 +4,14 @@ package plugins.fmp.multicafeTools;
 import java.util.List;
 
 public class XLSCapillaryResults {
-	String			name = null;
-	List<Integer > 	data = null;
+	String				name 		= null;
+	EnumXLSExportType 	exportType 	= null;
+	List<Integer > 		data 		= null;
+	
+	public XLSCapillaryResults (String name, EnumXLSExportType exportType) {
+		this.name = name;
+		this.exportType = exportType;
+	}
 	
 	public double getAt(int indexData, double scale) {			
 		double value = Double.NaN;

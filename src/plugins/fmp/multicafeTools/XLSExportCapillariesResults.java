@@ -35,9 +35,8 @@ public class XLSExportCapillariesResults extends XLSExport {
 		    
 			int column = 1;
 			int iSeries = 0;
-			expList.readInfosFromAllExperiments(true, options.onlyalive);
-			if (options.collateSeries)
-				expList.chainExperiments();
+			expList.loadAllExperiments(true, options.onlyalive);
+			expList.chainExperiments(options.collateSeries);
 			expAll = expList.getStartAndEndFromAllExperiments(options);
 			expAll.stepFrame = expList.getExperiment(0).stepFrame;
 			int nbexpts = expList.getSize();
@@ -49,22 +48,22 @@ public class XLSExportCapillariesResults extends XLSExport {
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				if (options.topLevel) 		
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.TOPLEVEL);
+					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.TOPLEVEL);
 				if (options.sum && options.topLevel) 		
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.TOPLEVEL_LR);
+					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.TOPLEVEL_LR);
 				if (options.topLevelDelta) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.TOPLEVELDELTA);
+					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.TOPLEVELDELTA);
 				if (options.sum && options.topLevelDelta) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.TOPLEVELDELTA_LR);
+					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.TOPLEVELDELTA_LR);
 				if (options.consumption) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.SUMGULPS);
+					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.SUMGULPS);
 				if (options.sum && options.consumption) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.SUMGULPS_LR);
+					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.SUMGULPS_LR);
 
 				if (options.bottomLevel) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.BOTTOMLEVEL);		
+					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.BOTTOMLEVEL);		
 				if (options.derivative) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportItems.DERIVEDVALUES);	
+					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.DERIVEDVALUES);	
 				
 				if (!options.collateSeries || exp.previousExperiment == null)
 					column += expList.maxSizeOfCapillaryArrays +2;
@@ -85,7 +84,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		System.out.println("XLS output finished");
 	}
 	
-	private int getDataAndExport(Experiment exp, XSSFWorkbook workbook, int col0, String charSeries, EnumXLSExportItems datatype) {	
+	private int getDataAndExport(Experiment exp, XSSFWorkbook workbook, int col0, String charSeries, EnumXLSExportType datatype) {	
 		List <XLSCapillaryResults> resultsArrayList = getDataFromCapillaryMeasures(exp, datatype);
 		options.trim_alive = false;
 		XSSFSheet sheet = xlsInitSheet(workbook, datatype.toString());
@@ -99,13 +98,12 @@ public class XLSExportCapillariesResults extends XLSExport {
 		return colmax;
 	}
 	
-	private List <XLSCapillaryResults> getDataFromCapillaryMeasures(Experiment exp, EnumXLSExportItems xlsoption) {	
+	private List <XLSCapillaryResults> getDataFromCapillaryMeasures(Experiment exp, EnumXLSExportType xlsoption) {	
 		List <XLSCapillaryResults> resultsArrayList = new ArrayList <XLSCapillaryResults> ();	
 		Capillaries capillaries = exp.capillaries;
 		double scalingFactorToPhysicalUnits = capillaries.desc.volume / exp.capillaries.desc.pixels;
 		for (Capillary cap: capillaries.capillariesArrayList) {
-			XLSCapillaryResults results = new XLSCapillaryResults();
-			results.name = cap.capillaryRoi.getName(); 
+			XLSCapillaryResults results = new XLSCapillaryResults(cap.capillaryRoi.getName(), xlsoption);
 			switch (xlsoption) {
 				case TOPLEVEL:
 				case TOPLEVEL_LR:
@@ -149,7 +147,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		return resultsArrayList;
 	}
 	
-	private double getLastValue_Of_Previous_Experiment(Experiment exp, EnumXLSExportItems xlsoption, String capName) {
+	private double getLastValue_Of_Previous_Experiment(Experiment exp, EnumXLSExportType xlsoption, String capName) {
 		double valuePreviousSeries = 0.;
 		if (exp.previousExperiment != null)
 			valuePreviousSeries = getLastValue_Of_Previous_Experiment(exp.previousExperiment, xlsoption, capName);
@@ -242,7 +240,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		return sheet;
 	}
 	
-	private int xlsExportResultsArrayToSheet(Experiment exp, XSSFSheet sheet, EnumXLSExportItems xlsExportOption, int col0, String charSeries, List <XLSCapillaryResults> arrayList) {
+	private int xlsExportResultsArrayToSheet(Experiment exp, XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries, List <XLSCapillaryResults> arrayList) {
 		Point pt = new Point(col0, 0);
 		if (options.collateSeries) 
 			pt.x = expList.getStackColumnPosition(exp, col0);
@@ -252,7 +250,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		return pt.x;
 	}
 	
-	private Point writeSeriesInfos (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt, String charSeries) {	
+	private Point writeSeriesInfos (Experiment exp, XSSFSheet sheet, EnumXLSExportType option, Point pt, String charSeries) {	
 		if (exp.previousExperiment == null)
 			writeExperimentDescriptors(exp, charSeries, sheet, pt, options);
 		else
@@ -260,7 +258,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		return pt;
 	}
 		
-	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportItems option, Point pt_main, String charSeries, List <XLSCapillaryResults> dataArrayList) {
+	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportType option, Point pt_main, String charSeries, List <XLSCapillaryResults> dataArrayList) {
 		boolean transpose = options.transpose;
 		double scalingFactorToPhysicalUnits = exp.capillaries.desc.volume / exp.capillaries.desc.pixels;
 		int col0 = pt_main.x;

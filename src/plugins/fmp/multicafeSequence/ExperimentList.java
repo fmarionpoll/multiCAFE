@@ -17,7 +17,7 @@ public class ExperimentList {
 	public 	int index0 = 0;
 	public 	int index1 = 0;
 	public	int	maxSizeOfCapillaryArrays = 0;
-	
+
 
 	public ExperimentList () {
 	}
@@ -69,7 +69,7 @@ public class ExperimentList {
 		return expglobal;
 	}
 		
-	public boolean readInfosFromAllExperiments(boolean loadCapillaries, boolean loadDrosoTrack) {
+	public boolean loadAllExperiments(boolean loadCapillaries, boolean loadDrosoTrack) {
 		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
 		int nexpts = experimentList.size();
 		int index = 1;
@@ -92,8 +92,13 @@ public class ExperimentList {
 		return flag;
 	}
 	
-	public void chainExperiments() {
+	public void chainExperiments(boolean collate) {
 		for (Experiment exp: experimentList) {
+			if (!collate) {
+				exp.previousExperiment = null;
+				exp.nextExperiment = null;
+				continue;
+			}
 			for (Experiment expi: experimentList) {
 				if (expi == exp)
 					continue;

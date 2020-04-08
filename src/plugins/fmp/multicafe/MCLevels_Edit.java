@@ -115,7 +115,7 @@ public class MCLevels_Edit  extends JPanel {
 		Rectangle2D rectRef = roiRef.getBounds2D();
 		double xleft = rectRef.getX();
 		
-		Polyline2D polyline = cap.ptsTop.ppolyline;
+		Polyline2D polyline = cap.ptsTop.polylineLimit;
 		for (int i=0; i < polyline.npoints; i++) {
 			if (polyline.xpoints[i] < xleft)
 				continue;
@@ -194,7 +194,7 @@ public class MCLevels_Edit  extends JPanel {
 	}
 	
 	void removeMeasuresEnclosedInRoi(CapillaryLimits caplimits, ROI2D roi) {
-		Polyline2D polyline = caplimits.ppolyline;
+		Polyline2D polyline = caplimits.polylineLimit;
 		int npointsOutside = polyline.npoints - getPointsWithinROI(polyline, roi);
 		if (npointsOutside > 0) {
 			double [] xpoints = new double [npointsOutside];
@@ -207,9 +207,9 @@ public class MCLevels_Edit  extends JPanel {
 					index++;
 				}
 			}
-			caplimits.ppolyline = new Polyline2D(xpoints, ypoints, npointsOutside);	
+			caplimits.polylineLimit = new Polyline2D(xpoints, ypoints, npointsOutside);	
 		} else {
-			caplimits.ppolyline = null;
+			caplimits.polylineLimit = null;
 		}
 	}
 	

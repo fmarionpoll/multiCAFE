@@ -30,8 +30,9 @@ public class XLSExportMoveResults extends XLSExport {
 			int col_max = 1;
 			int col_end = 0;
 			int iSeries = 0;
-			options.expList.readInfosFromAllExperiments(true, true);
-			options.expList.chainExperiments();
+			options.expList.loadAllExperiments(true, true);
+			options.expList.chainExperiments(options.collateSeries);
+			
 			expAll = options.expList.getStartAndEndFromAllExperiments(options);
 			expAll.stepFrame = options.expList.getExperiment(0).stepFrame;
 			int nbexpts = options.expList.getSize();
@@ -44,9 +45,9 @@ public class XLSExportMoveResults extends XLSExport {
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 			
-				if (options.xyCenter)  	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportItems.XYCENTER);
-				if (options.distance) 	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportItems.DISTANCE);
-				if (options.alive) 		col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries,  EnumXLSExportItems.ISALIVE);
+				if (options.xyCenter)  	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYCENTER);
+				if (options.distance) 	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.DISTANCE);
+				if (options.alive) 		col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries,  EnumXLSExportType.ISALIVE);
 				
 				if (col_end > col_max)
 					col_max = col_end;
@@ -68,7 +69,7 @@ public class XLSExportMoveResults extends XLSExport {
 		System.out.println("XLS output finished");
 	}
 
-	public int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, int col0, String charSeries, EnumXLSExportItems xlsExportOption) {
+	public int xlsExportToWorkbook(Experiment exp, XSSFWorkbook workBook, int col0, String charSeries, EnumXLSExportType xlsExportOption) {
 		XSSFSheet sheet = workBook.getSheet(xlsExportOption.toString());
 		if (sheet == null) {
 			sheet = workBook.createSheet(xlsExportOption.toString());
@@ -89,7 +90,7 @@ public class XLSExportMoveResults extends XLSExport {
 		return pt.x;
 	}
 
-	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportItems option, boolean transpose, String charSeries) {
+	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, String charSeries) {
 		int col0 = pt_main.x;
 		int row0 = pt_main.y;
 		if (charSeries == null)
