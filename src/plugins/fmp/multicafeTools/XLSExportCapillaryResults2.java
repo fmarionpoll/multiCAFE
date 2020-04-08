@@ -20,9 +20,7 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.XYTaSeries;
 
-
-
-public class XLSExportCapillariesResults extends XLSExport {
+public class XLSExportCapillaryResults2  extends XLSExport {
 	ExperimentList expList = null;
 	
 	public void exportToFile(String filename, XLSExportOptions opt) {	

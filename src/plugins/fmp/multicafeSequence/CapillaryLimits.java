@@ -17,7 +17,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class CapillaryLimits  implements XMLPersistent  {
 
-	public Polyline2D 	polyline 		= null;
+	public Polyline2D 	ppolyline 		= null;
 	public Polyline2D 	polyline_old 	= null;
 	
 	public String 		typename 		= "notype";
@@ -41,35 +41,35 @@ public class CapillaryLimits  implements XMLPersistent  {
 	public CapillaryLimits(String name, int indexImage, Polyline2D polyline) {
 		this.name = name;
 		this.indexImage = indexImage;
-		this.polyline = polyline;
+		this.ppolyline = polyline;
 	}
 	
 	int getNpoints() {
-		if (polyline == null)
+		if (ppolyline == null)
 			return 0;
-		return polyline.npoints;
+		return ppolyline.npoints;
 	}
 
 	int restoreNpoints() {
 		if (polyline_old != null) {
-			polyline = (Polyline2D) polyline_old.clone();
+			ppolyline = (Polyline2D) polyline_old.clone();
 		}
-		return polyline.npoints;
+		return ppolyline.npoints;
 	}
 	
 	void cropToNPoints(int npoints) {
 		if (polyline_old == null) {
-			polyline_old = (Polyline2D) polyline.clone();
+			polyline_old = (Polyline2D) ppolyline.clone();
 		}
-		polyline.npoints = npoints;
+		ppolyline.npoints = npoints;
 	}
 	
 	void copy(CapillaryLimits cap) {
-		polyline = (Polyline2D) cap.polyline.clone(); 
+		ppolyline = (Polyline2D) cap.ppolyline.clone(); 
 	}
 	
 	boolean isThereAnyMeasuresDone() {
-		boolean yes = (polyline != null && polyline.npoints > 0);
+		boolean yes = (ppolyline != null && ppolyline.npoints > 0);
 		return yes;
 	}
 	
@@ -79,37 +79,37 @@ public class CapillaryLimits  implements XMLPersistent  {
 	}
 	
 	int getLastMeasure() {	
-		if (polyline == null)
+		if (ppolyline == null)
 			return 0;
-		int lastitem = polyline.ypoints.length - 1;
-		int ivalue = (int) polyline.ypoints[lastitem];
+		int lastitem = ppolyline.ypoints.length - 1;
+		int ivalue = (int) ppolyline.ypoints[lastitem];
 		return ivalue;
 	}
 	
 	int getT0Measure() {	
-		if (polyline == null)
+		if (ppolyline == null)
 			return 0;
-		int ivalue = (int) polyline.ypoints[0];
+		int ivalue = (int) ppolyline.ypoints[0];
 		return ivalue;
 	}
 	
 	int getLastDeltaMeasure() {	
-		if (polyline == null)
+		if (ppolyline == null)
 			return 0;
-		int lastitem = polyline.ypoints.length - 1;
-		int ivalue = (int) (polyline.ypoints[lastitem] - polyline.ypoints[lastitem-1]);
+		int lastitem = ppolyline.ypoints.length - 1;
+		int ivalue = (int) (ppolyline.ypoints[lastitem] - ppolyline.ypoints[lastitem-1]);
 		return ivalue;
 	}
 	
 	List<ROI2D> addToROIs(List<ROI2D> listrois, int indexImage) {
 		this.indexImage = indexImage;
-		if (polyline != null) 
+		if (ppolyline != null) 
 			listrois.add(transferPolyline2DToROI());
 		return listrois;
 	}
 	
 	List<ROI2D> addToROIs(List<ROI2D> listrois, Color color, double stroke, int indexImage) {
-		if (polyline != null) { 
+		if (ppolyline != null) { 
 			this.indexImage = indexImage;
 			ROI2D roi = transferPolyline2DToROI();
 			roi.setColor(color);
@@ -125,7 +125,7 @@ public class CapillaryLimits  implements XMLPersistent  {
 			String roiname = roi.getName();
 			if (roi instanceof ROI2DPolyLine ) {
 				if  (roiname .contains (name)) {
-					polyline = ((ROI2DPolyLine)roi).getPolyline2D();
+					ppolyline = ((ROI2DPolyLine)roi).getPolyline2D();
 					name = roiname;
 					((ROI2DPolyLine) roi).setT(indexImage);
 				}
@@ -146,19 +146,19 @@ public class CapillaryLimits  implements XMLPersistent  {
 	}
 	
 	List<Integer> getIntegerArrayFromPolyline2D() {
-		if (polyline == null)
+		if (ppolyline == null)
 			return null;
-		List<Integer> arrayInt = new ArrayList<Integer>(polyline.ypoints.length);
-		for (double i: polyline.ypoints)
+		List<Integer> arrayInt = new ArrayList<Integer>(ppolyline.ypoints.length);
+		for (double i: ppolyline.ypoints)
 			arrayInt.add((int) i);
 		return arrayInt;
 	}
 	
 	public ROI2D transferPolyline2DToROI() {
-		if (polyline == null)
+		if (ppolyline == null)
 			return null;
 		
-		ROI2D roi = new ROI2DPolyLine(polyline); 
+		ROI2D roi = new ROI2DPolyLine(ppolyline); 
 		roi.setName(name);
 		roi.setT(indexImage);
 		return roi;
@@ -167,16 +167,16 @@ public class CapillaryLimits  implements XMLPersistent  {
 	int loadPolyline2DFromXML(Node node, String nodename, String header) {
 		final Node nodeMeta = XMLUtil.getElement(node, nodename);
 		int npoints = 0;
-		polyline = null;
+		ppolyline = null;
 	    if (nodeMeta != null) {
 	    	name =  XMLUtil.getElementValue(nodeMeta, "name", nodename);
 	    	if (!name.contains("_")) {
 	    		this.header = header;
 	    		name = header + name;
 	    	} 
-	    	polyline = loadPolyline2DFromXML(nodeMeta);
-		    if (polyline != null)
-		    	npoints = polyline.npoints;
+	    	ppolyline = loadPolyline2DFromXML(nodeMeta);
+		    if (ppolyline != null)
+		    	npoints = ppolyline.npoints;
 	    }
 		final Node nodeMeta_old = XMLUtil.getElement(node, nodename+"old");
 		if (nodeMeta_old != null) {
@@ -205,15 +205,15 @@ public class CapillaryLimits  implements XMLPersistent  {
     }
 	
 	void savePolyline2DToXML(Node node, String nodename) {
-		if (polyline == null)
+		if (ppolyline == null)
 			return;
 		final Node nodeMeta = XMLUtil.setElement(node, nodename);
 	    if (nodeMeta != null) {
 	    	XMLUtil.setElementValue(nodeMeta, "name", name);
-	    	savePolyline2DtoXML(nodeMeta, polyline);
+	    	savePolyline2DtoXML(nodeMeta, ppolyline);
 	    }
 	    final Node nodeMeta_old = XMLUtil.setElement(node, nodename+"old");
-	    if (polyline_old != null && polyline_old.npoints != polyline.npoints) 
+	    if (polyline_old != null && polyline_old.npoints != ppolyline.npoints) 
 	    	savePolyline2DtoXML(nodeMeta_old,  polyline_old);
 	}
 	
@@ -228,34 +228,34 @@ public class CapillaryLimits  implements XMLPersistent  {
 	}
 	
 	public void adjustToImageWidth(int imageSize) {
-		if (polyline == null || polyline.npoints == imageSize)
+		if (ppolyline == null || ppolyline.npoints == imageSize)
 			return;
-		else if (polyline.npoints > imageSize) {
+		else if (ppolyline.npoints > imageSize) {
 			double [] xpoints = new double[imageSize];
 			double [] ypoints = new double [imageSize];
 			for (int i=0; i< imageSize; i++) {
-				int j = i * polyline.npoints / imageSize;
+				int j = i * ppolyline.npoints / imageSize;
 				xpoints[i] = i;
-				ypoints[i] = polyline.ypoints[j];
+				ypoints[i] = ppolyline.ypoints[j];
 			}
-			polyline = new Polyline2D (xpoints, ypoints, imageSize);
+			ppolyline = new Polyline2D (xpoints, ypoints, imageSize);
 		}
 		else { // imageSize > polyline.npoints
 			double [] xpoints = new double[imageSize];
 			double [] ypoints = new double [imageSize];
-			for (int j=0; j< polyline.npoints; j++) {
-				int i0 = j * imageSize / polyline.npoints;
-				int i1 = (j +1) * imageSize / polyline.npoints;
-				double y0 = polyline.ypoints[j];
+			for (int j=0; j< ppolyline.npoints; j++) {
+				int i0 = j * imageSize / ppolyline.npoints;
+				int i1 = (j +1) * imageSize / ppolyline.npoints;
+				double y0 = ppolyline.ypoints[j];
 				double y1 = y0;
-				if ((j+1) < polyline.npoints)
-					y1 = polyline.ypoints[j+1]; 
+				if ((j+1) < ppolyline.npoints)
+					y1 = ppolyline.ypoints[j+1]; 
 				for (int i = i0; i< i1; i++) {
 					xpoints[i] = i;
 					ypoints[i] = y0 + (y1-y0) * (i-i0)/(i1-i0);
 				}
 			}
-			polyline = new Polyline2D (xpoints, ypoints, imageSize);
+			ppolyline = new Polyline2D (xpoints, ypoints, imageSize);
 		}
 	}
 

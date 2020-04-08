@@ -152,20 +152,20 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	}
 	
 	public void cropMeasuresToNPoints (int npoints) {
-		if (ptsTop.polyline != null)
+		if (ptsTop.ppolyline != null)
 			ptsTop.cropToNPoints(npoints);
-		if (ptsBottom.polyline != null)
+		if (ptsBottom.ppolyline != null)
 			ptsBottom.cropToNPoints(npoints);
-		if (ptsDerivative.polyline != null)
+		if (ptsDerivative.ppolyline != null)
 			ptsDerivative.cropToNPoints(npoints);
 	}
 	
 	public void restoreCroppedMeasures () {
-		if (ptsTop.polyline != null)
+		if (ptsTop.ppolyline != null)
 			ptsTop.restoreNpoints();
-		if (ptsBottom.polyline != null)
+		if (ptsBottom.ppolyline != null)
 			ptsBottom.restoreNpoints();
-		if (ptsDerivative.polyline != null)
+		if (ptsDerivative.ppolyline != null)
 			ptsDerivative.restoreNpoints();
 	}
 	
@@ -184,7 +184,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public void getGulps(int indexkymo, DetectGulps_Options options) {
 		int indexpixel = 0;
 		int start = 1;
-		int end = ptsTop.polyline.npoints;
+		int end = ptsTop.ppolyline.npoints;
 		if (options.analyzePartOnly) {
 			start = options.startPixel;
 			end = options.endPixel;
@@ -193,7 +193,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
 		List<Point2D> gulpPoints = new ArrayList<>();
 		for (indexpixel = start; indexpixel < end; indexpixel++) {
-			int derivativevalue = (int) ptsDerivative.polyline.ypoints[indexpixel-1];
+			int derivativevalue = (int) ptsDerivative.ppolyline.ypoints[indexpixel-1];
 			if (derivativevalue < options.detectGulpsThreshold)
 				continue;
 			
@@ -207,8 +207,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 				}
 			}
 			if (gulpPoints.size() == 0)
-				gulpPoints.add(new Point2D.Double (indexpixel-1, ptsTop.polyline.ypoints[indexpixel-1]));
-			Point2D.Double detectedPoint = new Point2D.Double (indexpixel, ptsTop.polyline.ypoints[indexpixel]);
+				gulpPoints.add(new Point2D.Double (indexpixel-1, ptsTop.ppolyline.ypoints[indexpixel-1]));
+			Point2D.Double detectedPoint = new Point2D.Double (indexpixel, ptsTop.ppolyline.ypoints[indexpixel]);
 			gulpPoints.add(detectedPoint);
 		}
 		
