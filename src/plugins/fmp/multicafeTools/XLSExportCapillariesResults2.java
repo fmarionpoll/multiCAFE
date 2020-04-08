@@ -22,6 +22,7 @@ import plugins.fmp.multicafeSequence.XYTaSeries;
 
 public class XLSExportCapillariesResults2  extends XLSExport {
 	ExperimentList expList = null;
+	List <XLSCapillaryResults> rowsForOneExp = new ArrayList <XLSCapillaryResults> ();
 	
 	public void exportToFile(String filename, XLSExportOptions opt) {	
 		System.out.println("XLS capillary measures output");
@@ -36,11 +37,12 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 		expList.chainExperiments(options.collateSeries);
 		// store parameters common to all experiments into expAll (intervals, step)
 		expAll = expList.getStartAndEndFromAllExperiments(options);
-		expAll.stepFrame = expList.getExperiment(0).stepFrame;
 		
-		int nbexpts = expList.getSize();
-	
-		
+		expAll.stepFrame = expList.getExperiment(0).stepFrame * options.buildExcelBinStep;
+		expAll.startFrame = (int) expAll.fileTimeImageFirstMinute;
+		expAll.endFrame = (int) expAll.fileTimeImageLastMinute;
+		expAll.number_of_frames = (int) (expAll.endFrame - expAll.startFrame)/expAll.stepFrame +1;
+
 		try { 
 			XSSFWorkbook workbook = xlsInitWorkbook();
 		    
@@ -48,6 +50,7 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 			int iSeries = 0;
 			
 			ProgressFrame progress = new ProgressFrame("Export data to Excel");
+			int nbexpts = expList.getSize();
 			progress.setLength(nbexpts);
 			
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
@@ -94,8 +97,9 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 		System.out.println("XLS output finished");
 	}
 	
+	
 	private int getDataAndExport(Experiment exp, XSSFWorkbook workbook, int col0, String charSeries, EnumXLSExportType datatype) {	
-		List <XLSCapillaryResults> resultsArrayList = getDataFromCapillaryMeasures(exp, datatype);
+		getDataFromCapillaryMeasures(exp, datatype);
 		
 		options.trim_alive = false;
 		XSSFSheet sheet = xlsInitSheet(workbook, datatype.toString());
@@ -109,21 +113,71 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 		return colmax;
 	}
 	
-	private List <XLSCapillaryResults> getDataFromCapillaryMeasures(Experiment exp, EnumXLSExportType xlsoption) {	
-		// loop to get all capillaries into expAll
+	private void getDataFromCapillaryMeasures(Experiment exp, EnumXLSExportType xlsoption) {	
+		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.capillaries.copy(exp.capillaries);
 		Experiment expi = exp.nextExperiment;
 		while (expi != null ) {
 			expAll.capillaries.mergeLists(expi.capillaries);
 			expi= expi.nextExperiment;
 		}
+		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
+		rowsForOneExp = new ArrayList <XLSCapillaryResults> (ncapillaries);
+		for (int i=0; i< ncapillaries; i++) {
+			Capillary cap = expAll.capillaries.capillariesArrayList.get(i);
+			XLSCapillaryResults row = new XLSCapillaryResults (cap.capillaryRoi.getName(), xlsoption);
+			row.initValuesArray(expAll.number_of_frames);
+		}
 		
+		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
 		expi = exp;
 		while (expi != null) {
-			double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
 			List <XLSCapillaryResults> resultsArrayList = new ArrayList <XLSCapillaryResults> (expi.capillaries.capillariesArrayList.size());
 			for (Capillary cap: expi.capillaries.capillariesArrayList) {
 				XLSCapillaryResults results = new XLSCapillaryResults(cap.capillaryRoi.getName(), xlsoption);
+				switch (xlsoption) {
+					case TOPLEVEL:
+					case TOPLEVEL_LR:
+						if (options.t0) 
+							results.data = exp.seqKymos.subtractT0(cap.getMeasures(EnumListType.topLevel));
+						else
+							results.data = cap.getMeasures(EnumListType.topLevel);
+						break;
+					case TOPLEVELDELTA:
+					case TOPLEVELDELTA_LR:
+						results.data = exp.seqKymos.subtractTdelta(cap.getMeasures(EnumListType.topLevel), options.buildExcelBinStep);
+						break;
+					case DERIVEDVALUES:
+						results.data = cap.getMeasures(EnumListType.derivedValues);
+						break;
+					case SUMGULPS:
+					case SUMGULPS_LR:
+						results.data = cap.getMeasures(EnumListType.cumSum);
+						break;
+					case BOTTOMLEVEL:
+						results.data = cap.getMeasures(EnumListType.bottomLevel);
+						break;
+					default:
+						break;
+				}
+				resultsArrayList.add(results);
+			}
+			// here add resultsArrayList to expAll
+			addResultsToGlobalList(exp, expi, resultsArrayList);
+			expi = expi.nextExperiment;
+		}
+	}
+	
+	private void addResultsToGlobalList(Experiment exp0, Experiment expi, List <XLSCapillaryResults> resultsArrayList) {
+		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
+		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
+		int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - exp0.fileTimeImageFirstMinute);
+		int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expAll.stepFrame);
+		
+		for (XLSCapillaryResults row: rowsForOneExp ) {
+			for (XLSCapillaryResults results: resultsArrayList) {
+				if (!results.name.equals(row.name))
+					continue;
 				switch (xlsoption) {
 					case TOPLEVEL:
 					case TOPLEVEL_LR:
@@ -141,10 +195,8 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 						break;
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
-						results.data = exp.seqKymos.subtractTdelta(cap.getMeasures(EnumListType.topLevel), options.buildExcelBinStep);
 						break;
 					case DERIVEDVALUES:
-						results.data = cap.getMeasures(EnumListType.derivedValues);
 						break;
 					case SUMGULPS:
 					case SUMGULPS_LR:
@@ -157,23 +209,22 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 							results.data = cap.getMeasures(EnumListType.cumSum);
 						break;
 					case BOTTOMLEVEL:
-						results.data = cap.getMeasures(EnumListType.bottomLevel);
 						break;
 					default:
 						break;
 				}
-				resultsArrayList.add(results);
+				
+			
+				int tofirst = transfer_first_index;
+				int tolast = tofirst + transfer_nvalues;
+				for (int toi = tofirst; toi < tolast; toi++) {
+					int fromi = (toi - tofirst)*options.buildExcelBinStep;
+					row.values[toi]= results.data.get(fromi) * scalingFactorToPhysicalUnits;
+				}
+				break;
 			}
-			// here add resultsArrayList to expAll
-			addResultsToGlobalList(expi, resultsArrayList);
-			expi = expi.nextExperiment;
 		}
-		return resultsAll;
-	}
-	
-	private void addResultsToGlobalList(Experiment exp, List <XLSCapillaryResults> resultsArrayList) {
-		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
-		// TODO - transfer into interval: but array, list?
+		
 	}
 	
 	private double getLastValue_Of_Previous_Experiment(Experiment exp, EnumXLSExportType xlsoption, String capName) {
@@ -298,7 +349,7 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 		int endFrame 	= (int) exp.endFrame;
 		if (endFrame > exp.seqCamData.seq.getSizeT()-1)
 			endFrame = exp.seqCamData.seq.getSizeT()-1;
-		int fullstep 	= exp.stepFrame * options.buildExcelBinStep;
+		int fullstep = exp.stepFrame * options.buildExcelBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
 		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;

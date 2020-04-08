@@ -22,6 +22,7 @@ public class XLSExport {
 	protected XLSExportOptions 	options 			= null;
 	protected Experiment 		expAll 				= null;
 	protected List <XLSCapillaryResults> resultsAll = null;
+	protected double [] 		row_array			= null;
 	int							nintervals			= 0;
 	XSSFCellStyle 				xssfCellStyle_red 	= null;
 	XSSFCellStyle 				xssfCellStyle_blue 	= null;

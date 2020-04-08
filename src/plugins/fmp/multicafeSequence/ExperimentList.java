@@ -23,9 +23,6 @@ public class ExperimentList {
 	}
 	
 	public Experiment getStartAndEndFromAllExperiments(XLSExportOptions options) {
-		ProgressFrame progress = new ProgressFrame("Get time start and time end across all experiments");
-		progress.setLength(experimentList.size());
-
 		Experiment expglobal = new Experiment();
 		if (options.absoluteTime) {
 			Experiment exp0 = experimentList.get(0);
@@ -35,37 +32,27 @@ public class ExperimentList {
 				if (expglobal.getFileTimeImageFirst(false).compareTo(exp.getFileTimeImageFirst(true)) > 0) 
 					expglobal.setFileTimeImageFirst(exp.getFileTimeImageFirst(true));
 				if (expglobal.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
-						expglobal.setFileTimeImageLast(exp.getFileTimeImageLast(true));
-				progress.incPosition();
+					expglobal.setFileTimeImageLast(exp.getFileTimeImageLast(true));
 			}
 			expglobal.fileTimeImageFirstMinute = expglobal.getFileTimeImageFirst(false).toMillis()/60000;
 			expglobal.fileTimeImageLastMinute = expglobal.getFileTimeImageLast(false).toMillis()/60000;
 		} 
-		else {
+		else 
+		{
 			expglobal.fileTimeImageFirstMinute = 0;
-			Experiment exp0 = experimentList.get(0);
-			long last = exp0.getFileTimeImageLast(options.collateSeries).toMillis();
-			long first = exp0.getFileTimeImageFirst(options.collateSeries).toMillis();
-			if (options.t0) {
-				last = last - first;
-				first = 0;
-			}
-			expglobal.fileTimeImageLastMinute = last;
+			expglobal.fileTimeImageLastMinute = 0;
 			for (Experiment exp: experimentList) {
-				last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
-				first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
-				if (options.t0) {
-					last = last - first;
-					first = 0;
-				}
+				if (options.collateSeries && exp.previousExperiment != null)
+					continue;
+				
+				long last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
+				long first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
 				long diff = ( last - first) /60000;
+				
 				if (expglobal.fileTimeImageLastMinute < diff) 
 					expglobal.fileTimeImageLastMinute = diff;
-				progress.incPosition();
 			}
 		}
-		
-		progress.close();
 		return expglobal;
 	}
 		

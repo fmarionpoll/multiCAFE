@@ -1,12 +1,14 @@
 package plugins.fmp.multicafeTools;
 
 
+import java.util.Arrays;
 import java.util.List;
 
 public class XLSCapillaryResults {
 	String				name 		= null;
 	EnumXLSExportType 	exportType 	= null;
 	List<Integer > 		data 		= null;
+	double [] 			values		= null;
 	
 	public XLSCapillaryResults (String name, EnumXLSExportType exportType) {
 		this.name = name;
@@ -27,6 +29,11 @@ public class XLSCapillaryResults {
 			value = data.get(data.size()-1) * scale;
 		}
 		return value;
+	}
+	
+	public void initValuesArray(int dimension) {
+		values = new double [dimension];
+		Arrays.fill(values, Double.NaN);
 	}
 	
 	
