@@ -18,7 +18,6 @@ import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeTools.MulticafeTools;
-import plugins.fmp.multicafeTools.XLSExportCapillariesResults;
 import plugins.fmp.multicafeTools.XLSExportCapillariesResults2;
 import plugins.fmp.multicafeTools.XLSExportMoveResults;
 import plugins.fmp.multicafeTools.XLSExportOptions;
@@ -88,17 +87,17 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 				xlsExport.exportToFile(file, getMoveOptions());
 			}});
 		} 
-		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
-			String file = defineXlsFileName(exp, "_feeding.xlsx");
-			if (file == null)
-				return;
-			updateParametersCurrentExperiment(exp);
-			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-				XLSExportCapillariesResults xlsExport = new XLSExportCapillariesResults();
-				xlsExport.exportToFile(file, getCapillariesOptions());
-			}});
-			firePropertyChange("SAVE_KYMOSMEASURES", false, true);	
-		} 
+//		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
+//			String file = defineXlsFileName(exp, "_feeding.xlsx");
+//			if (file == null)
+//				return;
+//			updateParametersCurrentExperiment(exp);
+//			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
+//				XLSExportCapillariesResults xlsExport = new XLSExportCapillariesResults();
+//				xlsExport.exportToFile(file, getCapillariesOptions());
+//			}});
+//			firePropertyChange("SAVE_KYMOSMEASURES", false, true);	
+//		} 
 		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA2")) {
 			String file = defineXlsFileName(exp, "_feeding.xlsx");
 			if (file == null)

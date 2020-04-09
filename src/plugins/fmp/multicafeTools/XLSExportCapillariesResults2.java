@@ -13,11 +13,11 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import icy.gui.frame.progress.ProgressFrame;
-import icy.util.XMLUtil;
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
+
 
 
 
@@ -369,9 +369,13 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 			for (int i=0; i < lenL; i++, pt.y++) {
 				pt.x = row0;
 				double dataL = rowL.values_out[i];
-				double dataR = 0;
-				if (rowR != null)
+				double dataR = Double.NaN;
+				if (rowR != null) 
 					dataR = rowR.values_out[i];
+				
+				if (Double.isNaN(dataR) && !Double.isNaN(dataL)) dataR=0;
+				if (!Double.isNaN(dataR) && Double.isNaN(dataL)) dataL=0;
+					
 				double valueL = dataL+dataR;
 				if (!Double.isNaN(valueL)) {
 					XLSUtils.setValue(sheet, pt, transpose, valueL);

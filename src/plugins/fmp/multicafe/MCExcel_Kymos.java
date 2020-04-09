@@ -19,8 +19,8 @@ public class MCExcel_Kymos extends JPanel  {
 	 */
 	private static final long serialVersionUID = 1290058998782225526L;
 
-	JButton 	exportToXLSButton 	= new JButton("save XLS");
-	JButton 	exportToXLSButton2 	= new JButton("(save v2)");
+	JButton 	exportToXLSButton 	= new JButton("save XLS (v1)");
+	JButton 	exportToXLSButton2 	= new JButton("save XLS");
 	JCheckBox 	topLevelCheckBox 	= new JCheckBox("top", true);
 	JCheckBox 	topLevelDeltaCheckBox 	= new JCheckBox("delta top", false);
 	
@@ -35,15 +35,15 @@ public class MCExcel_Kymos extends JPanel  {
 		setLayout(capLayout);
 		add(GuiUtil.besidesPanel( topLevelCheckBox, topLevelDeltaCheckBox, consumptionCheckBox, bottomLevelCheckBox));
 		add(GuiUtil.besidesPanel( t0CheckBox, sumCheckBox, new JLabel(" "), new JLabel(" "))); 
-		add(GuiUtil.besidesPanel( onlyaliveCheckBox, new JLabel(" "), exportToXLSButton, exportToXLSButton2)); 
+		add(GuiUtil.besidesPanel( onlyaliveCheckBox, new JLabel(" "), new JLabel(" "), exportToXLSButton2)); 
 		defineActionListeners();
 	}
 	
 	private void defineActionListeners() {
-		exportToXLSButton.addActionListener (new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
-				firePropertyChange("EXPORT_KYMOSDATA", false, true);
-			}});
+//		exportToXLSButton.addActionListener (new ActionListener () { 
+//			@Override public void actionPerformed( final ActionEvent e ) { 
+//				firePropertyChange("EXPORT_KYMOSDATA", false, true);
+//			}});
 		
 		exportToXLSButton2.addActionListener (new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
