@@ -13,6 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import icy.gui.frame.progress.ProgressFrame;
+import icy.util.XMLUtil;
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
@@ -100,7 +101,6 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 		System.out.println("XLS output finished");
 	}
 	
-	
 	private int getDataAndExport(Experiment exp, XSSFWorkbook workbook, int col0, String charSeries, EnumXLSExportType datatype) {	
 		getDataFromOneSeriesOfExperiments(exp, datatype);
 		XSSFSheet sheet = xlsInitSheet(workbook, datatype.toString());
@@ -119,6 +119,11 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 		expAll.fileTimeImageFirst = exp.fileTimeImageFirst;
 		expAll.fileTimeImageLast = exp.fileTimeImageLast;
 		expAll.experimentFileName = exp.experimentFileName;
+		expAll.boxID 		= exp.boxID;
+		expAll.experiment 	= exp.experiment;
+		expAll.comment1 	= exp.comment1;
+		expAll.comment2 	= exp.comment2;
+
 		Experiment expi = exp.nextExperiment;
 		while (expi != null ) {
 			expAll.capillaries.mergeLists(expi.capillaries);
@@ -194,10 +199,12 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 					case SUMGULPS_LR:
 						if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) {
 							int index = getIndexOfFirstNonEmptyValueBackwards(row, transfer_first_index);
-							dvalue = row.values_out[index];
-							for (int i=index+1; i< transfer_first_index; i++) {
-								row.values_out[i] = dvalue;
-								row.padded_out[i] = true;
+							if (index >= 0) {
+								dvalue = row.values_out[index];
+								for (int i=index+1; i< transfer_first_index; i++) {
+									row.values_out[i] = dvalue;
+									row.padded_out[i] = true;
+								}
 							}
 						}
 						break;
@@ -212,6 +219,8 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 				int tolast = tofirst + transfer_nvalues;
 				int fromi = 0;
 				for (int toi = tofirst; toi < tolast; toi++) {
+					if (fromi >= results.data.size())
+						break;
 					row.values_out[toi]= results.data.get(fromi) * scalingFactorToPhysicalUnits + dvalue;
 					fromi += options.buildExcelBinStep;
 				}
@@ -231,7 +240,6 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 		}
 		return index;
 	}
-
 	
 	private void trimDeadsFromArrayList(Experiment exp) {
 	for (Cage cage: exp.cages.cageList) {
