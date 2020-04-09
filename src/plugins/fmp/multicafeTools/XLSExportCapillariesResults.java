@@ -29,18 +29,21 @@ public class XLSExportCapillariesResults extends XLSExport {
 		System.out.println("XLS capillary measures output");
 		options = opt;
 		expList = options.expList;
-
+		expList.loadAllExperiments(true, options.onlyalive);
+		expList.chainExperiments(options.collateSeries);
+		expAll = expList.getStartAndEndFromAllExperiments(options);
+		expAll.stepFrame = expList.getExperiment(0).stepFrame;
+		expAll.startFrame = (int) expAll.fileTimeImageFirstMinute;
+		expAll.endFrame = (int) expAll.fileTimeImageLastMinute;
+		expAll.number_of_frames = (int) (expAll.endFrame - expAll.startFrame)/expAll.stepFrame +1;
+		
 		try { 
 			XSSFWorkbook workbook = xlsInitWorkbook();
 		    
 			int column = 1;
 			int iSeries = 0;
-			expList.loadAllExperiments(true, options.onlyalive);
-			expList.chainExperiments(options.collateSeries);
-			expAll = expList.getStartAndEndFromAllExperiments(options);
-			expAll.stepFrame = expList.getExperiment(0).stepFrame;
-			int nbexpts = expList.getSize();
 			ProgressFrame progress = new ProgressFrame("Export data to Excel");
+			int nbexpts = expList.getSize();
 			progress.setLength(nbexpts);
 			
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
@@ -235,7 +238,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		XSSFSheet sheet = workBook.getSheet(title);
 		if (sheet == null) {
 			sheet = workBook.createSheet(title);
-			outputFieldHeaders(sheet, options.transpose);
+			outputFieldDescriptors(sheet);
 		}
 		return sheet;
 	}
@@ -246,25 +249,24 @@ public class XLSExportCapillariesResults extends XLSExport {
 			pt.x = expList.getStackColumnPosition(exp, col0);
 		
 		pt = writeSeriesInfos(exp, sheet, xlsExportOption, pt, charSeries);
-		pt = writeData(exp, sheet, xlsExportOption, pt, charSeries, arrayList);
+		pt = writeData(exp, sheet, xlsExportOption, pt, arrayList);
 		return pt.x;
 	}
 	
 	private Point writeSeriesInfos (Experiment exp, XSSFSheet sheet, EnumXLSExportType option, Point pt, String charSeries) {	
 		if (exp.previousExperiment == null)
-			writeExperimentDescriptors(exp, charSeries, sheet, pt, options);
+			writeExperimentDescriptors(exp, charSeries, sheet, pt);
 		else
 			pt.y += 17;  // n descriptor columns = 17
 		return pt;
 	}
 		
-	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportType option, Point pt_main, String charSeries, List <XLSCapillaryResults> dataArrayList) {
+	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportType option, Point pt_main, List <XLSCapillaryResults> dataArrayList) {
 		boolean transpose = options.transpose;
 		double scalingFactorToPhysicalUnits = exp.capillaries.desc.volume / exp.capillaries.desc.pixels;
 		int col0 = pt_main.x;
 		int row0 = pt_main.y;
-		if (charSeries == null)
-			charSeries = "t";
+
 		int startFrame 	= (int) exp.startFrame;
 		int endFrame 	= (int) exp.endFrame;
 		if (endFrame > exp.seqCamData.seq.getSizeT()-1)

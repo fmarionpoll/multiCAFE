@@ -14,15 +14,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafeSequence.Cage;
-import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
-import plugins.fmp.multicafeSequence.XYTaSeries;
+
+
+
 
 public class XLSExportCapillariesResults2  extends XLSExport {
 	ExperimentList expList = null;
 	List <XLSCapillaryResults> rowsForOneExp = new ArrayList <XLSCapillaryResults> ();
+
+	// ----------------------
 	
 	public void exportToFile(String filename, XLSExportOptions opt) {	
 		System.out.println("XLS capillary measures output");
@@ -99,34 +102,39 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 	
 	
 	private int getDataAndExport(Experiment exp, XSSFWorkbook workbook, int col0, String charSeries, EnumXLSExportType datatype) {	
-		getDataFromCapillaryMeasures(exp, datatype);
-		
-		options.trim_alive = false;
+		getDataFromOneSeriesOfExperiments(exp, datatype);
 		XSSFSheet sheet = xlsInitSheet(workbook, datatype.toString());
-		int colmax = xlsExportResultsArrayToSheet(exp, sheet, datatype, col0, charSeries, resultsArrayList);
+		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
 		if (options.onlyalive) {
-			options.trim_alive = true;
-			trimDeadsFromArrayList(exp, resultsArrayList);
+			trimDeadsFromArrayList(exp);
 			sheet = xlsInitSheet(workbook, datatype.toString()+"_alive");
-			xlsExportResultsArrayToSheet(exp, sheet, datatype, col0, charSeries, resultsArrayList);
+			xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
 		}
 		return colmax;
 	}
 	
-	private void getDataFromCapillaryMeasures(Experiment exp, EnumXLSExportType xlsoption) {	
+	private void getDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsoption) {	
 		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.capillaries.copy(exp.capillaries);
+		expAll.fileTimeImageFirst = exp.fileTimeImageFirst;
+		expAll.fileTimeImageLast = exp.fileTimeImageLast;
+		expAll.experimentFileName = exp.experimentFileName;
 		Experiment expi = exp.nextExperiment;
 		while (expi != null ) {
 			expAll.capillaries.mergeLists(expi.capillaries);
+			expAll.fileTimeImageLast = expi.fileTimeImageLast;
 			expi= expi.nextExperiment;
 		}
+		expAll.fileTimeImageFirstMinute = expAll.fileTimeImageFirst.toMillis()/60000;
+		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
+		
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
 		rowsForOneExp = new ArrayList <XLSCapillaryResults> (ncapillaries);
 		for (int i=0; i< ncapillaries; i++) {
 			Capillary cap = expAll.capillaries.capillariesArrayList.get(i);
 			XLSCapillaryResults row = new XLSCapillaryResults (cap.capillaryRoi.getName(), xlsoption);
 			row.initValuesArray(expAll.number_of_frames);
+			rowsForOneExp.add(row);
 		}
 		
 		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
@@ -163,63 +171,49 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 				resultsArrayList.add(results);
 			}
 			// here add resultsArrayList to expAll
-			addResultsToGlobalList(exp, expi, resultsArrayList);
+			addResultsTo_rowsForOneExp(expi, resultsArrayList);
 			expi = expi.nextExperiment;
 		}
 	}
 	
-	private void addResultsToGlobalList(Experiment exp0, Experiment expi, List <XLSCapillaryResults> resultsArrayList) {
+	private void addResultsTo_rowsForOneExp(Experiment expi, List <XLSCapillaryResults> resultsArrayList) {
 		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
 		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
-		int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - exp0.fileTimeImageFirstMinute);
-		int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expAll.stepFrame);
+		int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.stepFrame ;
+		int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expAll.stepFrame)+1;
 		
 		for (XLSCapillaryResults row: rowsForOneExp ) {
 			for (XLSCapillaryResults results: resultsArrayList) {
 				if (!results.name.equals(row.name))
 					continue;
+				double dvalue = 0;
 				switch (xlsoption) {
 					case TOPLEVEL:
 					case TOPLEVEL_LR:
-						if (options.t0) {
-							if (options.collateSeries && exp.previousExperiment != null) {
-								double dvalue = getLastValue_Of_Previous_Experiment(exp.previousExperiment, xlsoption, cap.getName());
-								int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
-								results.data = exp.seqKymos.subtractT0AndAddConstant(cap.getMeasures(EnumListType.topLevel), addedValue);
+					case SUMGULPS:
+					case SUMGULPS_LR:
+						if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) {
+							int index = getIndexOfFirstNonEmptyValueBackwards(row, transfer_first_index);
+							dvalue = row.values_out[index];
+							for (int i=index+1; i< transfer_first_index; i++) {
+								row.values_out[i] = dvalue;
+								row.padded_out[i] = true;
 							}
-							else
-								results.data = exp.seqKymos.subtractT0(cap.getMeasures(EnumListType.topLevel));
 						}
-						else
-							results.data = cap.getMeasures(EnumListType.topLevel);
 						break;
+					case DERIVEDVALUES:
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
-						break;
-					case DERIVEDVALUES:
-						break;
-					case SUMGULPS:
-					case SUMGULPS_LR:
-						if (options.collateSeries && exp.previousExperiment != null) {
-							double dvalue = getLastValue_Of_Previous_Experiment(exp.previousExperiment, xlsoption, cap.getName());
-							int addedValue = (int) (dvalue / scalingFactorToPhysicalUnits);
-							results.data = exp.seqKymos.addConstant(cap.getMeasures(EnumListType.cumSum), addedValue);
-						}
-						else 
-							results.data = cap.getMeasures(EnumListType.cumSum);
-						break;
 					case BOTTOMLEVEL:
-						break;
 					default:
 						break;
 				}
-				
-			
 				int tofirst = transfer_first_index;
 				int tolast = tofirst + transfer_nvalues;
+				int fromi = 0;
 				for (int toi = tofirst; toi < tolast; toi++) {
-					int fromi = (toi - tofirst)*options.buildExcelBinStep;
-					row.values[toi]= results.data.get(fromi) * scalingFactorToPhysicalUnits;
+					row.values_out[toi]= results.data.get(fromi) * scalingFactorToPhysicalUnits + dvalue;
+					fromi += options.buildExcelBinStep;
 				}
 				break;
 			}
@@ -227,73 +221,40 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 		
 	}
 	
-	private double getLastValue_Of_Previous_Experiment(Experiment exp, EnumXLSExportType xlsoption, String capName) {
-		double valuePreviousSeries = 0.;
-		if (exp.previousExperiment != null)
-			valuePreviousSeries = getLastValue_Of_Previous_Experiment(exp.previousExperiment, xlsoption, capName);
-		
-		Capillaries capillaries = exp.capillaries;
-		for (Capillary cap : capillaries.capillariesArrayList) {
-			if (cap.getName().equals(capName)) {
-				int lastValue = 0;
-				switch (xlsoption) {
-					case SUMGULPS:
-					case SUMGULPS_LR:
-						lastValue = cap.getLastMeasure(EnumListType.cumSum);
-						break;
-					case TOPLEVELDELTA:
-					case TOPLEVELDELTA_LR: 
-						lastValue = cap.getLastDeltaMeasure(EnumListType.topLevel);
-						break;
-					case DERIVEDVALUES:
-						lastValue = cap.getLastMeasure(EnumListType.derivedValues);
-						break;
-					default:
-					case TOPLEVEL:
-					case TOPLEVEL_LR:
-						if (options.t0)
-							lastValue = cap.getLastMeasure(EnumListType.topLevel) -cap.getT0Measure(EnumListType.topLevel);
-						else
-							lastValue = cap.getLastMeasure(EnumListType.topLevel);
-						break;
-				}
-				double scalingFactorToPhysicalUnits = exp.capillaries.desc.volume / exp.capillaries.desc.pixels;
-				valuePreviousSeries += (lastValue * scalingFactorToPhysicalUnits);
+	private int getIndexOfFirstNonEmptyValueBackwards(XLSCapillaryResults row, int fromindex) {
+		int index = -1;
+		for (int i= fromindex; i>= 0; i--) {
+			if (!Double.isNaN(row.values_out[i])) {
+				index = i;
 				break;
 			}
 		}
-		return valuePreviousSeries;
+		return index;
 	}
+
 	
-	private void trimDeadsFromArrayList(Experiment exp, List <XLSCapillaryResults> resultsArrayList) {
- 		for (Cage cage: exp.cages.cageList) {
-			XYTaSeries flypos = cage.flyPositions;		
+	private void trimDeadsFromArrayList(Experiment exp) {
+	for (Cage cage: exp.cages.cageList) {
 			String cagenumberString = cage.cageLimitROI.getName().substring(4);
 			int cagenumber = Integer.parseInt(cagenumberString);
 			if (cagenumber == 0 || cagenumber == 9)
 				continue;
-			if (options.collateSeries && exp.nextExperiment != null && exp.nextExperiment.isFlyAlive(cagenumber))
-				continue; 
-			for (XLSCapillaryResults capillaryResult : resultsArrayList) {
-				if (getCageFromCapillaryName (capillaryResult.name) == cagenumber) {
-					flypos.getLastIntervalAlive();
-					int ilastalive = flypos.lastTimeAlive/ exp.stepFrame;
-					trimArrayLength(capillaryResult.data, ilastalive);
+			// find the last time it is alive in the whole series --------------------
+			Experiment expi = exp;
+			while (expi.nextExperiment != null && expi.nextExperiment.isFlyAlive(cagenumber)) {
+				expi = expi.nextExperiment;
+			}
+			// remove data up to the end ----------------------------------------------
+			int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
+			int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.stepFrame + (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
+			int ilastalive = lastMinuteAlive / expAll.stepFrame;
+			for (XLSCapillaryResults row : rowsForOneExp) {
+				if (getCageFromCapillaryName (row.name) == cagenumber) {
+					row.clearValues(ilastalive+1);
 				}
 			}
-		}		
-	}
-	
-	private void trimArrayLength (List<Integer> array, int ilastalive) {
-		if (array == null)
-			return;
-		int arraysize = array.size();
-		if (ilastalive < 0)
-			ilastalive = 0;
-		if (ilastalive > (arraysize-1))
-			ilastalive = arraysize-1;
-		for (int i=array.size()-1; i>= ilastalive; i--)
-			array.remove(i);
+		}
+		
 	}
 	
 	private XSSFWorkbook xlsInitWorkbook() {
@@ -315,266 +276,113 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 		XSSFSheet sheet = workBook.getSheet(title);
 		if (sheet == null) {
 			sheet = workBook.createSheet(title);
-			outputFieldHeaders(sheet, options.transpose);
+			int row = outputFieldDescriptors(sheet);
+			outputDataTimeIntervals(sheet, row);
 		}
 		return sheet;
 	}
 	
-	private int xlsExportResultsArrayToSheet(Experiment exp, XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries, List <XLSCapillaryResults> arrayList) {
+	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) {
 		Point pt = new Point(col0, 0);
-		if (options.collateSeries) 
-			pt.x = expList.getStackColumnPosition(exp, col0);
-		
-		pt = writeSeriesInfos(exp, sheet, xlsExportOption, pt, charSeries);
-		pt = writeData(exp, sheet, xlsExportOption, pt, charSeries, arrayList);
+		writeExperimentDescriptors(expAll, charSeries, sheet, pt);
+		pt = writeData2(sheet, xlsExportOption, pt);
 		return pt.x;
 	}
 	
-	private Point writeSeriesInfos (Experiment exp, XSSFSheet sheet, EnumXLSExportType option, Point pt, String charSeries) {	
-		if (exp.previousExperiment == null)
-			writeExperimentDescriptors(exp, charSeries, sheet, pt, options);
-		else
-			pt.y += 17;  // n descriptor columns = 17
-		return pt;
+	private void outputDataTimeIntervals(XSSFSheet sheet, int row) {
+		boolean transpose = options.transpose;
+		Point pt = new Point(0, row);
+		for (int i = expAll.startFrame; i <= expAll.endFrame; i += expAll.stepFrame, pt.y++) {
+			XLSUtils.setValue(sheet, pt, transpose, "t"+i);
+		}
 	}
 		
-	private Point writeData (Experiment exp, XSSFSheet sheet, EnumXLSExportType option, Point pt_main, String charSeries, List <XLSCapillaryResults> dataArrayList) {
-		boolean transpose = options.transpose;
-		double scalingFactorToPhysicalUnits = exp.capillaries.desc.volume / exp.capillaries.desc.pixels;
-		int col0 = pt_main.x;
-		int row0 = pt_main.y;
-		if (charSeries == null)
-			charSeries = "t";
-		int startFrame 	= (int) exp.startFrame;
-		int endFrame 	= (int) exp.endFrame;
-		if (endFrame > exp.seqCamData.seq.getSizeT()-1)
-			endFrame = exp.seqCamData.seq.getSizeT()-1;
-		int fullstep = exp.stepFrame * options.buildExcelBinStep;
-		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
-		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
-		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;
-		if (options.absoluteTime) {
-			referenceFileTimeImageFirstMinutes = expAll.fileTimeImageFirstMinute;
-			referenceFileTimeImageLastMinutes = expAll.fileTimeImageLastMinute;
-		}
-		
-		pt_main.x =0;
-		long tspanMinutes = referenceFileTimeImageLastMinutes-referenceFileTimeImageFirstMinutes;
-		long lastinterval = getnearest(tspanMinutes, fullstep)/ fullstep;
-		
-		long firstImageTimeMinutes = exp.getFileTimeImageFirst(false).toMillis()/60000;
-		long diff2 = getnearest(firstImageTimeMinutes-referenceFileTimeImageFirstMinutes, fullstep);
-		pt_main.y = (int) (diff2/fullstep + row0); 
-		int row_y0 = pt_main.y;
-		for (int i = 0; i<= lastinterval; i++) {
-			long diff3 = getnearest(imageTimeMinutes-referenceFileTimeImageFirstMinutes, fullstep);
-			XLSUtils.setValue(sheet, pt_main, transpose, "t"+diff3);
-			imageTimeMinutes += fullstep ;
-			pt_main.y++;
-		}
-		
-		pt_main.y = row_y0 -1;
-		int lastFrame = 0;
-		if (options.collateSeries && options.padIntervals && exp.nextExperiment != null)
-			exp.nextExperiment.loadKymos_Measures();
-		
-		for (int currentFrame=startFrame; currentFrame < endFrame; currentFrame+= fullstep) {	
-			pt_main.x = col0;
-			pt_main.y++;
-			imageTimeMinutes = exp.seqCamData.getImageFileTime(currentFrame).toMillis()/ 60000;
-			XLSUtils.setValue(sheet, pt_main, transpose, imageTimeMinutes);
-			pt_main.x++;
-			pt_main.x++;
-			int colseries = pt_main.x;
-			int indexData = (currentFrame - startFrame)/exp.stepFrame;
-			switch (option) {
-				case TOPLEVEL_LR:
-				case TOPLEVELDELTA_LR:
-				case SUMGULPS_LR:
-					for (int indexDataArrayList=0; indexDataArrayList< dataArrayList.size()-1; indexDataArrayList+=2) {
-						XLSCapillaryResults xlsDataL = dataArrayList.get(indexDataArrayList);
-						int cage = getCageFromKymoFileName(xlsDataL.name);
-						pt_main.x = colseries + cage*2;
-						double dataL = getDataL( exp,  dataArrayList, indexDataArrayList, indexData, scalingFactorToPhysicalUnits);
-						double dataR = getDataR( exp,  dataArrayList, indexDataArrayList, indexData, scalingFactorToPhysicalUnits);
-						if (!Double.isNaN(dataL) || !Double.isNaN(dataR)) {
-							if (Double.isNaN(dataL)) dataL = 0;
-							if (Double.isNaN(dataR)) dataR = 0;
-						}
-						double valueL = dataL+dataR;
-						if (!Double.isNaN(valueL)) 
-							XLSUtils.setValue(sheet, pt_main, transpose, valueL);
-						pt_main.x ++;
-						double valueR = (dataL-dataR)/valueL;
-						if (!Double.isNaN(valueR)) 
-							XLSUtils.setValue(sheet, pt_main, transpose, valueR);
-						if (!isThisAndNextCapillarySameCage(dataArrayList, indexDataArrayList)) 
-							indexDataArrayList--;
-					}
-					break;
-				default:
-					for (XLSCapillaryResults xlsData: dataArrayList) {
-						double value = xlsData.getAt(indexData, scalingFactorToPhysicalUnits);
-						Point pt = getCellXCoordinateFromDataName(xlsData, pt_main, colseries);
-						if (!Double.isNaN(value)) 
-							XLSUtils.setValue(sheet, pt, transpose, value);
-						else  {
-							value = getDataForTable (exp, xlsData, indexData, scalingFactorToPhysicalUnits);
-							if (!Double.isNaN(value)) {
-								XLSUtils.setValue(sheet, pt, transpose, value);
-								XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
-							}
-						}
-					}
-					pt_main.x ++;
+	private Point writeData2 (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) {
+		int rowseries = pt_main.x +2;
+		int columndataarea = pt_main.y;
+		Point pt = new Point(pt_main);
+	
+		switch (option) {
+			case TOPLEVEL_LR:
+			case TOPLEVELDELTA_LR:
+			case SUMGULPS_LR:
+				writeLRRows(sheet, columndataarea, rowseries, pt);
 				break;
-			}
-			lastFrame = currentFrame;
-		}		
-		
-		// pad remaining cells with the last value
-		if (options.collateSeries && options.padIntervals && exp.nextExperiment != null) {
-			Point padpt = new Point(pt_main);
-			padpt.x = col0;
-			int startNextExpt = (int) (((exp.nextExperiment.fileTimeImageFirstMinute- exp.fileTimeImageFirstMinute)/fullstep)*fullstep);
-			if (startNextExpt < (exp.nextExperiment.fileTimeImageFirstMinute- exp.fileTimeImageFirstMinute))
-				startNextExpt += fullstep;
-			exp.nextExperiment.loadKymos_Measures();
-				
-			for (int nextFrame= lastFrame; nextFrame <= startNextExpt; nextFrame+= fullstep, padpt.y++) {	
-				padpt.x = col0;
-				XLSUtils.setValue(sheet, padpt, transpose, "xxxT");
-				XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle_red);
-				padpt.x++;
-				if (exp.seqCamData.isFileStack()) {
-					XLSUtils.setValue(sheet, padpt, transpose, "xxxF" );
-					XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle_red);	
-				}
-				padpt.x++;
-				int colseries = padpt.x;
-				switch (option) {
-					case TOPLEVEL_LR:
-					case TOPLEVELDELTA_LR:
-					case SUMGULPS_LR:
-						for (int idataArray=0; idataArray< dataArrayList.size()-1; idataArray+=2) {
-							// get current data array and compute column position
-							XLSCapillaryResults dataList = dataArrayList.get(idataArray);
-							// see if this set of data needs to be padded up to next experiment
-							int cage = getCageFromKymoFileName(dataList.name);
-							boolean flag = options.trim_alive;
-							if (cage > 0 && cage < 9  && options.trim_alive) {
-								flag = exp.nextExperiment.isFlyAlive(cage); 
-							} else {
-								flag = exp.nextExperiment.isDataAvailable(cage);
-							}
-							// get position of this set of data
-							int colL2 = getColFromKymoFileName(dataList.name);
-							padpt.x = colseries + colL2;
-							double dataL = 0;
-							double dataR = 0;
-							// get data from first capillary
-							int lastL = dataList.data.size()-1;
-							if (lastL >=0)
-								dataL = dataList.data.get(lastL)*scalingFactorToPhysicalUnits;
-							// get second capillary - capillary nb = cage nb * 2 +1
-							if (idataArray < dataArrayList.size()-1) {
-								XLSCapillaryResults dataListR = dataArrayList.get(idataArray+1);
-								int cageR = getCageFromKymoFileName(dataListR.name);
-								if (cage == cageR) {
-									int lastR = dataListR.data.size()-1;
-									if (lastR >= 0)
-										dataR = dataListR.data.get(lastR)*scalingFactorToPhysicalUnits;
-								}
-								else
-									idataArray--;
-							}
-							// patch data if necessary
-							if (flag) {			
-								double valueL = (dataL+dataR);
-								if (!Double.isNaN(valueL ))
-									XLSUtils.setValue(sheet, padpt, transpose, valueL);
-								XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle_red);
-								padpt.x ++;
-								double valueR = (dataL-dataR)/valueL;
-								if (!Double.isNaN(valueR))
-									XLSUtils.setValue(sheet, padpt, transpose, valueR); 
-								XLSUtils.getCell(sheet, padpt, transpose).setCellStyle(xssfCellStyle_red);
-							}
-						}
-						break;
-					default:
-						for (XLSCapillaryResults xlsData: dataArrayList) 
-							outputMissingData(sheet, getCellXCoordinateFromDataName(xlsData, padpt, colseries), exp, xlsData, scalingFactorToPhysicalUnits);
-						break;
-				}
-			}
+			default:
+				writeSimpleRow(sheet, columndataarea, rowseries, pt);
+				break;
 		}
-		pt_main.x++;
+						
+		pt_main.x = pt.x+1;
 		return pt_main;
 	}
 	
-	private void outputMissingData(XSSFSheet sheet, Point ptadp, Experiment exp, XLSCapillaryResults xlsData, double scalingFactorToPhysicalUnits) {
-		int cage = getCageFromKymoFileName(xlsData.name);
-		boolean flag = options.trim_alive;
-		if (exp.nextExperiment != null) {
-			if (cage >0 && cage < 9 && options.trim_alive) {
-				flag = exp.nextExperiment.isFlyAlive(cage);
-			} else { 
-				flag = exp.nextExperiment.isDataAvailable(cage);
+	private void writeSimpleRow(XSSFSheet sheet, int columndataarea, int rowseries, Point pt) {
+		boolean transpose = options.transpose;
+		for (XLSCapillaryResults row: rowsForOneExp) {
+			pt.y = columndataarea;
+			int col = getColFromKymoFileName(row.name);
+			pt.x = rowseries + col; 
+			for (int i=0; i < row.values_out.length; i++, pt.y++) {
+				double value = row.values_out[i];
+				if (!Double.isNaN(value)) {
+					XLSUtils.setValue(sheet, pt, transpose, value);
+					if (row.padded_out[i])
+						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
+				}
 			}
-		}
-		if (flag) {
-			double value = xlsData.getLast(scalingFactorToPhysicalUnits);
-			if (!Double.isNaN(value )) {
-				XLSUtils.setValue(sheet, ptadp, options.transpose, value);
-				XLSUtils.getCell(sheet, ptadp, options.transpose).setCellStyle(xssfCellStyle_red);
-			}
+			pt.x++;
 		}
 	}
 	
-	private double getDataForTable (Experiment exp, XLSCapillaryResults xlsData, int indexData, double scalingFactorToPhysicalUnits) {
-		double value = xlsData.getAt(indexData, scalingFactorToPhysicalUnits);
-		if (Double.isNaN(value) && options.collateSeries && options.padIntervals && exp.nextExperiment != null) {
-			int cage = getCageFromKymoFileName(xlsData.name);
-			boolean flag = options.trim_alive;
-			if (options.trim_alive) {
-				flag = exp.nextExperiment.isFlyAlive(cage);
-			} else { 
-				flag = exp.nextExperiment.isDataAvailable(cage);
+	private void writeLRRows(XSSFSheet sheet, int columndataarea, int rowseries, Point pt) {
+		boolean transpose = options.transpose;
+		for (int irow = 0; irow < rowsForOneExp.size(); irow ++) {
+			XLSCapillaryResults rowL = rowsForOneExp.get(irow);
+			pt.y = columndataarea;
+			int colL = getColFromKymoFileName(rowL.name);
+			pt.x = rowseries + colL; 
+			int cageL = getCageFromKymoFileName(rowL.name);
+			XLSCapillaryResults rowR = null;
+			if (irow+1 < rowsForOneExp.size()) {
+				rowR = rowsForOneExp.get(irow+1);
+				int cageR = getCageFromKymoFileName(rowR.name);
+				if (cageR == cageL)
+					irow++;
+				else
+					rowR = null;
 			}
-			if (flag) {
-				value = xlsData.getLast(scalingFactorToPhysicalUnits);
+			
+			// output values from the row
+			int lenL = rowL.values_out.length;
+			if (rowR != null && lenL != rowR.values_out.length)
+					System.out.println("lenght of data - rowL="+lenL+" rowR="+rowR.values_out.length);
+			int row0 = pt.x;
+			for (int i=0; i < lenL; i++, pt.y++) {
+				pt.x = row0;
+				double dataL = rowL.values_out[i];
+				double dataR = 0;
+				if (rowR != null)
+					dataR = rowR.values_out[i];
+				double valueL = dataL+dataR;
+				if (!Double.isNaN(valueL)) {
+					XLSUtils.setValue(sheet, pt, transpose, valueL);
+					if (rowL.padded_out[i])
+						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
+				}
+				pt.x ++;
+				if (valueL != 0 && !Double.isNaN(valueL)) {
+					double valueR = (dataL-dataR)/valueL;
+					if (!Double.isNaN(valueR)) {
+						XLSUtils.setValue(sheet, pt, transpose, valueR);
+						if (rowL.padded_out[i])
+							XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
+					}
+				}
 			}
+			pt.x++;
 		}
-		return value;
 	}
 	
-	private double getDataL(Experiment exp, List <XLSCapillaryResults> dataArrayList, int indexDataArrayList, int indexData, double scalingFactorToPhysicalUnits) {
-		double value = Double.NaN;
-		XLSCapillaryResults xlsData = dataArrayList.get(indexDataArrayList);
-		if (indexData < xlsData.data.size()) {
-			value =  getDataForTable (exp, xlsData, indexData, scalingFactorToPhysicalUnits);
-		}
-		return value;
-	}
-	
-	private double getDataR(Experiment exp, List <XLSCapillaryResults> dataArrayList, int indexDataArrayList, int indexData, double scalingFactorToPhysicalUnits) {
-		double value = Double.NaN;
-		if (isThisAndNextCapillarySameCage(dataArrayList, indexDataArrayList)) {
-			XLSCapillaryResults xlsDataR = dataArrayList.get(indexDataArrayList+1);
-			if (indexData < xlsDataR.data.size()) {
-				value =  getDataForTable (exp, xlsDataR, indexData, scalingFactorToPhysicalUnits);
-			}
-		}
-		return value;
-	}
-	
-	private boolean isThisAndNextCapillarySameCage(List <XLSCapillaryResults> dataArrayList, int indexDataArrayList) {
-		XLSCapillaryResults xlsDataL = dataArrayList.get(indexDataArrayList);
-		int cageL = getCageFromKymoFileName(xlsDataL.name);
-		XLSCapillaryResults xlsDataR = dataArrayList.get(indexDataArrayList+1);
-		int cageR = getCageFromKymoFileName(xlsDataR.name);
-		return (cageL == cageR);
-	}
 
 }

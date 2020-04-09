@@ -73,7 +73,7 @@ public class XLSExportMoveResults extends XLSExport {
 		XSSFSheet sheet = workBook.getSheet(xlsExportOption.toString());
 		if (sheet == null) {
 			sheet = workBook.createSheet(xlsExportOption.toString());
-			outputFieldHeaders(sheet, options.transpose);
+			outputFieldDescriptors(sheet);
 		}
 		Point pt = new Point(col0, 0);
 		if (options.collateSeries) {
@@ -82,7 +82,7 @@ public class XLSExportMoveResults extends XLSExport {
 //		pt = writeGlobalInfos(exp, sheet, pt, options.transpose, xlsExportOption);
 //		pt = writeHeader(exp, sheet, pt, xlsExportOption, options.transpose, charSeries);
 		if (exp.previousExperiment == null)
-			writeExperimentDescriptors(exp, charSeries, sheet, pt, options);
+			writeExperimentDescriptors(exp, charSeries, sheet, pt);
 		else
 			pt.y += 17;
 		

@@ -20,7 +20,7 @@ public class MCExcel_Kymos extends JPanel  {
 	private static final long serialVersionUID = 1290058998782225526L;
 
 	JButton 	exportToXLSButton 	= new JButton("save XLS");
-	JButton 	exportToXLSButton2 	= new JButton("(v2)");
+	JButton 	exportToXLSButton2 	= new JButton("(save v2)");
 	JCheckBox 	topLevelCheckBox 	= new JCheckBox("top", true);
 	JCheckBox 	topLevelDeltaCheckBox 	= new JCheckBox("delta top", false);
 	

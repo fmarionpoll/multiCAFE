@@ -65,7 +65,8 @@ public class CapillaryLimits  implements XMLPersistent  {
 	}
 	
 	void copy(CapillaryLimits cap) {
-		polylineLimit = (Polyline2D) cap.polylineLimit.clone(); 
+		if (cap.polylineLimit != null)
+			polylineLimit = (Polyline2D) cap.polylineLimit.clone(); 
 	}
 	
 	boolean isThereAnyMeasuresDone() {

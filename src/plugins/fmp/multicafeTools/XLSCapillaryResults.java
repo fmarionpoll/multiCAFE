@@ -8,7 +8,8 @@ public class XLSCapillaryResults {
 	String				name 		= null;
 	EnumXLSExportType 	exportType 	= null;
 	List<Integer > 		data 		= null;
-	double [] 			values		= null;
+	double [] 			values_out	= null;
+	boolean[]			padded_out	= null;
 	
 	public XLSCapillaryResults (String name, EnumXLSExportType exportType) {
 		this.name = name;
@@ -32,8 +33,18 @@ public class XLSCapillaryResults {
 	}
 	
 	public void initValuesArray(int dimension) {
-		values = new double [dimension];
-		Arrays.fill(values, Double.NaN);
+		values_out = new double [dimension];
+		Arrays.fill(values_out, Double.NaN);
+		padded_out = new boolean [dimension];
+		Arrays.fill(padded_out, false);
+	}
+	
+	public void clearValues (int fromindex) {
+		int toindex = values_out.length;
+		if (fromindex < toindex) {
+			Arrays.fill(values_out, fromindex,  toindex, Double.NaN);
+			Arrays.fill(padded_out, fromindex,  toindex, false);
+		}
 	}
 	
 	

@@ -42,8 +42,8 @@ public class Experiment {
 	public Capillaries 		capillaries 				= new Capillaries();
 	public Cages			cages 						= new Cages();
 
-	private FileTime		fileTimeImageFirst;
-	private FileTime		fileTimeImageLast;
+	public FileTime			fileTimeImageFirst;
+	public FileTime			fileTimeImageLast;
 	public long				fileTimeImageFirstMinute 	= 0;
 	public long				fileTimeImageLastMinute 	= 0;
 	public int				number_of_frames 			= 0;
@@ -327,6 +327,18 @@ public class Experiment {
 			}
 		}
 		return isalive;
+	}
+	
+	public int getLastIntervalFlyAlive(int cagenumber) {
+		int flypos = -1;
+		for (Cage cage: cages.cageList) {
+			String cagenumberString = cage.cageLimitROI.getName().substring(4);
+			if (Integer.parseInt(cagenumberString) == cagenumber) {
+				flypos = cage.flyPositions.getLastIntervalAlive();
+				break;
+			}
+		}
+		return flypos;
 	}
 	
 	public boolean isDataAvailable(int cagenumber) {

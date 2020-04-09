@@ -21,9 +21,7 @@ public class XLSExport {
 
 	protected XLSExportOptions 	options 			= null;
 	protected Experiment 		expAll 				= null;
-	protected List <XLSCapillaryResults> resultsAll = null;
-	protected double [] 		row_array			= null;
-	int							nintervals			= 0;
+
 	XSSFCellStyle 				xssfCellStyle_red 	= null;
 	XSSFCellStyle 				xssfCellStyle_blue 	= null;
     XSSFFont 					font_red 			= null;
@@ -41,7 +39,7 @@ public class XLSExport {
 		return value;
 	}
 		
-	protected Point writeExperimentDescriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, XLSExportOptions options) {
+	protected Point writeExperimentDescriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt) {
 		boolean transpose = options.transpose;
 		int row = pt.y;
 		int col0 = pt.x;
@@ -56,7 +54,7 @@ public class XLSExport {
 		}
 		pt.x = colseries;
 		
-		String filename = exp.seqCamData.getSequenceFileName();
+		String filename = exp.experimentFileName;
 		if (filename == null)
 			filename = exp.seqCamData.getDirectory();
 		Path path = Paths.get(filename);
@@ -138,8 +136,9 @@ public class XLSExport {
 		return pt;
 	}
 	
-	public int outputFieldHeaders(XSSFSheet sheet, boolean transpose) {		
+	public int outputFieldDescriptors(XSSFSheet sheet) {		
 		Point pt = new Point(0,0);
+		boolean transpose = options.transpose;
 		XLSUtils.setValue(sheet, pt, transpose, "path");
 		pt.y++;
 		XLSUtils.setValue(sheet, pt, transpose, EnumXLSExperimentDescriptors.DATE.toString());
