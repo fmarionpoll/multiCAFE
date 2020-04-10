@@ -229,7 +229,6 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 				break;
 			}
 		}
-		
 	}
 	
 	private int getIndexOfFirstNonEmptyValueBackwards(XLSCapillaryResults row, int fromindex) {
@@ -263,8 +262,7 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 					row.clearValues(ilastalive+1);
 				}
 			}
-		}
-		
+		}	
 	}
 	
 	private XSSFWorkbook xlsInitWorkbook() {
@@ -311,7 +309,6 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 		int rowseries = pt_main.x +2;
 		int columndataarea = pt_main.y;
 		Point pt = new Point(pt_main);
-	
 		switch (option) {
 			case TOPLEVEL_LR:
 			case TOPLEVELDELTA_LR:
@@ -321,8 +318,7 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 			default:
 				writeSimpleRow(sheet, columndataarea, rowseries, pt);
 				break;
-		}
-						
+		}			
 		pt_main.x = pt.x+1;
 		return pt_main;
 	}

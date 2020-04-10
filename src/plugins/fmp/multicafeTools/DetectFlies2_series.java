@@ -208,6 +208,10 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			int[] intRefImage = Array1DUtil.arrayToIntArray(seqCamData.refImage.getDataXY(c),
 					seqCamData.refImage.isSignedDataType());
 			int xwidth = currentImage.getSizeX();
+			int h = (int) (rect.getWidth() /2);
+			int v = (int) (rect.getHeight()/2);
+			((Rectangle) rect).grow(h, v);
+			
 			for (int x = 0; x < rect.getWidth(); x++) {
 				for (int y = 0; y < rect.getHeight(); y++) {
 					int xi = (int) (rect.getX() + x);
