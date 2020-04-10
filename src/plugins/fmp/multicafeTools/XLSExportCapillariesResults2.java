@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.poi.hssf.util.HSSFColor;
@@ -141,7 +142,8 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 			row.initValuesArray(expAll.number_of_frames);
 			rowsForOneExp.add(row);
 		}
-		
+		Collections.sort(rowsForOneExp, new Comparators.XLSCapillaryResultsComparator());
+				
 		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
 		expi = exp;
 		while (expi != null) {
@@ -360,11 +362,10 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 				else
 					rowR = null;
 			}
-			
 			// output values from the row
 			int lenL = rowL.values_out.length;
 			if (rowR != null && lenL != rowR.values_out.length)
-					System.out.println("lenght of data - rowL="+lenL+" rowR="+rowR.values_out.length);
+				System.out.println("length of data - rowL="+lenL+" rowR="+rowR.values_out.length);
 			int row0 = pt.x;
 			for (int i=0; i < lenL; i++, pt.y++) {
 				pt.x = row0;
@@ -373,8 +374,10 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 				if (rowR != null) 
 					dataR = rowR.values_out[i];
 				
-				if (Double.isNaN(dataR) && !Double.isNaN(dataL)) dataR=0;
-				if (!Double.isNaN(dataR) && Double.isNaN(dataL)) dataL=0;
+				if (Double.isNaN(dataR) && !Double.isNaN(dataL)) 
+					dataR=0;
+				else if (!Double.isNaN(dataR) && Double.isNaN(dataL)) 
+					dataL=0;
 					
 				double valueL = dataL+dataR;
 				if (!Double.isNaN(valueL)) {
@@ -392,7 +395,6 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 					}
 				}
 			}
-			pt.x++;
 		}
 	}
 	

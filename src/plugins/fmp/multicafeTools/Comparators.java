@@ -30,4 +30,11 @@ public class Comparators {
 		}
 	}
 	
+	public static class XLSCapillaryResultsComparator implements Comparator <XLSCapillaryResults> {
+		@Override
+		public int compare (XLSCapillaryResults o1, XLSCapillaryResults o2) {
+			return o1.name.compareTo(o2.name);
+		}
+	}
+	
 }
