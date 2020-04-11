@@ -364,6 +364,27 @@ public class Experiment {
 		return isOK;
 	}
 	
+	public int getStep() {
+		int step = -1;
+		if (seqKymos == null || seqKymos.seq == null)
+			return step;
+		if (seqKymos.imageWidthMax < 1) {
+			seqKymos.imageWidthMax = seqKymos.seq.getSizeX();
+			if (seqKymos.imageWidthMax < 1)
+				return step;
+		}
+		if (endFrame == 0) {
+			if (seqCamData != null && seqCamData.seq != null)
+				endFrame = seqCamData.seq.getSizeT() -1;
+			else
+				return step;
+		}
+		int len2 = (endFrame +1)/ stepFrame;
+		if (len2 != seqKymos.imageWidthMax) 
+			stepFrame = (endFrame +1)/(seqKymos.imageWidthMax-1);
+		return stepFrame;
+	}
+	
 	public void loadExperimentData() {
 		xmlLoadExperiment();
 		seqCamData.loadSequence(experimentFileName) ;
@@ -371,7 +392,6 @@ public class Experiment {
 		capillaries.desc.analysisStart = startFrame; 
 		capillaries.desc.analysisEnd  = endFrame;
 		capillaries.desc.analysisStep = stepFrame;
-
 		xmlLoadMCcapillaries(experimentFileName);
 	}
 	

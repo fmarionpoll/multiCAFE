@@ -2,7 +2,6 @@ package plugins.fmp.multicafeTools;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -200,22 +199,29 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 	}
 
-	private void patchRectToReferenceImage(SequenceCamData seqCamData, IcyBufferedImage currentImage, Rectangle2D rect) {
+	private void patchRectToReferenceImage(SequenceCamData seqCamData, IcyBufferedImage currentImage, Rectangle rect) {
 		int cmax = currentImage.getSizeC();
+		
 		for (int c = 0; c < cmax; c++) {
 			int[] intCurrentImage = Array1DUtil.arrayToIntArray(currentImage.getDataXY(c),
 					currentImage.isSignedDataType());
 			int[] intRefImage = Array1DUtil.arrayToIntArray(seqCamData.refImage.getDataXY(c),
 					seqCamData.refImage.isSignedDataType());
-			int xwidth = currentImage.getSizeX();
-			int h = (int) (rect.getWidth() /2);
-			int v = (int) (rect.getHeight()/2);
-			((Rectangle) rect).grow(h, v);
 			
-			for (int x = 0; x < rect.getWidth(); x++) {
-				for (int y = 0; y < rect.getHeight(); y++) {
-					int xi = (int) (rect.getX() + x);
-					int yi = (int) (rect.getY() + y);
+			int xwidth = currentImage.getSizeX();
+			int yheight = currentImage.getSizeY();
+			int h = rect.width/4;
+			int v = rect.height/4;
+			rect.grow(h, v); 
+		
+			for (int x = 0; x < rect.width; x++) {
+				for (int y = 0; y < rect.height; y++) {
+					int xi = rect.x + x;
+					int yi = rect.y + y;
+					if (xi > xwidth) 
+						continue;
+					if (yi > yheight) 
+						continue; 
 					int coord = xi + yi * xwidth;
 					intRefImage[coord] = intCurrentImage[coord];
 				}
@@ -314,7 +320,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 				if (bestMask != null) {
 					ROI2DArea flyROI = new ROI2DArea(bestMask);
 					if (!initialflyRemoved.get(iroi)) {
-						Rectangle2D rect = flyROI.getBounds2D();
+						Rectangle rect = flyROI.getBounds();
 						patchRectToReferenceImage(exp.seqCamData, currentImage, rect);
 						initialflyRemoved.set(iroi, true);
 						nfliesRemoved++;

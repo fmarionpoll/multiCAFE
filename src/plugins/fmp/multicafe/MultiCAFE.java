@@ -161,10 +161,11 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			progress = new ProgressFrame("load kymographs");
 			paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 			paneKymos.tabFile.loadDefaultKymos(exp);
+			paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
 			progress.close();
 			if (paneSequence.tabOpen.graphsCheckBox.isSelected())
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
-				    	paneLevels.tabGraphs.xyDisplayGraphs(exp);
+				    paneLevels.tabGraphs.xyDisplayGraphs(exp);
 				}});
 		}
 		

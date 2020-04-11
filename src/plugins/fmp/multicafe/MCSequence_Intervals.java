@@ -74,7 +74,7 @@ public class MCSequence_Intervals extends JPanel {
 	public void setAnalyzeFrameToDialog (Experiment exp) {
 		startFrameJSpinner.setValue((int) exp.startFrame);
 		endFrameJSpinner.setValue((int) exp.endFrame);
-		stepFrameJSpinner.setValue(exp.stepFrame);		
+		stepFrameJSpinner.setValue(exp.getStep());		
 	}
 	
 	void getAnalyzeFrameFromDialog (Experiment exp) {		
