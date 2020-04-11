@@ -1,6 +1,7 @@
 package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -47,7 +48,7 @@ public class MCLevels_Edit  extends JPanel  implements PropertyChangeListener {
 	private JButton 			deleteButton 	= new JButton("Cut & interpolate");
 	private JButton 			cropButton 		= new JButton("Crop from left");
 	private JButton 			restoreButton 	= new JButton("Restore");
-	private JCheckBox			allSeriesCheckBox = new JCheckBox("all series", false);
+	private JCheckBox			allSeriesCheckBox = new JCheckBox("ALL series", false);
 	private String 				adjustString 	= "Adjust dimensions";
 	private JButton 			adjustButton 	= new JButton(adjustString);
 	private AdjustMeasuresDimensions_series thread = null;
@@ -112,6 +113,15 @@ public class MCLevels_Edit  extends JPanel  implements PropertyChangeListener {
 				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
 				restoreCroppedPoints(exp);
 			}});
+		
+		allSeriesCheckBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) {
+				Color color = Color.BLACK;
+				if (allSeriesCheckBox.isSelected()) 
+					color = Color.RED;
+				allSeriesCheckBox.setForeground(color);
+				adjustButton.setForeground(color);
+		}});
 	}
 
 	void cropPointsToLeftLimit(Experiment exp) {

@@ -123,7 +123,6 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 				allSeriesCheckBox.setForeground(color);
 				detectButton.setForeground(color);
 		}});
-
 	}
 	
 	// -------------------------------------------------
