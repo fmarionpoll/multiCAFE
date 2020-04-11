@@ -208,4 +208,13 @@ public class Capillaries {
 		}
 	}
 	
+	public void adjustToImageWidth (int imageWidth) {
+		for (Capillary cap: capillariesArrayList) {
+			cap.ptsTop.adjustToImageWidth(imageWidth);
+			cap.ptsBottom.adjustToImageWidth(imageWidth);
+			cap.ptsDerivative.adjustToImageWidth(imageWidth);
+			cap.gulpsRois = null;
+			// TODO: deal with gulps.. (simply remove?)
+		}
+	}
 }

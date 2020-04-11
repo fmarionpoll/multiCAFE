@@ -1,14 +1,18 @@
 package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Rectangle2D;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,15 +23,18 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
+import icy.util.StringUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.CapillaryLimits;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceKymos;
+import plugins.fmp.multicafeTools.AdjustMeasuresDimensions_series;
+import plugins.fmp.multicafeTools.DetectLimits_Options;
 
 
 
-
-public class MCLevels_Edit  extends JPanel {
+public class MCLevels_Edit  extends JPanel  implements PropertyChangeListener {
 	/**
 	 * 
 	 */
@@ -37,11 +44,14 @@ public class MCLevels_Edit  extends JPanel {
 //	private ArrayList<ROI> 		listGulpsSelected = null;
 	private JComboBox<String> 	roiTypeCombo 	= new JComboBox<String> (new String[] 
 			{" top level", "bottom level", "top & bottom levels", "derivative", "gulps" });
-	private JButton 			adjustButton 	= new JButton("Adjust dimensions");
 	private JButton 			deleteButton 	= new JButton("Cut & interpolate");
 	private JButton 			cropButton 		= new JButton("Crop from left");
 	private JButton 			restoreButton 	= new JButton("Restore");
-
+	private JCheckBox			allSeriesCheckBox = new JCheckBox("all series", false);
+	private String 				adjustString 	= "Adjust dimensions";
+	private JButton 			adjustButton 	= new JButton(adjustString);
+	private AdjustMeasuresDimensions_series thread = null;
+	
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -61,7 +71,11 @@ public class MCLevels_Edit  extends JPanel {
 		panel2.add(cropButton, BorderLayout.CENTER); 
 		panel2.add(restoreButton, BorderLayout.EAST);
 		
-		add(GuiUtil.besidesPanel(adjustButton, new JLabel(" "),   panel2));
+		JPanel panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		((FlowLayout)panel3.getLayout()).setVgap(0);
+		panel3.add(adjustButton);
+		panel3.add(allSeriesCheckBox);
+		add(GuiUtil.besidesPanel(panel3, new JLabel(" "),   panel2));
 
 		defineListeners();
 	}
@@ -74,9 +88,17 @@ public class MCLevels_Edit  extends JPanel {
 			}});
 		
 		adjustButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
-				adjustDimensions(exp);
+			@Override public void actionPerformed( final ActionEvent e ) {
+				if (!allSeriesCheckBox.isSelected()) {
+					Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
+					adjustCapillaryMeasuresDimensions(exp);
+				}
+				else {
+					if (adjustButton.getText() .equals(adjustString))
+						series_detectLimitsStart();
+					else 
+						series_detectLimitsStop();
+				}
 			}});
 		
 		cropButton.addActionListener(new ActionListener () { 
@@ -223,20 +245,57 @@ public class MCLevels_Edit  extends JPanel {
 		return npointsInside;
 	}
 	
-	void adjustDimensions (Experiment exp) {
+	void adjustCapillaryMeasuresDimensions (Experiment exp) {
 		if (!exp.checkStepConsistency()) {
 			parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
 		}
-		int imageSize = exp.seqKymos.imageWidthMax;
-		for (Capillary cap: exp.capillaries.capillariesArrayList) {
-			cap.ptsTop.adjustToImageWidth(imageSize);
-			cap.ptsBottom.adjustToImageWidth(imageSize);
-			cap.ptsDerivative.adjustToImageWidth(imageSize);
-			cap.gulpsRois = null;
-			// TODO: deal with gulps.. (simply remove?)
-		}
-		exp.seqKymos.seq.removeAllROI();
-		exp.seqKymos.transferCapillariesToKymosRois(exp.capillaries);
+		exp.adjustCapillaryMeasuresDimensions();
 	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
+			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
+			parent0.paneSequence.openExperiment(exp);
+			adjustButton.setText(adjustString);
+		 }	 
+	}
+	
+	private void series_detectLimitsStop() {	
+		if (thread != null && !thread.stopFlag) {
+			thread.stopFlag = true;
+		}
+	}
+	
+	void series_detectLimitsStart() {
+		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp == null)
+			return;
+		parent0.paneSequence.tabClose.closeExp(exp);
+		thread = new AdjustMeasuresDimensions_series();
+		
+		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
+		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
+		DetectLimits_Options options= thread.options;
+		options.expList = new ExperimentList(); 
+		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
+		if (allSeriesCheckBox.isSelected()) {
+			options.expList.index0 = 0;
+			options.expList.index1 = options.expList.getSize()-1;
+		} else {
+			options.expList.index0 = parent0.currentExperimentIndex;
+			options.expList.index1 = parent0.currentExperimentIndex;
+		}
+		options.parent0Rect = parent0.mainFrame.getBoundsInternal();
+		
+		thread.addPropertyChangeListener(this);
+		thread.execute();
+		adjustButton.setText("STOP");
+	}
+	
+	
+	
+	
 	
 }

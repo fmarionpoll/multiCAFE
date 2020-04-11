@@ -46,10 +46,10 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
 	private JButton		displayTransform1Button	= new JButton("Display");
 	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
-	private String 		detectString 			= "Detect";
+	private String 		detectString 			= "        Detect     ";
 	private JButton 	detectButton 			= new JButton(detectString);
 	private JCheckBox	partCheckBox 			= new JCheckBox (" from", false);
-	private JCheckBox	allSeriesCheckBox 			= new JCheckBox("ALL series", false);
+	private JCheckBox	allSeriesCheckBox 		= new JCheckBox("ALL series", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
 
@@ -65,13 +65,14 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
-		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		((FlowLayout)panel0.getLayout()).setVgap(0);
+		panel0.add( detectButton);
 		panel0.add( allSeriesCheckBox);
 		panel0.add(allKymosCheckBox);
 		panel0.add(leftCheckBox);
 		panel0.add(rightCheckBox);
-		add( GuiUtil.besidesPanel(detectButton, panel0 ));
+		add( GuiUtil.besidesPanel(panel0 ));
 		
 		((JLabel) directionComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
 		add( GuiUtil.besidesPanel(directionComboBox, thresholdSpinner, transformForLevelsComboBox, displayTransform1Button ));
@@ -99,12 +100,10 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		
 		detectButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				if (detectButton.getText() .equals(detectString)) {
+				if (detectButton.getText() .equals(detectString))
 					series_detectLimitsStart();
-				}
-				else {
+				else 
 					series_detectLimitsStop();
-				}
 			}});	
 		
 		displayTransform1Button.addActionListener(new ActionListener () { 

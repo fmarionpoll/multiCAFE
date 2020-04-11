@@ -246,6 +246,12 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			if (numC <= 0)
 				numC = 3;
 			double fimagewidth =  1 + (exp.endFrame - exp.startFrame )/options.stepFrame;
+			if (fimagewidth < 0) {
+				options.stepFrame = 10;
+				exp.stepFrame = options.stepFrame;
+				fimagewidth =  1 + (exp.endFrame - exp.startFrame )/options.stepFrame;
+			}
+				
 			imagewidth = (int) fimagewidth;
 			dataType = seqCamData.seq.getDataType_();
 			if (dataType.toString().equals("undefined"))

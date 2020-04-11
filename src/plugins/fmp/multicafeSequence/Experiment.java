@@ -385,6 +385,19 @@ public class Experiment {
 		return stepFrame;
 	}
 	
+	public boolean adjustCapillaryMeasuresDimensions() {
+		if (seqKymos.imageWidthMax < 1) {
+			seqKymos.imageWidthMax = seqKymos.seq.getSizeX();
+			if (seqKymos.imageWidthMax < 1)
+				return false;
+		}
+		int imageWidth = seqKymos.imageWidthMax;
+		capillaries.adjustToImageWidth(imageWidth);
+		seqKymos.seq.removeAllROI();
+		seqKymos.transferCapillariesToKymosRois(capillaries);
+		return true;
+	}
+	
 	public void loadExperimentData() {
 		xmlLoadExperiment();
 		seqCamData.loadSequence(experimentFileName) ;

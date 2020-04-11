@@ -20,10 +20,10 @@ public class MCSequence_Infos  extends JPanel {
 	 */
 	private static final long serialVersionUID = 2190848825783418962L;
 
-	private JComboBox<String>	comment1JCombo		= new JComboBox<String>();
-	private JComboBox<String>	comment2JCombo		= new JComboBox<String>();
+	private JComboBox<String>	comment1_JCombo		= new JComboBox<String>();
+	private JComboBox<String>	comment2_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	boxID_JCombo		= new JComboBox<String>();
-	private JComboBox<String> 	experimentJCombo 	= new JComboBox<String>();
+	private JComboBox<String> 	experiment_JCombo 	= new JComboBox<String>();
 	private MultiCAFE 			parent0 			= null;
 	boolean 					disableChangeFile 	= false;
 	
@@ -33,26 +33,26 @@ public class MCSequence_Infos  extends JPanel {
 		setLayout(capLayout);
 
 		add( GuiUtil.besidesPanel(
-				createComboPanel("Experiment ", experimentJCombo),  
+				createComboPanel("Experiment ", experiment_JCombo),  
 				createComboPanel("  Box ID ",  boxID_JCombo)));
 		
 		JPanel panel1 = new JPanel();
 		panel1.setLayout(new BorderLayout());
 		panel1.add(new JLabel("Comment1   ", SwingConstants.RIGHT), BorderLayout.WEST); 
-		panel1.add(comment1JCombo, BorderLayout.CENTER);
+		panel1.add(comment1_JCombo, BorderLayout.CENTER);
 		add( GuiUtil.besidesPanel(panel1));
 		
 		JPanel panel2 = new JPanel();
 		panel2.setLayout(new BorderLayout());
 		panel2.add(new JLabel("Comment2   ", SwingConstants.RIGHT), BorderLayout.WEST); 
-		panel2.add(comment2JCombo, BorderLayout.CENTER);
+		panel2.add(comment2_JCombo, BorderLayout.CENTER);
 		add( GuiUtil.besidesPanel(panel2));
 
 		boxID_JCombo.setEditable(true);
-		experimentJCombo.setEditable(true);	
+		experiment_JCombo.setEditable(true);	
 		
-		comment1JCombo.setEditable(true);
-		comment2JCombo.setEditable(true);
+		comment1_JCombo.setEditable(true);
+		comment2_JCombo.setEditable(true);
 		
 		defineActionListeners();
 	}
@@ -73,10 +73,10 @@ public class MCSequence_Infos  extends JPanel {
 				for (int i = 0; i < nexpts; i++) {
 					Experiment exp = parent0.expList.getExperiment(i);
 					if (newtext.equals(exp.boxID)) {
-						addItem(experimentJCombo, exp.experiment);
-						addItem(comment1JCombo, exp.comment1);
-						addItem(comment2JCombo, exp.comment2);
-						parent0.paneCapillaries.tabInfos.setAllDescriptors(exp.capillaries);
+						addItem(experiment_JCombo, exp.experiment);
+						addItem(comment1_JCombo, exp.comment1);
+						addItem(comment2_JCombo, exp.comment2);
+						parent0.paneCapillaries.tabInfos.setTextDescriptors(exp.capillaries);
 						break;
 					}
 				}
@@ -92,22 +92,21 @@ public class MCSequence_Infos  extends JPanel {
 		addItem(boxID_JCombo, exp.boxID);
 		if (exp.experiment.equals(".."))
 			exp.experiment = exp.capillaries.desc.old_experiment;
-		addItem(experimentJCombo, exp.experiment);
+		addItem(experiment_JCombo, exp.experiment);
 		
 		if (exp.comment1 .equals(".."))
 			exp.comment1 = exp.capillaries.desc.old_comment1;
-		addItem(comment1JCombo, exp.comment1);
+		addItem(comment1_JCombo, exp.comment1);
 		if (exp.comment2 .equals(".."))
 			exp.comment2 = exp.capillaries.desc.old_comment2;
-		addItem(comment2JCombo, exp.comment2);
+		addItem(comment2_JCombo, exp.comment2);
 	}
 
 	void getExperimentInfosFromDialog(Experiment exp) {
 		exp.boxID = (String) boxID_JCombo.getSelectedItem();
-		exp.experiment = (String) experimentJCombo.getSelectedItem();
-		
-		exp.comment1 = (String) comment1JCombo.getSelectedItem();
-		exp.comment2 = (String) comment2JCombo.getSelectedItem();
+		exp.experiment = (String) experiment_JCombo.getSelectedItem();
+		exp.comment1 = (String) comment1_JCombo.getSelectedItem();
+		exp.comment2 = (String) comment2_JCombo.getSelectedItem();
 	}
 	
 	private void addItem(JComboBox<String> combo, String text) {
@@ -134,10 +133,9 @@ public class MCSequence_Infos  extends JPanel {
 	
 	void updateCombos () {
 		addItem(boxID_JCombo, (String) boxID_JCombo.getSelectedItem());
-		addItem(experimentJCombo, (String) experimentJCombo.getSelectedItem());
-		
-		addItem(comment1JCombo, (String) comment1JCombo.getSelectedItem());
-		addItem(comment2JCombo, (String) comment2JCombo.getSelectedItem());
+		addItem(experiment_JCombo, (String) experiment_JCombo.getSelectedItem());
+		addItem(comment1_JCombo, (String) comment1_JCombo.getSelectedItem());
+		addItem(comment2_JCombo, (String) comment2_JCombo.getSelectedItem());
 	}
 
 }
