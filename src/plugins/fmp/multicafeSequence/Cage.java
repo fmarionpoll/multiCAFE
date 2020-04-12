@@ -15,6 +15,8 @@ public class Cage {
 	public XYTaSeries 		flyPositions 		= new XYTaSeries();
 	public List<ROI2D> 		detectedFliesList	= new ArrayList<ROI2D>();
 	
+	
+	
 	public boolean xmlSaveCage (Node node, int index) {
 		if (node == null)
 			return false;

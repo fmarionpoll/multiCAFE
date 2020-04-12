@@ -190,25 +190,19 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 		int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expAll.stepFrame)+1;
 		
 		for (XLSCapillaryResults row: rowsForOneExp ) {
+			boolean found = false;
 			for (XLSCapillaryResults results: resultsArrayList) {
 				if (!results.name.equals(row.name))
 					continue;
+				found = true;
 				double dvalue = 0;
 				switch (xlsoption) {
 					case TOPLEVEL:
 					case TOPLEVEL_LR:
 					case SUMGULPS:
 					case SUMGULPS_LR:
-						if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) {
-							int index = getIndexOfFirstNonEmptyValueBackwards(row, transfer_first_index);
-							if (index >= 0) {
-								dvalue = row.values_out[index];
-								for (int i=index+1; i< transfer_first_index; i++) {
-									row.values_out[i] = dvalue;
-									row.padded_out[i] = true;
-								}
-							}
-						}
+						if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
+							dvalue = padWithLastPreviousValue(row, transfer_first_index);
 						break;
 					case DERIVEDVALUES:
 					case TOPLEVELDELTA:
@@ -228,7 +222,30 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 				}
 				break;
 			}
+			if (!found) {
+				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) {
+					double dvalue = padWithLastPreviousValue(row, transfer_first_index);
+					int tofirst = transfer_first_index;
+					int tolast = tofirst + transfer_nvalues;
+					for (int toi = tofirst; toi < tolast; toi++) {
+						row.values_out[toi]= dvalue;
+					}
+				}
+			}
 		}
+	}
+	
+	private double padWithLastPreviousValue(XLSCapillaryResults row, int transfer_first_index) {
+		double dvalue = 0;
+		int index = getIndexOfFirstNonEmptyValueBackwards(row, transfer_first_index);
+		if (index >= 0) {
+			dvalue = row.values_out[index];
+			for (int i=index+1; i< transfer_first_index; i++) {
+				row.values_out[i] = dvalue;
+				row.padded_out[i] = true;
+			}
+		}
+		return dvalue;
 	}
 	
 	private int getIndexOfFirstNonEmptyValueBackwards(XLSCapillaryResults row, int fromindex) {
