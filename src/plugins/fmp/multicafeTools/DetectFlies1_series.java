@@ -57,6 +57,10 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 				exp.startFrame = 0;
 				exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
 			}
+			if (exp.cages.cageList.size() < 1 ) {
+				System.out.println("! skipped experiment with no cage: " + exp.experimentFileName);
+				continue;
+			}
 			runDetectFlies(exp);
 			if (!stopFlag)
 				exp.saveComputation();

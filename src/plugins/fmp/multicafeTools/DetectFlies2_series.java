@@ -73,6 +73,10 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 				exp.startFrame = 0;
 				exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
 			}
+			if (exp.cages.cageList.size() < 1 ) {
+				System.out.println("! skipped experiment with no cage: " + exp.experimentFileName);
+				continue;
+			}
 			runDetectFlies(exp);
 			if (!stopFlag)
 				exp.saveComputation();
@@ -209,19 +213,19 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 					seqCamData.refImage.isSignedDataType());
 			
 			int xwidth = currentImage.getSizeX();
-			int yheight = currentImage.getSizeY();
-			int h = rect.width/4;
-			int v = rect.height/4;
-			rect.grow(h, v); 
+//			int yheight = currentImage.getSizeY();
+//			int h = rect.width/4;
+//			int v = rect.height/4;
+//			rect.grow(h, v); 
 		
 			for (int x = 0; x < rect.width; x++) {
 				for (int y = 0; y < rect.height; y++) {
 					int xi = rect.x + x;
 					int yi = rect.y + y;
-					if (xi > xwidth) 
-						continue;
-					if (yi > yheight) 
-						continue; 
+//					if (xi > xwidth) 
+//						continue;
+//					if (yi > yheight) 
+//						continue; 
 					int coord = xi + yi * xwidth;
 					intRefImage[coord] = intCurrentImage[coord];
 				}

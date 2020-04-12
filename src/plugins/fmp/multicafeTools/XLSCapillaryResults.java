@@ -41,7 +41,7 @@ public class XLSCapillaryResults {
 	
 	public void clearValues (int fromindex) {
 		int toindex = values_out.length;
-		if (fromindex < toindex) {
+		if (fromindex > 0 && fromindex < toindex) {
 			Arrays.fill(values_out, fromindex,  toindex, Double.NaN);
 			Arrays.fill(padded_out, fromindex,  toindex, false);
 		}

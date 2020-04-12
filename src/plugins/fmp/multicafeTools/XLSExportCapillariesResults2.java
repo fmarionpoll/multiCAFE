@@ -221,7 +221,7 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 				int tolast = tofirst + transfer_nvalues;
 				int fromi = 0;
 				for (int toi = tofirst; toi < tolast; toi++) {
-					if (fromi >= results.data.size())
+					if (results.data == null || fromi >= results.data.size())
 						break;
 					row.values_out[toi]= results.data.get(fromi) * scalingFactorToPhysicalUnits + dvalue;
 					fromi += options.buildExcelBinStep;
