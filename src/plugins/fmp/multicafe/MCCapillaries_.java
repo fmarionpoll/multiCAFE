@@ -31,7 +31,9 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	MCCapillaries_File 		tabFile 		= new MCCapillaries_File();
 	MCCapillaries_Adjust 	tabAdjust 		= new MCCapillaries_Adjust();
 	MCCapillaries_Infos		tabInfos		= new MCCapillaries_Infos();
-
+	private int ID_INFOS = 1;
+	private int ID_ADJUST = 2;
+	
 	private MultiCAFE parent0 = null;
 
 	
@@ -45,23 +47,28 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 		
 		GridLayout capLayout = new GridLayout(3, 1);
-		
+		int order = 0;
 		tabCreate.init(capLayout, parent0);
 		tabCreate.addPropertyChangeListener(this);
 		tabsPane.addTab("Create", null, tabCreate, "Create lines defining capillaries");
+		order++;
 		
+		ID_INFOS=order;
 		tabInfos.init(capLayout);
 		tabInfos.addPropertyChangeListener(this);
 		tabsPane.addTab("Infos", null, tabInfos, "Define pixel conversion unit of images and capillaries content");
-
+		order++;
+		
 		tabAdjust.init(capLayout, parent0);
 		tabAdjust.addPropertyChangeListener(parent0);
 		tabsPane.addTab("Adjust", null, tabAdjust, "Adjust ROIS position to the capillaries");
-
+		order++;
+		
 		tabFile.init(capLayout, parent0);
 		tabFile.addPropertyChangeListener(this);
 		tabsPane.addTab("Load/Save", null, tabFile, "Load/Save xml file with capillaries descriptors");
-
+		order++;
+		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));
 		
@@ -81,16 +88,16 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) {
 			setCapillariesInfosToDialogs();
-		  	tabsPane.setSelectedIndex(2);
+		  	tabsPane.setSelectedIndex(ID_INFOS);
 		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
 		}			  
 		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) {
-			tabsPane.setSelectedIndex(2);
+			tabsPane.setSelectedIndex(ID_INFOS);
 		}
 		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) {
 			parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
 			firePropertyChange("CAPILLARIES_NEW", false, true);
-			tabsPane.setSelectedIndex(2);
+			tabsPane.setSelectedIndex(ID_INFOS);
 		}
 
 	}
@@ -137,8 +144,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	public void stateChanged(ChangeEvent arg0) {
 		JTabbedPane tabbedPane = (JTabbedPane) arg0.getSource();
         int selectedIndex = tabbedPane.getSelectedIndex();
-        tabAdjust.roisDisplayrefBar(selectedIndex == 1);
-        parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(selectedIndex == 2);
+        tabAdjust.roisDisplayrefBar(selectedIndex == ID_ADJUST);
+        parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(selectedIndex == ID_INFOS);
 	}
 
 }
