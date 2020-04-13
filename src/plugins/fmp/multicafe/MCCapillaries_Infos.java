@@ -5,7 +5,10 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -77,9 +80,25 @@ public class MCCapillaries_Infos extends JPanel {
 					ArrayList<Point2D> pts = cap.capillaryRoi.getPoints();
 					Point2D pt1 = pts.get(0);
 					Point2D pt2 = pts.get(pts.size() -1);
+					Line2D line = new Line2D.Double(pt1, pt2);
+					double distance = line.getP1().distance(line.getP2());
 					double npixels = Math.sqrt(
 							(pt2.getY() - pt1.getY()) * (pt2.getY() - pt1.getY()) 
 							+ (pt2.getX() - pt1.getX()) * (pt2.getX() - pt2.getX()));
+					exp.seqCamData.seq.getPixelSizeX();
+					
+/*
+					Line2D line = new Line2D.Double(a1.getPosition(), a2.getPosition());
+					// transform and display ticks
+					lineDefinitionList.clear();
+					AffineTransform originalTransform = g.getTransform();
+					double realDistance = Math.sqrt((Math.pow(vx * distance * sequence.getPixelSizeX(), 2) + Math.pow(vy * distance * sequence.getPixelSizeY(), 2)));
+					pixelString = " " + (int) distance + " px" + " / " + UnitUtil.getBestUnitInMeters(realDistance, 2, UnitPrefix.MICRO);
+					Rectangle2D pixelBounds = GraphicsUtil.getStringBounds(g, font, pixelString);
+					g.translate(distance / 2 - pixelBounds.getWidth() / 2, -convertScale(canvas, 20));
+					double distance = line.getP1().distance(line.getP2());
+					
+*/
 					capillaryPixelsTextField.setValue((int) npixels);
 				}
 			}});
