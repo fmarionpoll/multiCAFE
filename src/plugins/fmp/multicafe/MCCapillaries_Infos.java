@@ -42,6 +42,7 @@ public class MCCapillaries_Infos extends JPanel {
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
+		this.parent0 = parent0;
 		
 		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		((FlowLayout)panel0.getLayout()).setVgap(0);
@@ -79,7 +80,7 @@ public class MCCapillaries_Infos extends JPanel {
 					double npixels = Math.sqrt(
 							(pt2.getY() - pt1.getY()) * (pt2.getY() - pt1.getY()) 
 							+ (pt2.getX() - pt1.getX()) * (pt2.getX() - pt2.getX()));
-					capillaryPixelsTextField.setValue(npixels);
+					capillaryPixelsTextField.setValue((int) npixels);
 				}
 			}});
 	}
