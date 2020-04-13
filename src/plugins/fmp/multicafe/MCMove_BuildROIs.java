@@ -69,6 +69,7 @@ public class MCMove_BuildROIs extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				addROISCreatedFromSelectedPolygon();
 			}});
+		
 		addPolygon2DButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				create2DPolygon();

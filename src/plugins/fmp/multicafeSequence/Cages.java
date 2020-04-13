@@ -24,39 +24,41 @@ public class Cages {
 	public DetectFlies_Options 	detect 					= new DetectFlies_Options();
 	public List<Cage>			cageList				= new ArrayList<Cage>();
 	
-	private List<ROI2D> 		cageLimitROIList		= new ArrayList<ROI2D>();
-	private List<ROI2D> 		detectedFliesList		= new ArrayList<ROI2D>();
-	private List<XYTaSeries> 	flyPositionsList 		= new ArrayList<XYTaSeries>();
+	private final String ID_CAGES 		= "Cages";
+	private final String ID_NCAGES 		= "n_cages";
+	private final String ID_DROSOTRACK 	= "drosoTrack";
+	private final String ID_NBITEMS 	= "nb_items";
+	private final String ID_CAGELIMITS 	= "Cage_Limits";
+	private final String ID_FLYDETECTED = "Fly_Detected";
 	
 	
 
 	public void clear() {
-		detectedFliesList.clear();
-		flyPositionsList.clear();
+		for (Cage cage: cageList) {
+			cage.clearMeasures();
+		}
 	}
 	
 	public boolean xmlWriteCagesToFile(String name, String directory) {
 		String csFile = MulticafeTools.saveFileAs(name, directory, "xml");
 		if (csFile == null)
 			return false;
-		
 		csFile.toLowerCase();
-		if (!csFile.contains(".xml")) {
+		if (!csFile.contains(".xml")) 
 			csFile += ".xml";
-		}
 		return xmlWriteCagesToFileNoQuestion(csFile);
 	}
 		
-	public boolean xmlWriteCagesToFileNoQuestion(String csFile) {
-		if (csFile == null) 
+	public boolean xmlWriteCagesToFileNoQuestion(String tempname) {
+		if (tempname == null) 
 			return false;
 		final Document doc = XMLUtil.createDocument(true);
 		if (doc == null)
 			return false;
-		
-		xmlSaveCages (doc);
-		XMLUtil.saveDocument(doc, csFile);
-		return true;
+		boolean flag = xmlSaveCages (doc);
+		if (!flag)
+			System.out.println("failed to write cages to file");
+		return XMLUtil.saveDocument(doc, tempname);
 	}
 		
 	public boolean xmlReadCagesFromFile(SequenceCamData seq) {
@@ -73,64 +75,68 @@ public class Cages {
 			}
 		}
 		return wasOk;
-
 	}
 	
-	public boolean xmlReadCagesFromFileNoQuestion(String csFileName, SequenceCamData seq) {
-		if (csFileName != null)  {
-			final Document doc = XMLUtil.loadDocument(csFileName);
-			if (doc != null) {
-				xmlLoadCages(doc);
-				fromCagesToROIs(seq);
-				fromDetectedFliesToROIs(seq);
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	private boolean xmlLoadCages (Document doc) {
-		String nodeName = "drosoTrack";
-		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), nodeName);
-		if (node == null)
+	public boolean xmlReadCagesFromFileNoQuestion(String tempname, SequenceCamData seq) {
+		if (tempname == null) 
 			return false;
-		cageList.clear();
-		detect.loadFromXML(node);
-		if (xmlLoadCagesLimits(node)) {
-			xmlLoadFlyPositions(node);
-			xmlLoadDetectedFlies(node);
-			transferV0DataToCages();
+		final Document doc = XMLUtil.loadDocument(tempname);
+		if (doc == null)
+			return false;
+		boolean flag = xmlLoadCages(doc); 
+		if (flag) {
+			fromCagesToROIs(seq);
+			fromDetectedFliesToROIs(seq);
 		}
 		else {
-			Element xmlVal = XMLUtil.getElement(node, "Cages");
-			if (xmlVal != null) {
-				int ncages = XMLUtil.getAttributeIntValue(xmlVal, "n_cages", 0);
-				if (ncages > 0)
-					cageList.clear();
-				for (int index = 0; index < ncages; index++) {
-					Cage cage = new Cage();
-					cage.xmlLoadCage(xmlVal, index);
-					cageList.add(cage);
-				}
-			}
+			System.out.println("failed to write cages to file");
+			return false;
 		}
 		return true;
 	}
 	
-	private void transferV0DataToCages() {
+	private boolean xmlLoadCages (Document doc) {
+		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_DROSOTRACK);
+		if (node == null)
+			return false;
+		cageList.clear();
+		detect.loadFromXML(node);
+		Element xmlVal = XMLUtil.getElement(node, ID_CAGES);
+		if (xmlVal != null) {
+			int ncages = XMLUtil.getAttributeIntValue(xmlVal, ID_NCAGES, 0);
+			if (ncages > 0)
+				cageList.clear();
+			for (int index = 0; index < ncages; index++) {
+				Cage cage = new Cage();
+				cage.xmlLoadCage(xmlVal, index);
+				cageList.add(cage);
+			}
+		} else {
+			List<ROI2D> cageLimitROIList = new ArrayList<ROI2D>();
+			if (v0XmlLoadCagesLimits(node, cageLimitROIList)) {
+				List<XYTaSeries> flyPositionsList = new ArrayList<XYTaSeries>();
+				v0XmlLoadFlyPositions(node, flyPositionsList);
+				v0TransferDataToCages(cageLimitROIList, flyPositionsList);
+			}
+			else
+				return false;
+		}
+		return true;
+	}
+	
+	private void v0TransferDataToCages(List<ROI2D> cageLimitROIList, List<XYTaSeries> flyPositionsList) {
 		cageList.clear();
 		int ncages = cageLimitROIList.size();
 		for (int index=0; index< ncages; index++) {
 			Cage cage = new Cage();
-			cage.cageLimitROI = cageLimitROIList.get(index);
+			cage.roi = cageLimitROIList.get(index);
 			cage.flyPositions = flyPositionsList.get(index);
 			cageList.add(cage);
 		}
 	}
 	
 	private boolean xmlSaveCages (Document doc) {
-		String nodeName = "drosoTrack";
-		Node node = XMLUtil.addElement(XMLUtil.getRootElement(doc), nodeName);
+		Node node = XMLUtil.addElement(XMLUtil.getRootElement(doc), ID_DROSOTRACK);
 		if (node == null)
 			return false;
 
@@ -143,9 +149,9 @@ public class Cages {
 		if (node == null)
 			return false;
 		int index = 0;
-		Element xmlVal = XMLUtil.addElement(node, "Cages");
+		Element xmlVal = XMLUtil.addElement(node, ID_CAGES);
 		int ncages = cageList.size();
-		XMLUtil.setAttributeIntValue(xmlVal, "n_cages", ncages);
+		XMLUtil.setAttributeIntValue(xmlVal, ID_NCAGES, ncages);
 		for (Cage cage: cageList) {
 			cage.xmlSaveCage(xmlVal, index);
 			index++;
@@ -153,15 +159,15 @@ public class Cages {
 		return true;
 	}
 	
-	private boolean xmlLoadCagesLimits(Node node) {
+	private boolean v0XmlLoadCagesLimits(Node node, List<ROI2D> cageLimitROIList) {
 		if (node == null)
 			return false;
-		Element xmlVal = XMLUtil.getElement(node, "Cage_Limits");
+		Element xmlVal = XMLUtil.getElement(node, ID_CAGELIMITS);
 		if (xmlVal == null) 
 			return false;
 		
 		cageLimitROIList.clear();
-		int nb_items =  XMLUtil.getAttributeIntValue(xmlVal, "nb_items", 0);
+		int nb_items =  XMLUtil.getAttributeIntValue(xmlVal, ID_NBITEMS, 0);
 		for (int i=0; i< nb_items; i++) {
 			ROI2DPolygon roi = (ROI2DPolygon) ROI.create("plugins.kernel.roi.roi2d.ROI2DPolygon");
 			Element subnode = XMLUtil.getElement(xmlVal, "cage"+i);
@@ -171,15 +177,15 @@ public class Cages {
 		return true;
 	}
 	
-	private boolean xmlLoadFlyPositions(Node node) {
+	private boolean v0XmlLoadFlyPositions(Node node, List<XYTaSeries> flyPositionsList) {
 		if (node == null)
 			return false;
-		Element xmlVal = XMLUtil.getElement(node, "Fly_Detected");
+		Element xmlVal = XMLUtil.getElement(node, ID_FLYDETECTED);
 		if (xmlVal == null) 
 			return false;
 		
 		flyPositionsList.clear();
-		int nb_items =  XMLUtil.getAttributeIntValue(xmlVal, "nb_items", 0);
+		int nb_items =  XMLUtil.getAttributeIntValue(xmlVal, ID_NBITEMS, 0);
 		int ielement = 0;
 		for (int i=0; i< nb_items; i++) {
 			Element subnode = XMLUtil.getElement(xmlVal, "cage"+ielement);
@@ -191,62 +197,60 @@ public class Cages {
 		return true;
 	}
 	
-	private boolean xmlLoadDetectedFlies(Node node) {
-		if (node == null)
-			return false;
-		Element xmlVal = XMLUtil.getElement(node, "Flies_detected");
-		if (xmlVal == null)
-				return false;
-		
-		detectedFliesList.clear();
-		int nb_items =  XMLUtil.getAttributeIntValue(xmlVal, "nb_items", 0);
-		for (int i=0; i< nb_items; i++) {
-			ROI2DPolygon roi = (ROI2DPolygon) ROI.create("plugins.kernel.roi.roi2d.ROI2DPolygon");
-			Element subnode = XMLUtil.getElement(xmlVal, "det"+i);
-			roi.loadFromXML(subnode);
-			detectedFliesList.add((ROI2D) roi);
-		}
-		return true;
-	}
-	
-	public void fromCagesToROIs(SequenceCamData seq) {
-		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
-		for (ROI2D roi: list) {
-			if (!(roi instanceof ROI2DShape))
-				continue;
-			if (!roi.getName().contains("cage"))
-				continue;
-			seq.seq.removeROI(roi);
-		}
-		
-		cageLimitROIList.clear();
+	public void fromCagesToROIs(SequenceCamData seqCamData) {
+		List <ROI2D> cageLimitROIList = getRoisWithCageName(seqCamData);
+		seqCamData.seq.removeROIs(cageLimitROIList, false);
 		for (Cage cage: cageList) {
-			cageLimitROIList.add(cage.cageLimitROI);
+			cageLimitROIList.add(cage.roi);
 		}
-		seq.seq.addROIs(cageLimitROIList, true);
+		seqCamData.seq.addROIs(cageLimitROIList, true);
 	}
 	
-	public void fromROIsToCages(SequenceCamData seq) {
-		cageLimitROIList.clear();
-		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
-		for (ROI2D roi: list) {
-			if (!(roi instanceof ROI2DShape))
-				continue;
-			if (!roi.getName().contains("cage"))
-				continue;
-			roi.setSelected(false);
-			cageLimitROIList.add(roi);
-		}
+	public void fromROIsToCages(SequenceCamData seqCamData) {
+		List <ROI2D> cageLimitROIList = getRoisWithCageName(seqCamData);
 		Collections.sort(cageLimitROIList, new Comparators.ROI2DNameComparator());
-		// remove cages with no names like in the list
+//		updateExistingCages(cageLimitROIList);
+		addMissingCages(cageLimitROIList);
+		removeOrphanCages(cageLimitROIList);
+	}
+	
+	private void addMissingCages(List<ROI2D> roiList) {
+		for (ROI2D roi:roiList) {
+			boolean found = false;
+			for (Cage cage: cageList) {
+				if (roi.getName().equals(cage.roi.getName())) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				Cage cage = new Cage();
+				cage.roi = roi;
+				cageList.add(cage);
+			}
+		}
+	}
+	
+//	private void updateExistingCages(List<ROI2D> roiList) {
+//		for (Cage cage: cageList) {
+//			for (ROI2D roi: roiList) {
+//				if (roi.getName().equals(cage.roi.getName())) {
+//					cage.roi.copyFrom(roi);
+//					break;
+//				}
+//			}
+//		}
+//	}
+	
+	private void removeOrphanCages(List<ROI2D> roiList) {
+		// remove cages which names are not in the list
 		Iterator<Cage> iterator = cageList.iterator();
 		while (iterator.hasNext()) {
 			Cage cage = iterator.next();
 			boolean found = false;
-			for (ROI2D roi: cageLimitROIList) {
-				if (roi.getName().equals(cage.cageLimitROI.getName())) {
-					cage.cageLimitROI.copyFrom(roi);
-					roi = null;
+			String cageRoiName = cage.roi.getName();
+			for (ROI2D roi: roiList) {
+				if (roi.getName().equals(cageRoiName)) {
 					found = true;
 					break;
 				}
@@ -254,54 +258,53 @@ public class Cages {
 			if (!found ) {
 				iterator.remove();
 			}
-		}	
-		// copy names that are equal and create new ones
-		for (ROI2D roi: cageLimitROIList) {
-			for (Cage cage: cageList) {
-				if (roi.getName().equals(cage.cageLimitROI.getName())) {
-					cage.cageLimitROI.copyFrom(roi);
-					roi = null;
-					break;
-				}
-			}
-			if (roi != null) {
-				Cage cage = new Cage();
-				cage.cageLimitROI = roi;
-				cageList.add(cage);
-			}
 		}
 	}
 	
-	public void fromDetectedFliesToROIs(SequenceCamData seq) {
-		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
-		detectedFliesList.clear();
-		for (ROI2D roi: list) {
+	private List <ROI2D> getRoisWithCageName(SequenceCamData seqCamData) {
+		List<ROI2D> roiList = seqCamData.seq.getROI2Ds();
+		Collections.sort(roiList, new Comparators.ROI2DNameComparator());
+		
+		List<ROI2D> cageList = new ArrayList<ROI2D>();
+		for ( ROI2D roi : roiList ) {
+			String csName = roi.getName();
+			if (!(roi instanceof ROI2DPolygon))
+				continue;
+			if (( csName.contains( "cage") 
+				|| csName.contains("Polygon2D")) ) {
+				cageList.add(roi);
+			}
+		}
+		return cageList;
+	}
+	
+	public void fromDetectedFliesToROIs(SequenceCamData seqCamData) {
+		ArrayList<ROI2D> seqlist = seqCamData.seq.getROI2Ds();
+		for (ROI2D roi: seqlist) {
 			if (!(roi instanceof ROI2DShape))
 				continue;
 			if (!roi.getName().contains("det"))
 				continue;
-			seq.seq.removeROI(roi);
+			seqCamData.seq.removeROI(roi);
 		}
-		seq.seq.addROIs(detectedFliesList, true);
+		
+		List<ROI2D> detectedFliesList = new ArrayList<ROI2D>();
+		for (Cage cage: cageList) 
+			detectedFliesList.addAll(cage.detectedFliesList);
+		seqCamData.seq.addROIs(detectedFliesList, true);
 	}
 	
-	public void fromROIstoDetectedFlies(SequenceCamData seq) {
-		detectedFliesList.clear();
-		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
-		for (ROI2D roi: list) {
-			if (!(roi instanceof ROI2DShape))
-				continue;
-			if (!roi.getName().contains("det"))
-				continue;
-			detectedFliesList.add(roi);
-		}
-		Collections.sort(detectedFliesList, new Comparators.ROI2DNameComparator());
-	}
+//	public void fromROIstoDetectedFlies(SequenceCamData seq) {
+//		detectedFliesList.clear();
+//		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
+//		for (ROI2D roi: list) {
+//			if (!(roi instanceof ROI2DShape))
+//				continue;
+//			if (!roi.getName().contains("det"))
+//				continue;
+//			detectedFliesList.add(roi);
+//		}
+//		Collections.sort(detectedFliesList, new Comparators.ROI2DNameComparator());
+//	}
 	
-	public void storeAnalysisParametersToCages(Experiment exp) {
-		detect.startFrame = (int) exp.endFrame;
-		detect.endFrame = (int) exp.startFrame;
-		detect.stepFrame = exp.stepFrame;
-	}
-
 }

@@ -44,15 +44,14 @@ public class Capillaries {
 		return xmlSaveCapillaries_Only(csFile);
 	}
 	
-	public boolean xmlSaveCapillaries_Only(String csFile) {
-		if (csFile != null) {
+	public boolean xmlSaveCapillaries_Only(String tempname) {
+		if (tempname != null) {
 			final Document doc = XMLUtil.createDocument(true);
 			if (doc != null) {
 				Collections.sort(capillariesArrayList);
 				desc.xmlSaveCapillaryDescription (doc);
 				xmlSaveListOfCapillaries(doc);
-				XMLUtil.saveDocument(doc, csFile);
-				return true;
+				return XMLUtil.saveDocument(doc, tempname);
 			}
 		}
 		return false;

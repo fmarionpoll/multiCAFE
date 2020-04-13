@@ -11,9 +11,14 @@ import icy.util.XMLUtil;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 public class Cage {
-	public ROI2D 			cageLimitROI		= null;
+	public ROI2D 			roi				= null;
 	public XYTaSeries 		flyPositions 		= new XYTaSeries();
 	public List<ROI2D> 		detectedFliesList	= new ArrayList<ROI2D>();
+	
+	private final String ID_CAGELIMITS 	= "CageLimits";
+	private final String ID_FLYPOSITIONS= "FlyPositions";
+	private final String ID_ROISDETECTED= "RoisDetected";
+	private final String ID_NBITEMS		= "nb_items";
 	
 	
 	
@@ -23,15 +28,17 @@ public class Cage {
 		
 		Element xmlVal = XMLUtil.addElement(node, "Cage"+index);
 		
-		Element xmlVal2 = XMLUtil.addElement(xmlVal, "CageLimits");
-		if (cageLimitROI != null)
-			cageLimitROI.saveToXML(xmlVal2);
+		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_CAGELIMITS);
+		if (roi != null) {
+			roi.setSelected(false);
+			roi.saveToXML(xmlVal2);
+		}
 		
-		xmlVal2 = XMLUtil.addElement(xmlVal, "FlyPositions");
+		xmlVal2 = XMLUtil.addElement(xmlVal, ID_FLYPOSITIONS);
 		flyPositions.saveToXML(xmlVal2);
 		
-		xmlVal2 = XMLUtil.addElement(xmlVal, "RoisDetected");
-		XMLUtil.setAttributeIntValue(xmlVal2, "nb_items", detectedFliesList.size());
+		xmlVal2 = XMLUtil.addElement(xmlVal, ID_ROISDETECTED);
+		XMLUtil.setAttributeIntValue(xmlVal2, ID_NBITEMS, detectedFliesList.size());
 		int i=0;
 		for (ROI roi: detectedFliesList) {
 			Element subnode = XMLUtil.addElement(xmlVal2, "det"+i);
@@ -49,20 +56,21 @@ public class Cage {
 		if (xmlVal == null)
 			return false;
 		
-		Element xmlVal2 = XMLUtil.getElement(xmlVal, "CageLimits");
+		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_CAGELIMITS);
 		if (xmlVal2 != null) {
-			cageLimitROI = (ROI2DPolygon) ROI.create("plugins.kernel.roi.roi2d.ROI2DPolygon");
-			cageLimitROI.loadFromXML(xmlVal2);
+			roi = (ROI2DPolygon) ROI.create("plugins.kernel.roi.roi2d.ROI2DPolygon");
+			roi.loadFromXML(xmlVal2);
+			roi.setSelected(false);
 		}
 		
-		xmlVal2 = XMLUtil.getElement(xmlVal, "FlyPositions");
+		xmlVal2 = XMLUtil.getElement(xmlVal, ID_FLYPOSITIONS);
 		if (xmlVal2 != null) {
 			flyPositions.loadFromXML(xmlVal2);
 		}
 		
-		xmlVal2 = XMLUtil.getElement(xmlVal, "RoisDetected");
+		xmlVal2 = XMLUtil.getElement(xmlVal, ID_ROISDETECTED);
 		if (xmlVal2 != null) {
-			int nb_items =  XMLUtil.getAttributeIntValue(xmlVal2, "nb_items", detectedFliesList.size());
+			int nb_items =  XMLUtil.getAttributeIntValue(xmlVal2, ID_NBITEMS, detectedFliesList.size());
 			for (int i=0; i< nb_items; i++) {
 				ROI2DPolygon roi = (ROI2DPolygon) ROI.create("plugins.kernel.roi.roi2d.ROI2DPolygon");
 				Element subnode = XMLUtil.getElement(xmlVal2, "det"+i);
@@ -73,4 +81,8 @@ public class Cage {
 		return true;
 	}
 
+	public void clearMeasures () {
+		detectedFliesList.clear();
+		flyPositions.clear();
+	}
 }

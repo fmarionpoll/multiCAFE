@@ -105,7 +105,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	}
 	
 	public BooleanMask2D findLargestComponent(ROI2DArea roiAll, int iroi) {
-		ROI cageLimitROI = cages.cageList.get(iroi).cageLimitROI;
+		ROI cageLimitROI = cages.cageList.get(iroi).roi;
 		if ( cageLimitROI == null )
 			return null;
 		BooleanMask2D cageMask = cageMaskList.get(iroi);
@@ -158,17 +158,17 @@ public class DetectFlies_Options implements XMLPersistent {
 	
 	public void findFlies (IcyBufferedImage workimage, int t, int it) {
 		ROI2DArea roiAll = findFly (workimage, threshold);
-		for ( int iroi = 0; iroi < cages.cageList.size(); iroi++ ) {		
-			BooleanMask2D bestMask = findLargestComponent(roiAll, iroi);
+		for ( int icage = 0; icage < cages.cageList.size(); icage++ ) {		
+			BooleanMask2D bestMask = findLargestComponent(roiAll, icage);
 			ROI2DArea flyROI = null;
-			Cage cage = cages.cageList.get(iroi);
+			Cage cage = cages.cageList.get(icage);
 			if ( bestMask != null ) {
 				flyROI = new ROI2DArea( bestMask );
-				flyROI.setName("det"+iroi +" " + t );
+				flyROI.setName("det"+cage.roi.getName() +"_" + t );
 				flyROI.setT( t );
-				resultFlyPositionArrayList[iroi][it] = flyROI;
+				resultFlyPositionArrayList[icage][it] = flyROI;
 				Rectangle2D rect = flyROI.getBounds2D();
-				tempRectROI[iroi].setRectangle(rect);
+				tempRectROI[icage].setRectangle(rect);
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 				int npoints = cage.flyPositions.pointsList.size();
 				cage.flyPositions.add(flyPosition, t);
@@ -211,7 +211,7 @@ public class DetectFlies_Options implements XMLPersistent {
 		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageList);
 		rectangleAllCages = null;
 		for (Cage cage: cages.cageList) {
-			Rectangle rect = cage.cageLimitROI.getBounds();
+			Rectangle rect = cage.roi.getBounds();
 			if (rectangleAllCages == null)
 				rectangleAllCages = new Rectangle(rect);
 			else

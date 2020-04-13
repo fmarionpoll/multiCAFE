@@ -251,10 +251,10 @@ public class Experiment {
 	        XMLUtil.setElementValue(node, ID_EXPTFILENAME, experimentFileName);
 
 	        String directory = seqCamData.getDirectory();
-	        String csFileName = directory + File.separator + "results" + File.separator + "MCexperiment.xml";
-	        XMLUtil.saveDocument(doc, csFileName);
+	        String tempname = directory + File.separator + "results" + File.separator + "MCexperiment.xml";
+	        return XMLUtil.saveDocument(doc, tempname);
 		}
-		return true;
+		return false;
 	}
 	
  	public boolean loadKymographs() {
@@ -320,7 +320,7 @@ public class Experiment {
 	public boolean isFlyAlive(int cagenumber) {
 		boolean isalive = false;
 		for (Cage cage: cages.cageList) {
-			String cagenumberString = cage.cageLimitROI.getName().substring(4);
+			String cagenumberString = cage.roi.getName().substring(4);
 			if (Integer.parseInt(cagenumberString) == cagenumber) {
 				isalive = (cage.flyPositions.getLastIntervalAlive() > 0);
 				break;
@@ -332,7 +332,7 @@ public class Experiment {
 	public int getLastIntervalFlyAlive(int cagenumber) {
 		int flypos = -1;
 		for (Cage cage: cages.cageList) {
-			String cagenumberString = cage.cageLimitROI.getName().substring(4);
+			String cagenumberString = cage.roi.getName().substring(4);
 			if (Integer.parseInt(cagenumberString) == cagenumber) {
 				flypos = cage.flyPositions.getLastIntervalAlive();
 				break;
@@ -344,7 +344,7 @@ public class Experiment {
 	public boolean isDataAvailable(int cagenumber) {
 		boolean isavailable = false;
 		for (Cage cage: cages.cageList) {
-			String cagenumberString = cage.cageLimitROI.getName().substring(4);
+			String cagenumberString = cage.roi.getName().substring(4);
 			if (Integer.parseInt(cagenumberString) == cagenumber) {
 				isavailable = true;
 				break;
@@ -626,6 +626,12 @@ public class Experiment {
 				seqCamData.seq.removeROI(roi);
 			}
 		}
+	}
+	
+	public void storeAnalysisParametersToCages() {
+		cages.detect.startFrame = (int) endFrame;
+		cages.detect.endFrame = (int) startFrame;
+		cages.detect.stepFrame = stepFrame;
 	}
 	
 	public void saveComputation() {			

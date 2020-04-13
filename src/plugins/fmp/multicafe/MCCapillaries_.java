@@ -49,14 +49,14 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		tabCreate.init(capLayout, parent0);
 		tabCreate.addPropertyChangeListener(this);
 		tabsPane.addTab("Create", null, tabCreate, "Create lines defining capillaries");
+		
+		tabInfos.init(capLayout);
+		tabInfos.addPropertyChangeListener(this);
+		tabsPane.addTab("Infos", null, tabInfos, "Define pixel conversion unit of images and capillaries content");
 
 		tabAdjust.init(capLayout, parent0);
 		tabAdjust.addPropertyChangeListener(parent0);
 		tabsPane.addTab("Adjust", null, tabAdjust, "Adjust ROIS position to the capillaries");
-
-		tabInfos.init(capLayout);
-		tabInfos.addPropertyChangeListener(this);
-		tabsPane.addTab("Infos", null, tabInfos, "Define pixel conversion unit of images and capillaries content");
 
 		tabFile.init(capLayout, parent0);
 		tabFile.addPropertyChangeListener(this);

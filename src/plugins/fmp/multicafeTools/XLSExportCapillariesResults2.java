@@ -261,7 +261,7 @@ public class XLSExportCapillariesResults2  extends XLSExport {
 	
 	private void trimDeadsFromArrayList(Experiment exp) {
 	for (Cage cage: exp.cages.cageList) {
-			String cagenumberString = cage.cageLimitROI.getName().substring(4);
+			String cagenumberString = cage.roi.getName().substring(4);
 			int cagenumber = Integer.parseInt(cagenumberString);
 			if (cagenumber == 0 || cagenumber == 9)
 				continue;

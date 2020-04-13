@@ -523,8 +523,8 @@ public class SequenceCamData {
 	public void removeRoisContainingString(int t, String string) {
 		for (ROI roi: seq.getROIs()) {
 			if (roi instanceof ROI2D 
-			&& ((ROI2D) roi).getT() == t 
-			&& roi.getName().contains(string))
+					&& roi.getName().contains(string)
+					&&  (t < 0 || ((ROI2D) roi).getT() == t ))
 				seq.removeROI(roi);
 		}
 	}
@@ -553,7 +553,7 @@ public class SequenceCamData {
 			if (( csName.contains( "cage") 
 				|| csName.contains("Polygon2D")) ) {
 				Cage cage = new Cage();
-				cage.cageLimitROI = roi;
+				cage.roi = roi;
 				cageList.add(cage);
 			}
 		}

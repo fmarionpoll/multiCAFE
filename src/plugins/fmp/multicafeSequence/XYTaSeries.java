@@ -28,6 +28,10 @@ public class XYTaSeries implements XMLPersistent {
 	public XYTaSeries() {
 	}
 
+	public void clear() {
+		pointsList.clear();
+	}
+	
 	public Point2D getPoint(int i) {
 		return pointsList.get(i).point;
 	}
@@ -48,7 +52,6 @@ public class XYTaSeries implements XMLPersistent {
 		return pointsList.get(i).time;
 	}
 
-	
 	public void add(Point2D point, int frame) {
 		XYTaValue pos = new XYTaValue(point, frame);
 		pointsList.add(pos);

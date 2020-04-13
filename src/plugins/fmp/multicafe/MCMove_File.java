@@ -44,7 +44,7 @@ public class MCMove_File extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null)
-					exp.cages.xmlReadCagesFromFile(exp.seqCamData);
+					exp.xmlReadDrosoTrackDefault();
 				firePropertyChange("LOAD_DATA", false, true);
 				parent0.paneMove.tabsPane.setSelectedIndex(3);
 			}});
@@ -53,8 +53,9 @@ public class MCMove_File extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null) {
-					exp.cages.storeAnalysisParametersToCages(exp);
-					exp.saveFlyPositions();
+					exp.storeAnalysisParametersToCages();
+					exp.cages.fromROIsToCages(exp.seqCamData);
+					exp.xmlWriteDrosoTrackDefault();
 				}
 				parent0.paneMove.tabsPane.setSelectedIndex(3);
 			}});

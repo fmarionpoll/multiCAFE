@@ -27,7 +27,7 @@ public class ROI2DUtilities  {
 	public static List<BooleanMask2D> getMask2DFromROIs (List<Cage> cageList) {
 		List<BooleanMask2D> cageMaskList = new ArrayList<BooleanMask2D>();
 		for (Cage cage : cageList ) {
-			cageMaskList.add(cage.cageLimitROI.getBooleanMask2D( 0 , 0, 1, true ));
+			cageMaskList.add(cage.roi.getBooleanMask2D( 0 , 0, 1, true ));
 		}
 		return cageMaskList;
 	}
@@ -76,9 +76,8 @@ public class ROI2DUtilities  {
 	}
 	
 	public static void mergeROIsListNoDuplicate(List<ROI2D> seqList, List<ROI2D> listRois, Sequence seq) {
-		if (seqList.isEmpty()) {
+		if (seqList.isEmpty()) 
 			seqList.addAll(listRois);
-		}
 		for (ROI2D seqRoi: seqList) {
 			Iterator <ROI2D> iterator = listRois.iterator();
 			while(iterator.hasNext()) {

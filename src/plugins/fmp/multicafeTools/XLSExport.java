@@ -216,7 +216,7 @@ public class XLSExport {
 	}
 	
 	protected int getColFromCageName(Cage cage) {
-		String name = cage.cageLimitROI.getName();
+		String name = cage.roi.getName();
 		if (!name .contains("cage"))
 			return -1;
 		
