@@ -54,7 +54,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		order++;
 		
 		ID_INFOS=order;
-		tabInfos.init(capLayout);
+		tabInfos.init(capLayout, parent0);
 		tabInfos.addPropertyChangeListener(this);
 		tabsPane.addTab("Infos", null, tabInfos, "Define pixel conversion unit of images and capillaries content");
 		order++;

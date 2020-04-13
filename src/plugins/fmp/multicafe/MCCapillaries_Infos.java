@@ -1,8 +1,14 @@
 package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -12,6 +18,8 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Capillaries;
+import plugins.fmp.multicafeSequence.Capillary;
+import plugins.fmp.multicafeSequence.Experiment;
 
 
 
@@ -28,17 +36,21 @@ public class MCCapillaries_Infos extends JPanel {
 	private JComboBox<String> 	concentrationRJCombo 		= new JComboBox<String>();
 	private JComboBox<String> 	stimulusLJCombo				= new JComboBox<String>();
 	private JComboBox<String> 	concentrationLJCombo 		= new JComboBox<String>();
+	private JButton				getLenButton				= new JButton ("get pixels 1rst capillary");
+	private MultiCAFE 			parent0 					= null;
 	
 	
-	void init(GridLayout capLayout) {
+	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		
-		add( GuiUtil.besidesPanel(
-				new JLabel(" "), //visibleCheckBox,
-				new JLabel("volume (µl) ", SwingConstants.RIGHT), 
-				capillaryVolumeTextField,  
-				new JLabel("length (pixels) ", SwingConstants.RIGHT), 
-				capillaryPixelsTextField));
+		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		((FlowLayout)panel0.getLayout()).setVgap(0);
+		panel0.add( new JLabel("volume (µl) ", SwingConstants.RIGHT));
+		panel0.add( capillaryVolumeTextField);
+		panel0.add( new JLabel("length (pixels) ", SwingConstants.RIGHT));
+		panel0.add( capillaryPixelsTextField);
+		panel0.add( getLenButton);
+		add( GuiUtil.besidesPanel(panel0));
 		
 		add( GuiUtil.besidesPanel(
 				createComboPanel("stim(L) ", stimulusLJCombo),  
@@ -52,6 +64,24 @@ public class MCCapillaries_Infos extends JPanel {
 		concentrationRJCombo.setEditable(true);
 		stimulusLJCombo.setEditable(true);
 		concentrationLJCombo.setEditable(true);	
+		defineActionListeners();
+	}
+	
+	private void defineActionListeners() {
+		getLenButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				if (exp != null && exp.capillaries.capillariesArrayList.size() > 0) {
+					Capillary cap = exp.capillaries.capillariesArrayList.get(0);
+					ArrayList<Point2D> pts = cap.capillaryRoi.getPoints();
+					Point2D pt1 = pts.get(0);
+					Point2D pt2 = pts.get(pts.size() -1);
+					double npixels = Math.sqrt(
+							(pt2.getY() - pt1.getY()) * (pt2.getY() - pt1.getY()) 
+							+ (pt2.getX() - pt1.getX()) * (pt2.getX() - pt2.getX()));
+					capillaryPixelsTextField.setValue(npixels);
+				}
+			}});
 	}
 				
 	private JPanel createComboPanel(String text, JComboBox<String> combo) {

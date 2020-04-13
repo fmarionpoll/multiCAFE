@@ -44,7 +44,7 @@ public class MCCapillaries_Create extends JPanel {
 	private JSpinner 	nbcapillariesJSpinner 	= new JSpinner(new SpinnerNumberModel(20, 0, 500, 1));
 	private JSpinner 	width_between_capillariesJSpinner = new JSpinner(new SpinnerNumberModel(30, 0, 10000, 1));
 	private JSpinner 	width_intervalJSpinner = new JSpinner(new SpinnerNumberModel(53, 0, 10000, 1)); 
-	private MultiCAFE parent0;
+	private MultiCAFE 	parent0 				= null;
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
@@ -72,6 +72,7 @@ public class MCCapillaries_Create extends JPanel {
 		addPolygon2DButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				create2DPolygon();
 			}});
+		
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				roisGenerateFromPolygon();
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
@@ -80,6 +81,7 @@ public class MCCapillaries_Create extends JPanel {
 					firePropertyChange("CAPILLARIES_NEW", false, true);
 				}
 			}});
+		
 		selectRegularButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 				boolean status = false;
 				width_between_capillariesJSpinner.setEnabled(status);
