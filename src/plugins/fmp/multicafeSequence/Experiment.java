@@ -260,11 +260,11 @@ public class Experiment {
  	public boolean loadKymographs() {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
-		if (capillaries.capillariesArrayList.size() == 0) {
-			// TODO check if it is ok to load only the list of capillaries here
+//		if (capillaries.capillariesArrayList.size() == 0) {
+//			// TODO check if it is ok to load only the list of capillaries here
 			if (!xmlLoadKymos_Measures(seqCamData.getDirectory())) 
-				return false;;
-		}
+				return false;
+//		}
 		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory(), capillaries);
 		boolean flag = seqKymos.loadImagesFromList(myList, true);
 		seqKymos.transferCapillariesToKymosRois(capillaries);

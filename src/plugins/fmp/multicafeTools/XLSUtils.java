@@ -18,7 +18,25 @@ public class XLSUtils {
 		XSSFCell cell = getCell(sheet, pt, transpose);
 		cell.setCellValue(string);
 	}
-		
+	
+	public static void setValue (XSSFSheet sheet, int x, int y, boolean transpose, String string) {
+		Point pt = new Point(x, y);
+		XSSFCell cell = getCell(sheet, pt, transpose);
+		cell.setCellValue(string);
+	}
+	
+	public static void setValue (XSSFSheet sheet, int x, int y,  boolean transpose, int ivalue) {
+		Point pt = new Point(x, y);
+		XSSFCell cell = getCell(sheet, pt, transpose);
+		cell.setCellValue(ivalue);
+	}
+
+	public static void setValue (XSSFSheet sheet, int x, int y,  boolean transpose, double value) {
+		Point pt = new Point(x, y);
+		XSSFCell cell = getCell(sheet, pt, transpose);
+		cell.setCellValue(value);
+	}
+	
 	public static void setValue (XSSFSheet sheet, Point pt, boolean transpose, double value) {
 		XSSFCell cell = getCell(sheet, pt, transpose);
 		cell.setCellValue(value);

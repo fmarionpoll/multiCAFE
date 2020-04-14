@@ -18,7 +18,7 @@ import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeTools.MulticafeTools;
-import plugins.fmp.multicafeTools.XLSExportCapillariesResults2;
+import plugins.fmp.multicafeTools.XLSExportCapillariesResults;
 import plugins.fmp.multicafeTools.XLSExportMoveResults;
 import plugins.fmp.multicafeTools.XLSExportOptions;
 
@@ -93,7 +93,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 				return;
 			updateParametersCurrentExperiment(exp);
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-				XLSExportCapillariesResults2 xlsExport2 = new XLSExportCapillariesResults2();
+				XLSExportCapillariesResults xlsExport2 = new XLSExportCapillariesResults();
 				xlsExport2.exportToFile(file, getCapillariesOptions());
 			}});
 			firePropertyChange("SAVE_KYMOSMEASURES", false, true);	

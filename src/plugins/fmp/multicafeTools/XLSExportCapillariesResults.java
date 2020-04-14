@@ -23,7 +23,7 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 
 
 
-public class XLSExportCapillariesResults2  extends XLSExport {
+public class XLSExportCapillariesResults  extends XLSExport {
 	ExperimentList expList = null;
 	List <XLSCapillaryResults> rowsForOneExp = new ArrayList <XLSCapillaryResults> ();
 
