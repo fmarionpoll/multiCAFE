@@ -112,8 +112,6 @@ public class XLSExport {
 				j = 0;
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, j);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM1.getValue(), transpose, name1);
-//			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM2.getValue(), transpose, name11);
-//			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM3.getValue(), transpose, name111);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM2.getValue(), transpose, exp.capillaries.desc.volume);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM3.getValue(), transpose, exp.capillaries.desc.pixels);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, sheetName);

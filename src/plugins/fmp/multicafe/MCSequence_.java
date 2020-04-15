@@ -210,6 +210,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				}
 				loadMeasuresAndKymos();
 				tabsPane.setSelectedIndex(1);
+			} else {
+				openExperiment (exp0);
 			}
 		}
 	}

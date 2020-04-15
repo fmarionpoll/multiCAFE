@@ -33,7 +33,7 @@ public class MCMove_BuildROIs extends JPanel {
 	private JButton 	addPolygon2DButton 		= new JButton("Draw Polygon2D");
 	private JButton createROIsFromPolygonButton = new JButton("Create/add (from Polygon 2D)");
 	private JSpinner nColumnsTextField 			= new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));
-	private JSpinner width_cageTextField 		= new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));
+	private JSpinner width_cageTextField 		= new JSpinner(new SpinnerNumberModel(20, 0, 10000, 1));
 	private JSpinner width_intervalTextField 	= new JSpinner(new SpinnerNumberModel(2, 0, 10000, 1));
 	private JSpinner nRowsTextField 			= new JSpinner(new SpinnerNumberModel(1, 0, 10000, 1));
 	

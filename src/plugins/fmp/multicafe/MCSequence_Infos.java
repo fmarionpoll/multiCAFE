@@ -90,6 +90,7 @@ public class MCSequence_Infos  extends JPanel {
 		if (exp.boxID .equals(".."))
 			exp.boxID = exp.capillaries.desc.old_boxID;
 		addItem(boxID_JCombo, exp.boxID);
+		
 		if (exp.experiment.equals(".."))
 			exp.experiment = exp.capillaries.desc.old_experiment;
 		addItem(experiment_JCombo, exp.experiment);
@@ -97,9 +98,15 @@ public class MCSequence_Infos  extends JPanel {
 		if (exp.comment1 .equals(".."))
 			exp.comment1 = exp.capillaries.desc.old_comment1;
 		addItem(comment1_JCombo, exp.comment1);
+		
 		if (exp.comment2 .equals(".."))
 			exp.comment2 = exp.capillaries.desc.old_comment2;
 		addItem(comment2_JCombo, exp.comment2);
+		
+//		addItem(boxID_JCombo, exp.boxID);
+//		addItem(experiment_JCombo, exp.experiment);
+//		addItem(comment1_JCombo, exp.comment1);
+//		addItem(comment2_JCombo, exp.comment2);
 	}
 
 	void getExperimentInfosFromDialog(Experiment exp) {

@@ -47,7 +47,8 @@ public class MCSequence_Close  extends JPanel {
 		if (exp != null) {
 			parent0.paneSequence.tabInfos.getExperimentInfosFromDialog(exp);
 			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog (exp);
-			exp.xmlSaveExperiment();
+			if (exp.seqCamData != null) 
+				exp.xmlSaveExperiment();
 			exp.closeSequences();
 		}
 		parent0.paneMove.tabGraphics.closeAll();
