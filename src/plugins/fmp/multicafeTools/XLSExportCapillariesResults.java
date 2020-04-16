@@ -317,8 +317,9 @@ public class XLSExportCapillariesResults  extends XLSExport {
 	private void outputDataTimeIntervals(XSSFSheet sheet, int row) {
 		boolean transpose = options.transpose;
 		Point pt = new Point(0, row);
-		for (int i = expAll.startFrame; i <= expAll.endFrame; i += expAll.stepFrame, pt.y++) {
+		for (int i = expAll.startFrame; i <= expAll.endFrame; i += expAll.stepFrame) {
 			XLSUtils.setValue(sheet, pt, transpose, "t"+i);
+			pt.y++;
 		}
 	}
 		
