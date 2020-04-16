@@ -87,11 +87,11 @@ public class ExperimentList {
 				continue;
 			}
 			for (Experiment expi: experimentList) {
-				if (expi == exp)
+				if (expi == exp 
+					|| !expi.experiment .contentEquals(exp.experiment) 
+					|| !expi.boxID .equals(exp.boxID))
 					continue;
-				if (!expi.boxID .equals(exp.boxID))
-					continue;
-				// if before, insert eventually
+				// same exp: if before, insert eventually
 				if (expi.fileTimeImageLastMinute < exp.fileTimeImageFirstMinute) {
 					if (exp.previousExperiment == null)
 						exp.previousExperiment = expi;
