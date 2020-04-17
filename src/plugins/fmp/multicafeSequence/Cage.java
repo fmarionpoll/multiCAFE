@@ -11,7 +11,7 @@ import icy.util.XMLUtil;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 public class Cage {
-	public ROI2D 			roi				= null;
+	public ROI2D 			roi					= null;
 	public XYTaSeries 		flyPositions 		= new XYTaSeries();
 	public List<ROI2D> 		detectedFliesList	= new ArrayList<ROI2D>();
 	
@@ -19,6 +19,13 @@ public class Cage {
 	private final String ID_FLYPOSITIONS= "FlyPositions";
 	private final String ID_ROISDETECTED= "RoisDetected";
 	private final String ID_NBITEMS		= "nb_items";
+	
+	private final String ID_CAGENB 	= "Cage#";
+	private final String ID_NFLIES 	= "nflies";
+	private final String ID_SEX 	= "sex";
+	private final String ID_AGE 	= "age";
+	private final String ID_STRAIN 	= "strain"; 
+	private final String ID_COMMENT	= "comment";
 	
 	
 	

@@ -29,6 +29,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	
 	JTabbedPane 				tabsPane	= new JTabbedPane();
 	private MCMove_BuildROIs 	tabBuildROIs= new MCMove_BuildROIs();
+	MCMove_Infos				tabInfos	= new MCMove_Infos();
 	private MCMove_Detect1 		tabDetect1 	= new MCMove_Detect1();
 	private MCMove_Detect2 		tabDetect2 	= new MCMove_Detect2();
 	MCMove_File 				tabFile 	= new MCMove_File();
@@ -52,6 +53,10 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 		tabBuildROIs.addPropertyChangeListener(this);
 		tabsPane.addTab("Cages", null, tabBuildROIs, "Define cages using ROI polygons placed over each cage");
 
+		tabInfos.init(capLayout, parent0);
+		tabInfos.addPropertyChangeListener(this);
+		tabsPane.addTab("Infos", null, tabInfos, "Infos about cages");
+		
 		tabDetect1.init(capLayout, parent0);
 		tabDetect1.addPropertyChangeListener(this);
 		tabsPane.addTab("Detect1", null, tabDetect1, "Detect flies position using thresholding on image overlay");
