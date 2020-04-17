@@ -34,11 +34,7 @@ public class MCSequence_Close  extends JPanel {
 	}
 	
 	void closeAll() {
-		if (parent0.currentExperimentIndex < 0)
-			return;
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp != null)
-			closeExp(exp);
+		closeCurrentExperiment();
 		parent0.expList.clear();
 		parent0.currentExperimentIndex = -1;
 	}
@@ -54,6 +50,14 @@ public class MCSequence_Close  extends JPanel {
 		parent0.paneMove.tabGraphics.closeAll();
 		parent0.paneLevels.tabGraphs.closeAll();
 		parent0.paneKymos.tabDisplay.kymographNamesComboBox.removeAllItems();
+	}
+	
+	void closeCurrentExperiment() {
+		if (parent0.currentExperimentIndex < 0)
+			return;
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp != null)
+			closeExp(exp);
 	}
 
 }

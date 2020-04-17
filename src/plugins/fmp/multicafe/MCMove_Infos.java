@@ -21,23 +21,13 @@ public class MCMove_Infos  extends JPanel {
 //		setLayout(capLayout);
 		this.parent0 = parent0;
 		setLayout(new GridLayout(1,0));		 
-        String[] columnNames = {"Cage #",
-                                "nflies",
-                                "sex",
-                                "age",
-                                "strain", 
-                                "comment"};
+        String[] columnNames = {"Cage #", "nflies", "comment"};
         Object[][] data = {
-        {"Kathy", "Smith",
-         "Snowboarding", new Integer(5), new Boolean(false), "comment"},
-        {"John", "Doe",
-         "Rowing", new Integer(3), new Boolean(true), "comment"},
-        {"Sue", "Black",
-         "Knitting", new Integer(2), new Boolean(false), "comment"},
-        {"Jane", "White",
-         "Speed reading", new Integer(20), new Boolean(true), "comment"},
-        {"Joe", "Brown",
-         "Pool", new Integer(10), new Boolean(false), "comment"}
+        {"Kathy", 0, "comment"},
+        {"John", 1, "Rowing"},
+        {"Sue", 1, "Knitting"},
+        {"Jane", 1, "comment"},
+        {"Joe", 1, "comment"}
         };
  
         final JTable table = new JTable(data, columnNames);

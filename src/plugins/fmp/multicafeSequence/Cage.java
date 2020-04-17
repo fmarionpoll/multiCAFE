@@ -14,17 +14,17 @@ public class Cage {
 	public ROI2D 			roi					= null;
 	public XYTaSeries 		flyPositions 		= new XYTaSeries();
 	public List<ROI2D> 		detectedFliesList	= new ArrayList<ROI2D>();
+	public int 				cageNFlies  		= 1;
+	public String 			cageComment 		= "..";
+	public String 			cageID 				= "..";
 	
 	private final String ID_CAGELIMITS 	= "CageLimits";
 	private final String ID_FLYPOSITIONS= "FlyPositions";
 	private final String ID_ROISDETECTED= "RoisDetected";
 	private final String ID_NBITEMS		= "nb_items";
 	
-	private final String ID_CAGENB 	= "Cage#";
-	private final String ID_NFLIES 	= "nflies";
-	private final String ID_SEX 	= "sex";
-	private final String ID_AGE 	= "age";
-	private final String ID_STRAIN 	= "strain"; 
+	private final String ID_CAGEID 	= "Cage#";
+	private final String ID_NFLIES 	= "nflies"; 
 	private final String ID_COMMENT	= "comment";
 	
 	
@@ -34,6 +34,9 @@ public class Cage {
 			return false;
 		
 		Element xmlVal = XMLUtil.addElement(node, "Cage"+index);
+		XMLUtil.setElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
+		XMLUtil.setElementValue(xmlVal, ID_COMMENT, cageComment);
+		XMLUtil.setElementValue(xmlVal, ID_CAGEID, cageID);
 		
 		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_CAGELIMITS);
 		if (roi != null) {
@@ -62,6 +65,9 @@ public class Cage {
 		Element xmlVal = XMLUtil.getElement(node, "Cage"+index);
 		if (xmlVal == null)
 			return false;
+		cageNFlies = XMLUtil.getElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
+		cageComment = XMLUtil.getElementValue(xmlVal, ID_COMMENT, cageComment);
+		cageID = XMLUtil.getElementValue(xmlVal, ID_CAGEID, cageID);
 		
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_CAGELIMITS);
 		if (xmlVal2 != null) {

@@ -247,7 +247,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				numC = 3;
 			double fimagewidth =  1 + (exp.endFrame - exp.startFrame )/options.stepFrame;
 			if (fimagewidth < 0) {
-				options.stepFrame = 10;
+				options.stepFrame = 1;
 				exp.stepFrame = options.stepFrame;
 				fimagewidth =  1 + (exp.endFrame - exp.startFrame )/options.stepFrame;
 			}

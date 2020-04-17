@@ -151,15 +151,14 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
+			tabClose.closeAll();
 			openSeqCamData();
+			tabsPane.setSelectedIndex(1);
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			if (exp == null) {
-				openSeqCamData();
-			} else {
-				addSeqCamData();
-			}
+			tabClose.closeCurrentExperiment();
+			openSeqCamData();
+			tabsPane.setSelectedIndex(1);
 		}
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) {
 			System.out.println("SEQ_CLOSE");
@@ -193,8 +192,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
 			expListComboBox.removeAllItems();
 			if (addSequenceCamToCombo()) {
-				loadMeasuresAndKymos();
-				tabsPane.setSelectedIndex(1);
+				loadMeasuresAndKymos();	
 			}
 		}
 	}
@@ -209,7 +207,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 					parent0.paneSequence.tabClose.closeExp(exp0);
 				}
 				loadMeasuresAndKymos();
-				tabsPane.setSelectedIndex(1);
 			} else {
 				openExperiment (exp0);
 			}

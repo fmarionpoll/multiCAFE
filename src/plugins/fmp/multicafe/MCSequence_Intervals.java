@@ -23,10 +23,10 @@ public class MCSequence_Intervals extends JPanel {
 	 */
 	private static final long serialVersionUID = -5739112045358747277L;
 	JSpinner 	startFrameJSpinner	= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
-	JSpinner 	endFrameJSpinner		= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
+	JSpinner 	endFrameJSpinner	= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
 	JSpinner 	stepFrameJSpinner	= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
-	JRadioButton  isFixedFrame			= new JRadioButton("keep the same intervals for all experiment", false);
-	JRadioButton  isFloatingFrame		= new JRadioButton("analyze complete files", true);
+	JRadioButton  isFixedFrame		= new JRadioButton("keep the same intervals for all experiment", false);
+	JRadioButton  isFloatingFrame	= new JRadioButton("analyze complete files", true);
 		
 	
 	void init(GridLayout capLayout) {
@@ -74,7 +74,8 @@ public class MCSequence_Intervals extends JPanel {
 	public void setAnalyzeFrameToDialog (Experiment exp) {
 		startFrameJSpinner.setValue((int) exp.startFrame);
 		endFrameJSpinner.setValue((int) exp.endFrame);
-		stepFrameJSpinner.setValue(exp.getStep());		
+		if (exp.getStep() > 0)
+			stepFrameJSpinner.setValue(exp.getStep());
 	}
 	
 	void getAnalyzeFrameFromDialog (Experiment exp) {		

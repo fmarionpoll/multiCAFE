@@ -120,9 +120,9 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 			int xwidth = image.getSizeX();
 			int yheight = image.getSizeY();
 			Capillary cap = exp.capillaries.capillariesArrayList.get(kymo);
-			if (cap.getName().endsWith("2") && !options.detectR)
+			if (!options.detectR && cap.getName().endsWith("2"))
 				continue;
-			if (cap.getName().endsWith("1") && !options.detectL)
+			if (!options.detectL && cap.getName().endsWith("1"))
 				continue;
 			
 			cap.ptsDerivative = null;
