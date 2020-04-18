@@ -69,8 +69,15 @@ public class CageTableModel extends AbstractTableModel {
     
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-    	return true;
-        }
+    	switch (columnIndex) {
+        case 0: 
+        	return false;
+        case 1: 
+        case 2: 
+        	return true;
+   	}
+    	return false;
+    }
     
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {

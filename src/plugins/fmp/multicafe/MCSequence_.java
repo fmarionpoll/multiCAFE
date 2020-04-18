@@ -152,6 +152,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
 			tabClose.closeAll();
+			expListComboBox.removeAllItems();
 			openSeqCamData();
 			tabsPane.setSelectedIndex(1);
 		}
@@ -190,7 +191,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		SequenceCamData seqCamData = parent0.openSequenceCam(null);
 		if (seqCamData != null && seqCamData.seq != null) {
 			parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
-			expListComboBox.removeAllItems();
 			if (addSequenceCamToCombo()) {
 				loadMeasuresAndKymos();	
 			}
