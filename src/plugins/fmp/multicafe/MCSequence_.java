@@ -197,22 +197,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
-	private void addSeqCamData() {
-		Experiment exp0 = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp0 != null) {
-			SequenceCamData seqCamData = parent0.openSequenceCam(null);
-			if (seqCamData != null) {
-				if (addSequenceCamToCombo()) {
-					parent0.updateDialogsAfterOpeningSequenceCam(exp0.seqCamData);
-					parent0.paneSequence.tabClose.closeExp(exp0);
-				}
-				loadMeasuresAndKymos();
-			} else {
-				openExperiment (exp0);
-			}
-		}
-	}
-	
 	void openExperiment(Experiment exp) {
 		exp.xmlLoadExperiment();
 		String filename = exp.experimentFileName;

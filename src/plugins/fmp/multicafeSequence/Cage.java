@@ -16,14 +16,12 @@ public class Cage {
 	public List<ROI2D> 		detectedFliesList	= new ArrayList<ROI2D>();
 	public int 				cageNFlies  		= 1;
 	public String 			cageComment 		= "..";
-	public String 			cageID 				= "..";
 	
 	private final String ID_CAGELIMITS 	= "CageLimits";
 	private final String ID_FLYPOSITIONS= "FlyPositions";
 	private final String ID_ROISDETECTED= "RoisDetected";
 	private final String ID_NBITEMS		= "nb_items";
 	
-	private final String ID_CAGEID 	= "Cage#";
 	private final String ID_NFLIES 	= "nflies"; 
 	private final String ID_COMMENT	= "comment";
 	
@@ -36,7 +34,6 @@ public class Cage {
 		Element xmlVal = XMLUtil.addElement(node, "Cage"+index);
 		XMLUtil.setElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
 		XMLUtil.setElementValue(xmlVal, ID_COMMENT, cageComment);
-		XMLUtil.setElementValue(xmlVal, ID_CAGEID, cageID);
 		
 		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_CAGELIMITS);
 		if (roi != null) {
@@ -67,7 +64,6 @@ public class Cage {
 			return false;
 		cageNFlies = XMLUtil.getElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
 		cageComment = XMLUtil.getElementValue(xmlVal, ID_COMMENT, cageComment);
-		cageID = XMLUtil.getElementValue(xmlVal, ID_CAGEID, cageID);
 		
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_CAGELIMITS);
 		if (xmlVal2 != null) {

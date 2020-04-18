@@ -1,10 +1,10 @@
 package plugins.fmp.multicafeSequence;
 
-import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
-
 import plugins.fmp.multicafe.MultiCAFE;
+
+
 
 public class CageTableModel extends AbstractTableModel {
 	/**
@@ -17,8 +17,7 @@ public class CageTableModel extends AbstractTableModel {
 		super();
 		this.parent0 = parent0;
 	}
-	
-	
+		
 	@Override
     public int getColumnCount() {
 		return 3;
@@ -27,11 +26,9 @@ public class CageTableModel extends AbstractTableModel {
     @Override
     public Class<?> getColumnClass(int columnIndex) {
     	switch (columnIndex) {
-    	case 0:
-    	case 2:
-    		return String.class;
-    	case 1:
-    		return Boolean.class;
+    	case 0: return String.class;
+    	case 1: return Integer.class;
+    	case 2: return String.class;
         }
     	return String.class;
     }
@@ -39,9 +36,9 @@ public class CageTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int column) {
     	switch (column) {
-    	case 0:	return "Cage#";
+    	case 0:	return "Name";
     	case 1: return "n flies";
-    	case 2: return "comment";
+    	case 2: return "Comment";
         }
     	return "";
     }
@@ -55,18 +52,16 @@ public class CageTableModel extends AbstractTableModel {
     
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-    	List<Cage> cageList = null;
+    	Cage cage = null;
     	if (parent0 != null && parent0.currentExperimentIndex >=0 ) {
-    		cageList = parent0.expList.getExperiment(parent0.currentExperimentIndex).cages.cageList;
+    		cage = parent0.expList.getExperiment(parent0.currentExperimentIndex).cages.cageList.get(rowIndex);
     	}
-    	if (cageList != null) {
+    	if (cage != null) {
         	switch (columnIndex) {
-            case 0:
-            	return cageList.get(rowIndex).cageID;
-            case 1:
-            	return cageList.get(rowIndex).cageNFlies;
-            case 2:
-            	return cageList.get(rowIndex).cageComment;
+            case 0: 
+            	return cage.roi.getName();
+            case 1: return cage.cageNFlies;
+            case 2: return cage.cageComment;
         	}
     	}
     	return null;
@@ -76,22 +71,20 @@ public class CageTableModel extends AbstractTableModel {
     public boolean isCellEditable(int rowIndex, int columnIndex) {
     	return true;
         }
+    
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         Cage cage = null;
     	if (parent0 != null && parent0.currentExperimentIndex >=0 ) {
-    		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex); 
-    		cage = exp.cages.cageList.get(rowIndex);
+    		cage = parent0.expList.getExperiment(parent0.currentExperimentIndex).cages.cageList.get(rowIndex);
     	}
     	if (cage != null) {
         	switch (columnIndex) {
-            case 0:
-            	cage.cageID = aValue.toString() ;
-            case 1:
-            	cage.cageNFlies = (int) aValue;
-            case 2:
-            	cage.cageComment = aValue.toString();
+            case 0: cage.roi.setName(aValue.toString()); break;
+            case 1: cage.cageNFlies = (int) aValue; break;
+            case 2: cage.cageComment = aValue.toString(); break;
         	}
     	}
     }
+
 }
