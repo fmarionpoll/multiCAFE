@@ -67,7 +67,7 @@ public class MCLevels_File  extends JPanel {
 			boolean readOK = exp.xmlLoadKymos_Measures(directory);
 			if (readOK) {
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
-					parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp);
+					parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
 					parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
 					parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
 				}});

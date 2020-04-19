@@ -27,10 +27,10 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	private static final long serialVersionUID = 853047648249832145L;
 	
 	JTabbedPane 			tabsPane 		= new JTabbedPane();
-	MCCapillaries_Create 	tabCreate 		= new MCCapillaries_Create();
-	MCCapillaries_File 		tabFile 		= new MCCapillaries_File();
+	MCCapillaries_Create 	tabCreateCap 		= new MCCapillaries_Create();
+	MCCapillaries_File 		tabFileCap 		= new MCCapillaries_File();
 	MCCapillaries_Adjust 	tabAdjust 		= new MCCapillaries_Adjust();
-	MCCapillaries_Infos		tabInfos		= new MCCapillaries_Infos();
+	MCCapillaries_Infos		tabInfosCap		= new MCCapillaries_Infos();
 	private int ID_INFOS = 1;
 	private int ID_ADJUST = 2;
 	
@@ -48,15 +48,15 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		
 		GridLayout capLayout = new GridLayout(3, 1);
 		int order = 0;
-		tabCreate.init(capLayout, parent0);
-		tabCreate.addPropertyChangeListener(this);
-		tabsPane.addTab("Create", null, tabCreate, "Create lines defining capillaries");
+		tabCreateCap.init(capLayout, parent0);
+		tabCreateCap.addPropertyChangeListener(this);
+		tabsPane.addTab("Create", null, tabCreateCap, "Create lines defining capillaries");
 		order++;
 		
 		ID_INFOS=order;
-		tabInfos.init(capLayout, parent0);
-		tabInfos.addPropertyChangeListener(this);
-		tabsPane.addTab("Infos", null, tabInfos, "Define pixel conversion unit of images and capillaries content");
+		tabInfosCap.init(capLayout, parent0);
+		tabInfosCap.addPropertyChangeListener(this);
+		tabsPane.addTab("Infos", null, tabInfosCap, "Define pixel conversion unit of images and capillaries content");
 		order++;
 		
 		tabAdjust.init(capLayout, parent0);
@@ -64,9 +64,9 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		tabsPane.addTab("Adjust", null, tabAdjust, "Adjust ROIS position to the capillaries");
 		order++;
 		
-		tabFile.init(capLayout, parent0);
-		tabFile.addPropertyChangeListener(this);
-		tabsPane.addTab("Load/Save", null, tabFile, "Load/Save xml file with capillaries descriptors");
+		tabFileCap.init(capLayout, parent0);
+		tabFileCap.addPropertyChangeListener(this);
+		tabsPane.addTab("Load/Save", null, tabFileCap, "Load/Save xml file with capillaries descriptors");
 		order++;
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -106,15 +106,15 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null)
 			return false;
-		boolean flag = tabFile.loadCapillaries_File(exp);
+		boolean flag = tabFileCap.loadCapillaries_File(exp);
 		if (flag) {
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
-				tabInfos.setAllDescriptors(exp.capillaries);
+				tabInfosCap.setAllDescriptors(exp.capillaries);
 				parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
-				parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp);
+				parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
 				parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
 				parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
-				tabCreate.setGroupingAndNumber(exp.capillaries);
+				tabCreateCap.setGroupingAndNumber(exp.capillaries);
 			}});
 		}
 		return flag;
@@ -125,19 +125,19 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		if (exp != null) {
 			SequenceKymosUtils.transferCamDataROIStoKymo(exp);
 			exp.capillaries.desc_old.copy(exp.capillaries.desc);
-			tabInfos.setAllDescriptors(exp.capillaries);
-			tabCreate.setGroupingAndNumber(exp.capillaries);
-			parent0.paneSequence.tabInfos.setExperimentsInfosToDialog(exp);
+			tabInfosCap.setAllDescriptors(exp.capillaries);
+			tabCreateCap.setGroupingAndNumber(exp.capillaries);
+			parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
 		}
 	}
 	
 	boolean saveCapillaries(Experiment exp) {
-		return tabFile.saveCapillaries(exp);
+		return tabFileCap.saveCapillaries(exp);
 	}
 	
 	void getCapillariesInfos(Experiment exp) {
-		tabInfos.getDescriptors(exp.capillaries);
-		tabCreate.getGrouping(exp.capillaries);
+		tabInfosCap.getDescriptors(exp.capillaries);
+		tabCreateCap.getGrouping(exp.capillaries);
 	}
 
 	@Override

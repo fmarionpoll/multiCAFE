@@ -69,15 +69,15 @@ public class MCSequence_Infos  extends JPanel {
 		boxID_JCombo.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			String newtext = (String) boxID_JCombo.getSelectedItem();
 			int nexpts = parent0.expList.getSize();
-			if (nexpts > 0) {
+			if (nexpts > 0 && parent0.paneExcel.tabOptions.collateSeriesCheckBox.isSelected()) {
 				String exptName = (String) experiment_JCombo.getSelectedItem();
 				for (int i = 0; i < nexpts; i++) {
 					Experiment exp = parent0.expList.getExperiment(i);
-					if (newtext.equals(exp.boxID) && exptName != null && exptName .equals(exp.experiment)) {
+					if (newtext.equals(exp.boxID) && exptName != null && exptName .equals(exp.experiment) ) {
 						addItem(experiment_JCombo, exp.experiment);
 						addItem(comment1_JCombo, exp.comment1);
 						addItem(comment2_JCombo, exp.comment2);
-						parent0.paneCapillaries.tabInfos.setTextDescriptors(exp.capillaries);
+						parent0.paneCapillaries.tabInfosCap.setTextDescriptors(exp.capillaries);
 						break;
 					}
 				}

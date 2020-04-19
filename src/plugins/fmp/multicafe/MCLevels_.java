@@ -22,7 +22,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = -7339633966002954720L;
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
-	public MCLevels_File 			tabFile 		= new MCLevels_File();
+	public MCLevels_File 	tabFileLevels	= new MCLevels_File();
 	MCLevels_DetectLimits 	tabDetectLimits = new MCLevels_DetectLimits();
 	MCLevels_DetectGulps 	tabDetectGulps 	= new MCLevels_DetectGulps();
 	MCLevels_Edit			tabEdit			= new MCLevels_Edit();
@@ -55,9 +55,9 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 		tabGraphs.addPropertyChangeListener(this);
 		tabsPane.addTab("Graphs", null, tabGraphs, "Display results as a graph");
 		
-		tabFile.init(capLayout, parent0);
-		tabFile.addPropertyChangeListener(this);
-		tabsPane.addTab("Load/Save", null, tabFile, "Load/Save kymographs");
+		tabFileLevels.init(capLayout, parent0);
+		tabFileLevels.addPropertyChangeListener(this);
+		tabsPane.addTab("Load/Save", null, tabFileLevels, "Load/Save kymographs");
 						
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));
 		tabDetectLimits.transformForLevelsComboBox.setSelectedItem(TransformOp.G2MINUS_RB);

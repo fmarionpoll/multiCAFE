@@ -107,7 +107,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				Experiment exp = expList.getExperiment(currentExperimentIndex);
 				if (exp != null)
-					paneLevels.tabFile.saveKymosMeasures(exp);
+					paneLevels.tabFileLevels.saveKymosMeasures(exp);
 			}});
 		}
 	} 
@@ -153,7 +153,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		
 		if (loadCapillaries) {
 			progress = new ProgressFrame("load capillary measures");
-			paneLevels.tabFile.loadKymosMeasures(exp);
+			paneLevels.tabFileLevels.loadKymosMeasures(exp);
 			progress.close();
 		}
 

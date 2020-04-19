@@ -37,7 +37,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	private JTabbedPane 		tabsPane 		= new JTabbedPane();
 	MCSequence_Open 			tabOpen 		= new MCSequence_Open();
-	MCSequence_Infos			tabInfos		= new MCSequence_Infos();
+	MCSequence_Infos			tabInfosSeq		= new MCSequence_Infos();
 	public MCSequence_Intervals	tabIntervals	= new MCSequence_Intervals();
 	MCSequence_Display			tabDisplay 		= new MCSequence_Display();
 	MCSequence_Close 			tabClose 		= new MCSequence_Close();
@@ -77,9 +77,9 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Open/Add", null, tabOpen, "Open one or several stacks of .jpg files");
 		tabOpen.addPropertyChangeListener(this);
 		
-		tabInfos.init(tabsLayout, parent0);
-		tabsPane.addTab("Infos", null, tabInfos, "Define infos for this experiment/box");
-		tabInfos.addPropertyChangeListener(this);
+		tabInfosSeq.init(tabsLayout, parent0);
+		tabsPane.addTab("Infos", null, tabInfosSeq, "Define infos for this experiment/box");
+		tabInfosSeq.addPropertyChangeListener(this);
 		
 		tabIntervals.init(tabsLayout);
 		tabsPane.addTab("Intervals", null, tabIntervals, "Browse and analysis parameters");
@@ -114,7 +114,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	private void defineActionListeners() {
 		expListComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (expListComboBox.getItemCount() == 0 || tabInfos.disableChangeFile) {
+			if (expListComboBox.getItemCount() == 0 || tabInfosSeq.disableChangeFile) {
 				updateBrowseInterface();
 				return;
 			}
@@ -127,8 +127,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
         		ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 	        		parent0.paneSequence.tabClose.closeExp(exp); //saveAndClose(exp);
         		}});
-        		tabInfos.updateCombos();
-				parent0.paneCapillaries.tabInfos.updateCombos();
+        		tabInfosSeq.updateCombos();
+				parent0.paneCapillaries.tabInfosCap.updateCombos();
 				parent0.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);						
 				openSequenceCamFromCombo();
 				updateBrowseInterface();
@@ -173,7 +173,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			int index = expListComboBox.getSelectedIndex();
 			if (index < 0)
 				index = 0;
-			tabInfos.disableChangeFile = true;
+			tabInfosSeq.disableChangeFile = true;
 			for (String name: tabOpen.selectedNames) {
 				 addSequenceCamToCombo(name);
 			}
@@ -181,7 +181,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			if (expListComboBox.getItemCount() > 0) {
 				expListComboBox.setSelectedIndex(index);
 				updateBrowseInterface();
-				tabInfos.disableChangeFile = false;
+				tabInfosSeq.disableChangeFile = false;
 				openSequenceCamFromCombo();
 			}
 		}
@@ -282,7 +282,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	void getExperimentInfosFromDialog(Experiment exp) {
-		tabInfos.getExperimentInfosFromDialog(exp);
+		tabInfosSeq.getExperimentInfosFromDialog(exp);
 		tabIntervals.getAnalyzeFrameFromDialog (exp);
 	}
 	

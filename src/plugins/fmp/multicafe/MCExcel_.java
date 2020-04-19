@@ -30,10 +30,10 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = -4296207607692017074L;
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
-	private MCExcel_Options	tabOptions		= new MCExcel_Options();
+	MCExcel_Options			tabOptions		= new MCExcel_Options();
 	private MCExcel_Kymos	tabKymos		= new MCExcel_Kymos();
 	private MCExcel_Move 	tabMove  		= new MCExcel_Move();
-	private MultiCAFE parent0 = null;
+	private MultiCAFE 		parent0 = null;
 
 	
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
@@ -110,7 +110,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	
 	private void updateParametersCurrentExperiment(Experiment exp) {
 		parent0.paneCapillaries.getCapillariesInfos(exp);
-		parent0.paneSequence.tabInfos.getExperimentInfosFromDialog(exp);
+		parent0.paneSequence.tabInfosSeq.getExperimentInfosFromDialog(exp);
 	}
 	
 	private XLSExportOptions getMoveOptions() {
