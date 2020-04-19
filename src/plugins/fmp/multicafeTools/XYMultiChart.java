@@ -44,10 +44,7 @@ public class XYMultiChart extends IcyFrame  {
 
 	//----------------------------------------
 	public void createPanel(String cstitle) {
-
 		title = cstitle;
-		
-		// create window 
 		mainChartFrame = GuiUtil.generateTitleFrame(title, new JPanel(), new Dimension(300, 70), true, true, true, true);	    
 		mainChartPanel = new JPanel(); 
 		mainChartPanel.setLayout( new BoxLayout( mainChartPanel, BoxLayout.LINE_AXIS ) );
@@ -104,9 +101,11 @@ public class XYMultiChart extends IcyFrame  {
 		getDataArrays(exp, option, xyDataSetList);
 		
 		// display charts
-		int width = 150;
+		int width = 130;
 		int minimumDrawWidth = 100;
-		int maximumDrawWidth = 150;
+		int maximumDrawWidth = width;
+		int height = 200;
+		int maximumDrawHeight = height;
 		boolean displayLabels = true; 
 		for (int i=0; i< xyDataSetList.size(); i++) {	
 			XYSeriesCollection xyDataset = xyDataSetList.get(i);
@@ -123,11 +122,14 @@ public class XYMultiChart extends IcyFrame  {
 				xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
 			}
 			xyChartList.add(xyChart);
-			ChartPanel xyChartPanel = new ChartPanel(xyChart, width, 200, minimumDrawWidth, 100, maximumDrawWidth, 200, false, false, true, true, true, true);
+			ChartPanel xyChartPanel = new ChartPanel(xyChart, width, height, minimumDrawWidth, 100, 
+					maximumDrawWidth, maximumDrawHeight, false, false, true, true, true, true);
 			mainChartPanel.add(xyChartPanel);
 			width = 100;
+			height = 200;
 			minimumDrawWidth = 50;
-			maximumDrawWidth = 100;
+			maximumDrawWidth = width;
+			maximumDrawHeight = 200;
 			displayLabels = false; 
 		}
 		mainChartFrame.pack();
