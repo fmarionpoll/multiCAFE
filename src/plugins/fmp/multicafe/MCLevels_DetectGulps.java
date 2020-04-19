@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe;
 
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -42,6 +43,7 @@ public class MCLevels_DetectGulps extends JPanel {
 	private JSpinner		spanTransf2Spinner				= new JSpinner(new SpinnerNumberModel(3, 0, 500, 1));
 	private JSpinner 		detectGulpsThresholdSpinner		= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
 	private JButton 		detectGulpsButton 				= new JButton("Detect");
+	private JCheckBox		allSeriesCheckBox 				= new JCheckBox("ALL series", false);
 	private MultiCAFE 		parent0;
 	
 	
@@ -49,9 +51,12 @@ public class MCLevels_DetectGulps extends JPanel {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
-		detectAllGulpsCheckBox.setHorizontalAlignment(SwingConstants.LEFT);
-		detectAllGulpsCheckBox.setHorizontalTextPosition(SwingConstants.RIGHT);
-		add( GuiUtil.besidesPanel(detectGulpsButton, detectAllGulpsCheckBox));
+		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		((FlowLayout)panel0.getLayout()).setVgap(0);
+		panel0.add( detectGulpsButton);
+		panel0.add( allSeriesCheckBox);
+		panel0.add(detectAllGulpsCheckBox);
+		add( GuiUtil.besidesPanel(panel0 ));
 		
 		add( GuiUtil.besidesPanel(new JLabel("threshold", SwingConstants.RIGHT), detectGulpsThresholdSpinner, transformForGulpsComboBox, displayTransform2Button));
 		
@@ -88,6 +93,15 @@ public class MCLevels_DetectGulps extends JPanel {
 				kymosDisplayFiltered2();
 				parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 			}});
+		
+		allSeriesCheckBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) {
+				Color color = Color.BLACK;
+				if (allSeriesCheckBox.isSelected()) 
+					color = Color.RED;
+				allSeriesCheckBox.setForeground(color);
+				detectGulpsButton.setForeground(color);
+		}});
 		
 	}
 
