@@ -69,8 +69,8 @@ public class YPosMultiChart extends IcyFrame {
 			}
 		}
 		cleanChartsPanel(chartsInMainChartPanel);
-		int width = 130;
-		boolean displayLabels = true; 
+		int width = 100;
+		boolean displayLabels = false; 
 		
 		for (XYSeriesCollection xyDataset: xyDataSetList) {
 			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, true, true);
