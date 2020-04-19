@@ -89,6 +89,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	}
 	
 	private void defineActionListeners() {
+		
 		transformForLevelsComboBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
@@ -179,6 +180,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		if (thread == null)
 			return false;
 		
+		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		DetectLimits_Options options= thread.options;
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
@@ -189,14 +191,16 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 			options.expList.index0 = parent0.currentExperimentIndex;
 			options.expList.index1 = parent0.currentExperimentIndex;
 		}
-		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
-		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
-		options.detectLevelThreshold= (int) getDetectLevelThreshold();
-		options.detectAllKymos 		= allKymosCheckBox.isSelected();
 		if (!allKymosCheckBox.isSelected())
 			options.firstKymo = exp.seqKymos.currentFrame;
 		else 
 			options.firstKymo = 0;
+		
+		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
+		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
+		options.detectLevelThreshold= (int) getDetectLevelThreshold();
+		options.detectAllKymos 		= allKymosCheckBox.isSelected();
+		
 //		indexCurrentKymo = options.firstKymo;
 		options.analyzePartOnly		= partCheckBox.isSelected();
 		options.startPixel			= (int) startSpinner.getValue() / exp.stepFrame;
@@ -216,8 +220,6 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		parent0.paneSequence.tabClose.closeExp(exp);
 		thread = new DetectLimits_series();
 		
-		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
-		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		initBuildParameters(exp);
 		
 		thread.addPropertyChangeListener(this);

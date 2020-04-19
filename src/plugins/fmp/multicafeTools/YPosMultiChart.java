@@ -69,15 +69,20 @@ public class YPosMultiChart extends IcyFrame {
 			}
 		}
 		cleanChartsPanel(chartsInMainChartPanel);
+		int width = 130;
+		boolean displayLabels = true; 
+		
 		for (XYSeriesCollection xyDataset: xyDataSetList) {
 			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, true, true);
 			xyChart.setAntiAlias( true );
 			xyChart.setTextAntiAlias( true );
 			ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
 			yAxis.setRange(valMinMax.min, valMinMax.max);
-			yAxis.setTickLabelsVisible(false);
-			ChartPanel xyChartPanel = new ChartPanel(xyChart, 100, 200, 50, 100, 100, 200, false, false, true, true, true, true);
+			yAxis.setTickLabelsVisible(displayLabels);
+			ChartPanel xyChartPanel = new ChartPanel(xyChart, width, 200, 50, 100, 100, 200, false, false, true, true, true, true);
 			mainChartPanel.add(xyChartPanel);
+			width = 100;
+			displayLabels = false; 
 		}
 
 		mainChartFrame.pack();

@@ -1,16 +1,20 @@
 package plugins.fmp.multicafeTools;
 
 
+import java.awt.Rectangle;
+
 import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class DetectGulps_Options implements XMLPersistent {
 	
 	public int 			detectGulpsThreshold	= 90;
 	public TransformOp 	transformForGulps 		= TransformOp.XDIFFN;
+	public int			spanDiff				= 3;
 	public boolean 		detectAllGulps 			= true;
 	public boolean		buildGulps				= true;
 	public boolean		buildDerivative			= true;
@@ -18,6 +22,8 @@ public class DetectGulps_Options implements XMLPersistent {
 	public 	boolean 	analyzePartOnly			= false;
 	public 	int 		startPixel 				= -1;
 	public 	int 		endPixel 				= -1;
+	public Rectangle 	parent0Rect 			= null;
+	public ExperimentList expList				= null;
 	
 	
 	public void copy(DetectGulps_Options destination) {
@@ -29,12 +35,10 @@ public class DetectGulps_Options implements XMLPersistent {
 	@Override
 	public boolean loadFromXML(Node node) {
 		final Node nodeMeta = XMLUtil.setElement(node, "LimitsOptions");
-	    if (nodeMeta != null)
-	    {
+	    if (nodeMeta != null) {
 	    	detectAllGulps = XMLUtil.getElementBooleanValue(nodeMeta, "detectAllGulps", detectAllGulps);
 	    	buildGulps = XMLUtil.getElementBooleanValue(nodeMeta, "buildGulps", buildGulps);
 	    	buildDerivative = XMLUtil.getElementBooleanValue(nodeMeta, "buildDerivative", buildDerivative);
-	    	
 	    	transformForGulps = TransformOp.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transformForGulps.toString()));       
 	    }
         return true;
@@ -44,12 +48,10 @@ public class DetectGulps_Options implements XMLPersistent {
 	@Override
 	public boolean saveToXML(Node node) {
 		final Node nodeMeta = XMLUtil.setElement(node, "LimitsOptions");
-	    if (nodeMeta != null)
-	    {
+	    if (nodeMeta != null) {
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "detectAllGulps", detectAllGulps);
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "buildGulps", buildGulps);
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "buildDerivative", buildDerivative);
-	    	
 	    	XMLUtil.setElementValue(nodeMeta, "Transform", transformForGulps.toString());       
 	    }
         return true;

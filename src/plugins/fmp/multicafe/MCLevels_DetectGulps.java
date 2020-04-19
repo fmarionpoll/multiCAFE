@@ -5,7 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -17,15 +18,17 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
+import icy.util.StringUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.fmp.multicafeTools.DetectGulps;
+import plugins.fmp.multicafeTools.DetectGulps_series;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
-public class MCLevels_DetectGulps extends JPanel {
+public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListener {
 	/**
 	 * 
 	 */
@@ -42,8 +45,10 @@ public class MCLevels_DetectGulps extends JPanel {
 	private JButton			displayTransform2Button			= new JButton("Display");
 	private JSpinner		spanTransf2Spinner				= new JSpinner(new SpinnerNumberModel(3, 0, 500, 1));
 	private JSpinner 		detectGulpsThresholdSpinner		= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
-	private JButton 		detectGulpsButton 				= new JButton("Detect");
+	private String 			detectString 					= "        Detect     ";
+	private JButton 		detectButton 					= new JButton(detectString);
 	private JCheckBox		allSeriesCheckBox 				= new JCheckBox("ALL series", false);
+	private DetectGulps_series 	thread 							= null;
 	private MultiCAFE 		parent0;
 	
 	
@@ -53,7 +58,7 @@ public class MCLevels_DetectGulps extends JPanel {
 		
 		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		((FlowLayout)panel0.getLayout()).setVgap(0);
-		panel0.add( detectGulpsButton);
+		panel0.add( detectButton);
 		panel0.add( allSeriesCheckBox);
 		panel0.add(detectAllGulpsCheckBox);
 		add( GuiUtil.besidesPanel(panel0 ));
@@ -71,21 +76,23 @@ public class MCLevels_DetectGulps extends JPanel {
 		add( panel1);
 
 		transformForGulpsComboBox.setSelectedItem(TransformOp.XDIFFN);
-		defineListeners();
+		defineActionListeners();
 	}
 	
-	private void defineListeners() {
+	private void defineActionListeners() {
 
 		transformForGulpsComboBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				kymosDisplayFiltered2();
-				kymosDetectGulps(false);
+				series_detectGulpsStart(false);
 			}});
 		
-		detectGulpsButton.addActionListener(new ActionListener () { 
+		detectButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
-				kymosDisplayFiltered2();
-				kymosDetectGulps(true);
+				if (detectButton.getText() .equals(detectString))
+					series_detectGulpsStart(true);
+				else 
+					series_detectGulpsStop();
 			}});
 		
 		displayTransform2Button.addActionListener(new ActionListener () { 
@@ -100,12 +107,10 @@ public class MCLevels_DetectGulps extends JPanel {
 				if (allSeriesCheckBox.isSelected()) 
 					color = Color.RED;
 				allSeriesCheckBox.setForeground(color);
-				detectGulpsButton.setForeground(color);
+				detectButton.setForeground(color);
 		}});
 		
 	}
-
-	// get/set
 		
 	void kymosDisplayFiltered2() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
@@ -114,10 +119,6 @@ public class MCLevels_DetectGulps extends JPanel {
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
-		List<Capillary> capList = exp.capillaries.capillariesArrayList;
-		for (int t=0; t < seqKymos.seq.getSizeT(); t++) {
-			getInfosFromDialog(capList.get(t));		
-		}
 		
 		TransformOp transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		int zChannelDestination = 2;
@@ -125,12 +126,38 @@ public class MCLevels_DetectGulps extends JPanel {
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
-	void kymosDetectGulps(boolean detectGulps) {
-		DetectGulps_Options options 	= new DetectGulps_Options();
+	void series_detectGulpsStart(boolean detectGulps) {
+		kymosDisplayFiltered2();
+		
+		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		if (exp == null)
+			return;
+		
+		parent0.paneSequence.tabClose.closeExp(exp);
+		thread = new DetectGulps_series();
+		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
+		exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
+		
+		DetectGulps_Options options = thread.options;
+		options.expList = new ExperimentList(); 
+		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
+		if (allSeriesCheckBox.isSelected()) {
+			options.expList.index0 = 0;
+			options.expList.index1 = options.expList.getSize()-1;
+		} else {
+			options.expList.index0 = parent0.currentExperimentIndex;
+			options.expList.index1 = parent0.currentExperimentIndex;
+		}
+//		if (!allKymosCheckBox.isSelected())
+//			options.firstKymo = exp.seqKymos.currentFrame;
+//		else 
+//			options.firstKymo = 0;
+		options.firstkymo 				= parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
 		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
 		options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps 			= detectAllGulpsCheckBox.isSelected();
-		options.firstkymo 				= parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
+		options.spanDiff				= (int) spanTransf2Spinner.getValue();
 		options.buildGulps				= detectGulpsCheckBox.isSelected();
 		if (!detectGulps)
 			options.buildGulps = false;
@@ -138,13 +165,11 @@ public class MCLevels_DetectGulps extends JPanel {
 		options.analyzePartOnly			= partCheckBox.isSelected();
 		options.startPixel				= (int) startSpinner.getValue();
 		options.endPixel				= (int) endSpinner.getValue();
+		options.parent0Rect 			= parent0.mainFrame.getBoundsInternal();
 		
-		DetectGulps detect = new DetectGulps();
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp != null) {
-			exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
-			detect.detectGulps(exp, options);
-		}
+		thread.addPropertyChangeListener(this);
+		thread.execute();
+		detectButton.setText("STOP");
 	}
 
 	void setInfos(Capillary cap) {
@@ -153,12 +178,20 @@ public class MCLevels_DetectGulps extends JPanel {
 		transformForGulpsComboBox.setSelectedItem(options.transformForGulps);
 		detectAllGulpsCheckBox.setSelected(options.detectAllGulps);
 	}
-	
-	void getInfosFromDialog(Capillary cap) {
-		DetectGulps_Options options = cap.gulpsOptions;
-		options.detectGulpsThreshold = (int) detectGulpsThresholdSpinner.getValue();
-		options.transformForGulps = (TransformOp) transformForGulpsComboBox.getSelectedItem();
-		options.detectAllGulps = detectAllGulpsCheckBox.isSelected();
+
+	private void series_detectGulpsStop() {	
+		if (thread != null && !thread.stopFlag) {
+			thread.stopFlag = true;
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
+			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
+			parent0.paneSequence.openExperiment(exp);
+			detectButton.setText(detectString);
+		 }
 	}
 	
 

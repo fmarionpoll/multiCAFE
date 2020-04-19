@@ -104,6 +104,10 @@ public class XYMultiChart extends IcyFrame  {
 		getDataArrays(exp, option, xyDataSetList);
 		
 		// display charts
+		int width = 150;
+		int minimumDrawWidth = 100;
+		int maximumDrawWidth = 150;
+		boolean displayLabels = true; 
 		for (int i=0; i< xyDataSetList.size(); i++) {	
 			XYSeriesCollection xyDataset = xyDataSetList.get(i);
 			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, false, false);
@@ -111,7 +115,7 @@ public class XYMultiChart extends IcyFrame  {
 			xyChart.setTextAntiAlias( true );
 			ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
 			yAxis.setRange(globalYMin, globalYMax);
-			yAxis.setTickLabelsVisible(false);
+			yAxis.setTickLabelsVisible(displayLabels);
 			ValueAxis xAxis = xyChart.getXYPlot().getDomainAxis(0);
 			xAxis.setRange(0, globalXMax);
 
@@ -119,8 +123,12 @@ public class XYMultiChart extends IcyFrame  {
 				xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
 			}
 			xyChartList.add(xyChart);
-			ChartPanel xyChartPanel = new ChartPanel(xyChart, 100, 200, 50, 100, 100, 200, false, false, true, true, true, true);
+			ChartPanel xyChartPanel = new ChartPanel(xyChart, width, 200, minimumDrawWidth, 100, maximumDrawWidth, 200, false, false, true, true, true, true);
 			mainChartPanel.add(xyChartPanel);
+			width = 100;
+			minimumDrawWidth = 50;
+			maximumDrawWidth = 100;
+			displayLabels = false; 
 		}
 		mainChartFrame.pack();
 		mainChartFrame.setLocation(pt);
