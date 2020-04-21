@@ -77,7 +77,10 @@ public class XYMultiChart extends IcyFrame  {
 			List<Integer> results = cap.getMeasures(ooption);
 			if (option == EnumListType.topLevelDelta) 
 				results = kymoseq.subtractTi(results);
-			XYSeries seriesXY = getXYSeries(results, cap.capillaryRoi.getName(), startFrame);
+			String name = cap.capillaryRoi.getName();
+			if (t == 0)	// trick to change the size of the legend so that it takes the same vertical space as others 
+				name = name + "    ";
+			XYSeries seriesXY = getXYSeries(results, name, startFrame);
 			
 			if (option == EnumListType.topAndBottom) 
 				appendDataToXYSeries(seriesXY, cap.getMeasures(EnumListType.bottomLevel), startFrame );
@@ -107,11 +110,12 @@ public class XYMultiChart extends IcyFrame  {
 		int height = 200;
 		int maximumDrawHeight = height;
 		boolean displayLabels = true; 
-		for (int i=0; i< xyDataSetList.size(); i++) {	
-			XYSeriesCollection xyDataset = xyDataSetList.get(i);
+
+		for (XYSeriesCollection xyDataset : xyDataSetList) {
 			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, false, false);
 			xyChart.setAntiAlias( true );
 			xyChart.setTextAntiAlias( true );
+			
 			ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
 			yAxis.setRange(globalYMin, globalYMax);
 			yAxis.setTickLabelsVisible(displayLabels);
@@ -125,6 +129,7 @@ public class XYMultiChart extends IcyFrame  {
 			ChartPanel xyChartPanel = new ChartPanel(xyChart, width, height, minimumDrawWidth, 100, 
 					maximumDrawWidth, maximumDrawHeight, false, false, true, true, true, true);
 			mainChartPanel.add(xyChartPanel);
+
 			width = 100;
 			height = 200;
 			minimumDrawWidth = 50;
