@@ -43,7 +43,7 @@ public class MCCapillaries_Table  extends JPanel {
         JScrollPane scrollPane = new JScrollPane(tableView);
         //Add the scroll pane to this panel.
         dialogFrame.add(scrollPane);
-        
+        mainPanel.add(tableView);
 		dialogFrame.add(mainPanel);
 		
 		dialogFrame.pack();
