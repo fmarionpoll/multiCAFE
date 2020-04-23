@@ -37,7 +37,9 @@ public class MCCapillaries_Infos extends JPanel {
 	private JComboBox<String> 	stimulusLJCombo				= new JComboBox<String>();
 	private JComboBox<String> 	concentrationLJCombo 		= new JComboBox<String>();
 	private JButton				getLenButton				= new JButton ("get pixels 1rst capillary");
+	private JButton				editCapillariesButton		= new JButton("edit capillaries descriptors");
 	private MultiCAFE 			parent0 					= null;
+	private MCCapillaries_Table dialog 						= null;
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -51,6 +53,7 @@ public class MCCapillaries_Infos extends JPanel {
 		panel0.add( new JLabel("length (pixels) ", SwingConstants.RIGHT));
 		panel0.add( capillaryPixelsTextField);
 		panel0.add( getLenButton);
+		panel0.add( editCapillariesButton);
 		add( GuiUtil.besidesPanel(panel0));
 		
 		add( GuiUtil.besidesPanel(
@@ -97,6 +100,12 @@ public class MCCapillaries_Infos extends JPanel {
 */
 					capillaryPixelsTextField.setValue((int) npixels);
 				}
+			}});
+		
+		editCapillariesButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				dialog = new MCCapillaries_Table();
+            	dialog.initialize(parent0);
 			}});
 	}
 				

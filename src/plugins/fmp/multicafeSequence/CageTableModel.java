@@ -75,7 +75,7 @@ public class CageTableModel extends AbstractTableModel {
         case 1: 
         case 2: 
         	return true;
-   	}
+    	}
     	return false;
     }
     

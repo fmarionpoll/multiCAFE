@@ -1,8 +1,8 @@
 package plugins.fmp.multicafe;
 
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -10,26 +10,28 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import plugins.fmp.multicafeSequence.CageTableModel;
+import icy.gui.frame.IcyFrame;
+import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.CapillaryTableModel;
 
-
-
-
-public class MCMove_Infos  extends JPanel {
+public class MCCapillaries_Table  extends JPanel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3325915033686366985L;
+	private static final long serialVersionUID = -8611587540329642259L;
+	IcyFrame 					dialogFrame 			= null;
     private JTable 				tableView = new JTable();
-	private CageTableModel 		viewModel = null;
+	private CapillaryTableModel viewModel = null;
+
 	
-    
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
-//		setLayout(capLayout);
-		setLayout(new GridLayout(1,0));		 
-		viewModel = new CageTableModel(parent0);
+	public void initialize (MultiCAFE parent0) {
+//		this.parent0 = parent0;
+		dialogFrame = new IcyFrame ("Edit capillaries", true, true);
+		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
+		dialogFrame.setLayout(new BorderLayout());
 		
+		viewModel = new CapillaryTableModel(parent0);
 	    tableView.setModel(viewModel);
 	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 70));
 	    tableView.setFillsViewportHeight(true);
@@ -40,7 +42,19 @@ public class MCMove_Infos  extends JPanel {
         //Create the scroll pane and add the table to it.
         JScrollPane scrollPane = new JScrollPane(tableView);
         //Add the scroll pane to this panel.
-        add(scrollPane);
+        dialogFrame.add(scrollPane);
+        
+		dialogFrame.add(mainPanel);
+		
+		dialogFrame.pack();
+		dialogFrame.addToDesktopPane();
+		dialogFrame.requestFocus();
+		dialogFrame.center();
+		dialogFrame.setVisible(true);
+	}
+	
+	void close() {
+		dialogFrame.close();
 	}
 	
 	private void setFixedColumnProperties (TableColumn column) {
@@ -49,5 +63,4 @@ public class MCMove_Infos  extends JPanel {
         column.setMaxWidth(50);
         column.setMinWidth(30);
 	}
-
 }

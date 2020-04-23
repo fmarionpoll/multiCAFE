@@ -32,9 +32,10 @@ public class MCSequence_Intervals extends JPanel {
 	void init(GridLayout capLayout) {
 		setLayout(capLayout);	
 
-		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		FlowLayout layout1 = (FlowLayout) panel1.getLayout();
+		FlowLayout layout1 = new FlowLayout(FlowLayout.LEFT);
 		layout1.setVgap(0);
+		
+		JPanel panel1 = new JPanel(layout1);
 		panel1.add(new JLabel("Analyze from ", SwingConstants.RIGHT));
 		panel1.add(startFrameJSpinner);
 		panel1.add(new JLabel(" to "));
@@ -43,9 +44,9 @@ public class MCSequence_Intervals extends JPanel {
 		panel1.add(stepFrameJSpinner );
 		add(GuiUtil.besidesPanel(panel1));
 		
-		JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		FlowLayout layout2 = (FlowLayout) panel2.getLayout();
+		FlowLayout layout2 = new FlowLayout(FlowLayout.LEFT);
 		layout2.setVgap(0);
+		JPanel panel2 = new JPanel(layout2);
 		panel2.add(isFixedFrame);
 		panel2.add(isFloatingFrame);
 		ButtonGroup group = new ButtonGroup();
