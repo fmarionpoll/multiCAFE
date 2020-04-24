@@ -232,8 +232,10 @@ public class Capillaries {
 			cap.concentration = desc.concentrationR;
 			String nameL = name.substring(0, name.length() - 1) + "L";
 			Capillary cap0 = getCapillaryFromName(nameL);
-			cap.nflies = cap0.nflies;
-			cap.cagenb = cap0.cagenb;
+			if (cap0 != null) {
+				cap.nflies = cap0.nflies;
+				cap.cagenb = cap0.cagenb;
+			}
 		} else {
 			cap.stimulus = desc.stimulusL;
 			cap.concentration = desc.concentrationL;
