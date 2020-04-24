@@ -36,8 +36,8 @@ public class MCCapillaries_Infos extends JPanel {
 	private JComboBox<String> 	concentrationRJCombo 		= new JComboBox<String>();
 	private JComboBox<String> 	stimulusLJCombo				= new JComboBox<String>();
 	private JComboBox<String> 	concentrationLJCombo 		= new JComboBox<String>();
-	private JButton				getLenButton				= new JButton ("get pixels 1rst capillary");
-	private JButton				editCapillariesButton		= new JButton("edit capillaries descriptors");
+	private JButton				getLenButton				= new JButton ("pixels 1rst capillary");
+	private JButton				editCapillariesButton		= new JButton("edit capillaries");
 	private MultiCAFE 			parent0 					= null;
 	private MCCapillaries_Table dialog 						= null;
 	

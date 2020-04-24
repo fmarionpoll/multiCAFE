@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -20,7 +21,6 @@ import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.XYMultiChart;
 
 public class MCLevels_Graphs extends JPanel {
-
 	/**
 	 * 
 	 */
@@ -42,7 +42,16 @@ public class MCLevels_Graphs extends JPanel {
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
 		setLayout(capLayout);
 		this.parent0 = parent0;
-		add(GuiUtil.besidesPanel(limitsCheckbox, derivativeCheckbox, consumptionCheckbox, deltaCheckbox));
+		setLayout(capLayout);
+		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
+		layout.setVgap(0);
+		
+		JPanel panel = new JPanel(layout);
+		panel.add(limitsCheckbox);
+		panel.add(derivativeCheckbox);
+		panel.add(consumptionCheckbox);
+		panel.add(deltaCheckbox);
+		add( GuiUtil.besidesPanel(panel));
 		add(GuiUtil.besidesPanel(displayResultsButton, new JLabel(" "))); 
 		defineActionListeners();
 	}

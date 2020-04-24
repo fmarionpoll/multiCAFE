@@ -64,8 +64,8 @@ public class MCLevels_Edit  extends JPanel  implements PropertyChangeListener {
 		panel1.add(new JLabel("Apply to ", SwingConstants.LEFT), BorderLayout.WEST); 
 		panel1.add(roiTypeCombo, BorderLayout.CENTER);
 		
-		add(GuiUtil.besidesPanel(panel1,  new JLabel(" "), new JLabel("from Rect/Polygon2D:")));
-		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel(" "),   deleteButton));
+		add(GuiUtil.besidesPanel(new JLabel(" "), panel1));
+		add(GuiUtil.besidesPanel(new JLabel(" "), deleteButton));
 		
 		JPanel panel2 = new JPanel();
 		panel2.setLayout(new BorderLayout());
@@ -76,7 +76,7 @@ public class MCLevels_Edit  extends JPanel  implements PropertyChangeListener {
 		((FlowLayout)panel3.getLayout()).setVgap(0);
 		panel3.add(adjustButton);
 		panel3.add(allSeriesCheckBox);
-		add(GuiUtil.besidesPanel(panel3, new JLabel(" "),   panel2));
+		add(GuiUtil.besidesPanel(panel3, panel2));
 
 		defineListeners();
 	}
