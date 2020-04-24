@@ -25,13 +25,15 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 
-	public ROI2DShape 					capillaryRoi 	= null;	// the capillary (source)
+	public ROI2DShape 					roi 			= null;	// the capillary (source)
 	public int							indexImage 		= -1;
 	public String						capillaryName 	= null;
 	public String 						version 		= null;
 	public String						filenameTIFF	= null;
 	public String 						stimulus		= new String("stimulus");
 	public String 						concentration	= new String("xmM");
+	public int							nflies			= 1;
+	public int							cagenb			= 0;
 	
 	public DetectLimits_Options 		limitsOptions	= new DetectLimits_Options();
 	public DetectGulps_Options 			gulpsOptions	= new DetectGulps_Options();
@@ -51,6 +53,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 
 	private final String 				ID_META 		= "metaMC";
 	private final String 				ID_ROI 			= "roiMC";
+	private final String				ID_NFLIES		= "nflies";
+	private final String				ID_CAGENB		= "cage_number";
 	private final String 				ID_INDEXIMAGE 	= "indexImageMC";
 	private final String 				ID_NAME 		= "nameMC";
 	private final String 				ID_NAMETIFF 	= "filenameTIFF";
@@ -60,7 +64,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	// ----------------------------------------------------
 	
 	Capillary(ROI2DShape roi) {
-		this.capillaryRoi = roi;
+		this.roi = roi;
 		this.capillaryName = replace_LR_with_12(roi.getName());
 	}
 	
@@ -75,7 +79,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		indexImage 		= cap.indexImage;
 		capillaryName 	= cap.capillaryName;
 		version 		= cap.version;
-		capillaryRoi 	= cap.capillaryRoi;
+		roi 	= cap.roi;
 		filenameTIFF	= cap.filenameTIFF;
 		limitsOptions	= cap.limitsOptions;
 		gulpsOptions	= cap.gulpsOptions;
@@ -95,7 +99,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	}
 	
 	public String getLast2ofCapillaryName() {
-		return capillaryRoi.getName().substring(capillaryRoi.getName().length() -2);
+		return roi.getName().substring(roi.getName().length() -2);
 	}
 	
 	public String replace_LR_with_12(String name) {
@@ -347,12 +351,13 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
 	    boolean flag = (nodeMeta != null); 
 	    if (flag) {
-	    	
 	    	version = XMLUtil.getElementValue(nodeMeta, ID_VERSION, ID_VERSIONNUM);
 	    	indexImage = XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        capillaryName = XMLUtil.getElementValue(nodeMeta, ID_NAME, capillaryName);
 	        filenameTIFF = XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);
-	        capillaryRoi = (ROI2DShape) loadFromXML_ROI(nodeMeta);
+	        nflies = XMLUtil.getElementIntValue(nodeMeta, ID_NFLIES, nflies);
+	        cagenb = XMLUtil.getElementIntValue(nodeMeta, ID_CAGENB, cagenb);
+	        roi = (ROI2DShape) loadFromXML_ROI(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
 	        gulpsOptions.loadFromXML(nodeMeta);
 	    }
@@ -371,7 +376,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	        	String filename = Paths.get(filenameTIFF).getFileName().toString();
 	        	XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);
 	        }
-	        saveToXML_ROI(nodeMeta, capillaryRoi); 
+	        XMLUtil.setElementIntValue(nodeMeta, ID_NFLIES, nflies);
+	        XMLUtil.setElementIntValue(nodeMeta, ID_CAGENB, cagenb);
+	        saveToXML_ROI(nodeMeta, roi); 
 	    }
 	}
 

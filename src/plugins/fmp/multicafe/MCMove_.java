@@ -53,7 +53,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 		tabBuildROIs.addPropertyChangeListener(this);
 		tabsPane.addTab("Cages", null, tabBuildROIs, "Define cages using ROI polygons placed over each cage");
 
-		tabInfos.init(capLayout, parent0);
+		tabInfos.init(parent0);
 		tabInfos.addPropertyChangeListener(this);
 		tabsPane.addTab("Infos", null, tabInfos, "Infos about cages");
 		

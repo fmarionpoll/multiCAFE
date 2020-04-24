@@ -77,7 +77,7 @@ public class XYMultiChart extends IcyFrame  {
 			List<Integer> results = cap.getMeasures(ooption);
 			if (option == EnumListType.topLevelDelta) 
 				results = kymoseq.subtractTi(results);
-			String name = cap.capillaryRoi.getName();
+			String name = cap.roi.getName();
 			if (t == 0)	// trick to change the size of the legend so that it takes the same vertical space as others 
 				name = name + "    ";
 			XYSeries seriesXY = getXYSeries(results, name, startFrame);

@@ -262,7 +262,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			for (int t=0; t < nbcapillaries; t++) {
 				Capillary cap = exp.capillaries.capillariesArrayList.get(t);
 				cap.masksList = new ArrayList<ArrayList<int[]>>();
-				initExtractionParametersfromROI(cap.capillaryRoi, cap.masksList, options.diskRadius, sizex, sizey);
+				initExtractionParametersfromROI(cap.roi, cap.masksList, options.diskRadius, sizex, sizey);
 				if (cap.masksList.size() > masksizeMax)
 					masksizeMax = cap.masksList.size();
 			}

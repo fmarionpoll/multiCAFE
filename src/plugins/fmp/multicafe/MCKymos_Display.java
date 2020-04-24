@@ -125,7 +125,7 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 				kymographNamesComboBox.removeAllItems();
 				Collections.sort(capillaryArrayList); 
 				for (Capillary cap: capillaryArrayList) 
-					kymographNamesComboBox.addItem(cap.capillaryRoi.getName());	
+					kymographNamesComboBox.addItem(cap.roi.getName());	
 			}});
 	}
 	

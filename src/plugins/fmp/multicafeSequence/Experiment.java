@@ -553,13 +553,13 @@ public class Experiment {
 		Collections.sort(listROISCap, new Comparators.ROI2DNameComparator());
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			cap.valid = false;
-			String capName = cap.replace_LR_with_12(cap.capillaryRoi.getName());
+			String capName = cap.replace_LR_with_12(cap.roi.getName());
 			Iterator <ROI2D> iterator = listROISCap.iterator();
 			while(iterator.hasNext()) { 
 				ROI2D roi = iterator.next();
 				String roiName = cap.replace_LR_with_12(roi.getName());
 				if (roiName.equals (capName)) {
-					cap.capillaryRoi = (ROI2DShape) roi;
+					cap.roi = (ROI2DShape) roi;
 					cap.valid = true;
 				}
 				if (cap.valid) {
@@ -587,7 +587,7 @@ public class Experiment {
 	
 	public String getDecoratedImageNameFromCapillary(int t) {
 		if (capillaries != null & capillaries.capillariesArrayList.size() > 0)
-			return capillaries.capillariesArrayList.get(t).capillaryRoi.getName() + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
+			return capillaries.capillariesArrayList.get(t).roi.getName() + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
 		return seqKymos.csFileName + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
 	}
 	

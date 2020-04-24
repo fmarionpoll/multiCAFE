@@ -13,6 +13,8 @@ public class CageTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = -3501225818220221949L;
 	private MultiCAFE parent0 = null;
 	
+	
+	
 	public CageTableModel (MultiCAFE parent0) {
 		super();
 		this.parent0 = parent0;
@@ -46,7 +48,9 @@ public class CageTableModel extends AbstractTableModel {
     @Override
     public int getRowCount() {
     	if (parent0 != null && parent0.currentExperimentIndex >= 0 )
-    		return parent0.expList.getExperiment(parent0.currentExperimentIndex).cages.cageList.size();
+    		return parent0.expList
+    				.getExperiment(parent0.currentExperimentIndex)
+    				.cages.cageList.size();
         return 0;
     }
     
@@ -54,12 +58,13 @@ public class CageTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
     	Cage cage = null;
     	if (parent0 != null && parent0.currentExperimentIndex >=0 ) {
-    		cage = parent0.expList.getExperiment(parent0.currentExperimentIndex).cages.cageList.get(rowIndex);
+    		cage = parent0.expList
+    				.getExperiment(parent0.currentExperimentIndex)
+    				.cages.cageList.get(rowIndex);
     	}
     	if (cage != null) {
         	switch (columnIndex) {
-            case 0: 
-            	return cage.roi.getName();
+            case 0: return cage.roi.getName();
             case 1: return cage.cageNFlies;
             case 2: return cage.cageComment;
         	}
@@ -72,11 +77,9 @@ public class CageTableModel extends AbstractTableModel {
     	switch (columnIndex) {
         case 0: 
         	return false;
-        case 1: 
-        case 2: 
+        default: 
         	return true;
     	}
-    	return false;
     }
     
     @Override

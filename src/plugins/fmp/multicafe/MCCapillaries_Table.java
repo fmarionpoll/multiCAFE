@@ -1,7 +1,7 @@
 package plugins.fmp.multicafe;
 
 
-import java.awt.BorderLayout;
+
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
@@ -11,7 +11,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import icy.gui.frame.IcyFrame;
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.CapillaryTableModel;
 
 public class MCCapillaries_Table  extends JPanel {
@@ -26,25 +25,20 @@ public class MCCapillaries_Table  extends JPanel {
 	
 	
 	public void initialize (MultiCAFE parent0) {
-//		this.parent0 = parent0;
-		dialogFrame = new IcyFrame ("Edit capillaries", true, true);
-		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
-		dialogFrame.setLayout(new BorderLayout());
-		
-		viewModel = new CapillaryTableModel(parent0);
-	    tableView.setModel(viewModel);
-	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 70));
-	    tableView.setFillsViewportHeight(true);
-	    TableColumnModel columnModel = tableView.getColumnModel();
-        setFixedColumnProperties(columnModel.getColumn(0));
-        setFixedColumnProperties(columnModel.getColumn(1));
 
-        //Create the scroll pane and add the table to it.
+		dialogFrame = new IcyFrame ("Edit capillaries", true, true);	 
+		viewModel = new CapillaryTableModel(parent0);
+		
+	    tableView.setModel(viewModel);
+	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 400));
+	    tableView.setFillsViewportHeight(true);
+	    
+	    TableColumnModel columnModel = tableView.getColumnModel();
+	    for (int i=0; i<3; i++)
+	    	setFixedColumnProperties(columnModel.getColumn(i));
+
         JScrollPane scrollPane = new JScrollPane(tableView);
-        //Add the scroll pane to this panel.
-        dialogFrame.add(scrollPane);
-        mainPanel.add(tableView);
-		dialogFrame.add(mainPanel);
+		dialogFrame.add(scrollPane);
 		
 		dialogFrame.pack();
 		dialogFrame.addToDesktopPane();

@@ -1,7 +1,6 @@
 package plugins.fmp.multicafeSequence;
 
 import javax.swing.table.AbstractTableModel;
-
 import plugins.fmp.multicafe.MultiCAFE;
 
 public class CapillaryTableModel extends AbstractTableModel  {
@@ -11,6 +10,8 @@ public class CapillaryTableModel extends AbstractTableModel  {
 	private static final long serialVersionUID = 6325792669154093747L;
 	private MultiCAFE parent0 = null;
 	
+	
+	
 	public CapillaryTableModel (MultiCAFE parent0) {
 		super();
 		this.parent0 = parent0;
@@ -18,33 +19,39 @@ public class CapillaryTableModel extends AbstractTableModel  {
 	
 	@Override
 	public int getColumnCount() {
-		return 3;
-	}
-	
-	@Override
-	public String getColumnName(int column) {
-		switch (column) {
-		case 0:	return "Name";
-		case 1: return "stimulus";
-		case 2: return "concentration";
-		}
-		return "";
+		return 5;
 	}
 	
     @Override
     public Class<?> getColumnClass(int columnIndex) {
     	switch (columnIndex) {
     	case 0: return String.class;
-    	case 1: return String.class;
-    	case 2: return String.class;
+    	case 1: return Integer.class;
+    	case 2: return Integer.class;
+    	case 3: return String.class;
+    	case 4: return String.class;
         }
     	return String.class;
     }
-
+    
+	@Override
+	public String getColumnName(int column) {
+		switch (column) {
+		case 0:	return "Name";
+		case 1: return "cage nb";
+		case 2: return "n flies";
+		case 3: return "stimulus";
+		case 4: return "concentration";
+		}
+		return "";
+	}
+	
     @Override
     public int getRowCount() {
     	if (parent0 != null && parent0.currentExperimentIndex >= 0 )
-    		return parent0.expList.getExperiment(parent0.currentExperimentIndex).capillaries.capillariesArrayList.size();
+    		return parent0.expList
+    				.getExperiment(parent0.currentExperimentIndex)
+    				.capillaries.capillariesArrayList.size();
         return 0;
     }
 
@@ -52,14 +59,17 @@ public class CapillaryTableModel extends AbstractTableModel  {
     public Object getValueAt(int rowIndex, int columnIndex) {
     	Capillary cap = null;
     	if (parent0 != null && parent0.currentExperimentIndex >=0 ) {
-    		cap = parent0.expList.getExperiment(parent0.currentExperimentIndex).capillaries.capillariesArrayList.get(rowIndex);
+    		cap = parent0.expList
+    				.getExperiment(parent0.currentExperimentIndex)
+    				.capillaries.capillariesArrayList.get(rowIndex);
     	}
     	if (cap != null) {
         	switch (columnIndex) {
-            case 0: 
-            	return cap.capillaryRoi.getName();
-            case 1: return cap.stimulus;
-            case 2: return cap.concentration;
+            case 0: return cap.roi.getName();
+            case 1: return cap.cagenb;
+            case 2: return cap.nflies;
+            case 3: return cap.stimulus;
+            case 4: return cap.concentration;
         	}
     	}
     	return null;
@@ -70,11 +80,9 @@ public class CapillaryTableModel extends AbstractTableModel  {
     	switch (columnIndex) {
         case 0: 
         	return false;
-        case 1: 
-        case 2: 
+        default:
         	return true;
     	}
-    	return false;
     }
     
     @Override
@@ -85,9 +93,11 @@ public class CapillaryTableModel extends AbstractTableModel  {
     	}
     	if (cap != null) {
         	switch (columnIndex) {
-            case 0: cap.capillaryRoi.setName(aValue.toString()); break;
-            case 1: cap.stimulus = aValue.toString(); break;
-            case 2: cap.concentration = aValue.toString(); break;
+            case 0: cap.roi.setName(aValue.toString()); break;
+            case 1: cap.cagenb = (int) aValue; break;
+            case 2: cap.nflies = (int) aValue; break; 
+            case 3: cap.stimulus = aValue.toString(); break;
+            case 4: cap.concentration = aValue.toString(); break;
         	}
     	}
     }

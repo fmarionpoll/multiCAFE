@@ -138,7 +138,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		rowsForOneExp = new ArrayList <XLSCapillaryResults> (ncapillaries);
 		for (int i=0; i< ncapillaries; i++) {
 			Capillary cap = expAll.capillaries.capillariesArrayList.get(i);
-			XLSCapillaryResults row = new XLSCapillaryResults (cap.capillaryRoi.getName(), xlsoption);
+			XLSCapillaryResults row = new XLSCapillaryResults (cap.roi.getName(), xlsoption);
 			row.initValuesArray(expAll.number_of_frames);
 			rowsForOneExp.add(row);
 		}
@@ -149,7 +149,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		while (expi != null) {
 			List <XLSCapillaryResults> resultsArrayList = new ArrayList <XLSCapillaryResults> (expi.capillaries.capillariesArrayList.size());
 			for (Capillary cap: expi.capillaries.capillariesArrayList) {
-				XLSCapillaryResults results = new XLSCapillaryResults(cap.capillaryRoi.getName(), xlsoption);
+				XLSCapillaryResults results = new XLSCapillaryResults(cap.roi.getName(), xlsoption);
 				switch (xlsoption) {
 					case TOPLEVEL:
 					case TOPLEVEL_LR:

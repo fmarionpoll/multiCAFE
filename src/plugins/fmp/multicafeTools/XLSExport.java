@@ -86,7 +86,7 @@ public class XLSExport {
 		List<Capillary> capList = exp.capillaries.capillariesArrayList;
 		for (int t=0; t< capList.size(); t++) { 
 			Capillary cap = capList.get(t);
-			String	name = cap.capillaryRoi.getName();
+			String	name = cap.roi.getName();
 			int col = getColFromKymoFileName(name);
 			if (col >= 0) 
 				pt.x = colseries + col;
@@ -98,22 +98,22 @@ public class XLSExport {
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXPMT.getValue(), transpose, experiment);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT1.getValue(), transpose, comment1);
 			String letter = name.substring(name.length() - 1);
-			if (letter .equals("L")) XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.STIM.getValue(), transpose, stimulusL);
-			else					 XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.STIM.getValue(), transpose, stimulusR);
-			if (letter .equals("L")) XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CONC.getValue(), transpose, concentrationL);
-			else 					 XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CONC.getValue(), transpose, concentrationR);
+			if (letter .equals("L")) XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, stimulusL);
+			else					 XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, stimulusR);
+			if (letter .equals("L")) XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, concentrationL);
+			else 					 XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, concentrationR);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAM.getValue(), transpose, cam);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, letter);
 			int i = getCageFromCapillaryName(name);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGE.getValue(), transpose, i);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEINDEX.getValue(), transpose, i);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEID.getValue(), transpose, charSeries+i);
 			int j = 1;
 			if (i < 1 || i > 8)
 				j = 0;
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, j);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM1.getValue(), transpose, name1);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM2.getValue(), transpose, exp.capillaries.desc.volume);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM3.getValue(), transpose, exp.capillaries.desc.pixels);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPVOLUME.getValue(), transpose, exp.capillaries.desc.volume);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPPIXELS.getValue(), transpose, exp.capillaries.desc.pixels);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, sheetName);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT2.getValue(), transpose, comment2);
 		}

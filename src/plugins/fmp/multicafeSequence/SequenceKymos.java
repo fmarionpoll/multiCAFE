@@ -210,7 +210,7 @@ public class SequenceKymos extends SequenceCamData  {
 			String tempname = directoryFull+cap.getName()+ ".tiff";
 			boolean found = isFileFound(tempname);
 			if (!found) {
-				tempname = directoryFull+cap.capillaryRoi.getName()+ ".tiff";
+				tempname = directoryFull+cap.roi.getName()+ ".tiff";
 				found = isFileFound(tempname);
 			}
 			if (found) {
