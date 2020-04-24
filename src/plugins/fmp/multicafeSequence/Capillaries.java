@@ -21,9 +21,10 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Capillaries {
 	
-	public CapillariesDescription desc				= new CapillariesDescription();
-	public CapillariesDescription desc_old			= new CapillariesDescription();
+	public CapillariesDescription 	desc			= new CapillariesDescription();
+	public CapillariesDescription 	desc_old		= new CapillariesDescription();
 	public List <Capillary> capillariesArrayList	= new ArrayList <Capillary>();
+	
 	
 	public DetectLimits_Options limitsOptions		= new DetectLimits_Options();
 	public DetectGulps_Options 	gulpsOptions		= new DetectGulps_Options();
@@ -185,10 +186,6 @@ public class Capillaries {
 		}
 	}
 	
-	public boolean isChanged (Capillaries cap) {	
-		return desc.isChanged(cap.desc);
-	}
-
 	public boolean isPresent(Capillary capnew) {
 		boolean flag = false;
 		for (Capillary cap: capillariesArrayList) {
@@ -215,5 +212,45 @@ public class Capillaries {
 			cap.gulpsRois = null;
 			// TODO: deal with gulps.. (simply remove?)
 		}
+	}
+
+	public void transferDescriptionToCapillaries() {
+		for (Capillary cap: capillariesArrayList) {
+			transferDescriptionToCapillary (cap);
+		}
+	}
+	
+	public void transferDescriptionToCapillary (Capillary cap) {
+		String	name = cap.roi.getName();
+		cap.cagenb = cap.getCageFromRoiName(name);
+		if (cap.cagenb < 1 || cap.cagenb > 8)
+			cap.nflies = 0;
+		String letter = name.substring(name.length() - 1);
+		cap.side = letter;
+		if (desc.grouping == 2 && letter .equals("R")) {	
+			cap.stimulus = desc.stimulusR;
+			cap.concentration = desc.concentrationR;
+			String nameL = name.substring(0, name.length() - 1) + "L";
+			Capillary cap0 = getCapillaryFromName(nameL);
+			cap.nflies = cap0.nflies;
+			cap.cagenb = cap0.cagenb;
+		} else {
+			cap.stimulus = desc.stimulusL;
+			cap.concentration = desc.concentrationL;
+		}
+		cap.volume = desc.volume;
+		cap.pixels = desc.pixels;
+		cap.descriptionOK = true;
+	}
+	
+	private Capillary getCapillaryFromName(String name) {
+		Capillary capFound = null;
+		for (Capillary cap: capillariesArrayList) {
+			if (cap.roi.getName().equals(name)) {
+				capFound = cap;
+				break;
+			}
+		}
+		return capFound;
 	}
 }

@@ -58,14 +58,7 @@ public class XLSExport {
 		if (filename == null)
 			filename = exp.seqCamData.getDirectory();
 		Path path = Paths.get(filename);
-		String boxID = exp.boxID;
-		String experiment = exp.experiment;
-		String comment1 = exp.comment1;
-		String comment2 = exp.comment2;
-		String stimulusL = exp.capillaries.desc.stimulusL;
-		String stimulusR = exp.capillaries.desc.stimulusR;
-		String concentrationL = exp.capillaries.desc.concentrationL;
-		String concentrationR = exp.capillaries.desc.concentrationR;
+
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String date = df.format(exp.getFileTimeImageFirst(false).toMillis());
 		int subpath_i = 2;
@@ -86,6 +79,8 @@ public class XLSExport {
 		List<Capillary> capList = exp.capillaries.capillariesArrayList;
 		for (int t=0; t< capList.size(); t++) { 
 			Capillary cap = capList.get(t);
+			if (!cap.descriptionOK)
+				exp.capillaries.transferDescriptionToCapillary(cap);
 			String	name = cap.roi.getName();
 			int col = getColFromKymoFileName(name);
 			if (col >= 0) 
@@ -94,28 +89,22 @@ public class XLSExport {
 			int y = row;
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.PATH.getValue(), transpose, name0);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DATE.getValue(), transpose, date);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.BOXID.getValue(), transpose, boxID);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXPMT.getValue(), transpose, experiment);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT1.getValue(), transpose, comment1);
-			String letter = name.substring(name.length() - 1);
-			if (letter .equals("L")) XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, stimulusL);
-			else					 XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, stimulusR);
-			if (letter .equals("L")) XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, concentrationL);
-			else 					 XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, concentrationR);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.BOXID.getValue(), transpose, exp.boxID);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXPMT.getValue(), transpose, exp.experiment);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT1.getValue(), transpose, exp.comment1);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, cap.stimulus);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.concentration);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAM.getValue(), transpose, cam);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, letter);
-			int i = getCageFromCapillaryName(name);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, cap.side);
+			int i = cap.cagenb;
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEINDEX.getValue(), transpose, i);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEID.getValue(), transpose, charSeries+i);
-			int j = 1;
-			if (i < 1 || i > 8)
-				j = 0;
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, j);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, cap.nflies);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM1.getValue(), transpose, name1);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPVOLUME.getValue(), transpose, exp.capillaries.desc.volume);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPPIXELS.getValue(), transpose, exp.capillaries.desc.pixels);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, sheetName);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT2.getValue(), transpose, comment2);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT2.getValue(), transpose, exp.comment2);
 		}
 		pt.x = col0;
 		pt.y = rowmax +1;
@@ -168,13 +157,7 @@ public class XLSExport {
 		}
 		return numFromName;
 	}
-	
-	protected int getCageFromKymoFileName(String name) {
-		if (!name .contains("line"))
-			return -1;
-		return Integer.parseInt(name.substring(4, 5));
-	}
-	
+		
 	protected int getColFromCageName(Cage cage) {
 		String name = cage.roi.getName();
 		if (!name .contains("cage"))
@@ -190,6 +173,12 @@ public class XLSExport {
 		if (col >= 0)
 			pt_main.x = colseries + col;
 		return pt_main;
+	}
+	
+	protected int getCageFromKymoFileName(String name) {
+		if (!name .contains("line"))
+			return -1;
+		return Integer.parseInt(name.substring(4, 5));
 	}
 	
 }

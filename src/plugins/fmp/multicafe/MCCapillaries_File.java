@@ -13,6 +13,7 @@ import javax.swing.SwingConstants;
 
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
@@ -80,6 +81,10 @@ public class MCCapillaries_File extends JPanel {
 		SequenceCamData seqCamData = exp.seqCamData;;
 		parent0.paneCapillaries.getCapillariesInfos(exp);  // get data into desc
 		parent0.paneSequence.getExperimentInfosFromDialog(exp);
+		for (Capillary cap: exp.capillaries.capillariesArrayList) {
+			if (!cap.descriptionOK)
+				exp.capillaries.transferDescriptionToCapillary(cap);
+		}
 		exp.xmlSaveExperiment ();
 		exp.updateCapillariesFromCamData();
 		return exp.xmlSaveMCcapillaries(seqCamData.getDirectory());

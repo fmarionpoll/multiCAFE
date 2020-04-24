@@ -90,6 +90,8 @@ public class MCCapillaries_Infos extends JPanel {
 		
 		editCapillariesButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				exp.capillaries.transferDescriptionToCapillaries();
 				dialog = new MCCapillaries_Table();
             	dialog.initialize(parent0);
 			}});

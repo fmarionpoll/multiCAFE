@@ -8,49 +8,49 @@ import icy.util.XMLUtil;
 
 public class CapillariesDescription {
 	public int version = 1;
-	public double 	volume 				= 5.;
-	public int 		pixels 				= 5;
-	public String 	sourceName 			= null;
-	public long 	analysisStart 		= 0;
-	public long 	analysisEnd 		= 0;
-	public int 		analysisStep 		= 1;
+	public double 	volume 			= 5.;
+	public int 		pixels 			= 5;
+	public String 	sourceName 		= null;
+	public long 	analysisStart 	= 0;
+	public long 	analysisEnd 	= 0;
+	public int 		analysisStep 	= 1;
 	
-	public String 	old_boxID			= new String("..");
-	public String	old_experiment		= new String("..");
-	public String 	old_comment1		= new String("..");
-	public String 	old_comment2		= new String("..");
+	public String 	old_boxID		= new String("..");
+	public String	old_experiment	= new String("..");
+	public String 	old_comment1	= new String("..");
+	public String 	old_comment2	= new String("..");
 	
-	public int		grouping 			= 2;
-	public String 	stimulusR			= new String("..");
-	public String 	concentrationR		= new String("..");
-	public String 	stimulusL			= new String("..");
-	public String 	concentrationL		= new String("..");
+	public int		grouping 		= 2;
+	public String 	stimulusR		= new String("..");
+	public String 	concentrationR	= new String("..");
+	public String 	stimulusL		= new String("..");
+	public String 	concentrationL	= new String("..");
 	
-	private final static String ID_CAPILLARYTRACK = "capillaryTrack";
-	private final static String ID_PARAMETERS = "Parameters";	
-	private final static String ID_FILE = "file";
-	private final static String ID_ID = "ID";
-	private final static String ID_GROUPING = "Grouping";
-	private final static String ID_N = "n";
-	private final static String ID_CAPVOLUME = "capillaryVolume";
-	private final static String ID_VOLUMEUL = "volume_ul";
-	private final static String ID_CAPILLARYPIX = "capillaryPixels";
-	private final static String ID_NPIXELS = "npixels";
-	private final static String ID_ANALYSIS = "analysis";
-	private final static String ID_START = "start";
-	private final static String ID_END = "end";
-	private final static String ID_STEP = "step";
-	private final static String ID_LRSTIMULUS = "LRstimulus";
-	private final static String ID_STIMR = "stimR";
-	private final static String ID_CONCR = "concR";
-	private final static String ID_STIML = "stimL";
-	private final static String ID_CONCL = "concL";
-	private final static String ID_EXPERIMENT = "Experiment";
-	private final static String ID_BOXID = "boxID";
-	private final static String ID_EXPT = "expt";
-	private final static String ID_COMMENT1 = "comment";
-	private final static String ID_COMMENT2 = "comment2";
-	private final static String ID_NOPE = "..";
+	private final static String ID_CAPILLARYTRACK 	= "capillaryTrack";
+	private final static String ID_PARAMETERS 		= "Parameters";	
+	private final static String ID_FILE 			= "file";
+	private final static String ID_ID 				= "ID";
+	private final static String ID_GROUPING 		= "Grouping";
+	private final static String ID_N 				= "n";
+	private final static String ID_CAPVOLUME 		= "capillaryVolume";
+	private final static String ID_VOLUMEUL 		= "volume_ul";
+	private final static String ID_CAPILLARYPIX 	= "capillaryPixels";
+	private final static String ID_NPIXELS 			= "npixels";
+	private final static String ID_ANALYSIS 		= "analysis";
+	private final static String ID_START 			= "start";
+	private final static String ID_END 				= "end";
+	private final static String ID_STEP 			= "step";
+	private final static String ID_LRSTIMULUS 		= "LRstimulus";
+	private final static String ID_STIMR 			= "stimR";
+	private final static String ID_CONCR 			= "concR";
+	private final static String ID_STIML 			= "stimL";
+	private final static String ID_CONCL 			= "concL";
+	private final static String ID_EXPERIMENT 		= "Experiment";
+	private final static String ID_BOXID 			= "boxID";
+	private final static String ID_EXPT 			= "expt";
+	private final static String ID_COMMENT1 		= "comment";
+	private final static String ID_COMMENT2 		= "comment2";
+	private final static String ID_NOPE 			= "..";
 
 	
 
@@ -69,15 +69,16 @@ public class CapillariesDescription {
 	
 	public boolean isChanged (CapillariesDescription desc) {
 		boolean flag = false; 
-		flag = (volume != desc.volume) || flag;
-		flag = (pixels != desc.pixels) || flag;
-		flag = (analysisStart != desc.analysisStart) || flag;
-		flag = (analysisEnd != desc.analysisEnd) || flag;
-		flag = (analysisStep != desc.analysisStep) || flag;
-		flag = (stimulusR != null && !stimulusR .equals(desc.stimulusR)) || flag;
-		flag = (concentrationR != null && !concentrationR .equals(desc.concentrationR)) || flag;
-		flag = (stimulusL != null && !stimulusL .equals(desc.stimulusL)) || flag;
-		flag = (concentrationL != null && !concentrationL .equals(desc.concentrationL)) || flag;
+		flag |= (volume != desc.volume);
+		flag |= (pixels != desc.pixels) ;
+		flag |= (grouping != desc.grouping);
+		flag |= (analysisStart != desc.analysisStart);
+		flag |= (analysisEnd != desc.analysisEnd);
+		flag |= (analysisStep != desc.analysisStep);
+		flag |= (stimulusR != null && !stimulusR .equals(desc.stimulusR));
+		flag |= (concentrationR != null && !concentrationR .equals(desc.concentrationR));
+		flag |= (stimulusL != null && !stimulusL .equals(desc.stimulusL));
+		flag |= (concentrationL != null && !concentrationL .equals(desc.concentrationL));
 		return flag;
 	}
 	
