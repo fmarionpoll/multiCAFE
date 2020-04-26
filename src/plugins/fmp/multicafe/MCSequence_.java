@@ -26,7 +26,7 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.ComboBoxWide;
-import plugins.fmp.multicafeTools.ComboBoxWithIndexTextRenderer;
+
 
 
 public class MCSequence_ extends JPanel implements PropertyChangeListener {
@@ -106,8 +106,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			}
 		});
 		//expListComboBox.setPrototypeDisplayValue("text here");
-		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
-		expListComboBox.setRenderer(renderer);
+//		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
+//		expListComboBox.setRenderer(renderer);
 		
 		defineActionListeners();
 	}
