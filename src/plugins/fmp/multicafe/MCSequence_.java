@@ -10,6 +10,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.nio.file.Paths;
 
 import javax.swing.JButton;
@@ -26,6 +27,7 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.ComboBoxWide;
+import plugins.fmp.multicafeTools.ComboBoxWithIndexTextRenderer;
 
 
 
@@ -43,7 +45,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	MCSequence_Close 			tabClose 		= new MCSequence_Close();
 	private JButton  			previousButton	= new JButton("<");
 	private JButton				nextButton		= new JButton(">");
-	ComboBoxWide		 		expListComboBox	= new ComboBoxWide();
+	ComboBoxWide				expListComboBox	= new ComboBoxWide();
+	
 	private MultiCAFE 			parent0 		= null;
 	
 	
@@ -105,9 +108,9 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				parent0.mainFrame.repaint();
 			}
 		});
-		//expListComboBox.setPrototypeDisplayValue("text here");
-//		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
-//		expListComboBox.setRenderer(renderer);
+
+		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
+		expListComboBox.setRenderer(renderer);
 		
 		defineActionListeners();
 	}
@@ -122,8 +125,16 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			if (exp == null)
 				return;
 			String oldtext = exp.seqCamData.getDirectory();
+			File oldFile = new File( oldtext );
+			if (oldFile.isFile())
+				oldFile = oldFile.getParentFile();
+			
 			String newtext = (String) expListComboBox.getSelectedItem();
-			if (!newtext.contains(oldtext)) {
+			File newFile = new File(newtext);
+			if (newFile.isFile())
+				newFile = newFile.getParentFile();
+			
+			if (newFile.compareTo(oldFile) != 0) {
         		ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 	        		parent0.paneSequence.tabClose.closeExp(exp); //saveAndClose(exp);
         		}});
@@ -139,12 +150,14 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			if (expListComboBox.getSelectedIndex() < (expListComboBox.getItemCount() -1)) {
 				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()+1);
 			}
+			updateBrowseInterface();
 		} } );
 		
 		previousButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			if (expListComboBox.getSelectedIndex() > 0) {
 				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()-1);
 			}
+			updateBrowseInterface();
 		} } );
 	}
 	
@@ -194,6 +207,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			if (addSequenceCamToCombo()) {
 				loadMeasuresAndKymos();	
 			}
+			updateBrowseInterface();
 		}
 	}
 	

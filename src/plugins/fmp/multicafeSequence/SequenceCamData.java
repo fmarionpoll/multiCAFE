@@ -477,6 +477,8 @@ public class SequenceCamData {
 	// ---------------------------
 	
 	public void closeSequence() {
+		if (seq == null)
+			return;
 		seq.removeAllROI();
 		seq.close();
 	}

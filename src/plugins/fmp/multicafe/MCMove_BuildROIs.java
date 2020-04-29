@@ -34,7 +34,7 @@ public class MCMove_BuildROIs extends JPanel {
 	private JButton createROIsFromPolygonButton = new JButton("Create/add (from Polygon 2D)");
 	private JSpinner nColumnsTextField 			= new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));
 	private JSpinner width_cageTextField 		= new JSpinner(new SpinnerNumberModel(20, 0, 10000, 1));
-	private JSpinner width_intervalTextField 	= new JSpinner(new SpinnerNumberModel(2, 0, 10000, 1));
+	private JSpinner width_intervalTextField 	= new JSpinner(new SpinnerNumberModel(3, 0, 10000, 1));
 	private JSpinner nRowsTextField 			= new JSpinner(new SpinnerNumberModel(1, 0, 10000, 1));
 	
 	private int 	ncolumns 				= 10;
@@ -102,6 +102,7 @@ public class MCMove_BuildROIs extends JPanel {
 		List<Point2D> points = new ArrayList<Point2D>();
 		int rectleft = rect.x + rect.width /6;
 		int rectright = rect.x + rect.width*5 /6;
+		int recttop = rect.y + rect.height *2/3; 
 		if (exp.capillaries.capillariesArrayList.size() > 0) {
 			Rectangle bound0 = exp.capillaries.capillariesArrayList.get(0).roi.getBounds();
 			int last = exp.capillaries.capillariesArrayList.size() - 1;
@@ -111,11 +112,11 @@ public class MCMove_BuildROIs extends JPanel {
 			int diff = (rectright - rectleft)*2/60;
 			rectleft -= diff;
 			rectright += diff;
-			
+			recttop = bound0.y+ bound0.height- (bound0.height /8);
 		}
 		
-		points.add(new Point2D.Double(rectleft, rect.y + rect.height *2/3));
-		points.add(new Point2D.Double(rectright, rect.y + rect.height *2/3));
+		points.add(new Point2D.Double(rectleft, recttop));
+		points.add(new Point2D.Double(rectright, recttop));
 		points.add(new Point2D.Double(rectright, rect.y + rect.height - 4));
 		points.add(new Point2D.Double(rectleft, rect.y + rect.height - 4 ));
 		ROI2DPolygon roi = new ROI2DPolygon(points);
@@ -131,17 +132,24 @@ public class MCMove_BuildROIs extends JPanel {
 			nrows = (int) nRowsTextField.getValue();
 			width_cage = (int) width_cageTextField.getValue();
 			width_interval = (int) width_intervalTextField.getValue();
-		}catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
+		} 
+		catch( Exception e ) { 
+			new AnnounceFrame("Can't interpret one of the ROI parameters value"); 
+		}
 
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
 		ROI2D roi = seqCamData.seq.getSelectedROI2D();
-		if ( ! ( roi instanceof ROI2DPolygon ) ) {
-			new AnnounceFrame("The frame for the cages must be a ROI2D POLYGON");
+		if ( ! ( roi instanceof ROI2DPolygon ) || roi.getName().contains("cage")) {
+			if ( ! ( roi instanceof ROI2DPolygon ) ) 
+				new AnnounceFrame("The frame must be a ROI2D POLYGON");
+			if (roi.getName().contains("cage")) 
+				new AnnounceFrame("The roi name should not contain -cage-");
 			return;
 		}
+		
 		Polygon2D roiPolygonMin = MulticafeTools.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
 		seqCamData.seq.removeROI(roi);
 
