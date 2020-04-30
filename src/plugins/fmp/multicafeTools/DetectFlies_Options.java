@@ -163,6 +163,8 @@ public class DetectFlies_Options implements XMLPersistent {
 			BooleanMask2D bestMask = findLargestComponent(roiAll, icage);
 			ROI2DArea flyROI = null;
 			Cage cage = cages.cageList.get(icage);
+			if (cage.cageNFlies < 1)
+				continue;
 			if ( bestMask != null ) {
 				flyROI = new ROI2DArea( bestMask );
 				flyROI.setName("det"+cage.roi.getName() +"_" + t );
@@ -207,7 +209,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	
 	public void initParametersForDetection(Experiment exp) {
 		nbframes = (exp.endFrame - exp.startFrame +1)/stepFrame +1;
-//		exp.cages.clear();
+		exp.cages.clear();
 //		exp.cages.cageList = exp.seqCamData.getCages();
 		cages = exp.cages;
 		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageList);
