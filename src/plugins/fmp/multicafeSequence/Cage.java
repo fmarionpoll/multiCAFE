@@ -50,9 +50,9 @@ public class Cage {
 				Element subnode = XMLUtil.addElement(xmlVal2, "det"+i);
 				roi.saveToXML(subnode);
 			} 
-			else {
-				System.out.println("output roi is null at interval: "+ i);
-			}
+//			else {
+//				System.out.println("output roi is null at interval: "+ i);
+//			}
 			i++;
 		}
 		return true;
