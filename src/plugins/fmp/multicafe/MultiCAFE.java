@@ -101,7 +101,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
 			paneKymos.tabDisplay.displayUpdateOnSwingThread();
-			paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 		}
 		else if (arg0.getPropertyName() .equals("SAVE_KYMOSMEASURES")) {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
@@ -159,7 +158,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 
 		if (loadKymographs) {
 			progress = new ProgressFrame("load kymographs");
-			paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 			paneKymos.tabFile.loadDefaultKymos(exp);
 			paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
 			progress.close();

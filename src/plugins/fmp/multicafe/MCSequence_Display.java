@@ -1,17 +1,18 @@
 package plugins.fmp.multicafe;
 
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import icy.canvas.IcyCanvas;
 import icy.canvas.Layer;
-import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.roi.ROI;
 import icy.system.thread.ThreadUtil;
@@ -24,20 +25,25 @@ public class MCSequence_Display  extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 8137492850312895195L;
-	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries ROIs", true);
-	JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages ROIs", true);
-	JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position ROIs", true);
+	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries", true);
+	JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages", true);
+	JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position", true);
 
 	private MultiCAFE parent0 = null;
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
+		
 		setLayout(capLayout);
+		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
+		layout.setVgap(0);
+		setLayout(layout);
 		this.parent0 = parent0;
 	
-		add(GuiUtil.besidesPanel( viewCapillariesCheckBox));
-		add(GuiUtil.besidesPanel( viewCagesCheckbox));
-		add(GuiUtil.besidesPanel( viewFlyCheckbox));
+		add(new JLabel(" ROIs: "));
+		add(viewCapillariesCheckBox);
+		add(viewCagesCheckbox);
+		add(viewFlyCheckbox);
 		defineActionListeners();
 	}
 	

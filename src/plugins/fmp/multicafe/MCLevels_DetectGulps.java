@@ -98,7 +98,6 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 		displayTransform2Button.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				kymosDisplayFiltered2();
-				parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
 			}});
 		
 		allSeriesCheckBox.addActionListener(new ActionListener () { 

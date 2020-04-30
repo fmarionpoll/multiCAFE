@@ -144,8 +144,7 @@ public class MCKymos_File extends JPanel {
 			SwingUtilities.invokeLater(new Runnable() {
 			    public void run() {
 	        	parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
-				parent0.paneKymos.tabDisplay.viewKymosCheckBox.setSelected(true);
-			    }
+				}
 			});
 		}
 		return flag;
