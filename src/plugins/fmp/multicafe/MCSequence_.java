@@ -2,6 +2,7 @@ package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -27,7 +28,6 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.ComboBoxWide;
-import plugins.fmp.multicafeTools.ComboBoxWithIndexTextRenderer;
 
 
 
@@ -45,6 +45,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	MCSequence_Close 			tabClose 		= new MCSequence_Close();
 	private JButton  			previousButton	= new JButton("<");
 	private JButton				nextButton		= new JButton(">");
+	private JLabel				numFile			= new JLabel("..");
 	ComboBoxWide				expListComboBox	= new ComboBoxWide();
 	
 	private MultiCAFE 			parent0 		= null;
@@ -53,20 +54,25 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		this.parent0 = parent0;
 		
-		JPanel k2Panel = new JPanel();
-		k2Panel.setLayout(new BorderLayout());
-		k2Panel.add(new JLabel("Stack "), BorderLayout.WEST); 
-		k2Panel.add(previousButton, BorderLayout.EAST); 
-		int bWidth = 30;
-		int height = 10;
+		
+		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
+		layout.setVgap(0);
+		
+		JPanel k2Panel = new JPanel(layout);
+		int bWidth = 28;
+		int height = 20;
 		previousButton.setPreferredSize(new Dimension(bWidth, height));
+		nextButton.setPreferredSize(new Dimension(bWidth, height));
+		k2Panel.add(new JLabel("Stack ")); 
+		k2Panel.add(previousButton); 
+		k2Panel.add(numFile); 
+		k2Panel.add(nextButton);
 		
 		JPanel k3Panel = new JPanel();
 		k3Panel.setLayout(new BorderLayout());
 		k3Panel.add(k2Panel, BorderLayout.WEST);
-		k3Panel.add(expListComboBox, BorderLayout.CENTER);
-		nextButton.setPreferredSize(new Dimension(bWidth, height)); 
-		k3Panel.add(nextButton, BorderLayout.EAST);
+		
+		k3Panel.add(expListComboBox);
 		
 		PopupPanel capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
@@ -109,9 +115,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			}
 		});
 
-		ComboBoxWithIndexTextRenderer renderer = new ComboBoxWithIndexTextRenderer();
-		expListComboBox.setRenderer(renderer);
-		
 		defineActionListeners();
 	}
 	
@@ -302,10 +305,13 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	void updateBrowseInterface() {
 		int isel = expListComboBox.getSelectedIndex();
-		boolean flag1 = (isel == 0? false: true);
+		int nitems = expListComboBox.getItemCount();
+		
+	    boolean flag1 = (isel == 0? false: true);
 		boolean flag2 = (isel == (expListComboBox.getItemCount() -1)? false: true);
 		previousButton.setEnabled(flag1);
 		nextButton.setEnabled(flag2);
+		numFile .setText((isel+1)+"/"+nitems);
 	}
 	
 	void transferExperimentNamesToExpList(ExperimentList expList, boolean clearOldList) {
