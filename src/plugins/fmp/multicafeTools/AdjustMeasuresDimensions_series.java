@@ -1,10 +1,6 @@
 package plugins.fmp.multicafeTools;
 
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.SwingWorker;
@@ -12,6 +8,8 @@ import javax.swing.SwingWorker;
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
+
+
 
 public class AdjustMeasuresDimensions_series  extends SwingWorker<Integer, Integer> {
 	public boolean 				stopFlag 		= false;
@@ -65,18 +63,6 @@ public class AdjustMeasuresDimensions_series  extends SwingWorker<Integer, Integ
     }
 	
 	private void saveComputation(Experiment exp) {			
-		Path dir = Paths.get(exp.seqCamData.getDirectory());
-		dir = dir.resolve("results");
-		String directory = dir.toAbsolutePath().toString();
-		if (Files.notExists(dir))  {
-			try {
-				Files.createDirectory(dir);
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Creating directory failed: "+ directory);
-				return;
-			}
-		}
 		ProgressFrame progress = new ProgressFrame("Save kymograph measures");		
 		exp.saveExperimentMeasures();
 		progress.close();

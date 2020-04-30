@@ -2,10 +2,6 @@ package plugins.fmp.multicafeTools;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -14,9 +10,9 @@ import javax.swing.SwingWorker;
 
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
-
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
+
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.CapillaryLimits;
 import plugins.fmp.multicafeSequence.Experiment;
@@ -78,18 +74,6 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
     }
 	
 	private void saveComputation(Experiment exp) {			
-		Path dir = Paths.get(exp.seqCamData.getDirectory());
-		dir = dir.resolve("results");
-		String directory = dir.toAbsolutePath().toString();
-		if (Files.notExists(dir))  {
-			try {
-				Files.createDirectory(dir);
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Creating directory failed: "+ directory);
-				return;
-			}
-		}
 		ProgressFrame progress = new ProgressFrame("Save kymograph measures");		
 		exp.saveExperimentMeasures();
 		progress.close();

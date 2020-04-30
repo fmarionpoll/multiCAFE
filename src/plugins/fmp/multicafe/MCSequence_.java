@@ -71,8 +71,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		JPanel k3Panel = new JPanel();
 		k3Panel.setLayout(new BorderLayout());
 		k3Panel.add(k2Panel, BorderLayout.WEST);
-		
-		k3Panel.add(expListComboBox);
+		k3Panel.add(expListComboBox, BorderLayout.CENTER);
 		
 		PopupPanel capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();

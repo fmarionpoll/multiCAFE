@@ -78,7 +78,6 @@ public class MCCapillaries_File extends JPanel {
 	}
 	
 	boolean saveCapillaries(Experiment exp) {
-		SequenceCamData seqCamData = exp.seqCamData;;
 		parent0.paneCapillaries.getCapillariesInfos(exp);  // get data into desc
 		parent0.paneSequence.getExperimentInfosFromDialog(exp);
 		for (Capillary cap: exp.capillaries.capillariesArrayList) {
@@ -87,7 +86,7 @@ public class MCCapillaries_File extends JPanel {
 		}
 		exp.xmlSaveExperiment ();
 		exp.updateCapillariesFromCamData();
-		return exp.xmlSaveMCcapillaries(seqCamData.getDirectory());
+		return exp.xmlSaveMCcapillaries();
 	}
 
 }

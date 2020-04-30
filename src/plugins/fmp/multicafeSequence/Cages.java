@@ -209,7 +209,6 @@ public class Cages {
 	public void fromROIsToCages(SequenceCamData seqCamData) {
 		List <ROI2D> cageLimitROIList = getRoisWithCageName(seqCamData);
 		Collections.sort(cageLimitROIList, new Comparators.ROI2DNameComparator());
-//		updateExistingCages(cageLimitROIList);
 		addMissingCages(cageLimitROIList);
 		removeOrphanCages(cageLimitROIList);
 	}
@@ -231,16 +230,6 @@ public class Cages {
 		}
 	}
 	
-//	private void updateExistingCages(List<ROI2D> roiList) {
-//		for (Cage cage: cageList) {
-//			for (ROI2D roi: roiList) {
-//				if (roi.getName().equals(cage.roi.getName())) {
-//					cage.roi.copyFrom(roi);
-//					break;
-//				}
-//			}
-//		}
-//	}
 	
 	private void removeOrphanCages(List<ROI2D> roiList) {
 		// remove cages which names are not in the list

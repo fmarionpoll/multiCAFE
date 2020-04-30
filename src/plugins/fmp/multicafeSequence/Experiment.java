@@ -421,9 +421,10 @@ public class Experiment {
 	
 	public void saveExperimentMeasures() {
 		if (seqKymos != null) {
-			seqKymos.roisSaveEdits(capillaries);
-			xmlSaveMCcapillaries(seqCamData.getDirectory());
-			xmlSaveKymos_Measures(seqCamData.getDirectory());
+			seqKymos.validateRois();
+			seqKymos.transferKymosRoisToCapillaries(capillaries);
+			xmlSaveMCcapillaries();
+			xmlSaveKymos_Measures();
 		}
 	}
 		
@@ -478,10 +479,10 @@ public class Experiment {
 		boolean flag = false;
 		if (capillaries != null) {
 			if (csFileName == null) {
-				csFileName = seqKymos.getDirectory() +File.separator+"results"+ File.separator+ "MCcapillaries.xml";
+				csFileName = seqKymos.getDirectory() + File.separator+ "MCcapillaries.xml";
 				flag = capillaries.xmlLoadCapillaries(csFileName);
 				if (!flag) {
-					csFileName = seqKymos.getDirectory() + File.separator + "capillaryTrack.xml";
+					csFileName = seqCamData.getDirectory() + File.separator + "capillaryTrack.xml";
 					flag = capillaries.xmlLoadCapillaries(csFileName);
 				}
 			}
@@ -525,18 +526,14 @@ public class Experiment {
 		return flag;
 	}
 	
-	public boolean xmlSaveMCcapillaries(String pathname) {
-		String pathnameMC = seqKymos.buildCorrectPath(pathname);
-		capillaries.xmlSaveCapillaries_Only(pathnameMC);
-		boolean flag = capillaries.xmlSaveCapillaries_Measures(pathname);
+	public boolean xmlSaveMCcapillaries() {
+		capillaries.xmlSaveCapillaries_Only(seqKymos.getDirectory());
+		boolean flag = capillaries.xmlSaveCapillaries_Measures(seqCamData.getResultsDirectory());
 		return flag;
 	}
 	
-	public boolean xmlSaveKymos_Measures(String pathname) {
-		File f = new File(pathname);
-		if (!f.isDirectory())
-			pathname = Paths.get(pathname).getParent().toString();
-		return capillaries.xmlSaveCapillaries_Measures(pathname);
+	public boolean xmlSaveKymos_Measures() {
+		return capillaries.xmlSaveCapillaries_Measures(seqCamData.getResultsDirectory());
 	}
 	
 	public boolean xmlReadRoiLineParameters(String pathname) {
@@ -593,7 +590,7 @@ public class Experiment {
 	
 	public boolean loadReferenceImage() {
 		BufferedImage image = null;
-		String path = seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
+		String path = seqCamData.getResultsDirectory()+File.separator+"referenceImage.jpg";
 		File inputfile = new File(path);
 		boolean exists = inputfile.exists();
 		if (!exists) 
@@ -610,7 +607,7 @@ public class Experiment {
 	}
 	
 	public boolean saveReferenceImage() {
-		String path = seqCamData.getDirectory()+ File.separator+"results"+File.separator+"referenceImage.jpg";
+		String path = seqCamData.getResultsDirectory()+File.separator+"referenceImage.jpg";
 		File outputfile = new File(path);
 		RenderedImage image = ImageUtil.toRGBImage(seqCamData.refImage);
 		return ImageUtil.save(image, "jpg", outputfile);
@@ -634,26 +631,19 @@ public class Experiment {
 		cages.detect.stepFrame = stepFrame;
 	}
 	
-	public void saveComputation() {			
-		Path dir = Paths.get(seqCamData.getDirectory());
-		dir = dir.resolve("results");
-		String directory = dir.toAbsolutePath().toString();
-		if (Files.notExists(dir))  {
-			try {
-				Files.createDirectory(dir);
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Creating directory failed: "+ directory);
-				return;
-			}
-		}
-		saveFlyPositions();
+	public void saveFlyPositionsForAllCages() {			
+		cages.fromROIsToCages(seqCamData);
+		cages.xmlWriteCagesToFileNoQuestion(getMCdrosotrackName());
 	}
 	
 	// --------------------------
 	
+	private String getMCdrosotrackName() {
+		return seqCamData.getResultsDirectory() + File.separator + "MCdrosotrack.xml";
+	}
+	
 	public boolean xmlReadDrosoTrackDefault() {
-		boolean flag = cages.xmlReadCagesFromFileNoQuestion(seqCamData.getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml", seqCamData);
+		boolean flag = cages.xmlReadCagesFromFileNoQuestion(getMCdrosotrackName(), seqCamData);
 		if (!flag)
 			flag = cages.xmlReadCagesFromFileNoQuestion(seqCamData.getDirectory() + File.separator + "drosotrack.xml", seqCamData);
 		return flag;
@@ -664,14 +654,9 @@ public class Experiment {
 	}
 	
 	public boolean xmlWriteDrosoTrackDefault() {
-		return cages.xmlWriteCagesToFileNoQuestion(seqCamData.getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml");
+		return cages.xmlWriteCagesToFileNoQuestion(getMCdrosotrackName());
 	}
 	
-	public boolean saveFlyPositions() {
-		cages.fromROIsToCages(seqCamData);
-		String csFile = seqCamData.getDirectory() + File.separator + "results" + File.separator + "MCdrosotrack.xml";
-		return cages.xmlWriteCagesToFileNoQuestion(csFile);
-	}
 	
 
 }

@@ -58,19 +58,17 @@ public class Capillaries {
 		return false;
 	}
 	
-	public boolean xmlSaveCapillaries_Measures(String dataFilesPathname) {
-		if (dataFilesPathname != null) {
-			String directoryFull = dataFilesPathname +File.separator +"results" + File.separator;
-			Collections.sort(capillariesArrayList);
-			for (Capillary cap: capillariesArrayList) {
-				String tempname = directoryFull+cap.getName()+ ".xml";
-				final Document capdoc = XMLUtil.createDocument(true);
-				cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
-				XMLUtil.saveDocument(capdoc, tempname);
-			}
-			return true;
+	public boolean xmlSaveCapillaries_Measures(String directoryFull) {
+		if (directoryFull == null)
+			return false;
+		Collections.sort(capillariesArrayList);
+		for (Capillary cap: capillariesArrayList) {
+			String tempname = directoryFull + File.separator + cap.getName()+ ".xml";
+			final Document capdoc = XMLUtil.createDocument(true);
+			cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
+			XMLUtil.saveDocument(capdoc, tempname);
 		}
-		return false;
+		return true;
 	}
 	
 	public boolean xmlLoadCapillaries(String csFileName) { 

@@ -39,8 +39,6 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 public class SequenceKymos extends SequenceCamData  {	
-	public 	boolean 		hasChanged 				= false;
-	public 	boolean 		bStatusChanged 			= false;
 	public 	OverlayThreshold thresholdOverlay 		= null;
 	public 	OverlayTrapMouse trapOverlay 			= null;
 	
@@ -49,7 +47,6 @@ public class SequenceKymos extends SequenceCamData  {
 	public int 				imageWidthMax 			= 0;
 	public int 				imageHeightMax 			= 0;
 	public int				step					= 1;
-	
 	
 	// -----------------------------------------------------
 	
@@ -74,14 +71,6 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	// ----------------------------
-	
-	public void roisSaveEdits(Capillaries capillaries) {
-		if (hasChanged) {
-			validateRois();
-			transferKymosRoisToCapillaries(capillaries);
-			hasChanged = false;
-		}
-	}
 	
 	public void validateRoisAtT(int t) {
 		List<ROI2D> listRois = seq.getROI2Ds();
@@ -190,9 +179,10 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	public void saveKymosCapillaries(Experiment exp) {
-		roisSaveEdits(exp.capillaries);
-		exp.xmlSaveMCcapillaries(getDirectory());
-		exp.xmlSaveKymos_Measures(getDirectory());
+		exp.seqKymos.validateRois();
+		exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
+		exp.xmlSaveMCcapillaries();
+		exp.xmlSaveKymos_Measures();
 	}
 
 	// ----------------------------

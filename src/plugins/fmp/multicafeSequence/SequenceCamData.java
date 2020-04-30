@@ -144,6 +144,22 @@ public class SequenceCamData {
 		return directory;
 	}
 	
+	public String getResultsDirectory() {
+		Path dir = Paths.get(getDirectory());
+		dir = dir.resolve("results");
+		String directory = dir.toAbsolutePath().toString();
+		if (Files.notExists(dir))  {
+			try {
+				Files.createDirectory(dir);
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("Creating directory failed: "+ directory);
+				return null;
+			}
+		}
+		return directory;
+	}
+
 	public IcyBufferedImage getImageTransf(int t, int z, int c, TransformOp transformop)  {
 		IcyBufferedImage image =  getImageAndSubtractReference(t, transformop);
 		if (image != null && c != -1)

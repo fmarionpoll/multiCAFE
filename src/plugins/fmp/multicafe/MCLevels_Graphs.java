@@ -61,7 +61,8 @@ public class MCLevels_Graphs extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null) {
-					exp.seqKymos.roisSaveEdits(exp.capillaries);
+					exp.seqKymos.validateRois();
+					exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
 					xyDisplayGraphs(exp);
 				}
 			}});

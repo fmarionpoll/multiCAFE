@@ -63,7 +63,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			}
 			runDetectFlies(exp);
 			if (!stopFlag)
-				exp.saveComputation();
+				exp.saveFlyPositionsForAllCages();
 			exp.seqCamData.closeSequence();
 		}
 		progress.close();
