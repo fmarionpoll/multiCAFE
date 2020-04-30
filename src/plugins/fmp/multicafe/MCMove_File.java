@@ -54,7 +54,7 @@ public class MCMove_File extends JPanel {
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null) {
 					exp.storeAnalysisParametersToCages();
-					exp.cages.fromROIsToCages(exp.seqCamData);
+					exp.cages.getCagesFromROIs(exp.seqCamData);
 					exp.xmlWriteDrosoTrackDefault();
 				}
 				parent0.paneMove.tabsPane.setSelectedIndex(3);

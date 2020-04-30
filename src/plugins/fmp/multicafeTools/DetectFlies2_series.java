@@ -78,8 +78,9 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 				continue;
 			}
 			runDetectFlies(exp);
-			if (!stopFlag)
-				exp.saveFlyPositionsForAllCages();
+			if (!stopFlag) {
+				exp.xmlSaveFlyPositionsForAllCages();
+			}
 			exp.seqCamData.closeSequence();
 		}
 		progress.close();
@@ -169,7 +170,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			vBackgroundImage.close();
 			vBackgroundImage = null;
 		}
-		detect.initTempRectROIs(seqNegative);
+		detect.initTempRectROIs(exp, seqNegative);
 
 		try {
 			viewerCamData = exp.seqCamData.seq.getFirstViewer();
@@ -198,6 +199,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			exp.seqCamData.seq.endUpdate();
 			seqNegative.close();
 			detect.copyDetectedROIsToSequence(exp);
+			detect.copyDetectedROIsToCages(exp);
 		}
 		progressBar.close();
 
@@ -300,7 +302,8 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		detect.initParametersForDetection(exp);
 		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getImage(detect.startFrame, 0));
 		initialflyRemoved.clear();
-		for (int i = 0; i < detect.cages.cageList.size(); i++)
+		int ndetectcages = detect.cages.cageList.size();
+		for (int i = 0; i < ndetectcages; i++)
 			initialflyRemoved.add(false);
 
 		viewerCamData = exp.seqCamData.seq.getFirstViewer();
@@ -318,15 +321,15 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			IcyBufferedImage positiveImage = exp.seqCamData.subtractImages(currentImage, exp.seqCamData.refImage);
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, detect.rectangleAllCages));
 			ROI2DArea roiAll = detect.findFly(positiveImage, detect.thresholdBckgnd);
-
-			for (int iroi = 1; iroi < detect.cages.cageList.size() - 1; iroi++) {
-				BooleanMask2D bestMask = detect.findLargestComponent(roiAll, iroi);
+			 
+			for (int icage = 1; icage < ndetectcages - 1; icage++) {
+				BooleanMask2D bestMask = detect.findLargestComponent(roiAll, icage);
 				if (bestMask != null) {
 					ROI2DArea flyROI = new ROI2DArea(bestMask);
-					if (!initialflyRemoved.get(iroi)) {
+					if (!initialflyRemoved.get(icage)) {
 						Rectangle rect = flyROI.getBounds();
 						patchRectToReferenceImage(exp.seqCamData, currentImage, rect);
-						initialflyRemoved.set(iroi, true);
+						initialflyRemoved.set(icage, true);
 						nfliesRemoved++;
 						if (exp.seqBackgroundImage != null)
 							exp.seqBackgroundImage.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage,
@@ -335,7 +338,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 					}
 				}
 			}
-			if (nfliesRemoved == detect.cages.cageList.size())
+			if (nfliesRemoved == ndetectcages)
 				break;
 		}
 		progress.close();

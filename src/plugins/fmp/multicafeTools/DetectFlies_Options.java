@@ -13,6 +13,7 @@ import icy.file.xml.XMLPersistent;
 import icy.image.IcyBufferedImage;
 import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
+import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeSequence.Cage;
@@ -32,8 +33,8 @@ public class DetectFlies_Options implements XMLPersistent {
 	public boolean 	btrackWhite 			= false;
 	public boolean  blimitLow 				= false;
 	public boolean  blimitUp 				= false;
-	public int  	limitLow;
-	public int  	limitUp;
+	public int  	limitLow				= 0;
+	public int  	limitUp					= 1;
 	public int 		jitter 					= 10;
 	
 	public TransformOp transformop; 
@@ -43,11 +44,11 @@ public class DetectFlies_Options implements XMLPersistent {
 	public Cages 	cages 					= null;
 	public List<BooleanMask2D> 	cageMaskList = new ArrayList<BooleanMask2D>();
 	
-	public int		stepFrame ;
-	public int 		startFrame;
-	public int 		endFrame;
+	public int		stepFrame 				= 1;
+	public int 		startFrame				= 0;
+	public int 		endFrame				= 1;
 	public boolean	isFrameFixed			= false;
-	public int 		nbframes;
+	public int 		nbframes				= 1;
 	public Rectangle parent0Rect 			= null;
 
 	public ExperimentList expList 			= null;
@@ -188,7 +189,8 @@ public class DetectFlies_Options implements XMLPersistent {
 		}
 	}
 	
-	public void initTempRectROIs(Sequence seq) {
+	public void initTempRectROIs(Experiment exp, Sequence seq) {
+		cages = exp.cages;
 		int nbcages = cages.cageList.size();
 		tempRectROI = new ROI2DRectangle [nbcages];
 		for (int i=0; i < nbcages; i++) {
@@ -205,8 +207,8 @@ public class DetectFlies_Options implements XMLPersistent {
 	
 	public void initParametersForDetection(Experiment exp) {
 		nbframes = (exp.endFrame - exp.startFrame +1)/stepFrame +1;
-		exp.cages.clear();
-		exp.cages.cageList = exp.seqCamData.getCages();
+//		exp.cages.clear();
+//		exp.cages.cageList = exp.seqCamData.getCages();
 		cages = exp.cages;
 		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageList);
 		rectangleAllCages = null;
@@ -226,17 +228,28 @@ public class DetectFlies_Options implements XMLPersistent {
 	
 	public void copyDetectedROIsToSequence(Experiment exp) {
 		try {
-			exp.seqCamData.seq.beginUpdate();
-			exp.cages = cages;
-			int nrois = cages.cageList.size();
-			for (int iroi=0; iroi < nrois; iroi++) {
-				for ( int it = 0; it < resultFlyPositionArrayList[iroi].length ; it++ ) {
-					exp.seqCamData.seq.addROI( resultFlyPositionArrayList[iroi][it] );
+//			exp.seqCamData.seq.beginUpdate();
+//			exp.cages = cages;
+			int ncages = cages.cageList.size();
+			for (int icage=0; icage < ncages; icage++) {
+				for ( int it = 0; it < resultFlyPositionArrayList[icage].length ; it++ ) {
+					exp.seqCamData.seq.addROI( resultFlyPositionArrayList[icage][it] );
 				}
 			}
 		}
 		finally {
 			exp.seqCamData.seq.endUpdate();
+		}
+	}
+	
+	public void copyDetectedROIsToCages(Experiment exp) {
+//		exp.cages = cages;
+		int ncages = cages.cageList.size();
+		for (int icage=0; icage < ncages; icage++) {
+			Cage cage = cages.cageList.get(icage);
+			for ( int it = 0; it < resultFlyPositionArrayList[icage].length ; it++ ) {
+				cage.detectedFliesList.add((ROI2D) resultFlyPositionArrayList[icage][it] );
+			}
 		}
 	}
 	

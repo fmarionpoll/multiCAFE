@@ -63,7 +63,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			}
 			runDetectFlies(exp);
 			if (!stopFlag)
-				exp.saveFlyPositionsForAllCages();
+				exp.xmlSaveFlyPositionsForAllCages();
 			exp.seqCamData.closeSequence();
 		}
 		progress.close();
@@ -89,7 +89,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		
 	private void runDetectFlies(Experiment exp) {
 		detect.initParametersForDetection(exp);
-		detect.initTempRectROIs(exp.seqCamData.seq);
+		detect.initTempRectROIs(exp, exp.seqCamData.seq);
 		exp.cleanPreviousDetections();
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
 		progressBar.initChrono(detect.endFrame-detect.startFrame+1);
@@ -125,8 +125,8 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 	
 		exp.seqCamData.seq.endUpdate();
 		detect.removeTempRectROIs(exp);
-		if (!stopFlag)
-			detect.copyDetectedROIsToSequence(exp);
+		detect.copyDetectedROIsToSequence(exp);
+		detect.copyDetectedROIsToCages(exp);
 		progressBar.close();
 	}
 	

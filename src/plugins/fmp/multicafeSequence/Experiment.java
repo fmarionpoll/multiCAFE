@@ -5,9 +5,7 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
@@ -527,7 +525,7 @@ public class Experiment {
 	}
 	
 	public boolean xmlSaveMCcapillaries() {
-		capillaries.xmlSaveCapillaries_Only(seqKymos.getDirectory());
+		capillaries.xmlSaveCapillaries_Only(seqKymos.getMCcapillariesPath());
 		boolean flag = capillaries.xmlSaveCapillaries_Measures(seqCamData.getResultsDirectory());
 		return flag;
 	}
@@ -631,8 +629,8 @@ public class Experiment {
 		cages.detect.stepFrame = stepFrame;
 	}
 	
-	public void saveFlyPositionsForAllCages() {			
-		cages.fromROIsToCages(seqCamData);
+	public void xmlSaveFlyPositionsForAllCages() {			
+//		cages.getCagesFromROIs(seqCamData);
 		cages.xmlWriteCagesToFileNoQuestion(getMCdrosotrackName());
 	}
 	

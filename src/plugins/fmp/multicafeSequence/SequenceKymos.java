@@ -373,6 +373,10 @@ public class SequenceKymos extends SequenceCamData  {
 		return pathname;
 	}
 	
+	String getMCcapillariesPath() {
+		return getDirectory() + File.separator + "results" + File.separator + "MCcapillaries.xml";
+	}
+	
 	// ----------------------------
 
 	public List<Integer> subtractTi(List<Integer > array) {
