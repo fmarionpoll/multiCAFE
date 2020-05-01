@@ -23,8 +23,8 @@ import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceKymos;
-import plugins.fmp.multicafeTools.DetectLimits_Options;
-import plugins.fmp.multicafeTools.DetectLimits_series;
+import plugins.fmp.multicafeTools.DetectLevels_Options;
+import plugins.fmp.multicafeTools.DetectLevels_series;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
@@ -54,7 +54,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
 
 	private MultiCAFE 	parent0 				= null;
-	private DetectLimits_series thread 			= null;
+	private DetectLevels_series thread 			= null;
 //	private int indexCurrentKymo 				= 0;
 
 	
@@ -155,7 +155,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	}
 	
 	void setInfosToDialog(Capillary cap) {
-		DetectLimits_Options options = cap.limitsOptions;
+		DetectLevels_Options options = cap.limitsOptions;
 		transformForLevelsComboBox.setSelectedItem(options.transformForLevels);
 		int index =options.directionUp ? 0:1;
 		directionComboBox.setSelectedIndex(index);
@@ -167,7 +167,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	}
 	
 	void getInfosFromDialog(Capillary cap) {
-		DetectLimits_Options options = cap.limitsOptions;
+		DetectLevels_Options options = cap.limitsOptions;
 		options.transformForLevels = (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
 		options.detectLevelThreshold = getDetectLevelThreshold();
@@ -181,7 +181,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 			return false;
 		
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		DetectLimits_Options options= thread.options;
+		DetectLevels_Options options= thread.options;
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		if (allSeriesCheckBox.isSelected()) {
@@ -218,7 +218,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		if (exp == null)
 			return;
 		parent0.paneSequence.tabClose.closeExp(exp);
-		thread = new DetectLimits_series();
+		thread = new DetectLevels_series();
 		
 		initBuildParameters(exp);
 		

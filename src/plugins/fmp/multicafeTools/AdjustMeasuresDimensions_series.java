@@ -14,7 +14,7 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 public class AdjustMeasuresDimensions_series  extends SwingWorker<Integer, Integer> {
 	public boolean 				stopFlag 		= false;
 	public boolean 				threadRunning 	= false;
-	public DetectLimits_Options options 		= new DetectLimits_Options();
+	public DetectLevels_Options options 		= new DetectLevels_Options();
 	
 	
 	@Override

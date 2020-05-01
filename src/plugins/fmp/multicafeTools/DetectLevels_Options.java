@@ -9,7 +9,7 @@ import icy.util.XMLUtil;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
-public class DetectLimits_Options implements XMLPersistent {
+public class DetectLevels_Options implements XMLPersistent {
 	
 			boolean 	detectTop 				= true;
 			boolean 	detectBottom 			= true;
@@ -30,7 +30,7 @@ public class DetectLimits_Options implements XMLPersistent {
 	
 	// -----------------------
 	
-	void copy(DetectLimits_Options destination) {
+	void copy(DetectLevels_Options destination) {
 		destination.detectTop 				= detectTop; 
 		destination.detectBottom 			= detectBottom; 
 		destination.transformForLevels 		= transformForLevels;

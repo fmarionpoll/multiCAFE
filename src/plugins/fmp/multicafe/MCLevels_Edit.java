@@ -31,7 +31,7 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeTools.AdjustMeasuresDimensions_series;
-import plugins.fmp.multicafeTools.DetectLimits_Options;
+import plugins.fmp.multicafeTools.DetectLevels_Options;
 
 
 
@@ -287,7 +287,7 @@ public class MCLevels_Edit  extends JPanel  implements PropertyChangeListener {
 		
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		DetectLimits_Options options= thread.options;
+		DetectLevels_Options options= thread.options;
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		if (allSeriesCheckBox.isSelected()) {

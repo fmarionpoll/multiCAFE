@@ -17,7 +17,7 @@ import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
-import plugins.fmp.multicafeTools.DetectLimits_Options;
+import plugins.fmp.multicafeTools.DetectLevels_Options;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
@@ -39,7 +39,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public int 							pixels 			= 5;
 	public boolean						descriptionOK	= false;
 	
-	public DetectLimits_Options 		limitsOptions	= new DetectLimits_Options();
+	public DetectLevels_Options 		limitsOptions	= new DetectLevels_Options();
 	public DetectGulps_Options 			gulpsOptions	= new DetectGulps_Options();
 	
 	public  final String 				ID_TOPLEVEL 	= "toplevel";	

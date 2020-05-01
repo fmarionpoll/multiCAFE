@@ -17,12 +17,12 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
-public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
+public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 	List<Point2D> 				limitTop 		= null;
 	List<Point2D> 				limitBottom 	= null;
 	public boolean 				stopFlag 		= false;
 	public boolean 				threadRunning 	= false;
-	public DetectLimits_Options options 		= new DetectLimits_Options();
+	public DetectLevels_Options options 		= new DetectLevels_Options();
 	
 	
 	@Override
@@ -161,7 +161,7 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 		seqKymos.seq.endUpdate();
 	}
 	
-	private int detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
+	private int detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, DetectLevels_Options options) {
 		boolean found = false;
 		int y = 0;
 		oldiytop -= jitter;
@@ -189,7 +189,7 @@ public class DetectLimits_series  extends SwingWorker<Integer, Integer> {
 		return y;
 	}
 	
-	private int detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, int xwidth, int yheight, DetectLimits_Options options) {
+	private int detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, int xwidth, int yheight, DetectLevels_Options options) {
 		// set flags for internal loop (part of the row)
 		boolean found = false;
 		int y = 0;

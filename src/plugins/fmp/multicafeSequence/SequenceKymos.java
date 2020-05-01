@@ -374,7 +374,11 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 	
 	String getMCcapillariesPath() {
-		return getDirectory() + File.separator + "results" + File.separator + "MCcapillaries.xml";
+		String path =  getDirectory() + File.separator + "MCcapillaries.xml";
+		if (!path.contains("results"))
+			path = getDirectory() + File.separator + "results" + File.separator + "MCcapillaries.xml";
+		System.out.println("out to:" + path);
+		return path;
 	}
 	
 	// ----------------------------

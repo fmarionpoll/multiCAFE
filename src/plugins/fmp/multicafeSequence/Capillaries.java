@@ -14,7 +14,7 @@ import org.w3c.dom.NodeList;
 import icy.roi.ROI;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
-import plugins.fmp.multicafeTools.DetectLimits_Options;
+import plugins.fmp.multicafeTools.DetectLevels_Options;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
@@ -26,7 +26,7 @@ public class Capillaries {
 	public List <Capillary> capillariesArrayList	= new ArrayList <Capillary>();
 	
 	
-	public DetectLimits_Options limitsOptions		= new DetectLimits_Options();
+	public DetectLevels_Options limitsOptions		= new DetectLevels_Options();
 	public DetectGulps_Options 	gulpsOptions		= new DetectGulps_Options();
 	
 	private final static String ID_CAPILLARYTRACK = "capillaryTrack";
