@@ -46,7 +46,8 @@ public class XLSExportMoveResults extends XLSExport {
 				String charSeries = CellReference.convertNumToColString(iSeries);
 			
 				if (options.xyImage)  	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYIMAGE);
-				if (options.xyTopCage)  	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYTOPCAGE);
+				if (options.xyTopCage)  col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYTOPCAGE);
+				if (options.xyTipCapillaries)  col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYTIPCAPS);
 				if (options.distance) 	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.DISTANCE);
 				if (options.alive) 		col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries,  EnumXLSExportType.ISALIVE);
 				
@@ -170,9 +171,22 @@ public class XLSExportMoveResults extends XLSExport {
 				}
 				break;
 
+			case XYIMAGE:
 			case XYTOPCAGE:
+			case XYTIPCAPS:
+			default:
 				for (Cage cage: cages.cageList ) {
-					Point2D pt0 = cage.getCenterTopCage();
+					Point2D pt0 = new Point2D.Double(0, 0);
+					switch (option) {
+					case XYTOPCAGE:
+						pt0 = cage.getCenterTopCage();
+						break;
+					case XYTIPCAPS: 
+						pt0 = cage.getCenterTipCapillaries(exp.capillaries);
+						break;
+					default:
+						break;
+					}
 					int col = getColFromCageName(cage)*2;
 					if (col >= 0)
 						pt_main.x = colseries + col;			
@@ -182,22 +196,6 @@ public class XLSExportMoveResults extends XLSExport {
 					pt_main.x++;
 					if (point != null) 
 						XLSUtils.setValue(sheet, pt_main, transpose, point.getY() - pt0.getY());
-					pt_main.x++;
-				}
-				break;
-				
-			case XYIMAGE:
-			default:
-				for (Cage cage: cages.cageList ) {
-					int col = getColFromCageName(cage)*2;
-					if (col >= 0)
-						pt_main.x = colseries + col;			
-					Point2D point = cage.flyPositions.getPointNearestTo(currentIndex);
-					if (point != null) 
-						XLSUtils.setValue(sheet, pt_main, transpose, point.getX());
-					pt_main.x++;
-					if (point != null) 
-						XLSUtils.setValue(sheet, pt_main, transpose, point.getY());
 					pt_main.x++;
 				}
 				break;

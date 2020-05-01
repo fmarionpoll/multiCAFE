@@ -9,6 +9,7 @@ public enum EnumXLSExportType {
 	TOPLEVEL_LR ("toplevel_L+R"), 
 	XYIMAGE ("xy-image"), 
 	XYTOPCAGE ("xy-topcage"), 
+	XYTIPCAPS ("xy-tipcaps"), 
 	DISTANCE ("distance"), 
 	ISALIVE ("_alive"), 
 	TOPLEVELDELTA ("topdelta"),

@@ -24,8 +24,6 @@ public class Capillaries {
 	public CapillariesDescription 	desc			= new CapillariesDescription();
 	public CapillariesDescription 	desc_old		= new CapillariesDescription();
 	public List <Capillary> capillariesArrayList	= new ArrayList <Capillary>();
-	
-	
 	public DetectLevels_Options limitsOptions		= new DetectLevels_Options();
 	public DetectGulps_Options 	gulpsOptions		= new DetectGulps_Options();
 	

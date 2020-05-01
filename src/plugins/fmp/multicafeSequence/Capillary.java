@@ -150,6 +150,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			break;
 		case XYIMAGE:
 		case XYTOPCAGE:
+		case XYTIPCAPS:
 			if (side .equals ("L"))
 				value = "x";
 			else

@@ -19,15 +19,16 @@ public class MCExcel_Move  extends JPanel {
 	 */
 	private static final long serialVersionUID = 1290058998782225526L;
 
-	JCheckBox 	xyCenterCheckBox 	= new JCheckBox("XY image position", true);
-	JCheckBox 	xyCageCheckBox 		= new JCheckBox("XY cage position", true);
+	JCheckBox 	xyCenterCheckBox 	= new JCheckBox("XY vs image", true);
+	JCheckBox 	xyCageCheckBox 		= new JCheckBox("XY vs top cage", true);
+	JCheckBox 	xyTipCapsCheckBox 	= new JCheckBox("XY vs tip capillaries", true);
 	JCheckBox 	distanceCheckBox 	= new JCheckBox("distance", false);
 	JCheckBox 	aliveCheckBox 		= new JCheckBox("alive", true);
 	JButton 	exportToXLSButton 	= new JButton("save XLS");
 	
 	void init(GridLayout capLayout) {	
 		setLayout(capLayout);
-		add(GuiUtil.besidesPanel( xyCenterCheckBox, xyCageCheckBox, new JLabel(" "), new JLabel(" ")));
+		add(GuiUtil.besidesPanel( xyCenterCheckBox, xyCageCheckBox, xyTipCapsCheckBox, new JLabel(" ")));
 		add(GuiUtil.besidesPanel( distanceCheckBox, new JLabel(" "), new JLabel(" "), new JLabel(" "), new JLabel(" "))); 
 		add(GuiUtil.besidesPanel( aliveCheckBox, new JLabel(" "), new JLabel(" "), exportToXLSButton )); 
 		defineActionListeners();

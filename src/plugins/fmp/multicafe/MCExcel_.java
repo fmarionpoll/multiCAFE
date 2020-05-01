@@ -117,6 +117,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		XLSExportOptions options = new XLSExportOptions();
 		options.xyImage 		= tabMove.xyCenterCheckBox.isSelected(); 
 		options.xyTopCage		= tabMove.xyCageCheckBox.isSelected();
+		options.xyTipCapillaries= tabMove.xyTipCapsCheckBox.isSelected();
 		options.distance 		= tabMove.distanceCheckBox.isSelected();
 		options.alive 			= tabMove.aliveCheckBox.isSelected(); 
 		getCommonOptions(options);
