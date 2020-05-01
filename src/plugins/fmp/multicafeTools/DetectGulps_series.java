@@ -75,7 +75,9 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 	
 	private void saveComputation(Experiment exp) {			
 		ProgressFrame progress = new ProgressFrame("Save kymograph measures");		
-		exp.saveExperimentMeasures();
+		//exp.saveExperimentMeasures();
+		exp.xmlSaveMCcapillaries();
+		exp.xmlSaveKymos_Measures();
 		progress.close();
 	}
 	
