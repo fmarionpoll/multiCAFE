@@ -63,7 +63,7 @@ public class Capillaries {
 			return false;
 		Collections.sort(capillariesArrayList);
 		for (Capillary cap: capillariesArrayList) {
-			String tempname = directoryFull + File.separator + cap.getName()+ ".xml";
+			String tempname = directoryFull + File.separator + cap.getCapillaryName()+ ".xml";
 			final Document capdoc = XMLUtil.createDocument(true);
 			cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
 			XMLUtil.saveDocument(capdoc, tempname);
@@ -167,7 +167,7 @@ public class Capillaries {
 		if (!directory .contains("results"))
 			directory = directory + "results"+File.separator;
 		for (Capillary cap: capillariesArrayList) {
-			String csFile = directory + cap.getName() + ".xml";
+			String csFile = directory + cap.getCapillaryName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
 			cap.loadFromXML(node);
@@ -220,7 +220,7 @@ public class Capillaries {
 	
 	public void transferDescriptionToCapillary (Capillary cap) {
 		String	name = cap.roi.getName();
-		cap.cagenb = cap.getCageFromRoiName(name);
+		cap.cagenb = cap.getCageFromRoiName();
 		if (cap.cagenb < 1 || cap.cagenb > 8)
 			cap.nflies = 0;
 		String letter = name.substring(name.length() - 1);

@@ -102,8 +102,8 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			ProgressFrame progress = new ProgressFrame("Save kymographs");		
 			for (int t = 0; t < exp.seqKymos.seq.getSizeT(); t++) {
 				Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-				progress.setMessage( "Save kymograph file : " + cap.getName());	
-				String filename = directory + File.separator + cap.getName() + ".tiff";
+				progress.setMessage( "Save kymograph file : " + cap.getCapillaryName());	
+				String filename = directory + File.separator + cap.getCapillaryName() + ".tiff";
 				File file = new File (filename);
 				IcyBufferedImage image = exp.seqKymos.seq.getImage(t, 0);
 				try {

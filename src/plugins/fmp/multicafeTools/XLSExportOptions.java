@@ -4,7 +4,8 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 
 public class XLSExportOptions {
 	
-	public boolean 	xyCenter 		= true;
+	public boolean 	xyImage 		= true;
+	public boolean 	xyTopCage = true;
 	public boolean 	distance 		= false;
 	public boolean 	alive 			= true;
 	

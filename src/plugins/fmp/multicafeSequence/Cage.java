@@ -1,5 +1,7 @@
 package plugins.fmp.multicafeSequence;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import org.w3c.dom.Element;
@@ -93,5 +95,11 @@ public class Cage {
 	public void clearMeasures () {
 		detectedFliesList.clear();
 		flyPositions.clear();
+	}
+	
+	public Point2D getCenterTopCage() {
+		Rectangle2D rect = roi.getBounds2D();
+		Point2D pt = new Point2D.Double(rect.getX() + rect.getWidth()/2, rect.getY());
+		return pt;
 	}
 }

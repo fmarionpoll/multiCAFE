@@ -197,7 +197,7 @@ public class SequenceKymos extends SequenceCamData  {
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			if (isInterrupted_loadImages)
 				break;
-			String tempname = directoryFull+cap.getName()+ ".tiff";
+			String tempname = directoryFull+cap.getCapillaryName()+ ".tiff";
 			boolean found = isFileFound(tempname);
 			if (!found) {
 				tempname = directoryFull+cap.roi.getName()+ ".tiff";

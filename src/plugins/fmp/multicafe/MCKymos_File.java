@@ -90,8 +90,8 @@ public class MCKymos_File extends JPanel {
 			outputpath = f.getSelectedFile().getAbsolutePath();		
 			for (int t = 0; t < seqKymos.seq.getSizeT(); t++) {
 				Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-				progress.setMessage( "Save kymograph file : " + cap.getName());
-				cap.filenameTIFF = outputpath + File.separator + cap.getName() + ".tiff";
+				progress.setMessage( "Save kymograph file : " + cap.getCapillaryName());
+				cap.filenameTIFF = outputpath + File.separator + cap.getCapillaryName() + ".tiff";
 				final File file = new File (cap.filenameTIFF);
 				IcyBufferedImage image = seqKymos.seq.getImage(t, 0);
 				ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
@@ -100,7 +100,7 @@ public class MCKymos_File extends JPanel {
 						} catch (FormatException | IOException e) {
 							e.printStackTrace();
 						}
-					System.out.println("File "+ cap.getName() + " saved " );
+					System.out.println("File "+ cap.getCapillaryName() + " saved " );
 				}});
 			}
 		}

@@ -104,9 +104,9 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 			int xwidth = image.getSizeX();
 			int yheight = image.getSizeY();
 			Capillary cap = exp.capillaries.capillariesArrayList.get(kymo);
-			if (!options.detectR && cap.getName().endsWith("2"))
+			if (!options.detectR && cap.getCapillaryName().endsWith("2"))
 				continue;
-			if (!options.detectL && cap.getName().endsWith("1"))
+			if (!options.detectL && cap.getCapillaryName().endsWith("1"))
 				continue;
 			
 			cap.ptsDerivative = null;

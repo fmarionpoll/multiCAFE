@@ -45,7 +45,8 @@ public class XLSExportMoveResults extends XLSExport {
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 			
-				if (options.xyCenter)  	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYCENTER);
+				if (options.xyImage)  	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYIMAGE);
+				if (options.xyTopCage)  	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYTOPCAGE);
 				if (options.distance) 	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.DISTANCE);
 				if (options.alive) 		col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries,  EnumXLSExportType.ISALIVE);
 				
@@ -76,13 +77,10 @@ public class XLSExportMoveResults extends XLSExport {
 			outputFieldDescriptors(sheet);
 		}
 		Point pt = new Point(col0, 0);
-		if (options.collateSeries) {
+		if (options.collateSeries)
 			pt.x = options.expList.getStackColumnPosition(exp, col0);
-		}
-//		pt = writeGlobalInfos(exp, sheet, pt, options.transpose, xlsExportOption);
-//		pt = writeHeader(exp, sheet, pt, xlsExportOption, options.transpose, charSeries);
 		if (exp.previousExperiment == null)
-			writeExperimentDescriptors(exp, charSeries, sheet, pt);
+			writeExperimentDescriptors(exp, charSeries, sheet, pt, xlsExportOption);
 		else
 			pt.y += 17;
 		
@@ -172,7 +170,23 @@ public class XLSExportMoveResults extends XLSExport {
 				}
 				break;
 
-			case XYCENTER:
+			case XYTOPCAGE:
+				for (Cage cage: cages.cageList ) {
+					Point2D pt0 = cage.getCenterTopCage();
+					int col = getColFromCageName(cage)*2;
+					if (col >= 0)
+						pt_main.x = colseries + col;			
+					Point2D point = cage.flyPositions.getPointNearestTo(currentIndex);
+					if (point != null) 
+						XLSUtils.setValue(sheet, pt_main, transpose, point.getX() - pt0.getX());
+					pt_main.x++;
+					if (point != null) 
+						XLSUtils.setValue(sheet, pt_main, transpose, point.getY() - pt0.getY());
+					pt_main.x++;
+				}
+				break;
+				
+			case XYIMAGE:
 			default:
 				for (Cage cage: cages.cageList ) {
 					int col = getColFromCageName(cage)*2;

@@ -115,7 +115,8 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	
 	private XLSExportOptions getMoveOptions() {
 		XLSExportOptions options = new XLSExportOptions();
-		options.xyCenter 		= tabMove.xyCenterCheckBox.isSelected(); 
+		options.xyImage 		= tabMove.xyCenterCheckBox.isSelected(); 
+		options.xyTopCage		= tabMove.xyCageCheckBox.isSelected();
 		options.distance 		= tabMove.distanceCheckBox.isSelected();
 		options.alive 			= tabMove.aliveCheckBox.isSelected(); 
 		getCommonOptions(options);
@@ -141,7 +142,6 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.buildExcelBinStep = (int) tabOptions.pivotBinStep.getValue();
 		options.collateSeries 	= tabOptions.collateSeriesCheckBox.isSelected();
 		options.padIntervals 	= tabOptions.padIntervalsCheckBox.isSelected();
-		
 		options.absoluteTime	= tabOptions.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= tabOptions.exportAllFilesCheckBox.isSelected();
 		options.expList = new ExperimentList(); 

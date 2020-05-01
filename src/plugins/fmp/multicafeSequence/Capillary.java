@@ -16,6 +16,7 @@ import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.EnumListType;
+import plugins.fmp.multicafeTools.EnumXLSExportType;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.DetectLevels_Options;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
@@ -27,8 +28,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 
 	public ROI2DShape 					roi 			= null;	// the capillary (source)
 	public int							indexImage 		= -1;
-	public String						capillaryName 	= null;
-	public String 						version 		= null;
+	String								capillaryName 	= null;
+	String 								version 		= null;
 	public String						filenameTIFF	= null;
 	public String 						stimulus		= new String("stimulus");
 	public String 						concentration	= new String("xmM");
@@ -102,11 +103,11 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		ptsDerivative.copy(cap.ptsDerivative); 
 	}
 	
-	public String getName() {
+	public String getCapillaryName() {
 		return capillaryName;
 	}
 	
-	public void setName(String name) {
+	public void setCapillaryName(String name) {
 		this.capillaryName = name;
 	}
 	
@@ -125,10 +126,40 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return newname;
 	}
 	
-	public int getCageFromRoiName(String name) {
+	public int getCageFromRoiName() {
+		String name = roi.getName();
 		if (!name .contains("line"))
 			return -1;
 		return Integer.parseInt(name.substring(4, 5));
+	}
+	
+	public String getSideDescriptor(EnumXLSExportType xlsExportOption) {
+		String value = null;
+		switch (xlsExportOption) {
+		case DISTANCE:
+		case ISALIVE:
+			value = side + "(L=R)";
+			break;
+		case SUMGULPS_LR:
+		case TOPLEVELDELTA_LR:
+		case TOPLEVEL_LR:
+			if (side.equals("L"))
+				value = "sum";
+			else
+				value = "ratio";
+			break;
+		case XYIMAGE:
+		case XYTOPCAGE:
+			if (side .equals ("L"))
+				value = "x";
+			else
+				value = "y";
+			break;
+		default:
+			value = side;
+			break;
+		}
+		return value;
 	}
 	
 	public boolean isThereAnyMeasuresDone(EnumListType option) {
