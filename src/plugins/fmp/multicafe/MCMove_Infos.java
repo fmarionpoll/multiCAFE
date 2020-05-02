@@ -39,6 +39,7 @@ public class MCMove_Infos  extends JPanel {
 
         JScrollPane scrollPane = new JScrollPane(tableView);
         add(scrollPane);
+        scrollPane.validate();
 	}
 	
 	private void setFixedColumnProperties (TableColumn column) {

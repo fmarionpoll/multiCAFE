@@ -43,7 +43,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	public int		videoChannel 			= 0;
 	public boolean 	backgroundSubstraction 	= false;
 
-	public Cages 	cages 					= null;
+	private Cages 	cages 					= null;
 	public List<BooleanMask2D> 	cageMaskList = new ArrayList<BooleanMask2D>();
 	
 	public int		stepFrame 				= 1;

@@ -53,8 +53,8 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	private JButton 	loadButton 				= new JButton("Load...");
 	private JButton 	saveButton 				= new JButton("Save...");
 	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
-	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("(re)build background");
-	private JCheckBox 	detectCheckBox 			= new JCheckBox("detect flies");
+	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("(re)build background", false);
+	private JCheckBox 	detectCheckBox 			= new JCheckBox("detect flies", true);
 	
 	private DetectFlies2_series detectFlies2Thread 	= null;
 	private int 		currentExp 				= -1;
@@ -65,7 +65,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
-		FlowLayout layout = new FlowLayout();
+		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
 		layout.setVgap(0);
 		
 		JPanel panel = new JPanel(layout);
@@ -104,7 +104,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	private void defineActionListeners() {
 		startComputationButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				if (startComputationButton.getText() .equals(detectString))
+				if (startComputationButton.getText() .equals(detectString)) 
 					startComputation();
 				else
 					stopComputation();
@@ -200,6 +200,7 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		Experiment exp = parent0.expList.getExperiment(currentExp);
 		if (exp == null)
 			return;
+		parent0.paneMove.tabFile.saveCagesAndMeasures(exp);
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
 		detectFlies2Thread = new DetectFlies2_series();		

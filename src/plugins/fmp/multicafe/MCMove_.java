@@ -6,7 +6,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -15,8 +14,6 @@ import javax.swing.event.ChangeListener;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
-import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceCamData;
 
 
 
@@ -102,19 +99,6 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 		}
 	}
 
-	boolean loadDefaultCages(Experiment exp) {
-		SequenceCamData seqCamData = exp.seqCamData;
-		String path = seqCamData.getDirectory();
-		boolean flag = tabFile.loadCages(path+File.separator+"drosotrack.xml");
-		return flag;
-	}
-	
-	boolean saveDefaultCages(Experiment exp) {
-		SequenceCamData seqCamData = exp.seqCamData;
-		String directory = seqCamData.getDirectory();
-		String filename = directory + File.separator+"drosotrack.xml";
-		return exp.cages.xmlWriteCagesToFileNoQuestion(filename);
-	}
 	
 	
 }
