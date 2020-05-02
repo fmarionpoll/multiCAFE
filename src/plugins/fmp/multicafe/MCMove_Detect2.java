@@ -39,39 +39,43 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 	private static final long serialVersionUID = -5257698990389571518L;
 	private MultiCAFE parent0;
 	
-	private JButton 	buildBackgroundButton 	= new JButton("Build ref. / Stop");
-	private String 		detectString 			= "Detect";
+	private String 		detectString 			= "Run..";
 	private JButton 	startComputationButton 	= new JButton(detectString);
 	private JSpinner 	thresholdDiffSpinner	= new JSpinner(new SpinnerNumberModel(100, 0, 255, 10));
 	private JSpinner 	thresholdBckgSpinner	= new JSpinner(new SpinnerNumberModel(40, 0, 255, 10));
 	
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 255, 1));
-	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object >");
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
+	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object >");
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object <");
 	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
 	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
 	private JButton 	loadButton 				= new JButton("Load...");
 	private JButton 	saveButton 				= new JButton("Save...");
 	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
+	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("(re)build background");
+	private JCheckBox 	detectCheckBox 			= new JCheckBox("detect flies");
 	
 	private DetectFlies2_series detectFlies2Thread 	= null;
 	private int 		currentExp 				= -1;
 	
-	
-
 	// ----------------------------------------------------
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
-
-		add( GuiUtil.besidesPanel(startComputationButton,  ALLCheckBox));
 		
-		JPanel panel1 = new JPanel();
-		FlowLayout layout1 = (FlowLayout) panel1.getLayout();
-		layout1.setVgap(0);
-		panel1.add( buildBackgroundButton);
+		FlowLayout layout = new FlowLayout();
+		layout.setVgap(0);
+		
+		JPanel panel = new JPanel(layout);
+		panel.add(startComputationButton);
+		panel.add(ALLCheckBox);
+		panel.add(backgroundCheckBox);
+		panel.add(detectCheckBox);
+		add( GuiUtil.besidesPanel(panel));
+		
+		JPanel panel1 = new JPanel(layout);
 		panel1.add(loadButton);
 		panel1.add(saveButton);
 		panel1.add(new JLabel("threshold for bckgnd "));
@@ -104,11 +108,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 					startComputation();
 				else
 					stopComputation();
-			}});
-		
-		buildBackgroundButton.addActionListener(new ActionListener () {
-			@Override public void actionPerformed( final ActionEvent e ) { 
-				builBackgroundImage();
 			}});
 		
 		saveButton.addActionListener(new ActionListener () {
@@ -167,10 +166,12 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		detect.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();
 		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 		
-		detect.stepFrame = parent0.paneSequence.tabIntervals.getStepFrame();
+		detect.forceBuildBackground	= backgroundCheckBox.isSelected();
+		detect.detectFlies	= detectCheckBox.isSelected();
+		detect.stepFrame 	= parent0.paneSequence.tabIntervals.getStepFrame();
 		detect.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
-		detect.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
-		detect.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();
+		detect.startFrame 	= parent0.paneSequence.tabIntervals.getStartFrame();
+		detect.endFrame 	= parent0.paneSequence.tabIntervals.getEndFrame();
 
 		detect.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(detect.expList, true);		
@@ -193,28 +194,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		return true;
 	}
 	
-	void builBackgroundImage() {
-		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		currentExp = parent0.currentExperimentIndex;
-		Experiment exp = parent0.expList.getExperiment(currentExp);
-		if (exp == null)
-			return;
-		parent0.paneSequence.tabClose.closeExp(exp);
-		if (detectFlies2Thread == null)
-			detectFlies2Thread = new DetectFlies2_series();
-		if (detectFlies2Thread.threadRunning) {
-			stopComputation();
-			return;
-		}
-
-		initTrackParameters();
-		detectFlies2Thread.buildBackground	= true;
-		detectFlies2Thread.detectFlies		= false;
-		detectFlies2Thread.addPropertyChangeListener(this);
-		detectFlies2Thread.execute();
-		startComputationButton.setText("STOP");
-	}
-	
 	void startComputation() {
 		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		currentExp = parent0.currentExperimentIndex;
@@ -225,8 +204,6 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		
 		detectFlies2Thread = new DetectFlies2_series();		
 		initTrackParameters();
-		detectFlies2Thread.buildBackground	= false;
-		detectFlies2Thread.detectFlies		= true;
 		detectFlies2Thread.addPropertyChangeListener(this);
 		detectFlies2Thread.execute();
 		startComputationButton.setText("STOP");
@@ -248,7 +225,5 @@ public class MCMove_Detect2 extends JPanel implements ChangeListener, PropertyCh
 		 }
 	}
 	
-
-
 
 }

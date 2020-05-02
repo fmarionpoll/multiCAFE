@@ -34,8 +34,8 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 	public boolean stopFlag = false;
 	public boolean threadRunning = false;
-	public boolean buildBackground = true;
-	public boolean detectFlies = true;
+//	public boolean buildBackground = true;
+//	public boolean detectFlies = true;
 
 	public DetectFlies_Options detect = new DetectFlies_Options();
 	public Sequence seqNegative = new Sequence();
@@ -129,7 +129,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			e.printStackTrace();
 		}
 		
-		boolean flag = buildBackground;
+		boolean flag = detect.forceBuildBackground;
 		flag |= (exp.seqCamData.refImage == null);
 		flag |= (!exp.loadReferenceImage());
 		if (flag) {
@@ -138,7 +138,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			exp.saveReferenceImage();
 		}
 		
-		if (detectFlies) {
+		if (detect.detectFlies) {
 			exp.cleanPreviousDetections();
 			findFlies(exp);
 			exp.xmlSaveFlyPositionsForAllCages();
@@ -157,7 +157,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			seqPositive.close();
 			seqPositive = null;
 		}
-		if (!buildBackground && exp.seqBackgroundImage != null) {
+		if (exp.seqBackgroundImage != null) {
 			exp.seqBackgroundImage.close();
 			exp.seqBackgroundImage = null;
 		}

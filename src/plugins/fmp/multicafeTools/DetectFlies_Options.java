@@ -36,6 +36,8 @@ public class DetectFlies_Options implements XMLPersistent {
 	public int  	limitLow				= 0;
 	public int  	limitUp					= 1;
 	public int 		jitter 					= 10;
+	public boolean	forceBuildBackground	= false;
+	public boolean	detectFlies				= true;
 	
 	public TransformOp transformop; 
 	public int		videoChannel 			= 0;
