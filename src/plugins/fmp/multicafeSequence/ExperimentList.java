@@ -68,8 +68,13 @@ public class ExperimentList {
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			exp.xmlLoadExperiment();
 			int image_size = exp.seqKymos.seq.getSizeX();
-			if (image_size != 0)
+			if (image_size != 0) {
 				exp.stepFrame = exp.seqCamData.nTotalFrames / image_size;
+				if (exp.stepFrame < 1) {
+					System.out.println("Error: experiment with stepFrame set to 1");
+					exp.stepFrame = 1;
+				}
+			}
 			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())
 				maxSizeOfCapillaryArrays = exp.capillaries.capillariesArrayList.size();
 			progress.incPosition();

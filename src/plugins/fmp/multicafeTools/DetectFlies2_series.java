@@ -73,14 +73,13 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 				exp.startFrame = 0;
 				exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
 			}
+			
 			if (exp.cages.cageList.size() < 1 ) {
 				System.out.println("! skipped experiment with no cage: " + exp.experimentFileName);
-				continue;
+			} else {
+				runDetectFlies(exp);
 			}
-			runDetectFlies(exp);
-			if (!stopFlag) {
-				exp.xmlSaveFlyPositionsForAllCages();
-			}
+
 			exp.seqCamData.closeSequence();
 		}
 		progress.close();
@@ -112,7 +111,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		
 		detect.initParametersForDetection(exp);
 		detect.threshold = detect.thresholdDiff;
-		exp.cleanPreviousDetections();
+		
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() {
@@ -129,14 +128,21 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		} catch (InvocationTargetException | InterruptedException e) {
 			e.printStackTrace();
 		}
-		if (buildBackground || exp.seqCamData.refImage == null) {
-			if (!exp.loadReferenceImage()) {
-				buildBackgroundImage(exp);
-				exp.saveReferenceImage();
-			}
+		
+		boolean flag = buildBackground;
+		flag |= (exp.seqCamData.refImage == null);
+		flag |= (!exp.loadReferenceImage());
+		if (flag) {
+			System.out.println(" buildbackground");
+			buildBackgroundImage(exp);
+			exp.saveReferenceImage();
 		}
-		if (detectFlies)
+		
+		if (detectFlies) {
+			exp.cleanPreviousDetections();
 			findFlies(exp);
+			exp.xmlSaveFlyPositionsForAllCages();
+		}
 		closeViewersAndSequences (exp);
 	}
 	
