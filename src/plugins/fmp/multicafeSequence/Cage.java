@@ -23,13 +23,12 @@ public class Cage {
 	public int 				cageNFlies  		= 1;
 	public String 			cageComment 		= "..";
 	
-	private final String ID_CAGELIMITS 	= "CageLimits";
-	private final String ID_FLYPOSITIONS= "FlyPositions";
-	private final String ID_ROISDETECTED= "RoisDetected";
-	private final String ID_NBITEMS		= "nb_items";
-	
-	private final String ID_NFLIES 	= "nflies"; 
-	private final String ID_COMMENT	= "comment";
+	private final String ID_CAGELIMITS 			= "CageLimits";
+	private final String ID_FLYPOSITIONS		= "FlyPositions";
+	private final String ID_ROISDETECTED		= "RoisDetected";
+	private final String ID_NBITEMS				= "nb_items";
+	private final String ID_NFLIES 				= "nflies"; 
+	private final String ID_COMMENT				= "comment";
 	
 	
 	
