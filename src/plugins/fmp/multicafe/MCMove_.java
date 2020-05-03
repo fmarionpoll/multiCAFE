@@ -80,7 +80,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	        public void stateChanged(ChangeEvent e) {
 	            int selectedIndex = tabsPane.getSelectedIndex();
 	            tabDetect1.overlayCheckBox.setSelected(selectedIndex == 2);
-	            if (selectedIndex == 1) {
+	            if (selectedIndex == 1 && tabInfos.tableView.getRowCount() > 0) {
 	            	tabInfos.tableView.setRowSelectionInterval(0, 0);
 	            	tabInfos.tableView.setColumnSelectionInterval(1, 1);
 	            	boolean includeSpacing = true;
