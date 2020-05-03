@@ -377,6 +377,8 @@ public class Experiment {
 			else
 				return step;
 		}
+		if (stepFrame == 0)
+			stepFrame = 1;
 		int len2 = (endFrame +1)/ stepFrame;
 		if (len2 != seqKymos.imageWidthMax) 
 			stepFrame = (endFrame +1)/(seqKymos.imageWidthMax-1);
