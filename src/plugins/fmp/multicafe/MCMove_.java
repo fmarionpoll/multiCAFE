@@ -2,6 +2,7 @@ package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeEvent;
@@ -77,8 +78,15 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 		tabsPane.addChangeListener(new ChangeListener() {
 			@Override 
 	        public void stateChanged(ChangeEvent e) {
-	            int itab = tabsPane.getSelectedIndex();
-	            tabDetect1.overlayCheckBox.setSelected(itab == 1);
+	            int selectedIndex = tabsPane.getSelectedIndex();
+	            tabDetect1.overlayCheckBox.setSelected(selectedIndex == 2);
+	            if (selectedIndex == 1) {
+	            	tabInfos.tableView.setRowSelectionInterval(0, 0);
+	            	tabInfos.tableView.setColumnSelectionInterval(1, 1);
+	            	boolean includeSpacing = true;
+	            	Rectangle cellRect = tabInfos.tableView.getCellRect(0, 0, includeSpacing);
+	            	tabInfos.tableView.scrollRectToVisible(cellRect);
+	            }
 	        }
 	    });
 		

@@ -20,8 +20,8 @@ public class MCMove_Infos  extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -3325915033686366985L;
-    private JTable 				tableView = new JTable();
-	private CageTableModel 		viewModel = null;
+    JTable 					tableView = new JTable();
+	private CageTableModel 	viewModel = null;
 	
     
 	
