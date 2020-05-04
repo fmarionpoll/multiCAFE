@@ -6,7 +6,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.ListModel;
 
-public class ComboBoxWideRenderer extends DefaultListCellRenderer {
+public class SequenceNameListRenderer extends DefaultListCellRenderer {
 	/**
 	 * 
 	 */

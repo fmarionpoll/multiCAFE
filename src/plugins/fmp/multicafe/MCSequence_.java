@@ -25,7 +25,7 @@ import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
 import icy.system.thread.ThreadUtil;
-import plugins.fmp.multicafeSequence.ComboBoxWideRenderer;
+import plugins.fmp.multicafeSequence.SequenceNameListRenderer;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
@@ -56,7 +56,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		this.parent0 = parent0;
 		
-		ComboBoxWideRenderer renderer = new ComboBoxWideRenderer();
+		SequenceNameListRenderer renderer = new SequenceNameListRenderer();
 		expListComboBox.setRenderer(renderer);
 		int bWidth = 28;
 		int height = 20;

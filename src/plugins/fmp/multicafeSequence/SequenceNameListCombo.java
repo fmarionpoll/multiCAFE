@@ -7,25 +7,25 @@ import javax.swing.ComboBoxModel;
 
 
 
-public class ComboBoxWide extends JComboBox<String> { 
+public class SequenceNameListCombo extends JComboBox<String> { 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7489975211080267194L;
 	
-	public ComboBoxWide() { 
+	public SequenceNameListCombo() { 
 		super();		
 	} 
 	
-	public ComboBoxWide(final Object items[]){ 
+	public SequenceNameListCombo(final Object items[]){ 
 		super(); 
 	} 
 	
-	public ComboBoxWide(Vector<?> items) { 
+	public SequenceNameListCombo(Vector<?> items) { 
 		super(); 
 	} 
 	
-	public ComboBoxWide(ComboBoxModel<?> aModel) { 
+	public SequenceNameListCombo(ComboBoxModel<?> aModel) { 
 		super(); 
 	} 
 	
