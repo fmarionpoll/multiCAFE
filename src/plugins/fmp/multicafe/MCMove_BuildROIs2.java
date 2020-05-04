@@ -25,11 +25,11 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
-public class MCMove_BuildROIs extends JPanel {
+public class MCMove_BuildROIs2  extends JPanel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5257698990389571518L;
+	private static final long serialVersionUID = -121724000730795396L;
 	private JButton addPolygon2DButton 			= new JButton("Draw Polygon2D");
 	private JButton createROIsFromPolygonButton = new JButton("Create/add (from Polygon 2D)");
 	private JSpinner nColumnsTextField 			= new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));

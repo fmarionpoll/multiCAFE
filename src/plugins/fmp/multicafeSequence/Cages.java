@@ -196,10 +196,18 @@ public class Cages {
 	}
 	
 	public void getCagesFromROIs(SequenceCamData seqCamData) {
-		List <ROI2D> cageList = getRoisWithCageName(seqCamData);
-		Collections.sort(cageList, new Comparators.ROI2DNameComparator());
-		addMissingCages(cageList);
-		removeOrphanCages(cageList);
+		List <ROI2D> roiList = getRoisWithCageName(seqCamData);
+		Collections.sort(roiList, new Comparators.ROI2DNameComparator());
+		addMissingCages(roiList);
+		removeOrphanCages(roiList);
+		Collections.sort(cageList, new Comparators.CageNameComparator());
+	}
+	
+	public void setFirstAndLastCageToZeroFly() {
+		for (Cage cage: cageList) {
+			if (cage.roi.getName().contains("000") || cage.roi.getName().contains("009"))
+				cage.cageNFlies = 0;
+		}
 	}
 	
 	private void addMissingCages(List<ROI2D> roiList) {
@@ -218,7 +226,6 @@ public class Cages {
 			}
 		}
 	}
-	
 	
 	private void removeOrphanCages(List<ROI2D> roiList) {
 		// remove cages which names are not in the list
