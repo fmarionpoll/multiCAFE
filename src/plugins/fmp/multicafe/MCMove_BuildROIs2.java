@@ -32,10 +32,7 @@ public class MCMove_BuildROIs2  extends JPanel {
 	private static final long serialVersionUID = -121724000730795396L;
 	private JButton addPolygon2DButton 			= new JButton("Draw Polygon2D");
 	private JButton createROIsFromPolygonButton = new JButton("Create/add (from Polygon 2D)");
-	private JSpinner nColumnsTextField 			= new JSpinner(new SpinnerNumberModel(10, 0, 10000, 1));
-	private JSpinner width_cageTextField 		= new JSpinner(new SpinnerNumberModel(20, 0, 10000, 1));
-	private JSpinner width_intervalTextField 	= new JSpinner(new SpinnerNumberModel(3, 0, 10000, 1));
-	private JSpinner nRowsTextField 			= new JSpinner(new SpinnerNumberModel(1, 0, 10000, 1));
+	private JSpinner threshold 		= new JSpinner(new SpinnerNumberModel(20, 0, 10000, 1));
 	
 	private int 	ncolumns 					= 10;
 	private int 	nrows 						= 1;
@@ -49,16 +46,8 @@ public class MCMove_BuildROIs2  extends JPanel {
 		this.parent0 = parent0;
 		
 		add( GuiUtil.besidesPanel(addPolygon2DButton, createROIsFromPolygonButton));
-		JLabel nColumnsLabel = new JLabel("N columns ");
-		JLabel nRowsLabel = new JLabel("N rows ");
-		JLabel cagewidthLabel = new JLabel("cage width ");
-		JLabel btwcagesLabel = new JLabel("between cages ");
-		nColumnsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		cagewidthLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		btwcagesLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		nRowsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		add( GuiUtil.besidesPanel( cagewidthLabel,  width_cageTextField, nColumnsLabel, nColumnsTextField));
-		add( GuiUtil.besidesPanel( btwcagesLabel, width_intervalTextField, nRowsLabel, nRowsTextField));
+		JLabel thresholdLabel = new JLabel("Threshold ");
+		add( GuiUtil.besidesPanel( thresholdLabel,  threshold, new JLabel(" "), new JLabel(" ")));
 		
 		defineActionListeners();
 	}
@@ -81,7 +70,6 @@ public class MCMove_BuildROIs2  extends JPanel {
 		if (exp != null) {
 			int nrois = exp.cages.cageList.size();	
 			if (nrois > 0) {
-				nColumnsTextField.setValue(nrois);
 				ncolumns = nrois;
 			}
 		}
@@ -128,10 +116,10 @@ public class MCMove_BuildROIs2  extends JPanel {
 	private void addROISCreatedFromSelectedPolygon() {
 		// read values from text boxes
 		try { 
-			ncolumns = (int) nColumnsTextField.getValue();
-			nrows = (int) nRowsTextField.getValue();
-			width_cage = (int) width_cageTextField.getValue();
-			width_interval = (int) width_intervalTextField.getValue();
+			ncolumns = 20;
+			nrows = 1;
+			width_cage = 20;
+			width_interval = 3;
 		} 
 		catch( Exception e ) { 
 			new AnnounceFrame("Can't interpret one of the ROI parameters value"); 
