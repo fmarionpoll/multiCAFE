@@ -1,4 +1,4 @@
-package plugins.fmp.multicafeTools;
+package plugins.fmp.multicafeSequence;
 
 import java.awt.Dimension;
 import javax.swing.JComboBox;
@@ -42,8 +42,10 @@ public class ComboBoxWide extends JComboBox<String> {
 	
 	public Dimension getSize(){ 
 		Dimension dim = super.getSize(); 
-		if (!layingOut) 
-		    dim.width = Math.max(dim.width, getPreferredSize().width); 
+		if (!layingOut) {
+			int preferredWidth = getPreferredSize().width;
+		    dim.width = Math.max(dim.width, preferredWidth);
+		}
 		return dim; 
 	} 
 }

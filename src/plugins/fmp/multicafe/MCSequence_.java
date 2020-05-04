@@ -15,6 +15,7 @@ import java.io.File;
 import java.nio.file.Paths;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -24,10 +25,10 @@ import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
 import icy.system.thread.ThreadUtil;
+import plugins.fmp.multicafeSequence.ComboBoxWideRenderer;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceCamData;
-import plugins.fmp.multicafeTools.ComboBoxWide;
 
 
 
@@ -43,40 +44,40 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	public MCSequence_Intervals	tabIntervals	= new MCSequence_Intervals();
 	MCSequence_Display			tabDisplay 		= new MCSequence_Display();
 	MCSequence_Close 			tabClose 		= new MCSequence_Close();
+	private JLabel				text 			= new JLabel("Experiment ");
 	private JButton  			previousButton	= new JButton("<");
 	private JButton				nextButton		= new JButton(">");
-	private JLabel				numFile			= new JLabel("..");
-	ComboBoxWide				expListComboBox	= new ComboBoxWide();
+	JComboBox <String>				expListComboBox	= new JComboBox <String>();
 	
 	private MultiCAFE 			parent0 		= null;
+	
 	
 	
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		this.parent0 = parent0;
 		
-		
-		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
-		layout.setVgap(0);
-		
-		JPanel k2Panel = new JPanel(layout);
+		ComboBoxWideRenderer renderer = new ComboBoxWideRenderer();
+		expListComboBox.setRenderer(renderer);
 		int bWidth = 28;
 		int height = 20;
 		previousButton.setPreferredSize(new Dimension(bWidth, height));
 		nextButton.setPreferredSize(new Dimension(bWidth, height));
-		k2Panel.add(new JLabel("Stack ")); 
-		k2Panel.add(previousButton); 
-		k2Panel.add(numFile); 
-		k2Panel.add(nextButton);
 		
-		JPanel k3Panel = new JPanel();
-		k3Panel.setLayout(new BorderLayout());
-		k3Panel.add(k2Panel, BorderLayout.WEST);
-		k3Panel.add(expListComboBox, BorderLayout.CENTER);
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
+		flowLayout.setVgap(0);
+		JPanel leftPanel = new JPanel(flowLayout);
+		leftPanel.add(text);
+		leftPanel.add(previousButton);
 		
-		PopupPanel capPopupPanel = new PopupPanel(string);
-		JPanel capPanel = capPopupPanel.getMainPanel();
-		capPanel.setLayout(new BorderLayout());
-			
+		BorderLayout borderlayout1 = new BorderLayout();
+		JPanel sequencePanel = new JPanel(borderlayout1);
+		sequencePanel.add(leftPanel, BorderLayout.LINE_START);
+		
+		sequencePanel.add(nextButton, BorderLayout.LINE_END);
+		sequencePanel.add(expListComboBox, BorderLayout.CENTER);
+		expListComboBox.setPrototypeDisplayValue("XXXXXXXXxxxxxxxxxxxxxxxxx______________XXXXXXXXXXXXXXXXXXX");
+		
+		PopupPanel capPopupPanel = new PopupPanel(string);			
 		capPopupPanel.expand();
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 		GridLayout tabsLayout = new GridLayout(3, 1);
@@ -102,7 +103,11 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		tabClose.addPropertyChangeListener(this);
 
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		capPanel.add(k3Panel, BorderLayout.PAGE_START);
+		
+		JPanel capPanel = capPopupPanel.getMainPanel();
+		BorderLayout borderlayout2 = new BorderLayout();
+		capPanel.setLayout(borderlayout2);
+		capPanel.add(sequencePanel, BorderLayout.PAGE_START);
 		capPanel.add(tabsPane, BorderLayout.PAGE_END);	
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() {
@@ -114,7 +119,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			}
 		});
 
-		defineActionListeners();
+		defineActionListeners();		
 	}
 	
 	private void defineActionListeners() {
@@ -303,14 +308,11 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	void updateBrowseInterface() {
-		int isel = expListComboBox.getSelectedIndex();
-		int nitems = expListComboBox.getItemCount();
-		
+		int isel = expListComboBox.getSelectedIndex();		
 	    boolean flag1 = (isel == 0? false: true);
 		boolean flag2 = (isel == (expListComboBox.getItemCount() -1)? false: true);
 		previousButton.setEnabled(flag1);
 		nextButton.setEnabled(flag2);
-		numFile .setText((isel+1)+"/"+nitems);
 	}
 	
 	void transferExperimentNamesToExpList(ExperimentList expList, boolean clearOldList) {
