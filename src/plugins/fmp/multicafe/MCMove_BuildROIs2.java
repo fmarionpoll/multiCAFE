@@ -49,7 +49,6 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
 	
 	private OverlayThreshold 	ov 				= null;
-	private	ROI2DPolygon 		roiArea 		= null;
 	private MultiCAFE 			parent0			= null;
 	
 	
@@ -148,11 +147,10 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 	
 	private void create2DPolygon(Experiment exp) {
 		final String dummyname = "perimeter_enclosing";
-		ArrayList<ROI2D> listRois = exp.seqCamData.seq.getROI2Ds();
-		for (ROI2D roi: listRois) {
-			if (roi.getName() .equals(dummyname))
-				return;
-		}
+		ROI2DPolygon roiArea = findRoiArea(exp);
+		if (roiArea != null)
+			return;
+				
 		Rectangle rect = exp.seqCamData.seq.getBounds2D();
 		List<Point2D> points = new ArrayList<Point2D>();
 		int rectleft = rect.x + rect.width /6;
@@ -179,8 +177,19 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		exp.seqCamData.seq.addROI(roiArea);
 		exp.seqCamData.seq.setSelectedROI(roiArea);
 	}
+	
+	private ROI2DPolygon findRoiArea(Experiment exp) {
+		final String dummyname = "perimeter_enclosing";
+		ArrayList<ROI2D> listRois = exp.seqCamData.seq.getROI2Ds();
+		for (ROI2D roi: listRois) {
+			if (roi.getName() .equals(dummyname))
+				return (ROI2DPolygon) roi;
+		}
+		return (ROI2DPolygon) null;
+	}
 		
 	private void createROIsFromSelectedPolygon(Experiment exp) {
+		ROI2DPolygon roiArea = findRoiArea(exp);
 		if (roiArea == null)
 			return;
 		if (exp.seqCamData.cacheThresholdedImage == null)
@@ -193,8 +202,11 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		int [] binaryData = img.getDataXYAsInt(0);
 		int sizeX = img.getSizeX();
 		int sizeY = img.getSizeY();
-		getPixelsConnected (sizeX, sizeY, binaryData);
+		int nblobs = getPixelsConnected (sizeX, sizeY, binaryData);
+		System.out.println("n pixel areas found=" + nblobs);
 		getBlobsConnected(sizeX, sizeY, binaryData);
+		List<Integer> list = getListOfBlobs (binaryData);
+		System.out.println("n blobs found=" + list.size());
 		
 		int i = 0;
 		for (Capillary cap : exp.capillaries.capillariesArrayList) {
@@ -202,10 +214,10 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 			if (pt != null) {
 				int ix = (int) (pt.getX() - rectGrid.x);
 				int iy = (int) (pt.getY() - rectGrid.y);
-				System.out.println("ptX=" + pt.getX()+ "ptY=" + pt.getY() + "ix = "+ix+" iy = "+iy);
 				int blobi = binaryData[ix + sizeX*iy];
-				System.out.println("i="+ i+ ": ptX=" + pt.getX()+ "ptY=" + pt.getY() + "ix = "+ix+" iy = "+iy + "blobi="+blobi);
+				System.out.println("i="+ i+ ": ptX=" + (int)pt.getX()+ " ptY=" + (int)pt.getY() + " ix = "+ix+" iy = "+iy + " blobi="+blobi);
 				Rectangle leafBlobRect = getBlobRectangle(blobi, sizeX, sizeY, binaryData);
+				leafBlobRect.translate(rectGrid.x, rectGrid.y);
 				ROI2DRectangle roiP = new ROI2DRectangle(leafBlobRect);
 				roiP.setName("xcage_" + blobi);
 				roiP.setColor(Color.RED);
@@ -215,12 +227,11 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		}
 	}
 	
-	
 	private int getPixelsConnected (int sizeX, int sizeY, int [] binaryData) {
 		byte blobnumber = 1;
 		for (int iy= 0; iy < sizeY; iy++) {
 			for (int ix = 0; ix < sizeX; ix++) {					
-				if (binaryData[ix + sizeX*iy] < 0) 
+				if (binaryData[ix + sizeX*iy] < 1) 
 					continue;
 				int ioffset = ix + sizeX*iy;
 				int ioffsetpreviousrow = ix + sizeX*(iy-1);
@@ -263,6 +274,23 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 						changeAllBlobNumber1Into2 (binaryData[ioffset-1], val, binaryData) ;					
 			}
 		}
+	}
+	
+	private List<Integer> getListOfBlobs (int [] binaryData) {
+		List<Integer> list = new ArrayList<Integer> (10);
+		for (int i=0; i< binaryData.length; i++) {
+			int val = binaryData[i];
+			boolean found = false;
+			for (int ref: list) {
+				if (val == ref) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) 
+				list.add(val);
+		}
+		return list;
 	}
 	
 	private void changeAllBlobNumber1Into2 (int oldvalue, int newvalue, int [] binaryData) {
