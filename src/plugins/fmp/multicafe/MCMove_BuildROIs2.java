@@ -86,7 +86,7 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 			}});
 		
 		overlayCheckBox.addItemListener(new ItemListener() {
-		      public void itemStateChanged(ItemEvent e) {
+			public void itemStateChanged(ItemEvent e) {
 	    	  	Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 	    	  	if (exp != null) {
 		  			if (overlayCheckBox.isSelected()) {
