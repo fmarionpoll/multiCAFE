@@ -204,7 +204,7 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		int sizeY = img.getSizeY();
 		int nblobs = getPixelsConnected (sizeX, sizeY, binaryData);
 		System.out.println("n pixel areas found=" + nblobs);
-		getBlobsConnected(sizeX, sizeY, binaryData);
+		//getBlobsConnected(sizeX, sizeY, binaryData);
 		List<Integer> list = getListOfBlobs (binaryData);
 		System.out.println("n blobs found=" + list.size());
 		
@@ -230,7 +230,7 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 	private int getPixelsConnected (int sizeX, int sizeY, int [] binaryData) {
 		byte blobnumber = 1;
 		for (int iy= 0; iy < sizeY; iy++) {
-			for (int ix = 0; ix < sizeX; ix++) {					
+			for (int ix = 0; ix < sizeX; ix++) {
 				if (binaryData[ix + sizeX*iy] < 1) 
 					continue;
 				int ioffset = ix + sizeX*iy;
@@ -255,7 +255,7 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 	private void getBlobsConnected (int sizeX, int sizeY, int[] binaryData) {
 		for (int iy= 0; iy < sizeY; iy++) {
 			for (int ix = 0; ix < sizeX; ix++) {					
-				if (binaryData[ix + sizeX*iy] < 0) 
+				if (binaryData[ix + sizeX*iy] < 1) 
 					continue;
 				int ioffset = ix + sizeX*iy;
 				int ioffsetpreviousrow = ix + sizeX*(iy-1);
