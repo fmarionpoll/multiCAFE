@@ -26,8 +26,9 @@ import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.roi.ROI2D;
-import plugins.kernel.roi.roi2d.ROI2DEllipse;
+import icy.type.DataType;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
+import plugins.kernel.roi.roi2d.ROI2DRectangle;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
@@ -44,6 +45,7 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 	private JButton createROIsFromPolygonButton = new JButton("Create/add (from Polygon 2D)");
 	private JSpinner thresholdSpinner 			= new JSpinner(new SpinnerNumberModel(60, 0, 10000, 1));
 	private JCheckBox overlayCheckBox			= new JCheckBox("Overlay ", false);
+	private JCheckBox whiteBackGroundCheckBox	= new JCheckBox("white background", false);
 	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
 	
 	private OverlayThreshold 	ov 				= null;
@@ -60,7 +62,7 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		JLabel videochannel = new JLabel("video channel ");
 		videochannel.setHorizontalAlignment(SwingConstants.RIGHT);
 		colorChannelComboBox.setSelectedIndex(2);
-		add( GuiUtil.besidesPanel( videochannel, colorChannelComboBox, new JLabel(" "), new JLabel(" ")));
+		add( GuiUtil.besidesPanel( videochannel, colorChannelComboBox, whiteBackGroundCheckBox, new JLabel(" ")));
 		add( GuiUtil.besidesPanel( overlayCheckBox,  thresholdSpinner, new JLabel(" "), new JLabel(" ")));
 		
 		defineActionListeners();
@@ -83,6 +85,13 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null)
 					create2DPolygon(exp);
+			}});
+		
+		whiteBackGroundCheckBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				if (exp != null)
+					updateOverlay(exp);
 			}});
 		
 		overlayCheckBox.addItemListener(new ItemListener() {
@@ -113,9 +122,12 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 			seqCamData.seq.removeOverlay(ov);
 			ov.setSequence(seqCamData);
 		}
+		exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
+		ov.setThresholdSingle(exp.cages.detect.threshold, whiteBackGroundCheckBox.isSelected());
+//		seqCamData.seq.overlayChanged(ov);
 		seqCamData.seq.addOverlay(ov);	
-		ov.setThresholdSingle(exp.cages.detect.threshold, false);
-		ov.painterChanged();
+		seqCamData.seq.dataChanged();
+		
 	}
 	
 	public void removeOverlay(Experiment exp) {
@@ -127,10 +139,8 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdSpinner) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			if (exp != null) {
-				exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
+			if (exp != null)
 				updateOverlay(exp);
-			}
 		}
 	}
 	
@@ -178,29 +188,35 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		exp.cages.removeAllRoiCagesFromSequence(exp.seqCamData);
 
 		Rectangle rectGrid = roiArea.getBounds();
-		IcyBufferedImage img = IcyBufferedImageUtil.getSubImage(exp.seqCamData.cacheThresholdedImage, rectGrid);
-		byte [] binaryData = img.getDataXYAsByte(0);
+		IcyBufferedImage img0 = IcyBufferedImageUtil.convertToType(exp.seqCamData.cacheThresholdedImage, DataType.INT, false);
+		IcyBufferedImage img = IcyBufferedImageUtil.getSubImage(img0, rectGrid);
+		int [] binaryData = img.getDataXYAsInt(0);
 		int sizeX = img.getSizeX();
 		int sizeY = img.getSizeY();
 		getPixelsConnected (sizeX, sizeY, binaryData);
 		getBlobsConnected(sizeX, sizeY, binaryData);
 		
+		int i = 0;
 		for (Capillary cap : exp.capillaries.capillariesArrayList) {
 			Point2D pt = cap.getCapillaryTipWithinROI2D(roiArea);
 			if (pt != null) {
 				int ix = (int) (pt.getX() - rectGrid.x);
 				int iy = (int) (pt.getY() - rectGrid.y);
-				byte blobi = binaryData[ix + sizeX*iy];
+				System.out.println("ptX=" + pt.getX()+ "ptY=" + pt.getY() + "ix = "+ix+" iy = "+iy);
+				int blobi = binaryData[ix + sizeX*iy];
+				System.out.println("i="+ i+ ": ptX=" + pt.getX()+ "ptY=" + pt.getY() + "ix = "+ix+" iy = "+iy + "blobi="+blobi);
 				Rectangle leafBlobRect = getBlobRectangle(blobi, sizeX, sizeY, binaryData);
-				String name = "xcage_" + blobi;
-				ROI2DEllipse roiP = addLeafROIinGridRectangle (leafBlobRect, rectGrid, name);
+				ROI2DRectangle roiP = new ROI2DRectangle(leafBlobRect);
+				roiP.setName("xcage_" + blobi);
+				roiP.setColor(Color.RED);
 				exp.seqCamData.seq.addROI(roiP);
 			}
+			i++;
 		}
 	}
 	
 	
-	private int getPixelsConnected (int sizeX, int sizeY, byte [] binaryData) {
+	private int getPixelsConnected (int sizeX, int sizeY, int [] binaryData) {
 		byte blobnumber = 1;
 		for (int iy= 0; iy < sizeY; iy++) {
 			for (int ix = 0; ix < sizeX; ix++) {					
@@ -225,14 +241,14 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		return (int) blobnumber -1;
 	}
 	
-	private void getBlobsConnected (int sizeX, int sizeY, byte[] binaryData) {
+	private void getBlobsConnected (int sizeX, int sizeY, int[] binaryData) {
 		for (int iy= 0; iy < sizeY; iy++) {
 			for (int ix = 0; ix < sizeX; ix++) {					
 				if (binaryData[ix + sizeX*iy] < 0) 
 					continue;
 				int ioffset = ix + sizeX*iy;
 				int ioffsetpreviousrow = ix + sizeX*(iy-1);
-				byte val = binaryData[ioffset];
+				int val = binaryData[ioffset];
 				if ((iy > 0) && (ix > 0) && (binaryData[ioffsetpreviousrow-1] > 0)) 
 					if (binaryData[ioffsetpreviousrow-1] > val)
 						changeAllBlobNumber1Into2 (binaryData[ioffsetpreviousrow-1], val, binaryData) ;
@@ -249,14 +265,14 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		}
 	}
 	
-	private void changeAllBlobNumber1Into2 (byte oldvalue, byte newvalue, byte [] binaryData) {
+	private void changeAllBlobNumber1Into2 (int oldvalue, int newvalue, int [] binaryData) {
 		for (int i=0; i< binaryData.length; i++) {
 			if (binaryData[i] == oldvalue)
 				binaryData[i] = newvalue;
 		}
 	}
 	
-	private Rectangle getBlobRectangle(byte blobNumber, int sizeX, int sizeY, byte [] binaryData) {
+	private Rectangle getBlobRectangle(int blobNumber, int sizeX, int sizeY, int [] binaryData) {
 		Rectangle rect = new Rectangle(0, 0, 0, 0);
 		int [] arrayX = new int [sizeX];
 		int [] arrayY = new int [sizeY];
@@ -292,28 +308,7 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		return rect;
 	}
 	
-	private ROI2DEllipse addLeafROIinGridRectangle (Rectangle leafBlobRect, Rectangle rectGrid, String name) {
-		double xleft = rectGrid.getX()+ leafBlobRect.getX();
-		double xright = xleft + leafBlobRect.getWidth();
-		double ytop = rectGrid.getY() + leafBlobRect.getY();
-		double ybottom = ytop + leafBlobRect.getHeight();
-		
-		Point2D.Double point0 = new Point2D.Double (xleft , ytop);
-		Point2D.Double point1 = new Point2D.Double (xleft , ybottom);
-		Point2D.Double point2 = new Point2D.Double (xright , ybottom);
-		Point2D.Double point3 = new Point2D.Double (xright , ytop);
-		
-		List<Point2D> points = new ArrayList<>();
-		points.add(point0);
-		points.add(point1);
-		points.add(point2);
-		points.add(point3);
-		
-		ROI2DEllipse roiP = new ROI2DEllipse (points.get(0), points.get(2));
-		roiP.setName("leaf"+name);
-		roiP.setColor(Color.RED);
-		return roiP;
-	}
+
 		
 
 }
