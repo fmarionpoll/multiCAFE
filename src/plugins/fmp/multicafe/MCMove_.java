@@ -113,7 +113,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals("LOAD_DATA")) {
-			tabBuildROIs.updateFromSequence();
+			tabBuildROIs.updateNColumnsFieldFromSequence();
 		}
 	}
 

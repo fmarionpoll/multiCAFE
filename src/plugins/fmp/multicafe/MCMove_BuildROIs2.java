@@ -1,91 +1,148 @@
 package plugins.fmp.multicafe;
 
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-import icy.gui.frame.progress.AnnounceFrame;
 import icy.gui.util.GuiUtil;
-import icy.roi.ROI;
+import icy.image.IcyBufferedImage;
+import icy.image.IcyBufferedImageUtil;
 import icy.roi.ROI2D;
-import icy.type.geom.Polygon2D;
+import plugins.kernel.roi.roi2d.ROI2DEllipse;
+import plugins.kernel.roi.roi2d.ROI2DPolygon;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
-import plugins.fmp.multicafeTools.MulticafeTools;
-import plugins.kernel.roi.roi2d.ROI2DPolygon;
+import plugins.fmp.multicafeTools.OverlayThreshold;
 
-public class MCMove_BuildROIs2  extends JPanel {
+
+
+public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -121724000730795396L;
 	private JButton addPolygon2DButton 			= new JButton("Draw Polygon2D");
 	private JButton createROIsFromPolygonButton = new JButton("Create/add (from Polygon 2D)");
-	private JSpinner threshold 		= new JSpinner(new SpinnerNumberModel(20, 0, 10000, 1));
+	private JSpinner thresholdSpinner 			= new JSpinner(new SpinnerNumberModel(60, 0, 10000, 1));
+	private JCheckBox overlayCheckBox			= new JCheckBox("Overlay ", false);
+	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
 	
-	private int 	ncolumns 					= 10;
-	private int 	nrows 						= 1;
-	private int 	width_cage 					= 10;
-	private int 	width_interval 				= 2;
-
-	private MultiCAFE parent0;
+	private OverlayThreshold 	ov 				= null;
+	private	ROI2DPolygon 		roiArea 		= null;
+	private MultiCAFE 			parent0			= null;
+	
+	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
 		add( GuiUtil.besidesPanel(addPolygon2DButton, createROIsFromPolygonButton));
-		JLabel thresholdLabel = new JLabel("Threshold ");
-		add( GuiUtil.besidesPanel( thresholdLabel,  threshold, new JLabel(" "), new JLabel(" ")));
+		JLabel videochannel = new JLabel("video channel ");
+		videochannel.setHorizontalAlignment(SwingConstants.RIGHT);
+		colorChannelComboBox.setSelectedIndex(2);
+		add( GuiUtil.besidesPanel( videochannel, colorChannelComboBox, new JLabel(" "), new JLabel(" ")));
+		add( GuiUtil.besidesPanel( overlayCheckBox,  thresholdSpinner, new JLabel(" "), new JLabel(" ")));
 		
 		defineActionListeners();
+		thresholdSpinner.addChangeListener(this);
 	}
 	
 	private void defineActionListeners() {
-		
 		createROIsFromPolygonButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				addROISCreatedFromSelectedPolygon();
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				if (exp != null) {
+					createROIsFromSelectedPolygon(exp);
+					exp.cages.getCagesFromROIs(exp.seqCamData);
+					exp.cages.setFirstAndLastCageToZeroFly();
+				}
 			}});
 		
 		addPolygon2DButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				create2DPolygon();
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				if (exp != null)
+					create2DPolygon(exp);
 			}});
+		
+		overlayCheckBox.addItemListener(new ItemListener() {
+		      public void itemStateChanged(ItemEvent e) {
+	    	  	Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+	    	  	if (exp != null) {
+		  			if (overlayCheckBox.isSelected()) {
+						if (ov == null)
+							ov = new OverlayThreshold(exp.seqCamData);
+						exp.seqCamData.seq.addOverlay(ov);
+						updateOverlay(exp);
+					}
+					else
+						removeOverlay(exp);
+	    	  	}
+		      }});
+	}
+
+	// -----------------------------------
+
+	public void updateOverlay (Experiment exp) {
+		SequenceCamData seqCamData = exp.seqCamData;
+		if (seqCamData == null)
+			return;
+		if (ov == null) 
+			ov = new OverlayThreshold(seqCamData);
+		else {
+			seqCamData.seq.removeOverlay(ov);
+			ov.setSequence(seqCamData);
+		}
+		seqCamData.seq.addOverlay(ov);	
+		ov.setThresholdSingle(exp.cages.detect.threshold);
+		ov.painterChanged();
 	}
 	
-	void updateFromSequence() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp != null) {
-			int nrois = exp.cages.cageList.size();	
-			if (nrois > 0) {
-				ncolumns = nrois;
+	public void removeOverlay(Experiment exp) {
+		if (exp.seqCamData != null && exp.seqCamData.seq != null)
+			exp.seqCamData.seq.removeOverlay(ov);
+	}
+	
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if (e.getSource() == thresholdSpinner) {
+			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			if (exp != null) {
+				exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
+				updateOverlay(exp);
 			}
 		}
 	}
-
-	private void create2DPolygon() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp == null)
-			return;
-		final String dummyname = "perimeter_enclosing_capillaries";
+	
+	// -----------------------------------
+	
+	private void create2DPolygon(Experiment exp) {
+		final String dummyname = "perimeter_enclosing";
 		ArrayList<ROI2D> listRois = exp.seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName() .equals(dummyname))
 				return;
 		}
-
 		Rectangle rect = exp.seqCamData.seq.getBounds2D();
 		List<Point2D> points = new ArrayList<Point2D>();
 		int rectleft = rect.x + rect.width /6;
@@ -102,136 +159,161 @@ public class MCMove_BuildROIs2  extends JPanel {
 			rectright += diff;
 			recttop = bound0.y+ bound0.height- (bound0.height /8);
 		}
-		
 		points.add(new Point2D.Double(rectleft, recttop));
 		points.add(new Point2D.Double(rectright, recttop));
 		points.add(new Point2D.Double(rectright, rect.y + rect.height - 4));
 		points.add(new Point2D.Double(rectleft, rect.y + rect.height - 4 ));
-		ROI2DPolygon roi = new ROI2DPolygon(points);
-		roi.setName(dummyname);
-		exp.seqCamData.seq.addROI(roi);
-		exp.seqCamData.seq.setSelectedROI(roi);
+		
+		roiArea = new ROI2DPolygon(points);
+		roiArea.setName(dummyname);
+		exp.seqCamData.seq.addROI(roiArea);
+		exp.seqCamData.seq.setSelectedROI(roiArea);
 	}
 		
-	private void addROISCreatedFromSelectedPolygon() {
-		// read values from text boxes
-		try { 
-			ncolumns = 20;
-			nrows = 1;
-			width_cage = 20;
-			width_interval = 3;
-		} 
-		catch( Exception e ) { 
-			new AnnounceFrame("Can't interpret one of the ROI parameters value"); 
-		}
+	private void createROIsFromSelectedPolygon(Experiment exp) {
+		if (roiArea == null)
+			return;
+		if (exp.seqCamData.cacheThresholdedImage == null)
+			return;
+		exp.cages.removeAllRoiCagesFromSequence(exp.seqCamData);
 
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp == null)
-			return;
-		SequenceCamData seqCamData = exp.seqCamData;
-		ROI2D roi = seqCamData.seq.getSelectedROI2D();
-		if ( ! ( roi instanceof ROI2DPolygon ) || roi.getName().contains("cage")) {
-			if ( ! ( roi instanceof ROI2DPolygon ) ) 
-				new AnnounceFrame("The frame must be a ROI2D POLYGON");
-			if (roi.getName().contains("cage")) 
-				new AnnounceFrame("The roi name should not contain -cage-");
-			return;
-		}
+		Rectangle rectGrid = roiArea.getBounds();
+		IcyBufferedImage img = IcyBufferedImageUtil.getSubImage(exp.seqCamData.cacheThresholdedImage, rectGrid);
+		byte [] binaryData = img.getDataXYAsByte(0);
+		int sizeX = img.getSizeX();
+		int sizeY = img.getSizeY();
+		getPixelsConnected (sizeX, sizeY, binaryData);
+		getBlobsConnected(sizeX, sizeY, binaryData);
 		
-		Polygon2D roiPolygonMin = MulticafeTools.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
-		seqCamData.seq.removeROI(roi);
-
-		// generate cage frames
-		String cageRoot = "cage";
-		int iRoot = -1;
-		for (ROI iRoi: seqCamData.seq.getROIs()) {
-			if (iRoi.getName().contains(cageRoot)) {
-				String left = iRoi.getName().substring(4);
-				int item = Integer.parseInt(left);
-				iRoot = Math.max(iRoot, item);
+		for (Capillary cap : exp.capillaries.capillariesArrayList) {
+			Point2D pt = cap.getCapillaryTipWithinROI2D(roiArea);
+			if (pt != null) {
+				int ix = (int) (pt.getX() - rectGrid.x);
+				int iy = (int) (pt.getY() - rectGrid.y);
+				byte blobi = binaryData[ix + sizeX*iy];
+				Rectangle leafBlobRect = getBlobRectangle(blobi, sizeX, sizeY, binaryData);
+				String name = "xcage_" + blobi;
+				ROI2DEllipse roiP = addLeafROIinGridRectangle (leafBlobRect, rectGrid, name);
+				exp.seqCamData.seq.addROI(roiP);
 			}
 		}
-		iRoot++;
-		
-		Polygon2D roiPolygon = MulticafeTools.inflate( roiPolygonMin, ncolumns, nrows, width_cage, width_interval);
-		
-		double deltax_top = (roiPolygon.xpoints[3]- roiPolygon.xpoints[0]) / ncolumns;
-		double deltax_bottom = (roiPolygon.xpoints[2]- roiPolygon.xpoints[1]) / ncolumns;
-		double deltay_top = (roiPolygon.ypoints[3]- roiPolygon.ypoints[0]) / ncolumns ;
-		double deltay_bottom = (roiPolygon.ypoints[2]- roiPolygon.ypoints[1]) / ncolumns;
-		
-		for (int i=0; i< ncolumns; i++) {
-			double x0i = roiPolygon.xpoints[0] + deltax_top * i;
-			double x1i = roiPolygon.xpoints[1] + deltax_bottom * i;
-			double x3i = x0i + deltax_top;
-			double x2i = x1i + deltax_bottom;
-			
-			double y0i = roiPolygon.ypoints[0] + deltay_top * i ;
-			double y1i = roiPolygon.ypoints[1] + deltay_bottom * i ;
-			double y3i = y0i + deltay_top ;
-			double y2i = y1i + deltay_bottom;
-			
-			for (int j = 0; j < nrows; j++) {
-				double deltax_left = (x1i - x0i) / nrows;
-				double deltax_right = (x2i - x3i) / nrows;
-				double deltay_left = (y1i - y0i) / nrows;
-				double deltay_right = (y2i - y3i) / nrows;
-				
-				double x0ij = x0i + deltax_left *j;
-				double x1ij = x0ij + deltax_left;
-				double x3ij = x3i + deltax_right * j;
-				double x2ij = x3ij + deltax_right;
-				
-				double y0ij = y0i + deltay_left * j;
-				double y1ij = y0ij + deltay_left ;
-				double y3ij = y3i + deltay_right * j;
-				double y2ij = y3ij + deltay_right;
-				
-				// shrink by
-				double xspacer_top =  (x3ij - x0ij) * width_interval / (width_cage + 2 * width_interval);				
-				double xspacer_bottom = (x2ij - x1ij) * width_interval / (width_cage + 2 * width_interval);
-				double yspacer_left =  (y1ij - y0ij) * width_interval / (width_cage + 2 * width_interval);				
-				double yspacer_right = (y2ij - y3ij) * width_interval / (width_cage + 2 * width_interval);
-				
-				// define intersection
-				List<Point2D> points = new ArrayList<>();
-
-				Point2D point0 = MulticafeTools.lineIntersect(
-						x0ij + xspacer_top, 	y0ij, 
-						x1ij + xspacer_bottom, 	y1ij,  
-						x0ij, 					y0ij + yspacer_left, 
-						x3ij, 					y3ij + yspacer_right);
-				points.add(point0);
-
-				Point2D point1 = MulticafeTools.lineIntersect(
-						x1ij, 					y1ij - yspacer_left, 
-						x2ij, 					y2ij - yspacer_right,  
-						x0ij + xspacer_top, 	y0ij, 
-						x1ij+ xspacer_bottom, 	y1ij);
-				points.add(point1);
-
-				Point2D point2 = MulticafeTools.lineIntersect(
-						x1ij, 					y1ij - yspacer_left, 
-						x2ij, 					y2ij - yspacer_right, 
-						x3ij-xspacer_top, 		y3ij, 
-						x2ij-xspacer_bottom, 	y2ij);
-				points.add(point2);
-
-				Point2D point3 = MulticafeTools.lineIntersect(
-						x0ij, 					y0ij + yspacer_left, 
-						x3ij, 					y3ij + yspacer_right, 
-						x3ij-xspacer_top, 		y3ij, 
-						x2ij-xspacer_bottom, 	y2ij);
-				points.add(point3);
+	}
 	
-				ROI2DPolygon roiP = new ROI2DPolygon (points);
-				roiP.setName(cageRoot+String.format("%03d", iRoot));
-				iRoot++;
-				seqCamData.seq.addROI(roiP);
+	
+	private int getPixelsConnected (int sizeX, int sizeY, byte [] binaryData) {
+		byte blobnumber = 1;
+		for (int iy= 0; iy < sizeY; iy++) {
+			for (int ix = 0; ix < sizeX; ix++) {					
+				if (binaryData[ix + sizeX*iy] < 0) 
+					continue;
+				int ioffset = ix + sizeX*iy;
+				int ioffsetpreviousrow = ix + sizeX*(iy-1);
+				if ((iy > 0) && (ix > 0) && (binaryData[ioffsetpreviousrow-1] > 0)) 
+					binaryData[ioffset] = binaryData[ioffsetpreviousrow-1];
+				else if ((iy > 0) && (binaryData[ioffsetpreviousrow] > 0))
+					binaryData[ioffset] = binaryData[ioffsetpreviousrow];
+				else if ((iy > 0) && ((ix+1) < sizeX) &&  (binaryData[ioffsetpreviousrow+1] > 0))
+					binaryData[ioffset] = binaryData[ioffsetpreviousrow+1];
+				else if ((ix > 0) && (binaryData[ioffset-1] > 0))
+					binaryData[ioffset] = binaryData[ioffset-1];
+				else { // new blob number
+					binaryData[ioffset] = blobnumber;
+					blobnumber++;
+				}						
 			}
 		}
-		exp.cages.getCagesFromROIs(seqCamData);
-		exp.cages.setFirstAndLastCageToZeroFly();
+		return (int) blobnumber -1;
 	}
+	
+	private void getBlobsConnected (int sizeX, int sizeY, byte[] binaryData) {
+		for (int iy= 0; iy < sizeY; iy++) {
+			for (int ix = 0; ix < sizeX; ix++) {					
+				if (binaryData[ix + sizeX*iy] < 0) 
+					continue;
+				int ioffset = ix + sizeX*iy;
+				int ioffsetpreviousrow = ix + sizeX*(iy-1);
+				byte val = binaryData[ioffset];
+				if ((iy > 0) && (ix > 0) && (binaryData[ioffsetpreviousrow-1] > 0)) 
+					if (binaryData[ioffsetpreviousrow-1] > val)
+						changeAllBlobNumber1Into2 (binaryData[ioffsetpreviousrow-1], val, binaryData) ;
+				else if ((iy > 0) && (binaryData[ioffsetpreviousrow] > 0))
+					if (binaryData[ioffsetpreviousrow] > val)
+						changeAllBlobNumber1Into2 (binaryData[ioffsetpreviousrow], val, binaryData) ;
+				else if ((iy > 0) && ((ix+1) < sizeX) &&  (binaryData[ioffsetpreviousrow+1] > 0))
+					if (binaryData[ioffsetpreviousrow+1] > val)
+						changeAllBlobNumber1Into2 (binaryData[ioffsetpreviousrow+1], val, binaryData) ;
+				else if ((ix>0) && (binaryData[ioffset-1] > 0))
+					if (binaryData[ioffset-1] > val)
+						changeAllBlobNumber1Into2 (binaryData[ioffset-1], val, binaryData) ;					
+			}
+		}
+	}
+	
+	private void changeAllBlobNumber1Into2 (byte oldvalue, byte newvalue, byte [] binaryData) {
+		for (int i=0; i< binaryData.length; i++) {
+			if (binaryData[i] == oldvalue)
+				binaryData[i] = newvalue;
+		}
+	}
+	
+	private Rectangle getBlobRectangle(byte blobNumber, int sizeX, int sizeY, byte [] binaryData) {
+		Rectangle rect = new Rectangle(0, 0, 0, 0);
+		int [] arrayX = new int [sizeX];
+		int [] arrayY = new int [sizeY];
+		for (int iy= 0; iy < sizeY; iy++) {
+			for (int ix = 0; ix < sizeX; ix++) {					
+				if (binaryData[ix + sizeX*iy] != blobNumber) 
+					continue;
+				arrayX[ix] ++;
+				arrayY[iy]++;
+			}
+		}
+		for (int i=0; i< sizeX; i++)
+			if (arrayX[i] > 0) {
+				rect.x = i;
+				break;
+			}
+		for (int i = sizeX-1; i >=0; i--)
+			if (arrayX[i] > 0) {
+				rect.width = i-rect.x +1;
+				break;
+			}
+		
+		for (int i=0; i< sizeY; i++)
+			if (arrayY[i] > 0) {
+				rect.y = i;
+				break;
+			}
+		for (int i = sizeY-1; i >=0; i--)
+			if (arrayY[i] > 0) {
+				rect.height = i-rect.y +1;
+				break;
+			}
+		return rect;
+	}
+	
+	private ROI2DEllipse addLeafROIinGridRectangle (Rectangle leafBlobRect, Rectangle rectGrid, String name) {
+		double xleft = rectGrid.getX()+ leafBlobRect.getX();
+		double xright = xleft + leafBlobRect.getWidth();
+		double ytop = rectGrid.getY() + leafBlobRect.getY();
+		double ybottom = ytop + leafBlobRect.getHeight();
+		
+		Point2D.Double point0 = new Point2D.Double (xleft , ytop);
+		Point2D.Double point1 = new Point2D.Double (xleft , ybottom);
+		Point2D.Double point2 = new Point2D.Double (xright , ybottom);
+		Point2D.Double point3 = new Point2D.Double (xright , ytop);
+		
+		List<Point2D> points = new ArrayList<>();
+		points.add(point0);
+		points.add(point1);
+		points.add(point2);
+		points.add(point3);
+		
+		ROI2DEllipse roiP = new ROI2DEllipse (points.get(0), points.get(2));
+		roiP.setName("leaf"+name);
+		roiP.setColor(Color.RED);
+		return roiP;
+	}
+		
 
 }

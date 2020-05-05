@@ -2,6 +2,7 @@ package plugins.fmp.multicafeSequence;
 
 
 import java.awt.Color;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -13,12 +14,14 @@ import icy.file.xml.XMLPersistent;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
+import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
 
 import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.EnumXLSExportType;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.DetectLevels_Options;
+import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
@@ -88,6 +91,14 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public Capillary() {
 	}
 
+	@Override
+	public int compareTo(Capillary o) {
+		int compareValue = this.capillaryName.compareTo(o.capillaryName);
+		return compareValue;
+	}
+	
+	// ------------------------------------------
+	
 	public void copy(Capillary cap) {
 		indexImage 		= cap.indexImage;
 		capillaryName 	= cap.capillaryName;
@@ -162,6 +173,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		}
 		return value;
 	}
+	
+	// -----------------------------------------
 	
 	public boolean isThereAnyMeasuresDone(EnumListType option) {
 		boolean yes = false;
@@ -465,10 +478,25 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
         return null;
 	}
 
-	@Override
-	public int compareTo(Capillary o) {
-		int compareValue = this.capillaryName.compareTo(o.capillaryName);
-		return compareValue;
+	// -------------------------------------------
+	
+	public Point2D getCapillaryTipWithinROI2D (ROI2D roi2D) {
+		Point2D pt = null;		
+		if (roi instanceof ROI2DPolyLine) {
+			Polyline2D line = (( ROI2DPolyLine) roi).getPolyline2D();
+			int last = line.npoints - 1;
+			if (roi2D.contains(line.xpoints[0],  line.ypoints[0]))
+				pt = new Point2D.Double(line.xpoints[0],  line.ypoints[0]);
+			else if (roi2D.contains(line.xpoints[last],  line.ypoints[last])) 
+				pt = new Point2D.Double(line.xpoints[last],  line.ypoints[last]);
+		} else if (roi instanceof ROI2DLine) {
+			Line2D line = (( ROI2DLine) roi).getLine();
+			if (roi2D.contains(line.getP1()))
+				pt = line.getP1();
+			else if (roi2D.contains(line.getP2())) 
+				pt = line.getP2();
+		}
+		return pt;
 	}
 
 }

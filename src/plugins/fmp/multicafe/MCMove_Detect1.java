@@ -40,25 +40,25 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	 */
 	private static final long serialVersionUID = 6066671006689527651L;
 
-	private MultiCAFE parent0;
-	private String detectString 			= "Detect";
-	private JButton startComputationButton 	= new JButton(detectString);
+	private MultiCAFE 	parent0					= null;
+	private String 		detectString 			= "Detect";
+	private JButton 	startComputationButton 	= new JButton(detectString);
 
 	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
 	private JComboBox<TransformOp> backgroundComboBox = new JComboBox<> (new TransformOp[]  {TransformOp.NONE, TransformOp.REF_PREVIOUS, TransformOp.REF_T0});
-	private JSpinner thresholdSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 10));
-	private JSpinner jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 255, 1));
-	private JCheckBox objectLowsizeCheckBox = new JCheckBox("object > ");
-	private JSpinner objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
-	private JCheckBox objectUpsizeCheckBox 	= new JCheckBox("object < ");
-	private JSpinner objectUpsizeSpinner	= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
-	private JCheckBox whiteMiceCheckBox 	= new JCheckBox("white object");
-	JCheckBox overlayCheckBox 				= new JCheckBox("overlay");
-	private JCheckBox ALLCheckBox 			= new JCheckBox("ALL series", false);
+	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 10));
+	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 255, 1));
+	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object > ");
+	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
+	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object < ");
+	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
+	private JCheckBox 	whiteMiceCheckBox 		= new JCheckBox("white object");
+	JCheckBox 			overlayCheckBox 		= new JCheckBox("overlay");
+	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
 	
-	private OverlayThreshold 	ov 			= null;
-	private DetectFlies1_series thread 		= null;
-	private int 				currentExp 	= -1;
+	private OverlayThreshold 	ov 				= null;
+	private DetectFlies1_series thread 			= null;
+	private int 				currentExp 		= -1;
 
 	// -----------------------------------------------------
 	
@@ -98,15 +98,17 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	private void defineActionListeners() {
 		overlayCheckBox.addItemListener(new ItemListener() {
 		      public void itemStateChanged(ItemEvent e) {
-	    	  	Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-	  			if (overlayCheckBox.isSelected() && exp != null) {
-					if (ov == null)
-						ov = new OverlayThreshold(exp.seqCamData);
-					exp.seqCamData.seq.addOverlay(ov);
-					updateOverlay();
-				}
-				else
-					removeOverlay();
+		    	  Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		    	  	if (exp != null) {
+			  			if (overlayCheckBox.isSelected()) {
+							if (ov == null)
+								ov = new OverlayThreshold(exp.seqCamData);
+							exp.seqCamData.seq.addOverlay(ov);
+							updateOverlay(exp);
+						}
+						else
+							removeOverlay(exp);
+		    	  	}
 		      }});
 
 		startComputationButton.addActionListener(new ActionListener () {
@@ -127,27 +129,23 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 		}});
 	}
 	
-	public void updateOverlay () {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp != null) {
-			SequenceCamData seqCamData = exp.seqCamData;
-			if (seqCamData == null)
-				return;
-			if (ov == null) 
-				ov = new OverlayThreshold(seqCamData);
-			else {
-				seqCamData.seq.removeOverlay(ov);
-				ov.setSequence(seqCamData);
-			}
-			seqCamData.seq.addOverlay(ov);	
-			ov.setThresholdSingle(exp.cages.detect.threshold);
-			ov.painterChanged();
+	public void updateOverlay (Experiment exp) {
+		SequenceCamData seqCamData = exp.seqCamData;
+		if (seqCamData == null)
+			return;
+		if (ov == null) 
+			ov = new OverlayThreshold(seqCamData);
+		else {
+			seqCamData.seq.removeOverlay(ov);
+			ov.setSequence(seqCamData);
 		}
+		seqCamData.seq.addOverlay(ov);	
+		ov.setThresholdSingle(exp.cages.detect.threshold);
+		ov.painterChanged();	
 	}
 	
-	public void removeOverlay() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp != null && exp.seqCamData != null && exp.seqCamData.seq != null)
+	public void removeOverlay(Experiment exp) {
+		if (exp.seqCamData != null && exp.seqCamData.seq != null)
 			exp.seqCamData.seq.removeOverlay(ov);
 	}
 
@@ -155,9 +153,10 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdSpinner) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			if (exp != null)
+			if (exp != null) {
 				exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
-			updateOverlay();
+				updateOverlay(exp);
+			}
 		}
 	}
 	

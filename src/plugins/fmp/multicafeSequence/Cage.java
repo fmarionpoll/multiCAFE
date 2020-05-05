@@ -1,6 +1,5 @@
 package plugins.fmp.multicafeSequence;
 
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -10,11 +9,10 @@ import org.w3c.dom.Node;
 
 import icy.roi.ROI;
 import icy.roi.ROI2D;
-import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
-import plugins.kernel.roi.roi2d.ROI2DLine;
-import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
+
+
 
 public class Cage {
 	public ROI2D 			roi					= null;
@@ -109,20 +107,9 @@ public class Cage {
 	public Point2D getCenterTipCapillaries(Capillaries capList) {
 		List<Point2D> listpts = new ArrayList<Point2D>();
 		for (Capillary cap: capList.capillariesArrayList) {
-			if (cap.roi instanceof ROI2DPolyLine) {
-				Polyline2D line = (( ROI2DPolyLine) cap.roi).getPolyline2D();
-				int last = line.npoints - 1;
-				if (roi.contains(line.xpoints[0],  line.ypoints[0]))
-					listpts.add(new Point2D.Double(line.xpoints[0],  line.ypoints[0]));
-				if (roi.contains(line.xpoints[last],  line.ypoints[last])) 
-					listpts.add(new Point2D.Double(line.xpoints[last],  line.ypoints[last]));
-			} else if (cap.roi instanceof ROI2DLine) {
-				Line2D line = (( ROI2DLine) cap.roi).getLine();
-				if (roi.contains(line.getP1()))
-					listpts.add(line.getP1());
-				if (roi.contains(line.getP2())) 
-					listpts.add(line.getP2());
-			}
+			Point2D pt = cap.getCapillaryTipWithinROI2D(roi);
+			if (pt != null)
+				listpts.add(pt);
 		}
 		double x = 0;
 		double y = 0;

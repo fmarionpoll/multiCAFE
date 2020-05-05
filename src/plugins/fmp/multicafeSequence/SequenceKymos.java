@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-
 import loci.formats.FormatException;
 import ome.xml.meta.OMEXMLMetadata;
 
@@ -28,20 +25,14 @@ import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
 
-import plugins.fmp.multicafeTools.OverlayThreshold;
-import plugins.fmp.multicafeTools.OverlayTrapMouse;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.fmp.multicafeTools.Comparators;
-import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
 
 public class SequenceKymos extends SequenceCamData  {	
-	public 	OverlayThreshold thresholdOverlay 		= null;
-	public 	OverlayTrapMouse trapOverlay 			= null;
-	
 	public boolean 			isRunning_loadImages 	= false;
 	public boolean 			isInterrupted_loadImages = false;
 	public int 				imageWidthMax 			= 0;
@@ -439,48 +430,5 @@ public class SequenceKymos extends SequenceCamData  {
 		return array;
 	}
 
-	// ----------------------------
-	
-	public void setThresholdOverlay(boolean bActive) {
-		if (bActive) {
-			if (thresholdOverlay == null) 
-				thresholdOverlay = new OverlayThreshold(this);
-			if (!seq.contains(thresholdOverlay)) 
-				seq.addOverlay(thresholdOverlay);
-			thresholdOverlay.setSequence (this);
-		}
-		else {
-			if (thresholdOverlay != null && seq.contains(thresholdOverlay) )
-				seq.removeOverlay(thresholdOverlay);
-			thresholdOverlay = null;
-		}
-	}
-	
-	public void setThresholdOverlayParametersSingle(TransformOp transf, int threshold) {
-		thresholdOverlay.setTransform(transf);
-		thresholdOverlay.setThresholdSingle(threshold);
-		thresholdOverlay.painterChanged();
-	}
-	
-	public void setThresholdOverlayParametersColors(TransformOp transf, ArrayList <Color> colorarray, int colordistancetype, int colorthreshold) {
-		thresholdOverlay.setTransform(transf);
-		thresholdOverlay.setThresholdColor(colorarray, colordistancetype, colorthreshold);
-		thresholdOverlay.painterChanged();
-	}
-
-	public void setMouseTrapOverlay (boolean bActive, JButton pickColorButton, JComboBox<Color> colorPickCombo) {
-		if (bActive) {
-			if (trapOverlay == null)
-				trapOverlay = new OverlayTrapMouse (pickColorButton, colorPickCombo);
-			if (!seq.contains(trapOverlay))
-				seq.addOverlay(trapOverlay);
-		}
-		else {
-			if (trapOverlay != null && seq.contains(trapOverlay))
-				seq.removeOverlay(trapOverlay);
-			trapOverlay = null;
-		}
-	}
-	
 	
 }

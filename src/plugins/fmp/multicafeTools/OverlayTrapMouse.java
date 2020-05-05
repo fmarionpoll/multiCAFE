@@ -4,6 +4,7 @@ import icy.canvas.IcyCanvas;
 import icy.canvas.IcyCanvas2D;
 import icy.image.IcyBufferedImage;
 import icy.type.point.Point5D;
+import plugins.fmp.multicafeSequence.SequenceCamData;
 import icy.painter.Overlay;
 import icy.painter.OverlayListener;
 import icy.sequence.Sequence;
@@ -29,6 +30,20 @@ public class OverlayTrapMouse extends Overlay
         super("Simple overlay");
     }
     
+	public void setMouseTrapOverlay (SequenceCamData seqCamData, boolean bActive, JButton pickColorButton, JComboBox<Color> colorPickCombo) {
+		if (bActive) {
+			if (seqCamData.trapOverlay == null)
+				seqCamData.trapOverlay = new OverlayTrapMouse (pickColorButton, colorPickCombo);
+			if (!seqCamData.seq.contains(seqCamData.trapOverlay))
+				seqCamData.seq.addOverlay(seqCamData.trapOverlay);
+		}
+		else {
+			if (seqCamData.trapOverlay != null && seqCamData.seq.contains(seqCamData.trapOverlay))
+				seqCamData.seq.removeOverlay(seqCamData.trapOverlay);
+			seqCamData.trapOverlay = null;
+		}
+	}
+	
     public OverlayTrapMouse(JButton pickColorButton, JComboBox<Color> colorPickCombo) {
     	super("overlay with Jbutton and JComboBox");
     	this.pickColorButton = pickColorButton;

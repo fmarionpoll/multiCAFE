@@ -12,6 +12,7 @@ import org.w3c.dom.Node;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
+
 import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.fmp.multicafeTools.Comparators;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
@@ -289,5 +290,19 @@ public class Cages {
 //		}
 //		Collections.sort(detectedFliesList, new Comparators.ROI2DNameComparator());
 //	}
+	
+	public int removeAllRoiCagesFromSequence(SequenceCamData seqCamData) {
+		String cageRoot = "cage";
+		int iRoot = -1;
+		for (ROI roi: seqCamData.seq.getROIs()) {
+			if (roi.getName().contains(cageRoot)) {
+				String left = roi.getName().substring(4);
+				int item = Integer.parseInt(left);
+				iRoot = Math.max(iRoot, item);
+			}
+		}
+		iRoot++;
+		return iRoot;
+	}
 	
 }

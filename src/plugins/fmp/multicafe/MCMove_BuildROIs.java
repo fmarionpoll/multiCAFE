@@ -17,7 +17,6 @@ import javax.swing.SwingConstants;
 
 import icy.gui.frame.progress.AnnounceFrame;
 import icy.gui.util.GuiUtil;
-import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.type.geom.Polygon2D;
 import plugins.fmp.multicafeSequence.Experiment;
@@ -67,16 +66,23 @@ public class MCMove_BuildROIs extends JPanel {
 		
 		createROIsFromPolygonButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				addROISCreatedFromSelectedPolygon();
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				if (exp != null) {
+					createROIsFromSelectedPolygon(exp);
+					exp.cages.getCagesFromROIs(exp.seqCamData);
+					exp.cages.setFirstAndLastCageToZeroFly();
+				}
 			}});
 		
 		addPolygon2DButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				create2DPolygon();
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				if (exp != null)
+					create2DPolygon(exp);
 			}});
 	}
 	
-	void updateFromSequence() {
+	void updateNColumnsFieldFromSequence() {
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp != null) {
 			int nrois = exp.cages.cageList.size();	
@@ -87,11 +93,8 @@ public class MCMove_BuildROIs extends JPanel {
 		}
 	}
 
-	private void create2DPolygon() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp == null)
-			return;
-		final String dummyname = "perimeter_enclosing_capillaries";
+	private void create2DPolygon(Experiment exp) {
+		final String dummyname = "perimeter_enclosing";
 		ArrayList<ROI2D> listRois = exp.seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName() .equals(dummyname))
@@ -125,7 +128,7 @@ public class MCMove_BuildROIs extends JPanel {
 		exp.seqCamData.seq.setSelectedROI(roi);
 	}
 		
-	private void addROISCreatedFromSelectedPolygon() {
+	private void createROIsFromSelectedPolygon(Experiment exp) {
 		// read values from text boxes
 		try { 
 			ncolumns = (int) nColumnsTextField.getValue();
@@ -137,9 +140,6 @@ public class MCMove_BuildROIs extends JPanel {
 			new AnnounceFrame("Can't interpret one of the ROI parameters value"); 
 		}
 
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-		if (exp == null)
-			return;
 		SequenceCamData seqCamData = exp.seqCamData;
 		ROI2D roi = seqCamData.seq.getSelectedROI2D();
 		if ( ! ( roi instanceof ROI2DPolygon ) || roi.getName().contains("cage")) {
@@ -154,16 +154,8 @@ public class MCMove_BuildROIs extends JPanel {
 		seqCamData.seq.removeROI(roi);
 
 		// generate cage frames
+		int iRoot = exp.cages.removeAllRoiCagesFromSequence(exp.seqCamData);
 		String cageRoot = "cage";
-		int iRoot = -1;
-		for (ROI iRoi: seqCamData.seq.getROIs()) {
-			if (iRoi.getName().contains(cageRoot)) {
-				String left = iRoi.getName().substring(4);
-				int item = Integer.parseInt(left);
-				iRoot = Math.max(iRoot, item);
-			}
-		}
-		iRoot++;
 		
 		Polygon2D roiPolygon = MulticafeTools.inflate( roiPolygonMin, ncolumns, nrows, width_cage, width_interval);
 		
@@ -242,8 +234,6 @@ public class MCMove_BuildROIs extends JPanel {
 				seqCamData.seq.addROI(roiP);
 			}
 		}
-		exp.cages.getCagesFromROIs(seqCamData);
-		exp.cages.setFirstAndLastCageToZeroFly();
 	}
 
 }
