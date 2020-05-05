@@ -13,7 +13,7 @@ public class ImageOperationsStruct {
 	int 				colorthreshold	= 0;
 	ArrayList <Color> 	colorarray 		= null;
 	TransformOp 		transformop		= TransformOp.NONE;
-	EnumThresholdType 		thresholdtype 	= EnumThresholdType.NONE;
+	EnumThresholdType 	thresholdtype 	= EnumThresholdType.NONE;
 		
 	// -----------------------------------
 	
@@ -53,7 +53,6 @@ public class ImageOperationsStruct {
 	}
 	
 	public void copyThresholdOpTo (ImageOperationsStruct op) {
-		
 		op.thresholdtype = thresholdtype;
 		if (thresholdtype == EnumThresholdType.SINGLE) {
 			op.simplethreshold = simplethreshold;

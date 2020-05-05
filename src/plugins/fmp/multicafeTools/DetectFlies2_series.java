@@ -120,7 +120,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 					viewerCamData.setBounds(rectv);
 					ov = new OverlayThreshold(exp.seqCamData);
 					exp.seqCamData.seq.addOverlay(ov);
-					ov.setThresholdSingle(exp.cages.detect.threshold);
+					ov.setThresholdSingle(exp.cages.detect.threshold, true);
 					ov.painterChanged();
 
 				}});

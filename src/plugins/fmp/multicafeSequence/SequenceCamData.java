@@ -613,9 +613,9 @@ public class SequenceCamData {
 		}
 	}
 	
-	public void setThresholdOverlayParametersSingle(TransformOp transf, int threshold) {
+	public void setThresholdOverlayParametersSingle(TransformOp transf, int threshold, boolean ifGreater) {
 		thresholdOverlay.setTransform(transf);
-		thresholdOverlay.setThresholdSingle(threshold);
+		thresholdOverlay.setThresholdSingle(threshold, ifGreater);
 		thresholdOverlay.painterChanged();
 	}
 	

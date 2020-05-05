@@ -140,7 +140,7 @@ public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyCh
 			ov.setSequence(seqCamData);
 		}
 		seqCamData.seq.addOverlay(ov);	
-		ov.setThresholdSingle(exp.cages.detect.threshold);
+		ov.setThresholdSingle(exp.cages.detect.threshold, true);
 		ov.painterChanged();	
 	}
 	

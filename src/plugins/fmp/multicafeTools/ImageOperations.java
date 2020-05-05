@@ -28,10 +28,10 @@ public class ImageOperations {
 		opTransf.transformop = transformop;
 	}
 	
-	public void setThresholdSingle( int threshold) {
+	public void setThresholdSingle( int threshold, boolean ifGreater) {
 		opThresh.thresholdtype = EnumThresholdType.SINGLE;
 		opThresh.simplethreshold = threshold;
-		imgThresh.setSingleThreshold(threshold);
+		imgThresh.setSingleThreshold(threshold, ifGreater);
 	}
 	
 	public void setColorArrayThreshold (ArrayList <Color> colorarray, int distanceType, int colorthreshold) {
@@ -83,7 +83,6 @@ public class ImageOperations {
 			thresholdedImage = imgThresh.getBinaryInt_FromColorsThreshold(transformedImage); 
 		else 
 			thresholdedImage = imgThresh.getBinaryInt_FromThreshold(transformedImage);
-
 		return thresholdedImage;
 	}
 

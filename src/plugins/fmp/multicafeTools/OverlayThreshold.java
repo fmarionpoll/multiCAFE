@@ -24,8 +24,7 @@ public class OverlayThreshold extends Overlay
 	
 	// ---------------------------------------------
 	
-	public OverlayThreshold()
-	{
+	public OverlayThreshold() {
 		super("ThresholdOverlay");	
 	}
 	
@@ -34,8 +33,7 @@ public class OverlayThreshold extends Overlay
 		setSequence(seq);
 	}
 	
-	public void setSequence (SequenceCamData seq)
-	{
+	public void setSequence (SequenceCamData seq) 	{
 		if (seq == null)
 			return;
 		if (imgOp == null)
@@ -47,19 +45,16 @@ public class OverlayThreshold extends Overlay
 		imgOp.setTransform( transf);
 	}
 	
-	public void setThresholdSingle (int threshold)
-	{
-		imgOp.setThresholdSingle(threshold);
+	public void setThresholdSingle (int threshold, boolean ifGreater) {
+		imgOp.setThresholdSingle(threshold, ifGreater);
 	}
 	
-	public void setThresholdColor (ArrayList <Color> colorarray, int distancetype, int threshold)
-	{
+	public void setThresholdColor (ArrayList <Color> colorarray, int distancetype, int threshold) {
 		imgOp.setColorArrayThreshold(colorarray, distancetype, threshold);
 	}
 	
 	@Override
-	public void paint(Graphics2D g, Sequence sequence, IcyCanvas canvas)
-	{
+	public void paint(Graphics2D g, Sequence sequence, IcyCanvas canvas) {
 		// check if we are dealing with a 2D canvas and if we have a valid Graphics object
 		if ((canvas instanceof IcyCanvas2D) && (g != null))
 		{

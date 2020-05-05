@@ -114,7 +114,7 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 			ov.setSequence(seqCamData);
 		}
 		seqCamData.seq.addOverlay(ov);	
-		ov.setThresholdSingle(exp.cages.detect.threshold);
+		ov.setThresholdSingle(exp.cages.detect.threshold, false);
 		ov.painterChanged();
 	}
 	
