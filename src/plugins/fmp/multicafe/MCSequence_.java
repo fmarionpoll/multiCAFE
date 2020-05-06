@@ -47,8 +47,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private JLabel				text 			= new JLabel("Experiment ");
 	private JButton  			previousButton	= new JButton("<");
 	private JButton				nextButton		= new JButton(">");
-	JComboBox <String>				expListComboBox	= new JComboBox <String>();
-	
+	JComboBox <String>			expListComboBox	= new JComboBox <String>();
 	private MultiCAFE 			parent0 		= null;
 	
 	
@@ -141,29 +140,27 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			if (newFile.isFile())
 				newFile = newFile.getParentFile();
 			
-			if (newFile.compareTo(oldFile) != 0) {
+			if (newFile.compareTo(oldFile) != 0 ) {
         		ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-	        		parent0.paneSequence.tabClose.closeExp(exp); //saveAndClose(exp);
+	        		parent0.paneSequence.tabClose.closeExp(exp); 
         		}});
         		tabInfosSeq.updateCombos();
 				parent0.paneCapillaries.tabInfosCap.updateCombos();
 				parent0.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);						
 				openSequenceCamFromCombo();
-				updateBrowseInterface();
-			}
-		} } );
-		
-		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (expListComboBox.getSelectedIndex() < (expListComboBox.getItemCount() -1)) {
-				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()+1);
 			}
 			updateBrowseInterface();
 		} } );
 		
+		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+			if (expListComboBox.getSelectedIndex() < (expListComboBox.getItemCount() -1)) 
+				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()+1);
+			updateBrowseInterface();
+		} } );
+		
 		previousButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			if (expListComboBox.getSelectedIndex() > 0) {
+			if (expListComboBox.getSelectedIndex() > 0) 
 				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()-1);
-			}
 			updateBrowseInterface();
 		} } );
 	}
@@ -173,13 +170,12 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		if (event.getPropertyName() .equals ("SEQ_OPENFILE")) {
 			tabClose.closeAll();
 			expListComboBox.removeAllItems();
+			expListComboBox.updateUI();
 			openSeqCamData();
-			tabsPane.setSelectedIndex(1);
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
 			tabClose.closeCurrentExperiment();
 			openSeqCamData();
-			tabsPane.setSelectedIndex(1);
 		}
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) {
 			System.out.println("SEQ_CLOSE");
@@ -210,11 +206,13 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private void openSeqCamData() {
 		SequenceCamData seqCamData = parent0.openSequenceCam(null);
 		if (seqCamData != null && seqCamData.seq != null) {
-			parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
-			if (addSequenceCamToCombo()) {
-				loadMeasuresAndKymos();	
-			}
+			tabInfosSeq.disableChangeFile = true;
+			int item = addStringToCombo( seqCamData.getDirectory());
+			seqCamData.closeSequence();
+			expListComboBox.setSelectedIndex(item);
 			updateBrowseInterface();
+			tabInfosSeq.disableChangeFile = false;
+			openSequenceCamFromCombo();	
 		}
 	}
 	
