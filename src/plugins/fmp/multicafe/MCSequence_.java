@@ -195,7 +195,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				index = 0;
 			tabInfosSeq.disableChangeFile = true;
 			for (String name: tabOpen.selectedNames) {
-				 addSequenceCamToCombo(name);
+				 addStringToCombo(name);
 			}
 			tabOpen.selectedNames.clear();
 			if (expListComboBox.getItemCount() > 0) {
@@ -238,7 +238,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		tabsPane.setSelectedIndex(1);
 	}
 	
-	private int addSequenceCamToCombo(String strItem) {
+	private int addStringToCombo(String strItem) {
 		int item = findIndexItemInCombo(strItem);
 		if(item < 0) { 
 			expListComboBox.addItem(strItem);
@@ -268,7 +268,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			return false;
 		String strItem = Paths.get(filename).toString();
 		if (strItem != null) {
-			addSequenceCamToCombo(strItem);
+			addStringToCombo(strItem);
 			expListComboBox.setSelectedItem(strItem);
 			XMLPreferences guiPrefs = parent0.getPreferences("gui");
 			guiPrefs.put("lastUsedPath", strItem);
