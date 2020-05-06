@@ -122,8 +122,8 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t));
 			detect.findFlies (workImage, t, it);
 		}
-	
 		exp.seqCamData.seq.endUpdate();
+		
 		detect.removeTempRectROIs(exp);
 		detect.copyDetectedROIsToSequence(exp);
 		detect.copyDetectedROIsToCages(exp);

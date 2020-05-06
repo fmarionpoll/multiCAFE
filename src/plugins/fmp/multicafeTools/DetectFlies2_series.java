@@ -30,8 +30,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 	private List<Boolean> initialflyRemoved = new ArrayList<Boolean>();
 	private Viewer viewerCamData;
 	private Viewer vPositive = null;
-	private Viewer vBackgroundImage = null;
-	private OverlayThreshold ov = null;
+	private Viewer vBackgroundImage = null;;
 
 	public boolean stopFlag = false;
 	public boolean threadRunning = false;
@@ -118,11 +117,6 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 					Rectangle rectv = viewerCamData.getBoundsInternal();
 					rectv.setLocation(detect.parent0Rect.x+ detect.parent0Rect.width, detect.parent0Rect.y);
 					viewerCamData.setBounds(rectv);
-					ov = new OverlayThreshold(exp.seqCamData);
-					exp.seqCamData.seq.addOverlay(ov);
-					ov.setThresholdSingle(exp.cages.detect.threshold, true);
-					ov.painterChanged();
-
 				}});
 		} catch (InvocationTargetException | InterruptedException e) {
 			e.printStackTrace();

@@ -13,11 +13,14 @@ import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.painter.Overlay;
 import icy.sequence.Sequence;
+import icy.sequence.SequenceEvent;
+import icy.sequence.SequenceEvent.SequenceEventSourceType;
+import icy.sequence.SequenceEvent.SequenceEventType;
+import icy.sequence.SequenceListener;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
-public class OverlayThreshold extends Overlay
-{
+public class OverlayThreshold extends Overlay implements SequenceListener {
 	private ImageOperations 	imgOp 	= null;
 	private float 				opacity = 0.3f;
 	private OverlayColorMask	map 	= new OverlayColorMask ("", new Color(0x00FF0000, true));
@@ -33,7 +36,7 @@ public class OverlayThreshold extends Overlay
 		setSequence(seq);
 	}
 	
-	public void setSequence (SequenceCamData seq) 	{
+	public void setSequence (SequenceCamData seq) {
 		if (seq == null)
 			return;
 		if (imgOp == null)
@@ -55,8 +58,7 @@ public class OverlayThreshold extends Overlay
 	
 	@Override
 	public void paint(Graphics2D g, Sequence sequence, IcyCanvas canvas) {
-		// check if we are dealing with a 2D canvas and if we have a valid Graphics object
-		if ((canvas instanceof IcyCanvas2D) && (g != null)) {
+		if ((canvas instanceof IcyCanvas2D) && g != null) {
 			IcyBufferedImage thresholdedImage = imgOp.run();
 			if (thresholdedImage != null) {
 				thresholdedImage.setColorMap(0, map);
@@ -65,10 +67,26 @@ public class OverlayThreshold extends Overlay
 				g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
 				g.drawImage(bufferedImage, 0, 0, null);
 				g.setComposite(bck);
-
 			}
 		}
 	}
 
+	@Override
+	public void sequenceChanged(SequenceEvent sequenceEvent) {
+		if (sequenceEvent.getSourceType() != SequenceEventSourceType.SEQUENCE_OVERLAY) 
+			return;
+        if (sequenceEvent.getSource() == this && sequenceEvent.getType() == SequenceEventType.REMOVED) {
+            sequenceEvent.getSequence().removeListener(this);
+            remove();
+        }
+	}
+
+	@Override
+	public void sequenceClosed(Sequence sequence) {
+		sequence.removeListener(this);
+        remove();
+	}
+
 }
+
 
