@@ -33,6 +33,7 @@ import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.OverlayThreshold;
+import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
 
@@ -46,8 +47,12 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 	private JSpinner thresholdSpinner 			= new JSpinner(new SpinnerNumberModel(60, 0, 10000, 1));
 	private JCheckBox overlayCheckBox			= new JCheckBox("Overlay ", false);
 	private JCheckBox whiteBackGroundCheckBox	= new JCheckBox("white background", false);
-	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
-	
+	JComboBox<TransformOp> transformForLevelsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
+			TransformOp.R_RGB, TransformOp.G_RGB, TransformOp.B_RGB, 
+			TransformOp.R2MINUS_GB, TransformOp.G2MINUS_RB, TransformOp.B2MINUS_RG, TransformOp.RGB,
+			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, 
+			TransformOp.H_HSB, TransformOp.S_HSB, TransformOp.B_HSB	});
+
 	private OverlayThreshold 	ov 				= null;
 	private MultiCAFE 			parent0			= null;
 	
@@ -58,10 +63,10 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		this.parent0 = parent0;
 		
 		add( GuiUtil.besidesPanel(addPolygon2DButton, createROIsFromPolygonButton));
-		JLabel videochannel = new JLabel("video channel ");
+		JLabel videochannel = new JLabel("filter operation ");
 		videochannel.setHorizontalAlignment(SwingConstants.RIGHT);
-		colorChannelComboBox.setSelectedIndex(2);
-		add( GuiUtil.besidesPanel( videochannel, colorChannelComboBox, whiteBackGroundCheckBox, new JLabel(" ")));
+		transformForLevelsComboBox.setSelectedIndex(2);
+		add( GuiUtil.besidesPanel( videochannel, transformForLevelsComboBox, whiteBackGroundCheckBox, new JLabel(" ")));
 		add( GuiUtil.besidesPanel( overlayCheckBox,  thresholdSpinner, new JLabel(" "), new JLabel(" ")));
 		
 		defineActionListeners();
@@ -85,15 +90,8 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 				if (exp != null)
 					create2DPolygon(exp);
 			}});
-		
-		whiteBackGroundCheckBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				if (exp != null)
-					updateOverlay(exp);
-			}});
-		
-		colorChannelComboBox.addActionListener(new ActionListener () { 
+	
+		transformForLevelsComboBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null)
@@ -129,7 +127,10 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 			ov.setSequence(seqCamData);
 		}
 		exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
-		ov.setThresholdSingle(exp.cages.detect.threshold, whiteBackGroundCheckBox.isSelected());
+		ov.setThresholdTransform(
+				exp.cages.detect.threshold,  
+				(TransformOp) transformForLevelsComboBox.getSelectedItem(),
+				whiteBackGroundCheckBox.isSelected());
 		seqCamData.seq.overlayChanged(ov);
 		seqCamData.seq.dataChanged();		
 	}

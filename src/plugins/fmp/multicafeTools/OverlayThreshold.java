@@ -52,6 +52,11 @@ public class OverlayThreshold extends Overlay implements SequenceListener {
 		imgOp.setThresholdSingle(threshold, ifGreater);
 	}
 	
+	public void setThresholdTransform (int threshold, TransformOp transformop, boolean ifGreater) {
+		imgOp.setThresholdSingle(threshold, ifGreater);
+		imgOp.setTransform(transformop);
+	}
+	
 	public void setThresholdColor (ArrayList <Color> colorarray, int distancetype, int threshold) {
 		imgOp.setColorArrayThreshold(colorarray, distancetype, threshold);
 	}
