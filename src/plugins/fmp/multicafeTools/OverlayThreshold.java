@@ -56,8 +56,7 @@ public class OverlayThreshold extends Overlay
 	@Override
 	public void paint(Graphics2D g, Sequence sequence, IcyCanvas canvas) {
 		// check if we are dealing with a 2D canvas and if we have a valid Graphics object
-		if ((canvas instanceof IcyCanvas2D) && (g != null))
-		{
+		if ((canvas instanceof IcyCanvas2D) && (g != null)) {
 			IcyBufferedImage thresholdedImage = imgOp.run();
 			if (thresholdedImage != null) {
 				thresholdedImage.setColorMap(0, map);

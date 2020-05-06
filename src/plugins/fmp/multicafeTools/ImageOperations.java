@@ -9,7 +9,7 @@ import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 public class ImageOperations {
 	
-	private SequenceCamData 		seq 		= null;
+	private SequenceCamData 		seqCamData 	= null;
 	private ImageOperationsStruct 	opTransf 	= new ImageOperationsStruct();
 	private ImageOperationsStruct 	opThresh 	= new ImageOperationsStruct();
 	private ImageTransformTools 	imgTransf 	= new ImageTransformTools();
@@ -20,7 +20,7 @@ public class ImageOperations {
 	}
 	
 	public void setSequence(SequenceCamData seq) {
-		this.seq = seq;
+		this.seqCamData = seq;
 		imgTransf.setSequence(seq);
 	}
 	
@@ -43,36 +43,35 @@ public class ImageOperations {
 	}
 	
 	public IcyBufferedImage run() {
-		return run (seq.currentFrame);
+		return run (seqCamData.currentFrame);
 	}
 	
 	public IcyBufferedImage run (int frame) {	
 		// step 1
 		opTransf.fromFrame = frame;
-		if (!opTransf.isValidTransformCache(seq.cacheTransformOp)) {
-			seq.cacheTransformedImage = imgTransf.transformImageFromVirtualSequence(frame, opTransf.transformop);
-			if (seq.cacheTransformedImage == null) {
+		if (!opTransf.isValidTransformCache(seqCamData.cacheTransformOp)) {
+			seqCamData.cacheTransformedImage = imgTransf.transformImageFromVirtualSequence(frame, opTransf.transformop);
+			if (seqCamData.cacheTransformedImage == null) 
 				return null;
-			}
-			opTransf.copyTransformOpTo(seq.cacheTransformOp);
-			seq.cacheThresholdOp.fromFrame = -1;
+			opTransf.copyTransformOpTo(seqCamData.cacheTransformOp);
+			seqCamData.cacheThresholdOp.fromFrame = -1;
 		}
 		
 		// step 2
 		opThresh.fromFrame = frame;
-		if (!opThresh.isValidThresholdCache(seq.cacheThresholdOp)) {
+		if (!opThresh.isValidThresholdCache(seqCamData.cacheThresholdOp)) {
 			if (opThresh.thresholdtype == EnumThresholdType.COLORARRAY) 
-				seq.cacheThresholdedImage = imgThresh.getBinaryInt_FromColorsThreshold(seq.cacheTransformedImage); 
+				seqCamData.cacheThresholdedImage = imgThresh.getBinaryInt_FromColorsThreshold(seqCamData.cacheTransformedImage); 
 			else 
-				seq.cacheThresholdedImage = imgThresh.getBinaryInt_FromThreshold(seq.cacheTransformedImage);
-			opThresh.copyThresholdOpTo(seq.cacheThresholdOp) ;
+				seqCamData.cacheThresholdedImage = imgThresh.getBinaryInt_FromThreshold(seqCamData.cacheTransformedImage);
+			opThresh.copyThresholdOpTo(seqCamData.cacheThresholdOp) ;
 		}
-		return seq.cacheThresholdedImage;
+		return seqCamData.cacheThresholdedImage;
 	}
 	
 	public IcyBufferedImage run_nocache() {
 		// step 1
-		int frame = seq.currentFrame;
+		int frame = seqCamData.currentFrame;
 		IcyBufferedImage transformedImage = imgTransf.transformImageFromVirtualSequence(frame, opTransf.transformop);
 		if (transformedImage == null)
 			return null;

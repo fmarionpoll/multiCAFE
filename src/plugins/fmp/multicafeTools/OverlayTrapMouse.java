@@ -4,7 +4,6 @@ import icy.canvas.IcyCanvas;
 import icy.canvas.IcyCanvas2D;
 import icy.image.IcyBufferedImage;
 import icy.type.point.Point5D;
-import plugins.fmp.multicafeSequence.SequenceCamData;
 import icy.painter.Overlay;
 import icy.painter.OverlayListener;
 import icy.sequence.Sequence;
@@ -18,31 +17,29 @@ import javax.swing.JComboBox;
 
 
 //our painter extends AbstractPainter as it provides painter facilities
-public class OverlayTrapMouse extends Overlay
-{
+public class OverlayTrapMouse extends Overlay {
     private Point5D.Double Pt;
 	private JButton		pickColorButton		= null;
 	private JComboBox<Color> colorPickCombo = null;
 	private String textPickAPixel = null;
 
-    public OverlayTrapMouse()
-    {
+    public OverlayTrapMouse() {
         super("Simple overlay");
     }
     
-	public void setMouseTrapOverlay (SequenceCamData seqCamData, boolean bActive, JButton pickColorButton, JComboBox<Color> colorPickCombo) {
-		if (bActive) {
-			if (seqCamData.trapOverlay == null)
-				seqCamData.trapOverlay = new OverlayTrapMouse (pickColorButton, colorPickCombo);
-			if (!seqCamData.seq.contains(seqCamData.trapOverlay))
-				seqCamData.seq.addOverlay(seqCamData.trapOverlay);
-		}
-		else {
-			if (seqCamData.trapOverlay != null && seqCamData.seq.contains(seqCamData.trapOverlay))
-				seqCamData.seq.removeOverlay(seqCamData.trapOverlay);
-			seqCamData.trapOverlay = null;
-		}
-	}
+//	public void setMouseTrapOverlay (SequenceCamData seqCamData, boolean bActive, JButton pickColorButton, JComboBox<Color> colorPickCombo) {
+//		if (bActive) {
+//			if (seqCamData.trapMouseOverlay == null)
+//				seqCamData.trapMouseOverlay = new OverlayTrapMouse (pickColorButton, colorPickCombo);
+//			if (!seqCamData.seq.contains(seqCamData.trapMouseOverlay))
+//				seqCamData.seq.addOverlay(seqCamData.trapMouseOverlay);
+//		}
+//		else {
+//			if (seqCamData.trapMouseOverlay != null && seqCamData.seq.contains(seqCamData.trapMouseOverlay))
+//				seqCamData.seq.removeOverlay(seqCamData.trapMouseOverlay);
+//			seqCamData.trapMouseOverlay = null;
+//		}
+//	}
 	
     public OverlayTrapMouse(JButton pickColorButton, JComboBox<Color> colorPickCombo) {
     	super("overlay with Jbutton and JComboBox");
@@ -63,23 +60,20 @@ public class OverlayTrapMouse extends Overlay
     }
 
     @Override
-    public void mouseClick(MouseEvent e, Point5D.Double imagePoint, IcyCanvas canvas)
-    {
+    public void mouseClick(MouseEvent e, Point5D.Double imagePoint, IcyCanvas canvas) {
         // check if we are dealing with a 2D canvas and we have a valid image position
         if ((canvas instanceof IcyCanvas2D) && (imagePoint != null))
             onMouseClicked(canvas.getSequence(), canvas.getPositionT(), imagePoint);
     }
 
     @Override
-    public void mouseMove(MouseEvent e, Point5D.Double imagePoint, IcyCanvas canvas)
-    {
+    public void mouseMove(MouseEvent e, Point5D.Double imagePoint, IcyCanvas canvas) {
          // check if we are dealing with a 2D canvas and we have a valid image position
         if ((canvas instanceof IcyCanvas2D) && (imagePoint != null))
             onMouseMoved(canvas.getSequence(), canvas.getPositionT(), imagePoint);
     }
  
-    private void onMouseClicked(Sequence sequence, int posT, Point5D.Double imagePoint)
-    {
+    private void onMouseClicked(Sequence sequence, int posT, Point5D.Double imagePoint) {
         Color c = getRGB(sequence, posT, imagePoint);
         if (c != null && pickColorButton != null) {
             pickColorButton.setBackground(c);
@@ -103,8 +97,7 @@ public class OverlayTrapMouse extends Overlay
     }
 
 
-    private void onMouseMoved(Sequence sequence, int posT, Point5D.Double imagePoint)
-    {
+    private void onMouseMoved(Sequence sequence, int posT, Point5D.Double imagePoint) {
         Color c = getRGB(sequence, posT, imagePoint);
         if (c != null && pickColorButton != null) {
         	pickColorButton.setBackground(c);
@@ -113,8 +106,7 @@ public class OverlayTrapMouse extends Overlay
         }
     }
 
-    private Color getRGB(Sequence sequence, int posT, Point5D.Double imagePoint)
-    {
+    private Color getRGB(Sequence sequence, int posT, Point5D.Double imagePoint) {
         int x = (int) imagePoint.getX();
         int y = (int) imagePoint.getY();
         setPt(imagePoint);

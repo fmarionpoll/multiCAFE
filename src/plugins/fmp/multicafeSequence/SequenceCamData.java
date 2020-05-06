@@ -1,7 +1,6 @@
  package plugins.fmp.multicafeSequence;
 
 
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -28,8 +27,6 @@ import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.Comparators;
 import plugins.fmp.multicafeTools.ImageOperationsStruct;
-import plugins.fmp.multicafeTools.OverlayThreshold;
-import plugins.fmp.multicafeTools.OverlayTrapMouse;
 import plugins.fmp.multicafeTools.StringSorter;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DLine;
@@ -56,9 +53,6 @@ public class SequenceCamData {
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
-	
-	public 	OverlayThreshold 		thresholdOverlay 		= null;
-	public 	OverlayTrapMouse 		trapOverlay 			= null;
 	
 	volatile public List <String>	listFiles 				= new ArrayList<String>();
 	protected String 				csFileName 				= null;
@@ -596,34 +590,6 @@ public class SequenceCamData {
 		return IcyBufferedImageUtil.getCopy(getImage(t, 0));
 	}
 
-	// ----------------------------
-	
-	public void setThresholdOverlay(boolean bActive) {
-		if (bActive) {
-			if (thresholdOverlay == null) 
-				thresholdOverlay = new OverlayThreshold(this);
-			if (!seq.contains(thresholdOverlay)) 
-				seq.addOverlay(thresholdOverlay);
-			thresholdOverlay.setSequence (this);
-		}
-		else {
-			if (thresholdOverlay != null && seq.contains(thresholdOverlay) )
-				seq.removeOverlay(thresholdOverlay);
-			thresholdOverlay = null;
-		}
-	}
-	
-	public void setThresholdOverlayParametersSingle(TransformOp transf, int threshold, boolean ifGreater) {
-		thresholdOverlay.setTransform(transf);
-		thresholdOverlay.setThresholdSingle(threshold, ifGreater);
-		thresholdOverlay.painterChanged();
-	}
-	
-	public void setThresholdOverlayParametersColors(TransformOp transf, ArrayList <Color> colorarray, int colordistancetype, int colorthreshold) {
-		thresholdOverlay.setTransform(transf);
-		thresholdOverlay.setThresholdColor(colorarray, colordistancetype, colorthreshold);
-		thresholdOverlay.painterChanged();
-	}
 
 	
 }

@@ -93,6 +93,13 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 					updateOverlay(exp);
 			}});
 		
+		colorChannelComboBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				if (exp != null)
+					updateOverlay(exp);
+			}});
+		
 		overlayCheckBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 	    	  	Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
@@ -123,10 +130,8 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		}
 		exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
 		ov.setThresholdSingle(exp.cages.detect.threshold, whiteBackGroundCheckBox.isSelected());
-//		seqCamData.seq.overlayChanged(ov);
-		seqCamData.seq.addOverlay(ov);	
-		seqCamData.seq.dataChanged();
-		
+		seqCamData.seq.overlayChanged(ov);
+		seqCamData.seq.dataChanged();		
 	}
 	
 	public void removeOverlay(Experiment exp) {
@@ -204,9 +209,11 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		int sizeY = img.getSizeY();
 		int nblobs = getPixelsConnected (sizeX, sizeY, binaryData);
 		System.out.println("n pixel areas found=" + nblobs);
-		//getBlobsConnected(sizeX, sizeY, binaryData);
+		getBlobsConnected(sizeX, sizeY, binaryData);
 		List<Integer> list = getListOfBlobs (binaryData);
-		System.out.println("n blobs found=" + list.size());
+		for (int ref: list) 
+			System.out.print(" " + ref);
+		System.out.println("\nn blobs found=" + list.size());
 		
 		int i = 0;
 		for (Capillary cap : exp.capillaries.capillariesArrayList) {
@@ -228,21 +235,27 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 	}
 	
 	private int getPixelsConnected (int sizeX, int sizeY, int [] binaryData) {
-		byte blobnumber = 1;
+		int blobnumber = 1;
 		for (int iy= 0; iy < sizeY; iy++) {
 			for (int ix = 0; ix < sizeX; ix++) {
-				if (binaryData[ix + sizeX*iy] < 1) 
+				if (binaryData[ix + sizeX*iy] <1) 
 					continue;
+				
 				int ioffset = ix + sizeX*iy;
 				int ioffsetpreviousrow = ix + sizeX*(iy-1);
-				if ((iy > 0) && (ix > 0) && (binaryData[ioffsetpreviousrow-1] > 0)) 
+				
+				if ((iy > 0) && (ix > 0) && (binaryData[ioffsetpreviousrow-1] > 0)) // ix-1, iy-1
 					binaryData[ioffset] = binaryData[ioffsetpreviousrow-1];
-				else if ((iy > 0) && (binaryData[ioffsetpreviousrow] > 0))
+				
+				else if ((iy > 0) && (binaryData[ioffsetpreviousrow] > 0))	// ix, iy-1
 					binaryData[ioffset] = binaryData[ioffsetpreviousrow];
-				else if ((iy > 0) && ((ix+1) < sizeX) &&  (binaryData[ioffsetpreviousrow+1] > 0))
+				
+				else if ((iy > 0) && ((ix+1) < sizeX) &&  (binaryData[ioffsetpreviousrow+1] > 0)) // ix+1, iy-1
 					binaryData[ioffset] = binaryData[ioffsetpreviousrow+1];
-				else if ((ix > 0) && (binaryData[ioffset-1] > 0))
+				
+				else if ((ix > 0) && (binaryData[ioffset-1] > 0))	// ix-1, iy
 					binaryData[ioffset] = binaryData[ioffset-1];
+				
 				else { // new blob number
 					binaryData[ioffset] = blobnumber;
 					blobnumber++;
@@ -257,20 +270,25 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 			for (int ix = 0; ix < sizeX; ix++) {					
 				if (binaryData[ix + sizeX*iy] < 1) 
 					continue;
+				
 				int ioffset = ix + sizeX*iy;
 				int ioffsetpreviousrow = ix + sizeX*(iy-1);
 				int val = binaryData[ioffset];
-				if ((iy > 0) && (ix > 0) && (binaryData[ioffsetpreviousrow-1] > 0)) 
-					if (binaryData[ioffsetpreviousrow-1] > val)
+				
+				if ((iy > 0) && (ix > 0) && (binaryData[ioffsetpreviousrow-1] > 0)) // ix-1, iy-1
+					if (binaryData[ioffsetpreviousrow-1] != val)
 						changeAllBlobNumber1Into2 (binaryData[ioffsetpreviousrow-1], val, binaryData) ;
-				else if ((iy > 0) && (binaryData[ioffsetpreviousrow] > 0))
-					if (binaryData[ioffsetpreviousrow] > val)
+				
+				else if ((iy > 0) && (binaryData[ioffsetpreviousrow] > 0))			// ix, iy-1
+					if (binaryData[ioffsetpreviousrow] != val)
 						changeAllBlobNumber1Into2 (binaryData[ioffsetpreviousrow], val, binaryData) ;
-				else if ((iy > 0) && ((ix+1) < sizeX) &&  (binaryData[ioffsetpreviousrow+1] > 0))
-					if (binaryData[ioffsetpreviousrow+1] > val)
+				
+				else if ((iy > 0) && ((ix+1) < sizeX) &&  (binaryData[ioffsetpreviousrow+1] > 0)) // ix+1, iy-1
+					if (binaryData[ioffsetpreviousrow+1] != val)
 						changeAllBlobNumber1Into2 (binaryData[ioffsetpreviousrow+1], val, binaryData) ;
-				else if ((ix>0) && (binaryData[ioffset-1] > 0))
-					if (binaryData[ioffset-1] > val)
+				
+				else if ((ix>0) && (binaryData[ioffset-1] > 0))									// ix-1, iy
+					if (binaryData[ioffset-1] != val)
 						changeAllBlobNumber1Into2 (binaryData[ioffset-1], val, binaryData) ;					
 			}
 		}

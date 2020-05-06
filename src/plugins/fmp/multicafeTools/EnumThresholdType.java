@@ -10,9 +10,9 @@ public enum EnumThresholdType {
 	public String toString() { 
 		return label;}	
 	public static EnumThresholdType findByText(String abbr){
-	    for(EnumThresholdType v : values()){ 
-	    	if( v.toString().equals(abbr)) { 
-	    		return v; }  }
+	    for(EnumThresholdType v : values()) 
+	    	if( v.toString().equals(abbr))  
+	    		return v;   
 	    return null;
 	}
 }
