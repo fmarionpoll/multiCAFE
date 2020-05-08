@@ -218,7 +218,7 @@ public class Capillaries {
 	
 	public void transferDescriptionToCapillary (Capillary cap) {
 		String	name = cap.roi.getName();
-		cap.cagenb = cap.getCageFromRoiName();
+		cap.cagenb = cap.getCageIndexFromRoiName();
 		if (cap.cagenb < 1 || cap.cagenb > 8)
 			cap.nflies = 0;
 		String letter = name.substring(name.length() - 1);

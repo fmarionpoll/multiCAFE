@@ -10,7 +10,7 @@ import org.w3c.dom.Node;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
-import plugins.kernel.roi.roi2d.ROI2DPolygon;
+
 
 
 
@@ -72,9 +72,8 @@ public class Cage {
 		cageComment = XMLUtil.getElementValue(xmlVal, ID_COMMENT, cageComment);
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_CAGELIMITS);
 		if (xmlVal2 != null) {
-			roi = (ROI2DPolygon) ROI.create("plugins.kernel.roi.roi2d.ROI2DPolygon");
-			roi.loadFromXML(xmlVal2);
-			roi.setSelected(false);
+			ROI roi = ROI.createFromXML(xmlVal2 );
+	        roi.setSelected(false);
 		}
 		xmlVal2 = XMLUtil.getElement(xmlVal, ID_FLYPOSITIONS);
 		if (xmlVal2 != null) {

@@ -2,6 +2,7 @@ package plugins.fmp.multicafe;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +10,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -25,10 +27,13 @@ import javax.swing.event.ChangeListener;
 import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
+import icy.roi.BooleanMask2D;
 import icy.roi.ROI2D;
+
 import icy.type.DataType;
+import icy.type.geom.Polygon2D;
+import plugins.kernel.roi.roi2d.ROI2DArea;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
-import plugins.kernel.roi.roi2d.ROI2DRectangle;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
@@ -214,28 +219,34 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		getPixelsConnected (sizeX, sizeY, binaryData);
 		getBlobsConnected(sizeX, sizeY, binaryData);
 		fillBlanksPixelsWithinBlobs (sizeX, sizeY, binaryData);
-		
-//		List<Integer> list = getListOfBlobs (binaryData);
-//		for (int ref: list) 
-//			System.out.print(" " + ref);
-//		System.out.println("\nn blobs found=" + list.size());
-		
-		int i = 0;
+	
+		List<Integer> blobsfound = new ArrayList<Integer> ();
 		for (Capillary cap : exp.capillaries.capillariesArrayList) {
 			Point2D pt = cap.getCapillaryTipWithinROI2D(roiArea);
 			if (pt != null) {
 				int ix = (int) (pt.getX() - rectGrid.x);
 				int iy = (int) (pt.getY() - rectGrid.y);
 				int blobi = binaryData[ix + sizeX*iy];
-				System.out.println("i="+ i+ ": ptX=" + (int)pt.getX()+ " ptY=" + (int)pt.getY() + " ix = "+ix+" iy = "+iy + " blobi="+blobi);
-				Rectangle leafBlobRect = getBlobRectangle(blobi, sizeX, sizeY, binaryData);
-				leafBlobRect.translate(rectGrid.x, rectGrid.y);
-				ROI2DRectangle roiP = new ROI2DRectangle(leafBlobRect);
-				roiP.setName("xcage_" + blobi);
-				roiP.setColor(Color.RED);
-				exp.seqCamData.seq.addROI(roiP);
+				cap.cagenb = blobi;
+				
+				boolean found = false;
+				for (int i: blobsfound) {
+					if (i == blobi) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					blobsfound.add(blobi);
+					//ROI2DArea roiP = new ROI2DArea(getBlobBooleanMask2D(blobi, sizeX, sizeY, binaryData));
+					ROI2DPolygon roiP = new ROI2DPolygon (getBlobPolygon2D(blobi, sizeX, sizeY, binaryData));
+					roiP.translate(rectGrid.x, rectGrid.y);
+					int cagenb = cap.getCageIndexFromRoiName();
+					roiP.setName("cage" + String.format("%03d", cagenb));
+					roiP.setColor(Color.RED);
+					exp.seqCamData.seq.addROI(roiP);
+				}
 			}
-			i++;
 		}
 	}
 	
@@ -323,40 +334,98 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		}
 	}
 	
-	private Rectangle getBlobRectangle(int blobNumber, int sizeX, int sizeY, int [] binaryData) {
-		Rectangle rect = new Rectangle(0, 0, 0, 0);
-		int [] arrayX = new int [sizeX];
-		int [] arrayY = new int [sizeY];
-		for (int iy= 0; iy < sizeY; iy++) {
-			for (int ix = 0; ix < sizeX; ix++) {					
-				if (binaryData[ix + sizeX*iy] != blobNumber) 
+//	private Rectangle getBlobRectangle(int blobNumber, int sizeX, int sizeY, int [] binaryData) {
+//		Rectangle rect = new Rectangle(0, 0, 0, 0);
+//		int [] arrayX = new int [sizeX];
+//		int [] arrayY = new int [sizeY];
+//		for (int iy= 0; iy < sizeY; iy++) {
+//			for (int ix = 0; ix < sizeX; ix++) {					
+//				if (binaryData[ix + sizeX*iy] != blobNumber) 
+//					continue;
+//				arrayX[ix] ++;
+//				arrayY[iy]++;
+//			}
+//		}
+//		for (int i=0; i< sizeX; i++)
+//			if (arrayX[i] > 0) {
+//				rect.x = i;
+//				break;
+//			}
+//		for (int i = sizeX-1; i >=0; i--)
+//			if (arrayX[i] > 0) {
+//				rect.width = i-rect.x +1;
+//				break;
+//			}
+//		
+//		for (int i=0; i< sizeY; i++)
+//			if (arrayY[i] > 0) {
+//				rect.y = i;
+//				break;
+//			}
+//		for (int i = sizeY-1; i >=0; i--)
+//			if (arrayY[i] > 0) {
+//				rect.height = i-rect.y +1;
+//				break;
+//			}
+//		return rect;
+//	}
+	
+	private Polygon2D getBlobPolygon2D(int blobNumber, int sizeX, int sizeY, int [] binaryData) {
+		List<Point> list_right = new ArrayList<Point>();
+		List<Point> list_left = new ArrayList<Point>();
+		for (int irow= 0; irow < sizeY; irow++) {
+			for (int icolumn = 0; icolumn < sizeX; icolumn++) {					
+				if (binaryData[icolumn + sizeX*irow] != blobNumber) 
 					continue;
-				arrayX[ix] ++;
-				arrayY[iy]++;
+				
+				int icolumn_left = icolumn;
+				int icolumn_right = icolumn;
+				for (int icolumn1 = icolumn; icolumn1 < sizeX; icolumn1++) {
+					if (binaryData[icolumn1 + sizeX*irow] != blobNumber) {
+						icolumn_right = icolumn1;
+						break;
+					}
+				}
+				list_left.add(new Point(icolumn_left, irow));
+				if (icolumn_right != icolumn_left)
+					list_right.add(new Point(icolumn_right, irow));
+				
+				break;
 			}
 		}
-		for (int i=0; i< sizeX; i++)
-			if (arrayX[i] > 0) {
-				rect.x = i;
-				break;
-			}
-		for (int i = sizeX-1; i >=0; i--)
-			if (arrayX[i] > 0) {
-				rect.width = i-rect.x +1;
-				break;
-			}
 		
-		for (int i=0; i< sizeY; i++)
-			if (arrayY[i] > 0) {
-				rect.y = i;
+		List<Point> allpoints = new ArrayList<Point>();
+		allpoints.addAll(list_left);
+		Collections.reverse(list_right);
+		allpoints.addAll(list_right);
+		
+		
+		final List<Point2D> points2D = new ArrayList<Point2D>(allpoints.size());
+        for (Point pt : allpoints)
+            points2D.add(new Point2D.Double(pt.x + 0.5d, pt.y + 0.5d));
+        double dev = 1.;
+		return Polygon2D.getPolygon2D(points2D, dev);
+	}
+	
+	private BooleanMask2D getBlobBooleanMask2D(int blobNumber, int sizeX, int sizeY, int [] binaryData) {
+		List<Point> ptList = new ArrayList<Point>();
+		for (int irow= 0; irow < sizeY; irow++) {
+			for (int icolumn = 0; icolumn < sizeX; icolumn++) {					
+				if (binaryData[icolumn + sizeX*irow] != blobNumber) 
+					continue;
+				for (int icolumn1 = icolumn; icolumn1 < sizeX; icolumn1++) {
+					if (binaryData[icolumn1 + sizeX*irow] != blobNumber) 
+						break;
+					ptList.add(new Point(icolumn1, irow));
+				}
 				break;
 			}
-		for (int i = sizeY-1; i >=0; i--)
-			if (arrayY[i] > 0) {
-				rect.height = i-rect.y +1;
-				break;
-			}
-		return rect;
+		}
+		
+		Point[] ptArray = new Point[ptList.size()];
+		ptList.toArray(ptArray);
+		BooleanMask2D mask = new BooleanMask2D(ptArray);
+		return mask;
 	}
 	
 

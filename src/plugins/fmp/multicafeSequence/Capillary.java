@@ -137,7 +137,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return newname;
 	}
 	
-	public int getCageFromRoiName() {
+	public int getCageIndexFromRoiName() {
 		String name = roi.getName();
 		if (!name .contains("line"))
 			return -1;

@@ -17,6 +17,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.fmp.multicafeTools.Comparators;
 import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.MulticafeTools;
+import plugins.kernel.roi.roi2d.ROI2DArea;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
@@ -214,7 +215,11 @@ public class Cages {
 	private void addMissingCages(List<ROI2D> roiList) {
 		for (ROI2D roi:roiList) {
 			boolean found = false;
+			if (roi.getName() == null)
+				break;
 			for (Cage cage: cageList) {
+				if (cage.roi == null)
+					break;
 				if (roi.getName().equals(cage.roi.getName())) {
 					found = true;
 					break;
@@ -234,11 +239,13 @@ public class Cages {
 		while (iterator.hasNext()) {
 			Cage cage = iterator.next();
 			boolean found = false;
-			String cageRoiName = cage.roi.getName();
-			for (ROI2D roi: roiList) {
-				if (roi.getName().equals(cageRoiName)) {
-					found = true;
-					break;
+			if (cage.roi != null) {
+				String cageRoiName = cage.roi.getName();
+				for (ROI2D roi: roiList) {
+					if (roi.getName().equals(cageRoiName)) {
+						found = true;
+						break;
+					}
 				}
 			}
 			if (!found ) {
@@ -252,11 +259,11 @@ public class Cages {
 		List<ROI2D> cageList = new ArrayList<ROI2D>();
 		for ( ROI2D roi : roiList ) {
 			String csName = roi.getName();
-			if (!(roi instanceof ROI2DPolygon))
-				continue;
-			if (( csName.contains( "cage") 
-				|| csName.contains("Polygon2D")) ) {
-				cageList.add(roi);
+			if ((roi instanceof ROI2DPolygon) || (roi instanceof ROI2DArea)) {
+				if (( csName.contains( "cage") 
+					|| csName.contains("Polygon2D")) ) {
+					cageList.add(roi);
+				}
 			}
 		}
 		return cageList;
@@ -277,19 +284,6 @@ public class Cages {
 			detectedFliesList.addAll(cage.detectedFliesList);
 		seqCamData.seq.addROIs(detectedFliesList, true);
 	}
-	
-//	public void fromROIstoDetectedFlies(SequenceCamData seq) {
-//		detectedFliesList.clear();
-//		ArrayList<ROI2D> list = seq.seq.getROI2Ds();
-//		for (ROI2D roi: list) {
-//			if (!(roi instanceof ROI2DShape))
-//				continue;
-//			if (!roi.getName().contains("det"))
-//				continue;
-//			detectedFliesList.add(roi);
-//		}
-//		Collections.sort(detectedFliesList, new Comparators.ROI2DNameComparator());
-//	}
 	
 	public int removeAllRoiCagesFromSequence(SequenceCamData seqCamData) {
 		String cageRoot = "cage";
