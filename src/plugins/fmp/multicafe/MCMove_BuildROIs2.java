@@ -151,7 +151,8 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 
 		IcyBufferedImage img0 = IcyBufferedImageUtil.convertToType(exp.seqCamData.cacheThresholdedImage, DataType.INT, false);
 		Rectangle rectGrid = new Rectangle(0,0, img0.getSizeX(), img0.getSizeY());
-		Blobs blobs = new Blobs(IcyBufferedImageUtil.getSubImage(img0, rectGrid));
+//		Blobs blobs = new Blobs(IcyBufferedImageUtil.getSubImage(img0, rectGrid));
+		Blobs blobs = new Blobs(img0);
 		blobs.getPixelsConnected ();
 		blobs.getBlobsConnected();
 		blobs.fillBlanksPixelsWithinBlobs ();
