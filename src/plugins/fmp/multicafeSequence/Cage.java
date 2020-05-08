@@ -72,7 +72,7 @@ public class Cage {
 		cageComment = XMLUtil.getElementValue(xmlVal, ID_COMMENT, cageComment);
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_CAGELIMITS);
 		if (xmlVal2 != null) {
-			ROI roi = ROI.createFromXML(xmlVal2 );
+			roi = (ROI2D) ROI.createFromXML(xmlVal2 );
 	        roi.setSelected(false);
 		}
 		xmlVal2 = XMLUtil.getElement(xmlVal, ID_FLYPOSITIONS);
