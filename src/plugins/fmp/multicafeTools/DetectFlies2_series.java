@@ -201,7 +201,6 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			detect.copyDetectedROIsToCages(exp);
 		}
 		progressBar.close();
-
 	}
 
 	private void patchRectToReferenceImage(SequenceCamData seqCamData, IcyBufferedImage currentImage, Rectangle rect) {

@@ -169,7 +169,7 @@ public class DetectFlies_Options implements XMLPersistent {
 				continue;
 			if ( bestMask != null ) {
 				flyROI = new ROI2DArea( bestMask );
-				flyROI.setName("det"+cage.roi.getName() +"_" + t );
+				flyROI.setName("det"+cage.getCageNumber() +"_" + t );
 				flyROI.setT( t );
 				resultFlyPositionArrayList[icage][it] = flyROI;
 				Rectangle2D rect = flyROI.getBounds2D();

@@ -27,7 +27,7 @@ public class Cage {
 	private final String ID_NBITEMS				= "nb_items";
 	private final String ID_NFLIES 				= "nflies"; 
 	private final String ID_COMMENT				= "comment";
-	
+	private String cageNumber = null;
 	
 	
 	public boolean xmlSaveCage (Node node, int index) {
@@ -92,6 +92,13 @@ public class Cage {
 		return true;
 	}
 
+	public String getCageNumber() {
+		if (cageNumber == null) {
+			cageNumber = roi.getName().substring(roi.getName().length() - 3);
+		}
+		return cageNumber;
+	}
+	
 	public void clearMeasures () {
 		detectedFliesList.clear();
 		flyPositions.clear();
@@ -120,4 +127,6 @@ public class Cage {
 		Point2D pt = new Point2D.Double(x/n, y/n);
 		return pt;
 	}
+	
+	
 }
