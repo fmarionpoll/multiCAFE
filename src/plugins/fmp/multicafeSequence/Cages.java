@@ -35,10 +35,14 @@ public class Cages {
 	
 	
 
-	public void clear() {
+	public void clearAllMeasures() {
 		for (Cage cage: cageList) {
 			cage.clearMeasures();
 		}
+	}
+	
+	public void removeCages() {
+		cageList.clear();
 	}
 	
 	public boolean xmlWriteCagesToFile(String name, String directory) {

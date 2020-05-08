@@ -1,6 +1,5 @@
 package plugins.fmp.multicafe;
 
-import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -79,6 +78,7 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null) {
+					exp.cages.removeCages();
 					createROIsFromSelectedPolygon(exp);
 					exp.cages.getCagesFromROIs(exp.seqCamData);
 					exp.cages.setFirstAndLastCageToZeroFly();
@@ -221,7 +221,6 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 				int iy = (int) (pt.getY() - rectGrid.y);
 				int blobi = blobs.getBlobAt(ix, iy);
 				cap.cagenb = blobi;
-				
 				boolean found = false;
 				for (int i: blobsfound) {
 					if (i == blobi) {
@@ -236,7 +235,6 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 					roiP.translate(rectGrid.x, rectGrid.y);
 					int cagenb = cap.getCageIndexFromRoiName();
 					roiP.setName("cage" + String.format("%03d", cagenb));
-					roiP.setColor(Color.RED);
 					exp.seqCamData.seq.addROI(roiP);
 				}
 			}
