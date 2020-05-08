@@ -120,12 +120,15 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData == null)
 			return;
-		if (ov == null) 
+		if (ov == null) {
 			ov = new OverlayThreshold(seqCamData);
-		else {
-			seqCamData.seq.removeOverlay(ov);
-			ov.setSequence(seqCamData);
+			seqCamData.seq.addOverlay(ov);
 		}
+//		else {
+//			seqCamData.seq.removeOverlay(ov);
+//			ov.setSequence(seqCamData);
+//			seqCamData.seq.addOverlay(ov);
+//		}
 		exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
 		ov.setThresholdTransform(
 				exp.cages.detect.threshold,  
@@ -208,13 +211,14 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		int [] binaryData = img.getDataXYAsInt(0);
 		int sizeX = img.getSizeX();
 		int sizeY = img.getSizeY();
-		int nblobs = getPixelsConnected (sizeX, sizeY, binaryData);
-		System.out.println("n pixel areas found=" + nblobs);
+		getPixelsConnected (sizeX, sizeY, binaryData);
 		getBlobsConnected(sizeX, sizeY, binaryData);
-		List<Integer> list = getListOfBlobs (binaryData);
-		for (int ref: list) 
-			System.out.print(" " + ref);
-		System.out.println("\nn blobs found=" + list.size());
+		fillBlanksPixelsWithinBlobs (sizeX, sizeY, binaryData);
+		
+//		List<Integer> list = getListOfBlobs (binaryData);
+//		for (int ref: list) 
+//			System.out.print(" " + ref);
+//		System.out.println("\nn blobs found=" + list.size());
 		
 		int i = 0;
 		for (Capillary cap : exp.capillaries.capillariesArrayList) {
@@ -295,22 +299,22 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		}
 	}
 	
-	private List<Integer> getListOfBlobs (int [] binaryData) {
-		List<Integer> list = new ArrayList<Integer> (10);
-		for (int i=0; i< binaryData.length; i++) {
-			int val = binaryData[i];
-			boolean found = false;
-			for (int ref: list) {
-				if (val == ref) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) 
-				list.add(val);
-		}
-		return list;
-	}
+//	private List<Integer> getListOfBlobs (int [] binaryData) {
+//		List<Integer> list = new ArrayList<Integer> (10);
+//		for (int i=0; i< binaryData.length; i++) {
+//			int val = binaryData[i];
+//			boolean found = false;
+//			for (int ref: list) {
+//				if (val == ref) {
+//					found = true;
+//					break;
+//				}
+//			}
+//			if (!found) 
+//				list.add(val);
+//		}
+//		return list;
+//	}
 	
 	private void changeAllBlobNumber1Into2 (int oldvalue, int newvalue, int [] binaryData) {
 		for (int i=0; i< binaryData.length; i++) {
@@ -356,6 +360,30 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 	}
 	
 
+	private void fillBlanksPixelsWithinBlobs (int sizeX, int sizeY, int [] binaryData) {
+		for (int irow= 0; irow < sizeY; irow++) {
+			
+			for (int icolumn = 0; icolumn < sizeX; icolumn++) {
+				int iblob = binaryData[icolumn + sizeX*irow];
+				if (iblob <1) 
+					continue;
+				
+				int icol_first = icolumn;
+				int icol_last = icolumn;
+				// get last col of iblob
+				for (int icolumn1 = icol_first; icolumn1 < sizeX; icolumn1++) {
+					if (binaryData[icolumn1 + sizeX*irow] == iblob)
+						icol_last = icolumn1;				
+				}
+				// make sure that all pixels between icol_first and icol_last are set at iblob
+				for (int icolumn1 = icol_first; icolumn1 <= icol_last; icolumn1++) {
+					binaryData[icolumn1 + sizeX*irow] = iblob;				
+				}
+				
+				icolumn = icol_last;
+			}
+		}
+	}
 		
 
 }
