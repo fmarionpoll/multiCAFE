@@ -498,5 +498,24 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		}
 		return pt;
 	}
+	
+	public Point2D getCapillaryLowestPoint () {
+		Point2D pt = null;		
+		if (roi instanceof ROI2DPolyLine) {
+			Polyline2D line = (( ROI2DPolyLine) roi).getPolyline2D();
+			int last = line.npoints - 1;
+			if (line.ypoints[0] > line.ypoints[last])
+				pt = new Point2D.Double(line.xpoints[0],  line.ypoints[0]);
+			else  
+				pt = new Point2D.Double(line.xpoints[last],  line.ypoints[last]);
+		} else if (roi instanceof ROI2DLine) {
+			Line2D line = (( ROI2DLine) roi).getLine();
+			if (line.getP1().getY() > line.getP2().getY())
+				pt = line.getP1();
+			else
+				pt = line.getP2();
+		}
+		return pt;
+	}
 
 }

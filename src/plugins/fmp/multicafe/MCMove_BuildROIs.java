@@ -68,6 +68,7 @@ public class MCMove_BuildROIs extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null) {
+					exp.seqCamData.removeRoisContainingString(-1, "cage");
 					exp.cages.removeCages();
 					createROIsFromSelectedPolygon(exp);
 					exp.cages.getCagesFromROIs(exp.seqCamData);
