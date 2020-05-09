@@ -34,6 +34,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	MCMove_Graphs 		tabGraphics = new MCMove_Graphs();
 	int 				iTAB_INFOS 	= 2;
 	int 				iTAB_DETECT1= 3;
+	int 				iTAB_CAGE2	= 1;
 	MultiCAFE 			parent0		= null;
 
 	
@@ -54,6 +55,7 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Cages", null, tabBuildROIs, "Define cages using ROI polygons placed over each cage");
 		
 		iTab++;
+		iTAB_CAGE2	= iTab;
 		tabBuildROIs2.init(capLayout, parent0);
 		tabBuildROIs2.addPropertyChangeListener(this);
 		tabsPane.addTab("Cages (bis)", null, tabBuildROIs2, "Define cages using a ROI polygons and limits detection");
@@ -97,6 +99,11 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	            if (selectedIndex == iTAB_INFOS && tabInfos.tableView.getRowCount() > 0) {
 	            	tabInfos.tableView.changeSelection(0, 1, false, false);
 	            }
+	            boolean activateOverlay = false;
+	            if (selectedIndex == iTAB_CAGE2) {
+	            	activateOverlay = true;
+	            }
+	            tabBuildROIs2.overlayCheckBox.setSelected(activateOverlay);
 	        }
 	    });
 		

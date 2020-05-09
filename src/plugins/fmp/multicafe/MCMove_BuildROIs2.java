@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -22,8 +23,9 @@ import javax.swing.event.ChangeListener;
 import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
-
+import icy.roi.ROI2D;
 import icy.type.DataType;
+import icy.type.geom.Polygon2D;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
@@ -39,10 +41,10 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 	 * 
 	 */
 	private static final long serialVersionUID 	= -121724000730795396L;
-	private JButton 	createCagesButton 		= new JButton("Create/add cages");
+	private JButton 	createCagesButton 		= new JButton("Create cages");
 	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(60, 0, 10000, 1));
-	private JCheckBox 	overlayCheckBox			= new JCheckBox("Overlay ", false);
-	private JCheckBox 	whiteBackGroundCheckBox	= new JCheckBox("white background", false);
+	public 	JCheckBox 	overlayCheckBox			= new JCheckBox("Overlay ", false);
+	private JButton 	deleteButton 			= new JButton("Cut points within selected polygon");
 	JComboBox<TransformOp> transformForLevelsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
 			TransformOp.R_RGB, TransformOp.G_RGB, TransformOp.B_RGB, 
 			TransformOp.R2MINUS_GB, TransformOp.G2MINUS_RB, TransformOp.B2MINUS_RG, TransformOp.RGB,
@@ -61,8 +63,14 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		JLabel videochannel = new JLabel("filter operation ");
 		videochannel.setHorizontalAlignment(SwingConstants.RIGHT);
 		transformForLevelsComboBox.setSelectedIndex(2);
-		add( GuiUtil.besidesPanel( videochannel, transformForLevelsComboBox, whiteBackGroundCheckBox, new JLabel(" ")));
+		add( GuiUtil.besidesPanel( videochannel, transformForLevelsComboBox,new JLabel(" "), new JLabel(" ")));
 		add( GuiUtil.besidesPanel( overlayCheckBox,  thresholdSpinner, new JLabel(" "), new JLabel(" ")));
+		
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
+		flowLayout.setVgap(0);
+		JPanel panel = new JPanel(flowLayout);
+		panel.add(deleteButton);
+		add(panel);
 		
 		defineActionListeners();
 		thresholdSpinner.addChangeListener(this);
@@ -89,9 +97,14 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 				if (exp != null)
 					updateOverlay(exp);
 			}});
+		
+		deleteButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
+				deletePointsIncluded(exp);
+			}});
 
 	}
-	
 
 	public void updateOverlay (Experiment exp) {
 		SequenceCamData seqCamData = exp.seqCamData;
@@ -110,7 +123,7 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 		ov.setThresholdTransform(
 				exp.cages.detect.threshold,  
 				(TransformOp) transformForLevelsComboBox.getSelectedItem(),
-				whiteBackGroundCheckBox.isSelected());
+				false);
 		seqCamData.seq.overlayChanged(ov);
 		seqCamData.seq.dataChanged();		
 	}
@@ -183,24 +196,49 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 				}
 			}
 		}
+		
+	}
+		
+	void deletePointsIncluded(Experiment exp) {
+		SequenceCamData seqCamData = exp.seqCamData;
+		ROI2D roiSnip = seqCamData.seq.getSelectedROI2D();
+		if (roiSnip == null)
+			return;
+		
+		List <ROI2D> roiList = seqCamData.getROIs2DContainingString("cage");
+		for (ROI2D cageRoi: roiList) {
+			if (roiSnip.intersects(cageRoi) && cageRoi instanceof ROI2DPolygon) {
+				Polygon2D oldPolygon = ((ROI2DPolygon) cageRoi).getPolygon2D();
+				if (oldPolygon == null)
+					continue;
+				Polygon2D newPolygon = new Polygon2D();
+				for (int i = 0; i < oldPolygon.npoints; i++) {
+					if (roiSnip.contains(oldPolygon.xpoints[i], oldPolygon.ypoints[i]))
+						continue;
+					newPolygon.addPoint(oldPolygon.xpoints[i], oldPolygon.ypoints[i]);
+				}
+				((ROI2DPolygon)cageRoi).setPolygon2D(newPolygon);
+			}
+		}
+		
+//		seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
+//		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
+//		String optionSelected = (String) roiTypeCombo.getSelectedItem();
+//		if (optionSelected .contains("gulp")) {
+//			List<ROI> listGulpsSelected = selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
+//			deleteGulps(seqKymos, listGulpsSelected);
+//			seqKymos.removeROIsAtT(t);
+//			List<ROI2D> listOfRois = cap.transferMeasuresToROIs();
+//			seqKymos.seq.addROIs (listOfRois, false);
+//		} else {
+//			if (optionSelected .contains("top")) 
+//				removeAndUpdate(seqKymos, cap, cap.ptsTop, roi);
+//			if (optionSelected.contains("bottom"))
+//				removeAndUpdate(seqKymos, cap, cap.ptsBottom, roi);
+//			if (optionSelected.contains("deriv"))
+//				removeAndUpdate(seqKymos, cap, cap.ptsDerivative, roi);
+//		}
 	}
 	
-
-	
-
-	
-
-	
-	
-	
-
-	
-
-	
-	
-	
-
-	
-		
-
 }
+

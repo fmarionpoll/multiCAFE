@@ -29,8 +29,6 @@ import plugins.fmp.multicafeTools.Comparators;
 import plugins.fmp.multicafeTools.ImageOperationsStruct;
 import plugins.fmp.multicafeTools.StringSorter;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
-import plugins.kernel.roi.roi2d.ROI2DLine;
-import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
@@ -547,14 +545,12 @@ public class SequenceCamData {
 		}
 	}
 	
-	public List<ROI2D> get2DLineORPolylineRoisContainingString (String string) {
+	public List<ROI2D> getROIs2DContainingString (String string) {
 		List<ROI2D> roiList = seq.getROI2Ds();
 		Collections.sort(roiList, new Comparators.ROI2DNameComparator());
 		List<ROI2D> capillaryRois = new ArrayList<ROI2D>();
 		for ( ROI2D roi : roiList ) {
-			if (!(roi instanceof ROI2DShape) || !roi.getName().contains(string)) 
-				continue;
-			if (roi instanceof ROI2DLine || roi instanceof ROI2DPolyLine)
+			if ((roi instanceof ROI2DShape) && roi.getName().contains(string)) 
 				capillaryRois.add(roi);
 		}
 		return capillaryRois;
@@ -580,7 +576,7 @@ public class SequenceCamData {
 	
 	public void getCamDataROIS (Capillaries capillaries) {
 		capillaries.capillariesArrayList.clear();
-		List<ROI2D> listROISCap = get2DLineORPolylineRoisContainingString ("line");
+		List<ROI2D> listROISCap = getROIs2DContainingString ("line");
 		for (ROI2D roi:listROISCap) {
 			capillaries.capillariesArrayList.add(new Capillary((ROI2DShape)roi));
 		}

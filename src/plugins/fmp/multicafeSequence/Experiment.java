@@ -546,7 +546,7 @@ public class Experiment {
 	}
 	
 	public void updateCapillariesFromCamData() {
-		List<ROI2D> listROISCap = seqCamData.get2DLineORPolylineRoisContainingString ("line");
+		List<ROI2D> listROISCap = seqCamData.getROIs2DContainingString ("line");
 		Collections.sort(listROISCap, new Comparators.ROI2DNameComparator());
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			cap.valid = false;
