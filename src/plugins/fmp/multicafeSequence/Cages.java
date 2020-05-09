@@ -132,10 +132,10 @@ public class Cages {
 			}
 		} else {
 			List<ROI2D> cageLimitROIList = new ArrayList<ROI2D>();
-			if (v0XmlLoadCagesLimits(node, cageLimitROIList)) {
+			if (xmlLoadCagesLimits_v0(node, cageLimitROIList)) {
 				List<XYTaSeries> flyPositionsList = new ArrayList<XYTaSeries>();
-				v0XmlLoadFlyPositions(node, flyPositionsList);
-				v0TransferDataToCages(cageLimitROIList, flyPositionsList);
+				xmlLoadFlyPositions_v0(node, flyPositionsList);
+				transferDataToCages_v0(cageLimitROIList, flyPositionsList);
 			}
 			else
 				return false;
@@ -143,7 +143,7 @@ public class Cages {
 		return true;
 	}
 	
-	private void v0TransferDataToCages(List<ROI2D> cageLimitROIList, List<XYTaSeries> flyPositionsList) {
+	private void transferDataToCages_v0(List<ROI2D> cageLimitROIList, List<XYTaSeries> flyPositionsList) {
 		cageList.clear();
 		int ncages = cageLimitROIList.size();
 		for (int index=0; index< ncages; index++) {
@@ -154,7 +154,7 @@ public class Cages {
 		}
 	}
 
-	private boolean v0XmlLoadCagesLimits(Node node, List<ROI2D> cageLimitROIList) {
+	private boolean xmlLoadCagesLimits_v0(Node node, List<ROI2D> cageLimitROIList) {
 		if (node == null)
 			return false;
 		Element xmlVal = XMLUtil.getElement(node, ID_CAGELIMITS);
@@ -172,7 +172,7 @@ public class Cages {
 		return true;
 	}
 	
-	private boolean v0XmlLoadFlyPositions(Node node, List<XYTaSeries> flyPositionsList) {
+	private boolean xmlLoadFlyPositions_v0(Node node, List<XYTaSeries> flyPositionsList) {
 		if (node == null)
 			return false;
 		Element xmlVal = XMLUtil.getElement(node, ID_FLYDETECTED);
