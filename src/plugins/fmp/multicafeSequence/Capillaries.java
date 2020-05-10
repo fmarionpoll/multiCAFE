@@ -34,6 +34,35 @@ public class Capillaries {
 
 	// ---------------------------------
 	
+	String getCorrectPath(String cspathname) {
+		Path path = Paths.get(cspathname);
+		String pathname = cspathname;
+		if (path.toFile().isDirectory()) {
+			pathname = cspathname + File.separator + "results" + File.separator + "MCcapillaries.xml";
+			path = Paths.get(pathname);
+			if (path.toFile().isFile())
+				return pathname;
+			else {
+				pathname = cspathname + File.separator + "capillarytrack.xml";
+				path = Paths.get(pathname);
+			}
+		}
+		if (!path.toFile().isFile())
+			return null;
+		return pathname;
+	}
+	
+	String getMCCapillaryNameFromExperimentPath(String cspathname) {
+		Path path = Paths.get(cspathname);
+		String pathname = cspathname;
+		if (path.toFile().isDirectory()) {
+			pathname = cspathname + File.separator + "results" + File.separator + "MCcapillaries.xml";
+			path = Paths.get(pathname);
+			return pathname;
+		}
+		return null;
+	}
+	
 	public boolean xmlWriteROIsAndData(String name, SequenceKymos seq) {
 		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");
 		csFile.toLowerCase();

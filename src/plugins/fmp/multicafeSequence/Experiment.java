@@ -494,7 +494,7 @@ public class Experiment {
 	}
 	
 	public boolean xmlLoadKymos_Measures(String pathname) {
-		pathname = seqKymos.getCorrectPath(pathname);
+		pathname = capillaries.getCorrectPath(pathname);
 		if (pathname == null)
 			return false;
 		boolean flag = capillaries.xmlLoadCapillaries(pathname);
@@ -507,27 +507,28 @@ public class Experiment {
 	}
 	
 	public boolean xmlLoadMCcapillariesOnly(String pathname) {
-		pathname = seqKymos.getCorrectPath(pathname);
+		pathname = capillaries.getCorrectPath(pathname);
 		if (pathname == null)
 			return false;
 		return capillaries.xmlLoadCapillaries(pathname);
 	}
 	
 	public boolean xmlLoadMCcapillaries(String pathname) {
-		pathname = seqKymos.getCorrectPath(pathname);
+		pathname = capillaries.getCorrectPath(pathname);
 		if (pathname == null)
 			return false;
 		boolean flag = capillaries.xmlLoadCapillaries(pathname);
 		if (flag) {
 			Path pathfilename = Paths.get(pathname);
 			seqKymos.directory = pathfilename.getParent().toString();
-			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.getDirectory(), capillaries);
+			seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getResultsDirectory(), capillaries);
 		}
 		return flag;
 	}
 	
 	public boolean xmlSaveMCcapillaries() {
-		capillaries.xmlSaveCapillaries_Only(seqKymos.getMCcapillariesPath());
+		String saveMCcapillariesFullPath = capillaries.getMCCapillaryNameFromExperimentPath(experimentFileName);
+		capillaries.xmlSaveCapillaries_Only(saveMCcapillariesFullPath);
 		boolean flag = capillaries.xmlSaveCapillaries_Measures(seqCamData.getResultsDirectory());
 		return flag;
 	}

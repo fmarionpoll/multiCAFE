@@ -220,24 +220,6 @@ public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
 				((ROI2DPolygon)cageRoi).setPolygon2D(newPolygon);
 			}
 		}
-		
-//		seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
-//		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-//		String optionSelected = (String) roiTypeCombo.getSelectedItem();
-//		if (optionSelected .contains("gulp")) {
-//			List<ROI> listGulpsSelected = selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
-//			deleteGulps(seqKymos, listGulpsSelected);
-//			seqKymos.removeROIsAtT(t);
-//			List<ROI2D> listOfRois = cap.transferMeasuresToROIs();
-//			seqKymos.seq.addROIs (listOfRois, false);
-//		} else {
-//			if (optionSelected .contains("top")) 
-//				removeAndUpdate(seqKymos, cap, cap.ptsTop, roi);
-//			if (optionSelected.contains("bottom"))
-//				removeAndUpdate(seqKymos, cap, cap.ptsBottom, roi);
-//			if (optionSelected.contains("deriv"))
-//				removeAndUpdate(seqKymos, cap, cap.ptsDerivative, roi);
-//		}
 	}
 	
 }

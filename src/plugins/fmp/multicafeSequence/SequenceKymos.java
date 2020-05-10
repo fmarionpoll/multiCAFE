@@ -337,24 +337,6 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	// ----------------------------------
 	
-	String getCorrectPath(String cspathname) {
-		Path path = Paths.get(cspathname);
-		String pathname = cspathname;
-		if (path.toFile().isDirectory()) {
-			pathname = cspathname + File.separator + "results" + File.separator + "MCcapillaries.xml";
-			path = Paths.get(pathname);
-			if (path.toFile().isFile())
-				return pathname;
-			else {
-				pathname = cspathname + File.separator + "capillarytrack.xml";
-				path = Paths.get(pathname);
-			}
-		}
-		if (!path.toFile().isFile())
-			return null;
-		return pathname;
-	}
-	
 	String buildCorrectPath(String pathname) {
 		Path path = Paths.get(pathname);
 		if (path.toFile().isDirectory()) {
