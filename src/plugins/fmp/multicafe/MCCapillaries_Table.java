@@ -24,20 +24,24 @@ public class MCCapillaries_Table  extends JPanel {
 
 	
 	
-	public void initialize (MultiCAFE parent0) {
-
-		dialogFrame = new IcyFrame ("Edit capillaries", true, true);	 
+	public void initialize (MultiCAFE parent0) {		
 		viewModel = new CapillaryTableModel(parent0);
-		
 	    tableView.setModel(viewModel);
 	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 400));
 	    tableView.setFillsViewportHeight(true);
-	    
 	    TableColumnModel columnModel = tableView.getColumnModel();
 	    for (int i=0; i<3; i++)
 	    	setFixedColumnProperties(columnModel.getColumn(i));
-
         JScrollPane scrollPane = new JScrollPane(tableView);
+        
+		dialogFrame = new IcyFrame ("Edit capillaries", true, true);	
+		/*
+		 *  https://stackoverflow.com/questions/15194991/how-to-put-a-table-and-3-buttons-in-a-jframe
+		 * 
+		 */
+		JPanel topPanel = new JPanel();
+		JPanel btnPanel = new JPanel();
+        
 		dialogFrame.add(scrollPane);
 		
 		dialogFrame.pack();
