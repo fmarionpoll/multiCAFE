@@ -2,8 +2,10 @@ package plugins.fmp.multicafe;
 
 
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -21,7 +23,8 @@ public class MCCapillaries_Table  extends JPanel {
 	IcyFrame 					dialogFrame 			= null;
     private JTable 				tableView = new JTable();
 	private CapillaryTableModel viewModel = null;
-
+	private JButton				dummyButton1 = new JButton("dummy button 1");
+	private JButton				dummyButton2 = new JButton("dummy button 2");
 	
 	
 	public void initialize (MultiCAFE parent0) {		
@@ -41,8 +44,16 @@ public class MCCapillaries_Table  extends JPanel {
 		 */
 		JPanel topPanel = new JPanel();
 		JPanel btnPanel = new JPanel();
+		topPanel.setLayout(new BorderLayout());
+		topPanel.add(dummyButton1);
+        topPanel.add(dummyButton2);
         
-		dialogFrame.add(scrollPane);
+        btnPanel.add(scrollPane);
+        
+        dialogFrame.add(topPanel);
+		dialogFrame.add(btnPanel);
+        
+//		dialogFrame.add(scrollPane);
 		
 		dialogFrame.pack();
 		dialogFrame.addToDesktopPane();
