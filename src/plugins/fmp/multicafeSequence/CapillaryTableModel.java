@@ -19,7 +19,7 @@ public class CapillaryTableModel extends AbstractTableModel  {
 	
 	@Override
 	public int getColumnCount() {
-		return 5;
+		return 6;
 	}
 	
     @Override
@@ -28,8 +28,9 @@ public class CapillaryTableModel extends AbstractTableModel  {
     	case 0: return String.class;
     	case 1: return Integer.class;
     	case 2: return Integer.class;
-    	case 3: return String.class;
+    	case 3:	return Double.class;
     	case 4: return String.class;
+    	case 5: return String.class;
         }
     	return String.class;
     }
@@ -40,8 +41,9 @@ public class CapillaryTableModel extends AbstractTableModel  {
 		case 0:	return "Name";
 		case 1: return "cage nb";
 		case 2: return "n flies";
-		case 3: return "stimulus";
-		case 4: return "concentration";
+		case 3: return "volume";
+		case 4: return "stimulus";
+		case 5: return "concentration";
 		}
 		return "";
 	}
@@ -68,8 +70,9 @@ public class CapillaryTableModel extends AbstractTableModel  {
             case 0: return cap.roi.getName();
             case 1: return cap.cagenb;
             case 2: return cap.nflies;
-            case 3: return cap.stimulus;
-            case 4: return cap.concentration;
+            case 3: return cap.volume;
+            case 4: return cap.stimulus;
+            case 5: return cap.concentration;
         	}
     	}
     	return null;
@@ -95,9 +98,10 @@ public class CapillaryTableModel extends AbstractTableModel  {
         	switch (columnIndex) {
             case 0: cap.roi.setName(aValue.toString()); break;
             case 1: cap.cagenb = (int) aValue; break;
-            case 2: cap.nflies = (int) aValue; break; 
-            case 3: cap.stimulus = aValue.toString(); break;
-            case 4: cap.concentration = aValue.toString(); break;
+            case 2: cap.nflies = (int) aValue; break;
+            case 3: cap.volume = (double) aValue; break;
+            case 4: cap.stimulus = aValue.toString(); break;
+            case 5: cap.concentration = aValue.toString(); break;
         	}
     	}
     }

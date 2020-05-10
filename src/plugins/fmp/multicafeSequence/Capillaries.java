@@ -23,9 +23,9 @@ public class Capillaries {
 	
 	public CapillariesDescription 	desc			= new CapillariesDescription();
 	public CapillariesDescription 	desc_old		= new CapillariesDescription();
-	public List <Capillary> capillariesArrayList	= new ArrayList <Capillary>();
-	public DetectLevels_Options limitsOptions		= new DetectLevels_Options();
-	public DetectGulps_Options 	gulpsOptions		= new DetectGulps_Options();
+	public List <Capillary> 		capillariesArrayList = new ArrayList <Capillary>();
+	public DetectLevels_Options 	limitsOptions	= new DetectLevels_Options();
+	public DetectGulps_Options 		gulpsOptions	= new DetectGulps_Options();
 	
 	private final static String ID_CAPILLARYTRACK = "capillaryTrack";
 	private final static String ID_NCAPILLARIES = "N_capillaries";
@@ -248,8 +248,7 @@ public class Capillaries {
 	public void transferDescriptionToCapillary (Capillary cap) {
 		String	name = cap.roi.getName();
 		cap.cagenb = cap.getCageIndexFromRoiName();
-		if (cap.cagenb < 1 || cap.cagenb > 8)
-			cap.nflies = 0;
+
 		String letter = name.substring(name.length() - 1);
 		cap.side = letter;
 		if (desc.grouping == 2 && letter .equals("R")) {	
@@ -261,9 +260,6 @@ public class Capillaries {
 				cap.nflies = cap0.nflies;
 				cap.cagenb = cap0.cagenb;
 			}
-		} else {
-			cap.stimulus = desc.stimulusL;
-			cap.concentration = desc.concentrationL;
 		}
 		cap.volume = desc.volume;
 		cap.pixels = desc.pixels;

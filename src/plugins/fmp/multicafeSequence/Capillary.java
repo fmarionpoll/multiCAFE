@@ -103,8 +103,17 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		indexImage 		= cap.indexImage;
 		capillaryName 	= cap.capillaryName;
 		version 		= cap.version;
-		roi 	= cap.roi;
+		roi 			= cap.roi;
 		filenameTIFF	= cap.filenameTIFF;
+		
+		stimulus		= cap.stimulus;
+		concentration	= cap.concentration;
+		side			= cap.side;
+		nflies			= cap.nflies;
+		cagenb			= cap.cagenb;
+		volume 			= cap.volume;
+		pixels 			= cap.pixels;
+		
 		limitsOptions	= cap.limitsOptions;
 		gulpsOptions	= cap.gulpsOptions;
 		gulpsRois.rois	= new ArrayList <ROI2D> ();

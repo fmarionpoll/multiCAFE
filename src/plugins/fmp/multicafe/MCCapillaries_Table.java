@@ -4,6 +4,11 @@ package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -13,21 +18,27 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import icy.gui.frame.IcyFrame;
+import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.CapillaryTableModel;
+import plugins.fmp.multicafeSequence.Experiment;
 
 public class MCCapillaries_Table  extends JPanel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -8611587540329642259L;
-	IcyFrame 					dialogFrame 			= null;
-    private JTable 				tableView = new JTable();
-	private CapillaryTableModel viewModel = null;
-	private JButton				dummyButton1 = new JButton("dummy button 1");
-	private JButton				dummyButton2 = new JButton("dummy button 2");
+	private static final long serialVersionUID 	= -8611587540329642259L;
+	IcyFrame 					dialogFrame 	= null;
+    private JTable 				tableView 		= new JTable();
+	private CapillaryTableModel viewModel 		= null;
+	private JButton				copyButton 		= new JButton("Copy table");
+	private JButton				pasteButton 	= new JButton("Paste");
+	private MultiCAFE 			parent0 		= null; 
+	private List <Capillary> 	capillariesArrayCopy = null;
 	
 	
-	public void initialize (MultiCAFE parent0) {		
+	public void initialize (MultiCAFE parent0, List <Capillary> capCopy) {
+		this.parent0 = parent0;
+		capillariesArrayCopy = capCopy;
 		viewModel = new CapillaryTableModel(parent0);
 	    tableView.setModel(viewModel);
 	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 400));
@@ -43,15 +54,15 @@ public class MCCapillaries_Table  extends JPanel {
 		 * 
 		 */
 		JPanel topPanel = new JPanel();
-		JPanel btnPanel = new JPanel();
-		topPanel.setLayout(new BorderLayout());
-		topPanel.add(dummyButton1);
-        topPanel.add(dummyButton2);
+		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		topPanel.add(copyButton);
+        topPanel.add(pasteButton);
         
-        btnPanel.add(scrollPane);
+        JPanel tablePanel = new JPanel();
+		tablePanel.add(scrollPane);
         
-        dialogFrame.add(topPanel);
-		dialogFrame.add(btnPanel);
+        dialogFrame.add(topPanel, BorderLayout.NORTH);
+		dialogFrame.add(tablePanel, BorderLayout.CENTER);
         
 //		dialogFrame.add(scrollPane);
 		
@@ -60,6 +71,40 @@ public class MCCapillaries_Table  extends JPanel {
 		dialogFrame.requestFocus();
 		dialogFrame.center();
 		dialogFrame.setVisible(true);
+		defineActionListeners();
+		pasteButton.setEnabled(capillariesArrayCopy != null);
+	}
+	
+	private void defineActionListeners() {
+		copyButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				int size = exp.capillaries.capillariesArrayList.size();
+				capillariesArrayCopy = new ArrayList <Capillary>(size);
+				for (Capillary cap: exp.capillaries.capillariesArrayList ) {
+					capillariesArrayCopy.add(cap);
+				}
+				pasteButton.setEnabled(true);
+			}});
+		
+		pasteButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				for (Capillary capFrom: capillariesArrayCopy ) {
+					capFrom.valid = false;
+					for (Capillary capTo: exp.capillaries.capillariesArrayList) {
+						if (!capFrom.roi.getName().equals (capTo.roi.getName()))
+							continue;
+						capFrom.valid = true;
+						capTo.cagenb = capFrom.cagenb;
+						capTo.nflies = capFrom.nflies;
+						capTo.volume = capFrom.volume;
+						capTo.stimulus = capFrom.stimulus;
+						capTo.concentration = capFrom.concentration;
+					}
+				}
+				viewModel.fireTableDataChanged();
+			}});
 	}
 	
 	void close() {

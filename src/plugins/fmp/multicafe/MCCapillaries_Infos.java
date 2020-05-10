@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -27,9 +28,7 @@ public class MCCapillaries_Infos extends JPanel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4950182090521600937L;
-
-//	JCheckBox					visibleCheckBox				= new JCheckBox("ROIs visible", true);
+	private static final long 	serialVersionUID 			= 4950182090521600937L;
 	private JSpinner 			capillaryVolumeTextField	= new JSpinner(new SpinnerNumberModel(5., 0., 100., 1.));
 	private JSpinner 			capillaryPixelsTextField	= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
 	private JComboBox<String> 	stimulusRJCombo				= new JComboBox<String>();
@@ -40,6 +39,7 @@ public class MCCapillaries_Infos extends JPanel {
 	private JButton				editCapillariesButton		= new JButton("edit capillaries");
 	private MultiCAFE 			parent0 					= null;
 	private MCCapillaries_Table dialog 						= null;
+	private List <Capillary> 	capillariesArrayCopy 		= null;
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -93,7 +93,7 @@ public class MCCapillaries_Infos extends JPanel {
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				exp.capillaries.transferDescriptionToCapillaries();
 				dialog = new MCCapillaries_Table();
-            	dialog.initialize(parent0);
+            	dialog.initialize(parent0, capillariesArrayCopy);
 			}});
 	}
 				
