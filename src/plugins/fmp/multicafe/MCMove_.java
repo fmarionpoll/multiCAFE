@@ -96,9 +96,9 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	        public void stateChanged(ChangeEvent e) {
 	            int selectedIndex = tabsPane.getSelectedIndex();
 	            tabDetect1.overlayCheckBox.setSelected(selectedIndex == iTAB_DETECT1);
-	            if (selectedIndex == iTAB_INFOS && tabInfos.tableView.getRowCount() > 0) {
-	            	tabInfos.tableView.changeSelection(0, 1, false, false);
-	            }
+//	            if (selectedIndex == iTAB_INFOS && tabInfos.tableView.getRowCount() > 0) {
+//	            	tabInfos.tableView.changeSelection(0, 1, false, false);
+//	            }
 	            boolean activateOverlay = false;
 	            if (selectedIndex == iTAB_CAGE2) {
 	            	activateOverlay = true;

@@ -20,6 +20,8 @@ public class Cage {
 	public List<ROI2D> 		detectedFliesList	= new ArrayList<ROI2D>();
 	public int 				cageNFlies  		= 1;
 	public String 			cageComment 		= "..";
+	private String 			cageNumber 			= null;
+	public	boolean			valid				= false;
 	
 	private final String ID_CAGELIMITS 			= "CageLimits";
 	private final String ID_FLYPOSITIONS		= "FlyPositions";
@@ -27,7 +29,6 @@ public class Cage {
 	private final String ID_NBITEMS				= "nb_items";
 	private final String ID_NFLIES 				= "nflies"; 
 	private final String ID_COMMENT				= "comment";
-	private String cageNumber = null;
 	
 	
 	public boolean xmlSaveCage (Node node, int index) {
