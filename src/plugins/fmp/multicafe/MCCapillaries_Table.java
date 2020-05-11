@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -39,6 +38,7 @@ public class MCCapillaries_Table  extends JPanel {
 	public void initialize (MultiCAFE parent0, List <Capillary> capCopy) {
 		this.parent0 = parent0;
 		capillariesArrayCopy = capCopy;
+		
 		viewModel = new CapillaryTableModel(parent0);
 	    tableView.setModel(viewModel);
 	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 400));
@@ -48,11 +48,6 @@ public class MCCapillaries_Table  extends JPanel {
 	    	setFixedColumnProperties(columnModel.getColumn(i));
         JScrollPane scrollPane = new JScrollPane(tableView);
         
-		dialogFrame = new IcyFrame ("Edit capillaries", true, true);	
-		/*
-		 *  https://stackoverflow.com/questions/15194991/how-to-put-a-table-and-3-buttons-in-a-jframe
-		 * 
-		 */
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		topPanel.add(copyButton);
@@ -61,10 +56,9 @@ public class MCCapillaries_Table  extends JPanel {
         JPanel tablePanel = new JPanel();
 		tablePanel.add(scrollPane);
         
-        dialogFrame.add(topPanel, BorderLayout.NORTH);
+		dialogFrame = new IcyFrame ("Edit capillaries", true, true);	
+		dialogFrame.add(topPanel, BorderLayout.NORTH);
 		dialogFrame.add(tablePanel, BorderLayout.CENTER);
-        
-//		dialogFrame.add(scrollPane);
 		
 		dialogFrame.pack();
 		dialogFrame.addToDesktopPane();
@@ -72,15 +66,14 @@ public class MCCapillaries_Table  extends JPanel {
 		dialogFrame.center();
 		dialogFrame.setVisible(true);
 		defineActionListeners();
-		pasteButton.setEnabled(capillariesArrayCopy != null);
+		pasteButton.setEnabled(capillariesArrayCopy.size() > 0);
 	}
 	
 	private void defineActionListeners() {
 		copyButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				int size = exp.capillaries.capillariesArrayList.size();
-				capillariesArrayCopy = new ArrayList <Capillary>(size);
+				capillariesArrayCopy.clear();
 				for (Capillary cap: exp.capillaries.capillariesArrayList ) {
 					capillariesArrayCopy.add(cap);
 				}

@@ -39,7 +39,7 @@ public class MCCapillaries_Infos extends JPanel {
 	private JButton				editCapillariesButton		= new JButton("edit capillaries");
 	private MultiCAFE 			parent0 					= null;
 	private MCCapillaries_Table dialog 						= null;
-	private List <Capillary> 	capillariesArrayCopy 		= null;
+	private List <Capillary> 	capillariesArrayCopy 		= new ArrayList<Capillary>();
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {

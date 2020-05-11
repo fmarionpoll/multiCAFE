@@ -247,8 +247,6 @@ public class Capillaries {
 	
 	public void transferDescriptionToCapillary (Capillary cap) {
 		String	name = cap.roi.getName();
-		cap.cagenb = cap.getCageIndexFromRoiName();
-
 		String letter = name.substring(name.length() - 1);
 		cap.side = letter;
 		if (desc.grouping == 2 && letter .equals("R")) {	
