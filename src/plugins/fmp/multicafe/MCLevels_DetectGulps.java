@@ -32,23 +32,23 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 	/**
 	 * 
 	 */
-	private static final long 	serialVersionUID 				= -5590697762090397890L;
+	private static final long 	serialVersionUID 		= -5590697762090397890L;
 	
-	JCheckBox				detectAllGulpsCheckBox 			= new JCheckBox ("all images", true);
-	JComboBox<TransformOp> 	transformForGulpsComboBox 		= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
-	JSpinner				startSpinner					= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
-	JSpinner				endSpinner						= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
-	JCheckBox				buildDerivativeCheckBox 		= new JCheckBox ("build derivative", true);
-	JCheckBox				detectGulpsCheckBox 			= new JCheckBox ("detect gulps", true);
+	JCheckBox				detectAllGulpsCheckBox 		= new JCheckBox ("all images", true);
+	JComboBox<TransformOp> 	transformForGulpsComboBox 	= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
+	JSpinner				startSpinner				= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
+	JSpinner				endSpinner					= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
+	JCheckBox				buildDerivativeCheckBox 	= new JCheckBox ("build derivative", true);
+	JCheckBox				detectGulpsCheckBox 		= new JCheckBox ("detect gulps", true);
 	
-	private JCheckBox		partCheckBox 					= new JCheckBox ("detect from", false);
-	private JButton			displayTransform2Button			= new JButton("Display");
-	private JSpinner		spanTransf2Spinner				= new JSpinner(new SpinnerNumberModel(3, 0, 500, 1));
-	private JSpinner 		detectGulpsThresholdSpinner		= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
-	private String 			detectString 					= "        Detect     ";
-	private JButton 		detectButton 					= new JButton(detectString);
-	private JCheckBox		allSeriesCheckBox 				= new JCheckBox("ALL series", false);
-	private DetectGulps_series 	thread 							= null;
+	private JCheckBox		partCheckBox 				= new JCheckBox ("detect from", false);
+	private JButton			displayTransform2Button		= new JButton("Display");
+	private JSpinner		spanTransf2Spinner			= new JSpinner(new SpinnerNumberModel(3, 0, 500, 1));
+	private JSpinner 		detectGulpsThresholdSpinner	= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
+	private String 			detectString 				= "        Detect     ";
+	private JButton 		detectButton 				= new JButton(detectString);
+	private JCheckBox		allSeriesCheckBox 			= new JCheckBox("ALL series", false);
+	private DetectGulps_series 	thread 					= null;
 	private MultiCAFE 		parent0;
 	
 	

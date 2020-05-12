@@ -276,22 +276,17 @@ public class ImageTransformTools {
 		int imageSizeX = sourceImage.getSizeX();
 		int imageSizeY = sourceImage.getSizeY();
 		IcyBufferedImage img2 = new IcyBufferedImage(imageSizeX, imageSizeY, 3, sourceImage.getDataType_());
-		
 		for (int c=chan0; c < chan1; c++) {
-
 			int[] tabValues = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
 			int[] outValues = Array1DUtil.arrayToIntArray(img2.getDataXY(c), img2.isSignedDataType());			
-
 			for (int iy = 0; iy < imageSizeY; iy++) {	
 				// erase border values
 				for (int ix = 0; ix < spanDiff; ix++) {
 					outValues[ix + iy* imageSizeX] = 0;
 				}
-
 				// compute values
 				int deltay = iy* imageSizeX;
 				for (int ix =spanDiff; ix < imageSizeX -spanDiff; ix++) {
-
 					int kx = ix + deltay;
 					int deltax =  0;
 					double outVal = 0;
@@ -301,7 +296,6 @@ public class ImageTransformTools {
 					}
 					outValues [kx] = (int) Math.abs(outVal);
 				}
-
 				// erase border values
 				for (int ix = imageSizeX-spanDiff; ix < imageSizeX; ix++) {
 					outValues[ix + iy* imageSizeX] = 0;
