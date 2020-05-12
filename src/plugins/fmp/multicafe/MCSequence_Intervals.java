@@ -26,7 +26,7 @@ public class MCSequence_Intervals extends JPanel {
 	JSpinner 	endFrameJSpinner	= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
 	JSpinner 	stepFrameJSpinner	= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	JRadioButton  isFixedFrame		= new JRadioButton("keep the same intervals for all experiment", false);
-	JRadioButton  isFloatingFrame	= new JRadioButton("analyze complete files", true);
+	JRadioButton  isFloatingFrame	= new JRadioButton("analyze complete experiments", true);
 		
 	
 	void init(GridLayout capLayout) {

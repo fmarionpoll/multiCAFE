@@ -32,6 +32,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	/**
 	 * 
 	 */
+	private static final long serialVersionUID 	= -6329863521455897561L;
 	JSpinner			startSpinner			= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
 	JSpinner			endSpinner				= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	JComboBox<TransformOp> transformForLevelsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
@@ -40,9 +41,8 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, 
 			TransformOp.H_HSB, TransformOp.S_HSB, TransformOp.B_HSB	});
 
-	private static final long serialVersionUID = -6329863521455897561L;
-	private JComboBox<String> 	directionComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
-	private JCheckBox	allKymosCheckBox 		= new JCheckBox ("all images", true);
+	private JComboBox<String> directionComboBox	= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
+	private JCheckBox	allKymosCheckBox 		= new JCheckBox ("all kymographs", true);
 	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
 	private JButton		displayTransform1Button	= new JButton("Display");
 	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
@@ -55,10 +55,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 
 	private MultiCAFE 	parent0 				= null;
 	private DetectLevels_series thread 			= null;
-//	private int indexCurrentKymo 				= 0;
 
-	
-	
 	// -----------------------------------------------------
 		
 	void init(GridLayout capLayout, MultiCAFE parent0) {

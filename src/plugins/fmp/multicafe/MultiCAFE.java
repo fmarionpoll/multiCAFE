@@ -24,7 +24,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 11-May-2020", true, true, true, true);
+	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 12-May-2020", true, true, true, true);
 	public ExperimentList expList 	= new ExperimentList();
 	public int		currentExperimentIndex	= -1;
 	
@@ -62,7 +62,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		paneMove.init(mainPanel, "DETECT FLIES", this);
 		paneMove.addPropertyChangeListener(this);
 		
-		paneExcel.init(mainPanel, "MEASURES -> EXCEL FILE (XLSX)", this);
+		paneExcel.init(mainPanel, "EXPORT TO XLSX FILE", this);
 		paneExcel.addPropertyChangeListener(this);
 		
 		mainFrame.pack();

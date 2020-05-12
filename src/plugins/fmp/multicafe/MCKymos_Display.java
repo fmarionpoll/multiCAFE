@@ -44,11 +44,10 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 	JButton 	updateButton 			= new JButton("Update");
 	JButton  	previousButton		 	= new JButton("<");
 	JButton		nextButton				= new JButton(">");
-//	public JCheckBox viewKymosCheckBox	= new JCheckBox("View kymos");
 	JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("top/bottom level (green)", true);
 	JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
 	JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
-	private MultiCAFE parent0 = null;
+	private MultiCAFE parent0 			= null;
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
@@ -66,17 +65,17 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 		k2Panel.add(nextButton, BorderLayout.EAST);
 		
 		add(GuiUtil.besidesPanel( viewLevelsCheckbox, k2Panel));
-		add(GuiUtil.besidesPanel( viewDerivativeCheckbox, new JLabel(" "), updateButton));
+		add(GuiUtil.besidesPanel( viewDerivativeCheckbox, new JLabel(" "), new JLabel(" ")));
 		add(GuiUtil.besidesPanel( viewGulpsCheckbox, new JLabel(" "), new JLabel(" ")));
 		
 		defineActionListeners();
 	}
 	
 	private void defineActionListeners() {
-		updateButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
-			displayUpdateOnSwingThread();
-		} } );
+//		updateButton.addActionListener(new ActionListener () { 
+//			@Override public void actionPerformed( final ActionEvent e ) { 
+//			displayUpdateOnSwingThread();
+//		} } );
 		
 		kymographNamesComboBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
@@ -97,11 +96,6 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 			roisDisplay("level", viewLevelsCheckbox.isSelected());
 		} } );
-		
-//		viewKymosCheckBox.addActionListener(new ActionListener () { 
-//			@Override public void actionPerformed( final ActionEvent e ) { 
-//			displayViews(viewKymosCheckBox.isSelected());
-//		} } );
 		
 		nextButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
