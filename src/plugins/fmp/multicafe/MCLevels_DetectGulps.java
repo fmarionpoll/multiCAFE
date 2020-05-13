@@ -34,7 +34,7 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 	 */
 	private static final long 	serialVersionUID 		= -5590697762090397890L;
 	
-	JCheckBox				detectAllGulpsCheckBox 		= new JCheckBox ("all images", true);
+	JCheckBox				detectAllGulpsCheckBox 		= new JCheckBox ("all kymographs", true);
 	JComboBox<TransformOp> 	transformForGulpsComboBox 	= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
 	JSpinner				startSpinner				= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
 	JSpinner				endSpinner					= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
