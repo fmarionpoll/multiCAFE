@@ -391,6 +391,10 @@ public class Experiment {
 	}
 	
 	public int getStepFrame() {
+		return stepFrame;
+	}
+	
+	public int checkStepFrame() {
 		int step = -1;
 		if (seqKymos == null || seqKymos.seq == null)
 			return step;
@@ -658,8 +662,8 @@ public class Experiment {
 	}
 	
 	public void storeAnalysisParametersToCages() {
-		cages.detect.startFrame = (int) endFrame;
-		cages.detect.endFrame = (int) startFrame;
+		cages.detect.startFrame = (int) startFrame;
+		cages.detect.endFrame = (int) endFrame;
 		cages.detect.stepFrame = stepFrame;
 	}
 	
