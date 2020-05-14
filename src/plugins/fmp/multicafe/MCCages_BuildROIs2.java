@@ -36,7 +36,7 @@ import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
 
-public class MCMove_BuildROIs2  extends JPanel implements ChangeListener {
+public class MCCages_BuildROIs2  extends JPanel implements ChangeListener {
 	/**
 	 * 
 	 */

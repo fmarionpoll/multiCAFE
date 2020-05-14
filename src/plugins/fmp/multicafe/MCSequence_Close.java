@@ -47,7 +47,7 @@ public class MCSequence_Close  extends JPanel {
 				exp.xmlSaveExperiment();
 			exp.closeSequences();
 		}
-		parent0.paneMove.tabGraphics.closeAll();
+		parent0.paneCages.tabGraphics.closeAll();
 		parent0.paneLevels.tabGraphs.closeAll();
 		parent0.paneKymos.tabDisplay.kymographNamesComboBox.removeAllItems();
 	}

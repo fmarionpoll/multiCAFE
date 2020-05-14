@@ -19,7 +19,7 @@ import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.CageTableModel;
 import plugins.fmp.multicafeSequence.Experiment;
 
-public class MCMove_Table extends JPanel {
+public class MCCages_Table extends JPanel {
 	/**
 	 * 
 	 */

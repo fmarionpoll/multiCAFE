@@ -33,7 +33,7 @@ import plugins.fmp.multicafeTools.OverlayThreshold;
 
 
 
-public class MCMove_Detect1 extends JPanel implements ChangeListener, PropertyChangeListener {
+public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyChangeListener {
 
 	/**
 	 * 

@@ -33,7 +33,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	MCKymos_		paneKymos		= new MCKymos_();
 	MCLevels_ 		paneLevels 		= new MCLevels_();
 	MCSpots_		paneSpots		= new MCSpots_();
-	MCMove_ 		paneMove 		= new MCMove_();
+	MCCages_ 		paneCages 		= new MCCages_();
 	MCExcel_		paneExcel		= new MCExcel_();
 	
 	//-------------------------------------------------------------------
@@ -59,8 +59,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 //		paneSpots.init(mainPanel, "MEASURE SPOTS", this);
 //		paneSpots.addPropertyChangeListener(this);
 
-		paneMove.init(mainPanel, "DETECT FLIES", this);
-		paneMove.addPropertyChangeListener(this);
+		paneCages.init(mainPanel, "DETECT FLIES", this);
+		paneCages.addPropertyChangeListener(this);
 		
 		paneExcel.init(mainPanel, "EXPORT TO XLSX FILE", this);
 		paneExcel.addPropertyChangeListener(this);
@@ -172,8 +172,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			exp.loadDrosotrack();
 			progress.close();
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
-				paneMove.tabGraphics.moveCheckbox.setEnabled(true);
-				paneMove.tabGraphics.displayResultsButton.setEnabled(true);
+				paneCages.tabGraphics.moveCheckbox.setEnabled(true);
+				paneCages.tabGraphics.displayResultsButton.setEnabled(true);
 			}});
 		}
 		progress.close();

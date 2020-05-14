@@ -16,7 +16,7 @@ import plugins.fmp.multicafeSequence.Experiment;
 
 
 
-public class MCMove_File extends JPanel {
+public class MCCages_File extends JPanel {
 	/**
 	 * 
 	 */
@@ -46,14 +46,14 @@ public class MCMove_File extends JPanel {
 				if (exp != null)
 					exp.xmlReadDrosoTrackDefault();
 				firePropertyChange("LOAD_DATA", false, true);
-				parent0.paneMove.tabsPane.setSelectedIndex(3);
+				parent0.paneCages.tabsPane.setSelectedIndex(3);
 			}});
 		
 		saveCagesButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				saveCagesAndMeasures(exp);
-				parent0.paneMove.tabsPane.setSelectedIndex(3);
+				parent0.paneCages.tabsPane.setSelectedIndex(3);
 			}});
 	}
 

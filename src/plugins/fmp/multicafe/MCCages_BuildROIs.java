@@ -24,7 +24,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
-public class MCMove_BuildROIs extends JPanel {
+public class MCCages_BuildROIs extends JPanel {
 	/**
 	 * 
 	 */

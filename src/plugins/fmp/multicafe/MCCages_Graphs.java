@@ -21,7 +21,7 @@ import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.YPosMultiChart;
 
 
-public class MCMove_Graphs extends JPanel {
+public class MCCages_Graphs extends JPanel {
 
 	/**
 	 * 

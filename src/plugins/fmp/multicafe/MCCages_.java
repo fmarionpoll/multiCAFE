@@ -17,7 +17,7 @@ import icy.gui.util.GuiUtil;
 
 
 
-public class MCMove_ extends JPanel implements PropertyChangeListener {
+public class MCCages_ extends JPanel implements PropertyChangeListener {
 	
 	/**
 	 * 
@@ -25,13 +25,13 @@ public class MCMove_ extends JPanel implements PropertyChangeListener {
 	private static final long serialVersionUID = 3457738144388946607L;
 	
 	JTabbedPane 		tabsPane	= new JTabbedPane();
-	MCMove_BuildROIs 	tabBuildROIs= new MCMove_BuildROIs();
-	MCMove_BuildROIs2 	tabBuildROIs2= new MCMove_BuildROIs2();
-	MCMove_Infos		tabInfos	= new MCMove_Infos();
-	MCMove_Detect1 		tabDetect1 	= new MCMove_Detect1();
-	MCMove_Detect2 		tabDetect2 	= new MCMove_Detect2();
-	MCMove_File 		tabFile 	= new MCMove_File();
-	MCMove_Graphs 		tabGraphics = new MCMove_Graphs();
+	MCCages_BuildROIs 	tabBuildROIs= new MCCages_BuildROIs();
+	MCCages_BuildROIs2 	tabBuildROIs2= new MCCages_BuildROIs2();
+	MCCages_Infos		tabInfos	= new MCCages_Infos();
+	MCCages_Detect1 		tabDetect1 	= new MCCages_Detect1();
+	MCCages_Detect2 		tabDetect2 	= new MCCages_Detect2();
+	MCCages_File 		tabFile 	= new MCCages_File();
+	MCCages_Graphs 		tabGraphics = new MCCages_Graphs();
 	int 				iTAB_INFOS 	= 2;
 	int 				iTAB_DETECT1= 3;
 	int 				iTAB_CAGE2	= 1;
