@@ -210,7 +210,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	}
 	
 	public void initParametersForDetection(Experiment exp) {
-		nbframes = (exp.endFrame - exp.startFrame +1)/stepFrame +1;
+		nbframes = (exp.getEndFrame() - exp.getStartFrame() +1)/stepFrame +1;
 		exp.cages.clearAllMeasures();
 //		exp.cages.cageList = exp.seqCamData.getCages();
 		cages = exp.cages;

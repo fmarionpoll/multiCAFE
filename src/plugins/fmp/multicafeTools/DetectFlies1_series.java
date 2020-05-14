@@ -47,15 +47,15 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			
 			exp.loadExperimentCamData();
 			exp.xmlReadDrosoTrackDefault();
-			exp.stepFrame = detect.stepFrame;
+			exp.setStepFrame (detect.stepFrame);
 			if (detect.isFrameFixed) {
-				exp.startFrame = detect.startFrame;
-				exp.endFrame = detect.endFrame;
-				if (exp.endFrame > (exp.seqCamData.seq.getSizeT() - 1))
-					exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
+				exp.setStartFrame (detect.startFrame);
+				exp.setEndFrame (detect.endFrame);
+				if (exp.getEndFrame() > (exp.seqCamData.seq.getSizeT() - 1))
+					exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);
 			} else {
-				exp.startFrame = 0;
-				exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
+				exp.setStartFrame (0);
+				exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);
 			}
 			if (exp.cages.cageList.size() < 1 ) {
 				System.out.println("! skipped experiment with no cage: " + exp.experimentFileName);
@@ -110,7 +110,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		
 		exp.seqCamData.seq.beginUpdate();
 		int it = 0;
-		for (int t = exp.startFrame ; t <= exp.endFrame; t  += exp.stepFrame, it++ ) {				
+		for (int t = exp.getStartFrame() ; t <= exp.getEndFrame(); t  += exp.getStepFrame(), it++ ) {				
 			if (stopFlag)
 				break;
 			progressBar.updatePosition(t);

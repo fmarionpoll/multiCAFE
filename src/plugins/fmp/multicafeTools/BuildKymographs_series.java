@@ -60,15 +60,15 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				
 				exp.loadExperimentDataToBuildKymos();
 				exp.displayCamData(options.parent0Rect);
-				exp.stepFrame = options.stepFrame;
+				exp.setStepFrame (options.stepFrame);
 				if (options.isFrameFixed) {
-					exp.startFrame = options.startFrame;
-					exp.endFrame = options.endFrame;
-					if (exp.endFrame > (exp.seqCamData.seq.getSizeT() - 1))
-						exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
+					exp.setStartFrame( options.startFrame);
+					exp.setEndFrame (options.endFrame);
+					if (exp.getEndFrame() > (exp.seqCamData.seq.getSizeT() - 1))
+						exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);
 				} else {
-					exp.startFrame = 0;
-					exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
+					exp.setStartFrame (0);
+					exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);
 				}
 				if (computeKymo(exp)) 
 					saveComputation(exp);
@@ -125,9 +125,9 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			if (seqCamData == null || seqKymos == null)
 				return false;
 			
-			if ((exp.endFrame >= (int) seqCamData.nTotalFrames) || (options.endFrame < 0)) 
-				exp.endFrame = (int) seqCamData.nTotalFrames-1;
-			int nbframes = exp.endFrame - exp.startFrame +1;
+			if ((exp.getEndFrame() >= (int) seqCamData.nTotalFrames) || (options.endFrame < 0)) 
+				exp.setEndFrame ((int) seqCamData.nTotalFrames-1);
+			int nbframes = exp.getEndFrame() - exp.getStartFrame() +1;
 			
 			ProgressChrono progressBar = new ProgressChrono("Processing started");
 			progressBar.initChrono(nbframes);
@@ -160,7 +160,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			}
 			
 			seqCamData.seq.beginUpdate();
-			for (int t = exp.startFrame ; t <= exp.endFrame; t += exp.stepFrame, ipixelcolumn++ ) {
+			for (int t = exp.getStartFrame() ; t <= exp.getEndFrame(); t += exp.getStepFrame(), ipixelcolumn++ ) {
 				if (stopFlag)
 					break;
 				progressBar.updatePosition(t);
@@ -234,11 +234,11 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			int numC = seqCamData.seq.getSizeC();
 			if (numC <= 0)
 				numC = 3;
-			double fimagewidth =  1 + (exp.endFrame - exp.startFrame )/options.stepFrame;
+			double fimagewidth =  1 + (exp.getEndFrame() - exp.getStartFrame() )/options.stepFrame;
 			if (fimagewidth < 0) {
 				options.stepFrame = 1;
-				exp.stepFrame = options.stepFrame;
-				fimagewidth =  1 + (exp.endFrame - exp.startFrame )/options.stepFrame;
+				exp.setStepFrame (options.stepFrame);
+				fimagewidth =  1 + (exp.getEndFrame() - exp.getStartFrame() )/options.stepFrame;
 			}
 				
 			imagewidth = (int) fimagewidth;
