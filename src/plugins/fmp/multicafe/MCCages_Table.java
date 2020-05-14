@@ -42,7 +42,7 @@ public class MCCages_Table extends JPanel {
 	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 400));
 	    tableView.setFillsViewportHeight(true);
 	    TableColumnModel columnModel = tableView.getColumnModel();
-	    for (int i=0; i<3; i++)
+	    for (int i=0; i<2; i++)
 	    	setFixedColumnProperties(columnModel.getColumn(i));
         JScrollPane scrollPane = new JScrollPane(tableView);
         
@@ -97,6 +97,9 @@ public class MCCages_Table extends JPanel {
 	
 	void close() {
 		dialogFrame.close();
+		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
+		parent0.paneCapillaries.tabFile.saveCapillaries(exp);
 	}
 	
 	private void setFixedColumnProperties (TableColumn column) {
