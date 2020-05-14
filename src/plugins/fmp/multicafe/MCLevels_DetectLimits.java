@@ -200,8 +200,8 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		
 //		indexCurrentKymo = options.firstKymo;
 		options.analyzePartOnly		= partCheckBox.isSelected();
-		options.startPixel			= (int) startSpinner.getValue() / exp.stepFrame;
-		options.endPixel			= (int) endSpinner.getValue() / exp.stepFrame;
+		options.startPixel			= (int) startSpinner.getValue() / exp.getStepFrame();
+		options.endPixel			= (int) endSpinner.getValue() / exp.getStepFrame();
 		options.spanDiffTop			= getSpanDiffTop();
 		options.detectL 			= leftCheckBox.isSelected();
 		options.detectR				= rightCheckBox.isSelected();

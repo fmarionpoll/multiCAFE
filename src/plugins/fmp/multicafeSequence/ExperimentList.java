@@ -69,10 +69,10 @@ public class ExperimentList {
 			exp.xmlLoadExperiment();
 			int image_size = exp.seqKymos.seq.getSizeX();
 			if (image_size != 0) {
-				exp.stepFrame = exp.seqCamData.nTotalFrames / image_size;
-				if (exp.stepFrame < 1) {
+				exp.setStepFrame(exp.seqCamData.nTotalFrames / image_size);
+				if (exp.getStepFrame() < 1) {
 					System.out.println("Error: experiment with stepFrame set to 1");
-					exp.stepFrame = 1;
+					exp.setStepFrame (1);
 				}
 			}
 			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())

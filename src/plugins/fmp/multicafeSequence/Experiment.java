@@ -46,9 +46,9 @@ public class Experiment {
 	public long				fileTimeImageLastMinute 	= 0;
 	public int				number_of_frames 			= 0;
 	
-	public int 				startFrame 					= 0;
-	public int 				endFrame 					= 0;
-	public int 				stepFrame 					= 1;					
+	private int 			startFrame 					= 0;
+	private int 			endFrame 					= 0;
+	private int 			stepFrame 					= 1;					
 	
 	public String			boxID 						= new String("..");
 	public String			experiment					= new String("..");
@@ -351,18 +351,46 @@ public class Experiment {
 		return isavailable;
 	}
 	
+	// --------------------------------------------
+	
 	public boolean checkStepConsistency() {
 		int imageWidth = seqKymos.imageWidthMax; 
 		int len = (endFrame - startFrame + 1) / stepFrame;
 		boolean isOK = true;
-		if (len != imageWidth) {
+		if (len > imageWidth) {
 			isOK = false;
 			stepFrame = (endFrame - startFrame + 1)/imageWidth;
 		}
 		return isOK;
 	}
 	
-	public int getStep() {
+	public int setStartFrame(int start) {
+		startFrame = start;
+		return startFrame;
+	}
+	
+	public int setEndFrame(int end) {
+		endFrame = end;
+		if (seqCamData != null && seqCamData.seq != null && endFrame >= seqCamData.seq.getSizeT()) {
+			endFrame = seqCamData.seq.getSizeT() -1;
+		}
+		return endFrame;
+	}
+	public int setStepFrame(int step) {
+		return stepFrame;
+	}
+	
+	public int getStartFrame() {
+		return startFrame;
+	}
+	
+	public int getEndFrame() {
+		if (seqCamData != null && seqCamData.seq != null)
+			endFrame = seqCamData.seq.getSizeT() -1;
+		return endFrame;
+	}
+	
+	public int getStepFrame() {
 		int step = -1;
 		if (seqKymos == null || seqKymos.seq == null)
 			return step;
@@ -384,6 +412,8 @@ public class Experiment {
 			stepFrame = (endFrame +1)/(seqKymos.imageWidthMax-1);
 		return stepFrame;
 	}
+	
+	// --------------------------------------------
 	
 	public boolean adjustCapillaryMeasuresDimensions() {
 		if (seqKymos.imageWidthMax < 1) {

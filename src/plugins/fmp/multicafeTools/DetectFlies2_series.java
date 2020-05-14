@@ -61,15 +61,15 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 			exp.loadExperimentCamData();
 			exp.xmlReadDrosoTrackDefault();
-			exp.stepFrame = detect.stepFrame;
+			exp.setStepFrame(detect.stepFrame);
 			if (detect.isFrameFixed) {
-				exp.startFrame = detect.startFrame;
-				exp.endFrame = detect.endFrame;
-				if (exp.endFrame > (exp.seqCamData.seq.getSizeT() - 1))
-					exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
+				exp.setStartFrame ( detect.startFrame);
+				exp.setEndFrame ( detect.endFrame);
+				if (exp.getEndFrame() > (exp.seqCamData.seq.getSizeT() - 1))
+					exp.setEndFrame( exp.seqCamData.seq.getSizeT() - 1);
 			} else {
-				exp.startFrame = 0;
-				exp.endFrame = exp.seqCamData.seq.getSizeT() - 1;
+				exp.setStartFrame (0);
+				exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);
 			}
 			
 			if (exp.cages.cageList.size() < 1 ) {
@@ -179,7 +179,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 			// ----------------- loop over all images of the stack
 			int it = 0;
-			for (int t = exp.startFrame; t <= exp.endFrame; t += exp.stepFrame, it++) {
+			for (int t = exp.getStartFrame(); t <= exp.getEndFrame(); t += exp.getStepFrame(), it++) {
 				if (stopFlag)
 					break;
 				progressBar.updatePosition(t);
@@ -295,11 +295,11 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 		viewerCamData = exp.seqCamData.seq.getFirstViewer();
 		displayRefViewers(exp);
-		int limit = 50 * exp.stepFrame;
-		if (limit > exp.endFrame)
-			limit = exp.endFrame;
+		int limit = 50 * exp.getStepFrame();
+		if (limit > exp.getEndFrame())
+			limit = exp.getEndFrame();
 		
-		for (int t = exp.startFrame + 1; t <= limit && !stopFlag; t += exp.stepFrame) {
+		for (int t = exp.getStartFrame() + 1; t <= limit && !stopFlag; t += exp.getStepFrame()) {
 			IcyBufferedImage currentImage = exp.seqCamData.getImage(t, 0);
 			exp.seqCamData.currentFrame = t;
 			viewerCamData.setPositionT(t);
