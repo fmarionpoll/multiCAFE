@@ -23,15 +23,15 @@ import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 public class Cages {
 	
-	public DetectFlies_Options 	detect 					= new DetectFlies_Options();
-	public List<Cage>			cageList				= new ArrayList<Cage>();
+	public DetectFlies_Options 	detect 		= new DetectFlies_Options();
+	public List<Cage>			cageList	= new ArrayList<Cage>();
 	
-	private final String ID_CAGES 		= "Cages";
-	private final String ID_NCAGES 		= "n_cages";
-	private final String ID_DROSOTRACK 	= "drosoTrack";
-	private final String ID_NBITEMS 	= "nb_items";
-	private final String ID_CAGELIMITS 	= "Cage_Limits";
-	private final String ID_FLYDETECTED = "Fly_Detected";
+	private final String ID_CAGES 			= "Cages";
+	private final String ID_NCAGES 			= "n_cages";
+	private final String ID_DROSOTRACK 		= "drosoTrack";
+	private final String ID_NBITEMS 		= "nb_items";
+	private final String ID_CAGELIMITS 		= "Cage_Limits";
+	private final String ID_FLYDETECTED 	= "Fly_Detected";
 	
 	
 
@@ -303,5 +303,26 @@ public class Cages {
 		return iRoot;
 	}
 	
-
+	public void transferNFliesFromCapillariesToCages(List<Capillary> capList) {
+		for (Cage cage: cageList ) {
+			int cagenb = cage.getCageNumberInteger();
+			for (Capillary cap: capList) {
+				if (cap.cagenb != cagenb)
+					continue;
+				cage.cageNFlies = cap.nflies;
+			}
+		}
+	}
+		
+	public void transferNFliesFromCagesToCapillaries(List<Capillary> capList) {
+		for (Cage cage: cageList ) {
+			int cagenb = cage.getCageNumberInteger();
+			for (Capillary cap: capList) {
+				if (cap.cagenb != cagenb)
+					continue;
+				cap.nflies = cage.cageNFlies;
+			}
+		}
+	}
+	
 }

@@ -33,6 +33,7 @@ public class MCCages_Infos  extends JPanel {
     
 	
 	void init(MultiCAFE parent0) {
+		this.parent0 = parent0;
 		setLayout(new FlowLayout(FlowLayout.LEFT, 3, 1));	
 		add(editCagesButton);
 		defineActionListeners();
@@ -43,9 +44,11 @@ public class MCCages_Infos  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				exp.capillaries.transferDescriptionToCapillaries();
+				exp.cages.transferNFliesFromCapillariesToCages(exp.capillaries.capillariesArrayList);
 				dialog = new MCCages_Table();
             	dialog.initialize(parent0, cagesArrayCopy);
 			}});
 	}
 	
+	// TODO: follow status of dialog to trap close condition and transfer nflies to capillaries 
 }

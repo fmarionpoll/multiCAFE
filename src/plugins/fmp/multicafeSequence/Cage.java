@@ -94,10 +94,18 @@ public class Cage {
 	}
 
 	public String getCageNumber() {
-		if (cageNumber == null) {
+		if (cageNumber == null) 
 			cageNumber = roi.getName().substring(roi.getName().length() - 3);
-		}
 		return cageNumber;
+	}
+	
+	public int getCageNumberInteger() {
+		int cagenb = -1;
+		cageNumber = getCageNumber();
+		if (cageNumber == null) {
+			cagenb = Integer.valueOf(cageNumber);
+		}
+		return cagenb;
 	}
 	
 	public void clearMeasures () {
