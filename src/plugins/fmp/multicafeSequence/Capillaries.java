@@ -117,10 +117,20 @@ public class Capillaries {
 					return false;
 				}		
 				Collections.sort(capillariesArrayList);
+				transferDescToCapillariesVersionInfos0();
 				return true;
 			}
 		}
 		return false;
+	}
+	
+	private void transferDescToCapillariesVersionInfos0() {
+		for (Capillary cap: capillariesArrayList) {
+			if (cap.versionInfos == 0) {
+				transferDescriptionToCapillary(cap);
+				transferCapGroupToCapillary (cap);
+			}
+		}
 	}
 	
 	private boolean xmlSaveListOfCapillaries(Document doc) {

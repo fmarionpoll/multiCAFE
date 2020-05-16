@@ -42,6 +42,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public double 						volume 			= 5.;
 	public int 							pixels 			= 5;
 	public boolean						descriptionOK	= false;
+	public int							versionInfos	= 0;
 	
 	public DetectLevels_Options 		limitsOptions	= new DetectLevels_Options();
 	public DetectGulps_Options 			gulpsOptions	= new DetectGulps_Options();
@@ -69,6 +70,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	private final String 				ID_CONCL 		= "concentration";
 	private final String 				ID_SIDE 		= "side";
 	private final String 				ID_DESCOK 		= "descriptionOK";
+	private final String				ID_VERSIONINFOS	= "versionInfos";
 	
 	private final String 				ID_INDEXIMAGE 	= "indexImageMC";
 	private final String 				ID_NAME 		= "nameMC";
@@ -422,19 +424,20 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
 	    boolean flag = (nodeMeta != null); 
 	    if (flag) {
-	    	version = XMLUtil.getElementValue(nodeMeta, ID_VERSION, ID_VERSIONNUM);
-	    	indexImage = XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
-	        capillaryName = XMLUtil.getElementValue(nodeMeta, ID_NAME, capillaryName);
-	        filenameTIFF = XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);
+	    	version 		= XMLUtil.getElementValue(nodeMeta, ID_VERSION, ID_VERSIONNUM);
+	    	indexImage 		= XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
+	        capillaryName 	= XMLUtil.getElementValue(nodeMeta, ID_NAME, capillaryName);
+	        filenameTIFF 	= XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);
 	        
-	        descriptionOK = XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, false);
-	        nflies = XMLUtil.getElementIntValue(nodeMeta, ID_NFLIES, nflies);
-	        cagenb = XMLUtil.getElementIntValue(nodeMeta, ID_CAGENB, cagenb);
-	        volume 	= XMLUtil.getElementDoubleValue(nodeMeta, ID_CAPVOLUME, Double.NaN);
-			pixels 	= XMLUtil.getElementIntValue(nodeMeta, ID_CAPPIXELS, 5);
-			stimulus = XMLUtil.getElementValue(nodeMeta, ID_STIML, ID_STIML);
-			concentration = XMLUtil.getElementValue(nodeMeta, ID_CONCL, ID_CONCL);
-			side = XMLUtil.getElementValue(nodeMeta, ID_SIDE, ".");
+	        descriptionOK 	= XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, false);
+	        versionInfos 	= XMLUtil.getElementIntValue(nodeMeta, ID_VERSIONINFOS, 0);
+	        nflies 			= XMLUtil.getElementIntValue(nodeMeta, ID_NFLIES, nflies);
+	        cagenb 			= XMLUtil.getElementIntValue(nodeMeta, ID_CAGENB, cagenb);
+	        volume 			= XMLUtil.getElementDoubleValue(nodeMeta, ID_CAPVOLUME, Double.NaN);
+			pixels 			= XMLUtil.getElementIntValue(nodeMeta, ID_CAPPIXELS, 5);
+			stimulus 		= XMLUtil.getElementValue(nodeMeta, ID_STIML, ID_STIML);
+			concentration 	= XMLUtil.getElementValue(nodeMeta, ID_CONCL, ID_CONCL);
+			side 			= XMLUtil.getElementValue(nodeMeta, ID_SIDE, ".");
 			
 	        roi = (ROI2DShape) loadFromXML_ROI(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
@@ -455,7 +458,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	        	String filename = Paths.get(filenameTIFF).getFileName().toString();
 	        	XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);
 	        }
-	        XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, descriptionOK);
+	        XMLUtil.setElementBooleanValue(nodeMeta, ID_DESCOK, descriptionOK);
+	        XMLUtil.setElementIntValue(nodeMeta, ID_VERSIONINFOS, versionInfos);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_NFLIES, nflies);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_CAGENB, cagenb);
 			XMLUtil.setElementDoubleValue(nodeMeta, ID_CAPVOLUME, volume);

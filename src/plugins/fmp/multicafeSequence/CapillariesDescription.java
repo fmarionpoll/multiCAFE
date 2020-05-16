@@ -30,12 +30,12 @@ public class CapillariesDescription {
 	private final static String ID_PARAMETERS 		= "Parameters";	
 	private final static String ID_FILE 			= "file";
 	private final static String ID_ID 				= "ID";
-	private final static String ID_GROUPING 		= "Grouping";
-	private final static String ID_N 				= "n";
-	private final static String ID_CAPVOLUME 		= "capillaryVolume";
-	private final static String ID_VOLUMEUL 		= "volume_ul";
-	private final static String ID_CAPILLARYPIX 	= "capillaryPixels";
-	private final static String ID_NPIXELS 			= "npixels";
+	private final static String ID_DESCGROUPING 	= "Grouping";
+	private final static String ID_DESCN 			= "n";
+	private final static String ID_DESCCAPVOLUME 	= "capillaryVolume";
+	private final static String ID_DESCVOLUMEUL 	= "volume_ul";
+	private final static String ID_DESCCAPILLARYPIX = "capillaryPixels";
+	private final static String ID_DESCNPIXELS 		= "npixels";
 	private final static String ID_ANALYSIS 		= "analysis";
 	private final static String ID_START 			= "start";
 	private final static String ID_END 				= "end";
@@ -92,9 +92,9 @@ public class CapillariesDescription {
 		
 		XMLUtil.addElement(xmlElement, ID_FILE, sourceName);
 		Element xmlVal = XMLUtil.addElement(xmlElement, "capillaries");
-		XMLUtil.setElementIntValue(xmlVal, ID_GROUPING, grouping);
-		XMLUtil.setElementDoubleValue(xmlVal, ID_VOLUMEUL, volume);
-		XMLUtil.setElementIntValue(xmlVal, ID_NPIXELS, pixels);
+		XMLUtil.setElementIntValue(xmlVal, ID_DESCGROUPING, grouping);
+		XMLUtil.setElementDoubleValue(xmlVal, ID_DESCVOLUMEUL, volume);
+		XMLUtil.setElementIntValue(xmlVal, ID_DESCNPIXELS, pixels);
 
 		xmlVal = XMLUtil.addElement(xmlElement, ID_ANALYSIS);
 		XMLUtil.setElementLongValue(xmlVal, ID_START, analysisStart);
@@ -136,14 +136,14 @@ public class CapillariesDescription {
 		Element xmlVal = XMLUtil.getElement(xmlElement, ID_FILE);
 		sourceName = XMLUtil.getAttributeValue(xmlVal, ID_ID, null);
 		
-		xmlVal = XMLUtil.getElement(xmlElement, ID_GROUPING);
-		grouping = XMLUtil.getAttributeIntValue(xmlVal, ID_N, 2);
+		xmlVal = XMLUtil.getElement(xmlElement, ID_DESCGROUPING);
+		grouping = XMLUtil.getAttributeIntValue(xmlVal, ID_DESCN, 2);
 		
-		xmlVal = XMLUtil.getElement(xmlElement, ID_CAPVOLUME);
-		volume = XMLUtil.getAttributeDoubleValue(xmlVal, ID_VOLUMEUL, Double.NaN);
+		xmlVal = XMLUtil.getElement(xmlElement, ID_DESCCAPVOLUME);
+		volume = XMLUtil.getAttributeDoubleValue(xmlVal, ID_DESCVOLUMEUL, Double.NaN);
 
-		xmlVal = XMLUtil.getElement(xmlElement, ID_CAPILLARYPIX);
-		pixels = (int) XMLUtil.getAttributeDoubleValue(xmlVal, ID_NPIXELS, Double.NaN);
+		xmlVal = XMLUtil.getElement(xmlElement, ID_DESCCAPILLARYPIX);
+		pixels = (int) XMLUtil.getAttributeDoubleValue(xmlVal, ID_DESCNPIXELS, Double.NaN);
 
 		xmlVal = XMLUtil.getElement(xmlElement, ID_ANALYSIS);
 		if (xmlVal != null) {
@@ -178,9 +178,9 @@ public class CapillariesDescription {
 		sourceName = XMLUtil.getElementValue(xmlElement, ID_FILE, null);
 		Element xmlVal 		= XMLUtil.getElement(xmlElement, "capillaries");
 		if (xmlVal != null) {
-			grouping		= XMLUtil.getElementIntValue(xmlVal, ID_GROUPING, 2);
-			volume 			= XMLUtil.getElementDoubleValue(xmlVal, ID_VOLUMEUL, Double.NaN);
-			pixels 			= XMLUtil.getElementIntValue(xmlVal, ID_NPIXELS, 5);
+			grouping		= XMLUtil.getElementIntValue(xmlVal, ID_DESCGROUPING, 2);
+			volume 			= XMLUtil.getElementDoubleValue(xmlVal, ID_DESCVOLUMEUL, Double.NaN);
+			pixels 			= XMLUtil.getElementIntValue(xmlVal, ID_DESCNPIXELS, 5);
 		}
 
 		xmlVal = XMLUtil.getElement(xmlElement, ID_ANALYSIS);
