@@ -79,8 +79,6 @@ public class XLSExport {
 		List<Capillary> capList = exp.capillaries.capillariesArrayList;
 		for (int t=0; t< capList.size(); t++) { 
 			Capillary cap = capList.get(t);
-			if (!cap.descriptionOK)
-				exp.capillaries.transferDescriptionToCapillary(cap);
 			String	name = cap.roi.getName();
 			int col = getColFromKymoFileName(name);
 			if (col >= 0) 

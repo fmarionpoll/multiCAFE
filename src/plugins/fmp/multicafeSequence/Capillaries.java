@@ -241,17 +241,24 @@ public class Capillaries {
 
 	public void transferDescriptionToCapillaries() {
 		for (Capillary cap: capillariesArrayList) {
+			transferCapGroupToCapillary(cap);
 			transferDescriptionToCapillary (cap);
 		}
 	}
 	
-	public void transferDescriptionToCapillary (Capillary cap) {
+	private void transferDescriptionToCapillary (Capillary cap) {
+		cap.volume = desc.volume;
+		cap.pixels = desc.pixels;
+		cap.descriptionOK = true;
+	}
+	
+	private void transferCapGroupToCapillary (Capillary cap) {
+		if (desc.grouping != 2)
+			return;
 		String	name = cap.roi.getName();
 		String letter = name.substring(name.length() - 1);
 		cap.side = letter;
-		if (desc.grouping == 2 && letter .equals("R")) {	
-			cap.stimulus = desc.stimulusR;
-			cap.concentration = desc.concentrationR;
+		if (letter .equals("R")) {	
 			String nameL = name.substring(0, name.length() - 1) + "L";
 			Capillary cap0 = getCapillaryFromName(nameL);
 			if (cap0 != null) {
@@ -259,9 +266,6 @@ public class Capillaries {
 				cap.cagenb = cap0.cagenb;
 			}
 		}
-		cap.volume = desc.volume;
-		cap.pixels = desc.pixels;
-		cap.descriptionOK = true;
 	}
 	
 	private Capillary getCapillaryFromName(String name) {

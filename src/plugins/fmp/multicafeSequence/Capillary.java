@@ -59,7 +59,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public IcyBufferedImage 			bufImage 		= null;
 	public boolean						valid			= true;
 
-
 	private final String 				ID_META 		= "metaMC";
 	private final String 				ID_ROI 			= "roiMC";
 	private final String				ID_NFLIES		= "nflies";
@@ -456,7 +455,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	        	String filename = Paths.get(filenameTIFF).getFileName().toString();
 	        	XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);
 	        }
-	        
 	        XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, descriptionOK);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_NFLIES, nflies);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_CAGENB, cagenb);

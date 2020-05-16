@@ -21,10 +21,10 @@ public class CapillariesDescription {
 	public String 	old_comment2	= new String("..");
 	
 	public int		grouping 		= 2;
-	public String 	stimulusR		= new String("..");
-	public String 	concentrationR	= new String("..");
-	public String 	stimulusL		= new String("..");
-	public String 	concentrationL	= new String("..");
+	private String 	stimulusR		= new String("..");
+	private String 	concentrationR	= new String("..");
+	private String 	stimulusL		= new String("..");
+	private String 	concentrationL	= new String("..");
 	
 	private final static String ID_CAPILLARYTRACK 	= "capillaryTrack";
 	private final static String ID_PARAMETERS 		= "Parameters";	
