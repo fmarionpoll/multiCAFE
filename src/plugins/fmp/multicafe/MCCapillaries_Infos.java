@@ -1,6 +1,5 @@
 package plugins.fmp.multicafe;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -10,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -31,10 +29,6 @@ public class MCCapillaries_Infos extends JPanel {
 	private static final long 	serialVersionUID 			= 4950182090521600937L;
 	private JSpinner 			capillaryVolumeTextField	= new JSpinner(new SpinnerNumberModel(5., 0., 100., 1.));
 	private JSpinner 			capillaryPixelsTextField	= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
-	private JComboBox<String> 	stimulusRJCombo				= new JComboBox<String>();
-	private JComboBox<String> 	concentrationRJCombo 		= new JComboBox<String>();
-	private JComboBox<String> 	stimulusLJCombo				= new JComboBox<String>();
-	private JComboBox<String> 	concentrationLJCombo 		= new JComboBox<String>();
 	private JButton				getLenButton				= new JButton ("pixels 1rst capillary");
 	private JButton				editCapillariesButton		= new JButton("edit capillaries");
 	private MultiCAFE 			parent0 					= null;
@@ -52,21 +46,12 @@ public class MCCapillaries_Infos extends JPanel {
 		panel0.add( new JLabel("length (pixels) ", SwingConstants.RIGHT));
 		panel0.add( capillaryPixelsTextField);
 		panel0.add( getLenButton);
-		panel0.add( editCapillariesButton);
 		add( GuiUtil.besidesPanel(panel0));
 		
-		add( GuiUtil.besidesPanel(
-				createComboPanel("stim(L) ", stimulusLJCombo),  
-				createComboPanel("  conc(L) ", concentrationLJCombo)));
-		
-		add( GuiUtil.besidesPanel(
-				createComboPanel("stim(R) ", stimulusRJCombo),  
-				createComboPanel("  conc(R) ", concentrationRJCombo)));
-		
-		stimulusRJCombo.setEditable(true);
-		concentrationRJCombo.setEditable(true);
-		stimulusLJCombo.setEditable(true);
-		concentrationLJCombo.setEditable(true);	
+		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 1));
+		panel1.add( editCapillariesButton);
+		add( GuiUtil.besidesPanel(panel1));
+
 		defineActionListeners();
 	}
 	
@@ -95,28 +80,12 @@ public class MCCapillaries_Infos extends JPanel {
             	dialog.initialize(parent0, capillariesArrayCopy);
 			}});
 	}
-				
-	private JPanel createComboPanel(String text, JComboBox<String> combo) {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		panel.add(new JLabel(text, SwingConstants.RIGHT), BorderLayout.WEST); 
-		panel.add(combo, BorderLayout.CENTER);
-		return panel;
-	}
 
 	// set/ get
 	
 	void setAllDescriptors(Capillaries cap) {
 		capillaryVolumeTextField.setValue( cap.desc.volume);
 		capillaryPixelsTextField.setValue( cap.desc.pixels);
-		setTextDescriptors(cap);
-	}
-	
-	void setTextDescriptors(Capillaries cap) {
-		addItem(stimulusRJCombo, cap.desc.stimulusR);
-		addItem(concentrationRJCombo, cap.desc.concentrationR);
-		addItem(stimulusLJCombo, cap.desc.stimulusL);
-		addItem(concentrationLJCombo, cap.desc.concentrationL);
 	}
 
 	private double getCapillaryVolume() {
@@ -127,42 +96,13 @@ public class MCCapillaries_Infos extends JPanel {
 		return (int) capillaryPixelsTextField.getValue(); 
 	}
 	
-	void getDescriptors(Capillaries cap) {
-		cap.desc.volume = getCapillaryVolume();
-		cap.desc.pixels = getCapillaryPixelLength();
-		cap.desc.stimulusR = (String) stimulusRJCombo.getSelectedItem();
-		cap.desc.concentrationR = (String) concentrationRJCombo.getSelectedItem();
-		cap.desc.stimulusL = (String) stimulusLJCombo.getSelectedItem();
-		cap.desc.concentrationL = (String) concentrationLJCombo.getSelectedItem();
+	void getDescriptors(Capillaries capList) {
+		capList.desc.volume = getCapillaryVolume();
+		capList.desc.pixels = getCapillaryPixelLength();
 	}
 	
-	private void addItem(JComboBox<String> combo, String text) {
-		if (text == null)
-			return;
-		combo.setSelectedItem(text);
-		if (combo.getSelectedIndex() < 0) {
-			boolean found = false;
-			for (int i=0; i < combo.getItemCount(); i++) {
-				int comparison = text.compareTo(combo.getItemAt(i));
-				if (comparison > 0)
-					continue;
-				if (comparison < 0) {
-					found = true;
-					combo.insertItemAt(text, i);
-					break;
-				}
-			}
-			if (!found)
-				combo.addItem(text);
-			combo.setSelectedItem(text);
-		}
-	}
+
 	
-	void updateCombos() {
-		addItem(stimulusRJCombo, (String) stimulusRJCombo.getSelectedItem());
-		addItem(concentrationRJCombo, (String) concentrationRJCombo.getSelectedItem());
-		addItem(stimulusLJCombo, (String) stimulusLJCombo.getSelectedItem());
-		addItem(concentrationLJCombo, (String) concentrationLJCombo.getSelectedItem());
-	}
+
 						
 }

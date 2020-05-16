@@ -145,7 +145,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	        		parent0.paneSequence.tabClose.closeExp(exp); 
         		}});
         		tabInfosSeq.updateCombos();
-				parent0.paneCapillaries.tabInfos.updateCombos();
 				parent0.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);						
 				openSequenceCamFromCombo();
 			}

@@ -77,7 +77,6 @@ public class MCSequence_Infos  extends JPanel {
 						addItem(experiment_JCombo, exp.experiment);
 						addItem(comment1_JCombo, exp.comment1);
 						addItem(comment2_JCombo, exp.comment2);
-						parent0.paneCapillaries.tabInfos.setTextDescriptors(exp.capillaries);
 						break;
 					}
 				}
