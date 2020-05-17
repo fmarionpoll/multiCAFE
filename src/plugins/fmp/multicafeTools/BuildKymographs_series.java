@@ -64,8 +64,8 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				if (options.isFrameFixed) {
 					exp.setStartFrame( options.startFrame);
 					exp.setEndFrame (options.endFrame);
-					if (exp.getEndFrame() > (exp.seqCamData.seq.getSizeT() - 1))
-						exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);
+					if (exp.getEndFrame() > (exp.getSeqCamSizeT() - 1))
+						exp.setEndFrame (exp.getSeqCamSizeT() - 1);
 				} else {
 					exp.setStartFrame (0);
 					exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);
@@ -125,10 +125,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			if (seqCamData == null || seqKymos == null)
 				return false;
 			
-			if ((exp.getEndFrame() >= (int) seqCamData.nTotalFrames) || (options.endFrame < 0)) 
-				exp.setEndFrame ((int) seqCamData.nTotalFrames-1);
-			int nbframes = exp.getEndFrame() - exp.getStartFrame() +1;
-			
+			int nbframes = exp.getEndFrame() - exp.getStartFrame() +1;		
 			ProgressChrono progressBar = new ProgressChrono("Processing started");
 			progressBar.initChrono(nbframes);
 			threadRunning = true;

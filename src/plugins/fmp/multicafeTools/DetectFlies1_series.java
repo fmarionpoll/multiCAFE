@@ -51,8 +51,8 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			if (detect.isFrameFixed) {
 				exp.setStartFrame (detect.startFrame);
 				exp.setEndFrame (detect.endFrame);
-				if (exp.getEndFrame() > (exp.seqCamData.seq.getSizeT() - 1))
-					exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);
+				if (exp.getEndFrame() > (exp.getSeqCamSizeT() - 1))
+					exp.setEndFrame (exp.getSeqCamSizeT() - 1);
 			} else {
 				exp.setStartFrame (0);
 				exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);

@@ -34,6 +34,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	String								capillaryName 	= null;
 	String 								version 		= null;
 	public String						filenameTIFF	= null;
+	// TODO: add frame start/end/step
 	public String 						stimulus		= new String("stimulus");
 	public String 						concentration	= new String("xmM");
 	public String						side			= ".";

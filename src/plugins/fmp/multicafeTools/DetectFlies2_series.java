@@ -65,8 +65,8 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			if (detect.isFrameFixed) {
 				exp.setStartFrame ( detect.startFrame);
 				exp.setEndFrame ( detect.endFrame);
-				if (exp.getEndFrame() > (exp.seqCamData.seq.getSizeT() - 1))
-					exp.setEndFrame( exp.seqCamData.seq.getSizeT() - 1);
+				if (exp.getEndFrame() > (exp.getSeqCamSizeT() - 1))
+					exp.setEndFrame( exp.getSeqCamSizeT() - 1);
 			} else {
 				exp.setStartFrame (0);
 				exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);
@@ -296,8 +296,8 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		viewerCamData = exp.seqCamData.seq.getFirstViewer();
 		displayRefViewers(exp);
 		int limit = 50 * exp.getStepFrame();
-		if (limit > exp.getEndFrame())
-			limit = exp.getEndFrame();
+		if (limit > exp.getSeqCamSizeT())
+			limit = exp.getSeqCamSizeT();
 		
 		for (int t = exp.getStartFrame() + 1; t <= limit && !stopFlag; t += exp.getStepFrame()) {
 			IcyBufferedImage currentImage = exp.seqCamData.getImage(t, 0);

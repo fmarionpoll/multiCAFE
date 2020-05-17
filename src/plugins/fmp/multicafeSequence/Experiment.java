@@ -46,9 +46,9 @@ public class Experiment {
 	public long				fileTimeImageLastMinute 	= 0;
 	public int				number_of_frames 			= 0;
 	
-	private int 			startFrame 					= 0;
-	private int 			endFrame 					= 0;
-	private int 			stepFrame 					= 1;					
+	private int 			frameStart 					= 0;
+	private int 			frameEnd 					= 0;
+	private int 			frameStep 					= 1;					
 	
 	public String			boxID 						= new String("..");
 	public String			experiment					= new String("..");
@@ -214,9 +214,9 @@ public class Experiment {
 		fileTimeImageFirstMinute = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
 		fileTimeImageLastMinute = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
 		number_of_frames 		= XMLUtil.getElementIntValue(node, ID_NFRAMES, number_of_frames);
-		startFrame 	= XMLUtil.getElementIntValue(node, ID_STARTFRAME, startFrame);
-		endFrame 	= XMLUtil.getElementIntValue(node, ID_ENDFRAME, endFrame);
-		stepFrame 	= XMLUtil.getElementIntValue(node, ID_STEP, stepFrame);
+		frameStart 	= XMLUtil.getElementIntValue(node, ID_STARTFRAME, frameStart);
+		frameEnd 	= XMLUtil.getElementIntValue(node, ID_ENDFRAME, frameEnd);
+		frameStep 	= XMLUtil.getElementIntValue(node, ID_STEP, frameStep);
 		boxID 		= XMLUtil.getElementValue(node, ID_BOXID, "..");
         experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
         comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
@@ -236,9 +236,9 @@ public class Experiment {
 			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
 			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
 			XMLUtil.setElementIntValue(node, ID_NFRAMES, number_of_frames);
-			XMLUtil.setElementIntValue(node, ID_STARTFRAME, startFrame);
-			XMLUtil.setElementIntValue(node, ID_ENDFRAME, endFrame);
-			XMLUtil.setElementIntValue(node, ID_STEP, stepFrame);
+			XMLUtil.setElementIntValue(node, ID_STARTFRAME, frameStart);
+			XMLUtil.setElementIntValue(node, ID_ENDFRAME, frameEnd);
+			XMLUtil.setElementIntValue(node, ID_STEP, frameStep);
 			XMLUtil.setElementValue(node, ID_BOXID, boxID);
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
 	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
@@ -355,43 +355,49 @@ public class Experiment {
 	
 	public boolean checkStepConsistency() {
 		int imageWidth = seqKymos.imageWidthMax; 
-		int len = (endFrame - startFrame + 1) / stepFrame;
+		int len = (frameEnd - frameStart + 1) / frameStep;
 		boolean isOK = true;
 		if (len > imageWidth) {
 			isOK = false;
-			stepFrame = (endFrame - startFrame + 1)/imageWidth;
+			frameStep = (frameEnd - frameStart + 1)/imageWidth;
 		}
 		return isOK;
 	}
 	
 	public int setStartFrame(int start) {
-		startFrame = start;
-		return startFrame;
+		frameStart = start;
+		return frameStart;
 	}
 	
 	public int setEndFrame(int end) {
-		endFrame = end;
-		if (seqCamData != null && seqCamData.seq != null && endFrame >= seqCamData.seq.getSizeT()) {
-			endFrame = seqCamData.seq.getSizeT() -1;
+		frameEnd = end;
+		if (seqCamData != null && seqCamData.seq != null && frameEnd >= seqCamData.seq.getSizeT()) {
+			frameEnd = seqCamData.seq.getSizeT() -1;
 		}
-		return endFrame;
+		return frameEnd;
 	}
 	public int setStepFrame(int step) {
-		return stepFrame;
+		frameStep = step;
+		return frameStep;
 	}
 	
 	public int getStartFrame() {
-		return startFrame;
+		return frameStart;
 	}
 	
 	public int getEndFrame() {
+		return frameEnd;
+	}
+	
+	public int getSeqCamSizeT() {
+		int lastFrame = frameEnd;
 		if (seqCamData != null && seqCamData.seq != null)
-			endFrame = seqCamData.seq.getSizeT() -1;
-		return endFrame;
+			lastFrame = seqCamData.seq.getSizeT() -1;
+		return lastFrame;
 	}
 	
 	public int getStepFrame() {
-		return stepFrame;
+		return frameStep;
 	}
 	
 	public int checkStepFrame() {
@@ -403,18 +409,18 @@ public class Experiment {
 			if (seqKymos.imageWidthMax < 1)
 				return step;
 		}
-		if (endFrame == 0) {
+		if (frameEnd == 0) {
 			if (seqCamData != null && seqCamData.seq != null)
-				endFrame = seqCamData.seq.getSizeT() -1;
+				frameEnd = seqCamData.seq.getSizeT() -1;
 			else
 				return step;
 		}
-		if (stepFrame == 0)
-			stepFrame = 1;
-		int len2 = (endFrame +1)/ stepFrame;
+		if (frameStep == 0)
+			frameStep = 1;
+		int len2 = (frameEnd +1)/ frameStep;
 		if (len2 != seqKymos.imageWidthMax) 
-			stepFrame = (endFrame +1)/(seqKymos.imageWidthMax-1);
-		return stepFrame;
+			frameStep = (frameEnd +1)/(seqKymos.imageWidthMax-1);
+		return frameStep;
 	}
 	
 	// --------------------------------------------
@@ -436,9 +442,9 @@ public class Experiment {
 		xmlLoadExperiment();
 		seqCamData.loadSequence(experimentFileName) ;
 		seqCamData.getCamDataROIS (capillaries);
-		capillaries.desc.analysisStart = startFrame; 
-		capillaries.desc.analysisEnd  = endFrame;
-		capillaries.desc.analysisStep = stepFrame;
+		capillaries.desc.analysisStart = frameStart; 
+		capillaries.desc.analysisEnd  = frameEnd;
+		capillaries.desc.analysisStep = frameStep;
 		xmlLoadMCcapillaries(experimentFileName);
 	}
 	
@@ -520,9 +526,9 @@ public class Experiment {
 					flag = capillaries.xmlLoadCapillaries(csFileName);
 				}
 			}
-			startFrame = (int) capillaries.desc.analysisStart;
-			endFrame = (int) capillaries.desc.analysisEnd;
-			stepFrame = capillaries.desc.analysisStep;
+			frameStart = (int) capillaries.desc.analysisStart;
+			frameEnd = (int) capillaries.desc.analysisEnd;
+			frameStep = capillaries.desc.analysisStep;
 		}
 		return flag;
 	}
@@ -662,9 +668,9 @@ public class Experiment {
 	}
 	
 	public void storeAnalysisParametersToCages() {
-		cages.detect.startFrame = (int) startFrame;
-		cages.detect.endFrame = (int) endFrame;
-		cages.detect.stepFrame = stepFrame;
+		cages.detect.startFrame = (int) frameStart;
+		cages.detect.endFrame = (int) frameEnd;
+		cages.detect.stepFrame = frameStep;
 	}
 	
 	public void xmlSaveFlyPositionsForAllCages() {			
