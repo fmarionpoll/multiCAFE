@@ -371,9 +371,6 @@ public class Experiment {
 	
 	public int setKymoFrameEnd(int end) {
 		kymoFrameEnd = end;
-		if (seqCamData != null && seqCamData.seq != null && kymoFrameEnd >= seqCamData.seq.getSizeT()) {
-			kymoFrameEnd = seqCamData.seq.getSizeT() -1;
-		}
 		return kymoFrameEnd;
 	}
 	

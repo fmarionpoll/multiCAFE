@@ -38,15 +38,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		boolean loadDrosoTrack = options.onlyalive;
 		// get time first and last of each experiment, plus get 
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
-		// chain/unchain experiments
 		expList.chainExperiments(options.collateSeries);
-		// store parameters common to all experiments into expAll (intervals, step)
 		expAll = expList.getStartAndEndFromAllExperiments(options);
-		
-		expAll.setKymoFrameStep ( expList.getExperiment(0).getKymoFrameStep() * options.buildExcelBinStep);
-		expAll.setKymoFrameStart ( (int) expAll.fileTimeImageFirstMinute);
-		expAll.setKymoFrameEnd ( (int) expAll.fileTimeImageLastMinute);
-		expAll.number_of_frames = (int) (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1;
 
 		try { 
 			XSSFWorkbook workbook = xlsInitWorkbook();

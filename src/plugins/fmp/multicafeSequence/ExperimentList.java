@@ -23,24 +23,24 @@ public class ExperimentList {
 	}
 	
 	public Experiment getStartAndEndFromAllExperiments(XLSExportOptions options) {
-		Experiment expglobal = new Experiment();
+		Experiment expAll = new Experiment();
 		if (options.absoluteTime) {
 			Experiment exp0 = experimentList.get(0);
-			expglobal.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
-			expglobal.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
+			expAll.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
+			expAll.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
 			for (Experiment exp: experimentList) {
-				if (expglobal.getFileTimeImageFirst(false).compareTo(exp.getFileTimeImageFirst(true)) > 0) 
-					expglobal.setFileTimeImageFirst(exp.getFileTimeImageFirst(true));
-				if (expglobal.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
-					expglobal.setFileTimeImageLast(exp.getFileTimeImageLast(true));
+				if (expAll.getFileTimeImageFirst(false).compareTo(exp.getFileTimeImageFirst(true)) > 0) 
+					expAll.setFileTimeImageFirst(exp.getFileTimeImageFirst(true));
+				if (expAll.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
+					expAll.setFileTimeImageLast(exp.getFileTimeImageLast(true));
 			}
-			expglobal.fileTimeImageFirstMinute = expglobal.getFileTimeImageFirst(false).toMillis()/60000;
-			expglobal.fileTimeImageLastMinute = expglobal.getFileTimeImageLast(false).toMillis()/60000;
+			expAll.fileTimeImageFirstMinute = expAll.getFileTimeImageFirst(false).toMillis()/60000;
+			expAll.fileTimeImageLastMinute = expAll.getFileTimeImageLast(false).toMillis()/60000;	
 		} 
 		else 
 		{
-			expglobal.fileTimeImageFirstMinute = 0;
-			expglobal.fileTimeImageLastMinute = 0;
+			expAll.fileTimeImageFirstMinute = 0;
+			expAll.fileTimeImageLastMinute = 0;
 			for (Experiment exp: experimentList) {
 				if (options.collateSeries && exp.previousExperiment != null)
 					continue;
@@ -49,11 +49,17 @@ public class ExperimentList {
 				long first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
 				long diff = ( last - first) /60000;
 				
-				if (expglobal.fileTimeImageLastMinute < diff) 
-					expglobal.fileTimeImageLastMinute = diff;
+				if (expAll.fileTimeImageLastMinute < diff) 
+					expAll.fileTimeImageLastMinute = diff;
 			}
 		}
-		return expglobal;
+		
+		expAll.setKymoFrameStep ( getExperiment(0).getKymoFrameStep() * options.buildExcelBinStep);
+		expAll.setKymoFrameStart ( (int) expAll.fileTimeImageFirstMinute);
+		expAll.setKymoFrameEnd ( (int) expAll.fileTimeImageLastMinute);
+		expAll.number_of_frames = (int) (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1;
+
+		return expAll;
 	}
 		
 	public boolean loadAllExperiments(boolean loadCapillaries, boolean loadDrosoTrack) {
