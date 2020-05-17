@@ -47,15 +47,15 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			
 			exp.loadExperimentCamData();
 			exp.xmlReadDrosoTrackDefault();
-			exp.setStepFrame (detect.stepFrame);
+			exp.setKymoFrameStep (detect.stepFrame);
 			if (detect.isFrameFixed) {
-				exp.setStartFrame (detect.startFrame);
-				exp.setEndFrame (detect.endFrame);
-				if (exp.getEndFrame() > (exp.getSeqCamSizeT() - 1))
-					exp.setEndFrame (exp.getSeqCamSizeT() - 1);
+				exp.setKymoFrameStart (detect.startFrame);
+				exp.setKymoFrameEnd (detect.endFrame);
+				if (exp.getKymoFrameEnd() > (exp.getSeqCamSizeT() - 1))
+					exp.setKymoFrameEnd (exp.getSeqCamSizeT() - 1);
 			} else {
-				exp.setStartFrame (0);
-				exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);
+				exp.setKymoFrameStart (0);
+				exp.setKymoFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
 			}
 			if (exp.cages.cageList.size() < 1 ) {
 				System.out.println("! skipped experiment with no cage: " + exp.experimentFileName);
@@ -110,7 +110,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		
 		exp.seqCamData.seq.beginUpdate();
 		int it = 0;
-		for (int t = exp.getStartFrame() ; t <= exp.getEndFrame(); t  += exp.getStepFrame(), it++ ) {				
+		for (int t = exp.getKymoFrameStart() ; t <= exp.getKymoFrameEnd(); t  += exp.getKymoFrameStep(), it++ ) {				
 			if (stopFlag)
 				break;
 			progressBar.updatePosition(t);

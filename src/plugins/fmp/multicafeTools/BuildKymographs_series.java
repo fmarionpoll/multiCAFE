@@ -60,15 +60,15 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				
 				exp.loadExperimentDataToBuildKymos();
 				exp.displayCamData(options.parent0Rect);
-				exp.setStepFrame (options.stepFrame);
+				exp.setKymoFrameStep (options.stepFrame);
 				if (options.isFrameFixed) {
-					exp.setStartFrame( options.startFrame);
-					exp.setEndFrame (options.endFrame);
-					if (exp.getEndFrame() > (exp.getSeqCamSizeT() - 1))
-						exp.setEndFrame (exp.getSeqCamSizeT() - 1);
+					exp.setKymoFrameStart( options.startFrame);
+					exp.setKymoFrameEnd (options.endFrame);
+					if (exp.getKymoFrameEnd() > (exp.getSeqCamSizeT() - 1))
+						exp.setKymoFrameEnd (exp.getSeqCamSizeT() - 1);
 				} else {
-					exp.setStartFrame (0);
-					exp.setEndFrame (exp.seqCamData.seq.getSizeT() - 1);
+					exp.setKymoFrameStart (0);
+					exp.setKymoFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
 				}
 				if (computeKymo(exp)) 
 					saveComputation(exp);
@@ -125,7 +125,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			if (seqCamData == null || seqKymos == null)
 				return false;
 			
-			int nbframes = exp.getEndFrame() - exp.getStartFrame() +1;		
+			int nbframes = exp.getKymoFrameEnd() - exp.getKymoFrameStart() +1;		
 			ProgressChrono progressBar = new ProgressChrono("Processing started");
 			progressBar.initChrono(nbframes);
 			threadRunning = true;
@@ -157,7 +157,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			}
 			
 			seqCamData.seq.beginUpdate();
-			for (int t = exp.getStartFrame() ; t <= exp.getEndFrame(); t += exp.getStepFrame(), ipixelcolumn++ ) {
+			for (int t = exp.getKymoFrameStart() ; t <= exp.getKymoFrameEnd(); t += exp.getKymoFrameStep(), ipixelcolumn++ ) {
 				if (stopFlag)
 					break;
 				progressBar.updatePosition(t);
@@ -231,11 +231,11 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			int numC = seqCamData.seq.getSizeC();
 			if (numC <= 0)
 				numC = 3;
-			double fimagewidth =  1 + (exp.getEndFrame() - exp.getStartFrame() )/options.stepFrame;
+			double fimagewidth =  1 + (exp.getKymoFrameEnd() - exp.getKymoFrameStart() )/options.stepFrame;
 			if (fimagewidth < 0) {
 				options.stepFrame = 1;
-				exp.setStepFrame (options.stepFrame);
-				fimagewidth =  1 + (exp.getEndFrame() - exp.getStartFrame() )/options.stepFrame;
+				exp.setKymoFrameStep (options.stepFrame);
+				fimagewidth =  1 + (exp.getKymoFrameEnd() - exp.getKymoFrameStart() )/options.stepFrame;
 			}
 				
 			imagewidth = (int) fimagewidth;

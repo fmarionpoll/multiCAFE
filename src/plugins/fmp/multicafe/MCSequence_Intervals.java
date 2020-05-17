@@ -22,11 +22,11 @@ public class MCSequence_Intervals extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -5739112045358747277L;
-	JSpinner 	startFrameJSpinner	= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
-	JSpinner 	endFrameJSpinner	= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
-	JSpinner 	stepFrameJSpinner	= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
-	JRadioButton  isFixedFrame		= new JRadioButton("keep the same intervals for all experiment", false);
-	JRadioButton  isFloatingFrame	= new JRadioButton("analyze complete experiments", true);
+	JSpinner 		startFrameJSpinner	= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
+	JSpinner 		endFrameJSpinner	= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
+	JSpinner 		stepFrameJSpinner	= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
+	JRadioButton  	isFixedFrame		= new JRadioButton("keep the same intervals for all experiment", false);
+	JRadioButton  	isFloatingFrame		= new JRadioButton("analyze complete experiments", true);
 		
 	
 	void init(GridLayout capLayout) {
@@ -73,18 +73,19 @@ public class MCSequence_Intervals extends JPanel {
 	}
 		
 	public void setAnalyzeFrameToDialog (Experiment exp) {
-		startFrameJSpinner.setValue((int) exp.getStartFrame());
-		endFrameJSpinner.setValue((int) exp.getSeqCamSizeT());
-		int step = exp.checkStepFrame();
-		if (step <= 0 )
-			exp.setStepFrame(1);
-		stepFrameJSpinner.setValue(exp.getStepFrame());
+		startFrameJSpinner.setValue((int) exp.getKymoFrameStart());
+		if (exp.getKymoFrameEnd() == 0)
+			exp.setKymoFrameEnd(exp.getSeqCamSizeT());
+		endFrameJSpinner.setValue((int) exp.getKymoFrameEnd());
+		if (exp.getKymoFrameStep() <= 0 )
+			exp.setKymoFrameStep(1);
+		stepFrameJSpinner.setValue(exp.getKymoFrameStep());
 	}
 	
 	void getAnalyzeFrameFromDialog (Experiment exp) {		
-		exp.setStartFrame ((int) startFrameJSpinner.getValue());
-		exp.setEndFrame ( (int) endFrameJSpinner.getValue());
-		exp.setStepFrame ( (int) stepFrameJSpinner.getValue());
+		exp.setKymoFrameStart ((int) startFrameJSpinner.getValue());
+		exp.setKymoFrameEnd ( (int) endFrameJSpinner.getValue());
+		exp.setKymoFrameStep ( (int) stepFrameJSpinner.getValue());
 	}
 	
 	public void setEndFrameToDialog (int end) {

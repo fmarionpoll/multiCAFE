@@ -46,9 +46,9 @@ public class Experiment {
 	public long				fileTimeImageLastMinute 	= 0;
 	public int				number_of_frames 			= 0;
 	
-	private int 			frameStart 					= 0;
-	private int 			frameEnd 					= 0;
-	private int 			frameStep 					= 1;					
+	private int 			kymoFrameStart 				= 0;
+	private int 			kymoFrameEnd 				= 0;
+	private int 			kymoFrameStep 				= 1;					
 	
 	public String			boxID 						= new String("..");
 	public String			experiment					= new String("..");
@@ -211,16 +211,16 @@ public class Experiment {
 		String version = XMLUtil.getElementValue(node, ID_VERSION, ID_VERSIONNUM);
 		if (!version .equals(ID_VERSIONNUM))
 			return false;
-		fileTimeImageFirstMinute = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
+		fileTimeImageFirstMinute= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
 		fileTimeImageLastMinute = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
 		number_of_frames 		= XMLUtil.getElementIntValue(node, ID_NFRAMES, number_of_frames);
-		frameStart 	= XMLUtil.getElementIntValue(node, ID_STARTFRAME, frameStart);
-		frameEnd 	= XMLUtil.getElementIntValue(node, ID_ENDFRAME, frameEnd);
-		frameStep 	= XMLUtil.getElementIntValue(node, ID_STEP, frameStep);
-		boxID 		= XMLUtil.getElementValue(node, ID_BOXID, "..");
-        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
-        comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
-        comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
+		kymoFrameStart 			= XMLUtil.getElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
+		kymoFrameEnd 			= XMLUtil.getElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
+		kymoFrameStep 			= XMLUtil.getElementIntValue(node, ID_STEP, kymoFrameStep);
+		boxID 					= XMLUtil.getElementValue(node, ID_BOXID, "..");
+        experiment 				= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
+        comment1 				= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
+        comment2 				= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
 		return true;
 	}
 	
@@ -236,9 +236,9 @@ public class Experiment {
 			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
 			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
 			XMLUtil.setElementIntValue(node, ID_NFRAMES, number_of_frames);
-			XMLUtil.setElementIntValue(node, ID_STARTFRAME, frameStart);
-			XMLUtil.setElementIntValue(node, ID_ENDFRAME, frameEnd);
-			XMLUtil.setElementIntValue(node, ID_STEP, frameStep);
+			XMLUtil.setElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
+			XMLUtil.setElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
+			XMLUtil.setElementIntValue(node, ID_STEP, kymoFrameStep);
 			XMLUtil.setElementValue(node, ID_BOXID, boxID);
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
 	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
@@ -355,49 +355,50 @@ public class Experiment {
 	
 	public boolean checkStepConsistency() {
 		int imageWidth = seqKymos.imageWidthMax; 
-		int len = (frameEnd - frameStart + 1) / frameStep;
+		int len = (kymoFrameEnd - kymoFrameStart + 1) / kymoFrameStep;
 		boolean isOK = true;
 		if (len > imageWidth) {
 			isOK = false;
-			frameStep = (frameEnd - frameStart + 1)/imageWidth;
+			kymoFrameStep = (kymoFrameEnd - kymoFrameStart + 1)/imageWidth;
 		}
 		return isOK;
 	}
 	
-	public int setStartFrame(int start) {
-		frameStart = start;
-		return frameStart;
+	public int setKymoFrameStart(int start) {
+		kymoFrameStart = start;
+		return kymoFrameStart;
 	}
 	
-	public int setEndFrame(int end) {
-		frameEnd = end;
-		if (seqCamData != null && seqCamData.seq != null && frameEnd >= seqCamData.seq.getSizeT()) {
-			frameEnd = seqCamData.seq.getSizeT() -1;
+	public int setKymoFrameEnd(int end) {
+		kymoFrameEnd = end;
+		if (seqCamData != null && seqCamData.seq != null && kymoFrameEnd >= seqCamData.seq.getSizeT()) {
+			kymoFrameEnd = seqCamData.seq.getSizeT() -1;
 		}
-		return frameEnd;
-	}
-	public int setStepFrame(int step) {
-		frameStep = step;
-		return frameStep;
+		return kymoFrameEnd;
 	}
 	
-	public int getStartFrame() {
-		return frameStart;
+	public int setKymoFrameStep(int step) {
+		kymoFrameStep = step;
+		return kymoFrameStep;
 	}
 	
-	public int getEndFrame() {
-		return frameEnd;
+	public int getKymoFrameStart() {
+		return kymoFrameStart;
+	}
+	
+	public int getKymoFrameEnd() {
+		return kymoFrameEnd;
 	}
 	
 	public int getSeqCamSizeT() {
-		int lastFrame = frameEnd;
+		int lastFrame = kymoFrameEnd;
 		if (seqCamData != null && seqCamData.seq != null)
 			lastFrame = seqCamData.seq.getSizeT() -1;
 		return lastFrame;
 	}
 	
-	public int getStepFrame() {
-		return frameStep;
+	public int getKymoFrameStep() {
+		return kymoFrameStep;
 	}
 	
 	public int checkStepFrame() {
@@ -409,18 +410,18 @@ public class Experiment {
 			if (seqKymos.imageWidthMax < 1)
 				return step;
 		}
-		if (frameEnd == 0) {
+		if (kymoFrameEnd == 0) {
 			if (seqCamData != null && seqCamData.seq != null)
-				frameEnd = seqCamData.seq.getSizeT() -1;
+				kymoFrameEnd = seqCamData.seq.getSizeT() -1;
 			else
 				return step;
 		}
-		if (frameStep == 0)
-			frameStep = 1;
-		int len2 = (frameEnd +1)/ frameStep;
+		if (kymoFrameStep == 0)
+			kymoFrameStep = 1;
+		int len2 = (kymoFrameEnd +1)/ kymoFrameStep;
 		if (len2 != seqKymos.imageWidthMax) 
-			frameStep = (frameEnd +1)/(seqKymos.imageWidthMax-1);
-		return frameStep;
+			kymoFrameStep = (kymoFrameEnd +1)/(seqKymos.imageWidthMax-1);
+		return kymoFrameStep;
 	}
 	
 	// --------------------------------------------
@@ -442,9 +443,9 @@ public class Experiment {
 		xmlLoadExperiment();
 		seqCamData.loadSequence(experimentFileName) ;
 		seqCamData.getCamDataROIS (capillaries);
-		capillaries.desc.analysisStart = frameStart; 
-		capillaries.desc.analysisEnd  = frameEnd;
-		capillaries.desc.analysisStep = frameStep;
+		capillaries.desc.analysisStart = kymoFrameStart; 
+		capillaries.desc.analysisEnd  = kymoFrameEnd;
+		capillaries.desc.analysisStep = kymoFrameStep;
 		xmlLoadMCcapillaries(experimentFileName);
 	}
 	
@@ -526,9 +527,9 @@ public class Experiment {
 					flag = capillaries.xmlLoadCapillaries(csFileName);
 				}
 			}
-			frameStart = (int) capillaries.desc.analysisStart;
-			frameEnd = (int) capillaries.desc.analysisEnd;
-			frameStep = capillaries.desc.analysisStep;
+			kymoFrameStart = (int) capillaries.desc.analysisStart;
+			kymoFrameEnd = (int) capillaries.desc.analysisEnd;
+			kymoFrameStep = capillaries.desc.analysisStep;
 		}
 		return flag;
 	}
@@ -668,9 +669,9 @@ public class Experiment {
 	}
 	
 	public void storeAnalysisParametersToCages() {
-		cages.detect.startFrame = (int) frameStart;
-		cages.detect.endFrame = (int) frameEnd;
-		cages.detect.stepFrame = frameStep;
+		cages.detect.startFrame = (int) kymoFrameStart;
+		cages.detect.endFrame = (int) kymoFrameEnd;
+		cages.detect.stepFrame = kymoFrameStep;
 	}
 	
 	public void xmlSaveFlyPositionsForAllCages() {			

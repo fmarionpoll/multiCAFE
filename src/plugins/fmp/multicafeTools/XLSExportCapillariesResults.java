@@ -43,10 +43,10 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		// store parameters common to all experiments into expAll (intervals, step)
 		expAll = expList.getStartAndEndFromAllExperiments(options);
 		
-		expAll.setStepFrame ( expList.getExperiment(0).getStepFrame() * options.buildExcelBinStep);
-		expAll.setStartFrame ( (int) expAll.fileTimeImageFirstMinute);
-		expAll.setEndFrame ( (int) expAll.fileTimeImageLastMinute);
-		expAll.number_of_frames = (int) (expAll.getEndFrame() - expAll.getStartFrame())/expAll.getStepFrame() +1;
+		expAll.setKymoFrameStep ( expList.getExperiment(0).getKymoFrameStep() * options.buildExcelBinStep);
+		expAll.setKymoFrameStart ( (int) expAll.fileTimeImageFirstMinute);
+		expAll.setKymoFrameEnd ( (int) expAll.fileTimeImageLastMinute);
+		expAll.number_of_frames = (int) (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1;
 
 		try { 
 			XSSFWorkbook workbook = xlsInitWorkbook();
@@ -186,8 +186,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 	private void addResultsTo_rowsForOneExp(Experiment expi, List <XLSCapillaryResults> resultsArrayList) {
 		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
 		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
-		int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getStepFrame() ;
-		int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expAll.getStepFrame())+1;
+		int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
+		int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expAll.getKymoFrameStep())+1;
 		
 		for (XLSCapillaryResults row: rowsForOneExp ) {
 			boolean found = false;
@@ -272,8 +272,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			}
 			// remove data up to the end ----------------------------------------------
 			int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
-			int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getStepFrame() + (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
-			int ilastalive = lastMinuteAlive / expAll.getStepFrame();
+			int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getKymoFrameStep() + (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
+			int ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
 			for (XLSCapillaryResults row : rowsForOneExp) {
 				if (getCageFromCapillaryName (row.name) == cagenumber) {
 					row.clearValues(ilastalive+1);
@@ -317,7 +317,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 	private void outputDataTimeIntervals(XSSFSheet sheet, int row) {
 		boolean transpose = options.transpose;
 		Point pt = new Point(0, row);
-		for (int i = expAll.getStartFrame(); i <= expAll.getEndFrame(); i += expAll.getStepFrame()) {
+		for (int i = expAll.getKymoFrameStart(); i <= expAll.getKymoFrameEnd(); i += expAll.getKymoFrameStep()) {
 			XLSUtils.setValue(sheet, pt, transpose, "t"+i);
 			pt.y++;
 		}
