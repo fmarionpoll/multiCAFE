@@ -107,12 +107,11 @@ public class MCCapillaries_Table  extends JPanel {
 		duplicateButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				 if (tableView.getCellSelectionEnabled()) {
-					 tableView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-				      int rowIndex = tableView.getSelectedRow();
-				      int colIndex = tableView.getSelectedColumn();
-
-				    }
+//				if (tableView.getCellSelectionEnabled()) {
+					int rowIndex = tableView.getSelectedRow();
+				    int colIndex = tableView.getSelectedColumn();
+				    
+//				    }
 			}});
 	}
 	
