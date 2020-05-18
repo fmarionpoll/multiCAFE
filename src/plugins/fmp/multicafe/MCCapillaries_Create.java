@@ -175,11 +175,8 @@ public class MCCapillaries_Create extends JPanel {
 		}
 		
 		Polygon2D roiPolygon = MulticafeTools.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
-			
-		// clear Rois from sequence
 		seqCamData.seq.removeROI(roi);
 
-		// generate lines from polygon frame
 		if (statusGroup2Mode) {	
 			double span = (nbcapillaries/2)* (width_between_capillaries + width_interval) - width_interval;
 			for (int i=0; i< nbcapillaries; i+= 2) {
@@ -193,7 +190,6 @@ public class MCCapillaries_Create extends JPanel {
 				Point2D.Double point0 = new Point2D.Double (x, y);
 				x = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * span0 /span ;
 				y = roiPolygon.ypoints[1] + (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) * span0 /span ;
-				// TODO: test here if out of bound
 				Point2D.Double point1 = new Point2D.Double (x, y);
 				ROI2DLine roiL1 = new ROI2DLine (point0, point1);
 				roiL1.setName("line"+i/2+"L");

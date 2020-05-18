@@ -193,8 +193,6 @@ public class Experiment {
 		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
 	}
 	
-	// TODO call it loadKymographs_Images if possible 
-	
 	public boolean xmlLoadExperiment () {
 		if (experimentFileName == null) {
 			String directory = seqCamData.getDirectory();
@@ -258,15 +256,11 @@ public class Experiment {
  	public boolean loadKymographs() {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
-//		if (capillaries.capillariesArrayList.size() == 0) {
-//			// TODO check if it is ok to load only the list of capillaries here
-			if (!xmlLoadKymos_Measures(seqCamData.getDirectory())) 
-				return false;
-//		}
+		if (!xmlLoadKymos_Measures(seqCamData.getDirectory())) 
+			return false;
 		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(seqCamData.getDirectory(), capillaries);
 		boolean flag = seqKymos.loadImagesFromList(myList, true);
 		seqKymos.transferCapillariesToKymosRois(capillaries);
-		
 		return flag;
 	}
 	

@@ -18,10 +18,9 @@ import icy.type.geom.Polygon2D;
 
 
 
-public class MulticafeTools  extends Plugin {
+public class MulticafeTools extends Plugin {
 
-	public static String saveFileAs(String defaultName, String directory, String csExt)
-	{		
+	public static String saveFileAs(String defaultName, String directory, String csExt) {		
 		// load last preferences for loader
 		String csFile = null;
 		final JFileChooser fileChooser = new JFileChooser();
@@ -59,10 +58,7 @@ public class MulticafeTools  extends Plugin {
 		return csFile;
 	}
 
-	// TODO use LoaderDialog from Icy
-	public static String[] selectFiles(String directory, String csExt)
-	{
-		// load last preferences for loader
+	public static String[] selectFiles(String directory, String csExt) {
 		final JFileChooser fileChooser = new JFileChooser();
 
 		final String path = directory;

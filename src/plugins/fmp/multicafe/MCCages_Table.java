@@ -32,6 +32,7 @@ public class MCCages_Table extends JPanel {
 	private MultiCAFE 			parent0 		= null; 
 	private List <Cage> 		cageArrayCopy 	= null;
 	
+	// -------------------------
 	
 	public void initialize (MultiCAFE parent0, List <Cage> cageCopy) {
 		this.parent0 = parent0;
@@ -108,4 +109,6 @@ public class MCCages_Table extends JPanel {
         column.setMaxWidth(50);
         column.setMinWidth(30);
 	}
+
+
 }

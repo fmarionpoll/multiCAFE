@@ -31,6 +31,7 @@ public class MCCapillaries_Table  extends JPanel {
 	private CapillaryTableModel viewModel 		= null;
 	private JButton				copyButton 		= new JButton("Copy table");
 	private JButton				pasteButton 	= new JButton("Paste");
+	private JButton				duplicateButton  = new JButton("Duplicate line");
 	private MultiCAFE 			parent0 		= null; 
 	private List <Capillary> 	capillariesArrayCopy = null;
 	

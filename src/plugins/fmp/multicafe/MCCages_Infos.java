@@ -6,7 +6,6 @@ import java.awt.FlowLayout;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +48,5 @@ public class MCCages_Infos  extends JPanel {
             	dialog.initialize(parent0, cagesArrayCopy);
 			}});
 	}
-	
-	// TODO: follow status of dialog to trap close condition and transfer nflies to capillaries 
+
 }

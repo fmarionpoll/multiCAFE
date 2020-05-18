@@ -244,8 +244,7 @@ public class Capillaries {
 			cap.ptsTop.adjustToImageWidth(imageWidth);
 			cap.ptsBottom.adjustToImageWidth(imageWidth);
 			cap.ptsDerivative.adjustToImageWidth(imageWidth);
-			cap.gulpsRois = null;
-			// TODO: deal with gulps.. (simply remove?)
+			cap.gulpsRois = null; // TODO: deal with gulps.. (simply remove?)
 		}
 	}
 

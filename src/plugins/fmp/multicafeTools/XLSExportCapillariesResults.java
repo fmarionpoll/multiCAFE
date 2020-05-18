@@ -386,17 +386,17 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				else if (!Double.isNaN(dataR) && Double.isNaN(dataL)) 
 					dataL=0;
 					
-				double valueL = dataL+dataR;
-				if (!Double.isNaN(valueL)) {
-					XLSUtils.setValue(sheet, pt, transpose, valueL);
+				double sum = dataL+dataR;
+				if (!Double.isNaN(sum)) {
+					XLSUtils.setValue(sheet, pt, transpose, sum);
 					if (rowL.padded_out[i])
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
 				pt.x ++;
-				if (valueL != 0 && !Double.isNaN(valueL)) {
-					double valueR = (dataL-dataR)/valueL;
-					if (!Double.isNaN(valueR)) {
-						XLSUtils.setValue(sheet, pt, transpose, valueR);
+				if (sum != 0 && !Double.isNaN(sum)) {
+					double ratio = (dataL-dataR)/sum;
+					if (!Double.isNaN(ratio)) {
+						XLSUtils.setValue(sheet, pt, transpose, ratio);
 						if (rowL.padded_out[i])
 							XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 					}

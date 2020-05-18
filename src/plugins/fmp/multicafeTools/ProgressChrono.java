@@ -13,7 +13,6 @@ public class ProgressChrono extends ProgressFrame {
 	
 	public ProgressChrono(String message) {
 		super(message);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void startChrono() {
