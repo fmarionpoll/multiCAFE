@@ -10,9 +10,11 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -31,7 +33,7 @@ public class MCCapillaries_Table  extends JPanel {
 	private CapillaryTableModel viewModel 		= null;
 	private JButton				copyButton 		= new JButton("Copy table");
 	private JButton				pasteButton 	= new JButton("Paste");
-	private JButton				duplicateButton  = new JButton("Duplicate line");
+	private JButton				duplicateButton = new JButton("Duplicate");
 	private MultiCAFE 			parent0 		= null; 
 	private List <Capillary> 	capillariesArrayCopy = null;
 	
@@ -42,6 +44,7 @@ public class MCCapillaries_Table  extends JPanel {
 		
 		viewModel = new CapillaryTableModel(parent0);
 	    tableView.setModel(viewModel);
+	    tableView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 400));
 	    tableView.setFillsViewportHeight(true);
 	    TableColumnModel columnModel = tableView.getColumnModel();
@@ -53,6 +56,8 @@ public class MCCapillaries_Table  extends JPanel {
 		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		topPanel.add(copyButton);
         topPanel.add(pasteButton);
+        topPanel.add(new JLabel("          "));
+        topPanel.add(duplicateButton);
         
         JPanel tablePanel = new JPanel();
 		tablePanel.add(scrollPane);
@@ -75,9 +80,8 @@ public class MCCapillaries_Table  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				capillariesArrayCopy.clear();
-				for (Capillary cap: exp.capillaries.capillariesArrayList ) {
+				for (Capillary cap: exp.capillaries.capillariesArrayList ) 
 					capillariesArrayCopy.add(cap);
-				}
 				pasteButton.setEnabled(true);
 			}});
 		
@@ -98,6 +102,17 @@ public class MCCapillaries_Table  extends JPanel {
 					}
 				}
 				viewModel.fireTableDataChanged();
+			}});
+		
+		duplicateButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				 if (tableView.getCellSelectionEnabled()) {
+					 tableView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				      int rowIndex = tableView.getSelectedRow();
+				      int colIndex = tableView.getSelectedColumn();
+
+				    }
 			}});
 	}
 	
