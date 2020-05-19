@@ -137,6 +137,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return roi.getName().substring(roi.getName().length() -2);
 	}
 	
+	public String getCapillarySide() {
+		return roi.getName().substring(roi.getName().length() -1);
+	}
+	
 	public String replace_LR_with_12(String name) {
 		String newname = null;
 		if (name .endsWith("R"))
