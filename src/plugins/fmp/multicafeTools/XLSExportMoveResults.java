@@ -94,10 +94,12 @@ public class XLSExportMoveResults extends XLSExport {
 		int row0 = pt_main.y;
 		if (charSeries == null)
 			charSeries = "t";
-		int startFrame 	= (int) exp.getKymoFrameStart();
-		int endFrame 	= (int) exp.getKymoFrameEnd();
-		if (endFrame > exp.getSeqCamSizeT()-1)
-			endFrame = exp.getSeqCamSizeT()-1;
+//		int startFrame 	= (int) exp.getKymoFrameStart();
+//		int endFrame 	= (int) exp.getKymoFrameEnd();
+//		if (endFrame > exp.getSeqCamSizeT()-1)
+//			endFrame = exp.getSeqCamSizeT()-1;
+		int startFrame 	= 0;
+		int endFrame 	= exp.getSeqCamSizeT()-1;
 		int step = exp.getKymoFrameStep() * options.buildExcelBinStep;
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
