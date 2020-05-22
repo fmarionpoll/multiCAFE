@@ -158,7 +158,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 	private void findFlies(Experiment exp) {
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
-		progressBar.initChrono(detect.endFrame - detect.startFrame + 1);
+		progressBar.initChrono(exp.getKymoFrameEnd()-exp.getKymoFrameStart()+1);
 
 		exp.seqBackgroundImage.close();
 		if (vPositive != null) {

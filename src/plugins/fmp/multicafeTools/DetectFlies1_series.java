@@ -92,7 +92,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		detect.initTempRectROIs(exp, exp.seqCamData.seq);
 		exp.cleanPreviousDetections();
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
-		progressBar.initChrono(detect.endFrame-detect.startFrame+1);
+		progressBar.initChrono(exp.getKymoFrameEnd()-exp.getKymoFrameStart()+1);
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() { public void run() {
 				viewerCamData = new Viewer(exp.seqCamData.seq, true);
