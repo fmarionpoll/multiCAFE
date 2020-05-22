@@ -23,6 +23,7 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DArea;
+import plugins.kernel.roi.roi2d.ROI2DEllipse;
 import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
 public class DetectFlies_Options implements XMLPersistent {
@@ -35,6 +36,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	public boolean  blimitUp 				= false;
 	public int  	limitLow				= 0;
 	public int  	limitUp					= 1;
+	public int		limitRatio				= 4;
 	public int 		jitter 					= 10;
 	public boolean	forceBuildBackground	= false;
 	public boolean	detectFlies				= true;
@@ -107,7 +109,7 @@ public class DetectFlies_Options implements XMLPersistent {
 		return true;
 	}
 	
-	public BooleanMask2D findLargestComponent(ROI2DArea roiAll, int iroi) {
+	public BooleanMask2D findLargestBlob(ROI2DArea roiAll, int iroi) {
 		ROI cageLimitROI = cages.cageList.get(iroi).roi;
 		if ( cageLimitROI == null )
 			return null;
@@ -124,6 +126,15 @@ public class DetectFlies_Options implements XMLPersistent {
 				len = 0;
 			if (blimitUp && len > limitUp)
 				len = 0;
+			// trap condition where a line is found
+			int width = mask.bounds.width;
+			int height = mask.bounds.height;
+			int ratio = width / height;
+			if (width < height)
+				ratio = height/width;
+			if (ratio > 4)
+				len = 0;
+			
 			if ( len > max ) {
 				bestMask = mask;
 				max = len;
@@ -132,7 +143,7 @@ public class DetectFlies_Options implements XMLPersistent {
 		return bestMask;
 	}
 	
-	public ROI2DArea findFly(IcyBufferedImage img, int threshold) {
+	public ROI2DArea binarizeImage(IcyBufferedImage img, int threshold) {
 		if (img == null)
 			return null;
 		boolean[] mask = new boolean[ img.getSizeX() * img.getSizeY() ];
@@ -155,24 +166,25 @@ public class DetectFlies_Options implements XMLPersistent {
 			}
 		}
 		BooleanMask2D bmask = new BooleanMask2D( img.getBounds(), mask); 
-		ROI2DArea roiResult = new ROI2DArea( bmask );
-		return roiResult;
+		return new ROI2DArea( bmask );
 	}
 	
 	public void findFlies (IcyBufferedImage workimage, int t, int it) {
-		ROI2DArea roiAll = findFly (workimage, threshold);
+		ROI2DArea binarizedImageRoi = binarizeImage (workimage, threshold);
 		for ( int icage = 0; icage < cages.cageList.size(); icage++ ) {		
-			BooleanMask2D bestMask = findLargestComponent(roiAll, icage);
+			BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, icage);
 			ROI2DArea flyROI = null;
 			Cage cage = cages.cageList.get(icage);
 			if (cage.cageNFlies < 1)
 				continue;
 			if ( bestMask != null ) {
-				flyROI = new ROI2DArea( bestMask );
-				flyROI.setName("det"+cage.getCageNumber() +"_" + t );
-				flyROI.setT( t );
-				resultFlyPositionArrayList[icage][it] = flyROI;
+				flyROI = new ROI2DArea( bestMask ); 
 				Rectangle2D rect = flyROI.getBounds2D();
+				ROI2DEllipse flyEllipse = new ROI2DEllipse(rect.getX(), rect.getY(), rect.getX()+rect.getWidth(), rect.getY()+rect.getHeight());
+				flyEllipse.setName("det"+cage.getCageNumber() +"_" + t );
+				flyEllipse.setT( t );
+				resultFlyPositionArrayList[icage][it] = flyEllipse;
+				
 				tempRectROI[icage].setRectangle(rect);
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 				int npoints = cage.flyPositions.pointsList.size();

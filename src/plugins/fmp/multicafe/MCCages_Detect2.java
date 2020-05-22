@@ -55,6 +55,7 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
 	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("(re)build background", false);
 	private JCheckBox 	detectCheckBox 			= new JCheckBox("detect flies", true);
+	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 100, 1));
 	
 	private DetectFlies2_series detectFlies2Thread 	= null;
 	private int 		currentExp 				= -1;
@@ -65,17 +66,17 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
-		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
-		layout.setVgap(0);
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
+		flowLayout.setVgap(0);
 		
-		JPanel panel = new JPanel(layout);
+		JPanel panel = new JPanel(flowLayout);
 		panel.add(startComputationButton);
 		panel.add(ALLCheckBox);
 		panel.add(backgroundCheckBox);
 		panel.add(detectCheckBox);
 		add( GuiUtil.besidesPanel(panel));
 		
-		JPanel panel1 = new JPanel(layout);
+		JPanel panel1 = new JPanel(flowLayout);
 		panel1.add(loadButton);
 		panel1.add(saveButton);
 		panel1.add(new JLabel("threshold for bckgnd "));
@@ -85,17 +86,23 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 		add( GuiUtil.besidesPanel(panel1));
 		
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
-		add( GuiUtil.besidesPanel(new JLabel("threshold ", 
-				SwingConstants.RIGHT), 
-				thresholdDiffSpinner, 
-				objectLowsizeCheckBox, 
-				objectLowsizeSpinner));
-		
 		objectUpsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
-		add( GuiUtil.besidesPanel( new JLabel("jitter <= ", SwingConstants.RIGHT), 
-				jitterTextField , 
-				objectUpsizeCheckBox, 
-				objectUpsizeSpinner) );
+		JPanel dummyPanel3 = new JPanel(flowLayout);
+		dummyPanel3.add(new JLabel("threshold ", SwingConstants.RIGHT));
+		dummyPanel3.add(thresholdDiffSpinner);
+		dummyPanel3.add(objectLowsizeCheckBox);
+		dummyPanel3.add(objectLowsizeSpinner);
+		dummyPanel3.add(objectUpsizeCheckBox);
+		dummyPanel3.add(objectUpsizeSpinner);
+		add( dummyPanel3);
+		
+		JPanel dummyPanel4 = new JPanel(flowLayout);
+		dummyPanel4.add(new JLabel("ratio length/width < ", SwingConstants.RIGHT));
+		dummyPanel4.add(limitRatioSpinner);
+		JLabel jitterLabel = new JLabel("jitter <= ", SwingConstants.RIGHT);
+		dummyPanel4.add(jitterLabel);
+		dummyPanel4.add(jitterTextField);
+		add(dummyPanel4);
 		
 		defineActionListeners();
 		thresholdDiffSpinner.addChangeListener(this);
@@ -161,6 +168,7 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 		detect.blimitUp 		= objectUpsizeCheckBox.isSelected();
 		detect.limitLow 		= (int) objectLowsizeSpinner.getValue();
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
+		detect.limitRatio		= (int) limitRatioSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
 		detect.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
 		detect.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();

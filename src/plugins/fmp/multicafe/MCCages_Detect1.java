@@ -52,6 +52,8 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object < ");
 	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
+	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 100, 1));
+	
 	private JCheckBox 	whiteMiceCheckBox 		= new JCheckBox("white object");
 	JCheckBox 			overlayCheckBox 		= new JCheckBox("overlay");
 	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
@@ -66,30 +68,40 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
-		JPanel dummyPanel = new JPanel();
-		dummyPanel.add( GuiUtil.besidesPanel(ALLCheckBox, whiteMiceCheckBox, overlayCheckBox) );
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
+		flowLayout.setVgap(0);
+		JPanel dummyPanel1 = new JPanel(flowLayout);
+		dummyPanel1.add( GuiUtil.besidesPanel(ALLCheckBox, whiteMiceCheckBox, overlayCheckBox) );
+		dummyPanel1.validate();
+		add( GuiUtil.besidesPanel( startComputationButton, dummyPanel1));
 		
-		FlowLayout layout = (FlowLayout) dummyPanel.getLayout();
-		layout.setVgap(0);
-		dummyPanel.validate();
-		add( GuiUtil.besidesPanel( startComputationButton, dummyPanel));
-		
-		JLabel videochannel = new JLabel("video channel ");
-		videochannel.setHorizontalAlignment(SwingConstants.RIGHT);
+		JPanel dummyPanel2 = new JPanel(flowLayout);
 		colorChannelComboBox.setSelectedIndex(1);
-		JLabel backgroundsubtraction = new JLabel("bkgnd subtraction ");
-		backgroundsubtraction.setHorizontalAlignment(SwingConstants.RIGHT);
-		add( GuiUtil.besidesPanel( videochannel, colorChannelComboBox, backgroundsubtraction, backgroundComboBox));
+		dummyPanel2.add(new JLabel("video channel ", SwingConstants.RIGHT));
+		dummyPanel2.add(colorChannelComboBox);
+		dummyPanel2.add(new JLabel("bkgnd subtraction ", SwingConstants.RIGHT));
+		dummyPanel2.add(backgroundComboBox);
+		dummyPanel2.add(new JLabel("detect threshold ", SwingConstants.RIGHT));
+		dummyPanel2.add(thresholdSpinner);
+		add(dummyPanel2);
+		//add( GuiUtil.besidesPanel( videochannel, colorChannelComboBox, backgroundsubtraction, backgroundComboBox));
 		
-		JLabel thresholdLabel = new JLabel("detect threshold ");
-		thresholdLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
-		add( GuiUtil.besidesPanel( thresholdLabel, thresholdSpinner, objectLowsizeCheckBox, objectLowsizeSpinner));
-		
 		objectUpsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
-		JLabel jitterlabel = new JLabel("jitter <= ");
-		jitterlabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		add( GuiUtil.besidesPanel( jitterlabel, jitterTextField , objectUpsizeCheckBox, objectUpsizeSpinner) );
+		JPanel dummyPanel3 = new JPanel(flowLayout);
+		dummyPanel3.add(objectLowsizeCheckBox);
+		dummyPanel3.add(objectLowsizeSpinner);
+		dummyPanel3.add(objectUpsizeCheckBox);
+		dummyPanel3.add(objectUpsizeSpinner);
+		add( dummyPanel3);
+		
+		JPanel dummyPanel4 = new JPanel(flowLayout);
+		dummyPanel4.add(new JLabel("ratio length/width < ", SwingConstants.RIGHT));
+		dummyPanel4.add(limitRatioSpinner);
+		JLabel jitterLabel = new JLabel("jitter <= ", SwingConstants.RIGHT);
+		dummyPanel4.add(jitterLabel);
+		dummyPanel4.add(jitterTextField);
+		add(dummyPanel4);
 		
 		defineActionListeners();
 		thresholdSpinner.addChangeListener(this);
@@ -169,6 +181,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		detect.blimitUp 		= objectUpsizeCheckBox.isSelected();
 		detect.limitLow 		= (int) objectLowsizeSpinner.getValue();
 		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
+		detect.limitRatio		= (int) limitRatioSpinner.getValue();
 		detect.jitter 			= (int) jitterTextField.getValue();
 		detect.videoChannel 	= colorChannelComboBox.getSelectedIndex();
 		detect.transformop		= (TransformOp) backgroundComboBox.getSelectedItem();

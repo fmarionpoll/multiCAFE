@@ -307,13 +307,13 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 			IcyBufferedImage positiveImage = exp.seqCamData.subtractImages(currentImage, exp.seqCamData.refImage);
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, detect.rectangleAllCages));
-			ROI2DArea roiAll = detect.findFly(positiveImage, detect.thresholdBckgnd);
+			ROI2DArea roiAll = detect.binarizeImage(positiveImage, detect.thresholdBckgnd);
 			 
 			for (int icage = 0; icage <= ndetectcages - 1; icage++) {
 				Cage cage = exp.cages.cageList.get(icage);
 				if (cage.cageNFlies < 1)
 					continue;
-				BooleanMask2D bestMask = detect.findLargestComponent(roiAll, icage);
+				BooleanMask2D bestMask = detect.findLargestBlob(roiAll, icage);
 				if (bestMask != null) {
 					ROI2DArea flyROI = new ROI2DArea(bestMask);
 					if (!initialflyRemoved.get(icage)) {
