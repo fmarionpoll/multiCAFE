@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafeSequence.Cage;
@@ -39,12 +38,13 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
 		expList.chainExperiments(options.collateSeries);
 		expAll = expList.getStartAndEndFromAllExperiments(options);
+	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
 		int nbexpts = expList.getSize();
 		progress.setLength(nbexpts);
 
 		try { 
-			XSSFWorkbook workbook = xlsInitWorkbook();
+			workbook = xlsInitWorkbook();
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
 				Experiment exp = expList.getExperiment(index);
 				if (exp.previousExperiment != null)
@@ -54,22 +54,22 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				
 				if (options.topLevel) 		
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.TOPLEVEL);
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVEL);
 				if (options.sum && options.topLevel) 		
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.TOPLEVEL_LR);
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVEL_LR);
 				if (options.topLevelDelta) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.TOPLEVELDELTA);
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVELDELTA);
 				if (options.sum && options.topLevelDelta) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.TOPLEVELDELTA_LR);
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVELDELTA_LR);
 				if (options.consumption) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.SUMGULPS);
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS);
 				if (options.sum && options.consumption) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.SUMGULPS_LR);
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS_LR);
 
 				if (options.bottomLevel) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.BOTTOMLEVEL);		
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.BOTTOMLEVEL);		
 				if (options.derivative) 	
-					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.DERIVEDVALUES);	
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.DERIVEDVALUES);	
 				
 				if (!options.collateSeries || exp.previousExperiment == null)
 					column += expList.maxSizeOfCapillaryArrays +2;
@@ -88,13 +88,14 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		System.out.println("XLS output finished");
 	}
 	
-	private int getDataAndExport(Experiment exp, XSSFWorkbook workbook, int col0, String charSeries, EnumXLSExportType datatype) {	
+	private int getDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType datatype) {	
 		getDataFromOneSeriesOfExperiments(exp, datatype);
-		XSSFSheet sheet = xlsInitSheet(workbook, datatype.toString());
+		
+		XSSFSheet sheet = xlsInitSheet(datatype.toString());
 		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
 		if (options.onlyalive) {
 			trimDeadsFromArrayList(exp);
-			sheet = xlsInitSheet(workbook, datatype.toString()+"_alive");
+			sheet = xlsInitSheet(datatype.toString()+"_alive");
 			xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
 		}
 		return colmax;

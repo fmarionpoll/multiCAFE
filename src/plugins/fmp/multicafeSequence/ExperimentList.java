@@ -59,9 +59,6 @@ public class ExperimentList {
 		expAll.setKymoFrameEnd ( (int) expAll.fileTimeImageLastMinute);
 		expAll.number_of_frames = (int) (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1;
 		
-		expAll.setCagesFrameStart ( (int) expAll.fileTimeImageFirstMinute);
-		expAll.setCagesFrameEnd ( (int) expAll.fileTimeImageLastMinute);
-		expAll.setCagesFrameStep ( options.buildExcelBinStep);
 		return expAll;
 	}
 		

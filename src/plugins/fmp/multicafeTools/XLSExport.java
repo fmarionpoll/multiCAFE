@@ -29,6 +29,7 @@ public class XLSExport {
 	XSSFCellStyle 				xssfCellStyle_blue 	= null;
     XSSFFont 					font_red 			= null;
     XSSFFont 					font_blue 			= null;
+    XSSFWorkbook 				workbook			= null;		
 
 	// -------------------------------------------------
     
@@ -197,10 +198,10 @@ public class XLSExport {
 	    return workbook;
 	}
 	
-	XSSFSheet xlsInitSheet(XSSFWorkbook workBook, String title) {
-		XSSFSheet sheet = workBook.getSheet(title);
+	XSSFSheet xlsInitSheet(String title) {
+		XSSFSheet sheet = workbook.getSheet(title);
 		if (sheet == null) {
-			sheet = workBook.createSheet(title);
+			sheet = workbook.createSheet(title);
 			int row = outputFieldDescriptors(sheet);
 			outputDataTimeIntervals(sheet, row);
 		}
