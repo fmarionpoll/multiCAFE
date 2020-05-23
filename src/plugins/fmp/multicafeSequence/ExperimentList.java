@@ -54,11 +54,14 @@ public class ExperimentList {
 			}
 		}
 		
-		expAll.setKymoFrameStep ( getExperiment(0).getKymoFrameStep() * options.buildExcelBinStep);
+		expAll.setKymoFrameStep ( options.buildExcelBinStep);
 		expAll.setKymoFrameStart ( (int) expAll.fileTimeImageFirstMinute);
 		expAll.setKymoFrameEnd ( (int) expAll.fileTimeImageLastMinute);
 		expAll.number_of_frames = (int) (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1;
-
+		
+		expAll.setCagesFrameStart ( (int) expAll.fileTimeImageFirstMinute);
+		expAll.setCagesFrameEnd ( (int) expAll.fileTimeImageLastMinute);
+		expAll.setCagesFrameStep ( options.buildExcelBinStep);
 		return expAll;
 	}
 		

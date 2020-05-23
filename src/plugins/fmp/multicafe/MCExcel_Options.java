@@ -28,16 +28,28 @@ public class MCExcel_Options extends JPanel {
 	JCheckBox   padIntervalsCheckBox	= new JCheckBox("pad intervals", false);
 	
 	JCheckBox	absoluteTimeCheckBox 	= new JCheckBox("absolute time", false);
-	JSpinner 	pivotBinStep			= new JSpinner(new SpinnerNumberModel(1, 1, 10000, 1));
-	JLabel		pivotStepText			= new JLabel("binning step: ", SwingConstants.RIGHT);
+	JSpinner 	pivotBinStep			= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
 	
 	void init(GridLayout capLayout) {	
 		setLayout(capLayout);
 		
-		add(GuiUtil.besidesPanel( exportAllFilesCheckBox, collateSeriesCheckBox, absoluteTimeCheckBox, new JLabel(" ")));
-		add(GuiUtil.besidesPanel(  transposeCheckBox, padIntervalsCheckBox, new JLabel(" "), new JLabel(" ") )); 
-		add(GuiUtil.besidesPanel(  aliveCheckBox, 	pivotStepText,	pivotBinStep, new JLabel(" "), new JLabel(" "))); 
+		add(GuiUtil.besidesPanel( 
+				exportAllFilesCheckBox, 
+				collateSeriesCheckBox, 
+				absoluteTimeCheckBox, 
+				new JLabel(" ")));
+		add(GuiUtil.besidesPanel(  
+				transposeCheckBox, 
+				padIntervalsCheckBox, 
+				new JLabel(" "), 
+				new JLabel(" ") )); 
+		add(GuiUtil.besidesPanel(  
+				aliveCheckBox, 	
+				new JLabel("bin size(min) ", SwingConstants.RIGHT),	
+				pivotBinStep, 
+				new JLabel(" "), 
+				new JLabel(" "))); 
 		
 	   collateSeriesCheckBox.addActionListener(new ActionListener() {
 		    @Override

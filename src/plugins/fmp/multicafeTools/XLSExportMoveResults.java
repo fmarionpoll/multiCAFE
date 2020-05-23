@@ -6,8 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.ss.usermodel.Row;
-
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -23,20 +21,17 @@ public class XLSExportMoveResults extends XLSExport {
 		
 		System.out.println("XLS move output");
 		options = opt;
+		options.expList.loadAllExperiments(true, true);
+		options.expList.chainExperiments(options.collateSeries);
+		expAll = options.expList.getStartAndEndFromAllExperiments(options);
 		
 		try { 
-			XSSFWorkbook workbook = new XSSFWorkbook(); 
-			workbook.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+			XSSFWorkbook workbook = xlsInitWorkbook();
 			int col_max = 1;
 			int col_end = 0;
 			int iSeries = 0;
-			options.expList.loadAllExperiments(true, true);
-			options.expList.chainExperiments(options.collateSeries);
-			
-			expAll = options.expList.getStartAndEndFromAllExperiments(options);
-			expAll.setKymoFrameStep( options.expList.getExperiment(0).getKymoFrameStep());
-			int nbexpts = options.expList.getSize();
 			ProgressFrame progress = new ProgressFrame("Export data to Excel");
+			int nbexpts = options.expList.getSize();
 			progress.setLength(nbexpts);
 
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
@@ -45,11 +40,16 @@ public class XLSExportMoveResults extends XLSExport {
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 			
-				if (options.xyImage)  	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYIMAGE);
-				if (options.xyTopCage)  col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYTOPCAGE);
-				if (options.xyTipCapillaries)  col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYTIPCAPS);
-				if (options.distance) 	col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.DISTANCE);
-				if (options.alive) 		col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries,  EnumXLSExportType.ISALIVE);
+				if (options.xyImage)
+					col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYIMAGE);
+				if (options.xyTopCage) 
+					col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYTOPCAGE);
+				if (options.xyTipCapillaries) 
+					col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.XYTIPCAPS);
+				if (options.distance) 
+					col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries, EnumXLSExportType.DISTANCE);
+				if (options.alive) 
+					col_end = xlsExportToWorkbook(exp, workbook, col_max, charSeries,  EnumXLSExportType.ISALIVE);
 				
 				if (col_end > col_max)
 					col_max = col_end;
@@ -94,13 +94,11 @@ public class XLSExportMoveResults extends XLSExport {
 		int row0 = pt_main.y;
 		if (charSeries == null)
 			charSeries = "t";
-//		int startFrame 	= (int) exp.getKymoFrameStart();
-//		int endFrame 	= (int) exp.getKymoFrameEnd();
-//		if (endFrame > exp.getSeqCamSizeT()-1)
-//			endFrame = exp.getSeqCamSizeT()-1;
+
 		int startFrame 	= 0;
 		int endFrame 	= exp.getSeqCamSizeT()-1;
-		int step = exp.getKymoFrameStep() * options.buildExcelBinStep;
+		int step 		= options.buildExcelBinStep;
+		
 		long imageTimeMinutes = exp.seqCamData.getImageFileTime(startFrame).toMillis()/ 60000;
 		long referenceFileTimeImageFirstMinutes = exp.getFileTimeImageFirst(true).toMillis()/60000;
 		long referenceFileTimeImageLastMinutes = exp.getFileTimeImageLast(true).toMillis()/60000;

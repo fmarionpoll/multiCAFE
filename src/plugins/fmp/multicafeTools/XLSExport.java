@@ -6,9 +6,12 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Capillary;
@@ -177,6 +180,40 @@ public class XLSExport {
 		if (!name .contains("line"))
 			return -1;
 		return Integer.parseInt(name.substring(4, 5));
+	}
+	
+	XSSFWorkbook xlsInitWorkbook() {
+		XSSFWorkbook workbook = new XSSFWorkbook(); 
+		workbook.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+		xssfCellStyle_red = workbook.createCellStyle();
+	    font_red = workbook.createFont();
+	    font_red.setColor(HSSFColor.HSSFColorPredefined.RED.getIndex());
+	    xssfCellStyle_red.setFont(font_red);
+	    
+		xssfCellStyle_blue = workbook.createCellStyle();
+	    font_blue = workbook.createFont();
+	    font_blue.setColor(HSSFColor.HSSFColorPredefined.BLUE.getIndex());
+	    xssfCellStyle_blue.setFont(font_blue);
+	    return workbook;
+	}
+	
+	XSSFSheet xlsInitSheet(XSSFWorkbook workBook, String title) {
+		XSSFSheet sheet = workBook.getSheet(title);
+		if (sheet == null) {
+			sheet = workBook.createSheet(title);
+			int row = outputFieldDescriptors(sheet);
+			outputDataTimeIntervals(sheet, row);
+		}
+		return sheet;
+	}
+	
+	void outputDataTimeIntervals(XSSFSheet sheet, int row) {
+		boolean transpose = options.transpose;
+		Point pt = new Point(0, row);
+		for (int i = expAll.getKymoFrameStart(); i <= expAll.getKymoFrameEnd(); i += expAll.getKymoFrameStep()) {
+			XLSUtils.setValue(sheet, pt, transpose, "t"+i);
+			pt.y++;
+		}
 	}
 	
 }

@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -36,7 +34,6 @@ public class XLSExportCapillariesResults  extends XLSExport {
 
 		boolean loadCapillaries = true;
 		boolean loadDrosoTrack = options.onlyalive;
-		// get time first and last of each experiment, plus get 
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
 		expList.chainExperiments(options.collateSeries);
 		expAll = expList.getStartAndEndFromAllExperiments(options);
@@ -58,6 +55,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
+				
 				if (options.topLevel) 		
 					getDataAndExport(exp, workbook, column, charSeries, EnumXLSExportType.TOPLEVEL);
 				if (options.sum && options.topLevel) 		
@@ -110,19 +108,19 @@ public class XLSExportCapillariesResults  extends XLSExport {
 	private void getDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsoption) {	
 		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.capillaries.copy(exp.capillaries);
-		expAll.fileTimeImageFirst = exp.fileTimeImageFirst;
-		expAll.fileTimeImageLast = exp.fileTimeImageLast;
-		expAll.experimentFileName = exp.experimentFileName;
-		expAll.boxID 		= exp.boxID;
-		expAll.experiment 	= exp.experiment;
-		expAll.comment1 	= exp.comment1;
-		expAll.comment2 	= exp.comment2;
+		expAll.fileTimeImageFirst 	= exp.fileTimeImageFirst;
+		expAll.fileTimeImageLast 	= exp.fileTimeImageLast;
+		expAll.experimentFileName 	= exp.experimentFileName;
+		expAll.boxID 				= exp.boxID;
+		expAll.experiment 			= exp.experiment;
+		expAll.comment1 			= exp.comment1;
+		expAll.comment2 			= exp.comment2;
 
 		Experiment expi = exp.nextExperiment;
 		while (expi != null ) {
 			expAll.capillaries.mergeLists(expi.capillaries);
 			expAll.fileTimeImageLast = expi.fileTimeImageLast;
-			expi= expi.nextExperiment;
+			expi = expi.nextExperiment;
 		}
 		expAll.fileTimeImageFirstMinute = expAll.fileTimeImageFirst.toMillis()/60000;
 		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
@@ -275,47 +273,13 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		}	
 	}
 	
-	private XSSFWorkbook xlsInitWorkbook() {
-		XSSFWorkbook workbook = new XSSFWorkbook(); 
-		workbook.setMissingCellPolicy(Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-		xssfCellStyle_red = workbook.createCellStyle();
-	    font_red = workbook.createFont();
-	    font_red.setColor(HSSFColor.HSSFColorPredefined.RED.getIndex());
-	    xssfCellStyle_red.setFont(font_red);
-	    
-		xssfCellStyle_blue = workbook.createCellStyle();
-	    font_blue = workbook.createFont();
-	    font_blue.setColor(HSSFColor.HSSFColorPredefined.BLUE.getIndex());
-	    xssfCellStyle_blue.setFont(font_blue);
-	    return workbook;
-	}
-	
-	private XSSFSheet xlsInitSheet(XSSFWorkbook workBook, String title) {
-		XSSFSheet sheet = workBook.getSheet(title);
-		if (sheet == null) {
-			sheet = workBook.createSheet(title);
-			int row = outputFieldDescriptors(sheet);
-			outputDataTimeIntervals(sheet, row);
-		}
-		return sheet;
-	}
-	
 	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) {
 		Point pt = new Point(col0, 0);
 		writeExperimentDescriptors(expAll, charSeries, sheet, pt, xlsExportOption);
 		pt = writeData2(sheet, xlsExportOption, pt);
 		return pt.x;
 	}
-	
-	private void outputDataTimeIntervals(XSSFSheet sheet, int row) {
-		boolean transpose = options.transpose;
-		Point pt = new Point(0, row);
-		for (int i = expAll.getKymoFrameStart(); i <= expAll.getKymoFrameEnd(); i += expAll.getKymoFrameStep()) {
-			XLSUtils.setValue(sheet, pt, transpose, "t"+i);
-			pt.y++;
-		}
-	}
-		
+			
 	private Point writeData2 (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) {
 		int rowseries = pt_main.x +2;
 		int columndataarea = pt_main.y;
