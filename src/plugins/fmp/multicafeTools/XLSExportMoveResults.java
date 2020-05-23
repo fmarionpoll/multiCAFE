@@ -24,16 +24,15 @@ public class XLSExportMoveResults extends XLSExport {
 		options.expList.loadAllExperiments(true, true);
 		options.expList.chainExperiments(options.collateSeries);
 		expAll = options.expList.getStartAndEndFromAllExperiments(options);
+		int col_max = 1;
+		int col_end = 0;
+		int iSeries = 0;
+		ProgressFrame progress = new ProgressFrame("Export data to Excel");
+		int nbexpts = options.expList.getSize();
+		progress.setLength(nbexpts);
 		
 		try { 
 			XSSFWorkbook workbook = xlsInitWorkbook();
-			int col_max = 1;
-			int col_end = 0;
-			int iSeries = 0;
-			ProgressFrame progress = new ProgressFrame("Export data to Excel");
-			int nbexpts = options.expList.getSize();
-			progress.setLength(nbexpts);
-
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
 				Experiment exp = options.expList.getExperiment(index);
 				
@@ -55,19 +54,16 @@ public class XLSExportMoveResults extends XLSExport {
 					col_max = col_end;
 				iSeries++;
 				progress.incPosition();
-			}
-						
+			}		
 			progress.setMessage( "Save Excel file to disk... ");
 			FileOutputStream fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
 	        fileOut.close();
 	        workbook.close();
 	        progress.close();
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		System.out.println("XLS output finished");
 	}
 

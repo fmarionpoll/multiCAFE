@@ -32,22 +32,19 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		options = opt;
 		expList = options.expList;
 
+		int column = 1;
+		int iSeries = 0;
 		boolean loadCapillaries = true;
 		boolean loadDrosoTrack = options.onlyalive;
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
 		expList.chainExperiments(options.collateSeries);
 		expAll = expList.getStartAndEndFromAllExperiments(options);
+		ProgressFrame progress = new ProgressFrame("Export data to Excel");
+		int nbexpts = expList.getSize();
+		progress.setLength(nbexpts);
 
 		try { 
 			XSSFWorkbook workbook = xlsInitWorkbook();
-		    
-			int column = 1;
-			int iSeries = 0;
-			
-			ProgressFrame progress = new ProgressFrame("Export data to Excel");
-			int nbexpts = expList.getSize();
-			progress.setLength(nbexpts);
-			
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
 				Experiment exp = expList.getExperiment(index);
 				if (exp.previousExperiment != null)
@@ -79,14 +76,12 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				iSeries++;
 				progress.incPosition();
 			}
-			
 			progress.setMessage( "Save Excel file to disk... ");
 			FileOutputStream fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
 	        fileOut.close();
 	        workbook.close();
 	        progress.close();
-	        
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
