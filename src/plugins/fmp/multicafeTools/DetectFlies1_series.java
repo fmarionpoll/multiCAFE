@@ -47,15 +47,15 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			
 			exp.loadExperimentCamData();
 			exp.xmlReadDrosoTrackDefault();
-			exp.setKymoFrameStep (detect.stepFrame);
+			exp.setCagesFrameStep (detect.stepFrame);
 			if (detect.isFrameFixed) {
-				exp.setKymoFrameStart (detect.startFrame);
-				exp.setKymoFrameEnd (detect.endFrame);
-				if (exp.getKymoFrameEnd() > (exp.getSeqCamSizeT() - 1))
-					exp.setKymoFrameEnd (exp.getSeqCamSizeT() - 1);
+				exp.setCagesFrameStart (detect.startFrame);
+				exp.setCagesFrameEnd (detect.endFrame);
+				if (exp.getCagesFrameEnd() > (exp.getSeqCamSizeT() - 1))
+					exp.setCagesFrameEnd (exp.getSeqCamSizeT() - 1);
 			} else {
-				exp.setKymoFrameStart (0);
-				exp.setKymoFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
+				exp.setCagesFrameStart (0);
+				exp.setCagesFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
 			}
 			if (exp.cages.cageList.size() < 1 ) {
 				System.out.println("! skipped experiment with no cage: " + exp.experimentFileName);
@@ -92,7 +92,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		detect.initTempRectROIs(exp, exp.seqCamData.seq);
 		exp.cleanPreviousDetections();
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
-		progressBar.initChrono(exp.getKymoFrameEnd()-exp.getKymoFrameStart()+1);
+		progressBar.initChrono(exp.getCagesFrameEnd()-exp.getCagesFrameStart()+1);
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() { public void run() {
 				viewerCamData = new Viewer(exp.seqCamData.seq, true);
@@ -110,7 +110,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		
 		exp.seqCamData.seq.beginUpdate();
 		int it = 0;
-		for (int t = exp.getKymoFrameStart() ; t <= exp.getKymoFrameEnd(); t  += exp.getKymoFrameStep(), it++ ) {				
+		for (int t = exp.getCagesFrameStart() ; t <= exp.getCagesFrameEnd(); t  += exp.getCagesFrameStep(), it++ ) {				
 			if (stopFlag)
 				break;
 			progressBar.updatePosition(t);

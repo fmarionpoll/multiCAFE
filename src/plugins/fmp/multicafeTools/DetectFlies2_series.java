@@ -61,15 +61,15 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 			exp.loadExperimentCamData();
 			exp.xmlReadDrosoTrackDefault();
-			exp.setKymoFrameStep(detect.stepFrame);
+			exp.setCagesFrameStep(detect.stepFrame);
 			if (detect.isFrameFixed) {
-				exp.setKymoFrameStart ( detect.startFrame);
-				exp.setKymoFrameEnd ( detect.endFrame);
-				if (exp.getKymoFrameEnd() > (exp.getSeqCamSizeT() - 1))
-					exp.setKymoFrameEnd( exp.getSeqCamSizeT() - 1);
+				exp.setCagesFrameStart ( detect.startFrame);
+				exp.setCagesFrameEnd ( detect.endFrame);
+				if (exp.getCagesFrameEnd() > (exp.getSeqCamSizeT() - 1))
+					exp.setCagesFrameEnd( exp.getSeqCamSizeT() - 1);
 			} else {
-				exp.setKymoFrameStart (0);
-				exp.setKymoFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
+				exp.setCagesFrameStart (0);
+				exp.setCagesFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
 			}
 			
 			if (exp.cages.cageList.size() < 1 ) {
@@ -158,7 +158,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 	private void findFlies(Experiment exp) {
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
-		progressBar.initChrono(exp.getKymoFrameEnd()-exp.getKymoFrameStart()+1);
+		progressBar.initChrono(exp.getCagesFrameEnd()-exp.getCagesFrameStart()+1);
 
 		exp.seqBackgroundImage.close();
 		if (vPositive != null) {
@@ -179,7 +179,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 			// ----------------- loop over all images of the stack
 			int it = 0;
-			for (int t = exp.getKymoFrameStart(); t <= exp.getKymoFrameEnd(); t += exp.getKymoFrameStep(), it++) {
+			for (int t = exp.getCagesFrameStart(); t <= exp.getCagesFrameEnd(); t += exp.getCagesFrameStep(), it++) {
 				if (stopFlag)
 					break;
 				progressBar.updatePosition(t);
@@ -295,11 +295,11 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 		viewerCamData = exp.seqCamData.seq.getFirstViewer();
 		displayRefViewers(exp);
-		int limit = 50 * exp.getKymoFrameStep();
+		int limit = 50 * exp.getCagesFrameStep();
 		if (limit > exp.getSeqCamSizeT())
 			limit = exp.getSeqCamSizeT();
 		
-		for (int t = exp.getKymoFrameStart() + 1; t <= limit && !stopFlag; t += exp.getKymoFrameStep()) {
+		for (int t = exp.getCagesFrameStart() + 1; t <= limit && !stopFlag; t += exp.getCagesFrameStep()) {
 			IcyBufferedImage currentImage = exp.seqCamData.getImage(t, 0);
 			exp.seqCamData.currentFrame = t;
 			viewerCamData.setPositionT(t);

@@ -25,7 +25,10 @@ public class Cages {
 	
 	public DetectFlies_Options 	detect 		= new DetectFlies_Options();
 	public List<Cage>			cageList	= new ArrayList<Cage>();
-	
+	public int 					frameStart 	= 0;
+	public int 					frameEnd 	= 0;
+	public int 					frameStep 	= 1;
+
 	private final String ID_CAGES 			= "Cages";
 	private final String ID_NCAGES 			= "n_cages";
 	private final String ID_DROSOTRACK 		= "drosoTrack";
@@ -73,6 +76,9 @@ public class Cages {
 		int ncages = cageList.size();
 		XMLUtil.setAttributeIntValue(xmlVal, ID_NCAGES, ncages);
 		for (Cage cage: cageList) {
+			cage.frameStart = frameStart;
+			cage.frameEnd = frameEnd;
+			cage.frameStep = frameStep;
 			cage.xmlSaveCage(xmlVal, index);
 			index++;
 		}

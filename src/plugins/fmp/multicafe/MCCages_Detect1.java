@@ -47,12 +47,12 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
 	private JComboBox<TransformOp> backgroundComboBox = new JComboBox<> (new TransformOp[]  {TransformOp.NONE, TransformOp.REF_PREVIOUS, TransformOp.REF_T0});
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 10));
-	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 255, 1));
+	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
 	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object > ");
-	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
+	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 9999, 1));
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object < ");
-	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
-	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 100, 1));
+	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 9999, 1));
+	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	
 	private JCheckBox 	whiteMiceCheckBox 		= new JCheckBox("white object");
 	JCheckBox 			overlayCheckBox 		= new JCheckBox("overlay");
@@ -70,38 +70,36 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
 		flowLayout.setVgap(0);
-		JPanel dummyPanel1 = new JPanel(flowLayout);
-		dummyPanel1.add( GuiUtil.besidesPanel(ALLCheckBox, whiteMiceCheckBox, overlayCheckBox) );
-		dummyPanel1.validate();
-		add( GuiUtil.besidesPanel( startComputationButton, dummyPanel1));
+		JPanel panel1 = new JPanel(flowLayout);
+		panel1.add( GuiUtil.besidesPanel(ALLCheckBox, whiteMiceCheckBox, overlayCheckBox) );
+		panel1.validate();
+		add( GuiUtil.besidesPanel( startComputationButton, panel1));
 		
-		JPanel dummyPanel2 = new JPanel(flowLayout);
+		JPanel panel2 = new JPanel(flowLayout);
 		colorChannelComboBox.setSelectedIndex(1);
-		dummyPanel2.add(new JLabel("video channel ", SwingConstants.RIGHT));
-		dummyPanel2.add(colorChannelComboBox);
-		dummyPanel2.add(new JLabel("bkgnd subtraction ", SwingConstants.RIGHT));
-		dummyPanel2.add(backgroundComboBox);
-		dummyPanel2.add(new JLabel("detect threshold ", SwingConstants.RIGHT));
-		dummyPanel2.add(thresholdSpinner);
-		add(dummyPanel2);
-		//add( GuiUtil.besidesPanel( videochannel, colorChannelComboBox, backgroundsubtraction, backgroundComboBox));
+		panel2.add(new JLabel("video channel ", SwingConstants.RIGHT));
+		panel2.add(colorChannelComboBox);
+		panel2.add(new JLabel("bkgnd subtraction ", SwingConstants.RIGHT));
+		panel2.add(backgroundComboBox);
+		panel2.add(new JLabel("detect threshold ", SwingConstants.RIGHT));
+		panel2.add(thresholdSpinner);
+		add(panel2);
 		
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
 		objectUpsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
-		JPanel dummyPanel3 = new JPanel(flowLayout);
-		dummyPanel3.add(objectLowsizeCheckBox);
-		dummyPanel3.add(objectLowsizeSpinner);
-		dummyPanel3.add(objectUpsizeCheckBox);
-		dummyPanel3.add(objectUpsizeSpinner);
-		add( dummyPanel3);
+		JPanel panel3 = new JPanel(flowLayout);
+		panel3.add(objectLowsizeCheckBox);
+		panel3.add(objectLowsizeSpinner);
+		panel3.add(objectUpsizeCheckBox);
+		panel3.add(objectUpsizeSpinner);
+		add( panel3);
 		
-		JPanel dummyPanel4 = new JPanel(flowLayout);
-		dummyPanel4.add(new JLabel("ratio length/width < ", SwingConstants.RIGHT));
-		dummyPanel4.add(limitRatioSpinner);
-		JLabel jitterLabel = new JLabel("jitter <= ", SwingConstants.RIGHT);
-		dummyPanel4.add(jitterLabel);
-		dummyPanel4.add(jitterTextField);
-		add(dummyPanel4);
+		JPanel panel4 = new JPanel(flowLayout);
+		panel4.add(new JLabel("length/width<", SwingConstants.RIGHT));
+		panel4.add(limitRatioSpinner);
+		panel4.add(new JLabel("         jitter <= ", SwingConstants.RIGHT));
+		panel4.add(jitterTextField);
+		add(panel4);
 		
 		defineActionListeners();
 		thresholdSpinner.addChangeListener(this);

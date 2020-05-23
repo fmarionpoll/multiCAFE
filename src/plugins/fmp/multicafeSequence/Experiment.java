@@ -48,7 +48,7 @@ public class Experiment {
 	
 	private int 			kymoFrameStart 				= 0;
 	private int 			kymoFrameEnd 				= 0;
-	private int 			kymoFrameStep 				= 1;					
+	private int 			kymoFrameStep 				= 1;									
 	
 	public String			boxID 						= new String("..");
 	public String			experiment					= new String("..");
@@ -392,7 +392,7 @@ public class Experiment {
 		return kymoFrameStep;
 	}
 	
-	public int checkStepFrame() {
+	public int checkKymoFrameStep() {
 		int step = -1;
 		if (seqKymos == null || seqKymos.seq == null)
 			return step;
@@ -413,6 +413,33 @@ public class Experiment {
 		if (len2 != seqKymos.imageWidthMax) 
 			kymoFrameStep = (kymoFrameEnd +1)/(seqKymos.imageWidthMax-1);
 		return kymoFrameStep;
+	}
+	
+	public int setCagesFrameStart(int start) {
+		cages.frameStart = start;
+		return cages.frameStart;
+	}
+	
+	public int setCagesFrameEnd(int end) {
+		cages.frameEnd = end;
+		return cages.frameEnd;
+	}
+	
+	public int setCagesFrameStep(int step) {
+		cages.frameStep = step;
+		return cages.frameStep;
+	}
+	
+	public int getCagesFrameStart() {
+		return cages.frameStart;
+	}
+	
+	public int getCagesFrameEnd() {
+		return cages.frameEnd;
+	}
+	
+	public int getCagesFrameStep() {
+		return cages.frameStep;
 	}
 	
 	// --------------------------------------------

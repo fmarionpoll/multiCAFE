@@ -44,18 +44,18 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 	private JSpinner 	thresholdDiffSpinner	= new JSpinner(new SpinnerNumberModel(100, 0, 255, 10));
 	private JSpinner 	thresholdBckgSpinner	= new JSpinner(new SpinnerNumberModel(40, 0, 255, 10));
 	
-	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 255, 1));
-	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 100000, 1));
+	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
+	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 9999, 1));
 	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object >");
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object <");
-	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 100000, 1));
+	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 9999, 1));
 	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
 	private JButton 	loadButton 				= new JButton("Load...");
 	private JButton 	saveButton 				= new JButton("Save...");
 	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
 	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("(re)build background", false);
 	private JCheckBox 	detectCheckBox 			= new JCheckBox("detect flies", true);
-	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 100, 1));
+	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	
 	private DetectFlies2_series detectFlies2Thread 	= null;
 	private int 		currentExp 				= -1;
@@ -69,40 +69,40 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
 		flowLayout.setVgap(0);
 		
-		JPanel panel = new JPanel(flowLayout);
-		panel.add(startComputationButton);
-		panel.add(ALLCheckBox);
-		panel.add(backgroundCheckBox);
-		panel.add(detectCheckBox);
-		add( GuiUtil.besidesPanel(panel));
-		
 		JPanel panel1 = new JPanel(flowLayout);
-		panel1.add(loadButton);
-		panel1.add(saveButton);
-		panel1.add(new JLabel("threshold for bckgnd "));
-		panel1.add(thresholdBckgSpinner);
-		panel1.add(viewsCheckBox);
-		panel1.validate();
+		panel1.add(startComputationButton);
+		panel1.add(ALLCheckBox);
+		panel1.add(backgroundCheckBox);
+		panel1.add(detectCheckBox);
 		add( GuiUtil.besidesPanel(panel1));
+		
+		JPanel panel2 = new JPanel(flowLayout);
+		panel2.add(loadButton);
+		panel2.add(saveButton);
+		panel2.add(new JLabel("threshold for background "));
+		panel2.add(thresholdBckgSpinner);
+		panel2.add(viewsCheckBox);
+		panel2.validate();
+		add( GuiUtil.besidesPanel(panel2));
 		
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
 		objectUpsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
-		JPanel dummyPanel3 = new JPanel(flowLayout);
-		dummyPanel3.add(new JLabel("threshold ", SwingConstants.RIGHT));
-		dummyPanel3.add(thresholdDiffSpinner);
-		dummyPanel3.add(objectLowsizeCheckBox);
-		dummyPanel3.add(objectLowsizeSpinner);
-		dummyPanel3.add(objectUpsizeCheckBox);
-		dummyPanel3.add(objectUpsizeSpinner);
-		add( dummyPanel3);
+		JPanel panel3 = new JPanel(flowLayout);
+		panel3.add(new JLabel("threshold ", SwingConstants.RIGHT));
+		panel3.add(thresholdDiffSpinner);
+		panel3.add(objectLowsizeCheckBox);
+		panel3.add(objectLowsizeSpinner);
+		panel3.add(objectUpsizeCheckBox);
+		panel3.add(objectUpsizeSpinner);
+		add( panel3);
 		
-		JPanel dummyPanel4 = new JPanel(flowLayout);
-		dummyPanel4.add(new JLabel("ratio length/width < ", SwingConstants.RIGHT));
-		dummyPanel4.add(limitRatioSpinner);
-		JLabel jitterLabel = new JLabel("jitter <= ", SwingConstants.RIGHT);
-		dummyPanel4.add(jitterLabel);
-		dummyPanel4.add(jitterTextField);
-		add(dummyPanel4);
+		JPanel panel4 = new JPanel(flowLayout);
+		panel4.add(new JLabel("                                        length/width <", SwingConstants.RIGHT));
+		panel4.add(limitRatioSpinner);
+		JLabel jitterLabel = new JLabel("         jitter <= ", SwingConstants.RIGHT);
+		panel4.add(jitterLabel);
+		panel4.add(jitterTextField);
+		add(panel4);
 		
 		defineActionListeners();
 		thresholdDiffSpinner.addChangeListener(this);

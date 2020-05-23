@@ -16,6 +16,9 @@ import icy.util.XMLUtil;
 
 public class Cage {
 	public ROI2D 			roi					= null;
+	public 	int				frameStep			= 1;
+	public	int				frameStart			= 0;
+	public	int				frameEnd			= 1;
 	public XYTaSeries 		flyPositions 		= new XYTaSeries();
 	public List<ROI2D> 		detectedFliesList	= new ArrayList<ROI2D>();
 	public int 				cageNFlies  		= 1;
@@ -29,6 +32,9 @@ public class Cage {
 	private final String ID_NBITEMS				= "nb_items";
 	private final String ID_NFLIES 				= "nflies"; 
 	private final String ID_COMMENT				= "comment";
+	private final String ID_STARTFRAME = "startFrame";
+	private final String ID_ENDFRAME = "endFrame";
+	private final String ID_STEP = "stepFrame";
 	
 	
 	public boolean xmlSaveCage (Node node, int index) {
@@ -43,6 +49,9 @@ public class Cage {
 			roi.setSelected(false);
 			roi.saveToXML(xmlVal2);
 		}
+		XMLUtil.setElementIntValue(xmlVal, ID_STARTFRAME, frameStart);
+		XMLUtil.setElementIntValue(xmlVal, ID_ENDFRAME, frameEnd);
+		XMLUtil.setElementIntValue(xmlVal, ID_STEP, frameStep);
 		xmlVal2 = XMLUtil.addElement(xmlVal, ID_FLYPOSITIONS);
 		flyPositions.saveToXML(xmlVal2);
 		
@@ -76,6 +85,9 @@ public class Cage {
 			roi = (ROI2D) ROI.createFromXML(xmlVal2 );
 	        roi.setSelected(false);
 		}
+		frameStart 			= XMLUtil.getElementIntValue(xmlVal, ID_STARTFRAME, frameStart);
+		frameEnd 			= XMLUtil.getElementIntValue(xmlVal, ID_ENDFRAME, frameEnd);
+		frameStep 			= XMLUtil.getElementIntValue(xmlVal, ID_STEP, frameStep);
 		xmlVal2 = XMLUtil.getElement(xmlVal, ID_FLYPOSITIONS);
 		if (xmlVal2 != null) {
 			flyPositions.loadFromXML(xmlVal2);
