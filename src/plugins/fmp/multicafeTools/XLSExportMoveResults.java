@@ -106,6 +106,10 @@ public class XLSExportMoveResults extends XLSExport {
 			switch (option) {
 				case DISTANCE:
 					for (Cage cage: cages.cageList ) {
+						if (cage.cageNFlies <1) {
+							pt_main.x += 2;
+							continue;
+						}
 						int col = getColFromCageName(cage) * 2;
 						if (col >= 0)
 							pt_main.x = colseries + col;
@@ -128,6 +132,10 @@ public class XLSExportMoveResults extends XLSExport {
 					break;
 				case ISALIVE:
 					for (Cage cage: cages.cageList ) {
+						if (cage.cageNFlies <1) {
+							pt_main.x += 2;
+							continue;
+						}
 						int col = getColFromCageName(cage)*2;
 						if (col >= 0)
 							pt_main.x = colseries + col;
@@ -147,6 +155,10 @@ public class XLSExportMoveResults extends XLSExport {
 				case XYTIPCAPS:
 				default:
 					for (Cage cage: cages.cageList ) {
+						if (cage.cageNFlies <1) {
+							pt_main.x += 2;
+							continue;
+						}
 						Point2D pt0 = new Point2D.Double(0, 0);
 						switch (option) {
 							case XYTOPCAGE:
