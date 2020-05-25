@@ -120,6 +120,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.xyTipCapillaries= tabMove.xyTipCapsCheckBox.isSelected();
 		options.distance 		= tabMove.distanceCheckBox.isSelected();
 		options.alive 			= tabMove.aliveCheckBox.isSelected(); 
+		options.onlyalive 		= tabMove.onlyaliveCheckBox.isSelected();
 		getCommonOptions(options);
 		return options;
 	}

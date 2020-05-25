@@ -40,11 +40,6 @@ public class MCExcel_Kymos extends JPanel  {
 	}
 	
 	private void defineActionListeners() {
-//		exportToXLSButton.addActionListener (new ActionListener () { 
-//			@Override public void actionPerformed( final ActionEvent e ) { 
-//				firePropertyChange("EXPORT_KYMOSDATA", false, true);
-//			}});
-		
 		exportToXLSButton2.addActionListener (new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				firePropertyChange("EXPORT_KYMOSDATA2", false, true);
