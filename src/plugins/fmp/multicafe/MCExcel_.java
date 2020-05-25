@@ -121,6 +121,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.distance 		= tabMove.distanceCheckBox.isSelected();
 		options.alive 			= tabMove.aliveCheckBox.isSelected(); 
 		options.onlyalive 		= tabMove.onlyaliveCheckBox.isSelected();
+		options.pause			= tabMove.pauseCheckBox.isSelected();
 		getCommonOptions(options);
 		return options;
 	}

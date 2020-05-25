@@ -12,6 +12,7 @@ public enum EnumXLSExportType {
 	XYTIPCAPS ("xy-tipcaps"), 
 	DISTANCE ("distance"), 
 	ISALIVE ("_alive"), 
+	PAUSE ("pause"),
 	TOPLEVELDELTA ("topdelta"),
 	TOPLEVELDELTA_LR ("topdelta_L+R");
 	
