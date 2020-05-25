@@ -139,7 +139,9 @@ public class XYTaSeries implements XMLPersistent {
 			Point2D previous = new Point2D.Double();
 			previous = pointsList.get(0).point;
 			for (XYTaValue pos: pointsList) {
-				double distance = pos.point.distance(previous); 
+				double distance = pos.point.distance(previous);
+				if (previous.getX() < 0 || pos.point.getX() < 0)
+					distance = Double.NaN;
 				dataArray.add(distance);
 				previous = pos.point;
 			}
@@ -201,71 +203,36 @@ public class XYTaSeries implements XMLPersistent {
 		return pointsList.get(1).time - pointsList.get(0).time;
 	}
 	
-	public Point2D getPointNearestTo (int timeIndex) {
+	public Point2D getPointAt (int timeIndex) {
 		if (pointsList.size() < 1)
 			return null;
-		int indexXYTarray = findNearest(timeIndex);
-		Point2D previous = new Point2D.Double();
-		previous = pointsList.get(indexXYTarray).point;
-		return previous;
+		
+		int index = timeIndex / getTimeBinSize();
+		return pointsList.get(index).point;
 	}
-	
-	private int findNearest(int timeIndex) {
-		if (pointsList.size() < 1)
-			return 0;
-		int indexXYTarray = -1; 
-		for (XYTaValue xyt: pointsList) {
-			indexXYTarray ++;
-			if (xyt.time >= timeIndex) 
-				break;
-		}
-		return indexXYTarray;
-	}
-	
-	public Double getIntegratedDistanceBetween2Points(int firstTimeIndex, int secondTimeIndex) {
-		Double distance=0.;
-		int index1 = firstTimeIndex / getTimeBinSize();
-		int index2 = secondTimeIndex / getTimeBinSize();
-		Point2D previous = new Point2D.Double();
-		previous = pointsList.get(index1).point;
-		for (int index = index1; index <= index2; index++) {
-			XYTaValue pos = pointsList.get(index);
-			distance += pos.point.distance(previous); 
-			previous = pos.point;
-		}
-		return distance;
-	}
-	
-	public Double getSimpleDistanceBetween2Points(int firstTimeIndex, int secondTimeIndex) {
+		
+	public Double getDistanceBetween2Points(int firstTimeIndex, int secondTimeIndex) {
 		if (pointsList.size() < 2)
-			return (double) 0;
-		int index1 = firstTimeIndex / getTimeBinSize();
-		int index2 = secondTimeIndex / getTimeBinSize();
-		Point2D previous = pointsList.get(findNearest(index1)).point;
-		XYTaValue pos = pointsList.get(findNearest(index2));
-		Double distance = pos.point.distance(previous); 
+			return Double.NaN;
+		int firstIndex = firstTimeIndex / getTimeBinSize();
+		int secondIndex = secondTimeIndex / getTimeBinSize();
+		if (firstIndex < 0 || secondIndex < 0)
+			return Double.NaN;
+		XYTaValue pos1 = pointsList.get(firstIndex);
+		XYTaValue pos2 = pointsList.get(secondIndex);
+		if (pos1.point.getX() < 0 || pos2.point.getX()  < 0)
+			return Double.NaN;
+		Double distance = pos2.point.distance(pos1.point); 
 		return distance;
 	}
 	
-	public Double getDistanceBetweenValidPoints(int firstTimeIndex, int secondTimeIndex) {
-		if (pointsList.size() < 2)
-			return (double) 0;
-		int index1 = findNearest(firstTimeIndex / getTimeBinSize());
-		int index2 = findNearest(secondTimeIndex / getTimeBinSize());
-		Point2D previous = getValidPointAtOrBefore(index1);
-		XYTaValue pos = pointsList.get(index2);
-		if (pos.point.getX() < 0 || previous.getX() < 0)
-			return (double) 0;
-		Double distance = pos.point.distance(previous); 
-		return distance;
-	}
-	
-	public int isAliveAt(int timeIndex) {
+	public int isAliveAtTimeIndex(int timeIndex) {
 		if (pointsList.size() < 2)
 			return 0;
 		getLastIntervalAlive();
 		int index = timeIndex / getTimeBinSize();
-		XYTaValue pos = pointsList.get(findNearest(index));
+		XYTaValue pos = pointsList.get(index);
 		return (pos.alive ? 1: 0); 
 	}
+
 }

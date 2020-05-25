@@ -417,16 +417,25 @@ public class Experiment {
 	
 	public int setCagesFrameStart(int start) {
 		cages.frameStart = start;
+		for (Cage cage: cages.cageList) {
+			cage.frameStart = start;
+		}
 		return cages.frameStart;
 	}
 	
 	public int setCagesFrameEnd(int end) {
 		cages.frameEnd = end;
+		for (Cage cage: cages.cageList) {
+			cage.frameEnd = end;
+		}
 		return cages.frameEnd;
 	}
 	
 	public int setCagesFrameStep(int step) {
 		cages.frameStep = step;
+		for (Cage cage: cages.cageList) {
+			cage.frameStep = step;
+		}
 		return cages.frameStep;
 	}
 	

@@ -32,9 +32,9 @@ public class Cage {
 	private final String ID_NBITEMS				= "nb_items";
 	private final String ID_NFLIES 				= "nflies"; 
 	private final String ID_COMMENT				= "comment";
-	private final String ID_STARTFRAME = "startFrame";
-	private final String ID_ENDFRAME = "endFrame";
-	private final String ID_STEP = "stepFrame";
+	private final String ID_STARTFRAME 			= "startFrame";
+	private final String ID_ENDFRAME 			= "endFrame";
+	private final String ID_STEP 				= "stepFrame";
 	
 	
 	public boolean xmlSaveCage (Node node, int index) {

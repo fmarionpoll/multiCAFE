@@ -19,10 +19,10 @@ public class MCExcel_Move  extends JPanel {
 	 */
 	private static final long serialVersionUID = 1290058998782225526L;
 
-	JCheckBox 	xyCenterCheckBox 	= new JCheckBox("XY vs image", true);
+	JCheckBox 	xyCenterCheckBox 	= new JCheckBox("XY vs image", false);
 	JCheckBox 	xyCageCheckBox 		= new JCheckBox("XY vs top cage", true);
-	JCheckBox 	xyTipCapsCheckBox 	= new JCheckBox("XY vs tip capillaries", true);
-	JCheckBox 	distanceCheckBox 	= new JCheckBox("distance", false);
+	JCheckBox 	xyTipCapsCheckBox 	= new JCheckBox("XY vs tip capillaries", false);
+	JCheckBox 	distanceCheckBox 	= new JCheckBox("distance", true);
 	JCheckBox 	aliveCheckBox 		= new JCheckBox("alive", true);
 	JButton 	exportToXLSButton 	= new JButton("save XLS");
 	

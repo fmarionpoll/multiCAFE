@@ -101,30 +101,26 @@ public class XLSExportMoveResults extends XLSExport {
 						if (col >= 0)
 							pt_main.x = colseries + col;
 						int currentTimeIndex = currentFrame - startFrame;
-						int oreviousTimeIndex = currentFrame - options.buildExcelBinStep - startFrame;
-						Double value = cage.flyPositions.getDistanceBetweenValidPoints(oreviousTimeIndex, currentTimeIndex);
-						XLSUtils.setValue(sheet, pt_main, transpose, value);
+						int previousTimeIndex = currentTimeIndex - options.buildExcelBinStep;
+						Double value = cage.flyPositions.getDistanceBetween2Points(previousTimeIndex, currentTimeIndex);
+						if (!Double.isNaN(value))
+							XLSUtils.setValue(sheet, pt_main, transpose, value);
 						pt_main.x++;
-						XLSUtils.setValue(sheet, pt_main, transpose, value);
+						if (!Double.isNaN(value))
+							XLSUtils.setValue(sheet, pt_main, transpose, value);
 						pt_main.x++;
 					}
 					break;
 				case ISALIVE:
 					for (Cage cage: cages.cageList ) {
-						
 						int col = getColFromCageName(cage)*2;
 						if (col >= 0)
 							pt_main.x = colseries + col;
-						int currentIndex = (currentFrame - startFrame)/cage.frameStep;
-						int value = cage.flyPositions.isAliveAt(currentIndex);
-						if (value > 0) {
-							XLSUtils.setValue(sheet, pt_main, transpose, value );
-							pt_main.x++;
-							XLSUtils.setValue(sheet, pt_main, transpose, value);
-							pt_main.x++;
-						}
-						else
-							pt_main.x += 2;
+						int value = cage.flyPositions.isAliveAtTimeIndex(currentFrame - startFrame);						
+						XLSUtils.setValue(sheet, pt_main, transpose, value );
+						pt_main.x++;
+						XLSUtils.setValue(sheet, pt_main, transpose, value);
+						pt_main.x++;
 					}
 					break;
 				case XYIMAGE:
@@ -134,21 +130,20 @@ public class XLSExportMoveResults extends XLSExport {
 					for (Cage cage: cages.cageList ) {
 						Point2D pt0 = new Point2D.Double(0, 0);
 						switch (option) {
-						case XYTOPCAGE:
-							pt0 = cage.getCenterTopCage();
-							break;
-						case XYTIPCAPS: 
-							pt0 = cage.getCenterTipCapillaries(exp.capillaries);
-							break;
-						default:
-							break;
+							case XYTOPCAGE:
+								pt0 = cage.getCenterTopCage();
+								break;
+							case XYTIPCAPS: 
+								pt0 = cage.getCenterTipCapillaries(exp.capillaries);
+								break;
+							default:
+								break;
 						}
 						int col = getColFromCageName(cage)*2;
 						if (col >= 0)
 							pt_main.x = colseries + col;
-						
-						int currentIndex = (currentFrame - startFrame)/cage.frameStep;
-						Point2D point = cage.flyPositions.getPointNearestTo(currentIndex);
+						int currentIndex = currentFrame - startFrame;
+						Point2D point = cage.flyPositions.getPointAt(currentIndex);
 						if (point != null) 
 							XLSUtils.setValue(sheet, pt_main, transpose, point.getX() - pt0.getX());
 						pt_main.x++;
