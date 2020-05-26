@@ -235,4 +235,7 @@ public class XYTaSeries implements XMLPersistent {
 		return (pos.alive ? 1: 0); 
 	}
 
+	public void computeSleep() {
+		
+	}
 }

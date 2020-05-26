@@ -24,7 +24,7 @@ public class MCExcel_Move  extends JPanel {
 	JCheckBox 	xyTipCapsCheckBox 	= new JCheckBox("XY vs tip capillaries", false);
 	JCheckBox 	distanceCheckBox 	= new JCheckBox("distance", true);
 	JCheckBox 	aliveCheckBox 		= new JCheckBox("alive", true);
-	JCheckBox 	pauseCheckBox 		= new JCheckBox("pause intervals", true);
+	JCheckBox 	sleepCheckBox 		= new JCheckBox("sleep", true);
 	
 	JButton 	exportToXLSButton 	= new JButton("save XLS");
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty");	
@@ -32,7 +32,7 @@ public class MCExcel_Move  extends JPanel {
 	void init(GridLayout capLayout) {	
 		setLayout(capLayout);
 		add(GuiUtil.besidesPanel( xyCenterCheckBox, xyCageCheckBox, xyTipCapsCheckBox, new JLabel(" ")));
-		add(GuiUtil.besidesPanel( distanceCheckBox, aliveCheckBox,  pauseCheckBox, new JLabel(" "))); 
+		add(GuiUtil.besidesPanel( distanceCheckBox, aliveCheckBox,  sleepCheckBox, new JLabel(" "))); 
 		add(GuiUtil.besidesPanel( onlyaliveCheckBox, new JLabel(" "), new JLabel(" "), exportToXLSButton )); 
 		defineActionListeners();
 	}
