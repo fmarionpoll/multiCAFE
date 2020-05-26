@@ -15,10 +15,11 @@ import plugins.fmp.multicafeTools.EnumListType;
 
 public class XYTaSeries implements XMLPersistent {
 	
-	public Double 			threshold 			= 50.;
+	public Double 			moveThreshold 		= 50.;
+	public int				sleepThreshold		= 5;
 	public int 				lastTimeAlive 		= 0;
 	public int 				lastIntervalAlive 	= 0;
-	public ArrayList<XYTaValue> pointsList  = new ArrayList<XYTaValue>();
+	public ArrayList<XYTaValue> pointsList  	= new ArrayList<XYTaValue>();
 
 	
 	public void ensureCapacity(int minCapacity) {
@@ -116,8 +117,12 @@ public class XYTaSeries implements XMLPersistent {
 			break;
 		case isalive:
 			datai = getDistanceBetweenPoints();
-			computeIsAlive(datai, threshold);
+			computeIsAlive(datai, moveThreshold);
 			datai = getIsAliveAsDoubleArray();
+			break;
+		case sleep:
+			computeSleep();
+			datai = getSleepAsDoubleArray();
 			break;
 		case xyPosition:
 		default:
@@ -128,7 +133,7 @@ public class XYTaSeries implements XMLPersistent {
 	}
 	
 	public int computeLastIntervalAlive() {
-		computeIsAlive(getDistanceBetweenPoints(), threshold);
+		computeIsAlive(getDistanceBetweenPoints(), moveThreshold);
 		return lastIntervalAlive;
 	}
 	
@@ -168,7 +173,7 @@ public class XYTaSeries implements XMLPersistent {
 	}
 	
 	public void computeIsAlive(List<Double> data, Double threshold) {
-		this.threshold = threshold;
+		this.moveThreshold = threshold;
 		lastIntervalAlive = 0;
 		boolean isalive = false;
 		for (int i= data.size() - 1; i >= 0; i--) {
@@ -236,6 +241,27 @@ public class XYTaSeries implements XMLPersistent {
 	}
 
 	public void computeSleep() {
-		
+		List<Double> datai = getDistanceBetweenPoints();
+		int sleepintervals = getTimeBinSize() * sleepThreshold;
+		int j = 0;
+		for (XYTaValue pos: pointsList) {
+			boolean sleep = false;
+			if (j + sleepintervals >= datai.size())
+				break;
+			for (int i= 0; i< sleepintervals; i++) {
+				sleep &= datai.get(i+j) <= moveThreshold;
+			}
+			pos.sleep = sleep;
+			j++;
+		}
+	}
+	
+	public List<Double> getSleepAsDoubleArray() {
+		ArrayList<Double> dataArray = new ArrayList<Double>();
+		dataArray.ensureCapacity(pointsList.size());
+		for (XYTaValue pos: pointsList) {
+			dataArray.add(pos.sleep ? 1.0: 0.0);
+		}
+		return dataArray;
 	}
 }

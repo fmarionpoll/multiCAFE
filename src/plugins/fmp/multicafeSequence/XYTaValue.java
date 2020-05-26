@@ -42,7 +42,7 @@ public class XYTaValue implements XMLPersistent {
 		point.setLocation(x, y);
 		time =  XMLUtil.getAttributeIntValue(node_XYTa, "t", 0);
 		alive = XMLUtil.getAttributeBooleanValue(node_XYTa, "a", false);
-		
+		sleep = XMLUtil.getAttributeBooleanValue(node_XYTa, "s", false);
 		return false;
 	}
 
@@ -56,7 +56,7 @@ public class XYTaValue implements XMLPersistent {
 		XMLUtil.setAttributeDoubleValue(node_XYTa, "y", point.getY());
 		XMLUtil.setAttributeIntValue(node_XYTa, "t", time);
 		XMLUtil.setAttributeBooleanValue(node_XYTa, "a", alive);
-
+		XMLUtil.setAttributeBooleanValue(node_XYTa, "s", sleep);
 		return false;
 	}
 }

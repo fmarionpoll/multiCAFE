@@ -37,13 +37,14 @@ public class MCCages_Graphs extends JPanel {
 	private JCheckBox	distanceCheckbox	= new JCheckBox("distance t/t+1", true);
 	JCheckBox			aliveCheckbox		= new JCheckBox("fly alive", true);
 	JSpinner 			aliveThresholdSpinner = new JSpinner(new SpinnerNumberModel(50.0, 0., 100000., .1));
+	JCheckBox			sleepCheckbox		= new JCheckBox("sleep", true);
 	JButton 			displayResultsButton= new JButton("Display results");
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
 		setLayout(capLayout);
 		this.parent0 = parent0;
-		add(GuiUtil.besidesPanel(moveCheckbox, distanceCheckbox, aliveCheckbox, new JLabel(" ")));
+		add(GuiUtil.besidesPanel(moveCheckbox, distanceCheckbox, aliveCheckbox, sleepCheckbox));
 		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel("Alive threshold"), aliveThresholdSpinner, new JLabel(" ")));
 		
 		add(GuiUtil.besidesPanel(displayResultsButton, new JLabel(" "))); 
@@ -80,11 +81,20 @@ public class MCCages_Graphs extends JPanel {
 			double threshold = (double) aliveThresholdSpinner.getValue();		
 			for (Cage cage: exp.cages.cageList) {
 				XYTaSeries posSeries = cage.flyPositions;
-				posSeries.threshold = threshold;
+				posSeries.moveThreshold = threshold;
 				posSeries.getDoubleArrayList(EnumListType.isalive);
 			}
-			aliveChart = displayYPos("flies alive", aliveChart, rectv, ptRelative,
-					exp, EnumListType.isalive);	
+			aliveChart = displayYPos("flies alive", aliveChart, rectv, ptRelative, exp, EnumListType.isalive);	
+			ptRelative.y += deltay;
+		}
+		if (sleepCheckbox.isSelected()) {
+			//double threshold = (double) aliveThresholdSpinner.getValue();		
+			for (Cage cage: exp.cages.cageList) {
+				XYTaSeries posSeries = cage.flyPositions;
+				//posSeries.moveThreshold = threshold;
+				posSeries.getDoubleArrayList(EnumListType.sleep);
+			}
+			aliveChart = displayYPos("flies asleep", aliveChart, rectv, ptRelative, exp, EnumListType.sleep);	
 			ptRelative.y += deltay;
 		}
 	}

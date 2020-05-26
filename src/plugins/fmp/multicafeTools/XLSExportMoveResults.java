@@ -97,6 +97,19 @@ public class XLSExportMoveResults extends XLSExport {
 		int startFrame 	= 0;
 		int endFrame 	= exp.getSeqCamSizeT()-1;
 		int currentFrame = 0;
+		for (Cage cagei: exp.cages.cageList ) {
+			if (cagei.cageNFlies <1) {
+				pt_main.x += 2;
+				continue;
+			}
+			switch (option) {
+			case SLEEP:
+				cagei.flyPositions.computeSleep();
+				break;
+			default:
+				break;
+			}
+		}
 		for (currentFrame=startFrame; currentFrame< endFrame; currentFrame+= options.buildExcelBinStep) {
 			pt_main.x = col0;
 			pt_main.y++;
@@ -158,6 +171,8 @@ public class XLSExportMoveResults extends XLSExport {
 							pt_main.x += 2;
 							continue;
 						}
+						cage.flyPositions.computeSleep();
+						
 						int col = getColFromCageName(cage)*2;
 						if (col >= 0)
 							pt_main.x = colseries + col;
@@ -165,31 +180,12 @@ public class XLSExportMoveResults extends XLSExport {
 						if (deadEmpty) 
 							alive = cage.flyPositions.isAliveAtTimeIndex(currentIndex);
 						if (alive > 0) {
-							int previousIndex = currentIndex - options.buildExcelBinStep;
-							Double value = cage.flyPositions.getDistanceBetween2Points(previousIndex, currentIndex);
-							if (Double.isNaN(value)) {
-								pt_main.x += 2;
-								continue;
-							}
-							if (value < cage.flyPositions.threshold) {
-								pt_main.x += 2;
-							} else {
-								int nintervals = options.buildExcelBinStep;
-								int index = currentFrame -options.buildExcelBinStep;
-								for (int i =index ; i >= options.buildExcelBinStep; i -= options.buildExcelBinStep) {
-									int previous = i - options.buildExcelBinStep;
-									Double valuei = cage.flyPositions.getDistanceBetween2Points(previous, i);
-									if (Double.isNaN(valuei) || valuei < cage.flyPositions.threshold) {
-										nintervals += options.buildExcelBinStep;
-										continue;										
-									} 
-									break;
-								}
-								XLSUtils.setValue(sheet, pt_main, transpose, nintervals);
-								pt_main.x++;
-								XLSUtils.setValue(sheet, pt_main, transpose, nintervals);
-								pt_main.x++;
-							}
+							boolean sleep = cage.flyPositions.pointsList.get(currentIndex).sleep;
+							XLSUtils.setValue(sheet, pt_main, transpose, sleep ? 0:1);
+							pt_main.x++;
+							XLSUtils.setValue(sheet, pt_main, transpose, sleep ? 1:0);
+							pt_main.x++;
+							
 						} else {
 							pt_main.x += 2;
 						}
