@@ -50,7 +50,7 @@ public class XLSExportMoveResults extends XLSExport {
 				if (options.alive) 
 					col_end = xlsExportToWorkbook(exp, col_max, charSeries,  EnumXLSExportType.ISALIVE);
 				if (options.pause)
-					col_end = xlsExportToWorkbook(exp, col_max, charSeries,  EnumXLSExportType.PAUSE);
+					col_end = xlsExportToWorkbook(exp, col_max, charSeries,  EnumXLSExportType.PAUSES);
 				
 				if (col_end > col_max)
 					col_max = col_end;
@@ -152,7 +152,7 @@ public class XLSExportMoveResults extends XLSExport {
 						}
 					}
 					break;
-				case PAUSE:
+				case PAUSES:
 					for (Cage cage: cages.cageList ) {
 						if (cage.cageNFlies <1) {
 							pt_main.x += 2;
