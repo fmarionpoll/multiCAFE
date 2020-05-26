@@ -10,7 +10,8 @@ public class XLSExportOptions {
 	
 	public boolean 	distance 		= false;
 	public boolean 	alive 			= true;
-	public boolean  pause			= true;
+	public boolean  sleep			= true;
+	public int		sleepThreshold  = 5;
 	
 	public boolean 	topLevel 		= true;
 	public boolean  topLevelDelta   = false;

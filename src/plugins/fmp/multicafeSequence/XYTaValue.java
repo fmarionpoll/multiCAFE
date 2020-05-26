@@ -9,9 +9,12 @@ import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 
 public class XYTaValue implements XMLPersistent {
-	public Point2D point = new Point2D.Double();
-	public int time = 0;
-	public boolean alive = false;
+	public Point2D 	point 	= new Point2D.Double();
+	public int 		time 	= 0;
+	public boolean 	alive 	= false;
+	public boolean 	sleep 	= false;
+	
+	
 	
 	public XYTaValue() {
 	}
