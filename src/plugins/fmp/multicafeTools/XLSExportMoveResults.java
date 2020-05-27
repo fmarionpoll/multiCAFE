@@ -177,7 +177,7 @@ public class XLSExportMoveResults extends XLSExport {
 						int currentIndex = currentFrame - startFrame;
 						if (deadEmpty) 
 							alive = cage.flyPositions.isAliveAtTimeIndex(currentIndex);
-						if (alive > 0) {
+						if (alive > 0 && currentIndex < cage.flyPositions.pointsList.size()) {
 							boolean sleep = cage.flyPositions.pointsList.get(currentIndex).sleep;
 							XLSUtils.setValue(sheet, pt_main, transpose, sleep ? 0:1);
 							pt_main.x++;
