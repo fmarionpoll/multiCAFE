@@ -31,11 +31,13 @@ public class MCCages_Graphs extends JPanel {
 	private YPosMultiChart ypositionsChart	= null;
 	private YPosMultiChart distanceChart	= null;
 	private YPosMultiChart aliveChart		= null;
+	private YPosMultiChart sleepChart		= null;
+	
 	private MultiCAFE parent0 = null;
 	
-	JCheckBox			moveCheckbox		= new JCheckBox("y position", true);	
+	JCheckBox			moveCheckbox		= new JCheckBox("y position", false);	
 	private JCheckBox	distanceCheckbox	= new JCheckBox("distance t/t+1", true);
-	JCheckBox			aliveCheckbox		= new JCheckBox("fly alive", true);
+	JCheckBox			aliveCheckbox		= new JCheckBox("fly alive", false);
 	JSpinner 			aliveThresholdSpinner = new JSpinner(new SpinnerNumberModel(50.0, 0., 100000., .1));
 	JCheckBox			sleepCheckbox		= new JCheckBox("sleep", true);
 	JButton 			displayResultsButton= new JButton("Display results");
@@ -46,7 +48,6 @@ public class MCCages_Graphs extends JPanel {
 		this.parent0 = parent0;
 		add(GuiUtil.besidesPanel(moveCheckbox, distanceCheckbox, aliveCheckbox, sleepCheckbox));
 		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel("Alive threshold"), aliveThresholdSpinner, new JLabel(" ")));
-		
 		add(GuiUtil.besidesPanel(displayResultsButton, new JLabel(" "))); 
 		defineActionListeners();
 	}
@@ -68,13 +69,11 @@ public class MCCages_Graphs extends JPanel {
 		final int deltay = 230;
 	
 		if (moveCheckbox.isSelected() ) {
-			ypositionsChart = displayYPos("flies Y positions", ypositionsChart, rectv, ptRelative, 
-					exp, EnumListType.xyPosition);
+			ypositionsChart = displayYPos("flies Y positions", ypositionsChart, rectv, ptRelative,  exp, EnumListType.xyPosition);
 			ptRelative.y += deltay;
 		}
 		if (distanceCheckbox.isSelected()) {
-			distanceChart = displayYPos("distance between positions at t+1 and t", distanceChart, rectv, ptRelative,
-					exp, EnumListType.distance);
+			distanceChart = displayYPos("distance between positions at t+1 and t", distanceChart, rectv, ptRelative, exp, EnumListType.distance);
 			ptRelative.y += deltay;
 		}
 		if (aliveCheckbox.isSelected()) {
@@ -82,19 +81,17 @@ public class MCCages_Graphs extends JPanel {
 			for (Cage cage: exp.cages.cageList) {
 				XYTaSeries posSeries = cage.flyPositions;
 				posSeries.moveThreshold = threshold;
-				posSeries.getDoubleArrayList(EnumListType.isalive);
+				posSeries.computeIsAlive();
 			}
 			aliveChart = displayYPos("flies alive", aliveChart, rectv, ptRelative, exp, EnumListType.isalive);	
 			ptRelative.y += deltay;
 		}
-		if (sleepCheckbox.isSelected()) {
-			//double threshold = (double) aliveThresholdSpinner.getValue();		
+		if (sleepCheckbox.isSelected()) {	
 			for (Cage cage: exp.cages.cageList) {
 				XYTaSeries posSeries = cage.flyPositions;
-				//posSeries.moveThreshold = threshold;
-				posSeries.getDoubleArrayList(EnumListType.sleep);
+				posSeries.computeSleep();
 			}
-			aliveChart = displayYPos("flies asleep", aliveChart, rectv, ptRelative, exp, EnumListType.sleep);	
+			sleepChart = displayYPos("flies asleep", sleepChart, rectv, ptRelative, exp, EnumListType.sleep);	
 			ptRelative.y += deltay;
 		}
 	}
@@ -126,6 +123,11 @@ public class MCCages_Graphs extends JPanel {
 		if (aliveChart != null) {
 			aliveChart.mainChartFrame.close();
 			aliveChart = null;
+		}
+		
+		if (sleepChart != null) {
+			sleepChart.mainChartFrame.close();
+			sleepChart = null;
 		}
 	}
 }

@@ -9,7 +9,7 @@ import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafeTools.EnumListType;
+
 
 
 
@@ -106,34 +106,8 @@ public class XYTaSeries implements XMLPersistent {
 		return true;
 	}
 	
-	public List<Double> getDoubleArrayList (EnumListType option) {
-		if (pointsList.size() == 0)
-			return null;
-		List<Double> datai = null;
-		
-		switch (option) {
-		case distance:
-			datai = getDistanceBetweenPoints();
-			break;
-		case isalive:
-			datai = getDistanceBetweenPoints();
-			computeIsAlive(datai, moveThreshold);
-			datai = getIsAliveAsDoubleArray();
-			break;
-		case sleep:
-			computeSleep();
-			datai = getSleepAsDoubleArray();
-			break;
-		case xyPosition:
-		default:
-			datai = getXYPositions();
-			break;
-		}
-		return datai;
-	}
-	
 	public int computeLastIntervalAlive() {
-		computeIsAlive(getDistanceBetweenPoints(), moveThreshold);
+		computeIsAlive();
 		return lastIntervalAlive;
 	}
 	
@@ -171,31 +145,20 @@ public class XYTaSeries implements XMLPersistent {
 		}
 		return dataArray;
 	}
-	
-	public void computeIsAlive(List<Double> data, Double threshold) {
-		this.moveThreshold = threshold;
+		
+	public void computeIsAlive() {
+		List<Double> data = getDistanceBetweenPoints();
+		
 		lastIntervalAlive = 0;
 		boolean isalive = false;
 		for (int i= data.size() - 1; i >= 0; i--) {
-			if (data.get(i) > threshold && !isalive) {
+			if (data.get(i) > moveThreshold && !isalive) {
 				lastIntervalAlive = i;
 				lastTimeAlive = pointsList.get(i).time;
 				isalive = true;				
 			}
 			pointsList.get(i).alive = isalive;
 		}
-	}
-	
-	private List<Double> getXYPositions() {
-		ArrayList<Double> dataArray = new ArrayList<Double>();
-		dataArray.ensureCapacity(pointsList.size()*2);
-		for (XYTaValue pos: pointsList) {
-			double x = pos.point.getX(); 
-			double y = pos.point.getY();
-			dataArray.add(x);
-			dataArray.add(y);
-		}
-		return dataArray;
 	}
 
 	public int getLastIntervalAlive() {
@@ -240,18 +203,34 @@ public class XYTaSeries implements XMLPersistent {
 		return (pos.alive ? 1: 0); 
 	}
 
-	public void computeSleep() {
+	private List<Integer> getDistanceAsMoveOrNot() {
 		List<Double> datai = getDistanceBetweenPoints();
-		int sleepintervals = getTimeBinSize() * sleepThreshold;
+		ArrayList<Integer> dataArray = new ArrayList<Integer>();
+		dataArray.ensureCapacity(datai.size());
+		for (int i= 0; i< datai.size(); i++) {
+			dataArray.add(datai.get(i) < moveThreshold ? 1: 0);
+		}
+		return dataArray;
+	}
+	
+	public void computeSleep() {
+		if (pointsList.size() < 1)
+			return;
+		List <Integer> datai = getDistanceAsMoveOrNot();
+		int sleepintervals = sleepThreshold / getTimeBinSize() ;
+		if (sleepintervals < 1)
+			sleepintervals = 1;
 		int j = 0;
 		for (XYTaValue pos: pointsList) {
-			boolean sleep = false;
+			int isleep = 1;
 			if (j + sleepintervals >= datai.size())
 				break;
 			for (int i= 0; i< sleepintervals; i++) {
-				sleep &= datai.get(i+j) <= moveThreshold;
+				isleep = datai.get(i+j) * isleep;
+				if (isleep == 0)
+					break;
 			}
-			pos.sleep = sleep;
+			pos.sleep = (isleep == 1);
 			j++;
 		}
 	}

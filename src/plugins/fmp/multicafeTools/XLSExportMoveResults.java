@@ -93,13 +93,8 @@ public class XLSExportMoveResults extends XLSExport {
 	}
 
 	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, boolean deadEmpty) {
-		int col0 = pt_main.x;
-		int startFrame 	= 0;
-		int endFrame 	= exp.getSeqCamSizeT()-1;
-		int currentFrame = 0;
 		for (Cage cagei: exp.cages.cageList ) {
 			if (cagei.cageNFlies <1) {
-				pt_main.x += 2;
 				continue;
 			}
 			switch (option) {
@@ -110,6 +105,11 @@ public class XLSExportMoveResults extends XLSExport {
 				break;
 			}
 		}
+		
+		int col0 = pt_main.x;
+		int startFrame 	= 0;
+		int endFrame 	= exp.getSeqCamSizeT()-1;
+		int currentFrame = 0;
 		for (currentFrame=startFrame; currentFrame< endFrame; currentFrame+= options.buildExcelBinStep) {
 			pt_main.x = col0;
 			pt_main.y++;
@@ -171,8 +171,6 @@ public class XLSExportMoveResults extends XLSExport {
 							pt_main.x += 2;
 							continue;
 						}
-						cage.flyPositions.computeSleep();
-						
 						int col = getColFromCageName(cage)*2;
 						if (col >= 0)
 							pt_main.x = colseries + col;
