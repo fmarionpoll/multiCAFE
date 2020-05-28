@@ -137,6 +137,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			List <XLSCapillaryResults> resultsArrayList = new ArrayList <XLSCapillaryResults> (expi.capillaries.capillariesArrayList.size());
 			for (Capillary cap: expi.capillaries.capillariesArrayList) {
 				XLSCapillaryResults results = new XLSCapillaryResults(cap.roi.getName(), xlsoption);
+				results.binsize = expi.getKymoFrameStep();
 				switch (xlsoption) {
 					case TOPLEVEL:
 					case TOPLEVEL_LR:
@@ -206,7 +207,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					if (results.data == null || fromi >= results.data.size())
 						break;
 					row.values_out[toi]= results.data.get(fromi) * scalingFactorToPhysicalUnits + dvalue;
-					fromi += options.buildExcelBinStep;
+					fromi ++; //= expi.getKymoFrameStep();
 				}
 				break;
 			}

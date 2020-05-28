@@ -37,10 +37,6 @@ public class SequenceKymos extends SequenceCamData  {
 	public boolean 			isInterrupted_loadImages = false;
 	public int 				imageWidthMax 			= 0;
 	public int 				imageHeightMax 			= 0;
-	public int				step					= 1;
-//	public					kymoStart				= 0;
-//	public					kymoEnd					= 0;
-//	public					kymoStep				= 1;
 	
 	// -----------------------------------------------------
 	

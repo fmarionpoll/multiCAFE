@@ -8,6 +8,7 @@ public class XLSCapillaryResults {
 	String				name 		= null;
 	EnumXLSExportType 	exportType 	= null;
 	List<Integer > 		data 		= null;
+	int					binsize		= 1;
 	double [] 			values_out	= null;
 	boolean[]			padded_out	= null;
 	
