@@ -10,7 +10,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafeSequence.Cage;
-import plugins.fmp.multicafeSequence.Cages;
 import plugins.fmp.multicafeSequence.Experiment;
 
 
@@ -94,9 +93,8 @@ public class XLSExportMoveResults extends XLSExport {
 
 	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, boolean deadEmpty) {
 		for (Cage cagei: exp.cages.cageList ) {
-			if (cagei.cageNFlies <1) {
+			if (cagei.cageNFlies <1) 
 				continue;
-			}
 			switch (option) {
 			case SLEEP:
 				cagei.flyPositions.computeSleep();
@@ -115,121 +113,147 @@ public class XLSExportMoveResults extends XLSExport {
 			pt_main.y++;
 			pt_main.x++;
 			pt_main.x++;
-			int colseries = pt_main.x;
-			Cages cages = exp.cages;
-			int alive = 1;
 			switch (option) {
 				case DISTANCE:
-					for (Cage cage: cages.cageList ) {
-						if (cage.cageNFlies <1) {
-							pt_main.x += 2;
-							continue;
-						}
-						int col = getColFromCageName(cage) * 2;
-						if (col >= 0)
-							pt_main.x = colseries + col;
-						int currentIndex = currentFrame - startFrame;
-						if (deadEmpty) 
-							alive = cage.flyPositions.isAliveAtTimeIndex(currentIndex);
-						if (alive > 0) {
-							int previousIndex = currentIndex - options.buildExcelBinStep;
-							Double value = cage.flyPositions.getDistanceBetween2Points(previousIndex, currentIndex);
-							if (!Double.isNaN(value))
-								XLSUtils.setValue(sheet, pt_main, transpose, value);
-							pt_main.x++;
-							if (!Double.isNaN(value))
-								XLSUtils.setValue(sheet, pt_main, transpose, value);
-							pt_main.x++;
-						} else {
-							pt_main.x += 2;
-						}
-					}
+					pt_main = exportDistance(exp, sheet, pt_main, option, transpose, deadEmpty, currentFrame, startFrame );
 					break;
 				case ISALIVE:
-					for (Cage cage: cages.cageList ) {
-						if (cage.cageNFlies <1) {
-							pt_main.x += 2;
-							continue;
-						}
-						int col = getColFromCageName(cage)*2;
-						if (col >= 0)
-							pt_main.x = colseries + col;
-						alive = cage.flyPositions.isAliveAtTimeIndex(currentFrame - startFrame);
-						if (alive > 1 || !deadEmpty) {
-							XLSUtils.setValue(sheet, pt_main, transpose, alive );
-							pt_main.x++;
-							XLSUtils.setValue(sheet, pt_main, transpose, alive);
-							pt_main.x++;
-						} else {
-							pt_main.x += 2;
-						}
-					}
+					pt_main = exportIsAlive(exp, sheet, pt_main, option, transpose, deadEmpty, currentFrame, startFrame );
 					break;
 				case SLEEP:
-					for (Cage cage: cages.cageList ) {
-						if (cage.cageNFlies <1) {
-							pt_main.x += 2;
-							continue;
-						}
-						int col = getColFromCageName(cage)*2;
-						if (col >= 0)
-							pt_main.x = colseries + col;
-						int currentIndex = currentFrame - startFrame;
-						if (deadEmpty) 
-							alive = cage.flyPositions.isAliveAtTimeIndex(currentIndex);
-						if (alive > 0 && currentIndex < cage.flyPositions.pointsList.size()) {
-							boolean sleep = cage.flyPositions.pointsList.get(currentIndex).sleep;
-							XLSUtils.setValue(sheet, pt_main, transpose, sleep ? 0:1);
-							pt_main.x++;
-							XLSUtils.setValue(sheet, pt_main, transpose, sleep ? 1:0);
-							pt_main.x++;
-							
-						} else {
-							pt_main.x += 2;
-						}
-					}
+					pt_main = exportSleep(exp, sheet, pt_main, option, transpose, deadEmpty, currentFrame, startFrame );
 					break;
 				case XYIMAGE:
 				case XYTOPCAGE:
 				case XYTIPCAPS:
 				default:
-					for (Cage cage: cages.cageList ) {
-						if (cage.cageNFlies <1) {
-							pt_main.x += 2;
-							continue;
-						}
-						Point2D pt0 = new Point2D.Double(0, 0);
-						switch (option) {
-							case XYTOPCAGE:
-								pt0 = cage.getCenterTopCage();
-								break;
-							case XYTIPCAPS: 
-								pt0 = cage.getCenterTipCapillaries(exp.capillaries);
-								break;
-							default:
-								break;
-						}
-						int col = getColFromCageName(cage)*2;
-						if (col >= 0)
-							pt_main.x = colseries + col;
-						int currentIndex = currentFrame - startFrame;
-						if (deadEmpty) 
-							alive = cage.flyPositions.isAliveAtTimeIndex(currentIndex);
-						if (alive > 0) {
-							Point2D point = cage.flyPositions.getPointAt(currentIndex);
-							if (point != null) 
-								XLSUtils.setValue(sheet, pt_main, transpose, point.getX() - pt0.getX());
-							pt_main.x++;
-							if (point != null) 
-								XLSUtils.setValue(sheet, pt_main, transpose, point.getY() - pt0.getY());
-							pt_main.x++;
-						} else {
-							pt_main.x += 2;
-						}
-					}
+					pt_main = exportDefault(exp, sheet, pt_main, option, transpose, deadEmpty, currentFrame, startFrame );
 					break;
 			}	
 		} 
+		return pt_main;
+	}
+	
+	private Point exportDefault(Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, boolean deadEmpty, int currentFrame, int startFrame) {
+		int colseries = pt_main.x;
+		int alive = 1;
+		for (Cage cage: exp.cages.cageList ) {
+			if (cage.cageNFlies <1) {
+				pt_main.x += 2;
+				continue;
+			}
+			Point2D pt0 = new Point2D.Double(0, 0);
+			switch (option) {
+				case XYTOPCAGE:
+					pt0 = cage.getCenterTopCage();
+					break;
+				case XYTIPCAPS: 
+					pt0 = cage.getCenterTipCapillaries(exp.capillaries);
+					break;
+				default:
+					break;
+			}
+			int col = getColFromCageName(cage)*2;
+			if (col >= 0)
+				pt_main.x = colseries + col;
+			int currentIndex = currentFrame - startFrame;
+			if (deadEmpty) 
+				alive = cage.flyPositions.isAliveAtTimeIndex(currentIndex);
+			if (alive > 0) {
+				Point2D point = cage.flyPositions.getPointAt(currentIndex);
+				if (point != null) 
+					XLSUtils.setValue(sheet, pt_main, transpose, point.getX() - pt0.getX());
+				pt_main.x++;
+				if (point != null) 
+					XLSUtils.setValue(sheet, pt_main, transpose, point.getY() - pt0.getY());
+				pt_main.x++;
+			} else {
+				pt_main.x += 2;
+			}
+		}
+		return pt_main;
+	}
+	
+	private Point exportSleep(Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, boolean deadEmpty, int currentFrame, int startFrame) {
+		int colseries = pt_main.x;
+		int alive = 1;
+		for (Cage cage: exp.cages.cageList ) {
+			if (cage.cageNFlies <1) {
+				pt_main.x += 2;
+				continue;
+			}
+			int col = getColFromCageName(cage)*2;
+			if (col >= 0)
+				pt_main.x = colseries + col;
+			int currentIndex = currentFrame - startFrame;
+			if (deadEmpty) 
+				alive = cage.flyPositions.isAliveAtTimeIndex(currentIndex);
+			int sleep = -1;
+			if (alive > 0)
+				sleep = cage.flyPositions.isAsleepAtTimeIndex(currentIndex);
+			if (sleep >= 0) {
+				XLSUtils.setValue(sheet, pt_main, transpose, sleep);
+				pt_main.x++;
+				XLSUtils.setValue(sheet, pt_main, transpose, sleep == 0? 1: 0);
+				pt_main.x++;
+			} else {
+				pt_main.x += 2;
+			}
+		}
+		return pt_main;
+	}
+
+	private Point exportIsAlive(Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, boolean deadEmpty, int currentFrame, int startFrame) {
+		int colseries = pt_main.x;
+		int alive = 1;
+		for (Cage cage: exp.cages.cageList ) {
+			if (cage.cageNFlies <1) {
+				pt_main.x += 2;
+				continue;
+			}
+			int col = getColFromCageName(cage)*2;
+			if (col >= 0)
+				pt_main.x = colseries + col;
+			alive = cage.flyPositions.isAliveAtTimeIndex(currentFrame - startFrame);
+			if (alive > 1 || !deadEmpty) {
+				XLSUtils.setValue(sheet, pt_main, transpose, alive );
+				pt_main.x++;
+				XLSUtils.setValue(sheet, pt_main, transpose, alive);
+				pt_main.x++;
+			} else {
+				pt_main.x += 2;
+			}
+		}
+		return pt_main;
+	}
+	
+	private Point exportDistance(Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, boolean deadEmpty, int currentFrame, int startFrame) {
+		int colseries = pt_main.x;
+		int alive = 1;
+		for (Cage cage: exp.cages.cageList ) {
+			if (cage.cageNFlies <1) {
+				pt_main.x += 2;
+				continue;
+			}
+			int col = getColFromCageName(cage) * 2;
+			if (col >= 0)
+				pt_main.x = colseries + col;
+			int currentIndex = currentFrame - startFrame;
+			if (deadEmpty) 
+				alive = cage.flyPositions.isAliveAtTimeIndex(currentIndex);
+			if (alive > 0) {
+				int previousIndex = currentIndex - options.buildExcelBinStep;
+				Double value = cage.flyPositions.getDistanceBetween2Points(previousIndex, currentIndex);
+				if (!Double.isNaN(value))
+					XLSUtils.setValue(sheet, pt_main, transpose, value);
+				pt_main.x++;
+				if (!Double.isNaN(value))
+					XLSUtils.setValue(sheet, pt_main, transpose, value);
+				pt_main.x++;
+			} else {
+				pt_main.x += 2;
+			}
+		}
 		return pt_main;
 	}
 }

@@ -148,7 +148,6 @@ public class XYTaSeries implements XMLPersistent {
 		
 	public void computeIsAlive() {
 		List<Double> data = getDistanceBetweenPoints();
-		
 		lastIntervalAlive = 0;
 		boolean isalive = false;
 		for (int i= data.size() - 1; i >= 0; i--) {
@@ -184,7 +183,7 @@ public class XYTaSeries implements XMLPersistent {
 			return Double.NaN;
 		int firstIndex = firstTimeIndex / getTimeBinSize();
 		int secondIndex = secondTimeIndex / getTimeBinSize();
-		if (firstIndex < 0 || secondIndex < 0)
+		if (firstIndex < 0 || secondIndex < 0 || firstIndex >= pointsList.size() || secondIndex >= pointsList.size())
 			return Double.NaN;
 		XYTaValue pos1 = pointsList.get(firstIndex);
 		XYTaValue pos2 = pointsList.get(secondIndex);
@@ -217,18 +216,18 @@ public class XYTaSeries implements XMLPersistent {
 		if (pointsList.size() < 1)
 			return;
 		List <Integer> datai = getDistanceAsMoveOrNot();
-		int sleepintervals = sleepThreshold / getTimeBinSize() ;
-		if (sleepintervals < 1)
-			sleepintervals = 1;
+		int timeBinSize = getTimeBinSize() ;
 		int j = 0;
 		for (XYTaValue pos: pointsList) {
 			int isleep = 1;
-			if (j + sleepintervals >= datai.size())
-				break;
-			for (int i= 0; i< sleepintervals; i++) {
-				isleep = datai.get(i+j) * isleep;
+			int k = 0;
+			for (int i= 0; i < sleepThreshold; i+= timeBinSize) {
+				if ((k+j) >= datai.size())
+					break;
+				isleep = datai.get(k+j) * isleep;
 				if (isleep == 0)
 					break;
+				k++;
 			}
 			pos.sleep = (isleep == 1);
 			j++;
@@ -242,5 +241,14 @@ public class XYTaSeries implements XMLPersistent {
 			dataArray.add(pos.sleep ? 1.0: 0.0);
 		}
 		return dataArray;
+	}
+	
+	public int isAsleepAtTimeIndex(int timeIndex) {
+		if (pointsList.size() < 2)
+			return -1;
+		int index = timeIndex / getTimeBinSize();
+		if (index >= pointsList.size())
+			return -1;
+		return (pointsList.get(index).sleep ? 1: 0); 
 	}
 }
