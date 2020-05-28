@@ -308,15 +308,15 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			int col = getColFromKymoFileName(row.name);
 			pt.x = rowSeries + col; 
 			
-			for (int i_to=0; i_to < row.values_out.length; i_to++, pt.y++) {
-				int coltime = i_to * options.buildExcelBinStep;
+			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
 				int i_from = coltime / row.binsize;
 				if (i_from >= row.values_out.length)
 					break;
 				double value = row.values_out[i_from];
 				if (!Double.isNaN(value)) {
 					XLSUtils.setValue(sheet, pt, transpose, value);
-					if (row.padded_out[i_to])
+					int i_to = coltime / options.buildExcelBinStep;
+					if (i_to < row.padded_out.length && row.padded_out[i_to])
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
 			}
@@ -347,9 +347,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				System.out.println("length of data - rowL="+lenL+" rowR="+rowR.values_out.length);
 			int row0 = pt.x;
 			
-			for (int i_to=0; i_to < lenL; i_to++, pt.y++) {
+			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
 				pt.x = row0;
-				int coltime = i_to * options.buildExcelBinStep;
 				int i_from = coltime / rowL.binsize;
 				if (i_from >= rowL.values_out.length)
 					break;
@@ -366,7 +365,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				double sum = dataL+dataR;
 				if (!Double.isNaN(sum)) {
 					XLSUtils.setValue(sheet, pt, transpose, sum);
-					if (rowL.padded_out[i_to])
+					int i_to = coltime / options.buildExcelBinStep;
+					if (i_to < rowL.padded_out.length && rowL.padded_out[i_to])
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
 				pt.x ++;
@@ -374,7 +374,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					double ratio = (dataL-dataR)/sum;
 					if (!Double.isNaN(ratio)) {
 						XLSUtils.setValue(sheet, pt, transpose, ratio);
-						if (rowL.padded_out[i_to])
+						int i_to = coltime / options.buildExcelBinStep;
+						if (i_to < rowL.padded_out.length && rowL.padded_out[i_to])
 							XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 					}
 				}
