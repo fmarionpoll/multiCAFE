@@ -211,7 +211,7 @@ public class XLSExport {
 	void outputDataTimeIntervals(XSSFSheet sheet, int row) {
 		boolean transpose = options.transpose;
 		Point pt = new Point(0, row);
-		for (int i = expAll.getKymoFrameStart(); i <= expAll.getKymoFrameEnd(); i += expAll.getKymoFrameStep()) {
+		for (int i = expAll.getKymoFrameStart(); i <= expAll.getKymoFrameEnd(); i += options.buildExcelBinStep) {
 			XLSUtils.setValue(sheet, pt, transpose, "t"+i);
 			pt.y++;
 		}

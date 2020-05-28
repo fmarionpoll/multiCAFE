@@ -122,12 +122,14 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
 		
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
+		int nFrames = (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1 ;
 		rowsForOneExp = new ArrayList <XLSCapillaryResults> (ncapillaries);
 		for (int i=0; i< ncapillaries; i++) {
 			Capillary cap = expAll.capillaries.capillariesArrayList.get(i);
 			XLSCapillaryResults row = new XLSCapillaryResults (cap.roi.getName(), xlsoption);
-			row.initValuesArray(expAll.number_of_frames);
+			row.initValuesArray(nFrames);
 			rowsForOneExp.add(row);
+			row.binsize = expAll.getKymoFrameStep();
 		}
 		Collections.sort(rowsForOneExp, new Comparators.XLSCapillaryResultsComparator());
 				
@@ -171,19 +173,27 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		}
 	}
 	
+	private XLSCapillaryResults getResultsArrayWithThatName(String testname, List <XLSCapillaryResults> resultsArrayList) {
+		XLSCapillaryResults resultsFound = null;
+		for (XLSCapillaryResults results: resultsArrayList) {
+			if (!results.name.equals(testname))
+				continue;
+			resultsFound = results;
+			break;
+		}
+		return resultsFound;
+	}
+	
 	private void addResultsTo_rowsForOneExp(Experiment expi, List <XLSCapillaryResults> resultsArrayList) {
 		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
 		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
 		
 		int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
-		int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expAll.getKymoFrameStep())+1;
+		int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
 		
 		for (XLSCapillaryResults row: rowsForOneExp ) {
-			boolean found = false;
-			for (XLSCapillaryResults results: resultsArrayList) {
-				if (!results.name.equals(row.name))
-					continue;
-				found = true;
+			XLSCapillaryResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
+			if (results != null) {
 				double dvalue = 0;
 				switch (xlsoption) {
 					case TOPLEVEL:
@@ -193,25 +203,20 @@ public class XLSExportCapillariesResults  extends XLSExport {
 						if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
 							dvalue = padWithLastPreviousValue(row, transfer_first_index);
 						break;
-					case DERIVEDVALUES:
-					case TOPLEVELDELTA:
-					case TOPLEVELDELTA_LR:
-					case BOTTOMLEVEL:
 					default:
 						break;
 				}
-				int tofirst = transfer_first_index;
-				int tolast = tofirst + transfer_nvalues;
-				int fromi = 0;
-				for (int toi = tofirst; toi < tolast; toi++) {
-					if (results.data == null || fromi >= results.data.size())
+				
+				for (int fromTime = expi.getKymoFrameStart(); fromTime <= expi.getKymoFrameEnd(); fromTime += expi.getKymoFrameStep()) {
+					int from_i = fromTime / expi.getKymoFrameStep();
+					if (from_i >= results.data.size())
 						break;
-					row.values_out[toi]= results.data.get(fromi) * scalingFactorToPhysicalUnits + dvalue;
-					fromi ++; //= expi.getKymoFrameStep();
+					double value = results.data.get(from_i) * scalingFactorToPhysicalUnits + dvalue;
+					int to_i = (int) (fromTime + expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
+					row.values_out[to_i]= value;
 				}
-				break;
-			}
-			if (!found) {
+				
+			} else {
 				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) {
 					double dvalue = padWithLastPreviousValue(row, transfer_first_index);
 					int tofirst = transfer_first_index;
@@ -296,17 +301,22 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		return pt_main;
 	}
 	
-	private void writeSimpleRow(XSSFSheet sheet, int columndataarea, int rowseries, Point pt) {
+	private void writeSimpleRow(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
 		boolean transpose = options.transpose;
 		for (XLSCapillaryResults row: rowsForOneExp) {
-			pt.y = columndataarea;
+			pt.y = column_dataArea;
 			int col = getColFromKymoFileName(row.name);
-			pt.x = rowseries + col; 
-			for (int i=0; i < row.values_out.length; i++, pt.y++) {
-				double value = row.values_out[i];
+			pt.x = rowSeries + col; 
+			
+			for (int i_to=0; i_to < row.values_out.length; i_to++, pt.y++) {
+				int coltime = i_to * options.buildExcelBinStep;
+				int i_from = coltime / row.binsize;
+				if (i_from >= row.values_out.length)
+					break;
+				double value = row.values_out[i_from];
 				if (!Double.isNaN(value)) {
 					XLSUtils.setValue(sheet, pt, transpose, value);
-					if (row.padded_out[i])
+					if (row.padded_out[i_to])
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
 			}
@@ -336,12 +346,17 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			if (rowR != null && lenL != rowR.values_out.length)
 				System.out.println("length of data - rowL="+lenL+" rowR="+rowR.values_out.length);
 			int row0 = pt.x;
-			for (int i=0; i < lenL; i++, pt.y++) {
+			
+			for (int i_to=0; i_to < lenL; i_to++, pt.y++) {
 				pt.x = row0;
-				double dataL = rowL.values_out[i];
+				int coltime = i_to * options.buildExcelBinStep;
+				int i_from = coltime / rowL.binsize;
+				if (i_from >= rowL.values_out.length)
+					break;
+				double dataL = rowL.values_out[i_from];
 				double dataR = Double.NaN;
 				if (rowR != null) 
-					dataR = rowR.values_out[i];
+					dataR = rowR.values_out[i_from];
 				
 				if (Double.isNaN(dataR) && !Double.isNaN(dataL)) 
 					dataR=0;
@@ -351,7 +366,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				double sum = dataL+dataR;
 				if (!Double.isNaN(sum)) {
 					XLSUtils.setValue(sheet, pt, transpose, sum);
-					if (rowL.padded_out[i])
+					if (rowL.padded_out[i_to])
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
 				pt.x ++;
@@ -359,7 +374,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					double ratio = (dataL-dataR)/sum;
 					if (!Double.isNaN(ratio)) {
 						XLSUtils.setValue(sheet, pt, transpose, ratio);
-						if (rowL.padded_out[i])
+						if (rowL.padded_out[i_to])
 							XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 					}
 				}

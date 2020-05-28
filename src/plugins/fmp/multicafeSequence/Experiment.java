@@ -44,7 +44,6 @@ public class Experiment {
 	public FileTime			fileTimeImageLast;
 	public long				fileTimeImageFirstMinute 	= 0;
 	public long				fileTimeImageLastMinute 	= 0;
-	public int				number_of_frames 			= 0;
 	
 	private int 			kymoFrameStart 				= 0;
 	private int 			kymoFrameEnd 				= 0;
@@ -65,7 +64,6 @@ public class Experiment {
 	private final String ID_VERSIONNUM	= "1.0.0"; 
 	private final String ID_TIMEFIRSTIMAGE	= "fileTimeImageFirstMinute"; 
 	private final String ID_TIMELASTIMAGE = "fileTimeImageLastMinute";
-	private final String ID_NFRAMES = "number_of_frames";
 	private final String ID_STARTFRAME = "startFrame";
 	private final String ID_ENDFRAME = "endFrame";
 	private final String ID_STEP = "stepFrame";
@@ -211,7 +209,6 @@ public class Experiment {
 			return false;
 		fileTimeImageFirstMinute= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
 		fileTimeImageLastMinute = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
-		number_of_frames 		= XMLUtil.getElementIntValue(node, ID_NFRAMES, number_of_frames);
 		kymoFrameStart 			= XMLUtil.getElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 		kymoFrameEnd 			= XMLUtil.getElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 		kymoFrameStep 			= XMLUtil.getElementIntValue(node, ID_STEP, kymoFrameStep);
@@ -233,7 +230,6 @@ public class Experiment {
 			XMLUtil.setElementValue(node, ID_VERSION, ID_VERSIONNUM);
 			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
 			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
-			XMLUtil.setElementIntValue(node, ID_NFRAMES, number_of_frames);
 			XMLUtil.setElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 			XMLUtil.setElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 			XMLUtil.setElementIntValue(node, ID_STEP, kymoFrameStep);

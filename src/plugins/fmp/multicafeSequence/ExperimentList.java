@@ -24,8 +24,14 @@ public class ExperimentList {
 	
 	public Experiment getStartAndEndFromAllExperiments(XLSExportOptions options) {
 		Experiment expAll = new Experiment();
+		Experiment exp0 = experimentList.get(0);
+		expAll.setKymoFrameStep(exp0.getKymoFrameStep());
+		for (Experiment exp: experimentList) {
+			if (exp.getKymoFrameStep() < expAll.getKymoFrameStep())
+				expAll.setKymoFrameStep(exp.getKymoFrameStep());
+		}
+		
 		if (options.absoluteTime) {
-			Experiment exp0 = experimentList.get(0);
 			expAll.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
 			expAll.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
 			for (Experiment exp: experimentList) {
@@ -36,9 +42,7 @@ public class ExperimentList {
 			}
 			expAll.fileTimeImageFirstMinute = expAll.getFileTimeImageFirst(false).toMillis()/60000;
 			expAll.fileTimeImageLastMinute = expAll.getFileTimeImageLast(false).toMillis()/60000;	
-		} 
-		else 
-		{
+		} else {
 			expAll.fileTimeImageFirstMinute = 0;
 			expAll.fileTimeImageLastMinute = 0;
 			for (Experiment exp: experimentList) {
@@ -48,17 +52,12 @@ public class ExperimentList {
 				long last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
 				long first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
 				long diff = ( last - first) /60000;
-				
 				if (expAll.fileTimeImageLastMinute < diff) 
 					expAll.fileTimeImageLastMinute = diff;
 			}
 		}
-		
-		expAll.setKymoFrameStep ( options.buildExcelBinStep);
 		expAll.setKymoFrameStart ( (int) expAll.fileTimeImageFirstMinute);
 		expAll.setKymoFrameEnd ( (int) expAll.fileTimeImageLastMinute);
-		expAll.number_of_frames = (int) (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1;
-		
 		return expAll;
 	}
 		
