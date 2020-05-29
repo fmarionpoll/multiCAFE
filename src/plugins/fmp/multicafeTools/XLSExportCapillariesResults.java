@@ -315,8 +315,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				double value = row.values_out[i_from];
 				if (!Double.isNaN(value)) {
 					XLSUtils.setValue(sheet, pt, transpose, value);
-					int i_to = coltime / options.buildExcelBinStep;
-					if (i_to < row.padded_out.length && row.padded_out[i_to])
+					if (i_from < row.padded_out.length && row.padded_out[i_from])
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
 			}
@@ -365,8 +364,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				double sum = dataL+dataR;
 				if (!Double.isNaN(sum)) {
 					XLSUtils.setValue(sheet, pt, transpose, sum);
-					int i_to = coltime / options.buildExcelBinStep;
-					if (i_to < rowL.padded_out.length && rowL.padded_out[i_to])
+					if (i_from < rowL.padded_out.length && rowL.padded_out[i_from])
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
 				pt.x ++;
@@ -374,8 +372,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					double ratio = (dataL-dataR)/sum;
 					if (!Double.isNaN(ratio)) {
 						XLSUtils.setValue(sheet, pt, transpose, ratio);
-						int i_to = coltime / options.buildExcelBinStep;
-						if (i_to < rowL.padded_out.length && rowL.padded_out[i_to])
+						if (i_from < rowL.padded_out.length && rowL.padded_out[i_from])
 							XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 					}
 				}

@@ -57,7 +57,6 @@ public class MCCapillaries_Table  extends JPanel {
 		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		topPanel.add(copyButton);
         topPanel.add(pasteButton);
-        //topPanel.add(new JLabel("          "));
         topPanel.add(getNfliesButton);
         topPanel.add(duplicateButton);
         topPanel.add(duplicateallButton);
