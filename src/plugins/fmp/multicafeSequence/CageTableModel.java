@@ -66,7 +66,7 @@ public class CageTableModel extends AbstractTableModel {
         	switch (columnIndex) {
             case 0: return cage.roi.getName();
             case 1: return cage.cageNFlies;
-            case 2: return cage.cageComment;
+            case 2: return cage.strCageComment;
         	}
     	}
     	return null;
@@ -92,7 +92,7 @@ public class CageTableModel extends AbstractTableModel {
         	switch (columnIndex) {
             case 0: cage.roi.setName(aValue.toString()); break;
             case 1: cage.cageNFlies = (int) aValue; break;
-            case 2: cage.cageComment = aValue.toString(); break;
+            case 2: cage.strCageComment = aValue.toString(); break;
         	}
     	}
     }

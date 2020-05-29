@@ -89,7 +89,7 @@ public class MCCages_Table extends JPanel {
 							continue;
 						cageFrom.valid = true;
 						cageTo.cageNFlies = cageFrom.cageNFlies;
-						cageTo.cageComment = cageFrom.cageComment;
+						cageTo.strCageComment = cageFrom.strCageComment;
 					}
 				}
 				viewModel.fireTableDataChanged();

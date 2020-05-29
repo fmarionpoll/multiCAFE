@@ -22,8 +22,8 @@ public class Cage {
 	public XYTaSeries 		flyPositions 		= new XYTaSeries();
 	public List<ROI2D> 		detectedFliesList	= new ArrayList<ROI2D>();
 	public int 				cageNFlies  		= 1;
-	public String 			cageComment 		= "..";
-	private String 			cageNumber 			= null;
+	public String 			strCageComment 		= "..";
+	private String 			strCageNumber 		= null;
 	public	boolean			valid				= false;
 	
 	private final String ID_CAGELIMITS 			= "CageLimits";
@@ -43,7 +43,7 @@ public class Cage {
 		
 		Element xmlVal = XMLUtil.addElement(node, "Cage"+index);
 		XMLUtil.setElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
-		XMLUtil.setElementValue(xmlVal, ID_COMMENT, cageComment);
+		XMLUtil.setElementValue(xmlVal, ID_COMMENT, strCageComment);
 		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_CAGELIMITS);
 		if (roi != null) {
 			roi.setSelected(false);
@@ -79,7 +79,7 @@ public class Cage {
 			return false;
 		
 		cageNFlies = XMLUtil.getElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
-		cageComment = XMLUtil.getElementValue(xmlVal, ID_COMMENT, cageComment);
+		strCageComment = XMLUtil.getElementValue(xmlVal, ID_COMMENT, strCageComment);
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_CAGELIMITS);
 		if (xmlVal2 != null) {
 			roi = (ROI2D) ROI.createFromXML(xmlVal2 );
@@ -106,16 +106,16 @@ public class Cage {
 	}
 
 	public String getCageNumber() {
-		if (cageNumber == null) 
-			cageNumber = roi.getName().substring(roi.getName().length() - 3);
-		return cageNumber;
+		if (strCageNumber == null) 
+			strCageNumber = roi.getName().substring(roi.getName().length() - 3);
+		return strCageNumber;
 	}
 	
 	public int getCageNumberInteger() {
 		int cagenb = -1;
-		cageNumber = getCageNumber();
-		if (cageNumber == null) {
-			cagenb = Integer.valueOf(cageNumber);
+		strCageNumber = getCageNumber();
+		if (strCageNumber != null) {
+			cagenb = Integer.valueOf(strCageNumber);
 		}
 		return cagenb;
 	}

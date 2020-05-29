@@ -48,6 +48,7 @@ public class Cages {
 		cageList.clear();
 	}
 	
+	// -------------
 	public boolean xmlWriteCagesToFile(String name, String directory) {
 		String csFile = MulticafeTools.saveFileAs(name, directory, "xml");
 		if (csFile == null)
@@ -148,6 +149,8 @@ public class Cages {
 		}
 		return true;
 	}
+	
+	// --------------
 	
 	private void transferDataToCages_v0(List<ROI2D> cageLimitROIList, List<XYTaSeries> flyPositionsList) {
 		cageList.clear();

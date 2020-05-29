@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -33,8 +32,9 @@ public class MCCapillaries_Table  extends JPanel {
 	private CapillaryTableModel viewModel 		= null;
 	private JButton				copyButton 		= new JButton("Copy table");
 	private JButton				pasteButton 	= new JButton("Paste");
-	private JButton				duplicateButton = new JButton("Duplicate selected cell (L/R)");
+	private JButton				duplicateButton = new JButton("Duplicate cell to L/R");
 	private JButton				duplicateallButton = new JButton("Duplicate cell to all");
+	private JButton				getNfliesButton = new JButton("Get n flies from cage");
 	private MultiCAFE 			parent0 		= null; 
 	private List <Capillary> 	capillariesArrayCopy = null;
 	
@@ -57,7 +57,8 @@ public class MCCapillaries_Table  extends JPanel {
 		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		topPanel.add(copyButton);
         topPanel.add(pasteButton);
-        topPanel.add(new JLabel("          "));
+        //topPanel.add(new JLabel("          "));
+        topPanel.add(getNfliesButton);
         topPanel.add(duplicateButton);
         topPanel.add(duplicateallButton);
         
@@ -149,6 +150,13 @@ public class MCCapillaries_Table  extends JPanel {
 			        	}					
 					}
 				}
+			}});
+		
+		getNfliesButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
+				viewModel.fireTableDataChanged();
 			}});
 	}
 	
