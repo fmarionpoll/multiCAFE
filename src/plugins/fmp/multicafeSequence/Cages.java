@@ -48,6 +48,23 @@ public class Cages {
 		cageList.clear();
 	}
 	
+	public void mergeLists(Cages cagesm) {
+		for (Cage cagem : cagesm.cageList ) {
+			if (!isPresent(cagem))
+				cageList.add(cagem);
+		}
+	}
+	
+	boolean isPresent(Cage cagenew) {
+		boolean flag = false;
+		for (Cage cage: cageList) {
+			if (cage.roi.getName().contentEquals(cagenew.roi.getName())) {
+				flag = true;
+				break;
+			}
+		}
+		return flag;
+	}
 	// -------------
 	public boolean xmlWriteCagesToFile(String name, String directory) {
 		String csFile = MulticafeTools.saveFileAs(name, directory, "xml");
@@ -151,6 +168,16 @@ public class Cages {
 	}
 	
 	// --------------
+	
+	public void copy (Cages cag) {
+		detect.copyParameters(cag.detect);
+		cageList.clear();
+		for (Cage ccag: cag.cageList) {
+			Cage cagi = new Cage();
+			cagi.copy(ccag);
+			cageList.add(cagi);
+		}
+	}
 	
 	private void transferDataToCages_v0(List<ROI2D> cageLimitROIList, List<XYTaSeries> flyPositionsList) {
 		cageList.clear();

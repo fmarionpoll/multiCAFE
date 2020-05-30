@@ -1,5 +1,6 @@
 package plugins.fmp.multicafeSequence;
 
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
+import plugins.fmp.multicafeTools.EnumXLSExportType;
 
 
 
@@ -20,15 +22,46 @@ public class XYTaSeries implements XMLPersistent {
 	public int 				lastTimeAlive 		= 0;
 	public int 				lastIntervalAlive 	= 0;
 	public ArrayList<XYTaValue> pointsList  	= new ArrayList<XYTaValue>();
-
 	
+	public String			name 				= null;
+	public EnumXLSExportType exportType 		= null;
+	public int				binsize				= 1;
+	public Point2D			origin				= new Point2D.Double(0, 0);
+	public double			pixelsize			= 1.;
+	
+
+
 	public void ensureCapacity(int minCapacity) {
 		pointsList.ensureCapacity(minCapacity);
 	}
 	
 	public XYTaSeries() {
 	}
-
+	
+	public XYTaSeries(String name, EnumXLSExportType exportType, int nFrames, int binsize) {
+		this.name = name;
+		this.exportType = exportType;
+		this.binsize = binsize;
+		pointsList 	= new ArrayList<XYTaValue>(nFrames);
+		for (int i = 0; i< nFrames; i++) {
+			pointsList.add(new XYTaValue(i*binsize));
+		}
+	}
+	
+	public XYTaValue getAt(int indexData) {
+		XYTaValue val = null;
+		if (indexData < pointsList.size())
+			val = pointsList.get(indexData);
+		return val;
+	}
+	
+	public XYTaValue getLast() {			
+		XYTaValue val = null;
+		if (pointsList.size()>0) 
+			val = pointsList.get(pointsList.size()-1);
+		return val;
+	}
+	
 	public void clear() {
 		pointsList.clear();
 	}
@@ -56,6 +89,20 @@ public class XYTaSeries implements XMLPersistent {
 	public void add(Point2D point, int frame) {
 		XYTaValue pos = new XYTaValue(point, frame);
 		pointsList.add(pos);
+	}
+	
+	public void copy (XYTaSeries xySer) {
+		moveThreshold = xySer.moveThreshold;
+		sleepThreshold = xySer.sleepThreshold;
+		lastTimeAlive = xySer.lastIntervalAlive;
+		for (XYTaValue aVal: xySer.pointsList) {
+			XYTaValue newVal = new XYTaValue();
+			newVal.copy(aVal);
+			pointsList.add(newVal);
+		}
+		name = xySer.name;
+		exportType = xySer.exportType;
+		binsize = xySer.binsize;
 	}
 
 	@Override
@@ -111,21 +158,32 @@ public class XYTaSeries implements XMLPersistent {
 		return lastIntervalAlive;
 	}
 	
-	private List<Double> getDistanceBetweenPoints() {
-		ArrayList<Double> dataArray = new ArrayList<Double>();
-		dataArray.ensureCapacity(pointsList.size());
+	public void computeIsAlive() {
+		computeDistanceBetweenPoints();
+		lastIntervalAlive = 0;
+		boolean isalive = false;
+		for (int i= pointsList.size() - 1; i >= 0; i--) {
+			XYTaValue pos = pointsList.get(i);
+			if (pos.distance > moveThreshold && !isalive) {
+				lastIntervalAlive = i;
+				lastTimeAlive = pos.time;
+				isalive = true;				
+			}
+			pos.alive = isalive;
+		}
+	}
+
+	public void computeDistanceBetweenPoints() {
 		if (pointsList.size() > 0) {
 			Point2D previous = new Point2D.Double();
 			previous = pointsList.get(0).point;
 			for (XYTaValue pos: pointsList) {
-				double distance = pos.point.distance(previous);
+				pos.distance = pos.point.distance(previous);
 				if (previous.getX() < 0 || pos.point.getX() < 0)
-					distance = Double.NaN;
-				dataArray.add(distance);
+					pos.distance = Double.NaN;
 				previous = pos.point;
 			}
 		}
-		return dataArray;
 	}
 	
 	public List<Double> getIsAliveAsDoubleArray() {
@@ -146,20 +204,6 @@ public class XYTaSeries implements XMLPersistent {
 		return dataArray;
 	}
 		
-	public void computeIsAlive() {
-		List<Double> data = getDistanceBetweenPoints();
-		lastIntervalAlive = 0;
-		boolean isalive = false;
-		for (int i= data.size() - 1; i >= 0; i--) {
-			if (data.get(i) > moveThreshold && !isalive) {
-				lastIntervalAlive = i;
-				lastTimeAlive = pointsList.get(i).time;
-				isalive = true;				
-			}
-			pointsList.get(i).alive = isalive;
-		}
-	}
-
 	public int getLastIntervalAlive() {
 		if (lastIntervalAlive >= 0)
 			return lastIntervalAlive;
@@ -203,11 +247,11 @@ public class XYTaSeries implements XMLPersistent {
 	}
 
 	private List<Integer> getDistanceAsMoveOrNot() {
-		List<Double> datai = getDistanceBetweenPoints();
+		computeDistanceBetweenPoints();
 		ArrayList<Integer> dataArray = new ArrayList<Integer>();
-		dataArray.ensureCapacity(datai.size());
-		for (int i= 0; i< datai.size(); i++) {
-			dataArray.add(datai.get(i) < moveThreshold ? 1: 0);
+		dataArray.ensureCapacity(pointsList.size());
+		for (int i= 0; i< pointsList.size(); i++) {
+			dataArray.add(pointsList.get(i).distance < moveThreshold ? 1: 0);
 		}
 		return dataArray;
 	}
@@ -251,4 +295,34 @@ public class XYTaSeries implements XMLPersistent {
 			return -1;
 		return (pointsList.get(index).sleep ? 1: 0); 
 	}
+
+	public void computeNewPointsOrigin(Point2D newOrigin) {
+		newOrigin.setLocation(newOrigin.getX()*pixelsize, newOrigin.getY()*pixelsize);
+		double deltaX = newOrigin.getX() - origin.getX();
+		double deltaY = newOrigin.getY() - origin.getY();
+		if (deltaX == 0 && deltaY == 0)
+			return;
+		for (XYTaValue pos : pointsList) {
+			pos.point.setLocation(pos.point.getX()-deltaX, pos.point.getY()-deltaY);
+		}
+	}
+	
+	public void changePixelSize(double newpixelSize) {
+		if (newpixelSize == pixelsize)
+			return;
+		double ratio = 1/pixelsize*newpixelSize;
+		for (XYTaValue pos : pointsList) 
+			pos.point.setLocation(pos.point.getX()*ratio, pos.point.getY()*ratio);
+		pixelsize = newpixelSize;
+		origin.setLocation(origin.getX()*ratio, origin.getY()*ratio);
+	}
+
+	
+	public void clearValues(int fromIndex) {
+		int toIndex = pointsList.size();
+		if (fromIndex > 0 && fromIndex < toIndex) 
+			pointsList.subList(fromIndex, toIndex).clear();
+		
+	}
+
 }

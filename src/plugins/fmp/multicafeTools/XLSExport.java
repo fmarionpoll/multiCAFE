@@ -170,7 +170,7 @@ public class XLSExport {
 		return numFromName;
 	}
 	
-	protected Point getCellXCoordinateFromDataName(XLSCapillaryResults xlsResults, Point pt_main, int colseries) {
+	protected Point getCellXCoordinateFromDataName(XLSResults xlsResults, Point pt_main, int colseries) {
 		int col = getColFromKymoFileName(xlsResults.name);
 		if (col >= 0)
 			pt_main.x = colseries + col;

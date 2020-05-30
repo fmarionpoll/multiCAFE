@@ -4,7 +4,7 @@ package plugins.fmp.multicafeTools;
 import java.util.Arrays;
 import java.util.List;
 
-public class XLSCapillaryResults {
+public class XLSResults {
 	String				name 		= null;
 	EnumXLSExportType 	exportType 	= null;
 	List<Integer > 		data 		= null;
@@ -12,9 +12,16 @@ public class XLSCapillaryResults {
 	double [] 			values_out	= null;
 	boolean[]			padded_out	= null;
 	
-	public XLSCapillaryResults (String name, EnumXLSExportType exportType) {
+	public XLSResults (String name, EnumXLSExportType exportType) {
 		this.name = name;
 		this.exportType = exportType;
+	}
+	
+	public XLSResults(String name, EnumXLSExportType exportType, int nFrames, int binsize) {
+		this.name = name;
+		this.exportType = exportType;
+		this.binsize = binsize;
+		initValuesArray(nFrames);
 	}
 	
 	public double getAt(int indexData, double scale) {			
@@ -33,7 +40,7 @@ public class XLSCapillaryResults {
 		return value;
 	}
 	
-	public void initValuesArray(int dimension) {
+	private void initValuesArray(int dimension) {
 		values_out = new double [dimension];
 		Arrays.fill(values_out, Double.NaN);
 		padded_out = new boolean [dimension];

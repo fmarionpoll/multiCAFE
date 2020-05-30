@@ -367,13 +367,16 @@ public class SequenceKymos extends SequenceCamData  {
 		return array;
 	}
 	
-	public List<Integer> subtractTdelta(List<Integer > array, int delta) {
+	public List<Integer> subtractTdelta(List<Integer > array, int kymoFrameStep, int delta) {
 		if (array == null)
 			return null;
+		
 		for (int index=0; index < array.size(); index++) {
 			int value = 0;
-			if (index+delta < array.size()) 
-				value = array.get(index+delta) - array.get(index);
+			int timeIndex = index * kymoFrameStep + delta;
+			int indexDelta = timeIndex/kymoFrameStep;
+			if (indexDelta < array.size()) 
+				value = array.get(indexDelta) - array.get(index);
 			array.set(index, value);
 		}
 		return array;

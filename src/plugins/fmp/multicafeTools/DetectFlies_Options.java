@@ -62,6 +62,35 @@ public class DetectFlies_Options implements XMLPersistent {
 	
 	// -----------------------------------------------------
 	
+	public void copyParameters (DetectFlies_Options det) {
+		threshold = det.threshold;
+		thresholdBckgnd			= det.thresholdBckgnd;
+		thresholdDiff			= det.thresholdDiff;
+		btrackWhite 			= det.btrackWhite;
+		blimitLow 				= det.blimitLow;
+		blimitUp 				= det.blimitUp;
+		limitLow				= det.limitLow;
+		limitUp					= det.limitUp;
+		limitRatio				= det.limitRatio;
+		jitter 					= det.jitter;
+		forceBuildBackground	= det.forceBuildBackground;
+		detectFlies				= det.detectFlies;
+		transformop				= det.transformop; 
+		videoChannel 			= det.videoChannel;
+		backgroundSubstraction 	= det.backgroundSubstraction;
+		//cages 					= null;
+		//cageMaskList = new ArrayList<BooleanMask2D>();
+		stepFrame 				= det.stepFrame;
+		startFrame				= det.startFrame;
+		endFrame				= det.endFrame;
+		isFrameFixed			= det.isFrameFixed;
+		nbframes				= det.nbframes;
+		//public Rectangle parent0Rect 			= null;
+		//public ExperimentList expList 			= null;
+		//public Rectangle 	rectangleAllCages 	= null;
+		//ROI2DRectangle [] 	tempRectROI;
+		//ROI [][] 			resultFlyPositionArrayList;
+	}
 	
 	@Override
 	public boolean loadFromXML(Node node) {

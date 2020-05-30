@@ -6,6 +6,7 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafeSequence.Cage;
+import plugins.fmp.multicafeSequence.XYTaSeries;
 
 
 public class Comparators {
@@ -31,9 +32,16 @@ public class Comparators {
 		}
 	}
 	
-	public static class XLSCapillaryResultsComparator implements Comparator <XLSCapillaryResults> {
+	public static class XLSResultsComparator implements Comparator <XLSResults> {
 		@Override
-		public int compare (XLSCapillaryResults o1, XLSCapillaryResults o2) {
+		public int compare (XLSResults o1, XLSResults o2) {
+			return o1.name.compareTo(o2.name);
+		}
+	}
+	
+	public static class XYTaSeriesComparator implements Comparator <XYTaSeries> {
+		@Override
+		public int compare (XYTaSeries o1, XYTaSeries o2) {
 			return o1.name.compareTo(o2.name);
 		}
 	}

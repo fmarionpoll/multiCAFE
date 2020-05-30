@@ -9,14 +9,20 @@ import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 
 public class XYTaValue implements XMLPersistent {
-	public Point2D 	point 	= new Point2D.Double();
+	public Point2D 	point 	= new Point2D.Double(Double.NaN, Double.NaN);
 	public int 		time 	= 0;
 	public boolean 	alive 	= false;
 	public boolean 	sleep 	= false;
+	public boolean  padded	= false;
+	public double	distance = 0.;
 	
 	
 	
 	public XYTaValue() {
+	}
+	
+	public XYTaValue(int time) {
+		this.time = time;
 	}
 	
 	public XYTaValue(Point2D point, int time) {
@@ -28,6 +34,15 @@ public class XYTaValue implements XMLPersistent {
 		this.point = point;
 		this.time = time;
 		this.alive = alive;
+	}
+	
+	public void copy (XYTaValue aVal) {
+		point = (Point2D) aVal.point.clone();
+		time = aVal.time;
+		alive = aVal.alive;
+		sleep = aVal.sleep;
+		padded = aVal.padded;
+		distance = aVal.distance;
 	}
 	
 	@Override

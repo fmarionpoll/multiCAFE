@@ -149,5 +149,20 @@ public class Cage {
 		return pt;
 	}
 	
-	
+	public void copy (Cage cag) {
+		roi	= cag.roi;
+		frameStep = cag.frameStep;
+		frameStart = cag.frameStart;
+		frameEnd = cag.frameEnd;
+		cageNFlies  = cag.cageNFlies;
+		strCageComment = cag.strCageComment;
+		strCageNumber = cag.strCageNumber;
+		valid = false; 
+		
+		flyPositions.copy(cag.flyPositions);
+		
+		detectedFliesList	= new ArrayList<ROI2D>();
+		detectedFliesList.addAll(cag.detectedFliesList);
+		
+	}
 }
