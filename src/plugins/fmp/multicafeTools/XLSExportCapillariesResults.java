@@ -291,14 +291,14 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				writeLRRows(sheet, columndataarea, rowseries, pt);
 				break;
 			default:
-				writeSimpleRow(sheet, columndataarea, rowseries, pt);
+				writeSimpleRows(sheet, columndataarea, rowseries, pt);
 				break;
 		}			
 		pt_main.x = pt.x+1;
 		return pt_main;
 	}
 	
-	private void writeSimpleRow(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
+	private void writeSimpleRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
 		boolean transpose = options.transpose;
 		for (XLSResults row: rowsForOneExp) {
 			pt.y = column_dataArea;

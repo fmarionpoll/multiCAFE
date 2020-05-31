@@ -13,7 +13,6 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
@@ -160,8 +159,7 @@ public class XLSExport {
 		return numFromName;
 	}
 		
-	protected int getColFromCageName(Cage cage) {
-		String name = cage.roi.getName();
+	protected int getColFromCageName(String name) {
 		if (!name .contains("cage"))
 			return -1;
 		

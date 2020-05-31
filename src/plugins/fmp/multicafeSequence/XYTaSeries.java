@@ -28,6 +28,7 @@ public class XYTaSeries implements XMLPersistent {
 	public int				binsize				= 1;
 	public Point2D			origin				= new Point2D.Double(0, 0);
 	public double			pixelsize			= 1.;
+	public int				nflies				= 1;
 	
 
 

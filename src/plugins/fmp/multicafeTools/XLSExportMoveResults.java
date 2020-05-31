@@ -153,7 +153,7 @@ public class XLSExportMoveResults extends XLSExport {
 				default:
 					break;
 			}
-			int col = getColFromCageName(cage)*2;
+			int col = getColFromCageName(cage.roi.getName())*2;
 			if (col >= 0)
 				pt_main.x = colseries + col;
 			int currentIndex = currentFrame - startFrame;
@@ -182,7 +182,7 @@ public class XLSExportMoveResults extends XLSExport {
 				pt_main.x += 2;
 				continue;
 			}
-			int col = getColFromCageName(cage)*2;
+			int col = getColFromCageName(cage.roi.getName())*2;
 			if (col >= 0)
 				pt_main.x = colseries + col;
 			int currentIndex = currentFrame - startFrame;
@@ -211,7 +211,7 @@ public class XLSExportMoveResults extends XLSExport {
 				pt_main.x += 2;
 				continue;
 			}
-			int col = getColFromCageName(cage)*2;
+			int col = getColFromCageName(cage.roi.getName())*2;
 			if (col >= 0)
 				pt_main.x = colseries + col;
 			alive = cage.flyPositions.isAliveAtTimeIndex(currentFrame - startFrame);
@@ -235,7 +235,7 @@ public class XLSExportMoveResults extends XLSExport {
 				pt_main.x += 2;
 				continue;
 			}
-			int col = getColFromCageName(cage) * 2;
+			int col = getColFromCageName(cage.roi.getName()) * 2;
 			if (col >= 0)
 				pt_main.x = colseries + col;
 			int currentIndex = currentFrame - startFrame;

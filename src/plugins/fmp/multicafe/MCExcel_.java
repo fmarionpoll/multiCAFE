@@ -19,7 +19,6 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.XLSExportCapillariesResults;
-import plugins.fmp.multicafeTools.XLSExportMoveResults;
 import plugins.fmp.multicafeTools.XLSExportMoveResults2;
 import plugins.fmp.multicafeTools.XLSExportOptions;
 
