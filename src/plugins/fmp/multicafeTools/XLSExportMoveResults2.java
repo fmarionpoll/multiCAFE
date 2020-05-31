@@ -165,6 +165,9 @@ public class XLSExportMoveResults2  extends XLSExport {
 			}
 			expi = expi.nextExperiment;
 		}
+		for (XYTaSeries row: rowsForOneExp ) {
+			row.checkIsAliveFromAliveArray();
+		}
 	}
 	
 	private XYTaSeries getResultsArrayWithThatName(String testname, List <XYTaSeries> resultsArrayList) {
@@ -179,9 +182,8 @@ public class XLSExportMoveResults2  extends XLSExport {
 	}
 	
 	private void addResultsTo_rowsForOneExp(Experiment expi, List <XYTaSeries> resultsArrayList) {
-		int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
-		int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
-		
+		final int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
+		final int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
 		for (XYTaSeries row: rowsForOneExp ) {
 			XYTaSeries results = getResultsArrayWithThatName(row.name,  resultsArrayList);
 			if (results != null) {
@@ -200,11 +202,12 @@ public class XLSExportMoveResults2  extends XLSExport {
 			} else {
 				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) {
 					XYTaValue posok = padWithLastPreviousValue(row, transfer_first_index);
+					int nvalues = transfer_nvalues;
 					if (posok != null) {
-						if (transfer_nvalues > row.pointsList.size())
-							transfer_nvalues = row.pointsList.size();
+						if (nvalues > row.pointsList.size())
+							nvalues = row.pointsList.size();
 						int tofirst = transfer_first_index;
-						int tolast = tofirst + transfer_nvalues;
+						int tolast = tofirst + nvalues;
 						for (int toi = tofirst; toi < tolast; toi++) 
 							row.pointsList.get(toi).copy(posok);
 					}

@@ -173,6 +173,20 @@ public class XYTaSeries implements XMLPersistent {
 			pos.alive = isalive;
 		}
 	}
+	
+	public void checkIsAliveFromAliveArray() {
+		lastIntervalAlive = 0;
+		boolean isalive = false;
+		for (int i= pointsList.size() - 1; i >= 0; i--) {
+			XYTaValue pos = pointsList.get(i);
+			if (!isalive && pos.alive) {
+				lastIntervalAlive = i;
+				lastTimeAlive = pos.time;
+				isalive = true;				
+			}
+			pos.alive = isalive;
+		}
+	}
 
 	public void computeDistanceBetweenPoints() {
 		if (pointsList.size() > 0) {
