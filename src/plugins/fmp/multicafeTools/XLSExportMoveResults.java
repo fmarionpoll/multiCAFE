@@ -1,9 +1,11 @@
 package plugins.fmp.multicafeTools;
 
 import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -11,51 +13,61 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
+import plugins.fmp.multicafeSequence.ExperimentList;
+import plugins.fmp.multicafeSequence.XYTaSeries;
+import plugins.fmp.multicafeSequence.XYTaValue;
 
+public class XLSExportMoveResults  extends XLSExport {
+	ExperimentList expList = null;
+	List <XYTaSeries> rowsForOneExp = new ArrayList <XYTaSeries> ();
 
-public class XLSExportMoveResults extends XLSExport {
-
-	public void exportToFile(String filename, XLSExportOptions opt) {
-		System.out.println("XLS move output");
+	// ----------------------
+	
+	public void exportToFile(String filename, XLSExportOptions opt) {	
+		System.out.println("XLS move measures output");
 		options = opt;
-		
-		int col_max = 1;
-		int col_end = 0;
+		expList = options.expList;
+
+		int column = 1;
 		int iSeries = 0;
-		options.expList.loadAllExperiments(true, true);
-		options.expList.chainExperiments(options.collateSeries);
-		expAll = options.expList.getStartAndEndFromAllExperiments(options);
-		
+		boolean loadCapillaries = true;
+		boolean loadDrosoTrack = true; 
+		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
+		expList.chainExperiments(options.collateSeries);
+		expAll = expList.getStartAndEndFromAllExperiments(options);
+	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
-		int nbexpts = options.expList.getSize();
+		int nbexpts = expList.getSize();
 		progress.setLength(nbexpts);
-		
+
 		try { 
 			workbook = xlsInitWorkbook();
 			for (int index = options.firstExp; index <= options.lastExp; index++) {
-				Experiment exp = options.expList.getExperiment(index);
+				Experiment exp = expList.getExperiment(index);
+				if (exp.previousExperiment != null)
+					continue;
 				
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
-			
-				if (options.xyImage)
-					col_end = xlsExportToWorkbook(exp, col_max, charSeries, EnumXLSExportType.XYIMAGE);
-				if (options.xyTopCage) 
-					col_end = xlsExportToWorkbook(exp, col_max, charSeries, EnumXLSExportType.XYTOPCAGE);
-				if (options.xyTipCapillaries) 
-					col_end = xlsExportToWorkbook(exp, col_max, charSeries, EnumXLSExportType.XYTIPCAPS);
-				if (options.distance) 
-					col_end = xlsExportToWorkbook(exp, col_max, charSeries, EnumXLSExportType.DISTANCE);
-				if (options.alive) 
-					col_end = xlsExportToWorkbook(exp, col_max, charSeries,  EnumXLSExportType.ISALIVE);
-				if (options.sleep)
-					col_end = xlsExportToWorkbook(exp, col_max, charSeries,  EnumXLSExportType.SLEEP);
 				
-				if (col_end > col_max)
-					col_max = col_end;
+				if (options.xyImage)		
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.XYIMAGE);
+				if (options.xyTopCage) 		
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTOPCAGE);
+				if (options.xyTipCapillaries)  	
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTIPCAPS);
+				if (options.distance)  	
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.DISTANCE);
+				if (options.alive)	
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.ISALIVE);
+				if (options.sleep) 	
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SLEEP);
+				
+				if (!options.collateSeries || exp.previousExperiment == null)
+					column += expList.maxSizeOfCapillaryArrays +2;
 				iSeries++;
 				progress.incPosition();
-			}		
+			}
 			progress.setMessage( "Save Excel file to disk... ");
 			FileOutputStream fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
@@ -67,193 +79,263 @@ public class XLSExportMoveResults extends XLSExport {
 		}
 		System.out.println("XLS output finished");
 	}
-
-	public int xlsExportToWorkbook(Experiment exp, int col0, String charSeries, EnumXLSExportType xlsExportOption) {
-		XSSFSheet sheet = xlsInitSheet(xlsExportOption.toString());
-		Point pt = writeDescriptors(exp, col0, charSeries, sheet, xlsExportOption);
-		pt = writeData(exp, sheet, pt, xlsExportOption, options.transpose, false);
+	
+	private int getDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType datatype) {	
+		getDataFromOneSeriesOfExperiments(exp, datatype);
+		
+		XSSFSheet sheet = xlsInitSheet(datatype.toString());
+		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
 		if (options.onlyalive) {
-			sheet = xlsInitSheet(xlsExportOption.toString()+"_alive");
-			Point pt2 = writeDescriptors(exp, col0, charSeries, sheet, xlsExportOption);
-			writeData(exp, sheet, pt2, xlsExportOption, options.transpose, true);
+			trimDeadsFromArrayList(exp);
+			sheet = xlsInitSheet(datatype.toString()+"_alive");
+			xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
 		}
+		return colmax;
+	}
+	
+	private void getDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsoption) {	
+		// loop to get all capillaries into expAll and init rows for this experiment
+		expAll.cages.copy(exp.cages);
+		expAll.capillaries.copy(exp.capillaries);
+		expAll.fileTimeImageFirst 	= exp.fileTimeImageFirst;
+		expAll.fileTimeImageLast 	= exp.fileTimeImageLast;
+		expAll.experimentFileName 	= exp.experimentFileName;
+		expAll.boxID 				= exp.boxID;
+		expAll.experiment 			= exp.experiment;
+		expAll.comment1 			= exp.comment1;
+		expAll.comment2 			= exp.comment2;
+
+		Experiment expi = exp.nextExperiment;
+		while (expi != null ) {
+			expAll.cages.mergeLists(expi.cages);
+			expAll.fileTimeImageLast = expi.fileTimeImageLast;
+			expi = expi.nextExperiment;
+		}
+		expAll.fileTimeImageFirstMinute = expAll.fileTimeImageFirst.toMillis()/60000;
+		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
+		
+		int ncages = expAll.cages.cageList.size();
+		int nFrames = (int) ((expAll.fileTimeImageLastMinute - expAll.fileTimeImageFirstMinute)/expAll.getKymoFrameStep() +1) ;
+		rowsForOneExp = new ArrayList <XYTaSeries> (ncages);
+		for (int i=0; i< ncages; i++) {
+			Cage cage = expAll.cages.cageList.get(i);
+			XYTaSeries row = new XYTaSeries (cage.roi.getName(), xlsoption, nFrames, expAll.getKymoFrameStep());
+			row.nflies = cage.cageNFlies;
+			rowsForOneExp.add(row);
+		}
+		Collections.sort(rowsForOneExp, new Comparators.XYTaSeriesComparator());
+				
+		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
+		expi = exp;
+		while (expi != null) {
+			List <XYTaSeries> resultsArrayList = new ArrayList <XYTaSeries> (expi.cages.cageList.size());
+			for (Cage cage: expi.cages.cageList) {
+				XYTaSeries results = new XYTaSeries();
+				results.copy(cage.flyPositions);
+				results.binsize = expi.getKymoFrameStep();
+				results.name = cage.roi.getName();
+				results.nflies = cage.cageNFlies;
+				if (results.nflies > 0) {				
+					switch (xlsoption) {
+						case DISTANCE:
+							results.computeDistanceBetweenPoints();
+							break;
+						case ISALIVE:
+							results.computeIsAlive();
+							break;
+						case SLEEP:
+							results.computeSleep();
+							break;
+						case XYTOPCAGE:
+							results.computeNewPointsOrigin(cage.getCenterTopCage());
+							break;
+						case XYTIPCAPS:
+							results.computeNewPointsOrigin(cage.getCenterTipCapillaries(exp.capillaries));
+							break;
+						case XYIMAGE:
+						default:
+							break;
+					}
+					double pixelsize = 32. / exp.capillaries.capillariesArrayList.get(0).pixels;
+					results.changePixelSize(pixelsize);
+					resultsArrayList.add(results);
+				}
+				// here add resultsArrayList to expAll
+				addResultsTo_rowsForOneExp(expi, resultsArrayList);
+			}
+			expi = expi.nextExperiment;
+		}
+		for (XYTaSeries row: rowsForOneExp ) {
+			row.checkIsAliveFromAliveArray();
+		}
+	}
+	
+	private XYTaSeries getResultsArrayWithThatName(String testname, List <XYTaSeries> resultsArrayList) {
+		XYTaSeries resultsFound = null;
+		for (XYTaSeries results: resultsArrayList) {
+			if (!results.name.equals(testname))
+				continue;
+			resultsFound = results;
+			break;
+		}
+		return resultsFound;
+	}
+	
+	private void addResultsTo_rowsForOneExp(Experiment expi, List <XYTaSeries> resultsArrayList) {
+		final int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
+		final int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
+		for (XYTaSeries row: rowsForOneExp ) {
+			XYTaSeries results = getResultsArrayWithThatName(row.name,  resultsArrayList);
+			if (results != null) {
+				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
+					padWithLastPreviousValue(row, transfer_first_index);
+				
+				for (int fromTime = expi.getKymoFrameStart(); fromTime <= expi.getKymoFrameEnd(); fromTime += expi.getKymoFrameStep()) {
+					int from_i = fromTime / expi.getKymoFrameStep();
+					if (from_i >= results.pointsList.size())
+						break;
+					XYTaValue aVal = results.pointsList.get(from_i);
+					int to_i = (int) (fromTime + expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
+					row.pointsList.get(to_i).copy(aVal);
+				}
+				
+			} else {
+				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) {
+					XYTaValue posok = padWithLastPreviousValue(row, transfer_first_index);
+					int nvalues = transfer_nvalues;
+					if (posok != null) {
+						if (nvalues > row.pointsList.size())
+							nvalues = row.pointsList.size();
+						int tofirst = transfer_first_index;
+						int tolast = tofirst + nvalues;
+						for (int toi = tofirst; toi < tolast; toi++) 
+							row.pointsList.get(toi).copy(posok);
+					}
+				}
+			}
+		}
+	}
+	
+	private XYTaValue padWithLastPreviousValue(XYTaSeries row, int transfer_first_index) {
+		XYTaValue posok = null;
+		int index = getIndexOfFirstNonEmptyValueBackwards(row, transfer_first_index);
+		if (index >= 0) {
+			posok = row.pointsList.get(index);
+			for (int i=index+1; i< transfer_first_index; i++) {
+				XYTaValue pos = row.pointsList.get(i);
+				pos.copy(posok);
+				pos.padded = true;
+			}
+		}
+		return posok;
+	}
+	
+	private int getIndexOfFirstNonEmptyValueBackwards(XYTaSeries row, int fromindex) {
+		int index = -1;
+		for (int i= fromindex; i>= 0; i--) {
+			XYTaValue pos = row.pointsList.get(i);
+			if (!Double.isNaN(pos.point.getX())) {
+				index = i;
+				break;
+			}
+		}
+		return index;
+	}
+	
+	private void trimDeadsFromArrayList(Experiment exp) {
+	for (Cage cage: exp.cages.cageList) {
+			String cagenumberString = cage.roi.getName().substring(4);
+			int cagenumber = Integer.parseInt(cagenumberString);
+			if (cagenumber == 0 || cagenumber == 9)
+				continue;
+			// find the last time it is alive in the whole series --------------------
+			Experiment expi = exp;
+			while (expi.nextExperiment != null && expi.nextExperiment.isFlyAlive(cagenumber)) {
+				expi = expi.nextExperiment;
+			}
+			// remove data up to the end ----------------------------------------------
+			int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
+			int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getKymoFrameStep() + (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
+			int ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
+			for (XYTaSeries row : rowsForOneExp) {
+				if (getCageFromCapillaryName (row.name) == cagenumber) {
+					row.clearValues(ilastalive+1);
+				}
+			}
+		}	
+	}
+	
+	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) {
+		Point pt = new Point(col0, 0);
+		writeExperimentDescriptors(expAll, charSeries, sheet, pt, xlsExportOption);
+		pt = writeData2(sheet, xlsExportOption, pt);
 		return pt.x;
 	}
-	
-	private Point writeDescriptors(Experiment exp, int col0, String charSeries, XSSFSheet sheet, EnumXLSExportType xlsExportOption) {
-		Point pt = new Point(col0, 0);
-		if (options.collateSeries)
-			pt.x = options.expList.getStackColumnPosition(exp, col0);
-		if (exp.previousExperiment == null)
-			writeExperimentDescriptors(exp, charSeries, sheet, pt, xlsExportOption);
-		else
-			pt.y += 17;
-		return pt;
+			
+	private Point writeData2 (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) {
+		int rowseries = pt_main.x +2;
+		int columndataarea = pt_main.y;
+		Point pt = new Point(pt_main);
+		writeRows(sheet, columndataarea, rowseries, pt);		
+		pt_main.x = pt.x+1;
+		return pt_main;
 	}
+	
+	private void writeRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
+		boolean transpose = options.transpose;
+		for (XYTaSeries row: rowsForOneExp) {
+			pt.y = column_dataArea;
+			int col = getColFromCageName(row.name)*2;
+			pt.x = rowSeries + col; 
+			if (row.nflies < 1)
+				continue;
+			
+			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
+				int i_from = coltime / row.binsize;
+				if (i_from >= row.pointsList.size())
+					break;
+				double valueL = Double.NaN;
+				double valueR = Double.NaN;
+				XYTaValue pos = row.pointsList.get(i_from);
+				switch (row.exportType) {
+					case DISTANCE:
+						valueL = pos.distance;
+						valueR = valueL;
+						break;
+					case ISALIVE:
+						valueL = pos.alive ? 1: 0;
+						valueR = valueL;
+						break;
+					case SLEEP:
+						valueL = pos.sleep? 1: 0;
+						valueR = valueL;
+						break;
+					case XYTOPCAGE:
+					case XYTIPCAPS:
+					case XYIMAGE:
+						valueL = pos.point.getX();
+						valueR = pos.point.getY();
+					default:
+						break;
+				}
+				
+				if (!Double.isNaN(valueL)) {
+					XLSUtils.setValue(sheet, pt, transpose, valueL);
+					if (pos.padded)
+						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
+				}
+				if (!Double.isNaN(valueR)) {
+					pt.x++;
+					XLSUtils.setValue(sheet, pt, transpose, valueR);
+					if (pos.padded)
+						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
+					pt.x--;
+				}
+			}
+			pt.x+=2;
+		}
+	}
+	
 
-	private Point writeData (Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, boolean deadEmpty) {
-		for (Cage cagei: exp.cages.cageList ) {
-			if (cagei.cageNFlies <1) 
-				continue;
-			switch (option) {
-			case SLEEP:
-				cagei.flyPositions.computeSleep();
-				break;
-			default:
-				break;
-			}
-		}
-		
-		int col0 = pt_main.x;
-		int startFrame 	= 0;
-		int endFrame 	= exp.getSeqCamSizeT()-1;
-		int currentFrame = 0;
-		for (currentFrame=startFrame; currentFrame< endFrame; currentFrame+= options.buildExcelBinStep) {
-			pt_main.x = col0;
-			pt_main.y++;
-			pt_main.x++;
-			pt_main.x++;
-			switch (option) {
-				case DISTANCE:
-					pt_main = exportDistance(exp, sheet, pt_main, option, transpose, deadEmpty, currentFrame, startFrame );
-					break;
-				case ISALIVE:
-					pt_main = exportIsAlive(exp, sheet, pt_main, option, transpose, deadEmpty, currentFrame, startFrame );
-					break;
-				case SLEEP:
-					pt_main = exportSleep(exp, sheet, pt_main, option, transpose, deadEmpty, currentFrame, startFrame );
-					break;
-				case XYIMAGE:
-				case XYTOPCAGE:
-				case XYTIPCAPS:
-				default:
-					pt_main = exportDefault(exp, sheet, pt_main, option, transpose, deadEmpty, currentFrame, startFrame );
-					break;
-			}	
-		} 
-		return pt_main;
-	}
 	
-	private Point exportDefault(Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, boolean deadEmpty, int currentFrame, int startFrame) {
-		int colseries = pt_main.x;
-		int alive = 1;
-		for (Cage cage: exp.cages.cageList ) {
-			if (cage.cageNFlies <1) {
-				pt_main.x += 2;
-				continue;
-			}
-			Point2D pt0 = new Point2D.Double(0, 0);
-			switch (option) {
-				case XYTOPCAGE:
-					pt0 = cage.getCenterTopCage();
-					break;
-				case XYTIPCAPS: 
-					pt0 = cage.getCenterTipCapillaries(exp.capillaries);
-					break;
-				default:
-					break;
-			}
-			int col = getColFromCageName(cage.roi.getName())*2;
-			if (col >= 0)
-				pt_main.x = colseries + col;
-			int currentIndex = currentFrame - startFrame;
-			if (deadEmpty) 
-				alive = cage.flyPositions.isAliveAtTimeIndex(currentIndex);
-			if (alive > 0) {
-				Point2D point = cage.flyPositions.getPointAt(currentIndex);
-				if (point != null) 
-					XLSUtils.setValue(sheet, pt_main, transpose, point.getX() - pt0.getX());
-				pt_main.x++;
-				if (point != null) 
-					XLSUtils.setValue(sheet, pt_main, transpose, point.getY() - pt0.getY());
-				pt_main.x++;
-			} else {
-				pt_main.x += 2;
-			}
-		}
-		return pt_main;
-	}
-	
-	private Point exportSleep(Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, boolean deadEmpty, int currentFrame, int startFrame) {
-		int colseries = pt_main.x;
-		int alive = 1;
-		for (Cage cage: exp.cages.cageList ) {
-			if (cage.cageNFlies <1) {
-				pt_main.x += 2;
-				continue;
-			}
-			int col = getColFromCageName(cage.roi.getName())*2;
-			if (col >= 0)
-				pt_main.x = colseries + col;
-			int currentIndex = currentFrame - startFrame;
-			if (deadEmpty) 
-				alive = cage.flyPositions.isAliveAtTimeIndex(currentIndex);
-			int sleep = -1;
-			if (alive > 0)
-				sleep = cage.flyPositions.isAsleepAtTimeIndex(currentIndex);
-			if (sleep >= 0) {
-				XLSUtils.setValue(sheet, pt_main, transpose, sleep);
-				pt_main.x++;
-				XLSUtils.setValue(sheet, pt_main, transpose, sleep == 0? 1: 0);
-				pt_main.x++;
-			} else {
-				pt_main.x += 2;
-			}
-		}
-		return pt_main;
-	}
-
-	private Point exportIsAlive(Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, boolean deadEmpty, int currentFrame, int startFrame) {
-		int colseries = pt_main.x;
-		int alive = 1;
-		for (Cage cage: exp.cages.cageList ) {
-			if (cage.cageNFlies <1) {
-				pt_main.x += 2;
-				continue;
-			}
-			int col = getColFromCageName(cage.roi.getName())*2;
-			if (col >= 0)
-				pt_main.x = colseries + col;
-			alive = cage.flyPositions.isAliveAtTimeIndex(currentFrame - startFrame);
-			if (alive > 1 || !deadEmpty) {
-				XLSUtils.setValue(sheet, pt_main, transpose, alive );
-				pt_main.x++;
-				XLSUtils.setValue(sheet, pt_main, transpose, alive);
-				pt_main.x++;
-			} else {
-				pt_main.x += 2;
-			}
-		}
-		return pt_main;
-	}
-	
-	private Point exportDistance(Experiment exp, XSSFSheet sheet, Point pt_main, EnumXLSExportType option, boolean transpose, boolean deadEmpty, int currentFrame, int startFrame) {
-		int colseries = pt_main.x;
-		int alive = 1;
-		for (Cage cage: exp.cages.cageList ) {
-			if (cage.cageNFlies <1) {
-				pt_main.x += 2;
-				continue;
-			}
-			int col = getColFromCageName(cage.roi.getName()) * 2;
-			if (col >= 0)
-				pt_main.x = colseries + col;
-			int currentIndex = currentFrame - startFrame;
-			if (deadEmpty) 
-				alive = cage.flyPositions.isAliveAtTimeIndex(currentIndex);
-			if (alive > 0) {
-				int previousIndex = currentIndex - options.buildExcelBinStep;
-				Double value = cage.flyPositions.getDistanceBetween2Points(previousIndex, currentIndex);
-				if (!Double.isNaN(value))
-					XLSUtils.setValue(sheet, pt_main, transpose, value);
-				pt_main.x++;
-				if (!Double.isNaN(value))
-					XLSUtils.setValue(sheet, pt_main, transpose, value);
-				pt_main.x++;
-			} else {
-				pt_main.x += 2;
-			}
-		}
-		return pt_main;
-	}
 }

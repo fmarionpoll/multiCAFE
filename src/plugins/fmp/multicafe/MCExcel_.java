@@ -19,7 +19,7 @@ import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.fmp.multicafeTools.XLSExportCapillariesResults;
-import plugins.fmp.multicafeTools.XLSExportMoveResults2;
+import plugins.fmp.multicafeTools.XLSExportMoveResults;
 import plugins.fmp.multicafeTools.XLSExportOptions;
 
 
@@ -83,7 +83,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 				return;
 			updateParametersCurrentExperiment(exp);
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-				XLSExportMoveResults2 xlsExport = new XLSExportMoveResults2();
+				XLSExportMoveResults xlsExport = new XLSExportMoveResults();
 				xlsExport.exportToFile(file, getMoveOptions());
 			}});
 		} 
