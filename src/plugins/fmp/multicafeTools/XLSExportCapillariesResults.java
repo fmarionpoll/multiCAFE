@@ -210,6 +210,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 						break;
 					double value = results.data.get(from_i) * scalingFactorToPhysicalUnits + dvalue;
 					int to_i = (int) (fromTime + expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
+					if (to_i >= row.values_out.length)
+						break;
 					row.values_out[to_i]= value;
 				}
 				

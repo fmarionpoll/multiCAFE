@@ -196,6 +196,8 @@ public class XLSExportMoveResults  extends XLSExport {
 						break;
 					XYTaValue aVal = results.pointsList.get(from_i);
 					int to_i = (int) (fromTime + expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
+					if (to_i >= row.pointsList.size())
+						break;
 					row.pointsList.get(to_i).copy(aVal);
 				}
 				
