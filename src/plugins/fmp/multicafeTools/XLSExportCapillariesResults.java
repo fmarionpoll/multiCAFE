@@ -220,6 +220,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					double dvalue = padWithLastPreviousValue(row, transfer_first_index);
 					int tofirst = transfer_first_index;
 					int tolast = tofirst + transfer_nvalues;
+					if (tolast > row.values_out.length)
+						tolast = row.values_out.length;
 					for (int toi = tofirst; toi < tolast; toi++) {
 						row.values_out[toi]= dvalue;
 					}
