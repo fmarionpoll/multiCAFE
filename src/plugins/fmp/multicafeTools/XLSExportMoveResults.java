@@ -86,7 +86,7 @@ public class XLSExportMoveResults  extends XLSExport {
 		XSSFSheet sheet = xlsInitSheet(datatype.toString());
 		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
 		if (options.onlyalive) {
-			trimDeadsFromArrayList(exp);
+			trimDeadsFromRowMoveData(exp);
 			sheet = xlsInitSheet(datatype.toString()+"_alive");
 			xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
 		}
@@ -244,23 +244,22 @@ public class XLSExportMoveResults  extends XLSExport {
 		return index;
 	}
 	
-	private void trimDeadsFromArrayList(Experiment exp) {
+	private void trimDeadsFromRowMoveData(Experiment exp) {
 	for (Cage cage: exp.cages.cageList) {
-			String cagenumberString = cage.roi.getName().substring(4);
-			int cagenumber = Integer.parseInt(cagenumberString);
-			if (cagenumber == 0 || cagenumber == 9)
-				continue;
-			// find the last time it is alive in the whole series --------------------
-			Experiment expi = exp;
-			while (expi.nextExperiment != null && expi.nextExperiment.isFlyAlive(cagenumber)) {
-				expi = expi.nextExperiment;
+			int cagenumber = Integer.parseInt(cage.roi.getName().substring(4));
+			int ilastalive = 0;
+			if (cage.cageNFlies > 0) {
+				Experiment expi = exp;
+				while (expi.nextExperiment != null && expi.nextExperiment.isFlyAlive(cagenumber)) {
+					expi = expi.nextExperiment;
+				}
+				int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
+				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getKymoFrameStep() + (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
+				ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
 			}
-			// remove data up to the end ----------------------------------------------
-			int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
-			int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getKymoFrameStep() + (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
-			int ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
 			for (XYTaSeries row : rowsForOneExp) {
-				if (getCageFromCapillaryName (row.name) == cagenumber) {
+				int rowCageNumber = Integer.parseInt(row.name.substring(4));
+				if ( rowCageNumber == cagenumber) {
 					row.clearValues(ilastalive+1);
 				}
 			}

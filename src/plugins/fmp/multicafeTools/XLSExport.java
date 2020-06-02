@@ -64,13 +64,18 @@ public class XLSExport {
 
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String date = df.format(exp.getFileTimeImageFirst(false).toMillis());
+		
 		int subpath_i = 2;
 		String name0 = path.toString();
 		if (name0 .contains("grabs"))
 			subpath_i++;
 		String name1 = exp.getSubName(path, subpath_i);
+		
+		int pos = name0.indexOf("cam");
 		String cam = "-"; 
-		if (name1.length() >= 5) cam = name1.substring(0, 5); 
+		if (pos > 0) 
+			cam = name0.substring(pos, pos+5);
+		
 		String sheetName = sheet.getSheetName();
 		
 		int rowmax = -1;
@@ -88,24 +93,23 @@ public class XLSExport {
 				pt.x = colseries + col;
 			int x = pt.x;
 			int y = row;
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.PATH.getValue(), transpose, name0);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DATE.getValue(), transpose, date);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.BOXID.getValue(), transpose, exp.boxID);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXPMT.getValue(), transpose, exp.experiment);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT1.getValue(), transpose, exp.comment1);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, cap.stimulus);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.concentration);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAM.getValue(), transpose, cam);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, cap.getSideDescriptor(xlsExportOption));
-			int i = cap.cagenb;
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEINDEX.getValue(), transpose, i);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEID.getValue(), transpose, charSeries+i);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, cap.nflies);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM1.getValue(), transpose, name1);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPVOLUME.getValue(), transpose, exp.capillaries.desc.volume);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPPIXELS.getValue(), transpose, exp.capillaries.desc.pixels);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, sheetName);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT2.getValue(), transpose, exp.comment2);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.PATH.getValue(), transpose, 		name0);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DATE.getValue(), transpose, 		date);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.BOXID.getValue(), transpose, 		exp.boxID);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXPMT.getValue(), transpose, 		exp.experiment);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT1.getValue(), transpose, 	exp.comment1);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, 	cap.stimulus);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, 	cap.concentration);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAM.getValue(), transpose, 		cam);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, 		cap.getSideDescriptor(xlsExportOption));
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEINDEX.getValue(), transpose, 	cap.cagenb);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEID.getValue(), transpose, 	charSeries+cap.cagenb);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, 	cap.nflies);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM1.getValue(), transpose, 		name1);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPVOLUME.getValue(), transpose, 	exp.capillaries.desc.volume);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPPIXELS.getValue(), transpose, 	exp.capillaries.desc.pixels);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, 		sheetName);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT2.getValue(), transpose, 	exp.comment2);
 		}
 		pt.x = col0;
 		pt.y = rowmax +1;

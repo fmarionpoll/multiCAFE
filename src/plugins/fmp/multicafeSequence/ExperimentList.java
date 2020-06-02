@@ -30,7 +30,6 @@ public class ExperimentList {
 			if (exp.getKymoFrameStep() < expAll.getKymoFrameStep())
 				expAll.setKymoFrameStep(exp.getKymoFrameStep());
 		}
-		
 		if (options.absoluteTime) {
 			expAll.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
 			expAll.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
@@ -48,7 +47,6 @@ public class ExperimentList {
 			for (Experiment exp: experimentList) {
 				if (options.collateSeries && exp.previousExperiment != null)
 					continue;
-				
 				long last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
 				long first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
 				long diff = ( last - first) /60000;
@@ -97,11 +95,14 @@ public class ExperimentList {
 				continue;
 			}
 			for (Experiment expi: experimentList) {
-				if (expi == exp 
-					|| !expi.experiment .contentEquals(exp.experiment) 
-					|| !expi.boxID .equals(exp.boxID))
+				if (expi.experimentID == exp.experimentID 
+					|| !expi.experiment .equals(exp.experiment) 
+					|| !expi.boxID .equals(exp.boxID)
+					|| !expi.comment1 .equals(exp.comment1)
+					|| !expi.comment2 .equals(exp.comment2)
+					)
 					continue;
-				// same exp: if before, insert eventually
+				// same exp series: if before, insert eventually
 				if (expi.fileTimeImageLastMinute < exp.fileTimeImageFirstMinute) {
 					if (exp.previousExperiment == null)
 						exp.previousExperiment = expi;
@@ -113,7 +114,7 @@ public class ExperimentList {
 					}
 					continue;
 				}
-				// if after, insert eventually
+				// same exp series: if after, insert eventually
 				if (expi.fileTimeImageFirstMinute > exp.fileTimeImageLastMinute) {
 					if (exp.nextExperiment == null)
 						exp.nextExperiment = expi;
@@ -237,6 +238,12 @@ public class ExperimentList {
 		}
 		if (!exists) {
 			exp = new Experiment(filename);
+			int experimentNewID  = 0;
+			for (Experiment expi: experimentList) {
+				if (expi.experimentID > experimentNewID)
+					experimentNewID = expi.experimentID;
+			}
+			exp.experimentID = experimentNewID + 1;
 			experimentList.add(exp);
 		}
 		return exp;

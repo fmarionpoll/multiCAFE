@@ -65,7 +65,9 @@ public class Cages {
 		}
 		return flag;
 	}
+	
 	// -------------
+	
 	public boolean xmlWriteCagesToFile(String name, String directory) {
 		String csFile = MulticafeTools.saveFileAs(name, directory, "xml");
 		if (csFile == null)

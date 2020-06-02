@@ -253,20 +253,19 @@ public class XLSExportCapillariesResults  extends XLSExport {
 	}
 	
 	private void trimDeadsFromArrayList(Experiment exp) {
-	for (Cage cage: exp.cages.cageList) {
+		for (Cage cage: exp.cages.cageList) {
 			String cagenumberString = cage.roi.getName().substring(4);
 			int cagenumber = Integer.parseInt(cagenumberString);
-			if (cagenumber == 0 || cagenumber == 9)
-				continue;
-			// find the last time it is alive in the whole series --------------------
-			Experiment expi = exp;
-			while (expi.nextExperiment != null && expi.nextExperiment.isFlyAlive(cagenumber)) {
-				expi = expi.nextExperiment;
+			int ilastalive = 0;
+			if (cage.cageNFlies > 0) {
+				Experiment expi = exp;
+				while (expi.nextExperiment != null && expi.nextExperiment.isFlyAlive(cagenumber)) {
+					expi = expi.nextExperiment;
+				}
+				int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
+				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getKymoFrameStep() + (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
+				ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
 			}
-			// remove data up to the end ----------------------------------------------
-			int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
-			int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getKymoFrameStep() + (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
-			int ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
 			for (XLSResults row : rowsForOneExp) {
 				if (getCageFromCapillaryName (row.name) == cagenumber) {
 					row.clearValues(ilastalive+1);
@@ -306,7 +305,6 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			pt.y = column_dataArea;
 			int col = getColFromKymoFileName(row.name);
 			pt.x = rowSeries + col; 
-			
 			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
 				int i_from = coltime / row.binsize;
 				if (i_from >= row.values_out.length)

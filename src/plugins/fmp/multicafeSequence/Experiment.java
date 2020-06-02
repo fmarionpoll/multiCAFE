@@ -57,22 +57,23 @@ public class Experiment {
 	public int				col							= -1;
 	public Experiment 		previousExperiment			= null;		// pointer to chain this experiment to another one before
 	public Experiment 		nextExperiment 				= null;		// pointer to chain this experiment to another one after
+	public int				experimentID 				= 0;
 	
 	ImageTransformTools 	tImg 						= null;
 
-	private final String ID_VERSION	= "version"; 
-	private final String ID_VERSIONNUM	= "1.0.0"; 
+	private final String ID_VERSION			= "version"; 
+	private final String ID_VERSIONNUM		= "1.0.0"; 
 	private final String ID_TIMEFIRSTIMAGE	= "fileTimeImageFirstMinute"; 
-	private final String ID_TIMELASTIMAGE = "fileTimeImageLastMinute";
-	private final String ID_STARTFRAME = "startFrame";
-	private final String ID_ENDFRAME = "endFrame";
-	private final String ID_STEP = "stepFrame";
-	private final String ID_BOXID = "boxID";
-	private final String ID_EXPERIMENT = "experiment";
-	private final String ID_EXPTFILENAME = "exptFileName";
-	private final String ID_COMMENT1 = "comment";
-	private final String ID_COMMENT2 = "comment2";
-	private final String ID_MCEXPERIMENT = "MCexperiment";
+	private final String ID_TIMELASTIMAGE 	= "fileTimeImageLastMinute";
+	private final String ID_STARTFRAME 		= "startFrame";
+	private final String ID_ENDFRAME 		= "endFrame";
+	private final String ID_STEP 			= "stepFrame";
+	private final String ID_BOXID 			= "boxID";
+	private final String ID_EXPERIMENT 		= "experiment";
+	private final String ID_EXPTFILENAME 	= "exptFileName";
+	private final String ID_COMMENT1 		= "comment";
+	private final String ID_COMMENT2 		= "comment2";
+	private final String ID_MCEXPERIMENT 	= "MCexperiment";
 	
 	
 	// ----------------------------------
