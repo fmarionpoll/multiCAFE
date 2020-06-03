@@ -210,6 +210,8 @@ public class XLSExportMoveResults  extends XLSExport {
 							nvalues = row.pointsList.size();
 						int tofirst = transfer_first_index;
 						int tolast = tofirst + nvalues;
+						if (tolast > row.pointsList.size())
+							tolast = row.pointsList.size();
 						for (int toi = tofirst; toi < tolast; toi++) 
 							row.pointsList.get(toi).copy(posok);
 					}
