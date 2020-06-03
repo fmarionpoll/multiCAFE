@@ -190,6 +190,7 @@ public class Experiment {
 		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
+//		System.out.println(seqCamData.getDirectory()+ "  from:" +fileTimeImageFirstMinute + " to:" + fileTimeImageLastMinute);
 	}
 	
 	public boolean xmlLoadExperiment () {

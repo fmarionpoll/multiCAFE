@@ -26,11 +26,13 @@ public class ExperimentList {
 		Experiment expAll = new Experiment();
 		Experiment exp0 = experimentList.get(0);
 		expAll.setKymoFrameStep(exp0.getKymoFrameStep());
-		// assume they have all the same step
-//		for (Experiment exp: experimentList) {
-//			if (exp.getKymoFrameStep() < expAll.getKymoFrameStep())
-//				expAll.setKymoFrameStep(exp.getKymoFrameStep());
-//		}
+		
+		// make sure they have all the same step
+		for (Experiment exp: experimentList) {
+			if (exp.getKymoFrameStep() != expAll.getKymoFrameStep())
+				exp.setKymoFrameStep(expAll.getKymoFrameStep());
+		}
+		
 		if (options.absoluteTime) {
 			expAll.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
 			expAll.setFileTimeImageLast(exp0.getFileTimeImageLast(true));

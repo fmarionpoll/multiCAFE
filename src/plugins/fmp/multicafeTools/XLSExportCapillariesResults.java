@@ -120,6 +120,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		}
 		expAll.fileTimeImageFirstMinute = expAll.fileTimeImageFirst.toMillis()/60000;
 		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
+//		System.out.println("expAll from:" +expAll.fileTimeImageFirstMinute + " to:" + expAll.fileTimeImageLastMinute);
 		
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
 		int nFrames = (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1 ;
@@ -173,10 +174,10 @@ public class XLSExportCapillariesResults  extends XLSExport {
 	private XLSResults getResultsArrayWithThatName(String testname, List <XLSResults> resultsArrayList) {
 		XLSResults resultsFound = null;
 		for (XLSResults results: resultsArrayList) {
-			if (!results.name.equals(testname))
-				continue;
-			resultsFound = results;
-			break;
+			if (results.name.equals(testname)) {
+				resultsFound = results;
+				break;
+			}
 		}
 		return resultsFound;
 	}
@@ -185,8 +186,9 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
 		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
 		
-		int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
-		int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
+		long to_first_index = (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
+		long to_nvalues = (expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep()+1;
+//		System.out.println("transfer to:" +transfer_first_index + " nvalues:" + transfer_nvalues);
 		
 		for (XLSResults row: rowsForOneExp ) {
 			XLSResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
@@ -198,12 +200,12 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					case SUMGULPS:
 					case SUMGULPS_LR:
 						if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
-							dvalue = padWithLastPreviousValue(row, transfer_first_index);
+							dvalue = padWithLastPreviousValue(row, to_first_index);
 						break;
 					default:
 						break;
 				}
-				
+//				System.out.println("transfer from:" +expi.getKymoFrameStart() + " to:" + expi.getKymoFrameEnd() + "  step:" + expi.getKymoFrameStep());
 				for (int fromTime = expi.getKymoFrameStart(); fromTime <= expi.getKymoFrameEnd(); fromTime += expi.getKymoFrameStep()) {
 					int from_i = fromTime / expi.getKymoFrameStep();
 					if (from_i >= results.data.size())
@@ -217,9 +219,9 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				
 			} else {
 				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) {
-					double dvalue = padWithLastPreviousValue(row, transfer_first_index);
-					int tofirst = transfer_first_index;
-					int tolast = tofirst + transfer_nvalues;
+					double dvalue = padWithLastPreviousValue(row, to_first_index);
+					int tofirst = (int) to_first_index;
+					int tolast = (int) (tofirst + to_nvalues);
 					if (tolast > row.values_out.length)
 						tolast = row.values_out.length;
 					for (int toi = tofirst; toi < tolast; toi++) {
@@ -230,12 +232,12 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		}
 	}
 	
-	private double padWithLastPreviousValue(XLSResults row, int transfer_first_index) {
+	private double padWithLastPreviousValue(XLSResults row, long to_first_index) {
 		double dvalue = 0;
-		int index = getIndexOfFirstNonEmptyValueBackwards(row, transfer_first_index);
+		int index = getIndexOfFirstNonEmptyValueBackwards(row, to_first_index);
 		if (index >= 0) {
 			dvalue = row.values_out[index];
-			for (int i=index+1; i< transfer_first_index; i++) {
+			for (int i=index+1; i< to_first_index; i++) {
 				row.values_out[i] = dvalue;
 				row.padded_out[i] = true;
 			}
@@ -243,9 +245,10 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		return dvalue;
 	}
 	
-	private int getIndexOfFirstNonEmptyValueBackwards(XLSResults row, int fromindex) {
+	private int getIndexOfFirstNonEmptyValueBackwards(XLSResults row, long fromindex) {
 		int index = -1;
-		for (int i= fromindex; i>= 0; i--) {
+		int ifrom = (int) fromindex;
+		for (int i= ifrom; i>= 0; i--) {
 			if (!Double.isNaN(row.values_out[i])) {
 				index = i;
 				break;

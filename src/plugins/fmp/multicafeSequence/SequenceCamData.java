@@ -381,9 +381,6 @@ public class SequenceCamData {
 				for (int t = 0; t < tmax; t++) {
 					for (int i=0; i < lseq.size(); i++) {
 						IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
-//						System.out.println("file "+ bufImg.getDataType_());
-//						if (bufImg.getDataType_() != DataType.UBYTE)
-//							IcyBufferedImageUtil.convertToType(bufImg, DataType.UBYTE, true);
 						seq.setImage(tseq, 0, bufImg);
 						tseq++;
 					}
@@ -522,7 +519,7 @@ public class SequenceCamData {
 		FileTime fileTime;
 		try { fileTime = Files.getLastModifiedTime(path); }
 		catch (IOException e) {
-			System.err.println("Cannot get the last modified time - " + e + "image "+ t+ " -- file "+ name);
+			System.err.println("Cannot get Files.lastModifiedTime - " + e + "image "+ t+ " -- file "+ name);
 			return null;
 		}
 		return fileTime;
