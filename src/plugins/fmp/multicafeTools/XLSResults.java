@@ -10,6 +10,7 @@ public class XLSResults {
 	EnumXLSExportType 	exportType 	= null;
 	List<Integer > 		data 		= null;
 	int					binsize		= 1;
+	int[]				valint		= null;
 	double [] 			values_out	= null;
 	boolean[]			padded_out	= null;
 	
@@ -41,6 +42,11 @@ public class XLSResults {
 			value = data.get(data.size()-1) * scale;
 		}
 		return value;
+	}
+	
+	public void initValIntArray(int dimension, int val) {
+		valint = new int [dimension];
+		Arrays.fill(valint, 0);
 	}
 	
 	private void initValuesArray(int dimension) {

@@ -24,10 +24,13 @@ public class XLSResultsArray {
 	
 	public void subtractEvaporation() {
 		XLSResults results0 = resultsArrayList.get(0);
-		if (results0.values_out == null)
+		int dimension = results0.data.size();
+		if (dimension== 0)
 			return;
-		evapL = new XLSResults("L", 0, results0.exportType, results0.values_out.length, 1);
-		evapR = new XLSResults("R", 0, results0.exportType, results0.values_out.length, 1);
+		evapL = new XLSResults("L", 0, results0.exportType);
+		evapL.initValIntArray(dimension, 0);
+		evapR = new XLSResults("R", 0, results0.exportType);
+		evapR.initValIntArray(dimension, 0);
 		computeEvaporationFromResultsWithZeroFlies();
 		subtractEvaporationLocal();
 	}
@@ -46,18 +49,22 @@ public class XLSResultsArray {
 		averageEvaporation(evapR);
 	}
 	
-	private void addToEvap(XLSResults fromResult, XLSResults evap) {
-		if (fromResult.values_out.length != evap.values_out.length)
-			System.out.println("Error: from len="+fromResult.values_out.length + " to len="+ evap.values_out.length);
-		for (int i=0; i < fromResult.values_out.length; i++) {
-			evap.values_out[i] += fromResult.values_out[i];			
+	private void addToEvap(XLSResults result, XLSResults evap) {
+		if (result.data.size() > evap.valint.length) {
+			System.out.println("Error: from len="+result.data.size() + " to len="+ evap.valint.length);
+			return;
+		}
+		for (int i=0; i < result.data.size(); i++) {
+			evap.valint[i] += result.data.get(i);			
 		}
 		evap.nflies ++;
 	}
 	
 	private void averageEvaporation(XLSResults evap) {
-		for (int i=0; i < evap.values_out.length; i++) {
-			evap.values_out[i] = evap.values_out[i] / evap.nflies;			
+		if (evap.nflies != 0) {
+			for (int i=0; i < evap.valint.length; i++) {
+				evap.valint[i] = evap.valint[i] / evap.nflies;			
+			}
 		}
 		evap.nflies = 1;
 	}
@@ -73,8 +80,8 @@ public class XLSResultsArray {
 	}
 	
 	private void subtractEvap(XLSResults result, XLSResults evap) {
-		for (int i=0; i < evap.values_out.length; i++) {
-			result.values_out[i] -= evap.values_out[i];			
+		for (int i=0; i < result.data.size(); i++) {
+			result.data.set(i, result.data.get(i) - evap.valint[i]);			
 		}
 		evap.nflies = 1;
 	}

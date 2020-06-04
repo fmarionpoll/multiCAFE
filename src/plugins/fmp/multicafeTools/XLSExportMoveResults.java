@@ -161,7 +161,7 @@ public class XLSExportMoveResults  extends XLSExport {
 					resultsArrayList.add(results);
 				}
 				// here add resultsArrayList to expAll
-				addResultsTo_rowsForOneExp(expi, resultsArrayList);
+				addMoveResultsTo_rowsForOneExp(expi, resultsArrayList);
 			}
 			expi = expi.nextExperiment;
 		}
@@ -181,7 +181,7 @@ public class XLSExportMoveResults  extends XLSExport {
 		return resultsFound;
 	}
 	
-	private void addResultsTo_rowsForOneExp(Experiment expi, List <XYTaSeries> resultsArrayList) {
+	private void addMoveResultsTo_rowsForOneExp(Experiment expi, List <XYTaSeries> resultsArrayList) {
 		final int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
 		final int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
 		for (XYTaSeries row: rowsForOneExp ) {
