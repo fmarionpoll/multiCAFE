@@ -6,19 +6,22 @@ import java.util.List;
 
 public class XLSResults {
 	String				name 		= null;
+	int					nflies		= 1;
 	EnumXLSExportType 	exportType 	= null;
 	List<Integer > 		data 		= null;
 	int					binsize		= 1;
 	double [] 			values_out	= null;
 	boolean[]			padded_out	= null;
 	
-	public XLSResults (String name, EnumXLSExportType exportType) {
+	public XLSResults (String name, int nflies, EnumXLSExportType exportType) {
 		this.name = name;
+		this.nflies = nflies;
 		this.exportType = exportType;
 	}
 	
-	public XLSResults(String name, EnumXLSExportType exportType, int nFrames, int binsize) {
+	public XLSResults(String name, int nflies, EnumXLSExportType exportType, int nFrames, int binsize) {
 		this.name = name;
+		this.nflies = nflies;
 		this.exportType = exportType;
 		this.binsize = binsize;
 		initValuesArray(nFrames);

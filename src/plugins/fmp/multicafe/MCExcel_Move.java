@@ -1,12 +1,12 @@
 package plugins.fmp.multicafe;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import icy.gui.util.GuiUtil;
@@ -27,13 +27,32 @@ public class MCExcel_Move  extends JPanel {
 	JCheckBox 	sleepCheckBox 		= new JCheckBox("sleep", true);
 	
 	JButton 	exportToXLSButton 	= new JButton("save XLS");
-	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty");	
+	JCheckBox	deadEmptyCheckBox   = new JCheckBox("dead=empty");	
 	
 	void init(GridLayout capLayout) {	
 		setLayout(capLayout);
-		add(GuiUtil.besidesPanel( xyCenterCheckBox, xyCageCheckBox, xyTipCapsCheckBox, new JLabel(" ")));
-		add(GuiUtil.besidesPanel( distanceCheckBox, aliveCheckBox,  sleepCheckBox, new JLabel(" "))); 
-		add(GuiUtil.besidesPanel( onlyaliveCheckBox, new JLabel(" "), new JLabel(" "), exportToXLSButton )); 
+		
+		FlowLayout flowLayout1 = new FlowLayout(FlowLayout.LEFT);
+		flowLayout1.setVgap(0);
+		JPanel panel0 = new JPanel(flowLayout1);
+		panel0.add(xyCenterCheckBox);
+		panel0.add(xyCageCheckBox);
+		panel0.add(xyTipCapsCheckBox);
+		panel0.add(distanceCheckBox);
+		panel0.add(sleepCheckBox);
+		add(panel0);
+		
+		JPanel panel1 = new JPanel(flowLayout1);
+		panel1.add(aliveCheckBox);
+		panel1.add(deadEmptyCheckBox);
+		add(panel1);
+		
+		FlowLayout flowLayout2 = new FlowLayout(FlowLayout.RIGHT);
+		flowLayout2.setVgap(0);
+		JPanel panel2 = new JPanel(flowLayout2);
+		panel2.add(exportToXLSButton);
+		add(GuiUtil.besidesPanel(panel2));
+		
 		defineActionListeners();
 	}
 	

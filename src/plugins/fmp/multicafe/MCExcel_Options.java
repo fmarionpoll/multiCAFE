@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,9 +10,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 
-import icy.gui.util.GuiUtil;
+
+
 
 public class MCExcel_Options extends JPanel {
 
@@ -22,7 +23,6 @@ public class MCExcel_Options extends JPanel {
 	
 	JCheckBox 	exportAllFilesCheckBox 	= new JCheckBox("all experiments", true);
 	JCheckBox	transposeCheckBox 		= new JCheckBox("transpose", true);
-	JCheckBox 	aliveCheckBox 			= new JCheckBox("alive", false);
 	
 	JCheckBox   collateSeriesCheckBox	= new JCheckBox("collate series", false);
 	JCheckBox   padIntervalsCheckBox	= new JCheckBox("pad intervals", false);
@@ -34,22 +34,20 @@ public class MCExcel_Options extends JPanel {
 	void init(GridLayout capLayout) {	
 		setLayout(capLayout);
 		
-		add(GuiUtil.besidesPanel( 
-				exportAllFilesCheckBox, 
-				collateSeriesCheckBox, 
-				absoluteTimeCheckBox, 
-				new JLabel(" ")));
-		add(GuiUtil.besidesPanel(  
-				transposeCheckBox, 
-				padIntervalsCheckBox, 
-				new JLabel(" "), 
-				new JLabel(" ") )); 
-		add(GuiUtil.besidesPanel(  
-				aliveCheckBox, 	
-				new JLabel("bin size(min) ", SwingConstants.RIGHT),	
-				pivotBinStep, 
-				new JLabel(" "), 
-				new JLabel(" "))); 
+		FlowLayout flowLayout1 = new FlowLayout(FlowLayout.LEFT);
+		flowLayout1.setVgap(0);
+		JPanel panel0 = new JPanel(flowLayout1);
+		panel0.add(exportAllFilesCheckBox);
+		panel0.add(transposeCheckBox);
+		panel0.add(collateSeriesCheckBox);
+		panel0.add(padIntervalsCheckBox);
+		add(panel0);
+
+		JPanel panel1 = new JPanel(flowLayout1);
+		panel1.add(absoluteTimeCheckBox);
+		panel1.add(new JLabel("bin size(min) "));
+		panel1.add(pivotBinStep);
+		add(panel1); 
 		
 	   collateSeriesCheckBox.addActionListener(new ActionListener() {
 		    @Override

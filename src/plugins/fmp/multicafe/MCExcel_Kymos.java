@@ -1,15 +1,15 @@
 package plugins.fmp.multicafe;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import icy.gui.util.GuiUtil;
+
 
 
 public class MCExcel_Kymos extends JPanel  {
@@ -29,13 +29,34 @@ public class MCExcel_Kymos extends JPanel  {
 	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R", true);
 	JCheckBox 	derivativeCheckBox  = new JCheckBox("derivative", false);
 	JCheckBox	t0CheckBox			= new JCheckBox("t-t0", true);
-	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty");	
+	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
+	JCheckBox	subtractEvaporationCheckBox = new JCheckBox("subtract evaporation", false);
 	
 	void init(GridLayout capLayout) {	
 		setLayout(capLayout);
-		add(GuiUtil.besidesPanel( topLevelCheckBox, topLevelDeltaCheckBox, consumptionCheckBox, bottomLevelCheckBox));
-		add(GuiUtil.besidesPanel( t0CheckBox, sumCheckBox, new JLabel(" "), new JLabel(" "))); 
-		add(GuiUtil.besidesPanel( onlyaliveCheckBox, new JLabel(" "), new JLabel(" "), exportToXLSButton2)); 
+		
+		FlowLayout flowLayout0 = new FlowLayout(FlowLayout.LEFT);
+		flowLayout0.setVgap(0);
+		JPanel panel0 = new JPanel(flowLayout0);
+		panel0.add(topLevelCheckBox);
+		panel0.add(topLevelDeltaCheckBox);
+		panel0.add(consumptionCheckBox);
+		panel0.add(bottomLevelCheckBox);
+		panel0.add(sumCheckBox);
+		add(panel0);
+		
+		JPanel panel1 = new JPanel(flowLayout0);
+		panel1.add(t0CheckBox);
+		panel1.add(onlyaliveCheckBox);
+		panel1.add(subtractEvaporationCheckBox);
+		add(panel1);
+		
+		FlowLayout flowLayout2 = new FlowLayout(FlowLayout.RIGHT);
+		flowLayout2.setVgap(0);
+		JPanel panel2 = new JPanel(flowLayout2);
+		panel2.add(exportToXLSButton2);
+		add(panel2);
+		
 		defineActionListeners();
 	}
 	

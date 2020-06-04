@@ -127,53 +127,82 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		rowsForOneExp = new ArrayList <XLSResults> (ncapillaries);
 		for (int i=0; i< ncapillaries; i++) {
 			Capillary cap = expAll.capillaries.capillariesArrayList.get(i);
-			rowsForOneExp.add(new XLSResults (cap.roi.getName(), xlsoption, nFrames, expAll.getKymoFrameStep()));
+			rowsForOneExp.add(new XLSResults (cap.roi.getName(), cap.nflies, xlsoption, nFrames, expAll.getKymoFrameStep()));
 		}
 		Collections.sort(rowsForOneExp, new Comparators.XLSResultsComparator());
 				
 		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
 		expi = exp;
 		while (expi != null) {
-			List <XLSResults> resultsArrayList = new ArrayList <XLSResults> (expi.capillaries.capillariesArrayList.size());
-			for (Capillary cap: expi.capillaries.capillariesArrayList) {
-				XLSResults results = new XLSResults(cap.roi.getName(), xlsoption);
-				results.binsize = expi.getKymoFrameStep();
-				switch (xlsoption) {
-					case TOPLEVEL:
-					case TOPLEVEL_LR:
+			XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
+			switch (xlsoption) {
+				case TOPLEVEL:
+				case TOPLEVEL_LR:
+					for (Capillary cap: expi.capillaries.capillariesArrayList) {
+						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
+						results.binsize = expi.getKymoFrameStep();
 						if (options.t0) 
 							results.data = exp.seqKymos.subtractT0(cap.getMeasures(EnumListType.topLevel));
 						else
 							results.data = cap.getMeasures(EnumListType.topLevel);
-						break;
-					case TOPLEVELDELTA:
-					case TOPLEVELDELTA_LR:
+						resultsArrayList.add(results);
+					}
+					if (options.subtractEvaporation)
+						resultsArrayList.subtractEvaporation();
+					break;
+				case TOPLEVELDELTA:
+				case TOPLEVELDELTA_LR:
+					for (Capillary cap: expi.capillaries.capillariesArrayList) {
+						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
+						results.binsize = expi.getKymoFrameStep();
 						results.data = exp.seqKymos.subtractTdelta(cap.getMeasures(EnumListType.topLevel), exp.getKymoFrameStep(), options.buildExcelBinStep);
-						break;
-					case DERIVEDVALUES:
+						resultsArrayList.add(results);
+					}
+					if (options.subtractEvaporation)
+						resultsArrayList.subtractEvaporation();
+					break;
+				case DERIVEDVALUES:
+					for (Capillary cap: expi.capillaries.capillariesArrayList) {
+						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
+						results.binsize = expi.getKymoFrameStep();
 						results.data = cap.getMeasures(EnumListType.derivedValues);
-						break;
-					case SUMGULPS:
-					case SUMGULPS_LR:
+						resultsArrayList.add(results);
+					}
+					if (options.subtractEvaporation)
+						resultsArrayList.subtractEvaporation();
+					break;
+				case SUMGULPS:
+				case SUMGULPS_LR:
+					for (Capillary cap: expi.capillaries.capillariesArrayList) {
+						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
+						results.binsize = expi.getKymoFrameStep();
 						results.data = cap.getMeasures(EnumListType.cumSum);
-						break;
-					case BOTTOMLEVEL:
+						resultsArrayList.add(results);
+					}
+					if (options.subtractEvaporation)
+						resultsArrayList.subtractEvaporation();
+					break;
+				case BOTTOMLEVEL:
+					for (Capillary cap: expi.capillaries.capillariesArrayList) {
+						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
+						results.binsize = expi.getKymoFrameStep();
 						results.data = cap.getMeasures(EnumListType.bottomLevel);
-						break;
-					default:
-						break;
-				}
-				resultsArrayList.add(results);
+						resultsArrayList.add(results);
+					}
+					break;
+				default:
+					break;
 			}
+				
 			// here add resultsArrayList to expAll
 			addResultsTo_rowsForOneExp(expi, resultsArrayList);
 			expi = expi.nextExperiment;
 		}
 	}
 	
-	private XLSResults getResultsArrayWithThatName(String testname, List <XLSResults> resultsArrayList) {
+	private XLSResults getResultsArrayWithThatName(String testname, XLSResultsArray resultsArrayList) {
 		XLSResults resultsFound = null;
-		for (XLSResults results: resultsArrayList) {
+		for (XLSResults results: resultsArrayList.resultsArrayList) {
 			if (results.name.equals(testname)) {
 				resultsFound = results;
 				break;
@@ -182,7 +211,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		return resultsFound;
 	}
 	
-	private void addResultsTo_rowsForOneExp(Experiment expi, List <XLSResults> resultsArrayList) {
+	private void addResultsTo_rowsForOneExp(Experiment expi, XLSResultsArray resultsArrayList) {
 		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
 		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
 		
