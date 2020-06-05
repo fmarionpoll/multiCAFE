@@ -155,7 +155,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
 						results.binsize = expi.getKymoFrameStep();
-						results.data = exp.seqKymos.subtractTdelta(cap.getMeasures(EnumListType.topLevel), exp.getKymoFrameStep(), options.buildExcelBinStep);
+						results.data = exp.seqKymos.subtractTdelta(cap.getMeasures(EnumListType.topLevel), expAll.getKymoFrameStep(), options.buildExcelBinStep);
 						resultsArrayList.add(results);
 					}
 					if (options.subtractEvaporation)
