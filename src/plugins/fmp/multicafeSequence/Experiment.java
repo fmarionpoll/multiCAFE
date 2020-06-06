@@ -153,7 +153,6 @@ public class Experiment {
 		boolean flag = xmlLoadExperiment ();
 		if (null == seqCamData.loadSequence(experimentFileName))
 			return false;
-		
 		loadFileIntervalsFromSeqCamData();
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
@@ -167,7 +166,6 @@ public class Experiment {
 			comment1 = capillaries.desc.old_comment1;
 			comment2 = capillaries.desc.old_comment2;
 		}
-		
 		if (loadDrosoPositions)
 			xmlReadDrosoTrackDefault();
 		return true;
@@ -190,7 +188,6 @@ public class Experiment {
 		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
 		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
-//		System.out.println(seqCamData.getDirectory()+ "  from:" +fileTimeImageFirstMinute + " to:" + fileTimeImageLastMinute);
 	}
 	
 	public boolean xmlLoadExperiment () {
@@ -218,6 +215,8 @@ public class Experiment {
         experiment 				= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
         comment1 				= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
         comment2 				= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
+        
+        checkValidKymoIntervals();
 		return true;
 	}
 	
@@ -354,6 +353,15 @@ public class Experiment {
 			kymoFrameStep = (kymoFrameEnd - kymoFrameStart + 1)/imageWidth;
 		}
 		return isOK;
+	}
+	
+	public void checkValidKymoIntervals() {
+		long lengthDataFile = fileTimeImageLastMinute - fileTimeImageFirstMinute +1;
+		long lengthKymoAnalysis = kymoFrameEnd - kymoFrameStart +1;
+		if (lengthDataFile != lengthKymoAnalysis) {
+			kymoFrameEnd = (int) (lengthDataFile - 1);
+			kymoFrameStart = 0;
+		}
 	}
 	
 	public int setKymoFrameStart(int start) {

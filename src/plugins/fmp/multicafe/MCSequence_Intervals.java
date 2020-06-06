@@ -73,6 +73,7 @@ public class MCSequence_Intervals extends JPanel {
 	}
 		
 	public void setAnalyzeFrameToDialog (Experiment exp) {
+		exp.checkKymoFrameStep();
 		startFrameJSpinner.setValue((int) exp.getKymoFrameStart());
 		if (exp.getKymoFrameEnd() == 0)
 			exp.setKymoFrameEnd(exp.getSeqCamSizeT());

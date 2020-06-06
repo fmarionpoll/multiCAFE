@@ -79,7 +79,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 	}
 	
 	public void setBuildKymosParametersToDialog (Experiment exp) {
-		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog (exp);
+		parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog (exp);
 	}
 	
 	private boolean initBuildParameters(Experiment exp) {

@@ -30,7 +30,6 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 
 
 public class MCKymos_File extends JPanel {
-
 	/**
 	 * 
 	 */

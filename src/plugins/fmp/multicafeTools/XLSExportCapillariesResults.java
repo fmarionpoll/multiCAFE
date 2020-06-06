@@ -134,6 +134,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
 		expi = exp;
 		while (expi != null) {
+			expi.setKymoFrameStep(expAll.getKymoFrameStep()); // ugly patch
 			XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
 			switch (xlsoption) {
 				case TOPLEVEL:

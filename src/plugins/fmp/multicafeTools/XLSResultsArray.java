@@ -23,13 +23,16 @@ public class XLSResultsArray {
 	}
 	
 	public void subtractEvaporation() {
-		XLSResults results0 = resultsArrayList.get(0);
-		int dimension = results0.data.size();
+		int dimension = 0;
+		for (XLSResults result: resultsArrayList) {
+			if (result.data.size() > dimension)
+				dimension = result.data.size();
+		}
 		if (dimension== 0)
 			return;
-		evapL = new XLSResults("L", 0, results0.exportType);
+		evapL = new XLSResults("L", 0, null);
 		evapL.initValIntArray(dimension, 0);
-		evapR = new XLSResults("R", 0, results0.exportType);
+		evapR = new XLSResults("R", 0, null);
 		evapR.initValIntArray(dimension, 0);
 		computeEvaporationFromResultsWithZeroFlies();
 		subtractEvaporationLocal();
