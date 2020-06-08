@@ -120,7 +120,6 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		}
 		expAll.fileTimeImageFirstMinute = expAll.fileTimeImageFirst.toMillis()/60000;
 		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
-//		System.out.println("expAll from:" +expAll.fileTimeImageFirstMinute + " to:" + expAll.fileTimeImageLastMinute);
 		
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
 		int nFrames = (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1 ;
@@ -139,6 +138,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			switch (xlsoption) {
 				case TOPLEVEL:
 				case TOPLEVEL_LR:
+				case TOPLEVELDELTA:
+				case TOPLEVELDELTA_LR:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
 						results.binsize = expi.getKymoFrameStep();
@@ -151,17 +152,17 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					if (options.subtractEvaporation)
 						resultsArrayList.subtractEvaporation();
 					break;
-				case TOPLEVELDELTA:
-				case TOPLEVELDELTA_LR:
-					for (Capillary cap: expi.capillaries.capillariesArrayList) {
-						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
-						results.binsize = expi.getKymoFrameStep();
-						results.data = exp.seqKymos.subtractTdelta(cap.getMeasures(EnumListType.topLevel), expAll.getKymoFrameStep(), options.buildExcelBinStep);
-						resultsArrayList.add(results);
-					}
-					if (options.subtractEvaporation)
-						resultsArrayList.subtractEvaporation();
-					break;
+//				case TOPLEVELDELTA:
+//				case TOPLEVELDELTA_LR:
+//					for (Capillary cap: expi.capillaries.capillariesArrayList) {
+//						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
+//						results.binsize = expi.getKymoFrameStep();
+//						results.data = cap.getMeasures(EnumListType.topLevel);
+//						resultsArrayList.add(results);
+//					}
+//					if (options.subtractEvaporation)
+//						resultsArrayList.subtractEvaporation();
+//					break;
 				case DERIVEDVALUES:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
@@ -199,6 +200,16 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			addResultsTo_rowsForOneExp(expi, resultsArrayList);
 			expi = expi.nextExperiment;
 		}
+		
+		switch (xlsoption) {
+			case TOPLEVELDELTA:
+			case TOPLEVELDELTA_LR:
+				for (XLSResults row: rowsForOneExp ) 
+					row.subtractDeltaT(expAll.getKymoFrameStep(), options.buildExcelBinStep);
+				break;
+			default:
+				break;
+		}
 	}
 	
 	private XLSResults getResultsArrayWithThatName(String testname, XLSResultsArray resultsArrayList) {
@@ -229,6 +240,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					case TOPLEVEL_LR:
 					case SUMGULPS:
 					case SUMGULPS_LR:
+					case TOPLEVELDELTA:
+					case TOPLEVELDELTA_LR:
 						if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
 							dvalue = padWithLastPreviousValue(row, to_first_index);
 						break;

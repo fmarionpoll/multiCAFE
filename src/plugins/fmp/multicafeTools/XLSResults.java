@@ -64,5 +64,19 @@ public class XLSResults {
 		}
 	}
 	
+	public boolean subtractDeltaT(int arrayStep, int deltaT) {
+		if (values_out == null || values_out.length < 2)
+			return false;
+		for (int index=0; index < values_out.length; index++) {
+			int timeIndex = index * arrayStep + deltaT;
+			int indexDelta = timeIndex/arrayStep;
+			if (indexDelta < values_out.length) 
+				values_out[index] = values_out[indexDelta] - values_out[index];
+			else
+				values_out[index] = Double.NaN;
+		}
+		return true;
+	}
+	
 	
 }
