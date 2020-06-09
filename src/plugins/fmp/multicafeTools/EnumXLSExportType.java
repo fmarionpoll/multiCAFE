@@ -1,6 +1,7 @@
 package plugins.fmp.multicafeTools;
 
 public enum EnumXLSExportType {
+	TOPRAW ("topraw"),
 	TOPLEVEL ("toplevel"), 
 	BOTTOMLEVEL ("bottomlevel"), 
 	DERIVEDVALUES ("derivative"), 

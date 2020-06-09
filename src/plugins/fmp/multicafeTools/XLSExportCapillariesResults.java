@@ -49,12 +49,13 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				Experiment exp = expList.getExperiment(index);
 				if (exp.previousExperiment != null)
 					continue;
-				
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				
-				if (options.topLevel) 		
+				if (options.topLevel) {	
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPRAW);
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVEL);
+				}
 				if (options.sum && options.topLevel) 		
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVEL_LR);
 				if (options.topLevelDelta) 	
@@ -136,6 +137,15 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			expi.setKymoFrameStep(expAll.getKymoFrameStep()); // ugly patch
 			XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
 			switch (xlsoption) {
+				case TOPRAW:
+					for (Capillary cap: expi.capillaries.capillariesArrayList) {
+						resultsArrayList.checkIfSameStim(cap);
+						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
+						results.binsize = expi.getKymoFrameStep();
+						results.data = cap.getMeasures(EnumListType.topLevel);
+						resultsArrayList.add(results);
+					}
+					break;
 				case TOPLEVEL:
 				case TOPLEVEL_LR:
 				case TOPLEVELDELTA:
