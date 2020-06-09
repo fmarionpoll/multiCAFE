@@ -3,26 +3,42 @@ package plugins.fmp.multicafeTools;
 import java.util.ArrayList;
 import java.util.List;
 
+import plugins.fmp.multicafeSequence.Capillary;
+
 public class XLSResultsArray {
-	List <XLSResults> resultsArrayList = null;
-	XLSResults evapL	= null;
-	XLSResults evapR	= null;
+	List <XLSResults> 	resultsArrayList 	= null;
+	XLSResults 			evapL				= null;
+	XLSResults 			evapR				= null;
+	boolean				sameLR				= true;
+	String				stim				= null;
+	String				conc				= null;
 	
 	public XLSResultsArray (int size) {
 		resultsArrayList = new ArrayList <XLSResults> (size);
 	}
 	
-	public void add(XLSResults results) {
+	void add(XLSResults results) {
 		resultsArrayList.add(results);
 	}
 	
-	public XLSResults get(int index) {
+	void checkIfSameStim(Capillary cap) {
+		if (!sameLR)
+			return;
+		if (stim == null)
+			stim = cap.stimulus;
+		if (conc == null)
+			conc = cap.concentration;
+		sameLR &= stim .equals(cap.stimulus);
+		sameLR &= conc .equals(cap.concentration);
+	}
+	
+	XLSResults get(int index) {
 		if (index >= resultsArrayList.size())
 			return null;
 		return resultsArrayList.get(index);
 	}
 	
-	public void subtractEvaporation() {
+	void subtractEvaporation() {
 		int dimension = 0;
 		for (XLSResults result: resultsArrayList) {
 			if (result.data.size() > dimension)
@@ -43,49 +59,25 @@ public class XLSResultsArray {
 			if (result.nflies > 0)
 				continue;
 			String side = result.name.substring(result.name.length() -1);
-			if (side.equals("L"))
-				addToEvap(result, evapL);
+			if (sameLR || side.equals("L"))
+				evapL.addDataToValInt(result);
 			else
-				addToEvap(result, evapR);
+				evapR.addDataToValInt(result);
 		}
-		averageEvaporation(evapL);
-		averageEvaporation(evapR);
+		evapL.averageEvaporation();
+		evapR.averageEvaporation();
 	}
 	
-	private void addToEvap(XLSResults result, XLSResults evap) {
-		if (result.data.size() > evap.valint.length) {
-			System.out.println("Error: from len="+result.data.size() + " to len="+ evap.valint.length);
-			return;
-		}
-		for (int i=0; i < result.data.size(); i++) {
-			evap.valint[i] += result.data.get(i);			
-		}
-		evap.nflies ++;
-	}
-	
-	private void averageEvaporation(XLSResults evap) {
-		if (evap.nflies != 0) {
-			for (int i=0; i < evap.valint.length; i++) {
-				evap.valint[i] = evap.valint[i] / evap.nflies;			
-			}
-		}
-		evap.nflies = 1;
-	}
 	
 	private void subtractEvaporationLocal() {
 		for (XLSResults result: resultsArrayList) {
 			String side = result.name.substring(result.name.length() -1);
-			if (side.equals("L"))
-				subtractEvap(result, evapL);
+			if (sameLR || side.equals("L"))
+				result.subtractEvap(evapL);
 			else
-				subtractEvap(result, evapR);
+				result.subtractEvap(evapR);
 		}
 	}
 	
-	private void subtractEvap(XLSResults result, XLSResults evap) {
-		for (int i=0; i < result.data.size(); i++) {
-			result.data.set(i, result.data.get(i) - evap.valint[i]);			
-		}
-		evap.nflies = 1;
-	}
+	
 }

@@ -28,7 +28,7 @@ public class XLSResults {
 		initValuesArray(nFrames);
 	}
 	
-	public double getAt(int indexData, double scale) {			
+	double getAt(int indexData, double scale) {			
 		double value = Double.NaN;
 		if (indexData < data.size()) {
 			value = data.get(indexData) * scale;
@@ -36,7 +36,7 @@ public class XLSResults {
 		return value;
 	}
 	
-	public double getLast(double scale) {			
+	double getLast(double scale) {			
 		double value = Double.NaN;
 		if (data.size()>0) {
 			value = data.get(data.size()-1) * scale;
@@ -44,7 +44,7 @@ public class XLSResults {
 		return value;
 	}
 	
-	public void initValIntArray(int dimension, int val) {
+	void initValIntArray(int dimension, int val) {
 		valint = new int [dimension];
 		Arrays.fill(valint, 0);
 	}
@@ -56,7 +56,7 @@ public class XLSResults {
 		Arrays.fill(padded_out, false);
 	}
 	
-	public void clearValues (int fromindex) {
+	void clearValues (int fromindex) {
 		int toindex = values_out.length;
 		if (fromindex > 0 && fromindex < toindex) {
 			Arrays.fill(values_out, fromindex,  toindex, Double.NaN);
@@ -64,7 +64,7 @@ public class XLSResults {
 		}
 	}
 	
-	public boolean subtractDeltaT(int arrayStep, int deltaT) {
+	boolean subtractDeltaT(int arrayStep, int deltaT) {
 		if (values_out == null || values_out.length < 2)
 			return false;
 		for (int index=0; index < values_out.length; index++) {
@@ -78,5 +78,31 @@ public class XLSResults {
 		return true;
 	}
 	
+	void addDataToValInt(XLSResults result) {
+		if (result.data.size() > valint.length) {
+			System.out.println("Error: from len="+result.data.size() + " to len="+ valint.length);
+			return;
+		}
+		for (int i=0; i < result.data.size(); i++) {
+			valint[i] += result.data.get(i);			
+		}
+		nflies ++;
+	}
 	
+	void averageEvaporation() {
+		if (nflies != 0) {
+			for (int i=0; i < valint.length; i++) {
+				valint[i] = valint[i] / nflies;			
+			}
+		}
+		nflies = 1;
+	}
+	
+	void subtractEvap(XLSResults evap) {
+		for (int i = 0; i < data.size(); i++) {
+			if (evap.valint.length > i)
+				data.set(i, data.get(i) - evap.valint[i]);			
+		}
+		evap.nflies = 1;
+	}
 }

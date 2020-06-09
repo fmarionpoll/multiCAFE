@@ -141,6 +141,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				case TOPLEVELDELTA:
 				case TOPLEVELDELTA_LR:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
+						resultsArrayList.checkIfSameStim(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
 						results.binsize = expi.getKymoFrameStep();
 						if (options.t0) 
@@ -152,19 +153,9 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					if (options.subtractEvaporation)
 						resultsArrayList.subtractEvaporation();
 					break;
-//				case TOPLEVELDELTA:
-//				case TOPLEVELDELTA_LR:
-//					for (Capillary cap: expi.capillaries.capillariesArrayList) {
-//						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
-//						results.binsize = expi.getKymoFrameStep();
-//						results.data = cap.getMeasures(EnumListType.topLevel);
-//						resultsArrayList.add(results);
-//					}
-//					if (options.subtractEvaporation)
-//						resultsArrayList.subtractEvaporation();
-//					break;
 				case DERIVEDVALUES:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
+						resultsArrayList.checkIfSameStim(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
 						results.binsize = expi.getKymoFrameStep();
 						results.data = cap.getMeasures(EnumListType.derivedValues);
@@ -176,6 +167,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				case SUMGULPS:
 				case SUMGULPS_LR:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
+						resultsArrayList.checkIfSameStim(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.nflies, xlsoption);
 						results.binsize = expi.getKymoFrameStep();
 						results.data = cap.getMeasures(EnumListType.cumSum);
