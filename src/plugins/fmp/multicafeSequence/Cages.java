@@ -345,9 +345,9 @@ public class Cages {
 		for (Cage cage: cageList ) {
 			int cagenb = cage.getCageNumberInteger();
 			for (Capillary cap: capList) {
-				if (cap.cagenb != cagenb)
+				if (cap.capCageNb != cagenb)
 					continue;
-				cage.cageNFlies = cap.nflies;
+				cage.cageNFlies = cap.capNFlies;
 			}
 		}
 	}
@@ -356,9 +356,9 @@ public class Cages {
 		for (Cage cage: cageList ) {
 			int cagenb = cage.getCageNumberInteger();
 			for (Capillary cap: capList) {
-				if (cap.cagenb != cagenb)
+				if (cap.capCageNb != cagenb)
 					continue;
-				cap.nflies = cage.cageNFlies;
+				cap.capNFlies = cage.cageNFlies;
 			}
 		}
 	}

@@ -75,7 +75,6 @@ public class Experiment {
 	private final String ID_COMMENT2 		= "comment2";
 	private final String ID_MCEXPERIMENT 	= "MCexperiment";
 	
-	
 	// ----------------------------------
 	
 	public Experiment() {

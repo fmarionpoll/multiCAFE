@@ -256,8 +256,8 @@ public class Capillaries {
 	}
 	
 	private void transferDescriptionToCapillary (Capillary cap) {
-		cap.volume = desc.volume;
-		cap.pixels = desc.pixels;
+		cap.capVolume = desc.volume;
+		cap.capPixels = desc.pixels;
 		cap.descriptionOK = true;
 	}
 	
@@ -266,13 +266,13 @@ public class Capillaries {
 			return;
 		String	name = cap.roi.getName();
 		String letter = name.substring(name.length() - 1);
-		cap.side = letter;
+		cap.capSide = letter;
 		if (letter .equals("R")) {	
 			String nameL = name.substring(0, name.length() - 1) + "L";
 			Capillary cap0 = getCapillaryFromName(nameL);
 			if (cap0 != null) {
-				cap.nflies = cap0.nflies;
-				cap.cagenb = cap0.cagenb;
+				cap.capNFlies = cap0.capNFlies;
+				cap.capCageNb = cap0.capCageNb;
 			}
 		}
 	}

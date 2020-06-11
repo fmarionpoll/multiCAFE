@@ -25,11 +25,11 @@ public class XLSResultsArray {
 		if (!sameLR)
 			return;
 		if (stim == null)
-			stim = cap.stimulus;
+			stim = cap.capStimulus;
 		if (conc == null)
-			conc = cap.concentration;
-		sameLR &= stim .equals(cap.stimulus);
-		sameLR &= conc .equals(cap.concentration);
+			conc = cap.capConcentration;
+		sameLR &= stim .equals(cap.capStimulus);
+		sameLR &= conc .equals(cap.capConcentration);
 	}
 	
 	XLSResults get(int index) {

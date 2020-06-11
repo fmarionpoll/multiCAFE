@@ -156,7 +156,7 @@ public class XLSExportMoveResults  extends XLSExport {
 						default:
 							break;
 					}
-					double pixelsize = 32. / exp.capillaries.capillariesArrayList.get(0).pixels;
+					double pixelsize = 32. / exp.capillaries.capillariesArrayList.get(0).capPixels;
 					results.changePixelSize(pixelsize);
 					resultsArrayList.add(results);
 				}

@@ -35,13 +35,13 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	String 								version 		= null;
 	public String						filenameTIFF	= null;
 	// TODO: add frame start/end/step?
-	public String 						stimulus		= new String("stimulus");
-	public String 						concentration	= new String("xmM");
-	public String						side			= ".";
-	public int							nflies			= 1;
-	public int							cagenb			= 0;
-	public double 						volume 			= 5.;
-	public int 							pixels 			= 5;
+	public String 						capStimulus		= new String("stimulus");
+	public String 						capConcentration= new String("xmM");
+	public String						capSide			= ".";
+	public int							capNFlies		= 1;
+	public int							capCageNb		= 0;
+	public double 						capVolume 		= 5.;
+	public int 							capPixels 		= 5;
 	public boolean						descriptionOK	= false;
 	public int							versionInfos	= 0;
 	
@@ -108,13 +108,13 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		roi 			= cap.roi;
 		filenameTIFF	= cap.filenameTIFF;
 		
-		stimulus		= cap.stimulus;
-		concentration	= cap.concentration;
-		side			= cap.side;
-		nflies			= cap.nflies;
-		cagenb			= cap.cagenb;
-		volume 			= cap.volume;
-		pixels 			= cap.pixels;
+		capStimulus		= cap.capStimulus;
+		capConcentration	= cap.capConcentration;
+		capSide			= cap.capSide;
+		capNFlies			= cap.capNFlies;
+		capCageNb			= cap.capCageNb;
+		capVolume 			= cap.capVolume;
+		capPixels 			= cap.capPixels;
 		
 		limitsOptions	= cap.limitsOptions;
 		gulpsOptions	= cap.gulpsOptions;
@@ -164,12 +164,12 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		switch (xlsExportOption) {
 		case DISTANCE:
 		case ISALIVE:
-			value = side + "(L=R)";
+			value = capSide + "(L=R)";
 			break;
 		case SUMGULPS_LR:
 		case TOPLEVELDELTA_LR:
 		case TOPLEVEL_LR:
-			if (side.equals("L"))
+			if (capSide.equals("L"))
 				value = "sum";
 			else
 				value = "ratio";
@@ -177,13 +177,13 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		case XYIMAGE:
 		case XYTOPCAGE:
 		case XYTIPCAPS:
-			if (side .equals ("L"))
+			if (capSide .equals ("L"))
 				value = "x";
 			else
 				value = "y";
 			break;
 		default:
-			value = side;
+			value = capSide;
 			break;
 		}
 		return value;
@@ -436,13 +436,13 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	        
 	        descriptionOK 	= XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, false);
 	        versionInfos 	= XMLUtil.getElementIntValue(nodeMeta, ID_VERSIONINFOS, 0);
-	        nflies 			= XMLUtil.getElementIntValue(nodeMeta, ID_NFLIES, nflies);
-	        cagenb 			= XMLUtil.getElementIntValue(nodeMeta, ID_CAGENB, cagenb);
-	        volume 			= XMLUtil.getElementDoubleValue(nodeMeta, ID_CAPVOLUME, Double.NaN);
-			pixels 			= XMLUtil.getElementIntValue(nodeMeta, ID_CAPPIXELS, 5);
-			stimulus 		= XMLUtil.getElementValue(nodeMeta, ID_STIML, ID_STIML);
-			concentration 	= XMLUtil.getElementValue(nodeMeta, ID_CONCL, ID_CONCL);
-			side 			= XMLUtil.getElementValue(nodeMeta, ID_SIDE, ".");
+	        capNFlies 			= XMLUtil.getElementIntValue(nodeMeta, ID_NFLIES, capNFlies);
+	        capCageNb 			= XMLUtil.getElementIntValue(nodeMeta, ID_CAGENB, capCageNb);
+	        capVolume 			= XMLUtil.getElementDoubleValue(nodeMeta, ID_CAPVOLUME, Double.NaN);
+			capPixels 			= XMLUtil.getElementIntValue(nodeMeta, ID_CAPPIXELS, 5);
+			capStimulus 		= XMLUtil.getElementValue(nodeMeta, ID_STIML, ID_STIML);
+			capConcentration 	= XMLUtil.getElementValue(nodeMeta, ID_CONCL, ID_CONCL);
+			capSide 			= XMLUtil.getElementValue(nodeMeta, ID_SIDE, ".");
 			
 	        roi = (ROI2DShape) loadFromXML_ROI(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
@@ -465,13 +465,13 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	        }
 	        XMLUtil.setElementBooleanValue(nodeMeta, ID_DESCOK, descriptionOK);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_VERSIONINFOS, versionInfos);
-	        XMLUtil.setElementIntValue(nodeMeta, ID_NFLIES, nflies);
-	        XMLUtil.setElementIntValue(nodeMeta, ID_CAGENB, cagenb);
-			XMLUtil.setElementDoubleValue(nodeMeta, ID_CAPVOLUME, volume);
-			XMLUtil.setElementIntValue(nodeMeta, ID_CAPPIXELS, pixels);
-			XMLUtil.setElementValue(nodeMeta, ID_STIML, stimulus);
-			XMLUtil.setElementValue(nodeMeta, ID_SIDE, side);
-			XMLUtil.setElementValue(nodeMeta, ID_CONCL, concentration);
+	        XMLUtil.setElementIntValue(nodeMeta, ID_NFLIES, capNFlies);
+	        XMLUtil.setElementIntValue(nodeMeta, ID_CAGENB, capCageNb);
+			XMLUtil.setElementDoubleValue(nodeMeta, ID_CAPVOLUME, capVolume);
+			XMLUtil.setElementIntValue(nodeMeta, ID_CAPPIXELS, capPixels);
+			XMLUtil.setElementValue(nodeMeta, ID_STIML, capStimulus);
+			XMLUtil.setElementValue(nodeMeta, ID_SIDE, capSide);
+			XMLUtil.setElementValue(nodeMeta, ID_CONCL, capConcentration);
 
 	        saveToXML_ROI(nodeMeta, roi); 
 	    }

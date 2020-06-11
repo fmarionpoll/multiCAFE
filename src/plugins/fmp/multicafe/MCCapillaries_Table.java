@@ -96,11 +96,11 @@ public class MCCapillaries_Table  extends JPanel {
 						if (!capFrom.roi.getName().equals (capTo.roi.getName()))
 							continue;
 						capFrom.valid = true;
-						capTo.cagenb = capFrom.cagenb;
-						capTo.nflies = capFrom.nflies;
-						capTo.volume = capFrom.volume;
-						capTo.stimulus = capFrom.stimulus;
-						capTo.concentration = capFrom.concentration;
+						capTo.capCageNb = capFrom.capCageNb;
+						capTo.capNFlies = capFrom.capNFlies;
+						capTo.capVolume = capFrom.capVolume;
+						capTo.capStimulus = capFrom.capStimulus;
+						capTo.capConcentration = capFrom.capConcentration;
 					}
 				}
 				viewModel.fireTableDataChanged();
@@ -120,10 +120,10 @@ public class MCCapillaries_Table  extends JPanel {
 						if ((exp.capillaries.desc.grouping == 2) && (!cap.getCapillarySide().equals(side)))
 							continue;
 			        	switch (columnIndex) {
-			            case 2: cap.nflies = cap0.nflies; break;
-			            case 3: cap.volume = cap0.volume; break;
-			            case 4: cap.stimulus = cap0.stimulus; break;
-			            case 5: cap.concentration = cap0.concentration; break;
+			            case 2: cap.capNFlies = cap0.capNFlies; break;
+			            case 3: cap.capVolume = cap0.capVolume; break;
+			            case 4: cap.capStimulus = cap0.capStimulus; break;
+			            case 5: cap.capConcentration = cap0.capConcentration; break;
 			            default: break;
 			        	}					
 					}
@@ -141,10 +141,10 @@ public class MCCapillaries_Table  extends JPanel {
 						if (cap.getCapillaryName().equals(cap0.getCapillaryName()))
 							continue;
 						switch (columnIndex) {
-			            case 2: cap.nflies = cap0.nflies; break;
-			            case 3: cap.volume = cap0.volume; break;
-			            case 4: cap.stimulus = cap0.stimulus; break;
-			            case 5: cap.concentration = cap0.concentration; break;
+			            case 2: cap.capNFlies = cap0.capNFlies; break;
+			            case 3: cap.capVolume = cap0.capVolume; break;
+			            case 4: cap.capStimulus = cap0.capStimulus; break;
+			            case 5: cap.capConcentration = cap0.capConcentration; break;
 			            default: break;
 			        	}					
 					}
@@ -154,8 +154,10 @@ public class MCCapillaries_Table  extends JPanel {
 		getNfliesButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
-				viewModel.fireTableDataChanged();
+				if (exp.cages.cageList.size() > 0) {
+					exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
+					viewModel.fireTableDataChanged();
+				}
 			}});
 	}
 	

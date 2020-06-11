@@ -177,7 +177,7 @@ public class MCCages_BuildROIs2  extends JPanel implements ChangeListener {
 				int ix = (int) (pt.getX() - rectGrid.x);
 				int iy = (int) (pt.getY() - rectGrid.y);
 				int blobi = blobs.getBlobAt(ix, iy);
-				cap.cagenb = blobi;
+				cap.capCageNb = blobi;
 				boolean found = false;
 				for (int i: blobsfound) {
 					if (i == blobi) {
