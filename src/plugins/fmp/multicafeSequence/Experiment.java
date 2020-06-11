@@ -39,7 +39,7 @@ public class Experiment {
 	public Sequence 		seqBackgroundImage			= null;
 	public Capillaries 		capillaries 				= new Capillaries();
 	public Cages			cages 						= new Cages();
-
+	public String			resultsString				= "results";
 	public FileTime			fileTimeImageFirst;
 	public FileTime			fileTimeImageLast;
 	public long				fileTimeImageFirstMinute 	= 0;
@@ -195,7 +195,7 @@ public class Experiment {
 			String directory = seqCamData.getDirectory();
 			experimentFileName = directory;
 		}
-		String csFileName = experimentFileName + File.separator + "results" + File.separator + "MCexperiment.xml";
+		String csFileName = experimentFileName + File.separator + resultsString + File.separator + "MCexperiment.xml";
 		final Document doc = XMLUtil.loadDocument(csFileName);
 		if (doc == null)
 			return false;
@@ -244,7 +244,7 @@ public class Experiment {
 	        XMLUtil.setElementValue(node, ID_EXPTFILENAME, experimentFileName);
 
 	        String directory = seqCamData.getDirectory();
-	        String tempname = directory + File.separator + "results" + File.separator + "MCexperiment.xml";
+	        String tempname = directory + File.separator + resultsString + File.separator + "MCexperiment.xml";
 	        return XMLUtil.saveDocument(doc, tempname);
 		}
 		return false;

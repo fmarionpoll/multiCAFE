@@ -180,8 +180,8 @@ public class SequenceKymos extends SequenceCamData  {
 	public List <String> loadListOfKymographsFromCapillaries(String dir, Capillaries capillaries) {
 		isRunning_loadImages = true;
 		String directoryFull = dir +File.separator ;
-		if (!dir .contains("results"))
-			directoryFull = dir +File.separator +"results" + File.separator;	
+		if (!dir .contains(resultsString))
+			directoryFull = dir +File.separator +resultsString + File.separator;	
 		List<String> myListOfFileNames = new ArrayList<String>(capillaries.capillariesArrayList.size());
 		Collections.sort(capillaries.capillariesArrayList);
 		for (Capillary cap: capillaries.capillariesArrayList) {
@@ -339,7 +339,7 @@ public class SequenceKymos extends SequenceCamData  {
 	String buildCorrectPath(String pathname) {
 		Path path = Paths.get(pathname);
 		if (path.toFile().isDirectory()) {
-			pathname = pathname + File.separator + "results" + File.separator + "MCcapillaries.xml";
+			pathname = pathname + File.separator + resultsString + File.separator + "MCcapillaries.xml";
 			path = Paths.get(pathname);
 		}
 		return pathname;
@@ -347,8 +347,8 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	String getMCcapillariesPath() {
 		String path =  getDirectory() + File.separator + "MCcapillaries.xml";
-		if (!path.contains("results"))
-			path = getDirectory() + File.separator + "results" + File.separator + "MCcapillaries.xml";
+		if (!path.contains(resultsString))
+			path = getDirectory() + File.separator + resultsString + File.separator + "MCcapillaries.xml";
 		System.out.println("out to:" + path);
 		return path;
 	}
