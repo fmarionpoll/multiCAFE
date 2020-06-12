@@ -56,6 +56,7 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("(re)build background", false);
 	private JCheckBox 	detectCheckBox 			= new JCheckBox("detect flies", true);
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
+	private JSpinner 	stepFrameJSpinner		= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
 	private DetectFlies2_series detectFlies2Thread 	= null;
 	private int 		currentExp 				= -1;
@@ -72,6 +73,8 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 		JPanel panel1 = new JPanel(flowLayout);
 		panel1.add(startComputationButton);
 		panel1.add(ALLCheckBox);
+		panel1.add(new JLabel (" step"));
+		panel1.add(stepFrameJSpinner);
 		panel1.add(backgroundCheckBox);
 		panel1.add(detectCheckBox);
 		add( GuiUtil.besidesPanel(panel1));
@@ -176,7 +179,7 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 		
 		detect.forceBuildBackground	= backgroundCheckBox.isSelected();
 		detect.detectFlies	= detectCheckBox.isSelected();
-		detect.stepFrame 	= parent0.paneSequence.tabIntervals.getStepFrame();
+		detect.stepFrame 	= (int) stepFrameJSpinner.getValue();
 		detect.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
 		detect.startFrame 	= parent0.paneSequence.tabIntervals.getStartFrame();
 		detect.endFrame 	= parent0.paneSequence.tabIntervals.getEndFrame();

@@ -27,10 +27,10 @@ public class Capillaries {
 	public DetectLevels_Options 	limitsOptions	= new DetectLevels_Options();
 	public DetectGulps_Options 		gulpsOptions	= new DetectGulps_Options();
 	public String					resultsString   = "results";
-	private final static String ID_CAPILLARYTRACK = "capillaryTrack";
-	private final static String ID_NCAPILLARIES = "N_capillaries";
+	private final static String ID_CAPILLARYTRACK 	= "capillaryTrack";
+	private final static String ID_NCAPILLARIES 	= "N_capillaries";
 	private final static String ID_LISTOFCAPILLARIES = "List_of_capillaries";
-	private final static String ID_CAPILLARY_ = "capillary_";
+	private final static String ID_CAPILLARY_ 		= "capillary_";
 
 	// ---------------------------------
 	

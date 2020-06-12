@@ -24,10 +24,9 @@ public class MCSequence_Intervals extends JPanel {
 	private static final long serialVersionUID = -5739112045358747277L;
 	JSpinner 		startFrameJSpinner	= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
 	JSpinner 		endFrameJSpinner	= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
-	JSpinner 		stepFrameJSpinner	= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	JRadioButton  	isFixedFrame		= new JRadioButton("keep the same intervals for all experiment", false);
 	JRadioButton  	isFloatingFrame		= new JRadioButton("analyze complete experiments", true);
-		
+	JLabel			stepFrameLabel			= new JLabel(" step = 1");	
 	
 	void init(GridLayout capLayout) {
 		setLayout(capLayout);	
@@ -36,24 +35,25 @@ public class MCSequence_Intervals extends JPanel {
 		layout1.setVgap(0);
 		
 		JPanel panel1 = new JPanel(layout1);
-		panel1.add(new JLabel("Analyze from ", SwingConstants.RIGHT));
+		panel1.add(new JLabel("From ", SwingConstants.RIGHT));
 		panel1.add(startFrameJSpinner);
 		panel1.add(new JLabel(" to "));
 		panel1.add(endFrameJSpinner);
-		panel1.add(new JLabel(" step "));
-		panel1.add(stepFrameJSpinner );
+		panel1.add(stepFrameLabel);
 		add(GuiUtil.besidesPanel(panel1));
 		
-		FlowLayout layout2 = new FlowLayout(FlowLayout.LEFT);
-		layout2.setVgap(0);
-		JPanel panel2 = new JPanel(layout2);
+		JPanel panel2 = new JPanel(layout1);
 		panel2.add(isFixedFrame);
-		panel2.add(isFloatingFrame);
+		add(GuiUtil.besidesPanel(panel2));
+		
+
+		JPanel panel3 = new JPanel(layout1);
+		panel3.add(isFloatingFrame);
+		add(GuiUtil.besidesPanel(panel3));
+		
 		ButtonGroup group = new ButtonGroup();
 		group.add(isFloatingFrame);
 		group.add(isFixedFrame);
-		
-		add(GuiUtil.besidesPanel(panel2));
 		
 		defineActionListeners();
 		startFrameJSpinner.setEnabled(false); 
@@ -80,21 +80,16 @@ public class MCSequence_Intervals extends JPanel {
 		endFrameJSpinner.setValue((int) exp.getKymoFrameEnd());
 		if (exp.getKymoFrameStep() <= 0 )
 			exp.setKymoFrameStep(1);
-		stepFrameJSpinner.setValue(exp.getKymoFrameStep());
+		stepFrameLabel.setText(" step=" +exp.getKymoFrameStep());
 	}
 	
 	void getAnalyzeFrameFromDialog (Experiment exp) {		
 		exp.setKymoFrameStart ((int) startFrameJSpinner.getValue());
 		exp.setKymoFrameEnd ( (int) endFrameJSpinner.getValue());
-		exp.setKymoFrameStep ( (int) stepFrameJSpinner.getValue());
 	}
 	
 	public void setEndFrameToDialog (int end) {
 		endFrameJSpinner.setValue(end);		
-	}
-	
-	int getStepFrame() {
-		return (int) stepFrameJSpinner.getValue();
 	}
 	
 	boolean getIsFixedFrame() {

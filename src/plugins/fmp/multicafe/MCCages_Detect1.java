@@ -53,6 +53,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object < ");
 	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 9999, 1));
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
+	private JSpinner 	stepFrameJSpinner		= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
 	private JCheckBox 	whiteMiceCheckBox 		= new JCheckBox("white object");
 	JCheckBox 			overlayCheckBox 		= new JCheckBox("overlay");
@@ -71,7 +72,9 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
 		flowLayout.setVgap(0);
 		JPanel panel1 = new JPanel(flowLayout);
-		panel1.add( GuiUtil.besidesPanel(ALLCheckBox, whiteMiceCheckBox, overlayCheckBox) );
+		panel1.add( ALLCheckBox);
+		panel1.add(new JLabel (" step"));
+		panel1.add(stepFrameJSpinner);
 		panel1.validate();
 		add( GuiUtil.besidesPanel( startComputationButton, panel1));
 		
@@ -92,6 +95,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		panel3.add(objectLowsizeSpinner);
 		panel3.add(objectUpsizeCheckBox);
 		panel3.add(objectUpsizeSpinner);
+		panel3.add(whiteMiceCheckBox);
 		add( panel3);
 		
 		JPanel panel4 = new JPanel(flowLayout);
@@ -99,6 +103,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		panel4.add(limitRatioSpinner);
 		panel4.add(new JLabel("         jitter <= ", SwingConstants.RIGHT));
 		panel4.add(jitterTextField);
+		panel4.add(overlayCheckBox);
 		add(panel4);
 		
 		defineActionListeners();
@@ -186,7 +191,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		detect.threshold		= (int) thresholdSpinner.getValue();
 		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 
-		detect.stepFrame = parent0.paneSequence.tabIntervals.getStepFrame();
+		detect.stepFrame = (int) stepFrameJSpinner.getValue();
 		detect.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
 		detect.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
 		detect.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();

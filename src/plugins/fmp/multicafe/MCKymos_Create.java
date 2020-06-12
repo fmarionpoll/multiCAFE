@@ -1,6 +1,7 @@
 package plugins.fmp.multicafe;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
 import java.awt.event.ActionEvent;
@@ -37,6 +38,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
 	JCheckBox				updateViewerCheckBox 		= new JCheckBox("update viewer", true);
 	JCheckBox				ALLCheckBox 				= new JCheckBox("ALL series", false);
+	JSpinner 				stepFrameJSpinner			= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE 		parent0						= null;
@@ -47,8 +49,17 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);	
 		this.parent0 = parent0;
-		add(GuiUtil.besidesPanel(
-				startComputationButton, ALLCheckBox));
+		
+		FlowLayout layout1 = new FlowLayout(FlowLayout.LEFT);
+		layout1.setVgap(0);
+		
+		JPanel panel1 = new JPanel(layout1);
+		panel1.add(startComputationButton);
+		panel1.add(ALLCheckBox);
+		panel1.add(new JLabel(" step "));
+		panel1.add(stepFrameJSpinner );
+		add(GuiUtil.besidesPanel(panel1));
+		
 		add(GuiUtil.besidesPanel(
 				new JLabel("area around ROIs", SwingConstants.RIGHT), 
 				diskRadiusSpinner, 
@@ -97,7 +108,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		}
 		options.expList = parent0.expList; 
 		
-		options.stepFrame = parent0.paneSequence.tabIntervals.getStepFrame();
+		options.stepFrame = (int) stepFrameJSpinner.getValue();
 		options.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
 		options.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
 		options.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();
