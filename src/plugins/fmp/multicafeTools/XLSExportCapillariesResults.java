@@ -259,6 +259,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					int to_i = (int) (fromTime + expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
 					if (to_i >= row.values_out.length)
 						break;
+					if (to_i < 0)
+						break;
 					row.values_out[to_i]= value;
 				}
 				
