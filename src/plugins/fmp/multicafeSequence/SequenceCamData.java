@@ -51,7 +51,7 @@ public class SequenceCamData {
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
-	public String 					resultsString			= "results";
+	//public String 					resultsString			= "results";
 	volatile public List <String>	listFiles 				= new ArrayList<String>();
 	protected String 				csFileName 				= null;
 	protected String				directory 				= null;
@@ -139,22 +139,6 @@ public class SequenceCamData {
 	public String getDirectory () {
 		if (directory == null)
 			directory = seq.getFilename();
-		return directory;
-	}
-	
-	public String getResultsDirectory() {
-		Path dir = Paths.get(getDirectory());
-		dir = dir.resolve(resultsString);
-		String directory = dir.toAbsolutePath().toString();
-		if (Files.notExists(dir))  {
-			try {
-				Files.createDirectory(dir);
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Creating directory failed: "+ directory);
-				return null;
-			}
-		}
 		return directory;
 	}
 

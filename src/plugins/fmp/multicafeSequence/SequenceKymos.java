@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,10 +31,10 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 public class SequenceKymos extends SequenceCamData  {	
-	public boolean 			isRunning_loadImages 	= false;
-	public boolean 			isInterrupted_loadImages = false;
-	public int 				imageWidthMax 			= 0;
-	public int 				imageHeightMax 			= 0;
+	public boolean 	isRunning_loadImages 		= false;
+	public boolean 	isInterrupted_loadImages 	= false;
+	public int 		imageWidthMax 				= 0;
+	public int 		imageHeightMax 				= 0;
 	
 	// -----------------------------------------------------
 	
@@ -179,9 +177,7 @@ public class SequenceKymos extends SequenceCamData  {
 
 	public List <String> loadListOfKymographsFromCapillaries(String dir, Capillaries capillaries) {
 		isRunning_loadImages = true;
-		String directoryFull = dir +File.separator ;
-		if (!dir .contains(resultsString))
-			directoryFull = dir +File.separator +resultsString + File.separator;	
+		String directoryFull = dir +File.separator ;	
 		List<String> myListOfFileNames = new ArrayList<String>(capillaries.capillariesArrayList.size());
 		Collections.sort(capillaries.capillariesArrayList);
 		for (Capillary cap: capillaries.capillariesArrayList) {
@@ -333,26 +329,7 @@ public class SequenceKymos extends SequenceCamData  {
         }
         result.dataChanged();
 	}
-	
-	// ----------------------------------
-	
-	String buildCorrectPath(String pathname) {
-		Path path = Paths.get(pathname);
-		if (path.toFile().isDirectory()) {
-			pathname = pathname + File.separator + resultsString + File.separator + "MCcapillaries.xml";
-			path = Paths.get(pathname);
-		}
-		return pathname;
-	}
-	
-	String getMCcapillariesPath() {
-		String path =  getDirectory() + File.separator + "MCcapillaries.xml";
-		if (!path.contains(resultsString))
-			path = getDirectory() + File.separator + resultsString + File.separator + "MCcapillaries.xml";
-		System.out.println("out to:" + path);
-		return path;
-	}
-	
+		
 	// ----------------------------
 
 	public List<Integer> subtractTi(List<Integer > array) {

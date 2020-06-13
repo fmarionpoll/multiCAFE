@@ -95,7 +95,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 	    }
 				
 		private void saveComputation(Experiment exp) {			
-			String directory = exp.seqCamData.getResultsDirectory();
+			String directory = exp.getResultsDirectory();
 			if (directory == null)
 				return;
 			

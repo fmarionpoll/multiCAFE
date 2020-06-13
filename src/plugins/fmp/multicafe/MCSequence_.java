@@ -203,7 +203,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	private void openSeqCamData() {
-		SequenceCamData seqCamData = parent0.openSequenceCam(null);
+		Experiment exp = parent0.openExperimentFromString(null);
+		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData != null && seqCamData.seq != null) {
 			tabInfosSeq.disableChangeFile = true;
 			int item = addStringToCombo( seqCamData.getDirectory());
@@ -217,8 +218,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	void openExperiment(Experiment exp) {
 		exp.xmlLoadExperiment();
-		String filename = exp.experimentFileName;
-		exp.seqCamData = exp.openSequenceCamData(filename);
+		exp.seqCamData = exp.openSequenceCamData(exp.experimentFileName);
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			parent0.addSequence(exp.seqCamData.seq);
 			updateViewerForSequenceCam(exp.seqCamData);
@@ -227,8 +227,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	void openSequenceCamFromCombo() {
-		SequenceCamData seqCamData = parent0.openSequenceCam((String) expListComboBox.getSelectedItem());
-		parent0.updateDialogsAfterOpeningSequenceCam(seqCamData);
+		Experiment exp = parent0.openExperimentFromString((String) expListComboBox.getSelectedItem());
+		parent0.updateDialogsAfterOpeningSequenceCam(exp);
 		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
 			loadMeasuresAndKymos();
 		}});
@@ -286,9 +286,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
-	public void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
-		tabIntervals.setEndFrameToDialog((int)seqCamData.analysisEnd);
-		updateViewerForSequenceCam(seqCamData);
+	public void transferSequenceCamDataToDialogs(Experiment exp) {
+		tabIntervals.setEndFrameToDialog((int)exp.seqCamData.analysisEnd);
+		tabDisplay.updateResultsAvailable(exp);
+		updateViewerForSequenceCam(exp.seqCamData);
 	}
 
 	void loadMeasuresAndKymos() {

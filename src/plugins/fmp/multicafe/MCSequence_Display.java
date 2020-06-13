@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -28,22 +29,28 @@ public class MCSequence_Display  extends JPanel {
 	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries", true);
 	JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages", true);
 	JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position", true);
+	JComboBox<String> viewResultsCombo	= new JComboBox <String>();
 
 	private MultiCAFE parent0 = null;
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
-		
 		setLayout(capLayout);
+		this.parent0 = parent0;
+		
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
 		layout.setVgap(0);
-		setLayout(layout);
-		this.parent0 = parent0;
-	
-		add(new JLabel(" ROIs: "));
-		add(viewCapillariesCheckBox);
-		add(viewCagesCheckbox);
-		add(viewFlyCheckbox);
+		JPanel panel1 = new JPanel (layout);
+		panel1.add(new JLabel(" ROIs: "));
+		panel1.add(viewCapillariesCheckBox);
+		panel1.add(viewCagesCheckbox);
+		panel1.add(viewFlyCheckbox);
+		add(panel1);
+		
+		JPanel panel2 = new JPanel(layout);
+		panel2.add(new JLabel("available views :"));
+		panel2.add(viewResultsCombo);
+		add(panel2);
 		defineActionListeners();
 	}
 	
@@ -83,6 +90,13 @@ public class MCSequence_Display  extends JPanel {
 				}
 			}
 		});
+	}
+	
+	void updateResultsAvailable(Experiment exp) {
+		viewResultsCombo.removeAllItems();
+		for (String dirName: exp.resultsDirList) {
+			viewResultsCombo.addItem(dirName);
+		}
 	}
 
 }

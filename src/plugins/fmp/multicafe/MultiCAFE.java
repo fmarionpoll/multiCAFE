@@ -111,7 +111,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 	} 
 	
-	SequenceCamData openSequenceCam(String filename) {
+	Experiment openExperimentFromString(String filename) {
 		Experiment exp = null;
 		currentExperimentIndex = expList.getPositionOfCamFileName(filename);
 		if (currentExperimentIndex < 0) {
@@ -132,13 +132,13 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		} else {
 			System.out.println("seqcamdata or seq of seqcamdata is null!");
 		}
-		return exp.seqCamData;
+		return exp;
 	}
 	
-	void updateDialogsAfterOpeningSequenceCam(SequenceCamData seqCamData) {
-		if (seqCamData != null) {
-			paneSequence.transferSequenceCamDataToDialogs(seqCamData);	
-			paneLevels.transferSequenceCamDataToDialogs(seqCamData);
+	void updateDialogsAfterOpeningSequenceCam(Experiment exp) {
+		if (exp.seqCamData != null) {
+			paneSequence.transferSequenceCamDataToDialogs(exp);	
+			paneLevels.transferSequenceCamDataToDialogs(exp.seqCamData);
 		}
 	}
 

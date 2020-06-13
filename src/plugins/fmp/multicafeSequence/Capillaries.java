@@ -26,37 +26,19 @@ public class Capillaries {
 	public List <Capillary> 		capillariesArrayList = new ArrayList <Capillary>();
 	public DetectLevels_Options 	limitsOptions	= new DetectLevels_Options();
 	public DetectGulps_Options 		gulpsOptions	= new DetectGulps_Options();
-	public String					resultsString   = "results";
+	
 	private final static String ID_CAPILLARYTRACK 	= "capillaryTrack";
 	private final static String ID_NCAPILLARIES 	= "N_capillaries";
 	private final static String ID_LISTOFCAPILLARIES = "List_of_capillaries";
 	private final static String ID_CAPILLARY_ 		= "capillary_";
 
 	// ---------------------------------
-	
-	String getCorrectPath(String cspathname) {
-		Path path = Paths.get(cspathname);
-		String pathname = cspathname;
-		if (path.toFile().isDirectory()) {
-			pathname = cspathname + File.separator + resultsString + File.separator + "MCcapillaries.xml";
-			path = Paths.get(pathname);
-			if (path.toFile().isFile())
-				return pathname;
-			else {
-				pathname = cspathname + File.separator + "capillarytrack.xml";
-				path = Paths.get(pathname);
-			}
-		}
-		if (!path.toFile().isFile())
-			return null;
-		return pathname;
-	}
-	
+		
 	String getMCCapillaryNameFromExperimentPath(String cspathname) {
 		Path path = Paths.get(cspathname);
 		String pathname = cspathname;
 		if (path.toFile().isDirectory()) {
-			pathname = cspathname + File.separator + resultsString + File.separator + "MCcapillaries.xml";
+			pathname = cspathname + File.separator + "MCcapillaries.xml";
 			path = Paths.get(pathname);
 			return pathname;
 		}
@@ -156,7 +138,7 @@ public class Capillaries {
 		List<ROI> listOfCapillaryROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
 		capillariesArrayList.clear();
 		Path directorypath = Paths.get(csFileName).getParent();
-		String directory = directorypath + File.separator + resultsString +File.separator;
+		String directory = directorypath + File.separator + File.separator;
 		// then load measures stored into individual files
 		for (ROI roiCapillary: listOfCapillaryROIs) {
 			Capillary cap = new Capillary((ROI2DShape) roiCapillary);
@@ -201,8 +183,6 @@ public class Capillaries {
 		xmlLoadCapillariesv1(doc);
 		Path directorypath = Paths.get(csFileName).getParent();
 		String directory = directorypath + File.separator;
-		if (!directory .contains(resultsString))
-			directory = directory + resultsString +File.separator;
 		for (Capillary cap: capillariesArrayList) {
 			String csFile = directory + cap.getCapillaryName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);

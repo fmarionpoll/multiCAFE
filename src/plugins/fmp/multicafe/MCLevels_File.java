@@ -61,10 +61,9 @@ public class MCLevels_File  extends JPanel {
 	}
 
 	boolean loadKymosMeasures(Experiment exp) {
-		String directory = exp.seqCamData.getDirectory();
 		boolean flag = true;
 		if (exp.seqKymos != null ) {
-			boolean readOK = exp.xmlLoadKymos_Measures(directory);
+			boolean readOK = exp.xmlLoadKymos_Measures();
 			if (readOK) {
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
 					parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
