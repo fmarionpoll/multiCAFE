@@ -106,17 +106,17 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 			options.expList.index0 = parent0.currentExperimentIndex;
 			options.expList.index1 = options.expList.index0;
 		}
-		options.expList = parent0.expList; 
+		options.expList 		= parent0.expList; 
 		
-		options.stepFrame = (int) stepFrameJSpinner.getValue();
-		options.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
-		options.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
-		options.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();
+		options.stepFrame 		= (int) stepFrameJSpinner.getValue();
+		options.isFrameFixed 	= parent0.paneSequence.tabIntervals.getIsFixedFrame();
+		options.startFrame 		= parent0.paneSequence.tabIntervals.getStartFrame();
+		options.endFrame 		= parent0.paneSequence.tabIntervals.getEndFrame();
 				
-		options.diskRadius 	= (int) diskRadiusSpinner.getValue();
-		options.doRegistration = doRegistrationCheckBox.isSelected();
+		options.diskRadius 		= (int) diskRadiusSpinner.getValue();
+		options.doRegistration 	= doRegistrationCheckBox.isSelected();
 		options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
-		options.parent0Rect = parent0.mainFrame.getBoundsInternal();
+		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		return true;
 	}
 		
@@ -148,8 +148,10 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			if (exp != null)
+			if (exp != null) {
+				exp.setKymoFrameStep((int) stepFrameJSpinner.getValue());
 				parent0.paneSequence.openExperiment(exp);
+			}
 			startComputationButton.setText(detectString);
 		 }
 	}

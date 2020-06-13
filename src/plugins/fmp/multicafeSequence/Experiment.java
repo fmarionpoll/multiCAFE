@@ -80,6 +80,7 @@ public class Experiment {
 	private final String ID_COMMENT1 		= "comment";
 	private final String ID_COMMENT2 		= "comment2";
 	private final String ID_MCEXPERIMENT 	= "MCexperiment";
+	private final String ID_MCDROSOTRACK    = "MCdrosotrack.xml";
 	
 	// ----------------------------------
 	
@@ -197,9 +198,6 @@ public class Experiment {
 	
 	public String getResultsDirectory() {
 		Path dir = Paths.get(seqCamData.getDirectory());
-//		if (resultsSubPath .contentEquals(RESULTS)) {
-//			resultsSubPath = RESULTS + "_"+kymoFrameStep;
-//		}
 		dir = dir.resolve(resultsSubPath);
 		String directory = dir.toAbsolutePath().toString();
 		if (Files.notExists(dir))  {
@@ -214,7 +212,28 @@ public class Experiment {
 		return directory;
 	}
 	
-	public List<String> getResultsDirectories(String experimentDir) {
+	private String getResultSubPathFromKymoFrameStep() {
+		return RESULTS + "_"+kymoFrameStep;
+	}
+	
+	public String getDirectoryToSaveResults() {
+		Path dir = Paths.get(seqCamData.getDirectory());
+		resultsSubPath = getResultSubPathFromKymoFrameStep();
+		dir = dir.resolve(resultsSubPath);
+		String directory = dir.toAbsolutePath().toString();
+		if (Files.notExists(dir))  {
+			try {
+				Files.createDirectory(dir);
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.out.println("Creating directory failed: "+ directory);
+				return null;
+			}
+		}
+		return directory;
+	}
+	
+	public List<String> getListOfResultsDirectories(String experimentDir) {
 		Path pathExperimentDir = Paths.get(experimentDir);
 		List<Path> subfolders;
 		try {
@@ -225,7 +244,15 @@ public class Experiment {
 			for (Path dirPath: subfolders) {
 				String subString = dirPath.subpath(dirPath.getNameCount() - 1, dirPath.getNameCount()).toString();
 				if (subString.contains(RESULTS)) {
-					resultsDirList.add(subString);
+					boolean found = false;
+					for (String item: resultsDirList) {
+						if (item.equals(subString)) {
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+						resultsDirList.add(subString);
 				}
 			}
 		} catch (IOException e) {
@@ -234,7 +261,7 @@ public class Experiment {
 		return resultsDirList;
 	}
 	
-	public int getResultsBinStep(String resultsPath) {
+	private int getBinStepFromResultsDirectoryName(String resultsPath) {
 		int step = -1;
 		if (resultsPath.contains(RESULTS)) {
 			if (resultsPath.length() < (RESULTS.length() +2)) {
@@ -246,14 +273,30 @@ public class Experiment {
 		return step;
 	}
 	
+	private boolean findSubPathWithinList(String testName) {
+		boolean found = false;
+		for (String test: resultsDirList) {
+			if (test.equals(testName)) {
+				found = true;
+				break;
+			}
+		}
+		return found;
+	}
+	
 	public boolean xmlLoadExperiment () {
 		if (experimentFileName == null) {
 			String directory = seqCamData.getDirectory();
 			experimentFileName = directory;
 		}
-		getResultsDirectories (experimentFileName);
-		resultsSubPath = resultsDirList.get(0);
-		kymoFrameStep = getResultsBinStep(resultsSubPath);
+		getListOfResultsDirectories (experimentFileName);
+		if (findSubPathWithinList(getResultSubPathFromKymoFrameStep())) {
+			resultsSubPath = getResultSubPathFromKymoFrameStep();
+		} else {
+			resultsSubPath = resultsDirList.get(0);
+			kymoFrameStep = getBinStepFromResultsDirectoryName(resultsSubPath);
+		}
+	
 		String csFileName = experimentFileName + File.separator + resultsSubPath + File.separator + "MCexperiment.xml";
 		final Document doc = XMLUtil.loadDocument(csFileName);
 		if (doc == null)
@@ -302,8 +345,8 @@ public class Experiment {
 	        	experimentFileName = seqCamData.getDirectory();
 	        XMLUtil.setElementValue(node, ID_EXPTFILENAME, experimentFileName);
 
-	        String directory = seqCamData.getDirectory();
-	        String tempname = directory + File.separator + resultsSubPath + File.separator + "MCexperiment.xml";
+	        String directory = getDirectoryToSaveResults();
+	        String tempname = directory + File.separator + "MCexperiment.xml";
 	        return XMLUtil.saveDocument(doc, tempname);
 		}
 		return false;
@@ -541,17 +584,6 @@ public class Experiment {
 		xmlLoadMCcapillaries();
 	}
 	
-	public void loadExperimentCamData() {
-		xmlLoadExperiment();
-		seqCamData.loadSequence(experimentFileName) ;
-	}
-	
-	public void loadExperimentDataToBuildKymos() {
-		xmlLoadExperiment();
-		seqCamData.loadSequence(experimentFileName) ;
-		xmlLoadMCcapillariesOnly();
-	}
-	
 	public void saveExperimentMeasures() {
 		if (seqKymos != null) {
 			seqKymos.validateRois();
@@ -658,14 +690,14 @@ public class Experiment {
 	}
 	
 	public boolean xmlSaveMCcapillaries() {
-		String saveMCcapillariesFullPath = capillaries.getMCCapillaryNameFromExperimentPath(getResultsDirectory());
+		String saveMCcapillariesFullPath = capillaries.getMCCapillaryNameFromExperimentPath(getDirectoryToSaveResults());
 		capillaries.xmlSaveCapillaries_Only(saveMCcapillariesFullPath);
-		boolean flag = capillaries.xmlSaveCapillaries_Measures(getResultsDirectory());
+		boolean flag = capillaries.xmlSaveCapillaries_Measures(getDirectoryToSaveResults());
 		return flag;
 	}
 	
 	public boolean xmlSaveKymos_Measures() {
-		return capillaries.xmlSaveCapillaries_Measures(getResultsDirectory());
+		return capillaries.xmlSaveCapillaries_Measures(getDirectoryToSaveResults());
 	}
 	
 	public boolean xmlReadRoiLineParameters(String pathname) {
@@ -739,7 +771,7 @@ public class Experiment {
 	}
 	
 	public boolean saveReferenceImage() {
-		String path = getResultsDirectory()+File.separator+"referenceImage.jpg";
+		String path = getDirectoryToSaveResults()+File.separator+"referenceImage.jpg";
 		File outputfile = new File(path);
 		RenderedImage image = ImageUtil.toRGBImage(seqCamData.refImage);
 		return ImageUtil.save(image, "jpg", outputfile);
@@ -766,17 +798,15 @@ public class Experiment {
 	
 	public void xmlSaveFlyPositionsForAllCages() {			
 //		cages.getCagesFromROIs(seqCamData);
-		cages.xmlWriteCagesToFileNoQuestion(getMCdrosotrackName());
+		String fileName = getDirectoryToSaveResults() + File.separator + ID_MCDROSOTRACK;
+		cages.xmlWriteCagesToFileNoQuestion(fileName);
 	}
 	
 	// --------------------------
 	
-	private String getMCdrosotrackName() {
-		return getResultsDirectory() + File.separator + "MCdrosotrack.xml";
-	}
-	
 	public boolean xmlReadDrosoTrackDefault() {
-		boolean flag = cages.xmlReadCagesFromFileNoQuestion(getMCdrosotrackName(), seqCamData);
+		String fileName = getResultsDirectory() + File.separator + ID_MCDROSOTRACK;
+		boolean flag = cages.xmlReadCagesFromFileNoQuestion(fileName, seqCamData);
 		if (!flag)
 			flag = cages.xmlReadCagesFromFileNoQuestion(seqCamData.getDirectory() + File.separator + "drosotrack.xml", seqCamData);
 		return flag;
@@ -787,7 +817,8 @@ public class Experiment {
 	}
 	
 	public boolean xmlWriteDrosoTrackDefault() {
-		return cages.xmlWriteCagesToFileNoQuestion(getMCdrosotrackName());
+		String fileName = getDirectoryToSaveResults() + File.separator + ID_MCDROSOTRACK;
+		return cages.xmlWriteCagesToFileNoQuestion(fileName);
 	}
 	
 	

@@ -45,7 +45,8 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			System.out.println(exp.experimentFileName);
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
-			exp.loadExperimentCamData();
+			exp.xmlLoadExperiment();
+			exp.seqCamData.loadSequence(exp.experimentFileName) ;
 			exp.xmlReadDrosoTrackDefault();
 			exp.setCagesFrameStep (detect.stepFrame);
 			if (detect.isFrameFixed) {

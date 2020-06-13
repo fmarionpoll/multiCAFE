@@ -60,7 +60,7 @@ public class MCKymos_File extends JPanel {
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			if (exp != null) {
-				String path = exp.getResultsDirectory();
+				String path = exp.getDirectoryToSaveResults();
 				saveKymographFiles(path);
 				firePropertyChange("KYMOS_SAVE", false, true);
 			}
@@ -74,7 +74,7 @@ public class MCKymos_File extends JPanel {
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (directory == null) 
-			directory = exp.getResultsDirectory();
+			directory = exp.getDirectoryToSaveResults();
 		try {
 			Files.createDirectories(Paths.get(directory));
 		} catch (IOException e1) {

@@ -54,7 +54,7 @@ public class MCLevels_File  extends JPanel {
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null) {
 					transferRoisToMeasures(exp);
-					saveKymosMeasures(exp);
+					exp.saveExperimentMeasures();
 				}
 				firePropertyChange("MEASURES_SAVE", false, true);
 			}});	
@@ -93,7 +93,4 @@ public class MCLevels_File  extends JPanel {
 		return flag;
 	}
 	
-	public void saveKymosMeasures(Experiment exp) {
-		exp.saveExperimentMeasures();
-	}
 }
