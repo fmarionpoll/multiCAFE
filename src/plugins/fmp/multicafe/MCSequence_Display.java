@@ -106,7 +106,7 @@ public class MCSequence_Display  extends JPanel {
 		viewResultsCombo.removeAllItems();
 		for (String dirName: exp.resultsDirList) {
 			viewResultsCombo.addItem(dirName);
-		}
+			}
 	}
 
 }
