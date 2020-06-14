@@ -66,6 +66,16 @@ public class MCSequence_Display  extends JPanel {
 		viewFlyCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			displayROIsCategory(viewFlyCheckbox.isSelected(), "det");
 		} } );
+		
+		viewResultsCombo.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			if (exp == null)
+				return;
+			String localString = (String) viewResultsCombo.getSelectedItem();
+			if (localString != null && !localString.contentEquals(exp.resultsSubPath)) {
+				firePropertyChange("SEQ_CHGBIN", false, true);
+			}
+		} } );
 	}
 	
 	private void displayROIsCategory(boolean isVisible, String pattern) {

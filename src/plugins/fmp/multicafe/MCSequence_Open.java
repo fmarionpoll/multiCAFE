@@ -68,8 +68,6 @@ public class MCSequence_Open extends JPanel implements PropertyChangeListener {
 		openButton.addActionListener(new ActionListener()  {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-            	if(parent0.paneSequence.expListComboBox.getItemCount() > 0 )
-            		parent0.paneSequence.tabClose.closeAll();
             	firePropertyChange("SEQ_OPENFILE", false, true);
             }});
 		

@@ -34,13 +34,10 @@ public class Capillaries {
 
 	// ---------------------------------
 		
-	String getMCCapillaryNameFromExperimentPath(String cspathname) {
+	String getFullFileName(String cspathname) {
 		Path path = Paths.get(cspathname);
-		String pathname = cspathname;
 		if (path.toFile().isDirectory()) {
-			pathname = cspathname + File.separator + "MCcapillaries.xml";
-			path = Paths.get(pathname);
-			return pathname;
+			return cspathname + File.separator + "MCcapillaries.xml";
 		}
 		return null;
 	}

@@ -212,13 +212,13 @@ public class Experiment {
 		return directory;
 	}
 	
-	private String getResultSubPathFromKymoFrameStep() {
+	private String getSubPathFromKymoFrameStep() {
 		return RESULTS + "_"+kymoFrameStep;
 	}
 	
 	public String getDirectoryToSaveResults() {
 		Path dir = Paths.get(seqCamData.getDirectory());
-		resultsSubPath = getResultSubPathFromKymoFrameStep();
+		resultsSubPath = getSubPathFromKymoFrameStep();
 		dir = dir.resolve(resultsSubPath);
 		String directory = dir.toAbsolutePath().toString();
 		if (Files.notExists(dir))  {
@@ -233,7 +233,7 @@ public class Experiment {
 		return directory;
 	}
 	
-	public List<String> getListOfResultsDirectories(String experimentDir) {
+	public List<String> fetchListOfResultsDirectories(String experimentDir) {
 		Path pathExperimentDir = Paths.get(experimentDir);
 		List<Path> subfolders;
 		try {
@@ -241,6 +241,7 @@ public class Experiment {
 			        .filter(Files::isDirectory)
 			        .collect(Collectors.toList());
 			subfolders.remove(0);
+			resultsDirList.clear();
 			for (Path dirPath: subfolders) {
 				String subString = dirPath.subpath(dirPath.getNameCount() - 1, dirPath.getNameCount()).toString();
 				if (subString.contains(RESULTS)) {
@@ -261,19 +262,19 @@ public class Experiment {
 		return resultsDirList;
 	}
 	
-	private int getBinStepFromResultsDirectoryName(String resultsPath) {
-		int step = -1;
-		if (resultsPath.contains(RESULTS)) {
-			if (resultsPath.length() < (RESULTS.length() +2)) {
-				step = kymoFrameStep;
-			} else {
-				step = Integer.parseInt(resultsPath.substring(RESULTS.length()+1));
-			}
-		}
-		return step;
-	}
+//	private int getBinStepFromResultsDirectoryName(String resultsPath) {
+//		int step = -1;
+//		if (resultsPath.contains(RESULTS)) {
+//			if (resultsPath.length() < (RESULTS.length() +2)) {
+//				step = kymoFrameStep;
+//			} else {
+//				step = Integer.parseInt(resultsPath.substring(RESULTS.length()+1));
+//			}
+//		}
+//		return step;
+//	}
 	
-	private boolean findSubPathWithinList(String testName) {
+	private boolean isSubPathWithinList(String testName) {
 		boolean found = false;
 		for (String test: resultsDirList) {
 			if (test.equals(testName)) {
@@ -285,19 +286,37 @@ public class Experiment {
 	}
 	
 	public boolean xmlLoadExperiment () {
-		if (experimentFileName == null) {
-			String directory = seqCamData.getDirectory();
-			experimentFileName = directory;
-		}
-		getListOfResultsDirectories (experimentFileName);
-		if (findSubPathWithinList(getResultSubPathFromKymoFrameStep())) {
-			resultsSubPath = getResultSubPathFromKymoFrameStep();
+		if (experimentFileName == null) 
+			experimentFileName = seqCamData.getDirectory();
+		fetchListOfResultsDirectories (experimentFileName);
+		if (!isSubPathWithinList(resultsSubPath)) {
+			xmlLoadExperiment (resultsDirList.get(0));
+			resultsSubPath = getSubPathFromKymoFrameStep();
+//			if (resultsDirList.get(0) .equals(RESULTS)) {
+//				boolean flag = renameDirectory(RESULTS, resultsSubPath);
+//				if (!flag) { 
+//					resultsSubPath = RESULTS;
+//				}
+//			}	
 		} else {
-			resultsSubPath = resultsDirList.get(0);
-			kymoFrameStep = getBinStepFromResultsDirectoryName(resultsSubPath);
+			xmlLoadExperiment (resultsSubPath);
 		}
+        checkValidKymoIntervals();
+		return true;
+	}
 	
-		String csFileName = experimentFileName + File.separator + resultsSubPath + File.separator + "MCexperiment.xml";
+//	private boolean renameDirectory(String oldSubPath, String newSubPath ) {
+//		Path dir0 = Paths.get(seqCamData.getDirectory());
+//		Path dirOld = dir0.resolve(oldSubPath);
+//		Path dirNew = dir0.resolve(newSubPath);
+//		if (Files.notExists(dirNew)) {
+//			return dirOld.toFile().renameTo(dirNew.toFile());
+//		}
+//		return false;
+//	}
+	
+	private boolean xmlLoadExperiment (String subpath) {
+		String csFileName = experimentFileName + File.separator + subpath + File.separator + "MCexperiment.xml";
 		final Document doc = XMLUtil.loadDocument(csFileName);
 		if (doc == null)
 			return false;
@@ -317,8 +336,6 @@ public class Experiment {
         experiment 				= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
         comment1 				= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
         comment2 				= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
-        
-        checkValidKymoIntervals();
 		return true;
 	}
 	
@@ -644,7 +661,7 @@ public class Experiment {
 		boolean flag = false;
 		if (capillaries != null) {
 			if (csFileName == null) {
-				csFileName = capillaries.getMCCapillaryNameFromExperimentPath(getResultsDirectory());
+				csFileName = capillaries.getFullFileName(getResultsDirectory());
 				flag = capillaries.xmlLoadCapillaries(csFileName);
 				if (!flag) {
 					csFileName = seqCamData.getDirectory() + File.separator + "capillaryTrack.xml";
@@ -659,7 +676,7 @@ public class Experiment {
 	}
 	
 	public boolean xmlLoadKymos_Measures() {
-		String pathname = capillaries.getMCCapillaryNameFromExperimentPath(getResultsDirectory());
+		String pathname = capillaries.getFullFileName(getResultsDirectory());
 		if (pathname == null)
 			return false;
 		boolean flag = capillaries.xmlLoadCapillaries(pathname);
@@ -671,14 +688,14 @@ public class Experiment {
 	}
 	
 	public boolean xmlLoadMCcapillariesOnly() {
-		String pathname = capillaries.getMCCapillaryNameFromExperimentPath(getResultsDirectory());
+		String pathname = capillaries.getFullFileName(getResultsDirectory());
 		if (pathname == null)
 			return false;
 		return capillaries.xmlLoadCapillaries(pathname);
 	}
 	
 	public boolean xmlLoadMCcapillaries() {
-		String pathname = capillaries.getMCCapillaryNameFromExperimentPath(getResultsDirectory());
+		String pathname = capillaries.getFullFileName(getResultsDirectory());
 		if (pathname == null)
 			return false;
 		boolean flag = capillaries.xmlLoadCapillaries(pathname);
@@ -690,7 +707,7 @@ public class Experiment {
 	}
 	
 	public boolean xmlSaveMCcapillaries() {
-		String saveMCcapillariesFullPath = capillaries.getMCCapillaryNameFromExperimentPath(getDirectoryToSaveResults());
+		String saveMCcapillariesFullPath = capillaries.getFullFileName(getDirectoryToSaveResults());
 		capillaries.xmlSaveCapillaries_Only(saveMCcapillariesFullPath);
 		boolean flag = capillaries.xmlSaveCapillaries_Measures(getDirectoryToSaveResults());
 		return flag;
