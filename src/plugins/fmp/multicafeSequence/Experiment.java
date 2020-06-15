@@ -604,7 +604,6 @@ public class Experiment {
 			seqKymos.validateRois();
 			seqKymos.transferKymosRoisToCapillaries(capillaries);
 			xmlSaveMCcapillaries();
-			xmlSaveKymos_Measures();
 		}
 	}
 		
@@ -711,10 +710,6 @@ public class Experiment {
 		boolean flag1 = capillaries.xmlSaveCapillaries_Only(xmlCapillaryFileName);
 		boolean flag2 = capillaries.xmlSaveCapillaries_Measures(getDirectoryToSaveResults());
 		return flag1 & flag2;
-	}
-	
-	public boolean xmlSaveKymos_Measures() {
-		return capillaries.xmlSaveCapillaries_Measures(getDirectoryToSaveResults());
 	}
 	
 	public boolean xmlReadRoiLineParameters(String pathname) {

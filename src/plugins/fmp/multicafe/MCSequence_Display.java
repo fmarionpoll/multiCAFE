@@ -30,6 +30,7 @@ public class MCSequence_Display  extends JPanel {
 	JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages", true);
 	JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position", true);
 	JComboBox<String> viewResultsCombo	= new JComboBox <String>();
+	boolean 	actionAllowed			= true;
 	private MultiCAFE parent0 = null;
 
 	
@@ -66,9 +67,9 @@ public class MCSequence_Display  extends JPanel {
 			displayROIsCategory(viewFlyCheckbox.isSelected(), "det");
 		} } );
 		
-		viewResultsCombo.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		viewResultsCombo.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			if (exp == null)
+			if (!actionAllowed || exp == null)
 				return;
 			String localString = (String) viewResultsCombo.getSelectedItem();
 			if (localString != null && !localString.contentEquals(exp.resultsSubPath)) {
@@ -102,11 +103,14 @@ public class MCSequence_Display  extends JPanel {
 	}
 	
 	void updateResultsAvailable(Experiment exp) {
+		actionAllowed = false;
 		viewResultsCombo.removeAllItems();
 		for (int i = 0; i < exp.resultsDirList.size(); i++) {
 			String dirName = exp.resultsDirList.get(i);
 			viewResultsCombo.addItem(dirName);
-			}
+		}
+		viewResultsCombo.setSelectedItem(exp.resultsSubPath);
+		actionAllowed = true;
 	}
 
 }

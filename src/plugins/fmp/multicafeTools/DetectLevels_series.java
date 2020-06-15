@@ -31,6 +31,7 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
         threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = options.expList;
+		expList.resultsSubPath = options.resultsSubPath; 
 		int nbexp = expList.index1 - expList.index0 +1;
 		ProgressFrame progress = new ProgressFrame("Detect limits");
 		
@@ -38,9 +39,9 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 			if (stopFlag)
 				break;
 			Experiment exp = expList.getExperiment(index);
-			System.out.println(exp.experimentFileName);
+			System.out.println(index+ " - "+ exp.experimentFileName);
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
-			
+
 			exp.loadExperimentData_ForSeries();
 			exp.displayCamData(options.parent0Rect);
 			if ( exp.loadKymographs()) {

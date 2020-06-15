@@ -78,22 +78,38 @@ public class Cage {
 		if (xmlVal == null)
 			return false;
 		
-		cageNFlies = XMLUtil.getElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
-		strCageComment = XMLUtil.getElementValue(xmlVal, ID_COMMENT, strCageComment);
+		getCageLimits(xmlVal);
+		getFlyPositions(xmlVal);
+		getRoisDetected(xmlVal);
+
+		return true;
+	}
+	
+	public boolean getCageLimits (Element xmlVal) {
+		cageNFlies 		= XMLUtil.getElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
+		strCageComment 	= XMLUtil.getElementValue(xmlVal, ID_COMMENT, strCageComment);
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_CAGELIMITS);
 		if (xmlVal2 != null) {
 			roi = (ROI2D) ROI.createFromXML(xmlVal2 );
 	        roi.setSelected(false);
 		}
-		frameStart 			= XMLUtil.getElementIntValue(xmlVal, ID_STARTFRAME, frameStart);
-		frameEnd 			= XMLUtil.getElementIntValue(xmlVal, ID_ENDFRAME, frameEnd);
-		frameStep 			= XMLUtil.getElementIntValue(xmlVal, ID_STEP, frameStep);
-		xmlVal2 = XMLUtil.getElement(xmlVal, ID_FLYPOSITIONS);
+		frameStart 	= XMLUtil.getElementIntValue(xmlVal, ID_STARTFRAME, frameStart);
+		frameEnd 	= XMLUtil.getElementIntValue(xmlVal, ID_ENDFRAME, frameEnd);
+		frameStep 	= XMLUtil.getElementIntValue(xmlVal, ID_STEP, frameStep);
+		return true;
+	}
+	
+	public boolean getFlyPositions(Element xmlVal) {
+		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_FLYPOSITIONS);
 		if (xmlVal2 != null) {
 			flyPositions.loadFromXML(xmlVal2);
+			return true;
 		}
-		
-		xmlVal2 = XMLUtil.getElement(xmlVal, ID_ROISDETECTED);
+		return false;
+	}
+	
+	public boolean getRoisDetected(Element xmlVal) {
+		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_ROISDETECTED);
 		if (xmlVal2 != null) {
 			int nb_items =  XMLUtil.getAttributeIntValue(xmlVal2, ID_NBITEMS, detectedFliesList.size());
 			for (int i=0; i< nb_items; i++) {

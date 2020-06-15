@@ -206,6 +206,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				return;
 			String localString = (String) tabDisplay.viewResultsCombo.getSelectedItem();
 			tabClose.closeCurrentExperiment();
+			parent0.expList.resultsSubPath = localString;
 			exp.resultsSubPath = localString;
 			openExperiment(exp);
 		}

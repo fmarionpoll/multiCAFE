@@ -27,6 +27,7 @@ public class DetectLevels_Options implements XMLPersistent {
 	public  int			spanDiffTop				= 3;
 	public Rectangle 	parent0Rect 			= null;
 	public ExperimentList expList				= null;
+	public 	String		resultsSubPath			= null;
 	
 	// -----------------------
 	

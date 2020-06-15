@@ -170,7 +170,6 @@ public class SequenceKymos extends SequenceCamData  {
 		exp.seqKymos.validateRois();
 		exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
 		exp.xmlSaveMCcapillaries();
-		exp.xmlSaveKymos_Measures();
 	}
 
 	// ----------------------------

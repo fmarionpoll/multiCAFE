@@ -206,6 +206,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		options.detectL 			= leftCheckBox.isSelected();
 		options.detectR				= rightCheckBox.isSelected();
 		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
+		options.resultsSubPath		= exp.resultsSubPath;
 		return true;
 	}
 	
