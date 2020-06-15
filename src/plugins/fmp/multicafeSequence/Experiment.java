@@ -262,6 +262,7 @@ public class Experiment {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		Collections.sort(resultsDirList, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER));
 		return resultsDirList;
 	}
 	

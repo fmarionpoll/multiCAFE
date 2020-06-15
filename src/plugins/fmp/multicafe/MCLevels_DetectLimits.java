@@ -197,8 +197,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();
 		options.detectAllKymos 		= allKymosCheckBox.isSelected();
-		
-//		indexCurrentKymo = options.firstKymo;
+	
 		options.analyzePartOnly		= partCheckBox.isSelected();
 		options.startPixel			= (int) startSpinner.getValue() / exp.getKymoFrameStep();
 		options.endPixel			= (int) endSpinner.getValue() / exp.getKymoFrameStep();

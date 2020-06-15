@@ -5,6 +5,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JCheckBox;
@@ -105,8 +107,9 @@ public class MCSequence_Display  extends JPanel {
 	void updateResultsAvailable(Experiment exp) {
 		actionAllowed = false;
 		viewResultsCombo.removeAllItems();
-		for (int i = 0; i < exp.resultsDirList.size(); i++) {
-			String dirName = exp.resultsDirList.get(i);
+		List<String> list = new ArrayList<String> (exp.resultsDirList);
+		for (int i = 0; i < list.size(); i++) {
+			String dirName = list.get(i);
 			viewResultsCombo.addItem(dirName);
 		}
 		viewResultsCombo.setSelectedItem(exp.resultsSubPath);

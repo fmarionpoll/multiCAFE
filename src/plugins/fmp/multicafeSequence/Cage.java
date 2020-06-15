@@ -40,8 +40,14 @@ public class Cage {
 	public boolean xmlSaveCage (Node node, int index) {
 		if (node == null)
 			return false;
-		
-		Element xmlVal = XMLUtil.addElement(node, "Cage"+index);
+		Element xmlVal = XMLUtil.addElement(node, "Cage"+index);		
+		xmlSaveCageLimitsAndParameters(xmlVal);
+		xmlSaveFlyPositions(xmlVal);
+		xmlSaveDetecteRois(xmlVal);
+		return true;
+	}
+	
+	public boolean xmlSaveCageLimitsAndParameters(Element xmlVal) {
 		XMLUtil.setElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
 		XMLUtil.setElementValue(xmlVal, ID_COMMENT, strCageComment);
 		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_CAGELIMITS);
@@ -52,10 +58,17 @@ public class Cage {
 		XMLUtil.setElementIntValue(xmlVal, ID_STARTFRAME, frameStart);
 		XMLUtil.setElementIntValue(xmlVal, ID_ENDFRAME, frameEnd);
 		XMLUtil.setElementIntValue(xmlVal, ID_STEP, frameStep);
-		xmlVal2 = XMLUtil.addElement(xmlVal, ID_FLYPOSITIONS);
+		return true;
+	}
+	
+	public boolean xmlSaveFlyPositions(Element xmlVal) {
+		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_FLYPOSITIONS);
 		flyPositions.saveToXML(xmlVal2);
-		
-		xmlVal2 = XMLUtil.addElement(xmlVal, ID_ROISDETECTED);
+		return true;
+	}
+	
+	public boolean xmlSaveDetecteRois(Element xmlVal) {
+		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_ROISDETECTED);
 		XMLUtil.setAttributeIntValue(xmlVal2, ID_NBITEMS, detectedFliesList.size());
 		int i=0;
 		for (ROI roi: detectedFliesList) {
@@ -63,9 +76,6 @@ public class Cage {
 				Element subnode = XMLUtil.addElement(xmlVal2, "det"+i);
 				roi.saveToXML(subnode);
 			} 
-//			else {
-//				System.out.println("output roi is null at interval: "+ i);
-//			}
 			i++;
 		}
 		return true;
