@@ -679,23 +679,20 @@ public class Experiment {
 	
 	private String getFileLocation(String xmlFileName) {
 		// primary data
-		String xmlCapillaryFileName = getPrimaryDataDirectory() + File.separator + xmlFileName;
-		if(fileExists (xmlCapillaryFileName))
-			return xmlCapillaryFileName;
+		String xmlFullFileName = getPrimaryDataDirectory() + File.separator + xmlFileName;
+		if(fileExists (xmlFullFileName))
+			return xmlFullFileName;
 		// current results directory
-		xmlCapillaryFileName = getResultsDirectory() + File.separator + xmlFileName;
-		if(fileExists (xmlCapillaryFileName))
-			return xmlCapillaryFileName;
+		xmlFullFileName = getResultsDirectory() + File.separator + xmlFileName;
+		if(fileExists (xmlFullFileName))
+			return xmlFullFileName;
 		// any results directory
-		Path dir = Paths.get(getPrimaryDataDirectory());
+		Path dirPath = Paths.get(getPrimaryDataDirectory());
 		for (String resultsSub : resultsDirList) {
-			dir = dir.resolve(resultsSub);
+			Path dir = dirPath.resolve(resultsSub+ File.separator + xmlFileName);
 			if (Files.notExists(dir))
 				continue;
-			String directory = dir.toAbsolutePath().toString();	
-			xmlCapillaryFileName = directory + File.separator + xmlFileName;
-			if(fileExists (xmlCapillaryFileName))
-				return xmlCapillaryFileName;
+			return dir.toAbsolutePath().toString();	
 		}
 		return null;
 		
@@ -818,10 +815,14 @@ public class Experiment {
 	// --------------------------
 	
 	public boolean xmlReadDrosoTrackDefault() {
-		String fileName = getResultsDirectory() + File.separator + ID_MCDROSOTRACK;
-		boolean flag = cages.xmlReadCagesFromFileNoQuestion(fileName, seqCamData);
-		if (!flag)
-			flag = cages.xmlReadCagesFromFileNoQuestion(seqCamData.getDirectory() + File.separator + "drosotrack.xml", seqCamData);
+		String fileName = getFileLocation(ID_MCDROSOTRACK);
+		boolean flag = false;
+		if (fileName != null) { 
+			flag = cages.xmlReadCagesFromFileNoQuestion(fileName, seqCamData);
+		} else {
+			fileName = getFileLocation("drosotrack.xml");
+			flag = cages.xmlReadCagesFromFileNoQuestion(fileName, seqCamData);
+		}
 		return flag;
 	}
 	
