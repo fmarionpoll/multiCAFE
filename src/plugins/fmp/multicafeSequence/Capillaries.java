@@ -15,7 +15,6 @@ import icy.roi.ROI;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.DetectLevels_Options;
-import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
@@ -34,42 +33,29 @@ public class Capillaries {
 
 	// ---------------------------------
 		
-	String getFullFileName(String cspathname) {
-		Path path = Paths.get(cspathname);
-		if (path.toFile().isDirectory()) {
-			return cspathname + File.separator + "MCcapillaries.xml";
-		}
-		return null;
+	String getXMLNameToAppend() {
+		return "MCcapillaries.xml";
 	}
-	
-	public boolean xmlWriteROIsAndData(String name, SequenceKymos seq) {
-		String csFile = MulticafeTools.saveFileAs(name, seq.getDirectory(), "xml");
-		csFile.toLowerCase();
-		if (!csFile.contains(".xml")) {
-			csFile += ".xml";
-		}
-		return xmlSaveCapillaries_Only(csFile);
-	}
-	
-	public boolean xmlSaveCapillaries_Only(String tempname) {
-		if (tempname != null) {
+
+	public boolean xmlSaveCapillaries_Only(String csFileName) {
+		if (csFileName != null) {
 			final Document doc = XMLUtil.createDocument(true);
 			if (doc != null) {
 				Collections.sort(capillariesArrayList);
 				desc.xmlSaveCapillaryDescription (doc);
 				xmlSaveListOfCapillaries(doc);
-				return XMLUtil.saveDocument(doc, tempname);
+				return XMLUtil.saveDocument(doc, csFileName);
 			}
 		}
 		return false;
 	}
 	
-	public boolean xmlSaveCapillaries_Measures(String directoryFull) {
-		if (directoryFull == null)
+	public boolean xmlSaveCapillaries_Measures(String csFileName) {
+		if (csFileName == null)
 			return false;
 		Collections.sort(capillariesArrayList);
 		for (Capillary cap: capillariesArrayList) {
-			String tempname = directoryFull + File.separator + cap.getCapillaryName()+ ".xml";
+			String tempname = csFileName + File.separator + cap.getCapillaryName()+ ".xml";
 			final Document capdoc = XMLUtil.createDocument(true);
 			cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
 			XMLUtil.saveDocument(capdoc, tempname);
@@ -77,32 +63,56 @@ public class Capillaries {
 		return true;
 	}
 	
-	public boolean xmlLoadCapillaries(String csFileName) { 
-		if (csFileName != null)  {		
-			final Document doc = XMLUtil.loadDocument(csFileName);
-			if (doc != null) {
-				desc.xmlLoadCapillaryDescription(doc);
-				switch (desc.version) {
-				case 2:	// current xml storage structure
-					xmlLoadCapillariesv2(doc, csFileName);
-					break;
-				case 1: // old xml storage structure
-					xmlLoadCapillariesv1(doc);
-					break;
-				case 0: // old-old xml storage structure
-					xmlLoadCapillariesv0(doc, csFileName);
-					break;
-				default:
-					return false;
-				}		
-				Collections.sort(capillariesArrayList);
-				transferDescToCapillariesVersionInfos0();
-				return true;
-			}
+	public boolean xmlLoadCapillaries_Only(String csFileName) {	// TODO
+		if (csFileName == null)
+			return false;
+				
+		final Document doc = XMLUtil.loadDocument(csFileName);
+		if (doc != null) {
+			desc.xmlLoadCapillaryDescription(doc);
+			xmlLoadCapillariesv1(doc);
+			return true;
 		}
 		return false;
 	}
 	
+	public boolean xmlLoadCapillaries_Measures(String csFileName) { // TODO
+		if (csFileName == null)
+			return false;
+		
+		final Document doc = XMLUtil.loadDocument(csFileName);
+		if (doc != null) {
+			switch (desc.version) {
+			case 2:	// current xml storage structure
+				xmlLoadCapillariesv2(doc, csFileName);
+				break;
+			case 1: // old xml storage structure
+				xmlLoadCapillariesv1(doc);
+				break;
+			case 0: // old-old xml storage structure
+				xmlLoadCapillariesv0(doc, csFileName);
+				break;
+			default:
+				return false;
+			}		
+			Collections.sort(capillariesArrayList);
+			transferDescToCapillariesVersionInfos0();
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean xmlLoadCapillaries_Measures2(String directory) {
+		boolean flag = true;
+		for (Capillary cap: capillariesArrayList) {
+			String csFile = directory + File.separator + cap.getCapillaryName() + ".xml";
+			final Document capdoc = XMLUtil.loadDocument(csFile);
+			Node node = XMLUtil.getRootElement(capdoc, true);
+			flag &= cap.loadFromXML(node);
+		}
+		return flag;
+	}
+		
 	private void transferDescToCapillariesVersionInfos0() {
 		for (Capillary cap: capillariesArrayList) {
 			if (cap.versionInfos == 0) {
@@ -135,7 +145,7 @@ public class Capillaries {
 		List<ROI> listOfCapillaryROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
 		capillariesArrayList.clear();
 		Path directorypath = Paths.get(csFileName).getParent();
-		String directory = directorypath + File.separator + File.separator;
+		String directory = directorypath + File.separator;
 		// then load measures stored into individual files
 		for (ROI roiCapillary: listOfCapillaryROIs) {
 			Capillary cap = new Capillary((ROI2DShape) roiCapillary);
@@ -186,8 +196,8 @@ public class Capillaries {
 			Node node = XMLUtil.getRootElement(capdoc, true);
 			cap.loadFromXML(node);
 		}
-	}
-	
+	}	
+
 	public void copy (Capillaries cap) {
 		desc.copy(cap.desc);
 		capillariesArrayList.clear();

@@ -436,13 +436,13 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	        
 	        descriptionOK 	= XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, false);
 	        versionInfos 	= XMLUtil.getElementIntValue(nodeMeta, ID_VERSIONINFOS, 0);
-	        capNFlies 			= XMLUtil.getElementIntValue(nodeMeta, ID_NFLIES, capNFlies);
-	        capCageNb 			= XMLUtil.getElementIntValue(nodeMeta, ID_CAGENB, capCageNb);
-	        capVolume 			= XMLUtil.getElementDoubleValue(nodeMeta, ID_CAPVOLUME, Double.NaN);
-			capPixels 			= XMLUtil.getElementIntValue(nodeMeta, ID_CAPPIXELS, 5);
-			capStimulus 		= XMLUtil.getElementValue(nodeMeta, ID_STIML, ID_STIML);
-			capConcentration 	= XMLUtil.getElementValue(nodeMeta, ID_CONCL, ID_CONCL);
-			capSide 			= XMLUtil.getElementValue(nodeMeta, ID_SIDE, ".");
+	        capNFlies 		= XMLUtil.getElementIntValue(nodeMeta, ID_NFLIES, capNFlies);
+	        capCageNb 		= XMLUtil.getElementIntValue(nodeMeta, ID_CAGENB, capCageNb);
+	        capVolume 		= XMLUtil.getElementDoubleValue(nodeMeta, ID_CAPVOLUME, Double.NaN);
+			capPixels 		= XMLUtil.getElementIntValue(nodeMeta, ID_CAPPIXELS, 5);
+			capStimulus 	= XMLUtil.getElementValue(nodeMeta, ID_STIML, ID_STIML);
+			capConcentration= XMLUtil.getElementValue(nodeMeta, ID_CONCL, ID_CONCL);
+			capSide 		= XMLUtil.getElementValue(nodeMeta, ID_SIDE, ".");
 			
 	        roi = (ROI2DShape) loadFromXML_ROI(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);

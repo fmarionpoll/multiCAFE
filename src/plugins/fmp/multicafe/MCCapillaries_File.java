@@ -4,7 +4,6 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -14,7 +13,6 @@ import javax.swing.SwingConstants;
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 
@@ -59,20 +57,17 @@ public class MCCapillaries_File extends JPanel {
 	}
 	
 	boolean loadCapillaries_File(Experiment exp) {	
-		SequenceCamData seqCamData = exp.seqCamData;
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null) {
 			exp.seqKymos = new SequenceKymos();
 			seqKymos = exp.seqKymos;
 		}
 		boolean flag = false;
-		if (flag = exp.xmlLoadKymos_Measures()) {
+		flag = exp.xmlLoadMCcapillaries_Only();
+		if (flag &= exp.xmlLoadMCCapillaries_Measures()) {
 			SequenceKymosUtils.transferKymoCapillariesToCamData (exp);
 			return true;
 		}
-		String filename = seqCamData.getDirectory() + File.separator + "roislines.xml";
-		if (flag = seqCamData.xmlReadROIs(filename)) 
-			exp.xmlReadRoiLineParameters(filename);
 		return flag;
 	}
 	

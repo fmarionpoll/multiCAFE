@@ -24,7 +24,7 @@ import plugins.fmp.multicafeSequence.SequenceCamData;
 
 // SequenceListener?
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 12-June-2020", true, true, true, true);
+	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 14-June-2020", true, true, true, true);
 	public ExperimentList expList 	= new ExperimentList();
 	public int		currentExperimentIndex	= -1;
 	
@@ -147,12 +147,12 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (exp == null)
 			return;
 		ProgressFrame progress = new ProgressFrame("load descriptors");
-		paneCapillaries.loadCapillaries_();
+		paneCapillaries.loadCapillaries_Only();
 		progress.close();
 		
 		if (loadCapillaries) {
 			progress = new ProgressFrame("load capillary measures");
-			paneLevels.tabFileLevels.loadKymosMeasures(exp);
+			paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
 			progress.close();
 		}
 

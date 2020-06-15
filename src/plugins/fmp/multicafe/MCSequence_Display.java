@@ -30,7 +30,6 @@ public class MCSequence_Display  extends JPanel {
 	JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages", true);
 	JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position", true);
 	JComboBox<String> viewResultsCombo	= new JComboBox <String>();
-
 	private MultiCAFE parent0 = null;
 
 	
@@ -104,7 +103,8 @@ public class MCSequence_Display  extends JPanel {
 	
 	void updateResultsAvailable(Experiment exp) {
 		viewResultsCombo.removeAllItems();
-		for (String dirName: exp.resultsDirList) {
+		for (int i = 0; i < exp.resultsDirList.size(); i++) {
+			String dirName = exp.resultsDirList.get(i);
 			viewResultsCombo.addItem(dirName);
 			}
 	}

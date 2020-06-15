@@ -43,7 +43,7 @@ public class MCLevels_File  extends JPanel {
 		loadMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-				if (exp != null && loadKymosMeasures(exp)) {
+				if (exp != null && loadCapillaries_Measures(exp)) {
 					transferCapillariesToROIs(exp);
 					firePropertyChange("MEASURES_OPEN", false, true);
 				}
@@ -60,10 +60,10 @@ public class MCLevels_File  extends JPanel {
 			}});	
 	}
 
-	boolean loadKymosMeasures(Experiment exp) {
+	boolean loadCapillaries_Measures(Experiment exp) {
 		boolean flag = true;
 		if (exp.seqKymos != null ) {
-			boolean readOK = exp.xmlLoadKymos_Measures();
+			boolean readOK = exp.xmlLoadMCCapillaries_Measures();
 			if (readOK) {
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
 					parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);

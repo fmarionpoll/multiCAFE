@@ -232,6 +232,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			parent0.addSequence(exp.seqCamData.seq);
 			updateViewerForSequenceCam(exp.seqCamData);
 			loadMeasuresAndKymos();
+			tabDisplay.updateResultsAvailable(exp);
 		}
 	}
 	
@@ -297,8 +298,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	public void transferSequenceCamDataToDialogs(Experiment exp) {
 		tabIntervals.setEndFrameToDialog((int)exp.seqCamData.analysisEnd);
-		tabDisplay.updateResultsAvailable(exp);
 		updateViewerForSequenceCam(exp.seqCamData);
+		tabDisplay.updateResultsAvailable(exp);
 	}
 
 	void loadMeasuresAndKymos() {

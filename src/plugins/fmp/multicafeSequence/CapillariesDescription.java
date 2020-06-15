@@ -117,13 +117,13 @@ public class CapillariesDescription {
 			return flag;
 		version = XMLUtil.getElementIntValue(node, "version", 0);
 		switch (version) {
-		case 0:
-			flag = xmlLoadCapillaryDescriptionv0(node);
-			break;
-		case 1:
-		default:
-			flag = xmlLoadCapillaryDescriptionv1(node);
-			break;
+			case 0:
+				flag = xmlLoadCapillaryDescriptionv0(node);
+				break;
+			case 1:
+			default:
+				flag = xmlLoadCapillaryDescriptionv1(node);
+				break;
 		}
 		return flag;
 	}

@@ -55,12 +55,13 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			if (stopFlag)
 				break;
 			Experiment exp = expList.getExperiment(index);
-			System.out.println(exp.experimentFileName);
+			System.out.println(index+ " - " + exp.experimentFileName);
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
 			loadExperimentDataToBuildKymos(exp);
 			exp.displayCamData(options.parent0Rect);
 			exp.setKymoFrameStep (options.stepFrame);
+			
 			if (options.isFrameFixed) {
 				exp.setKymoFrameStart( options.startFrame);
 				exp.setKymoFrameEnd (options.endFrame);
@@ -97,10 +98,11 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 	private void loadExperimentDataToBuildKymos(Experiment exp) {
 		exp.xmlLoadExperiment();
 		exp.seqCamData.loadSequence(exp.experimentFileName) ;
-		exp.xmlLoadMCcapillariesOnly();
+		exp.xmlLoadMCcapillaries_Only();
 	}
 			
-	private void saveComputation(Experiment exp) {			
+	private void saveComputation(Experiment exp) {	
+		exp.resultsSubPath = exp.getResultsDirectoryNameFromKymoFrameStep();
 		String directory = exp.getDirectoryToSaveResults();
 		if (directory == null)
 			return;
