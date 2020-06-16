@@ -113,7 +113,6 @@ public class MCCapillaries_Create extends JPanel {
 	}
 	
 	void setGroupingAndNumber(Capillaries cap) {
-		nbcapillariesJSpinner.setValue(cap.capillariesArrayList.size());
 		setGroupedBy2(cap.desc.grouping == 2);
 	}
 	

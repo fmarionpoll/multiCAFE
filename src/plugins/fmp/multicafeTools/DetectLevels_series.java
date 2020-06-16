@@ -1,5 +1,6 @@
 package plugins.fmp.multicafeTools;
 
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,7 @@ import javax.swing.SwingWorker;
 
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
+import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.Capillary;
 import plugins.fmp.multicafeSequence.CapillaryLimits;
@@ -43,13 +45,14 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 
 			exp.loadExperimentData_ForSeries();
-			exp.displayCamData(options.parent0Rect);
+//			exp.displayCamData(options.parent0Rect);
 			if ( exp.loadKymographs()) {
+				exp.displaySequenceData(options.parent0Rect, exp.seqKymos.seq);
 				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
 				detectCapillaryLevels(exp);
 				saveComputation(exp);
 			}
-			exp.seqCamData.closeSequence();
+//			exp.seqCamData.closeSequence();
 			exp.seqKymos.closeSequence();
 		}
 		progress.close();

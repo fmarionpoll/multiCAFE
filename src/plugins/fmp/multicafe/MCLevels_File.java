@@ -53,7 +53,6 @@ public class MCLevels_File  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null) {
-					exp.transferRoisToMeasures();
 					exp.saveExperimentMeasures();
 					firePropertyChange("MEASURES_SAVE", false, true);
 				}

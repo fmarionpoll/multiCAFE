@@ -122,12 +122,12 @@ public class Experiment {
 		}
 	}
 	
-	public void displayCamData(Rectangle parent0Rect) {
+	public void displaySequenceData(Rectangle parent0Rect, Sequence seq) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() { public void run() {
-				Viewer viewerCamData = seqCamData.seq.getFirstViewer();
+				Viewer viewerCamData = seq.getFirstViewer();
 				if (viewerCamData == null)
-					viewerCamData = new Viewer(seqCamData.seq, true);
+					viewerCamData = new Viewer(seq, true);
 				Rectangle rectv = viewerCamData.getBoundsInternal();
 				rectv.setLocation(parent0Rect.x+ parent0Rect.width, parent0Rect.y);
 				viewerCamData.setBounds(rectv);				
@@ -583,12 +583,12 @@ public class Experiment {
 	
 	public void loadExperimentData_ForSeries() {
 		xmlLoadExperiment();
-		seqCamData.loadSequence(experimentFileName) ;
-		seqCamData.getCamDataROIS (capillaries);
+//		seqCamData.loadSequence(experimentFileName) ;
+//		seqCamData.getCamDataROIS (capillaries);
+		xmlLoadMCcapillaries();
 		capillaries.desc.analysisStart = kymoFrameStart; 
 		capillaries.desc.analysisEnd  = kymoFrameEnd;
 		capillaries.desc.analysisStep = kymoFrameStep;
-		xmlLoadMCcapillaries();
 	}
 	
 	private boolean xmlLoadMCcapillaries() {
@@ -609,20 +609,12 @@ public class Experiment {
 		}
 		return flag;
 	}
-	
-	public boolean transferRoisToMeasures() {
-		boolean flag = true;
-		if (seqKymos != null && seqKymos.seq != null) {
-			seqKymos.transferKymosRoisToCapillaries(capillaries);
-		}
-		return flag;
-	}
-	
+
 	public void saveExperimentMeasures() {
-		if (seqKymos != null) {
+		if (seqKymos != null && seqKymos.seq != null) {
 			seqKymos.validateRois();
 			seqKymos.transferKymosRoisToCapillaries(capillaries);
-			xmlSaveMCcapillaries();
+			capillaries.xmlSaveCapillaries_Measures(getDirectoryToSaveResults());
 		}
 	}
 		

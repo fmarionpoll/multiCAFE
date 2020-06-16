@@ -135,22 +135,25 @@ public class SequenceKymos extends SequenceCamData  {
 		Collections.sort(listRois, new Comparators.ROI2DNameComparator());
 	}
 
-	public void transferKymosRoisToCapillaries(Capillaries capillaries) {
+	public boolean transferKymosRoisToCapillaries(Capillaries capillaries) {
 		List<ROI> allRois = seq.getROIs();
-		for (int t=0; t< seq.getSizeT(); t++) {
+		if (allRois.size() < 1)
+			return false;
+		for (int kymo=0; kymo< seq.getSizeT(); kymo++) {
 			List<ROI> roisAtT = new ArrayList<ROI> ();
 			for (ROI roi: allRois) {
 				if (roi instanceof ROI2D) {
-					if (((ROI2D)roi).getT() == t)
+					if (((ROI2D)roi).getT() == kymo)
 						roisAtT.add(roi);
 				}
 			}
-			if (capillaries.capillariesArrayList.size() <= t) 
+			if (capillaries.capillariesArrayList.size() <= kymo) 
 				capillaries.capillariesArrayList.add(new Capillary());
-			Capillary cap = capillaries.capillariesArrayList.get(t);
-			cap.filenameTIFF = getFileName(t);
+			Capillary cap = capillaries.capillariesArrayList.get(kymo);
+			cap.filenameTIFF = getFileName(kymo);
 			cap.transferROIsToMeasures(roisAtT);	
 		}
+		return true;
 	}
 	
 	public void transferCapillariesToKymosRois(Capillaries capillaries) {

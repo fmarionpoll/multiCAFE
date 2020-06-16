@@ -173,12 +173,13 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		options.detectR = rightCheckBox.isSelected();
 	}
 	
-	private boolean initBuildParameters(Experiment exp) {
-		if (thread == null)
-			return false;
+	private DetectLevels_Options initBuildParameters(Experiment exp) {
+//		if (thread == null)
+//			return false;
+//		DetectLevels_Options options= thread.options;
 		
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		DetectLevels_Options options= thread.options;
+		DetectLevels_Options options= new DetectLevels_Options();
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		if (allSeriesCheckBox.isSelected()) {
@@ -206,7 +207,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		options.detectR				= rightCheckBox.isSelected();
 		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 		options.resultsSubPath		= exp.resultsSubPath;
-		return true;
+		return options;
 	}
 	
 	void series_detectLimitsStart() {
@@ -214,12 +215,11 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null)
 			return;
-		exp.transferRoisToMeasures();
 		exp.saveExperimentMeasures();
 		parent0.paneSequence.tabClose.closeExp(exp);
 		thread = new DetectLevels_series();
-		
-		initBuildParameters(exp);
+//		DetectLevels_Options options= thread.options;
+		thread.options = initBuildParameters(exp);
 		
 		thread.addPropertyChangeListener(this);
 		thread.execute();
