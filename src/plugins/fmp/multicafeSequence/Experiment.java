@@ -36,7 +36,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Experiment {
 	
-	public String			experimentFileName			= null;
+	private String			experimentFileName			= null;
 	public SequenceCamData 	seqCamData 					= null;
 	public final String 	RESULTS						= "results";
 	public String			resultsSubPath				= RESULTS;
@@ -110,6 +110,14 @@ public class Experiment {
 		loadFileIntervalsFromSeqCamData();
 	}
 	
+	public String getExperimentFileName() {
+		return experimentFileName;
+	}
+	
+	public void setExperimentFileName(String fileName) {
+		experimentFileName = fileName;
+	}
+	
 	public void closeSequences() {
 		if (seqKymos != null) {
 			seqKymos.closeSequence();
@@ -178,7 +186,6 @@ public class Experiment {
 	}
 	
 	public SequenceCamData openSequenceCamData(String filename) {
-		this.experimentFileName = filename;
 		seqCamData = new SequenceCamData();
 		if (null == seqCamData.loadSequence(filename))
 			return null;
@@ -196,12 +203,8 @@ public class Experiment {
 		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
 	}
 	
-	public String getPrimaryDataDirectory() {
-		return seqCamData.getDirectory();
-	}
-	
 	public String getResultsDirectory() {
-		Path dir = Paths.get(seqCamData.getDirectory());
+		Path dir = Paths.get(experimentFileName);
 		dir = dir.resolve(resultsSubPath);
 		String directory = dir.toAbsolutePath().toString();
 		if (Files.notExists(dir))  {
@@ -221,7 +224,7 @@ public class Experiment {
 	}
 	
 	public String getDirectoryToSaveResults() {
-		Path dir = Paths.get(seqCamData.getDirectory());
+		Path dir = Paths.get(experimentFileName);
 		dir = dir.resolve(resultsSubPath);
 		String directory = dir.toAbsolutePath().toString();
 		if (Files.notExists(dir))  {
@@ -292,7 +295,13 @@ public class Experiment {
 	public boolean xmlLoadExperiment () {
 		if (experimentFileName == null) 
 			experimentFileName = seqCamData.getDirectory();
-		fetchListOfResultsDirectories (experimentFileName);
+		
+		String experimentRootName = experimentFileName;
+		if (experimentRootName .contains(RESULTS)) {
+			int i = experimentRootName.indexOf(RESULTS);
+			experimentRootName = experimentRootName.substring(0, i-1);
+		}
+		fetchListOfResultsDirectories (experimentRootName);
 		if (!isSubPathWithinList(resultsSubPath)) {
 			if (resultsDirList.size() < 1)
 				return false;
@@ -669,7 +678,7 @@ public class Experiment {
 		boolean flag = capillaries.xmlLoadCapillaries_Measures2(getResultsDirectory());
 		if (flag) {
 			seqKymos.directory = getResultsDirectory();
-			seqKymos.loadListOfKymographsFromCapillaries(getResultsDirectory(), capillaries);
+			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.directory, capillaries);
 		}
 		return flag;
 	}
@@ -689,7 +698,7 @@ public class Experiment {
 	
 	private String getFileLocation(String xmlFileName) {
 		// primary data
-		String xmlFullFileName = getPrimaryDataDirectory() + File.separator + xmlFileName;
+		String xmlFullFileName = experimentFileName + File.separator + xmlFileName;
 		if(fileExists (xmlFullFileName))
 			return xmlFullFileName;
 		// current results directory
@@ -697,7 +706,7 @@ public class Experiment {
 		if(fileExists (xmlFullFileName))
 			return xmlFullFileName;
 		// any results directory
-		Path dirPath = Paths.get(getPrimaryDataDirectory());
+		Path dirPath = Paths.get(experimentFileName);
 		for (String resultsSub : resultsDirList) {
 			Path dir = dirPath.resolve(resultsSub+ File.separator + xmlFileName);
 			if (Files.notExists(dir))
@@ -714,7 +723,7 @@ public class Experiment {
 	}
 	
 	public boolean xmlSaveMCcapillaries() {
-		String xmlCapillaryFileName = getPrimaryDataDirectory() + File.separator + capillaries.getXMLNameToAppend();
+		String xmlCapillaryFileName = experimentFileName + File.separator + capillaries.getXMLNameToAppend();
 		boolean flag1 = capillaries.xmlSaveCapillaries_Only(xmlCapillaryFileName);
 		boolean flag2 = capillaries.xmlSaveCapillaries_Measures(getDirectoryToSaveResults());
 		return flag1 & flag2;

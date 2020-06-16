@@ -40,7 +40,7 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 			if (stopFlag)
 				break;
 			Experiment exp = expList.getExperiment(index);
-			System.out.println(exp.experimentFileName);
+			System.out.println(index + " - "+ exp.getExperimentFileName());
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
 			exp.loadExperimentData_ForSeries();

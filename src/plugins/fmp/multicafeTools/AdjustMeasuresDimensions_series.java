@@ -30,7 +30,7 @@ public class AdjustMeasuresDimensions_series  extends SwingWorker<Integer, Integ
 			if (stopFlag)
 				break;
 			Experiment exp = expList.getExperiment(index);
-			System.out.println(exp.experimentFileName);
+			System.out.println(exp.getExperimentFileName());
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
 			exp.loadExperimentData_ForSeries();

@@ -99,7 +99,7 @@ public class XLSExportMoveResults  extends XLSExport {
 		expAll.capillaries.copy(exp.capillaries);
 		expAll.fileTimeImageFirst 	= exp.fileTimeImageFirst;
 		expAll.fileTimeImageLast 	= exp.fileTimeImageLast;
-		expAll.experimentFileName 	= exp.experimentFileName;
+		expAll.setExperimentFileName( exp.getExperimentFileName());
 		expAll.boxID 				= exp.boxID;
 		expAll.experiment 			= exp.experiment;
 		expAll.comment1 			= exp.comment1;

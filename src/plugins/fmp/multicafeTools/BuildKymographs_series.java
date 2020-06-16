@@ -55,7 +55,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			if (stopFlag)
 				break;
 			Experiment exp = expList.getExperiment(index);
-			System.out.println(index+ " - " + exp.experimentFileName);
+			System.out.println(index+ " - " + exp.getExperimentFileName());
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
 			loadExperimentDataToBuildKymos(exp);
@@ -97,7 +97,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 	
 	private void loadExperimentDataToBuildKymos(Experiment exp) {
 		exp.xmlLoadExperiment();
-		exp.seqCamData.loadSequence(exp.experimentFileName) ;
+		exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
 		exp.xmlLoadMCcapillaries_Only();
 	}
 			

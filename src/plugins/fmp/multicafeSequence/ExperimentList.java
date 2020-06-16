@@ -132,7 +132,7 @@ public class ExperimentList {
 					continue;
 				}
 				// it should never arrive here
-				System.out.println("error in chaining "+ exp.experimentFileName +" with ->" + expi.experimentFileName);
+				System.out.println("error in chaining "+ exp.getExperimentFileName() +" with ->" + expi.getExperimentFileName());
 			}
 		}
 	}
@@ -166,7 +166,7 @@ public class ExperimentList {
 					continue;
 				String filename2 = exp.seqCamData.getSequenceFileName();
 				if (filename2 == null) {
-					filename2 = exp.experimentFileName; 
+					filename2 = exp.getExperimentFileName(); 
 					if (filename2 == null) {
 						filename2 = exp.seqCamData.getDirectory();
 						if (filename2 == null)
@@ -231,13 +231,13 @@ public class ExperimentList {
 				
 		for (int i=0; i < experimentList.size(); i++) {
 			exp = experimentList.get(i);
-			if (exp.experimentFileName == null	&& exp.seqCamData != null) {
-				exp.experimentFileName = exp.seqCamData.getSequenceFileName();
+			if (exp.getExperimentFileName() == null	&& exp.seqCamData != null) {
+				exp.setExperimentFileName(exp.seqCamData.getSequenceFileName());
 			}
 			
-			if (exp.experimentFileName != null) {	
-				String parent = getDirectoryName(exp.experimentFileName);
-				exp.experimentFileName = parent;		
+			if (exp.getExperimentFileName() != null) {	
+				String parent = getDirectoryName(exp.getExperimentFileName());
+				exp.setExperimentFileName(parent);		
 				if (parent.contains(parent0)) {
 					exists = true;
 					break;

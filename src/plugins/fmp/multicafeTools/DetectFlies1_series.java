@@ -42,11 +42,11 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			if (stopFlag) 
 				break;
 			Experiment exp = expList.getExperiment(index);
-			System.out.println(exp.experimentFileName);
+			System.out.println(exp.getExperimentFileName());
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
 			exp.xmlLoadExperiment();
-			exp.seqCamData.loadSequence(exp.experimentFileName) ;
+			exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
 			exp.xmlReadDrosoTrackDefault();
 			exp.setCagesFrameStep (detect.stepFrame);
 			if (detect.isFrameFixed) {
@@ -60,7 +60,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			}
 			
 			if (exp.cages.cageList.size() < 1 ) {
-				System.out.println("! skipped experiment with no cage: " + exp.experimentFileName);
+				System.out.println("! skipped experiment with no cage: " + exp.getExperimentFileName());
 				continue;
 			}
 			runDetectFlies(exp);

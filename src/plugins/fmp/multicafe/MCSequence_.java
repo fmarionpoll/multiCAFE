@@ -228,7 +228,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	void openExperiment(Experiment exp) {
 		exp.xmlLoadExperiment();
-		exp.seqCamData = exp.openSequenceCamData(exp.experimentFileName);
+		exp.seqCamData = exp.openSequenceCamData(exp.getExperimentFileName());
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			parent0.addSequence(exp.seqCamData.seq);
 			updateViewerForSequenceCam(exp.seqCamData);
