@@ -133,7 +133,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		}
 		
 		if (detect.detectFlies) {
-			exp.cleanPreviousDetections();
+			exp.cleanPreviousFliesDetections();
 			findFlies(exp);
 			exp.xmlSaveFlyPositionsForAllCages();
 		}

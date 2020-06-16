@@ -33,7 +33,7 @@ public class AdjustMeasuresDimensions_series  extends SwingWorker<Integer, Integ
 			System.out.println(exp.getExperimentFileName());
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
-			exp.loadExperimentData_ForSeries();
+			exp.loadExperimentCapillariesData_ForSeries();
 			exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
 			if (exp.loadKymographs()) {
 				exp.adjustCapillaryMeasuresDimensions();

@@ -43,7 +43,7 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 			System.out.println(index + " - "+ exp.getExperimentFileName());
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
-			exp.loadExperimentData_ForSeries();
+			exp.loadExperimentCapillariesData_ForSeries();
 			exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
 			if ( exp.loadKymographs()) {
 				displayGulps(exp);

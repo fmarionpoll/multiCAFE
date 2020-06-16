@@ -92,7 +92,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 	private void runDetectFlies(Experiment exp) {
 		detect.initParametersForDetection(exp);
 		detect.initTempRectROIs(exp, exp.seqCamData.seq);
-		exp.cleanPreviousDetections();
+		exp.cleanPreviousFliesDetections();
 		ProgressChrono progressBar = new ProgressChrono("Detecting flies...");
 		progressBar.initChrono(exp.getCagesFrameEnd()-exp.getCagesFrameStart()+1);
 		try {

@@ -590,10 +590,8 @@ public class Experiment {
 		return true;
 	}
 	
-	public void loadExperimentData_ForSeries() {
+	public void loadExperimentCapillariesData_ForSeries() {
 		xmlLoadExperiment();
-//		seqCamData.loadSequence(experimentFileName) ;
-//		seqCamData.getCamDataROIS (capillaries);
 		xmlLoadMCcapillaries();
 		capillaries.desc.analysisStart = kymoFrameStart; 
 		capillaries.desc.analysisEnd  = kymoFrameEnd;
@@ -685,7 +683,7 @@ public class Experiment {
 	
 	public boolean xmlLoadMCcapillaries_Only() {
 		String xmlCapillaryFileName = getFileLocation(capillaries.getXMLNameToAppend());
-		if (xmlCapillaryFileName == null) {
+		if (xmlCapillaryFileName == null && seqCamData != null) {
 			String filename = getFileLocation("roislines.xml");
 			if (seqCamData.xmlReadROIs(filename)) {
 				xmlReadRoiLineParameters(filename);
@@ -739,6 +737,9 @@ public class Experiment {
 	}
 	
 	public void updateCapillariesFromCamData() {
+		if (seqCamData == null)
+			return;
+		
 		List<ROI2D> listROISCap = seqCamData.getROIs2DContainingString ("line");
 		Collections.sort(listROISCap, new Comparators.ROI2DNameComparator());
 		for (Capillary cap: capillaries.capillariesArrayList) {
@@ -806,7 +807,7 @@ public class Experiment {
 		return ImageUtil.save(image, "jpg", outputfile);
 	}
 
-	public 	void cleanPreviousDetections() {
+	public 	void cleanPreviousFliesDetections() {
 		for (Cage cage: cages.cageList) {
 			cage.flyPositions = new XYTaSeries();
 			cage.detectedFliesList.clear();
@@ -826,7 +827,6 @@ public class Experiment {
 	}
 	
 	public void xmlSaveFlyPositionsForAllCages() {			
-//		cages.getCagesFromROIs(seqCamData);
 		String fileName = getDirectoryToSaveResults() + File.separator + ID_MCDROSOTRACK;
 		cages.xmlWriteCagesToFileNoQuestion(fileName);
 	}
