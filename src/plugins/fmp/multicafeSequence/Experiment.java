@@ -600,6 +600,22 @@ public class Experiment {
 		return flag1 & flag2;
 	}
 	
+	public boolean transferCapillariesToROIs() {
+		boolean flag = true;
+		if (seqKymos != null && seqKymos.seq != null) {
+			seqKymos.transferCapillariesToKymosRois(capillaries);
+		}
+		return flag;
+	}
+	
+	public boolean transferRoisToMeasures() {
+		boolean flag = true;
+		if (seqKymos != null && seqKymos.seq != null) {
+			seqKymos.transferKymosRoisToCapillaries(capillaries);
+		}
+		return flag;
+	}
+	
 	public void saveExperimentMeasures() {
 		if (seqKymos != null) {
 			seqKymos.validateRois();

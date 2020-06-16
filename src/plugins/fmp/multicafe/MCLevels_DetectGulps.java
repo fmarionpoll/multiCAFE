@@ -132,7 +132,9 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null)
 			return;
-		
+
+		exp.transferRoisToMeasures();
+		exp.saveExperimentMeasures();
 		parent0.paneSequence.tabClose.closeExp(exp);
 		thread = new DetectGulps_series();
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);

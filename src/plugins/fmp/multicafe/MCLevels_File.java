@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceKymos;
+
 
 
 
@@ -44,7 +44,7 @@ public class MCLevels_File  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null && loadCapillaries_Measures(exp)) {
-					transferCapillariesToROIs(exp);
+					exp.transferCapillariesToROIs();
 					firePropertyChange("MEASURES_OPEN", false, true);
 				}
 			}}); 
@@ -53,10 +53,10 @@ public class MCLevels_File  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				if (exp != null) {
-					transferRoisToMeasures(exp);
+					exp.transferRoisToMeasures();
 					exp.saveExperimentMeasures();
+					firePropertyChange("MEASURES_SAVE", false, true);
 				}
-				firePropertyChange("MEASURES_SAVE", false, true);
 			}});	
 	}
 
@@ -75,22 +75,5 @@ public class MCLevels_File  extends JPanel {
 		return flag;
 	}
 	
-	boolean transferRoisToMeasures(Experiment exp) {
-		SequenceKymos seqKymos = exp.seqKymos;
-		boolean flag = true;
-		if (seqKymos != null && seqKymos.seq != null) {
-			seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
-		}
-		return flag;
-	}
-	
-	boolean transferCapillariesToROIs(Experiment exp) {
-		SequenceKymos seqKymos = exp.seqKymos;
-		boolean flag = true;
-		if (seqKymos != null && seqKymos.seq != null) {
-			seqKymos.transferCapillariesToKymosRois(exp.capillaries);
-		}
-		return flag;
-	}
 	
 }

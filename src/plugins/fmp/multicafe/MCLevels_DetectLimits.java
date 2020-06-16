@@ -214,6 +214,8 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 		if (exp == null)
 			return;
+		exp.transferRoisToMeasures();
+		exp.saveExperimentMeasures();
 		parent0.paneSequence.tabClose.closeExp(exp);
 		thread = new DetectLevels_series();
 		
