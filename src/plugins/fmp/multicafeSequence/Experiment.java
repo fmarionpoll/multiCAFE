@@ -294,6 +294,8 @@ public class Experiment {
 			experimentFileName = seqCamData.getDirectory();
 		fetchListOfResultsDirectories (experimentFileName);
 		if (!isSubPathWithinList(resultsSubPath)) {
+			if (resultsDirList.size() < 1)
+				return false;
 			xmlLoadExperiment (resultsDirList.get(0));
 			resultsSubPath = getResultsDirectoryNameFromKymoFrameStep();
 		} else {
