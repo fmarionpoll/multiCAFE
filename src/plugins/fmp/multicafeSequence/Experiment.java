@@ -590,7 +590,7 @@ public class Experiment {
 		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(getResultsDirectory());
 		if (flag1 & flag2) {
 			seqKymos.directory = getResultsDirectory();
-			seqKymos.loadListOfKymographsFromCapillaries(getResultsDirectory(), capillaries);
+			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.directory, capillaries);
 		}
 		return flag1 & flag2;
 	}
@@ -670,7 +670,12 @@ public class Experiment {
 	public boolean xmlLoadMCcapillaries_Only() {
 		String xmlCapillaryFileName = getFileLocation(capillaries.getXMLNameToAppend());
 		if (xmlCapillaryFileName == null && seqCamData != null) {
-			String filename = getFileLocation("roislines.xml");
+			String filename = getFileLocation("capillarytrack.xml");
+			if (capillaries.xmlLoadCapillaries_Only(filename)) {
+				xmlSaveMCcapillaries();
+				return true;
+			}
+			filename = getFileLocation("roislines.xml");
 			if (seqCamData.xmlReadROIs(filename)) {
 				xmlReadRoiLineParameters(filename);
 				return true;

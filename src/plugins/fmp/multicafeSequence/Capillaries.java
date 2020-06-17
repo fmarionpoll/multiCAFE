@@ -181,6 +181,15 @@ public class Capillaries {
 			Node nodecapillary = XMLUtil.getElement(node, ID_CAPILLARY_+i);
 			Capillary cap = new Capillary();
 			cap.loadFromXML(nodecapillary);
+			if (desc.grouping == 2) {
+				if (cap.getCapillarySide().equals("R")) {
+					cap.capStimulus = desc.stimulusR;
+					cap.capConcentration = desc.concentrationR;
+				} else {
+					cap.capStimulus = desc.stimulusL;
+					cap.capConcentration = desc.concentrationL;
+				}
+			}
 			capillariesArrayList.add(cap);
 		}
 		return true;

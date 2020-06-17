@@ -109,12 +109,12 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		filenameTIFF	= cap.filenameTIFF;
 		
 		capStimulus		= cap.capStimulus;
-		capConcentration	= cap.capConcentration;
+		capConcentration= cap.capConcentration;
 		capSide			= cap.capSide;
-		capNFlies			= cap.capNFlies;
-		capCageNb			= cap.capCageNb;
-		capVolume 			= cap.capVolume;
-		capPixels 			= cap.capPixels;
+		capNFlies		= cap.capNFlies;
+		capCageNb		= cap.capCageNb;
+		capVolume 		= cap.capVolume;
+		capPixels 		= cap.capPixels;
 		
 		limitsOptions	= cap.limitsOptions;
 		gulpsOptions	= cap.gulpsOptions;

@@ -41,16 +41,16 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 				break;
 			Experiment exp = expList.getExperiment(index);
 			System.out.println(index + " - "+ exp.getExperimentFileName());
-			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
 			exp.loadExperimentCapillariesData_ForSeries();
-			exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
+//			exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
 			if ( exp.loadKymographs()) {
-				displayGulps(exp);
+				progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
+				buildFilteredImage(exp);
 				detectGulps(exp);
 				saveComputation(exp);
 			}
-			exp.seqCamData.closeSequence();
+//			exp.seqCamData.closeSequence();
 			exp.seqKymos.closeSequence();
 		}
 		progress.close();
@@ -77,7 +77,7 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 		exp.xmlSaveMCcapillaries();
 	}
 	
-	private void displayGulps(Experiment exp) {
+	private void buildFilteredImage(Experiment exp) {
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
@@ -88,8 +88,7 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 	
 	public void detectGulps(Experiment exp) {			
 		this.seqkymo = exp.seqKymos;
-		ProgressChrono progressBar = new ProgressChrono("Detection of gulps started");
-		progressBar.initChrono(seqkymo.seq.getSizeT() );
+
 		int jitter = 5;
 		int firstkymo = 0;
 		int lastkymo = seqkymo.seq.getSizeT() -1;
@@ -99,7 +98,6 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 		}
 		seqkymo.seq.beginUpdate();
 		for (int indexkymo=firstkymo; indexkymo <= lastkymo; indexkymo++) {
-			progressBar.updatePositionAndTimeLeft(indexkymo);
 			Capillary cap = exp.capillaries.capillariesArrayList.get(indexkymo);
 			cap.gulpsOptions = options;
 			if (options.buildDerivative) {
@@ -116,7 +114,6 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 		}
 		seqkymo.seq.endUpdate();
 		seqkymo.closeSequence();
-		progressBar.close();
 	}	
 
 	private void getDerivativeProfile(int indexkymo, Capillary cap, int jitter) {	
