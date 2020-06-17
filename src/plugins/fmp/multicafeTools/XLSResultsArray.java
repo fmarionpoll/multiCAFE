@@ -41,6 +41,8 @@ public class XLSResultsArray {
 	void subtractEvaporation() {
 		int dimension = 0;
 		for (XLSResults result: resultsArrayList) {
+			if (result.data == null)
+				continue;
 			if (result.data.size() > dimension)
 				dimension = result.data.size();
 		}

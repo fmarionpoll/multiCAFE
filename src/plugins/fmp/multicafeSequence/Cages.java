@@ -363,4 +363,11 @@ public class Cages {
 		}
 	}
 	
+	public void setCageNbFromName(List<Capillary> capList) {
+		for (Capillary cap: capList) {
+			int cagenb = cap.getCageIndexFromRoiName();
+			cap.capCageNb = cagenb;
+		}
+	}
+	
 }

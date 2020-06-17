@@ -235,7 +235,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		
 		for (XLSResults row: rowsForOneExp ) {
 			XLSResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
-			if (results != null) {
+			if (results != null && results.data != null) {
 				double dvalue = 0;
 				switch (xlsoption) {
 					case TOPLEVEL:

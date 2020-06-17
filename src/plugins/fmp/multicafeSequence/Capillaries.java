@@ -71,7 +71,18 @@ public class Capillaries {
 		if (doc != null) {
 			desc.xmlLoadCapillaryDescription(doc);
 			xmlLoadCapillariesv1(doc);
-			return true;
+//			switch (desc.version) {
+//			case 1: // old xml storage structure
+//				xmlLoadCapillariesv1(doc);
+//				break;
+//			case 0: // old-old xml storage structure
+//				xmlLoadCapillariesv0(doc, csFileName);
+//				break;
+//			default:
+//				xmlLoadCapillariesv2(doc, csFileName);
+//				return false;
+//			}		
+		return true;
 		}
 		return false;
 	}
@@ -181,7 +192,7 @@ public class Capillaries {
 			Node nodecapillary = XMLUtil.getElement(node, ID_CAPILLARY_+i);
 			Capillary cap = new Capillary();
 			cap.loadFromXML(nodecapillary);
-			if (desc.grouping == 2) {
+			if (desc.grouping == 2 && (cap.capStimulus != null && cap.capStimulus.equals(".."))) {
 				if (cap.getCapillarySide().equals("R")) {
 					cap.capStimulus = desc.stimulusR;
 					cap.capConcentration = desc.concentrationR;

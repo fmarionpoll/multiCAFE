@@ -5,6 +5,7 @@ package plugins.fmp.multicafe;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -35,6 +36,7 @@ public class MCCapillaries_Table  extends JPanel {
 	private JButton				duplicateButton = new JButton("Duplicate cell to L/R");
 	private JButton				duplicateallButton = new JButton("Duplicate cell to all");
 	private JButton				getNfliesButton = new JButton("Get n flies from cage");
+	private JButton				getCageNoButton	= new JButton("Set cage n#");
 	private MultiCAFE 			parent0 		= null; 
 	private List <Capillary> 	capillariesArrayCopy = null;
 	
@@ -53,13 +55,18 @@ public class MCCapillaries_Table  extends JPanel {
 	    	setFixedColumnProperties(columnModel.getColumn(i));
         JScrollPane scrollPane = new JScrollPane(tableView);
         
-		JPanel topPanel = new JPanel();
-		topPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-		topPanel.add(copyButton);
-        topPanel.add(pasteButton);
-        topPanel.add(getNfliesButton);
-        topPanel.add(duplicateButton);
-        topPanel.add(duplicateallButton);
+		JPanel topPanel = new JPanel(new GridLayout(2, 1));
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT); 
+		JPanel panel1 = new JPanel (flowLayout);
+		panel1.add(copyButton);
+        panel1.add(pasteButton);
+        topPanel.add(panel1);
+        JPanel panel2 = new JPanel (flowLayout);
+        panel2.add(getCageNoButton);
+        panel2.add(getNfliesButton);
+        panel2.add(duplicateButton);
+        panel2.add(duplicateallButton);
+        topPanel.add(panel2);
         
         JPanel tablePanel = new JPanel();
 		tablePanel.add(scrollPane);
@@ -158,6 +165,13 @@ public class MCCapillaries_Table  extends JPanel {
 					exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
 					viewModel.fireTableDataChanged();
 				}
+			}});
+		
+		getCageNoButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				exp.cages.setCageNbFromName(exp.capillaries.capillariesArrayList);
+				viewModel.fireTableDataChanged();
 			}});
 	}
 	
