@@ -145,21 +145,6 @@ public class Experiment {
 		} 
 	}
 	
-	public boolean openSequenceAndMeasures() {
-		seqCamData = new SequenceCamData();
-		if (null == seqCamData.loadSequence(experimentFileName))
-			return false;
-		loadFileIntervalsFromSeqCamData();
-		
-		if (seqKymos == null)
-			seqKymos = new SequenceKymos();
-		if (!xmlLoadMCCapillaries_Measures()) 
-			return false;
-
-		xmlReadDrosoTrackDefault();
-		return true;
-	}
-	
 	public boolean openSequenceAndMeasures(boolean loadCapillaries, boolean loadDrosoPositions) {
 		if (seqCamData == null) {
 			seqCamData = new SequenceCamData();
@@ -171,6 +156,7 @@ public class Experiment {
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		if (loadCapillaries) {
+			xmlLoadMCcapillaries_Only();
 			if (!xmlLoadMCCapillaries_Measures()) 
 				return false;
 		}

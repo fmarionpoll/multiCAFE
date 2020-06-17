@@ -74,7 +74,6 @@ public class ExperimentList {
 		for (Experiment exp: experimentList) {
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
-			exp.xmlLoadExperiment();
 			int image_size = exp.seqKymos.seq.getSizeX();
 			if (image_size != 0) {
 				exp.setKymoFrameStep(exp.seqCamData.nTotalFrames / image_size);
