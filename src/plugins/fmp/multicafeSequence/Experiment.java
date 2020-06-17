@@ -361,6 +361,8 @@ public class Experiment {
 			return false;
 		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(getResultsDirectory(), capillaries);
 		boolean flag = seqKymos.loadImagesFromList(myList, true);
+		if (!flag)
+			return flag;
 		seqKymos.transferCapillariesToKymosRois(capillaries);
 		return flag;
 	}
