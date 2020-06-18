@@ -112,6 +112,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		expAll.experiment 			= exp.experiment;
 		expAll.comment1 			= exp.comment1;
 		expAll.comment2 			= exp.comment2;
+		expAll.resultsSubPath 		= expList.resultsSubPath;		
 
 		Experiment expi = exp.nextExperiment;
 		while (expi != null ) {
@@ -135,6 +136,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		expi = exp;
 		while (expi != null) {
 			expi.setKymoFrameStep(expAll.getKymoFrameStep()); // ugly patch
+			
 			XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
 			switch (xlsoption) {
 				case TOPRAW:

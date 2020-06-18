@@ -73,6 +73,7 @@ public class ExperimentList {
 		boolean flag = true;
 		for (Experiment exp: experimentList) {
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
+			exp.resultsSubPath = resultsSubPath;
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			int image_size = exp.seqKymos.seq.getSizeX();
 			if (image_size != 0) {
