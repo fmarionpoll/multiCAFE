@@ -59,7 +59,6 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
 			exp.resultsSubPath = expList.resultsSubPath;
-			exp.getDirectoryToSaveResults(); 
 
 			loadExperimentDataToBuildKymos(exp);
 			exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
@@ -105,7 +104,9 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 	}
 			
 	private void saveComputation(Experiment exp) {	
-		exp.resultsSubPath = exp.getResultsDirectoryNameFromKymoFrameStep();
+		if (options.doCreateResults_bin) {
+			exp.resultsSubPath = exp.getResultsDirectoryNameFromKymoFrameStep();
+		}
 		String directory = exp.getDirectoryToSaveResults();
 		if (directory == null)
 			return;
@@ -152,10 +153,8 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		int vinputSizeX = seqCamData.seq.getSizeX();		
 		int ipixelcolumn = 0;
 		workImage = seqCamData.seq.getImage(options.startFrame, 0); 
-		if (options.updateViewerDuringComputation) {
-			roiList = seqCamData.seq.getROIs();
-			seqCamData.seq.removeAllROI();
-		}
+		roiList = seqCamData.seq.getROIs();
+		seqCamData.seq.removeAllROI();
 		
 		seqForRegistration	= new Sequence();
 		seqForRegistration.addImage(0, workImage);
@@ -201,9 +200,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		seqCamData.seq.endUpdate();
 		seqKymos.seq.removeAllImages();
 		seqKymos.seq.setVirtual(false); 
-		if (options.updateViewerDuringComputation) {
-			seqCamData.seq.addROIs(roiList, false);
-		}
+		seqCamData.seq.addROIs(roiList, false);
 
 		for (int t=0; t < nbcapillaries; t++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(t);

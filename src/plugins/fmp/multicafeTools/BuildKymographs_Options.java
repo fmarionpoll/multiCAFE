@@ -14,8 +14,8 @@ public class BuildKymographs_Options {
 	
 	public int 				diskRadius 			= 5;
 	public boolean 			doRegistration 		= false;
+	public boolean			doCreateResults_bin	= false;
 	public ArrayList<ROI2D> listROIStoBuildKymos= new ArrayList<ROI2D> ();
-	public boolean			updateViewerDuringComputation = false;
 	public ExperimentList	expList;
 	public Rectangle 		parent0Rect 		= null;
 	

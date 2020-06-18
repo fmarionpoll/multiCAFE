@@ -41,10 +41,9 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 			if (stopFlag)
 				break;
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
-			Experiment exp = expList.getExperiment(index);
+			Experiment exp = expList.getExperiment(index);	
 			exp.resultsSubPath = expList.resultsSubPath;
 			exp.getDirectoryToSaveResults(); 
-			
 			exp.loadExperimentCapillariesData_ForSeries();
 			if (exp.loadKymographs()) {
 				System.out.println(index+ " - "+ exp.getExperimentFileName());			
@@ -75,9 +74,7 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
     }
 	
 	private void saveComputation(Experiment exp) {			
-		ProgressFrame progress = new ProgressFrame("Save kymograph measures");		
 		exp.saveExperimentMeasures();
-		progress.close();
 	}
 	
 	private void detectCapillaryLevels(Experiment exp) {

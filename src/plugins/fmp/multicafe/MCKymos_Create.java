@@ -36,7 +36,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 
 	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
 	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
-	JCheckBox				updateViewerCheckBox 		= new JCheckBox("update viewer", true);
+	JCheckBox 				doCreateCheckBox 			= new JCheckBox("force creation of results_bin", false);
 	JCheckBox				ALLCheckBox 				= new JCheckBox("ALL series", false);
 	JSpinner 				stepFrameJSpinner			= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
@@ -56,17 +56,19 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		JPanel panel1 = new JPanel(layout1);
 		panel1.add(startComputationButton);
 		panel1.add(ALLCheckBox);
-		panel1.add(new JLabel(" step "));
-		panel1.add(stepFrameJSpinner );
 		add(GuiUtil.besidesPanel(panel1));
 		
-		add(GuiUtil.besidesPanel(
-				new JLabel("area around ROIs", SwingConstants.RIGHT), 
-				diskRadiusSpinner, 
-				updateViewerCheckBox, 
-				doRegistrationCheckBox
-				));
+		JPanel panel2 = new JPanel(layout1);
+		panel2.add(new JLabel("area around ROIs", SwingConstants.RIGHT));
+		panel2.add(diskRadiusSpinner);  
+		panel2.add(doRegistrationCheckBox);
+		add(GuiUtil.besidesPanel(panel2));
 		
+		JPanel panel3 = new JPanel(layout1);
+		panel3.add(new JLabel(" step "));
+		panel3.add(stepFrameJSpinner );
+		panel3.add(doCreateCheckBox);
+		add(GuiUtil.besidesPanel(panel3));		
 		defineActionListeners();
 	}
 	
@@ -115,7 +117,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 				
 		options.diskRadius 		= (int) diskRadiusSpinner.getValue();
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();
-		options.updateViewerDuringComputation = updateViewerCheckBox.isSelected();
+		options.doCreateResults_bin = doCreateCheckBox.isSelected();
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		return true;
 	}
