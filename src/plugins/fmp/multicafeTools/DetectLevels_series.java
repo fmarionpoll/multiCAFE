@@ -40,8 +40,10 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag)
 				break;
-			Experiment exp = expList.getExperiment(index);
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
+			Experiment exp = expList.getExperiment(index);
+			exp.resultsSubPath = expList.resultsSubPath;
+			exp.getDirectoryToSaveResults(); 
 			exp.loadExperimentCapillariesData_ForSeries();
 			if (exp.loadKymographs()) {
 				System.out.println(index+ " - "+ exp.getExperimentFileName());			
