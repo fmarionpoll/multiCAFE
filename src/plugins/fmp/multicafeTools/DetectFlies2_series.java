@@ -58,7 +58,10 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			Experiment exp = expList.getExperiment(index);
 			System.out.println(exp.getExperimentFileName());
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
-
+			
+			exp.resultsSubPath = expList.resultsSubPath;
+			exp.getDirectoryToSaveResults(); 
+			
 			exp.xmlLoadExperiment();
 			exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
 			exp.xmlReadDrosoTrackDefault();

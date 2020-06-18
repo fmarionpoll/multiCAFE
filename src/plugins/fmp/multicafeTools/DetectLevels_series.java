@@ -44,10 +44,10 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 			Experiment exp = expList.getExperiment(index);
 			exp.resultsSubPath = expList.resultsSubPath;
 			exp.getDirectoryToSaveResults(); 
+			
 			exp.loadExperimentCapillariesData_ForSeries();
 			if (exp.loadKymographs()) {
 				System.out.println(index+ " - "+ exp.getExperimentFileName());			
-//				exp.displaySequenceData(options.parent0Rect, exp.seqKymos.seq);
 				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
 				detectCapillaryLevels(exp);
 				saveComputation(exp);
