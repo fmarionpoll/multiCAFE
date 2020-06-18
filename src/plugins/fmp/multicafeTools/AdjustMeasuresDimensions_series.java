@@ -37,7 +37,7 @@ public class AdjustMeasuresDimensions_series  extends SwingWorker<Integer, Integ
 			exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
 			if (exp.loadKymographs()) {
 				exp.adjustCapillaryMeasuresDimensions();
-				saveComputation(exp);
+				exp.saveExperimentMeasures(exp.getResultsDirectory());
 			}
 			exp.seqCamData.closeSequence();
 			exp.seqKymos.closeSequence();
@@ -61,11 +61,5 @@ public class AdjustMeasuresDimensions_series  extends SwingWorker<Integer, Integ
 			firePropertyChange("thread_done", null, statusMsg);
 		}
     }
-	
-	private void saveComputation(Experiment exp) {			
-		ProgressFrame progress = new ProgressFrame("Save kymograph measures");		
-		exp.saveExperimentMeasures();
-		progress.close();
-	}
 
 }

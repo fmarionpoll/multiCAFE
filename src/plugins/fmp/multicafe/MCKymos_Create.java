@@ -119,6 +119,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();
 		options.doCreateResults_bin = doCreateCheckBox.isSelected();
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
+		options.resultsSubPath = (String) parent0.paneSequence.tabDisplay.viewResultsCombo.getSelectedItem() ;
 		return true;
 	}
 		

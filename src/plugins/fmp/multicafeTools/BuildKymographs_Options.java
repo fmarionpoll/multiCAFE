@@ -18,6 +18,7 @@ public class BuildKymographs_Options {
 	public ArrayList<ROI2D> listROIStoBuildKymos= new ArrayList<ROI2D> ();
 	public ExperimentList	expList;
 	public Rectangle 		parent0Rect 		= null;
+	public String 			resultsSubPath 		= null;
 	
 	public boolean 			loopRunning 		= false;	
 }

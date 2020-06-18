@@ -40,17 +40,17 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 			if (stopFlag)
 				break;
 			Experiment exp = expList.getExperiment(index);
-			System.out.println(index + " - "+ exp.getExperimentFileName());
+			exp.resultsSubPath = options.resultsSubPath;
+			exp.getResultsDirectory(); 
+			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
 			exp.loadExperimentCapillariesData_ForSeries();
-//			exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
 			if ( exp.loadKymographs()) {
-				progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
+				System.out.println(index + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
 				buildFilteredImage(exp);
 				detectGulps(exp);
-				saveComputation(exp);
+				exp.xmlSaveMCcapillaries();
 			}
-//			exp.seqCamData.closeSequence();
 			exp.seqKymos.closeSequence();
 		}
 		progress.close();
@@ -73,15 +73,10 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 		}
     }
 	
-	private void saveComputation(Experiment exp) {			
-		exp.xmlSaveMCcapillaries();
-	}
-	
 	private void buildFilteredImage(Experiment exp) {
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
-
 		int zChannelDestination = 2;
 		exp.kymosBuildFiltered(0, zChannelDestination, options.transformForGulps, options.spanDiff);
 	}

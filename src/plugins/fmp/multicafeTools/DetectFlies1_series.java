@@ -45,8 +45,8 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			System.out.println(exp.getExperimentFileName());
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
 			
-			exp.resultsSubPath = expList.resultsSubPath;
-			exp.getDirectoryToSaveResults(); 
+			exp.resultsSubPath = detect.resultsSubPath;
+			exp.getResultsDirectory(); 
 			
 			exp.xmlLoadExperiment();
 			exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;

@@ -54,6 +54,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	public boolean	isFrameFixed			= false;
 	public int 		nbframes				= 1;
 	public Rectangle parent0Rect 			= null;
+	public String	resultsSubPath			= null;
 
 	public ExperimentList expList 			= null;
 	public Rectangle 	rectangleAllCages 	= null;
@@ -78,18 +79,11 @@ public class DetectFlies_Options implements XMLPersistent {
 		transformop				= det.transformop; 
 		videoChannel 			= det.videoChannel;
 		backgroundSubstraction 	= det.backgroundSubstraction;
-		//cages 					= null;
-		//cageMaskList = new ArrayList<BooleanMask2D>();
 		stepFrame 				= det.stepFrame;
 		startFrame				= det.startFrame;
 		endFrame				= det.endFrame;
 		isFrameFixed			= det.isFrameFixed;
 		nbframes				= det.nbframes;
-		//public Rectangle parent0Rect 			= null;
-		//public ExperimentList expList 			= null;
-		//public Rectangle 	rectangleAllCages 	= null;
-		//ROI2DRectangle [] 	tempRectROI;
-		//ROI [][] 			resultFlyPositionArrayList;
 	}
 	
 	@Override

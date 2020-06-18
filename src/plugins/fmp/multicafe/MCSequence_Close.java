@@ -45,7 +45,7 @@ public class MCSequence_Close  extends JPanel {
 			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog (exp);
 			if (exp.seqCamData != null) {
 				exp.xmlSaveExperiment();
-				exp.saveExperimentMeasures();
+				exp.saveExperimentMeasures(exp.getResultsDirectory());
 				exp.xmlWriteDrosoTrackDefault();
 			}
 			exp.closeSequences();

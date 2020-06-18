@@ -24,6 +24,7 @@ public class DetectGulps_Options implements XMLPersistent {
 	public 	int 		endPixel 				= -1;
 	public Rectangle 	parent0Rect 			= null;
 	public ExperimentList expList				= null;
+	public String		resultsSubPath			= null;
 	
 	
 	public void copy(DetectGulps_Options destination) {

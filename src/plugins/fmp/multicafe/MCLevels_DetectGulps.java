@@ -133,7 +133,7 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 		if (exp == null)
 			return;
 
-		exp.saveExperimentMeasures();
+		exp.saveExperimentMeasures(exp.getResultsDirectory());
 		parent0.paneSequence.tabClose.closeExp(exp);
 		thread = new DetectGulps_series();
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
@@ -149,10 +149,7 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 			options.expList.index0 = parent0.currentExperimentIndex;
 			options.expList.index1 = parent0.currentExperimentIndex;
 		}
-//		if (!allKymosCheckBox.isSelected())
-//			options.firstKymo = exp.seqKymos.currentFrame;
-//		else 
-//			options.firstKymo = 0;
+
 		options.firstkymo 				= parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
 		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
 		options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
@@ -166,6 +163,7 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 		options.startPixel				= (int) startSpinner.getValue();
 		options.endPixel				= (int) endSpinner.getValue();
 		options.parent0Rect 			= parent0.mainFrame.getBoundsInternal();
+		options.resultsSubPath 			= (String) parent0.paneSequence.tabDisplay.viewResultsCombo.getSelectedItem() ;
 		
 		thread.addPropertyChangeListener(this);
 		thread.execute();

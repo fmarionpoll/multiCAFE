@@ -55,14 +55,13 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			if (stopFlag)
 				break;
 			Experiment exp = expList.getExperiment(index);
-			System.out.println(index+ " - " + exp.getExperimentFileName());
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
-			
-			exp.resultsSubPath = expList.resultsSubPath;
-
+	
 			loadExperimentDataToBuildKymos(exp);
 			exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
 			exp.setKymoFrameStep (options.stepFrame);
+			exp.resultsSubPath = options.resultsSubPath;
+			exp.getResultsDirectory();
 			
 			if (options.isFrameFixed) {
 				exp.setKymoFrameStart( options.startFrame);
@@ -74,6 +73,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				exp.setKymoFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
 			}
 			if (computeKymo(exp)) 
+				System.out.println(index+ " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);			
 				saveComputation(exp);
 			exp.seqCamData.closeSequence();
 		}
@@ -107,7 +107,7 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		if (options.doCreateResults_bin) {
 			exp.resultsSubPath = exp.getResultsDirectoryNameFromKymoFrameStep();
 		}
-		String directory = exp.getDirectoryToSaveResults();
+		String directory = exp.getResultsDirectory();
 		if (directory == null)
 			return;
 		

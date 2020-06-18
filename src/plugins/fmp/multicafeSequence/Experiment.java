@@ -347,7 +347,7 @@ public class Experiment {
 	        	experimentFileName = seqCamData.getDirectory();
 	        XMLUtil.setElementValue(node, ID_EXPTFILENAME, experimentFileName);
 
-	        String directory = getDirectoryToSaveResults();
+	        String directory = getResultsDirectory();
 	        String tempname = directory + File.separator + "MCexperiment.xml";
 	        return XMLUtil.saveDocument(doc, tempname);
 		}
@@ -605,11 +605,11 @@ public class Experiment {
 		return flag;
 	}
 
-	public void saveExperimentMeasures() {
+	public void saveExperimentMeasures(String directory) {
 		if (seqKymos != null && seqKymos.seq != null) {
 			seqKymos.validateRois();
 			seqKymos.transferKymosRoisToCapillaries(capillaries);
-			capillaries.xmlSaveCapillaries_Measures(getDirectoryToSaveResults());
+			capillaries.xmlSaveCapillaries_Measures(directory);
 		}
 	}
 		
@@ -716,7 +716,7 @@ public class Experiment {
 	public boolean xmlSaveMCcapillaries() {
 		String xmlCapillaryFileName = experimentFileName + File.separator + capillaries.getXMLNameToAppend();
 		boolean flag1 = capillaries.xmlSaveCapillaries_Only(xmlCapillaryFileName);
-		boolean flag2 = capillaries.xmlSaveCapillaries_Measures(getDirectoryToSaveResults());
+		boolean flag2 = capillaries.xmlSaveCapillaries_Measures(getResultsDirectory());
 		return flag1 & flag2;
 	}
 	
@@ -794,7 +794,7 @@ public class Experiment {
 	}
 	
 	public boolean saveReferenceImage() {
-		String path = getDirectoryToSaveResults()+File.separator+"referenceImage.jpg";
+		String path = getResultsDirectory()+File.separator+"referenceImage.jpg";
 		File outputfile = new File(path);
 		RenderedImage image = ImageUtil.toRGBImage(seqCamData.refImage);
 		return ImageUtil.save(image, "jpg", outputfile);
@@ -820,7 +820,7 @@ public class Experiment {
 	}
 	
 	public void xmlSaveFlyPositionsForAllCages() {			
-		String fileName = getDirectoryToSaveResults() + File.separator + ID_MCDROSOTRACK;
+		String fileName = getResultsDirectory() + File.separator + ID_MCDROSOTRACK;
 		cages.xmlWriteCagesToFileNoQuestion(fileName);
 	}
 	
@@ -843,7 +843,7 @@ public class Experiment {
 	}
 	
 	public boolean xmlWriteDrosoTrackDefault() {
-		String fileName = getDirectoryToSaveResults() + File.separator + ID_MCDROSOTRACK;
+		String fileName = getResultsDirectory() + File.separator + ID_MCDROSOTRACK;
 		return cages.xmlWriteCagesToFileNoQuestion(fileName);
 	}
 	
