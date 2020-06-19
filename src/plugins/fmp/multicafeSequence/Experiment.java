@@ -296,7 +296,6 @@ public class Experiment {
 		} else {
 			xmlLoadExperiment (resultsSubPath);
 		}
-        checkValidKymoIntervals();
 		return true;
 	}
 	
@@ -460,16 +459,7 @@ public class Experiment {
 		}
 		return isOK;
 	}
-	
-	public void checkValidKymoIntervals() {
-		long lengthDataFile = fileTimeImageLastMinute - fileTimeImageFirstMinute +1;
-		long lengthKymoAnalysis = kymoFrameEnd - kymoFrameStart +1;
-		if (lengthDataFile != lengthKymoAnalysis) {
-			kymoFrameEnd = (int) (lengthDataFile - 1);
-			kymoFrameStart = 0;
-		}
-	}
-	
+		
 	public int setKymoFrameStart(int start) {
 		kymoFrameStart = start;
 		return kymoFrameStart;
