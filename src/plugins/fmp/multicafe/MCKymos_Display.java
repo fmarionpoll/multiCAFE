@@ -61,18 +61,19 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 		layout.setVgap(0);
 		
 		JPanel panel1 = new JPanel (layout);
-		panel1.add(new JLabel("available views :"));
+		panel1.add(new JLabel("available views:"));
 		panel1.add(availableResultsCombo);
+		panel1.add(new JLabel(" kymograph:"));
+		int bWidth = 30;
+		int bHeight = 21;
+		panel1.add(previousButton, BorderLayout.WEST); 
+		previousButton.setPreferredSize(new Dimension(bWidth, bHeight));
+		panel1.add(kymographNamesComboBox, BorderLayout.CENTER);
+		nextButton.setPreferredSize(new Dimension(bWidth, bHeight)); 
+		panel1.add(nextButton, BorderLayout.EAST);
 		add(GuiUtil.besidesPanel(panel1));
 		
 		JPanel panel2 = new JPanel (layout);
-		panel2.add(previousButton, BorderLayout.WEST); 
-		int bWidth = 30;
-		int height = 10;
-		previousButton.setPreferredSize(new Dimension(bWidth, height));
-		panel2.add(kymographNamesComboBox, BorderLayout.CENTER);
-		nextButton.setPreferredSize(new Dimension(bWidth, height)); 
-		panel2.add(nextButton, BorderLayout.EAST);
 		add(GuiUtil.besidesPanel(panel2));
 		
 		JPanel panel3 = new JPanel (layout);
