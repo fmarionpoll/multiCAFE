@@ -33,7 +33,6 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
         threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = options.expList;
-		expList.resultsSubPath = options.resultsSubPath; 
 		int nbexp = expList.index1 - expList.index0 +1;
 		ProgressFrame progress = new ProgressFrame("Detect limits");
 		

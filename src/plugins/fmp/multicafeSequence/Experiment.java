@@ -288,15 +288,16 @@ public class Experiment {
 			experimentRootName = experimentRootName.substring(0, i-1);
 		}
 		fetchListOfResultsDirectories (experimentRootName);
+		boolean flag = false;
 		if (!isSubPathWithinList(resultsSubPath)) {
 			if (resultsDirList.size() < 1)
 				return false;
-			xmlLoadExperiment (resultsDirList.get(0));
+			flag = xmlLoadExperiment (resultsDirList.get(0));
 			resultsSubPath = getResultsDirectoryNameFromKymoFrameStep();
 		} else {
-			xmlLoadExperiment (resultsSubPath);
+			flag = xmlLoadExperiment (resultsSubPath);
 		}
-		return true;
+		return flag;
 	}
 	
 	private boolean xmlLoadExperiment (String subpath) {

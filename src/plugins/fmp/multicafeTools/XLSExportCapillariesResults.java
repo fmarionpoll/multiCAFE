@@ -38,6 +38,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
 		expList.chainExperiments(options.collateSeries);
 		expAll = expList.getStartAndEndFromAllExperiments(options);
+		expAll.resultsSubPath = expList.expListResultsSubPath;
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
 		int nbexpts = expList.getSize();
@@ -111,8 +112,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		expAll.boxID 				= exp.boxID;
 		expAll.experiment 			= exp.experiment;
 		expAll.comment1 			= exp.comment1;
-		expAll.comment2 			= exp.comment2;
-		expAll.resultsSubPath 		= expList.resultsSubPath;		
+		expAll.comment2 			= exp.comment2;	
 
 		Experiment expi = exp.nextExperiment;
 		while (expi != null ) {
@@ -136,7 +136,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		expi = exp;
 		while (expi != null) {
 			expi.setKymoFrameStep(expAll.getKymoFrameStep()); // ugly patch
-			
+			expi.resultsSubPath = expAll.resultsSubPath;
 			XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
 			switch (xlsoption) {
 				case TOPRAW:
@@ -233,7 +233,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		
 		long to_first_index = (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
 		long to_nvalues = (expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep()+1;
-//		System.out.println("transfer to:" +transfer_first_index + " nvalues:" + transfer_nvalues);
+//		System.out.println("transfer to:" +to_first_index + " nvalues:" + to_nvalues);
 		
 		for (XLSResults row: rowsForOneExp ) {
 			XLSResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
@@ -359,6 +359,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			pt.y = column_dataArea;
 			int col = getColFromKymoFileName(row.name);
 			pt.x = rowSeries + col; 
+//			System.out.println("coltime =:" +expAll.getKymoFrameStart() + " to:" + expAll.getKymoFrameEnd() + "  step:" + options.buildExcelBinStep);
 			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
 				int i_from = coltime / row.binsize;
 				if (i_from >= row.values_out.length)

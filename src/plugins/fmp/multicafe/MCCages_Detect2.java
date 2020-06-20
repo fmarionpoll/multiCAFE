@@ -176,7 +176,7 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 		detect.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
 		detect.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();
 		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
-		detect.resultsSubPath 	= (String) parent0.paneSequence.tabDisplay.viewResultsCombo.getSelectedItem() ;
+		detect.resultsSubPath 	= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
 		
 		detect.forceBuildBackground	= backgroundCheckBox.isSelected();
 		detect.detectFlies		= detectCheckBox.isSelected();

@@ -34,6 +34,7 @@ public class XLSExportOptions {
 	public int 		firstExp 		= -1;
 	public int 		lastExp 		= -1;
 	public ExperimentList expList 	= null;
+
 	// internal parameter
 	public	boolean	trim_alive		= false;
 }

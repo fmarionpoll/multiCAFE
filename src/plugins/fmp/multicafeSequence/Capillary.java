@@ -161,6 +161,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	
 	public String getSideDescriptor(EnumXLSExportType xlsExportOption) {
 		String value = null;
+		capSide = getCapillarySide();
 		switch (xlsExportOption) {
 		case DISTANCE:
 		case ISALIVE:

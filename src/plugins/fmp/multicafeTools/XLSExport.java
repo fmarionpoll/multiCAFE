@@ -99,7 +99,7 @@ public class XLSExport {
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXPMT.getValue(), transpose, 		exp.experiment);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT1.getValue(), transpose, 	exp.comment1);
 
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, 		cap.getSideDescriptor(xlsExportOption));
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, cap.getSideDescriptor(xlsExportOption));
 			switch (xlsExportOption) {
 			case TOPLEVEL_LR:
 			case TOPLEVELDELTA_LR:

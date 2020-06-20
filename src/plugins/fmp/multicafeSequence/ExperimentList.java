@@ -17,7 +17,7 @@ public class ExperimentList {
 	public 	int index0 = 0;
 	public 	int index1 = 0;
 	public	int	maxSizeOfCapillaryArrays = 0;
-	public 	String resultsSubPath = null; 
+	public 	String expListResultsSubPath = null; 
 	
 
 
@@ -73,7 +73,7 @@ public class ExperimentList {
 		boolean flag = true;
 		for (Experiment exp: experimentList) {
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
-			exp.resultsSubPath = resultsSubPath;
+			exp.resultsSubPath = expListResultsSubPath;
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			int image_size = exp.seqKymos.seq.getSizeX();
 			if (image_size != 0) {
@@ -208,8 +208,8 @@ public class ExperimentList {
 		if (index > experimentList.size() -1)
 			index = experimentList.size() -1;
 		Experiment exp = experimentList.get(index);
-		if (resultsSubPath != null)
-			exp.resultsSubPath = resultsSubPath;
+		if (expListResultsSubPath != null)
+			exp.resultsSubPath = expListResultsSubPath;
 		return exp;
 	}
 	

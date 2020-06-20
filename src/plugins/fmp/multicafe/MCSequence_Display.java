@@ -5,11 +5,9 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -30,8 +28,7 @@ public class MCSequence_Display  extends JPanel {
 	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries", true);
 	JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages", true);
 	JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position", true);
-	JComboBox<String> viewResultsCombo	= new JComboBox <String>();
-	boolean 	actionAllowed			= true;
+
 	private MultiCAFE parent0 = null;
 
 	
@@ -47,11 +44,7 @@ public class MCSequence_Display  extends JPanel {
 		panel1.add(viewCagesCheckbox);
 		panel1.add(viewFlyCheckbox);
 		add(panel1);
-		
-		JPanel panel2 = new JPanel(layout);
-		panel2.add(new JLabel("available views :"));
-		panel2.add(viewResultsCombo);
-		add(panel2);
+
 		defineActionListeners();
 	}
 	
@@ -66,16 +59,6 @@ public class MCSequence_Display  extends JPanel {
 		
 		viewFlyCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			displayROIsCategory(viewFlyCheckbox.isSelected(), "det");
-		} } );
-		
-		viewResultsCombo.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			if (!actionAllowed || exp == null)
-				return;
-			String localString = (String) viewResultsCombo.getSelectedItem();
-			if (localString != null && !localString.contentEquals(exp.resultsSubPath)) {
-				firePropertyChange("SEQ_CHGBIN", false, true);
-			}
 		} } );
 	}
 	
@@ -101,18 +84,6 @@ public class MCSequence_Display  extends JPanel {
 				}
 			}
 		});
-	}
-	
-	void updateResultsAvailable(Experiment exp) {
-		actionAllowed = false;
-		viewResultsCombo.removeAllItems();
-		List<String> list = new ArrayList<String> (exp.resultsDirList);
-		for (int i = 0; i < list.size(); i++) {
-			String dirName = list.get(i);
-			viewResultsCombo.addItem(dirName);
-		}
-		viewResultsCombo.setSelectedItem(exp.resultsSubPath);
-		actionAllowed = true;
 	}
 
 }

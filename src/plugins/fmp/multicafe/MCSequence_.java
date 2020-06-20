@@ -200,16 +200,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				openSequenceCamFromCombo();
 			}
 		}
-		else if (event.getPropertyName().equals("SEQ_CHGBIN")) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
-			if (exp == null)
-				return;
-			String localString = (String) tabDisplay.viewResultsCombo.getSelectedItem();
-			tabClose.closeCurrentExperiment();
-			parent0.expList.resultsSubPath = localString;
-			exp.resultsSubPath = localString;
-			openExperiment(exp);
-		}
+
 	}
 	
 	private void openSeqCamData() {
@@ -233,7 +224,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			parent0.addSequence(exp.seqCamData.seq);
 			updateViewerForSequenceCam(exp.seqCamData);
 			loadMeasuresAndKymos();
-			tabDisplay.updateResultsAvailable(exp);
+			parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 		}
 	}
 	
@@ -300,7 +291,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	public void transferSequenceCamDataToDialogs(Experiment exp) {
 		tabIntervals.setEndFrameToDialog((int)exp.seqCamData.analysisEnd);
 		updateViewerForSequenceCam(exp.seqCamData);
-		tabDisplay.updateResultsAvailable(exp);
+		parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 	}
 
 	void loadMeasuresAndKymos() {

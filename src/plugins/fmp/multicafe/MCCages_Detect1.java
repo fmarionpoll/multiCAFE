@@ -195,7 +195,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		detect.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
 		detect.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
 		detect.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();
-		detect.resultsSubPath = (String) parent0.paneSequence.tabDisplay.viewResultsCombo.getSelectedItem() ;
+		detect.resultsSubPath = (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
 		
 		detect.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(detect.expList, true);		

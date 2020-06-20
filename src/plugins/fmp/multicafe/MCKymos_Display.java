@@ -2,6 +2,7 @@ package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -47,26 +48,38 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 	JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("top/bottom level (green)", true);
 	JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
 	JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
+	JComboBox<String> availableResultsCombo	= new JComboBox <String>();
 	private MultiCAFE parent0 			= null;
+	boolean 	actionAllowed			= true;
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
-		JPanel k2Panel = new JPanel();
-		k2Panel.setLayout(new BorderLayout());
-		k2Panel.add(previousButton, BorderLayout.WEST); 
+		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
+		layout.setVgap(0);
+		
+		JPanel panel1 = new JPanel (layout);
+		panel1.add(new JLabel("available views :"));
+		panel1.add(availableResultsCombo);
+		add(GuiUtil.besidesPanel(panel1));
+		
+		JPanel panel2 = new JPanel (layout);
+		panel2.add(previousButton, BorderLayout.WEST); 
 		int bWidth = 30;
 		int height = 10;
 		previousButton.setPreferredSize(new Dimension(bWidth, height));
-		k2Panel.add(kymographNamesComboBox, BorderLayout.CENTER);
+		panel2.add(kymographNamesComboBox, BorderLayout.CENTER);
 		nextButton.setPreferredSize(new Dimension(bWidth, height)); 
-		k2Panel.add(nextButton, BorderLayout.EAST);
+		panel2.add(nextButton, BorderLayout.EAST);
+		add(GuiUtil.besidesPanel(panel2));
 		
-		add(GuiUtil.besidesPanel( viewLevelsCheckbox, k2Panel));
-		add(GuiUtil.besidesPanel( viewDerivativeCheckbox, new JLabel(" "), new JLabel(" ")));
-		add(GuiUtil.besidesPanel( viewGulpsCheckbox, new JLabel(" "), new JLabel(" ")));
+		JPanel panel3 = new JPanel (layout);
+		panel3.add(viewLevelsCheckbox);
+		panel3.add(viewDerivativeCheckbox);
+		panel3.add(viewGulpsCheckbox);
+		add(GuiUtil.besidesPanel(panel3));
 		
 		defineActionListeners();
 	}
@@ -109,6 +122,16 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 			int isel = kymographNamesComboBox.getSelectedIndex()-1;
 			if (isel < kymographNamesComboBox.getItemCount())
 				selectKymograph(isel);
+		} } );
+		
+		availableResultsCombo.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
+			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			if (!actionAllowed || exp == null)
+				return;
+			String localString = (String) availableResultsCombo.getSelectedItem();
+			if (localString != null && !localString.contentEquals(exp.resultsSubPath)) {
+				firePropertyChange("SEQ_CHGBIN", false, true);
+			}
 		} } );
 	}
 		
@@ -283,4 +306,15 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 		viewer.removeListener(this);
 	}
 
+	void updateResultsAvailable(Experiment exp) {
+		actionAllowed = false;
+		availableResultsCombo.removeAllItems();
+		List<String> list = new ArrayList<String> (exp.resultsDirList);
+		for (int i = 0; i < list.size(); i++) {
+			String dirName = list.get(i);
+			availableResultsCombo.addItem(dirName);
+		}
+		availableResultsCombo.setSelectedItem(exp.resultsSubPath);
+		actionAllowed = true;
+	}
 }

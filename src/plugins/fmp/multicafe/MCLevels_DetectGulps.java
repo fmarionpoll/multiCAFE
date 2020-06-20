@@ -163,7 +163,7 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 		options.startPixel				= (int) startSpinner.getValue();
 		options.endPixel				= (int) endSpinner.getValue();
 		options.parent0Rect 			= parent0.mainFrame.getBoundsInternal();
-		options.resultsSubPath 			= (String) parent0.paneSequence.tabDisplay.viewResultsCombo.getSelectedItem() ;
+		options.resultsSubPath 			= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
 		
 		thread.addPropertyChangeListener(this);
 		thread.execute();
