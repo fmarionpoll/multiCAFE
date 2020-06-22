@@ -158,10 +158,12 @@ public class Cages {
 				cage.xmlLoadCage(xmlVal, index);
 				cageList.add(cage);
 			}
-			Cage cage = cageList.get(0);
-			cagesFrameStart = cage.frameStart;
-			cagesFrameEnd = cage.frameEnd;
-			cagesFrameStep = cage.frameStep;
+			if (cageList.size() > 0) {
+				Cage cage = cageList.get(0);
+				cagesFrameStart = cage.frameStart;
+				cagesFrameEnd = cage.frameEnd;
+				cagesFrameStep = cage.frameStep;
+			}
 		} else {
 			List<ROI2D> cageLimitROIList = new ArrayList<ROI2D>();
 			if (xmlLoadCagesLimits_v0(node, cageLimitROIList)) {
