@@ -25,6 +25,7 @@ public class Cage {
 	public String 			strCageComment 		= "..";
 	private String 			strCageNumber 		= null;
 	public	boolean			valid				= false;
+	public	boolean			saveDetectedROIs	= false;
 	
 	private final String ID_CAGELIMITS 			= "CageLimits";
 	private final String ID_FLYPOSITIONS		= "FlyPositions";
@@ -43,7 +44,8 @@ public class Cage {
 		Element xmlVal = XMLUtil.addElement(node, "Cage"+index);		
 		xmlSaveCageLimitsAndParameters(xmlVal);
 		xmlSaveFlyPositions(xmlVal);
-		xmlSaveDetecteRois(xmlVal);
+		if (saveDetectedROIs)
+			xmlSaveDetecteRois(xmlVal);
 		return true;
 	}
 	
@@ -87,11 +89,9 @@ public class Cage {
 		Element xmlVal = XMLUtil.getElement(node, "Cage"+index);
 		if (xmlVal == null)
 			return false;
-		
 		getCageLimits(xmlVal);
 		getFlyPositions(xmlVal);
 		getRoisDetected(xmlVal);
-
 		return true;
 	}
 	

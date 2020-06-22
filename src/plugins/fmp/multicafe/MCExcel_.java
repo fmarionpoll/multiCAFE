@@ -87,7 +87,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 				xlsExport.exportToFile(file, getMoveOptions());
 			}});
 		} 
-		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA2")) {
+		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
 			String file = defineXlsFileName(exp, "_feeding.xlsx");
 			if (file == null)
 				return;

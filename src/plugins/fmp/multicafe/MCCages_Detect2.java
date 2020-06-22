@@ -212,7 +212,6 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 		Experiment exp = parent0.expList.getExperiment(currentExp);
 		if (exp == null)
 			return;
-		parent0.paneCages.tabFile.saveCagesAndMeasures(exp);
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
 		detectFlies2Thread = new DetectFlies2_series();		

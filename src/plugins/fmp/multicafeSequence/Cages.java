@@ -24,10 +24,11 @@ import plugins.kernel.roi.roi2d.ROI2DPolygon;
 public class Cages {
 	
 	public DetectFlies_Options 	detect 		= new DetectFlies_Options();
-	public List<Cage>			cageList	= new ArrayList<Cage>();
-	public int 					frameStart 	= 0;
-	public int 					frameEnd 	= 0;
-	public int 					frameStep 	= 1;
+	public List<Cage>	cageList			= new ArrayList<Cage>();
+	public int 			cagesFrameStart		= 0;
+	public int 			cagesFrameEnd 		= 0;
+	public int 			cagesFrameStep 		= 1;
+	public boolean		saveDetectedROIs	= false;
 
 	private final String ID_CAGES 			= "Cages";
 	private final String ID_NCAGES 			= "n_cages";
@@ -96,9 +97,10 @@ public class Cages {
 		int ncages = cageList.size();
 		XMLUtil.setAttributeIntValue(xmlVal, ID_NCAGES, ncages);
 		for (Cage cage: cageList) {
-			cage.frameStart = frameStart;
-			cage.frameEnd = frameEnd;
-			cage.frameStep = frameStep;
+			cage.frameStart = cagesFrameStart;
+			cage.frameEnd = cagesFrameEnd;
+			cage.frameStep = cagesFrameStep;
+			cage.saveDetectedROIs = saveDetectedROIs;
 			cage.xmlSaveCage(xmlVal, index);
 			index++;
 		}
@@ -156,6 +158,10 @@ public class Cages {
 				cage.xmlLoadCage(xmlVal, index);
 				cageList.add(cage);
 			}
+			Cage cage = cageList.get(0);
+			cagesFrameStart = cage.frameStart;
+			cagesFrameEnd = cage.frameEnd;
+			cagesFrameStep = cage.frameStep;
 		} else {
 			List<ROI2D> cageLimitROIList = new ArrayList<ROI2D>();
 			if (xmlLoadCagesLimits_v0(node, cageLimitROIList)) {

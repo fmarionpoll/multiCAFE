@@ -113,13 +113,16 @@ public class XLSExportMoveResults  extends XLSExport {
 		}
 		expAll.fileTimeImageFirstMinute = expAll.fileTimeImageFirst.toMillis()/60000;
 		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
-		
+		int nFrames = (int) ((expAll.fileTimeImageLastMinute - expAll.fileTimeImageFirstMinute)/expAll.getCagesFrameStep() +1) ;
+		if (expAll.getCagesFrameEnd() < nFrames) {
+			expAll.setCagesFrameEnd(nFrames-1);
+			exp.setCagesFrameEnd(nFrames-1);
+		}
 		int ncages = expAll.cages.cageList.size();
-		int nFrames = (int) ((expAll.fileTimeImageLastMinute - expAll.fileTimeImageFirstMinute)/expAll.getKymoFrameStep() +1) ;
 		rowsForOneExp = new ArrayList <XYTaSeries> (ncages);
 		for (int i=0; i< ncages; i++) {
 			Cage cage = expAll.cages.cageList.get(i);
-			XYTaSeries row = new XYTaSeries (cage.roi.getName(), xlsoption, nFrames, expAll.getKymoFrameStep());
+			XYTaSeries row = new XYTaSeries (cage.roi.getName(), xlsoption, nFrames, expAll.getCagesFrameStep());
 			row.nflies = cage.cageNFlies;
 			rowsForOneExp.add(row);
 		}
@@ -132,7 +135,7 @@ public class XLSExportMoveResults  extends XLSExport {
 			for (Cage cage: expi.cages.cageList) {
 				XYTaSeries results = new XYTaSeries();
 				results.copy(cage.flyPositions);
-				results.binsize = expi.getKymoFrameStep();
+				results.binsize = expi.getCagesFrameStep();
 				results.name = cage.roi.getName();
 				results.nflies = cage.cageNFlies;
 				if (results.nflies > 0) {				
@@ -182,20 +185,20 @@ public class XLSExportMoveResults  extends XLSExport {
 	}
 	
 	private void addMoveResultsTo_rowsForOneExp(Experiment expi, List <XYTaSeries> resultsArrayList) {
-		final int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
-		final int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
+		final int transfer_first_index = (int) (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getCagesFrameStep() ;
+		final int transfer_nvalues = (int) ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getCagesFrameStep())+1;
 		for (XYTaSeries row: rowsForOneExp ) {
 			XYTaSeries results = getResultsArrayWithThatName(row.name,  resultsArrayList);
 			if (results != null) {
 				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
 					padWithLastPreviousValue(row, transfer_first_index);
 				
-				for (int fromTime = expi.getKymoFrameStart(); fromTime <= expi.getKymoFrameEnd(); fromTime += expi.getKymoFrameStep()) {
-					int from_i = fromTime / expi.getKymoFrameStep();
+				for (int fromTime = expi.getCagesFrameStart(); fromTime <= expi.getCagesFrameEnd(); fromTime += expi.getCagesFrameStep()) {
+					int from_i = fromTime / expi.getCagesFrameStep();
 					if (from_i >= results.pointsList.size())
 						break;
 					XYTaValue aVal = results.pointsList.get(from_i);
-					int to_i = (int) (fromTime + expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
+					int to_i = (int) (fromTime + expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getCagesFrameStep() ;
 					if (to_i >= row.pointsList.size())
 						break;
 					row.pointsList.get(to_i).copy(aVal);
@@ -247,7 +250,7 @@ public class XLSExportMoveResults  extends XLSExport {
 	}
 	
 	private void trimDeadsFromRowMoveData(Experiment exp) {
-	for (Cage cage: exp.cages.cageList) {
+		for (Cage cage: exp.cages.cageList) {
 			int cagenumber = Integer.parseInt(cage.roi.getName().substring(4));
 			int ilastalive = 0;
 			if (cage.cageNFlies > 0) {
@@ -256,8 +259,8 @@ public class XLSExportMoveResults  extends XLSExport {
 					expi = expi.nextExperiment;
 				}
 				int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
-				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getKymoFrameStep() + (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
-				ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
+				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getCagesFrameStep() + (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
+				ilastalive = lastMinuteAlive / expAll.getCagesFrameStep();
 			}
 			for (XYTaSeries row : rowsForOneExp) {
 				int rowCageNumber = Integer.parseInt(row.name.substring(4));
@@ -293,7 +296,7 @@ public class XLSExportMoveResults  extends XLSExport {
 			if (row.nflies < 1)
 				continue;
 			
-			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
+			for (int coltime=expAll.getCagesFrameStart(); coltime < expAll.getCagesFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
 				int i_from = coltime / row.binsize;
 				if (i_from >= row.pointsList.size())
 					break;

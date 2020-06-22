@@ -495,63 +495,40 @@ public class Experiment {
 		return kymoFrameStep;
 	}
 	
-	public int checkKymoFrameStep() {
-		int step = -1;
-		if (seqKymos == null || seqKymos.seq == null)
-			return step;
-		if (seqKymos.imageWidthMax < 1) {
-			seqKymos.imageWidthMax = seqKymos.seq.getSizeX();
-			if (seqKymos.imageWidthMax < 1)
-				return step;
-		}
-		if (kymoFrameEnd == 0) {
-			if (seqCamData != null && seqCamData.seq != null)
-				kymoFrameEnd = seqCamData.seq.getSizeT() -1;
-			else
-				return step;
-		}
-		if (kymoFrameStep == 0)
-			kymoFrameStep = 1;
-		int len2 = (kymoFrameEnd +1)/ kymoFrameStep;
-		if (len2 != seqKymos.imageWidthMax) 
-			kymoFrameStep = (kymoFrameEnd +1)/(seqKymos.imageWidthMax-1);
-		return kymoFrameStep;
-	}
-	
 	public int setCagesFrameStart(int start) {
-		cages.frameStart = start;
+		cages.cagesFrameStart = start;
 		for (Cage cage: cages.cageList) {
 			cage.frameStart = start;
 		}
-		return cages.frameStart;
+		return cages.cagesFrameStart;
 	}
 	
 	public int setCagesFrameEnd(int end) {
-		cages.frameEnd = end;
+		cages.cagesFrameEnd = end;
 		for (Cage cage: cages.cageList) {
 			cage.frameEnd = end;
 		}
-		return cages.frameEnd;
+		return cages.cagesFrameEnd;
 	}
 	
 	public int setCagesFrameStep(int step) {
-		cages.frameStep = step;
+		cages.cagesFrameStep = step;
 		for (Cage cage: cages.cageList) {
 			cage.frameStep = step;
 		}
-		return cages.frameStep;
+		return cages.cagesFrameStep;
 	}
 	
 	public int getCagesFrameStart() {
-		return cages.frameStart;
+		return cages.cagesFrameStart;
 	}
 	
 	public int getCagesFrameEnd() {
-		return cages.frameEnd;
+		return cages.cagesFrameEnd;
 	}
 	
 	public int getCagesFrameStep() {
-		return cages.frameStep;
+		return cages.cagesFrameStep;
 	}
 	
 	// --------------------------------------------
@@ -833,8 +810,9 @@ public class Experiment {
 		return cages.xmlReadCagesFromFileNoQuestion(filename, seqCamData);
 	}
 	
-	public boolean xmlWriteDrosoTrackDefault() {
+	public boolean xmlWriteDrosoTrackDefault(boolean saveDetectedROIs) {
 		String fileName = getResultsDirectory() + File.separator + ID_MCDROSOTRACK;
+		cages.saveDetectedROIs = saveDetectedROIs;
 		return cages.xmlWriteCagesToFileNoQuestion(fileName);
 	}
 	
