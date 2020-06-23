@@ -92,7 +92,6 @@ public class XLSExportCapillariesResults  extends XLSExport {
 	
 	private int getDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType datatype) {	
 		getDataFromOneSeriesOfExperiments(exp, datatype);
-		
 		XSSFSheet sheet = xlsInitSheet(datatype.toString());
 		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
 		if (options.onlyalive) {
@@ -122,10 +121,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		}
 		expAll.fileTimeImageFirstMinute = expAll.fileTimeImageFirst.toMillis()/60000;
 		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
-		//		int nFrames = (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1 ;
-		int nFrames = (int) ((expAll.fileTimeImageLastMinute - expAll.fileTimeImageFirstMinute)/expAll.getKymoFrameStep() +1) ;
-		expAll.setKymoFrameStart(0); 
-		expAll.setKymoFrameEnd(nFrames-1);
+		int nFrames = (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1 ;
+//		System.out.println("getData_v1 - expAll from: " +expAll.getKymoFrameStart() + " to:" + expAll.getKymoFrameEnd() + " step:"+ expAll.getKymoFrameStep());
 		
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
 		rowsForOneExp = new ArrayList <XLSResults> (ncapillaries);
@@ -235,9 +232,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
 		
 		long to_first_index = (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
-		long to_nvalues = (expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep()+1;
-//		System.out.println("transfer to:" +to_first_index + " nvalues:" + to_nvalues);
-		
+		long to_nvalues = ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
+
 		for (XLSResults row: rowsForOneExp ) {
 			XLSResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
 			if (results != null && results.data != null) {
@@ -255,7 +251,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					default:
 						break;
 				}
-//				System.out.println("transfer from:" +expi.getKymoFrameStart() + " to:" + expi.getKymoFrameEnd() + "  step:" + expi.getKymoFrameStep());
+//				System.out.println("addResults - transfer from:" +expi.getKymoFrameStart() + " to:" + expi.getKymoFrameEnd() + "  step:" + expi.getKymoFrameStep());
 				for (int fromTime = expi.getKymoFrameStart(); fromTime <= expi.getKymoFrameEnd(); fromTime += expi.getKymoFrameStep()) {
 					int from_i = fromTime / expi.getKymoFrameStep();
 					if (from_i >= results.data.size())
@@ -362,7 +358,6 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			pt.y = column_dataArea;
 			int col = getColFromKymoFileName(row.name);
 			pt.x = rowSeries + col; 
-//			System.out.println("coltime =:" +expAll.getKymoFrameStart() + " to:" + expAll.getKymoFrameEnd() + "  step:" + options.buildExcelBinStep);
 			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
 				int i_from = coltime / row.binsize;
 				if (i_from >= row.values_out.length)
