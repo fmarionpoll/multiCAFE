@@ -10,6 +10,7 @@ import org.w3c.dom.Node;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
+import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
 
 
@@ -192,9 +193,21 @@ public class Cage {
 	}
 	
 	public void transferPositionsToRois() {
-//		public XYTaSeries 		flyPositions 		= new XYTaSeries();
-//		public List<ROI2D> 		detectedFliesList	= new ArrayList<ROI2D>();
-		
+		int width = 10;
+		int height = 10;
+		detectedFliesList.clear();
+		for (XYTaValue aValue: flyPositions.pointsList) {
+			ROI2DRectangle flyRect = new ROI2DRectangle(
+					aValue.point.getX(), 
+					aValue.point.getY(), 
+					aValue.point.getX()+width, 
+					aValue.point.getY()+height);
+			int t = aValue.time;
+			flyRect.setName("det"+getCageNumber() +"_" + t );
+			flyRect.setT( t );
+			// TODO flyRect.setColor(value);
+			detectedFliesList.add(flyRect);
+		}
 	}
 	
 	

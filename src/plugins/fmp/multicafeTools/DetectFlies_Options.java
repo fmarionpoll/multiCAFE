@@ -23,7 +23,6 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.XYTaSeries;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DArea;
-import plugins.kernel.roi.roi2d.ROI2DEllipse;
 import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
 public class DetectFlies_Options implements XMLPersistent {
@@ -203,10 +202,10 @@ public class DetectFlies_Options implements XMLPersistent {
 			if ( bestMask != null ) {
 				flyROI = new ROI2DArea( bestMask ); 
 				Rectangle2D rect = flyROI.getBounds2D();
-				ROI2DEllipse flyEllipse = new ROI2DEllipse(rect.getX(), rect.getY(), rect.getX()+rect.getWidth(), rect.getY()+rect.getHeight());
-				flyEllipse.setName("det"+cage.getCageNumber() +"_" + t );
-				flyEllipse.setT( t );
-				resultFlyPositionArrayList[icage][it] = flyEllipse;
+				ROI2DRectangle flyRect = new ROI2DRectangle(rect.getX(), rect.getY(), rect.getX()+rect.getWidth(), rect.getY()+rect.getHeight());
+				flyRect.setName("det"+cage.getCageNumber() +"_" + t );
+				flyRect.setT( t );
+				resultFlyPositionArrayList[icage][it] = flyRect;
 				
 				tempRectROI[icage].setRectangle(rect);
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());

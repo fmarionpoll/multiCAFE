@@ -35,7 +35,7 @@ public class MCCages_Infos  extends JPanel {
 	
 	void init(MultiCAFE parent0) {
 		this.parent0 = parent0;
-		//setLayout(new FlowLayout(FlowLayout.LEFT, 3, 1));	
+		setLayout(new FlowLayout(FlowLayout.LEFT, 3, 1));	
 		add(editCagesButton);
 		add(new JLabel(" "));
 		add(viewAsRoisButton);
