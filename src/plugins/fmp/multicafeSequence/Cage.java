@@ -189,6 +189,13 @@ public class Cage {
 		
 		detectedFliesList	= new ArrayList<ROI2D>();
 		detectedFliesList.addAll(cag.detectedFliesList);
+	}
+	
+	public void transferPositionsToRois() {
+//		public XYTaSeries 		flyPositions 		= new XYTaSeries();
+//		public List<ROI2D> 		detectedFliesList	= new ArrayList<ROI2D>();
 		
 	}
+	
+	
 }

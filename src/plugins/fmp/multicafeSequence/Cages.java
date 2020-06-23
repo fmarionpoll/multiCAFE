@@ -11,6 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
+import icy.sequence.Sequence;
 import icy.util.XMLUtil;
 
 import plugins.kernel.roi.roi2d.ROI2DShape;
@@ -375,6 +376,18 @@ public class Cages {
 		for (Capillary cap: capList) {
 			int cagenb = cap.getCageIndexFromRoiName();
 			cap.capCageNb = cagenb;
+		}
+	}
+	
+	public void displayDetectedFliesAsRois(Sequence seq) {
+		for (Cage cage: cageList ) {
+			if (cage.detectedFliesList.size() >0) {
+				
+			} else {
+				cage.transferPositionsToRois();
+				seq.addROIs(cage.detectedFliesList, false);
+			}
+			
 		}
 	}
 	

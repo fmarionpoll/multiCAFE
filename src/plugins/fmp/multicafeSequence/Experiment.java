@@ -816,6 +816,9 @@ public class Experiment {
 		return cages.xmlWriteCagesToFileNoQuestion(fileName);
 	}
 	
-	
+	public void displayDetectedFliesAsRois() {
+		if (cages != null && cages.cageList.size() > 0)
+			cages.displayDetectedFliesAsRois(seqCamData.seq);
+	}
 
 }
