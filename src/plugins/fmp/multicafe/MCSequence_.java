@@ -89,7 +89,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Infos", null, tabInfosSeq, "Define infos for this experiment/box");
 		tabInfosSeq.addPropertyChangeListener(this);
 		
-		tabIntervals.init(tabsLayout);
+		tabIntervals.init(tabsLayout, parent0);
 		tabsPane.addTab("Intervals", null, tabIntervals, "Browse and analysis parameters");
 		tabIntervals.addPropertyChangeListener(this);
 
