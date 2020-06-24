@@ -80,10 +80,15 @@ public class MCSequence_Intervals extends JPanel {
 			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 			exp.setKymoFrameStart(0);
 			if (exp.seqCamData != null && exp.seqCamData.seq != null) {
-				exp.setKymoFrameEnd(exp.seqCamData.seq.getSizeT());
-				int step = (int) Math.round((double) exp.getKymoFrameEnd() / exp.seqKymos.imageWidthMax);
-				if (step > 0)
-					exp.setKymoFrameStep(step);
+				if (isFloatingFrame.isSelected()) {
+					exp.setKymoFrameEnd(exp.seqCamData.seq.getSizeT());
+					int step = (int) Math.round((double) exp.getKymoFrameEnd() / exp.seqKymos.imageWidthMax);
+					if (step > 0)
+						exp.setKymoFrameStep(step);
+				} else {
+					 getAnalyzeFrameFromDialog (exp);
+					 exp.setKymoFrameStep((int) parent0.paneKymos.tabCreate.stepFrameJSpinner.getValue());
+				}
 			} 
 			setAnalyzeFrameToDialog(exp);
 		}});

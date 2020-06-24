@@ -46,7 +46,7 @@ public class MCSequence_Close  extends JPanel {
 			if (exp.seqCamData != null) {
 				exp.xmlSaveExperiment();
 				exp.saveExperimentMeasures(exp.getResultsDirectory());
-				exp.xmlWriteDrosoTrackDefault(parent0.paneCages.tabFile.saveRoisCheckBox.isSelected());
+//				exp.xmlWriteDrosoTrackDefault(parent0.paneCages.tabFile.saveRoisCheckBox.isSelected());
 			}
 			exp.closeSequences();
 		}
