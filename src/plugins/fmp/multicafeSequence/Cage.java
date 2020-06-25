@@ -198,8 +198,8 @@ public class Cage {
 		detectedFliesList.clear();
 		for (XYTaValue aValue: flyPositions.pointsList) {
 			ROI2DRectangle flyRect = new ROI2DRectangle(
-					aValue.point.getX(), 
-					aValue.point.getY(), 
+					aValue.point.getX()-width/2, 
+					aValue.point.getY()-height/2, 
 					aValue.point.getX()+width, 
 					aValue.point.getY()+height);
 			int t = aValue.time;

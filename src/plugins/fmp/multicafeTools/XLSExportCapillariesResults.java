@@ -228,6 +228,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 	}
 	
 	private void addResultsTo_rowsForOneExp(Experiment expi, XLSResultsArray resultsArrayList) {
+		if (resultsArrayList.resultsArrayList.size() <1)
+			return;
 		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
 		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
 		

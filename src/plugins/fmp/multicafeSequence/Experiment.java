@@ -191,6 +191,8 @@ public class Experiment {
 	
 	public String getResultsDirectory() {
 		Path dir = Paths.get(experimentFileName);
+		if (resultsSubPath == null)
+			resultsSubPath = RESULTS;
 		dir = dir.resolve(resultsSubPath);
 		String directory = dir.toAbsolutePath().toString();
 		if (Files.notExists(dir))  {

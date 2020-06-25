@@ -209,6 +209,7 @@ public class DetectFlies_Options implements XMLPersistent {
 				
 				tempRectROI[icage].setRectangle(rect);
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
+				//Point2D flyPosition = ROIUtil.getMassCenter( flyROI); //ROIMassCenterXDescriptor
 				int npoints = cage.flyPositions.pointsList.size();
 				cage.flyPositions.add(flyPosition, t);
 				if (it > 0 && npoints > 0) {
