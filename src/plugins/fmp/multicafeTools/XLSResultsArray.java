@@ -58,7 +58,7 @@ public class XLSResultsArray {
 	
 	private void computeEvaporationFromResultsWithZeroFlies() {
 		for (XLSResults result: resultsArrayList) {
-			if (result.nflies > 0)
+			if (result.data == null || result.nflies > 0)
 				continue;
 			String side = result.name.substring(result.name.length() -1);
 			if (sameLR || side.equals("L"))

@@ -99,6 +99,9 @@ public class XLSResults {
 	}
 	
 	void subtractEvap(XLSResults evap) {
+		if (data == null)
+			return;
+		
 		for (int i = 0; i < data.size(); i++) {
 			if (evap.valint.length > i)
 				data.set(i, data.get(i) - evap.valint[i]);			
