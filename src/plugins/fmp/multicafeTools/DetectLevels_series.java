@@ -110,6 +110,8 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 			if (options.analyzePartOnly) {
 				startPixel = options.startPixel;
 				endPixel = options.endPixel;
+				if (endPixel > xwidth-1)
+					endPixel = xwidth -1;
 			} else {
 				cap.ptsTop = null;
 				cap.ptsBottom = null;
@@ -205,7 +207,7 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 			}
 		}
 		if (!found) {
-			oldiybottom = 0; //yheight - 1;
+			oldiybottom = 0;
 		}
 		return y;
 	}

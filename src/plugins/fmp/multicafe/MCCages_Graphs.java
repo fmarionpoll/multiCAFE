@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -41,14 +42,32 @@ public class MCCages_Graphs extends JPanel {
 	JSpinner 			aliveThresholdSpinner = new JSpinner(new SpinnerNumberModel(50.0, 0., 100000., .1));
 	JCheckBox			sleepCheckbox		= new JCheckBox("sleep", true);
 	JButton 			displayResultsButton= new JButton("Display results");
+	private JButton		viewAsRoisButton	= new JButton("view detected flies as ROIs");
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
 		setLayout(capLayout);
 		this.parent0 = parent0;
-		add(GuiUtil.besidesPanel(moveCheckbox, distanceCheckbox, aliveCheckbox, sleepCheckbox));
-		add(GuiUtil.besidesPanel(new JLabel(" "), new JLabel("Alive threshold"), aliveThresholdSpinner, new JLabel(" ")));
+		
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
+		flowLayout.setVgap(2);
+		JPanel panel1 = new JPanel(flowLayout);
+		panel1.add(moveCheckbox);
+		panel1.add(distanceCheckbox);
+		panel1.add(aliveCheckbox);
+		panel1.add(sleepCheckbox);
+		add(panel1);
+		
+		JPanel panel2 = new JPanel (flowLayout);
+		panel2.add(new JLabel("Alive threshold"));
+		panel2.add(aliveThresholdSpinner);
+		add(panel2);
+		
 		add(GuiUtil.besidesPanel(displayResultsButton, new JLabel(" "))); 
+		
+		JPanel panel4 = new JPanel(flowLayout);
+		panel4.add(viewAsRoisButton);
+		add(panel4);
 		defineActionListeners();
 	}
 	
@@ -57,6 +76,13 @@ public class MCCages_Graphs extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				xyDisplayGraphs();
 				firePropertyChange("DISPLAY_RESULTS", false, true);
+			}});
+		
+		viewAsRoisButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				if (exp != null)
+					exp.displayDetectedFliesAsRois();
 			}});
 	}
 
