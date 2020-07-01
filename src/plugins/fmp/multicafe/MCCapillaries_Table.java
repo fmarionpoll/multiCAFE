@@ -136,9 +136,14 @@ public class MCCapillaries_Table  extends JPanel {
 						if ((exp.capillaries.desc.grouping == 2) && (!cap.getCapillarySide().equals(side)))
 							continue;
 						else {
+							try {
 							int mod = Integer.parseInt(cap.getCapillarySide()) % 2;
 							if (mod != modulo2)
 								continue;
+							} catch (NumberFormatException nfe) {
+								if (!cap.getCapillarySide().equals(side))
+									continue;
+							}
 						}
 			        	switch (columnIndex) {
 			            case 2: cap.capNFlies = cap0.capNFlies; break;
