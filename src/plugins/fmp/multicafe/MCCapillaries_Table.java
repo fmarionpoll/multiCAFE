@@ -120,9 +120,16 @@ public class MCCapillaries_Table  extends JPanel {
 				int columnIndex = tableView.getSelectedColumn();
 				if (rowIndex >= 0) {
 					Capillary cap0 = exp.capillaries.capillariesArrayList.get(rowIndex);
-					int modulo2 = Integer.parseInt(cap0.getCapillarySide()) % 2;
 					
 					String side = cap0.getCapillarySide();
+					int modulo2 = 0;
+					if (side.equals("L"))
+						modulo2 = 0;
+					else if (side.equals("R"))
+						modulo2 = 1;
+					else
+						modulo2 = Integer.parseInt(cap0.getCapillarySide()) % 2;
+					
 					for (Capillary cap: exp.capillaries.capillariesArrayList) {
 						if (cap.getCapillaryName().equals(cap0.getCapillaryName()))
 							continue;
