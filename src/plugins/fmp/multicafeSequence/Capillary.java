@@ -144,7 +144,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public String replace_LR_with_12(String name) {
 		String newname = null;
 		if (name .endsWith("R"))
-			newname = name.replace("R",  "2");
+			newname = name.replace("R", "2");
 		else if (name.endsWith("L"))
 			newname = name.replace("L", "1");
 		else 

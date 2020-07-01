@@ -33,8 +33,8 @@ public class MCCapillaries_Table  extends JPanel {
 	private CapillaryTableModel viewModel 		= null;
 	private JButton				copyButton 		= new JButton("Copy table");
 	private JButton				pasteButton 	= new JButton("Paste");
-	private JButton				duplicateButton = new JButton("Duplicate cell to L/R");
-	private JButton				duplicateallButton = new JButton("Duplicate cell to all");
+	private JButton				duplicateLRButton = new JButton("Duplicate cell to L/R");
+	private JButton				duplicateAllButton = new JButton("Duplicate cell to all");
 	private JButton				getNfliesButton = new JButton("Get n flies from cage");
 	private JButton				getCageNoButton	= new JButton("Set cage n#");
 	private MultiCAFE 			parent0 		= null; 
@@ -64,8 +64,8 @@ public class MCCapillaries_Table  extends JPanel {
         JPanel panel2 = new JPanel (flowLayout);
         panel2.add(getCageNoButton);
         panel2.add(getNfliesButton);
-        panel2.add(duplicateButton);
-        panel2.add(duplicateallButton);
+        panel2.add(duplicateLRButton);
+        panel2.add(duplicateAllButton);
         topPanel.add(panel2);
         
         JPanel tablePanel = new JPanel();
@@ -113,19 +113,26 @@ public class MCCapillaries_Table  extends JPanel {
 				viewModel.fireTableDataChanged();
 			}});
 		
-		duplicateButton.addActionListener(new ActionListener () { 
+		duplicateLRButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				int rowIndex = tableView.getSelectedRow();
 				int columnIndex = tableView.getSelectedColumn();
 				if (rowIndex >= 0) {
-					Capillary cap0 = exp.capillaries.capillariesArrayList.get(rowIndex);	
+					Capillary cap0 = exp.capillaries.capillariesArrayList.get(rowIndex);
+					int modulo2 = Integer.parseInt(cap0.getCapillarySide()) % 2;
+					
 					String side = cap0.getCapillarySide();
 					for (Capillary cap: exp.capillaries.capillariesArrayList) {
 						if (cap.getCapillaryName().equals(cap0.getCapillaryName()))
 							continue;
 						if ((exp.capillaries.desc.grouping == 2) && (!cap.getCapillarySide().equals(side)))
 							continue;
+						else {
+							int mod = Integer.parseInt(cap.getCapillarySide()) % 2;
+							if (mod != modulo2)
+								continue;
+						}
 			        	switch (columnIndex) {
 			            case 2: cap.capNFlies = cap0.capNFlies; break;
 			            case 3: cap.capVolume = cap0.capVolume; break;
@@ -137,7 +144,7 @@ public class MCCapillaries_Table  extends JPanel {
 				}
 			}});
 		
-		duplicateallButton.addActionListener(new ActionListener () { 
+		duplicateAllButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
 				int rowIndex = tableView.getSelectedRow();
