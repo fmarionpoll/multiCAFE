@@ -341,7 +341,6 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		}	
 	}
 	
-	
 	private void combineData(Experiment exp) {
 		for (XLSResults row_master : rowsForOneExp) {
 			if ((row_master.nflies == 0) || (row_master.values_out == null))
@@ -360,7 +359,6 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			}
 		}
 	}
-
 	
 	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) {
 		Point pt = new Point(col0, 0);
