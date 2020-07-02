@@ -6,6 +6,9 @@ import java.util.List;
 
 public class XLSResults {
 	String				name 		= null;
+	String 				stimulus	= null;
+	String 				concentration = null;
+	int 				nadded		= 1;
 	int					nflies		= 1;
 	EnumXLSExportType 	exportType 	= null;
 	List<Integer > 		data 		= null;
@@ -64,6 +67,11 @@ public class XLSResults {
 		}
 	}
 	
+	void clearAll() {
+		data = null;
+		nflies = 0;
+	}
+	
 	boolean subtractDeltaT(int arrayStep, int deltaT) {
 		if (values_out == null || values_out.length < 2)
 			return false;
@@ -107,5 +115,16 @@ public class XLSResults {
 				data.set(i, data.get(i) - evap.valint[i]);			
 		}
 		evap.nflies = 1;
+	}
+	
+	void addData (XLSResults addedData) {
+		if (data == null)
+			return;
+		
+		for (int i = 0; i < data.size(); i++) {
+			if (addedData.valint.length > i)
+				data.set(i, data.get(i) + addedData.valint[i]);			
+		}
+		nadded += 1;
 	}
 }

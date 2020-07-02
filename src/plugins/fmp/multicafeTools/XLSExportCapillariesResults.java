@@ -57,15 +57,15 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPRAW);
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVEL);
 				}
-				if (options.sum && options.topLevel) 		
+				if (options.sum_ratio_LR && options.topLevel) 		
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVEL_LR);
 				if (options.topLevelDelta) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVELDELTA);
-				if (options.sum && options.topLevelDelta) 	
+				if (options.sum_ratio_LR && options.topLevelDelta) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVELDELTA_LR);
 				if (options.consumption) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS);
-				if (options.sum && options.consumption) 	
+				if (options.sum_ratio_LR && options.consumption) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS_LR);
 
 				if (options.bottomLevel) 	
@@ -94,11 +94,19 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		getDataFromOneSeriesOfExperiments(exp, datatype);
 		XSSFSheet sheet = xlsInitSheet(datatype.toString());
 		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
+		
 		if (options.onlyalive) {
 			trimDeadsFromArrayList(exp);
 			sheet = xlsInitSheet(datatype.toString()+"_alive");
 			xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
 		}
+		
+		if (options.cage) {
+			combineDataForEachCage(exp);
+			sheet = xlsInitSheet(datatype.toString()+"_cage");
+			xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
+		}
+		
 		return colmax;
 	}
 	
@@ -128,7 +136,10 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		rowsForOneExp = new ArrayList <XLSResults> (ncapillaries);
 		for (int i=0; i< ncapillaries; i++) {
 			Capillary cap = expAll.capillaries.capillariesArrayList.get(i);
-			rowsForOneExp.add(new XLSResults (cap.roi.getName(), cap.capNFlies, xlsoption, nFrames, expAll.getKymoFrameStep()));
+			XLSResults row = new XLSResults (cap.roi.getName(), cap.capNFlies, xlsoption, nFrames, expAll.getKymoFrameStep());
+			row.stimulus = cap.capStimulus;
+			row.concentration = cap.capConcentration;
+			rowsForOneExp.add(row);
 		}
 		Collections.sort(rowsForOneExp, new Comparators.XLSResultsComparator());
 				
@@ -328,6 +339,35 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			}
 		}	
 	}
+	
+	private void combineDataForEachCage(Experiment exp) {
+		for (Cage cage: exp.cages.cageList) {
+			String cagenumberString = cage.roi.getName().substring(4);
+			int cagenumber = Integer.parseInt(cagenumberString);
+			for (XLSResults rowi : rowsForOneExp) {
+				if (getCageFromCapillaryName (rowi.name) != cagenumber) 
+					continue;
+				if ((rowi.nflies == 0) || (rowi.data == null))
+					continue;
+				for (XLSResults row : rowsForOneExp) {
+					if (getCageFromCapillaryName (row.name) != cagenumber) 
+						continue;
+					if ((row.nflies == 0) || (row.data == null))
+						continue;
+					
+					if (row.name .equals(rowi.name))
+						continue;
+					if (row.stimulus .equals(rowi.stimulus) && row.concentration .equals(rowi.concentration)) {
+						rowi.addData(row);
+						rowi.clearAll();
+					}
+				}
+			}
+		}
+		
+		// at the end, divide by nadded?
+	}
+
 	
 	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) {
 		Point pt = new Point(col0, 0);

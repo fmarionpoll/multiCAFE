@@ -26,7 +26,8 @@ public class MCExcel_Kymos extends JPanel  {
 	
 	JCheckBox 	bottomLevelCheckBox = new JCheckBox("bottom", false);
 	JCheckBox 	consumptionCheckBox = new JCheckBox("gulps", false);
-	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R", true);
+	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R & ratio", true);
+	JCheckBox 	cageCheckBox 		= new JCheckBox("sum per cage", false);
 	JCheckBox 	derivativeCheckBox  = new JCheckBox("derivative", false);
 	JCheckBox	t0CheckBox			= new JCheckBox("t-t0", true);
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
@@ -43,6 +44,7 @@ public class MCExcel_Kymos extends JPanel  {
 		panel0.add(consumptionCheckBox);
 		panel0.add(bottomLevelCheckBox);
 		panel0.add(sumCheckBox);
+		panel0.add(cageCheckBox);
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout0);
