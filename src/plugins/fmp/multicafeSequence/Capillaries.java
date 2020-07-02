@@ -279,7 +279,7 @@ public class Capillaries {
 			Capillary cap0 = getCapillaryFromName(nameL);
 			if (cap0 != null) {
 				cap.capNFlies = cap0.capNFlies;
-				cap.capCageNb = cap0.capCageNb;
+				cap.capCageID = cap0.capCageID;
 			}
 		}
 	}

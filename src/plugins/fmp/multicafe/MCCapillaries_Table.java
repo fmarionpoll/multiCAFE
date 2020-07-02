@@ -103,7 +103,7 @@ public class MCCapillaries_Table  extends JPanel {
 						if (!capFrom.roi.getName().equals (capTo.roi.getName()))
 							continue;
 						capFrom.valid = true;
-						capTo.capCageNb = capFrom.capCageNb;
+						capTo.capCageID = capFrom.capCageID;
 						capTo.capNFlies = capFrom.capNFlies;
 						capTo.capVolume = capFrom.capVolume;
 						capTo.capStimulus = capFrom.capStimulus;

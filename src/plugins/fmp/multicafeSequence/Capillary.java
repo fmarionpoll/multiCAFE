@@ -39,7 +39,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public String 						capConcentration= new String("..");
 	public String						capSide			= ".";
 	public int							capNFlies		= 1;
-	public int							capCageNb		= 0;
+	public int							capCageID		= 0;
 	public double 						capVolume 		= 5.;
 	public int 							capPixels 		= 5;
 	public boolean						descriptionOK	= false;
@@ -112,7 +112,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		capConcentration= cap.capConcentration;
 		capSide			= cap.capSide;
 		capNFlies		= cap.capNFlies;
-		capCageNb		= cap.capCageNb;
+		capCageID		= cap.capCageID;
 		capVolume 		= cap.capVolume;
 		capPixels 		= cap.capPixels;
 		
@@ -438,7 +438,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	        descriptionOK 	= XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, false);
 	        versionInfos 	= XMLUtil.getElementIntValue(nodeMeta, ID_VERSIONINFOS, 0);
 	        capNFlies 		= XMLUtil.getElementIntValue(nodeMeta, ID_NFLIES, capNFlies);
-	        capCageNb 		= XMLUtil.getElementIntValue(nodeMeta, ID_CAGENB, capCageNb);
+	        capCageID 		= XMLUtil.getElementIntValue(nodeMeta, ID_CAGENB, capCageID);
 	        capVolume 		= XMLUtil.getElementDoubleValue(nodeMeta, ID_CAPVOLUME, Double.NaN);
 			capPixels 		= XMLUtil.getElementIntValue(nodeMeta, ID_CAPPIXELS, 5);
 			capStimulus 	= XMLUtil.getElementValue(nodeMeta, ID_STIML, ID_STIML);
@@ -467,7 +467,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	        XMLUtil.setElementBooleanValue(nodeMeta, ID_DESCOK, descriptionOK);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_VERSIONINFOS, versionInfos);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_NFLIES, capNFlies);
-	        XMLUtil.setElementIntValue(nodeMeta, ID_CAGENB, capCageNb);
+	        XMLUtil.setElementIntValue(nodeMeta, ID_CAGENB, capCageID);
 			XMLUtil.setElementDoubleValue(nodeMeta, ID_CAPVOLUME, capVolume);
 			XMLUtil.setElementIntValue(nodeMeta, ID_CAPPIXELS, capPixels);
 			XMLUtil.setElementValue(nodeMeta, ID_STIML, capStimulus);

@@ -102,7 +102,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		}
 		
 		if (options.cage) {
-			combineDataForEachCage(exp);
+			combineData(exp);
 			sheet = xlsInitSheet(datatype.toString()+"_cage");
 			xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
 		}
@@ -139,6 +139,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			XLSResults row = new XLSResults (cap.roi.getName(), cap.capNFlies, xlsoption, nFrames, expAll.getKymoFrameStep());
 			row.stimulus = cap.capStimulus;
 			row.concentration = cap.capConcentration;
+			row.cageID = cap.capCageID;
 			rowsForOneExp.add(row);
 		}
 		Collections.sort(rowsForOneExp, new Comparators.XLSResultsComparator());
@@ -340,32 +341,24 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		}	
 	}
 	
-	private void combineDataForEachCage(Experiment exp) {
-		for (Cage cage: exp.cages.cageList) {
-			String cagenumberString = cage.roi.getName().substring(4);
-			int cagenumber = Integer.parseInt(cagenumberString);
-			for (XLSResults rowi : rowsForOneExp) {
-				if (getCageFromCapillaryName (rowi.name) != cagenumber) 
+	
+	private void combineData(Experiment exp) {
+		for (XLSResults row_master : rowsForOneExp) {
+			if ((row_master.nflies == 0) || (row_master.values_out == null))
+				continue;
+			for (XLSResults row : rowsForOneExp) {
+				if ((row.nflies == 0) || (row.values_out == null))
 					continue;
-				if ((rowi.nflies == 0) || (rowi.data == null))
+				if (row.cageID != row_master.cageID)
 					continue;
-				for (XLSResults row : rowsForOneExp) {
-					if (getCageFromCapillaryName (row.name) != cagenumber) 
-						continue;
-					if ((row.nflies == 0) || (row.data == null))
-						continue;
-					
-					if (row.name .equals(rowi.name))
-						continue;
-					if (row.stimulus .equals(rowi.stimulus) && row.concentration .equals(rowi.concentration)) {
-						rowi.addData(row);
-						rowi.clearAll();
-					}
+				if (row.name .equals(row_master.name))
+					continue;
+				if (row.stimulus .equals(row_master.stimulus) && row.concentration .equals(row_master.concentration)) {
+					row_master.addValues_out(row);
+					row.clearAll();
 				}
 			}
 		}
-		
-		// at the end, divide by nadded?
 	}
 
 	
@@ -400,6 +393,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			pt.y = column_dataArea;
 			int col = getColFromKymoFileName(row.name);
 			pt.x = rowSeries + col; 
+			if (row.values_out == null)
+				continue;
 			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
 				int i_from = coltime / row.binsize;
 				if (i_from >= row.values_out.length)

@@ -10,6 +10,7 @@ public class XLSResults {
 	String 				concentration = null;
 	int 				nadded		= 1;
 	int					nflies		= 1;
+	int 				cageID		= 0;
 	EnumXLSExportType 	exportType 	= null;
 	List<Integer > 		data 		= null;
 	int					binsize		= 1;
@@ -69,6 +70,7 @@ public class XLSResults {
 	
 	void clearAll() {
 		data = null;
+		values_out = null;
 		nflies = 0;
 	}
 	
@@ -117,13 +119,10 @@ public class XLSResults {
 		evap.nflies = 1;
 	}
 	
-	void addData (XLSResults addedData) {
-		if (data == null)
-			return;
-		
-		for (int i = 0; i < data.size(); i++) {
-			if (addedData.valint.length > i)
-				data.set(i, data.get(i) + addedData.valint[i]);			
+	void addValues_out (XLSResults addedData) {
+		for (int i = 0; i < values_out.length; i++) {
+			if (addedData.values_out.length > i)
+				values_out[i] += addedData.values_out[i];			
 		}
 		nadded += 1;
 	}

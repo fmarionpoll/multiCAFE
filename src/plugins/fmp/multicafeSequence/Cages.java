@@ -354,7 +354,7 @@ public class Cages {
 		for (Cage cage: cageList ) {
 			int cagenb = cage.getCageNumberInteger();
 			for (Capillary cap: capList) {
-				if (cap.capCageNb != cagenb)
+				if (cap.capCageID != cagenb)
 					continue;
 				cage.cageNFlies = cap.capNFlies;
 			}
@@ -365,7 +365,7 @@ public class Cages {
 		for (Cage cage: cageList ) {
 			int cagenb = cage.getCageNumberInteger();
 			for (Capillary cap: capList) {
-				if (cap.capCageNb != cagenb)
+				if (cap.capCageID != cagenb)
 					continue;
 				cap.capNFlies = cage.cageNFlies;
 			}
@@ -375,7 +375,7 @@ public class Cages {
 	public void setCageNbFromName(List<Capillary> capList) {
 		for (Capillary cap: capList) {
 			int cagenb = cap.getCageIndexFromRoiName();
-			cap.capCageNb = cagenb;
+			cap.capCageID = cagenb;
 		}
 	}
 	
