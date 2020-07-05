@@ -20,16 +20,16 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Capillaries {
 	
-	public CapillariesDescription 	desc			= new CapillariesDescription();
-	public CapillariesDescription 	desc_old		= new CapillariesDescription();
-	public List <Capillary> 		capillariesArrayList = new ArrayList <Capillary>();
-	public DetectLevels_Options 	limitsOptions	= new DetectLevels_Options();
-	public DetectGulps_Options 		gulpsOptions	= new DetectGulps_Options();
+	public CapillariesDescription 	desc				= new CapillariesDescription();
+	public CapillariesDescription 	desc_old			= new CapillariesDescription();
+	public List <Capillary> 		capillariesArrayList= new ArrayList <Capillary>();
+	public DetectLevels_Options 	limitsOptions		= new DetectLevels_Options();
+	public DetectGulps_Options 		gulpsOptions		= new DetectGulps_Options();
 	
-	private final static String ID_CAPILLARYTRACK 	= "capillaryTrack";
-	private final static String ID_NCAPILLARIES 	= "N_capillaries";
-	private final static String ID_LISTOFCAPILLARIES = "List_of_capillaries";
-	private final static String ID_CAPILLARY_ 		= "capillary_";
+	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
+	private final static String ID_NCAPILLARIES 		= "N_capillaries";
+	private final static String ID_LISTOFCAPILLARIES 	= "List_of_capillaries";
+	private final static String ID_CAPILLARY_ 			= "capillary_";
 
 	// ---------------------------------
 		
@@ -63,7 +63,19 @@ public class Capillaries {
 		return true;
 	}
 	
-	public boolean xmlLoadCapillaries_Only(String csFileName) {	// TODO
+	public boolean xmlLoadCapillaries_Only(String csFileName) {	
+		if (csFileName == null)
+			return false;
+				
+		final Document doc = XMLUtil.loadDocument(csFileName);
+		if (doc != null) {
+			desc.xmlLoadCapillaryDescription(doc);
+			return xmlLoadCapillariesv1(doc);		
+		}
+		return false;
+	}
+	
+	public boolean xmlLoadOldCapillaries_Only(String csFileName) {
 		if (csFileName == null)
 			return false;
 				
@@ -71,17 +83,17 @@ public class Capillaries {
 		if (doc != null) {
 			desc.xmlLoadCapillaryDescription(doc);
 			xmlLoadCapillariesv1(doc);
-//			switch (desc.version) {
-//			case 1: // old xml storage structure
-//				xmlLoadCapillariesv1(doc);
-//				break;
-//			case 0: // old-old xml storage structure
-//				xmlLoadCapillariesv0(doc, csFileName);
-//				break;
-//			default:
-//				xmlLoadCapillariesv2(doc, csFileName);
-//				return false;
-//			}		
+			switch (desc.version) {
+			case 1: // old xml storage structure
+				xmlLoadCapillariesv1(doc);
+				break;
+			case 0: // old-old xml storage structure
+				xmlLoadCapillariesv0(doc, csFileName);
+				break;
+			default:
+				xmlLoadCapillariesv2(doc, csFileName);
+				return false;
+			}		
 		return true;
 		}
 		return false;

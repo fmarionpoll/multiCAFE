@@ -642,20 +642,28 @@ public class Experiment {
 	public boolean xmlLoadMCcapillaries_Only() {
 		String xmlCapillaryFileName = getFileLocation(capillaries.getXMLNameToAppend());
 		if (xmlCapillaryFileName == null && seqCamData != null) {
-			String filename = getFileLocation("capillarytrack.xml");
-			if (capillaries.xmlLoadCapillaries_Only(filename)) {
-				xmlSaveMCcapillaries();
-				return true;
-			}
-			filename = getFileLocation("roislines.xml");
-			if (seqCamData.xmlReadROIs(filename)) {
-				xmlReadRoiLineParameters(filename);
-				return true;
-			}
-			return false;
+			return xmlLoadOldCapillaries();
 		}
-		return capillaries.xmlLoadCapillaries_Only(xmlCapillaryFileName);
+		boolean flag = capillaries.xmlLoadCapillaries_Only(xmlCapillaryFileName);
+		if (capillaries.capillariesArrayList.size() < 1)
+			flag = xmlLoadOldCapillaries();
+		return flag;
 	}
+	
+	private boolean xmlLoadOldCapillaries() {
+		String filename = getFileLocation("capillarytrack.xml");
+		if (capillaries.xmlLoadOldCapillaries_Only(filename)) {
+			xmlSaveMCcapillaries();
+			return true;
+		}
+		filename = getFileLocation("roislines.xml");
+		if (seqCamData.xmlReadROIs(filename)) {
+			xmlReadRoiLineParameters(filename);
+			return true;
+		}
+		return false;
+	}
+	
 	
 	private String getFileLocation(String xmlFileName) {
 		// primary data

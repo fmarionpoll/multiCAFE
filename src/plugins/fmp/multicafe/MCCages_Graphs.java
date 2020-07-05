@@ -36,11 +36,11 @@ public class MCCages_Graphs extends JPanel {
 	
 	private MultiCAFE parent0 = null;
 	
-	JCheckBox			moveCheckbox		= new JCheckBox("y position", false);	
-	private JCheckBox	distanceCheckbox	= new JCheckBox("distance t/t+1", true);
-	JCheckBox			aliveCheckbox		= new JCheckBox("fly alive", false);
-	JSpinner 			aliveThresholdSpinner = new JSpinner(new SpinnerNumberModel(50.0, 0., 100000., .1));
+	JCheckBox			moveCheckbox		= new JCheckBox("y position", true);	
+	private JCheckBox	distanceCheckbox	= new JCheckBox("distance t/t+1", false);
+	JCheckBox			aliveCheckbox		= new JCheckBox("fly alive", true);
 	JCheckBox			sleepCheckbox		= new JCheckBox("sleep", true);
+	JSpinner 			aliveThresholdSpinner = new JSpinner(new SpinnerNumberModel(50.0, 0., 100000., .1));
 	JButton 			displayResultsButton= new JButton("Display results");
 	private JButton		viewAsRoisButton	= new JButton("view detected flies as ROIs");
 
