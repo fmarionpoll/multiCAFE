@@ -38,7 +38,7 @@ public class MCCages_Table extends JPanel {
 		this.parent0 = parent0;
 		cageArrayCopy = cageCopy;
 		
-		viewModel = new CageTableModel(parent0);
+		viewModel = new CageTableModel(parent0.expList);
 	    tableView.setModel(viewModel);
 	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 400));
 	    tableView.setFillsViewportHeight(true);
@@ -71,7 +71,7 @@ public class MCCages_Table extends JPanel {
 	private void defineActionListeners() {
 		copyButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				cageArrayCopy.clear();
 				for (Cage cage: exp.cages.cageList ) {
 					cageArrayCopy.add(cage);
@@ -81,7 +81,7 @@ public class MCCages_Table extends JPanel {
 		
 		pasteButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				for (Cage cageFrom: cageArrayCopy ) {
 					cageFrom.valid = false;
 					for (Cage cageTo: exp.cages.cageList) {
@@ -98,7 +98,7 @@ public class MCCages_Table extends JPanel {
 	
 	void close() {
 		dialogFrame.close();
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
 		parent0.paneCapillaries.tabFile.saveCapillaries(exp);
 	}

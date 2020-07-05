@@ -73,7 +73,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {	
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null) 
 			return;
 		
@@ -156,8 +156,8 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 			options.firstExp 	= 0;
 			options.lastExp 	= options.expList.getSize() - 1;
 		} else {
-			options.firstExp 	= parent0.currentExperimentIndex;
-			options.lastExp 	= parent0.currentExperimentIndex;
+			options.firstExp 	= parent0.expList.currentExperimentIndex;
+			options.lastExp 	= parent0.expList.currentExperimentIndex;
 		}
 	}
 }

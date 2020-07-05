@@ -2,7 +2,7 @@ package plugins.fmp.multicafeSequence;
 
 
 import javax.swing.table.AbstractTableModel;
-import plugins.fmp.multicafe.MultiCAFE;
+
 
 
 
@@ -11,13 +11,13 @@ public class CageTableModel extends AbstractTableModel {
 	 * 
 	 */
 	private static final long serialVersionUID = -3501225818220221949L;
-	private MultiCAFE parent0 = null;
+	private ExperimentList expList 	= null;
 	
 	
 	
-	public CageTableModel (MultiCAFE parent0) {
+	public CageTableModel (ExperimentList expList) {
 		super();
-		this.parent0 = parent0;
+		this.expList = expList;
 	}
 		
 	@Override
@@ -47,9 +47,9 @@ public class CageTableModel extends AbstractTableModel {
     
     @Override
     public int getRowCount() {
-    	if (parent0 != null && parent0.currentExperimentIndex >= 0 )
-    		return parent0.expList
-    				.getExperiment(parent0.currentExperimentIndex)
+    	if (expList != null && expList.currentExperimentIndex >= 0 )
+    		return expList
+    				.getCurrentExperiment()
     				.cages.cageList.size();
         return 0;
     }
@@ -57,9 +57,9 @@ public class CageTableModel extends AbstractTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
     	Cage cage = null;
-    	if (parent0 != null && parent0.currentExperimentIndex >=0 ) {
-    		cage = parent0.expList
-    				.getExperiment(parent0.currentExperimentIndex)
+    	if (expList != null && expList.currentExperimentIndex >=0 ) {
+    		cage = expList
+    				.getCurrentExperiment()
     				.cages.cageList.get(rowIndex);
     	}
     	if (cage != null) {
@@ -85,8 +85,8 @@ public class CageTableModel extends AbstractTableModel {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
         Cage cage = null;
-    	if (parent0 != null && parent0.currentExperimentIndex >=0 ) {
-    		cage = parent0.expList.getExperiment(parent0.currentExperimentIndex).cages.cageList.get(rowIndex);
+    	if (expList != null && expList.currentExperimentIndex >=0 ) {
+    		cage = expList.getCurrentExperiment().cages.cageList.get(rowIndex);
     	}
     	if (cage != null) {
         	switch (columnIndex) {

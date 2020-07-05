@@ -1,20 +1,20 @@
 package plugins.fmp.multicafeSequence;
 
 import javax.swing.table.AbstractTableModel;
-import plugins.fmp.multicafe.MultiCAFE;
+
 
 public class CapillaryTableModel extends AbstractTableModel  {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6325792669154093747L;
-	private MultiCAFE parent0 = null;
+	private ExperimentList expList 	= null;
 	
 	
 	
-	public CapillaryTableModel (MultiCAFE parent0) {
+	public CapillaryTableModel (ExperimentList expList) {
 		super();
-		this.parent0 = parent0;
+		this.expList = expList;
 	}
 	
 	@Override
@@ -50,9 +50,9 @@ public class CapillaryTableModel extends AbstractTableModel  {
 	
     @Override
     public int getRowCount() {
-    	if (parent0 != null && parent0.currentExperimentIndex >= 0 )
-    		return parent0.expList
-    				.getExperiment(parent0.currentExperimentIndex)
+    	if (expList != null && expList.currentExperimentIndex >= 0 )
+    		return expList
+    				.getCurrentExperiment()
     				.capillaries.capillariesArrayList.size();
         return 0;
     }
@@ -60,9 +60,9 @@ public class CapillaryTableModel extends AbstractTableModel  {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
     	Capillary cap = null;
-    	if (parent0 != null && parent0.currentExperimentIndex >=0 ) {
-    		cap = parent0.expList
-    				.getExperiment(parent0.currentExperimentIndex)
+    	if (expList != null && expList.currentExperimentIndex >=0 ) {
+    		cap = expList
+    				.getCurrentExperiment()
     				.capillaries.capillariesArrayList.get(rowIndex);
     	}
     	if (cap != null) {
@@ -91,8 +91,8 @@ public class CapillaryTableModel extends AbstractTableModel  {
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
     	Capillary cap = null;
-    	if (parent0 != null && parent0.currentExperimentIndex >=0 ) {
-    		cap = parent0.expList.getExperiment(parent0.currentExperimentIndex).capillaries.capillariesArrayList.get(rowIndex);
+    	if (expList != null && expList.currentExperimentIndex >=0 ) {
+    		cap = expList.getCurrentExperiment().capillaries.capillariesArrayList.get(rowIndex);
     	}
     	if (cap != null) {
         	switch (columnIndex) {

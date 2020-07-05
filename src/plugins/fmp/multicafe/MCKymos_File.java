@@ -51,14 +51,14 @@ public class MCKymos_File extends JPanel {
 	
 	private void defineActionListeners() {	
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
 				loadDefaultKymos(exp);
 				firePropertyChange("KYMOS_OPEN", false, true);
 			}
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
 				String path = exp.getResultsDirectory();
 				saveKymographFiles(path);
@@ -69,7 +69,7 @@ public class MCKymos_File extends JPanel {
 
 	void saveKymographFiles(String directory) {
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;

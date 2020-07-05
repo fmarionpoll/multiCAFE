@@ -126,7 +126,7 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 		} } );
 		
 		availableResultsCombo.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (!actionAllowed || exp == null)
 				return;
 			String localString = (String) availableResultsCombo.getSelectedItem();
@@ -154,7 +154,7 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 	}
 	
 	private void roisDisplay(String filter, boolean visible) {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null) 
 			return;		
 		Viewer v= exp.seqKymos.seq.getFirstViewer();
@@ -175,7 +175,7 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 	}
 
 	void displayON() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -218,7 +218,7 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 	}
 	
 	void displayOFF() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null || exp.seqKymos == null) 
 			return;
 		ArrayList<Viewer>vList =  exp.seqKymos.seq.getViewers();
@@ -260,7 +260,7 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 	}
 
 	void selectKymograph(int isel) {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null) 
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -291,7 +291,7 @@ public class MCKymos_Display extends JPanel implements ViewerListener {
 	@Override
 	public void viewerChanged(ViewerEvent event) {
 		if ( event.getType() == ViewerEvent.ViewerEventType.POSITION_CHANGED ) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp == null) 
 				return;
 

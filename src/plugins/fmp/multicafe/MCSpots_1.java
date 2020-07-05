@@ -58,21 +58,21 @@ public class MCSpots_1 extends JPanel {
 	private void defineActionListeners() {
 		subtractButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					subtractFirstColumn(exp);
 			}});
 		
 		buildHistogramButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					buildHistogram(exp);
 			}});
 		
 		removeBackGroundButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					removeBackGround(exp);
 			}});

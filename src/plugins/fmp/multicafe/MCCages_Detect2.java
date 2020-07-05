@@ -122,14 +122,14 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 		
 		saveButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					exp.saveReferenceImage();
 			}});
 		
 		loadButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) { 
 					boolean flag = exp.loadReferenceImage(); 
 					if (flag) {
@@ -156,7 +156,7 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdDiffSpinner) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null)
 				exp.cages.detect.threshold = (int) thresholdDiffSpinner.getValue();
 		}
@@ -191,11 +191,11 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 			detect.expList.index0 = 0;
 			detect.expList.index1 = detect.expList.getSize()-1;
 		} else {
-			detect.expList.index0 = parent0.currentExperimentIndex;
+			detect.expList.index0 = parent0.expList.currentExperimentIndex;
 			detect.expList.index1 = detect.expList.index0;
 		}
 		
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp != null) 
 			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		detect.initParametersForDetection(exp);
@@ -207,11 +207,11 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 	}
 	
 	void startComputation() {
-		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		currentExp = parent0.currentExperimentIndex;
+		currentExp =parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperiment(currentExp);
 		if (exp == null)
 			return;
+		parent0.expList.currentExperimentIndex = currentExp;
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
 		detectFlies2Thread = new DetectFlies2_series();		

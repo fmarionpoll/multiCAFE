@@ -63,7 +63,7 @@ public class MCSequence_Display  extends JPanel {
 	}
 	
 	private void displayROIsCategory(boolean isVisible, String pattern) {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
 		Viewer v = exp.seqCamData.seq.getFirstViewer();

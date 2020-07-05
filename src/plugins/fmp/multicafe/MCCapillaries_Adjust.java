@@ -62,7 +62,7 @@ public class MCCapillaries_Adjust extends JPanel {
 	
 	// -------------------------------------------------------
 	private void roisCenterLinestoAllCapillaries() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null) 
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
@@ -200,7 +200,7 @@ public class MCCapillaries_Adjust extends JPanel {
 	}
 
 	void roisDisplayrefBar(boolean display) {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;

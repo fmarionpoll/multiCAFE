@@ -35,7 +35,6 @@ public class MCLevels_Graphs extends JPanel {
 	private JCheckBox 	derivativeCheckbox 		= new JCheckBox("derivative", false);
 	private JCheckBox 	consumptionCheckbox 	= new JCheckBox("consumption", false);
 	private JCheckBox 	deltaCheckbox 			= new JCheckBox("delta (Vt - Vt-1)", false);
-	
 	private JButton 	displayResultsButton 	= new JButton("Display results");
 	
 	
@@ -59,7 +58,7 @@ public class MCLevels_Graphs extends JPanel {
 	private void defineActionListeners() {
 		displayResultsButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) {
 					exp.seqKymos.validateRois();
 					exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);

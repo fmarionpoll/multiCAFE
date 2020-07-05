@@ -45,7 +45,7 @@ public class MCCapillaries_Table  extends JPanel {
 		this.parent0 = parent0;
 		capillariesArrayCopy = capCopy;
 		
-		viewModel = new CapillaryTableModel(parent0);
+		viewModel = new CapillaryTableModel(parent0.expList);
 	    tableView.setModel(viewModel);
 	    tableView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 400));
@@ -87,7 +87,7 @@ public class MCCapillaries_Table  extends JPanel {
 	private void defineActionListeners() {
 		copyButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				capillariesArrayCopy.clear();
 				for (Capillary cap: exp.capillaries.capillariesArrayList ) 
 					capillariesArrayCopy.add(cap);
@@ -96,7 +96,7 @@ public class MCCapillaries_Table  extends JPanel {
 		
 		pasteButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				for (Capillary capFrom: capillariesArrayCopy ) {
 					capFrom.valid = false;
 					for (Capillary capTo: exp.capillaries.capillariesArrayList) {
@@ -115,7 +115,7 @@ public class MCCapillaries_Table  extends JPanel {
 		
 		duplicateLRButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				int rowIndex = tableView.getSelectedRow();
 				int columnIndex = tableView.getSelectedColumn();
 				if (rowIndex >= 0) {
@@ -158,7 +158,7 @@ public class MCCapillaries_Table  extends JPanel {
 		
 		duplicateAllButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				int rowIndex = tableView.getSelectedRow();
 				int columnIndex = tableView.getSelectedColumn();
 				if (rowIndex >= 0) {
@@ -179,7 +179,7 @@ public class MCCapillaries_Table  extends JPanel {
 		
 		getNfliesButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp.cages.cageList.size() > 0) {
 					exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
 					viewModel.fireTableDataChanged();
@@ -188,7 +188,7 @@ public class MCCapillaries_Table  extends JPanel {
 		
 		getCageNoButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				exp.cages.setCageNbFromName(exp.capillaries.capillariesArrayList);
 				viewModel.fireTableDataChanged();
 			}});

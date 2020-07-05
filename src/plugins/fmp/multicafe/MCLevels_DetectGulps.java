@@ -112,7 +112,7 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 	}
 		
 	void kymosDisplayFiltered2() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null) 
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -128,11 +128,12 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 	void series_detectGulpsStart(boolean detectGulps) {
 		kymosDisplayFiltered2();
 		
-		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		int current = parent0.paneSequence.expListComboBox.getSelectedIndex();
+		Experiment exp = parent0.expList.getExperiment(current);
 		if (exp == null)
 			return;
 
+		parent0.expList.currentExperimentIndex = current;
 		exp.saveExperimentMeasures(exp.getResultsDirectory());
 		parent0.paneSequence.tabClose.closeExp(exp);
 		thread = new DetectGulps_series();
@@ -146,8 +147,8 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 			options.expList.index0 = 0;
 			options.expList.index1 = options.expList.getSize()-1;
 		} else {
-			options.expList.index0 = parent0.currentExperimentIndex;
-			options.expList.index1 = parent0.currentExperimentIndex;
+			options.expList.index0 = parent0.expList.currentExperimentIndex;
+			options.expList.index1 = parent0.expList.currentExperimentIndex;
 		}
 
 		options.firstkymo 				= parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();

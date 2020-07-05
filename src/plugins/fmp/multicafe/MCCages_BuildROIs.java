@@ -66,7 +66,7 @@ public class MCCages_BuildROIs extends JPanel {
 		
 		createROIsFromPolygonButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) {
 					exp.seqCamData.removeRoisContainingString(-1, "cage");
 					exp.cages.removeCages();
@@ -78,14 +78,14 @@ public class MCCages_BuildROIs extends JPanel {
 		
 		addPolygon2DButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					create2DPolygon(exp);
 			}});
 	}
 	
 	void updateNColumnsFieldFromSequence() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp != null) {
 			int nrois = exp.cages.cageList.size();	
 			if (nrois > 0) {

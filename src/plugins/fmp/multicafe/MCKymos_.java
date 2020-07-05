@@ -74,7 +74,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			tabsPane.setSelectedIndex(2);
 		}
 		else if (event.getPropertyName().equals("KYMOS_CREATE")) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
 				tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
 				tabsPane.setSelectedIndex(1);
@@ -85,7 +85,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		}
 		
 		else if (event.getPropertyName().equals("SEQ_CHGBIN")) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp == null)
 				return;
 			String localString = (String) tabDisplay.availableResultsCombo.getSelectedItem();
@@ -97,7 +97,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 	}
 	
 	void tabbedCapillariesAndKymosSelected() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null || exp.seqCamData == null)
 			return;
 		int iselected = tabsPane.getSelectedIndex();

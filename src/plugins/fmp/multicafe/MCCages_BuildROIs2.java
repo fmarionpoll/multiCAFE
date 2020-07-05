@@ -81,7 +81,7 @@ public class MCCages_BuildROIs2  extends JPanel implements ChangeListener {
 	private void defineActionListeners() {
 		createCagesButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) {
 					exp.seqCamData.removeRoisContainingString(-1, "cage");
 					exp.cages.removeCages();
@@ -93,7 +93,7 @@ public class MCCages_BuildROIs2  extends JPanel implements ChangeListener {
 		
 		transformForLevelsComboBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					updateOverlay(exp);
 			}});
@@ -137,13 +137,13 @@ public class MCCages_BuildROIs2  extends JPanel implements ChangeListener {
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdSpinner) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null)
 				updateOverlay(exp);
 		}
 
 		else if (e.getSource() == overlayCheckBox)  {
-    	  	Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+    	  	Experiment exp = parent0.expList.getCurrentExperiment();
     	  	if (exp != null) {
 	  			if (overlayCheckBox.isSelected()) {
 					if (ov == null)

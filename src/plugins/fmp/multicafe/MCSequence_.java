@@ -127,7 +127,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				updateBrowseInterface();
 				return;
 			}
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp == null)
 				return;
 			String oldtext = exp.seqCamData.getDirectory();
@@ -145,7 +145,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	        		parent0.paneSequence.tabClose.closeExp(exp); 
         		}});
         		tabInfosSeq.updateCombos();
-				parent0.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);						
+				parent0.expList.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);						
 				openSequenceCamFromCombo();
 			}
 			updateBrowseInterface();
@@ -259,7 +259,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	boolean addSequenceCamToCombo() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return false;
 		String filename = exp.seqCamData.getSequenceFileName();
@@ -328,7 +328,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 
 	public Experiment getSelectedExperimentFromCombo() {
 		String newtext = (String) parent0.paneSequence.expListComboBox.getSelectedItem();
-		parent0.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);	
-		return parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		parent0.expList.currentExperimentIndex = parent0.expList.getPositionOfCamFileName(newtext);	
+		return parent0.expList.getCurrentExperiment();
 	}
 }

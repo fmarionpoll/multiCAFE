@@ -39,7 +39,7 @@ public class MCLevels_Filter  extends JPanel {
 	private void defineActionListeners() {
 		startButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) {
 					SequenceKymos seqKymos = exp.seqKymos; 
 					int span = getSpan();

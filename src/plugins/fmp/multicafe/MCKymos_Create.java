@@ -105,7 +105,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 			options.expList.index0 = 0;
 			options.expList.index1 = parent0.expList.getSize()-1;
 		} else {
-			options.expList.index0 = parent0.currentExperimentIndex;
+			options.expList.index0 = parent0.expList.currentExperimentIndex;
 			options.expList.index1 = options.expList.index0;
 		}
 		options.expList 		= parent0.expList; 
@@ -124,10 +124,11 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 	}
 		
 	private void startComputation() {
-		parent0.currentExperimentIndex = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		int current = parent0.paneSequence.expListComboBox.getSelectedIndex();
+		Experiment exp = parent0.expList.getExperiment(current);
 		if (exp == null) 
 			return;
+		parent0.expList.currentExperimentIndex = current;
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
 		thread = new BuildKymographs_series();	
@@ -150,7 +151,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
 				exp.setKymoFrameStep((int) stepFrameJSpinner.getValue());
 				parent0.paneSequence.openExperiment(exp);

@@ -113,7 +113,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 	private void defineActionListeners() {
 		overlayCheckBox.addItemListener(new ItemListener() {
 		      public void itemStateChanged(ItemEvent e) {
-		    	  Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		    	  Experiment exp = parent0.expList.getCurrentExperiment();
 		    	  	if (exp != null) {
 			  			if (overlayCheckBox.isSelected()) {
 							if (ov == null)
@@ -167,7 +167,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource() == thresholdSpinner) {
-			Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
 				exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
 				updateOverlay(exp);
@@ -203,7 +203,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 			detect.expList.index0 = 0;
 			detect.expList.index1 = detect.expList.getSize()-1;
 		} else {
-			detect.expList.index0 = parent0.currentExperimentIndex;
+			detect.expList.index0 = parent0.expList.currentExperimentIndex;
 			detect.expList.index1 = detect.expList.index0;
 		}
 		
@@ -214,10 +214,11 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 	
 	void startComputation() {
 		currentExp = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		parent0.currentExperimentIndex = currentExp;
+		
 		Experiment exp = parent0.expList.getExperiment(currentExp);
 		if (exp == null) 
 			return;
+		parent0.expList.currentExperimentIndex = currentExp;
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
 		thread = new DetectFlies1_series();		

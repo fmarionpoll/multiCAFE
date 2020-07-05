@@ -13,11 +13,12 @@ import plugins.fmp.multicafeTools.XLSExportOptions;
 
 public class ExperimentList {
 	
-	protected List<Experiment> experimentList = new ArrayList<Experiment> ();
-	public 	int index0 = 0;
-	public 	int index1 = 0;
-	public	int	maxSizeOfCapillaryArrays = 0;
-	public 	String expListResultsSubPath = null; 
+	protected List<Experiment> experimentList 	= new ArrayList<Experiment> ();
+	public 	int 	index0 						= 0;
+	public 	int 	index1 						= 0;
+	public	int		maxSizeOfCapillaryArrays 	= 0;
+	public 	String 	expListResultsSubPath 		= null; 
+	public int		currentExperimentIndex		= -1;
 	
 
 
@@ -183,6 +184,20 @@ public class ExperimentList {
 		return position;
 	}
 	
+	public Experiment getExperimentFromFileName(String filename) {
+		Experiment exp = null;
+		currentExperimentIndex = getPositionOfCamFileName(filename);
+		if (currentExperimentIndex < 0) {
+			exp = new Experiment();
+			currentExperimentIndex = addExperiment(exp);
+		} else {
+			if (currentExperimentIndex > getSize()-1)
+				currentExperimentIndex = getSize()-1;
+			exp = getExperiment(currentExperimentIndex);
+		}
+		return exp;
+	}
+	
 	private Path stripFilenameFromPath(String fileNameWithFullPath) {
 		Path path = Paths.get(fileNameWithFullPath);		
 //		boolean exists =      Files.exists(path);        // Check if the file exists
@@ -212,6 +227,10 @@ public class ExperimentList {
 		if (expListResultsSubPath != null)
 			exp.resultsSubPath = expListResultsSubPath;
 		return exp;
+	}
+	
+	public Experiment getCurrentExperiment() {
+		return getExperiment(currentExperimentIndex);
 	}
 	
 	public Experiment addNewExperiment () {

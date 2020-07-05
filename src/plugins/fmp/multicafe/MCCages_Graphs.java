@@ -80,14 +80,14 @@ public class MCCages_Graphs extends JPanel {
 		
 		viewAsRoisButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					exp.displayDetectedFliesAsRois();
 			}});
 	}
 
 	private void xyDisplayGraphs() {
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
 		final Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBounds();

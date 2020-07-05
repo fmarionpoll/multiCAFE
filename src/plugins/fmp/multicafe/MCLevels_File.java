@@ -42,7 +42,7 @@ public class MCLevels_File  extends JPanel {
 	private void defineActionListeners() {
 		loadMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null && loadCapillaries_Measures(exp)) {
 					exp.transferCapillariesToROIs();
 					firePropertyChange("MEASURES_OPEN", false, true);
@@ -51,7 +51,7 @@ public class MCLevels_File  extends JPanel {
 		
 		saveMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) {
 					exp.saveExperimentMeasures(exp.getResultsDirectory());
 					firePropertyChange("MEASURES_SAVE", false, true);

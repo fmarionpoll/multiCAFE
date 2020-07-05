@@ -47,7 +47,7 @@ public class MCCages_File extends JPanel {
 	private void defineActionListeners() {
 		openCagesButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					exp.xmlReadDrosoTrackDefault();
 				firePropertyChange("LOAD_DATA", false, true);
@@ -56,7 +56,7 @@ public class MCCages_File extends JPanel {
 		
 		saveCagesButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+				Experiment exp = parent0.expList.getCurrentExperiment();
 				saveCagesAndMeasures(exp);
 				parent0.paneCages.tabsPane.setSelectedIndex(3);
 			}});
@@ -64,7 +64,7 @@ public class MCCages_File extends JPanel {
 
 	boolean loadCages(String csFileName) {	
 		boolean flag = false;
-		Experiment exp = parent0.expList.getExperiment(parent0.currentExperimentIndex);
+		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return false;
 		if (csFileName == null)
