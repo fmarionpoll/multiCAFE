@@ -164,7 +164,6 @@ public class MCCages_BuildROIs2  extends JPanel implements ChangeListener {
 
 		IcyBufferedImage img0 = IcyBufferedImageUtil.convertToType(exp.seqCamData.cacheThresholdedImage, DataType.INT, false);
 		Rectangle rectGrid = new Rectangle(0,0, img0.getSizeX(), img0.getSizeY());
-//		Blobs blobs = new Blobs(IcyBufferedImageUtil.getSubImage(img0, rectGrid));
 		Blobs blobs = new Blobs(img0);
 		blobs.getPixelsConnected ();
 		blobs.getBlobsConnected();
@@ -177,7 +176,6 @@ public class MCCages_BuildROIs2  extends JPanel implements ChangeListener {
 				int ix = (int) (pt.getX() - rectGrid.x);
 				int iy = (int) (pt.getY() - rectGrid.y);
 				int blobi = blobs.getBlobAt(ix, iy);
-				cap.capCageID = blobi;
 				boolean found = false;
 				for (int i: blobsfound) {
 					if (i == blobi) {
@@ -187,11 +185,11 @@ public class MCCages_BuildROIs2  extends JPanel implements ChangeListener {
 				}
 				if (!found) {
 					blobsfound.add(blobi);
-					//ROI2DArea roiP = new ROI2DArea(blobs.getBlobBooleanMask2D(blobi));
 					ROI2DPolygon roiP = new ROI2DPolygon (blobs.getBlobPolygon2D(blobi));
 					roiP.translate(rectGrid.x, rectGrid.y);
 					int cagenb = cap.getCageIndexFromRoiName();
 					roiP.setName("cage" + String.format("%03d", cagenb));
+					cap.capCageID = cagenb;
 					exp.seqCamData.seq.addROI(roiP);
 				}
 			}
