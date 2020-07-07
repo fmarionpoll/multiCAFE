@@ -18,8 +18,6 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 
 
 
-
-
 public class XLSExportCapillariesResults  extends XLSExport {
 	ExperimentList expList = null;
 	List <XLSResults> rowsForOneExp = new ArrayList <XLSResults> ();
@@ -130,7 +128,6 @@ public class XLSExportCapillariesResults  extends XLSExport {
 		expAll.fileTimeImageFirstMinute = expAll.fileTimeImageFirst.toMillis()/60000;
 		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
 		int nFrames = (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1 ;
-//		System.out.println("getData_v1 - expAll from: " +expAll.getKymoFrameStart() + " to:" + expAll.getKymoFrameEnd() + " step:"+ expAll.getKymoFrameStep());
 		
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
 		rowsForOneExp = new ArrayList <XLSResults> (ncapillaries);
@@ -153,7 +150,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			switch (xlsoption) {
 				case TOPRAW:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
-						resultsArrayList.checkIfSameStim(cap);
+						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsoption);
 						results.binsize = expi.getKymoFrameStep();
 						results.data = cap.getMeasures(EnumListType.topLevel);
@@ -165,7 +162,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				case TOPLEVELDELTA:
 				case TOPLEVELDELTA_LR:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
-						resultsArrayList.checkIfSameStim(cap);
+						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsoption);
 						results.binsize = expi.getKymoFrameStep();
 						if (options.t0) 
@@ -179,7 +176,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					break;
 				case DERIVEDVALUES:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
-						resultsArrayList.checkIfSameStim(cap);
+						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsoption);
 						results.binsize = expi.getKymoFrameStep();
 						results.data = cap.getMeasures(EnumListType.derivedValues);
@@ -191,7 +188,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				case SUMGULPS:
 				case SUMGULPS_LR:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
-						resultsArrayList.checkIfSameStim(cap);
+						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsoption);
 						results.binsize = expi.getKymoFrameStep();
 						results.data = cap.getMeasures(EnumListType.cumSum);
@@ -265,7 +262,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					default:
 						break;
 				}
-//				System.out.println("addResults - transfer from:" +expi.getKymoFrameStart() + " to:" + expi.getKymoFrameEnd() + "  step:" + expi.getKymoFrameStep());
+
 				for (int fromTime = expi.getKymoFrameStart(); fromTime <= expi.getKymoFrameEnd(); fromTime += expi.getKymoFrameStep()) {
 					int from_i = fromTime / expi.getKymoFrameStep();
 					if (from_i >= results.data.size())
@@ -343,10 +340,10 @@ public class XLSExportCapillariesResults  extends XLSExport {
 	
 	private void combineData(Experiment exp) {
 		for (XLSResults row_master : rowsForOneExp) {
-			if ((row_master.nflies == 0) || (row_master.values_out == null))
+			if (row_master.nflies == 0 || row_master.values_out == null)
 				continue;
 			for (XLSResults row : rowsForOneExp) {
-				if ((row.nflies == 0) || (row.values_out == null))
+				if (row.nflies == 0 || row.values_out == null)
 					continue;
 				if (row.cageID != row_master.cageID)
 					continue;

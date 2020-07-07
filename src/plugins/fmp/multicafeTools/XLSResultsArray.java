@@ -21,7 +21,7 @@ public class XLSResultsArray {
 		resultsArrayList.add(results);
 	}
 	
-	void checkIfSameStim(Capillary cap) {
+	void checkIfSameStimulusAndConcentration(Capillary cap) {
 		if (!sameLR)
 			return;
 		if (stim == null)

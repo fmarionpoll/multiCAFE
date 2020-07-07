@@ -163,7 +163,6 @@ public class XLSExport {
 	protected int getColFromKymoFileName(String name) {
 		if (!name .contains("line"))
 			return -1;
-
 		String num = name.substring(4, 5);
 		int numFromName = Integer.parseInt(num);
 		if( name.length() > 5) {
@@ -183,7 +182,6 @@ public class XLSExport {
 	protected int getColFromCageName(String name) {
 		if (!name .contains("cage"))
 			return -1;
-		
 		String num = name.substring(4, name.length());
 		int numFromName = Integer.parseInt(num);
 		return numFromName;
