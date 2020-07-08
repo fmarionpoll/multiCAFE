@@ -81,7 +81,7 @@ public class MCSequence_Intervals extends JPanel {
 			exp.setKymoFrameStart(0);
 			if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 				if (isFloatingFrame.isSelected()) {
-					exp.setKymoFrameEnd(exp.seqCamData.seq.getSizeT());
+					exp.setKymoFrameEnd(exp.seqCamData.seq.getSizeT()-1);
 					int step = (int) Math.round((double) exp.getKymoFrameEnd() / exp.seqKymos.imageWidthMax);
 					if (step > 0)
 						exp.setKymoFrameStep(step);

@@ -103,7 +103,6 @@ public class MCCages_BuildROIs2  extends JPanel implements ChangeListener {
 				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
 				deletePointsIncluded(exp);
 			}});
-
 	}
 
 	public void updateOverlay (Experiment exp) {
@@ -141,7 +140,6 @@ public class MCCages_BuildROIs2  extends JPanel implements ChangeListener {
 			if (exp != null)
 				updateOverlay(exp);
 		}
-
 		else if (e.getSource() == overlayCheckBox)  {
     	  	Experiment exp = parent0.expList.getCurrentExperiment();
     	  	if (exp != null) {
@@ -194,7 +192,6 @@ public class MCCages_BuildROIs2  extends JPanel implements ChangeListener {
 				}
 			}
 		}
-		
 	}
 		
 	void deletePointsIncluded(Experiment exp) {

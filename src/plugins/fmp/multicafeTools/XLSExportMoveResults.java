@@ -259,7 +259,8 @@ public class XLSExportMoveResults  extends XLSExport {
 					expi = expi.nextExperiment;
 				}
 				int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
-				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getCagesFrameStep() + (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
+				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getCagesFrameStep() 
+						+ (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
 				ilastalive = lastMinuteAlive / expAll.getCagesFrameStep();
 			}
 			for (XYTaSeries row : rowsForOneExp) {

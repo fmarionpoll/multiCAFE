@@ -13,7 +13,7 @@ public class XLSResults {
 	int 				cageID		= 0;
 	EnumXLSExportType 	exportType 	= null;
 	List<Integer > 		data 		= null;
-	int					binsize		= 1;
+	int					rowbinsize		= 1;
 	int[]				valint		= null;
 	double [] 			values_out	= null;
 	boolean[]			padded_out	= null;
@@ -24,11 +24,18 @@ public class XLSResults {
 		this.exportType = exportType;
 	}
 	
+	public XLSResults(String name, int nflies, EnumXLSExportType exportType, int binsize) {
+		this.name = name;
+		this.nflies = nflies;
+		this.exportType = exportType;
+		this.rowbinsize = binsize;
+	}
+	
 	public XLSResults(String name, int nflies, EnumXLSExportType exportType, int nFrames, int binsize) {
 		this.name = name;
 		this.nflies = nflies;
 		this.exportType = exportType;
-		this.binsize = binsize;
+		this.rowbinsize = binsize;
 		initValuesArray(nFrames);
 	}
 	
