@@ -37,7 +37,7 @@ public class Capillaries {
 		return "MCcapillaries.xml";
 	}
 
-	public boolean xmlSaveCapillaries_Only(String csFileName) {
+	public boolean xmlSaveCapillaries_Descriptors(String csFileName) {
 		if (csFileName != null) {
 			final Document doc = XMLUtil.createDocument(true);
 			if (doc != null) {
@@ -63,7 +63,7 @@ public class Capillaries {
 		return true;
 	}
 	
-	public boolean xmlLoadCapillaries_Only(String csFileName) {	
+	public boolean xmlLoadCapillaries_Descriptors(String csFileName) {	
 		if (csFileName == null)
 			return false;
 				

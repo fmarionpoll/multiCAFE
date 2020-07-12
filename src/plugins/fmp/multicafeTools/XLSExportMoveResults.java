@@ -100,7 +100,7 @@ public class XLSExportMoveResults  extends XLSExport {
 		expAll.fileTimeImageFirst 	= exp.fileTimeImageFirst;
 		expAll.fileTimeImageLast 	= exp.fileTimeImageLast;
 		expAll.setExperimentFileName( exp.getExperimentFileName());
-		expAll.boxID 				= exp.boxID;
+		expAll.exp_boxID 				= exp.exp_boxID;
 		expAll.experiment 			= exp.experiment;
 		expAll.comment1 			= exp.comment1;
 		expAll.comment2 			= exp.comment2;

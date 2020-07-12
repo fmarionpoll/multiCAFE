@@ -137,7 +137,9 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (exp == null)
 			return;
 		ProgressFrame progress = new ProgressFrame("load descriptors");
-		paneCapillaries.loadCapillaries_Only();
+		boolean flag = exp.xmlLoadMCcapillaries_Only();
+		if (flag)
+			paneCapillaries.displayCapillariesInformation(exp);
 		progress.close();
 		
 		if (loadCapillaries) {

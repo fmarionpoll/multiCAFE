@@ -73,7 +73,7 @@ public class MCSequence_Infos  extends JPanel {
 				String exptName = (String) experiment_JCombo.getSelectedItem();
 				for (int i = 0; i < nexpts; i++) {
 					Experiment exp = parent0.expList.getExperiment(i);
-					if (newtext.equals(exp.boxID) && exptName != null && exptName .equals(exp.experiment) ) {
+					if (newtext.equals(exp.exp_boxID) && exptName != null && exptName .equals(exp.experiment) ) {
 						addItem(experiment_JCombo, exp.experiment);
 						addItem(comment1_JCombo, exp.comment1);
 						addItem(comment2_JCombo, exp.comment2);
@@ -87,9 +87,9 @@ public class MCSequence_Infos  extends JPanel {
 	// set/ get
 	
 	void setExperimentsInfosToDialog(Experiment exp) {
-		if (exp.boxID .equals(".."))
-			exp.boxID = exp.capillaries.desc.old_boxID;
-		addItem(boxID_JCombo, exp.boxID);
+		if (exp.exp_boxID .equals(".."))
+			exp.exp_boxID = exp.capillaries.desc.old_boxID;
+		addItem(boxID_JCombo, exp.exp_boxID);
 		
 		if (exp.experiment.equals(".."))
 			exp.experiment = exp.capillaries.desc.old_experiment;
@@ -105,7 +105,7 @@ public class MCSequence_Infos  extends JPanel {
 	}
 
 	void getExperimentInfosFromDialog(Experiment exp) {
-		exp.boxID = (String) boxID_JCombo.getSelectedItem();
+		exp.exp_boxID = (String) boxID_JCombo.getSelectedItem();
 		exp.experiment = (String) experiment_JCombo.getSelectedItem();
 		exp.comment1 = (String) comment1_JCombo.getSelectedItem();
 		exp.comment2 = (String) comment2_JCombo.getSelectedItem();

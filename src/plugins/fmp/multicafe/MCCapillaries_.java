@@ -16,7 +16,6 @@ import javax.swing.event.ChangeListener;
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Experiment;
-import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
 
 
@@ -103,24 +102,18 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 
 	}
 	
-	boolean loadCapillaries_Only() {
-		Experiment exp = parent0.expList.getCurrentExperiment();
-		if (exp == null)
-			return false;
-		if (exp.seqKymos == null) 
-			exp.seqKymos = new SequenceKymos();
-		boolean flag = exp.xmlLoadMCcapillaries_Only();
-		if (flag) {
-			SwingUtilities.invokeLater(new Runnable() { public void run() {
-				SequenceKymosUtils.transferKymoCapillariesToCamData (exp);
-				tabInfos.setAllDescriptors(exp.capillaries);
-				tabCreate.setGroupingAndNumber(exp.capillaries);
-				parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
-				parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
-				parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
-			}});
-		}
-		return flag;
+	void displayCapillariesInformation(Experiment exp) {
+//		if (exp.seqKymos == null) 
+//			exp.seqKymos = new SequenceKymos();
+
+		SwingUtilities.invokeLater(new Runnable() { public void run() {
+			SequenceKymosUtils.transferKymoCapillariesToCamData (exp);
+			tabInfos.setAllDescriptors(exp.capillaries);
+			tabCreate.setGroupingAndNumber(exp.capillaries);
+			parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
+			parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
+			parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
+		}});
 	}
 	
 	private void setCapillariesInfosToDialogs() {

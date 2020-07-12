@@ -107,6 +107,12 @@ public class CapillariesDescription {
 		XMLUtil.setElementValue(xmlVal, ID_STIML, stimulusL);
 		XMLUtil.setElementValue(xmlVal, ID_CONCL, concentrationL);
 
+		xmlVal = XMLUtil.addElement(xmlElement, ID_EXPERIMENT);
+		XMLUtil.setElementValue(xmlVal, ID_BOXID, old_boxID);
+		XMLUtil.setElementValue(xmlVal, ID_EXPT, old_experiment);
+		XMLUtil.setElementValue(xmlVal, ID_COMMENT1, old_comment1);
+		XMLUtil.setElementValue(xmlVal, ID_COMMENT2, old_comment2);
+			
 		return true;
 	}
 	

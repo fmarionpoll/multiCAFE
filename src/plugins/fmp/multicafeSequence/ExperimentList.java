@@ -103,7 +103,7 @@ public class ExperimentList {
 			for (Experiment expi: experimentList) {
 				if (expi.experimentID == exp.experimentID 
 					|| !expi.experiment .equals(exp.experiment) 
-					|| !expi.boxID .equals(exp.boxID)
+					|| !expi.exp_boxID .equals(exp.exp_boxID)
 					|| !expi.comment1 .equals(exp.comment1)
 					|| !expi.comment2 .equals(exp.comment2)
 					)
@@ -141,7 +141,7 @@ public class ExperimentList {
 	public int getStackColumnPosition (Experiment exp, int col0) {
 		boolean found = false;
 		for (Experiment expi: experimentList) {
-			if (!expi.boxID .equals(exp.boxID) || expi == exp)
+			if (!expi.exp_boxID .equals(exp.exp_boxID) || expi == exp)
 				continue;
 			if (expi.col < 0)
 				continue;

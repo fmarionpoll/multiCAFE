@@ -55,7 +55,7 @@ public class Experiment {
 	private int 			kymoFrameEnd 				= 0;
 	private int 			kymoFrameStep 				= 1;									
 	
-	public String			boxID 						= new String("..");
+	public String			exp_boxID 					= new String("..");
 	public String			experiment					= new String("..");
 	public String 			comment1					= new String("..");
 	public String 			comment2					= new String("..");
@@ -149,7 +149,7 @@ public class Experiment {
 		if (seqCamData == null) {
 			seqCamData = new SequenceCamData();
 		}
-		boolean flag = xmlLoadExperiment ();
+		xmlLoadExperiment ();
 		if (null == seqCamData.loadSequence(experimentFileName))
 			return false;
 		loadFileIntervalsFromSeqCamData();
@@ -160,12 +160,7 @@ public class Experiment {
 			if (!xmlLoadMCCapillaries_Measures()) 
 				return false;
 		}
-		if (!flag || boxID .equals ("..")) {
-			boxID = capillaries.desc.old_boxID;
-			experiment = capillaries.desc.old_experiment;
-			comment1 = capillaries.desc.old_comment1;
-			comment2 = capillaries.desc.old_comment2;
-		}
+
 		if (loadDrosoPositions)
 			xmlReadDrosoTrackDefault();
 		return true;
@@ -319,7 +314,7 @@ public class Experiment {
 		kymoFrameStart 			= XMLUtil.getElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 		kymoFrameEnd 			= XMLUtil.getElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 		kymoFrameStep 			= XMLUtil.getElementIntValue(node, ID_STEP, kymoFrameStep);
-		boxID 					= XMLUtil.getElementValue(node, ID_BOXID, "..");
+		exp_boxID 				= XMLUtil.getElementValue(node, ID_BOXID, "..");
         experiment 				= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
         comment1 				= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
         comment2 				= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
@@ -340,7 +335,7 @@ public class Experiment {
 			XMLUtil.setElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 			XMLUtil.setElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 			XMLUtil.setElementIntValue(node, ID_STEP, kymoFrameStep);
-			XMLUtil.setElementValue(node, ID_BOXID, boxID);
+			XMLUtil.setElementValue(node, ID_BOXID, exp_boxID);
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
 	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
 	        XMLUtil.setElementValue(node, ID_COMMENT2, comment2);
@@ -558,7 +553,7 @@ public class Experiment {
 	
 	private boolean xmlLoadMCcapillaries() {
 		String xmlCapillaryFileName = getFileLocation(capillaries.getXMLNameToAppend());
-		boolean flag1 = capillaries.xmlLoadCapillaries_Only(xmlCapillaryFileName);
+		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
 		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(getResultsDirectory());
 		if (flag1 & flag2) {
 			seqKymos.directory = getResultsDirectory();
@@ -644,9 +639,19 @@ public class Experiment {
 		if (xmlCapillaryFileName == null && seqCamData != null) {
 			return xmlLoadOldCapillaries();
 		}
-		boolean flag = capillaries.xmlLoadCapillaries_Only(xmlCapillaryFileName);
+		boolean flag = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
 		if (capillaries.capillariesArrayList.size() < 1)
 			flag = xmlLoadOldCapillaries();
+		
+		// load mccapillaries description of experiment
+		if (exp_boxID .equals ("..")) {
+			exp_boxID = capillaries.desc.old_boxID;
+			experiment = capillaries.desc.old_experiment;
+			comment1 = capillaries.desc.old_comment1;
+			comment2 = capillaries.desc.old_comment2;
+		}
+		if (exp_boxID .contentEquals(".."))
+			xmlLoadExperiment ();
 		return flag;
 	}
 	
@@ -663,7 +668,6 @@ public class Experiment {
 		}
 		return false;
 	}
-	
 	
 	private String getFileLocation(String xmlFileName) {
 		// primary data
@@ -693,9 +697,17 @@ public class Experiment {
 	
 	public boolean xmlSaveMCcapillaries() {
 		String xmlCapillaryFileName = experimentFileName + File.separator + capillaries.getXMLNameToAppend();
-		boolean flag1 = capillaries.xmlSaveCapillaries_Only(xmlCapillaryFileName);
-		boolean flag2 = capillaries.xmlSaveCapillaries_Measures(getResultsDirectory());
-		return flag1 & flag2;
+		saveExpDescriptorsToCapillariesDescriptors();
+		boolean flag = capillaries.xmlSaveCapillaries_Descriptors(xmlCapillaryFileName);
+		flag &= capillaries.xmlSaveCapillaries_Measures(getResultsDirectory());
+		return flag;
+	}
+	
+	private void saveExpDescriptorsToCapillariesDescriptors() {
+		if (!exp_boxID 	.equals("..")) capillaries.desc.old_boxID = exp_boxID;
+		if (!experiment	.equals("..")) capillaries.desc.old_experiment = experiment;
+		if (!comment1	.equals("..")) capillaries.desc.old_comment1 = comment1;
+		if (!comment2	.equals("..")) capillaries.desc.old_comment2 = comment2;	
 	}
 	
 	public boolean xmlReadRoiLineParameters(String pathname) {
