@@ -140,7 +140,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			if (newFile.isFile())
 				newFile = newFile.getParentFile();
 			
-			if (newFile.compareTo(oldFile) != 0 ) {
+			if (!newtext.contentEquals(oldtext)) {
+//			if (newFile.compareTo(oldFile) != 0 ) {
         		ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 	        		parent0.paneSequence.tabClose.closeExp(exp); 
         		}});
@@ -149,19 +150,19 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				openSequenceCamFromCombo();
 			}
 			updateBrowseInterface();
-		} } );
+		}});
 		
 		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			if (expListComboBox.getSelectedIndex() < (expListComboBox.getItemCount() -1)) 
 				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()+1);
 			updateBrowseInterface();
-		} } );
+		}});
 		
 		previousButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			if (expListComboBox.getSelectedIndex() > 0) 
 				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()-1);
 			updateBrowseInterface();
-		} } );
+		}});
 	}
 	
 	@Override
