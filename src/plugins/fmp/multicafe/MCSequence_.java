@@ -141,7 +141,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				newFile = newFile.getParentFile();
 			
 			if (!newtext.contentEquals(oldtext)) {
-//			if (newFile.compareTo(oldFile) != 0 ) {
         		ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 	        		parent0.paneSequence.tabClose.closeExp(exp); 
         		}});
@@ -290,7 +289,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	public void transferSequenceCamDataToDialogs(Experiment exp) {
-		tabIntervals.setEndFrameToDialog((int)exp.seqCamData.analysisEnd);
+		tabIntervals.setEndFrameToDialog((int)exp.seqCamData.seqAnalysisEnd);
 		updateViewerForSequenceCam(exp.seqCamData);
 		parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 	}

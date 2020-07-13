@@ -38,9 +38,9 @@ public class SequenceCamData {
 	public Sequence					seq						= null;
 	public IcyBufferedImage 		refImage 				= null;
 	
-	public long						analysisStart 			= 0;
-	public long 					analysisEnd				= 99999999;
-	public int 						analysisStep 			= 1;
+	public long						seqAnalysisStart 		= 0;
+	public long 					seqAnalysisEnd			= 99999999;
+	public int 						seqAnalysisStep 		= 1;
 	
 	public int 						currentFrame 			= 0;
 	public int						nTotalFrames 			= 0;
@@ -157,7 +157,7 @@ public class SequenceCamData {
 		IcyBufferedImage ibufImage = getImage(t, 0);
 		switch (transformop) {
 			case REF_PREVIOUS: {	// subtract image n-analysisStep 
-				int t0 = t-analysisStep;
+				int t0 = t-seqAnalysisStep;
 				if (t0 <0)
 					t0 = 0;
 				IcyBufferedImage ibufImage0 = getImage(t0, 0);
@@ -167,7 +167,7 @@ public class SequenceCamData {
 			case REF_T0: 			// subtract reference image
 			case REF:
 				if (refImage == null)
-					refImage = getImage((int) analysisStart, 0);
+					refImage = getImage((int) seqAnalysisStart, 0);
 				ibufImage = subtractImages (ibufImage, refImage);
 				break;
 
@@ -378,9 +378,9 @@ public class SequenceCamData {
 	}
 	
 	private void initAnalysisParameters() {
-		analysisStart = 0;
-		analysisEnd = seq.getSizeT()-1;
-		analysisStep = 1;
+		seqAnalysisStart = 0;
+		seqAnalysisEnd = seq.getSizeT()-1;
+		seqAnalysisStep = 1;
 	}
 		
 	private boolean isLinexLRFileNames(List<String> myListOfFilesNames) {

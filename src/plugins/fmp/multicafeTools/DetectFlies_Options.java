@@ -47,9 +47,9 @@ public class DetectFlies_Options implements XMLPersistent {
 	private Cages 	cages 					= null;
 	public List<BooleanMask2D> 	cageMaskList = new ArrayList<BooleanMask2D>();
 	
-	public int		stepFrame 				= 1;
-	public int 		startFrame				= 0;
-	public int 		endFrame				= 1;
+	public int		df_stepFrame 			= 1;
+	public int 		df_startFrame			= 0;
+	public int 		df_endFrame				= 1;
 	public boolean	isFrameFixed			= false;
 	public int 		nbframes				= 1;
 	public Rectangle parent0Rect 			= null;
@@ -78,9 +78,9 @@ public class DetectFlies_Options implements XMLPersistent {
 		transformop				= det.transformop; 
 		videoChannel 			= det.videoChannel;
 		backgroundSubstraction 	= det.backgroundSubstraction;
-		stepFrame 				= det.stepFrame;
-		startFrame				= det.startFrame;
-		endFrame				= det.endFrame;
+		df_stepFrame 				= det.df_stepFrame;
+		df_startFrame				= det.df_startFrame;
+		df_endFrame				= det.df_endFrame;
 		isFrameFixed			= det.isFrameFixed;
 		nbframes				= det.nbframes;
 	}
@@ -101,9 +101,9 @@ public class DetectFlies_Options implements XMLPersistent {
 		jitter =  XMLUtil.getElementIntValue(xmlVal, "jitter", 10); 
 		String op1 = XMLUtil.getElementValue(xmlVal, "transformOp", null);
 		transformop = TransformOp.findByText(op1);
-		startFrame =  XMLUtil.getAttributeIntValue(xmlVal, "start", 0);
-		endFrame = XMLUtil.getAttributeIntValue(xmlVal, "end", 0);
-		stepFrame = XMLUtil.getAttributeIntValue(xmlVal, "step", 1);
+		df_startFrame =  XMLUtil.getAttributeIntValue(xmlVal, "start", 0);
+		df_endFrame = XMLUtil.getAttributeIntValue(xmlVal, "end", 0);
+		df_stepFrame = XMLUtil.getAttributeIntValue(xmlVal, "step", 1);
 		videoChannel = XMLUtil.getAttributeIntValue(xmlVal, "videoChannel", 0);
 		return true;
 	}
@@ -124,9 +124,9 @@ public class DetectFlies_Options implements XMLPersistent {
 			String transform1 = transformop.toString();
 			XMLUtil.setElementValue(xmlVal, "transformOp", transform1);
 		}
-		XMLUtil.setAttributeIntValue(xmlVal, "start", startFrame);
-		XMLUtil.setAttributeIntValue(xmlVal, "end", endFrame); 
-		XMLUtil.setAttributeIntValue(xmlVal, "step", stepFrame); 
+		XMLUtil.setAttributeIntValue(xmlVal, "start", df_startFrame);
+		XMLUtil.setAttributeIntValue(xmlVal, "end", df_endFrame); 
+		XMLUtil.setAttributeIntValue(xmlVal, "step", df_stepFrame); 
 		XMLUtil.setAttributeIntValue(xmlVal, "videoChannel", videoChannel);
 		return true;
 	}
@@ -245,7 +245,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	}
 	
 	public void initParametersForDetection(Experiment exp) {
-		nbframes = (exp.getCagesFrameEnd() - exp.getCagesFrameStart() +1)/stepFrame +1;
+		nbframes = (exp.getCagesFrameEnd() - exp.getCagesFrameStart() +1)/df_stepFrame +1;
 		exp.cages.clearAllMeasures();
 //		exp.cages.cageList = exp.seqCamData.getCages();
 		cages = exp.cages;

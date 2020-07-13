@@ -87,9 +87,9 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	public void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
-		tabDetectLimits.startSpinner.setValue((int)seqCamData.analysisStart);
-		tabDetectLimits.endSpinner.setValue((int)seqCamData.analysisEnd);
-		tabDetectGulps.startSpinner.setValue((int)seqCamData.analysisStart);
-		tabDetectGulps.endSpinner.setValue((int)seqCamData.analysisEnd);
+		tabDetectLimits.startSpinner.setValue((int)seqCamData.seqAnalysisStart);
+		tabDetectLimits.endSpinner.setValue((int)seqCamData.seqAnalysisEnd);
+		tabDetectGulps.startSpinner.setValue((int)seqCamData.seqAnalysisStart);
+		tabDetectGulps.endSpinner.setValue((int)seqCamData.seqAnalysisEnd);
 	}
 }

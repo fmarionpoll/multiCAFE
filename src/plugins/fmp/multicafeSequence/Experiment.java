@@ -74,11 +74,7 @@ public class Experiment {
 	private final String ID_STARTFRAME 		= "startFrame";
 	private final String ID_ENDFRAME 		= "endFrame";
 	private final String ID_STEP 			= "stepFrame";
-	private final String ID_BOXID 			= "boxID";
-	private final String ID_EXPERIMENT 		= "experiment";
 	private final String ID_EXPTFILENAME 	= "exptFileName";
-	private final String ID_COMMENT1 		= "comment";
-	private final String ID_COMMENT2 		= "comment2";
 	private final String ID_MCEXPERIMENT 	= "MCexperiment";
 	private final String ID_MCDROSOTRACK    = "MCdrosotrack.xml";
 	
@@ -162,7 +158,7 @@ public class Experiment {
 		}
 
 		if (loadDrosoPositions)
-			xmlReadDrosoTrackDefault();
+			xmlReadDrosoTrack(null);
 		return true;
 	}
 	
@@ -314,10 +310,10 @@ public class Experiment {
 		kymoFrameStart 			= XMLUtil.getElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 		kymoFrameEnd 			= XMLUtil.getElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 		kymoFrameStep 			= XMLUtil.getElementIntValue(node, ID_STEP, kymoFrameStep);
-		exp_boxID 				= XMLUtil.getElementValue(node, ID_BOXID, "..");
-        experiment 				= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
-        comment1 				= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
-        comment2 				= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
+//		exp_boxID 				= XMLUtil.getElementValue(node, ID_BOXID, "..");
+//        experiment 				= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
+//        comment1 				= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
+//        comment2 				= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
 		return true;
 	}
 	
@@ -335,10 +331,10 @@ public class Experiment {
 			XMLUtil.setElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 			XMLUtil.setElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 			XMLUtil.setElementIntValue(node, ID_STEP, kymoFrameStep);
-			XMLUtil.setElementValue(node, ID_BOXID, exp_boxID);
-	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
-	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
-	        XMLUtil.setElementValue(node, ID_COMMENT2, comment2);
+//			XMLUtil.setElementValue(node, ID_BOXID, exp_boxID);
+//	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
+//	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
+//	        XMLUtil.setElementValue(node, ID_COMMENT2, comment2);
 	        
 	        if (experimentFileName == null ) 
 	        	experimentFileName = seqCamData.getDirectory();
@@ -365,7 +361,7 @@ public class Experiment {
 	}
 	
 	public boolean loadDrosotrack() {
-		return xmlReadDrosoTrackDefault();
+		return xmlReadDrosoTrack(null);
 	}
 	
 	public boolean loadKymos_Measures() {
@@ -804,9 +800,9 @@ public class Experiment {
 	}
 	
 	public void storeAnalysisParametersToCages() {
-		cages.detect.startFrame = (int) kymoFrameStart;
-		cages.detect.endFrame = (int) kymoFrameEnd;
-		cages.detect.stepFrame = kymoFrameStep;
+		cages.detect.df_startFrame = (int) kymoFrameStart;
+		cages.detect.df_endFrame = (int) kymoFrameEnd;
+		cages.detect.df_stepFrame = kymoFrameStep;
 	}
 	
 	public void xmlSaveFlyPositionsForAllCages() {			
@@ -816,19 +812,19 @@ public class Experiment {
 	
 	// --------------------------
 	
-	public boolean xmlReadDrosoTrackDefault() {
+	private String getXMLDrosoTrackLocation() {
 		String fileName = getFileLocation(ID_MCDROSOTRACK);
-		boolean flag = false;
-		if (fileName != null) { 
-			flag = cages.xmlReadCagesFromFileNoQuestion(fileName, seqCamData);
-		} else {
+		if (fileName == null)  
 			fileName = getFileLocation("drosotrack.xml");
-			flag = cages.xmlReadCagesFromFileNoQuestion(fileName, seqCamData);
-		}
-		return flag;
+		return fileName;
 	}
 	
 	public boolean xmlReadDrosoTrack(String filename) {
+		if (filename == null) {
+			filename = getXMLDrosoTrackLocation();
+			if (filename == null)
+				return false;
+		}
 		return cages.xmlReadCagesFromFileNoQuestion(filename, seqCamData);
 	}
 	

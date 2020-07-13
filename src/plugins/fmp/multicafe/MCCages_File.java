@@ -49,7 +49,7 @@ public class MCCages_File extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
-					exp.xmlReadDrosoTrackDefault();
+					exp.xmlReadDrosoTrack(null);
 				firePropertyChange("LOAD_DATA", false, true);
 				parent0.paneCages.tabsPane.setSelectedIndex(3);
 			}});
@@ -67,10 +67,7 @@ public class MCCages_File extends JPanel {
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return false;
-		if (csFileName == null)
-			flag = exp.xmlReadDrosoTrackDefault();
-		else
-			flag = exp.xmlReadDrosoTrack(csFileName);
+		flag = exp.xmlReadDrosoTrack(csFileName);
 		return flag;
 	}
 	

@@ -64,11 +64,11 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			
 			exp.xmlLoadExperiment();
 			exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
-			exp.xmlReadDrosoTrackDefault();
-			exp.setCagesFrameStep(detect.stepFrame);
+			exp.xmlReadDrosoTrack(null);
+			exp.setCagesFrameStep(detect.df_stepFrame);
 			if (detect.isFrameFixed) {
-				exp.setCagesFrameStart ( detect.startFrame);
-				exp.setCagesFrameEnd ( detect.endFrame);
+				exp.setCagesFrameStart ( detect.df_startFrame);
+				exp.setCagesFrameEnd ( detect.df_endFrame);
 				if (exp.getCagesFrameEnd() > (exp.getSeqCamSizeT() - 1))
 					exp.setCagesFrameEnd( exp.getSeqCamSizeT() - 1);
 			} else {
@@ -291,7 +291,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		int nfliesRemoved = 0;
 		detect.initParametersForDetection(exp);
-		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getImage(detect.startFrame, 0));
+		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getImage(detect.df_startFrame, 0));
 		initialflyRemoved.clear();
 		int ndetectcages = exp.cages.cageList.size();
 		for (int i = 0; i < ndetectcages; i++)

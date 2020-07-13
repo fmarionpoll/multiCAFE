@@ -191,10 +191,10 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		detect.threshold		= (int) thresholdSpinner.getValue();
 		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 
-		detect.stepFrame = (int) stepFrameJSpinner.getValue();
+		detect.df_stepFrame = (int) stepFrameJSpinner.getValue();
 		detect.isFrameFixed = parent0.paneSequence.tabIntervals.getIsFixedFrame();
-		detect.startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
-		detect.endFrame = parent0.paneSequence.tabIntervals.getEndFrame();
+		detect.df_startFrame = parent0.paneSequence.tabIntervals.getStartFrame();
+		detect.df_endFrame = parent0.paneSequence.tabIntervals.getEndFrame();
 		detect.resultsSubPath = (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
 		
 		detect.expList = new ExperimentList(); 

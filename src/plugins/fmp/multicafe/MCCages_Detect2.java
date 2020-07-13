@@ -180,10 +180,10 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 		
 		detect.forceBuildBackground	= backgroundCheckBox.isSelected();
 		detect.detectFlies		= detectCheckBox.isSelected();
-		detect.stepFrame 		= (int) stepFrameJSpinner.getValue();
+		detect.df_stepFrame 		= (int) stepFrameJSpinner.getValue();
 		detect.isFrameFixed 	= parent0.paneSequence.tabIntervals.getIsFixedFrame();
-		detect.startFrame 		= parent0.paneSequence.tabIntervals.getStartFrame();
-		detect.endFrame 		= parent0.paneSequence.tabIntervals.getEndFrame();
+		detect.df_startFrame 		= parent0.paneSequence.tabIntervals.getStartFrame();
+		detect.df_endFrame 		= parent0.paneSequence.tabIntervals.getEndFrame();
 
 		detect.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(detect.expList, true);		

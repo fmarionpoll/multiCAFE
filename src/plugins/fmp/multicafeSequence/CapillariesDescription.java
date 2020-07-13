@@ -36,10 +36,7 @@ public class CapillariesDescription {
 	private final static String ID_DESCVOLUMEUL 	= "volume_ul";
 	private final static String ID_DESCCAPILLARYPIX = "capillaryPixels";
 	private final static String ID_DESCNPIXELS 		= "npixels";
-	private final static String ID_ANALYSIS 		= "analysis";
-	private final static String ID_START 			= "start";
-	private final static String ID_END 				= "end";
-	private final static String ID_STEP 			= "step";
+
 	private final static String ID_LRSTIMULUS 		= "LRstimulus";
 	private final static String ID_STIMR 			= "stimR";
 	private final static String ID_CONCR 			= "concR";
@@ -96,17 +93,6 @@ public class CapillariesDescription {
 		XMLUtil.setElementDoubleValue(xmlVal, ID_DESCVOLUMEUL, volume);
 		XMLUtil.setElementIntValue(xmlVal, ID_DESCNPIXELS, pixels);
 
-		xmlVal = XMLUtil.addElement(xmlElement, ID_ANALYSIS);
-		XMLUtil.setElementLongValue(xmlVal, ID_START, analysisStart);
-		XMLUtil.setElementLongValue(xmlVal, ID_END, analysisEnd); 
-		XMLUtil.setElementIntValue(xmlVal, ID_STEP, analysisStep); 
-		
-		xmlVal = XMLUtil.addElement(xmlElement, ID_LRSTIMULUS);
-		XMLUtil.setElementValue(xmlVal, ID_STIMR, stimulusR);
-		XMLUtil.setElementValue(xmlVal, ID_CONCR, concentrationR);
-		XMLUtil.setElementValue(xmlVal, ID_STIML, stimulusL);
-		XMLUtil.setElementValue(xmlVal, ID_CONCL, concentrationL);
-
 		xmlVal = XMLUtil.addElement(xmlElement, ID_EXPERIMENT);
 		XMLUtil.setElementValue(xmlVal, ID_BOXID, old_boxID);
 		XMLUtil.setElementValue(xmlVal, ID_EXPT, old_experiment);
@@ -151,13 +137,6 @@ public class CapillariesDescription {
 		xmlVal = XMLUtil.getElement(xmlElement, ID_DESCCAPILLARYPIX);
 		pixels = (int) XMLUtil.getAttributeDoubleValue(xmlVal, ID_DESCNPIXELS, Double.NaN);
 
-		xmlVal = XMLUtil.getElement(xmlElement, ID_ANALYSIS);
-		if (xmlVal != null) {
-			analysisStart 	= XMLUtil.getAttributeLongValue(xmlVal, ID_START, 0);
-			analysisEnd 	= XMLUtil.getAttributeLongValue(xmlVal, ID_END, 0);
-			analysisStep 	= XMLUtil.getAttributeIntValue(xmlVal, ID_STEP, 1);
-		}
-
 		xmlVal = XMLUtil.getElement(xmlElement, ID_LRSTIMULUS);
 		if (xmlVal != null) {
 			stimulusR 		= XMLUtil.getAttributeValue(xmlVal, ID_STIMR, ID_STIMR);
@@ -187,13 +166,6 @@ public class CapillariesDescription {
 			grouping		= XMLUtil.getElementIntValue(xmlVal, ID_DESCGROUPING, 2);
 			volume 			= XMLUtil.getElementDoubleValue(xmlVal, ID_DESCVOLUMEUL, Double.NaN);
 			pixels 			= XMLUtil.getElementIntValue(xmlVal, ID_DESCNPIXELS, 5);
-		}
-
-		xmlVal = XMLUtil.getElement(xmlElement, ID_ANALYSIS);
-		if (xmlVal != null) {
-			analysisStart 	= XMLUtil.getElementLongValue(xmlVal, ID_START, 0);
-			analysisEnd 	= XMLUtil.getElementLongValue(xmlVal, ID_END, 0);
-			analysisStep 	= XMLUtil.getElementIntValue(xmlVal, ID_STEP, 1);
 		}
 
 		xmlVal = XMLUtil.getElement(xmlElement, ID_LRSTIMULUS);
