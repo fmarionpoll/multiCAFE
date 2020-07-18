@@ -78,6 +78,11 @@ public class Experiment {
 	private final String ID_MCEXPERIMENT 	= "MCexperiment";
 	private final String ID_MCDROSOTRACK    = "MCdrosotrack.xml";
 	
+	private final String ID_BOXID 			= "boxID";
+	private final String ID_EXPERIMENT 		= "experiment";
+	private final String ID_COMMENT1 		= "comment";
+	private final String ID_COMMENT2 		= "comment2";
+	
 	// ----------------------------------
 	
 	public Experiment() {
@@ -310,10 +315,12 @@ public class Experiment {
 		kymoFrameStart 			= XMLUtil.getElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 		kymoFrameEnd 			= XMLUtil.getElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 		kymoFrameStep 			= XMLUtil.getElementIntValue(node, ID_STEP, kymoFrameStep);
-//		exp_boxID 				= XMLUtil.getElementValue(node, ID_BOXID, "..");
-//        experiment 				= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
-//        comment1 				= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
-//        comment2 				= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
+		if (exp_boxID .contentEquals("..")) {
+			exp_boxID 			= XMLUtil.getElementValue(node, ID_BOXID, "..");
+	        experiment 			= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
+	        comment1 			= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
+	        comment2 			= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
+		}
 		return true;
 	}
 	
@@ -331,10 +338,11 @@ public class Experiment {
 			XMLUtil.setElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 			XMLUtil.setElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 			XMLUtil.setElementIntValue(node, ID_STEP, kymoFrameStep);
-//			XMLUtil.setElementValue(node, ID_BOXID, exp_boxID);
-//	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
-//	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
-//	        XMLUtil.setElementValue(node, ID_COMMENT2, comment2);
+			
+			XMLUtil.setElementValue(node, ID_BOXID, exp_boxID);
+	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
+	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
+	        XMLUtil.setElementValue(node, ID_COMMENT2, comment2);
 	        
 	        if (experimentFileName == null ) 
 	        	experimentFileName = seqCamData.getDirectory();
