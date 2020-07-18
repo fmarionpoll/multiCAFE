@@ -26,28 +26,28 @@ public class CapillariesDescription {
 	String 			stimulusL		= new String("..");
 	String 			concentrationL	= new String("..");
 	
-	private final String ID_CAPILLARYTRACK 	= "capillaryTrack";
-	private final String ID_PARAMETERS 		= "Parameters";	
-	private final String ID_FILE 			= "file";
-	private final String ID_ID 				= "ID";
-	private final String ID_DESCGROUPING 	= "Grouping";
-	private final String ID_DESCN 			= "n";
-	private final String ID_DESCCAPVOLUME 	= "capillaryVolume";
-	private final String ID_DESCVOLUMEUL 	= "volume_ul";
-	private final String ID_DESCCAPILLARYPIX = "capillaryPixels";
-	private final String ID_DESCNPIXELS 	= "npixels";
+	private final static String ID_CAPILLARYTRACK 	= "capillaryTrack";
+	private final static String ID_PARAMETERS 		= "Parameters";	
+	private final static String ID_FILE 			= "file";
+	private final static String ID_ID 				= "ID";
+	private final static String ID_DESCGROUPING 	= "Grouping";
+	private final static String ID_DESCN 			= "n";
+	private final static String ID_DESCCAPVOLUME 	= "capillaryVolume";
+	private final static String ID_DESCVOLUMEUL 	= "volume_ul";
+	private final static String ID_DESCCAPILLARYPIX = "capillaryPixels";
+	private final static String ID_DESCNPIXELS 	= "npixels";
 
-	private final String ID_LRSTIMULUS 		= "LRstimulus";
-	private final String ID_STIMR 			= "stimR";
-	private final String ID_CONCR 			= "concR";
-	private final String ID_STIML 			= "stimL";
-	private final String ID_CONCL 			= "concL";
-	private final String ID_EXPERIMENT 		= "Experiment";
-	private final String ID_BOXID 			= "boxID";
-	private final String ID_EXPT 			= "expt";
-	private final String ID_COMMENT1 		= "comment";
-	private final String ID_COMMENT2 		= "comment2";
-	private final String ID_NOPE 			= "..";
+	private final static String ID_LRSTIMULUS 		= "LRstimulus";
+	private final static String ID_STIMR 			= "stimR";
+	private final static String ID_CONCR 			= "concR";
+	private final static String ID_STIML 			= "stimL";
+	private final static String ID_CONCL 			= "concL";
+	private final static String ID_EXPERIMENT 		= "Experiment";
+	private final static String ID_BOXID 			= "boxID";
+	private final static String ID_EXPT 			= "expt";
+	private final static String ID_COMMENT1 		= "comment";
+	private final static String ID_COMMENT2 		= "comment2";
+	private final static String ID_NOPE 			= "..";
 
 	
 

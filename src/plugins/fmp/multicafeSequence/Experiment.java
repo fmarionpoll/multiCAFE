@@ -38,7 +38,7 @@ public class Experiment {
 	
 	private String			experimentFileName			= null;
 	public SequenceCamData 	seqCamData 					= null;
-	public final String 	RESULTS						= "results";
+	public final static String 	RESULTS						= "results";
 	public String			resultsSubPath				= RESULTS;
 	public List<String>		resultsDirList				= new ArrayList<String> ();
 		
@@ -67,21 +67,21 @@ public class Experiment {
 	
 	ImageTransformTools 	tImg 						= null;
 
-	private final String ID_VERSION			= "version"; 
-	private final String ID_VERSIONNUM		= "1.0.0"; 
-	private final String ID_TIMEFIRSTIMAGE	= "fileTimeImageFirstMinute"; 
-	private final String ID_TIMELASTIMAGE 	= "fileTimeImageLastMinute";
-	private final String ID_STARTFRAME 		= "startFrame";
-	private final String ID_ENDFRAME 		= "endFrame";
-	private final String ID_STEP 			= "stepFrame";
-	private final String ID_EXPTFILENAME 	= "exptFileName";
-	private final String ID_MCEXPERIMENT 	= "MCexperiment";
-	private final String ID_MCDROSOTRACK    = "MCdrosotrack.xml";
+	private final static String ID_VERSION			= "version"; 
+	private final static String ID_VERSIONNUM		= "1.0.0"; 
+	private final static String ID_TIMEFIRSTIMAGE	= "fileTimeImageFirstMinute"; 
+	private final static String ID_TIMELASTIMAGE 	= "fileTimeImageLastMinute";
+	private final static String ID_STARTFRAME 		= "startFrame";
+	private final static String ID_ENDFRAME 		= "endFrame";
+	private final static String ID_STEP 			= "stepFrame";
+	private final static String ID_EXPTFILENAME 	= "exptFileName";
+	private final static String ID_MCEXPERIMENT 	= "MCexperiment";
+	private final static String ID_MCDROSOTRACK    = "MCdrosotrack.xml";
 	
-	private final String ID_BOXID 			= "boxID";
-	private final String ID_EXPERIMENT 		= "experiment";
-	private final String ID_COMMENT1 		= "comment";
-	private final String ID_COMMENT2 		= "comment2";
+	private final static String ID_BOXID 			= "boxID";
+	private final static String ID_EXPERIMENT 		= "experiment";
+	private final static String ID_COMMENT1 		= "comment";
+	private final static String ID_COMMENT2 		= "comment2";
 	
 	// ----------------------------------
 	
