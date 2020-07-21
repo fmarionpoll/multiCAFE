@@ -73,7 +73,8 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				exp.setKymoFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
 			}
 			if (computeKymo(exp)) 
-				System.out.println(index+ " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);			
+				if (expList.index0 != expList.index1)
+					System.out.println(index+ " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);			
 				saveComputation(exp);
 			exp.seqCamData.closeSequence();
 		}
