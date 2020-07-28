@@ -73,8 +73,12 @@ public class XLSExport {
 		
 		int pos = name0.indexOf("cam");
 		String cam = "-"; 
-		if (pos > 0) 
-			cam = name0.substring(pos, pos+5);
+		if (pos > 0) {
+			int pos5 = pos+5;
+			if (pos5 >= name0.length())
+				pos5 = name0.length() -1;
+			cam = name0.substring(pos, pos5);
+		}
 		
 		String sheetName = sheet.getSheetName();
 		
