@@ -53,11 +53,13 @@ public class ExperimentList {
 			for (Experiment exp: experimentList) {
 				if (options.collateSeries && exp.previousExperiment != null)
 					continue;
-				long last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
-				long first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
-				long diff = ( last - first) /60000;
+				double last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
+				double first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
+				long diff = (long) (( last - first) /60000);
+				if (diff <1)
+					diff = exp.seqCamData.seq.getSizeT();
 				if (expAll.fileTimeImageLastMinute < diff) 
-					expAll.fileTimeImageLastMinute = diff;
+					expAll.fileTimeImageLastMinute = (long) diff;
 			}
 		}
 		expAll.setKymoFrameStart ( (int) expAll.fileTimeImageFirstMinute);
