@@ -181,8 +181,8 @@ public class Experiment {
 	public void loadFileIntervalsFromSeqCamData() {
 		fileTimeImageFirst = seqCamData.getImageFileTime(0);
 		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
-		fileTimeImageFirstMinute = fileTimeImageFirst.toMillis()/60000;
-		fileTimeImageLastMinute = fileTimeImageLast.toMillis()/60000;
+		fileTimeImageFirstMinute = (long) (fileTimeImageFirst.toMillis()/60000d);
+		fileTimeImageLastMinute = (long) (fileTimeImageLast.toMillis()/60000d);
 	}
 	
 	public String getResultsDirectory() {

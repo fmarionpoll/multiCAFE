@@ -45,8 +45,8 @@ public class ExperimentList {
 				if (expAll.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
 					expAll.setFileTimeImageLast(exp.getFileTimeImageLast(true));
 			}
-			expAll.fileTimeImageFirstMinute = expAll.getFileTimeImageFirst(false).toMillis()/60000;
-			expAll.fileTimeImageLastMinute = expAll.getFileTimeImageLast(false).toMillis()/60000;	
+			expAll.fileTimeImageFirstMinute = (long) (expAll.getFileTimeImageFirst(false).toMillis()/60000d);
+			expAll.fileTimeImageLastMinute = (long) (expAll.getFileTimeImageLast(false).toMillis()/60000d);	
 		} else {
 			expAll.fileTimeImageFirstMinute = 0;
 			expAll.fileTimeImageLastMinute = 0;
@@ -55,9 +55,11 @@ public class ExperimentList {
 					continue;
 				double last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
 				double first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
-				long diff = (long) (( last - first) /60000);
-				if (diff <1)
+				long diff = (long) (( last - first) /60000d);
+				if (diff <1) {
+					System.out.println("error when computing time difference between first and last image; set value of dt= 1 min");
 					diff = exp.seqCamData.seq.getSizeT();
+				}
 				if (expAll.fileTimeImageLastMinute < diff) 
 					expAll.fileTimeImageLastMinute = (long) diff;
 			}

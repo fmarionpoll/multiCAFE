@@ -125,8 +125,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			expAll.fileTimeImageLast = expi.fileTimeImageLast;
 			expi = expi.nextExperiment;
 		}
-		expAll.fileTimeImageFirstMinute = expAll.fileTimeImageFirst.toMillis()/60000;
-		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
+		expAll.fileTimeImageFirstMinute = (long) (expAll.fileTimeImageFirst.toMillis()/60000d);
+		expAll.fileTimeImageLastMinute = (long) (expAll.fileTimeImageLast.toMillis()/60000d);
 		int nFrames = (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1 ;
 		
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
