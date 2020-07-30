@@ -8,8 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -194,8 +197,8 @@ public class SequenceCamData {
 		String csName = null;
 		if (status == EnumStatus.FILESTACK) 
 			csName = listFiles.get(t);
-		else if (status == EnumStatus.AVIFILE)
-			csName = csFileName;
+//		else if (status == EnumStatus.AVIFILE)
+//			csName = csFileName;
 		return csName;
 	}
 	
@@ -495,17 +498,62 @@ public class SequenceCamData {
 	
 	// --------------------------
 
-	public FileTime getImageFileTime (int t) {
-		String name = getFileName(t);
-		if (name == null)
+//	public FileTime getImageLastModifiedTime (int t) {
+//		String fileName = getFileName(t);
+//		if (fileName == null)
+//			return null;
+//		Path path = Paths.get(fileName);
+//		FileTime fileTime;
+//		try { fileTime = Files.getLastModifiedTime(path); }
+//		catch (IOException e) {
+//			System.err.println("Cannot get Files.lastModifiedTime - " + e + "image "+ t+ " -- file "+ fileName);
+//			return null;
+//		}
+//		return fileTime;
+//	}
+	
+//	public FileTime getImageCreationTime(int t) {
+//		String fileName = getFileName(t);
+//		if (fileName == null)
+//			return null;
+//		File myfile = new File(fileName);
+//        Path path = myfile.toPath();
+//        BasicFileAttributes fatr = null;
+//        try {
+//			fatr = Files.readAttributes(path, BasicFileAttributes.class);
+//		} catch (IOException e) {
+//			System.err.println("Cannot get File creationTime - " + e + " : image "+ t+ " -- file "+ fileName);
+//			e.printStackTrace();
+//			return null;
+//		}
+//		
+//		FileTime fileTime = fatr.creationTime();
+//		return fileTime;
+//	}
+	
+	public FileTime getFileTimeFromName(int t) {
+		String fileName = getFileName(t);
+		if (fileName == null)
 			return null;
-		Path path = Paths.get(name);
-		FileTime fileTime;
-		try { fileTime = Files.getLastModifiedTime(path); }
-		catch (IOException e) {
-			System.err.println("Cannot get Files.lastModifiedTime - " + e + "image "+ t+ " -- file "+ name);
+		int len = fileName.length();
+		if (len < 23)
+			return null;
+		String text = fileName.substring(len-23, len-4);
+		String dateFormat = "yyyy"
+							+text.charAt(4)+"MM"
+							+text.charAt(7)+"dd"
+							+text.charAt(10)+"HH"
+							+text.charAt(13)+"mm"
+							+text.charAt(16)+"ss";
+		Date date = null;
+		try {
+			date = new SimpleDateFormat(dateFormat).parse(text);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			return null;
 		}
+		FileTime fileTime = FileTime.fromMillis(date.getTime());		
 		return fileTime;
 	}
 

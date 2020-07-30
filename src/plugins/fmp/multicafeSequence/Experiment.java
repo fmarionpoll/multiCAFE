@@ -179,11 +179,19 @@ public class Experiment {
 	}
 	
 	public void loadFileIntervalsFromSeqCamData() {
-		fileTimeImageFirst = seqCamData.getImageFileTime(0);
-		fileTimeImageLast = seqCamData.getImageFileTime(seqCamData.seq.getSizeT()-1);
+		fileTimeImageFirst = seqCamData.getFileTimeFromName(0);
+		fileTimeImageLast = seqCamData.getFileTimeFromName(seqCamData.seq.getSizeT()-1);
 		fileTimeImageFirstMinute = (long) (fileTimeImageFirst.toMillis()/60000d);
 		fileTimeImageLastMinute = (long) (fileTimeImageLast.toMillis()/60000d);
+	
+		long diff = fileTimeImageLastMinute - fileTimeImageFirstMinute;
+		if (diff <1) {
+			System.out.println("FileTime difference between last and first image < 1");
+//			Duration diffDur = Duration.between(fileTimeImageFirst, fileTimeImageLast);			
+		}
 	}
+	
+	
 	
 	public String getResultsDirectory() {
 		Path dir = Paths.get(experimentFileName);

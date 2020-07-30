@@ -55,9 +55,9 @@ public class ExperimentList {
 					continue;
 				double last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
 				double first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
-				long diff = (long) (( last - first) /60000d);
+				double diff = (( last - first) /60000d);
 				if (diff <1) {
-					System.out.println("error when computing time difference between first and last image; set value of dt= 1 min");
+					System.out.println("error when computing FileTime difference between last and first image; set dt= 1 min");
 					diff = exp.seqCamData.seq.getSizeT();
 				}
 				if (expAll.fileTimeImageLastMinute < diff) 

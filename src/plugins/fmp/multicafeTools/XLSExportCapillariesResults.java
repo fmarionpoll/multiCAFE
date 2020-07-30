@@ -419,7 +419,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			}
 			// output values from the row
 			int lenL = rowL.values_out.length;
-			if (rowR != null && lenL != rowR.values_out.length)
+			if (rowR != null && rowR.values_out != null && lenL != rowR.values_out.length)
 				System.out.println("length of data - rowL="+lenL+" rowR="+rowR.values_out.length);
 			int row0 = pt.x;
 			
@@ -430,7 +430,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					break;
 				double dataL = rowL.values_out[i_from];
 				double dataR = Double.NaN;
-				if (rowR != null) 
+				if (rowR != null && rowR.values_out != null) 
 					dataR = rowR.values_out[i_from];
 				
 				if (Double.isNaN(dataR) && !Double.isNaN(dataL)) 
