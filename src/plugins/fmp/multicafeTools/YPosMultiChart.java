@@ -115,11 +115,11 @@ public class YPosMultiChart extends IcyFrame {
 		if (itmax > 0) {
 			switch (option) {
 			case distance:
-				double previousY = positionxyt.pointsList.get(0).point.getY();
+				double previousY = positionxyt.pointsList.get(0).xytPoint.getY();
 				for ( int it = 0; it < itmax;  it++) {
-					double currentY = positionxyt.pointsList.get(it).point.getY();
+					double currentY = positionxyt.pointsList.get(it).xytPoint.getY();
 					double ypos = currentY - previousY;
-					double t = positionxyt.pointsList.get(it).time;
+					double t = positionxyt.pointsList.get(it).xytTime;
 					seriesXY.add( t, ypos );
 					previousY = currentY;
 				}
@@ -130,9 +130,9 @@ public class YPosMultiChart extends IcyFrame {
 				
 			case isalive:
 				for ( int it = 0; it < itmax;  it++) {
-					boolean alive = positionxyt.pointsList.get(it).alive;
+					boolean alive = positionxyt.pointsList.get(it).xytAlive;
 					double ypos = alive? 1.0: 0.0;
-					double t = positionxyt.pointsList.get(it).time;
+					double t = positionxyt.pointsList.get(it).xytTime;
 					seriesXY.add( t, ypos );
 				}
 				minmax = new MinMaxDouble(0., 1.2);
@@ -140,9 +140,9 @@ public class YPosMultiChart extends IcyFrame {
 				
 			case sleep:
 				for ( int it = 0; it < itmax;  it++) {
-					boolean sleep = positionxyt.pointsList.get(it).sleep;
+					boolean sleep = positionxyt.pointsList.get(it).xytSleep;
 					double ypos = sleep ? 1.0: 0.0;
-					double t = positionxyt.pointsList.get(it).time;
+					double t = positionxyt.pointsList.get(it).xytTime;
 					seriesXY.add( t, ypos );
 				}
 				minmax = new MinMaxDouble(0., 1.2);
@@ -153,9 +153,9 @@ public class YPosMultiChart extends IcyFrame {
 				Rectangle rect1 = cage.roi.getBounds();
 				double yOrigin = rect1.getY()+rect1.getHeight();	
 				for ( int it = 0; it < itmax;  it++) {
-					Point2D point = positionxyt.pointsList.get(it).point;
+					Point2D point = positionxyt.pointsList.get(it).xytPoint;
 					double ypos = yOrigin - point.getY();
-					double t = positionxyt.pointsList.get(it).time;
+					double t = positionxyt.pointsList.get(it).xytTime;
 					seriesXY.add( t, ypos );
 				}
 				minmax = new MinMaxDouble(0., rect1.height * 1.2);
