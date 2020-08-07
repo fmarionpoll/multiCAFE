@@ -538,7 +538,8 @@ public class SequenceCamData {
 		int len = fileName.length();
 		if (len < 23)
 			return null;
-		String text = fileName.substring(len-23, len-4);
+		String text = "20"+fileName.substring(len-21, len-4);
+		// TODO check if year is yyyy or yy
 		String dateFormat = "yyyy"
 							+text.charAt(4)+"MM"
 							+text.charAt(7)+"dd"

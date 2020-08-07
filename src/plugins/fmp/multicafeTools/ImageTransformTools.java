@@ -14,7 +14,7 @@ public class ImageTransformTools {
 		R_RGB("R(RGB)"), G_RGB("G(RGB)"), B_RGB("B(RGB)"),  
 		R2MINUS_GB ("2R-(G+B)"), G2MINUS_RB("2G-(R+B)"), B2MINUS_RG("2B-(R+G)"),
 		GBMINUS_2R ("(G+B)-2R"), RBMINUS_2G("(R+B)-2G"), RGMINUS_2B("(R+G)-2B"),
-		SUM_DIFFS("Sum([R-G]+[R-B]+[B-G])"),
+		RGB_DIFFS("Sum(diffRGB)"),
 		RGB ("(R+G+B)/3"),
 		H_HSB ("H(HSB)"), S_HSB ("S(HSB)"), B_HSB("B(HSB)"),  
 		XDIFFN("XDiffn"), YDIFFN("YDiffn"), XYDIFFN( "XYDiffn"), 
@@ -119,7 +119,7 @@ public class ImageTransformTools {
 			transformImage(transformedImage, TransformOp.RTOGB); 
 			break;
 			
-		case SUM_DIFFS:
+		case RGB_DIFFS:
 			transformedImage= functionRGB_sumDiff (inputImage);
 			break;
 
