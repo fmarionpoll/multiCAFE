@@ -142,14 +142,12 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 		
 		DetectGulps_Options options = thread.options;
 		options.expList = new ExperimentList(); 
-		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
-		if (allSeriesCheckBox.isSelected()) {
-			options.expList.index0 = 0;
+		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);	
+		options.expList.index0 = parent0.expList.currentExperimentIndex;
+		if (allSeriesCheckBox.isSelected()) 
 			options.expList.index1 = options.expList.getSize()-1;
-		} else {
-			options.expList.index0 = parent0.expList.currentExperimentIndex;
+		else 
 			options.expList.index1 = parent0.expList.currentExperimentIndex;
-		}
 
 		options.firstkymo 				= parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
 		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();

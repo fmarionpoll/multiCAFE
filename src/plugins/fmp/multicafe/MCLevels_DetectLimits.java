@@ -178,13 +178,12 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		DetectLevels_Options options= new DetectLevels_Options();
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
-		if (allSeriesCheckBox.isSelected()) {
-			options.expList.index0 = 0;
+		options.expList.index0 = parent0.expList.currentExperimentIndex;
+		if (allSeriesCheckBox.isSelected()) 
 			options.expList.index1 = options.expList.getSize()-1;
-		} else {
-			options.expList.index0 = parent0.expList.currentExperimentIndex;
+		else 
 			options.expList.index1 = parent0.expList.currentExperimentIndex;
-		}
+
 		if (!allKymosCheckBox.isSelected())
 			options.firstKymo = exp.seqKymos.currentFrame;
 		else 

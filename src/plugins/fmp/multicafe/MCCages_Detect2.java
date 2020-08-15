@@ -187,13 +187,11 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 
 		detect.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(detect.expList, true);		
-		if (ALLCheckBox.isSelected()) {
-			detect.expList.index0 = 0;
+		detect.expList.index0 = parent0.expList.currentExperimentIndex;
+		if (ALLCheckBox.isSelected()) 
 			detect.expList.index1 = detect.expList.getSize()-1;
-		} else {
-			detect.expList.index0 = parent0.expList.currentExperimentIndex;
+		else 
 			detect.expList.index1 = detect.expList.index0;
-		}
 		
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp != null) 
