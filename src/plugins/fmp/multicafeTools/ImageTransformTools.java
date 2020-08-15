@@ -7,6 +7,8 @@ import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 
+
+
 public class ImageTransformTools {
 
 	public enum TransformOp { 
@@ -14,6 +16,7 @@ public class ImageTransformTools {
 		R_RGB("R(RGB)"), G_RGB("G(RGB)"), B_RGB("B(RGB)"),  
 		R2MINUS_GB ("2R-(G+B)"), G2MINUS_RB("2G-(R+B)"), B2MINUS_RG("2B-(R+G)"),
 		GBMINUS_2R ("(G+B)-2R"), RBMINUS_2G("(R+B)-2G"), RGMINUS_2B("(R+G)-2B"),
+		RGB_DIFFS("Sum(diffRGB)"),
 		RGB ("(R+G+B)/3"),
 		H_HSB ("H(HSB)"), S_HSB ("S(HSB)"), B_HSB("B(HSB)"),  
 		XDIFFN("XDiffn"), YDIFFN("YDiffn"), XYDIFFN( "XYDiffn"), 
@@ -117,6 +120,10 @@ public class ImageTransformTools {
 			transformedImage= functionRGB_C1C2minus2C3 (inputImage, 0, 1, 2); 
 			transformImage(transformedImage, TransformOp.RTOGB); 
 			break;
+			
+		case RGB_DIFFS:
+			transformedImage= functionRGB_sumDiff (inputImage);
+			break;
 
 		case NORM_BRMINUSG: 
 			transformedImage= functionNormRGB_sumC1C2Minus2C3(inputImage, 1, 2, 0); 
@@ -173,7 +180,6 @@ public class ImageTransformTools {
 		int imageSizeX = sourceImage.getSizeX();
 		int imageSizeY = sourceImage.getSizeY();
 		IcyBufferedImage img2 = new IcyBufferedImage(imageSizeX, imageSizeY, chan1, sourceImage.getDataType_());
-		
 		for (int c=chan0; c < chan1; c++) {
 			int[] tabValues = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
 			int[] outValues = Array1DUtil.arrayToIntArray(img2.getDataXY(c), img2.isSignedDataType());			
@@ -196,12 +202,10 @@ public class ImageTransformTools {
 	// function proposed by François Rebaudo
 	private IcyBufferedImage functionNormRGB_sumC1C2Minus2C3 (IcyBufferedImage sourceImage, int Rlayer, int Glayer, int Blayer) {
 		IcyBufferedImage img2 = new IcyBufferedImage (sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
-		
 		double[] Rn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(Rlayer), sourceImage.isSignedDataType());
 		double[] Gn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(Glayer), sourceImage.isSignedDataType());
 		double[] Bn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(Blayer), sourceImage.isSignedDataType());
 		double[] ExG = (double[]) Array1DUtil.createArray(DataType.DOUBLE, Rn.length);
-
 		for (int i=0; i< Rn.length; i++) {
 			double sum = (Rn[i] / 255) + (Gn[i] / 255) + (Bn [i] / 255);
 			ExG[i] = ((Gn[i] *2 / 255 / sum) - (Rn[i] / 255/sum) - (Bn [i] / 255/sum)) * 255;
@@ -225,15 +229,12 @@ public class ImageTransformTools {
 		return img2;
 	}
 	
-	private IcyBufferedImage functionRGB_2C3MinusC1C2 (IcyBufferedImage sourceImage, int addchan1, int addchan2, int subtractchan3) {
-		
+	private IcyBufferedImage functionRGB_2C3MinusC1C2 (IcyBufferedImage sourceImage, int addchan1, int addchan2, int subtractchan3) {	
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
-		
 		double[] tabSubtract = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(subtractchan3), sourceImage.isSignedDataType());
 		double[] tabAdd1 = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(addchan1), sourceImage.isSignedDataType());
 		double[] tabAdd2 = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(addchan2), sourceImage.isSignedDataType());
 		double[] tabResult =  (double[]) Array1DUtil.createArray(DataType.DOUBLE, tabSubtract.length);
-
 		for (int i = 0; i < tabResult.length; i++) {	
 			double val = tabSubtract[i]* 2 - tabAdd1[i] - tabAdd2[i] ;
 			tabResult [i] = val;
@@ -248,10 +249,9 @@ public class ImageTransformTools {
 	}
 	
 	private IcyBufferedImage functionRGB_C1C2minus2C3 (IcyBufferedImage sourceImage, int addchan1, int addchan2, int subtractchan3) {
-		
-		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		if (sourceImage.getSizeC() < 3)
 			return null;
+		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		double[] tabSubtract = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(subtractchan3), sourceImage.isSignedDataType());
 		double[] tabAdd1 = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(addchan1), sourceImage.isSignedDataType());
 		double[] tabAdd2 = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(addchan2), sourceImage.isSignedDataType());
@@ -264,6 +264,35 @@ public class ImageTransformTools {
 		Array1DUtil.doubleArrayToSafeArray(tabResult, img2.getDataXY(0), false); //  true);
 		img2.setDataXY(0, img2.getDataXY(0));
 		for (int c= 1; c<3; c++ ) {
+			img2.copyData(img2, 0, c);
+			img2.setDataXY(c, img2.getDataXY(c));
+		}
+		return img2;
+	}
+	
+private IcyBufferedImage functionRGB_sumDiff (IcyBufferedImage sourceImage) {
+		if (sourceImage.getSizeC() < 3)
+			return null;
+		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
+		int c = 0;
+		int Rlayer = c;
+		int[] Rn = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(Rlayer), sourceImage.isSignedDataType());
+		int Glayer = c+1;
+		int[] Gn = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(Glayer), sourceImage.isSignedDataType());
+		int Blayer = c+2;
+		int[] Bn = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(Blayer), sourceImage.isSignedDataType());
+		int[] ExG = (int[]) Array1DUtil.createArray(DataType.INT, Rn.length);
+	
+		for (int i=0; i< Rn.length; i++) {
+			int diff1 = Math.abs(Rn[i]-Bn[i]);
+			int diff2 = Math.abs(Rn[i]-Gn[i]);
+			int diff3 = Math.abs(Bn[i]-Gn[i]);
+			ExG[i] = diff1+diff2+diff3; //Math.max(diff3, Math.max(diff1,  diff2));
+		}
+		
+		Array1DUtil.intArrayToSafeArray(ExG,  img2.getDataXY(0), false, false); //true);
+		img2.setDataXY(0, img2.getDataXY(0));
+		for (c= 1; c<3; c++ ) {
 			img2.copyData(img2, 0, c);
 			img2.setDataXY(c, img2.getDataXY(c));
 		}

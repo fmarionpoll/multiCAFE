@@ -21,6 +21,7 @@ import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
+
 public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 	private SequenceKymos 		seqkymo 		= null;
 	public boolean 				stopFlag 		= false;
@@ -29,7 +30,7 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground() throws Exception {
-		System.out.println("start detectLimits thread");
+		System.out.println("start detect gulps thread");
         threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = options.expList;
@@ -41,12 +42,11 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 			Experiment exp = expList.getExperiment(index);
 			exp.resultsSubPath = options.resultsSubPath;
 			exp.getResultsDirectory(); 
-			progress.setMessage("Processing file: " + (index+1) + "//" + (expList.index1+1));
-			System.out.println((index+1)+": " +exp.getExperimentFileName());
-			
+			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1 +1));
+
 			exp.loadExperimentCapillariesData_ForSeries();
 			if ( exp.loadKymographs()) {
-				System.out.println(index + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
+				System.out.println((index+1) + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
 				buildFilteredImage(exp);
 				detectGulps(exp);
 				exp.xmlSaveMCcapillaries();
@@ -121,6 +121,8 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 		int ix = 0;
 		int iy = 0;
 		Polyline2D 	polyline = cap.ptsTop.polylineLimit;
+		if (polyline == null)
+			return;
 		for (ix = 1; ix < polyline.npoints; ix++) {
 			// for each point of topLevelArray, define a bracket of rows to look at ("jitter" = 10)
 			int low = (int) polyline.ypoints[ix]- jitter;

@@ -28,6 +28,7 @@ import plugins.fmp.multicafeTools.DetectLevels_series;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
+
 public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListener {
 	/**
 	 * 
@@ -38,7 +39,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	JComboBox<TransformOp> transformForLevelsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
 			TransformOp.R_RGB, TransformOp.G_RGB, TransformOp.B_RGB, 
 			TransformOp.R2MINUS_GB, TransformOp.G2MINUS_RB, TransformOp.B2MINUS_RG, TransformOp.RGB,
-			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, 
+			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, TransformOp.RGB_DIFFS,
 			TransformOp.H_HSB, TransformOp.S_HSB, TransformOp.B_HSB	});
 
 	private JComboBox<String> directionComboBox	= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
@@ -49,7 +50,7 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 	private String 		detectString 			= "        Detect     ";
 	private JButton 	detectButton 			= new JButton(detectString);
 	private JCheckBox	partCheckBox 			= new JCheckBox (" from", false);
-	private JCheckBox	allSeriesCheckBox 		= new JCheckBox("ALL series", false);
+	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
 
@@ -64,8 +65,8 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		
 		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		((FlowLayout)panel0.getLayout()).setVgap(0);
-		panel0.add( detectButton);
-		panel0.add( allSeriesCheckBox);
+		panel0.add(detectButton);
+		panel0.add(allCheckBox);
 		panel0.add(allKymosCheckBox);
 		panel0.add(leftCheckBox);
 		panel0.add(rightCheckBox);
@@ -113,12 +114,12 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 				}
 			}});
 		
-		allSeriesCheckBox.addActionListener(new ActionListener () { 
+		allCheckBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				Color color = Color.BLACK;
-				if (allSeriesCheckBox.isSelected()) 
+				if (allCheckBox.isSelected()) 
 					color = Color.RED;
-				allSeriesCheckBox.setForeground(color);
+				allCheckBox.setForeground(color);
 				detectButton.setForeground(color);
 		}});
 	}
@@ -177,11 +178,11 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
 		DetectLevels_Options options= new DetectLevels_Options();
 		options.expList = new ExperimentList(); 
-		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
+		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);
 		options.expList.index0 = parent0.expList.currentExperimentIndex;
-		if (allSeriesCheckBox.isSelected()) 
+		if (allCheckBox.isSelected()) 
 			options.expList.index1 = options.expList.getSize()-1;
-		else 
+		else
 			options.expList.index1 = parent0.expList.currentExperimentIndex;
 
 		if (!allKymosCheckBox.isSelected())

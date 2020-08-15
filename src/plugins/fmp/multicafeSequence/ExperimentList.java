@@ -1,6 +1,5 @@
 package plugins.fmp.multicafeSequence;
 
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -45,19 +44,23 @@ public class ExperimentList {
 				if (expAll.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
 					expAll.setFileTimeImageLast(exp.getFileTimeImageLast(true));
 			}
-			expAll.fileTimeImageFirstMinute = expAll.getFileTimeImageFirst(false).toMillis()/60000;
-			expAll.fileTimeImageLastMinute = expAll.getFileTimeImageLast(false).toMillis()/60000;	
+			expAll.fileTimeImageFirstMinute = (long) (expAll.getFileTimeImageFirst(false).toMillis()/60000d);
+			expAll.fileTimeImageLastMinute = (long) (expAll.getFileTimeImageLast(false).toMillis()/60000d);	
 		} else {
 			expAll.fileTimeImageFirstMinute = 0;
 			expAll.fileTimeImageLastMinute = 0;
 			for (Experiment exp: experimentList) {
 				if (options.collateSeries && exp.previousExperiment != null)
 					continue;
-				long last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
-				long first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
-				long diff = ( last - first) /60000;
+				double last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
+				double first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
+				double diff = (( last - first) /60000d);
+				if (diff <1) {
+					System.out.println("error when computing FileTime difference between last and first image; set dt= 1 min");
+					diff = exp.seqCamData.seq.getSizeT();
+				}
 				if (expAll.fileTimeImageLastMinute < diff) 
-					expAll.fileTimeImageLastMinute = diff;
+					expAll.fileTimeImageLastMinute = (long) diff;
 			}
 		}
 		expAll.setKymoFrameStart ( (int) expAll.fileTimeImageFirstMinute);

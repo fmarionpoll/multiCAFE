@@ -21,7 +21,7 @@ public class XLSExportMoveResults  extends XLSExport {
 	ExperimentList expList = null;
 	List <XYTaSeries> rowsForOneExp = new ArrayList <XYTaSeries> ();
 
-	// ----------------------
+	// -----------------------
 	
 	public void exportToFile(String filename, XLSExportOptions opt) {	
 		System.out.println("XLS move measures output");
@@ -111,8 +111,8 @@ public class XLSExportMoveResults  extends XLSExport {
 			expAll.fileTimeImageLast = expi.fileTimeImageLast;
 			expi = expi.nextExperiment;
 		}
-		expAll.fileTimeImageFirstMinute = expAll.fileTimeImageFirst.toMillis()/60000;
-		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
+		expAll.fileTimeImageFirstMinute = (long) (expAll.fileTimeImageFirst.toMillis()/60000d);
+		expAll.fileTimeImageLastMinute = (long) (expAll.fileTimeImageLast.toMillis()/60000d);
 		int nFrames = (int) ((expAll.fileTimeImageLastMinute - expAll.fileTimeImageFirstMinute)/expAll.getCagesFrameStep() +1) ;
 		if (expAll.getCagesFrameEnd() < nFrames) {
 			expAll.setCagesFrameEnd(nFrames-1);
@@ -231,7 +231,7 @@ public class XLSExportMoveResults  extends XLSExport {
 			for (int i=index+1; i< transfer_first_index; i++) {
 				XYTaValue pos = row.pointsList.get(i);
 				pos.copy(posok);
-				pos.padded = true;
+				pos.xytPadded = true;
 			}
 		}
 		return posok;
@@ -241,7 +241,7 @@ public class XLSExportMoveResults  extends XLSExport {
 		int index = -1;
 		for (int i= fromindex; i>= 0; i--) {
 			XYTaValue pos = row.pointsList.get(i);
-			if (!Double.isNaN(pos.point.getX())) {
+			if (!Double.isNaN(pos.xytPoint.getX())) {
 				index = i;
 				break;
 			}
@@ -306,35 +306,35 @@ public class XLSExportMoveResults  extends XLSExport {
 				XYTaValue pos = row.pointsList.get(i_from);
 				switch (row.exportType) {
 					case DISTANCE:
-						valueL = pos.distance;
+						valueL = pos.xytDistance;
 						valueR = valueL;
 						break;
 					case ISALIVE:
-						valueL = pos.alive ? 1: 0;
+						valueL = pos.xytAlive ? 1: 0;
 						valueR = valueL;
 						break;
 					case SLEEP:
-						valueL = pos.sleep? 1: 0;
+						valueL = pos.xytSleep? 1: 0;
 						valueR = valueL;
 						break;
 					case XYTOPCAGE:
 					case XYTIPCAPS:
 					case XYIMAGE:
-						valueL = pos.point.getX();
-						valueR = pos.point.getY();
+						valueL = pos.xytPoint.getX();
+						valueR = pos.xytPoint.getY();
 					default:
 						break;
 				}
 				
 				if (!Double.isNaN(valueL)) {
 					XLSUtils.setValue(sheet, pt, transpose, valueL);
-					if (pos.padded)
+					if (pos.xytPadded)
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
 				if (!Double.isNaN(valueR)) {
 					pt.x++;
 					XLSUtils.setValue(sheet, pt, transpose, valueR);
-					if (pos.padded)
+					if (pos.xytPadded)
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 					pt.x--;
 				}

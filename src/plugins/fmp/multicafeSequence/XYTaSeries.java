@@ -1,6 +1,5 @@
 package plugins.fmp.multicafeSequence;
 
-
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,15 +67,15 @@ public class XYTaSeries implements XMLPersistent {
 	}
 	
 	public Point2D getPoint(int i) {
-		return pointsList.get(i).point;
+		return pointsList.get(i).xytPoint;
 	}
 	
 	public Point2D getValidPointAtOrBefore(int index) {
 		Point2D point = new Point2D.Double(-1, -1);
 		for (int i = index; i>= 0; i--) {
 			XYTaValue xyVal = pointsList.get(i);
-			if (xyVal.point.getX() >= 0 && xyVal.point.getY() >= 0) {
-				point = xyVal.point;
+			if (xyVal.xytPoint.getX() >= 0 && xyVal.xytPoint.getY() >= 0) {
+				point = xyVal.xytPoint;
 				break;
 			}	
 		}
@@ -84,7 +83,7 @@ public class XYTaSeries implements XMLPersistent {
 	}
 	
 	public int getTime(int i) {
-		return pointsList.get(i).time;
+		return pointsList.get(i).xytTime;
 	}
 
 	public void add(Point2D point, int frame) {
@@ -165,12 +164,12 @@ public class XYTaSeries implements XMLPersistent {
 		boolean isalive = false;
 		for (int i= pointsList.size() - 1; i >= 0; i--) {
 			XYTaValue pos = pointsList.get(i);
-			if (pos.distance > moveThreshold && !isalive) {
+			if (pos.xytDistance > moveThreshold && !isalive) {
 				lastIntervalAlive = i;
-				lastTimeAlive = pos.time;
+				lastTimeAlive = pos.xytTime;
 				isalive = true;				
 			}
-			pos.alive = isalive;
+			pos.xytAlive = isalive;
 		}
 	}
 	
@@ -179,24 +178,24 @@ public class XYTaSeries implements XMLPersistent {
 		boolean isalive = false;
 		for (int i= pointsList.size() - 1; i >= 0; i--) {
 			XYTaValue pos = pointsList.get(i);
-			if (!isalive && pos.alive) {
+			if (!isalive && pos.xytAlive) {
 				lastIntervalAlive = i;
-				lastTimeAlive = pos.time;
+				lastTimeAlive = pos.xytTime;
 				isalive = true;				
 			}
-			pos.alive = isalive;
+			pos.xytAlive = isalive;
 		}
 	}
 
 	public void computeDistanceBetweenPoints() {
 		if (pointsList.size() > 0) {
 			Point2D previous = new Point2D.Double();
-			previous = pointsList.get(0).point;
+			previous = pointsList.get(0).xytPoint;
 			for (XYTaValue pos: pointsList) {
-				pos.distance = pos.point.distance(previous);
-				if (previous.getX() < 0 || pos.point.getX() < 0)
-					pos.distance = Double.NaN;
-				previous = pos.point;
+				pos.xytDistance = pos.xytPoint.distance(previous);
+				if (previous.getX() < 0 || pos.xytPoint.getX() < 0)
+					pos.xytDistance = Double.NaN;
+				previous = pos.xytPoint;
 			}
 		}
 	}
@@ -205,7 +204,7 @@ public class XYTaSeries implements XMLPersistent {
 		ArrayList<Double> dataArray = new ArrayList<Double>();
 		dataArray.ensureCapacity(pointsList.size());
 		for (XYTaValue pos: pointsList) {
-			dataArray.add(pos.alive ? 1.0: 0.0);
+			dataArray.add(pos.xytAlive ? 1.0: 0.0);
 		}
 		return dataArray;
 	}
@@ -214,7 +213,7 @@ public class XYTaSeries implements XMLPersistent {
 		ArrayList<Integer> dataArray = new ArrayList<Integer>();
 		dataArray.ensureCapacity(pointsList.size());
 		for (XYTaValue pos: pointsList) {
-			dataArray.add(pos.alive ? 1: 0);
+			dataArray.add(pos.xytAlive ? 1: 0);
 		}
 		return dataArray;
 	}
@@ -226,7 +225,7 @@ public class XYTaSeries implements XMLPersistent {
 	}
 	
 	public int getTimeBinSize () {
-		return pointsList.get(1).time - pointsList.get(0).time;
+		return pointsList.get(1).xytTime - pointsList.get(0).xytTime;
 	}
 	
 	public Point2D getPointAt (int timeIndex) {
@@ -234,7 +233,7 @@ public class XYTaSeries implements XMLPersistent {
 			return null;
 		
 		int index = timeIndex / getTimeBinSize();
-		return pointsList.get(index).point;
+		return pointsList.get(index).xytPoint;
 	}
 		
 	public Double getDistanceBetween2Points(int firstTimeIndex, int secondTimeIndex) {
@@ -246,9 +245,9 @@ public class XYTaSeries implements XMLPersistent {
 			return Double.NaN;
 		XYTaValue pos1 = pointsList.get(firstIndex);
 		XYTaValue pos2 = pointsList.get(secondIndex);
-		if (pos1.point.getX() < 0 || pos2.point.getX()  < 0)
+		if (pos1.xytPoint.getX() < 0 || pos2.xytPoint.getX()  < 0)
 			return Double.NaN;
-		Double distance = pos2.point.distance(pos1.point); 
+		Double distance = pos2.xytPoint.distance(pos1.xytPoint); 
 		return distance;
 	}
 	
@@ -258,7 +257,7 @@ public class XYTaSeries implements XMLPersistent {
 		getLastIntervalAlive();
 		int index = timeIndex / getTimeBinSize();
 		XYTaValue pos = pointsList.get(index);
-		return (pos.alive ? 1: 0); 
+		return (pos.xytAlive ? 1: 0); 
 	}
 
 	private List<Integer> getDistanceAsMoveOrNot() {
@@ -266,7 +265,7 @@ public class XYTaSeries implements XMLPersistent {
 		ArrayList<Integer> dataArray = new ArrayList<Integer>();
 		dataArray.ensureCapacity(pointsList.size());
 		for (int i= 0; i< pointsList.size(); i++) {
-			dataArray.add(pointsList.get(i).distance < moveThreshold ? 1: 0);
+			dataArray.add(pointsList.get(i).xytDistance < moveThreshold ? 1: 0);
 		}
 		return dataArray;
 	}
@@ -288,7 +287,7 @@ public class XYTaSeries implements XMLPersistent {
 					break;
 				k++;
 			}
-			pos.sleep = (isleep == 1);
+			pos.xytSleep = (isleep == 1);
 			j++;
 		}
 	}
@@ -297,7 +296,7 @@ public class XYTaSeries implements XMLPersistent {
 		ArrayList<Double> dataArray = new ArrayList<Double>();
 		dataArray.ensureCapacity(pointsList.size());
 		for (XYTaValue pos: pointsList) {
-			dataArray.add(pos.sleep ? 1.0: 0.0);
+			dataArray.add(pos.xytSleep ? 1.0: 0.0);
 		}
 		return dataArray;
 	}
@@ -308,7 +307,7 @@ public class XYTaSeries implements XMLPersistent {
 		int index = timeIndex / getTimeBinSize();
 		if (index >= pointsList.size())
 			return -1;
-		return (pointsList.get(index).sleep ? 1: 0); 
+		return (pointsList.get(index).xytSleep ? 1: 0); 
 	}
 
 	public void computeNewPointsOrigin(Point2D newOrigin) {
@@ -318,7 +317,7 @@ public class XYTaSeries implements XMLPersistent {
 		if (deltaX == 0 && deltaY == 0)
 			return;
 		for (XYTaValue pos : pointsList) {
-			pos.point.setLocation(pos.point.getX()-deltaX, pos.point.getY()-deltaY);
+			pos.xytPoint.setLocation(pos.xytPoint.getX()-deltaX, pos.xytPoint.getY()-deltaY);
 		}
 	}
 	
@@ -327,7 +326,7 @@ public class XYTaSeries implements XMLPersistent {
 			return;
 		double ratio = 1/pixelsize*newpixelSize;
 		for (XYTaValue pos : pointsList) 
-			pos.point.setLocation(pos.point.getX()*ratio, pos.point.getY()*ratio);
+			pos.xytPoint.setLocation(pos.xytPoint.getX()*ratio, pos.xytPoint.getY()*ratio);
 		pixelsize = newpixelSize;
 		origin.setLocation(origin.getX()*ratio, origin.getY()*ratio);
 	}

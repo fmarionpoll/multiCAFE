@@ -28,6 +28,7 @@ import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
+
 public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListener {
 	/**
 	 * 
@@ -47,7 +48,7 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 	private JSpinner 		detectGulpsThresholdSpinner	= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
 	private String 			detectString 				= "        Detect     ";
 	private JButton 		detectButton 				= new JButton(detectString);
-	private JCheckBox		allSeriesCheckBox 			= new JCheckBox("ALL series", false);
+	private JCheckBox 		allCheckBox 				= new JCheckBox("ALL (current to last)", false);
 	private DetectGulps_series 	thread 					= null;
 	private MultiCAFE 		parent0;
 	
@@ -59,7 +60,7 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		((FlowLayout)panel0.getLayout()).setVgap(0);
 		panel0.add( detectButton);
-		panel0.add( allSeriesCheckBox);
+		panel0.add( allCheckBox);
 		panel0.add(detectAllGulpsCheckBox);
 		add( GuiUtil.besidesPanel(panel0 ));
 		
@@ -100,12 +101,12 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 				kymosDisplayFiltered2();
 			}});
 		
-		allSeriesCheckBox.addActionListener(new ActionListener () { 
+		allCheckBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				Color color = Color.BLACK;
-				if (allSeriesCheckBox.isSelected()) 
+				if (allCheckBox.isSelected()) 
 					color = Color.RED;
-				allSeriesCheckBox.setForeground(color);
+				allCheckBox.setForeground(color);
 				detectButton.setForeground(color);
 		}});
 		
@@ -142,11 +143,11 @@ public class MCLevels_DetectGulps extends JPanel  implements PropertyChangeListe
 		
 		DetectGulps_Options options = thread.options;
 		options.expList = new ExperimentList(); 
-		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);	
+		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		options.expList.index0 = parent0.expList.currentExperimentIndex;
-		if (allSeriesCheckBox.isSelected()) 
+		if (allCheckBox.isSelected()) 
 			options.expList.index1 = options.expList.getSize()-1;
-		else 
+		else
 			options.expList.index1 = parent0.expList.currentExperimentIndex;
 
 		options.firstkymo 				= parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();

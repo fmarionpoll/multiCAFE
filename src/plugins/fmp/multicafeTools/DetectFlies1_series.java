@@ -65,6 +65,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 				System.out.println("! skipped experiment with no cage: " + exp.getExperimentFileName());
 				continue;
 			}
+			System.out.println((index+1) + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
 			runDetectFlies(exp);
 			if (!stopFlag)
 				exp.xmlSaveFlyPositionsForAllCages();

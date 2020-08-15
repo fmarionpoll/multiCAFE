@@ -57,7 +57,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 	
 	private JCheckBox 	whiteMiceCheckBox 		= new JCheckBox("white object");
 	JCheckBox 			overlayCheckBox 		= new JCheckBox("overlay");
-	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
+	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	
 	private OverlayThreshold 	ov 				= null;
 	private DetectFlies1_series thread 			= null;
@@ -72,7 +72,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
 		flowLayout.setVgap(0);
 		JPanel panel1 = new JPanel(flowLayout);
-		panel1.add( ALLCheckBox);
+		panel1.add(allCheckBox);
 		panel1.add(new JLabel (" step"));
 		panel1.add(stepFrameJSpinner);
 		panel1.validate();
@@ -134,12 +134,12 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 					stopComputation();
 			}});
 		
-		ALLCheckBox.addActionListener(new ActionListener () { 
+		allCheckBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				Color color = Color.BLACK;
-				if (ALLCheckBox.isSelected()) 
+				if (allCheckBox.isSelected()) 
 					color = Color.RED;
-				ALLCheckBox.setForeground(color);
+				allCheckBox.setForeground(color);
 				startComputationButton.setForeground(color);
 		}});
 	}
@@ -200,9 +200,9 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		detect.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(detect.expList, true);		
 		detect.expList.index0 = parent0.expList.currentExperimentIndex;
-		if (ALLCheckBox.isSelected()) 
+		if (allCheckBox.isSelected())
 			detect.expList.index1 = detect.expList.getSize()-1;
-		else 
+		else
 			detect.expList.index1 = detect.expList.index0;
 		
 		thread.stopFlag 	= false;

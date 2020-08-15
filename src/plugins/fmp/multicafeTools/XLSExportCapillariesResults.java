@@ -22,7 +22,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 	ExperimentList expList = null;
 	List <XLSResults> rowsForOneExp = new ArrayList <XLSResults> ();
 
-	// ----------------------
+	// -----------------------
 	
 	public void exportToFile(String filename, XLSExportOptions opt) {	
 		System.out.println("XLS capillary measures output");
@@ -125,8 +125,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			expAll.fileTimeImageLast = expi.fileTimeImageLast;
 			expi = expi.nextExperiment;
 		}
-		expAll.fileTimeImageFirstMinute = expAll.fileTimeImageFirst.toMillis()/60000;
-		expAll.fileTimeImageLastMinute = expAll.fileTimeImageLast.toMillis()/60000;
+		expAll.fileTimeImageFirstMinute = (long) (expAll.fileTimeImageFirst.toMillis()/60000d);
+		expAll.fileTimeImageLastMinute = (long) (expAll.fileTimeImageLast.toMillis()/60000d);
 		int nFrames = (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1 ;
 		
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
@@ -419,7 +419,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 			}
 			// output values from the row
 			int lenL = rowL.values_out.length;
-			if (rowR != null && lenL != rowR.values_out.length)
+			if (rowR != null && rowR.values_out != null && lenL != rowR.values_out.length)
 				System.out.println("length of data - rowL="+lenL+" rowR="+rowR.values_out.length);
 			int row0 = pt.x;
 			
@@ -430,7 +430,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					break;
 				double dataL = rowL.values_out[i_from];
 				double dataR = Double.NaN;
-				if (rowR != null) 
+				if (rowR != null && rowR.values_out != null) 
 					dataR = rowR.values_out[i_from];
 				
 				if (Double.isNaN(dataR) && !Double.isNaN(dataL)) 

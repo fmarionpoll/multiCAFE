@@ -27,7 +27,7 @@ import plugins.kernel.roi.roi2d.ROI2DArea;
 
 public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
-	private List<Boolean> initialflyRemoved = new ArrayList<Boolean>();
+	private List<Boolean> initialflyRemovedList = new ArrayList<Boolean>();
 	private Viewer viewerCamData;
 	private Viewer vPositive = null;
 	private Viewer vBackgroundImage = null;;
@@ -78,6 +78,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			if (exp.cages.cageList.size() < 1 ) {
 				System.out.println("! skipped experiment with no cage: " + exp.getExperimentFileName());
 			} else {
+				System.out.println((index+1) + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
 				runDetectFlies(exp);
 			}
 
@@ -288,13 +289,13 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 	private void buildBackgroundImage(Experiment exp) {
 		ProgressFrame progress = new ProgressFrame("Build background image...");
-		int nfliesRemoved = 0;
+		int nfliesRemoved = 0; //
 		detect.initParametersForDetection(exp);
 		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getImage(detect.df_startFrame, 0));
-		initialflyRemoved.clear();
+		initialflyRemovedList.clear();
 		int ndetectcages = exp.cages.cageList.size();
 		for (int i = 0; i < ndetectcages; i++)
-			initialflyRemoved.add(false);
+			initialflyRemovedList.add(false);
 
 		viewerCamData = exp.seqCamData.seq.getFirstViewer();
 		displayRefViewers(exp);
@@ -314,15 +315,15 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			 
 			for (int icage = 0; icage <= ndetectcages - 1; icage++) {
 				Cage cage = exp.cages.cageList.get(icage);
-				if (cage.cageNFlies < 1)
+				if (cage.cageNFlies != 1)
 					continue;
 				BooleanMask2D bestMask = detect.findLargestBlob(roiAll, icage);
 				if (bestMask != null) {
 					ROI2DArea flyROI = new ROI2DArea(bestMask);
-					if (!initialflyRemoved.get(icage)) {
+					if (!initialflyRemovedList.get(icage)) {
 						Rectangle rect = flyROI.getBounds();
 						patchRectToReferenceImage(exp.seqCamData, currentImage, rect);
-						initialflyRemoved.set(icage, true);
+						initialflyRemovedList.set(icage, true);
 						nfliesRemoved++;
 						if (exp.seqBackgroundImage != null)
 							exp.seqBackgroundImage.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage,

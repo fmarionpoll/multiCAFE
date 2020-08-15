@@ -19,6 +19,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
+
 public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 	List<Point2D> 				limitTop 		= null;
 	List<Point2D> 				limitBottom 	= null;
@@ -29,7 +30,7 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground() throws Exception {
-		System.out.println("start detectLimits thread");
+		System.out.println("start detect levels thread");
         threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = options.expList;
@@ -45,6 +46,7 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 			String resultsDirectory = exp.getResultsDirectory(); 
 			exp.loadExperimentCapillariesData_ForSeries();
 			if (exp.loadKymographs()) {	
+				System.out.println((index+1) + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
 				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
 				detectCapillaryLevels(exp);
 				exp.saveExperimentMeasures(resultsDirectory);

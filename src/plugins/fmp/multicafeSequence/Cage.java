@@ -14,19 +14,18 @@ import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
 
 
-
 public class Cage {
-	public ROI2D 			roi					= null;
-	public 	int				frameStep			= 1;
-	public	int				frameStart			= 0;
-	public	int				frameEnd			= 1;
-	public XYTaSeries 		flyPositions 		= new XYTaSeries();
-	public List<ROI2D> 		detectedFliesList	= new ArrayList<ROI2D>();
-	public int 				cageNFlies  		= 1;
-	public String 			strCageComment 		= "..";
-	private String 			strCageNumber 		= null;
-	public	boolean			valid				= false;
-	public	boolean			saveDetectedROIs	= false;
+	public ROI2D 		roi						= null;
+	public 	int			frameStep				= 1;
+	public	int			frameStart				= 0;
+	public	int			frameEnd				= 1;
+	public XYTaSeries 	flyPositions 			= new XYTaSeries();
+	public List<ROI2D> 	detectedFliesList		= new ArrayList<ROI2D>();
+	public int 			cageNFlies  			= 1;
+	public String 		strCageComment 			= "..";
+	private String 		strCageNumber 			= null;
+	public	boolean		valid					= false;
+	public	boolean		saveDetectedROIs		= false;
 	
 	private final String ID_CAGELIMITS 			= "CageLimits";
 	private final String ID_FLYPOSITIONS		= "FlyPositions";
@@ -198,11 +197,11 @@ public class Cage {
 		detectedFliesList.clear();
 		for (XYTaValue aValue: flyPositions.pointsList) {
 			ROI2DRectangle flyRect = new ROI2DRectangle(
-					aValue.point.getX()-width/2, 
-					aValue.point.getY()-height/2, 
-					aValue.point.getX()+width, 
-					aValue.point.getY()+height);
-			int t = aValue.time;
+					aValue.xytPoint.getX()-width/2, 
+					aValue.xytPoint.getY()-height/2, 
+					aValue.xytPoint.getX()+width, 
+					aValue.xytPoint.getY()+height);
+			int t = aValue.xytTime;
 			flyRect.setName("det"+getCageNumber() +"_" + t );
 			flyRect.setT( t );
 			// TODO flyRect.setColor(value);

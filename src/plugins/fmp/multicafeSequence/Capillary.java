@@ -1,6 +1,5 @@
 package plugins.fmp.multicafeSequence;
 
-
 import java.awt.Color;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -267,6 +266,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public void getGulps(int indexkymo, DetectGulps_Options options) {
 		int indexpixel = 0;
 		int start = 1;
+		if (ptsTop.polylineLimit == null)
+			return;
 		int end = ptsTop.polylineLimit.npoints;
 		if (options.analyzePartOnly) {
 			start = options.startPixel;
