@@ -52,7 +52,7 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
 	private JButton 	loadButton 				= new JButton("Load...");
 	private JButton 	saveButton 				= new JButton("Save...");
-	private JCheckBox 	ALLCheckBox 			= new JCheckBox("ALL series", false);
+	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("(re)build background", false);
 	private JCheckBox 	detectCheckBox 			= new JCheckBox("detect flies", true);
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
@@ -72,7 +72,7 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 		
 		JPanel panel1 = new JPanel(flowLayout);
 		panel1.add(startComputationButton);
-		panel1.add(ALLCheckBox);
+		panel1.add(allCheckBox);
 		panel1.add(new JLabel (" step"));
 		panel1.add(stepFrameJSpinner);
 		panel1.add(backgroundCheckBox);
@@ -143,12 +143,12 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 				}
 			}});
 		
-		ALLCheckBox.addActionListener(new ActionListener () { 
+		allCheckBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				Color color = Color.BLACK;
-				if (ALLCheckBox.isSelected()) 
+				if (allCheckBox.isSelected()) 
 					color = Color.RED;
-				ALLCheckBox.setForeground(color);
+				allCheckBox.setForeground(color);
 				startComputationButton.setForeground(color);
 		}});
 	}
@@ -187,11 +187,10 @@ public class MCCages_Detect2 extends JPanel implements ChangeListener, PropertyC
 
 		detect.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(detect.expList, true);		
-		if (ALLCheckBox.isSelected()) {
-			detect.expList.index0 = 0;
+		detect.expList.index0 = parent0.expList.currentExperimentIndex;
+		if (allCheckBox.isSelected()) {
 			detect.expList.index1 = detect.expList.getSize()-1;
 		} else {
-			detect.expList.index0 = parent0.expList.currentExperimentIndex;
 			detect.expList.index1 = detect.expList.index0;
 		}
 		

@@ -48,7 +48,6 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
         threadRunning = true;
 		int nbiterations = 0;
 		ExperimentList expList = detect.expList;
-		int nbexp = expList.index1 - expList.index0 + 1;
 		ProgressFrame progress = new ProgressFrame("Detect flies");
 		detect.btrackWhite = true;
 		
@@ -57,7 +56,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 				break;
 			Experiment exp = expList.getExperiment(index);
 			System.out.println(exp.getExperimentFileName());
-			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
+			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1+1));
 			
 			exp.resultsSubPath = detect.resultsSubPath;
 			exp.getResultsDirectory(); 
@@ -79,6 +78,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			if (exp.cages.cageList.size() < 1 ) {
 				System.out.println("! skipped experiment with no cage: " + exp.getExperimentFileName());
 			} else {
+				System.out.println((index+1) + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
 				runDetectFlies(exp);
 			}
 

@@ -72,40 +72,44 @@ public class MCLevels_Graphs extends JPanel {
 		if (v == null)
 			return;
 		final Rectangle rectv = v.getBounds();
-		Point ptRelative = new Point(0, rectv.height); // 35);
-		final int deltay = 230;
+		Point ptRelative = new Point(0, rectv.height); 
+		int dx = 5;
+		int dy = 5; // 230
 		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumListType.topAndBottom)) {
 			topandbottomChart = xyDisplayGraphsItem(exp, "top + bottom levels", 
 					EnumListType.topAndBottom, 
 					topandbottomChart, rectv, ptRelative);
-			ptRelative.y += deltay;
+			ptRelative.translate(dx, dy);
 		}
 		if (deltaCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumListType.topLevelDelta)) {
 			deltaChart = xyDisplayGraphsItem(exp, "top delta t -(t-1)", 
 					EnumListType.topLevelDelta, 
 					deltaChart, rectv, ptRelative);
-			ptRelative.y += deltay;
+			ptRelative.translate(dx, dy);
 		}
 		if (derivativeCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumListType.derivedValues)) {
 			derivativeChart = xyDisplayGraphsItem(exp, "Derivative", 
 					EnumListType.derivedValues, 
 					derivativeChart, rectv, ptRelative);
-			ptRelative.y += deltay; 
+			ptRelative.translate(dx, dy); 
 		}
 		if (consumptionCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumListType.cumSum)) {
 			sumgulpsChart = xyDisplayGraphsItem(exp, "Cumulated gulps", 
 					EnumListType.cumSum, 
 					sumgulpsChart, rectv, ptRelative);
-			ptRelative.y += deltay; 
+			ptRelative.translate(dx, dy); 
 		}
 	}
+	
+
 
 	private XYMultiChart xyDisplayGraphsItem(Experiment exp, String title, EnumListType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) {	
 		if (iChart != null) 
 			iChart.mainChartFrame.dispose();
 		iChart = new XYMultiChart();
 		iChart.createPanel(title);
-		iChart.setLocationRelativeToRectangle(rectv, ptRelative);
+		if (ptRelative != null)
+			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		iChart.displayData(exp, option);
 		iChart.mainChartFrame.toFront();
 		return iChart;

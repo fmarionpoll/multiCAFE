@@ -29,11 +29,10 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground() throws Exception {
-		System.out.println("start detectLimits thread");
+		System.out.println("start detect gulps thread");
         threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = options.expList;
-		int nbexp = expList.index1 - expList.index0 +1;
 		ProgressFrame progress = new ProgressFrame("Detect limits");
 		
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
@@ -42,11 +41,11 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 			Experiment exp = expList.getExperiment(index);
 			exp.resultsSubPath = options.resultsSubPath;
 			exp.getResultsDirectory(); 
-			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
+			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1 +1));
 			
 			exp.loadExperimentCapillariesData_ForSeries();
 			if ( exp.loadKymographs()) {
-				System.out.println(index + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
+				System.out.println((index+1) + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
 				buildFilteredImage(exp);
 				detectGulps(exp);
 				exp.xmlSaveMCcapillaries();
@@ -121,6 +120,8 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 		int ix = 0;
 		int iy = 0;
 		Polyline2D 	polyline = cap.ptsTop.polylineLimit;
+		if (polyline == null)
+			return;
 		for (ix = 1; ix < polyline.npoints; ix++) {
 			// for each point of topLevelArray, define a bracket of rows to look at ("jitter" = 10)
 			int low = (int) polyline.ypoints[ix]- jitter;

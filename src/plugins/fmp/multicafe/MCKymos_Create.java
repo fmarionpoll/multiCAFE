@@ -37,7 +37,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
 	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
 	JCheckBox 				doCreateCheckBox 			= new JCheckBox("force creation of results_bin", false);
-	JCheckBox				ALLCheckBox 				= new JCheckBox("ALL series", false);
+	JCheckBox				allCheckBox 				= new JCheckBox("ALL series (current to last)", false);
 	JSpinner 				stepFrameJSpinner			= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
@@ -55,7 +55,7 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		
 		JPanel panel1 = new JPanel(layout1);
 		panel1.add(startComputationButton);
-		panel1.add(ALLCheckBox);
+		panel1.add(allCheckBox);
 		add(GuiUtil.besidesPanel(panel1));
 		
 		JPanel panel2 = new JPanel(layout1);
@@ -81,12 +81,12 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 					stopComputation();
 		}});
 
-		ALLCheckBox.addActionListener(new ActionListener () { 
+		allCheckBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				Color color = Color.BLACK;
-				if (ALLCheckBox.isSelected()) 
+				if (allCheckBox.isSelected()) 
 					color = Color.RED;
-				ALLCheckBox.setForeground(color);
+				allCheckBox.setForeground(color);
 				startComputationButton.setForeground(color);
 		}});
 	}
@@ -101,11 +101,10 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		
 		BuildKymographs_Options options = thread.options;
 		options.expList = parent0.expList; 
-		if (ALLCheckBox.isSelected()) {
-			options.expList.index0 = 0;
+		options.expList.index0 = parent0.expList.currentExperimentIndex;
+		if (allCheckBox.isSelected()) {
 			options.expList.index1 = parent0.expList.getSize()-1;
 		} else {
-			options.expList.index0 = parent0.expList.currentExperimentIndex;
 			options.expList.index1 = options.expList.index0;
 		}
 		options.expList 		= parent0.expList; 
