@@ -38,7 +38,7 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag)
 				break;
-			progress.setMessage("Processing file: " + (index+1) + "//" + (expList.index1+1));
+			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1+1));
 			Experiment exp = expList.getExperiment(index);	
 			exp.resultsSubPath = options.resultsSubPath;
 			String resultsDirectory = exp.getResultsDirectory(); 

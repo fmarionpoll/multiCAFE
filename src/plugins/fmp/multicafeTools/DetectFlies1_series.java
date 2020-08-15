@@ -42,7 +42,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 				break;
 			Experiment exp = expList.getExperiment(index);
 			System.out.println(exp.getExperimentFileName());
-			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1+1));
+			progress.setMessage("Processing file: " + (index+1) + "//" + (expList.index1+1));
 			
 			exp.resultsSubPath = detect.resultsSubPath;
 			exp.getResultsDirectory(); 

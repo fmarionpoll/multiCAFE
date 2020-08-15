@@ -20,7 +20,7 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 import plugins.fmp.multicafeSequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
-
+// detect gulps
 public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 	private SequenceKymos 		seqkymo 		= null;
 	public boolean 				stopFlag 		= false;

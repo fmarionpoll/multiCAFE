@@ -102,11 +102,11 @@ public class MCKymos_Create extends JPanel implements PropertyChangeListener {
 		BuildKymographs_Options options = thread.options;
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.expList.currentExperimentIndex;
-		if (allCheckBox.isSelected()) {
+		if (allCheckBox.isSelected())
 			options.expList.index1 = parent0.expList.getSize()-1;
-		} else {
+		else
 			options.expList.index1 = options.expList.index0;
-		}
+
 		options.expList 		= parent0.expList; 
 		
 		options.stepFrame 		= (int) stepFrameJSpinner.getValue();

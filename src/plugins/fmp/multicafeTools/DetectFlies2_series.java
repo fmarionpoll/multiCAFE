@@ -289,7 +289,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 
 	private void buildBackgroundImage(Experiment exp) {
 		ProgressFrame progress = new ProgressFrame("Build background image...");
-		int nfliesRemoved = 0;
+		int nfliesRemoved = 0; //
 		detect.initParametersForDetection(exp);
 		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getImage(detect.df_startFrame, 0));
 		initialflyRemovedList.clear();
