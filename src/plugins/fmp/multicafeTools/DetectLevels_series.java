@@ -33,14 +33,14 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
         threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = options.expList;
-		int nbexp = expList.index1 - expList.index0 +1;
 		ProgressFrame progress = new ProgressFrame("Detect limits");
 		
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag)
 				break;
-			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
+			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1+1));
 			Experiment exp = expList.getExperiment(index);	
+			System.out.println((index+1)+": " +exp.getExperimentFileName());
 			exp.resultsSubPath = options.resultsSubPath;
 			String resultsDirectory = exp.getResultsDirectory(); 
 			exp.loadExperimentCapillariesData_ForSeries();

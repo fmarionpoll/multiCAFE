@@ -35,15 +35,14 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
         threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = detect.expList;
-		int nbexp = expList.index1 - expList.index0 +1;
 		ProgressFrame progress = new ProgressFrame("Detect flies");
 		
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag) 
 				break;
 			Experiment exp = expList.getExperiment(index);
-			System.out.println(exp.getExperimentFileName());
-			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
+			System.out.println((index+1)+": " +exp.getExperimentFileName());
+			progress.setMessage("Processing file: " + (index+1) + "//" + (expList.index1+1));
 			
 			exp.resultsSubPath = detect.resultsSubPath;
 			exp.getResultsDirectory(); 
