@@ -1,6 +1,5 @@
 package plugins.fmp.multicafeSequence;
 
-
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;

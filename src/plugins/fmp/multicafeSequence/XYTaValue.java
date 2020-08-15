@@ -8,6 +8,7 @@ import org.w3c.dom.Node;
 import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 
+
 public class XYTaValue implements XMLPersistent {
 	public Point2D 	xytPoint 	= new Point2D.Double(Double.NaN, Double.NaN);
 	public int 		xytTime 	= 0;

@@ -19,6 +19,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
+
 public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 	List<Point2D> 				limitTop 		= null;
 	List<Point2D> 				limitBottom 	= null;

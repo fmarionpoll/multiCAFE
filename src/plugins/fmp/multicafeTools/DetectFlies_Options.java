@@ -25,6 +25,7 @@ import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
+
 public class DetectFlies_Options implements XMLPersistent {
 	
 	public int 		threshold 				= -1;

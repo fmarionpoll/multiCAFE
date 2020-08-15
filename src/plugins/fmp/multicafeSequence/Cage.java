@@ -14,7 +14,6 @@ import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
 
 
-
 public class Cage {
 	public ROI2D 		roi						= null;
 	public 	int			frameStep				= 1;

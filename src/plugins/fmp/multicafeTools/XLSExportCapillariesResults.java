@@ -22,7 +22,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 	ExperimentList expList = null;
 	List <XLSResults> rowsForOneExp = new ArrayList <XLSResults> ();
 
-	// ----------------------
+	// -----------------------
 	
 	public void exportToFile(String filename, XLSExportOptions opt) {	
 		System.out.println("XLS capillary measures output");

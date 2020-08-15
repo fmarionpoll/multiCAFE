@@ -37,6 +37,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 
 
+
 public class SequenceCamData {
 	public Sequence					seq						= null;
 	public IcyBufferedImage 		refImage 				= null;

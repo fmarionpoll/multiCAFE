@@ -29,7 +29,7 @@ public class YPosMultiChart extends IcyFrame {
 	public JPanel 	mainChartPanel = null;
 	private ArrayList<ChartPanel> chartsInMainChartPanel = null;
 	List<XYSeriesCollection> xyDataSetList = null;
-	
+	//
 	public IcyFrame mainChartFrame = null;
 	private String 	title;
 	private Point 	pt = new Point (0,0);

@@ -21,7 +21,7 @@ public class XLSExportMoveResults  extends XLSExport {
 	ExperimentList expList = null;
 	List <XYTaSeries> rowsForOneExp = new ArrayList <XYTaSeries> ();
 
-	// ----------------------
+	// -----------------------
 	
 	public void exportToFile(String filename, XLSExportOptions opt) {	
 		System.out.println("XLS move measures output");

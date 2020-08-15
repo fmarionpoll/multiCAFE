@@ -30,7 +30,7 @@ public class XLSExport {
     XSSFFont 					font_blue 			= null;
     XSSFWorkbook 				workbook			= null;		
 
-	// -------------------------------------------------
+	// ------------------------------------------------
     
 	public long getnearest(long value, int step) {
 		long diff0 = (value /step)*step;

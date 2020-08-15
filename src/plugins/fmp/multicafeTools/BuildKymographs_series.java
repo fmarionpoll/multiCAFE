@@ -56,7 +56,8 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				break;
 			Experiment exp = expList.getExperiment(index);
 			progress.setMessage("Processing file: " + (index-expList.index0 +1) + "//" + nbexp);
-	
+			System.out.println((index+1)+": " +exp.getExperimentFileName());
+			
 			loadExperimentDataToBuildKymos(exp);
 			exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
 			exp.setKymoFrameStep (options.stepFrame);
