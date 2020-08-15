@@ -28,6 +28,7 @@ import plugins.fmp.multicafeTools.DetectLevels_series;
 import plugins.fmp.multicafeTools.ImageTransformTools.TransformOp;
 
 
+
 public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListener {
 	/**
 	 * 
@@ -64,8 +65,8 @@ public class MCLevels_DetectLimits extends JPanel implements PropertyChangeListe
 		
 		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		((FlowLayout)panel0.getLayout()).setVgap(0);
-		panel0.add( detectButton);
-		panel0.add( allCheckBox);
+		panel0.add(detectButton);
+		panel0.add(allCheckBox);
 		panel0.add(allKymosCheckBox);
 		panel0.add(leftCheckBox);
 		panel0.add(rightCheckBox);

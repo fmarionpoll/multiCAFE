@@ -72,7 +72,7 @@ public class MCCages_Detect1 extends JPanel implements ChangeListener, PropertyC
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
 		flowLayout.setVgap(0);
 		JPanel panel1 = new JPanel(flowLayout);
-		panel1.add( allCheckBox);
+		panel1.add(allCheckBox);
 		panel1.add(new JLabel (" step"));
 		panel1.add(stepFrameJSpinner);
 		panel1.validate();
