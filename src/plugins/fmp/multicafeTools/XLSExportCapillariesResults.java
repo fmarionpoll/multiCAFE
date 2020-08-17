@@ -433,10 +433,15 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				if (rowR != null && rowR.values_out != null) 
 					dataR = rowR.values_out[i_from];
 				
-				if (Double.isNaN(dataR) && !Double.isNaN(dataL)) 
+				boolean ratioOK = true;
+				if (Double.isNaN(dataR)) {
 					dataR=0;
-				else if (!Double.isNaN(dataR) && Double.isNaN(dataL)) 
+					ratioOK = false;
+				}
+				if (Double.isNaN(dataL)) { 
 					dataL=0;
+					ratioOK = false;
+				}
 					
 				double sum = dataL+dataR;
 				if (!Double.isNaN(sum)) {
@@ -445,7 +450,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
 				pt.x ++;
-				if (!Double.isNaN(dataR) && !Double.isNaN(dataL) && sum != 0 && !Double.isNaN(sum)) {
+				if (ratioOK && sum != 0 && !Double.isNaN(sum)) {
 					double ratio = (dataL-dataR)/sum;
 					if (!Double.isNaN(ratio)) {
 						XLSUtils.setValue(sheet, pt, transpose, ratio);
