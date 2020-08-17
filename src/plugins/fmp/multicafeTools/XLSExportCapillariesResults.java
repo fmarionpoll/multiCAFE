@@ -443,7 +443,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 					ratioOK = false;
 				}
 					
-				double sum = dataL+dataR;
+				double sum = Math.abs(dataL)+Math.abs(dataR);
 				if (!Double.isNaN(sum)) {
 					XLSUtils.setValue(sheet, pt, transpose, sum);
 					if (i_from < rowL.padded_out.length && rowL.padded_out[i_from])
@@ -452,6 +452,8 @@ public class XLSExportCapillariesResults  extends XLSExport {
 				pt.x ++;
 				if (ratioOK && sum != 0 && !Double.isNaN(sum)) {
 					double ratio = (dataL-dataR)/sum;
+					if (ratio > 1. || ratio < -1.)
+						System.out.println("ratio out of limits: "+ ratio);
 					if (!Double.isNaN(ratio)) {
 						XLSUtils.setValue(sheet, pt, transpose, ratio);
 						if (i_from < rowL.padded_out.length && rowL.padded_out[i_from])
