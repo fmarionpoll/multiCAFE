@@ -132,7 +132,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.topLevelDelta   = tabKymos.topLevelDeltaCheckBox.isSelected();
 		options.bottomLevel 	= tabKymos.bottomLevelCheckBox.isSelected(); 
 		options.derivative 		= tabKymos.derivativeCheckBox.isSelected(); 
-		options.consumption 	= tabKymos.consumptionCheckBox.isSelected(); 
+		options.consumption 	= tabKymos.sumGulpsCheckBox.isSelected(); 
 		options.sum_ratio_LR 			= tabKymos.sumCheckBox.isSelected(); 
 		options.cage 			= tabKymos.cageCheckBox.isSelected();
 		options.t0 				= tabKymos.t0CheckBox.isSelected();
