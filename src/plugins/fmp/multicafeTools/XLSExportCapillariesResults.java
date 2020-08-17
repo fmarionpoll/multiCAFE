@@ -445,7 +445,7 @@ public class XLSExportCapillariesResults  extends XLSExport {
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
 				pt.x ++;
-				if (sum != 0 && !Double.isNaN(sum)) {
+				if (!Double.isNaN(dataR) && !Double.isNaN(dataL) && sum != 0 && !Double.isNaN(sum)) {
 					double ratio = (dataL-dataR)/sum;
 					if (!Double.isNaN(ratio)) {
 						XLSUtils.setValue(sheet, pt, transpose, ratio);
