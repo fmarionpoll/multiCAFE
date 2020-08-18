@@ -4,6 +4,7 @@ package plugins.fmp.multicafeTools;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class XLSResults {
 	String				name 		= null;
 	String 				stimulus	= null;
@@ -133,4 +134,6 @@ public class XLSResults {
 		}
 		nadded += 1;
 	}
+
+
 }

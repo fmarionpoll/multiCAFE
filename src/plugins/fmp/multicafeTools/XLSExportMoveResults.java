@@ -51,17 +51,17 @@ public class XLSExportMoveResults  extends XLSExport {
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				
 				if (options.xyImage)		
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.XYIMAGE);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.XYIMAGE);
 				if (options.xyTopCage) 		
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTOPCAGE);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTOPCAGE);
 				if (options.xyTipCapillaries)  	
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTIPCAPS);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTIPCAPS);
 				if (options.distance)  	
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.DISTANCE);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.DISTANCE);
 				if (options.alive)	
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.ISALIVE);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.ISALIVE);
 				if (options.sleep) 	
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SLEEP);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.SLEEP);
 				
 				if (!options.collateSeries || exp.previousExperiment == null)
 					column += expList.maxSizeOfCapillaryArrays +2;
@@ -80,7 +80,7 @@ public class XLSExportMoveResults  extends XLSExport {
 		System.out.println("XLS output finished");
 	}
 	
-	private int getDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType datatype) {	
+	private int getMoveDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType datatype) {	
 		getDataFromOneSeriesOfExperiments(exp, datatype);
 		
 		XSSFSheet sheet = xlsInitSheet(datatype.toString());
@@ -344,5 +344,4 @@ public class XLSExportMoveResults  extends XLSExport {
 	}
 	
 
-	
 }

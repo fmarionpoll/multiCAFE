@@ -7,8 +7,9 @@ import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafeSequence.Experiment;
 
 
+public class XLSExportGulpsResults  extends XLSExport {
 
-public class XLSExportCapillariesResults extends XLSExport {
+	// -----------------------
 	
 	public void exportToFile(String filename, XLSExportOptions opt) {	
 		System.out.println("XLS capillary measures output");
@@ -37,22 +38,10 @@ public class XLSExportCapillariesResults extends XLSExport {
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				
-				if (options.topLevel) {	
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPRAW);
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVEL);
-				}
-				if (options.sum_ratio_LR && options.topLevel) 		
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVEL_LR);
-				if (options.topLevelDelta) 	
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVELDELTA);
-				if (options.sum_ratio_LR && options.topLevelDelta) 	
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVELDELTA_LR);
-
-
-				if (options.bottomLevel) 	
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.BOTTOMLEVEL);		
-				if (options.derivative) 	
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.DERIVEDVALUES);	
+				if (options.consumption) 	
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS);
+				if (options.sum_ratio_LR && options.consumption) 	
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS_LR);
 				
 				if (!options.collateSeries || exp.previousExperiment == null)
 					column += expList.maxSizeOfCapillaryArrays +2;
@@ -70,5 +59,5 @@ public class XLSExportCapillariesResults extends XLSExport {
 		}
 		System.out.println("XLS output finished");
 	}
-	
+
 }

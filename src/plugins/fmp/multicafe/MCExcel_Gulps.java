@@ -19,6 +19,7 @@ public class MCExcel_Gulps extends JPanel {
 	JButton 	exportToXLSButton 	= new JButton("save XLS (v1)");
 	JButton 	exportToXLSButton2 	= new JButton("save XLS");
 	JCheckBox 	sumGulpsCheckBox 	= new JCheckBox("cumsum gulps", false);
+	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R & ratio", true);
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
 	
 	void init(GridLayout capLayout) {	
@@ -32,6 +33,7 @@ public class MCExcel_Gulps extends JPanel {
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout0);
+		panel1.add(sumCheckBox);
 		panel1.add(onlyaliveCheckBox);
 		add(panel1);
 		
