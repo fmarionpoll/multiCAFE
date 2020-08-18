@@ -31,7 +31,8 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	private static final long serialVersionUID = -4296207607692017074L;
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
 	MCExcel_Options			tabOptions		= new MCExcel_Options();
-	private MCExcel_Kymos	tabKymos		= new MCExcel_Kymos();
+	private MCExcel_Levels	tabKymos		= new MCExcel_Levels();
+	private MCExcel_Gulps	tabGulps		= new MCExcel_Gulps();
 	private MCExcel_Move 	tabMove  		= new MCExcel_Move();
 	private MultiCAFE 		parent0 = null;
 
@@ -53,6 +54,11 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		tabKymos.init(capLayout);
 		tabsPane.addTab("Capillaries", null, tabKymos, "Export capillary levels to file");
 		tabKymos.addPropertyChangeListener(this);
+		
+		tabGulps.init(capLayout);
+		tabsPane.addTab("Gulps", null, tabGulps, "Export gulps to file");
+		tabGulps.addPropertyChangeListener(this);
+		
 		
 		tabMove.init(capLayout);
 		tabsPane.addTab("Move", null, tabMove, "Export fly positions to file");
@@ -94,7 +100,18 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 			updateParametersCurrentExperiment(exp);
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				XLSExportCapillariesResults xlsExport2 = new XLSExportCapillariesResults();
-				xlsExport2.exportToFile(file, getCapillariesOptions());
+				xlsExport2.exportToFile(file, getLevelsOptions());
+			}});
+			firePropertyChange("SAVE_KYMOSMEASURES", false, true);	
+		}
+		else if (evt.getPropertyName().equals("EXPORT_GULPSDATA")) {
+			String file = defineXlsFileName(exp, "_gulps.xlsx");
+			if (file == null)
+				return;
+			updateParametersCurrentExperiment(exp);
+			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
+				XLSExportCapillariesResults xlsExport2 = new XLSExportCapillariesResults();
+				xlsExport2.exportToFile(file, getGulpsOptions());
 			}});
 			firePropertyChange("SAVE_KYMOSMEASURES", false, true);	
 		}
@@ -126,18 +143,34 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		return options;
 	}
 	
-	private XLSExportOptions getCapillariesOptions() {
+	private XLSExportOptions getLevelsOptions() {
 		XLSExportOptions options = new XLSExportOptions();
 		options.topLevel 		= tabKymos.topLevelCheckBox.isSelected(); 
 		options.topLevelDelta   = tabKymos.topLevelDeltaCheckBox.isSelected();
 		options.bottomLevel 	= tabKymos.bottomLevelCheckBox.isSelected(); 
 		options.derivative 		= tabKymos.derivativeCheckBox.isSelected(); 
-		options.consumption 	= tabKymos.sumGulpsCheckBox.isSelected(); 
-		options.sum_ratio_LR 			= tabKymos.sumCheckBox.isSelected(); 
+		options.consumption 	= false; 
+		options.sum_ratio_LR 	= tabKymos.sumCheckBox.isSelected(); 
 		options.cage 			= tabKymos.cageCheckBox.isSelected();
 		options.t0 				= tabKymos.t0CheckBox.isSelected();
 		options.onlyalive 		= tabKymos.onlyaliveCheckBox.isSelected();
 		options.subtractEvaporation = tabKymos.subtractEvaporationCheckBox.isSelected();
+		getCommonOptions(options);
+		return options;
+	}
+	
+	private XLSExportOptions getGulpsOptions() {
+		XLSExportOptions options = new XLSExportOptions();
+		options.topLevel 		= false; 
+		options.topLevelDelta   = false;
+		options.bottomLevel 	= false; 
+		options.derivative 		= false; 
+		options.consumption 	= tabGulps.sumGulpsCheckBox.isSelected(); 
+		options.sum_ratio_LR 	= false; 
+		options.cage 			= false;
+		options.t0 				= false;
+		options.onlyalive 		= tabGulps.onlyaliveCheckBox.isSelected();
+		options.subtractEvaporation = false;
 		getCommonOptions(options);
 		return options;
 	}
