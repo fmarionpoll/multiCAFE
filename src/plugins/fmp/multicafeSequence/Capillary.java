@@ -16,7 +16,6 @@ import icy.roi.ROI2D;
 import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
 
-import plugins.fmp.multicafeTools.EnumListType;
 import plugins.fmp.multicafeTools.EnumXLSExportType;
 import plugins.fmp.multicafeTools.DetectGulps_Options;
 import plugins.fmp.multicafeTools.DetectLevels_Options;
@@ -191,19 +190,19 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	
 	// -----------------------------------------
 	
-	public boolean isThereAnyMeasuresDone(EnumListType option) {
+	public boolean isThereAnyMeasuresDone(EnumXLSExportType option) {
 		boolean yes = false;
 		switch (option) {
-		case derivedValues:
+		case DERIVEDVALUES:
 			yes= (ptsDerivative != null && ptsDerivative.isThereAnyMeasuresDone());
 			break;
-		case cumSum:
+		case SUMGULPS:
 			yes= (gulpsRois!= null && gulpsRois.isThereAnyMeasuresDone());
 			break;
-		case bottomLevel:
+		case BOTTOMLEVEL:
 			yes= ptsBottom.isThereAnyMeasuresDone();
 			break;
-		case topLevel:
+		case TOPLEVEL:
 		default:
 			yes= ptsTop.isThereAnyMeasuresDone();
 			break;
@@ -211,21 +210,21 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return yes;
 	}
 	
-	public List<Integer> getMeasures(EnumListType option) {
+	public List<Integer> getMeasures(EnumXLSExportType option) {
 		List<Integer> datai = null;
 		switch (option) {
-		case derivedValues:
+		case DERIVEDVALUES:
 			if (ptsDerivative != null)
 				datai = ptsDerivative.getMeasures();
 			break;
-		case cumSum:
+		case SUMGULPS:
 			if (gulpsRois != null)
 				datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
 			break;
-		case bottomLevel:
+		case BOTTOMLEVEL:
 			datai = ptsBottom.getMeasures();
 			break;
-		case topLevel:
+		case TOPLEVEL:
 		default:
 			datai = ptsTop.getMeasures();
 			break;
@@ -304,23 +303,23 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			System.out.print("only_1_point_detected");
 	}
 	
-	public int getLastMeasure(EnumListType option) {
+	public int getLastMeasure(EnumXLSExportType option) {
 		int lastMeasure = 0;
 		switch (option) {
-		case derivedValues:
+		case DERIVEDVALUES:
 			if (ptsDerivative != null)
 				lastMeasure = ptsDerivative.getLastMeasure();
 			break;
-		case cumSum:
+		case SUMGULPS:
 			if (gulpsRois != null) {
 				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
 				lastMeasure = datai.get(datai.size()-1);
 			}
 			break;
-		case bottomLevel:
+		case BOTTOMLEVEL:
 			lastMeasure = ptsBottom.getLastMeasure();
 			break;
-		case topLevel:
+		case TOPLEVEL:
 		default:
 			lastMeasure = ptsTop.getLastMeasure();
 			break;
@@ -328,23 +327,23 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return lastMeasure;
 	}
 	
-	public int getLastDeltaMeasure(EnumListType option) {
+	public int getLastDeltaMeasure(EnumXLSExportType option) {
 		int lastMeasure = 0;
 		switch (option) {
-		case derivedValues:
+		case DERIVEDVALUES:
 			if (ptsDerivative != null)
 				lastMeasure = ptsDerivative.getLastDeltaMeasure();
 			break;
-		case cumSum:
+		case SUMGULPS:
 			if (gulpsRois != null) {
 				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
 				lastMeasure = datai.get(datai.size()-1) - datai.get(datai.size()-2);
 			}
 			break;
-		case bottomLevel:
+		case BOTTOMLEVEL:
 			lastMeasure = ptsBottom.getLastDeltaMeasure();
 			break;
-		case topLevel:
+		case TOPLEVEL:
 		default:
 			lastMeasure = ptsTop.getLastDeltaMeasure();
 			break;
@@ -352,23 +351,23 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return lastMeasure;
 	}
 	
-	public int getT0Measure(EnumListType option) {
+	public int getT0Measure(EnumXLSExportType option) {
 		int t0Measure = 0;
 		switch (option) {
-		case derivedValues:
+		case DERIVEDVALUES:
 			if (ptsDerivative != null)
 				t0Measure = ptsDerivative.getT0Measure();
 			break;
-		case cumSum:
+		case SUMGULPS:
 			if (gulpsRois != null) {
 				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
 				t0Measure = datai.get(0);
 			}
 			break;
-		case bottomLevel:
+		case BOTTOMLEVEL:
 			t0Measure = ptsBottom.getT0Measure();
 			break;
-		case topLevel:
+		case TOPLEVEL:
 		default:
 			t0Measure = ptsTop.getT0Measure();
 			break;

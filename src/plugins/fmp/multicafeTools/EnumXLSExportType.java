@@ -7,15 +7,17 @@ public enum EnumXLSExportType {
 	DERIVEDVALUES ("derivative"), 
 	SUMGULPS ("sumGulps"), 
 	SUMGULPS_LR ("sumGulps_L+R"), 
+	ISGULPS ("isGulps"),
 	TOPLEVEL_LR ("toplevel_L+R"), 
+	TOPLEVELDELTA ("topdelta"),
+	TOPLEVELDELTA_LR ("topdelta_L+R"),
+	
 	XYIMAGE ("xy-image"), 
 	XYTOPCAGE ("xy-topcage"), 
 	XYTIPCAPS ("xy-tipcaps"), 
 	DISTANCE ("distance"), 
 	ISALIVE ("_alive"), 
-	SLEEP ("sleep"),
-	TOPLEVELDELTA ("topdelta"),
-	TOPLEVELDELTA_LR ("topdelta_L+R");
+	SLEEP ("sleep");
 	
 	private String label;
 	

@@ -55,7 +55,7 @@ public class XYMultiChart extends IcyFrame  {
 		pt = new Point(rectv.x + deltapt.x, rectv.y + deltapt.y);
 	}
 	
-	private void getDataArrays(Experiment exp, EnumListType option, List<XYSeriesCollection> xyList) {
+	private void getDataArrays(Experiment exp, EnumXLSExportType option, List<XYSeriesCollection> xyList) {
 		SequenceKymos kymoseq = exp.seqKymos;
 		int nimages = kymoseq.seq.getSizeT();
 		int startFrame = (int) exp.capillaries.desc.analysisStart;
@@ -71,19 +71,19 @@ public class XYMultiChart extends IcyFrame  {
 				xyDataset = new XYSeriesCollection();
 				collection_char = test;
 			}
-			EnumListType ooption = option;
-			if (option == EnumListType.topAndBottom)
-				ooption = EnumListType.topLevel;
+			EnumXLSExportType ooption = option;
+			if (option == EnumXLSExportType.TOPLEVEL)
+				ooption = EnumXLSExportType.TOPLEVEL;
 			List<Integer> results = cap.getMeasures(ooption);
-			if (option == EnumListType.topLevelDelta) 
+			if (option == EnumXLSExportType.TOPLEVELDELTA) 
 				results = kymoseq.subtractTi(results);
 			String name = cap.roi.getName();
 			if (t == 0)	// trick to change the size of the legend so that it takes the same vertical space as others 
 				name = name + "    ";
 			XYSeries seriesXY = getXYSeries(results, name, startFrame);
 			
-			if (option == EnumListType.topAndBottom) 
-				appendDataToXYSeries(seriesXY, cap.getMeasures(EnumListType.bottomLevel), startFrame );
+			if (option == EnumXLSExportType.TOPLEVEL) 
+				appendDataToXYSeries(seriesXY, cap.getMeasures(EnumXLSExportType.BOTTOMLEVEL), startFrame );
 			
 			xyDataset.addSeries( seriesXY );
 			getMaxMin();
@@ -92,7 +92,7 @@ public class XYMultiChart extends IcyFrame  {
 			xyList.add(xyDataset);
 	}
 	
-	public void displayData(Experiment exp, EnumListType option) {
+	public void displayData(Experiment exp, EnumXLSExportType option) {
 		xyChartList.clear();
 		SequenceKymos kymoseq = exp.seqKymos;
 		if (kymoseq == null || kymoseq.seq == null)
@@ -122,7 +122,7 @@ public class XYMultiChart extends IcyFrame  {
 			ValueAxis xAxis = xyChart.getXYPlot().getDomainAxis(0);
 			xAxis.setRange(0, globalXMax);
 
-			if (option == EnumListType.topLevel || option == EnumListType.bottomLevel || option == EnumListType.topAndBottom) {
+			if (option == EnumXLSExportType.TOPLEVEL || option == EnumXLSExportType.BOTTOMLEVEL) {
 				xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
 			}
 			xyChartList.add(xyChart);

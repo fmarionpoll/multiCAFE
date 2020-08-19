@@ -46,14 +46,14 @@ public class YPosMultiChart extends IcyFrame {
 		pt = new Point(rectv.x + deltapt.x, rectv.y + deltapt.y);
 	}
 	
-	public void displayData(List<Cage> cageList, EnumListType option) {
+	public void displayData(List<Cage> cageList, EnumXLSExportType option) {
 		if (xyDataSetList == null)
 			displayNewData(cageList, option);
 		else
 			fetchNewData(cageList, option);
 	}
 	
-	private void displayNewData(List<Cage> cageList, EnumListType option) {
+	private void displayNewData(List<Cage> cageList, EnumXLSExportType option) {
 		xyDataSetList = new ArrayList <XYSeriesCollection>();
 		MinMaxDouble valMinMax = new MinMaxDouble();
 		int count = 0;
@@ -91,7 +91,7 @@ public class YPosMultiChart extends IcyFrame {
 		mainChartFrame.setVisible(true);
 	}
 	
-	private void fetchNewData (List<Cage> cageList, EnumListType option) {
+	private void fetchNewData (List<Cage> cageList, EnumXLSExportType option) {
 		for (Cage cage: cageList) {
 			String name = cage.roi.getName();
 			for (XYSeriesCollection xySeriesList: xyDataSetList) {
@@ -108,13 +108,13 @@ public class YPosMultiChart extends IcyFrame {
 		}
 	}
 	
-	private MinMaxDouble addPointsToXYSeries(Cage cage, EnumListType option, XYSeries seriesXY) {
+	private MinMaxDouble addPointsToXYSeries(Cage cage, EnumXLSExportType option, XYSeries seriesXY) {
 		XYTaSeries positionxyt = cage.flyPositions;
 		int itmax = positionxyt.pointsList.size();
 		MinMaxDouble minmax =null;
 		if (itmax > 0) {
 			switch (option) {
-			case distance:
+			case DISTANCE:
 				double previousY = positionxyt.pointsList.get(0).xytPoint.getY();
 				for ( int it = 0; it < itmax;  it++) {
 					double currentY = positionxyt.pointsList.get(it).xytPoint.getY();
@@ -128,7 +128,7 @@ public class YPosMultiChart extends IcyFrame {
 				minmax = new MinMaxDouble(0.0, length_diagonal);
 				break;
 				
-			case isalive:
+			case ISALIVE:
 				for ( int it = 0; it < itmax;  it++) {
 					boolean alive = positionxyt.pointsList.get(it).xytAlive;
 					double ypos = alive? 1.0: 0.0;
@@ -138,7 +138,7 @@ public class YPosMultiChart extends IcyFrame {
 				minmax = new MinMaxDouble(0., 1.2);
 				break;
 				
-			case sleep:
+			case SLEEP:
 				for ( int it = 0; it < itmax;  it++) {
 					boolean sleep = positionxyt.pointsList.get(it).xytSleep;
 					double ypos = sleep ? 1.0: 0.0;
@@ -149,7 +149,6 @@ public class YPosMultiChart extends IcyFrame {
 				break;
 				
 			default:
-			case xyPosition:
 				Rectangle rect1 = cage.roi.getBounds();
 				double yOrigin = rect1.getY()+rect1.getHeight();	
 				for ( int it = 0; it < itmax;  it++) {
@@ -165,7 +164,7 @@ public class YPosMultiChart extends IcyFrame {
 		return minmax;
 	}
 	
-	private YPosMultiChartStructure getDataSet(Cage cage, EnumListType option) {
+	private YPosMultiChartStructure getDataSet(Cage cage, EnumXLSExportType option) {
 		XYSeriesCollection xyDataset = new XYSeriesCollection();	
 		String name = cage.roi.getName();
 		XYSeries seriesXY = new XYSeries(name);

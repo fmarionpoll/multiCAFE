@@ -18,7 +18,7 @@ import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.XYTaSeries;
-import plugins.fmp.multicafeTools.EnumListType;
+import plugins.fmp.multicafeTools.EnumXLSExportType;
 import plugins.fmp.multicafeTools.YPosMultiChart;
 
 
@@ -95,11 +95,11 @@ public class MCCages_Graphs extends JPanel {
 		final int deltay = 230;
 	
 		if (moveCheckbox.isSelected() ) {
-			ypositionsChart = displayYPos("flies Y positions", ypositionsChart, rectv, ptRelative,  exp, EnumListType.xyPosition);
+			ypositionsChart = displayYPos("flies Y positions", ypositionsChart, rectv, ptRelative,  exp, EnumXLSExportType.XYTOPCAGE);
 			ptRelative.y += deltay;
 		}
 		if (distanceCheckbox.isSelected()) {
-			distanceChart = displayYPos("distance between positions at t+1 and t", distanceChart, rectv, ptRelative, exp, EnumListType.distance);
+			distanceChart = displayYPos("distance between positions at t+1 and t", distanceChart, rectv, ptRelative, exp, EnumXLSExportType.DISTANCE);
 			ptRelative.y += deltay;
 		}
 		if (aliveCheckbox.isSelected()) {
@@ -109,7 +109,7 @@ public class MCCages_Graphs extends JPanel {
 				posSeries.moveThreshold = threshold;
 				posSeries.computeIsAlive();
 			}
-			aliveChart = displayYPos("flies alive", aliveChart, rectv, ptRelative, exp, EnumListType.isalive);	
+			aliveChart = displayYPos("flies alive", aliveChart, rectv, ptRelative, exp, EnumXLSExportType.ISALIVE);	
 			ptRelative.y += deltay;
 		}
 		if (sleepCheckbox.isSelected()) {	
@@ -117,13 +117,13 @@ public class MCCages_Graphs extends JPanel {
 				XYTaSeries posSeries = cage.flyPositions;
 				posSeries.computeSleep();
 			}
-			sleepChart = displayYPos("flies asleep", sleepChart, rectv, ptRelative, exp, EnumListType.sleep);	
+			sleepChart = displayYPos("flies asleep", sleepChart, rectv, ptRelative, exp, EnumXLSExportType.SLEEP);	
 			ptRelative.y += deltay;
 		}
 	}
 
 	
-	private YPosMultiChart displayYPos(String title, YPosMultiChart iChart, Rectangle rectv, Point ptRelative, Experiment exp, EnumListType option) {
+	private YPosMultiChart displayYPos(String title, YPosMultiChart iChart, Rectangle rectv, Point ptRelative, Experiment exp, EnumXLSExportType option) {
 		if (iChart == null || !iChart.mainChartPanel.isValid()) {
 			iChart = new YPosMultiChart();
 			iChart.createPanel(title);

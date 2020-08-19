@@ -301,28 +301,19 @@ public class XLSExport {
 				
 		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
 		expi = exp;
-		EnumListType getOption = null;
+		EnumXLSExportType getOption = null;
 		switch (xlsoption) {
 		case TOPRAW:
-			getOption = EnumListType.topLevel;
-			break;
-		case TOPLEVEL:
 		case TOPLEVEL_LR:
 		case TOPLEVELDELTA:
 		case TOPLEVELDELTA_LR:
-			getOption = EnumListType.topLevel;
+			getOption = EnumXLSExportType.TOPLEVEL;
 			break;
-		case DERIVEDVALUES:
-			getOption = EnumListType.derivedValues;
-			break;
-		case SUMGULPS:
 		case SUMGULPS_LR:
-			getOption = EnumListType.cumSum;
-			break;
-		case BOTTOMLEVEL:
-			getOption = EnumListType.bottomLevel;
+			getOption = EnumXLSExportType.SUMGULPS;
 			break;
 		default:
+			getOption = xlsoption;
 			break;
 		}
 		
@@ -351,7 +342,7 @@ public class XLSExport {
 						if (options.t0) 
 							results.data = exp.seqKymos.subtractT0(cap.getMeasures(getOption));
 						else
-							results.data = cap.getMeasures(EnumListType.topLevel);
+							results.data = cap.getMeasures(getOption);
 						resultsArrayList.add(results);
 					}
 					if (options.subtractEvaporation)

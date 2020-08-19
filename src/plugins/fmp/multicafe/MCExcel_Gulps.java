@@ -18,7 +18,8 @@ public class MCExcel_Gulps extends JPanel {
 
 	JButton 	exportToXLSButton 	= new JButton("save XLS (v1)");
 	JButton 	exportToXLSButton2 	= new JButton("save XLS");
-	JCheckBox 	sumGulpsCheckBox 	= new JCheckBox("cumsum gulps", false);
+	JCheckBox 	sumGulpsCheckBox 	= new JCheckBox("cumsum gulps", true);
+	JCheckBox 	isGulpsCheckBox 	= new JCheckBox("gulps (0/1)", true);
 	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R & ratio", true);
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
 	

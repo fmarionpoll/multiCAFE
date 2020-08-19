@@ -38,10 +38,12 @@ public class XLSExportGulpsResults  extends XLSExport {
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				
-				if (options.consumption) 	
+				if (options.sumGulps) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS);
-				if (options.sum_ratio_LR && options.consumption) 	
+				if (options.sum_ratio_LR && options.sumGulps) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS_LR);
+				if (options.isGulps)
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.ISGULPS);
 				
 				if (!options.collateSeries || exp.previousExperiment == null)
 					column += expList.maxSizeOfCapillaryArrays +2;

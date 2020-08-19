@@ -17,12 +17,14 @@ public class XLSExportOptions {
 	public boolean  topLevelDelta   = false;
 	public boolean 	bottomLevel 	= false; 
 	public boolean 	derivative 		= false; 
-	public boolean 	consumption 	= false; 
 	public boolean 	sum_ratio_LR 	= true;
 	public boolean 	cage 			= true;
 	public boolean 	t0				= true;
 	public boolean 	onlyalive		= true;
 	public boolean  subtractEvaporation = true;
+	
+	public boolean 	sumGulps 		= false;
+	public boolean  isGulps			= false;
 
 	public boolean 	transpose 		= false;
 	public boolean 	duplicateSeries = true;
