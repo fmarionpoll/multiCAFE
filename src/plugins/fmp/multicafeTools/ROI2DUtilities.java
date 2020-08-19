@@ -148,6 +148,13 @@ public class ROI2DUtilities  {
 			}
 		}
 	}
+	
+	public static void addROItoIsGulpsArray (ROI2DPolyLine roi, List<Integer> isGulpsArrayList) {
+		Polyline2D roiline = roi.getPolyline2D();
+		for (int j = (int) roiline.xpoints[0]; j<= roiline.xpoints[roiline.npoints-1]; j++) {
+				isGulpsArrayList.set(j, 1);
+		}
+	}
 
 	public static List<ROI2D> loadROIsFromXML(Document doc) {
 		List<ROI> localList = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));

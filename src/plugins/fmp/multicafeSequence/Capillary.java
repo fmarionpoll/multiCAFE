@@ -221,6 +221,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			if (gulpsRois != null)
 				datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
 			break;
+		case ISGULPS:
+			if (gulpsRois != null)
+				datai = gulpsRois.getIsGulpsFromRoisArray(ptsTop.getNpoints());
+			break;
 		case BOTTOMLEVEL:
 			datai = ptsBottom.getMeasures();
 			break;

@@ -30,7 +30,7 @@ public class MCExcel_Gulps extends JPanel {
 		flowLayout0.setVgap(0);
 		JPanel panel0 = new JPanel(flowLayout0);
 		panel0.add(sumGulpsCheckBox);
-		
+		panel0.add(isGulpsCheckBox);
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout0);

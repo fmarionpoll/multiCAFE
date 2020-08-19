@@ -74,6 +74,16 @@ public class CapillaryGulps  implements XMLPersistent  {
 		}
 		return arrayInt;
 	}
+	
+	List<Integer> getIsGulpsFromRoisArray(int npoints) {
+		if (rois == null)
+			return null;
+		List<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
+		for (ROI roi: rois) {
+			ROI2DUtilities.addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
+		}
+		return arrayInt;
+	}
 
 	public void transferROIsToMeasures(List<ROI> listRois) {	
 		rois = new ArrayList<ROI2D>();

@@ -324,6 +324,7 @@ public class XLSExport {
 			switch (xlsoption) {
 				case TOPRAW:
 				case BOTTOMLEVEL:
+				case ISGULPS:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsoption, expi.getKymoFrameStep());
@@ -396,6 +397,8 @@ public class XLSExport {
 			return;
 		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
 		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
+		if (xlsoption == EnumXLSExportType.ISGULPS)
+			scalingFactorToPhysicalUnits = 1.;
 		
 		long to_first_index = (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
 		long to_nvalues = ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
@@ -408,6 +411,7 @@ public class XLSExport {
 					case TOPLEVEL_LR:
 					case SUMGULPS:
 					case SUMGULPS_LR:
+					case ISGULPS:
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
 						if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 

@@ -23,7 +23,7 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 
 
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 18-August-2020", true, true, true, true);
+	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 19-August-2020", true, true, true, true);
 	public ExperimentList expList 	= new ExperimentList();
 	
 	MCSequence_ 	paneSequence 	= new MCSequence_();
