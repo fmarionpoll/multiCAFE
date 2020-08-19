@@ -246,27 +246,27 @@ public class XLSExport {
 		}
 	}
 	
-	protected int getDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType datatype) {	
-		getDataFromOneSeriesOfExperiments(exp, datatype);
-		XSSFSheet sheet = xlsInitSheet(datatype.toString());
-		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
+	protected int getDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType xlsOption) {	
+		getDataFromOneSeriesOfExperiments(exp, xlsOption);
+		XSSFSheet sheet = xlsInitSheet(xlsOption.toString());
+		int colmax = xlsExportResultsArrayToSheet(sheet, xlsOption, col0, charSeries);
 		
 		if (options.onlyalive) {
 			trimDeadsFromArrayList(exp);
-			sheet = xlsInitSheet(datatype.toString()+"_alive");
-			xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
+			sheet = xlsInitSheet(xlsOption.toString()+"_alive");
+			xlsExportResultsArrayToSheet(sheet, xlsOption, col0, charSeries);
 		}
 		
 		if (options.cage) {
 			combineData(exp);
-			sheet = xlsInitSheet(datatype.toString()+"_cage");
-			xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
+			sheet = xlsInitSheet(xlsOption.toString()+"_cage");
+			xlsExportResultsArrayToSheet(sheet, xlsOption, col0, charSeries);
 		}
 		
 		return colmax;
 	}
 	
-	private void getDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsoption) {	
+	private void getDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsOption) {	
 		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.capillaries.copy(exp.capillaries);
 		expAll.fileTimeImageFirst 	= exp.fileTimeImageFirst;
@@ -291,7 +291,7 @@ public class XLSExport {
 		rowsForOneExp = new ArrayList <XLSResults> (ncapillaries);
 		for (int i=0; i< ncapillaries; i++) {
 			Capillary cap = expAll.capillaries.capillariesArrayList.get(i);
-			XLSResults row = new XLSResults (cap.roi.getName(), cap.capNFlies, xlsoption, nFrames, expAll.getKymoFrameStep());
+			XLSResults row = new XLSResults (cap.roi.getName(), cap.capNFlies, xlsOption, nFrames, expAll.getKymoFrameStep());
 			row.stimulus = cap.capStimulus;
 			row.concentration = cap.capConcentration;
 			row.cageID = cap.capCageID;
@@ -302,7 +302,7 @@ public class XLSExport {
 		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
 		expi = exp;
 		EnumXLSExportType getOption = null;
-		switch (xlsoption) {
+		switch (xlsOption) {
 		case TOPRAW:
 		case TOPLEVEL_LR:
 		case TOPLEVELDELTA:
@@ -313,7 +313,7 @@ public class XLSExport {
 			getOption = EnumXLSExportType.SUMGULPS;
 			break;
 		default:
-			getOption = xlsoption;
+			getOption = xlsOption;
 			break;
 		}
 		
@@ -321,13 +321,15 @@ public class XLSExport {
 			expi.resultsSubPath = expAll.resultsSubPath;
 			XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
 			
-			switch (xlsoption) {
+			switch (xlsOption) {
 				case TOPRAW:
 				case BOTTOMLEVEL:
 				case ISGULPS:
+				case TTONEXTGULP:
+				case TTONEXTGULP_LR:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsoption, expi.getKymoFrameStep());
+						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, expi.getKymoFrameStep());
 						results.data = cap.getMeasures(getOption);
 						resultsArrayList.add(results);
 					}
@@ -339,7 +341,7 @@ public class XLSExport {
 				case TOPLEVELDELTA_LR:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsoption, expi.getKymoFrameStep());
+						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, expi.getKymoFrameStep());
 						if (options.t0) 
 							results.data = exp.seqKymos.subtractT0(cap.getMeasures(getOption));
 						else
@@ -355,7 +357,7 @@ public class XLSExport {
 				case SUMGULPS_LR:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsoption, expi.getKymoFrameStep());
+						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, expi.getKymoFrameStep());
 						results.data = cap.getMeasures(getOption);
 						resultsArrayList.add(results);
 					}
@@ -370,7 +372,7 @@ public class XLSExport {
 			expi = expi.nextExperiment;
 		}
 		
-		switch (xlsoption) {
+		switch (xlsOption) {
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:
 				for (XLSResults row: rowsForOneExp ) 
@@ -397,21 +399,27 @@ public class XLSExport {
 			return;
 		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
 		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
-		if (xlsoption == EnumXLSExportType.ISGULPS)
-			scalingFactorToPhysicalUnits = 1.;
+		switch (xlsoption) {
+			case ISGULPS:
+			case TTONEXTGULP:
+			case TTONEXTGULP_LR:
+				scalingFactorToPhysicalUnits = 1.;
+				break;
+			default:
+				break;
+		}
 		
 		long to_first_index = (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
 		long to_nvalues = ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
 		for (XLSResults row: rowsForOneExp ) {
 			XLSResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
 			if (results != null && results.data != null) {
-				double dvalue = 0;
+				double dvalue = 0.;
 				switch (xlsoption) {
 					case TOPLEVEL:
 					case TOPLEVEL_LR:
 					case SUMGULPS:
 					case SUMGULPS_LR:
-					case ISGULPS:
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
 						if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
@@ -533,6 +541,9 @@ public class XLSExport {
 			case SUMGULPS_LR:
 				writeLRRows(sheet, columndataarea, rowseries, pt);
 				break;
+			case TTONEXTGULP_LR:
+				writeTOGulpLR(sheet, columndataarea, rowseries, pt);
+				break;
 			default:
 				writeSimpleRows(sheet, columndataarea, rowseries, pt);
 				break;
@@ -582,6 +593,72 @@ public class XLSExport {
 				else
 					rowR = null;
 			}
+			// output values from the row
+			int lenL = rowL.values_out.length;
+			if (rowR != null && rowR.values_out != null && lenL != rowR.values_out.length)
+				System.out.println("length of data - rowL="+lenL+" rowR="+rowR.values_out.length);
+			int row0 = pt.x;
+			
+			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
+				pt.x = row0;
+				int i_from = coltime / rowL.rowbinsize;
+				if (i_from >= rowL.values_out.length)
+					break;
+				double dataL = rowL.values_out[i_from];
+				double dataR = Double.NaN;
+				if (rowR != null && rowR.values_out != null) 
+					dataR = rowR.values_out[i_from];
+				
+				boolean ratioOK = true;
+				if (Double.isNaN(dataR)) {
+					dataR=0;
+					ratioOK = false;
+				}
+				if (Double.isNaN(dataL)) { 
+					dataL=0;
+					ratioOK = false;
+				}
+					
+				double sum = Math.abs(dataL)+Math.abs(dataR);
+				if (!Double.isNaN(sum)) {
+					XLSUtils.setValue(sheet, pt, transpose, sum);
+					if (i_from < rowL.padded_out.length && rowL.padded_out[i_from])
+						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
+				}
+				pt.x ++;
+				if (ratioOK && sum != 0 && !Double.isNaN(sum)) {
+					double ratio = (dataL-dataR)/sum;
+					if (ratio > 1. || ratio < -1.)
+						System.out.println("ratio out of limits: "+ ratio);
+					if (!Double.isNaN(ratio)) {
+						XLSUtils.setValue(sheet, pt, transpose, ratio);
+						if (i_from < rowL.padded_out.length && rowL.padded_out[i_from])
+							XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
+					}
+				}
+			}
+		}
+	}
+	
+	private void writeTOGulpLR(XSSFSheet sheet, int columndataarea, int rowseries, Point pt) {
+		boolean transpose = options.transpose;
+		for (int irow = 0; irow < rowsForOneExp.size(); irow ++) {
+			XLSResults rowL = rowsForOneExp.get(irow);
+			pt.y = columndataarea;
+			int colL = getColFromKymoFileName(rowL.name);
+			pt.x = rowseries + colL; 
+			int cageL = getCageFromKymoFileName(rowL.name);
+			XLSResults rowR = null;
+			if (irow+1 < rowsForOneExp.size()) {
+				rowR = rowsForOneExp.get(irow+1);
+				int cageR = getCageFromKymoFileName(rowR.name);
+				if (cageR == cageL)
+					irow++;
+				else
+					rowR = null;
+			}
+			// TODO here: merge the 2 results series (integer or double?): call a routine from gulps?
+			
 			// output values from the row
 			int lenL = rowL.values_out.length;
 			if (rowR != null && rowR.values_out != null && lenL != rowR.values_out.length)

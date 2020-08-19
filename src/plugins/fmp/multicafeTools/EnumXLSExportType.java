@@ -5,12 +5,16 @@ public enum EnumXLSExportType {
 	TOPLEVEL ("toplevel"),
 	BOTTOMLEVEL ("bottomlevel"), 
 	DERIVEDVALUES ("derivative"), 
-	SUMGULPS ("sumGulps"), 
-	SUMGULPS_LR ("sumGulps_L+R"), 
-	ISGULPS ("isGulps"),
+	
 	TOPLEVEL_LR ("toplevel_L+R"), 
 	TOPLEVELDELTA ("topdelta"),
 	TOPLEVELDELTA_LR ("topdelta_L+R"),
+	
+	SUMGULPS ("sumGulps"), 
+	SUMGULPS_LR ("sumGulps_L+R"), 
+	ISGULPS ("isGulps"),
+	TTONEXTGULP("tToNext"),
+	TTONEXTGULP_LR("tToNext_LR"),
 	
 	XYIMAGE ("xy-image"), 
 	XYTOPCAGE ("xy-topcage"), 

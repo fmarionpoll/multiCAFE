@@ -13,6 +13,7 @@ import icy.file.xml.XMLPersistent;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
+import plugins.fmp.multicafeTools.EnumXLSExportType;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
@@ -65,6 +66,24 @@ public class CapillaryGulps  implements XMLPersistent  {
 		return (rois != null && rois.size() > 0);
 	}
 	
+	public List<Integer> getMeasures(EnumXLSExportType option, int npoints) {
+		List<Integer> datai = null;
+		switch (option) {
+		case SUMGULPS:
+			datai = getCumSumFromRoisArray(npoints);
+			break;
+		case ISGULPS:
+			datai = getIsGulpsFromRoisArray(npoints);
+			break;
+		case TTONEXTGULP:
+			datai = getTToNextGulp(npoints);
+			break;
+		default:
+			break;
+		}
+		return datai;
+	}
+	
 	List<Integer> getCumSumFromRoisArray(int npoints) {
 		if (rois == null)
 			return null;
@@ -83,6 +102,27 @@ public class CapillaryGulps  implements XMLPersistent  {
 			ROI2DUtilities.addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
 		}
 		return arrayInt;
+	}
+	
+	List<Integer> getTToNextGulp(int npoints) {
+		List<Integer> datai = getIsGulpsFromRoisArray(npoints);
+		int nintervals = -1;
+		ArrayList<Integer> data_out = null;
+		for (int index= datai.size()-1; index>= 0; index--) {
+			if (datai.get(index) == 1) {
+				if (nintervals < 0) {
+					int nitems = index+1;
+					data_out = new ArrayList<Integer> (Collections.nCopies(nitems, 0));
+				}
+				nintervals = 0;
+				data_out.set(index, nintervals);
+			}
+			else if (nintervals >= 0) {
+				nintervals++;
+				data_out.set(index, nintervals);
+			}
+		}
+		return data_out;
 	}
 
 	public void transferROIsToMeasures(List<ROI> listRois) {	

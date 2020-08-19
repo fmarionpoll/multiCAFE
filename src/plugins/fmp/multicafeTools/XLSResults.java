@@ -14,7 +14,7 @@ public class XLSResults {
 	int 				cageID		= 0;
 	EnumXLSExportType 	exportType 	= null;
 	List<Integer > 		data 		= null;
-	int					rowbinsize		= 1;
+	int					rowbinsize	= 1;
 	int[]				valint		= null;
 	double [] 			values_out	= null;
 	boolean[]			padded_out	= null;

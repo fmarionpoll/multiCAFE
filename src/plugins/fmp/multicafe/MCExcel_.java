@@ -175,6 +175,8 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.sum_ratio_LR 	= tabGulps.sumCheckBox.isSelected(); 
 		options.onlyalive 		= tabGulps.onlyaliveCheckBox.isSelected();
 		options.isGulps 		= tabGulps.isGulpsCheckBox.isSelected();
+		options.tToNextGulp		= tabGulps.tToNextCheckBox.isSelected();
+		options.tToNextGulp_LR  = tabGulps.tToNextLRCheckBox.isSelected();
 		options.subtractEvaporation = false;
 		getCommonOptions(options);
 		return options;

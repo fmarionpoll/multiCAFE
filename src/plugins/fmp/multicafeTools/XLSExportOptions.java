@@ -25,6 +25,9 @@ public class XLSExportOptions {
 	
 	public boolean 	sumGulps 		= false;
 	public boolean  isGulps			= false;
+	public boolean	tToNextGulp		= false;
+	public boolean	tToNextGulp_LR	= false;
+
 
 	public boolean 	transpose 		= false;
 	public boolean 	duplicateSeries = true;
