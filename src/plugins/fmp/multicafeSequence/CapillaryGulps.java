@@ -76,7 +76,9 @@ public class CapillaryGulps  implements XMLPersistent  {
 			datai = getIsGulpsFromRoisArray(npoints);
 			break;
 		case TTONEXTGULP:
-			datai = getTToNextGulp(npoints);
+		case TTONEXTGULP_LR:
+			List<Integer> datag = getIsGulpsFromRoisArray(npoints);
+			datai = getTToNextGulp(datag, npoints);
 			break;
 		default:
 			break;
@@ -104,8 +106,7 @@ public class CapillaryGulps  implements XMLPersistent  {
 		return arrayInt;
 	}
 	
-	List<Integer> getTToNextGulp(int npoints) {
-		List<Integer> datai = getIsGulpsFromRoisArray(npoints);
+	List<Integer> getTToNextGulp(List<Integer> datai, int npoints) {
 		int nintervals = -1;
 		ArrayList<Integer> data_out = null;
 		for (int index= datai.size()-1; index>= 0; index--) {
@@ -161,4 +162,5 @@ public class CapillaryGulps  implements XMLPersistent  {
 			}
 		}
 	}
+	
 }

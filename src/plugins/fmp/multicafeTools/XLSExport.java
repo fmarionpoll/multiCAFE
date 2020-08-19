@@ -527,11 +527,11 @@ public class XLSExport {
 	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) {
 		Point pt = new Point(col0, 0);
 		writeExperimentDescriptors(expAll, charSeries, sheet, pt, xlsExportOption);
-		pt = writeData2(sheet, xlsExportOption, pt);
+		pt = writeDataToSheet(sheet, xlsExportOption, pt);
 		return pt.x;
 	}
 			
-	private Point writeData2 (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) {
+	private Point writeDataToSheet (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) {
 		int rowseries = pt_main.x +2;
 		int columndataarea = pt_main.y;
 		Point pt = new Point(pt_main);
@@ -581,6 +581,7 @@ public class XLSExport {
 		pt.x++;
 	}
 	
+	/*
 	private void writeLRRows_old(XSSFSheet sheet, int columndataarea, int rowseries, Point pt) {
 		boolean transpose = options.transpose;
 		for (int irow = 0; irow < rowsForOneExp.size(); irow ++) {
@@ -644,6 +645,7 @@ public class XLSExport {
 			}
 		}
 	}
+	*/
 	
 	private void writeLRRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
 		for (int irow = 0; irow < rowsForOneExp.size(); irow ++) {
