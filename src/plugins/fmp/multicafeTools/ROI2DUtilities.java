@@ -151,8 +151,14 @@ public class ROI2DUtilities  {
 	
 	public static void addROItoIsGulpsArray (ROI2DPolyLine roi, List<Integer> isGulpsArrayList) {
 		Polyline2D roiline = roi.getPolyline2D();
-		for (int j = (int) roiline.xpoints[0]; j<= roiline.xpoints[roiline.npoints-1]; j++) {
-				isGulpsArrayList.set(j, 1);
+		double yvalue = roiline.ypoints[0];
+		int npoints = roiline.npoints;
+		for (int j =0; j < npoints; j++) {
+			if (roiline.ypoints[j] != yvalue) {
+				int timeIndex =  (int) roiline.xpoints[j];
+				isGulpsArrayList.set(timeIndex, 1);
+			}
+			yvalue = roiline.ypoints[j];
 		}
 	}
 
