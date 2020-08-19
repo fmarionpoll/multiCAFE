@@ -12,6 +12,7 @@ public class XLSResults {
 	int 				nadded		= 1;
 	int					nflies		= 1;
 	int 				cageID		= 0;
+	int 				dimension	= 0;
 	EnumXLSExportType 	exportType 	= null;
 	List<Integer > 		data 		= null;
 	int					rowbinsize	= 1;
@@ -57,11 +58,13 @@ public class XLSResults {
 	}
 	
 	void initValIntArray(int dimension, int val) {
+		this.dimension = dimension; 
 		valint = new int [dimension];
 		Arrays.fill(valint, 0);
 	}
 	
 	private void initValuesArray(int dimension) {
+		this.dimension = dimension; 
 		values_out = new double [dimension];
 		Arrays.fill(values_out, Double.NaN);
 		padded_out = new boolean [dimension];
@@ -135,5 +138,52 @@ public class XLSResults {
 		nadded += 1;
 	}
 
-
+	void getSumLR(XLSResults rowL, XLSResults rowR) {
+		int lenL = rowL.values_out.length;
+		int lenR = rowR.values_out.length;
+		int len = Math.max(lenL,  lenR);
+		for (int index = 0; index < len; index++) {
+			double dataL = Double.NaN;
+			double dataR = Double.NaN;
+			double sum = Double.NaN;
+			if (rowL.values_out != null && index < lenL) 
+				dataL = rowR.values_out[index];
+			if (rowR.values_out != null && index < lenR) 
+				dataR = rowR.values_out[index];
+			
+			sum = Math.abs(dataL)+Math.abs(dataR);
+			values_out[index]= sum;
+		}
+	}
+	
+	void getRatioLR(XLSResults rowL, XLSResults rowR) {
+		int lenL = rowL.values_out.length;
+		int lenR = rowR.values_out.length;
+		int len = Math.max(lenL,  lenR);
+		for (int index = 0; index < len; index++) {
+			double dataL = Double.NaN;
+			double dataR = Double.NaN;
+			if (rowL.values_out != null && index < lenL) 
+				dataL = rowR.values_out[index];
+			if (rowR.values_out != null && index < lenR) 
+				dataR = rowR.values_out[index];
+			
+			boolean ratioOK = true;
+			if (Double.isNaN(dataR)) {
+				dataR=0;
+				ratioOK = false;
+			}
+			if (Double.isNaN(dataL)) { 
+				dataL=0;
+				ratioOK = false;
+			}
+			
+			double ratio = Double.NaN;
+			double sum = Math.abs(dataL)+Math.abs(dataR);
+			if (ratioOK && sum != 0 && !Double.isNaN(sum))
+				ratio = (dataL-dataR)/sum;
+			
+			values_out[index]= ratio;
+		}
+	}
 }

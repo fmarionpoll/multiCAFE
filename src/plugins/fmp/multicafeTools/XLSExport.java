@@ -553,30 +553,35 @@ public class XLSExport {
 	}
 	
 	private void writeSimpleRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
-		boolean transpose = options.transpose;
 		for (XLSResults row: rowsForOneExp) {
-			pt.y = column_dataArea;
-			int col = getColFromKymoFileName(row.name);
-			pt.x = rowSeries + col; 
-			if (row.values_out == null)
-				continue;
-			//System.out.println("writeSimpleRows row.binsize =" +row.binsize);
-			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
-				int i_from = coltime / row.rowbinsize;
-				if (i_from >= row.values_out.length)
-					break;
-				double value = row.values_out[i_from];
-				if (!Double.isNaN(value)) {
-					XLSUtils.setValue(sheet, pt, transpose, value);
-					if (i_from < row.padded_out.length && row.padded_out[i_from])
-						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
-				}
-			}
-			pt.x++;
+			writeRow(sheet, column_dataArea, rowSeries, pt, row);
 		}
 	}
 	
-	private void writeLRRows(XSSFSheet sheet, int columndataarea, int rowseries, Point pt) {
+	private void writeRow(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt, XLSResults row) {
+		boolean transpose = options.transpose;
+	
+		pt.y = column_dataArea;
+		int col = getColFromKymoFileName(row.name);
+		pt.x = rowSeries + col; 
+		if (row.values_out == null)
+			return;
+		
+		for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
+			int i_from = coltime / row.rowbinsize;
+			if (i_from >= row.values_out.length)
+				break;
+			double value = row.values_out[i_from];
+			if (!Double.isNaN(value)) {
+				XLSUtils.setValue(sheet, pt, transpose, value);
+				if (i_from < row.padded_out.length && row.padded_out[i_from])
+					XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
+			}
+		}
+		pt.x++;
+	}
+	
+	private void writeLRRows_old(XSSFSheet sheet, int columndataarea, int rowseries, Point pt) {
 		boolean transpose = options.transpose;
 		for (int irow = 0; irow < rowsForOneExp.size(); irow ++) {
 			XLSResults rowL = rowsForOneExp.get(irow);
@@ -640,13 +645,38 @@ public class XLSExport {
 		}
 	}
 	
-	private void writeTOGulpLR(XSSFSheet sheet, int columndataarea, int rowseries, Point pt) {
-		boolean transpose = options.transpose;
+	private void writeLRRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
 		for (int irow = 0; irow < rowsForOneExp.size(); irow ++) {
 			XLSResults rowL = rowsForOneExp.get(irow);
-			pt.y = columndataarea;
 			int colL = getColFromKymoFileName(rowL.name);
-			pt.x = rowseries + colL; 
+			pt.x = rowSeries + colL; 
+			int cageL = getCageFromKymoFileName(rowL.name);
+			XLSResults rowR = null;
+			if (irow+1 < rowsForOneExp.size()) {
+				rowR = rowsForOneExp.get(irow+1);
+				int cageR = getCageFromKymoFileName(rowR.name);
+				if (cageR == cageL)
+					irow++;
+				else
+					rowR = null;
+			}
+			
+			XLSResults sumResults = new XLSResults("(L+R)", rowL.nflies, rowL.exportType, rowL.dimension, rowL.rowbinsize);
+			sumResults.getSumLR(rowL, rowR);
+			writeRow(sheet, column_dataArea, rowSeries, pt, sumResults);
+			
+			XLSResults ratioResults = new XLSResults("(L-R)/(L+R)", rowL.nflies, rowL.exportType, rowL.dimension, rowL.rowbinsize);
+			ratioResults.getRatioLR(rowL, rowR);
+			writeRow(sheet, column_dataArea, rowSeries, pt, ratioResults);
+			
+		}
+	}
+	
+	private void writeTOGulpLR(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
+		for (int irow = 0; irow < rowsForOneExp.size(); irow ++) {
+			XLSResults rowL = rowsForOneExp.get(irow);
+			int colL = getColFromKymoFileName(rowL.name);
+			pt.x = rowSeries + colL; 
 			int cageL = getCageFromKymoFileName(rowL.name);
 			XLSResults rowR = null;
 			if (irow+1 < rowsForOneExp.size()) {
@@ -660,49 +690,7 @@ public class XLSExport {
 			// TODO here: merge the 2 results series (integer or double?): call a routine from gulps?
 			
 			// output values from the row
-			int lenL = rowL.values_out.length;
-			if (rowR != null && rowR.values_out != null && lenL != rowR.values_out.length)
-				System.out.println("length of data - rowL="+lenL+" rowR="+rowR.values_out.length);
-			int row0 = pt.x;
 			
-			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
-				pt.x = row0;
-				int i_from = coltime / rowL.rowbinsize;
-				if (i_from >= rowL.values_out.length)
-					break;
-				double dataL = rowL.values_out[i_from];
-				double dataR = Double.NaN;
-				if (rowR != null && rowR.values_out != null) 
-					dataR = rowR.values_out[i_from];
-				
-				boolean ratioOK = true;
-				if (Double.isNaN(dataR)) {
-					dataR=0;
-					ratioOK = false;
-				}
-				if (Double.isNaN(dataL)) { 
-					dataL=0;
-					ratioOK = false;
-				}
-					
-				double sum = Math.abs(dataL)+Math.abs(dataR);
-				if (!Double.isNaN(sum)) {
-					XLSUtils.setValue(sheet, pt, transpose, sum);
-					if (i_from < rowL.padded_out.length && rowL.padded_out[i_from])
-						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
-				}
-				pt.x ++;
-				if (ratioOK && sum != 0 && !Double.isNaN(sum)) {
-					double ratio = (dataL-dataR)/sum;
-					if (ratio > 1. || ratio < -1.)
-						System.out.println("ratio out of limits: "+ ratio);
-					if (!Double.isNaN(ratio)) {
-						XLSUtils.setValue(sheet, pt, transpose, ratio);
-						if (i_from < rowL.padded_out.length && rowL.padded_out[i_from])
-							XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
-					}
-				}
-			}
 		}
 	}
 	
