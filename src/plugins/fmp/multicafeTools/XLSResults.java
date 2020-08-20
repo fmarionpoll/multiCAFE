@@ -186,4 +186,34 @@ public class XLSResults {
 			values_out[index]= ratio;
 		}
 	}
+	
+	void getMixBackwardsLR(XLSResults rowL, XLSResults rowR) {
+		int lenL = rowL.values_out.length;
+		int lenR = rowR.values_out.length;
+		int len = Math.max(lenL,  lenR);
+		boolean isL = false;
+		boolean isR = false;
+		for (int index = len-1; index >= 0; index--) {
+			double dataL = Double.NaN;
+			double dataR = Double.NaN;
+			double dataMix = Double.NaN;
+			if (rowL.values_out != null && index < lenL) {
+				dataL = rowR.values_out[index];
+				if (dataL == 0.)
+					isL = true;
+			}
+			if (rowR.values_out != null && index < lenR) { 
+				dataR = rowR.values_out[index];
+				if (dataR == 0.)
+					isR = true;
+			}
+			
+			if (isL)
+				dataMix = dataL;
+			if (isR)
+				dataMix = dataR;
+			
+			values_out[index]= dataMix;
+		}
+	}
 }

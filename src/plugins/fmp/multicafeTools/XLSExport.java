@@ -657,13 +657,14 @@ public class XLSExport {
 			if (irow+1 < rowsForOneExp.size()) {
 				rowR = rowsForOneExp.get(irow+1);
 				int cageR = getCageFromKymoFileName(rowR.name);
-				if (cageR == cageL)
+				if (cageR == cageL) {
 					irow++;
+				}
 				else
 					rowR = null;
 			}
 			
-			XLSResults sumResults = new XLSResults("(L+R)", rowL.nflies, rowL.exportType, rowL.dimension, rowL.rowbinsize);
+			XLSResults sumResults = new XLSResults("L+R", rowL.nflies, rowL.exportType, rowL.dimension, rowL.rowbinsize);
 			sumResults.getSumLR(rowL, rowR);
 			writeRow(sheet, column_dataArea, rowSeries, pt, sumResults);
 			
@@ -680,19 +681,25 @@ public class XLSExport {
 			int colL = getColFromKymoFileName(rowL.name);
 			pt.x = rowSeries + colL; 
 			int cageL = getCageFromKymoFileName(rowL.name);
+			int len = rowL.values_out.length;
+			
 			XLSResults rowR = null;
 			if (irow+1 < rowsForOneExp.size()) {
 				rowR = rowsForOneExp.get(irow+1);
 				int cageR = getCageFromKymoFileName(rowR.name);
-				if (cageR == cageL)
+				if (cageR == cageL) {
 					irow++;
+					if (rowR.values_out.length > len)
+						len = rowR.values_out.length;
+				}
 				else
 					rowR = null;
 			}
-			// TODO here: merge the 2 results series (integer or double?): call a routine from gulps?
-			
-			// output values from the row
-			
+
+			XLSResults mixResults = new XLSResults("L&R", rowL.nflies, rowL.exportType, len, rowL.rowbinsize);
+			mixResults.getMixBackwardsLR(rowL, rowR);
+			writeRow(sheet, column_dataArea, rowSeries, pt, mixResults);
+			writeRow(sheet, column_dataArea, rowSeries, pt, mixResults);
 		}
 	}
 	
