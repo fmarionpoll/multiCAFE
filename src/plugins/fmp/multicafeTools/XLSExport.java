@@ -697,7 +697,10 @@ public class XLSExport {
 			}
 
 			XLSResults mixResults = new XLSResults("L&R", rowL.nflies, rowL.exportType, len, rowL.rowbinsize);
-			mixResults.getMixBackwardsLR(rowL, rowR);
+			if (rowR != null)
+				mixResults.getMixBackwardsLR(rowL, rowR);
+			else
+				mixResults = rowL;
 			writeRow(sheet, column_dataArea, rowSeries, pt, mixResults);
 			writeRow(sheet, column_dataArea, rowSeries, pt, mixResults);
 		}
