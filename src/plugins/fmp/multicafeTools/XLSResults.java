@@ -147,7 +147,7 @@ public class XLSResults {
 			double dataR = Double.NaN;
 			double sum = Double.NaN;
 			if (rowL.values_out != null && index < lenL) 
-				dataL = rowR.values_out[index];
+				dataL = rowL.values_out[index];
 			if (rowR.values_out != null && index < lenR) 
 				dataR = rowR.values_out[index];
 			
@@ -156,63 +156,47 @@ public class XLSResults {
 		}
 	}
 	
+	double getData(XLSResults row, int index) {
+		double data = Double.NaN;
+		if (row.values_out != null && index < row.values_out.length) 
+			data = row.values_out[index];
+		return data;
+	}
+	
 	void getRatioLR(XLSResults rowL, XLSResults rowR) {
 		int lenL = rowL.values_out.length;
 		int lenR = rowR.values_out.length;
 		int len = Math.max(lenL,  lenR);
 		for (int index = 0; index < len; index++) {
-			double dataL = Double.NaN;
-			double dataR = Double.NaN;
-			if (rowL.values_out != null && index < lenL) 
-				dataL = rowR.values_out[index];
-			if (rowR.values_out != null && index < lenR) 
-				dataR = rowR.values_out[index];
+			double dataL = getData(rowL, index);
+			double dataR = getData(rowR, index);
 			
 			boolean ratioOK = true;
-			if (Double.isNaN(dataR)) {
-				dataR=0;
-				ratioOK = false;
-			}
-			if (Double.isNaN(dataL)) { 
-				dataL=0;
-				ratioOK = false;
-			}
-			
+			if (Double.isNaN(dataR) || Double.isNaN(dataL)) 
+				ratioOK = false;		
 			double ratio = Double.NaN;
-			double sum = Math.abs(dataL)+Math.abs(dataR);
-			if (ratioOK && sum != 0 && !Double.isNaN(sum))
-				ratio = (dataL-dataR)/sum;
-			
+			if (ratioOK) {
+				double sum = Math.abs(dataL)+Math.abs(dataR);
+				if (sum != 0 && !Double.isNaN(sum))
+					ratio = (dataL-dataR)/sum;
+			}
 			values_out[index]= ratio;
 		}
 	}
 	
-	void getMixBackwardsLR(XLSResults rowL, XLSResults rowR) {
+	void getMixTimeToGulpLR(XLSResults rowL, XLSResults rowR) {
 		int lenL = rowL.values_out.length;
 		int lenR = rowR.values_out.length;
 		int len = Math.max(lenL,  lenR);
-		boolean isL = false;
-		boolean isR = false;
-		for (int index = len-1; index >= 0; index--) {
-			double dataL = Double.NaN;
-			double dataR = Double.NaN;
+		for (int index = 0; index < len; index++) {
 			double dataMix = Double.NaN;
-			if (rowL.values_out != null && index < lenL) {
-				dataL = rowR.values_out[index];
-				if (dataL == 0.)
-					isL = true;
-			}
-			if (rowR.values_out != null && index < lenR) { 
-				dataR = rowR.values_out[index];
-				if (dataR == 0.)
-					isR = true;
-			}
+			double dataL = getData(rowL, index);
+			double dataR = getData(rowR, index);
 			
-			if (isL)
+			if (dataL <= dataR)
 				dataMix = dataL;
-			if (isR)
+			else if (dataL > dataR)
 				dataMix = dataR;
-			
 			values_out[index]= dataMix;
 		}
 	}

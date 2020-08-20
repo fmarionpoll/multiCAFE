@@ -35,7 +35,7 @@ public class XLSExport {
     XSSFWorkbook 				workbook			= null;		
     
 	ExperimentList 				expList 	= null;
-	List <XLSResults> 			rowsForOneExp = new ArrayList <XLSResults> ();
+	List <XLSResults> 			rowListForOneExp = new ArrayList <XLSResults> ();
 
 
 	// ------------------------------------------------
@@ -288,16 +288,16 @@ public class XLSExport {
 		int nFrames = (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1 ;
 		
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
-		rowsForOneExp = new ArrayList <XLSResults> (ncapillaries);
+		rowListForOneExp = new ArrayList <XLSResults> (ncapillaries);
 		for (int i=0; i< ncapillaries; i++) {
 			Capillary cap = expAll.capillaries.capillariesArrayList.get(i);
 			XLSResults row = new XLSResults (cap.roi.getName(), cap.capNFlies, xlsOption, nFrames, expAll.getKymoFrameStep());
 			row.stimulus = cap.capStimulus;
 			row.concentration = cap.capConcentration;
 			row.cageID = cap.capCageID;
-			rowsForOneExp.add(row);
+			rowListForOneExp.add(row);
 		}
-		Collections.sort(rowsForOneExp, new Comparators.XLSResultsComparator());
+		Collections.sort(rowListForOneExp, new Comparators.XLSResultsComparator());
 				
 		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
 		expi = exp;
@@ -375,7 +375,7 @@ public class XLSExport {
 		switch (xlsOption) {
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:
-				for (XLSResults row: rowsForOneExp ) 
+				for (XLSResults row: rowListForOneExp ) 
 					row.subtractDeltaT(expAll.getKymoFrameStep(), options.buildExcelBinStep);
 				break;
 			default:
@@ -411,7 +411,7 @@ public class XLSExport {
 		
 		long to_first_index = (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
 		long to_nvalues = ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
-		for (XLSResults row: rowsForOneExp ) {
+		for (XLSResults row: rowListForOneExp ) {
 			XLSResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
 			if (results != null && results.data != null) {
 				double dvalue = 0.;
@@ -497,7 +497,7 @@ public class XLSExport {
 						+ (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
 				ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
 			}
-			for (XLSResults row : rowsForOneExp) {
+			for (XLSResults row : rowListForOneExp) {
 				if (getCageFromCapillaryName (row.name) == cagenumber) {
 					row.clearValues(ilastalive+1);
 				}
@@ -506,10 +506,10 @@ public class XLSExport {
 	}
 	
 	private void combineData(Experiment exp) {
-		for (XLSResults row_master : rowsForOneExp) {
+		for (XLSResults row_master : rowListForOneExp) {
 			if (row_master.nflies == 0 || row_master.values_out == null)
 				continue;
-			for (XLSResults row : rowsForOneExp) {
+			for (XLSResults row : rowListForOneExp) {
 				if (row.nflies == 0 || row.values_out == null)
 					continue;
 				if (row.cageID != row_master.cageID)
@@ -532,20 +532,20 @@ public class XLSExport {
 	}
 			
 	private Point writeDataToSheet (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) {
-		int rowseries = pt_main.x +2;
-		int columndataarea = pt_main.y;
+		int rowSeries = pt_main.x +2;
+		int column_dataArea = pt_main.y;
 		Point pt = new Point(pt_main);
 		switch (option) {
 			case TOPLEVEL_LR:
 			case TOPLEVELDELTA_LR:
 			case SUMGULPS_LR:
-				writeLRRows(sheet, columndataarea, rowseries, pt);
+				writeLRRows(sheet, column_dataArea, rowSeries, pt);
 				break;
 			case TTONEXTGULP_LR:
-				writeTOGulpLR(sheet, columndataarea, rowseries, pt);
+				writeTOGulpLR(sheet, column_dataArea, rowSeries, pt);
 				break;
 			default:
-				writeSimpleRows(sheet, columndataarea, rowseries, pt);
+				writeSimpleRows(sheet, column_dataArea, rowSeries, pt);
 				break;
 		}			
 		pt_main.x = pt.x+1;
@@ -553,14 +553,13 @@ public class XLSExport {
 	}
 	
 	private void writeSimpleRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
-		for (XLSResults row: rowsForOneExp) {
+		for (XLSResults row: rowListForOneExp) {
 			writeRow(sheet, column_dataArea, rowSeries, pt, row);
 		}
 	}
 	
 	private void writeRow(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt, XLSResults row) {
 		boolean transpose = options.transpose;
-	
 		pt.y = column_dataArea;
 		int col = getColFromKymoFileName(row.name);
 		pt.x = rowSeries + col; 
@@ -647,62 +646,55 @@ public class XLSExport {
 	}
 	*/
 	
+	
+	private XLSResults getNextRow(XLSResults rowL, int irow) {
+		int cageL = getCageFromKymoFileName(rowL.name);
+		XLSResults rowR = null;
+		if (irow+1 < rowListForOneExp.size()) {
+			rowR = rowListForOneExp.get(irow+1);
+			int cageR = getCageFromKymoFileName(rowR.name);
+			if (cageR != cageL) 
+				rowR = null;
+		}
+		return rowR;
+	}
+	
 	private void writeLRRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
-		for (int irow = 0; irow < rowsForOneExp.size(); irow ++) {
-			XLSResults rowL = rowsForOneExp.get(irow);
-			int colL = getColFromKymoFileName(rowL.name);
-			pt.x = rowSeries + colL; 
-			int cageL = getCageFromKymoFileName(rowL.name);
-			XLSResults rowR = null;
-			if (irow+1 < rowsForOneExp.size()) {
-				rowR = rowsForOneExp.get(irow+1);
-				int cageR = getCageFromKymoFileName(rowR.name);
-				if (cageR == cageL) {
-					irow++;
-				}
-				else
-					rowR = null;
+		for (int irow = 0; irow < rowListForOneExp.size(); irow ++) {
+			XLSResults rowL = rowListForOneExp.get(irow); 			
+			XLSResults rowR = getNextRow (rowL, irow);
+			if (rowR != null) {
+				irow++;
+				XLSResults sumResults = new XLSResults(rowL.name, rowL.nflies, rowL.exportType, rowL.dimension, rowL.rowbinsize);
+				sumResults.getSumLR(rowL, rowR);
+				writeRow(sheet, column_dataArea, rowSeries, pt, sumResults);
+				
+				XLSResults ratioResults = new XLSResults(rowR.name, rowL.nflies, rowL.exportType, rowL.dimension, rowL.rowbinsize);
+				ratioResults.getRatioLR(rowL, rowR);
+				writeRow(sheet, column_dataArea, rowSeries, pt, ratioResults);
+			} else {
+				writeRow(sheet, column_dataArea, rowSeries, pt, rowL);
 			}
-			
-			XLSResults sumResults = new XLSResults("L+R", rowL.nflies, rowL.exportType, rowL.dimension, rowL.rowbinsize);
-			sumResults.getSumLR(rowL, rowR);
-			writeRow(sheet, column_dataArea, rowSeries, pt, sumResults);
-			
-			XLSResults ratioResults = new XLSResults("(L-R)/(L+R)", rowL.nflies, rowL.exportType, rowL.dimension, rowL.rowbinsize);
-			ratioResults.getRatioLR(rowL, rowR);
-			writeRow(sheet, column_dataArea, rowSeries, pt, ratioResults);
 			
 		}
 	}
 	
 	private void writeTOGulpLR(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
-		for (int irow = 0; irow < rowsForOneExp.size(); irow ++) {
-			XLSResults rowL = rowsForOneExp.get(irow);
-			int colL = getColFromKymoFileName(rowL.name);
-			pt.x = rowSeries + colL; 
-			int cageL = getCageFromKymoFileName(rowL.name);
-			int len = rowL.values_out.length;
+		for (int irow = 0; irow < rowListForOneExp.size(); irow ++) {
+			XLSResults rowL = rowListForOneExp.get(irow);
+			XLSResults rowR = getNextRow (rowL, irow);
+			if (rowR != null) {
+				irow++;
+				int len = rowL.values_out.length;
+				if (rowR.values_out.length > len)
+					len = rowR.values_out.length;
 			
-			XLSResults rowR = null;
-			if (irow+1 < rowsForOneExp.size()) {
-				rowR = rowsForOneExp.get(irow+1);
-				int cageR = getCageFromKymoFileName(rowR.name);
-				if (cageR == cageL) {
-					irow++;
-					if (rowR.values_out.length > len)
-						len = rowR.values_out.length;
-				}
-				else
-					rowR = null;
+				XLSResults mixResults = new XLSResults(rowL.name, rowL.nflies, rowL.exportType, len, rowL.rowbinsize);	
+				mixResults.getMixTimeToGulpLR(rowL, rowR);
+				writeRow(sheet, column_dataArea, rowSeries, pt, mixResults);
+			} else {
+				writeRow(sheet, column_dataArea, rowSeries, pt, rowL);
 			}
-
-			XLSResults mixResults = new XLSResults("L&R", rowL.nflies, rowL.exportType, len, rowL.rowbinsize);
-			if (rowR != null)
-				mixResults.getMixBackwardsLR(rowL, rowR);
-			else
-				mixResults = rowL;
-			writeRow(sheet, column_dataArea, rowSeries, pt, mixResults);
-			writeRow(sheet, column_dataArea, rowSeries, pt, mixResults);
 		}
 	}
 	
