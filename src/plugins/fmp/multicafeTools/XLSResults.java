@@ -184,20 +184,37 @@ public class XLSResults {
 		}
 	}
 	
-	void getMixTimeToGulpLR(XLSResults rowL, XLSResults rowR) {
+	void getMinTimeToGulpLR(XLSResults rowL, XLSResults rowR) {
 		int lenL = rowL.values_out.length;
 		int lenR = rowR.values_out.length;
 		int len = Math.max(lenL,  lenR);
 		for (int index = 0; index < len; index++) {
-			double dataMix = Double.NaN;
+			double dataMax = Double.NaN;
 			double dataL = getData(rowL, index);
 			double dataR = getData(rowR, index);
 			
 			if (dataL <= dataR)
-				dataMix = dataL;
+				dataMax = dataL;
 			else if (dataL > dataR)
-				dataMix = dataR;
-			values_out[index]= dataMix;
+				dataMax = dataR;
+			values_out[index]= dataMax;
+		}
+	}
+	
+	void getMaxTimeToGulpLR(XLSResults rowL, XLSResults rowR) {
+		int lenL = rowL.values_out.length;
+		int lenR = rowR.values_out.length;
+		int len = Math.max(lenL,  lenR);
+		for (int index = 0; index < len; index++) {
+			double dataMin = Double.NaN;
+			double dataL = getData(rowL, index);
+			double dataR = getData(rowR, index);
+			
+			if (dataL >= dataR)
+				dataMin = dataL;
+			else if (dataL < dataR)
+				dataMin = dataR;
+			values_out[index]= dataMin;
 		}
 	}
 }

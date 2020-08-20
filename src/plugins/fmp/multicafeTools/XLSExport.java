@@ -689,9 +689,13 @@ public class XLSExport {
 				if (rowR.values_out.length > len)
 					len = rowR.values_out.length;
 			
-				XLSResults mixResults = new XLSResults(rowL.name, rowL.nflies, rowL.exportType, len, rowL.rowbinsize);	
-				mixResults.getMixTimeToGulpLR(rowL, rowR);
-				writeRow(sheet, column_dataArea, rowSeries, pt, mixResults);
+				XLSResults maxResults = new XLSResults(rowL.name, rowL.nflies, rowL.exportType, len, rowL.rowbinsize);	
+				maxResults.getMaxTimeToGulpLR(rowL, rowR);
+				writeRow(sheet, column_dataArea, rowSeries, pt, maxResults);
+				
+				XLSResults minResults = new XLSResults(rowR.name, rowL.nflies, rowL.exportType, len, rowL.rowbinsize);	
+				minResults.getMinTimeToGulpLR(rowL, rowR);
+				writeRow(sheet, column_dataArea, rowSeries, pt, minResults);
 			} else {
 				writeRow(sheet, column_dataArea, rowSeries, pt, rowL);
 			}
