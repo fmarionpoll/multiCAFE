@@ -75,8 +75,8 @@ public class CapillaryGulps  implements XMLPersistent  {
 		case ISGULPS:
 			datai = getIsGulpsFromRoisArray(npoints);
 			break;
-		case TTONEXTGULP:
-		case TTONEXTGULP_LR:
+		case TTOGULP:
+		case TTOGULP_LR:
 			List<Integer> datag = getIsGulpsFromRoisArray(npoints);
 			datai = getTToNextGulp(datag, npoints);
 			break;

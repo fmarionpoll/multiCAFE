@@ -120,7 +120,16 @@ public class XLSExport {
 					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "L+R");
 					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
 				} else {
-					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, 	"(L-R)/(L+R)");
+					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "(L-R)/(L+R)");
+					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
+				}
+				break;
+			case TTOGULP_LR:
+				if (cap.getCapillarySide().equals("L")) {
+					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "min_t_to_gulp");
+					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
+				} else {
+					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "max_t_to_gulp");
 					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
 				}
 				break;
@@ -325,8 +334,8 @@ public class XLSExport {
 				case TOPRAW:
 				case BOTTOMLEVEL:
 				case ISGULPS:
-				case TTONEXTGULP:
-				case TTONEXTGULP_LR:
+				case TTOGULP:
+				case TTOGULP_LR:
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, expi.getKymoFrameStep());
@@ -401,8 +410,8 @@ public class XLSExport {
 		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
 		switch (xlsoption) {
 			case ISGULPS:
-			case TTONEXTGULP:
-			case TTONEXTGULP_LR:
+			case TTOGULP:
+			case TTOGULP_LR:
 				scalingFactorToPhysicalUnits = 1.;
 				break;
 			default:
@@ -541,7 +550,7 @@ public class XLSExport {
 			case SUMGULPS_LR:
 				writeLRRows(sheet, column_dataArea, rowSeries, pt);
 				break;
-			case TTONEXTGULP_LR:
+			case TTOGULP_LR:
 				writeTOGulpLR(sheet, column_dataArea, rowSeries, pt);
 				break;
 			default:
@@ -579,73 +588,6 @@ public class XLSExport {
 		}
 		pt.x++;
 	}
-	
-	/*
-	private void writeLRRows_old(XSSFSheet sheet, int columndataarea, int rowseries, Point pt) {
-		boolean transpose = options.transpose;
-		for (int irow = 0; irow < rowsForOneExp.size(); irow ++) {
-			XLSResults rowL = rowsForOneExp.get(irow);
-			pt.y = columndataarea;
-			int colL = getColFromKymoFileName(rowL.name);
-			pt.x = rowseries + colL; 
-			int cageL = getCageFromKymoFileName(rowL.name);
-			XLSResults rowR = null;
-			if (irow+1 < rowsForOneExp.size()) {
-				rowR = rowsForOneExp.get(irow+1);
-				int cageR = getCageFromKymoFileName(rowR.name);
-				if (cageR == cageL)
-					irow++;
-				else
-					rowR = null;
-			}
-			// output values from the row
-			int lenL = rowL.values_out.length;
-			if (rowR != null && rowR.values_out != null && lenL != rowR.values_out.length)
-				System.out.println("length of data - rowL="+lenL+" rowR="+rowR.values_out.length);
-			int row0 = pt.x;
-			
-			for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
-				pt.x = row0;
-				int i_from = coltime / rowL.rowbinsize;
-				if (i_from >= rowL.values_out.length)
-					break;
-				double dataL = rowL.values_out[i_from];
-				double dataR = Double.NaN;
-				if (rowR != null && rowR.values_out != null) 
-					dataR = rowR.values_out[i_from];
-				
-				boolean ratioOK = true;
-				if (Double.isNaN(dataR)) {
-					dataR=0;
-					ratioOK = false;
-				}
-				if (Double.isNaN(dataL)) { 
-					dataL=0;
-					ratioOK = false;
-				}
-					
-				double sum = Math.abs(dataL)+Math.abs(dataR);
-				if (!Double.isNaN(sum)) {
-					XLSUtils.setValue(sheet, pt, transpose, sum);
-					if (i_from < rowL.padded_out.length && rowL.padded_out[i_from])
-						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
-				}
-				pt.x ++;
-				if (ratioOK && sum != 0 && !Double.isNaN(sum)) {
-					double ratio = (dataL-dataR)/sum;
-					if (ratio > 1. || ratio < -1.)
-						System.out.println("ratio out of limits: "+ ratio);
-					if (!Double.isNaN(ratio)) {
-						XLSUtils.setValue(sheet, pt, transpose, ratio);
-						if (i_from < rowL.padded_out.length && rowL.padded_out[i_from])
-							XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
-					}
-				}
-			}
-		}
-	}
-	*/
-	
 	
 	private XLSResults getNextRow(XLSResults rowL, int irow) {
 		int cageL = getCageFromKymoFileName(rowL.name);

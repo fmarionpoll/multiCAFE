@@ -45,9 +45,9 @@ public class XLSExportGulpsResults  extends XLSExport {
 				if (options.isGulps)
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.ISGULPS);
 				if (options.tToNextGulp)
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TTONEXTGULP);
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TTOGULP);
 				if (options.tToNextGulp_LR)
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TTONEXTGULP_LR);
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TTOGULP_LR);
 				
 				if (!options.collateSeries || exp.previousExperiment == null)
 					column += expList.maxSizeOfCapillaryArrays +2;

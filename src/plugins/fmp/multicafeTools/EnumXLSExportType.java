@@ -13,8 +13,8 @@ public enum EnumXLSExportType {
 	SUMGULPS ("sumGulps"), 
 	SUMGULPS_LR ("sumGulps_L+R"), 
 	ISGULPS ("isGulps"),
-	TTONEXTGULP("tToNext"),
-	TTONEXTGULP_LR("tToNext_LR"),
+	TTOGULP("tToGulp"),
+	TTOGULP_LR("tToGulp_LR"),
 	
 	XYIMAGE ("xy-image"), 
 	XYTOPCAGE ("xy-topcage"), 

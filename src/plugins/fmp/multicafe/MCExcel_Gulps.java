@@ -18,10 +18,10 @@ public class MCExcel_Gulps extends JPanel {
 
 	JButton 	exportToXLSButton 	= new JButton("save XLS (v1)");
 	JButton 	exportToXLSButton2 	= new JButton("save XLS");
-	JCheckBox 	sumGulpsCheckBox 	= new JCheckBox("cumsum gulps", true);
+	JCheckBox 	sumGulpsCheckBox 	= new JCheckBox("sum gulps", true);
 	JCheckBox 	isGulpsCheckBox 	= new JCheckBox("gulps (0/1)", true);
-	JCheckBox 	tToNextCheckBox 	= new JCheckBox("time to next gulp", true);
-	JCheckBox 	tToNextLRCheckBox 	= new JCheckBox("t to next gulp L/R", true);
+	JCheckBox 	tToGulpCheckBox 	= new JCheckBox("t to gulp", true);
+	JCheckBox 	tToGulpLRCheckBox 	= new JCheckBox("t to gulp L/R", true);
 	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R & ratio", true);
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
 	
@@ -33,8 +33,8 @@ public class MCExcel_Gulps extends JPanel {
 		JPanel panel0 = new JPanel(flowLayout0);
 		panel0.add(sumGulpsCheckBox);
 		panel0.add(isGulpsCheckBox);
-		panel0.add(tToNextCheckBox);
-		panel0.add(tToNextLRCheckBox);
+		panel0.add(tToGulpCheckBox);
+		panel0.add(tToGulpLRCheckBox);
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout0);
