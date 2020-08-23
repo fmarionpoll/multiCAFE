@@ -2,10 +2,12 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="C:/data/Icy-App/icy.jar"/>
-	<classpathentry kind="lib" path="C:/data/Icy-App/plugins/adufour/ezplug/EzPlug.jar"/>
-	<classpathentry kind="lib" path="C:/data/Icy-App/plugins/nchenouard/kymographtracker/KymographTracker.jar"/>
-	<classpathentry kind="lib" path="C:/data/Icy-App/plugins/stef/importer/xuggler/VideoImporter.jar"/>
-	<classpathentry kind="lib" path="C:/data/Icy-App/plugins/adufour/poi/POI.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/icy.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/adufour/ezplug/EzPlug.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/nchenouard/kymographtracker/KymographTracker.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/importer/xuggler/VideoImporter.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/adufour/poi/POI.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/fmp/multicafeSequence/multicafeSequence.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/fmp/multicafeTools/multicafeTools.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

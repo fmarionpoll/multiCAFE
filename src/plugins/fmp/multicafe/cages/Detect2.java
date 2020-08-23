@@ -166,41 +166,41 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	private boolean initTrackParameters() {
 		if (detectFlies2Thread == null)
 			return false;
-		DetectFlies_Options detect = new DetectFlies_Options();
-		detect.btrackWhite 		= true;
-		detect.blimitLow 		= objectLowsizeCheckBox.isSelected();
-		detect.blimitUp 		= objectUpsizeCheckBox.isSelected();
-		detect.limitLow 		= (int) objectLowsizeSpinner.getValue();
-		detect.limitUp 			= (int) objectUpsizeSpinner.getValue();
-		detect.limitRatio		= (int) limitRatioSpinner.getValue();
-		detect.jitter 			= (int) jitterTextField.getValue();
-		detect.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
-		detect.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();
-		detect.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
-		detect.resultsSubPath 	= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
+		detectFlies2Thread.options = new DetectFlies_Options();
+		DetectFlies_Options options 	= detectFlies2Thread.options;
 		
-		detect.forceBuildBackground	= backgroundCheckBox.isSelected();
-		detect.detectFlies		= detectCheckBox.isSelected();
-		detect.df_stepFrame 		= (int) stepFrameJSpinner.getValue();
-		detect.isFrameFixed 	= parent0.paneSequence.tabIntervals.getIsFixedFrame();
-		detect.df_startFrame 		= parent0.paneSequence.tabIntervals.getStartFrame();
-		detect.df_endFrame 		= parent0.paneSequence.tabIntervals.getEndFrame();
+		options.btrackWhite 		= true;
+		options.blimitLow 		= objectLowsizeCheckBox.isSelected();
+		options.blimitUp 		= objectUpsizeCheckBox.isSelected();
+		options.limitLow 		= (int) objectLowsizeSpinner.getValue();
+		options.limitUp 			= (int) objectUpsizeSpinner.getValue();
+		options.limitRatio		= (int) limitRatioSpinner.getValue();
+		options.jitter 			= (int) jitterTextField.getValue();
+		options.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
+		options.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();
+		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
+		options.resultsSubPath 	= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
+		
+		options.forceBuildBackground	= backgroundCheckBox.isSelected();
+		options.detectFlies		= detectCheckBox.isSelected();
+		options.df_stepFrame 		= (int) stepFrameJSpinner.getValue();
+		options.isFrameFixed 	= parent0.paneSequence.tabIntervals.getIsFixedFrame();
+		options.df_startFrame 		= parent0.paneSequence.tabIntervals.getStartFrame();
+		options.df_endFrame 		= parent0.paneSequence.tabIntervals.getEndFrame();
 
-		detect.expList = new ExperimentList(); 
-		parent0.paneSequence.transferExperimentNamesToExpList(detect.expList, true);		
-		detect.expList.index0 = parent0.expList.currentExperimentIndex;
+		options.expList = new ExperimentList(); 
+		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
+		options.expList.index0 = parent0.expList.currentExperimentIndex;
 		if (allCheckBox.isSelected())
-			detect.expList.index1 = detect.expList.getSize()-1;
+			options.expList.index1 = options.expList.getSize()-1;
 		else 
-			detect.expList.index1 = detect.expList.index0;
+			options.expList.index1 = options.expList.index0;
 		
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp != null) 
 			parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		detect.initParametersForDetection(exp);
 		
 		detectFlies2Thread.stopFlag = false;
-		detectFlies2Thread.detect 	= detect;
 		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();
 		return true;
 	}
