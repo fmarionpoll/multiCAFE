@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import icy.gui.frame.progress.ProgressFrame;
-import plugins.fmp.multicafeTools.XLSExportOptions;
+import plugins.fmp.multicafeTools.ToExcel.XLSExportOptions;
 
 public class ExperimentList {
 	

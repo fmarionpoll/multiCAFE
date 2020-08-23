@@ -13,8 +13,8 @@ import org.w3c.dom.NodeList;
 
 import icy.roi.ROI;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafeTools.DetectGulps_Options;
-import plugins.fmp.multicafeTools.DetectLevels_Options;
+import plugins.fmp.multicafeTools.Detect.DetectGulps_Options;
+import plugins.fmp.multicafeTools.Detect.DetectLevels_Options;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 

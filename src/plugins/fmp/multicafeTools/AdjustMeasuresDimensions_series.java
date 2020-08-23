@@ -8,6 +8,7 @@ import javax.swing.SwingWorker;
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
+import plugins.fmp.multicafeTools.Detect.DetectLevels_Options;
 
 
 

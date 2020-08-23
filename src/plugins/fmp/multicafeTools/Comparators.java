@@ -7,6 +7,7 @@ import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafeSequence.Cage;
 import plugins.fmp.multicafeSequence.XYTaSeries;
+import plugins.fmp.multicafeTools.ToExcel.XLSResults;
 
 
 public class Comparators {

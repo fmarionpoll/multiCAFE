@@ -17,22 +17,28 @@ import icy.gui.viewer.ViewerListener;
 import icy.plugin.abstract_.PluginActionable;
 import icy.sequence.DimensionId;
 import icy.system.thread.ThreadUtil;
+import plugins.fmp.multicafe.Kymos.MCKymos_;
+import plugins.fmp.multicafe.cages.MCCages_;
+import plugins.fmp.multicafe.capillaries.MCCapillaries_;
+import plugins.fmp.multicafe.excel.MCExcel_;
+import plugins.fmp.multicafe.levels.MCLevels_;
+import plugins.fmp.multicafe.sequence.MCSequence_;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
 
 
 
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 20-August-2020", true, true, true, true);
-	public ExperimentList expList 	= new ExperimentList();
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 20-August-2020", true, true, true, true);
+	public ExperimentList 	expList 	= new ExperimentList();
 	
-	MCSequence_ 	paneSequence 	= new MCSequence_();
-	MCCapillaries_ 	paneCapillaries	= new MCCapillaries_();
-	MCKymos_		paneKymos		= new MCKymos_();
-	MCLevels_ 		paneLevels 		= new MCLevels_();
-	MCSpots_		paneSpots		= new MCSpots_();
-	MCCages_ 		paneCages 		= new MCCages_();
-	MCExcel_		paneExcel		= new MCExcel_();
+	public MCSequence_ 		paneSequence 	= new MCSequence_();
+	public MCCapillaries_ 	paneCapillaries	= new MCCapillaries_();
+	public MCKymos_			paneKymos		= new MCKymos_();
+	public MCLevels_ 		paneLevels 		= new MCLevels_();
+	public MCSpots_			paneSpots		= new MCSpots_();
+	public MCCages_ 		paneCages 		= new MCCages_();
+	public MCExcel_			paneExcel		= new MCExcel_();
 	
 	//-------------------------------------------------------------------
 	
@@ -109,7 +115,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 	} 
 	
-	Experiment openExperimentFromString(String filename) {
+	public Experiment openExperimentFromString(String filename) {
 		Experiment exp = expList.getExperimentFromFileName(filename);
 		if (exp == null)
 			return null;
@@ -124,14 +130,14 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		return exp;
 	}
 	
-	void updateDialogsAfterOpeningSequenceCam(Experiment exp) {
+	public void updateDialogsAfterOpeningSequenceCam(Experiment exp) {
 		if (exp.seqCamData != null) {
 			paneSequence.transferSequenceCamDataToDialogs(exp);	
 			paneLevels.transferSequenceCamDataToDialogs(exp.seqCamData);
 		}
 	}
 
-	void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
+	public void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
 		Experiment exp = expList.getCurrentExperiment();
 		if (exp == null)
 			return;

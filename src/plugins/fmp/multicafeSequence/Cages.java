@@ -16,8 +16,8 @@ import icy.util.XMLUtil;
 
 import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.fmp.multicafeTools.Comparators;
-import plugins.fmp.multicafeTools.DetectFlies_Options;
 import plugins.fmp.multicafeTools.MulticafeTools;
+import plugins.fmp.multicafeTools.Detect.DetectFlies_Options;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 

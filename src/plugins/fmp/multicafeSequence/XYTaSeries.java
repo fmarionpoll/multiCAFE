@@ -9,7 +9,7 @@ import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafeTools.EnumXLSExportType;
+import plugins.fmp.multicafeTools.ToExcel.EnumXLSExportType;
 
 
 

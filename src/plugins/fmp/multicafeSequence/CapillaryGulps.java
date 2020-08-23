@@ -13,8 +13,8 @@ import icy.file.xml.XMLPersistent;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafeTools.EnumXLSExportType;
 import plugins.fmp.multicafeTools.ROI2DUtilities;
+import plugins.fmp.multicafeTools.ToExcel.EnumXLSExportType;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
