@@ -69,7 +69,7 @@ public class Cages {
 	// -------------
 	
 	public boolean xmlWriteCagesToFile(String name, String directory) {
-		String csFile = FileLoadSave.saveFileAs(name, directory, "xml");
+		String csFile = Dialog.saveFileAs(name, directory, "xml");
 		if (csFile == null)
 			return false;
 		csFile.toLowerCase();
@@ -112,7 +112,7 @@ public class Cages {
 		String filename = seq.getSequenceFileName();
 		File file = new File(filename);
 		String directory = file.getParentFile().getAbsolutePath();
-		filedummy = FileLoadSave.selectFiles(directory, "xml");
+		filedummy = Dialog.selectFiles(directory, "xml");
 		boolean wasOk = false;
 		if (filedummy != null) {
 			for (int i= 0; i< filedummy.length; i++) {

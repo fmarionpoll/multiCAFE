@@ -8,7 +8,7 @@ import icy.file.FileUtil;
 import icy.gui.dialog.ConfirmDialog;
 
 
-public class FileLoadSave {
+public class Dialog {
 	public static String saveFileAs(String defaultName, String directory, String csExt) {		
 		// load last preferences for loader
 		String csFile = null;
