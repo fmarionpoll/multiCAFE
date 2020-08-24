@@ -172,7 +172,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 	}
 
 	void setInfos(Capillary cap) {
-		DetectGulps_Options options = cap.gulpsOptions;
+		DetectGulps_Options options = cap.getGulpsOptions();
 		detectGulpsThresholdSpinner.setValue(options.detectGulpsThreshold);
 		transformForGulpsComboBox.setSelectedItem(options.transformForGulps);
 		detectAllGulpsCheckBox.setSelected(options.detectAllGulps);
