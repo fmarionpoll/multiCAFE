@@ -15,7 +15,6 @@ import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafeTools.Comparators;
-import plugins.fmp.multicafeTools.MulticafeTools;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 import plugins.kernel.roi.roi2d.ROI2DShape;
@@ -70,7 +69,7 @@ public class Cages {
 	// -------------
 	
 	public boolean xmlWriteCagesToFile(String name, String directory) {
-		String csFile = MulticafeTools.saveFileAs(name, directory, "xml");
+		String csFile = FileLoadSave.saveFileAs(name, directory, "xml");
 		if (csFile == null)
 			return false;
 		csFile.toLowerCase();
@@ -113,7 +112,7 @@ public class Cages {
 		String filename = seq.getSequenceFileName();
 		File file = new File(filename);
 		String directory = file.getParentFile().getAbsolutePath();
-		filedummy = MulticafeTools.selectFiles(directory, "xml");
+		filedummy = FileLoadSave.selectFiles(directory, "xml");
 		boolean wasOk = false;
 		if (filedummy != null) {
 			for (int i= 0; i< filedummy.length; i++) {

@@ -22,7 +22,7 @@ import icy.type.geom.Polygon2D;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
-import plugins.fmp.multicafeTools.MulticafeTools;
+import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 public class BuildROIs extends JPanel {
@@ -153,14 +153,14 @@ public class BuildROIs extends JPanel {
 			return;
 		}
 		
-		Polygon2D roiPolygonMin = MulticafeTools.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
+		Polygon2D roiPolygonMin = ROI2DUtilities.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
 		seqCamData.seq.removeROI(roi);
 
 		// generate cage frames
 		int iRoot = exp.cages.removeAllRoiCagesFromSequence(exp.seqCamData);
 		String cageRoot = "cage";
 		
-		Polygon2D roiPolygon = MulticafeTools.inflate( roiPolygonMin, ncolumns, nrows, width_cage, width_interval);
+		Polygon2D roiPolygon = ROI2DUtilities.inflate( roiPolygonMin, ncolumns, nrows, width_cage, width_interval);
 		
 		double deltax_top = (roiPolygon.xpoints[3]- roiPolygon.xpoints[0]) / ncolumns;
 		double deltax_bottom = (roiPolygon.xpoints[2]- roiPolygon.xpoints[1]) / ncolumns;
@@ -203,28 +203,28 @@ public class BuildROIs extends JPanel {
 				// define intersection
 				List<Point2D> points = new ArrayList<>();
 
-				Point2D point0 = MulticafeTools.lineIntersect(
+				Point2D point0 = ROI2DUtilities.lineIntersect(
 						x0ij + xspacer_top, 	y0ij, 
 						x1ij + xspacer_bottom, 	y1ij,  
 						x0ij, 					y0ij + yspacer_left, 
 						x3ij, 					y3ij + yspacer_right);
 				points.add(point0);
 
-				Point2D point1 = MulticafeTools.lineIntersect(
+				Point2D point1 = ROI2DUtilities.lineIntersect(
 						x1ij, 					y1ij - yspacer_left, 
 						x2ij, 					y2ij - yspacer_right,  
 						x0ij + xspacer_top, 	y0ij, 
 						x1ij+ xspacer_bottom, 	y1ij);
 				points.add(point1);
 
-				Point2D point2 = MulticafeTools.lineIntersect(
+				Point2D point2 = ROI2DUtilities.lineIntersect(
 						x1ij, 					y1ij - yspacer_left, 
 						x2ij, 					y2ij - yspacer_right, 
 						x3ij-xspacer_top, 		y3ij, 
 						x2ij-xspacer_bottom, 	y2ij);
 				points.add(point2);
 
-				Point2D point3 = MulticafeTools.lineIntersect(
+				Point2D point3 = ROI2DUtilities.lineIntersect(
 						x0ij, 					y0ij + yspacer_left, 
 						x3ij, 					y3ij + yspacer_right, 
 						x3ij-xspacer_top, 		y3ij, 

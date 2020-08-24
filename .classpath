@@ -7,7 +7,5 @@
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/nchenouard/kymographtracker/KymographTracker.jar"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/importer/xuggler/VideoImporter.jar"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/adufour/poi/POI.jar"/>
-	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/fmp/multicafeSequence/multicafeSequence.jar"/>
-	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/fmp/multicafeTools/multicafeTools.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

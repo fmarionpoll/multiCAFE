@@ -1,5 +1,8 @@
 package plugins.fmp.multicafeTools;
 
+import java.util.Arrays;
+import java.util.Comparator;
+
 /*
  * String sorter routines from imageJ
  * https://github.com/imagej/imagej1/blob/master/ij/util/StringSorter.java
@@ -37,6 +40,45 @@ public class StringSorter {
 		return true;
 	}
 	
+	public static int[] rank(final String[] data) {
+		/** Returns a sorted list of indices of the specified String array. */
+		int n = data.length;
+		final Integer[] indexes = new Integer[n];
+		for (int i=0; i<n; i++)
+			indexes[i] = new Integer(i);
+		Arrays.sort(indexes, new Comparator<Integer>() {
+			public int compare(final Integer o1, final Integer o2) {
+				return data[o1].compareToIgnoreCase(data[o2]);
+			}
+		});
+		int[] indexes2 = new int[n];
+		for (int i=0; i<n; i++)
+			indexes2[i] = indexes[i].intValue();
+		return indexes2;
+	}
+	
+	public static int[] rank(double[] values) {
+		/** Returns a sorted list of indices of the specified double array.
+		Modified from: http://stackoverflow.com/questions/951848 by N.Vischer.
+		 */
+		int n = values.length;
+		final Integer[] indexes = new Integer[n];
+		final Double[] data = new Double[n];
+		for (int i=0; i<n; i++) {
+			indexes[i] = new Integer(i);
+			data[i] = new Double(values[i]);
+		}
+		Arrays.sort(indexes, new Comparator<Integer>() {
+			public int compare(final Integer o1, final Integer o2) {
+				return data[o1].compareTo(data[o2]);
+			}
+		});
+		int[] indexes2 = new int[n];
+		for (int i=0; i<n; i++)
+			indexes2[i] = indexes[i].intValue();
+		return indexes2;
+	}
+	
 	public static String[] sortNumerically(String[] list) {
 		/** Sorts file names containing numerical components.
 		* Author: Norbert Vischer
@@ -44,7 +86,7 @@ public class StringSorter {
 		int n = list.length;
 		String[] paddedList = getPaddedNames(list);
 		String[] sortedList = new String[n];
-		int[] indexes = MulticafeTools.rank(paddedList);
+		int[] indexes = rank(paddedList);
 		for (int i = 0; i < n; i++)
 			sortedList[i] = list[indexes[i]];
 		return sortedList;

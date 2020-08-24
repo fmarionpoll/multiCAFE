@@ -26,7 +26,7 @@ import plugins.fmp.multicafeSequence.Capillaries;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.SequenceCamData;
 import plugins.fmp.multicafeSequence.SequenceKymosUtils;
-import plugins.fmp.multicafeTools.MulticafeTools;
+import plugins.fmp.multicafeTools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
@@ -174,7 +174,7 @@ public class Create extends JPanel {
 			return;
 		}
 		
-		Polygon2D roiPolygon = MulticafeTools.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
+		Polygon2D roiPolygon = ROI2DUtilities.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
 		seqCamData.seq.removeROI(roi);
 
 		if (statusGroup2Mode) {	

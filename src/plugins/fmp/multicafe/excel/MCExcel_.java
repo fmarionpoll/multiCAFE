@@ -18,7 +18,7 @@ import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafeSequence.Experiment;
 import plugins.fmp.multicafeSequence.ExperimentList;
-import plugins.fmp.multicafeTools.MulticafeTools;
+import plugins.fmp.multicafeSequence.FileLoadSave;
 import plugins.fmp.multicafeTools.ToExcel.XLSExportCapillariesResults;
 import plugins.fmp.multicafeTools.ToExcel.XLSExportGulpsResults;
 import plugins.fmp.multicafeTools.ToExcel.XLSExportMoveResults;
@@ -124,7 +124,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		Path directory = Paths.get(filename0).getParent();
 		Path subpath = directory.getName(directory.getNameCount()-1);
 		String tentativeName = subpath.toString()+ pattern;
-		return MulticafeTools.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
+		return FileLoadSave.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
 	}
 	
 	private void updateParametersCurrentExperiment(Experiment exp) {

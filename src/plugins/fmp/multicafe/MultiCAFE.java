@@ -17,6 +17,7 @@ import icy.gui.viewer.ViewerListener;
 import icy.plugin.abstract_.PluginActionable;
 import icy.sequence.DimensionId;
 import icy.system.thread.ThreadUtil;
+
 import plugins.fmp.multicafe.Kymos.MCKymos_;
 import plugins.fmp.multicafe.cages.MCCages_;
 import plugins.fmp.multicafe.capillaries.MCCapillaries_;
@@ -29,8 +30,8 @@ import plugins.fmp.multicafeSequence.ExperimentList;
 
 
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 23-August-2020", true, true, true, true);
-	public ExperimentList 	expList 	= new ExperimentList();
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 24-August-2020", true, true, true, true);
+	public ExperimentList 	expList 		= new ExperimentList();
 	
 	public MCSequence_ 		paneSequence 	= new MCSequence_();
 	public MCCapillaries_ 	paneCapillaries	= new MCCapillaries_();
