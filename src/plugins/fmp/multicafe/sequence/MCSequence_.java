@@ -24,6 +24,7 @@ import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
+import icy.sequence.Sequence;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafeSequence.SequenceNameListRenderer;
 import plugins.fmp.multicafe.MultiCAFE;
@@ -223,7 +224,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		exp.seqCamData = exp.openSequenceCamData(exp.getExperimentFileName());
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			parent0.addSequence(exp.seqCamData.seq);
-			updateViewerForSequenceCam(exp.seqCamData);
+			updateViewerForSequenceCam(exp.seqCamData.seq);
 			loadMeasuresAndKymos();
 			parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 		}
@@ -276,8 +277,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		return true;
 	}
 				
-	void updateViewerForSequenceCam(SequenceCamData seqCamData) {
-		Viewer v = seqCamData.seq.getFirstViewer();
+	void updateViewerForSequenceCam(Sequence seq) {
+		Viewer v = seq.getFirstViewer();
 		if (v != null) {
 			Rectangle rectv = v.getBoundsInternal();
 			Rectangle rect0 = parent0.mainFrame.getBoundsInternal();
@@ -291,7 +292,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	public void transferSequenceCamDataToDialogs(Experiment exp) {
 		tabIntervals.setEndFrameToDialog((int)exp.seqCamData.seqAnalysisEnd);
-		updateViewerForSequenceCam(exp.seqCamData);
+		updateViewerForSequenceCam(exp.seqCamData.seq);
 		parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 	}
 

@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 
 import icy.gui.util.GuiUtil;
 import icy.util.StringUtil;
@@ -57,6 +58,7 @@ public class DetectLimits extends JPanel implements PropertyChangeListener {
 
 	private MultiCAFE 	parent0 				= null;
 	private DetectLevels_series thread 			= null;
+	private int			selectedFrame			= 0;
 
 	// -----------------------------------------------------
 		
@@ -190,6 +192,7 @@ public class DetectLimits extends JPanel implements PropertyChangeListener {
 			options.firstKymo = exp.seqKymos.currentFrame;
 		else 
 			options.firstKymo = 0;
+		selectedFrame = options.firstKymo;
 		
 		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
@@ -235,8 +238,30 @@ public class DetectLimits extends JPanel implements PropertyChangeListener {
 			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
 			parent0.paneSequence.openExperiment(exp);
 			detectButton.setText(detectString);
-//			if (!allKymosCheckBox.isSelected())
-//				parent0.paneKymos.tabDisplay.selectKymograph(indexCurrentKymo);
+			if (selectedFrame != 0) 
+				selectFrame(selectedFrame);
 		 }
+	}
+	
+	void selectFrame(int selectedFrame) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				boolean flag = false;
+				int i = 10;
+				while (!flag && i > 0) {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if (parent0.paneKymos.tabDisplay.kymographNamesComboBox.getItemCount() >= selectedFrame) {
+						parent0.paneKymos.tabDisplay.selectKymograph(selectedFrame);
+						System.out.println("--- select "+ selectedFrame);
+						flag = true;
+					}
+					i--;
+				}
+			}});
 	}
 }

@@ -259,7 +259,7 @@ public class Display extends JPanel implements ViewerListener {
 			displayOFF();
 	}
 
-	void selectKymograph(int isel) {
+	public void selectKymograph(int isel) {
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null) 
 			return;
