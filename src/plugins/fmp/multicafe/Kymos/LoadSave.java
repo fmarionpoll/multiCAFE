@@ -15,7 +15,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
@@ -128,6 +127,7 @@ public class LoadSave extends JPanel {
 					break;
 			}
 		}
+		
 		List<String> myList = exp.seqKymos.loadListOfKymographsFromCapillaries(exp.getResultsDirectory(), exp.capillaries);
 		if (seqKymos.isInterrupted_loadImages) {
 			seqKymos.isInterrupted_loadImages = false;
@@ -141,13 +141,9 @@ public class LoadSave extends JPanel {
 		}
 
 		seqKymos.transferCapillariesToKymosRois(exp.capillaries);
-		if (flag) {
-			SwingUtilities.invokeLater(new Runnable() {
-			    public void run() {
-	        	parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
-				}
-			});
-		}
+		if (flag) 
+	        parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
+
 		return flag;
 	}
 }
