@@ -146,7 +146,7 @@ public class XLSExport {
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPVOLUME.getValue(), transpose, 	exp.capillaries.desc.volume);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPPIXELS.getValue(), transpose, 	exp.capillaries.desc.pixels);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT2.getValue(), transpose, 	exp.comment2);
-			if (exp.cages.cageList.size() >= cap.capCageID) {
+			if (exp.cages.cageList.size() > cap.capCageID) {
 				Cage cage = exp.cages.cageList.get(cap.capCageID);
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, cage.cageNFlies );
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGECOMMENT.getValue(), transpose, cage.strCageComment);
