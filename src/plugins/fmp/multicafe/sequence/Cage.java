@@ -22,7 +22,10 @@ public class Cage {
 	public XYTaSeries 	flyPositions 			= new XYTaSeries();
 	public List<ROI2D> 	detectedFliesList		= new ArrayList<ROI2D>();
 	public int 			cageNFlies  			= 1;
+	public int 			cageAge 				= 5;
 	public String 		strCageComment 			= "..";
+	public String 		strCageSex 				= "..";
+	public String 		strCageStrain 			= "..";
 	private String 		strCageNumber 			= null;
 	public	boolean		valid					= false;
 	public	boolean		saveDetectedROIs		= false;
@@ -32,7 +35,11 @@ public class Cage {
 	private final String ID_ROISDETECTED		= "RoisDetected";
 	private final String ID_NBITEMS				= "nb_items";
 	private final String ID_NFLIES 				= "nflies"; 
+	private final String ID_AGE 				= "age"; 
 	private final String ID_COMMENT				= "comment";
+	private final String ID_SEX					= "sex";
+	private final String ID_STRAIN				= "strain";
+	
 	private final String ID_STARTFRAME 			= "startFrame";
 	private final String ID_ENDFRAME 			= "endFrame";
 	private final String ID_STEP 				= "stepFrame";
@@ -42,24 +49,33 @@ public class Cage {
 		if (node == null)
 			return false;
 		Element xmlVal = XMLUtil.addElement(node, "Cage"+index);		
-		xmlSaveCageLimitsAndParameters(xmlVal);
+		xmlSaveCageLimits(xmlVal);
+		xmlSaveCageParameters(xmlVal);
 		xmlSaveFlyPositions(xmlVal);
 		if (saveDetectedROIs)
 			xmlSaveDetecteRois(xmlVal);
 		return true;
 	}
 	
-	public boolean xmlSaveCageLimitsAndParameters(Element xmlVal) {
+	public boolean xmlSaveCageParameters(Element xmlVal) {
 		XMLUtil.setElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
+		XMLUtil.setElementIntValue(xmlVal, ID_AGE, cageAge);
 		XMLUtil.setElementValue(xmlVal, ID_COMMENT, strCageComment);
+		XMLUtil.setElementValue(xmlVal, ID_SEX, strCageSex);
+		XMLUtil.setElementValue(xmlVal, ID_STRAIN, strCageStrain);
+		
+		XMLUtil.setElementIntValue(xmlVal, ID_STARTFRAME, frameStart);
+		XMLUtil.setElementIntValue(xmlVal, ID_ENDFRAME, frameEnd);
+		XMLUtil.setElementIntValue(xmlVal, ID_STEP, frameStep);
+		return true;
+	}
+	
+	public boolean xmlSaveCageLimits(Element xmlVal) {
 		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_CAGELIMITS);
 		if (roi != null) {
 			roi.setSelected(false);
 			roi.saveToXML(xmlVal2);
 		}
-		XMLUtil.setElementIntValue(xmlVal, ID_STARTFRAME, frameStart);
-		XMLUtil.setElementIntValue(xmlVal, ID_ENDFRAME, frameEnd);
-		XMLUtil.setElementIntValue(xmlVal, ID_STEP, frameStep);
 		return true;
 	}
 	
@@ -90,19 +106,28 @@ public class Cage {
 		if (xmlVal == null)
 			return false;
 		getCageLimits(xmlVal);
+		getCageParameters(xmlVal);
 		getFlyPositions(xmlVal);
 		getRoisDetected(xmlVal);
 		return true;
 	}
 	
 	public boolean getCageLimits (Element xmlVal) {
-		cageNFlies 		= XMLUtil.getElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
-		strCageComment 	= XMLUtil.getElementValue(xmlVal, ID_COMMENT, strCageComment);
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_CAGELIMITS);
 		if (xmlVal2 != null) {
 			roi = (ROI2D) ROI.createFromXML(xmlVal2 );
 	        roi.setSelected(false);
 		}
+		return true;
+	}
+	
+	public boolean getCageParameters (Element xmlVal) {
+		cageNFlies 		= XMLUtil.getElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
+		cageAge 		= XMLUtil.getElementIntValue(xmlVal, ID_AGE, cageAge);
+		strCageComment 	= XMLUtil.getElementValue(xmlVal, ID_COMMENT, strCageComment);
+		strCageSex 		= XMLUtil.getElementValue(xmlVal, ID_SEX, strCageSex);
+		strCageStrain 	= XMLUtil.getElementValue(xmlVal, ID_STRAIN, strCageStrain);
+		
 		frameStart 	= XMLUtil.getElementIntValue(xmlVal, ID_STARTFRAME, frameStart);
 		frameEnd 	= XMLUtil.getElementIntValue(xmlVal, ID_ENDFRAME, frameEnd);
 		frameStep 	= XMLUtil.getElementIntValue(xmlVal, ID_STEP, frameStep);
