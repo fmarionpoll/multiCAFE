@@ -84,9 +84,9 @@ public class XLSExportMoveResults  extends XLSExport {
 	
 	private int getMoveDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType datatype) {	
 		getDataFromOneSeriesOfExperiments(exp, datatype);
-		
 		XSSFSheet sheet = xlsInitSheet(datatype.toString());
 		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
+		
 		if (options.onlyalive) {
 			trimDeadsFromRowMoveData(exp);
 			sheet = xlsInitSheet(datatype.toString()+"_alive");

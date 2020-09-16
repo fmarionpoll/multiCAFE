@@ -62,6 +62,7 @@ public class Table  extends JPanel {
 		panel1.add(copyButton);
         panel1.add(pasteButton);
         topPanel.add(panel1);
+        
         JPanel panel2 = new JPanel (flowLayout);
         panel2.add(getCageNoButton);
         panel2.add(getNfliesButton);
@@ -72,7 +73,7 @@ public class Table  extends JPanel {
         JPanel tablePanel = new JPanel();
 		tablePanel.add(scrollPane);
         
-		dialogFrame = new IcyFrame ("Edit capillaries", true, true);	
+		dialogFrame = new IcyFrame ("Capillaries properties", true, true);	
 		dialogFrame.add(topPanel, BorderLayout.NORTH);
 		dialogFrame.add(tablePanel, BorderLayout.CENTER);
 		

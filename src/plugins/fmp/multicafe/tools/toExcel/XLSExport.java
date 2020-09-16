@@ -285,6 +285,7 @@ public class XLSExport {
 	
 	private void getDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsOption) {	
 		// loop to get all capillaries into expAll and init rows for this experiment
+		expAll.cages.copy(exp.cages);
 		expAll.capillaries.copy(exp.capillaries);
 		expAll.fileTimeImageFirst 	= exp.fileTimeImageFirst;
 		expAll.fileTimeImageLast 	= exp.fileTimeImageLast;
