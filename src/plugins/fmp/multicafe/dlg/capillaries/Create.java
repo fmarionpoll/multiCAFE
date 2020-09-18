@@ -183,8 +183,7 @@ public class Create extends JPanel {
 				width_between_capillaries = getWidthSmallInterval();
 				width_interval = getWidthLongInterval();
 			}
-
-		}catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
+		} catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
 
 		ROI2D roi = seqCamData.seq.getSelectedROI2D();
 		if ( ! ( roi instanceof ROI2DPolygon ) ) {
@@ -202,53 +201,50 @@ public class Create extends JPanel {
 			double span = (nbcapillaries/2)* (width_between_capillaries + width_interval) - width_interval;
 			for (int i=0; i< nbcapillaries; i+= 2) {
 				double span0 = (width_between_capillaries + width_interval)*i/2;
-				double x = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
-				double y = roiPolygon.ypoints[0] + (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * span0 /span;
-				if (x < 0) 
-					x= 0;
-				if (y < 0) 
-					y=0;				
-				Point2D.Double point0 = new Point2D.Double (x, y);
-				x = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * span0 /span ;
-				y = roiPolygon.ypoints[1] + (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) * span0 /span ;
-				Point2D.Double point1 = new Point2D.Double (x, y);
-				ROI2DLine roiL1 = new ROI2DLine (point0, point1);
-				roiL1.setName("line"+i/2+"L");
-				roiL1.setReadOnly(false);
-				seqCamData.seq.addROI(roiL1, true);
+				double x0 = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
+				double y0 = roiPolygon.ypoints[0] + (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * span0 /span;
+				if (x0 < 0) 
+					x0= 0;
+				if (y0 < 0) 
+					y0=0;
+				double x1 = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * span0 /span ;
+				double y1 = roiPolygon.ypoints[1] + (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) * span0 /span ;
+				
+				addROILine(seqCamData, "line"+i/2+"L", new Point2D.Double (x0, y0), new Point2D.Double (x1, y1));
 
 				span0 += width_between_capillaries ;
-				x = roiPolygon.xpoints[0]+ (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
-				y = roiPolygon.ypoints[0]+ (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * span0 /span;
-				if (x < 0) 
-					x= 0;
-				if (y < 0) 
-					y=0;				
-				Point2D.Double point3 = new Point2D.Double (x, y);
-				x = roiPolygon.xpoints[1]+ (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * span0 /span;
-				y = roiPolygon.ypoints[1]+ (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) * span0 /span;;
-				Point2D.Double point4 = new Point2D.Double (x, y);
-				ROI2DLine roiL2 = new ROI2DLine (point3, point4);
-				roiL2.setName("line"+i/2+"R");
-				roiL2.setReadOnly(false);
-				seqCamData.seq.addROI(roiL2, true);
+				x0 = roiPolygon.xpoints[0]+ (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
+				y0 = roiPolygon.ypoints[0]+ (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * span0 /span;
+				if (x0 < 0) 
+					x0= 0;
+				if (y0 < 0) 
+					y0=0;
+				
+				x1 = roiPolygon.xpoints[1]+ (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * span0 /span;
+				y1 = roiPolygon.ypoints[1]+ (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) * span0 /span;;
+				addROILine(seqCamData, "line"+i/2+"R", new Point2D.Double (x0, y0), new Point2D.Double (x1, y1));
+
 			}
 		}
 		else {
 			double span = nbcapillaries-1;
 			for (int i=0; i< nbcapillaries; i++) {
 				double span0 = width_between_capillaries*i;
-				double x = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
-				double y = roiPolygon.ypoints[0] + (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * span0 /span;
-				Point2D.Double point0 = new Point2D.Double (x, y);
-				x = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * span0 /span ;
-				y = roiPolygon.ypoints[1] + (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) * span0 /span ;
-				Point2D.Double point1 = new Point2D.Double (x, y);
-				ROI2DLine roiL1 = new ROI2DLine (point0, point1);				
-				roiL1.setName("line"+i);
-				roiL1.setReadOnly(false);
-				seqCamData.seq.addROI(roiL1, true);
+				double x0 = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
+				double y0 = roiPolygon.ypoints[0] + (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * span0 /span;
+
+				double x1 = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * span0 /span ;
+				double y1 = roiPolygon.ypoints[1] + (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) * span0 /span ;
+
+				addROILine(seqCamData, "line"+i, new Point2D.Double (x0, y0), new Point2D.Double (x1, y1));
 			}
 		}
+	}
+	
+	private void addROILine(SequenceCamData seqCamData, String name, Point2D point0, Point2D point1) {
+		ROI2DLine roiL1 = new ROI2DLine (point0, point1);
+		roiL1.setName(name);
+		roiL1.setReadOnly(false);
+		seqCamData.seq.addROI(roiL1, true);
 	}
 }
