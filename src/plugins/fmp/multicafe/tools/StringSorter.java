@@ -45,7 +45,7 @@ public class StringSorter {
 		int n = data.length;
 		final Integer[] indexes = new Integer[n];
 		for (int i=0; i<n; i++)
-			indexes[i] = new Integer(i);
+			indexes[i] = i;
 		Arrays.sort(indexes, new Comparator<Integer>() {
 			public int compare(final Integer o1, final Integer o2) {
 				return data[o1].compareToIgnoreCase(data[o2]);
@@ -65,8 +65,8 @@ public class StringSorter {
 		final Integer[] indexes = new Integer[n];
 		final Double[] data = new Double[n];
 		for (int i=0; i<n; i++) {
-			indexes[i] = new Integer(i);
-			data[i] = new Double(values[i]);
+			indexes[i] = i;
+			data[i] = values[i];
 		}
 		Arrays.sort(indexes, new Comparator<Integer>() {
 			public int compare(final Integer o1, final Integer o2) {

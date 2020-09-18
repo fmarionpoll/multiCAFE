@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe.dlg.capillaries;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -41,6 +43,7 @@ public class Create extends JPanel {
 	private JButton 	createROIsFromPolygonButton2 = new JButton("Generate capillaries");
 	private JRadioButton selectGroupedby2Button = new JRadioButton("grouped by 2");
 	private JRadioButton selectRegularButton 	= new JRadioButton("evenly spaced");
+	private JCheckBox	verticalCheckBox		= new JCheckBox("vertical orientation", true);
 	private ButtonGroup buttonGroup2 			= new ButtonGroup();
 	private JSpinner 	nbcapillariesJSpinner 	= new JSpinner(new SpinnerNumberModel(20, 0, 500, 1));
 	private JSpinner 	width_between_capillariesJSpinner = new JSpinner(new SpinnerNumberModel(30, 0, 10000, 1));
@@ -54,16 +57,23 @@ public class Create extends JPanel {
 		buttonGroup2.add(selectGroupedby2Button);
 		buttonGroup2.add(selectRegularButton);
 		selectGroupedby2Button.setSelected(true);
-		add( GuiUtil.besidesPanel( 
-				new JLabel ("N capillaries ", SwingConstants.RIGHT),  
-				nbcapillariesJSpinner, 
-				selectRegularButton, 
-				selectGroupedby2Button)); 
-		add( GuiUtil.besidesPanel( 
-				new JLabel("Pixels btw. caps ", SwingConstants.RIGHT), 
-				width_between_capillariesJSpinner, 
-				new JLabel("btw. groups ", SwingConstants.RIGHT), 
-				width_intervalJSpinner ) );
+		
+		FlowLayout flowLayout1 = new FlowLayout(FlowLayout.LEFT);
+		flowLayout1.setVgap(0);
+		JPanel panel0 = new JPanel(flowLayout1);
+		panel0.add(new JLabel ("N capillaries ", SwingConstants.RIGHT));
+		panel0.add(nbcapillariesJSpinner);
+		panel0.add(selectRegularButton);
+		panel0.add(selectGroupedby2Button);
+		panel0.add(verticalCheckBox);
+		add(panel0);
+		
+		JPanel panel1 = new JPanel(flowLayout1);
+		panel1.add(new JLabel("Pixels btw. caps ", SwingConstants.RIGHT));
+		panel1.add(width_between_capillariesJSpinner);
+		panel1.add(new JLabel("btw. groups ", SwingConstants.RIGHT));
+		panel1.add(width_intervalJSpinner);
+		add(panel1);
 		
 		defineActionListeners();
 		this.parent0 = parent0;
@@ -75,7 +85,7 @@ public class Create extends JPanel {
 			}});
 		
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-				roisGenerateFromPolygon();
+				roisGenerateFromPolygon(verticalCheckBox.isSelected());
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) {
 					SequenceKymosUtils.transferCamDataROIStoKymo(exp);
@@ -147,7 +157,15 @@ public class Create extends JPanel {
 		seqCamData.seq.setSelectedROI(roi);
 	}
 	
-	private void roisGenerateFromPolygon() {
+	private void swap (Polygon2D roiPolygon) {
+		for (int i=0; i<roiPolygon.npoints; i++) {
+			double val =  roiPolygon.xpoints[i];
+			roiPolygon.xpoints[i] = roiPolygon.ypoints[i];
+			roiPolygon.ypoints[i] = val;
+		}
+	}
+	
+	private void roisGenerateFromPolygon(boolean vertical) {
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
@@ -175,6 +193,9 @@ public class Create extends JPanel {
 		}
 		
 		Polygon2D roiPolygon = ROI2DUtilities.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
+		if (!vertical) {
+			swap(roiPolygon);
+		}
 		seqCamData.seq.removeROI(roi);
 
 		if (statusGroup2Mode) {	
@@ -221,7 +242,7 @@ public class Create extends JPanel {
 				double y = roiPolygon.ypoints[0] + (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * span0 /span;
 				Point2D.Double point0 = new Point2D.Double (x, y);
 				x = roiPolygon.xpoints[1] + (roiPolygon.xpoints[2]-roiPolygon.xpoints[1]) * span0 /span ;
-				y = roiPolygon.ypoints[1] + (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) *span0 /span ;
+				y = roiPolygon.ypoints[1] + (roiPolygon.ypoints[2]-roiPolygon.ypoints[1]) * span0 /span ;
 				Point2D.Double point1 = new Point2D.Double (x, y);
 				ROI2DLine roiL1 = new ROI2DLine (point0, point1);				
 				roiL1.setName("line"+i);
