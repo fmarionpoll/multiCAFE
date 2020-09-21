@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -20,7 +20,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import icy.gui.frame.progress.AnnounceFrame;
-import icy.gui.util.GuiUtil;
 import icy.roi.ROI2D;
 import icy.type.geom.Polygon2D;
 import plugins.fmp.multicafe.MultiCAFE;
@@ -43,37 +42,43 @@ public class Create extends JPanel {
 	private JButton 	createROIsFromPolygonButton2 = new JButton("Generate capillaries");
 	private JRadioButton selectGroupedby2Button = new JRadioButton("grouped by 2");
 	private JRadioButton selectRegularButton 	= new JRadioButton("evenly spaced");
-	private JCheckBox	verticalCheckBox		= new JCheckBox("vertical orientation", true);
+	private JComboBox<String> orientationJCombo = new JComboBox<String> (new String[] {"0°", "90°", "180°", "270°" });
 	private ButtonGroup buttonGroup2 			= new ButtonGroup();
 	private JSpinner 	nbcapillariesJSpinner 	= new JSpinner(new SpinnerNumberModel(20, 0, 500, 1));
 	private JSpinner 	width_between_capillariesJSpinner = new JSpinner(new SpinnerNumberModel(30, 0, 10000, 1));
-	private JSpinner 	width_intervalJSpinner = new JSpinner(new SpinnerNumberModel(53, 0, 10000, 1)); 
+	private JSpinner 	width_intervalJSpinner 	= new JSpinner(new SpinnerNumberModel(53, 0, 10000, 1)); 
 	private MultiCAFE 	parent0 				= null;
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		
-		add( GuiUtil.besidesPanel( addPolygon2DButton, createROIsFromPolygonButton2));
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
+		flowLayout.setVgap(0);
+		
+		JPanel panel0 = new JPanel(flowLayout);
+
+		panel0.add(addPolygon2DButton);
+		panel0.add(createROIsFromPolygonButton2);
 		buttonGroup2.add(selectGroupedby2Button);
 		buttonGroup2.add(selectRegularButton);
 		selectGroupedby2Button.setSelected(true);
-		
-		FlowLayout flowLayout1 = new FlowLayout(FlowLayout.LEFT);
-		flowLayout1.setVgap(0);
-		JPanel panel0 = new JPanel(flowLayout1);
-		panel0.add(new JLabel ("N capillaries ", SwingConstants.RIGHT));
-		panel0.add(nbcapillariesJSpinner);
-		panel0.add(selectRegularButton);
-		panel0.add(selectGroupedby2Button);
-		panel0.add(verticalCheckBox);
 		add(panel0);
 		
-		JPanel panel1 = new JPanel(flowLayout1);
-		panel1.add(new JLabel("Pixels btw. caps ", SwingConstants.RIGHT));
-		panel1.add(width_between_capillariesJSpinner);
-		panel1.add(new JLabel("btw. groups ", SwingConstants.RIGHT));
-		panel1.add(width_intervalJSpinner);
+		JPanel panel1 = new JPanel(flowLayout);
+		panel1.add(new JLabel ("N capillaries ", SwingConstants.RIGHT));
+		panel1.add(nbcapillariesJSpinner);
+		panel1.add(selectRegularButton);
+		panel1.add(selectGroupedby2Button);
 		add(panel1);
+		
+		JPanel panel2 = new JPanel(flowLayout);
+		panel2.add(new JLabel("btw. caps ", SwingConstants.RIGHT));
+		panel2.add(width_between_capillariesJSpinner);
+		panel2.add(new JLabel("btw. groups ", SwingConstants.RIGHT));
+		panel2.add(width_intervalJSpinner);
+		panel2.add(new JLabel("orientation: "));
+		panel2.add(orientationJCombo);
+		add(panel2);
 		
 		defineActionListeners();
 		this.parent0 = parent0;
@@ -85,7 +90,7 @@ public class Create extends JPanel {
 			}});
 		
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-				roisGenerateFromPolygon(verticalCheckBox.isSelected());
+				roisGenerateFromPolygon();
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) {
 					SequenceKymosUtils.transferCamDataROIStoKymo(exp);
@@ -158,14 +163,19 @@ public class Create extends JPanel {
 	}
 	
 	private void swap (Polygon2D roiPolygon) {
+		int isel = orientationJCombo.getSelectedIndex();
+		if (isel == 0)
+			return;
+		
+		Polygon2D roiPolygon_orig = (Polygon2D) roiPolygon.clone();
 		for (int i=0; i<roiPolygon.npoints; i++) {
-			double val =  roiPolygon.xpoints[i];
-			roiPolygon.xpoints[i] = roiPolygon.ypoints[i];
-			roiPolygon.ypoints[i] = val;
+			int j = (i + isel) % 4;
+			roiPolygon.xpoints[i] = roiPolygon_orig.xpoints[j];
+			roiPolygon.ypoints[i] = roiPolygon_orig.ypoints[j];
 		}
 	}
 	
-	private void roisGenerateFromPolygon(boolean vertical) {
+	private void roisGenerateFromPolygon() {
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
@@ -193,9 +203,8 @@ public class Create extends JPanel {
 		}
 		
 		Polygon2D roiPolygon = ROI2DUtilities.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
-		if (!vertical) {
-			swap(roiPolygon);
-		}
+		swap(roiPolygon);
+		
 		seqCamData.seq.removeROI(roi);
 
 		if (statusGroup2Mode) {	

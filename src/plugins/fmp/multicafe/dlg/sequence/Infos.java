@@ -1,6 +1,7 @@
 package plugins.fmp.multicafe.dlg.sequence;
 
-import java.awt.BorderLayout;
+
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,7 +9,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
@@ -33,20 +33,23 @@ public class Infos  extends JPanel {
 		this.parent0 = parent0;
 		setLayout(capLayout);
 
-		add( GuiUtil.besidesPanel(
-				createComboPanel("Experiment ", experiment_JCombo),  
-				createComboPanel("  Box ID ",  boxID_JCombo)));
+		FlowLayout flowlayout = new FlowLayout(FlowLayout.LEFT);
+		flowlayout.setVgap(0);
+		JPanel panel0 = new JPanel (flowlayout);
+		panel0.add(new JLabel("Experiment "));
+		panel0.add(experiment_JCombo);
+		panel0.add(new JLabel("  Box ID "));
+		panel0.add(boxID_JCombo);
+		add(panel0);
 		
-		JPanel panel1 = new JPanel();
-		panel1.setLayout(new BorderLayout());
-		panel1.add(new JLabel("Comment1   ", SwingConstants.RIGHT), BorderLayout.WEST); 
-		panel1.add(comment1_JCombo, BorderLayout.CENTER);
+		JPanel panel1 = new JPanel(flowlayout);
+		panel1.add(new JLabel("Comment1   ")); 
+		panel1.add(comment1_JCombo);
 		add( GuiUtil.besidesPanel(panel1));
 		
-		JPanel panel2 = new JPanel();
-		panel2.setLayout(new BorderLayout());
-		panel2.add(new JLabel("Comment2   ", SwingConstants.RIGHT), BorderLayout.WEST); 
-		panel2.add(comment2_JCombo, BorderLayout.CENTER);
+		JPanel panel2 = new JPanel(flowlayout);
+		panel2.add(new JLabel("Comment2   ")); 
+		panel2.add(comment2_JCombo);
 		add( GuiUtil.besidesPanel(panel2));
 
 		boxID_JCombo.setEditable(true);
@@ -57,15 +60,7 @@ public class Infos  extends JPanel {
 		
 		defineActionListeners();
 	}
-	
-	private JPanel createComboPanel(String text, JComboBox<String> combo) {
-		JPanel panel = new JPanel();
-		panel.setLayout(new BorderLayout());
-		panel.add(new JLabel(text, SwingConstants.RIGHT), BorderLayout.WEST); 
-		panel.add(combo, BorderLayout.CENTER);
-		return panel;
-	}
-	
+		
 	private void defineActionListeners() {
 		boxID_JCombo.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			String newtext = (String) boxID_JCombo.getSelectedItem();
