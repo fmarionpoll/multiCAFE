@@ -162,7 +162,7 @@ public class Create extends JPanel {
 		seqCamData.seq.setSelectedROI(roi);
 	}
 	
-	private void swap (Polygon2D roiPolygon) {
+	private void rotate (Polygon2D roiPolygon) {
 		int isel = orientationJCombo.getSelectedIndex();
 		if (isel == 0)
 			return;
@@ -202,7 +202,7 @@ public class Create extends JPanel {
 		}
 		
 		Polygon2D roiPolygon = ROI2DUtilities.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
-		swap(roiPolygon);
+		rotate(roiPolygon);
 		
 		seqCamData.seq.removeROI(roi);
 
