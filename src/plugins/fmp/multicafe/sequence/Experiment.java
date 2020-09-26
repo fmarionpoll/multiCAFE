@@ -266,7 +266,7 @@ public class Experiment {
 			if (resultsPath.length() < (RESULTS.length() +2)) {
 				step = kymoFrameStep;
 			} else {
-				step = Integer.parseInt(resultsPath.substring(RESULTS.length()+1));
+				step = Integer.valueOf(resultsPath.substring(RESULTS.length()+1));
 			}
 		}
 		return step;
@@ -424,7 +424,7 @@ public class Experiment {
 		boolean isalive = false;
 		for (Cage cage: cages.cageList) {
 			String cagenumberString = cage.roi.getName().substring(4);
-			if (Integer.parseInt(cagenumberString) == cagenumber) {
+			if (Integer.valueOf(cagenumberString) == cagenumber) {
 				isalive = (cage.flyPositions.getLastIntervalAlive() > 0);
 				break;
 			}
@@ -436,7 +436,7 @@ public class Experiment {
 		int flypos = -1;
 		for (Cage cage: cages.cageList) {
 			String cagenumberString = cage.roi.getName().substring(4);
-			if (Integer.parseInt(cagenumberString) == cagenumber) {
+			if (Integer.valueOf(cagenumberString) == cagenumber) {
 				flypos = cage.flyPositions.getLastIntervalAlive();
 				break;
 			}
@@ -448,7 +448,7 @@ public class Experiment {
 		boolean isavailable = false;
 		for (Cage cage: cages.cageList) {
 			String cagenumberString = cage.roi.getName().substring(4);
-			if (Integer.parseInt(cagenumberString) == cagenumber) {
+			if (Integer.valueOf(cagenumberString) == cagenumber) {
 				isavailable = true;
 				break;
 			}

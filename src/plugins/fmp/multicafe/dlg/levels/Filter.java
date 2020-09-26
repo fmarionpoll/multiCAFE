@@ -53,7 +53,7 @@ public class Filter  extends JPanel {
 	}
 
 	int getSpan( ) {
-		return Integer.parseInt( spanText.getText() );
+		return Integer.valueOf( spanText.getText() );
 	}
 	
 	private void crossCorrelatePixels (SequenceKymos kymographSeq, int span, int t, int c) {

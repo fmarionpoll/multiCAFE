@@ -183,7 +183,7 @@ public class XLSExport {
 			return -1;
 	
 		String num = name.substring(4, 5);
-		int numFromName = Integer.parseInt(num);
+		int numFromName = Integer.valueOf(num);
 		return numFromName;
 	}
 	
@@ -195,7 +195,7 @@ public class XLSExport {
 		if (!name .contains("line"))
 			return -1;
 		String num = name.substring(4, 5);
-		int numFromName = Integer.parseInt(num);
+		int numFromName = Integer.valueOf(num);
 		if( name.length() > 5) {
 			String side = name.substring(5, 6);
 			if (side != null) {
@@ -214,7 +214,7 @@ public class XLSExport {
 		if (!name .contains("cage"))
 			return -1;
 		String num = name.substring(4, name.length());
-		int numFromName = Integer.parseInt(num);
+		int numFromName = Integer.valueOf(num);
 		return numFromName;
 	}
 	
@@ -228,7 +228,7 @@ public class XLSExport {
 	protected int getCageFromKymoFileName(String name) {
 		if (!name .contains("line"))
 			return -1;
-		return Integer.parseInt(name.substring(4, 5));
+		return Integer.valueOf(name.substring(4, 5));
 	}
 	
 	XSSFWorkbook xlsInitWorkbook() {
@@ -505,7 +505,7 @@ public class XLSExport {
 	private void trimDeadsFromArrayList(Experiment exp) {
 		for (Cage cage: exp.cages.cageList) {
 			String cagenumberString = cage.roi.getName().substring(4);
-			int cagenumber = Integer.parseInt(cagenumberString);
+			int cagenumber = Integer.valueOf(cagenumberString);
 			int ilastalive = 0;
 			if (cage.cageNFlies > 0) {
 				Experiment expi = exp;

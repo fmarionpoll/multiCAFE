@@ -253,7 +253,7 @@ public class XLSExportMoveResults  extends XLSExport {
 	
 	private void trimDeadsFromRowMoveData(Experiment exp) {
 		for (Cage cage: exp.cages.cageList) {
-			int cagenumber = Integer.parseInt(cage.roi.getName().substring(4));
+			int cagenumber = Integer.valueOf(cage.roi.getName().substring(4));
 			int ilastalive = 0;
 			if (cage.cageNFlies > 0) {
 				Experiment expi = exp;
@@ -266,7 +266,7 @@ public class XLSExportMoveResults  extends XLSExport {
 				ilastalive = lastMinuteAlive / expAll.getCagesFrameStep();
 			}
 			for (XYTaSeries row : rowsForOneExp) {
-				int rowCageNumber = Integer.parseInt(row.name.substring(4));
+				int rowCageNumber = Integer.valueOf(row.name.substring(4));
 				if ( rowCageNumber == cagenumber) {
 					row.clearValues(ilastalive+1);
 				}

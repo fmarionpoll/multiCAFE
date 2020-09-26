@@ -130,7 +130,7 @@ public class Table  extends JPanel {
 					else if (side.equals("R"))
 						modulo2 = 1;
 					else
-						modulo2 = Integer.parseInt(cap0.getCapillarySide()) % 2;
+						modulo2 = Integer.valueOf(cap0.getCapillarySide()) % 2;
 					
 					for (Capillary cap: exp.capillaries.capillariesArrayList) {
 						if (cap.getCapillaryName().equals(cap0.getCapillaryName()))
@@ -139,7 +139,7 @@ public class Table  extends JPanel {
 							continue;
 						else {
 							try {
-							int mod = Integer.parseInt(cap.getCapillarySide()) % 2;
+							int mod = Integer.valueOf(cap.getCapillarySide()) % 2;
 							if (mod != modulo2)
 								continue;
 							} catch (NumberFormatException nfe) {

@@ -153,7 +153,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		String name = roi.getName();
 		if (!name .contains("line"))
 			return -1;
-		return Integer.parseInt(name.substring(4, 5));
+		return Integer.valueOf(name.substring(4, 5));
 	}
 	
 	public String getSideDescriptor(EnumXLSExportType xlsExportOption) {

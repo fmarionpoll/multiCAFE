@@ -340,7 +340,7 @@ public class Cages {
 		for (ROI roi: seqCamData.seq.getROIs()) {
 			if (roi.getName().contains(cageRoot)) {
 				String left = roi.getName().substring(4);
-				int item = Integer.parseInt(left);
+				int item = Integer.valueOf(left);
 				iRoot = Math.max(iRoot, item);
 			}
 		}
