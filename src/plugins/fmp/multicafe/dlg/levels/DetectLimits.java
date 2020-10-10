@@ -55,6 +55,8 @@ public class DetectLimits extends JPanel implements PropertyChangeListener {
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
+	private JCheckBox	maxContrastCheckBox 	= new JCheckBox ("maximize contrast", false);
+	
 
 	private MultiCAFE 	parent0 				= null;
 	private DetectLevels_series thread 			= null;
@@ -73,6 +75,7 @@ public class DetectLimits extends JPanel implements PropertyChangeListener {
 		panel0.add(allKymosCheckBox);
 		panel0.add(leftCheckBox);
 		panel0.add(rightCheckBox);
+		panel0.add(maxContrastCheckBox);
 		add( GuiUtil.besidesPanel(panel0 ));
 		
 		((JLabel) directionComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
