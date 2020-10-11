@@ -61,7 +61,7 @@ public class XLSResultsArray {
 			if (result.data == null || result.nflies > 0)
 				continue;
 			String side = result.name.substring(result.name.length() -1);
-			if (sameLR || side.equals("L"))
+			if (sameLR || side.contains("L"))
 				evapL.addDataToValInt(result);
 			else
 				evapR.addDataToValInt(result);
@@ -74,7 +74,7 @@ public class XLSResultsArray {
 	private void subtractEvaporationLocal() {
 		for (XLSResults result: resultsArrayList) {
 			String side = result.name.substring(result.name.length() -1);
-			if (sameLR || side.equals("L"))
+			if (sameLR || side.contains("L"))
 				result.subtractEvap(evapL);
 			else
 				result.subtractEvap(evapR);

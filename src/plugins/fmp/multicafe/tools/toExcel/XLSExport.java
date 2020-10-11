@@ -321,19 +321,19 @@ public class XLSExport {
 				
 		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
 		expi = exp;
-		EnumXLSExportType getOption = null;
+		EnumXLSExportType measureOption = null;
 		switch (xlsOption) {
 		case TOPRAW:
 		case TOPLEVEL_LR:
 		case TOPLEVELDELTA:
 		case TOPLEVELDELTA_LR:
-			getOption = EnumXLSExportType.TOPLEVEL;
+			measureOption = EnumXLSExportType.TOPLEVEL;
 			break;
 		case SUMGULPS_LR:
-			getOption = EnumXLSExportType.SUMGULPS;
+			measureOption = EnumXLSExportType.SUMGULPS;
 			break;
 		default:
-			getOption = xlsOption;
+			measureOption = xlsOption;
 			break;
 		}
 		
@@ -350,7 +350,7 @@ public class XLSExport {
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, expi.getKymoFrameStep());
-						results.data = cap.getMeasures(getOption);
+						results.data = cap.getMeasures(measureOption);
 						resultsArrayList.add(results);
 					}
 					break;
@@ -363,9 +363,9 @@ public class XLSExport {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, expi.getKymoFrameStep());
 						if (options.t0) 
-							results.data = exp.seqKymos.subtractT0(cap.getMeasures(getOption));
+							results.data = exp.seqKymos.subtractT0(cap.getMeasures(measureOption));
 						else
-							results.data = cap.getMeasures(getOption);
+							results.data = cap.getMeasures(measureOption);
 						resultsArrayList.add(results);
 					}
 					if (options.subtractEvaporation)
@@ -378,7 +378,7 @@ public class XLSExport {
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, expi.getKymoFrameStep());
-						results.data = cap.getMeasures(getOption);
+						results.data = cap.getMeasures(measureOption);
 						resultsArrayList.add(results);
 					}
 					if (options.subtractEvaporation)
