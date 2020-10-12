@@ -48,7 +48,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 				if (options.sum_ratio_LR && options.topLevelDelta) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVELDELTA_LR);
 
-
 				if (options.bottomLevel) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.BOTTOMLEVEL);		
 				if (options.derivative) 	
