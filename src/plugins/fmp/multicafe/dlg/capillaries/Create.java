@@ -170,8 +170,8 @@ public class Create extends JPanel {
 		Polygon2D roiPolygon_orig = (Polygon2D) roiPolygon.clone();
 		for (int i=0; i<roiPolygon.npoints; i++) {
 			int j = (i + isel) % 4;
-			roiPolygon.xpoints[i] = roiPolygon_orig.xpoints[j];
-			roiPolygon.ypoints[i] = roiPolygon_orig.ypoints[j];
+			roiPolygon.xpoints[j] = roiPolygon_orig.xpoints[i];
+			roiPolygon.ypoints[j] = roiPolygon_orig.ypoints[i];
 		}
 	}
 	
