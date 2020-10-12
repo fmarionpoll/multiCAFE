@@ -68,7 +68,7 @@ public class Infos extends JPanel {
 					Point2D pt2 = pts.get(pts.size() -1);
 					double npixels = Math.sqrt(
 							(pt2.getY() - pt1.getY()) * (pt2.getY() - pt1.getY()) 
-							+ (pt2.getX() - pt1.getX()) * (pt2.getX() - pt2.getX()));
+							+ (pt2.getX() - pt1.getX()) * (pt2.getX() - pt1.getX()));
 					capillaryPixelsTextField.setValue((int) npixels);
 				}
 			}});
