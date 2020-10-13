@@ -89,6 +89,7 @@ public class DetectLimits extends JPanel implements PropertyChangeListener {
 		panel1.add(endSpinner);
 		add( panel1);
 		
+		maxContrastCheckBox.setVisible(false);
 		defineActionListeners();
 	}
 	

@@ -151,7 +151,8 @@ public class XLSResults {
 			if (rowR.values_out != null && index < lenR) 
 				dataR = rowR.values_out[index];
 			
-			sum = Math.abs(dataL)+Math.abs(dataR);
+//			sum = Math.abs(dataL)+Math.abs(dataR);
+			sum = dataL + dataR;
 			values_out[index]= sum;
 		}
 	}

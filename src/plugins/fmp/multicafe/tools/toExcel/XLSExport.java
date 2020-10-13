@@ -517,9 +517,12 @@ public class XLSExport {
 						+ (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
 				ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
 			}
+			if (ilastalive > 0)
+				ilastalive += 1;
+			
 			for (XLSResults row : rowListForOneExp) {
 				if (getCageFromCapillaryName (row.name) == cagenumber) {
-					row.clearValues(ilastalive+1);
+					row.clearValues(ilastalive);
 				}
 			}
 		}	
