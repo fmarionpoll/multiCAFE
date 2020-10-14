@@ -167,6 +167,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (loadCages) {
 			progress = new ProgressFrame("load fly positions");
 			exp.loadDrosotrack();
+			
 			progress.close();
 			SwingUtilities.invokeLater(new Runnable() { public void run() {
 				paneCages.tabGraphics.moveCheckbox.setEnabled(true);

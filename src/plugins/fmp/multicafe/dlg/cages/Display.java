@@ -60,7 +60,7 @@ public class Display  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
-					exp.displayDetectedFliesAsRois();
+					exp.displayDetectedFliesAsRois(viewFlyCheckbox.isSelected());
 			}});
 	}
 

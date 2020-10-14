@@ -135,7 +135,7 @@ public class Cages {
 			fromDetectedFliesToROIs(seq);
 		}
 		else {
-			System.out.println("failed to write cages to file");
+			System.out.println("failed to load cages from file");
 			return false;
 		}
 		return true;
@@ -377,15 +377,16 @@ public class Cages {
 		}
 	}
 	
-	public void displayDetectedFliesAsRois(Sequence seq) {
+	public void displayDetectedFliesAsRois(Sequence seq, boolean isVisible) {
 		for (Cage cage: cageList ) {
 			if (cage.detectedFliesList.size() >0) {
 				
 			} else {
-				cage.transferPositionsToRois();
-				seq.addROIs(cage.detectedFliesList, false);
+				if (isVisible) {
+					cage.transferPositionsToRois();
+					seq.addROIs(cage.detectedFliesList, false);
+				}
 			}
-			
 		}
 	}
 	

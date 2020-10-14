@@ -27,11 +27,11 @@ public class Open extends JPanel implements PropertyChangeListener {
 	private JButton 	openButton				= new JButton("Open...");
 	private JButton 	addButton				= new JButton("Add...");
 	private JButton		searchButton 			= new JButton("Search for files...");
-	private JCheckBox	kymographsCheckBox		= new JCheckBox("kymographs", true);
+	JCheckBox			kymographsCheckBox		= new JCheckBox("kymographs", true);
 	JCheckBox			capillariesCheckBox		= new JCheckBox("capillaries", true);
 	JCheckBox			cagesCheckBox			= new JCheckBox("cages", true);
 	JCheckBox			measuresCheckBox		= new JCheckBox("measures", true);
-	public JCheckBox			graphsCheckBox			= new JCheckBox("graphs", true);
+	public JCheckBox	graphsCheckBox			= new JCheckBox("graphs", true);
 	
 	public List<String> selectedNames 			= new ArrayList<String> ();
 	private SelectFiles dialog 		= null;
