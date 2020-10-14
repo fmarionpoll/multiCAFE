@@ -43,7 +43,7 @@ public class Graphs extends JPanel {
 	JCheckBox			sleepCheckbox		= new JCheckBox("sleep", true);
 	JSpinner 			aliveThresholdSpinner = new JSpinner(new SpinnerNumberModel(50.0, 0., 100000., .1));
 	public JButton 		displayResultsButton= new JButton("Display results");
-	private JButton		viewAsRoisButton	= new JButton("view detected flies as ROIs");
+
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
@@ -66,9 +66,8 @@ public class Graphs extends JPanel {
 		
 		add(GuiUtil.besidesPanel(displayResultsButton, new JLabel(" "))); 
 		
-		JPanel panel4 = new JPanel(flowLayout);
-		panel4.add(viewAsRoisButton);
-		add(panel4);
+//		JPanel panel4 = new JPanel(flowLayout);
+//		add(panel4);
 		defineActionListeners();
 	}
 	
@@ -77,13 +76,6 @@ public class Graphs extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				xyDisplayGraphs();
 				firePropertyChange("DISPLAY_RESULTS", false, true);
-			}});
-		
-		viewAsRoisButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null)
-					exp.displayDetectedFliesAsRois();
 			}});
 	}
 

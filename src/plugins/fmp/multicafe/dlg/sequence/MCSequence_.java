@@ -40,17 +40,17 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = -6826269677524125173L;
 	
-	private JTabbedPane 		tabsPane 		= new JTabbedPane();
+	private JTabbedPane 	tabsPane 		= new JTabbedPane();
 	public Open 			tabOpen 		= new Open();
 	public Infos			tabInfosSeq		= new Infos();
-	public Intervals	tabIntervals	= new Intervals();
+	public Intervals		tabIntervals	= new Intervals();
 	public Display			tabDisplay 		= new Display();
 	public Close 			tabClose 		= new Close();
-	private JLabel				text 			= new JLabel("Experiment ");
-	private JButton  			previousButton	= new JButton("<");
-	private JButton				nextButton		= new JButton(">");
-	public JComboBox <String>			expListComboBox	= new JComboBox <String>();
-	private MultiCAFE 			parent0 		= null;
+	private JLabel			text 			= new JLabel("Experiment ");
+	private JButton  		previousButton	= new JButton("<");
+	private JButton			nextButton		= new JButton(">");
+	public JComboBox <String> expListComboBox	= new JComboBox <String>();
+	private MultiCAFE 		parent0 		= null;
 	
 	
 	
