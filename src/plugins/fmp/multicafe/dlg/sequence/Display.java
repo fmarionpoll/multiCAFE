@@ -63,7 +63,7 @@ public class Display  extends JPanel {
 		} } );
 	}
 	
-	private void displayROIsCategory(boolean isVisible, String pattern) {
+	public void displayROIsCategory(boolean isVisible, String pattern) {
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;

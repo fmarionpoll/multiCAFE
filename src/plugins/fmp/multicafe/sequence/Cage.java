@@ -107,8 +107,11 @@ public class Cage {
 			return false;
 		getCageLimits(xmlVal);
 		getCageParameters(xmlVal);
-		getFlyPositions(xmlVal);
-		getRoisDetected(xmlVal);
+		if (getFlyPositions(xmlVal)) {
+			transferPositionsToRois();
+		}
+		else if (getRoisDetected(xmlVal))
+			;
 		return true;
 	}
 	

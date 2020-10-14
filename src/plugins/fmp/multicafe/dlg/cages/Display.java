@@ -1,7 +1,5 @@
 package plugins.fmp.multicafe.dlg.cages;
 
-
-
 import java.awt.FlowLayout;
 
 import java.awt.event.ActionEvent;
@@ -17,8 +15,6 @@ import javax.swing.JPanel;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.Experiment;
-
-
 
 
 
@@ -58,10 +54,9 @@ public class Display  extends JPanel {
 		
 		viewFlyCheckbox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null)
-					exp.displayDetectedFliesAsRois(viewFlyCheckbox.isSelected());
+				parent0.paneSequence.tabDisplay.displayROIsCategory(viewFlyCheckbox.isSelected(), "det");
 			}});
 	}
+	
 
 }

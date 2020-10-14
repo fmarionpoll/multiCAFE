@@ -283,7 +283,7 @@ public class Cages {
 	}
 	
 	private void removeOrphanCages(List<ROI2D> roiList) {
-		// remove cages which names are not in the list
+		// remove cages with names not in the list
 		Iterator<Cage> iterator = cageList.iterator();
 		while (iterator.hasNext()) {
 			Cage cage = iterator.next();
@@ -329,8 +329,9 @@ public class Cages {
 		}
 		
 		List<ROI> detectedFliesList = new ArrayList<ROI>();
-		for (Cage cage: cageList) 
+		for (Cage cage: cageList) {
 			detectedFliesList.addAll(cage.detectedFliesList);
+		}
 		seqCamData.seq.addROIs(detectedFliesList, true);
 	}
 	
