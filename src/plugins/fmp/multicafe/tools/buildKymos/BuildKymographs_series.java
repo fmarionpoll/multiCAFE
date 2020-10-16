@@ -49,7 +49,8 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
         threadRunning = true;
 		int nbiterations = 0;
 		ExperimentList expList = options.expList;
-		ProgressChrono progress = new ProgressChrono("Build kymographs");
+		ProgressFrame progress = new ProgressFrame("Build kymographs");
+		long startTimeInNs = System.nanoTime();
 		
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag)
@@ -79,7 +80,8 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				saveComputation(exp);
 			exp.seqCamData.closeSequence();
 		}
-		System.out.println("process ended after " + progress.getSecondsSinceStart() + " s");
+		long endTimeInNs = System.nanoTime();
+		System.out.println("process ended - duration: "+((endTimeInNs-startTimeInNs)/ 1000000000f) + " s");
 		progress.close();
 		threadRunning = false;
 		return nbiterations;
