@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.swing.SwingWorker;
@@ -15,9 +17,9 @@ import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
 import icy.sequence.Sequence;
 import icy.system.SystemUtil;
-import icy.system.thread.Processor;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
+
 import loci.formats.FormatException;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
@@ -43,14 +45,14 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 	private ArrayList<double []> 	sourceValuesList 	= null;
 	private List<ROI> 				roiList 			= null;
 	
-	// ------------------------------
-	// From A. Dufour Filter.java
-    public static final Processor service = new Processor(SystemUtil.getNumberOfCPUs());
-    
-    static
-    {
-        service.setThreadName("buildkymo");
-    }
+//	// ------------------------------
+//	// From A. Dufour Filter.java
+//    public static final Processor service = new Processor(SystemUtil.getNumberOfCPUs());
+//    
+//    static
+//    {
+//        service.setThreadName("buildkymo");
+//    }
     
 //    public final VarBoolean stopFlag = new VarBoolean("stop", false);
 //    
@@ -178,21 +180,28 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		
 		seqCamData.seq.beginUpdate();
 		int nframes = (exp.getKymoFrameEnd() - exp.getKymoFrameStart()) / exp.getKymoFrameStep() +1;
-		ArrayList<Future<?>> tasks = new ArrayList<Future<?>>(nframes);
+		boolean multiThread = true;
+		final int cpus = SystemUtil.getNumberOfCPUs();
+		ExecutorService service = multiThread ? Executors.newFixedThreadPool(cpus)
+                : Executors.newSingleThreadExecutor();
+        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		
 		// clear the task array
-		tasks.clear();
+		futures.clear();
 		
 		int ipixelcolumn = 0;
-		for (int t = exp.getKymoFrameStart() ; t <= exp.getKymoFrameEnd(); t += exp.getKymoFrameStep(), ipixelcolumn++ ) {
-			if (stopFlag)
-				break;
+		for (int frame = exp.getKymoFrameStart() ; frame <= exp.getKymoFrameEnd(); frame += exp.getKymoFrameStep(), ipixelcolumn++ ) {
+			if (stopFlag || Thread.currentThread().isInterrupted()) {
+                // stop all task now
+                service.shutdownNow();
+                break;
+            }
 			
-			final int t_from = t;
+			final int t_from = frame;
 			final int t_out = ipixelcolumn;
 //			final IcyBufferedImage  workImage = seqCamData.getImageCopy(t_from);
 //			if (workImage != null) {
-				tasks.add(service.submit(new Runnable () {
+				futures.add(service.submit(new Runnable () {
 					@Override
 					public void run() {		
 						IcyBufferedImage  workImage = seqCamData.getImageCopy(t_from);
@@ -224,7 +233,7 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		}
 		
         // wait until kymo is built
-        waitCompletion(tasks);
+        waitCompletion(futures, service);
 	
 		seqCamData.seq.endUpdate();
 		seqKymos.seq.removeAllImages();
@@ -249,31 +258,20 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		return true;
 	}
 	
-    private void waitCompletion(List<Future<?>> futures)
+    private void waitCompletion(List<Future<?>> futures,  ExecutorService service)
     {
-        while (!futures.isEmpty())
-        {
-            // get last in queue
-            final Future<?> f = futures.get(futures.size() - 1);
-
-            try
-            {
-                // wait for it
-                f.get();
-            }
-            catch (ExecutionException e)
-            {
-                // warning
-                System.out.println("KymoBuilder - Warning: " + e);
-            }
-            catch (InterruptedException e)
-            {
-                // ignore
-            }
-
-            // remove it
-            futures.remove(f);
-        }
+    	 try {
+             for (Future<?> future : futures)
+                 future.get();
+         }
+         catch (InterruptedException e) {
+             // ignore
+             service.shutdownNow();
+         }
+         catch (Exception e) {
+             throw new RuntimeException(e);
+         }
+    	 service.shutdown();
     }
 	
 	// -------------------------------------------
