@@ -17,6 +17,7 @@ import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
 import icy.sequence.Sequence;
 import icy.system.SystemUtil;
+import icy.system.thread.Processor;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
@@ -180,10 +181,12 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		
 		seqCamData.seq.beginUpdate();
 		int nframes = (exp.getKymoFrameEnd() - exp.getKymoFrameStart()) / exp.getKymoFrameStep() +1;
-		boolean multiThread = true;
 		final int cpus = SystemUtil.getNumberOfCPUs();
-		ExecutorService service = multiThread ? Executors.newFixedThreadPool(cpus)
-                : Executors.newSingleThreadExecutor();
+//		boolean multiThread = true;
+//		ExecutorService service = multiThread ? Executors.newFixedThreadPool(cpus)
+//                : Executors.newSingleThreadExecutor();
+		final Processor service = new Processor(cpus);
+		service.setThreadName("buildkymo2");
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		
 		// clear the task array
