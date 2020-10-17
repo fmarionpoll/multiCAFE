@@ -11,7 +11,6 @@ import javax.swing.SwingWorker;
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
-import icy.roi.ROI;
 import icy.sequence.Sequence;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
@@ -39,7 +38,6 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 	private DataType 				dataType 			= DataType.INT;
 	private int 					imagewidth 			= 1;
 	private ArrayList<double []> 	sourceValuesList 	= null;
-	private List<ROI> 				roiList 			= null;
 
 	// ------------------------------
 	
@@ -74,15 +72,17 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 				exp.setKymoFrameStart (0);
 				exp.setKymoFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
 			}
-			if (computeKymo(exp)) 
+			if (computeKymo(exp)) {
 				if (expList.index0 != expList.index1)
 					System.out.println(index+ " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);			
-			long endTimeInNs = System.nanoTime();
-			System.out.println("building kymos duration: "+((endTimeInNs-startTimeInNs)/ 1000000000f) + " s");saveComputation(exp);
+				long endTimeInNs = System.nanoTime();
+				System.out.println("building kymos2 duration: "+((endTimeInNs-startTimeInNs)/ 1000000000f) + " s");
+				saveComputation(exp);
+				long endTime2InNs = System.nanoTime();
+				System.out.println("process ended - duration: "+((endTime2InNs-endTimeInNs)/ 1000000000f) + " s");
+			}
 			exp.seqCamData.closeSequence();
 		}
-		long endTimeInNs = System.nanoTime();
-		System.out.println("process ended - duration: "+((endTimeInNs-startTimeInNs)/ 1000000000f) + " s");
 		progress.close();
 		threadRunning = false;
 		return nbiterations;
@@ -159,7 +159,6 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		int vinputSizeX = seqCamData.seq.getSizeX();		
 		int ipixelcolumn = 0;
 		workImage = seqCamData.seq.getImage(options.startFrame, 0); 
-		roiList = seqCamData.seq.getROIs();
 		seqCamData.seq.removeAllROI();
 		
 		seqForRegistration	= new Sequence();
@@ -206,7 +205,6 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		seqCamData.seq.endUpdate();
 		seqKymos.seq.removeAllImages();
 		seqKymos.seq.setVirtual(false); 
-		seqCamData.seq.addROIs(roiList, false);
 
 		for (int t=0; t < nbcapillaries; t++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(t);

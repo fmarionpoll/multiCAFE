@@ -9,6 +9,7 @@ import javax.swing.SwingWorker;
 
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
+import icy.main.Icy;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.CapillaryLimits;
@@ -32,7 +33,9 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 	@Override
 	protected Integer doInBackground() throws Exception {
 		System.out.println("start detect levels thread");
-        threadRunning = true;
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
+		
+		threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = options.expList;
 		ProgressFrame progress = new ProgressFrame("Detect limits");
@@ -58,6 +61,7 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 		}
 		progress.close();
 		threadRunning = false;
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
 		return nbiterations;
 	}
 

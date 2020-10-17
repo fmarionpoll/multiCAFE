@@ -41,11 +41,7 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 	private Sequence 				seqForRegistration	= null;
 	private DataType 				dataType 			= DataType.INT;
 	private int 					imagewidth 			= 1;
-    public static final Processor service = new Processor(SystemUtil.getNumberOfCPUs());
-    static {
-        service.setThreadName("buildkymo2");
-    }
-    
+	    
 	// ------------------------------
 	@Override
 	protected Integer doInBackground() throws Exception {
@@ -80,16 +76,17 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 				exp.setKymoFrameStart (0);
 				exp.setKymoFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
 			}
-			if (computeKymo(exp)) 
+			if (computeKymo(exp)) {
 				if (expList.index0 != expList.index1)
 					System.out.println(index+ " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);	
 				long endTimeInNs = System.nanoTime();
 				System.out.println("building kymos2 duration: "+((endTimeInNs-startTimeInNs)/ 1000000000f) + " s");
 				saveComputation(exp);
+				long endTime2InNs = System.nanoTime();
+				System.out.println("process ended - duration: "+((endTime2InNs-endTimeInNs)/ 1000000000f) + " s");
+			}
 			exp.seqCamData.closeSequence();
-		}
-		long endTimeInNs = System.nanoTime();
-		System.out.println("process ended - duration: "+((endTimeInNs-startTimeInNs)/ 1000000000f) + " s");
+		}		
 		progress.close();
 		threadRunning = false;
 		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
@@ -174,23 +171,25 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		
 		seqCamData.seq.beginUpdate();
 		int nframes = (exp.getKymoFrameEnd() - exp.getKymoFrameStart()) / exp.getKymoFrameStep() +1;
+	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+	    processor.setThreadName("buildkymo2");
+	    processor.setPriority(Processor.NORM_PRIORITY - 1);
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		
-		// clear the task array
+		// clear the task array and create array
 		futures.clear();
 		
 		int ipixelcolumn = 0;
 		for (int frame = exp.getKymoFrameStart() ; frame <= exp.getKymoFrameEnd(); frame += exp.getKymoFrameStep(), ipixelcolumn++ ) {
-			if (stopFlag || Thread.currentThread().isInterrupted()) {
-                // stop all task now
-                service.shutdownNow();
-                break;
-            }
+//			if (stopFlag || Thread.currentThread().isInterrupted()) {
+//                processor.shutdownNow();
+//                break;
+//            }
 			
 			final int t_from = frame;
 			final int t_out = ipixelcolumn;
 			progressBar.setMessage("Read frame: " + (frame) + "//" + nframes);
-			futures.add(service.submit(new Runnable () {
+			futures.add(processor.submit(new Runnable () {
 			@Override
 			public void run() {		
 				final IcyBufferedImage  workImage = seqCamData.getImageCopy(t_from);
@@ -220,7 +219,7 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		
         // wait until kymo is built
 		progressBar.setMessage("wait completion");
-		waitCompletion(futures, progressBar);
+		waitCompletion(processor, futures, progressBar);
         progressBar.close();
 		seqCamData.seq.endUpdate();
 		seqKymos.seq.removeAllImages();
@@ -244,28 +243,29 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		return true;
 	}
 	
-    private void waitCompletion(List<Future<?>> futures,  ProgressFrame progressBar) {
+    private void waitCompletion(Processor processor, List<Future<?>> futures,  ProgressFrame progressBar) {
     	 try {
     		 int frame= 1;
     		 int nframes = futures.size();
     		 for (Future<?> future : futures) {
     			 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
-    			 if (!future.isDone())
-    				 future.get();
+    			 if (!future.isDone()) {
+    				 if (stopFlag) {
+    					 processor.shutdownNow();
+    					 break;
+    				 } else 
+    					 future.get();
+    			 }
     			 frame += 1; 
-    			 if (stopFlag) {
-    				 service.shutdownNow();
-  	    			break;
-     			 }
             }
          }
          catch (InterruptedException e) {
-             service.shutdownNow();
+        	 processor.shutdownNow();
          }
          catch (Exception e) {
-             throw new RuntimeException(e);
+        	 throw new RuntimeException(e);
          }
-    	 service.shutdown();
+    	 processor.shutdown();
     }
 	
 	// -------------------------------------------

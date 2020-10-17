@@ -14,6 +14,7 @@ import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
+import icy.main.Icy;
 import icy.roi.BooleanMask2D;
 import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
@@ -51,7 +52,9 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 		if (options == null)
 			return 0;
 		System.out.println("start detect flies thread (v2)");
-        threadRunning = true;
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
+		
+		threadRunning = true;
 		int nbiterations = 0;
 		ExperimentList expList = options.expList;
 		ProgressFrame progress = new ProgressFrame("Detect flies");
@@ -91,6 +94,7 @@ public class DetectFlies2_series extends SwingWorker<Integer, Integer> {
 			exp.seqCamData.closeSequence();
 		}
 		progress.close();
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
 		threadRunning = false;
 		return nbiterations;
 	}

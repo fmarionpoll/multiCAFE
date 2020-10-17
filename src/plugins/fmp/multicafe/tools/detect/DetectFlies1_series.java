@@ -10,6 +10,7 @@ import javax.swing.SwingWorker;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
+import icy.main.Icy;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.tools.OverlayThreshold;
@@ -38,7 +39,9 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 		if (options == null)
 			return 0;
 		System.out.println("start detect flies thread (v1)");
-        threadRunning = true;
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
+		
+		threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = options.expList;
 		ProgressFrame progress = new ProgressFrame("Detect flies");
@@ -78,6 +81,7 @@ public class DetectFlies1_series extends SwingWorker<Integer, Integer> {
 			exp.seqCamData.closeSequence();
 		}
 		progress.close();
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
 		threadRunning = false;
 		return nbiterations;
     }
