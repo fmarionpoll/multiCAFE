@@ -11,6 +11,7 @@ import javax.swing.SwingWorker;
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
+import icy.main.Icy;
 import icy.sequence.Sequence;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
@@ -49,6 +50,8 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 	@Override
 	protected Integer doInBackground() throws Exception {
 		System.out.println("start buildkymographsThread");
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
+		
         threadRunning = true;
 		int nbiterations = 0;
 		ExperimentList expList = options.expList;
@@ -89,6 +92,7 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		System.out.println("process ended - duration: "+((endTimeInNs-startTimeInNs)/ 1000000000f) + " s");
 		progress.close();
 		threadRunning = false;
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
 		return nbiterations;
 	}
 	
@@ -105,6 +109,7 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		} else {
 			firePropertyChange("thread_done", null, statusMsg);
 		}
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
     }
 	
 	private void loadExperimentDataToBuildKymos(Experiment exp) {
@@ -247,11 +252,14 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
     			 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
     			 if (!future.isDone())
     				 future.get();
-    			 frame += 1;
+    			 frame += 1; 
+    			 if (stopFlag) {
+    				 service.shutdownNow();
+  	    			break;
+     			 }
             }
          }
          catch (InterruptedException e) {
-             // ignore
              service.shutdownNow();
          }
          catch (Exception e) {

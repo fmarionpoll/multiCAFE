@@ -24,7 +24,7 @@ import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.tools.EnumStatusComputation;
 import plugins.fmp.multicafe.tools.buildKymos.BuildKymographs2_series;
 import plugins.fmp.multicafe.tools.buildKymos.BuildKymographs_Options;
-import plugins.fmp.multicafe.tools.buildKymos.BuildKymographs_series;
+//import plugins.fmp.multicafe.tools.buildKymos.BuildKymographs_series;
 
 
 
@@ -39,7 +39,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 
 	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
 	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
-	JCheckBox 				newMethodCheckBox 			= new JCheckBox("new method", false);
+//	JCheckBox 				newMethodCheckBox 			= new JCheckBox("new method", false);
 	
 	JCheckBox 				doCreateCheckBox 			= new JCheckBox("force creation of results_bin", false);
 	JCheckBox				allCheckBox 				= new JCheckBox("ALL series (current to last)", false);
@@ -47,7 +47,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 	
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE 		parent0						= null;
-	private BuildKymographs_series thread 				= null;
+//	private BuildKymographs_series thread 				= null;
 	private BuildKymographs2_series thread2 				= null;
 
 	// -----------------------------------------------------
@@ -68,7 +68,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		panel2.add(new JLabel("area around ROIs", SwingConstants.RIGHT));
 		panel2.add(diskRadiusSpinner);  
 		panel2.add(doRegistrationCheckBox);
-		panel2.add(newMethodCheckBox);
+//		panel2.add(newMethodCheckBox);
 		add(GuiUtil.besidesPanel(panel2));
 		
 		JPanel panel3 = new JPanel(layout1);
@@ -133,7 +133,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
-		if (newMethodCheckBox.isSelected()) {
+//		if (newMethodCheckBox.isSelected()) {
 			thread2 = new BuildKymographs2_series();	
 			BuildKymographs_Options options = thread2.options;
 			initBuildParameters(exp, options);
@@ -141,22 +141,22 @@ public class Create extends JPanel implements PropertyChangeListener {
 			thread2.buildBackground	= false;
 			thread2.addPropertyChangeListener(this);
 			thread2.execute();
-		} else {
-			thread = new BuildKymographs_series();	
-			BuildKymographs_Options options = thread.options;
-			initBuildParameters(exp, options);
-			
-			thread.buildBackground	= false;
-			thread.addPropertyChangeListener(this);
-			thread.execute();
-		}
+//		} else {
+//			thread = new BuildKymographs_series();	
+//			BuildKymographs_Options options = thread.options;
+//			initBuildParameters(exp, options);
+//			
+//			thread.buildBackground	= false;
+//			thread.addPropertyChangeListener(this);
+//			thread.execute();
+//		}
 		startComputationButton.setText("STOP");
 	}
 	
 	private void stopComputation() {	
-		if (thread != null && !thread.stopFlag) {
-			thread.stopFlag = true;
-		}
+//		if (thread != null && !thread.stopFlag) {
+//			thread.stopFlag = true;
+//		}
 		
 		if (thread2 != null && !thread2.stopFlag) {
 			thread2.stopFlag = true;
