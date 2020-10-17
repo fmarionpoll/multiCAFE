@@ -77,7 +77,8 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 			if (computeKymo(exp)) 
 				if (expList.index0 != expList.index1)
 					System.out.println(index+ " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);			
-				saveComputation(exp);
+			long endTimeInNs = System.nanoTime();
+			System.out.println("building kymos duration: "+((endTimeInNs-startTimeInNs)/ 1000000000f) + " s");saveComputation(exp);
 			exp.seqCamData.closeSequence();
 		}
 		long endTimeInNs = System.nanoTime();
@@ -309,10 +310,10 @@ public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
 		seqForRegistration.setImage(1, 0, workImage);
 		int referenceChannel = 1;
 		int referenceSlice = 0;
-		DufourRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
-        boolean rotate = DufourRigidRegistration.correctTemporalRotation2D(seqForRegistration, referenceChannel, referenceSlice);
+		GaspardRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
+        boolean rotate = GaspardRigidRegistration.correctTemporalRotation2D(seqForRegistration, referenceChannel, referenceSlice);
         if (rotate) 
-        	DufourRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
+        	GaspardRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
         workImage = seqForRegistration.getLastImage(1);
 	}
 

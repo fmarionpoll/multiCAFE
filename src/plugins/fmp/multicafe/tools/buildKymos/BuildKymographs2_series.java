@@ -5,21 +5,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
 import javax.swing.SwingWorker;
 
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
-import icy.roi.ROI;
 import icy.sequence.Sequence;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
+import plugins.kernel.roi.roi2d.ROI2DShape;
 
 import loci.formats.FormatException;
 import plugins.fmp.multicafe.sequence.Capillary;
@@ -27,7 +24,8 @@ import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
-import plugins.kernel.roi.roi2d.ROI2DShape;
+import plugins.fmp.multicafe.tools.ProgressChrono;
+
 import plugins.nchenouard.kymographtracker.Util;
 import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 
@@ -38,26 +36,14 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 	public boolean 					stopFlag 			= false;
 	public boolean 					threadRunning 		= false;
 	public boolean					buildBackground		= true;
-
-	//private IcyBufferedImage 		workImage 			= null; 
+ 
 	private Sequence 				seqForRegistration	= null;
 	private DataType 				dataType 			= DataType.INT;
 	private int 					imagewidth 			= 1;
-	private ArrayList<double []> 	sourceValuesList 	= null;
-	private List<ROI> 				roiList 			= null;
-	
-//	// ------------------------------
-//	// From A. Dufour Filter.java
-//    public static final Processor service = new Processor(SystemUtil.getNumberOfCPUs());
-//    
-//    static
-//    {
-//        service.setThreadName("buildkymo");
-//    }
-    
-//    public final VarBoolean stopFlag = new VarBoolean("stop", false);
-//    
-//    public final VarDouble  progress = new VarDouble("progression", 0.0);
+    public static final Processor service = new Processor(SystemUtil.getNumberOfCPUs());
+    static {
+        service.setThreadName("buildkymo2");
+    }
     
 	// ------------------------------
 	@Override
@@ -93,7 +79,9 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 			}
 			if (computeKymo(exp)) 
 				if (expList.index0 != expList.index1)
-					System.out.println(index+ " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);			
+					System.out.println(index+ " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);	
+				long endTimeInNs = System.nanoTime();
+				System.out.println("building kymos2 duration: "+((endTimeInNs-startTimeInNs)/ 1000000000f) + " s");
 				saveComputation(exp);
 			exp.seqCamData.closeSequence();
 		}
@@ -158,7 +146,8 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 	
 		threadRunning = true;
 		stopFlag = false;
-
+		ProgressFrame progressBar = new ProgressChrono("Processing with subthreads started");
+		
 		initArraysToBuildKymographImages(exp);
 		if (exp.capillaries.capillariesArrayList.size() < 1) {
 			System.out.println("Abort (1): nbcapillaries = 0");
@@ -167,7 +156,6 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		
 		int vinputSizeX = seqCamData.seq.getSizeX();		
 		IcyBufferedImage  workImage0 = seqCamData.seq.getImage(options.startFrame, 0); 
-		roiList = seqCamData.seq.getROIs();
 		seqCamData.seq.removeAllROI();
 		
 		seqForRegistration	= new Sequence();
@@ -181,12 +169,6 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		
 		seqCamData.seq.beginUpdate();
 		int nframes = (exp.getKymoFrameEnd() - exp.getKymoFrameStart()) / exp.getKymoFrameStep() +1;
-		final int cpus = SystemUtil.getNumberOfCPUs();
-//		boolean multiThread = true;
-//		ExecutorService service = multiThread ? Executors.newFixedThreadPool(cpus)
-//                : Executors.newSingleThreadExecutor();
-		final Processor service = new Processor(cpus);
-		service.setThreadName("buildkymo2");
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		
 		// clear the task array
@@ -202,46 +184,42 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 			
 			final int t_from = frame;
 			final int t_out = ipixelcolumn;
-//			final IcyBufferedImage  workImage = seqCamData.getImageCopy(t_from);
-//			if (workImage != null) {
-				futures.add(service.submit(new Runnable () {
-					@Override
-					public void run() {		
-						IcyBufferedImage  workImage = seqCamData.getImageCopy(t_from);
-						if (workImage != null) {
-							if (options.doRegistration ) 
-								adjustImage(workImage);
-							transferWorkImageToDoubleArrayList (workImage);
-							for (int iroi=0; iroi < nbcapillaries; iroi++) {
-								Capillary cap = exp.capillaries.capillariesArrayList.get(iroi);
-								for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) { 
-									double [] tabValues = cap.tabValuesList.get(chan); 
-									double [] sourceValues = sourceValuesList.get(chan);
-									int cnt = 0;
-									for (ArrayList<int[]> mask:cap.masksList) {
-										double sum = 0;
-										for (int[] m:mask)
-											sum += sourceValues[m[0] + m[1]*vinputSizeX];
-										if (mask.size() > 1)
-											sum = sum/mask.size();
-										tabValues[cnt*imagewidth + t_out] = sum; 
-										cnt ++;
-									}
-								}
-							}
+			progressBar.setMessage("Read frame: " + (frame) + "//" + nframes);
+			futures.add(service.submit(new Runnable () {
+			@Override
+			public void run() {		
+				final IcyBufferedImage  workImage = seqCamData.getImageCopy(t_from);
+				if (options.doRegistration ) 
+					adjustImage(workImage);
+				ArrayList<double []> sourceValuesList = transferWorkImageToDoubleArrayList (workImage);
+				for (int iroi=0; iroi < nbcapillaries; iroi++) {
+					Capillary cap = exp.capillaries.capillariesArrayList.get(iroi);
+					for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) { 
+						double [] tabValues = cap.tabValuesList.get(chan); 
+						double [] sourceValues = sourceValuesList.get(chan);
+						int cnt = 0;
+						for (ArrayList<int[]> mask:cap.masksList) {
+							double sum = 0;
+							for (int[] m:mask)
+								sum += sourceValues[m[0] + m[1]*vinputSizeX];
+							if (mask.size() > 1)
+								sum = sum/mask.size();
+							tabValues[cnt*imagewidth + t_out] = sum; 
+							cnt ++;
 						}
 					}
-				}));
-//			}
+				}
+			}
+			}));
 		}
 		
         // wait until kymo is built
-        waitCompletion(futures, service);
-	
+		progressBar.setMessage("wait completion");
+		waitCompletion(futures, progressBar);
+        progressBar.close();
 		seqCamData.seq.endUpdate();
 		seqKymos.seq.removeAllImages();
 		seqKymos.seq.setVirtual(false); 
-		seqCamData.seq.addROIs(roiList, false);
 
 		for (int icap=0; icap < nbcapillaries; icap++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
@@ -261,11 +239,16 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		return true;
 	}
 	
-    private void waitCompletion(List<Future<?>> futures,  ExecutorService service)
-    {
+    private void waitCompletion(List<Future<?>> futures,  ProgressFrame progressBar) {
     	 try {
-             for (Future<?> future : futures)
-                 future.get();
+    		 int frame= 1;
+    		 int nframes = futures.size();
+    		 for (Future<?> future : futures) {
+    			 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
+    			 if (!future.isDone())
+    				 future.get();
+    			 frame += 1;
+            }
          }
          catch (InterruptedException e) {
              // ignore
@@ -279,13 +262,13 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 	
 	// -------------------------------------------
 	
-	private boolean transferWorkImageToDoubleArrayList(IcyBufferedImage  workImage) {	
-		sourceValuesList = new ArrayList<double []>();
+	private ArrayList<double []> transferWorkImageToDoubleArrayList(IcyBufferedImage  workImage) {	
+		ArrayList<double []> sourceValuesList = new ArrayList<double []>();
 		for (int chan = 0; chan < workImage.getSizeC(); chan++)  {
 			double [] sourceValues = Array1DUtil.arrayToDoubleArray(workImage.getDataXY(chan), workImage.isSignedDataType()); 
 			sourceValuesList.add(sourceValues);
 		}
-		return true;
+		return sourceValuesList;
 	}
 	
 	private void initArraysToBuildKymographImages(Experiment exp) {
@@ -360,10 +343,10 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		seqForRegistration.setImage(1, 0, workImage);
 		int referenceChannel = 1;
 		int referenceSlice = 0;
-		DufourRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
-        boolean rotate = DufourRigidRegistration.correctTemporalRotation2D(seqForRegistration, referenceChannel, referenceSlice);
+		GaspardRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
+        boolean rotate = GaspardRigidRegistration.correctTemporalRotation2D(seqForRegistration, referenceChannel, referenceSlice);
         if (rotate) 
-        	DufourRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
+        	GaspardRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
         workImage = seqForRegistration.getLastImage(1);
 	}
 
