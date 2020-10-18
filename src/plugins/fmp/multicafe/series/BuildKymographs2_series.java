@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import javax.swing.SwingWorker;
 
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
@@ -32,15 +31,12 @@ import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 
 // see use of list of tasks in selectionfilter.java in plugin.adufour.filtering
 
-public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
-	public BuildSeries_Options 		options 			= new BuildSeries_Options();
-	public boolean 					stopFlag 			= false;
-	public boolean 					threadRunning 		= false;
-	public boolean					buildBackground		= true;
+public class BuildKymographs2_series extends BuildSeries  {
+	public boolean		buildBackground		= true;
  
-	private Sequence 				seqForRegistration	= null;
-	private DataType 				dataType 			= DataType.INT;
-	private int 					imagewidth 			= 1;
+	private Sequence 	seqForRegistration	= null;
+	private DataType 	dataType 			= DataType.INT;
+	private int 		imagewidth 			= 1;
 	    
 	// ------------------------------
 	@Override
@@ -92,22 +88,6 @@ public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
 		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
 		return nbiterations;
 	}
-	
-	@Override
-	protected void done() {
-		int statusMsg = 0;
-		try {
-			statusMsg = get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		} 
-		if (!threadRunning || stopFlag) {
-			firePropertyChange("thread_ended", null, statusMsg);
-		} else {
-			firePropertyChange("thread_done", null, statusMsg);
-		}
-		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
-    }
 	
 	private void loadExperimentDataToBuildKymos(Experiment exp) {
 		exp.xmlLoadExperiment();

@@ -11,7 +11,7 @@ import plugins.fmp.multicafe.sequence.ExperimentList;
 
 public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 
-	public BuildSeries_Options options 		= new BuildSeries_Options();
+	public BuildSeries_Options 	options 		= new BuildSeries_Options();
 	public boolean 				stopFlag 		= false;
 	public boolean 				threadRunning 	= false;
 	
@@ -23,7 +23,8 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 		threadRunning = true;
         int nbiterations = 0;
 		ExperimentList expList = options.expList;
-		ProgressFrame progress = new ProgressFrame("Detect limits");
+		ProgressFrame progress = new ProgressFrame("Starting thread");
+		long startTimeInNs = System.nanoTime();
 		
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag)
@@ -31,16 +32,19 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1+1));
 			Experiment exp = expList.getExperiment(index);	
 			System.out.println((index+1)+": " +exp.getExperimentFileName());
+			
 			exp.resultsSubPath = options.resultsSubPath;
 			String resultsDirectory = exp.getResultsDirectory(); 
 			exp.loadExperimentCapillariesData_ForSeries();
+			
 			if (exp.loadKymographs()) {	
 				System.out.println((index+1) + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
 				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
 				runMeasurement(exp);
 				exp.saveExperimentMeasures(resultsDirectory);
-				if (expList.index0 != expList.index1)
-					System.out.println(index+ " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
+				long endTime2InNs = System.nanoTime();
+				System.out.println("process ended - duration: "+((endTime2InNs-endTimeInNs)/ 1000000000f) + " s");
+			
 			}
 			exp.seqKymos.closeSequence();
 		}
@@ -63,6 +67,8 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 		} else {
 			firePropertyChange("thread_done", null, statusMsg);
 		}
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
+	  
     }
 	
 
