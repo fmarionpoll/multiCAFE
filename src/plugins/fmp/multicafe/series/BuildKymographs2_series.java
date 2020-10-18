@@ -33,7 +33,7 @@ import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 // see use of list of tasks in selectionfilter.java in plugin.adufour.filtering
 
 public class BuildKymographs2_series extends SwingWorker<Integer, Integer>  {
-	public BuildKymographs_Options 	options 			= new BuildKymographs_Options();
+	public BuildSeries_Options 		options 			= new BuildSeries_Options();
 	public boolean 					stopFlag 			= false;
 	public boolean 					threadRunning 		= false;
 	public boolean					buildBackground		= true;

@@ -22,12 +22,12 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
-public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
+public class DetectLevels_series extends SwingWorker<Integer, Integer> {
 	List<Point2D> 				limitTop 		= null;
 	List<Point2D> 				limitBottom 	= null;
 	public boolean 				stopFlag 		= false;
 	public boolean 				threadRunning 	= false;
-	public DetectLevels_Options options 		= new DetectLevels_Options();
+	public BuildSeries_Options options 		= new BuildSeries_Options();
 	
 	
 	@Override
@@ -91,14 +91,14 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 		}
 		seqKymos.seq.beginUpdate();
 				
-		for (int kymo = kymofirst; kymo <= kymolast; kymo++) {
-			seqKymos.removeROIsAtT(kymo);
+		for (int frame = kymofirst; frame <= kymolast; frame++) {
+			seqKymos.removeROIsAtT(frame);
 			limitTop = new ArrayList<Point2D>();
 			limitBottom = new ArrayList<Point2D>();
  
 			IcyBufferedImage image = null;
 			int c = 0;
-			image = seqKymos.seq.getImage(kymo, 1);
+			image = seqKymos.seq.getImage(frame, 1);
 			Object dataArray = image.getDataXY(c);
 			double[] tabValues = Array1DUtil.arrayToDoubleArray(dataArray, image.isSignedDataType());
 			
@@ -106,7 +106,7 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 			int endPixel = image.getSizeX()-1;
 			int xwidth = image.getSizeX();
 			int yheight = image.getSizeY();
-			Capillary cap = exp.capillaries.capillariesArrayList.get(kymo);
+			Capillary cap = exp.capillaries.capillariesArrayList.get(frame);
 			if (!options.detectR && cap.getCapillaryName().endsWith("2"))
 				continue;
 			if (!options.detectL && cap.getCapillaryName().endsWith("1"))
@@ -151,22 +151,22 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 				ROI2DPolyLine roiTopTrack = new ROI2DPolyLine (limitTop);
 				roiTopTrack.setName(cap.getLast2ofCapillaryName()+"_toplevel");
 				roiTopTrack.setStroke(1);
-				roiTopTrack.setT(kymo);
+				roiTopTrack.setT(frame);
 				seqKymos.seq.addROI(roiTopTrack);
-				cap.ptsTop = new CapillaryLimits(roiTopTrack.getName(), kymo-kymofirst, roiTopTrack.getPolyline2D());
+				cap.ptsTop = new CapillaryLimits(roiTopTrack.getName(), frame-kymofirst, roiTopTrack.getPolyline2D());
 
 				ROI2DPolyLine roiBottomTrack = new ROI2DPolyLine (limitBottom);
 				roiBottomTrack.setName(cap.getLast2ofCapillaryName()+"_bottomlevel");
 				roiBottomTrack.setStroke(1);
-				roiBottomTrack.setT(kymo);
+				roiBottomTrack.setT(frame);
 				seqKymos.seq.addROI(roiBottomTrack);
-				cap.ptsBottom = new CapillaryLimits(roiBottomTrack.getName(), kymo-kymofirst, roiBottomTrack.getPolyline2D());
+				cap.ptsBottom = new CapillaryLimits(roiBottomTrack.getName(), frame-kymofirst, roiBottomTrack.getPolyline2D());
 			}
 		}
 		seqKymos.seq.endUpdate();
 	}
 	
-	private int detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, DetectLevels_Options options) {
+	private int detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, BuildSeries_Options options) {
 		boolean found = false;
 		int y = 0;
 		oldiytop -= jitter;
@@ -194,7 +194,7 @@ public class DetectLevels_series  extends SwingWorker<Integer, Integer> {
 		return y;
 	}
 	
-	private int detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, int xwidth, int yheight, DetectLevels_Options options) {
+	private int detectBottom(int ix, int oldiybottom, int jitter, double[] tabValues, int xwidth, int yheight, BuildSeries_Options options) {
 		// set flags for internal loop (part of the row)
 		boolean found = false;
 		int y = 0;

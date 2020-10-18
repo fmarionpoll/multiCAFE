@@ -25,7 +25,7 @@ import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
-import plugins.fmp.multicafe.series.DetectLevels_Options;
+import plugins.fmp.multicafe.series.BuildSeries_Options;
 import plugins.fmp.multicafe.series.DetectLevels_series;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
@@ -160,7 +160,7 @@ public class DetectLimits extends JPanel implements PropertyChangeListener {
 	}
 	
 	void setInfosToDialog(Capillary cap) {
-		DetectLevels_Options options = cap.limitsOptions;
+		BuildSeries_Options options = cap.limitsOptions;
 		transformForLevelsComboBox.setSelectedItem(options.transformForLevels);
 		int index =options.directionUp ? 0:1;
 		directionComboBox.setSelectedIndex(index);
@@ -172,7 +172,7 @@ public class DetectLimits extends JPanel implements PropertyChangeListener {
 	}
 	
 	void getInfosFromDialog(Capillary cap) {
-		DetectLevels_Options options = cap.limitsOptions;
+		BuildSeries_Options options = cap.limitsOptions;
 		options.transformForLevels = (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
 		options.detectLevelThreshold = getDetectLevelThreshold();
@@ -181,9 +181,9 @@ public class DetectLimits extends JPanel implements PropertyChangeListener {
 		options.detectR = rightCheckBox.isSelected();
 	}
 	
-	private DetectLevels_Options initBuildParameters(Experiment exp) {	
+	private BuildSeries_Options initBuildParameters(Experiment exp) {	
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		DetectLevels_Options options= new DetectLevels_Options();
+		BuildSeries_Options options= new BuildSeries_Options();
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);
 		options.expList.index0 = parent0.expList.currentExperimentIndex;

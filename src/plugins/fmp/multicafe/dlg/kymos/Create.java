@@ -22,7 +22,7 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.series.BuildKymographs2_series;
-import plugins.fmp.multicafe.series.BuildKymographs_Options;
+import plugins.fmp.multicafe.series.BuildSeries_Options;
 import plugins.fmp.multicafe.tools.EnumStatusComputation;
 
 
@@ -101,7 +101,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog (exp);
 	}
 	
-	private boolean initBuildParameters(Experiment exp, BuildKymographs_Options options) {
+	private boolean initBuildParameters(Experiment exp, BuildSeries_Options options) {
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.expList.currentExperimentIndex;
 		if (allCheckBox.isSelected())
@@ -134,7 +134,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		
 //		if (newMethodCheckBox.isSelected()) {
 			thread2 = new BuildKymographs2_series();	
-			BuildKymographs_Options options = thread2.options;
+			BuildSeries_Options options = thread2.options;
 			initBuildParameters(exp, options);
 			
 			thread2.buildBackground	= false;

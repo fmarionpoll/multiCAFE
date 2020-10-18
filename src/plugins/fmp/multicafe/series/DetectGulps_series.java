@@ -26,7 +26,7 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 	private SequenceKymos 		seqkymo 		= null;
 	public boolean 				stopFlag 		= false;
 	public boolean 				threadRunning 	= false;
-	public DetectGulps_Options 	options 		= new DetectGulps_Options();
+	public BuildSeries_Options 	options 		= new BuildSeries_Options();
 	
 	@Override
 	protected Integer doInBackground() throws Exception {

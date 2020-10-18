@@ -8,14 +8,14 @@ import javax.swing.SwingWorker;
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
-import plugins.fmp.multicafe.series.DetectLevels_Options;
+import plugins.fmp.multicafe.series.BuildSeries_Options;
 
 
 
 public class AdjustMeasuresDimensions_series  extends SwingWorker<Integer, Integer> {
 	public boolean 				stopFlag 		= false;
 	public boolean 				threadRunning 	= false;
-	public DetectLevels_Options options 		= new DetectLevels_Options();
+	public BuildSeries_Options 	options 		= new BuildSeries_Options();
 	
 	
 	@Override

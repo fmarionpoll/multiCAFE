@@ -31,7 +31,7 @@ import plugins.fmp.multicafe.sequence.CapillaryLimits;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
-import plugins.fmp.multicafe.series.DetectLevels_Options;
+import plugins.fmp.multicafe.series.BuildSeries_Options;
 import plugins.fmp.multicafe.tools.AdjustMeasuresDimensions_series;
 
 
@@ -289,7 +289,7 @@ public class Edit  extends JPanel  implements PropertyChangeListener {
 		
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		DetectLevels_Options options= thread.options;
+		BuildSeries_Options options= thread.options;
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		if (allSeriesCheckBox.isSelected()) {

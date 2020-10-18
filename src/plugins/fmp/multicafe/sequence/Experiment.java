@@ -616,7 +616,7 @@ public class Experiment {
 		if (zChannelDestination == 1)
 			capillaries.limitsOptions.transformForLevels = transformop;
 		else
-			capillaries.gulpsOptions.transformForGulps = transformop;
+			capillaries.limitsOptions.transformForGulps = transformop;
 		seqKymos.seq.dataChanged();
 		seqKymos.seq.endUpdate();
 	}

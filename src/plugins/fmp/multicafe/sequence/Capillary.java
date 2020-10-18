@@ -15,8 +15,7 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafe.series.DetectGulps_Options;
-import plugins.fmp.multicafe.series.DetectLevels_Options;
+import plugins.fmp.multicafe.series.BuildSeries_Options;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
@@ -42,8 +41,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public boolean						descriptionOK	= false;
 	public int							versionInfos	= 0;
 	
-	public DetectLevels_Options 		limitsOptions	= new DetectLevels_Options();
-	private DetectGulps_Options 			gulpsOptions	= new DetectGulps_Options();
+	public BuildSeries_Options 			limitsOptions	= new BuildSeries_Options();
 	
 	public  final String 				ID_TOPLEVEL 	= "toplevel";	
 	public  final String 				ID_BOTTOMLEVEL 	= "bottomlevel";	
@@ -114,7 +112,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		capPixels 		= cap.capPixels;
 		
 		limitsOptions	= cap.limitsOptions;
-		gulpsOptions	= cap.gulpsOptions;
 		gulpsRois.rois	= new ArrayList <ROI2D> ();
 		gulpsRois.rois.addAll(cap.gulpsRois.rois);
 		ptsTop.copy(cap.ptsTop); 
@@ -252,12 +249,12 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			ptsDerivative.restoreNpoints();
 	}
 	
-	public void setGulpsOptions (DetectGulps_Options options) {
-		this.gulpsOptions = options;
+	public void setGulpsOptions (BuildSeries_Options options) {
+		limitsOptions = options;
 	}
 	
-	public DetectGulps_Options getGulpsOptions () {
-		return gulpsOptions;
+	public BuildSeries_Options getGulpsOptions () {
+		return limitsOptions;
 	}
 	
 	public void cleanGulps() {
@@ -266,8 +263,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			gulpsRois.rois = new ArrayList <> ();
 			return;
 		}
-		if (gulpsOptions.analyzePartOnly) 
-			gulpsRois.removeROIsWithinInterval(gulpsOptions.startPixel, gulpsOptions.endPixel);
+		if (limitsOptions.analyzePartOnly) 
+			gulpsRois.removeROIsWithinInterval(limitsOptions.startPixel, limitsOptions.endPixel);
 		else 
 			gulpsRois.rois.clear();
 	}
@@ -278,16 +275,16 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		if (ptsTop.polylineLimit == null)
 			return;
 		int end = ptsTop.polylineLimit.npoints;
-		if (gulpsOptions.analyzePartOnly) {
-			start = gulpsOptions.startPixel;
-			end = gulpsOptions.endPixel;
+		if (limitsOptions.analyzePartOnly) {
+			start = limitsOptions.startPixel;
+			end = limitsOptions.endPixel;
 		} 
 		
 		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
 		List<Point2D> gulpPoints = new ArrayList<>();
 		for (indexpixel = start; indexpixel < end; indexpixel++) {
 			int derivativevalue = (int) ptsDerivative.polylineLimit.ypoints[indexpixel-1];
-			if (derivativevalue < gulpsOptions.detectGulpsThreshold)
+			if (derivativevalue < limitsOptions.detectGulpsThreshold)
 				continue;
 			
 			if (gulpPoints.size() > 0) {
@@ -457,7 +454,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			
 	        roi = (ROI2DShape) loadFromXML_ROI(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
-	        gulpsOptions.loadFromXML(nodeMeta);
 	    }
 	    return flag;
 	}

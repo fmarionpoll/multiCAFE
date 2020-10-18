@@ -28,7 +28,7 @@ import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 
 
 public class BuildKymographs_series extends SwingWorker<Integer, Integer>  {
-	public BuildKymographs_Options 	options 			= new BuildKymographs_Options();
+	public BuildSeries_Options 		options 			= new BuildSeries_Options();
 	public boolean 					stopFlag 			= false;
 	public boolean 					threadRunning 		= false;
 	public boolean					buildBackground		= true;
