@@ -4,13 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
-import icy.main.Icy;
 import icy.sequence.Sequence;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
@@ -21,7 +19,6 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 import loci.formats.FormatException;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
 import plugins.fmp.multicafe.tools.ProgressChrono;
@@ -29,64 +26,34 @@ import plugins.fmp.multicafe.tools.ProgressChrono;
 import plugins.nchenouard.kymographtracker.Util;
 import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 
-// see use of list of tasks in selectionfilter.java in plugin.adufour.filtering
+
 
 public class BuildKymographs2_series extends BuildSeries  {
 	public boolean		buildBackground		= true;
- 
-	private Sequence 	seqForRegistration	= null;
+//	private Sequence 	seqForRegistration	= null;
 	private DataType 	dataType 			= DataType.INT;
 	private int 		imagewidth 			= 1;
 	    
 	// ------------------------------
-	@Override
-	protected Integer doInBackground() throws Exception {
-		System.out.println("start buildkymographsThread");
-		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
-		
-        threadRunning = true;
-		int nbiterations = 0;
-		ExperimentList expList = options.expList;
-		ProgressFrame progress = new ProgressFrame("Build kymographs");
-		long startTimeInNs = System.nanoTime();
-			
-		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
-			if (stopFlag)
-				break;
-			Experiment exp = expList.getExperiment(index);
-			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1+1));
-			System.out.println((index+1)+": " +exp.getExperimentFileName());
-			
-			loadExperimentDataToBuildKymos(exp);
-			exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
-			exp.setKymoFrameStep (options.stepFrame);
-			exp.resultsSubPath = options.resultsSubPath;
-			exp.getResultsDirectory();
-			
-			if (options.isFrameFixed) {
-				exp.setKymoFrameStart( options.startFrame);
-				exp.setKymoFrameEnd (options.endFrame);
-				if (exp.getKymoFrameEnd() > (exp.getSeqCamSizeT() - 1))
-					exp.setKymoFrameEnd (exp.getSeqCamSizeT() - 1);
-			} else {
-				exp.setKymoFrameStart (0);
-				exp.setKymoFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
-			}
-			if (computeKymo(exp)) {
-				if (expList.index0 != expList.index1)
-					System.out.println(index+ " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);	
-				long endTimeInNs = System.nanoTime();
-				System.out.println("building kymos2 duration: "+((endTimeInNs-startTimeInNs)/ 1000000000f) + " s");
-				saveComputation(exp);
-				long endTime2InNs = System.nanoTime();
-				System.out.println("process ended - duration: "+((endTime2InNs-endTimeInNs)/ 1000000000f) + " s");
-			}
-			exp.seqCamData.closeSequence();
-		}		
-		progress.close();
-		threadRunning = false;
-		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
-		return nbiterations;
+	
+	void runMeasurement(Experiment exp) {
+		loadExperimentDataToBuildKymos(exp);
+		exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
+		exp.setKymoFrameStep (options.stepFrame);
+		if (options.isFrameFixed) {
+			exp.setKymoFrameStart( options.startFrame);
+			exp.setKymoFrameEnd (options.endFrame);
+			if (exp.getKymoFrameEnd() > (exp.getSeqCamSizeT() - 1))
+				exp.setKymoFrameEnd (exp.getSeqCamSizeT() - 1);
+		} else {
+			exp.setKymoFrameStart (0);
+			exp.setKymoFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
+		}
+		if (computeKymo(exp)) {
+			saveComputation(exp);
+		}
+		exp.seqCamData.closeSequence();
+		exp.seqKymos.closeSequence();
 	}
 	
 	private void loadExperimentDataToBuildKymos(Experiment exp) {
@@ -116,7 +83,6 @@ public class BuildKymographs2_series extends BuildSeries  {
 				e.printStackTrace();
 			}
 		}
-		
 		exp.xmlSaveExperiment();
 	}
 	
@@ -140,41 +106,37 @@ public class BuildKymographs2_series extends BuildSeries  {
 		IcyBufferedImage  workImage0 = seqCamData.seq.getImage(options.startFrame, 0); 
 		seqCamData.seq.removeAllROI();
 		
-		seqForRegistration	= new Sequence();
-		seqForRegistration.addImage(0, workImage0);
-		seqForRegistration.addImage(1, workImage0);
+		final Sequence seqForRegistration = new Sequence();
+		if (options.doRegistration) {
+			seqForRegistration.addImage(0, workImage0);
+			seqForRegistration.addImage(1, workImage0);
+		}
+		
 		int nbcapillaries = exp.capillaries.capillariesArrayList.size();
 		if (nbcapillaries == 0) {
 			System.out.println("Abort(2): nbcapillaries = 0");
 			return false;
 		}
 		
-		seqCamData.seq.beginUpdate();
 		int nframes = (exp.getKymoFrameEnd() - exp.getKymoFrameStart()) / exp.getKymoFrameStep() +1;
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("buildkymo2");
-	    processor.setPriority(Processor.NORM_PRIORITY - 1);
+	    processor.setPriority(Processor.NORM_PRIORITY);
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
-		
-		// clear the task array and create array
 		futures.clear();
+		seqCamData.seq.setVirtual(false);
 		
 		int ipixelcolumn = 0;
 		for (int frame = exp.getKymoFrameStart() ; frame <= exp.getKymoFrameEnd(); frame += exp.getKymoFrameStep(), ipixelcolumn++ ) {
-//			if (stopFlag || Thread.currentThread().isInterrupted()) {
-//                processor.shutdownNow();
-//                break;
-//            }
-			
 			final int t_from = frame;
 			final int t_out = ipixelcolumn;
-			progressBar.setMessage("Read frame: " + (frame) + "//" + nframes);
 			futures.add(processor.submit(new Runnable () {
 			@Override
 			public void run() {		
+				seqCamData.seq.beginUpdate();
 				final IcyBufferedImage  workImage = seqCamData.getImageCopy(t_from);
 				if (options.doRegistration ) 
-					adjustImage(workImage);
+					adjustImage(seqForRegistration, workImage);
 				ArrayList<double []> sourceValuesList = transferWorkImageToDoubleArrayList (workImage);
 				for (int iroi=0; iroi < nbcapillaries; iroi++) {
 					Capillary cap = exp.capillaries.capillariesArrayList.get(iroi);
@@ -193,15 +155,13 @@ public class BuildKymographs2_series extends BuildSeries  {
 						}
 					}
 				}
+				seqCamData.seq.endUpdate();
 			}
 			}));
 		}
-		
-        // wait until kymo is built
-		progressBar.setMessage("wait completion");
 		waitCompletion(processor, futures, progressBar);
+		
         progressBar.close();
-		seqCamData.seq.endUpdate();
 		seqKymos.seq.removeAllImages();
 		seqKymos.seq.setVirtual(false); 
 
@@ -327,7 +287,7 @@ public class BuildKymographs2_series extends BuildSeries  {
 		return length;
 	}
 		
-	private void adjustImage(IcyBufferedImage  workImage) {
+	private void adjustImage(Sequence seqForRegistration, IcyBufferedImage  workImage) {
 		seqForRegistration.setImage(1, 0, workImage);
 		int referenceChannel = 1;
 		int referenceSlice = 0;

@@ -17,40 +17,32 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 	
 	@Override
 	protected Integer doInBackground() throws Exception {
-		System.out.println("start detect levels thread");
-		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
+		System.out.println("start buildkymographsThread");
+//		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
 		
-		threadRunning = true;
-        int nbiterations = 0;
+        threadRunning = true;
+		int nbiterations = 0;
 		ExperimentList expList = options.expList;
-		ProgressFrame progress = new ProgressFrame("Starting thread");
-		long startTimeInNs = System.nanoTime();
-		
+		ProgressFrame progress = new ProgressFrame("Build kymographs");
+			
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
 			if (stopFlag)
 				break;
+			long startTimeInNs = System.nanoTime();
+			Experiment exp = expList.getExperiment(index);
 			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1+1));
-			Experiment exp = expList.getExperiment(index);	
 			System.out.println((index+1)+": " +exp.getExperimentFileName());
-			
 			exp.resultsSubPath = options.resultsSubPath;
-			String resultsDirectory = exp.getResultsDirectory(); 
-			exp.loadExperimentCapillariesData_ForSeries();
+			exp.getResultsDirectory();
 			
-			if (exp.loadKymographs()) {	
-				System.out.println((index+1) + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
-				exp.kymosBuildFiltered( 0, 1, options.transformForLevels, options.spanDiffTop);
-				runMeasurement(exp);
-				exp.saveExperimentMeasures(resultsDirectory);
-				long endTime2InNs = System.nanoTime();
-				System.out.println("process ended - duration: "+((endTime2InNs-endTimeInNs)/ 1000000000f) + " s");
+			runMeasurement(exp);
 			
-			}
-			exp.seqKymos.closeSequence();
-		}
+			long endTime2InNs = System.nanoTime();
+			System.out.println("process ended - duration: "+((endTime2InNs-startTimeInNs)/ 1000000000f) + " s");
+		}		
 		progress.close();
 		threadRunning = false;
-		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
+//		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
 		return nbiterations;
 	}
 
@@ -67,11 +59,8 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 		} else {
 			firePropertyChange("thread_done", null, statusMsg);
 		}
-		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
-	  
+		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true); 
     }
 	
-
-	private void runMeasurement(Experiment exp) {
-	}
+	abstract void runMeasurement(Experiment exp);
 }
