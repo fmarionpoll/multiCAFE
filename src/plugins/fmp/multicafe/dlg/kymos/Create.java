@@ -21,10 +21,9 @@ import icy.gui.util.GuiUtil;
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.series.BuildKymographs2_series;
+import plugins.fmp.multicafe.series.BuildKymographs_Options;
 import plugins.fmp.multicafe.tools.EnumStatusComputation;
-import plugins.fmp.multicafe.tools.buildKymos.BuildKymographs2_series;
-import plugins.fmp.multicafe.tools.buildKymos.BuildKymographs_Options;
-//import plugins.fmp.multicafe.tools.buildKymos.BuildKymographs_series;
 
 
 

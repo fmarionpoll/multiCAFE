@@ -24,9 +24,9 @@ import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.series.DetectGulps_Options;
+import plugins.fmp.multicafe.series.DetectGulps_series;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
-import plugins.fmp.multicafe.tools.detect.DetectGulps_Options;
-import plugins.fmp.multicafe.tools.detect.DetectGulps_series;
 
 
 

@@ -27,10 +27,10 @@ import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
+import plugins.fmp.multicafe.series.DetectFlies1_series;
+import plugins.fmp.multicafe.series.DetectFlies_Options;
 import plugins.fmp.multicafe.tools.OverlayThreshold;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
-import plugins.fmp.multicafe.tools.detect.DetectFlies1_series;
-import plugins.fmp.multicafe.tools.detect.DetectFlies_Options;
 
 
 

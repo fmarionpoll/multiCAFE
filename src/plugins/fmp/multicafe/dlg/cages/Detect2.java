@@ -27,8 +27,8 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
-import plugins.fmp.multicafe.tools.detect.DetectFlies2_series;
-import plugins.fmp.multicafe.tools.detect.DetectFlies_Options;
+import plugins.fmp.multicafe.series.DetectFlies2_series;
+import plugins.fmp.multicafe.series.DetectFlies_Options;
 
 
 

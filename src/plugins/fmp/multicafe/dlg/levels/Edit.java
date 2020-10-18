@@ -31,8 +31,8 @@ import plugins.fmp.multicafe.sequence.CapillaryLimits;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.series.DetectLevels_Options;
 import plugins.fmp.multicafe.tools.AdjustMeasuresDimensions_series;
-import plugins.fmp.multicafe.tools.detect.DetectLevels_Options;
 
 
 
