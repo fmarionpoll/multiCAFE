@@ -27,8 +27,9 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
+import plugins.fmp.multicafe.series.BuildSeries_Options;
 import plugins.fmp.multicafe.series.DetectFlies2_series;
-import plugins.fmp.multicafe.series.DetectFlies_Options;
+
 
 
 
@@ -166,8 +167,8 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	private boolean initTrackParameters() {
 		if (detectFlies2Thread == null)
 			return false;
-		detectFlies2Thread.options = new DetectFlies_Options();
-		DetectFlies_Options options 	= detectFlies2Thread.options;
+		detectFlies2Thread.options = new BuildSeries_Options();
+		BuildSeries_Options options = detectFlies2Thread.options;
 		
 		options.btrackWhite 		= true;
 		options.blimitLow 		= objectLowsizeCheckBox.isSelected();

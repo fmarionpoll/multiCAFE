@@ -24,7 +24,7 @@ public class DetectFlies_Find {
 	
 	public List<BooleanMask2D> cageMaskList = new ArrayList<BooleanMask2D>();
 	public Rectangle 	rectangleAllCages 	= null;
-	public DetectFlies_Options	options		= null;
+	public BuildSeries_Options	options		= null;
 	
 	private Cages 		cages 				= null;
 	ROI2DRectangle [] 	tempRectROI;
@@ -146,7 +146,7 @@ public class DetectFlies_Find {
 		resultFlyPositionArrayList = new ROI[nbcages][options.nbframes];
 	}
 	
-	public void initParametersForDetection(Experiment exp, DetectFlies_Options	options) {
+	public void initParametersForDetection(Experiment exp, BuildSeries_Options	options) {
 		this.options = options;
 		options.nbframes = (exp.getCagesFrameEnd() - exp.getCagesFrameStart() +1)/options.df_stepFrame +1;
 		exp.cages.clearAllMeasures();

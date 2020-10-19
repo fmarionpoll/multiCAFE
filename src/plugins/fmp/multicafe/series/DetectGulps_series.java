@@ -4,119 +4,95 @@ import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-
-import javax.swing.SwingWorker;
+import java.util.concurrent.Future;
 
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
-import icy.main.Icy;
+import icy.sequence.Sequence;
+import icy.system.SystemUtil;
+import icy.system.thread.Processor;
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.CapillaryLimits;
 import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.ExperimentList;
+
 import plugins.fmp.multicafe.sequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
-public class DetectGulps_series extends SwingWorker<Integer, Integer> {
-	private SequenceKymos 		seqkymo 		= null;
-	public boolean 				stopFlag 		= false;
-	public boolean 				threadRunning 	= false;
-	public BuildSeries_Options 	options 		= new BuildSeries_Options();
+public class DetectGulps_series extends BuildSeries  {
 	
-	@Override
-	protected Integer doInBackground() throws Exception {
-		System.out.println("start detect gulps thread");
-		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
-		
-		threadRunning = true;
-        int nbiterations = 0;
-		ExperimentList expList = options.expList;
-		ProgressFrame progress = new ProgressFrame("Detect limits");
-		
-		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
-			if (stopFlag)
-				break;
-			Experiment exp = expList.getExperiment(index);
-			exp.resultsSubPath = options.resultsSubPath;
-			exp.getResultsDirectory(); 
-			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1 +1));
-
-			exp.loadExperimentCapillariesData_ForSeries();
-			if ( exp.loadKymographs()) {
-				System.out.println((index+1) + " - "+ exp.getExperimentFileName() + " " + exp.resultsSubPath);
-				buildFilteredImage(exp);
-				detectGulps(exp);
-				exp.xmlSaveMCcapillaries();
-			}
-			exp.seqKymos.closeSequence();
+	void runMeasurement(Experiment exp) {
+		exp.loadExperimentCapillariesData_ForSeries();
+		if ( exp.loadKymographs()) {
+			buildFilteredImage(exp);
+			detectGulps(exp);
+			exp.xmlSaveMCcapillaries();
 		}
-		progress.close();
-		threadRunning = false;
-		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
-		return nbiterations;
+		exp.seqKymos.closeSequence();
 	}
 
-	@Override
-	protected void done() {
-		int statusMsg = 0;
-		try {
-			statusMsg = get();
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-		} 
-		if (!threadRunning || stopFlag) {
-			firePropertyChange("thread_ended", null, statusMsg);
-		} else {
-			firePropertyChange("thread_done", null, statusMsg);
-		}
-    }
-	
 	private void buildFilteredImage(Experiment exp) {
-		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqKymos == null)
+		if (exp.seqKymos == null)
 			return;
 		int zChannelDestination = 2;
 		exp.kymosBuildFiltered(0, zChannelDestination, options.transformForGulps, options.spanDiff);
 	}
 	
 	public void detectGulps(Experiment exp) {			
-		this.seqkymo = exp.seqKymos;
-
+		SequenceKymos seqKymos = exp.seqKymos;
+		
 		int jitter = 5;
 		int firstkymo = 0;
-		int lastkymo = seqkymo.seq.getSizeT() -1;
+		int lastkymo = seqKymos.seq.getSizeT() -1;
 		if (!options.detectAllGulps) {
 			firstkymo = options.firstkymo;
 			lastkymo = firstkymo;
 		}
-		seqkymo.seq.beginUpdate();
-		for (int indexkymo=firstkymo; indexkymo <= lastkymo; indexkymo++) {
-			Capillary cap = exp.capillaries.capillariesArrayList.get(indexkymo);
+		seqKymos.seq.beginUpdate();
+		threadRunning = true;
+		stopFlag = false;
+		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
+		
+		int nframes = lastkymo - firstkymo +1;
+	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+	    processor.setThreadName("detect_levels");
+	    processor.setPriority(Processor.NORM_PRIORITY);
+        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
+		futures.clear();
+		
+		for (int frame = firstkymo; frame <= lastkymo; frame++) {
+			final Capillary cap = exp.capillaries.capillariesArrayList.get(frame);
 			cap.setGulpsOptions(options);
-			if (options.buildDerivative) {
-				seqkymo.removeRoisContainingString(indexkymo, "derivative");
-				getDerivativeProfile(indexkymo, cap, jitter);	
+			
+			final int t_from = frame;;
+			futures.add(processor.submit(new Runnable () {
+			@Override
+			public void run() {
+				if (options.buildDerivative) {
+					seqKymos.removeRoisContainingString(t_from, "derivative");
+					getDerivativeProfile(seqKymos.seq, t_from, cap, jitter);	
+				}
+				if (options.buildGulps) {
+					cap.cleanGulps();
+					seqKymos.removeRoisContainingString(t_from, "gulp");
+					cap.getGulps(t_from);
+					if (cap.gulpsRois.rois.size() > 0)
+						seqKymos.seq.addROIs(cap.gulpsRois.rois, false);
+				}
 			}
-			if (options.buildGulps) {
-				cap.cleanGulps();
-				seqkymo.removeRoisContainingString(indexkymo, "gulp");
-				cap.getGulps(indexkymo);
-				if (cap.gulpsRois.rois.size() > 0)
-					seqkymo.seq.addROIs(cap.gulpsRois.rois, false);
-			}
+			}));
 		}
-		seqkymo.seq.endUpdate();
-		seqkymo.closeSequence();
+		waitCompletion(processor, futures, progressBar);
+		seqKymos.seq.endUpdate();
+		progressBar.close();
 	}	
 
-	private void getDerivativeProfile(int indexkymo, Capillary cap, int jitter) {	
-		int z = seqkymo.seq.getSizeZ() -1;
-		IcyBufferedImage image = seqkymo.seq.getImage(indexkymo, z, 0);
+	private void getDerivativeProfile(Sequence seq, int indexkymo, Capillary cap, int jitter) {	
+		int z = seq.getSizeZ() -1;
+		IcyBufferedImage image = seq.getImage(indexkymo, z, 0);
 		List<Point2D> listOfMaxPoints = new ArrayList<>();
 		int[] kymoImageValues = Array1DUtil.arrayToIntArray(image.getDataXY(0), image.isSignedDataType());	// channel 0 - RED
 		int xwidth = image.getSizeX();
@@ -148,7 +124,7 @@ public class DetectGulps_series extends SwingWorker<Integer, Integer> {
 		roiDerivative.setStroke(1);
 		roiDerivative.setPoints(listOfMaxPoints);
 		roiDerivative.setT(indexkymo);
-		seqkymo.seq.addROI(roiDerivative, false);
+		seq.addROI(roiDerivative, false);
 		cap.ptsDerivative = new CapillaryLimits(roiDerivative.getName(), indexkymo, roiDerivative.getPolyline2D());
 	}
 	

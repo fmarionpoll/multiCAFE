@@ -21,7 +21,6 @@ import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
-import plugins.fmp.multicafe.tools.ProgressChrono;
 
 import plugins.nchenouard.kymographtracker.Util;
 import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
@@ -30,7 +29,6 @@ import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 
 public class BuildKymographs2_series extends BuildSeries  {
 	public boolean		buildBackground		= true;
-//	private Sequence 	seqForRegistration	= null;
 	private DataType 	dataType 			= DataType.INT;
 	private int 		imagewidth 			= 1;
 	    
@@ -94,7 +92,7 @@ public class BuildKymographs2_series extends BuildSeries  {
 	
 		threadRunning = true;
 		stopFlag = false;
-		ProgressFrame progressBar = new ProgressChrono("Processing with subthreads started");
+		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
 		
 		initArraysToBuildKymographImages(exp);
 		if (exp.capillaries.capillariesArrayList.size() < 1) {
@@ -124,7 +122,7 @@ public class BuildKymographs2_series extends BuildSeries  {
 	    processor.setPriority(Processor.NORM_PRIORITY);
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		futures.clear();
-		seqCamData.seq.setVirtual(false);
+
 		seqCamData.seq.beginUpdate();
 		
 		int ipixelcolumn = 0;
@@ -135,8 +133,6 @@ public class BuildKymographs2_series extends BuildSeries  {
 			@Override
 			public void run() {		
 				final IcyBufferedImage  workImage = seqCamData.seq.getImage(t_from, 0);
-//				final IcyBufferedImage  workImage = seqCamData.getImageCopy(t_from);
-//				seqCamData.seq.removeImage(t_from, 0);
 				if (options.doRegistration ) 
 					adjustImage(seqForRegistration, workImage);
 				ArrayList<double []> sourceValuesList = transferWorkImageToDoubleArrayList (workImage);
@@ -157,7 +153,6 @@ public class BuildKymographs2_series extends BuildSeries  {
 						}
 					}
 				}
-//				seqCamData.seq.removeImage(t_from, 0);
 			}
 			}));
 		}
@@ -166,7 +161,6 @@ public class BuildKymographs2_series extends BuildSeries  {
 		
         progressBar.close();
 		seqKymos.seq.removeAllImages();
-		seqKymos.seq.setVirtual(false); 
 
 		for (int icap=0; icap < nbcapillaries; icap++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
@@ -185,31 +179,6 @@ public class BuildKymographs2_series extends BuildSeries  {
 
 		return true;
 	}
-	
-    private void waitCompletion(Processor processor, List<Future<?>> futures,  ProgressFrame progressBar) {
-    	 try {
-    		 int frame= 1;
-    		 int nframes = futures.size();
-    		 for (Future<?> future : futures) {
-    			 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
-    			 if (!future.isDone()) {
-    				 if (stopFlag) {
-    					 processor.shutdownNow();
-    					 break;
-    				 } else 
-    					 future.get();
-    			 }
-    			 frame += 1; 
-            }
-         }
-         catch (InterruptedException e) {
-        	 processor.shutdownNow();
-         }
-         catch (Exception e) {
-        	 throw new RuntimeException(e);
-         }
-    	 processor.shutdown();
-    }
 	
 	// -------------------------------------------
 	

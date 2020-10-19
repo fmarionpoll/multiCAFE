@@ -27,8 +27,8 @@ import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
+import plugins.fmp.multicafe.series.BuildSeries_Options;
 import plugins.fmp.multicafe.series.DetectFlies1_series;
-import plugins.fmp.multicafe.series.DetectFlies_Options;
 import plugins.fmp.multicafe.tools.OverlayThreshold;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
@@ -179,8 +179,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private boolean initTrackParameters() {
 		if (thread == null)
 			return false;
-		thread.options = new DetectFlies_Options();
-		DetectFlies_Options options = thread.options;
+		thread.options = new BuildSeries_Options();
+		BuildSeries_Options options = thread.options;
 		options.btrackWhite 	= whiteMiceCheckBox.isSelected();
 		options.blimitLow 		= objectLowsizeCheckBox.isSelected();
 		options.blimitUp 		= objectUpsizeCheckBox.isSelected();
