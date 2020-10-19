@@ -498,39 +498,6 @@ public class SequenceCamData {
 	}
 	
 	// --------------------------
-
-//	public FileTime getImageLastModifiedTime (int t) {
-//		String fileName = getFileName(t);
-//		if (fileName == null)
-//			return null;
-//		Path path = Paths.get(fileName);
-//		FileTime fileTime;
-//		try { fileTime = Files.getLastModifiedTime(path); }
-//		catch (IOException e) {
-//			System.err.println("Cannot get Files.lastModifiedTime - " + e + "image "+ t+ " -- file "+ fileName);
-//			return null;
-//		}
-//		return fileTime;
-//	}
-	
-//	public FileTime getImageCreationTime(int t) {
-//		String fileName = getFileName(t);
-//		if (fileName == null)
-//			return null;
-//		File myfile = new File(fileName);
-//        Path path = myfile.toPath();
-//        BasicFileAttributes fatr = null;
-//        try {
-//			fatr = Files.readAttributes(path, BasicFileAttributes.class);
-//		} catch (IOException e) {
-//			System.err.println("Cannot get File creationTime - " + e + " : image "+ t+ " -- file "+ fileName);
-//			e.printStackTrace();
-//			return null;
-//		}
-//		
-//		FileTime fileTime = fatr.creationTime();
-//		return fileTime;
-//	}
 	
 	public FileTime getFileTimeFromName(int t) {
 		String fileName = getFileName(t);

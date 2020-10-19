@@ -125,6 +125,7 @@ public class BuildKymographs2_series extends BuildSeries  {
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		futures.clear();
 		seqCamData.seq.setVirtual(false);
+		seqCamData.seq.beginUpdate();
 		
 		int ipixelcolumn = 0;
 		for (int frame = exp.getKymoFrameStart() ; frame <= exp.getKymoFrameEnd(); frame += exp.getKymoFrameStep(), ipixelcolumn++ ) {
@@ -133,8 +134,9 @@ public class BuildKymographs2_series extends BuildSeries  {
 			futures.add(processor.submit(new Runnable () {
 			@Override
 			public void run() {		
-				seqCamData.seq.beginUpdate();
-				final IcyBufferedImage  workImage = seqCamData.getImageCopy(t_from);
+				final IcyBufferedImage  workImage = seqCamData.seq.getImage(t_from, 0);
+//				final IcyBufferedImage  workImage = seqCamData.getImageCopy(t_from);
+//				seqCamData.seq.removeImage(t_from, 0);
 				if (options.doRegistration ) 
 					adjustImage(seqForRegistration, workImage);
 				ArrayList<double []> sourceValuesList = transferWorkImageToDoubleArrayList (workImage);
@@ -155,11 +157,12 @@ public class BuildKymographs2_series extends BuildSeries  {
 						}
 					}
 				}
-				seqCamData.seq.endUpdate();
+//				seqCamData.seq.removeImage(t_from, 0);
 			}
 			}));
 		}
 		waitCompletion(processor, futures, progressBar);
+		seqCamData.seq.endUpdate();
 		
         progressBar.close();
 		seqKymos.seq.removeAllImages();
