@@ -27,7 +27,7 @@ import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 
 
 
-public class BuildKymographs2_series extends BuildSeries  {
+public class BuildKymographs_series extends BuildSeries  {
 	public boolean		buildBackground		= true;
 	private DataType 	dataType 			= DataType.INT;
 	private int 		imagewidth 			= 1;
