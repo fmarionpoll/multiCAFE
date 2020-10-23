@@ -229,36 +229,64 @@ public class CapillaryLimits  implements XMLPersistent  {
 	}
 	
 	public void adjustToImageWidth(int imageSize) {
-		if (polylineLimit == null || polylineLimit.npoints == imageSize)
+		if (polylineLimit == null)
 			return;
-		else if (polylineLimit.npoints > imageSize) {
-			double [] xpoints = new double[imageSize];
-			double [] ypoints = new double [imageSize];
-			for (int i=0; i< imageSize; i++) {
-				int j = i * polylineLimit.npoints / imageSize;
-				xpoints[i] = i;
-				ypoints[i] = polylineLimit.ypoints[j];
-			}
-			polylineLimit = new Polyline2D (xpoints, ypoints, imageSize);
+
+		int npoints = polylineLimit.npoints;
+		int npoints_old = 0;
+		if (polyline_old != null && polyline_old.npoints > npoints) {
+			npoints_old = polyline_old.npoints;
 		}
-		else { // imageSize > polyline.npoints
-			double [] xpoints = new double[imageSize];
-			double [] ypoints = new double [imageSize];
-			for (int j=0; j< polylineLimit.npoints; j++) {
-				int i0 = j * imageSize / polylineLimit.npoints;
-				int i1 = (j +1) * imageSize / polylineLimit.npoints;
-				double y0 = polylineLimit.ypoints[j];
-				double y1 = y0;
-				if ((j+1) < polylineLimit.npoints)
-					y1 = polylineLimit.ypoints[j+1]; 
-				for (int i = i0; i< i1; i++) {
-					xpoints[i] = i;
-					ypoints[i] = y0 + (y1-y0) * (i-i0)/(i1-i0);
-				}
-			}
-			polylineLimit = new Polyline2D (xpoints, ypoints, imageSize);
+		if (npoints == imageSize || npoints_old == imageSize)
+			return;
+		
+		// reduce polyline npoints to imageSize
+		if (npoints > imageSize) {
+			int newSize = imageSize;
+			if (npoints < npoints_old)
+				newSize = imageSize *npoints / npoints_old;
+			polylineLimit = reducePolylineToNewSize(newSize, polylineLimit);
+			if (npoints_old != 0)
+				polyline_old = reducePolylineToNewSize(imageSize, polyline_old);
+		}
+		// expand polyline npoints to imageSize
+		else { 
+			int newSize = imageSize;
+			if (npoints < npoints_old)
+				newSize = imageSize *npoints / npoints_old;
+			polylineLimit = expandPolylineToNewSize(newSize, polylineLimit);
+			if (npoints_old != 0)
+				polyline_old = expandPolylineToNewSize(imageSize, polyline_old);
 		}
 	}
-
+	
+	Polyline2D expandPolylineToNewSize(int imageSize, Polyline2D polylineLimit) {
+		double [] xpoints = new double[imageSize];
+		double [] ypoints = new double [imageSize];
+		for (int j=0; j< polylineLimit.npoints; j++) {
+			int i0 = j * imageSize / polylineLimit.npoints;
+			int i1 = (j +1) * imageSize / polylineLimit.npoints;
+			double y0 = polylineLimit.ypoints[j];
+			double y1 = y0;
+			if ((j+1) < polylineLimit.npoints)
+				y1 = polylineLimit.ypoints[j+1]; 
+			for (int i = i0; i< i1; i++) {
+				xpoints[i] = i;
+				ypoints[i] = y0 + (y1-y0) * (i-i0)/(i1-i0);
+			}
+		}
+		return new Polyline2D (xpoints, ypoints, imageSize);
+	}
+	
+	Polyline2D reducePolylineToNewSize(int imageSize, Polyline2D polylineLimit) {
+		double [] xpoints = new double[imageSize];
+		double [] ypoints = new double [imageSize];
+		for (int i=0; i< imageSize; i++) {
+			int j = i * polylineLimit.npoints / imageSize;
+			xpoints[i] = i;
+			ypoints[i] = polylineLimit.ypoints[j];
+		}
+		return new Polyline2D (xpoints, ypoints, imageSize);
+	}
 
 }

@@ -33,13 +33,13 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 	private JCheckBox			allSeriesCheckBox = new JCheckBox("ALL series", false);
 	
 	private String				adjustString  	= new String("Adjust dimensions");
-	private String				clipString 		= new String ("Clip curves per cage");
-	private String				restoreString	= new String ("Restore curves");
+	private String				clipString 		= new String("Clip curves per cage");
+	private String				restoreString	= new String("Restore curves");
 	
 	private JButton 			adjustButton 	= new JButton(adjustString);
 	private JButton 			restoreButton 	= new JButton(restoreString);
 	private JButton 			clipButton 		= new JButton(clipString);
-	private String				stopString		= new String ("STOP ");
+	private String				stopString		= new String("STOP ");
 	
 	private AdjustMeasuresDimensions_series threadAdjust = null;
 	private CurvesRestoreLength_series threadRestore = null;
