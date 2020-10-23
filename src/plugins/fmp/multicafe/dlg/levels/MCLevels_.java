@@ -22,11 +22,12 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -7339633966002954720L;
-	private JTabbedPane 	tabsPane 		= new JTabbedPane();
+	private JTabbedPane tabsPane 		= new JTabbedPane();
 	public LoadSave 	tabFileLevels	= new LoadSave();
-	DetectLimits 	tabDetectLimits = new DetectLimits();
-	DetectGulps 	tabDetectGulps 	= new DetectGulps();
-	Edit			tabEdit			= new Edit();
+	DetectLimits 		tabDetectLimits = new DetectLimits();
+	DetectGulps 		tabDetectGulps 	= new DetectGulps();
+	Edit				tabEdit			= new Edit();
+	Adjust				tabAdjust		= new Adjust();
 	public Graphs 		tabGraphs 		= new Graphs();
 
 	
@@ -51,6 +52,11 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 		tabEdit.init(capLayout, parent0);
 		tabEdit.addPropertyChangeListener(this);
 		tabsPane.addTab("Edit", null, tabEdit, "Edit Rois / measures");
+
+		tabAdjust.init(capLayout, parent0);
+		tabAdjust.addPropertyChangeListener(this);
+		tabsPane.addTab("Adjust", null, tabAdjust, "Adjust measures on series and across series");
+
 		
 		tabGraphs.init(capLayout, parent0);
 		tabGraphs.addPropertyChangeListener(this);

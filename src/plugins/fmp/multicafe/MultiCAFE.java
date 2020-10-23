@@ -29,7 +29,7 @@ import plugins.fmp.multicafe.sequence.ExperimentList;
 
 
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 20-Oct-2020", true, true, true, true);
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 23-Oct-2020", true, true, true, true);
 	public ExperimentList 	expList 		= new ExperimentList();
 	
 	public MCSequence_ 		paneSequence 	= new MCSequence_();
@@ -57,7 +57,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		paneKymos.init(mainPanel, "KYMOGRAPHS", this);
 		paneKymos.addPropertyChangeListener(this);
 		
-		paneLevels.init(mainPanel, "MEASURE TOP LEVEL & GULPS", this);
+		paneLevels.init(mainPanel, "MEASURE LEVEL & GULPS", this);
 		paneLevels.addPropertyChangeListener(this);
 
 //		paneSpots.init(mainPanel, "MEASURE SPOTS", this);
