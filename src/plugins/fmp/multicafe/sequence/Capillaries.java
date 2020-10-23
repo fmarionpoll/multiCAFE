@@ -22,7 +22,7 @@ public class Capillaries {
 	public CapillariesDescription 	desc				= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public List <Capillary> 		capillariesArrayList= new ArrayList <Capillary>();
-	public BuildSeries_Options 	limitsOptions			= new BuildSeries_Options();
+	public BuildSeries_Options 		limitsOptions		= new BuildSeries_Options();
 	
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
 	private final static String ID_NCAPILLARIES 		= "N_capillaries";

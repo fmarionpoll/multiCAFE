@@ -220,12 +220,5 @@ public class Edit  extends JPanel {
 		}
 		return npointsInside;
 	}
-	
-	void adjustCapillaryMeasuresDimensions (Experiment exp) {
-		if (!exp.checkStepConsistency()) {
-			parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
-		}
-		exp.adjustCapillaryMeasuresDimensions();
-	}
-	
+
 }

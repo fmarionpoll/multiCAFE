@@ -41,7 +41,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 //	JCheckBox 				newMethodCheckBox 			= new JCheckBox("new method", false);
 	
 	JCheckBox 				doCreateCheckBox 			= new JCheckBox("force creation of results_bin", false);
-	JCheckBox				allCheckBox 				= new JCheckBox("ALL series (current to last)", false);
+	JCheckBox				allSeriesCheckBox 				= new JCheckBox("ALL series (current to last)", false);
 	public JSpinner 		stepFrameJSpinner			= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
@@ -60,7 +60,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		
 		JPanel panel1 = new JPanel(layout1);
 		panel1.add(startComputationButton);
-		panel1.add(allCheckBox);
+		panel1.add(allSeriesCheckBox);
 		add(GuiUtil.besidesPanel(panel1));
 		
 		JPanel panel2 = new JPanel(layout1);
@@ -87,12 +87,12 @@ public class Create extends JPanel implements PropertyChangeListener {
 					stopComputation();
 		}});
 
-		allCheckBox.addActionListener(new ActionListener () { 
+		allSeriesCheckBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) {
 				Color color = Color.BLACK;
-				if (allCheckBox.isSelected()) 
+				if (allSeriesCheckBox.isSelected()) 
 					color = Color.RED;
-				allCheckBox.setForeground(color);
+				allSeriesCheckBox.setForeground(color);
 				startComputationButton.setForeground(color);
 		}});
 	}
@@ -104,7 +104,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 	private boolean initBuildParameters(Experiment exp, BuildSeries_Options options) {
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.expList.currentExperimentIndex;
-		if (allCheckBox.isSelected())
+		if (allSeriesCheckBox.isSelected())
 			options.expList.index1 = parent0.expList.getSize()-1;
 		else
 			options.expList.index1 = options.expList.index0; 
@@ -132,31 +132,18 @@ public class Create extends JPanel implements PropertyChangeListener {
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
-//		if (newMethodCheckBox.isSelected()) {
-			thread2 = new BuildKymographs_series();	
-			BuildSeries_Options options = thread2.options;
-			initBuildParameters(exp, options);
-			
-			thread2.buildBackground	= false;
-			thread2.addPropertyChangeListener(this);
-			thread2.execute();
-//		} else {
-//			thread = new BuildKymographs_series();	
-//			BuildKymographs_Options options = thread.options;
-//			initBuildParameters(exp, options);
-//			
-//			thread.buildBackground	= false;
-//			thread.addPropertyChangeListener(this);
-//			thread.execute();
-//		}
+		thread2 = new BuildKymographs_series();	
+		BuildSeries_Options options = thread2.options;
+		initBuildParameters(exp, options);
+		
+		thread2.buildBackground	= false;
+		thread2.addPropertyChangeListener(this);
+		thread2.execute();
+
 		startComputationButton.setText("STOP");
 	}
 	
 	private void stopComputation() {	
-//		if (thread != null && !thread.stopFlag) {
-//			thread.stopFlag = true;
-//		}
-		
 		if (thread2 != null && !thread2.stopFlag) {
 			thread2.stopFlag = true;
 		}
