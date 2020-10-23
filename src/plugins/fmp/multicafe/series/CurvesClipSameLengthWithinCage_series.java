@@ -23,17 +23,17 @@ public class CurvesClipSameLengthWithinCage_series extends BuildSeries {
 				if (findCageID(tcage, listCageID)) 
 					continue;
 				listCageID.add(tcage);
-				int dataLengthMin = findMinLength(exp, t, tcage);
+				int minLength = findMinLength(exp, t, tcage);
 				
 				for (int tt = t; tt< seqKymos.nTotalFrames; tt++) {
-					Capillary ttcap = exp.capillaries.capillariesArrayList.get(t);
+					Capillary ttcap = exp.capillaries.capillariesArrayList.get(tt);
 					int ttcage = ttcap.capCageID;
-					if (ttcage == tcage) {
-						ttcap.cropMeasuresToNPoints(dataLengthMin);
+					if (ttcage == tcage && ttcap.ptsTop.polylineLimit.npoints > minLength) {
+						ttcap.cropMeasuresToNPoints(minLength);
 					}
 				}
 			}
-			exp.saveExperimentMeasures(exp.getResultsDirectory());
+			exp.capillaries.xmlSaveCapillaries_Measures(exp.getResultsDirectory());
 		}
 		exp.seqCamData.closeSequence();
 		exp.seqKymos.closeSequence();
@@ -52,16 +52,16 @@ public class CurvesClipSameLengthWithinCage_series extends BuildSeries {
 	
 	private int findMinLength (Experiment exp, int t, int tcage ) {
 		Capillary tcap = exp.capillaries.capillariesArrayList.get(t);
-		int dataLengthMin = tcap.ptsTop.polylineLimit.npoints;
+		int minLength = tcap.ptsTop.polylineLimit.npoints;
 		for (int tt = t; tt< exp.capillaries.capillariesArrayList.size(); tt++) {
-			Capillary ttcap = exp.capillaries.capillariesArrayList.get(t);
+			Capillary ttcap = exp.capillaries.capillariesArrayList.get(tt);
 			int ttcage = ttcap.capCageID;
 			if (ttcage == tcage) {
 				int dataLength = ttcap.ptsTop.polylineLimit.npoints;
-				if (dataLength < dataLengthMin)
-					dataLengthMin = dataLength;
+				if (dataLength < minLength)
+					minLength = dataLength;
 			}
 		}
-		return dataLengthMin;
+		return minLength;
 	}
 }

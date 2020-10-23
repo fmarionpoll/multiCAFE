@@ -13,12 +13,8 @@ public class CurvesRestoreLength_series extends BuildSeries {
 			for (int t= 0; t< seqKymos.nTotalFrames; t++) {
 				Capillary cap = exp.capillaries.capillariesArrayList.get(t);
 				cap.restoreCroppedMeasures();
-				
-				seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsTop);
-				seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsBottom);
-				seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsDerivative);
 			}
-			exp.saveExperimentMeasures(exp.getResultsDirectory());
+			exp.capillaries.xmlSaveCapillaries_Measures(exp.getResultsDirectory());
 		}
 		exp.seqCamData.closeSequence();
 		exp.seqKymos.closeSequence();
