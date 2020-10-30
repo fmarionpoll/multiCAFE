@@ -30,7 +30,7 @@ import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
 public class BuildKymographs_series extends BuildSeries  {
 	public boolean		buildBackground		= true;
 	private DataType 	dataType 			= DataType.INT;
-	private int 		imagewidth 			= 1;
+//	private int 		imagewidth 			= 1;
 	    
 	// ------------------------------
 	
@@ -100,7 +100,6 @@ public class BuildKymographs_series extends BuildSeries  {
 			return false;
 		}
 		
-		int vinputSizeX = seqCamData.seq.getSizeX();		
 		IcyBufferedImage  workImage0 = seqCamData.seq.getImage(options.startFrame, 0); 
 		seqCamData.seq.removeAllROI();
 		
@@ -135,9 +134,12 @@ public class BuildKymographs_series extends BuildSeries  {
 				final IcyBufferedImage  workImage = seqCamData.seq.getImage(t_from, 0);
 				if (options.doRegistration ) 
 					adjustImage(seqForRegistration, workImage);
+				int vinputSizeX = workImage.getWidth();
+				
 				ArrayList<double []> sourceValuesList = transferWorkImageToDoubleArrayList (workImage);
 				for (int iroi=0; iroi < nbcapillaries; iroi++) {
 					Capillary cap = exp.capillaries.capillariesArrayList.get(iroi);
+					int imagewidth = cap.bufKymoImage.getWidth();
 					for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) { 
 						double [] tabValues = cap.tabValuesList.get(chan); 
 						double [] sourceValues = sourceValuesList.get(chan);
@@ -166,14 +168,14 @@ public class BuildKymographs_series extends BuildSeries  {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
 			for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) {
 				double [] tabValues = cap.tabValuesList.get(chan); 
-				Object destArray = cap.bufImage.getDataXY(chan);
-				Array1DUtil.doubleArrayToSafeArray(tabValues, destArray, cap.bufImage.isSignedDataType());
-				cap.bufImage.setDataXY(chan, destArray);
+				Object destArray = cap.bufKymoImage.getDataXY(chan);
+				Array1DUtil.doubleArrayToSafeArray(tabValues, destArray, cap.bufKymoImage.isSignedDataType());
+				cap.bufKymoImage.setDataXY(chan, destArray);
 			}
-			seqKymos.seq.setImage(icap, 0, cap.bufImage);
+			seqKymos.seq.setImage(icap, 0, cap.bufKymoImage);
 			cap.masksList.clear();
 			cap.tabValuesList.clear();
-			cap.bufImage = null;
+			cap.bufKymoImage = null;
 		}
 		seqKymos.seq.setName(exp.getDecoratedImageNameFromCapillary(0));
 
@@ -205,7 +207,7 @@ public class BuildKymographs_series extends BuildSeries  {
 			fimagewidth =  1 + (exp.getKymoFrameEnd() - exp.getKymoFrameStart() )/options.stepFrame;
 		}
 			
-		imagewidth = (int) fimagewidth;
+		int imagewidth = (int) fimagewidth;
 		dataType = seqCamData.seq.getDataType_();
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;
@@ -222,10 +224,10 @@ public class BuildKymographs_series extends BuildSeries  {
 		
 		for (int t=0; t < nbcapillaries; t++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-			cap.bufImage = new IcyBufferedImage(imagewidth, masksizeMax, numC, dataType);
+			cap.bufKymoImage = new IcyBufferedImage(imagewidth, masksizeMax, numC, dataType);
 			cap.tabValuesList = new ArrayList <double []>();
 			for (int chan = 0; chan < numC; chan++) {
-				Object dataArray = cap.bufImage.getDataXY(chan);
+				Object dataArray = cap.bufKymoImage.getDataXY(chan);
 				double[] tabValues =  Array1DUtil.arrayToDoubleArray(dataArray, false);
 				cap.tabValuesList.add(tabValues);
 			}

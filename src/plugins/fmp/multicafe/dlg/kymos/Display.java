@@ -136,7 +136,7 @@ public class Display extends JPanel implements ViewerListener {
 		} } );
 	}
 		
-	void transferCapillaryNamesToComboBox(List <Capillary> capillaryArrayList) {
+	public void transferCapillaryNamesToComboBox(List <Capillary> capillaryArrayList) {
 		kymographNamesComboBox.removeAllItems();
 		Collections.sort(capillaryArrayList); 
 		for (Capillary cap: capillaryArrayList) 

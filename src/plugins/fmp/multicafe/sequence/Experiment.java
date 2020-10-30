@@ -37,7 +37,7 @@ public class Experiment {
 	
 	private String			experimentFileName			= null;
 	public SequenceCamData 	seqCamData 					= null;
-	public final static String 	RESULTS						= "results";
+	public final static String 	RESULTS					= "results";
 	public String			resultsSubPath				= RESULTS;
 	public List<String>		resultsDirList				= new ArrayList<String> ();
 		

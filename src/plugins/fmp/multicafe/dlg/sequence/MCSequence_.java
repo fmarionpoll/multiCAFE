@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
+import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
@@ -280,14 +281,18 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	void updateViewerForSequenceCam(Sequence seq) {
 		Viewer v = seq.getFirstViewer();
 		if (v != null) {
-			Rectangle rectv = v.getBoundsInternal();
-			Rectangle rect0 = parent0.mainFrame.getBoundsInternal();
-			rectv.setLocation(rect0.x+ rect0.width, rect0.y);
-			v.setBounds(rectv);
+			placeViewerNextToDialogBox(v, parent0.mainFrame);
 			v.toFront();
 			v.requestFocus();
 			v.addListener( parent0 );
 		}
+	}
+	
+	void placeViewerNextToDialogBox(Viewer v, IcyFrame mainFrame) {
+		Rectangle rectv = v.getBoundsInternal();
+		Rectangle rect0 = mainFrame.getBoundsInternal();
+		rectv.setLocation(rect0.x+ rect0.width, rect0.y);
+		v.setBounds(rectv);
 	}
 	
 	public void transferSequenceCamDataToDialogs(Experiment exp) {

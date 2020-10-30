@@ -141,9 +141,6 @@ public class LoadSave extends JPanel {
 		}
 
 		seqKymos.transferCapillariesToKymosRois(exp.capillaries);
-		if (flag) 
-	        parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
-
 		return flag;
 	}
 }

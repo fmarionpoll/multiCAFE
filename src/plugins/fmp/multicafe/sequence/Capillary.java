@@ -53,7 +53,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	
 	public List<ArrayList<int[]>> 		masksList 		= null;
 	public List <double []> 			tabValuesList 	= null;
-	public IcyBufferedImage 			bufImage 		= null;
+	public IcyBufferedImage 			bufKymoImage 	= null;
 	public boolean						valid			= true;
 
 	private final String 				ID_META 		= "metaMC";
