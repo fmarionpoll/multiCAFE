@@ -15,7 +15,7 @@ import icy.canvas.IcyCanvas;
 import icy.canvas.Layer;
 import icy.gui.viewer.Viewer;
 import icy.roi.ROI;
-import icy.system.thread.ThreadUtil;
+
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 
@@ -27,8 +27,8 @@ public class Display  extends JPanel {
 	 */
 	private static final long serialVersionUID = 8137492850312895195L;
 	public JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries", true);
-	JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages", true);
-	JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position", true);
+	JCheckBox 			viewCagesCheckbox 		= new JCheckBox("cages", true);
+	JCheckBox 			viewFlyCheckbox 		= new JCheckBox("flies position", true);
 
 	private MultiCAFE parent0 = null;
 
@@ -72,9 +72,9 @@ public class Display  extends JPanel {
 		List<Layer> layers = canvas.getLayers(false);
 		if (layers == null)
 			return;
-		ThreadUtil.bgRun(new Runnable() {
-			@Override
-			public void run() {
+//		ThreadUtil.bgRun(new Runnable() {
+//			@Override
+//			public void run() {
 				for (Layer layer: layers) {
 					ROI roi = layer.getAttachedROI();
 					if (roi == null)
@@ -83,8 +83,8 @@ public class Display  extends JPanel {
 					if (cs.contains(pattern))  
 						layer.setVisible(isVisible);
 				}
-			}
-		});
+//			}
+//		});
 	}
 
 }
