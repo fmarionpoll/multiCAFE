@@ -21,9 +21,7 @@ import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
-
-import plugins.nchenouard.kymographtracker.Util;
-import plugins.nchenouard.kymographtracker.spline.CubicSmoothingSpline;
+import plugins.fmp.multicafe.tools.Bresenham;
 
 
 
@@ -221,7 +219,8 @@ public class BuildKymographs_series extends BuildSeries  {
 		for (int i=0; i < nbcapillaries; i++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
 			cap.masksList = new ArrayList<ArrayList<int[]>>();
-			initExtractionParametersfromROI(cap.roi, cap.masksList, options.diskRadius, sizex, sizey);
+//			getPointsfromROIPolyLineUsingSplines(cap.roi, cap.masksList, options.diskRadius, sizex, sizey);
+			getPointsfromROIPolyLineUsingBresenham(cap.roi, cap.masksList, options.diskRadius, sizex, sizey);
 			if (cap.masksList.size() > maskSizeMax)
 				maskSizeMax = cap.masksList.size();
 		}
@@ -240,17 +239,44 @@ public class BuildKymographs_series extends BuildSeries  {
 		} 
 	}
 	
-	private double initExtractionParametersfromROI( ROI2DShape roi, List<ArrayList<int[]>> masks,  double diskRadius, int sizex, int sizey) {
-		CubicSmoothingSpline xSpline 	= Util.getXsplineFromROI((ROI2DShape) roi);
-		CubicSmoothingSpline ySpline 	= Util.getYsplineFromROI((ROI2DShape) roi);
-		double length 					= Util.getSplineLength((ROI2DShape) roi);
-		double len = 0;
-		while (len < length) {
+//	private double getPointsfromROIPolyLineUsingSplines( ROI2DShape roi, List<ArrayList<int[]>> masks,  double diskRadius, int sizex, int sizey) {
+//		CubicSmoothingSpline xSpline 	= Util.getXsplineFromROI((ROI2DShape) roi);
+//		CubicSmoothingSpline ySpline 	= Util.getYsplineFromROI((ROI2DShape) roi);
+//		double length 					= Util.getSplineLength((ROI2DShape) roi);
+//		double len = 0;
+//		while (len < length) {
+//			ArrayList<int[]> mask = new ArrayList<int[]>();
+//			double x = xSpline.evaluate(len);
+//			double y = ySpline.evaluate(len);
+//			double dx = xSpline.derivative(len);
+//			double dy = ySpline.derivative(len);
+//			double ux = dy/Math.sqrt(dx*dx + dy*dy);
+//			double uy = -dx/Math.sqrt(dx*dx + dy*dy);
+//			double tt = -diskRadius;
+//			while (tt <= diskRadius) {
+//				int xx = (int) Math.round(x + tt*ux);
+//				int yy = (int) Math.round(y + tt*uy);
+//				if (xx >= 0 && xx < sizex && yy >= 0 && yy < sizey)
+//					mask.add(new int[]{xx, yy});
+//				tt += 1d;
+//			}
+//			masks.add(mask);			
+//			len ++;
+//		}
+//		return length;
+//	}
+	
+	private double getPointsfromROIPolyLineUsingBresenham ( ROI2DShape roi, List<ArrayList<int[]>> masks,  double diskRadius, int sizex, int sizey) {
+		ArrayList<int[]> pixels = Bresenham.getPixelsAlongLineFromROI2D (roi);
+		double length = pixels.size();
+		double previousX = pixels.get(0)[0] - (pixels.get(1)[0] - pixels.get(0)[0]);
+		double previousY = pixels.get(0)[1] - (pixels.get(1)[1] - pixels.get(0)[1]);
+		for (int[] pixel: pixels) {
 			ArrayList<int[]> mask = new ArrayList<int[]>();
-			double x = xSpline.evaluate(len);
-			double y = ySpline.evaluate(len);
-			double dx = xSpline.derivative(len);
-			double dy = ySpline.derivative(len);
+			double x = pixel[0];
+			double y = pixel[1];
+			double dx = x - previousX;
+			double dy = y - previousY;
 			double ux = dy/Math.sqrt(dx*dx + dy*dy);
 			double uy = -dx/Math.sqrt(dx*dx + dy*dy);
 			double tt = -diskRadius;
@@ -261,8 +287,9 @@ public class BuildKymographs_series extends BuildSeries  {
 					mask.add(new int[]{xx, yy});
 				tt += 1d;
 			}
-			masks.add(mask);			
-			len ++;
+			masks.add(mask);
+			previousX = x;
+			previousY = y;
 		}
 		return length;
 	}
