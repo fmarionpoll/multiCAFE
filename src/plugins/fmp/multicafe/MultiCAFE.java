@@ -3,6 +3,7 @@ package plugins.fmp.multicafe;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -13,9 +14,9 @@ import icy.gui.viewer.Viewer;
 import icy.gui.viewer.ViewerEvent;
 import icy.gui.viewer.ViewerEvent.ViewerEventType;
 import icy.gui.viewer.ViewerListener;
-
 import icy.plugin.abstract_.PluginActionable;
 import icy.sequence.DimensionId;
+
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafe.dlg.cages.MCCages_;
 import plugins.fmp.multicafe.dlg.capillaries.MCCapillaries_;

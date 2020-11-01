@@ -16,8 +16,12 @@ public class Multiply2Arrays {
 	
 	public static int arraySize = 100;
 	
+	public void setArraySize(int arraySize) {
+		Multiply2Arrays.arraySize = arraySize;
+	}
+	
 	public static void run(CLContext context, CLQueue queue, CLKernel kernel) {
-        final int ARRAY_SIZE = arraySize;
+        int ARRAY_SIZE = arraySize;
         
         float[] a = new float[ARRAY_SIZE];
         float[] b = new float[ARRAY_SIZE];

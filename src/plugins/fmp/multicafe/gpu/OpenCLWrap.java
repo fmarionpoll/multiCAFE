@@ -15,7 +15,7 @@ import com.nativelibs4java.opencl.JavaCL;
 import com.ochafik.io.ReadText;
 
 import icy.system.IcyHandledException;
-import plugins.adufour.ezplug.EzException;
+
 
 
 // modeled after adufour opencl4icy
