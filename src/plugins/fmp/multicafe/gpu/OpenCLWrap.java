@@ -22,11 +22,11 @@ import icy.system.IcyHandledException;
 
 public class OpenCLWrap {
 	
-	private CLContext    context;
-	private CLQueue      queue;
-	private CLProgram    program;
-	private CLKernel     kernel;
-	private boolean      runnable = false;
+	private CLContext   context;
+	private CLQueue     queue;
+	private CLProgram   program;
+	private CLKernel    kernel;
+	private boolean     runnable = false;
 
 
 	public String initCL() {

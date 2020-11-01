@@ -21,7 +21,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class DetectLevels_series extends BuildSeries  {
 
-	void runMeasurement(Experiment exp) {
+	void analyzeExperiment(Experiment exp) {
 		String resultsDirectory = exp.getResultsDirectory(); 
 		exp.loadExperimentCapillariesData_ForSeries();
 		if (exp.loadKymographs()) {	
@@ -131,7 +131,7 @@ public class DetectLevels_series extends BuildSeries  {
 			}
 			}));
 		}
-		waitCompletion(processor, futures, progressBar);
+		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		seqKymos.seq.endUpdate();
 		progressBar.close();	
 	}

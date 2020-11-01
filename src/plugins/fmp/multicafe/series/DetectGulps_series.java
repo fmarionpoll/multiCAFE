@@ -24,7 +24,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class DetectGulps_series extends BuildSeries  {
 	
-	void runMeasurement(Experiment exp) {
+	void analyzeExperiment(Experiment exp) {
 		exp.loadExperimentCapillariesData_ForSeries();
 		if ( exp.loadKymographs()) {
 			buildFilteredImage(exp);
@@ -85,7 +85,7 @@ public class DetectGulps_series extends BuildSeries  {
 			}
 			}));
 		}
-		waitCompletion(processor, futures, progressBar);
+		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		seqKymos.seq.endUpdate();
 		progressBar.close();
 	}	

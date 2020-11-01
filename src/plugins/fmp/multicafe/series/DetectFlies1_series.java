@@ -30,7 +30,7 @@ public class DetectFlies1_series extends BuildSeries {
 	
 	// -----------------------------------------------------
 	
-	void runMeasurement(Experiment exp) {
+	void analyzeExperiment(Experiment exp) {
 		exp.xmlLoadExperiment();
 		exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
 		exp.xmlReadDrosoTrack(null);
@@ -105,7 +105,7 @@ public class DetectFlies1_series extends BuildSeries {
 			}));
 		}
 		
-		waitCompletion(processor, futures, progressBar);
+		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		exp.seqCamData.seq.endUpdate();
 		
 		find_flies.removeTempRectROIs(exp);

@@ -38,7 +38,7 @@ public class DetectFlies2_series extends BuildSeries {
 
 	// -----------------------------------------
 	
-	void runMeasurement(Experiment exp) {
+	void analyzeExperiment(Experiment exp) {
 		exp.xmlLoadExperiment();
 		exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
 		exp.xmlReadDrosoTrack(null);
@@ -163,7 +163,7 @@ public class DetectFlies2_series extends BuildSeries {
 				}
 				}));
 			}
-			waitCompletion(processor, futures, progressBar);
+			waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 			
 		} finally {
 			exp.seqCamData.seq.endUpdate();

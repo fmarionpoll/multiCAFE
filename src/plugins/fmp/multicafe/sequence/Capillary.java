@@ -52,7 +52,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public CapillaryGulps 				gulpsRois 		= new CapillaryGulps(); 
 	
 	public List<ArrayList<int[]>> 		masksList 		= null;
-	public List <double []> 			tabValuesList 	= null;
+	public List <double []> 			kymoImageArray 	= null;
 	public IcyBufferedImage 			bufKymoImage 	= null;
 	public boolean						valid			= true;
 

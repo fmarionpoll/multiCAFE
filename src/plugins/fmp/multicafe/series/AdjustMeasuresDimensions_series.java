@@ -7,7 +7,7 @@ import plugins.fmp.multicafe.sequence.Experiment;
 
 public class AdjustMeasuresDimensions_series  extends BuildSeries {
 
-	void runMeasurement(Experiment exp) {
+	void analyzeExperiment(Experiment exp) {
 		exp.loadExperimentCapillariesData_ForSeries();
 		if (exp.loadKymographs()) {
 			exp.adjustCapillaryMeasuresDimensions();

@@ -40,7 +40,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 			exp.resultsSubPath = options.resultsSubPath;
 			exp.getResultsDirectory();
 			
-			runMeasurement(exp);
+			analyzeExperiment(exp);
 			
 			long endTime2InNs = System.nanoTime();
 			System.out.println("process ended - duration: "+((endTime2InNs-startTimeInNs)/ 1000000000f) + " s");
@@ -67,9 +67,9 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true); 
     }
 	
-	abstract void runMeasurement(Experiment exp);
+	abstract void analyzeExperiment(Experiment exp);
 	
-    protected void waitCompletion(Processor processor, List<Future<?>> futures,  ProgressFrame progressBar) {
+    protected void waitAnalyzeExperimentCompletion(Processor processor, List<Future<?>> futures,  ProgressFrame progressBar) {
    	 try {
    		 int frame= 1;
    		 int nframes = futures.size();

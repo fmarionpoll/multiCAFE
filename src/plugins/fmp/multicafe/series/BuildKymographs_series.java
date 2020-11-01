@@ -34,7 +34,7 @@ public class BuildKymographs_series extends BuildSeries  {
 	    
 	// ------------------------------
 	
-	void runMeasurement(Experiment exp) {
+	void analyzeExperiment(Experiment exp) {
 		loadExperimentDataToBuildKymos(exp);
 		exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
 		exp.setKymoFrameStep (options.stepFrame);
@@ -128,29 +128,31 @@ public class BuildKymographs_series extends BuildSeries  {
 		for (int frame = exp.getKymoFrameStart() ; frame <= exp.getKymoFrameEnd(); frame += exp.getKymoFrameStep(), ipixelcolumn++ ) {
 			final int t_from = frame;
 			final int t_out = ipixelcolumn;
+			
 			futures.add(processor.submit(new Runnable () {
 			@Override
 			public void run() {		
 				final IcyBufferedImage  workImage = seqCamData.seq.getImage(t_from, 0);
 				if (options.doRegistration ) 
 					adjustImage(seqForRegistration, workImage);
-				int vinputSizeX = workImage.getWidth();
+				int widthWorkImage = workImage.getWidth();				
+				ArrayList<double []> workImageDouble = transferWorkImageToDoubleArrayList (workImage);
 				
-				ArrayList<double []> sourceValuesList = transferWorkImageToDoubleArrayList (workImage);
-				for (int iroi=0; iroi < nbcapillaries; iroi++) {
-					Capillary cap = exp.capillaries.capillariesArrayList.get(iroi);
-					int imagewidth = cap.bufKymoImage.getWidth();
+				for (int icap=0; icap < nbcapillaries; icap++) {
+					Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
+					int widthKymoImage = cap.bufKymoImage.getWidth();
+					
 					for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) { 
-						double [] tabValues = cap.tabValuesList.get(chan); 
-						double [] sourceValues = sourceValuesList.get(chan);
+						double [] workImageOneChannel = workImageDouble.get(chan);
+						double [] kymoOneColumnValues = cap.kymoImageArray.get(chan); 
 						int cnt = 0;
 						for (ArrayList<int[]> mask:cap.masksList) {
 							double sum = 0;
 							for (int[] m:mask)
-								sum += sourceValues[m[0] + m[1]*vinputSizeX];
+								sum += workImageOneChannel[m[0] + m[1]*widthWorkImage];
 							if (mask.size() > 1)
 								sum = sum/mask.size();
-							tabValues[cnt*imagewidth + t_out] = sum; 
+							kymoOneColumnValues[cnt*widthKymoImage + t_out] = sum; 
 							cnt ++;
 						}
 					}
@@ -158,7 +160,7 @@ public class BuildKymographs_series extends BuildSeries  {
 			}
 			}));
 		}
-		waitCompletion(processor, futures, progressBar);
+		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		seqCamData.seq.endUpdate();
 		
         progressBar.close();
@@ -167,14 +169,14 @@ public class BuildKymographs_series extends BuildSeries  {
 		for (int icap=0; icap < nbcapillaries; icap++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
 			for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) {
-				double [] tabValues = cap.tabValuesList.get(chan); 
+				double [] tabValues = cap.kymoImageArray.get(chan); 
 				Object destArray = cap.bufKymoImage.getDataXY(chan);
 				Array1DUtil.doubleArrayToSafeArray(tabValues, destArray, cap.bufKymoImage.isSignedDataType());
 				cap.bufKymoImage.setDataXY(chan, destArray);
 			}
 			seqKymos.seq.setImage(icap, 0, cap.bufKymoImage);
 			cap.masksList.clear();
-			cap.tabValuesList.clear();
+			cap.kymoImageArray.clear();
 			cap.bufKymoImage = null;
 		}
 		seqKymos.seq.setName(exp.getDecoratedImageNameFromCapillary(0));
@@ -185,12 +187,14 @@ public class BuildKymographs_series extends BuildSeries  {
 	// -------------------------------------------
 	
 	private ArrayList<double []> transferWorkImageToDoubleArrayList(IcyBufferedImage  workImage) {	
-		ArrayList<double []> sourceValuesList = new ArrayList<double []>();
+		ArrayList<double []> sourceValuesArray = new ArrayList<double []>(workImage.getSizeC());
+		int len =  workImage.getSizeX() *  workImage.getSizeY();
 		for (int chan = 0; chan < workImage.getSizeC(); chan++)  {
-			double [] sourceValues = Array1DUtil.arrayToDoubleArray(workImage.getDataXY(chan), workImage.isSignedDataType()); 
-			sourceValuesList.add(sourceValues);
+			double [] sourceValues = new double [len];
+			sourceValues = Array1DUtil.arrayToDoubleArray(workImage.getDataXY(chan), sourceValues, workImage.isSignedDataType()); 
+			sourceValuesArray.add(sourceValues);
 		}
-		return sourceValuesList;
+		return sourceValuesArray;
 	}
 	
 	private void initArraysToBuildKymographImages(Experiment exp) {
@@ -207,29 +211,31 @@ public class BuildKymographs_series extends BuildSeries  {
 			fimagewidth =  1 + (exp.getKymoFrameEnd() - exp.getKymoFrameStart() )/options.stepFrame;
 		}
 			
-		int imagewidth = (int) fimagewidth;
+		int imageWidth = (int) fimagewidth;
 		dataType = seqCamData.seq.getDataType_();
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;
 
 		int nbcapillaries = exp.capillaries.capillariesArrayList.size();
-		int masksizeMax = 0;
-		for (int t=0; t < nbcapillaries; t++) {
-			Capillary cap = exp.capillaries.capillariesArrayList.get(t);
+		int maskSizeMax = 0;
+		for (int i=0; i < nbcapillaries; i++) {
+			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
 			cap.masksList = new ArrayList<ArrayList<int[]>>();
 			initExtractionParametersfromROI(cap.roi, cap.masksList, options.diskRadius, sizex, sizey);
-			if (cap.masksList.size() > masksizeMax)
-				masksizeMax = cap.masksList.size();
+			if (cap.masksList.size() > maskSizeMax)
+				maskSizeMax = cap.masksList.size();
 		}
 		
-		for (int t=0; t < nbcapillaries; t++) {
-			Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-			cap.bufKymoImage = new IcyBufferedImage(imagewidth, masksizeMax, numC, dataType);
-			cap.tabValuesList = new ArrayList <double []>();
+		int len = imageWidth * maskSizeMax;
+		for (int i=0; i < nbcapillaries; i++) {
+			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
+			cap.bufKymoImage = new IcyBufferedImage(imageWidth, maskSizeMax, numC, dataType);
+			cap.kymoImageArray = new ArrayList <double []>(len * numC);
 			for (int chan = 0; chan < numC; chan++) {
 				Object dataArray = cap.bufKymoImage.getDataXY(chan);
-				double[] tabValues =  Array1DUtil.arrayToDoubleArray(dataArray, false);
-				cap.tabValuesList.add(tabValues);
+				double[] tabValues = new double[len];
+				tabValues = Array1DUtil.arrayToDoubleArray(dataArray, tabValues, false);
+				cap.kymoImageArray.add(tabValues);
 			}
 		} 
 	}
