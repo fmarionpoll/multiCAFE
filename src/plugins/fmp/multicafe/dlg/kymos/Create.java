@@ -21,7 +21,7 @@ import icy.gui.util.GuiUtil;
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.series.BuildKymographs_series;
+import plugins.fmp.multicafe.series.BuildKymographsInt_series;
 import plugins.fmp.multicafe.series.BuildSeries_Options;
 import plugins.fmp.multicafe.tools.EnumStatusComputation;
 
@@ -47,7 +47,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE 		parent0						= null;
 //	private BuildKymographs_series thread 				= null;
-	private BuildKymographs_series thread2 				= null;
+	private BuildKymographsInt_series thread2 				= null;
 
 	// -----------------------------------------------------
 	
@@ -132,7 +132,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
-		thread2 = new BuildKymographs_series();	
+		thread2 = new BuildKymographsInt_series();	
 		BuildSeries_Options options = thread2.options;
 		initBuildParameters(exp, options);
 		

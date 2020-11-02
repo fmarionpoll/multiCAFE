@@ -14,18 +14,17 @@ import icy.system.SystemUtil;
 import icy.system.thread.Processor;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
-import plugins.kernel.roi.roi2d.ROI2DShape;
-
 import loci.formats.FormatException;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
 import plugins.fmp.multicafe.tools.Bresenham;
+import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
 
-public class BuildKymographs_series extends BuildSeries  {
+public class BuildKymographsInt_series  extends BuildSeries  {
 	public boolean		buildBackground		= true;
 	private DataType 	dataType 			= DataType.INT;
 //	private int 		imagewidth 			= 1;
@@ -98,13 +97,13 @@ public class BuildKymographs_series extends BuildSeries  {
 			return false;
 		}
 		
-		IcyBufferedImage  workImage0 = seqCamData.seq.getImage(options.startFrame, 0); 
+		IcyBufferedImage sourceImage0 = seqCamData.seq.getImage(options.startFrame, 0); 
 		seqCamData.seq.removeAllROI();
 		
 		final Sequence seqForRegistration = new Sequence();
 		if (options.doRegistration) {
-			seqForRegistration.addImage(0, workImage0);
-			seqForRegistration.addImage(1, workImage0);
+			seqForRegistration.addImage(0, sourceImage0);
+			seqForRegistration.addImage(1, sourceImage0);
 		}
 		
 		int nbcapillaries = exp.capillaries.capillariesArrayList.size();
@@ -130,27 +129,26 @@ public class BuildKymographs_series extends BuildSeries  {
 			futures.add(processor.submit(new Runnable () {
 			@Override
 			public void run() {		
-				final IcyBufferedImage  workImage = seqCamData.seq.getImage(t_from, 0);
+				final IcyBufferedImage  sourceImage = seqCamData.seq.getImage(t_from, 0);
 				if (options.doRegistration ) 
-					adjustImage(seqForRegistration, workImage);
-				int widthWorkImage = workImage.getWidth();				
-				ArrayList<double []> workImageDouble = transferWorkImageToDoubleArrayList (workImage);
+					adjustImage(seqForRegistration, sourceImage);
+				int widthSourceImage = sourceImage.getWidth();				
+				ArrayList<int []> sourceImageInteger = transferImageToIntegerArrayList (sourceImage);
 				
 				for (int icap=0; icap < nbcapillaries; icap++) {
 					Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
 					int widthKymoImage = cap.bufKymoImage.getWidth();
 					
-					for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) { 
-						double [] workImageOneChannel = workImageDouble.get(chan);
-						double [] kymoOneColumnValues = cap.kymoImageArray.get(chan); 
+					for (int channel = 0; channel < seqCamData.seq.getSizeC(); channel++) { 
+						int [] sourceImageOneChannel = sourceImageInteger.get(channel);
+						int [] kymoOneColumnValues = cap.kymoImageIntArray.get(channel); 
 						int cnt = 0;
 						for (ArrayList<int[]> mask:cap.masksList) {
 							double sum = 0;
 							for (int[] m:mask)
-								sum += workImageOneChannel[m[0] + m[1]*widthWorkImage];
-							if (mask.size() > 1)
-								sum = sum/mask.size();
-							kymoOneColumnValues[cnt*widthKymoImage + t_out] = sum; 
+								sum += sourceImageOneChannel[m[0] + m[1]*widthSourceImage];
+
+							kymoOneColumnValues[cnt*widthKymoImage + t_out] = (int) (sum/mask.size()); 
 							cnt ++;
 						}
 					}
@@ -162,34 +160,29 @@ public class BuildKymographs_series extends BuildSeries  {
 		seqCamData.seq.endUpdate();
 		
         progressBar.close();
-		seqKymos.seq.removeAllImages();
 
 		for (int icap=0; icap < nbcapillaries; icap++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
 			for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) {
-				double [] tabValues = cap.kymoImageArray.get(chan); 
+				int [] tabValues = cap.kymoImageIntArray.get(chan); 
 				Object destArray = cap.bufKymoImage.getDataXY(chan);
-				Array1DUtil.doubleArrayToSafeArray(tabValues, destArray, cap.bufKymoImage.isSignedDataType());
+				Array1DUtil.intArrayToSafeArray(tabValues, 0, destArray, 0, -1, cap.bufKymoImage.isSignedDataType(), cap.bufKymoImage.isSignedDataType());
 				cap.bufKymoImage.setDataXY(chan, destArray);
 			}
 			seqKymos.seq.setImage(icap, 0, cap.bufKymoImage);
-			cap.masksList.clear();
-			cap.kymoImageArray.clear();
-			cap.bufKymoImage = null;
 		}
-		seqKymos.seq.setName(exp.getDecoratedImageNameFromCapillary(0));
 
 		return true;
 	}
 	
 	// -------------------------------------------
 	
-	private ArrayList<double []> transferWorkImageToDoubleArrayList(IcyBufferedImage  workImage) {	
-		ArrayList<double []> sourceValuesArray = new ArrayList<double []>(workImage.getSizeC());
+	private ArrayList<int []> transferImageToIntegerArrayList(IcyBufferedImage  workImage) {	
+		ArrayList<int []> sourceValuesArray = new ArrayList<int[]>(workImage.getSizeC());
 		int len =  workImage.getSizeX() *  workImage.getSizeY();
 		for (int chan = 0; chan < workImage.getSizeC(); chan++)  {
-			double [] sourceValues = new double [len];
-			sourceValues = Array1DUtil.arrayToDoubleArray(workImage.getDataXY(chan), sourceValues, workImage.isSignedDataType()); 
+			int [] sourceValues = new int[len];
+			sourceValues = Array1DUtil.arrayToIntArray(workImage.getDataXY(chan), sourceValues, workImage.isSignedDataType()); 
 			sourceValuesArray.add(sourceValues);
 		}
 		return sourceValuesArray;
@@ -219,7 +212,6 @@ public class BuildKymographs_series extends BuildSeries  {
 		for (int i=0; i < nbcapillaries; i++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
 			cap.masksList = new ArrayList<ArrayList<int[]>>();
-//			getPointsfromROIPolyLineUsingSplines(cap.roi, cap.masksList, options.diskRadius, sizex, sizey);
 			getPointsfromROIPolyLineUsingBresenham(cap.roi, cap.masksList, options.diskRadius, sizex, sizey);
 			if (cap.masksList.size() > maskSizeMax)
 				maskSizeMax = cap.masksList.size();
@@ -229,46 +221,18 @@ public class BuildKymographs_series extends BuildSeries  {
 		for (int i=0; i < nbcapillaries; i++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
 			cap.bufKymoImage = new IcyBufferedImage(imageWidth, maskSizeMax, numC, dataType);
-			cap.kymoImageArray = new ArrayList <double []>(len * numC);
+			cap.kymoImageIntArray = new ArrayList <int []>(len * numC);
 			for (int chan = 0; chan < numC; chan++) {
 				Object dataArray = cap.bufKymoImage.getDataXY(chan);
-				double[] tabValues = new double[len];
-				tabValues = Array1DUtil.arrayToDoubleArray(dataArray, tabValues, false);
-				cap.kymoImageArray.add(tabValues);
+				int[] tabValues = new int[len];
+				tabValues = Array1DUtil.arrayToIntArray(dataArray, tabValues, false);
+				cap.kymoImageIntArray.add(tabValues);
 			}
 		} 
 	}
 	
-//	private double getPointsfromROIPolyLineUsingSplines( ROI2DShape roi, List<ArrayList<int[]>> masks,  double diskRadius, int sizex, int sizey) {
-//		CubicSmoothingSpline xSpline 	= Util.getXsplineFromROI((ROI2DShape) roi);
-//		CubicSmoothingSpline ySpline 	= Util.getYsplineFromROI((ROI2DShape) roi);
-//		double length 					= Util.getSplineLength((ROI2DShape) roi);
-//		double len = 0;
-//		while (len < length) {
-//			ArrayList<int[]> mask = new ArrayList<int[]>();
-//			double x = xSpline.evaluate(len);
-//			double y = ySpline.evaluate(len);
-//			double dx = xSpline.derivative(len);
-//			double dy = ySpline.derivative(len);
-//			double ux = dy/Math.sqrt(dx*dx + dy*dy);
-//			double uy = -dx/Math.sqrt(dx*dx + dy*dy);
-//			double tt = -diskRadius;
-//			while (tt <= diskRadius) {
-//				int xx = (int) Math.round(x + tt*ux);
-//				int yy = (int) Math.round(y + tt*uy);
-//				if (xx >= 0 && xx < sizex && yy >= 0 && yy < sizey)
-//					mask.add(new int[]{xx, yy});
-//				tt += 1d;
-//			}
-//			masks.add(mask);			
-//			len ++;
-//		}
-//		return length;
-//	}
-	
-	private double getPointsfromROIPolyLineUsingBresenham ( ROI2DShape roi, List<ArrayList<int[]>> masks,  double diskRadius, int sizex, int sizey) {
+	private void getPointsfromROIPolyLineUsingBresenham ( ROI2DShape roi, List<ArrayList<int[]>> masks, double diskRadius, int sizex, int sizey) {
 		ArrayList<int[]> pixels = Bresenham.getPixelsAlongLineFromROI2D (roi);
-		double length = pixels.size();
 		double previousX = pixels.get(0)[0] - (pixels.get(1)[0] - pixels.get(0)[0]);
 		double previousY = pixels.get(0)[1] - (pixels.get(1)[1] - pixels.get(0)[1]);
 		for (int[] pixel: pixels) {
@@ -291,9 +255,8 @@ public class BuildKymographs_series extends BuildSeries  {
 			previousX = x;
 			previousY = y;
 		}
-		return length;
 	}
-		
+
 	private void adjustImage(Sequence seqForRegistration, IcyBufferedImage  workImage) {
 		seqForRegistration.setImage(1, 0, workImage);
 		int referenceChannel = 1;

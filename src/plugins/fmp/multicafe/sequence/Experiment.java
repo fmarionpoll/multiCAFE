@@ -190,8 +190,6 @@ public class Experiment {
 		}
 	}
 	
-	
-	
 	public String getResultsDirectory() {
 		Path dir = Paths.get(experimentFileName);
 		if (resultsSubPath == null)
