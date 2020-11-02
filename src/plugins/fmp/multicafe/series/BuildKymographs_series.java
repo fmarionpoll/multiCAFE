@@ -24,7 +24,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
 
-public class BuildKymographsInt_series  extends BuildSeries  {
+public class BuildKymographs_series  extends BuildSeries  {
 	public boolean		buildBackground		= true;
 	private DataType 	dataType 			= DataType.INT;
 //	private int 		imagewidth 			= 1;
@@ -141,14 +141,13 @@ public class BuildKymographsInt_series  extends BuildSeries  {
 					
 					for (int channel = 0; channel < seqCamData.seq.getSizeC(); channel++) { 
 						int [] sourceImageOneChannel = sourceImageInteger.get(channel);
-						int [] kymoOneColumnValues = cap.kymoImageIntArray.get(channel); 
+						int [] kymoImageOneChannel = cap.kymoImageInteger.get(channel); 
 						int cnt = 0;
-						for (ArrayList<int[]> mask:cap.masksList) {
-							double sum = 0;
-							for (int[] m:mask)
+						for (ArrayList<int[]> mask : cap.masksList) {
+							int sum = 0;
+							for (int[] m: mask)
 								sum += sourceImageOneChannel[m[0] + m[1]*widthSourceImage];
-
-							kymoOneColumnValues[cnt*widthKymoImage + t_out] = (int) (sum/mask.size()); 
+							kymoImageOneChannel[cnt*widthKymoImage + t_out] = (int) (sum/mask.size()); 
 							cnt ++;
 						}
 					}
@@ -164,7 +163,7 @@ public class BuildKymographsInt_series  extends BuildSeries  {
 		for (int icap=0; icap < nbcapillaries; icap++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
 			for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) {
-				int [] tabValues = cap.kymoImageIntArray.get(chan); 
+				int [] tabValues = cap.kymoImageInteger.get(chan); 
 				Object destArray = cap.bufKymoImage.getDataXY(chan);
 				Array1DUtil.intArrayToSafeArray(tabValues, 0, destArray, 0, -1, cap.bufKymoImage.isSignedDataType(), cap.bufKymoImage.isSignedDataType());
 				cap.bufKymoImage.setDataXY(chan, destArray);
@@ -221,12 +220,12 @@ public class BuildKymographsInt_series  extends BuildSeries  {
 		for (int i=0; i < nbcapillaries; i++) {
 			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
 			cap.bufKymoImage = new IcyBufferedImage(imageWidth, maskSizeMax, numC, dataType);
-			cap.kymoImageIntArray = new ArrayList <int []>(len * numC);
+			cap.kymoImageInteger = new ArrayList <int []>(len * numC);
 			for (int chan = 0; chan < numC; chan++) {
 				Object dataArray = cap.bufKymoImage.getDataXY(chan);
 				int[] tabValues = new int[len];
 				tabValues = Array1DUtil.arrayToIntArray(dataArray, tabValues, false);
-				cap.kymoImageIntArray.add(tabValues);
+				cap.kymoImageInteger.add(tabValues);
 			}
 		} 
 	}
