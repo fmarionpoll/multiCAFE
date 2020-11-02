@@ -129,12 +129,12 @@ public class DetectFlies2_series extends BuildSeries {
 		}
 		detect.initTempRectROIs(exp, seqNegative);
 
-		try {
+		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+	    processor.setThreadName("detectFlies1");
+	    processor.setPriority(Processor.NORM_PRIORITY);
+        try {
 			int nframes = (exp.getKymoFrameEnd() - exp.getKymoFrameStart()) / exp.getKymoFrameStep() +1;
-		    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
-		    processor.setThreadName("detectFlies1");
-		    processor.setPriority(Processor.NORM_PRIORITY);
-	        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
+		   ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 			futures.clear();
 			
 			viewerCamData = exp.seqCamData.seq.getFirstViewer();
@@ -150,7 +150,8 @@ public class DetectFlies2_series extends BuildSeries {
 				futures.add(processor.submit(new Runnable () {
 				@Override
 				public void run() {	
-					IcyBufferedImage workImage = exp.seqCamData.getImage(t_from, 0);
+					
+					IcyBufferedImage workImage = exp.seqCamData.getImageDirectlyFromDisk(t_from);
 					if (workImage == null)
 						return;
 					IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(workImage);
@@ -172,6 +173,7 @@ public class DetectFlies2_series extends BuildSeries {
 			detect.copyDetectedROIsToCages(exp);
 		}
 		progressBar.close();
+		processor.shutdown();
 	}
 
 	private void patchRectToReferenceImage(SequenceCamData seqCamData, IcyBufferedImage currentImage, Rectangle rect) {

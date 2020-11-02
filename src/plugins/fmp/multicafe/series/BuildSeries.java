@@ -91,7 +91,6 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
         catch (Exception e) {
        	 throw new RuntimeException(e);
         }
-   	 processor.shutdown();
    }
 	
 }

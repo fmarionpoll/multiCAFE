@@ -1,14 +1,11 @@
 package plugins.fmp.multicafe.series;
 
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
-
-import javax.imageio.ImageIO;
 
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
@@ -128,13 +125,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 			futures.add(processor.submit(new Runnable () {
 			@Override
 			public void run() {	
-				String name = seqCamData.getFileName(t_from);
-				BufferedImage img = null;
-				try {
-				    img = ImageIO.read(new File(name));
-				} catch (IOException e) {
-				}
-				final IcyBufferedImage  sourceImage = IcyBufferedImage.createFrom(img);
+				final IcyBufferedImage  sourceImage = seqCamData.getImageDirectlyFromDisk(t_from);
 
 				if (options.doRegistration ) 
 					adjustImage(seqForRegistration, sourceImage);

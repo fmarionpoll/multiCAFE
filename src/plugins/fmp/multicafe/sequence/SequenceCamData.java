@@ -1,6 +1,7 @@
  package plugins.fmp.multicafe.sequence;
 
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
@@ -158,20 +161,20 @@ public class SequenceCamData {
 	}
 	
 	public IcyBufferedImage getImageAndSubtractReference(int t, TransformOp transformop) {
-		IcyBufferedImage ibufImage = getImage(t, 0);
+		IcyBufferedImage ibufImage = getImageDirectlyFromDisk(t);
 		switch (transformop) {
 			case REF_PREVIOUS: {	// subtract image n-analysisStep 
 				int t0 = t-seqAnalysisStep;
 				if (t0 <0)
 					t0 = 0;
-				IcyBufferedImage ibufImage0 = getImage(t0, 0);
+				IcyBufferedImage ibufImage0 = getImageDirectlyFromDisk(t0);
 				ibufImage = subtractImages (ibufImage, ibufImage0);
 				}	
 				break;
 			case REF_T0: 			// subtract reference image
 			case REF:
 				if (refImage == null)
-					refImage = getImage((int) seqAnalysisStart, 0);
+					refImage = getImageDirectlyFromDisk((int) seqAnalysisStart);
 				ibufImage = subtractImages (ibufImage, refImage);
 				break;
 
@@ -201,6 +204,16 @@ public class SequenceCamData {
 //		else if (status == EnumStatus.AVIFILE)
 //			csName = csFileName;
 		return csName;
+	}
+	
+	public IcyBufferedImage getImageDirectlyFromDisk(int t) {
+		String name = listFiles.get(t);
+		BufferedImage img = null;
+		try {
+	    	img = ImageIO.read(new File(name));
+		} catch (IOException e) {
+		}
+		return IcyBufferedImage.createFrom(img);
 	}
 	
 	public String getFileNameNoPath(int t) {

@@ -133,7 +133,8 @@ public class DetectLevels_series extends BuildSeries  {
 		}
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		seqKymos.seq.endUpdate();
-		progressBar.close();	
+		progressBar.close();
+		processor.shutdown();
 	}
 	
 	private int detectTop(int ix, int oldiytop, int jitter, double[] tabValues, int xwidth, int yheight, BuildSeries_Options options) {

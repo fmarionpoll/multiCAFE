@@ -112,6 +112,7 @@ public class DetectFlies1_series extends BuildSeries {
 		find_flies.copyDetectedROIsToSequence(exp);
 		find_flies.copyDetectedROIsToCages(exp);
 		progressBar.close();
+		processor.shutdown();
 	}
 	
 	
