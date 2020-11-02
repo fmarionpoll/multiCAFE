@@ -46,8 +46,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 	
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE 		parent0						= null;
-//	private BuildKymographs_series thread 				= null;
-	private BuildKymographs_series thread2 				= null;
+	private BuildKymographs_series threadBuildKymo 				= null;
 
 	// -----------------------------------------------------
 	
@@ -132,20 +131,19 @@ public class Create extends JPanel implements PropertyChangeListener {
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
-		thread2 = new BuildKymographs_series();	
-		BuildSeries_Options options = thread2.options;
+		threadBuildKymo = new BuildKymographs_series();	
+		BuildSeries_Options options = threadBuildKymo.options;
 		initBuildParameters(exp, options);
 		
-		thread2.buildBackground	= false;
-		thread2.addPropertyChangeListener(this);
-		thread2.execute();
+		threadBuildKymo.addPropertyChangeListener(this);
+		threadBuildKymo.execute();
 
 		startComputationButton.setText("STOP");
 	}
 	
 	private void stopComputation() {	
-		if (thread2 != null && !thread2.stopFlag) {
-			thread2.stopFlag = true;
+		if (threadBuildKymo != null && !threadBuildKymo.stopFlag) {
+			threadBuildKymo.stopFlag = true;
 		}
 	}
 

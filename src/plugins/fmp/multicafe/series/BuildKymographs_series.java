@@ -1,10 +1,14 @@
 package plugins.fmp.multicafe.series;
 
+
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
+
+import javax.imageio.ImageIO;
 
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
@@ -25,12 +29,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
 public class BuildKymographs_series  extends BuildSeries  {
-	public boolean		buildBackground		= true;
-	private DataType 	dataType 			= DataType.INT;
-//	private int 		imagewidth 			= 1;
-	    
-	// ------------------------------
-	
+
 	void analyzeExperiment(Experiment exp) {
 		loadExperimentDataToBuildKymos(exp);
 		exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
@@ -128,8 +127,15 @@ public class BuildKymographs_series  extends BuildSeries  {
 			
 			futures.add(processor.submit(new Runnable () {
 			@Override
-			public void run() {		
-				final IcyBufferedImage  sourceImage = seqCamData.seq.getImage(t_from, 0);
+			public void run() {	
+				String name = seqCamData.getFileName(t_from);
+				BufferedImage img = null;
+				try {
+				    img = ImageIO.read(new File(name));
+				} catch (IOException e) {
+				}
+				final IcyBufferedImage  sourceImage = IcyBufferedImage.createFrom(img);
+
 				if (options.doRegistration ) 
 					adjustImage(seqForRegistration, sourceImage);
 				int widthSourceImage = sourceImage.getWidth();				
@@ -202,7 +208,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 		}
 			
 		int imageWidth = (int) fimagewidth;
-		dataType = seqCamData.seq.getDataType_();
+		DataType dataType = seqCamData.seq.getDataType_();
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;
 
