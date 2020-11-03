@@ -149,40 +149,32 @@ public class SequenceCamData {
 		return directory;
 	}
 
-	public IcyBufferedImage getImageTransf(int t, int z, int c, TransformOp transformop)  {
-		IcyBufferedImage image =  getImageAndSubtractReference(t, transformop);
-		if (image != null && c != -1)
-			image = IcyBufferedImageUtil.extractChannel(image, c);
-		return image;
-	}
-	
 	public IcyBufferedImage getImage(int t, int z) {
 		return seq.getImage(t, z);
 	}
 	
-	public IcyBufferedImage getImageAndSubtractReference(int t, TransformOp transformop) {
-		IcyBufferedImage ibufImage = getImageDirectlyFromDisk(t);
+	public IcyBufferedImage subtractReference(IcyBufferedImage image, int t, TransformOp transformop) {
 		switch (transformop) {
-			case REF_PREVIOUS: {	// subtract image n-analysisStep 
+			case REF_PREVIOUS: {
 				int t0 = t-seqAnalysisStep;
 				if (t0 <0)
 					t0 = 0;
-				IcyBufferedImage ibufImage0 = getImageDirectlyFromDisk(t0);
-				ibufImage = subtractImages (ibufImage, ibufImage0);
+				IcyBufferedImage ibufImage0 = getImage(t0, 0);
+				image = subtractImages (image, ibufImage0);
 				}	
 				break;
-			case REF_T0: 			// subtract reference image
+			case REF_T0:
 			case REF:
 				if (refImage == null)
-					refImage = getImageDirectlyFromDisk((int) seqAnalysisStart);
-				ibufImage = subtractImages (ibufImage, refImage);
+					refImage = getImage((int) seqAnalysisStart, 0);
+				image = subtractImages (image, refImage);
 				break;
 
 			case NONE:
 			default:
 				break;
 		}
-		return ibufImage;
+		return image;
 	}
 		
 	public List <String> getListofFiles() {
@@ -206,14 +198,15 @@ public class SequenceCamData {
 		return csName;
 	}
 	
-	public IcyBufferedImage getImageDirectlyFromDisk(int t) {
+	public IcyBufferedImage getImageDirect(int t) {
+		currentFrame = t;
 		String name = listFiles.get(t);
-		BufferedImage img = null;
+		BufferedImage image = null;
 		try {
-	    	img = ImageIO.read(new File(name));
+	    	image = ImageIO.read(new File(name));
 		} catch (IOException e) {
 		}
-		return IcyBufferedImage.createFrom(img);
+		return IcyBufferedImage.createFrom(image);
 	}
 	
 	public String getFileNameNoPath(int t) {
@@ -271,6 +264,7 @@ public class SequenceCamData {
 		return list;
 	}
 
+	// TODO: use GPU
 	public IcyBufferedImage subtractImages (IcyBufferedImage image1, IcyBufferedImage image2) {	
 		IcyBufferedImage result = new IcyBufferedImage(image1.getSizeX(), image1.getSizeY(), image1.getSizeC(), image1.getDataType_());
 		for (int c = 0; c < image1.getSizeC(); c++) {

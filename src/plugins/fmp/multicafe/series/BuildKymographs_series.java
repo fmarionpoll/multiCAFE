@@ -125,7 +125,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 			futures.add(processor.submit(new Runnable () {
 			@Override
 			public void run() {	
-				final IcyBufferedImage  sourceImage = seqCamData.getImageDirectlyFromDisk(t_from);
+				final IcyBufferedImage  sourceImage = seqCamData.getImageDirect(t_from);
 
 				if (options.doRegistration ) 
 					adjustImage(seqForRegistration, sourceImage);

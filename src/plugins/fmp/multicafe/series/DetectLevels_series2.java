@@ -17,7 +17,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
-public class DetectLevels_series extends BuildSeries  {
+public class DetectLevels_series2 extends BuildSeries  {
 	ImageTransformTools tImg = new ImageTransformTools();
 	
 	void analyzeExperiment(Experiment exp) {

@@ -74,7 +74,8 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
    		 int frame= 1;
    		 int nframes = futures.size();
    		 for (Future<?> future : futures) {
-   			 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
+   			 if (progressBar != null)
+   				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
    			 if (!future.isDone()) {
    				 if (stopFlag) {
    					 processor.shutdownNow();

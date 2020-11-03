@@ -284,6 +284,7 @@ public class SequenceKymos extends SequenceCamData  {
 				continue;
 			
 			progress.setMessage("adjust image "+files.get(i));
+			System.out.print("adjust image "+files.get(i));
 			IcyBufferedImage ibufImage1 = null;
 			try {
 				ibufImage1 = Loader.loadImage(files.get(i).getAbsolutePath());

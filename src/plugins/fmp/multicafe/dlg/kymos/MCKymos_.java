@@ -20,17 +20,15 @@ import plugins.fmp.multicafe.sequence.Experiment;
 
 
 public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeListener {
-
-	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1122367183829360097L;
 
-	JTabbedPane 			tabsPane 		= new JTabbedPane();
+	JTabbedPane 	tabsPane 		= new JTabbedPane();
 	public Create 	tabCreate 		= new Create();
 	public Display	tabDisplay 		= new Display();
-	public LoadSave 			tabFile 		= new LoadSave();
+	public LoadSave tabFile 		= new LoadSave();
 	
 	private MultiCAFE parent0 = null;
 
@@ -46,7 +44,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		tabCreate.init(capLayout, parent0);
 		tabCreate.addPropertyChangeListener(this);
 		tabsPane.addTab("Build kymos", null, tabCreate, "Build kymographs from ROI lines placed over capillaries");
-		
+	
 		tabDisplay.init(capLayout, parent0);
 		tabDisplay.addPropertyChangeListener(this);
 		tabsPane.addTab("Display", null, tabDisplay, "Display options of data & kymographs");

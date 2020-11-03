@@ -24,7 +24,9 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	private static final long serialVersionUID = -7339633966002954720L;
 	private JTabbedPane tabsPane 		= new JTabbedPane();
 	public LoadSave 	tabFileLevels	= new LoadSave();
-	DetectLimits 		tabDetectLimits = new DetectLimits();
+	DetectLevels 		tabDetectLevels = new DetectLevels();
+	DetectLevels2 		tabDetectLevels2 = new DetectLevels2();
+	
 	DetectGulps 		tabDetectGulps 	= new DetectGulps();
 	Edit				tabEdit			= new Edit();
 	Adjust				tabAdjust		= new Adjust();
@@ -41,9 +43,13 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 
 		GridLayout capLayout = new GridLayout(3, 1);
 		
-		tabDetectLimits.init(capLayout, parent0);
-		tabDetectLimits.addPropertyChangeListener(this);
-		tabsPane.addTab("Limits", null, tabDetectLimits, "Find limits of the columns of liquid");
+		tabDetectLevels.init(capLayout, parent0);
+		tabDetectLevels.addPropertyChangeListener(this);
+		tabsPane.addTab("Levels", null, tabDetectLevels, "Find limits of the columns of liquid");
+		
+		tabDetectLevels2.init(capLayout, parent0);
+		tabDetectLevels2.addPropertyChangeListener(this);
+		tabsPane.addTab("Levels2", null, tabDetectLevels2, "Find limits of the columns of liquid");
 		
 		tabDetectGulps.init(capLayout, parent0);	
 		tabsPane.addTab("Gulps", null, tabDetectGulps, "Detect gulps");
@@ -67,7 +73,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Load/Save", null, tabFileLevels, "Load/Save kymographs");
 						
 		capPanel.add(GuiUtil.besidesPanel(tabsPane));
-		tabDetectLimits.transformForLevelsComboBox.setSelectedItem(TransformOp.G2MINUS_RB);
+		tabDetectLevels.transformForLevelsComboBox.setSelectedItem(TransformOp.G2MINUS_RB);
 		tabsPane.setSelectedIndex(0);
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() {
@@ -94,8 +100,8 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	public void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
-		tabDetectLimits.startSpinner.setValue((int)seqCamData.seqAnalysisStart);
-		tabDetectLimits.endSpinner.setValue((int)seqCamData.seqAnalysisEnd);
+		tabDetectLevels.startSpinner.setValue((int)seqCamData.seqAnalysisStart);
+		tabDetectLevels.endSpinner.setValue((int)seqCamData.seqAnalysisEnd);
 		tabDetectGulps.startSpinner.setValue((int)seqCamData.seqAnalysisStart);
 		tabDetectGulps.endSpinner.setValue((int)seqCamData.seqAnalysisEnd);
 	}

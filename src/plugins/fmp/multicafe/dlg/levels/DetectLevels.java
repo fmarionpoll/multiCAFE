@@ -31,7 +31,7 @@ import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 
 
-public class DetectLimits extends JPanel implements PropertyChangeListener {
+public class DetectLevels extends JPanel implements PropertyChangeListener {
 	/**
 	 * 
 	 */

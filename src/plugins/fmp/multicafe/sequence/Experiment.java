@@ -33,6 +33,8 @@ import plugins.fmp.multicafe.tools.ImageTransformTools;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
+
+
 public class Experiment {
 	
 	private String			experimentFileName			= null;
@@ -588,12 +590,12 @@ public class Experiment {
 	}
 		
 	public void kymosBuildFiltered(int zChannelSource, int zChannelDestination, TransformOp transformop, int spanDiff) {
+		int nimages = seqKymos.seq.getSizeT();
+		seqKymos.seq.beginUpdate();
+		
 		if (tImg == null) 
 			tImg = new ImageTransformTools();
 		tImg.setSpanDiff(spanDiff);
-		
-		int nimages = seqKymos.seq.getSizeT();
-		seqKymos.seq.beginUpdate();
 		tImg.setSequence(seqKymos);
 		
 		if (capillaries.capillariesArrayList.size() != nimages) {

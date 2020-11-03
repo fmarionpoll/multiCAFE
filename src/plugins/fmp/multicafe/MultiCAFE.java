@@ -58,7 +58,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		paneKymos.init(mainPanel, "KYMOGRAPHS", this);
 		paneKymos.addPropertyChangeListener(this);
 		
-		paneLevels.init(mainPanel, "MEASURE LEVEL & GULPS", this);
+		paneLevels.init(mainPanel, "MEASURE LEVELS & GULPS", this);
 		paneLevels.addPropertyChangeListener(this);
 
 //		paneSpots.init(mainPanel, "MEASURE SPOTS", this);

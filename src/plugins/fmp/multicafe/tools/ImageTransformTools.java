@@ -141,9 +141,11 @@ public class ImageTransformTools {
 			break;
 		case REF_PREVIOUS: 
 			int t = vinputSequence.currentFrame;
-			if (t>0){
-				referenceImage = vinputSequence.getImage(t-1, 0); 
-				transformedImage= functionSubtractRef(inputImage);} 
+			if (t > 0) {
+//				referenceImage = vinputSequence.getImage(t-1, 0); 
+				referenceImage = vinputSequence.getImageDirect(t-1);
+				transformedImage= functionSubtractRef(inputImage);
+				} 
 			break;
 			
 		case XDIFFN: 	
@@ -171,7 +173,8 @@ public class ImageTransformTools {
 	}
 	
 	public IcyBufferedImage transformImageFromVirtualSequence (int t, TransformOp transformop) {
-		return transformImage(vinputSequence.getImage(t, 0), transformop);
+//		return transformImage(vinputSequence.getImage(t, 0), transformop);
+		return transformImage(vinputSequence.getImageDirect(t), transformop);
 	}
 	
 	private IcyBufferedImage functionSubtractCol(IcyBufferedImage sourceImage, int column) {
@@ -348,11 +351,6 @@ private IcyBufferedImage functionRGB_sumDiff (IcyBufferedImage sourceImage) {
 			int [] outValues = Array1DUtil.arrayToIntArray(img2.getDataXY(c), img2.isSignedDataType());			
 
 			for (int ix = spanDiff; ix < imageSizeX - spanDiff; ix++) {	
-//				// erase border values
-//				for (int iy = 0; iy < spanDiff; iy++) {
-//					outValues[ix + iy* imageSizeX] = 0;
-//				}
-				// compute values
 				for (int iy =spanDiff; iy < imageSizeY -spanDiff; iy++) {
 
 					int kx = ix +  iy* imageSizeX;
@@ -364,10 +362,6 @@ private IcyBufferedImage functionRGB_sumDiff (IcyBufferedImage sourceImage) {
 					}
 					outValues [kx] = (int) Math.abs(outVal);
 				}
-//				// erase border values
-//				for (int iy = imageSizeY-spanDiff; iy < imageSizeY; iy++) {
-//					outValues[ix + iy* imageSizeX] = 0;
-//				}
 			}
 			Array1DUtil.intArrayToSafeArray(outValues, img2.getDataXY(c), true, img2.isSignedDataType());
 			img2.setDataXY(c, img2.getDataXY(c));

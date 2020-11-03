@@ -94,7 +94,8 @@ public class DetectFlies1_series extends BuildSeries {
 			futures.add(processor.submit(new Runnable () {
 			@Override
 			public void run() {	
-				IcyBufferedImage workImage = exp.seqCamData.getImageAndSubtractReference(t_from, options.transformop); 
+				// TODO: getImageDirect (getImageDirectAndSubtractReference) does not communicate with viewer - remove visualization?
+				IcyBufferedImage workImage = exp.seqCamData.subtractReference(exp.seqCamData.getImage(t_from, 0), t_from, options.transformop); 
 				if (workImage == null)
 					return;
 				exp.seqCamData.currentFrame = t_from;
