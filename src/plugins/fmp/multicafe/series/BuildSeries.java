@@ -23,7 +23,6 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 	@Override
 	protected Integer doInBackground() throws Exception {
 		System.out.println("loop over experiments");
-//		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(false);
 		
         threadRunning = true;
 		int nbiterations = 0;
@@ -47,7 +46,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 		}		
 		progress.close();
 		threadRunning = false;
-//		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
+
 		return nbiterations;
 	}
 

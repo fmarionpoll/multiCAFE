@@ -183,7 +183,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 	
 	private BuildSeries_Options initBuildParameters(Experiment exp) {	
 		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
-		BuildSeries_Options options= new BuildSeries_Options();
+		BuildSeries_Options options = new BuildSeries_Options();
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);
 		options.expList.index0 = parent0.expList.currentExperimentIndex;
@@ -221,7 +221,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 			return;
 		parent0.expList.currentExperimentIndex = current;
 		exp.saveExperimentMeasures(exp.getResultsDirectory());
-		parent0.paneSequence.tabClose.closeExp(exp);
+//		parent0.paneSequence.tabClose.closeExp(exp);
+		exp.closeSequences();
 		thread = new DetectLevels_series();
 		thread.options = initBuildParameters(exp);
 		

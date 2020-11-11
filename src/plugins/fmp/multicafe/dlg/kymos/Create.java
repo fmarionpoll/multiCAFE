@@ -38,7 +38,6 @@ public class Create extends JPanel implements PropertyChangeListener {
 
 	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
 	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
-//	JCheckBox 				newMethodCheckBox 			= new JCheckBox("new method", false);
 	
 	JCheckBox 				doCreateCheckBox 			= new JCheckBox("force creation of results_bin", false);
 	JCheckBox				allSeriesCheckBox 				= new JCheckBox("ALL series (current to last)", false);
@@ -66,7 +65,6 @@ public class Create extends JPanel implements PropertyChangeListener {
 		panel2.add(new JLabel("area around ROIs", SwingConstants.RIGHT));
 		panel2.add(diskRadiusSpinner);  
 		panel2.add(doRegistrationCheckBox);
-//		panel2.add(newMethodCheckBox);
 		add(GuiUtil.besidesPanel(panel2));
 		
 		JPanel panel3 = new JPanel(layout1);
@@ -127,7 +125,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		if (exp == null) 
 			return;
 		parent0.expList.currentExperimentIndex = current;
-		parent0.paneSequence.tabClose.closeExp(exp);
+//		parent0.paneSequence.tabClose.closeExp(exp);
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
@@ -153,7 +151,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
 				exp.setKymoFrameStep((int) stepFrameJSpinner.getValue());
-				parent0.paneSequence.openExperiment(exp);
+//				parent0.paneSequence.openExperiment(exp);
 			}
 			startComputationButton.setText(detectString);
 		 }
