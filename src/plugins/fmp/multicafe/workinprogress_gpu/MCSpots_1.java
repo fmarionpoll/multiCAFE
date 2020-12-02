@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe;
+package plugins.fmp.multicafe.workinprogress_gpu;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -26,6 +26,7 @@ import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
+import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;

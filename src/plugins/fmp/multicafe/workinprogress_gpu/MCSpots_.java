@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe;
+package plugins.fmp.multicafe.workinprogress_gpu;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -12,6 +12,7 @@ import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafe.MultiCAFE;
 
 
 

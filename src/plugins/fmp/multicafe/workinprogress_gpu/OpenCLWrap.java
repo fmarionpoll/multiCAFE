@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.gpu;
+package plugins.fmp.multicafe.workinprogress_gpu;
 
 import java.io.IOException;
 

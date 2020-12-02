@@ -26,6 +26,7 @@ import plugins.fmp.multicafe.dlg.levels.MCLevels_;
 import plugins.fmp.multicafe.dlg.sequence.MCSequence_;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
+import plugins.fmp.multicafe.workinprogress_gpu.MCSpots_;
 
 
 
