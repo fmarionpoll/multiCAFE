@@ -10,6 +10,12 @@
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/adufour/ezplug/EzPlug.jar"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/importer/xuggler/VideoImporter.jar"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/adufour/poi/POI.jar"/>
-	<classpathentry kind="lib" path="C:/Program Files/Java/opencv-4.5.0/build/java/opencv-450.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/library/FlanaganPlugin.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/library/JavaCLPlugin.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/library/JFreeChartPlugin.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/library/JFreeCommonPlugin.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/library/ParallelColtPlugin.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/library/VecmathPlugin.jar"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/library/XugglerPlugin.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
