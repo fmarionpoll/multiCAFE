@@ -167,7 +167,8 @@ public class XLSResults {
 	void getRatioLR(XLSResults rowL, XLSResults rowR) {
 		int lenL = rowL.values_out.length;
 		int lenR = rowR.values_out.length;
-		int len = Math.max(lenL,  lenR);
+//		int len = Math.max(lenL,  lenR);
+		int len = Math.min(lenL,  lenR);
 		for (int index = 0; index < len; index++) {
 			double dataL = getData(rowL, index);
 			double dataR = getData(rowR, index);
