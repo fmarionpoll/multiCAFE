@@ -504,7 +504,11 @@ public class XLSExport {
 	
 	private void trimDeadsFromArrayList(Experiment exp) {
 		for (Cage cage: exp.cages.cageList) {
-			String cagenumberString = cage.roi.getName().substring(4);
+			String roiname = cage.roi.getName();
+			if (roiname.length() < 4 || !roiname.substring( 0 , 4 ).contains("cage"))
+				continue;
+			
+			String cagenumberString = roiname.substring(4);		
 			int cagenumber = Integer.valueOf(cagenumberString);
 			int ilastalive = 0;
 			if (cage.cageNFlies > 0) {

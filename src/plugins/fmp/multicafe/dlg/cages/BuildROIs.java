@@ -145,10 +145,11 @@ public class BuildROIs extends JPanel {
 
 		SequenceCamData seqCamData = exp.seqCamData;
 		ROI2D roi = seqCamData.seq.getSelectedROI2D();
-		if ( ! ( roi instanceof ROI2DPolygon ) || roi.getName().contains("cage")) {
+		boolean flag = (roi.getName().length() > 4 && roi.getName().substring( 0 , 4 ).contains("cage"));
+		if ( ! ( roi instanceof ROI2DPolygon ) || flag) {
 			if ( ! ( roi instanceof ROI2DPolygon ) ) 
 				new AnnounceFrame("The frame must be a ROI2D POLYGON");
-			if (roi.getName().contains("cage")) 
+			if (flag) 
 				new AnnounceFrame("The roi name should not contain -cage-");
 			return;
 		}

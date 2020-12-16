@@ -309,7 +309,8 @@ public class Cages {
 		for ( ROI2D roi : roiList ) {
 			String csName = roi.getName();
 			if ((roi instanceof ROI2DPolygon) || (roi instanceof ROI2DArea)) {
-				if (( csName.contains( "cage") 
+//				if (( csName.contains( "cage") 
+				if ((csName.length() > 4 && csName.substring( 0 , 4 ).contains("cage")
 					|| csName.contains("Polygon2D")) ) {
 					cageList.add(roi);
 				}

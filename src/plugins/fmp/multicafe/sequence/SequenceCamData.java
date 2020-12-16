@@ -569,7 +569,8 @@ public class SequenceCamData {
 			String csName = roi.getName();
 			if (!(roi instanceof ROI2DPolygon))
 				continue;
-			if (( csName.contains( "cage") 
+//			if (( csName.contains( "cage")
+			if ((csName.length() > 4 && csName.substring( 0 , 4 ).contains("cage")
 				|| csName.contains("Polygon2D")) ) {
 				Cage cage = new Cage();
 				cage.roi = roi;

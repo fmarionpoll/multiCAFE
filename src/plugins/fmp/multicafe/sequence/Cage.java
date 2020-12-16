@@ -169,7 +169,12 @@ public class Cage {
 		int cagenb = -1;
 		strCageNumber = getCageNumber();
 		if (strCageNumber != null) {
-			cagenb = Integer.valueOf(strCageNumber);
+			try {
+			    return Integer.parseInt(strCageNumber);
+			  } catch (NumberFormatException e) {
+			    return cagenb;
+			  }
+//			cagenb = Integer.valueOf(strCageNumber);
 		}
 		return cagenb;
 	}
