@@ -8,7 +8,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/data/Icy-app/icy.jar"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/adufour/ezplug/EzPlug.jar"/>
-	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/importer/xuggler/VideoImporter.jar"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/adufour/poi/POI.jar"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/library/FlanaganPlugin.jar"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/library/JavaCLPlugin.jar"/>
