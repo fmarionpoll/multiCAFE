@@ -46,9 +46,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public  final String 				ID_TOPLEVEL 	= "toplevel";	
 	public  final String 				ID_BOTTOMLEVEL 	= "bottomlevel";	
 	public  final String 				ID_DERIVATIVE 	= "derivative";	
-	public CapillaryLimits				ptsTop  		= new CapillaryLimits(ID_TOPLEVEL, 0); 
-	public CapillaryLimits				ptsBottom 		= new CapillaryLimits(ID_BOTTOMLEVEL, 0); 
-	public CapillaryLimits				ptsDerivative 	= new CapillaryLimits(ID_DERIVATIVE, 0); 
+	public CapillaryLimit				ptsTop  		= new CapillaryLimit(ID_TOPLEVEL); 
+	public CapillaryLimit				ptsBottom 		= new CapillaryLimit(ID_BOTTOMLEVEL); 
+	public CapillaryLimit				ptsDerivative 	= new CapillaryLimit(ID_DERIVATIVE); 
 	public CapillaryGulps 				gulpsRois 		= new CapillaryGulps(); 
 	
 	public List<ArrayList<int[]>> 		masksList 		= null;
@@ -413,9 +413,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public boolean loadFromXML(Node node) {
 		boolean result = loadFromXML_CapillaryOnly(node);	
 		String header = getLast2ofCapillaryName()+"_";
-		result |= ptsDerivative.loadPolyline2DFromXML(node, ID_DERIVATIVE, header) > 0;
-		result |= ptsTop.loadPolyline2DFromXML(node, ID_TOPLEVEL, header) > 0;
-		result |= ptsBottom.loadPolyline2DFromXML(node, ID_BOTTOMLEVEL, header) > 0;
+		result |= ptsDerivative.loadCapillaryLimitFromXML(node, ID_DERIVATIVE, header) > 0;
+		result |= ptsTop.loadCapillaryLimitFromXML(node, ID_TOPLEVEL, header) > 0;
+		result |= ptsBottom.loadCapillaryLimitFromXML(node, ID_BOTTOMLEVEL, header) > 0;
 		result |= gulpsRois.loadFromXML(node);
 		return result;
 	}
@@ -424,11 +424,11 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	public boolean saveToXML(Node node) {
 		saveToXML_CapillaryOnly(node);
 		if (ptsTop != null)
-			ptsTop.savePolyline2DToXML(node, ID_TOPLEVEL);
+			ptsTop.saveCapillaryLimit2XML(node, ID_TOPLEVEL);
 		if (ptsBottom != null)
-			ptsBottom.savePolyline2DToXML(node, ID_BOTTOMLEVEL);
+			ptsBottom.saveCapillaryLimit2XML(node, ID_BOTTOMLEVEL);
 		if (ptsDerivative != null)
-			ptsDerivative.savePolyline2DToXML(node, ID_DERIVATIVE);
+			ptsDerivative.saveCapillaryLimit2XML(node, ID_DERIVATIVE);
 		if (gulpsRois != null)
 			gulpsRois.saveToXML(node);
         return true;

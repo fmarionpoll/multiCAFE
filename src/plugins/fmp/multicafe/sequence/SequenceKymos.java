@@ -96,7 +96,7 @@ public class SequenceKymos extends SequenceCamData  {
 		//Collections.sort(listRois, new Comparators.ROI2DNameComparator());
 	}
 	
-	public void updateROIFromCapillaryMeasure(Capillary cap, CapillaryLimits caplimits) {
+	public void updateROIFromCapillaryMeasure(Capillary cap, CapillaryLimit caplimits) {
 		int t = cap.indexImage;
 		List<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
@@ -150,6 +150,7 @@ public class SequenceKymos extends SequenceCamData  {
 				capillaries.capillariesArrayList.add(new Capillary());
 			Capillary cap = capillaries.capillariesArrayList.get(kymo);
 			cap.filenameTIFF = getFileName(kymo);
+			cap.indexImage = kymo;
 			cap.transferROIsToMeasures(roisAtT);	
 		}
 		return true;

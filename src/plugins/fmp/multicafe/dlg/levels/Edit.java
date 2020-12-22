@@ -24,8 +24,9 @@ import icy.type.geom.Polyline2D;
 
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.CapillaryLimits;
+import plugins.fmp.multicafe.sequence.CapillaryLimit;
 import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.sequence.Level2D;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
 
 
@@ -186,12 +187,12 @@ public class Edit  extends JPanel {
 		}
 	}
 	
-	private void removeAndUpdate(SequenceKymos seqKymos, Capillary cap, CapillaryLimits caplimits, ROI2D roi) {
+	private void removeAndUpdate(SequenceKymos seqKymos, Capillary cap, CapillaryLimit caplimits, ROI2D roi) {
 		removeMeasuresEnclosedInRoi(caplimits, roi);
 		seqKymos.updateROIFromCapillaryMeasure(cap, caplimits);
 	}
 	
-	void removeMeasuresEnclosedInRoi(CapillaryLimits caplimits, ROI2D roi) {
+	void removeMeasuresEnclosedInRoi(CapillaryLimit caplimits, ROI2D roi) {
 		Polyline2D polyline = caplimits.polylineLimit;
 		int npointsOutside = polyline.npoints - getPointsWithinROI(polyline, roi);
 		if (npointsOutside > 0) {
@@ -205,7 +206,7 @@ public class Edit  extends JPanel {
 					index++;
 				}
 			}
-			caplimits.polylineLimit = new Polyline2D(xpoints, ypoints, npointsOutside);	
+			caplimits.polylineLimit = new Level2D(xpoints, ypoints, npointsOutside);	
 		} else {
 			caplimits.polylineLimit = null;
 		}

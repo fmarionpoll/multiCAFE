@@ -125,7 +125,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		if (exp == null) 
 			return;
 		parent0.expList.currentExperimentIndex = current;
-//		parent0.paneSequence.tabClose.closeExp(exp);
+		parent0.paneSequence.tabClose.closeExp(exp);
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
@@ -151,7 +151,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
 				exp.setKymoFrameStep((int) stepFrameJSpinner.getValue());
-//				parent0.paneSequence.openExperiment(exp);
+				parent0.paneSequence.openExperiment(exp);
 			}
 			startComputationButton.setText(detectString);
 		 }

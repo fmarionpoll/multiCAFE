@@ -4,16 +4,14 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
-import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
+
 import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.CapillaryLimits;
+import plugins.fmp.multicafe.sequence.CapillaryLimit;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
 import plugins.fmp.multicafe.tools.ImageTransformTools;
-import plugins.fmp.multicafe.tools.Polyline2DUtil;
-import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
@@ -25,33 +23,30 @@ public class DetectLevels_series extends BuildSeries  {
 		exp.loadExperimentCapillariesData_ForSeries();
 		if (exp.loadKymographs()) {	
 			detectCapillaryLevels(exp);
-			exp.saveExperimentMeasures(resultsDirectory);
+			exp.capillaries.xmlSaveCapillaries_Measures(resultsDirectory);
 		}
 		exp.seqKymos.closeSequence();
 	}
 	
 	private void detectCapillaryLevels(Experiment exp) {
 		SequenceKymos seqKymos = exp.seqKymos;
-		int firstkymo = 0;
-		int lastkymo = seqKymos.seq.getSizeT() -1;
+		int firstKymo = 0;
+		int lastKymo = seqKymos.seq.getSizeT() -1;
 		if (! options.detectAllKymos) {
-			firstkymo = options.firstKymo;
-			lastkymo = firstkymo;
+			firstKymo = options.firstKymo;
+			lastKymo = firstKymo;
 		}
 		
 		threadRunning = true;
 		stopFlag = false;
-		ProgressFrame progressBar = new ProgressFrame("Processing with sub-threads started");
 		
 		tImg.setSpanDiff(options.spanDiffTop);
 		tImg.setSequence(seqKymos);
 		
-		for (int frame = firstkymo; frame <= lastkymo; frame++) {
-			seqKymos.removeROIsAtT(frame);
-			final int t_from = frame;
-			final int t_kymofirst = firstkymo;
+		for (int indexKymo = firstKymo; indexKymo <= lastKymo; indexKymo++) {
+			seqKymos.removeROIsAtT(indexKymo);
 			
-			IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.getImageDirect(t_from), options.transformForLevels);
+			IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.getImageDirect(indexKymo), options.transformForLevels);
 			int c = 0;
 			Object dataArray = sourceImage.getDataXY(c);
 			int[] sourceValues = Array1DUtil.arrayToIntArray(dataArray, sourceImage.isSignedDataType());
@@ -60,12 +55,13 @@ public class DetectLevels_series extends BuildSeries  {
 			int lastColumn = sourceImage.getSizeX()-1;
 			int xwidth = sourceImage.getSizeX();
 			int yheight = sourceImage.getSizeY();
-			Capillary cap = exp.capillaries.capillariesArrayList.get(t_from);
+			Capillary cap = exp.capillaries.capillariesArrayList.get(indexKymo);
 			if (!options.detectR && cap.getCapillaryName().endsWith("2"))
 				return;
 			if (!options.detectL && cap.getCapillaryName().endsWith("1"))
 				return;
 			
+			cap.indexImage= indexKymo;
 			cap.ptsDerivative = null;
 			cap.gulpsRois = null;
 			options.copy(cap.limitsOptions);
@@ -102,27 +98,15 @@ public class DetectLevels_series extends BuildSeries  {
 			}
 			
 			if (options.analyzePartOnly) {
-				Polyline2DUtil.insertSeriesofYPoints(limitTop, cap.ptsTop.polylineLimit, firstColumn, lastColumn);
-				seqKymos.seq.addROI(cap.ptsTop.transferPolyline2DToROI());
+				cap.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
+				cap.ptsBottom.polylineLimit.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
 				
-				Polyline2DUtil.insertSeriesofYPoints(limitBottom, cap.ptsBottom.polylineLimit, firstColumn, lastColumn);
-				seqKymos.seq.addROI(cap.ptsBottom.transferPolyline2DToROI());
 			} else {
-				cap.ptsTop    = getLimits(limitTop, cap.getLast2ofCapillaryName()+"_toplevel", t_from, t_kymofirst, seqKymos);
-				cap.ptsBottom = getLimits(limitBottom, cap.getLast2ofCapillaryName()+"_bottomlevel", t_from, t_kymofirst, seqKymos);
+				cap.ptsTop    = new CapillaryLimit(cap.getLast2ofCapillaryName()+"_toplevel", indexKymo, limitTop);
+				cap.ptsBottom = new CapillaryLimit(cap.getLast2ofCapillaryName()+"_bottomlevel", indexKymo, limitBottom);
 			}
 		}
-		progressBar.close();
 
-	}
-	
-	private CapillaryLimits getLimits (List<Point2D> limit, String name, int t_from, int t_kymofirst, SequenceKymos seqKymos ) {
-		ROI2DPolyLine roiTrack = new ROI2DPolyLine (limit);
-		roiTrack.setName(name);
-		roiTrack.setStroke(1);
-		roiTrack.setT(t_from);
-		seqKymos.seq.addROI(roiTrack);
-		return new CapillaryLimits(roiTrack.getName(), t_from-t_kymofirst, roiTrack.getPolyline2D());
 	}
 
 	private int checkLimits (int rowIndex, int maximumRowIndex) {

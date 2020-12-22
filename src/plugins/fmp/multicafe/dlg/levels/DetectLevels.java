@@ -221,7 +221,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 			return;
 		parent0.expList.currentExperimentIndex = current;
 		exp.saveExperimentMeasures(exp.getResultsDirectory());
-//		parent0.paneSequence.tabClose.closeExp(exp);
+		parent0.paneSequence.tabClose.closeExp(exp);
 		exp.closeSequences();
 		thread = new DetectLevels_series();
 		thread.options = initBuildParameters(exp);
@@ -241,10 +241,12 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
 			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
-			parent0.paneSequence.openExperiment(exp);
+			if (exp != null) {
+				parent0.paneSequence.openExperiment(exp);
+				if (selectedFrame != 0) 
+					selectFrame(selectedFrame);
+			}
 			detectButton.setText(detectString);
-			if (selectedFrame != 0) 
-				selectFrame(selectedFrame);
 		 }
 	}
 	
