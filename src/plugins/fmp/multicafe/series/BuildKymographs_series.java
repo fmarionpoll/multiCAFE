@@ -171,8 +171,6 @@ public class BuildKymographs_series  extends BuildSeries  {
 		return true;
 	}
 	
-	// -------------------------------------------
-	
 	private ArrayList<int []> transferImageToIntegerArrayList(IcyBufferedImage  workImage) {	
 		ArrayList<int []> sourceValuesArray = new ArrayList<int[]>(workImage.getSizeC());
 		int len =  workImage.getSizeX() *  workImage.getSizeY();
@@ -263,7 +261,5 @@ public class BuildKymographs_series  extends BuildSeries  {
         	GaspardRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
         workImage = seqForRegistration.getLastImage(1);
 	}
-
-
 
 }

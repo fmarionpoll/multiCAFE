@@ -37,47 +37,51 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Experiment {
 	
-	private String			experimentFileName			= null;
-	public SequenceCamData 	seqCamData 					= null;
-	public final static String 	RESULTS					= "results";
-	public String			resultsSubPath				= RESULTS;
-	public List<String>		resultsDirList				= new ArrayList<String> ();
+	private String			experimentFileName		= null;
+	public SequenceCamData 	seqCamData 				= null;
+	public final static String 	RESULTS				= "results";
+	public String			resultsSubPath			= RESULTS;
+	public List<String>		resultsDirList			= new ArrayList<String> ();
 		
-	public SequenceKymos 	seqKymos					= null;
-	public Sequence 		seqBackgroundImage			= null;
-	public Capillaries 		capillaries 				= new Capillaries();
-	public Cages			cages 						= new Cages();
-	public FileTime			fileTimeImageFirst;
-	public FileTime			fileTimeImageLast;
-	public long				fileTimeImageFirstMinute 	= 0;
-	public long				fileTimeImageLastMinute 	= 0;
+	public SequenceKymos 	seqKymos				= null;
+	public Sequence 		seqBackgroundImage		= null;
+	public Capillaries 		capillaries 			= new Capillaries();
+	public Cages			cages 					= new Cages();
 	
-	private int 			kymoFrameStart 				= 0;
-	private int 			kymoFrameEnd 				= 0;
-	private int 			kymoFrameStep 				= 1;									
+	public FileTime			firstImage_FileTime;
+	public FileTime			lastImage_FileTime;
 	
-	public String			exp_boxID 					= new String("..");
-	public String			experiment					= new String("..");
-	public String 			comment1					= new String("..");
-	public String 			comment2					= new String("..");
+	public long				firstImage_Ms			= 0;
+	public long				lastImage_Ms			= 0;
 	
-	public int				col							= -1;
-	public Experiment 		previousExperiment			= null;		// pointer to chain this experiment to another one before
-	public Experiment 		nextExperiment 				= null;		// pointer to chain this experiment to another one after
-	public int				experimentID 				= 0;
+	private int 			kymoFrameStart 			= 0;
+	private int 			kymoFrameEnd 			= 0;
+	private int 			kymoFrameStep 			= 1;									
 	
-	ImageTransformTools 	tImg 						= null;
+	public String			exp_boxID 				= new String("..");
+	public String			experiment				= new String("..");
+	public String 			comment1				= new String("..");
+	public String 			comment2				= new String("..");
+	
+	public int				col						= -1;
+	public Experiment 		previousExperiment		= null;		// pointer to chain this experiment to another one before
+	public Experiment 		nextExperiment 			= null;		// pointer to chain this experiment to another one after
+	public int				experimentID 			= 0;
+	
+	ImageTransformTools 	tImg 					= null;
 
 	private final static String ID_VERSION			= "version"; 
 	private final static String ID_VERSIONNUM		= "1.0.0"; 
 	private final static String ID_TIMEFIRSTIMAGE	= "fileTimeImageFirstMinute"; 
 	private final static String ID_TIMELASTIMAGE 	= "fileTimeImageLastMinute";
+	private final static String ID_TIMEFIRSTIMAGEMS	= "fileTimeImageFirstMs"; 
+	private final static String ID_TIMELASTIMAGEMS 	= "fileTimeImageLastMs";
 	private final static String ID_STARTFRAME 		= "startFrame";
 	private final static String ID_ENDFRAME 		= "endFrame";
 	private final static String ID_STEP 			= "stepFrame";
 	private final static String ID_EXPTFILENAME 	= "exptFileName";
 	private final static String ID_MCEXPERIMENT 	= "MCexperiment";
-	private final static String ID_MCDROSOTRACK    = "MCdrosotrack.xml";
+	private final static String ID_MCDROSOTRACK     = "MCdrosotrack.xml";
 	
 	private final static String ID_BOXID 			= "boxID";
 	private final static String ID_EXPERIMENT 		= "experiment";
@@ -180,16 +184,11 @@ public class Experiment {
 	}
 	
 	public void loadFileIntervalsFromSeqCamData() {
-		fileTimeImageFirst = seqCamData.getFileTimeFromName(0);
-		fileTimeImageLast = seqCamData.getFileTimeFromName(seqCamData.seq.getSizeT()-1);
-		fileTimeImageFirstMinute = (long) (fileTimeImageFirst.toMillis()/60000d);
-		fileTimeImageLastMinute = (long) (fileTimeImageLast.toMillis()/60000d);
-	
-		long diff = fileTimeImageLastMinute - fileTimeImageFirstMinute;
-		if (diff <1) {
-			System.out.println("FileTime difference between last and first image < 1");
-//			Duration diffDur = Duration.between(fileTimeImageFirst, fileTimeImageLast);			
-		}
+		firstImage_FileTime = seqCamData.getFileTimeFromStructuredName(0);
+		lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.seq.getSizeT()-1);
+		
+		firstImage_Ms = firstImage_FileTime.toMillis();
+		lastImage_Ms = lastImage_FileTime.toMillis();
 	}
 	
 	public String getResultsDirectory() {
@@ -317,8 +316,13 @@ public class Experiment {
 		String version = XMLUtil.getElementValue(node, ID_VERSION, ID_VERSIONNUM);
 		if (!version .equals(ID_VERSIONNUM))
 			return false;
-		fileTimeImageFirstMinute= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
-		fileTimeImageLastMinute = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
+		firstImage_Ms= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, -1);
+		if (firstImage_Ms < 0) 
+			firstImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, -1)*60000;
+
+		lastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, -1)*60000;
+		if (lastImage_Ms < 0)
+			lastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1);
 		kymoFrameStart 			= XMLUtil.getElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 		kymoFrameEnd 			= XMLUtil.getElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 		kymoFrameStep 			= XMLUtil.getElementIntValue(node, ID_STEP, kymoFrameStep);
@@ -340,8 +344,8 @@ public class Experiment {
 				return false;
 			
 			XMLUtil.setElementValue(node, ID_VERSION, ID_VERSIONNUM);
-			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGE, fileTimeImageFirstMinute);
-			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGE, fileTimeImageLastMinute);
+			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGEMS, firstImage_Ms);
+			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGEMS, lastImage_Ms);
 			XMLUtil.setElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 			XMLUtil.setElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 			XMLUtil.setElementIntValue(node, ID_STEP, kymoFrameStep);
@@ -397,25 +401,25 @@ public class Experiment {
 	}
 
 	public FileTime getFileTimeImageFirst(boolean globalValue) {
-		FileTime filetime = fileTimeImageFirst;
+		FileTime filetime = firstImage_FileTime;
 		if (globalValue && previousExperiment != null)
 			filetime = previousExperiment.getFileTimeImageFirst(globalValue);
 		return filetime;
 	}
 		
 	public void setFileTimeImageFirst(FileTime fileTimeImageFirst) {
-		this.fileTimeImageFirst = fileTimeImageFirst;
+		this.firstImage_FileTime = fileTimeImageFirst;
 	}
 	
 	public FileTime getFileTimeImageLast(boolean globalValue) {
-		FileTime filetime = fileTimeImageLast;
+		FileTime filetime = lastImage_FileTime;
 		if (globalValue && nextExperiment != null)
 			filetime = nextExperiment.getFileTimeImageLast(globalValue);
 		return filetime;
 	}
 	
 	public void setFileTimeImageLast(FileTime fileTimeImageLast) {
-		this.fileTimeImageLast = fileTimeImageLast;
+		this.lastImage_FileTime = fileTimeImageLast;
 	}
 	
 	// -----------------------

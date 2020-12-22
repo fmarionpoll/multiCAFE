@@ -40,7 +40,7 @@ public class Intervals extends JPanel {
 		layout1.setVgap(0);
 		
 		JPanel panel1 = new JPanel(layout1);
-		panel1.add(new JLabel("From ", SwingConstants.RIGHT));
+		panel1.add(new JLabel("Frame ", SwingConstants.RIGHT));
 		panel1.add(startFrameJSpinner);
 		panel1.add(new JLabel(" to "));
 		panel1.add(endFrameJSpinner);

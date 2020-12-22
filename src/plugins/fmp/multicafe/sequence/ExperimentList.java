@@ -44,27 +44,28 @@ public class ExperimentList {
 				if (expAll.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
 					expAll.setFileTimeImageLast(exp.getFileTimeImageLast(true));
 			}
-			expAll.fileTimeImageFirstMinute = (long) (expAll.getFileTimeImageFirst(false).toMillis()/60000d);
-			expAll.fileTimeImageLastMinute = (long) (expAll.getFileTimeImageLast(false).toMillis()/60000d);	
-		} else {
-			expAll.fileTimeImageFirstMinute = 0;
-			expAll.fileTimeImageLastMinute = 0;
+			expAll.firstImage_Ms = expAll.getFileTimeImageFirst(false).toMillis();
+			expAll.lastImage_Ms = expAll.getFileTimeImageLast(false).toMillis();	
+		} 
+		else {
+			expAll.firstImage_Ms = 0;
+			expAll.lastImage_Ms = 0;
 			for (Experiment exp: experimentList) {
 				if (options.collateSeries && exp.previousExperiment != null)
 					continue;
 				double last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
 				double first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
-				double diff = (( last - first) /60000d);
+				double diff = last - first;
 				if (diff <1) {
-					System.out.println("error when computing FileTime difference between last and first image; set dt= 1 min");
+					System.out.println("error when computing FileTime difference between last and first image; set dt between images = 1 ms");
 					diff = exp.seqCamData.seq.getSizeT();
 				}
-				if (expAll.fileTimeImageLastMinute < diff) 
-					expAll.fileTimeImageLastMinute = (long) diff;
+				if (expAll.lastImage_Ms < diff) 
+					expAll.lastImage_Ms = (long) diff;
 			}
 		}
-		expAll.setKymoFrameStart ( (int) expAll.fileTimeImageFirstMinute);
-		expAll.setKymoFrameEnd ( (int) expAll.fileTimeImageLastMinute);
+		expAll.setKymoFrameStart ( (int) expAll.firstImage_Ms);
+		expAll.setKymoFrameEnd ( (int) expAll.lastImage_Ms);
 		return expAll;
 	}
 		
@@ -112,10 +113,10 @@ public class ExperimentList {
 					)
 					continue;
 				// same exp series: if before, insert eventually
-				if (expi.fileTimeImageLastMinute < exp.fileTimeImageFirstMinute) {
+				if (expi.lastImage_Ms < exp.firstImage_Ms) {
 					if (exp.previousExperiment == null)
 						exp.previousExperiment = expi;
-					else if (expi.fileTimeImageLastMinute > exp.previousExperiment.fileTimeImageLastMinute ) {
+					else if (expi.lastImage_Ms > exp.previousExperiment.lastImage_Ms ) {
 						(exp.previousExperiment).nextExperiment = expi;
 						expi.previousExperiment = exp.previousExperiment;
 						expi.nextExperiment = exp;
@@ -124,10 +125,10 @@ public class ExperimentList {
 					continue;
 				}
 				// same exp series: if after, insert eventually
-				if (expi.fileTimeImageFirstMinute > exp.fileTimeImageLastMinute) {
+				if (expi.firstImage_Ms > exp.lastImage_Ms) {
 					if (exp.nextExperiment == null)
 						exp.nextExperiment = expi;
-					else if (expi.fileTimeImageFirstMinute < exp.nextExperiment.fileTimeImageFirstMinute ) {
+					else if (expi.firstImage_Ms < exp.nextExperiment.firstImage_Ms ) {
 						(exp.nextExperiment).previousExperiment = expi;
 						expi.nextExperiment = (exp.nextExperiment);
 						expi.previousExperiment = exp;

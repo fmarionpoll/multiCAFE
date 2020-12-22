@@ -8,6 +8,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,11 +16,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
+
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifSubIFDDirectory;
 
 import icy.file.Loader;
 import icy.gui.dialog.LoaderDialog;
@@ -506,7 +513,7 @@ public class SequenceCamData {
 	
 	// --------------------------
 	
-	public FileTime getFileTimeFromName(int t) {
+	public FileTime getFileTimeFromStructuredName(int t) {
 		String fileName = getFileName(t);
 		if (fileName == null)
 			return null;
@@ -514,7 +521,6 @@ public class SequenceCamData {
 		if (len < 23)
 			return null;
 		String text = "20"+fileName.substring(len-21, len-4);
-		// TODO check if year is yyyy or yy
 		String dateFormat = "yyyy"
 							+text.charAt(4)+"MM"
 							+text.charAt(7)+"dd"
@@ -524,15 +530,55 @@ public class SequenceCamData {
 		Date date = null;
 		try {
 			date = new SimpleDateFormat(dateFormat).parse(text);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+		} 
+		catch (ParseException e) {
 			e.printStackTrace();
 			return null;
 		}
 		FileTime fileTime = FileTime.fromMillis(date.getTime());		
 		return fileTime;
 	}
+	
+	public FileTime getFileTimeFromFileAttributes(int t) {
+		FileTime filetime=null;
+		File file = new File(getFileName(t));
+        Path filePath = file.toPath();
 
+        BasicFileAttributes attributes = null;
+        try {
+            attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+        }
+        catch (IOException exception) {
+            System.out.println("Exception handled when trying to get file " +
+                    "attributes: " + exception.getMessage());
+        }
+        
+        long milliseconds = attributes.creationTime().to(TimeUnit.MILLISECONDS);
+        if((milliseconds > Long.MIN_VALUE) && (milliseconds < Long.MAX_VALUE)) {
+            Date creationDate = new Date(attributes.creationTime().to(TimeUnit.MILLISECONDS));
+            filetime = FileTime.fromMillis(creationDate.getTime());
+        }
+		return filetime;
+	}
+
+	public FileTime getFileTimeFromJPEGMetaData(int t) {
+		FileTime filetime = null;
+		
+		File file = new File(getFileName(t));
+		Metadata metadata;
+		try {
+			metadata = ImageMetadataReader.readMetadata(file);
+			ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+			Date date = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL); 
+			filetime = FileTime.fromMillis(date.getTime());
+		} catch (ImageProcessingException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return filetime;
+	}
+	
 	public void removeROIsAtT(int t) {
 		final List<ROI> allROIs = seq.getROIs();
         for (ROI roi : allROIs) {

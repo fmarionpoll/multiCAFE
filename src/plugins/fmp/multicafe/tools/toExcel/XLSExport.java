@@ -35,8 +35,8 @@ public class XLSExport {
     XSSFFont 					font_blue 			= null;
     XSSFWorkbook 				workbook			= null;		
     
-	ExperimentList 				expList 	= null;
-	List <XLSResults> 			rowListForOneExp = new ArrayList <XLSResults> ();
+	ExperimentList 				expList 			= null;
+	List <XLSResults> 			rowListForOneExp 	= new ArrayList <XLSResults> ();
 
 
 	// ------------------------------------------------
@@ -258,10 +258,15 @@ public class XLSExport {
 	
 	void outputDataTimeIntervals(XSSFSheet sheet, int row) {
 		boolean transpose = options.transpose;
+		
 		Point pt = new Point(0, row);
-		for (int i = expAll.getKymoFrameStart(); i <= expAll.getKymoFrameEnd(); i += options.buildExcelBinStep) {
+		long duration = expAll.lastImage_Ms - expAll.firstImage_Ms;
+		long interval = 0;
+		while (interval < duration) {
+			int i = (int) (interval / options.buildExcelMilliSecStep);
 			XLSUtils.setValue(sheet, pt, transpose, "t"+i);
 			pt.y++;
+			interval += options.buildExcelMilliSecStep;
 		}
 	}
 	
@@ -289,8 +294,8 @@ public class XLSExport {
 		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.cages.copy(exp.cages);
 		expAll.capillaries.copy(exp.capillaries);
-		expAll.fileTimeImageFirst 	= exp.fileTimeImageFirst;
-		expAll.fileTimeImageLast 	= exp.fileTimeImageLast;
+		expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
+		expAll.lastImage_FileTime 	= exp.lastImage_FileTime;
 		expAll.setExperimentFileName(exp.getExperimentFileName());
 		expAll.exp_boxID 			= exp.exp_boxID;
 		expAll.experiment 			= exp.experiment;
@@ -300,11 +305,11 @@ public class XLSExport {
 		Experiment expi = exp.nextExperiment;
 		while (expi != null ) {
 			expAll.capillaries.mergeLists(expi.capillaries);
-			expAll.fileTimeImageLast = expi.fileTimeImageLast;
+			expAll.lastImage_FileTime = expi.lastImage_FileTime;
 			expi = expi.nextExperiment;
 		}
-		expAll.fileTimeImageFirstMinute = (long) (expAll.fileTimeImageFirst.toMillis()/60000d);
-		expAll.fileTimeImageLastMinute = (long) (expAll.fileTimeImageLast.toMillis()/60000d);
+		expAll.firstImage_Ms = expAll.firstImage_FileTime.toMillis();
+		expAll.lastImage_Ms = expAll.lastImage_FileTime.toMillis();
 		int nFrames = (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1 ;
 		
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
@@ -396,7 +401,7 @@ public class XLSExport {
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:
 				for (XLSResults row: rowListForOneExp ) 
-					row.subtractDeltaT(expAll.getKymoFrameStep(), options.buildExcelBinStep);
+					row.subtractDeltaT(expAll.getKymoFrameStep(), options.buildExcelMilliSecStep);
 				break;
 			default:
 				break;
@@ -429,8 +434,8 @@ public class XLSExport {
 				break;
 		}
 		
-		long to_first_index = (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
-		long to_nvalues = ((expi.fileTimeImageLastMinute - expi.fileTimeImageFirstMinute)/expi.getKymoFrameStep())+1;
+		long to_first_index = (expi.firstImage_Ms - expAll.firstImage_Ms) / expAll.getKymoFrameStep() ;
+		long to_nvalues = ((expi.lastImage_Ms - expi.firstImage_Ms)/expi.getKymoFrameStep())+1;
 		for (XLSResults row: rowListForOneExp ) {
 			XLSResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
 			if (results != null && results.data != null) {
@@ -454,7 +459,7 @@ public class XLSExport {
 					if (from_i >= results.data.size())
 						break;
 					double value = results.data.get(from_i) * scalingFactorToPhysicalUnits + dvalue;
-					int to_i = (int) (fromTime + expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute) / expAll.getKymoFrameStep() ;
+					int to_i = (int) (fromTime + expi.firstImage_Ms - expAll.firstImage_Ms) / expAll.getKymoFrameStep() ;
 					if (to_i >= row.values_out.length)
 						break;
 					if (to_i < 0)
@@ -518,7 +523,7 @@ public class XLSExport {
 				}
 				int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
 				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getKymoFrameStep() 
-						+ (expi.fileTimeImageFirstMinute - expAll.fileTimeImageFirstMinute));		
+						+ (expi.firstImage_Ms - expAll.firstImage_Ms));		
 				ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
 			}
 			if (ilastalive > 0)
@@ -593,7 +598,7 @@ public class XLSExport {
 		if (row.values_out == null)
 			return;
 		
-		for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelBinStep, pt.y++) {
+		for (int coltime=expAll.getKymoFrameStart(); coltime < expAll.getKymoFrameEnd(); coltime+=options.buildExcelMilliSecStep, pt.y++) {
 			int i_from = coltime / row.rowbinsize;
 			if (i_from >= row.values_out.length)
 				break;

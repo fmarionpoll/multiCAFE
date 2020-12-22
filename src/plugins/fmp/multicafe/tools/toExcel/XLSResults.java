@@ -85,12 +85,12 @@ public class XLSResults {
 		nflies = 0;
 	}
 	
-	boolean subtractDeltaT(int arrayStep, int deltaT) {
+	boolean subtractDeltaT(int arrayStep, int binStep) {
 		if (values_out == null || values_out.length < 2)
 			return false;
 		for (int index=0; index < values_out.length; index++) {
-			int timeIndex = index * arrayStep + deltaT;
-			int indexDelta = timeIndex/arrayStep;
+			int timeIndex = index * arrayStep + binStep;
+			int indexDelta = (int) (timeIndex/arrayStep);
 			if (indexDelta < values_out.length) 
 				values_out[index] = values_out[indexDelta] - values_out[index];
 			else
