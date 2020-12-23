@@ -44,7 +44,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
 	public Open 			tabOpen 		= new Open();
 	public Infos			tabInfosSeq		= new Infos();
-	public Intervals		tabIntervals	= new Intervals();
+	public Intervals			tabIntervals		= new Intervals();
 	public Display			tabDisplay 		= new Display();
 	public Close 			tabClose 		= new Close();
 	private JLabel			text 			= new JLabel("Experiment ");
@@ -93,7 +93,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		tabInfosSeq.addPropertyChangeListener(this);
 		
 		tabIntervals.init(tabsLayout, parent0);
-		tabsPane.addTab("Intervals", null, tabIntervals, "Browse and analysis parameters");
+		tabsPane.addTab("Intervals", null, tabIntervals, "Define analysis intervals");
 		tabIntervals.addPropertyChangeListener(this);
 
 		tabDisplay.init(tabsLayout, parent0);

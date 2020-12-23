@@ -28,6 +28,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 	JTabbedPane 	tabsPane 		= new JTabbedPane();
 	public Create 	tabCreate 		= new Create();
 	public Display	tabDisplay 		= new Display();
+	public Infos	tabInfos 		= new Infos();
 	public LoadSave tabFile 		= new LoadSave();
 	
 	private MultiCAFE parent0 = null;
@@ -48,6 +49,10 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		tabDisplay.init(capLayout, parent0);
 		tabDisplay.addPropertyChangeListener(this);
 		tabsPane.addTab("Display", null, tabDisplay, "Display options of data & kymographs");
+
+		tabInfos.init(capLayout, parent0);
+		tabInfos.addPropertyChangeListener(this);
+		tabsPane.addTab("Infos", null, tabInfos, "Time resolution of kymographs");
 
 		tabFile.init(capLayout, parent0);
 		tabFile.addPropertyChangeListener(this);
