@@ -24,12 +24,12 @@ public class Infos extends JPanel {
 	 */
 	private static final long serialVersionUID = -1530811745749103710L;
 	private MultiCAFE parent0 			= null;
-	JSpinner 		startFrameJSpinner	= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
-	JSpinner 		endFrameJSpinner	= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
-	JRadioButton  	isFixedFrame		= new JRadioButton("keep the same intervals for all experiment", false);
-	JRadioButton  	isFloatingFrame		= new JRadioButton("analyze complete experiments", true);
-	JLabel			stepFrameLabel		= new JLabel(" step = 1");
-	JButton			resetButton			= new JButton("Reset intervals");
+//	JSpinner 		startFrameJSpinner	= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
+//	JSpinner 		endFrameJSpinner	= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
+//	JRadioButton  	isFixedFrame		= new JRadioButton("keep the same intervals for all experiment", false);
+//	JRadioButton  	isFloatingFrame		= new JRadioButton("analyze complete experiments", true);
+//	JLabel			stepFrameLabel		= new JLabel(" step = 1");
+//	JButton			resetButton			= new JButton("Reset intervals");
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
