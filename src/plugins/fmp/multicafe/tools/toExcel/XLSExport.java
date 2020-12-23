@@ -260,7 +260,7 @@ public class XLSExport {
 		boolean transpose = options.transpose;
 		
 		Point pt = new Point(0, row);
-		long duration = expAll.lastImage_Ms - expAll.firstImage_Ms;
+		long duration = expAll.lastCamImage_Ms - expAll.firstCamImage_Ms;
 		long interval = 0;
 		while (interval < duration) {
 			int i = (int) (interval / options.buildExcelMilliSecStep);
@@ -308,8 +308,8 @@ public class XLSExport {
 			expAll.lastImage_FileTime = expi.lastImage_FileTime;
 			expi = expi.nextExperiment;
 		}
-		expAll.firstImage_Ms = expAll.firstImage_FileTime.toMillis();
-		expAll.lastImage_Ms = expAll.lastImage_FileTime.toMillis();
+		expAll.firstCamImage_Ms = expAll.firstImage_FileTime.toMillis();
+		expAll.lastCamImage_Ms = expAll.lastImage_FileTime.toMillis();
 		int nFrames = (expAll.getKymoFrameEnd() - expAll.getKymoFrameStart())/expAll.getKymoFrameStep() +1 ;
 		
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
@@ -434,8 +434,8 @@ public class XLSExport {
 				break;
 		}
 		
-		long to_first_index = (expi.firstImage_Ms - expAll.firstImage_Ms) / expAll.getKymoFrameStep() ;
-		long to_nvalues = ((expi.lastImage_Ms - expi.firstImage_Ms)/expi.getKymoFrameStep())+1;
+		long to_first_index = (expi.firstCamImage_Ms - expAll.firstCamImage_Ms) / expAll.getKymoFrameStep() ;
+		long to_nvalues = ((expi.lastCamImage_Ms - expi.firstCamImage_Ms)/expi.getKymoFrameStep())+1;
 		for (XLSResults row: rowListForOneExp ) {
 			XLSResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
 			if (results != null && results.data != null) {
@@ -459,7 +459,7 @@ public class XLSExport {
 					if (from_i >= results.data.size())
 						break;
 					double value = results.data.get(from_i) * scalingFactorToPhysicalUnits + dvalue;
-					int to_i = (int) (fromTime + expi.firstImage_Ms - expAll.firstImage_Ms) / expAll.getKymoFrameStep() ;
+					int to_i = (int) (fromTime + expi.firstCamImage_Ms - expAll.firstCamImage_Ms) / expAll.getKymoFrameStep() ;
 					if (to_i >= row.values_out.length)
 						break;
 					if (to_i < 0)
@@ -523,7 +523,7 @@ public class XLSExport {
 				}
 				int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
 				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getKymoFrameStep() 
-						+ (expi.firstImage_Ms - expAll.firstImage_Ms));		
+						+ (expi.firstCamImage_Ms - expAll.firstCamImage_Ms));		
 				ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
 			}
 			if (ilastalive > 0)

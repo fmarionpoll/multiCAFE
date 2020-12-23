@@ -57,7 +57,7 @@ public class XYMultiChart extends IcyFrame  {
 	private void getDataArrays(Experiment exp, EnumXLSExportType option, List<XYSeriesCollection> xyList) {
 		SequenceKymos kymoseq = exp.seqKymos;
 		int nimages = kymoseq.seq.getSizeT();
-		int startFrame = (int) exp.capillaries.desc.analysisStart;
+		int startFrame = (int) exp.kymoFrameStart;
 		int kmax = exp.capillaries.desc.grouping;
 		char collection_char = '-';
 		XYSeriesCollection xyDataset = null;

@@ -77,7 +77,6 @@ public class LoadSave  extends JPanel {
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
 					parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
 					parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
-					parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
 				}});
 			}
 		}

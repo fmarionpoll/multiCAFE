@@ -51,10 +51,18 @@ public class Experiment {
 	public FileTime			firstImage_FileTime;
 	public FileTime			lastImage_FileTime;
 	
-	public long				firstImage_Ms			= 0;
-	public long				lastImage_Ms			= 0;
+	// __________________________________________________
 	
-	private int 			kymoFrameStart 			= 0;
+	public long				firstCamImage_Ms		= 0;
+	public long				lastCamImage_Ms			= 0;
+	public long				binCamImage_Ms			= 60000;
+	
+	public long				firstKymoCol_Ms			= 0;
+	public long				lastKymoCol_Ms			= 0;
+	public long				binKymoCol_Ms			= 60000;
+	// _________________________________________________
+	
+	public int 			kymoFrameStart 			= 0;
 	private int 			kymoFrameEnd 			= 0;
 	private int 			kymoFrameStep 			= 1;									
 	
@@ -187,8 +195,8 @@ public class Experiment {
 		firstImage_FileTime = seqCamData.getFileTimeFromStructuredName(0);
 		lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.seq.getSizeT()-1);
 		
-		firstImage_Ms = firstImage_FileTime.toMillis();
-		lastImage_Ms = lastImage_FileTime.toMillis();
+		firstCamImage_Ms = firstImage_FileTime.toMillis();
+		lastCamImage_Ms = lastImage_FileTime.toMillis();
 	}
 	
 	public String getResultsDirectory() {
@@ -316,13 +324,13 @@ public class Experiment {
 		String version = XMLUtil.getElementValue(node, ID_VERSION, ID_VERSIONNUM);
 		if (!version .equals(ID_VERSIONNUM))
 			return false;
-		firstImage_Ms= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, -1);
-		if (firstImage_Ms < 0) 
-			firstImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, -1)*60000;
+		firstCamImage_Ms= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, -1);
+		if (firstCamImage_Ms < 0) 
+			firstCamImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, -1)*60000;
 
-		lastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, -1)*60000;
-		if (lastImage_Ms < 0)
-			lastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1);
+		lastCamImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, -1)*60000;
+		if (lastCamImage_Ms < 0)
+			lastCamImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1);
 		kymoFrameStart 			= XMLUtil.getElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 		kymoFrameEnd 			= XMLUtil.getElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 		kymoFrameStep 			= XMLUtil.getElementIntValue(node, ID_STEP, kymoFrameStep);
@@ -344,8 +352,8 @@ public class Experiment {
 				return false;
 			
 			XMLUtil.setElementValue(node, ID_VERSION, ID_VERSIONNUM);
-			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGEMS, firstImage_Ms);
-			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGEMS, lastImage_Ms);
+			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGEMS, firstCamImage_Ms);
+			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGEMS, lastCamImage_Ms);
 			XMLUtil.setElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 			XMLUtil.setElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 			XMLUtil.setElementIntValue(node, ID_STEP, kymoFrameStep);
@@ -561,9 +569,6 @@ public class Experiment {
 	public void loadExperimentCapillariesData_ForSeries() {
 		xmlLoadExperiment();
 		xmlLoadMCcapillaries();
-		capillaries.desc.analysisStart = kymoFrameStart; 
-		capillaries.desc.analysisEnd  = kymoFrameEnd;
-		capillaries.desc.analysisStep = kymoFrameStep;
 	}
 	
 	private boolean xmlLoadMCcapillaries() {

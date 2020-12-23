@@ -93,11 +93,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 				startComputationButton.setForeground(color);
 		}});
 	}
-	
-	public void setBuildKymosParametersToDialog (Experiment exp) {
-		parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog (exp);
-	}
-	
+		
 	private boolean initBuildParameters(Experiment exp, BuildSeries_Options options) {
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.expList.currentExperimentIndex;

@@ -113,7 +113,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			tabCreate.setGroupingAndNumber(exp.capillaries);
 			parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
 			parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
-			parent0.paneKymos.tabCreate.setBuildKymosParametersToDialog(exp);
+			parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog (exp);
 		}});
 	}
 	

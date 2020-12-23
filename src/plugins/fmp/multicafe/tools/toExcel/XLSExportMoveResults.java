@@ -113,9 +113,9 @@ public class XLSExportMoveResults  extends XLSExport {
 			expAll.lastImage_FileTime = expi.lastImage_FileTime;
 			expi = expi.nextExperiment;
 		}
-		expAll.firstImage_Ms = expAll.firstImage_FileTime.toMillis();
-		expAll.lastImage_Ms = expAll.lastImage_FileTime.toMillis();
-		int nFrames = (int) ((expAll.lastImage_Ms - expAll.firstImage_Ms)/expAll.getCagesFrameStep() +1) ;
+		expAll.firstCamImage_Ms = expAll.firstImage_FileTime.toMillis();
+		expAll.lastCamImage_Ms = expAll.lastImage_FileTime.toMillis();
+		int nFrames = (int) ((expAll.lastCamImage_Ms - expAll.firstCamImage_Ms)/expAll.getCagesFrameStep() +1) ;
 		if (expAll.getCagesFrameEnd() < nFrames) {
 			expAll.setCagesFrameEnd(nFrames-1);
 			exp.setCagesFrameEnd(nFrames-1);
@@ -187,8 +187,8 @@ public class XLSExportMoveResults  extends XLSExport {
 	}
 	
 	private void addMoveResultsTo_rowsForOneExp(Experiment expi, List <XYTaSeries> resultsArrayList) {
-		final int transfer_first_index = (int) (expi.firstImage_Ms - expAll.firstImage_Ms) / expAll.getCagesFrameStep() ;
-		final int transfer_nvalues = (int) ((expi.lastImage_Ms - expi.lastImage_Ms)/expi.getCagesFrameStep())+1;
+		final int transfer_first_index = (int) (expi.firstCamImage_Ms - expAll.firstCamImage_Ms) / expAll.getCagesFrameStep() ;
+		final int transfer_nvalues = (int) ((expi.lastCamImage_Ms - expi.lastCamImage_Ms)/expi.getCagesFrameStep())+1;
 		for (XYTaSeries row: rowsForOneExp ) {
 			XYTaSeries results = getResultsArrayWithThatName(row.name,  resultsArrayList);
 			if (results != null) {
@@ -200,7 +200,7 @@ public class XLSExportMoveResults  extends XLSExport {
 					if (from_i >= results.pointsList.size())
 						break;
 					XYTaValue aVal = results.pointsList.get(from_i);
-					int to_i = (int) (fromTime + expi.firstImage_Ms - expAll.firstImage_Ms) / expAll.getCagesFrameStep() ;
+					int to_i = (int) (fromTime + expi.firstCamImage_Ms - expAll.firstCamImage_Ms) / expAll.getCagesFrameStep() ;
 					if (to_i >= row.pointsList.size())
 						break;
 					row.pointsList.get(to_i).copy(aVal);
@@ -262,7 +262,7 @@ public class XLSExportMoveResults  extends XLSExport {
 				}
 				int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
 				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getCagesFrameStep() 
-						+ (expi.firstImage_Ms - expAll.firstImage_Ms));		
+						+ (expi.firstCamImage_Ms - expAll.firstCamImage_Ms));		
 				ilastalive = lastMinuteAlive / expAll.getCagesFrameStep();
 			}
 			for (XYTaSeries row : rowsForOneExp) {
