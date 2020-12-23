@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe.dlg.capillaries;
 
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -33,7 +34,14 @@ public class LoadSave extends JPanel {
 		
 		JLabel loadsaveText = new JLabel ("-> Capillaries (xml) ", SwingConstants.RIGHT);
 		loadsaveText.setFont(FontUtil.setStyle(loadsaveText.getFont(), Font.ITALIC));
-		add(GuiUtil.besidesPanel( new JLabel (" "), loadsaveText, openButtonCapillaries, saveButtonCapillaries));
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.RIGHT);
+		flowLayout.setVgap(0);
+		JPanel panel1 = new JPanel(flowLayout);
+		panel1.add(loadsaveText);
+		panel1.add(openButtonCapillaries);
+		panel1.add(saveButtonCapillaries);
+		panel1.validate();
+		add( GuiUtil.besidesPanel( panel1));
 			
 		this.parent0 = parent0;
 		defineActionListeners();

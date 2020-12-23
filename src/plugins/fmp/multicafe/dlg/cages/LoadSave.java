@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe.dlg.cages;
 
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -23,23 +24,30 @@ public class LoadSave extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -5257698990389571518L;
-
 	private JButton		openCagesButton			= new JButton("Load...");
 	private JButton		saveCagesButton			= new JButton("Save...");
 	public JCheckBox 	saveRoisCheckBox 		= new JCheckBox("save ROIs", false);
-	
 	private MultiCAFE parent0;
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 
-		JLabel 	loadsaveText1 = new JLabel ("-> File (xml) ");
-		loadsaveText1.setHorizontalAlignment(SwingConstants.RIGHT); 
-		loadsaveText1.setFont(FontUtil.setStyle(loadsaveText1.getFont(), Font.ITALIC));
-		JLabel emptyText1	= new JLabel (" ");
-		add(GuiUtil.besidesPanel( emptyText1, loadsaveText1, openCagesButton, saveCagesButton));
-		add(GuiUtil.besidesPanel( emptyText1));
+		JLabel 	loadsaveText = new JLabel ("-> File (xml) ", SwingConstants.RIGHT);
+		loadsaveText.setFont(FontUtil.setStyle(loadsaveText.getFont(), Font.ITALIC));
+		
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.RIGHT);
+		flowLayout.setVgap(0);
+		JPanel panel1 = new JPanel(flowLayout);
+		panel1.add(loadsaveText);
+		panel1.add(openCagesButton);
+		panel1.add(saveCagesButton);
+		panel1.validate();
+		add( GuiUtil.besidesPanel( panel1));
+		
+//		JLabel emptyText1	= new JLabel (" ");
+//		add(GuiUtil.besidesPanel( emptyText1, loadsaveText1, openCagesButton, saveCagesButton));
+		add(GuiUtil.besidesPanel( new JLabel (" ")));
 		add(GuiUtil.besidesPanel( saveRoisCheckBox));
 		
 		defineActionListeners();
