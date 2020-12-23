@@ -182,7 +182,7 @@ public class DetectLevels2 extends JPanel implements PropertyChangeListener {
 	}
 	
 	private BuildSeries_Options initBuildParameters(Experiment exp) {	
-		parent0.paneSequence.tabIntervals.getAnalyzeFrameFromDialog(exp);
+		parent0.paneSequence.tabIntervals.getCamDataIntervalsFromDialog(exp);
 		BuildSeries_Options options= new BuildSeries_Options();
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);

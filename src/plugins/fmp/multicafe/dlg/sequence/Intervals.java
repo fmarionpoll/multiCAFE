@@ -87,15 +87,15 @@ public class Intervals extends JPanel {
 					if (step > 0)
 						exp.setKymoFrameStep(step);
 				} else {
-					 getAnalyzeFrameFromDialog (exp);
+					 getCamDataIntervalsFromDialog (exp);
 					 exp.setKymoFrameStep((int) parent0.paneKymos.tabCreate.stepFrameJSpinner.getValue());
 				}
 			} 
-			setAnalyzeFrameToDialog(exp);
+			displayCamDataIntervals(exp);
 		}});
 	}
 		
-	public void setAnalyzeFrameToDialog (Experiment exp) {
+	public void displayCamDataIntervals (Experiment exp) {
 		startFrameJSpinner.setValue((int) exp.getKymoFrameStart());
 		if (exp.getKymoFrameEnd() == 0)
 			exp.setKymoFrameEnd(exp.getSeqCamSizeT());
@@ -105,20 +105,20 @@ public class Intervals extends JPanel {
 		stepFrameLabel.setText(" step=" +exp.getKymoFrameStep());
 	}
 	
-	public void getAnalyzeFrameFromDialog (Experiment exp) {		
+	public void displayEndFrame (int end) {
+		endFrameJSpinner.setValue(end);		
+	}
+	
+	public void getCamDataIntervalsFromDialog (Experiment exp) {		
 		exp.setKymoFrameStart ((int) startFrameJSpinner.getValue());
 		exp.setKymoFrameEnd ( (int) endFrameJSpinner.getValue());
 	}
 	
-	public void setEndFrameToDialog (int end) {
-		endFrameJSpinner.setValue(end);		
-	}
-	
-	public boolean getIsFixedFrame() {
+	public boolean getIsFixedFrameFromDialog() {
 		return isFixedFrame.isSelected();
 	}
 	
-	public int getStartFrame() {
+	public int getStartFrameFromDialog() {
 		return (int) startFrameJSpinner.getValue();
 	}
 	

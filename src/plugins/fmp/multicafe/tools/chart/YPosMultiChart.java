@@ -95,7 +95,7 @@ public class YPosMultiChart extends IcyFrame {
 	
 	private void fetchNewData (List<Cage> cageList, EnumXLSExportType option) {
 		for (Cage cage: cageList) {
-			String name = cage.roi.getName();
+			String name = cage.cageRoi.getName();
 			for (XYSeriesCollection xySeriesList: xyDataSetList) {
 				int countseries = xySeriesList.getSeriesCount();
 				for (int i = 0; i< countseries; i++) {
@@ -125,7 +125,7 @@ public class YPosMultiChart extends IcyFrame {
 					seriesXY.add( t, ypos );
 					previousY = currentY;
 				}
-				Rectangle rect = cage.roi.getBounds();
+				Rectangle rect = cage.cageRoi.getBounds();
 				double length_diagonal = Math.sqrt((rect.height*rect.height) + (rect.width*rect.width));
 				minmax = new MinMaxDouble(0.0, length_diagonal);
 				break;
@@ -151,7 +151,7 @@ public class YPosMultiChart extends IcyFrame {
 				break;
 				
 			default:
-				Rectangle rect1 = cage.roi.getBounds();
+				Rectangle rect1 = cage.cageRoi.getBounds();
 				double yOrigin = rect1.getY()+rect1.getHeight();	
 				for ( int it = 0; it < itmax;  it++) {
 					Point2D point = positionxyt.pointsList.get(it).xytPoint;
@@ -168,7 +168,7 @@ public class YPosMultiChart extends IcyFrame {
 	
 	private YPosMultiChartStructure getDataSet(Cage cage, EnumXLSExportType option) {
 		XYSeriesCollection xyDataset = new XYSeriesCollection();	
-		String name = cage.roi.getName();
+		String name = cage.cageRoi.getName();
 		XYSeries seriesXY = new XYSeries(name);
 		seriesXY.setDescription(name);
 		MinMaxDouble minmax = addPointsToXYSeries(cage, option, seriesXY);

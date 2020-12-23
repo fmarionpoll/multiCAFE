@@ -619,7 +619,7 @@ public class SequenceCamData {
 			if ((csName.length() > 4 && csName.substring( 0 , 4 ).contains("cage")
 				|| csName.contains("Polygon2D")) ) {
 				Cage cage = new Cage();
-				cage.roi = roi;
+				cage.cageRoi = roi;
 				cageList.add(cage);
 			}
 		}

@@ -101,7 +101,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (arg0.getPropertyName().equals("CAPILLARIES_OPEN")) {
 			Experiment exp = expList.getCurrentExperiment();
 			if (exp != null) {
-				paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
+				paneSequence.tabIntervals.displayCamDataIntervals(exp);
 			}
 		}
 		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
@@ -158,7 +158,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			progress = new ProgressFrame("load kymographs");
 			if (paneKymos.tabFile.loadDefaultKymos(exp)) 
 		        paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
-			paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
+			paneSequence.tabIntervals.displayCamDataIntervals(exp);
 			progress.close();
 			if (paneSequence.tabOpen.graphsCheckBox.isSelected())
 				SwingUtilities.invokeLater(new Runnable() { public void run() {

@@ -58,7 +58,7 @@ public class Cages {
 	boolean isPresent(Cage cagenew) {
 		boolean flag = false;
 		for (Cage cage: cageList) {
-			if (cage.roi.getName().contentEquals(cagenew.roi.getName())) {
+			if (cage.cageRoi.getName().contentEquals(cagenew.cageRoi.getName())) {
 				flag = true;
 				break;
 			}
@@ -96,9 +96,6 @@ public class Cages {
 		int ncages = cageList.size();
 		XMLUtil.setAttributeIntValue(xmlVal, ID_NCAGES, ncages);
 		for (Cage cage: cageList) {
-			cage.frameStart = cagesFrameStart;
-			cage.frameEnd = cagesFrameEnd;
-			cage.frameStep = cagesFrameStep;
 			cage.saveDetectedROIs = saveDetectedROIs;
 			cage.xmlSaveCage(xmlVal, index);
 			index++;
@@ -157,12 +154,6 @@ public class Cages {
 				cage.xmlLoadCage(xmlVal, index);
 				cageList.add(cage);
 			}
-			if (cageList.size() > 0) {
-				Cage cage = cageList.get(0);
-				cagesFrameStart = cage.frameStart;
-				cagesFrameEnd = cage.frameEnd;
-				cagesFrameStep = cage.frameStep;
-			}
 		} else {
 			List<ROI2D> cageLimitROIList = new ArrayList<ROI2D>();
 			if (xmlLoadCagesLimits_v0(node, cageLimitROIList)) {
@@ -193,7 +184,7 @@ public class Cages {
 		int ncages = cageLimitROIList.size();
 		for (int index=0; index< ncages; index++) {
 			Cage cage = new Cage();
-			cage.roi = cageLimitROIList.get(index);
+			cage.cageRoi = cageLimitROIList.get(index);
 			cage.flyPositions = flyPositionsList.get(index);
 			cageList.add(cage);
 		}
@@ -241,7 +232,7 @@ public class Cages {
 		List <ROI2D> cageLimitROIList = getRoisWithCageName(seqCamData);
 		seqCamData.seq.removeROIs(cageLimitROIList, false);
 		for (Cage cage: cageList) {
-			cageLimitROIList.add(cage.roi);
+			cageLimitROIList.add(cage.cageRoi);
 		}
 		seqCamData.seq.addROIs(cageLimitROIList, true);
 	}
@@ -256,7 +247,7 @@ public class Cages {
 	
 	public void setFirstAndLastCageToZeroFly() {
 		for (Cage cage: cageList) {
-			if (cage.roi.getName().contains("000") || cage.roi.getName().contains("009"))
+			if (cage.cageRoi.getName().contains("000") || cage.cageRoi.getName().contains("009"))
 				cage.cageNFlies = 0;
 		}
 	}
@@ -267,16 +258,16 @@ public class Cages {
 			if (roi.getName() == null)
 				break;
 			for (Cage cage: cageList) {
-				if (cage.roi == null)
+				if (cage.cageRoi == null)
 					break;
-				if (roi.getName().equals(cage.roi.getName())) {
+				if (roi.getName().equals(cage.cageRoi.getName())) {
 					found = true;
 					break;
 				}
 			}
 			if (!found) {
 				Cage cage = new Cage();
-				cage.roi = roi;
+				cage.cageRoi = roi;
 				cageList.add(cage);
 			}
 		}
@@ -288,8 +279,8 @@ public class Cages {
 		while (iterator.hasNext()) {
 			Cage cage = iterator.next();
 			boolean found = false;
-			if (cage.roi != null) {
-				String cageRoiName = cage.roi.getName();
+			if (cage.cageRoi != null) {
+				String cageRoiName = cage.cageRoi.getName();
 				for (ROI2D roi: roiList) {
 					if (roi.getName().equals(cageRoiName)) {
 						found = true;

@@ -124,7 +124,7 @@ public class XLSExportMoveResults  extends XLSExport {
 		rowsForOneExp = new ArrayList <XYTaSeries> (ncages);
 		for (int i=0; i< ncages; i++) {
 			Cage cage = expAll.cages.cageList.get(i);
-			XYTaSeries row = new XYTaSeries (cage.roi.getName(), xlsoption, nFrames, expAll.getCagesFrameStep());
+			XYTaSeries row = new XYTaSeries (cage.cageRoi.getName(), xlsoption, nFrames, expAll.getCagesFrameStep());
 			row.nflies = cage.cageNFlies;
 			rowsForOneExp.add(row);
 		}
@@ -138,7 +138,7 @@ public class XLSExportMoveResults  extends XLSExport {
 				XYTaSeries results = new XYTaSeries();
 				results.copy(cage.flyPositions);
 				results.binsize = expi.getCagesFrameStep();
-				results.name = cage.roi.getName();
+				results.name = cage.cageRoi.getName();
 				results.nflies = cage.cageNFlies;
 				if (results.nflies > 0) {				
 					switch (xlsoption) {
@@ -253,7 +253,7 @@ public class XLSExportMoveResults  extends XLSExport {
 	
 	private void trimDeadsFromRowMoveData(Experiment exp) {
 		for (Cage cage: exp.cages.cageList) {
-			int cagenumber = Integer.valueOf(cage.roi.getName().substring(4));
+			int cagenumber = Integer.valueOf(cage.cageRoi.getName().substring(4));
 			int ilastalive = 0;
 			if (cage.cageNFlies > 0) {
 				Experiment expi = exp;

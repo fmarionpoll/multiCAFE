@@ -129,7 +129,7 @@ public class DetectFlies_Options implements XMLPersistent {
 	}
 	
 	public BooleanMask2D findLargestBlob(ROI2DArea roiAll, int iroi) {
-		ROI cageLimitROI = cages.cageList.get(iroi).roi;
+		ROI cageLimitROI = cages.cageList.get(iroi).cageRoi;
 		if ( cageLimitROI == null )
 			return null;
 		BooleanMask2D cageMask = cageMaskList.get(iroi);
@@ -248,7 +248,7 @@ public class DetectFlies_Options implements XMLPersistent {
 		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageList);
 		rectangleAllCages = null;
 		for (Cage cage: cages.cageList) {
-			Rectangle rect = cage.roi.getBounds();
+			Rectangle rect = cage.cageRoi.getBounds();
 			if (rectangleAllCages == null)
 				rectangleAllCages = new Rectangle(rect);
 			else

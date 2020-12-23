@@ -62,7 +62,7 @@ public class Experiment {
 	public long				binKymoCol_Ms			= 60000;
 	// _________________________________________________
 	
-	public int 			kymoFrameStart 			= 0;
+	public int 				kymoFrameStart 			= 0;
 	private int 			kymoFrameEnd 			= 0;
 	private int 			kymoFrameStep 			= 1;									
 	
@@ -82,8 +82,13 @@ public class Experiment {
 	private final static String ID_VERSIONNUM		= "1.0.0"; 
 	private final static String ID_TIMEFIRSTIMAGE	= "fileTimeImageFirstMinute"; 
 	private final static String ID_TIMELASTIMAGE 	= "fileTimeImageLastMinute";
+	
 	private final static String ID_TIMEFIRSTIMAGEMS	= "fileTimeImageFirstMs"; 
 	private final static String ID_TIMELASTIMAGEMS 	= "fileTimeImageLastMs";
+	private final static String ID_FIRSTKYMOCOLMS	= "firstKymoColMs"; 
+	private final static String ID_LASTKYMOCOLMS 	= "lastKymoColMs";
+	private final static String ID_BINKYMOCOLMS 	= "binKymoColMs";	
+	
 	private final static String ID_STARTFRAME 		= "startFrame";
 	private final static String ID_ENDFRAME 		= "endFrame";
 	private final static String ID_STEP 			= "stepFrame";
@@ -327,18 +332,23 @@ public class Experiment {
 		firstCamImage_Ms= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, -1);
 		if (firstCamImage_Ms < 0) 
 			firstCamImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, -1)*60000;
-
 		lastCamImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, -1)*60000;
 		if (lastCamImage_Ms < 0)
 			lastCamImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1);
-		kymoFrameStart 			= XMLUtil.getElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
-		kymoFrameEnd 			= XMLUtil.getElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
-		kymoFrameStep 			= XMLUtil.getElementIntValue(node, ID_STEP, kymoFrameStep);
+
+		firstKymoCol_Ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, -1); 
+		lastKymoCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
+		binKymoCol_Ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
+		
+		kymoFrameStart	= XMLUtil.getElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
+		kymoFrameEnd 	= XMLUtil.getElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
+		kymoFrameStep	= XMLUtil.getElementIntValue(node, ID_STEP, kymoFrameStep);
+		
 		if (exp_boxID .contentEquals("..")) {
-			exp_boxID 			= XMLUtil.getElementValue(node, ID_BOXID, "..");
-	        experiment 			= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
-	        comment1 			= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
-	        comment2 			= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
+			exp_boxID	= XMLUtil.getElementValue(node, ID_BOXID, "..");
+	        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
+	        comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
+	        comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
 		}
 		return true;
 	}
@@ -354,6 +364,11 @@ public class Experiment {
 			XMLUtil.setElementValue(node, ID_VERSION, ID_VERSIONNUM);
 			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGEMS, firstCamImage_Ms);
 			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGEMS, lastCamImage_Ms);
+			
+			XMLUtil.setElementLongValue(node, ID_FIRSTKYMOCOLMS, firstKymoCol_Ms); 
+			XMLUtil.setElementLongValue(node, ID_LASTKYMOCOLMS, lastKymoCol_Ms);
+			XMLUtil.setElementLongValue(node, ID_BINKYMOCOLMS, binKymoCol_Ms); 	
+			
 			XMLUtil.setElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
 			XMLUtil.setElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
 			XMLUtil.setElementIntValue(node, ID_STEP, kymoFrameStep);
@@ -435,7 +450,7 @@ public class Experiment {
 	public boolean isFlyAlive(int cagenumber) {
 		boolean isalive = false;
 		for (Cage cage: cages.cageList) {
-			String cagenumberString = cage.roi.getName().substring(4);
+			String cagenumberString = cage.cageRoi.getName().substring(4);
 			if (Integer.valueOf(cagenumberString) == cagenumber) {
 				isalive = (cage.flyPositions.getLastIntervalAlive() > 0);
 				break;
@@ -447,7 +462,7 @@ public class Experiment {
 	public int getLastIntervalFlyAlive(int cagenumber) {
 		int flypos = -1;
 		for (Cage cage: cages.cageList) {
-			String cagenumberString = cage.roi.getName().substring(4);
+			String cagenumberString = cage.cageRoi.getName().substring(4);
 			if (Integer.valueOf(cagenumberString) == cagenumber) {
 				flypos = cage.flyPositions.getLastIntervalAlive();
 				break;
@@ -459,7 +474,7 @@ public class Experiment {
 	public boolean isDataAvailable(int cagenumber) {
 		boolean isavailable = false;
 		for (Cage cage: cages.cageList) {
-			String cagenumberString = cage.roi.getName().substring(4);
+			String cagenumberString = cage.cageRoi.getName().substring(4);
 			if (Integer.valueOf(cagenumberString) == cagenumber) {
 				isavailable = true;
 				break;
@@ -469,31 +484,17 @@ public class Experiment {
 	}
 	
 	// --------------------------------------------
-	
-	public boolean checkStepConsistency() {
-		int imageWidth = seqKymos.imageWidthMax; 
-		int len = (kymoFrameEnd - kymoFrameStart + 1) / kymoFrameStep;
-		boolean isOK = true;
-		if (len > imageWidth) {
-			isOK = false;
-			kymoFrameStep = (kymoFrameEnd - kymoFrameStart + 1)/imageWidth;
-		}
-		return isOK;
-	}
 		
-	public int setKymoFrameStart(int start) {
+	public void setKymoFrameStart(int start) {
 		kymoFrameStart = start;
-		return kymoFrameStart;
 	}
 	
-	public int setKymoFrameEnd(int end) {
+	public void setKymoFrameEnd(int end) {
 		kymoFrameEnd = end;
-		return kymoFrameEnd;
 	}
 	
-	public int setKymoFrameStep(int step) {
+	public void setKymoFrameStep(int step) {
 		kymoFrameStep = step;
-		return kymoFrameStep;
 	}
 	
 	public int getKymoFrameStart() {
@@ -515,28 +516,16 @@ public class Experiment {
 		return kymoFrameStep;
 	}
 	
-	public int setCagesFrameStart(int start) {
+	public void setCagesFrameStart(int start) {
 		cages.cagesFrameStart = start;
-		for (Cage cage: cages.cageList) {
-			cage.frameStart = start;
-		}
-		return cages.cagesFrameStart;
 	}
 	
-	public int setCagesFrameEnd(int end) {
+	public void setCagesFrameEnd(int end) {
 		cages.cagesFrameEnd = end;
-		for (Cage cage: cages.cageList) {
-			cage.frameEnd = end;
-		}
-		return cages.cagesFrameEnd;
 	}
 	
-	public int setCagesFrameStep(int step) {
+	public void setCagesFrameStep(int step) {
 		cages.cagesFrameStep = step;
-		for (Cage cage: cages.cageList) {
-			cage.frameStep = step;
-		}
-		return cages.cagesFrameStep;
 	}
 	
 	public int getCagesFrameStart() {
@@ -664,14 +653,15 @@ public class Experiment {
 			flag = xmlLoadOldCapillaries();
 		
 		// load mccapillaries description of experiment
-		if (exp_boxID .equals ("..")) {
+		if (exp_boxID .contentEquals("..")) {
 			exp_boxID = capillaries.desc.old_boxID;
 			experiment = capillaries.desc.old_experiment;
 			comment1 = capillaries.desc.old_comment1;
 			comment2 = capillaries.desc.old_comment2;
+			if (exp_boxID .contentEquals(".."))
+				xmlLoadExperiment ();
 		}
-		if (exp_boxID .contentEquals(".."))
-			xmlLoadExperiment ();
+		
 		return flag;
 	}
 	

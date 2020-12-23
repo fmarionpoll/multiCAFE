@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-
+import javax.swing.SwingConstants;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
@@ -20,15 +20,18 @@ import plugins.fmp.multicafe.sequence.Experiment;
 
 
 
-public class Infos extends JPanel {
+public class Intervals extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1530811745749103710L;
-	private MultiCAFE parent0 			= null;
+	private MultiCAFE parent0 				= null;
 	JSpinner 	pivotBinSize				= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	private 	JComboBox<String> binUnit 	= new JComboBox<String> (new String[] {"ms", "s", "min", "h", "day"});
-	JButton		resetButton					= new JButton("Apply");
+	JButton		applyButton					= new JButton("Apply");
+	JSpinner 	startColumnJSpinner	= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
+	JSpinner 	endColumnJSpinner	= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
+
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
@@ -38,21 +41,28 @@ public class Infos extends JPanel {
 		layout1.setVgap(0);
 		
 		JPanel panel1 = new JPanel(layout1);
-		panel1.add(new JLabel("  bin size "));
-		panel1.add(pivotBinSize);
-		panel1.add(binUnit);
-		binUnit.setSelectedIndex(2);
-		add(panel1); 
+		panel1.add(new JLabel("Column ", SwingConstants.RIGHT));
+		panel1.add(startColumnJSpinner);
+		panel1.add(new JLabel(" to "));
+		panel1.add(endColumnJSpinner);
+		add(GuiUtil.besidesPanel(panel1));
 		
 		JPanel panel2 = new JPanel(layout1);
-		panel2.add(resetButton);
-		add(GuiUtil.besidesPanel(panel2));
+		panel2.add(new JLabel("  bin size "));
+		panel2.add(pivotBinSize);
+		panel2.add(binUnit);
+		binUnit.setSelectedIndex(2);
+		add(panel2); 
+		
+		JPanel panel3 = new JPanel(layout1);
+		panel3.add(applyButton);
+		add(GuiUtil.besidesPanel(panel3));
 		
 		defineActionListeners();
 	}
 	
 	private void defineActionListeners() {
-		resetButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
+		applyButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
 			Experiment exp = parent0.expList.getCurrentExperiment();
 //			exp.setKymoFrameStart(0);
 //			if (exp.seqCamData != null && exp.seqCamData.seq != null) {

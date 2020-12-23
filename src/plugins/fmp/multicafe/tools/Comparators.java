@@ -50,7 +50,7 @@ public class Comparators {
 	public static class CageNameComparator implements Comparator <Cage> {
 		@Override
 		public int compare (Cage o1, Cage o2) {
-			return o1.roi.getName().compareTo(o2.roi.getName());
+			return o1.cageRoi.getName().compareTo(o2.cageRoi.getName());
 		}
 	}
 	

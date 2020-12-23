@@ -76,7 +76,7 @@ public class LoadSave  extends JPanel {
 			if (readOK) {
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
 					parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
-					parent0.paneSequence.tabIntervals.setAnalyzeFrameToDialog(exp);
+					parent0.paneSequence.tabIntervals.displayCamDataIntervals(exp);
 				}});
 			}
 		}

@@ -103,8 +103,8 @@ public class Create extends JPanel implements PropertyChangeListener {
 			options.expList.index1 = options.expList.index0; 
 		
 		options.stepFrame 		= (int) stepFrameJSpinner.getValue();
-		options.isFrameFixed 	= parent0.paneSequence.tabIntervals.getIsFixedFrame();
-		options.startFrame 		= parent0.paneSequence.tabIntervals.getStartFrame();
+		options.isFrameFixed 	= parent0.paneSequence.tabIntervals.getIsFixedFrameFromDialog();
+		options.startFrame 		= parent0.paneSequence.tabIntervals.getStartFrameFromDialog();
 		options.endFrame 		= parent0.paneSequence.tabIntervals.getEndFrame();
 				
 		options.diskRadius 		= (int) diskRadiusSpinner.getValue();

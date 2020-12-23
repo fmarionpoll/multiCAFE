@@ -15,10 +15,8 @@ import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
 
 public class Cage {
-	public ROI2D 		roi						= null;
-	public 	int			frameStep				= 1;
-	public	int			frameStart				= 0;
-	public	int			frameEnd				= 1;
+	public ROI2D 		cageRoi						= null;
+
 	public XYTaSeries 	flyPositions 			= new XYTaSeries();
 	public List<ROI2D> 	detectedFliesList		= new ArrayList<ROI2D>();
 	public int 			cageNFlies  			= 1;
@@ -40,9 +38,6 @@ public class Cage {
 	private final String ID_SEX					= "sex";
 	private final String ID_STRAIN				= "strain";
 	
-	private final String ID_STARTFRAME 			= "startFrame";
-	private final String ID_ENDFRAME 			= "endFrame";
-	private final String ID_STEP 				= "stepFrame";
 	
 	
 	public boolean xmlSaveCage (Node node, int index) {
@@ -64,17 +59,14 @@ public class Cage {
 		XMLUtil.setElementValue(xmlVal, ID_SEX, strCageSex);
 		XMLUtil.setElementValue(xmlVal, ID_STRAIN, strCageStrain);
 		
-		XMLUtil.setElementIntValue(xmlVal, ID_STARTFRAME, frameStart);
-		XMLUtil.setElementIntValue(xmlVal, ID_ENDFRAME, frameEnd);
-		XMLUtil.setElementIntValue(xmlVal, ID_STEP, frameStep);
 		return true;
 	}
 	
 	public boolean xmlSaveCageLimits(Element xmlVal) {
 		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_CAGELIMITS);
-		if (roi != null) {
-			roi.setSelected(false);
-			roi.saveToXML(xmlVal2);
+		if (cageRoi != null) {
+			cageRoi.setSelected(false);
+			cageRoi.saveToXML(xmlVal2);
 		}
 		return true;
 	}
@@ -111,15 +103,15 @@ public class Cage {
 			transferPositionsToRois();
 		}
 		else if (getRoisDetected(xmlVal))
-			;
+			; // TODO?
 		return true;
 	}
 	
 	public boolean getCageLimits (Element xmlVal) {
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_CAGELIMITS);
 		if (xmlVal2 != null) {
-			roi = (ROI2D) ROI.createFromXML(xmlVal2 );
-	        roi.setSelected(false);
+			cageRoi = (ROI2D) ROI.createFromXML(xmlVal2 );
+	        cageRoi.setSelected(false);
 		}
 		return true;
 	}
@@ -130,10 +122,6 @@ public class Cage {
 		strCageComment 	= XMLUtil.getElementValue(xmlVal, ID_COMMENT, strCageComment);
 		strCageSex 		= XMLUtil.getElementValue(xmlVal, ID_SEX, strCageSex);
 		strCageStrain 	= XMLUtil.getElementValue(xmlVal, ID_STRAIN, strCageStrain);
-		
-		frameStart 	= XMLUtil.getElementIntValue(xmlVal, ID_STARTFRAME, frameStart);
-		frameEnd 	= XMLUtil.getElementIntValue(xmlVal, ID_ENDFRAME, frameEnd);
-		frameStep 	= XMLUtil.getElementIntValue(xmlVal, ID_STEP, frameStep);
 		return true;
 	}
 	
@@ -161,7 +149,7 @@ public class Cage {
 
 	public String getCageNumber() {
 		if (strCageNumber == null) 
-			strCageNumber = roi.getName().substring(roi.getName().length() - 3);
+			strCageNumber = cageRoi.getName().substring(cageRoi.getName().length() - 3);
 		return strCageNumber;
 	}
 	
@@ -185,7 +173,7 @@ public class Cage {
 	}
 	
 	public Point2D getCenterTopCage() {
-		Rectangle2D rect = roi.getBounds2D();
+		Rectangle2D rect = cageRoi.getBounds2D();
 		Point2D pt = new Point2D.Double(rect.getX() + rect.getWidth()/2, rect.getY());
 		return pt;
 	}
@@ -193,7 +181,7 @@ public class Cage {
 	public Point2D getCenterTipCapillaries(Capillaries capList) {
 		List<Point2D> listpts = new ArrayList<Point2D>();
 		for (Capillary cap: capList.capillariesArrayList) {
-			Point2D pt = cap.getCapillaryTipWithinROI2D(roi);
+			Point2D pt = cap.getCapillaryTipWithinROI2D(cageRoi);
 			if (pt != null)
 				listpts.add(pt);
 		}
@@ -209,13 +197,10 @@ public class Cage {
 	}
 	
 	public void copy (Cage cag) {
-		roi	= cag.roi;
-		frameStep = cag.frameStep;
-		frameStart = cag.frameStart;
-		frameEnd = cag.frameEnd;
-		cageNFlies  = cag.cageNFlies;
-		strCageComment = cag.strCageComment;
-		strCageNumber = cag.strCageNumber;
+		cageRoi			= cag.cageRoi;
+		cageNFlies  	= cag.cageNFlies;
+		strCageComment 	= cag.strCageComment;
+		strCageNumber 	= cag.strCageNumber;
 		valid = false; 
 		
 		flyPositions.copy(cag.flyPositions);

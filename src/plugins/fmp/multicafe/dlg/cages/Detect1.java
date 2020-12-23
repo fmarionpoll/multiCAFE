@@ -193,8 +193,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.threshold		= (int) thresholdSpinner.getValue();
 		
 		options.df_stepFrame 	= (int) stepFrameJSpinner.getValue();
-		options.isFrameFixed 	= parent0.paneSequence.tabIntervals.getIsFixedFrame();
-		options.df_startFrame 	= parent0.paneSequence.tabIntervals.getStartFrame();
+		options.isFrameFixed 	= parent0.paneSequence.tabIntervals.getIsFixedFrameFromDialog();
+		options.df_startFrame 	= parent0.paneSequence.tabIntervals.getStartFrameFromDialog();
 		options.df_endFrame 	= parent0.paneSequence.tabIntervals.getEndFrame();
 
 		
