@@ -129,6 +129,8 @@ public class Experiment {
 		loadFileIntervalsFromSeqCamData();
 	}
 	
+	// ----------------------------------
+	
 	public String getExperimentFileName() {
 		return experimentFileName;
 	}

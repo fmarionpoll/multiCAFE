@@ -156,8 +156,10 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 
 		if (loadKymographs) {
 			progress = new ProgressFrame("load kymographs");
-			if (paneKymos.tabFile.loadDefaultKymos(exp)) 
+			if (paneKymos.tabFile.loadDefaultKymos(exp)) {
 		        paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
+		        paneKymos.tabIntervals.displayKymoIntervals(exp);
+			}
 			paneSequence.tabIntervals.displayCamDataIntervals(exp);
 			progress.close();
 			if (paneSequence.tabOpen.graphsCheckBox.isSelected())
