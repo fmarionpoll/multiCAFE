@@ -31,7 +31,7 @@ public class XLSExportOptions {
 
 	public boolean 	transpose 		= false;
 	public boolean 	duplicateSeries = true;
-	public int		buildExcelMilliSecStep	= 1;
+	public int		buildExcelStepMs= 1;
 	public boolean 	exportAllFiles 	= true;
 	public boolean 	absoluteTime	= false;
 	public boolean 	collateSeries	= false;

@@ -22,7 +22,7 @@ public class XLSExportGulpsResults  extends XLSExport {
 		boolean loadDrosoTrack = options.onlyalive;
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
 		expList.chainExperiments(options.collateSeries);
-		expAll = expList.getStartAndEndFromAllExperiments(options);
+		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
 		expAll.resultsSubPath = expList.expListResultsSubPath;
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");

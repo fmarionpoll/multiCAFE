@@ -26,13 +26,13 @@ public class Intervals extends JPanel {
 	 */
 	private static final long serialVersionUID = -1530811745749103710L;
 	private MultiCAFE parent0 				= null;
-	JSpinner 	pivotBinSize				= new JSpinner(new SpinnerNumberModel(1., 1., 1000., 1.));
 	private 	JComboBox<String> binUnit 	= new JComboBox<String> (new String[] {"ms", "s", "min", "h", "day"});
 	JButton		applyButton					= new JButton("Apply");
 	JButton		getFromCamDataButton		= new JButton("Get from stack of images");
-	JSpinner 	firstColumnJSpinner	= new JSpinner(new SpinnerNumberModel(0., 0., 10000.0, 1.)); 
-	JSpinner 	lastColumnJSpinner	= new JSpinner(new SpinnerNumberModel(99999999., 1., 99999999., 1.));
-
+	JSpinner 	firstColumnJSpinner	= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
+	JSpinner 	lastColumnJSpinner	= new JSpinner(new SpinnerNumberModel(99999999., 0., 99999999., 1.));
+	JSpinner 	binColumnJSpinner				= new JSpinner(new SpinnerNumberModel(1., 1., 1000., 1.));
+	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
@@ -51,7 +51,7 @@ public class Intervals extends JPanel {
 		
 		JPanel panel2 = new JPanel(layout1);
 		panel2.add(new JLabel("  bin size "));
-		panel2.add(pivotBinSize);
+		panel2.add(binColumnJSpinner);
 		panel2.add(binUnit);
 		binUnit.setSelectedIndex(2);
 		add(panel2); 
@@ -70,7 +70,7 @@ public class Intervals extends JPanel {
 			long binsize_Ms = getBinSize_Ms();
 			exp.firstKymoCol_Ms = (long) (((double) firstColumnJSpinner.getValue()) * binsize_Ms);
 			exp.lastKymoCol_Ms  = (long) (((double) lastColumnJSpinner.getValue()) * binsize_Ms);
-			exp.binKymoCol_Ms = (long) (((double) pivotBinSize.getValue()) * binsize_Ms);
+			exp.binKymoCol_Ms = (long) (((double) binColumnJSpinner.getValue()) * binsize_Ms);
 		}});
 	}
 	
@@ -86,7 +86,7 @@ public class Intervals extends JPanel {
 
 	
 	public int getBuildStep() {
-		int buildStep = ((int) pivotBinSize.getValue()) * getBinSize_Ms();
+		int buildStep = ((int) binColumnJSpinner.getValue()) * getBinSize_Ms();
 		return buildStep;
 	}
 	
@@ -113,7 +113,9 @@ public class Intervals extends JPanel {
 		if (exp.lastKymoCol_Ms < 0) 
 			exp.lastKymoCol_Ms = (long) (((double)exp.seqKymos.imageWidthMax) * binsize_Ms);
 		lastColumnJSpinner.setValue((double) exp.lastKymoCol_Ms/binsize_Ms);
-		pivotBinSize.setValue((double) exp.binKymoCol_Ms/binsize_Ms);
+		if (exp.binKymoCol_Ms <= 0)
+			exp.binKymoCol_Ms = (long) binsize_Ms;
+		binColumnJSpinner.setValue((double) exp.binKymoCol_Ms/binsize_Ms);
 	}
 
 }

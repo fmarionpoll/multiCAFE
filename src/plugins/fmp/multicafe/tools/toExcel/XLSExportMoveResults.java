@@ -36,7 +36,7 @@ public class XLSExportMoveResults  extends XLSExport {
 		boolean loadDrosoTrack = true; 
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
 		expList.chainExperiments(options.collateSeries);
-		expAll = expList.getStartAndEndFromAllExperiments(options);
+		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
 		int nbexpts = expList.getSize();
@@ -299,7 +299,7 @@ public class XLSExportMoveResults  extends XLSExport {
 			if (row.nflies < 1)
 				continue;
 			
-			for (int coltime=expAll.getCagesFrameStart(); coltime < expAll.getCagesFrameEnd(); coltime+=options.buildExcelMilliSecStep, pt.y++) {
+			for (int coltime=expAll.getCagesFrameStart(); coltime < expAll.getCagesFrameEnd(); coltime+=options.buildExcelStepMs, pt.y++) {
 				int i_from = coltime / row.binsize;
 				if (i_from >= row.pointsList.size())
 					break;

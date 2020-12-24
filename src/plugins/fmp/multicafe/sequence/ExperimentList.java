@@ -24,11 +24,14 @@ public class ExperimentList {
 	public ExperimentList () {
 	}
 	
-	public Experiment getStartAndEndFromAllExperiments(XLSExportOptions options) {
+	public Experiment getMsColStartAndEndFromAllExperiments(XLSExportOptions options) {
 		Experiment expAll = new Experiment();
 		Experiment exp0 = experimentList.get(0);
-		expAll.setKymoFrameStep(exp0.getKymoFrameStep());
 		
+		// TODO suppress use of kymoFrameStep
+		//expAll.setKymoFrameStep(exp0.getKymoFrameStep());
+		expAll.setKymoFrameStep( -1);
+
 		// make sure they have all the same step
 		for (Experiment exp: experimentList) {
 			if (exp.getKymoFrameStep() != expAll.getKymoFrameStep())
@@ -56,7 +59,7 @@ public class ExperimentList {
 				double last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
 				double first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
 				double diff = last - first;
-				if (diff <1) {
+				if (diff < 1) {
 					System.out.println("error when computing FileTime difference between last and first image; set dt between images = 1 ms");
 					diff = exp.seqCamData.seq.getSizeT();
 				}
@@ -64,8 +67,9 @@ public class ExperimentList {
 					expAll.lastCamImage_Ms = (long) diff;
 			}
 		}
-		expAll.setKymoFrameStart ( (int) expAll.firstCamImage_Ms);
-		expAll.setKymoFrameEnd ( (int) expAll.lastCamImage_Ms);
+		
+		expAll.firstKymoCol_Ms = expAll.firstCamImage_Ms;
+		expAll.lastKymoCol_Ms = expAll.lastCamImage_Ms;
 		return expAll;
 	}
 		
@@ -141,25 +145,6 @@ public class ExperimentList {
 			}
 		}
 	}
-		
-	public int getStackColumnPosition (Experiment exp, int col0) {
-		boolean found = false;
-		for (Experiment expi: experimentList) {
-			if (!expi.exp_boxID .equals(exp.exp_boxID) || expi == exp)
-				continue;
-			if (expi.col < 0)
-				continue;
-			
-			found = true;
-			exp.col = expi.col;
-			col0 = exp.col;
-				break;
-		}
-		if (!found) {
-			exp.col = col0;
-		}
-		return col0;
-	}
 
 	public int getPositionOfCamFileName(String filename) {
 		int position = -1;
@@ -204,8 +189,6 @@ public class ExperimentList {
 	
 	private Path stripFilenameFromPath(String fileNameWithFullPath) {
 		Path path = Paths.get(fileNameWithFullPath);		
-//		boolean exists =      Files.exists(path);        // Check if the file exists
-//		boolean isFile =      Files.isRegularFile(path); // Check if it's a regular file
 		boolean isDirectory = Files.isDirectory(path);   // Check if it's a directory
 		if (isDirectory)
 			return path;
