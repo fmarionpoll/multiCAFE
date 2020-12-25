@@ -18,8 +18,8 @@ import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Capillaries;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.tools.chart.XYMultiChart;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
-import plugins.fmp.multicafe.tools.toExcel.XYMultiChart;
 
 
 public class Graphs extends JPanel {

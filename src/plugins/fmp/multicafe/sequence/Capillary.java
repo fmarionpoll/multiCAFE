@@ -207,6 +207,32 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return yes;
 	}
 	
+	public List<Integer> getMeasures(EnumXLSExportType option, long seriesBinMs, long outputBinMs) {
+		List<Integer> datai = null;
+		switch (option) {
+		case DERIVEDVALUES:
+			if (ptsDerivative != null) 
+				datai = ptsDerivative.getMeasures(seriesBinMs, outputBinMs);
+			break;
+		case SUMGULPS:
+		case ISGULPS:
+		case TTOGULP:
+		case TTOGULP_LR:
+			if (gulpsRois != null)
+				datai = gulpsRois.getMeasures(option, ptsTop.getNPoints());
+			break;
+		case BOTTOMLEVEL:
+			datai = ptsBottom.getMeasures(seriesBinMs, outputBinMs);
+			break;
+		case TOPLEVEL:
+		default:
+			datai = ptsTop.getMeasures(seriesBinMs, outputBinMs);
+			break;
+		}
+		
+		return datai;
+	}
+	
 	public List<Integer> getMeasures(EnumXLSExportType option) {
 		List<Integer> datai = null;
 		switch (option) {
@@ -219,7 +245,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		case TTOGULP:
 		case TTOGULP_LR:
 			if (gulpsRois != null)
-				datai = gulpsRois.getMeasures(option, ptsTop.getNpoints());
+				datai = gulpsRois.getMeasures(option, ptsTop.getNPoints());
 			break;
 		case BOTTOMLEVEL:
 			datai = ptsBottom.getMeasures();
@@ -243,11 +269,11 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	
 	public void restoreCroppedMeasures () {
 		if (ptsTop.polylineLimit != null)
-			ptsTop.restoreNpoints();
+			ptsTop.restoreNPoints();
 		if (ptsBottom.polylineLimit != null)
-			ptsBottom.restoreNpoints();
+			ptsBottom.restoreNPoints();
 		if (ptsDerivative.polylineLimit != null)
-			ptsDerivative.restoreNpoints();
+			ptsDerivative.restoreNPoints();
 	}
 	
 	public void setGulpsOptions (BuildSeries_Options options) {
@@ -320,7 +346,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			break;
 		case SUMGULPS:
 			if (gulpsRois != null) {
-				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
+				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNPoints());
 				lastMeasure = datai.get(datai.size()-1);
 			}
 			break;
@@ -344,7 +370,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			break;
 		case SUMGULPS:
 			if (gulpsRois != null) {
-				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
+				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNPoints());
 				lastMeasure = datai.get(datai.size()-1) - datai.get(datai.size()-2);
 			}
 			break;
@@ -368,7 +394,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			break;
 		case SUMGULPS:
 			if (gulpsRois != null) {
-				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNpoints());
+				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNPoints());
 				t0Measure = datai.get(0);
 			}
 			break;

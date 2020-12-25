@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.tools.toExcel;
+package plugins.fmp.multicafe.tools.chart;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -22,6 +22,7 @@ import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
 public class XYMultiChart extends IcyFrame  {
 

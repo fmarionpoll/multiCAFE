@@ -368,7 +368,7 @@ public class XLSExport {
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nFrames);
-						results.data = cap.getMeasures(measureOption);
+						results.data = cap.getMeasures(measureOption, exp.binKymoCol_Ms, options.buildExcelStepMs);
 						resultsArrayList.add(results);
 					}
 					break;
@@ -381,9 +381,9 @@ public class XLSExport {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nFrames);
 						if (options.t0) 
-							results.data = exp.seqKymos.subtractT0(cap.getMeasures(measureOption));
+							results.data = exp.seqKymos.subtractT0(cap.getMeasures(measureOption, exp.binKymoCol_Ms, options.buildExcelStepMs));
 						else
-							results.data = cap.getMeasures(measureOption);
+							results.data = cap.getMeasures(measureOption, exp.binKymoCol_Ms, options.buildExcelStepMs);
 						resultsArrayList.add(results);
 					}
 					if (options.subtractEvaporation)
@@ -396,7 +396,7 @@ public class XLSExport {
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nFrames);
-						results.data = cap.getMeasures(measureOption);
+						results.data = cap.getMeasures(measureOption, exp.binKymoCol_Ms, options.buildExcelStepMs);
 						resultsArrayList.add(results);
 					}
 					if (options.subtractEvaporation)

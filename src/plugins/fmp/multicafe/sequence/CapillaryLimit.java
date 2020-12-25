@@ -48,13 +48,13 @@ public class CapillaryLimit  implements XMLPersistent  {
 		polylineLimit = new Level2D(limit);
 	}
 	
-	int getNpoints() {
+	int getNPoints() {
 		if (polylineLimit == null)
 			return 0;
 		return polylineLimit.npoints;
 	}
 
-	int restoreNpoints() {
+	int restoreNPoints() {
 		if (polyline_old != null) {
 			polylineLimit = polyline_old.clone();
 		}
@@ -78,6 +78,19 @@ public class CapillaryLimit  implements XMLPersistent  {
 		return yes;
 	}
 	
+	List<Integer> getMeasures(long seriesBinMs, long outputBinMs) {
+		if (polylineLimit == null)
+			return null;
+		
+		long npoints = polylineLimit.ypoints.length * seriesBinMs / outputBinMs;
+		List<Integer> arrayInt = new ArrayList<Integer>((int) npoints);
+		for (double iMs = 0; iMs <= npoints; iMs += outputBinMs) {
+			int index = (int) ((iMs * outputBinMs) / seriesBinMs);
+			arrayInt.add((int) polylineLimit.ypoints[index]);
+		}
+		return arrayInt;
+	}
+	
 	List<Integer> getMeasures() {
 		List<Integer> datai = getIntegerArrayFromPolyline2D();
 		return datai;
@@ -94,8 +107,7 @@ public class CapillaryLimit  implements XMLPersistent  {
 	int getT0Measure() {	
 		if (polylineLimit == null)
 			return 0;
-		int ivalue = (int) polylineLimit.ypoints[0];
-		return ivalue;
+		return (int) polylineLimit.ypoints[0];
 	}
 	
 	int getLastDeltaMeasure() {	
