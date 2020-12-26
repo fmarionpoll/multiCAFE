@@ -219,7 +219,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		case TTOGULP:
 		case TTOGULP_LR:
 			if (gulpsRois != null)
-				datai = gulpsRois.getMeasures(option, ptsTop.getNPoints());
+				datai = gulpsRois.getMeasures(option, ptsTop.getNPoints(), seriesBinMs, outputBinMs);
 			break;
 		case BOTTOMLEVEL:
 			datai = ptsBottom.getMeasures(seriesBinMs, outputBinMs);

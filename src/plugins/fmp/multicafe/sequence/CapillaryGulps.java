@@ -66,8 +66,38 @@ public class CapillaryGulps  implements XMLPersistent  {
 		return (rois != null && rois.size() > 0);
 	}
 	
+	public List<Integer> getMeasures(EnumXLSExportType option, int npoints, long seriesBinMs, long outputBinMs) {	
+		ArrayList<Integer> datai = null;
+		switch (option) {
+		case SUMGULPS:
+			datai = getCumSumFromRoisArray(npoints);
+			break;
+		case ISGULPS:
+			datai = getIsGulpsFromRoisArray(npoints);
+			break;
+		case TTOGULP:
+		case TTOGULP_LR:
+			List<Integer> datag = getIsGulpsFromRoisArray(npoints);
+			datai = getTToNextGulp(datag, npoints);
+			break;
+		default:
+			break;
+		}
+		return adaptArray(datai, seriesBinMs, outputBinMs);
+	}
+	
+	private ArrayList<Integer> adaptArray(ArrayList<Integer> data_in, long seriesBinMs, long outputBinMs) {
+		long npoints = data_in.size() * seriesBinMs / outputBinMs;
+		ArrayList<Integer> data_out = new ArrayList<Integer>((int)npoints);
+		for (double iMs = 0; iMs <= npoints; iMs += outputBinMs) {
+			int index = (int) ((iMs * outputBinMs) / seriesBinMs);
+			data_out.add( data_in.get(index));
+		}
+		return data_out;
+	}
+	
 	public List<Integer> getMeasures(EnumXLSExportType option, int npoints) {
-		List<Integer> datai = null;
+		ArrayList<Integer> datai = null;
 		switch (option) {
 		case SUMGULPS:
 			datai = getCumSumFromRoisArray(npoints);
@@ -86,27 +116,27 @@ public class CapillaryGulps  implements XMLPersistent  {
 		return datai;
 	}
 	
-	List<Integer> getCumSumFromRoisArray(int npoints) {
+	ArrayList<Integer> getCumSumFromRoisArray(int npoints) {
 		if (rois == null)
 			return null;
-		List<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
+		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
 		for (ROI roi: rois) {
 			ROI2DUtilities.addROItoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
 		}
 		return arrayInt;
 	}
 	
-	List<Integer> getIsGulpsFromRoisArray(int npoints) {
+	ArrayList<Integer> getIsGulpsFromRoisArray(int npoints) {
 		if (rois == null)
 			return null;
-		List<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
+		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
 		for (ROI roi: rois) {
 			ROI2DUtilities.addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
 		}
 		return arrayInt;
 	}
 	
-	List<Integer> getTToNextGulp(List<Integer> datai, int npoints) {
+	ArrayList<Integer> getTToNextGulp(List<Integer> datai, int npoints) {
 		int nintervals = -1;
 		ArrayList<Integer> data_out = null;
 		for (int index= datai.size()-1; index>= 0; index--) {

@@ -60,12 +60,12 @@ public class ExportOptions extends JPanel {
 		    }});
 	}
 	
-	public int getExcelBuildStep() {
+	int getExcelBuildStep() {
 		int buildStep = ((int) pivotBinSize.getValue()) * getBinSize();
 		return buildStep;
 	}
 	
-	private int getBinSize() {
+	int getBinSize() {
 		int binsize = 1;
 		int iselected = binUnit.getSelectedIndex();
 		switch (iselected) {

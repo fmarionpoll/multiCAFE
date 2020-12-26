@@ -186,6 +186,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	private void getCommonOptions(XLSExportOptions options) {
 		options.transpose 	= true; // tabOptions.transposeCheckBox.isSelected();
 		options.buildExcelStepMs = tabOptions.getExcelBuildStep() ;
+		options.buildExcelUnitMs = tabOptions.getBinSize();
 		options.collateSeries 	= tabOptions.collateSeriesCheckBox.isSelected();
 		options.padIntervals 	= tabOptions.padIntervalsCheckBox.isSelected();
 		options.absoluteTime	= tabOptions.absoluteTimeCheckBox.isSelected();

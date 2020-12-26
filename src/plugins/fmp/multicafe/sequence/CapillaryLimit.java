@@ -81,11 +81,11 @@ public class CapillaryLimit  implements XMLPersistent  {
 	List<Integer> getMeasures(long seriesBinMs, long outputBinMs) {
 		if (polylineLimit == null)
 			return null;
-		
-		long npoints = polylineLimit.ypoints.length * seriesBinMs / outputBinMs;
+		long maxMs = (polylineLimit.ypoints.length -1) * seriesBinMs;
+		long npoints = (maxMs / outputBinMs)+1;
 		List<Integer> arrayInt = new ArrayList<Integer>((int) npoints);
-		for (double iMs = 0; iMs <= npoints; iMs += outputBinMs) {
-			int index = (int) ((iMs * outputBinMs) / seriesBinMs);
+		for (double iMs = 0; iMs <= maxMs; iMs += outputBinMs) {
+			int index = (int) (iMs  / seriesBinMs);
 			arrayInt.add((int) polylineLimit.ypoints[index]);
 		}
 		return arrayInt;
