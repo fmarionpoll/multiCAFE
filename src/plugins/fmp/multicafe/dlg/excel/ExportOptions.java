@@ -26,6 +26,7 @@ public class ExportOptions extends JPanel {
 	public JCheckBox   collateSeriesCheckBox	= new JCheckBox("collate series", false);
 	JCheckBox   padIntervalsCheckBox	= new JCheckBox("pad intervals", false);
 	JCheckBox	absoluteTimeCheckBox 	= new JCheckBox("absolute time", false);
+	JCheckBox	transposeCheckBox 		= new JCheckBox("transpose", true);
 	JSpinner 	pivotBinSize			= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	private 	JComboBox<String> binUnit 	= new JComboBox<String> (new String[] {"ms", "s", "min", "h", "day"});
 	
@@ -38,6 +39,7 @@ public class ExportOptions extends JPanel {
 		flowLayout1.setVgap(0);
 		JPanel panel0 = new JPanel(flowLayout1);
 		panel0.add(exportAllFilesCheckBox);
+		panel0.add(transposeCheckBox);
 		panel0.add(collateSeriesCheckBox);
 		panel0.add(padIntervalsCheckBox);
 		add(panel0);

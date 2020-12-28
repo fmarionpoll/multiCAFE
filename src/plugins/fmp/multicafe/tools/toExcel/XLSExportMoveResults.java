@@ -115,7 +115,9 @@ public class XLSExportMoveResults  extends XLSExport {
 		}
 		expAll.firstCamImage_Ms = expAll.firstImage_FileTime.toMillis();
 		expAll.lastCamImage_Ms = expAll.lastImage_FileTime.toMillis();
-		int nFrames = (int) ((expAll.lastCamImage_Ms - expAll.firstCamImage_Ms)/expAll.getCagesFrameStep() +1) ;
+//		int nFrames = (int) ((expAll.lastCamImage_Ms - expAll.firstCamImage_Ms)/expAll.getCagesFrameStep() +1) ;
+		int nFrames = (int) ((expAll.lastCamImage_Ms - expAll.firstCamImage_Ms) / options.buildExcelStepMs +1);
+		
 		if (expAll.getCagesFrameEnd() < nFrames) {
 			expAll.setCagesFrameEnd(nFrames-1);
 			exp.setCagesFrameEnd(nFrames-1);

@@ -2,9 +2,9 @@ package plugins.fmp.multicafe.dlg.cages;
 
 import java.awt.GridLayout;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 

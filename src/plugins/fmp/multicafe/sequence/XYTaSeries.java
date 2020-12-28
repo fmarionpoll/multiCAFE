@@ -48,20 +48,6 @@ public class XYTaSeries implements XMLPersistent {
 		}
 	}
 	
-	public XYTaValue getAt(int indexData) {
-		XYTaValue val = null;
-		if (indexData < pointsList.size())
-			val = pointsList.get(indexData);
-		return val;
-	}
-	
-	public XYTaValue getLast() {			
-		XYTaValue val = null;
-		if (pointsList.size()>0) 
-			val = pointsList.get(pointsList.size()-1);
-		return val;
-	}
-	
 	public void clear() {
 		pointsList.clear();
 	}

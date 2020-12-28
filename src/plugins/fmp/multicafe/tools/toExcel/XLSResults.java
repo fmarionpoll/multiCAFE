@@ -33,22 +33,6 @@ public class XLSResults {
 		initValuesArray(nFrames);
 	}
 	
-	double getAt(int indexData, double scale) {			
-		double value = Double.NaN;
-		if (indexData < data.size()) {
-			value = data.get(indexData) * scale;
-		}
-		return value;
-	}
-	
-	double getLast(double scale) {			
-		double value = Double.NaN;
-		if (data.size()>0) {
-			value = data.get(data.size()-1) * scale;
-		}
-		return value;
-	}
-	
 	void initValIntArray(int dimension, int val) {
 		this.dimension = dimension; 
 		valint = new int [dimension];
