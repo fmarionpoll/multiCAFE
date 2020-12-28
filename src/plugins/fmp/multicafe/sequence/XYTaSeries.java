@@ -186,6 +186,67 @@ public class XYTaSeries implements XMLPersistent {
 		}
 	}
 	
+	// -----------------------------------------------------------
+	
+	public void computeDistanceBetweenPoints(XYTaSeries flyPositions, int buildExcelStepMs) {
+		if (flyPositions.pointsList.size() > 0) {
+			int it_start = 0;
+			int it_end = flyPositions.pointsList.size() * flyPositions.binsize;
+			Point2D previous = new Point2D.Double();
+			previous = pointsList.get(it_start).xytPoint;
+			int it_out = 0;
+			for (int it = it_start; it < it_end; it += buildExcelStepMs, it_out++) {
+				XYTaValue pos = pointsList.get(it_out);
+				pos.copy(flyPositions.pointsList.get(it));
+				pos.xytDistance = pos.xytPoint.distance(previous);
+				if (previous.getX() < 0 || pos.xytPoint.getX() < 0)
+					pos.xytDistance = Double.NaN;
+				previous = pos.xytPoint;
+			}
+		}
+	}
+	
+	public void computeIsAlive(XYTaSeries flyPositions, int buildExcelStepMs) {
+		flyPositions.computeIsAlive();
+		int it_start = 0;
+		int it_end = flyPositions.pointsList.size() * flyPositions.binsize;
+		int it_out = 0;
+		for (int it = it_start; it < it_end; it += buildExcelStepMs, it_out++) {
+			XYTaValue pos = pointsList.get(it_out);
+			pos.xytAlive = flyPositions.pointsList.get(it).xytAlive;
+		}
+	}
+	
+	public void computeSleep(XYTaSeries flyPositions, int buildExcelStepMs) {
+		flyPositions.computeSleep();
+		int it_start = 0;
+		int it_end = flyPositions.pointsList.size() * flyPositions.binsize;
+		int it_out = 0;
+		for (int it = it_start; it < it_end; it += buildExcelStepMs, it_out++) {
+			XYTaValue pos = pointsList.get(it_out);
+			pos.xytSleep = flyPositions.pointsList.get(it).xytSleep;
+		}
+	}
+	
+	public void computeNewPointsOrigin(Point2D newOrigin, XYTaSeries flyPositions, int buildExcelStepMs) {
+		newOrigin.setLocation(newOrigin.getX()*pixelsize, newOrigin.getY()*pixelsize);
+		double deltaX = newOrigin.getX() - origin.getX();
+		double deltaY = newOrigin.getY() - origin.getY();
+		if (deltaX == 0 && deltaY == 0)
+			return;
+		
+		int it_start = 0;
+		int it_end = flyPositions.pointsList.size() * flyPositions.binsize;
+		int it_out = 0;
+		for (int it = it_start; it < it_end; it += buildExcelStepMs, it_out++) {
+			XYTaValue pos_from = flyPositions.pointsList.get(it);
+			XYTaValue pos_to = pointsList.get(it_out);
+			pos_to.xytPoint.setLocation( pos_from.xytPoint.getX()-deltaX, pos_from.xytPoint.getY()-deltaY);
+		}
+	}
+	
+	// ------------------------------------------------------------
+	
 	public List<Double> getIsAliveAsDoubleArray() {
 		ArrayList<Double> dataArray = new ArrayList<Double>();
 		dataArray.ensureCapacity(pointsList.size());
