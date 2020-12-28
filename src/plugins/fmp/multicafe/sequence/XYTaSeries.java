@@ -188,16 +188,17 @@ public class XYTaSeries implements XMLPersistent {
 	
 	// -----------------------------------------------------------
 	
-	public void computeDistanceBetweenPoints(XYTaSeries flyPositions, int buildExcelStepMs) {
+	public void computeDistanceBetweenPoints(XYTaSeries flyPositions, int stepMs, int buildExcelStepMs) {
 		if (flyPositions.pointsList.size() > 0) {
 			int it_start = 0;
-			int it_end = flyPositions.pointsList.size() * flyPositions.binsize;
+			int it_end = flyPositions.pointsList.size() * stepMs;
 			Point2D previous = new Point2D.Double();
 			previous = pointsList.get(it_start).xytPoint;
 			int it_out = 0;
-			for (int it = it_start; it < it_end; it += buildExcelStepMs, it_out++) {
+			for (int it = it_start; it < it_end && it_out < pointsList.size(); it += buildExcelStepMs, it_out++) {
 				XYTaValue pos = pointsList.get(it_out);
-				pos.copy(flyPositions.pointsList.get(it));
+				int index = it/stepMs;
+				pos.copy(flyPositions.pointsList.get(index));
 				pos.xytDistance = pos.xytPoint.distance(previous);
 				if (previous.getX() < 0 || pos.xytPoint.getX() < 0)
 					pos.xytDistance = Double.NaN;
@@ -206,29 +207,31 @@ public class XYTaSeries implements XMLPersistent {
 		}
 	}
 	
-	public void computeIsAlive(XYTaSeries flyPositions, int buildExcelStepMs) {
+	public void computeIsAlive(XYTaSeries flyPositions, int stepMs, int buildExcelStepMs) {
 		flyPositions.computeIsAlive();
 		int it_start = 0;
-		int it_end = flyPositions.pointsList.size() * flyPositions.binsize;
+		int it_end = flyPositions.pointsList.size() * stepMs;
 		int it_out = 0;
-		for (int it = it_start; it < it_end; it += buildExcelStepMs, it_out++) {
+		for (int it = it_start; it < it_end && it_out < pointsList.size(); it += buildExcelStepMs, it_out++) {
+			int index = it/stepMs;
 			XYTaValue pos = pointsList.get(it_out);
-			pos.xytAlive = flyPositions.pointsList.get(it).xytAlive;
+			pos.xytAlive = flyPositions.pointsList.get(index).xytAlive;
 		}
 	}
 	
-	public void computeSleep(XYTaSeries flyPositions, int buildExcelStepMs) {
+	public void computeSleep(XYTaSeries flyPositions, int stepMs, int buildExcelStepMs) {
 		flyPositions.computeSleep();
 		int it_start = 0;
-		int it_end = flyPositions.pointsList.size() * flyPositions.binsize;
+		int it_end = flyPositions.pointsList.size() * stepMs;
 		int it_out = 0;
-		for (int it = it_start; it < it_end; it += buildExcelStepMs, it_out++) {
+		for (int it = it_start; it < it_end && it_out < pointsList.size(); it += buildExcelStepMs, it_out++) {
+			int index = it/stepMs;
 			XYTaValue pos = pointsList.get(it_out);
-			pos.xytSleep = flyPositions.pointsList.get(it).xytSleep;
+			pos.xytSleep = flyPositions.pointsList.get(index).xytSleep;
 		}
 	}
 	
-	public void computeNewPointsOrigin(Point2D newOrigin, XYTaSeries flyPositions, int buildExcelStepMs) {
+	public void computeNewPointsOrigin(Point2D newOrigin, XYTaSeries flyPositions, int stepMs, int buildExcelStepMs) {
 		newOrigin.setLocation(newOrigin.getX()*pixelsize, newOrigin.getY()*pixelsize);
 		double deltaX = newOrigin.getX() - origin.getX();
 		double deltaY = newOrigin.getY() - origin.getY();
@@ -236,12 +239,14 @@ public class XYTaSeries implements XMLPersistent {
 			return;
 		
 		int it_start = 0;
-		int it_end = flyPositions.pointsList.size() * flyPositions.binsize;
+		int it_end = flyPositions.pointsList.size()  * stepMs;
 		int it_out = 0;
-		for (int it = it_start; it < it_end; it += buildExcelStepMs, it_out++) {
-			XYTaValue pos_from = flyPositions.pointsList.get(it);
+		for (int it = it_start; it < it_end && it_out < pointsList.size(); it += buildExcelStepMs, it_out++) {
+			int index = it/stepMs;
+			XYTaValue pos_from = flyPositions.pointsList.get(index);
 			XYTaValue pos_to = pointsList.get(it_out);
-			pos_to.xytPoint.setLocation( pos_from.xytPoint.getX()-deltaX, pos_from.xytPoint.getY()-deltaY);
+			pos_to.copy(pos_from);
+			pos_to.xytPoint.setLocation( pos_to.xytPoint.getX()-deltaX, pos_to.xytPoint.getY()-deltaY);
 		}
 	}
 	

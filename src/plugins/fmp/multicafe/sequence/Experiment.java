@@ -204,6 +204,7 @@ public class Experiment {
 		
 		firstCamImage_Ms = firstImage_FileTime.toMillis();
 		lastCamImage_Ms = lastImage_FileTime.toMillis();
+		binCamImage_Ms = (lastCamImage_Ms - firstCamImage_Ms)/(seqCamData.seq.getSizeT()-1);
 	}
 	
 	public String getResultsDirectory() {

@@ -612,7 +612,7 @@ public class XLSExport {
 		if (row.values_out == null)
 			return;
 		for (long coltime=expAll.firstKymoCol_Ms; coltime < expAll.lastKymoCol_Ms; coltime+=options.buildExcelStepMs, pt.y++) {
-			int i_from = (int) (coltime / options.buildExcelStepMs);
+			int i_from = (int) ((coltime-expAll.firstKymoCol_Ms) / options.buildExcelStepMs);
 			if (i_from >= row.values_out.length) {
 				break;
 			}
