@@ -33,6 +33,9 @@ public class XLSExportOptions {
 	public boolean 	duplicateSeries = true;
 	public int		buildExcelStepMs= 1;
 	public int		buildExcelUnitMs= 1;
+	public boolean  fixedIntervals	= false;
+	public long 	startAll_Ms		= 0;
+	public long		endAll_Ms		= 999999;
 	public boolean 	exportAllFiles 	= true;
 	public boolean 	absoluteTime	= false;
 	public boolean 	collateSeries	= false;

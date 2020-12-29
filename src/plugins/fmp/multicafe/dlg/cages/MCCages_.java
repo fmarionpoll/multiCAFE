@@ -64,7 +64,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 		iTAB_INFOS = iTab;
 		tabInfos.init(parent0);
 		tabInfos.addPropertyChangeListener(this);
-		tabsPane.addTab("Display", null, tabInfos, "Display infos about cages and flies positions");
+		tabsPane.addTab("Infos", null, tabInfos, "Display infos about cages and flies positions");
 		
 		iTab++;
 		iTAB_DETECT1 = iTab;

@@ -30,12 +30,6 @@ public class ExperimentList {
 		
 		// TODO suppress use of kymoFrameStep
 		expAll.setKymoFrameStep( -1);
-
-//		// make sure they have all the same step; check also binCam
-//		for (Experiment exp: experimentList) {
-//			if (exp.getKymoFrameStep() != expAll.getKymoFrameStep())
-//				exp.setKymoFrameStep(expAll.getKymoFrameStep());
-//		}
 		
 		if (options.absoluteTime) {
 			expAll.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));

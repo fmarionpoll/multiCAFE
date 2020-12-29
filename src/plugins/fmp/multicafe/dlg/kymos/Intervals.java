@@ -74,17 +74,6 @@ public class Intervals extends JPanel {
 		}});
 	}
 	
-//	public void setAnalyzeFrameToDialog (Experiment exp) {
-//		startFrameJSpinner.setValue((int) exp.getKymoFrameStart());
-//		if (exp.getKymoFrameEnd() == 0)
-//			exp.setKymoFrameEnd(exp.getSeqCamSizeT());
-//		endFrameJSpinner.setValue((int) exp.getKymoFrameEnd());
-//		if (exp.getKymoFrameStep() <= 0 )
-//			exp.setKymoFrameStep(1);
-//		stepFrameLabel.setText(" step=" +exp.getKymoFrameStep());
-//	}
-
-	
 	public int getBuildStep() {
 		int buildStep = ((int) binColumnJSpinner.getValue()) * getBinSize_Ms();
 		return buildStep;

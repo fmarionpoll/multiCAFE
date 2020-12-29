@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import icy.gui.util.GuiUtil;
 
 
-public class ExportMove  extends JPanel {
+public class Move  extends JPanel {
 
 	/**
 	 * 

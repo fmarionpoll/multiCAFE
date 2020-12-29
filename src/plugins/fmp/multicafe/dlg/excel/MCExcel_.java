@@ -32,10 +32,10 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = -4296207607692017074L;
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
-	public ExportOptions			tabOptions		= new ExportOptions();
-	private ExportLevels	tabKymos		= new ExportLevels();
-	private ExportGulps	tabGulps		= new ExportGulps();
-	private ExportMove 	tabMove  		= new ExportMove();
+	public Options			tabOptions		= new Options();
+	private Levels	tabKymos		= new Levels();
+	private Gulps	tabGulps		= new Gulps();
+	private Move 	tabMove  		= new Move();
 	private MultiCAFE 		parent0 = null;
 
 	
@@ -186,7 +186,11 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	private void getCommonOptions(XLSExportOptions options) {
 		options.transpose 		= tabOptions.transposeCheckBox.isSelected();
 		options.buildExcelStepMs = tabOptions.getExcelBuildStep() ;
-		options.buildExcelUnitMs = tabOptions.getBinSize();
+		options.buildExcelUnitMs = tabOptions.getMsUnitValue(tabOptions.binUnit);
+		options.fixedIntervals 	= tabOptions.isFixedFrame.isSelected();
+		options.startAll_Ms 	= tabOptions.getStartAllMs();
+		options.endAll_Ms 		= tabOptions.getEndAllMs();
+		
 		options.collateSeries 	= tabOptions.collateSeriesCheckBox.isSelected();
 		options.padIntervals 	= tabOptions.padIntervalsCheckBox.isSelected();
 		options.absoluteTime	= tabOptions.absoluteTimeCheckBox.isSelected();
