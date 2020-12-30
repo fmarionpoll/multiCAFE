@@ -239,9 +239,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	void openSequenceCamFromCombo() {
 		Experiment exp = parent0.openExperimentFromString((String) expListComboBox.getSelectedItem());
-		parent0.updateDialogsAfterOpeningSequenceCam(exp);
+		parent0.paneSequence.transferSequenceCamDataToDialogs(exp);;
 		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
 			loadMeasuresAndKymos();
+			parent0.paneLevels.transferSeqKymoDataToDialogs(exp);
 		}});
 		tabsPane.setSelectedIndex(1);
 	}

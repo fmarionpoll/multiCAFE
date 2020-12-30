@@ -13,7 +13,7 @@ import javax.swing.JTabbedPane;
 import icy.gui.component.PopupPanel;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.SequenceCamData;
+import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 
@@ -100,10 +100,11 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 		}
 	}
 	
-	public void transferSequenceCamDataToDialogs(SequenceCamData seqCamData) {
-		tabDetectLevels.startSpinner.setValue((int)seqCamData.seqAnalysisStart);
-		tabDetectLevels.endSpinner.setValue((int)seqCamData.seqAnalysisEnd);
-		tabDetectGulps.startSpinner.setValue((int)seqCamData.seqAnalysisStart);
-		tabDetectGulps.endSpinner.setValue((int)seqCamData.seqAnalysisEnd);
+	public void transferSeqKymoDataToDialogs(Experiment exp) {
+		int lastpixel = exp.seqKymos.imageWidthMax - 1;
+		tabDetectLevels.startSpinner.setValue(0);
+		tabDetectLevels.endSpinner.setValue(lastpixel);
+		tabDetectGulps.startSpinner.setValue(0);
+		tabDetectGulps.endSpinner.setValue(lastpixel);
 	}
 }

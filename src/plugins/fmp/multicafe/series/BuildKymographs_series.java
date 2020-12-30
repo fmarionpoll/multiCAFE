@@ -37,7 +37,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 			if (exp.lastKymoCol_Ms > exp.lastCamImage_Ms)
 				exp.lastKymoCol_Ms = exp.lastCamImage_Ms;
 		} else {
-			exp.firstKymoCol_Ms = 0;
+			exp.firstKymoCol_Ms = exp.firstCamImage_Ms;
 			exp.lastKymoCol_Ms = exp.lastCamImage_Ms;
 		}
 		if (buildKymo(exp)) {
@@ -48,8 +48,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 	}
 	
 	private void loadExperimentDataToBuildKymos(Experiment exp) {
-		exp.xmlLoadExperiment();
-		exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
+		exp.openSequenceCamData();
 		exp.xmlLoadMCcapillaries_Only();
 	}
 			
@@ -190,7 +189,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 		int numC = seqCamData.seq.getSizeC();
 		if (numC <= 0)
 			numC = 3;
-		double fimagewidth =  1 + (exp.lastCamImage_Ms - exp.firstCamImage_Ms )/exp.binKymoCol_Ms;	
+		double fimagewidth =  1 + (exp.lastCamImage_Ms - exp.firstCamImage_Ms ) /options.binMs;	
 		int imageWidth = (int) fimagewidth;
 		DataType dataType = seqCamData.seq.getDataType_();
 		if (dataType.toString().equals("undefined"))

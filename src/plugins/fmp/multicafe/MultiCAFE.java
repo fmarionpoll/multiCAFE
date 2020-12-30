@@ -130,13 +130,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 		return exp;
 	}
-	
-	public void updateDialogsAfterOpeningSequenceCam(Experiment exp) {
-		if (exp.seqCamData != null) {
-			paneSequence.transferSequenceCamDataToDialogs(exp);	
-			paneLevels.transferSequenceCamDataToDialogs(exp.seqCamData);
-		}
-	}
 
 	public void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
 		Experiment exp = expList.getCurrentExperiment();

@@ -51,13 +51,12 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
 	private String 		detectString 			= "        Detect     ";
 	private JButton 	detectButton 			= new JButton(detectString);
-	private JCheckBox	partCheckBox 			= new JCheckBox (" from", false);
+	private JCheckBox	partCheckBox 			= new JCheckBox (" from (pixel)", false);
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
 	private JCheckBox	maxContrastCheckBox 	= new JCheckBox ("maximize contrast", false);
 	
-
 	private MultiCAFE 	parent0 				= null;
 	private DetectLevels_series thread 			= null;
 	private int			selectedFrame			= 0;
@@ -68,7 +67,9 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
-		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		FlowLayout layoutLeft = new FlowLayout(FlowLayout.LEFT); 
+		
+		JPanel panel0 = new JPanel(layoutLeft);
 		((FlowLayout)panel0.getLayout()).setVgap(0);
 		panel0.add(detectButton);
 		panel0.add(allCheckBox);
@@ -78,8 +79,13 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		panel0.add(maxContrastCheckBox);
 		add( GuiUtil.besidesPanel(panel0 ));
 		
+		JPanel panel01 = new JPanel(layoutLeft);
+		panel01.add(directionComboBox);
 		((JLabel) directionComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
-		add( GuiUtil.besidesPanel(directionComboBox, thresholdSpinner, transformForLevelsComboBox, displayTransform1Button ));
+		panel01.add(thresholdSpinner);
+		panel01.add(transformForLevelsComboBox);
+		panel01.add(displayTransform1Button);
+		add (panel01);
 		
 		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		((FlowLayout)panel1.getLayout()).setVgap(0);	
@@ -203,8 +209,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		options.detectAllKymos 		= allKymosCheckBox.isSelected();
 	
 		options.analyzePartOnly		= partCheckBox.isSelected();
-		options.startPixel			= (int) ((long) startSpinner.getValue() * exp.binCamImage_Ms  / exp.binKymoCol_Ms);
-		options.endPixel			= (int) ((long) endSpinner.getValue() * exp.binCamImage_Ms  / exp.binKymoCol_Ms);
+		options.startPixel			= (int) ((int) startSpinner.getValue()); // * exp.binCamImage_Ms  / exp.binKymoCol_Ms);
+		options.endPixel			= (int) ((int) endSpinner.getValue()); // * exp.binCamImage_Ms  / exp.binKymoCol_Ms);
 		options.spanDiffTop			= getSpanDiffTop();
 		options.detectL 			= leftCheckBox.isSelected();
 		options.detectR				= rightCheckBox.isSelected();

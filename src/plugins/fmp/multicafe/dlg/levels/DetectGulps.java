@@ -43,7 +43,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 	JCheckBox				buildDerivativeCheckBox 	= new JCheckBox ("build derivative", true);
 	JCheckBox				detectGulpsCheckBox 		= new JCheckBox ("detect gulps", true);
 	
-	private JCheckBox		partCheckBox 				= new JCheckBox ("detect from", false);
+	private JCheckBox		partCheckBox 				= new JCheckBox ("detect from (pixel)", false);
 	private JButton			displayTransform2Button		= new JButton("Display");
 	private JSpinner		spanTransf2Spinner			= new JSpinner(new SpinnerNumberModel(3, 0, 500, 1));
 	private JSpinner 		detectGulpsThresholdSpinner	= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
@@ -58,19 +58,28 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
-		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		FlowLayout layoutLeft = new FlowLayout(FlowLayout.LEFT); 
+		
+		JPanel panel0 = new JPanel(layoutLeft);
 		((FlowLayout)panel0.getLayout()).setVgap(0);
 		panel0.add( detectButton);
 		panel0.add( allCheckBox);
 		panel0.add(detectAllGulpsCheckBox);
+		panel0.add(buildDerivativeCheckBox);
+		panel0.add(detectGulpsCheckBox);
 		add( GuiUtil.besidesPanel(panel0 ));
 		
-		add( GuiUtil.besidesPanel(new JLabel("threshold", SwingConstants.RIGHT), detectGulpsThresholdSpinner, transformForGulpsComboBox, displayTransform2Button));
+//		add( GuiUtil.besidesPanel(new JLabel("threshold", SwingConstants.RIGHT), detectGulpsThresholdSpinner, transformForGulpsComboBox, displayTransform2Button));
+		JPanel panel01 = new JPanel(layoutLeft);
+		panel01.add(new JLabel("threshold", SwingConstants.RIGHT));
+		panel01.add(detectGulpsThresholdSpinner);
+		panel01.add(transformForGulpsComboBox);
+		panel01.add(displayTransform2Button);
+		add (panel01);
 		
 		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		((FlowLayout)panel1.getLayout()).setVgap(0);
-		panel1.add(buildDerivativeCheckBox);
-		panel1.add(detectGulpsCheckBox);
+
 		panel1.add(partCheckBox);
 		panel1.add(startSpinner);
 		panel1.add(new JLabel("to"));

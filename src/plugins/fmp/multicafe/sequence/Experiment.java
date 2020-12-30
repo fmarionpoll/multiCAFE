@@ -62,10 +62,6 @@ public class Experiment {
 	public long				binKymoCol_Ms			= 60000;
 	// _________________________________________________
 	
-//	public int 				kymoFrameStart 			= 0;
-//	private int 			kymoFrameEnd 			= 0;
-//	private int 			kymoFrameStep 			= 1;									
-	
 	public String			exp_boxID 				= new String("..");
 	public String			experiment				= new String("..");
 	public String 			comment1				= new String("..");
@@ -190,6 +186,17 @@ public class Experiment {
 			return null;
 		experimentFileName = filename;
 		xmlLoadExperiment();
+		seqCamData.setParentDirectoryAsFileName() ;
+		loadFileIntervalsFromSeqCamData();
+		return seqCamData;
+	}
+	
+	public SequenceCamData openSequenceCamData() {
+		xmlLoadExperiment();
+		if (seqCamData == null)
+			seqCamData = new SequenceCamData();
+		if (null == seqCamData.loadSequence(experimentFileName))
+			return null;
 		seqCamData.setParentDirectoryAsFileName() ;
 		loadFileIntervalsFromSeqCamData();
 		return seqCamData;

@@ -109,12 +109,12 @@ public class Options extends JPanel {
 	}
 	
 	long getStartAllMs() {
-		long startAll = ((int) startJSpinner.getValue()) * intervalsUnit.getMsUnitValue();
+		long startAll = (long) (((double) startJSpinner.getValue()) * intervalsUnit.getMsUnitValue());
 		return startAll;
 	}
 	
 	long getEndAllMs() {
-		long endAll = ((int) endJSpinner.getValue()) * intervalsUnit.getMsUnitValue();
+		long endAll = (long) (((double) endJSpinner.getValue()) * intervalsUnit.getMsUnitValue());
 		return endAll;
 	}
 
