@@ -72,19 +72,14 @@ public class Display  extends JPanel {
 		List<Layer> layers = canvas.getLayers(false);
 		if (layers == null)
 			return;
-//		ThreadUtil.bgRun(new Runnable() {
-//			@Override
-//			public void run() {
-				for (Layer layer: layers) {
-					ROI roi = layer.getAttachedROI();
-					if (roi == null)
-						continue;
-					String cs = roi.getName();
-					if (cs.contains(pattern))  
-						layer.setVisible(isVisible);
-				}
-//			}
-//		});
+		for (Layer layer: layers) {
+			ROI roi = layer.getAttachedROI();
+			if (roi == null)
+				continue;
+			String cs = roi.getName();
+			if (cs.contains(pattern))  
+				layer.setVisible(isVisible);
+		}
 	}
 
 }

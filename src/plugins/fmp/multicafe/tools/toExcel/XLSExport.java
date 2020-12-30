@@ -414,7 +414,8 @@ public class XLSExport {
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:
 				for (XLSResults row: rowListForOneExp ) 
-					row.subtractDeltaT(expAll.getKymoFrameStep(), options.buildExcelStepMs);
+					row.subtractDeltaT(1, options.buildExcelStepMs);
+//					row.subtractDeltaT(expAll.getKymoFrameStep(), options.buildExcelStepMs);
 				break;
 			default:
 				break;
@@ -536,9 +537,9 @@ public class XLSExport {
 					expi = expi.nextExperiment;
 				}
 				int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
-				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.getKymoFrameStep() 
+				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.binCamImage_Ms 
 						+ (expi.firstCamImage_Ms - expAll.firstCamImage_Ms));		
-				ilastalive = lastMinuteAlive / expAll.getKymoFrameStep();
+				ilastalive = (int) (lastMinuteAlive / expAll.binKymoCol_Ms);
 			}
 			if (ilastalive > 0)
 				ilastalive += 1;

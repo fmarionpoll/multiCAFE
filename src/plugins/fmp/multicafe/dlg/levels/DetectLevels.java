@@ -182,7 +182,6 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 	}
 	
 	private BuildSeries_Options initBuildParameters(Experiment exp) {	
-		parent0.paneSequence.tabIntervals.getCamDataIntervalsFromDialog(exp);
 		BuildSeries_Options options = new BuildSeries_Options();
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);
@@ -204,8 +203,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		options.detectAllKymos 		= allKymosCheckBox.isSelected();
 	
 		options.analyzePartOnly		= partCheckBox.isSelected();
-		options.startPixel			= (int) startSpinner.getValue() / exp.getKymoFrameStep();
-		options.endPixel			= (int) endSpinner.getValue() / exp.getKymoFrameStep();
+		options.startPixel			= (int) ((long) startSpinner.getValue() * exp.binCamImage_Ms  / exp.binKymoCol_Ms);
+		options.endPixel			= (int) ((long) endSpinner.getValue() * exp.binCamImage_Ms  / exp.binKymoCol_Ms);
 		options.spanDiffTop			= getSpanDiffTop();
 		options.detectL 			= leftCheckBox.isSelected();
 		options.detectR				= rightCheckBox.isSelected();

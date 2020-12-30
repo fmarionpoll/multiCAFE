@@ -27,10 +27,7 @@ public class ExperimentList {
 	public Experiment getMsColStartAndEndFromAllExperiments(XLSExportOptions options) {
 		Experiment expAll = new Experiment();
 		Experiment exp0 = experimentList.get(0);
-		
-		// TODO suppress use of kymoFrameStep
-		expAll.setKymoFrameStep( -1);
-		
+	
 		if (options.absoluteTime) {
 			expAll.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
 			expAll.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
@@ -77,14 +74,6 @@ public class ExperimentList {
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
 			exp.resultsSubPath = expListResultsSubPath;
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
-			int image_size = exp.seqKymos.seq.getSizeX();
-			if (image_size != 0) {
-				exp.setKymoFrameStep(exp.seqCamData.nTotalFrames / image_size);
-				if (exp.getKymoFrameStep() < 1) {
-					System.out.println("Error: experiment with stepFrame set to 1");
-					exp.setKymoFrameStep (1);
-				}
-			}
 			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())
 				maxSizeOfCapillaryArrays = exp.capillaries.capillariesArrayList.size();
 			progress.incPosition();

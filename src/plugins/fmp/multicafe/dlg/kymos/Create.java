@@ -41,7 +41,6 @@ public class Create extends JPanel implements PropertyChangeListener {
 	
 	JCheckBox 				doCreateCheckBox 			= new JCheckBox("force creation of results_bin", false);
 	JCheckBox				allSeriesCheckBox 				= new JCheckBox("ALL series (current to last)", false);
-	public JSpinner 		stepFrameJSpinner			= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
 	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE 		parent0						= null;
@@ -68,8 +67,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		add(GuiUtil.besidesPanel(panel2));
 		
 		JPanel panel3 = new JPanel(layout1);
-		panel3.add(new JLabel(" step "));
-		panel3.add(stepFrameJSpinner );
+
 		panel3.add(doCreateCheckBox);
 		add(GuiUtil.besidesPanel(panel3));		
 		defineActionListeners();
@@ -102,16 +100,16 @@ public class Create extends JPanel implements PropertyChangeListener {
 		else
 			options.expList.index1 = options.expList.index0; 
 		
-		options.stepFrame 		= (int) stepFrameJSpinner.getValue();
-		options.isFrameFixed 	= parent0.paneSequence.tabIntervals.getIsFixedFrameFromDialog();
-		options.startFrame 		= parent0.paneSequence.tabIntervals.getStartFrameFromDialog();
-		options.endFrame 		= parent0.paneSequence.tabIntervals.getEndFrame();
+		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
+		options.startMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
+		options.endMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
+		options.binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
 				
 		options.diskRadius 		= (int) diskRadiusSpinner.getValue();
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();
 		options.doCreateResults_bin = doCreateCheckBox.isSelected();
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
-		options.resultsSubPath = (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
+		options.resultsSubPath 	= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
 		return true;
 	}
 		
@@ -146,7 +144,6 @@ public class Create extends JPanel implements PropertyChangeListener {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
-				exp.setKymoFrameStep((int) stepFrameJSpinner.getValue());
 				parent0.paneSequence.openExperiment(exp);
 			}
 			startComputationButton.setText(detectString);

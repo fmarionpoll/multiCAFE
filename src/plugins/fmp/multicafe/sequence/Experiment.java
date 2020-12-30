@@ -55,16 +55,16 @@ public class Experiment {
 	
 	public long				firstCamImage_Ms		= 0;
 	public long				lastCamImage_Ms			= 0;
-	public long				binCamImage_Ms			= 60000;
+	public long				binCamImage_Ms			= 0;
 	
 	public long				firstKymoCol_Ms			= 0;
 	public long				lastKymoCol_Ms			= 0;
 	public long				binKymoCol_Ms			= 60000;
 	// _________________________________________________
 	
-	public int 				kymoFrameStart 			= 0;
-	private int 			kymoFrameEnd 			= 0;
-	private int 			kymoFrameStep 			= 1;									
+//	public int 				kymoFrameStart 			= 0;
+//	private int 			kymoFrameEnd 			= 0;
+//	private int 			kymoFrameStep 			= 1;									
 	
 	public String			exp_boxID 				= new String("..");
 	public String			experiment				= new String("..");
@@ -88,10 +88,7 @@ public class Experiment {
 	private final static String ID_FIRSTKYMOCOLMS	= "firstKymoColMs"; 
 	private final static String ID_LASTKYMOCOLMS 	= "lastKymoColMs";
 	private final static String ID_BINKYMOCOLMS 	= "binKymoColMs";	
-	
-	private final static String ID_STARTFRAME 		= "startFrame";
-	private final static String ID_ENDFRAME 		= "endFrame";
-	private final static String ID_STEP 			= "stepFrame";
+
 	private final static String ID_EXPTFILENAME 	= "exptFileName";
 	private final static String ID_MCEXPERIMENT 	= "MCexperiment";
 	private final static String ID_MCDROSOTRACK     = "MCdrosotrack.xml";
@@ -226,7 +223,7 @@ public class Experiment {
 	}
 	
 	public String getResultsDirectoryNameFromKymoFrameStep() {
-		return RESULTS + "_"+kymoFrameStep;
+		return RESULTS + "_"+binKymoCol_Ms/1000;
 	}
 	
 	public String getDirectoryToSaveResults() {
@@ -279,9 +276,9 @@ public class Experiment {
 		int step = -1;
 		if (resultsPath.contains(RESULTS)) {
 			if (resultsPath.length() < (RESULTS.length() +2)) {
-				step = kymoFrameStep;
+				step = (int) binKymoCol_Ms;
 			} else {
-				step = Integer.valueOf(resultsPath.substring(RESULTS.length()+1));
+				step = Integer.valueOf(resultsPath.substring(RESULTS.length()+1))*1000;
 			}
 		}
 		return step;
@@ -343,10 +340,6 @@ public class Experiment {
 		lastKymoCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
 		binKymoCol_Ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
 		
-		kymoFrameStart	= XMLUtil.getElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
-		kymoFrameEnd 	= XMLUtil.getElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
-		kymoFrameStep	= XMLUtil.getElementIntValue(node, ID_STEP, kymoFrameStep);
-		
 		if (exp_boxID .contentEquals("..")) {
 			exp_boxID	= XMLUtil.getElementValue(node, ID_BOXID, "..");
 	        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
@@ -371,10 +364,6 @@ public class Experiment {
 			XMLUtil.setElementLongValue(node, ID_FIRSTKYMOCOLMS, firstKymoCol_Ms); 
 			XMLUtil.setElementLongValue(node, ID_LASTKYMOCOLMS, lastKymoCol_Ms);
 			XMLUtil.setElementLongValue(node, ID_BINKYMOCOLMS, binKymoCol_Ms); 	
-			
-			XMLUtil.setElementIntValue(node, ID_STARTFRAME, kymoFrameStart);
-			XMLUtil.setElementIntValue(node, ID_ENDFRAME, kymoFrameEnd);
-			XMLUtil.setElementIntValue(node, ID_STEP, kymoFrameStep);
 			
 			XMLUtil.setElementValue(node, ID_BOXID, exp_boxID);
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
@@ -488,35 +477,31 @@ public class Experiment {
 	
 	// --------------------------------------------
 		
-	public void setKymoFrameStart(int start) {
-		kymoFrameStart = start;
-	}
-	
-	public void setKymoFrameEnd(int end) {
-		kymoFrameEnd = end;
-	}
-	
-	public void setKymoFrameStep(int step) {
-		kymoFrameStep = step;
-	}
-	
-	public int getKymoFrameStart() {
-		return kymoFrameStart;
-	}
-	
-	public int getKymoFrameEnd() {
-		return kymoFrameEnd;
-	}
+//	public void setKymoFrameStart(int start) {
+//		kymoFrameStart = start;
+//	}
+//	
+//	public void setKymoFrameEnd(int end) {
+//		kymoFrameEnd = end;
+//	}
+//	
+//	public void setKymoFrameStep(int step) {
+//		kymoFrameStep = step;
+//	}
+//	
+//	public int getKymoFrameStart() {
+//		return kymoFrameStart;
+//	}
+//	
+//	public int getKymoFrameEnd() {
+//		return kymoFrameEnd;
+//	}
 	
 	public int getSeqCamSizeT() {
-		int lastFrame = kymoFrameEnd;
+		int lastFrame = 0;
 		if (seqCamData != null && seqCamData.seq != null)
 			lastFrame = seqCamData.seq.getSizeT() -1;
 		return lastFrame;
-	}
-	
-	public int getKymoFrameStep() {
-		return kymoFrameStep;
 	}
 	
 	public void setCagesFrameStart(int start) {
@@ -815,13 +800,7 @@ public class Experiment {
 			}
 		}
 	}
-	
-	public void storeAnalysisParametersToCages() {
-		cages.detect.df_startFrame = (int) kymoFrameStart;
-		cages.detect.df_endFrame = (int) kymoFrameEnd;
-		cages.detect.df_stepFrame = kymoFrameStep;
-	}
-	
+
 	public void xmlSaveFlyPositionsForAllCages() {			
 		String fileName = getResultsDirectory() + File.separator + ID_MCDROSOTRACK;
 		cages.xmlWriteCagesToFileNoQuestion(fileName);

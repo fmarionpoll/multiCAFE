@@ -158,7 +158,6 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 			return false;
 		
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
-		parent0.paneSequence.tabIntervals.getCamDataIntervalsFromDialog(exp);
 		
 		parent0.expList.currentExperimentIndex = index;
 		parent0.paneSequence.tabClose.closeExp(exp);
@@ -169,9 +168,10 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 		else
 			options.expList.index1 = options.expList.index0; 
 		
-		options.isFrameFixed 	= parent0.paneSequence.tabIntervals.getIsFixedFrameFromDialog();
-		options.startFrame 		= parent0.paneSequence.tabIntervals.getStartFrameFromDialog();
-		options.endFrame 		= parent0.paneSequence.tabIntervals.getEndFrame();
+		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
+		options.startMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
+		options.endMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
+		options.binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
 				
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.resultsSubPath = (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;

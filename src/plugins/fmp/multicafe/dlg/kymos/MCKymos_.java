@@ -25,17 +25,18 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 	 */
 	private static final long serialVersionUID = 1122367183829360097L;
 
-	JTabbedPane 	tabsPane 		= new JTabbedPane();
-	public Create 	tabCreate 		= new Create();
-	public Display	tabDisplay 		= new Display();
-	public Intervals	tabIntervals 		= new Intervals();
-	public LoadSave tabFile 		= new LoadSave();
+	public	PopupPanel capPopupPanel	= null;
+	JTabbedPane 		tabsPane 		= new JTabbedPane();
+	public Create 		tabCreate 		= new Create();
+	public Display		tabDisplay 		= new Display();
+	public Intervals	tabIntervals 	= new Intervals();
+	public LoadSave 	tabFile 		= new LoadSave();
 	
 	private MultiCAFE parent0 = null;
 
 	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		this.parent0 = parent0;
-		PopupPanel capPopupPanel = new PopupPanel(string);
+		capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
@@ -68,8 +69,9 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 				parent0.mainFrame.revalidate();
 				parent0.mainFrame.pack();
 				parent0.mainFrame.repaint();
-			}
-		});
+				tabbedCapillariesAndKymosSelected();
+			}});
+		
 	}
 
 	@Override
@@ -87,7 +89,6 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		else if (event.getPropertyName().equals("KYMOS_SAVE")) {
 			tabsPane.setSelectedIndex(1);
 		}
-		
 		else if (event.getPropertyName().equals("SEQ_CHGBIN")) {
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp == null)
@@ -109,6 +110,9 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			Viewer v = exp.seqCamData.seq.getFirstViewer();
 			if (v != null)
 				v.toFront();
+			parent0.paneSequence.capPopupPanel.expand();
+			parent0.paneCapillaries.capPopupPanel.collapse();
+			parent0.paneSequence.tabsPane.setSelectedIndex(3);
 		} else if (iselected == 1) {
 			parent0.paneKymos.tabDisplay.displayUpdateOnSwingThread();
 		}

@@ -22,6 +22,7 @@ public class MCSpots_ extends JPanel implements PropertyChangeListener {
 	/**
 	 * 
 	 */
+	public	PopupPanel capPopupPanel	= null;
 	private static final long serialVersionUID = -2230724185086264742L;
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
 	MCSpots_1 				buildRef 		= new MCSpots_1();
@@ -30,7 +31,7 @@ public class MCSpots_ extends JPanel implements PropertyChangeListener {
 	
 	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		
-		PopupPanel capPopupPanel = new PopupPanel(string);
+		capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();

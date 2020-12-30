@@ -24,24 +24,25 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = 3457738144388946607L;
 	
-	BuildROIs 		tabBuildROIs= new BuildROIs();
-	BuildROIs2 		tabBuildROIs2= new BuildROIs2();
-	Display			tabInfos	= new Display();
-	Detect1 		tabDetect1 	= new Detect1();
-	Detect2 		tabDetect2 	= new Detect2();
-	LoadSave 		tabFile 	= new LoadSave();
-	public Graphs 	tabGraphics = new Graphs();
-	JTabbedPane 	tabsPane	= new JTabbedPane();
-	int 			iTAB_INFOS 	= 2;
-	int 			iTAB_DETECT1= 3;
-	int 			iTAB_CAGE2	= 1;
-	MultiCAFE 		parent0		= null;
+			BuildROIs 		tabBuildROIs= new BuildROIs();
+			BuildROIs2 		tabBuildROIs2= new BuildROIs2();
+			Display			tabInfos	= new Display();
+			Detect1 		tabDetect1 	= new Detect1();
+			Detect2 		tabDetect2 	= new Detect2();
+			LoadSave 		tabFile 	= new LoadSave();
+	public 	Graphs 			tabGraphics = new Graphs();
+	public	PopupPanel 		capPopupPanel	= null;
+			JTabbedPane 	tabsPane	= new JTabbedPane();
+			int 			iTAB_INFOS 	= 2;
+			int 			iTAB_DETECT1= 3;
+			int 			iTAB_CAGE2	= 1;
+			MultiCAFE 		parent0		= null;
 
 	
 	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		this.parent0 = parent0;
 		
-		PopupPanel capPopupPanel = new PopupPanel(string);
+		capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();

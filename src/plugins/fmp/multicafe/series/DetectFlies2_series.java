@@ -133,7 +133,7 @@ public class DetectFlies2_series extends BuildSeries {
 	    processor.setThreadName("detectFlies1");
 	    processor.setPriority(Processor.NORM_PRIORITY);
         try {
-			int nframes = (exp.getKymoFrameEnd() - exp.getKymoFrameStart()) / exp.getKymoFrameStep() +1;
+			int nframes = (int) ((exp.lastKymoCol_Ms - exp.firstKymoCol_Ms) / exp.binKymoCol_Ms +1);
 		   ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 			futures.clear();
 			

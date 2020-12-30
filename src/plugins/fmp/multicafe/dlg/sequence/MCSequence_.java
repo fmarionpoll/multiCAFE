@@ -41,10 +41,12 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = -6826269677524125173L;
 	
-	private JTabbedPane 	tabsPane 		= new JTabbedPane();
+	public	PopupPanel capPopupPanel	= null;
+	public JTabbedPane 		tabsPane 		= new JTabbedPane();
 	public Open 			tabOpen 		= new Open();
 	public Infos			tabInfosSeq		= new Infos();
-	public Intervals			tabIntervals		= new Intervals();
+	public Intervals		tabIntervals	= new Intervals();
+	public Analyze			tabAnalyze		= new Analyze();
 	public Display			tabDisplay 		= new Display();
 	public Close 			tabClose 		= new Close();
 	private JLabel			text 			= new JLabel("Experiment ");
@@ -79,7 +81,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		sequencePanel.add(expListComboBox, BorderLayout.CENTER);
 		expListComboBox.setPrototypeDisplayValue("XXXXXXXXxxxxxxxxxxxxxxxxx______________XXXXXXXXXXXXXXXXXXX");
 		
-		PopupPanel capPopupPanel = new PopupPanel(string);			
+		capPopupPanel = new PopupPanel(string);			
 		capPopupPanel.expand();
 		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
 		GridLayout tabsLayout = new GridLayout(3, 1);
@@ -93,8 +95,13 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		tabInfosSeq.addPropertyChangeListener(this);
 		
 		tabIntervals.init(tabsLayout, parent0);
-		tabsPane.addTab("Intervals", null, tabIntervals, "Define analysis intervals");
+		tabsPane.addTab("Intervals", null, tabIntervals, "View/define stack image intervals");
 		tabIntervals.addPropertyChangeListener(this);
+		
+		tabAnalyze.init(tabsLayout);
+		tabsPane.addTab("Analyze", null, tabAnalyze, "Define analysis intervals");
+		tabAnalyze.addPropertyChangeListener(this);
+
 
 		tabDisplay.init(tabsLayout, parent0);
 		tabsPane.addTab("Display", null, tabDisplay, "Display ROIs");
@@ -203,7 +210,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				openSequenceCamFromCombo();
 			}
 		}
-
 	}
 	
 	private void openSeqCamData() {
@@ -296,7 +302,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	public void transferSequenceCamDataToDialogs(Experiment exp) {
-		tabIntervals.displayEndFrame((int)exp.seqCamData.seqAnalysisEnd);
+		tabIntervals.displayCamDataIntervals(exp);
 		updateViewerForSequenceCam(exp.seqCamData.seq);
 		parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 	}
@@ -311,7 +317,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	public void getExperimentInfosFromDialog(Experiment exp) {
 		tabInfosSeq.getExperimentInfosFromDialog(exp);
-		tabIntervals.getCamDataIntervalsFromDialog (exp);
 	}
 	
 	void updateBrowseInterface() {

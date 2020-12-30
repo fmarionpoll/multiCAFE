@@ -185,9 +185,9 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.forceBuildBackground	= backgroundCheckBox.isSelected();
 		options.detectFlies		= detectCheckBox.isSelected();
 		options.df_stepFrame 		= (int) stepFrameJSpinner.getValue();
-		options.isFrameFixed 	= parent0.paneSequence.tabIntervals.getIsFixedFrameFromDialog();
-		options.df_startFrame 		= parent0.paneSequence.tabIntervals.getStartFrameFromDialog();
-		options.df_endFrame 		= parent0.paneSequence.tabIntervals.getEndFrame();
+		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
+		options.startMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
+		options.endMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
 
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
@@ -196,11 +196,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 			options.expList.index1 = options.expList.getSize()-1;
 		else 
 			options.expList.index1 = options.expList.index0;
-		
-		Experiment exp = parent0.expList.getCurrentExperiment();
-		if (exp != null) 
-			parent0.paneSequence.tabIntervals.getCamDataIntervalsFromDialog(exp);
-		
+
 		detectFlies2Thread.stopFlag = false;
 		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();
 		return true;

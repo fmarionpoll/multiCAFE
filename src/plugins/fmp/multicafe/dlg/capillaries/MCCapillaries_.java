@@ -26,12 +26,12 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	 * 
 	 */
 	private static final long serialVersionUID = 853047648249832145L;
-	
-	JTabbedPane 			tabsPane 		= new JTabbedPane();
-	Create 	tabCreate 		= new Create();
-	public LoadSave 		tabFile 		= new LoadSave();
-	Adjust 	tabAdjust 		= new Adjust();
-	Infos		tabInfos		= new Infos();
+	public	PopupPanel 	capPopupPanel	= null;
+			JTabbedPane tabsPane 		= new JTabbedPane();
+			Create 		tabCreate 		= new Create();
+	public 	LoadSave 	tabFile 		= new LoadSave();
+			Adjust 		tabAdjust 		= new Adjust();
+			Infos		tabInfos		= new Infos();
 	private int ID_INFOS = 1;
 	private int ID_ADJUST = 2;
 	
@@ -41,7 +41,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		
 		this.parent0 = parent0;
-		PopupPanel capPopupPanel = new PopupPanel(string);
+		capPopupPanel = new PopupPanel(string);
+		
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.expand();
@@ -113,7 +114,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			tabCreate.setGroupingAndNumber(exp.capillaries);
 			parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
 			parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
-			parent0.paneSequence.tabIntervals.displayCamDataIntervals (exp);
+			parent0.paneSequence.tabIntervals.displayCamDataIntervals(exp);
 		}});
 	}
 	

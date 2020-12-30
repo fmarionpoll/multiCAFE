@@ -82,7 +82,6 @@ public class LoadSave extends JPanel {
 	
 	public void saveCagesAndMeasures(Experiment exp) {
 		if (exp != null) {
-			exp.storeAnalysisParametersToCages();
 			exp.cages.getCagesFromROIs(exp.seqCamData);
 			exp.xmlWriteDrosoTrackDefault(saveRoisCheckBox.isSelected());
 		}

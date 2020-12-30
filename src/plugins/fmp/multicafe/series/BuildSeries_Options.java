@@ -13,10 +13,10 @@ import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 public class BuildSeries_Options implements XMLPersistent {
-	public int 				stepFrame 			= 1;
-	public int 				startFrame 			= 0;
-	public int				endFrame 			= 99999999;
 	public boolean			isFrameFixed		= false;
+	public long				startMs				= 0;
+	public long				endMs				= 0;
+	public long				binMs				= 1;
 	
 	public int 				diskRadius 			= 5;
 	public boolean 			doRegistration 		= false;
@@ -26,10 +26,10 @@ public class BuildSeries_Options implements XMLPersistent {
 	public Rectangle 		parent0Rect 		= null;
 	public String 			resultsSubPath 		= null;
 	
-	public boolean 			loopRunning 		= false;	
+	public boolean 		loopRunning 			= false;	
 	
-	boolean 	detectTop 				= true;
-	boolean 	detectBottom 			= true;
+	boolean 			detectTop 				= true;
+	boolean 			detectBottom 			= true;
 	
 	public	boolean		detectL					= true;
 	public	boolean		detectR					= true;

@@ -22,6 +22,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -7339633966002954720L;
+	public	PopupPanel capPopupPanel	= null;
 	private JTabbedPane tabsPane 		= new JTabbedPane();
 	public LoadSave 	tabFileLevels	= new LoadSave();
 	DetectLevels 		tabDetectLevels = new DetectLevels();
@@ -35,7 +36,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	
 	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
 		
-		PopupPanel capPopupPanel = new PopupPanel(string);
+		capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
