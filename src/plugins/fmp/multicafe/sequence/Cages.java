@@ -383,4 +383,14 @@ public class Cages {
 		}
 	}
 	
+	public Cage getCageFromNumber (int number) {
+		Cage cageFound = null;
+		for (Cage cage: cageList) {
+			if (number == cage.getCageNumberInteger()) {
+				cageFound = cage;
+				break;
+			}
+		}
+		return cageFound;
+	}
 }

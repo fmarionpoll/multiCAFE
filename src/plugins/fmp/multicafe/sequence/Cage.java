@@ -162,7 +162,6 @@ public class Cage {
 			  } catch (NumberFormatException e) {
 			    return cagenb;
 			  }
-//			cagenb = Integer.valueOf(strCageNumber);
 		}
 		return cagenb;
 	}
@@ -201,8 +200,7 @@ public class Cage {
 		cageNFlies  	= cag.cageNFlies;
 		strCageComment 	= cag.strCageComment;
 		strCageNumber 	= cag.strCageNumber;
-		valid = false; 
-		
+		valid 			= false; 
 		flyPositions.copy(cag.flyPositions);
 		
 		detectedROIsList	= new ArrayList<ROI2D>();
@@ -212,11 +210,11 @@ public class Cage {
 	public void transferPositionsToRois() {
 		detectedROIsList.clear();
 		for (XYTaValue aValue: flyPositions.pointsList) {
-			ROI2DPoint flyPoint = new ROI2DPoint(aValue.xytPoint.getX(), aValue.xytPoint.getY());
+			ROI2DPoint flyRoi = new ROI2DPoint(aValue.xytPoint.getX(), aValue.xytPoint.getY());
 			int t = aValue.xytTime;
-			flyPoint.setName("det"+getCageNumber() +"_" + t );
-			flyPoint.setT( t );
-			detectedROIsList.add(flyPoint);
+			flyRoi.setName("det"+getCageNumber() +"_" + t );
+			flyRoi.setT( t );
+			detectedROIsList.add(flyRoi);
 		}
 	}
 	

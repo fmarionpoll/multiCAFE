@@ -18,7 +18,6 @@ public class XYTaValue implements XMLPersistent {
 	public double	xytDistance = 0.;
 	
 	
-	
 	public XYTaValue() {
 	}
 	

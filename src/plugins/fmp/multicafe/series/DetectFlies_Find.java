@@ -32,7 +32,6 @@ public class DetectFlies_Find {
 	
 	// -----------------------------------------------------
 	
-
 	public BooleanMask2D findLargestBlob(ROI2DArea roiAll, int iroi) {
 		ROI cageLimitROI = cages.cageList.get(iroi).cageRoi;
 		if ( cageLimitROI == null )
@@ -111,8 +110,6 @@ public class DetectFlies_Find {
 				resultFlyPositionArrayList[icage][it] = flyXYROI;
 				
 				tempPosROI[icage] = flyXYROI; 
-//				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-				//Point2D flyPosition = ROIUtil.getMassCenter( flyROI); //ROIMassCenterXDescriptor
 				int npoints = cage.flyPositions.pointsList.size();
 				cage.flyPositions.add(flyPosition, t);
 				if (it > 0 && npoints > 0) {
