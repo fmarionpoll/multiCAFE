@@ -20,7 +20,9 @@ public class Edit extends JPanel {
 	private static final long serialVersionUID = -5257698990389571518L;
 	private MultiCAFE parent0;
 	
-	private JButton 	updateButton 			= new JButton(new String("update ROIs changes"));
+	private JButton 	findButton		= new JButton(new String("find missed detection"));
+	private JButton 	updateButton 	= new JButton(new String("update ROIs changes"));
+	
 	// ----------------------------------------------------
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -29,6 +31,10 @@ public class Edit extends JPanel {
 		
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
 		flowLayout.setVgap(0);
+		
+		JPanel panel0 = new JPanel(flowLayout);
+		panel0.add(findButton);
+		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout);
 		panel1.add(updateButton);
@@ -49,6 +55,17 @@ public class Edit extends JPanel {
 					}
 				}
 			}});
+		
+		findButton.addActionListener(new ActionListener () {
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getCurrentExperiment();
+				if (exp != null) 
+					findFirstMissed(exp);
+			}});
+	}
+	
+	void findFirstMissed (Experiment exp) {
+		
 	}
 
 }
