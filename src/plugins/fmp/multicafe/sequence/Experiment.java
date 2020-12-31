@@ -798,7 +798,7 @@ public class Experiment {
 	public 	void cleanPreviousFliesDetections() {
 		for (Cage cage: cages.cageList) {
 			cage.flyPositions = new XYTaSeries();
-			cage.detectedFliesList.clear();
+			cage.detectedROIsList.clear();
 		}
 		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: list) {

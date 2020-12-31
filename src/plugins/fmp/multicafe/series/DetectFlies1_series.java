@@ -17,8 +17,6 @@ import plugins.fmp.multicafe.tools.OverlayThreshold;
 
 
 
-
-
 public class DetectFlies1_series extends BuildSeries {
 
 	private Viewer 				viewerCamData 	= null;

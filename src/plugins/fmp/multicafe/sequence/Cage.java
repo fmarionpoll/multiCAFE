@@ -10,7 +10,7 @@ import org.w3c.dom.Node;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
-import plugins.kernel.roi.roi2d.ROI2DRectangle;
+import plugins.kernel.roi.roi2d.ROI2DPoint;
 
 
 
@@ -18,7 +18,7 @@ public class Cage {
 	public ROI2D 		cageRoi						= null;
 
 	public XYTaSeries 	flyPositions 			= new XYTaSeries();
-	public List<ROI2D> 	detectedFliesList		= new ArrayList<ROI2D>();
+	public List<ROI2D> 	detectedROIsList		= new ArrayList<ROI2D>();
 	public int 			cageNFlies  			= 1;
 	public int 			cageAge 				= 5;
 	public String 		strCageComment 			= "..";
@@ -79,9 +79,9 @@ public class Cage {
 	
 	public boolean xmlSaveDetecteRois(Element xmlVal) {
 		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_ROISDETECTED);
-		XMLUtil.setAttributeIntValue(xmlVal2, ID_NBITEMS, detectedFliesList.size());
+		XMLUtil.setAttributeIntValue(xmlVal2, ID_NBITEMS, detectedROIsList.size());
 		int i=0;
-		for (ROI roi: detectedFliesList) {
+		for (ROI roi: detectedROIsList) {
 			if (roi != null) {
 				Element subnode = XMLUtil.addElement(xmlVal2, "det"+i);
 				roi.saveToXML(subnode);
@@ -137,11 +137,11 @@ public class Cage {
 	public boolean getRoisDetected(Element xmlVal) {
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_ROISDETECTED);
 		if (xmlVal2 != null) {
-			int nb_items =  XMLUtil.getAttributeIntValue(xmlVal2, ID_NBITEMS, detectedFliesList.size());
+			int nb_items =  XMLUtil.getAttributeIntValue(xmlVal2, ID_NBITEMS, detectedROIsList.size());
 			for (int i=0; i< nb_items; i++) {
 				Element subnode = XMLUtil.getElement(xmlVal2, "det"+i);
 				ROI roi = ROI.createFromXML(subnode);
-				detectedFliesList.add((ROI2D) roi);
+				detectedROIsList.add((ROI2D) roi);
 			}
 		}
 		return true;
@@ -168,7 +168,7 @@ public class Cage {
 	}
 	
 	public void clearMeasures () {
-		detectedFliesList.clear();
+		detectedROIsList.clear();
 		flyPositions.clear();
 	}
 	
@@ -205,25 +205,37 @@ public class Cage {
 		
 		flyPositions.copy(cag.flyPositions);
 		
-		detectedFliesList	= new ArrayList<ROI2D>();
-		detectedFliesList.addAll(cag.detectedFliesList);
+		detectedROIsList	= new ArrayList<ROI2D>();
+		detectedROIsList.addAll(cag.detectedROIsList);
 	}
 	
 	public void transferPositionsToRois() {
-		int width = 10;
-		int height = 10;
-		detectedFliesList.clear();
+		detectedROIsList.clear();
 		for (XYTaValue aValue: flyPositions.pointsList) {
-			ROI2DRectangle flyRect = new ROI2DRectangle(
-					aValue.xytPoint.getX()-width/2, 
-					aValue.xytPoint.getY()-height/2, 
-					aValue.xytPoint.getX()+width, 
-					aValue.xytPoint.getY()+height);
+			ROI2DPoint flyPoint = new ROI2DPoint(aValue.xytPoint.getX(), aValue.xytPoint.getY());
 			int t = aValue.xytTime;
-			flyRect.setName("det"+getCageNumber() +"_" + t );
-			flyRect.setT( t );
-			// TODO flyRect.setColor(value);
-			detectedFliesList.add(flyRect);
+			flyPoint.setName("det"+getCageNumber() +"_" + t );
+			flyPoint.setT( t );
+			detectedROIsList.add(flyPoint);
+		}
+	}
+	
+	public void transferRoisToPositions() {
+		String filter = "det"+getCageNumber();
+		for (ROI2D roi: detectedROIsList) {
+			String name = roi.getName();
+			if (!name .contains(filter))
+				continue;
+			
+			Point2D point = ((ROI2DPoint) roi).getPoint();
+			int t = roi.getT();
+			
+			for (XYTaValue aValue: flyPositions.pointsList) {
+				if (aValue.xytTime == t) {
+					aValue.xytPoint = point;
+					break;
+				}
+			}
 		}
 	}
 	

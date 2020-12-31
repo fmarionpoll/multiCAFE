@@ -41,22 +41,22 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	private static final long serialVersionUID = -5257698990389571518L;
 	private MultiCAFE parent0;
 	
-	private String 		detectString 			= "Run..";
+	private String 		detectString 			= "Detect..";
 	private JButton 	startComputationButton 	= new JButton(detectString);
 	private JSpinner 	thresholdDiffSpinner	= new JSpinner(new SpinnerNumberModel(100, 0, 255, 10));
 	private JSpinner 	thresholdBckgSpinner	= new JSpinner(new SpinnerNumberModel(40, 0, 255, 10));
 	
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 9999, 1));
-	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object >");
-	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object <");
 	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 9999, 1));
+	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object > ");
+	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object < ");
 	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
 	private JButton 	loadButton 				= new JButton("Load...");
 	private JButton 	saveButton 				= new JButton("Save...");
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
-	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("(re)build background", false);
-	private JCheckBox 	detectCheckBox 			= new JCheckBox("detect flies", true);
+	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("background", false);
+	private JCheckBox 	detectCheckBox 			= new JCheckBox("flies", true);
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	private JSpinner 	stepFrameJSpinner		= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
@@ -93,19 +93,18 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
 		objectUpsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
 		JPanel panel3 = new JPanel(flowLayout);
-		panel3.add(new JLabel("threshold ", SwingConstants.RIGHT));
-		panel3.add(thresholdDiffSpinner);
 		panel3.add(objectLowsizeCheckBox);
 		panel3.add(objectLowsizeSpinner);
 		panel3.add(objectUpsizeCheckBox);
 		panel3.add(objectUpsizeSpinner);
+		panel3.add(new JLabel("threshold ", SwingConstants.RIGHT));
+		panel3.add(thresholdDiffSpinner);
 		add( panel3);
 		
 		JPanel panel4 = new JPanel(flowLayout);
-		panel4.add(new JLabel("                                        length/width <", SwingConstants.RIGHT));
+		panel4.add(new JLabel("length/width<", SwingConstants.RIGHT));
 		panel4.add(limitRatioSpinner);
-		JLabel jitterLabel = new JLabel("         jitter <= ", SwingConstants.RIGHT);
-		panel4.add(jitterLabel);
+		panel4.add(new JLabel("         jitter <= ", SwingConstants.RIGHT));
 		panel4.add(jitterTextField);
 		add(panel4);
 		

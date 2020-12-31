@@ -29,6 +29,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 			Display			tabInfos	= new Display();
 			Detect1 		tabDetect1 	= new Detect1();
 			Detect2 		tabDetect2 	= new Detect2();
+			Edit			tabEdit		= new Edit();
 			LoadSave 		tabFile 	= new LoadSave();
 	public 	Graphs 			tabGraphics = new Graphs();
 	public	PopupPanel 		capPopupPanel	= null;
@@ -78,6 +79,11 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 		tabDetect2.addPropertyChangeListener(this);
 		tabsPane.addTab("Detect2", null, tabDetect2, "Detect flies position using background subtraction");
 		
+		iTab++;
+		tabEdit.init(capLayout, parent0);
+		tabEdit.addPropertyChangeListener(this);
+		tabsPane.addTab("Edit", null, tabEdit, "Edit flies detection");
+	
 		iTab++;
 		tabGraphics.init(capLayout, parent0);		
 		tabGraphics.addPropertyChangeListener(this);

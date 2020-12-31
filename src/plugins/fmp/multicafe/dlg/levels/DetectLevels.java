@@ -209,8 +209,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		options.detectAllKymos 		= allKymosCheckBox.isSelected();
 	
 		options.analyzePartOnly		= partCheckBox.isSelected();
-		options.startPixel			= (int) ((int) startSpinner.getValue()); // * exp.binCamImage_Ms  / exp.binKymoCol_Ms);
-		options.endPixel			= (int) ((int) endSpinner.getValue()); // * exp.binCamImage_Ms  / exp.binKymoCol_Ms);
+		options.startPixel			= (int) ((int) startSpinner.getValue()); 
+		options.endPixel			= (int) ((int) endSpinner.getValue()); 
 		options.spanDiffTop			= getSpanDiffTop();
 		options.detectL 			= leftCheckBox.isSelected();
 		options.detectR				= rightCheckBox.isSelected();

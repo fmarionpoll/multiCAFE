@@ -280,7 +280,7 @@ public class DetectFlies_Options implements XMLPersistent {
 		for (int icage=0; icage < ncages; icage++) {
 			Cage cage = cages.cageList.get(icage);
 			for ( int it = 0; it < resultFlyPositionArrayList[icage].length ; it++ ) {
-				cage.detectedFliesList.add((ROI2D) resultFlyPositionArrayList[icage][it] );
+				cage.detectedROIsList.add((ROI2D) resultFlyPositionArrayList[icage][it] );
 			}
 		}
 	}

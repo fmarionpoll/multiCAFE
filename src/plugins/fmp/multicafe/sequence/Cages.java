@@ -322,7 +322,7 @@ public class Cages {
 		
 		List<ROI> detectedFliesList = new ArrayList<ROI>();
 		for (Cage cage: cageList) {
-			detectedFliesList.addAll(cage.detectedFliesList);
+			detectedFliesList.addAll(cage.detectedROIsList);
 		}
 		seqCamData.seq.addROIs(detectedFliesList, true);
 	}
@@ -372,12 +372,12 @@ public class Cages {
 	
 	public void displayDetectedFliesAsRois(Sequence seq, boolean isVisible) {
 		for (Cage cage: cageList ) {
-			if (cage.detectedFliesList.size() >0) {
+			if (cage.detectedROIsList.size() >0) {
 				
 			} else {
 				if (isVisible) {
 					cage.transferPositionsToRois();
-					seq.addROIs(cage.detectedFliesList, false);
+					seq.addROIs(cage.detectedROIsList, false);
 				}
 			}
 		}

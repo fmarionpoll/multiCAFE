@@ -21,7 +21,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import icy.gui.util.GuiUtil;
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
@@ -42,17 +41,17 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private static final long serialVersionUID = 6066671006689527651L;
 
 	private MultiCAFE 	parent0					= null;
-	private String 		detectString 			= "Detect";
+	private String 		detectString 			= "Detect...";
 	private JButton 	startComputationButton 	= new JButton(detectString);
 
 	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
 	private JComboBox<TransformOp> backgroundComboBox = new JComboBox<> (new TransformOp[]  {TransformOp.NONE, TransformOp.REF_PREVIOUS, TransformOp.REF_T0});
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 10));
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
-	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object > ");
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 9999, 1));
-	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object < ");
 	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 9999, 1));
+	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object > ");
+	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object < ");
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	private JSpinner 	stepFrameJSpinner		= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
@@ -72,12 +71,14 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
 		flowLayout.setVgap(0);
+		
 		JPanel panel1 = new JPanel(flowLayout);
+		panel1.add(startComputationButton);
 		panel1.add(allCheckBox);
 		panel1.add(new JLabel (" step"));
 		panel1.add(stepFrameJSpinner);
 		panel1.validate();
-		add( GuiUtil.besidesPanel( startComputationButton, panel1));
+		add(panel1);
 		
 		JPanel panel2 = new JPanel(flowLayout);
 		colorChannelComboBox.setSelectedIndex(1);
@@ -85,7 +86,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		panel2.add(colorChannelComboBox);
 		panel2.add(new JLabel("bkgnd subtraction ", SwingConstants.RIGHT));
 		panel2.add(backgroundComboBox);
-		panel2.add(new JLabel("detect threshold ", SwingConstants.RIGHT));
+		panel2.add(new JLabel("threshold ", SwingConstants.RIGHT));
 		panel2.add(thresholdSpinner);
 		add(panel2);
 		
