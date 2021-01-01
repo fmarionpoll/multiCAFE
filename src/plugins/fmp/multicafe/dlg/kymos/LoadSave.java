@@ -149,7 +149,7 @@ public class LoadSave extends JPanel {
 			return false;
 		}
 
-		seqKymos.transferCapillariesToKymosRois(exp.capillaries);
+		seqKymos.transferCapillariesMeasuresToKymos(exp.capillaries);
 		return flag;
 	}
 }

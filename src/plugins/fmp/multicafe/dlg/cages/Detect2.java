@@ -182,9 +182,9 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.forceBuildBackground = backgroundCheckBox.isSelected();
 		options.detectFlies		= detectCheckBox.isSelected();
 		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
-		options.startMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
-		options.endMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
-		options.binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
+		options.t_firstMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
+		options.t_lastMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
+		options.t_binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
 
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		

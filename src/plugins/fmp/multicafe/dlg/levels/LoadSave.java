@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.FontUtil;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
@@ -75,8 +76,10 @@ public class LoadSave  extends JPanel {
 			boolean readOK = exp.xmlLoadMCCapillaries_Measures();
 			if (readOK) {
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
+					ProgressFrame progress = new ProgressFrame("load capillary measures");
 					parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
 					parent0.paneSequence.tabIntervals.displayCamDataIntervals(exp);
+					progress.close();
 				}});
 			}
 		}

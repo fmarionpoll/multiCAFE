@@ -14,9 +14,9 @@ import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 public class Options_BuildSeries implements XMLPersistent {
 	public boolean			isFrameFixed		= false;
-	public long				startMs				= 0;
-	public long				endMs				= 0;
-	public long				binMs				= 1;
+	public long				t_firstMs			= 0;
+	public long				t_lastMs			= 0;
+	public long				t_binMs				= 1;
 	
 	public int 				diskRadius 			= 5;
 	public boolean 			doRegistration 		= false;
@@ -100,7 +100,6 @@ public class Options_BuildSeries implements XMLPersistent {
 		videoChannel 			= det.videoChannel;
 		backgroundSubstraction 	= det.backgroundSubstraction;
 		isFrameFixed			= det.isFrameFixed;
-//		nbframes				= det.nbframes;
 	}
 	
 	@Override

@@ -53,13 +53,13 @@ public class Experiment {
 	
 	// __________________________________________________
 	
-	public long				firstCamImage_Ms		= 0;
-	public long				lastCamImage_Ms			= 0;
-	public long				binCamImage_Ms			= 0;
+	public long				camFirstImage_Ms		= 0;
+	public long				camLastImage_Ms			= 0;
+	public long				camBinImage_Ms			= 0;
 	
-	public long				firstKymoCol_Ms			= 0;
-	public long				lastKymoCol_Ms			= 0;
-	public long				binKymoCol_Ms			= 60000;
+	public long				kymoFirstCol_Ms			= 0;
+	public long				kymoLastCol_Ms			= 0;
+	public long				kymoBinColl_Ms			= 60000;
 	// _________________________________________________
 	
 	public String			exp_boxID 				= new String("..");
@@ -206,9 +206,9 @@ public class Experiment {
 		firstImage_FileTime = seqCamData.getFileTimeFromStructuredName(0);
 		lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.seq.getSizeT()-1);
 		
-		firstCamImage_Ms = firstImage_FileTime.toMillis();
-		lastCamImage_Ms = lastImage_FileTime.toMillis();
-		binCamImage_Ms = (lastCamImage_Ms - firstCamImage_Ms)/(seqCamData.seq.getSizeT()-1);
+		camFirstImage_Ms = firstImage_FileTime.toMillis();
+		camLastImage_Ms = lastImage_FileTime.toMillis();
+		camBinImage_Ms = (camLastImage_Ms - camFirstImage_Ms)/(seqCamData.seq.getSizeT()-1);
 	}
 	
 	public String getResultsDirectory() {
@@ -230,7 +230,7 @@ public class Experiment {
 	}
 	
 	public String getResultsDirectoryNameFromKymoFrameStep() {
-		return RESULTS + "_"+binKymoCol_Ms/1000;
+		return RESULTS + "_"+kymoBinColl_Ms/1000;
 	}
 	
 	public String getDirectoryToSaveResults() {
@@ -283,7 +283,7 @@ public class Experiment {
 		int step = -1;
 		if (resultsPath.contains(RESULTS)) {
 			if (resultsPath.length() < (RESULTS.length() +2)) {
-				step = (int) binKymoCol_Ms;
+				step = (int) kymoBinColl_Ms;
 			} else {
 				step = Integer.valueOf(resultsPath.substring(RESULTS.length()+1))*1000;
 			}
@@ -336,16 +336,16 @@ public class Experiment {
 		String version = XMLUtil.getElementValue(node, ID_VERSION, ID_VERSIONNUM);
 		if (!version .equals(ID_VERSIONNUM))
 			return false;
-		firstCamImage_Ms= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, -1);
-		if (firstCamImage_Ms < 0) 
-			firstCamImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, -1)*60000;
-		lastCamImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, -1)*60000;
-		if (lastCamImage_Ms < 0)
-			lastCamImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1);
+		camFirstImage_Ms= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, -1);
+		if (camFirstImage_Ms < 0) 
+			camFirstImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, -1)*60000;
+		camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, -1)*60000;
+		if (camLastImage_Ms < 0)
+			camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1);
 
-		firstKymoCol_Ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, -1); 
-		lastKymoCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
-		binKymoCol_Ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
+		kymoFirstCol_Ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, -1); 
+		kymoLastCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
+		kymoBinColl_Ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
 		
 		if (exp_boxID .contentEquals("..")) {
 			exp_boxID	= XMLUtil.getElementValue(node, ID_BOXID, "..");
@@ -365,12 +365,12 @@ public class Experiment {
 				return false;
 			
 			XMLUtil.setElementValue(node, ID_VERSION, ID_VERSIONNUM);
-			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGEMS, firstCamImage_Ms);
-			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGEMS, lastCamImage_Ms);
+			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGEMS, camFirstImage_Ms);
+			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGEMS, camLastImage_Ms);
 			
-			XMLUtil.setElementLongValue(node, ID_FIRSTKYMOCOLMS, firstKymoCol_Ms); 
-			XMLUtil.setElementLongValue(node, ID_LASTKYMOCOLMS, lastKymoCol_Ms);
-			XMLUtil.setElementLongValue(node, ID_BINKYMOCOLMS, binKymoCol_Ms); 	
+			XMLUtil.setElementLongValue(node, ID_FIRSTKYMOCOLMS, kymoFirstCol_Ms); 
+			XMLUtil.setElementLongValue(node, ID_LASTKYMOCOLMS, kymoLastCol_Ms);
+			XMLUtil.setElementLongValue(node, ID_BINKYMOCOLMS, kymoBinColl_Ms); 	
 			
 			XMLUtil.setElementValue(node, ID_BOXID, exp_boxID);
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
@@ -397,7 +397,7 @@ public class Experiment {
 		boolean flag = seqKymos.loadImagesFromList(myList, true);
 		if (!flag)
 			return flag;
-		seqKymos.transferCapillariesToKymosRois(capillaries);
+		seqKymos.transferCapillariesMeasuresToKymos(capillaries);
 		return flag;
 	}
 	
@@ -502,7 +502,7 @@ public class Experiment {
 		int imageWidth = seqKymos.imageWidthMax;
 		capillaries.adjustToImageWidth(imageWidth);
 		seqKymos.seq.removeAllROI();
-		seqKymos.transferCapillariesToKymosRois(capillaries);
+		seqKymos.transferCapillariesMeasuresToKymos(capillaries);
 		return true;
 	}
 	
@@ -525,7 +525,7 @@ public class Experiment {
 	public boolean transferCapillariesToROIs() {
 		boolean flag = true;
 		if (seqKymos != null && seqKymos.seq != null) {
-			seqKymos.transferCapillariesToKymosRois(capillaries);
+			seqKymos.transferCapillariesMeasuresToKymos(capillaries);
 		}
 		return flag;
 	}

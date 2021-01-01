@@ -14,6 +14,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import icy.gui.component.PopupPanel;
+import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
@@ -105,16 +106,15 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	}
 	
 	public void displayCapillariesInformation(Experiment exp) {
-//		if (exp.seqKymos == null) 
-//			exp.seqKymos = new SequenceKymos();
-
 		SwingUtilities.invokeLater(new Runnable() { public void run() {
+			ProgressFrame progress = new ProgressFrame("Display capillaries information");
 			SequenceKymosUtils.transferKymoCapillariesToCamData (exp);
 			tabInfos.setAllDescriptors(exp.capillaries);
 			tabCreate.setGroupingAndNumber(exp.capillaries);
 			parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
 			parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
 			parent0.paneSequence.tabIntervals.displayCamDataIntervals(exp);
+			progress.close();
 		}});
 	}
 	

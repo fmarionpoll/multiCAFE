@@ -101,9 +101,9 @@ public class Create extends JPanel implements PropertyChangeListener {
 			options.expList.index1 = options.expList.index0; 
 		
 		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
-		options.startMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
-		options.endMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
-		options.binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
+		options.t_firstMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
+		options.t_lastMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
+		options.t_binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
 				
 		options.diskRadius 		= (int) diskRadiusSpinner.getValue();
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();

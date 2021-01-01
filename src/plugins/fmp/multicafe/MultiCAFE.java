@@ -126,7 +126,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			addSequence(exp.seqCamData.seq);
 			exp.seqCamData.seq.getFirstViewer().addListener( this );
 		} else {
-			System.out.println("seqcamdata or seq of seqcamdata is null!");
+			System.out.println("seqCamData or seq of seqCamData is null!");
 		}
 		return exp;
 	}
@@ -135,26 +135,22 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		Experiment exp = expList.getCurrentExperiment();
 		if (exp == null)
 			return;
-		ProgressFrame progress = new ProgressFrame("load descriptors");
+		
 		boolean flag = exp.xmlLoadMCcapillaries_Only();
 		if (flag)
 			paneCapillaries.displayCapillariesInformation(exp);
-		progress.close();
-		
+
 		if (loadCapillaries) {
-			progress = new ProgressFrame("load capillary measures");
 			paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
-			progress.close();
 		}
 
 		if (loadKymographs) {
-			progress = new ProgressFrame("load kymographs");
 			if (paneKymos.tabFile.loadDefaultKymos(exp)) {
 		        paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
-		        paneKymos.tabIntervals.displayKymoIntervals(exp);
 			}
 			paneSequence.tabIntervals.displayCamDataIntervals(exp);
-			progress.close();
+			paneKymos.tabIntervals.displayKymoIntervals(exp);
+
 			if (paneSequence.tabOpen.graphsCheckBox.isSelected())
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
 				    paneLevels.tabGraphs.xyDisplayGraphs(exp);
@@ -162,16 +158,13 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		}
 		
 		if (loadCages) {
-			progress = new ProgressFrame("load fly positions");
+			ProgressFrame progress = new ProgressFrame("load fly positions");
 			exp.loadDrosotrack();
-			
+			paneCages.tabGraphics.moveCheckbox.setEnabled(true);
+			paneCages.tabGraphics.displayResultsButton.setEnabled(true);
 			progress.close();
-			SwingUtilities.invokeLater(new Runnable() { public void run() {
-				paneCages.tabGraphics.moveCheckbox.setEnabled(true);
-				paneCages.tabGraphics.displayResultsButton.setEnabled(true);
-			}});
+
 		}
-		progress.close();
 	}
 
 }

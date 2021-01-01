@@ -34,15 +34,16 @@ public class DetectFlies1_series extends BuildSeries {
 		exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
 		exp.xmlReadDrosoTrack(null);
 		if (options.isFrameFixed) {
-			exp.cages.firstDetect_Ms = options.startMs;
-			exp.cages.lastDetect_Ms = options.endMs;
-			if (exp.cages.lastDetect_Ms > exp.lastCamImage_Ms)
-				exp.cages.lastDetect_Ms = exp.lastCamImage_Ms;
+			exp.cages.detectFirst_Ms = options.t_firstMs;
+			exp.cages.detectLast_Ms = options.t_lastMs;
+			if (exp.cages.detectLast_Ms > exp.camLastImage_Ms)
+				exp.cages.detectLast_Ms = exp.camLastImage_Ms;
 		} else {
-			exp.cages.firstDetect_Ms = exp.firstCamImage_Ms;
-			exp.cages.lastDetect_Ms = exp.lastCamImage_Ms;
+			exp.cages.detectFirst_Ms = exp.camFirstImage_Ms;
+			exp.cages.detectLast_Ms = exp.camLastImage_Ms;
 		}
-		exp.cages.binDetect_Ms = options.binMs;
+		exp.cages.detectBin_Ms = options.t_binMs;
+		exp.cages.detect_threshold = options.threshold;
 		
 		if (exp.cages.cageList.size() < 1 ) {
 			System.out.println("! skipped experiment with no cage: " + exp.getExperimentFileName());
@@ -77,7 +78,7 @@ public class DetectFlies1_series extends BuildSeries {
 			e.printStackTrace();
 		} 
 		
-		int nframes = (int) ((exp.lastKymoCol_Ms - exp.firstKymoCol_Ms) / exp.binKymoCol_Ms +1);
+		int nframes = (int) ((exp.kymoLastCol_Ms - exp.kymoFirstCol_Ms) / exp.kymoBinColl_Ms +1);
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectFlies1");
 	    processor.setPriority(Processor.NORM_PRIORITY);
@@ -87,8 +88,8 @@ public class DetectFlies1_series extends BuildSeries {
 		exp.seqCamData.seq.beginUpdate();
 		
 		int it = 0;
-		for (long indexms = exp.cages.firstDetect_Ms ; indexms <= exp.cages.lastDetect_Ms; indexms += exp.cages.binDetect_Ms, it++ ) {
-			final int t_from = (int) ((indexms - exp.firstCamImage_Ms)/exp.binCamImage_Ms);
+		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms, it++ ) {
+			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
 			final int t_it = it;
 			futures.add(processor.submit(new Runnable () {
 			@Override

@@ -155,7 +155,7 @@ public class SequenceKymos extends SequenceCamData  {
 		return true;
 	}
 	
-	public void transferCapillariesToKymosRois(Capillaries capillaries) {
+	public void transferCapillariesMeasuresToKymos(Capillaries capillaries) {
 		List<ROI2D> seqRoisList = seq.getROI2Ds(false);
 		ROI2DUtilities.removeROIsWithMissingChar(seqRoisList, '_');
 		List<ROI2D> newRoisList = new ArrayList<ROI2D>();
@@ -168,7 +168,7 @@ public class SequenceKymos extends SequenceCamData  {
 		seq.addROIs(seqRoisList, false);
 	}
 	
-	public void saveKymosCapillaries(Experiment exp) {
+	public void saveKymosCurvesToCapillariesMeasures(Experiment exp) {
 		exp.seqKymos.validateRois();
 		exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
 		exp.xmlSaveMCcapillaries();

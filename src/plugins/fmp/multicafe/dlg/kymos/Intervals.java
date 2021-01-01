@@ -68,9 +68,9 @@ public class Intervals extends JPanel {
 		applyButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			long binsize_Ms = getBinSize_Ms();
-			exp.firstKymoCol_Ms = (long) (((double) firstColumnJSpinner.getValue()) * binsize_Ms);
-			exp.lastKymoCol_Ms  = (long) (((double) lastColumnJSpinner.getValue()) * binsize_Ms);
-			exp.binKymoCol_Ms = (long) (((double) binColumnJSpinner.getValue()) * binsize_Ms);
+			exp.kymoFirstCol_Ms = (long) (((double) firstColumnJSpinner.getValue()) * binsize_Ms);
+			exp.kymoLastCol_Ms  = (long) (((double) lastColumnJSpinner.getValue()) * binsize_Ms);
+			exp.kymoBinColl_Ms = (long) (((double) binColumnJSpinner.getValue()) * binsize_Ms);
 		}});
 	}
 	
@@ -96,15 +96,15 @@ public class Intervals extends JPanel {
 	
 	public void displayKymoIntervals (Experiment exp) {
 		double binsize_Ms = getBinSize_Ms();
-		if (exp.firstKymoCol_Ms < 0) 
-			exp.firstKymoCol_Ms = 0;
-		firstColumnJSpinner.setValue((double) exp.firstKymoCol_Ms/binsize_Ms);
-		if (exp.lastKymoCol_Ms < 0) 
-			exp.lastKymoCol_Ms = (long) (((double)exp.seqKymos.imageWidthMax) * binsize_Ms);
-		lastColumnJSpinner.setValue((double) exp.lastKymoCol_Ms/binsize_Ms);
-		if (exp.binKymoCol_Ms <= 0)
-			exp.binKymoCol_Ms = (long) binsize_Ms;
-		binColumnJSpinner.setValue((double) exp.binKymoCol_Ms/binsize_Ms);
+		if (exp.kymoFirstCol_Ms < 0) 
+			exp.kymoFirstCol_Ms = 0;
+		firstColumnJSpinner.setValue((double) exp.kymoFirstCol_Ms/binsize_Ms);
+		if (exp.kymoLastCol_Ms < 0) 
+			exp.kymoLastCol_Ms = (long) (((double)exp.seqKymos.imageWidthMax) * binsize_Ms);
+		lastColumnJSpinner.setValue((double) exp.kymoLastCol_Ms/binsize_Ms);
+		if (exp.kymoBinColl_Ms <= 0)
+			exp.kymoBinColl_Ms = (long) binsize_Ms;
+		binColumnJSpinner.setValue((double) exp.kymoBinColl_Ms/binsize_Ms);
 	}
 
 }

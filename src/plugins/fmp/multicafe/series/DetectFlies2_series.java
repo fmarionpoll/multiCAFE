@@ -43,15 +43,16 @@ public class DetectFlies2_series extends BuildSeries {
 		exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
 		exp.xmlReadDrosoTrack(null);
 		if (options.isFrameFixed) {
-			exp.cages.firstDetect_Ms = options.startMs;
-			exp.cages.lastDetect_Ms = options.endMs;
-			if (exp.cages.lastDetect_Ms > exp.lastCamImage_Ms)
-				exp.cages.lastDetect_Ms = exp.lastCamImage_Ms;
+			exp.cages.detectFirst_Ms = options.t_firstMs;
+			exp.cages.detectLast_Ms = options.t_lastMs;
+			if (exp.cages.detectLast_Ms > exp.camLastImage_Ms)
+				exp.cages.detectLast_Ms = exp.camLastImage_Ms;
 		} else {
-			exp.cages.firstDetect_Ms = exp.firstCamImage_Ms;
-			exp.cages.lastDetect_Ms = exp.lastCamImage_Ms;
+			exp.cages.detectFirst_Ms = exp.camFirstImage_Ms;
+			exp.cages.detectLast_Ms = exp.camLastImage_Ms;
 		}
-		exp.cages.binDetect_Ms = options.binMs;
+		exp.cages.detectBin_Ms = options.t_binMs;
+		exp.cages.detect_threshold = options.threshold;
 		
 		if (exp.cages.cageList.size() < 1 ) {
 			System.out.println("! skipped experiment with no cage: " + exp.getExperimentFileName());
@@ -134,7 +135,7 @@ public class DetectFlies2_series extends BuildSeries {
 	    processor.setThreadName("detectFlies1");
 	    processor.setPriority(Processor.NORM_PRIORITY);
         try {
-			int nframes = (int) ((exp.lastKymoCol_Ms - exp.firstKymoCol_Ms) / exp.binKymoCol_Ms +1);
+			int nframes = (int) ((exp.kymoLastCol_Ms - exp.kymoFirstCol_Ms) / exp.kymoBinColl_Ms +1);
 		   ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 			futures.clear();
 			
@@ -145,8 +146,8 @@ public class DetectFlies2_series extends BuildSeries {
 
 			// ----------------- loop over all images of the stack
 			int it = 0;
-			for (long indexms = exp.cages.firstDetect_Ms ; indexms <= exp.cages.lastDetect_Ms; indexms += exp.cages.binDetect_Ms, it++ ) {
-				final int t_from = (int) ((indexms - exp.firstCamImage_Ms)/exp.binCamImage_Ms);
+			for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms, it++ ) {
+				final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
 				final int t_it = it;
 				futures.add(processor.submit(new Runnable () {
 				@Override
@@ -262,7 +263,7 @@ public class DetectFlies2_series extends BuildSeries {
 		int nfliesRemoved = 0; //
 		detect.initParametersForDetection(exp, options);
 		
-		int t_from = (int) ((exp.cages.firstDetect_Ms - exp.firstCamImage_Ms)/exp.binCamImage_Ms);
+		int t_from = (int) ((exp.cages.detectFirst_Ms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
 		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getImage(t_from, 0));
 		initialflyRemovedList.clear();
 		int ndetectcages = exp.cages.cageList.size();
@@ -271,12 +272,12 @@ public class DetectFlies2_series extends BuildSeries {
 
 		viewerCamData = exp.seqCamData.seq.getFirstViewer();
 		displayRefViewers(exp);
-		long limit = 50 * exp.cages.binDetect_Ms;
+		long limit = 50 * exp.cages.detectBin_Ms;
 		if (limit > exp.getSeqCamSizeT())
 			limit = exp.getSeqCamSizeT();
 		
-		for (long indexms = exp.cages.firstDetect_Ms + exp.cages.binDetect_Ms; indexms<= limit && !stopFlag; indexms += exp.cages.binDetect_Ms) {
-			int t = (int) ((indexms - exp.firstCamImage_Ms)/exp.binCamImage_Ms);
+		for (long indexms = exp.cages.detectFirst_Ms + exp.cages.detectBin_Ms; indexms<= limit && !stopFlag; indexms += exp.cages.detectBin_Ms) {
+			int t = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
 			IcyBufferedImage currentImage = exp.seqCamData.getImage(t, 0);
 			exp.seqCamData.currentFrame = t;
 			viewerCamData.setPositionT(t);

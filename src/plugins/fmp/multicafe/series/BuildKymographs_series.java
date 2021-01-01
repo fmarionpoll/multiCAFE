@@ -30,15 +30,15 @@ public class BuildKymographs_series  extends BuildSeries  {
 	void analyzeExperiment(Experiment exp) {
 		loadExperimentDataToBuildKymos(exp);
 		exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
-		exp.binKymoCol_Ms = options.binMs;
+		exp.kymoBinColl_Ms = options.t_binMs;
 		if (options.isFrameFixed) {
-			exp.firstKymoCol_Ms = options.startMs;
-			exp.lastKymoCol_Ms = options.endMs;
-			if (exp.lastKymoCol_Ms > exp.lastCamImage_Ms)
-				exp.lastKymoCol_Ms = exp.lastCamImage_Ms;
+			exp.kymoFirstCol_Ms = options.t_firstMs;
+			exp.kymoLastCol_Ms = options.t_lastMs;
+			if (exp.kymoLastCol_Ms > exp.camLastImage_Ms)
+				exp.kymoLastCol_Ms = exp.camLastImage_Ms;
 		} else {
-			exp.firstKymoCol_Ms = exp.firstCamImage_Ms;
-			exp.lastKymoCol_Ms = exp.lastCamImage_Ms;
+			exp.kymoFirstCol_Ms = exp.camFirstImage_Ms;
+			exp.kymoLastCol_Ms = exp.camLastImage_Ms;
 		}
 		if (buildKymo(exp)) {
 			saveComputation(exp);
@@ -92,7 +92,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 			return false;
 		}
 		
-		int startFrame = (int) ((exp.firstKymoCol_Ms - exp.firstCamImage_Ms)/exp.binCamImage_Ms);
+		int startFrame = (int) ((exp.kymoFirstCol_Ms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
 		IcyBufferedImage sourceImage0 = seqCamData.seq.getImage(startFrame, 0); 
 		seqCamData.seq.removeAllROI();
 		
@@ -108,7 +108,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 			return false;
 		}
 		
-		int nframes = (int) ((exp.lastKymoCol_Ms - exp.firstKymoCol_Ms) / exp.binKymoCol_Ms +1);
+		int nframes = (int) ((exp.kymoLastCol_Ms - exp.kymoFirstCol_Ms) / exp.kymoBinColl_Ms +1);
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("buildkymo2");
 	    processor.setPriority(Processor.NORM_PRIORITY);
@@ -118,8 +118,8 @@ public class BuildKymographs_series  extends BuildSeries  {
 		seqCamData.seq.beginUpdate();
 		
 		int ipixelcolumn = 0;
-		for (long indexms = exp.firstKymoCol_Ms ; indexms <= exp.lastKymoCol_Ms; indexms += exp.binKymoCol_Ms, ipixelcolumn++ ) {
-			final int t_from = (int) ((indexms - exp.firstCamImage_Ms)/exp.binCamImage_Ms);
+		for (long indexms = exp.kymoFirstCol_Ms ; indexms <= exp.kymoLastCol_Ms; indexms += exp.kymoBinColl_Ms, ipixelcolumn++ ) {
+			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
 			final int t_out = ipixelcolumn;
 			
 			futures.add(processor.submit(new Runnable () {
@@ -189,7 +189,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 		int numC = seqCamData.seq.getSizeC();
 		if (numC <= 0)
 			numC = 3;
-		double fimagewidth =  1 + (exp.lastCamImage_Ms - exp.firstCamImage_Ms ) /options.binMs;	
+		double fimagewidth =  1 + (exp.camLastImage_Ms - exp.camFirstImage_Ms ) /options.t_binMs;	
 		int imageWidth = (int) fimagewidth;
 		DataType dataType = seqCamData.seq.getDataType_();
 		if (dataType.toString().equals("undefined"))

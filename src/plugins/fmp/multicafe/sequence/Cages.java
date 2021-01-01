@@ -26,9 +26,9 @@ public class Cages {
 	public List<Cage>	cageList			= new ArrayList<Cage>();
 	public boolean		saveDetectedROIs	= false;
 	// ---------- not saved to xml:
-	public long			firstDetect_Ms		= 0;
-	public long			lastDetect_Ms		= 0;
-	public long			binDetect_Ms		= 60000;
+	public long			detectFirst_Ms		= 0;
+	public long			detectLast_Ms		= 0;
+	public long			detectBin_Ms		= 60000;
 	public int			detect_threshold	= 0;
 	public int			detect_nframes		= 0;
 	// ----------------------------

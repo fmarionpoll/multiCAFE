@@ -37,12 +37,12 @@ public class ExperimentList {
 				if (expAll.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
 					expAll.setFileTimeImageLast(exp.getFileTimeImageLast(true));
 			}
-			expAll.firstCamImage_Ms = expAll.getFileTimeImageFirst(false).toMillis();
-			expAll.lastCamImage_Ms = expAll.getFileTimeImageLast(false).toMillis();	
+			expAll.camFirstImage_Ms = expAll.getFileTimeImageFirst(false).toMillis();
+			expAll.camLastImage_Ms = expAll.getFileTimeImageLast(false).toMillis();	
 		} 
 		else {
-			expAll.firstCamImage_Ms = 0;
-			expAll.lastCamImage_Ms = 0;
+			expAll.camFirstImage_Ms = 0;
+			expAll.camLastImage_Ms = 0;
 			for (Experiment exp: experimentList) {
 				if (options.collateSeries && exp.previousExperiment != null)
 					continue;
@@ -53,13 +53,13 @@ public class ExperimentList {
 					System.out.println("error when computing FileTime difference between last and first image; set dt between images = 1 ms");
 					diff = exp.seqCamData.seq.getSizeT();
 				}
-				if (expAll.lastCamImage_Ms < diff) 
-					expAll.lastCamImage_Ms = (long) diff;
+				if (expAll.camLastImage_Ms < diff) 
+					expAll.camLastImage_Ms = (long) diff;
 			}
 		}
 		
-		expAll.firstKymoCol_Ms = expAll.firstCamImage_Ms;
-		expAll.lastKymoCol_Ms = expAll.lastCamImage_Ms;
+		expAll.kymoFirstCol_Ms = expAll.camFirstImage_Ms;
+		expAll.kymoLastCol_Ms = expAll.camLastImage_Ms;
 		return expAll;
 	}
 		
@@ -99,10 +99,10 @@ public class ExperimentList {
 					)
 					continue;
 				// same exp series: if before, insert eventually
-				if (expi.lastCamImage_Ms < exp.firstCamImage_Ms) {
+				if (expi.camLastImage_Ms < exp.camFirstImage_Ms) {
 					if (exp.previousExperiment == null)
 						exp.previousExperiment = expi;
-					else if (expi.lastCamImage_Ms > exp.previousExperiment.lastCamImage_Ms ) {
+					else if (expi.camLastImage_Ms > exp.previousExperiment.camLastImage_Ms ) {
 						(exp.previousExperiment).nextExperiment = expi;
 						expi.previousExperiment = exp.previousExperiment;
 						expi.nextExperiment = exp;
@@ -111,10 +111,10 @@ public class ExperimentList {
 					continue;
 				}
 				// same exp series: if after, insert eventually
-				if (expi.firstCamImage_Ms > exp.lastCamImage_Ms) {
+				if (expi.camFirstImage_Ms > exp.camLastImage_Ms) {
 					if (exp.nextExperiment == null)
 						exp.nextExperiment = expi;
-					else if (expi.firstCamImage_Ms < exp.nextExperiment.firstCamImage_Ms ) {
+					else if (expi.camFirstImage_Ms < exp.nextExperiment.camFirstImage_Ms ) {
 						(exp.nextExperiment).previousExperiment = expi;
 						expi.nextExperiment = (exp.nextExperiment);
 						expi.previousExperiment = exp;

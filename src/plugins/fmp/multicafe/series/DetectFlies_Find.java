@@ -141,12 +141,12 @@ public class DetectFlies_Find {
 			seq.addROI(tempPosROI[i]);	
 		}
 		// create array for the results - 1 point = 1 slice
-		resultFlyPositionArrayList = new ROI[nbcages][cages.detect_nframes];
+		resultFlyPositionArrayList = new ROI[nbcages][exp.cages.detect_nframes];
 	}
 	
 	public void initParametersForDetection(Experiment exp, Options_BuildSeries	options) {
 		this.options = options;
-		cages.detect_nframes = (int) (((cages.lastDetect_Ms - cages.firstDetect_Ms) / cages.binDetect_Ms) +1);
+		exp.cages.detect_nframes = (int) (((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms) +1);
 		exp.cages.clearAllMeasures();
 		cages = exp.cages;
 		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageList);
