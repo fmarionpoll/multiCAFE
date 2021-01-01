@@ -24,10 +24,11 @@ import icy.gui.dialog.MessageDialog;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.util.StringUtil;
+
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
-import plugins.fmp.multicafe.series.BuildSeries_Options;
+import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectFlies2_series;
 
 
@@ -58,7 +59,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("background", false);
 	private JCheckBox 	detectCheckBox 			= new JCheckBox("flies", true);
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
-	private JSpinner 	stepFrameJSpinner		= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
 	private DetectFlies2_series detectFlies2Thread 	= null;
 	private int 		currentExp 				= -1;
@@ -75,8 +75,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		JPanel panel1 = new JPanel(flowLayout);
 		panel1.add(startComputationButton);
 		panel1.add(allCheckBox);
-		panel1.add(new JLabel (" step"));
-		panel1.add(stepFrameJSpinner);
 		panel1.add(backgroundCheckBox);
 		panel1.add(detectCheckBox);
 		add( GuiUtil.besidesPanel(panel1));
@@ -159,34 +157,34 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		if (e.getSource() == thresholdDiffSpinner) {
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null)
-				exp.cages.detect.threshold = (int) thresholdDiffSpinner.getValue();
+				exp.cages.detect_threshold = (int) thresholdDiffSpinner.getValue();
 		}
 	}
 	
 	private boolean initTrackParameters() {
 		if (detectFlies2Thread == null)
 			return false;
-		detectFlies2Thread.options = new BuildSeries_Options();
-		BuildSeries_Options options = detectFlies2Thread.options;
+		detectFlies2Thread.options = new Options_BuildSeries();
+		Options_BuildSeries options = detectFlies2Thread.options;
 		
 		options.btrackWhite 		= true;
 		options.blimitLow 		= objectLowsizeCheckBox.isSelected();
 		options.blimitUp 		= objectUpsizeCheckBox.isSelected();
 		options.limitLow 		= (int) objectLowsizeSpinner.getValue();
-		options.limitUp 			= (int) objectUpsizeSpinner.getValue();
+		options.limitUp 		= (int) objectUpsizeSpinner.getValue();
 		options.limitRatio		= (int) limitRatioSpinner.getValue();
 		options.jitter 			= (int) jitterTextField.getValue();
 		options.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
 		options.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();
-		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
+		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.resultsSubPath 	= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
 		
-		options.forceBuildBackground	= backgroundCheckBox.isSelected();
+		options.forceBuildBackground = backgroundCheckBox.isSelected();
 		options.detectFlies		= detectCheckBox.isSelected();
-		options.df_stepFrame 		= (int) stepFrameJSpinner.getValue();
 		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
 		options.startMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
 		options.endMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
+		options.binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
 
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		

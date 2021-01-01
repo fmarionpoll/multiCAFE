@@ -14,6 +14,7 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.util.XMLUtil;
+
 import plugins.fmp.multicafe.tools.Comparators;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
@@ -22,12 +23,15 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Cages {
 	
-	public DetectFlies_Options 	detect 		= new DetectFlies_Options();
 	public List<Cage>	cageList			= new ArrayList<Cage>();
-	public int 			cagesFrameStart		= 0;
-	public int 			cagesFrameEnd 		= 0;
-	public int 			cagesFrameStep 		= 1;
 	public boolean		saveDetectedROIs	= false;
+	// ---------- not saved to xml:
+	public long			firstDetect_Ms		= 0;
+	public long			lastDetect_Ms		= 0;
+	public long			binDetect_Ms		= 60000;
+	public int			detect_threshold	= 0;
+	public int			detect_nframes		= 0;
+	// ----------------------------
 
 	private final String ID_CAGES 			= "Cages";
 	private final String ID_NCAGES 			= "n_cages";
@@ -89,8 +93,8 @@ public class Cages {
 		if (node == null)
 			return false;
 
-		detect.saveToXML(node);	
-		
+//		detect.saveToXML(node);	
+
 		int index = 0;
 		Element xmlVal = XMLUtil.addElement(node, ID_CAGES);
 		int ncages = cageList.size();
@@ -143,7 +147,9 @@ public class Cages {
 		if (node == null)
 			return false;
 		cageList.clear();
-		detect.loadFromXML(node);
+		
+//		detect.loadFromXML(node);
+		
 		Element xmlVal = XMLUtil.getElement(node, ID_CAGES);
 		if (xmlVal != null) {
 			int ncages = XMLUtil.getAttributeIntValue(xmlVal, ID_NCAGES, 0);
@@ -170,7 +176,9 @@ public class Cages {
 	// --------------
 	
 	public void copy (Cages cag) {
-		detect.copyParameters(cag.detect);
+		
+//		detect.copyParameters(cag.detect);
+		
 		cageList.clear();
 		for (Cage ccag: cag.cageList) {
 			Cage cagi = new Cage();

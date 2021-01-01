@@ -15,7 +15,7 @@ import plugins.fmp.multicafe.sequence.ExperimentList;
 
 public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 
-	public BuildSeries_Options 	options 		= new BuildSeries_Options();
+	public Options_BuildSeries 	options 		= new Options_BuildSeries();
 	public boolean 				stopFlag 		= false;
 	public boolean 				threadRunning 	= false;
 		

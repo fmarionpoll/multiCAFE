@@ -119,9 +119,9 @@ public class BuildROIs2  extends JPanel implements ChangeListener {
 			ov.setSequence(seqCamData);
 			seqCamData.seq.addOverlay(ov);
 		}
-		exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
+		exp.cages.detect_threshold = (int) thresholdSpinner.getValue();
 		ov.setThresholdTransform(
-				exp.cages.detect.threshold,  
+				exp.cages.detect_threshold,  
 				(TransformOp) transformForLevelsComboBox.getSelectedItem(),
 				false);
 		seqCamData.seq.overlayChanged(ov);

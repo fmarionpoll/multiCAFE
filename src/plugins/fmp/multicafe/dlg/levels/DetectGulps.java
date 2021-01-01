@@ -24,7 +24,7 @@ import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
-import plugins.fmp.multicafe.series.BuildSeries_Options;
+import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectGulps_series;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
@@ -150,7 +150,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		thread = new DetectGulps_series();
 		exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
 		
-		BuildSeries_Options options = thread.options;
+		Options_BuildSeries options = thread.options;
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		options.expList.index0 = parent0.expList.currentExperimentIndex;
@@ -180,7 +180,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 	}
 
 	void setInfos(Capillary cap) {
-		BuildSeries_Options options = cap.getGulpsOptions();
+		Options_BuildSeries options = cap.getGulpsOptions();
 		detectGulpsThresholdSpinner.setValue(options.detectGulpsThreshold);
 		transformForGulpsComboBox.setSelectedItem(options.transformForGulps);
 		detectAllGulpsCheckBox.setSelected(options.detectAllGulps);

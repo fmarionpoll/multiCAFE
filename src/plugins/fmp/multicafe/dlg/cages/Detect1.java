@@ -22,11 +22,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import icy.util.StringUtil;
+
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
-import plugins.fmp.multicafe.series.BuildSeries_Options;
+import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectFlies1_series;
 import plugins.fmp.multicafe.tools.OverlayThreshold;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
@@ -53,7 +54,6 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object > ");
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object < ");
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
-	private JSpinner 	stepFrameJSpinner		= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	
 	private JCheckBox 	whiteMiceCheckBox 		= new JCheckBox("white object");
 	JCheckBox 			overlayCheckBox 		= new JCheckBox("overlay");
@@ -75,8 +75,6 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		JPanel panel1 = new JPanel(flowLayout);
 		panel1.add(startComputationButton);
 		panel1.add(allCheckBox);
-		panel1.add(new JLabel (" step"));
-		panel1.add(stepFrameJSpinner);
 		panel1.validate();
 		add(panel1);
 		
@@ -157,7 +155,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 			ov.setSequence(seqCamData);
 		}
 		seqCamData.seq.addOverlay(ov);	
-		ov.setThresholdSingle(exp.cages.detect.threshold, true);
+		ov.setThresholdSingle(exp.cages.detect_threshold, true);
 		ov.painterChanged();	
 	}
 	
@@ -171,7 +169,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		if (e.getSource() == thresholdSpinner) {
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
-				exp.cages.detect.threshold = (int) thresholdSpinner.getValue();
+				exp.cages.detect_threshold = (int) thresholdSpinner.getValue();
 				updateOverlay(exp);
 			}
 		}
@@ -180,23 +178,23 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private boolean initTrackParameters() {
 		if (thread == null)
 			return false;
-		thread.options = new BuildSeries_Options();
-		BuildSeries_Options options = thread.options;
+		thread.options = new Options_BuildSeries();
+		Options_BuildSeries options = thread.options;
 		options.btrackWhite 	= whiteMiceCheckBox.isSelected();
 		options.blimitLow 		= objectLowsizeCheckBox.isSelected();
 		options.blimitUp 		= objectUpsizeCheckBox.isSelected();
 		options.limitLow 		= (int) objectLowsizeSpinner.getValue();
-		options.limitUp 			= (int) objectUpsizeSpinner.getValue();
+		options.limitUp 		= (int) objectUpsizeSpinner.getValue();
 		options.limitRatio		= (int) limitRatioSpinner.getValue();
 		options.jitter 			= (int) jitterTextField.getValue();
 		options.videoChannel 	= colorChannelComboBox.getSelectedIndex();
 		options.transformop		= (TransformOp) backgroundComboBox.getSelectedItem();
 		options.threshold		= (int) thresholdSpinner.getValue();
 		
-		options.df_stepFrame 	= (int) stepFrameJSpinner.getValue();
 		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
 		options.startMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
 		options.endMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
+		options.binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
 
 		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 		options.resultsSubPath = (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;

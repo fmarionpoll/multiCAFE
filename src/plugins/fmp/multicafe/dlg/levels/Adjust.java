@@ -19,7 +19,7 @@ import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
 import plugins.fmp.multicafe.series.AdjustMeasuresDimensions_series;
-import plugins.fmp.multicafe.series.BuildSeries_Options;
+import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.CurvesClipSameLengthWithinCage_series;
 import plugins.fmp.multicafe.series.CurvesRestoreLength_series;
 
@@ -151,7 +151,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 		}
 	}
 	
-	private boolean initBuildParameters(BuildSeries_Options options) {
+	private boolean initBuildParameters(Options_BuildSeries options) {
 		int index  = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperiment(index);
 		if (exp == null)
@@ -180,7 +180,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 	
 	private void series_adjustDimensionsStart() {
 		threadAdjust = new AdjustMeasuresDimensions_series();
-		BuildSeries_Options options= threadAdjust.options;
+		Options_BuildSeries options= threadAdjust.options;
 		if (initBuildParameters (options)) {
 			threadAdjust.addPropertyChangeListener(this);
 			threadAdjust.execute();
@@ -190,7 +190,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 	
 	private void series_restoreStart() {
 		threadRestore = new CurvesRestoreLength_series();
-		BuildSeries_Options options= threadRestore.options;
+		Options_BuildSeries options= threadRestore.options;
 		if (initBuildParameters (options)) {
 			threadRestore.addPropertyChangeListener(this);
 			threadRestore.execute();
@@ -200,7 +200,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 	
 	private void series_clipStart() {
 		threadClip = new CurvesClipSameLengthWithinCage_series();
-		BuildSeries_Options options= threadClip.options;
+		Options_BuildSeries options= threadClip.options;
 		if (initBuildParameters (options)) {
 			threadClip.addPropertyChangeListener(this);
 			threadClip.execute();

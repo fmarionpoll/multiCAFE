@@ -129,7 +129,7 @@ public class DetectLevels_series2 extends BuildSeries  {
 		return rowIndex;
 	}
 
-	private int detectThresholdFromTop(int ix, int oldiytop, int jitter, int [] tabValues, int xwidth, int yheight, BuildSeries_Options options) {
+	private int detectThresholdFromTop(int ix, int oldiytop, int jitter, int [] tabValues, int xwidth, int yheight, Options_BuildSeries options) {
 		int y = yheight-1;
 		oldiytop = checkLimits(oldiytop - jitter, yheight-1);
 		for (int iy = oldiytop; iy < yheight; iy++) {
@@ -146,7 +146,7 @@ public class DetectLevels_series2 extends BuildSeries  {
 		return y;
 	}
 	
-	private int detectThresholdFromBottom(int ix, int oldiybottom, int jitter, int[] tabValues, int xwidth, int yheight, BuildSeries_Options options) {
+	private int detectThresholdFromBottom(int ix, int oldiybottom, int jitter, int[] tabValues, int xwidth, int yheight, Options_BuildSeries options) {
 		int y = 0;
 		oldiybottom = yheight - 1; // no memory needed  - the bottom is quite stable
 		for (int iy = oldiybottom; iy >= 0 ; iy--) {

@@ -12,6 +12,7 @@ import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
+
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.tools.OverlayThreshold;
 
@@ -32,16 +33,16 @@ public class DetectFlies1_series extends BuildSeries {
 		exp.xmlLoadExperiment();
 		exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
 		exp.xmlReadDrosoTrack(null);
-		exp.setCagesFrameStep (options.df_stepFrame);
 		if (options.isFrameFixed) {
-			exp.setCagesFrameStart (options.df_startFrame);
-			exp.setCagesFrameEnd (options.df_endFrame);
-			if (exp.getCagesFrameEnd() > (exp.getSeqCamSizeT() - 1))
-				exp.setCagesFrameEnd (exp.getSeqCamSizeT() - 1);
+			exp.cages.firstDetect_Ms = options.startMs;
+			exp.cages.lastDetect_Ms = options.endMs;
+			if (exp.cages.lastDetect_Ms > exp.lastCamImage_Ms)
+				exp.cages.lastDetect_Ms = exp.lastCamImage_Ms;
 		} else {
-			exp.setCagesFrameStart (0);
-			exp.setCagesFrameEnd (exp.seqCamData.seq.getSizeT() - 1);
+			exp.cages.firstDetect_Ms = exp.firstCamImage_Ms;
+			exp.cages.lastDetect_Ms = exp.lastCamImage_Ms;
 		}
+		exp.cages.binDetect_Ms = options.binMs;
 		
 		if (exp.cages.cageList.size() < 1 ) {
 			System.out.println("! skipped experiment with no cage: " + exp.getExperimentFileName());
@@ -69,7 +70,7 @@ public class DetectFlies1_series extends BuildSeries {
 				viewerCamData.setBounds(rectv);
 				ov = new OverlayThreshold(exp.seqCamData);
 				exp.seqCamData.seq.addOverlay(ov);	
-				ov.setThresholdSingle(exp.cages.detect.threshold, true);
+				ov.setThresholdSingle(exp.cages.detect_threshold, true);
 				ov.painterChanged();
 			}});
 		} catch (InvocationTargetException | InterruptedException e) {
@@ -86,8 +87,8 @@ public class DetectFlies1_series extends BuildSeries {
 		exp.seqCamData.seq.beginUpdate();
 		
 		int it = 0;
-		for (int frame = exp.getCagesFrameStart() ; frame <= exp.getCagesFrameEnd(); frame  += exp.getCagesFrameStep(), it++ ) {				
-			final int t_from = frame;
+		for (long indexms = exp.cages.firstDetect_Ms ; indexms <= exp.cages.lastDetect_Ms; indexms += exp.cages.binDetect_Ms, it++ ) {
+			final int t_from = (int) ((indexms - exp.firstCamImage_Ms)/exp.binCamImage_Ms);
 			final int t_it = it;
 			futures.add(processor.submit(new Runnable () {
 			@Override

@@ -13,7 +13,7 @@ import org.w3c.dom.NodeList;
 
 import icy.roi.ROI;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafe.series.BuildSeries_Options;
+import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
@@ -22,7 +22,7 @@ public class Capillaries {
 	public CapillariesDescription 	desc				= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public List <Capillary> 		capillariesArrayList= new ArrayList <Capillary>();
-	public BuildSeries_Options 		limitsOptions		= new BuildSeries_Options();
+	public Options_BuildSeries 		limitsOptions		= new Options_BuildSeries();
 	
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
 	private final static String ID_NCAPILLARIES 		= "N_capillaries";

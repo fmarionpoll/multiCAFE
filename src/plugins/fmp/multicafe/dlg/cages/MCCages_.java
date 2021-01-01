@@ -36,6 +36,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 			JTabbedPane 	tabsPane	= new JTabbedPane();
 			int 			iTAB_INFOS 	= 2;
 			int 			iTAB_DETECT1= 3;
+			int 			iTAB_DETECT2= 4;
 			int 			iTAB_CAGE2	= 1;
 			MultiCAFE 		parent0		= null;
 
@@ -75,6 +76,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Detect1", null, tabDetect1, "Detect flies position using thresholding on image overlay");
 		
 		iTab++;
+		iTAB_DETECT2 = iTab;
 		tabDetect2.init(capLayout, parent0);
 		tabDetect2.addPropertyChangeListener(this);
 		tabsPane.addTab("Detect2", null, tabDetect2, "Detect flies position using background subtraction");
@@ -103,6 +105,11 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 	        public void stateChanged(ChangeEvent e) {
 	            int selectedIndex = tabsPane.getSelectedIndex();
 	            tabDetect1.overlayCheckBox.setSelected(selectedIndex == iTAB_DETECT1);
+	            if (selectedIndex == iTAB_DETECT1 || selectedIndex == iTAB_DETECT2) {
+	            	parent0.paneSequence.capPopupPanel.expand();
+	    			parent0.paneCapillaries.capPopupPanel.collapse();
+	    			parent0.paneSequence.tabsPane.setSelectedIndex(3);
+	            }
 //	            if (selectedIndex == iTAB_INFOS && tabInfos.tableView.getRowCount() > 0) {
 //	            	tabInfos.tableView.changeSelection(0, 1, false, false);
 //	            }

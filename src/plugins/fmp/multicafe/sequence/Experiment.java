@@ -483,26 +483,6 @@ public class Experiment {
 	}
 	
 	// --------------------------------------------
-		
-//	public void setKymoFrameStart(int start) {
-//		kymoFrameStart = start;
-//	}
-//	
-//	public void setKymoFrameEnd(int end) {
-//		kymoFrameEnd = end;
-//	}
-//	
-//	public void setKymoFrameStep(int step) {
-//		kymoFrameStep = step;
-//	}
-//	
-//	public int getKymoFrameStart() {
-//		return kymoFrameStart;
-//	}
-//	
-//	public int getKymoFrameEnd() {
-//		return kymoFrameEnd;
-//	}
 	
 	public int getSeqCamSizeT() {
 		int lastFrame = 0;
@@ -510,31 +490,7 @@ public class Experiment {
 			lastFrame = seqCamData.seq.getSizeT() -1;
 		return lastFrame;
 	}
-	
-	public void setCagesFrameStart(int start) {
-		cages.cagesFrameStart = start;
-	}
-	
-	public void setCagesFrameEnd(int end) {
-		cages.cagesFrameEnd = end;
-	}
-	
-	public void setCagesFrameStep(int step) {
-		cages.cagesFrameStep = step;
-	}
-	
-	public int getCagesFrameStart() {
-		return cages.cagesFrameStart;
-	}
-	
-	public int getCagesFrameEnd() {
-		return cages.cagesFrameEnd;
-	}
-	
-	public int getCagesFrameStep() {
-		return cages.cagesFrameStep;
-	}
-	
+		
 	// --------------------------------------------
 	
 	public boolean adjustCapillaryMeasuresDimensions() {

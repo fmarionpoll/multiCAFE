@@ -22,7 +22,7 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.series.BuildKymographs_series;
-import plugins.fmp.multicafe.series.BuildSeries_Options;
+import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.tools.EnumStatusComputation;
 
 
@@ -92,7 +92,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		}});
 	}
 		
-	private boolean initBuildParameters(Experiment exp, BuildSeries_Options options) {
+	private boolean initBuildParameters(Experiment exp, Options_BuildSeries options) {
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.expList.currentExperimentIndex;
 		if (allSeriesCheckBox.isSelected())
@@ -124,7 +124,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
 		threadBuildKymo = new BuildKymographs_series();	
-		BuildSeries_Options options = threadBuildKymo.options;
+		Options_BuildSeries options = threadBuildKymo.options;
 		initBuildParameters(exp, options);
 		
 		threadBuildKymo.addPropertyChangeListener(this);
