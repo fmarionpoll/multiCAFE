@@ -15,7 +15,7 @@ import plugins.kernel.roi.roi2d.ROI2DPoint;
 
 
 public class Cage {
-	public ROI2D 		cageRoi						= null;
+	public ROI2D 		cageRoi					= null;
 
 	public XYTaSeries 	flyPositions 			= new XYTaSeries();
 	public List<ROI2D> 	detectedROIsList		= new ArrayList<ROI2D>();
@@ -46,7 +46,8 @@ public class Cage {
 		Element xmlVal = XMLUtil.addElement(node, "Cage"+index);		
 		xmlSaveCageLimits(xmlVal);
 		xmlSaveCageParameters(xmlVal);
-		xmlSaveFlyPositions(xmlVal);
+		if (cageNFlies > 0)
+			xmlSaveFlyPositions(xmlVal);
 		if (saveDetectedROIs)
 			xmlSaveDetecteRois(xmlVal);
 		return true;
@@ -97,17 +98,17 @@ public class Cage {
 		Element xmlVal = XMLUtil.getElement(node, "Cage"+index);
 		if (xmlVal == null)
 			return false;
-		getCageLimits(xmlVal);
-		getCageParameters(xmlVal);
-		if (getFlyPositions(xmlVal)) {
+		xmlLoadCageLimits(xmlVal);
+		xmlLoadCageParameters(xmlVal);
+		if (xmlLoadFlyPositions(xmlVal)) 
 			transferPositionsToRois();
-		}
-		else if (getRoisDetected(xmlVal))
+		else 
+			xmlLoadRoisDetected(xmlVal);
 			; // TODO?
 		return true;
 	}
 	
-	public boolean getCageLimits (Element xmlVal) {
+	public boolean xmlLoadCageLimits (Element xmlVal) {
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_CAGELIMITS);
 		if (xmlVal2 != null) {
 			cageRoi = (ROI2D) ROI.createFromXML(xmlVal2 );
@@ -116,7 +117,7 @@ public class Cage {
 		return true;
 	}
 	
-	public boolean getCageParameters (Element xmlVal) {
+	public boolean xmlLoadCageParameters (Element xmlVal) {
 		cageNFlies 		= XMLUtil.getElementIntValue(xmlVal, ID_NFLIES, cageNFlies);
 		cageAge 		= XMLUtil.getElementIntValue(xmlVal, ID_AGE, cageAge);
 		strCageComment 	= XMLUtil.getElementValue(xmlVal, ID_COMMENT, strCageComment);
@@ -125,7 +126,7 @@ public class Cage {
 		return true;
 	}
 	
-	public boolean getFlyPositions(Element xmlVal) {
+	public boolean xmlLoadFlyPositions(Element xmlVal) {
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_FLYPOSITIONS);
 		if (xmlVal2 != null) {
 			flyPositions.loadFromXML(xmlVal2);
@@ -134,7 +135,7 @@ public class Cage {
 		return false;
 	}
 	
-	public boolean getRoisDetected(Element xmlVal) {
+	public boolean xmlLoadRoisDetected(Element xmlVal) {
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_ROISDETECTED);
 		if (xmlVal2 != null) {
 			int nb_items =  XMLUtil.getAttributeIntValue(xmlVal2, ID_NBITEMS, detectedROIsList.size());

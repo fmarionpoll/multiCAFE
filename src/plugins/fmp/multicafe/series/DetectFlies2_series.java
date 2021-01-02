@@ -30,7 +30,7 @@ public class DetectFlies2_series extends BuildSeries {
 	private Viewer viewerCamData;
 	private Viewer vPositive = null;
 	private Viewer vBackgroundImage = null;;
-	private DetectFlies_Find detect = new DetectFlies_Find();
+	private DetectFlies_Find find_flies = new DetectFlies_Find();
 	
 	public Sequence seqNegative = new Sequence();
 	public Sequence seqPositive = new Sequence();
@@ -39,8 +39,7 @@ public class DetectFlies2_series extends BuildSeries {
 	// -----------------------------------------
 	
 	void analyzeExperiment(Experiment exp) {
-		exp.xmlLoadExperiment();
-		exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
+		exp.openSequenceCamData();
 		exp.xmlReadDrosoTrack(null);
 		if (options.isFrameFixed) {
 			exp.cages.detectFirst_Ms = options.t_firstMs;
@@ -68,7 +67,9 @@ public class DetectFlies2_series extends BuildSeries {
 		if (seqPositive == null)
 			seqPositive = new Sequence();
 		
-		detect.initParametersForDetection(exp, options);
+		exp.cleanPreviousDetectedFliesROIs();
+		find_flies.initParametersForDetection(exp, options);
+		find_flies.initTempRectROIs(exp, exp.seqCamData.seq);
 		options.threshold = options.thresholdDiff;
 		
 		try {
@@ -93,7 +94,7 @@ public class DetectFlies2_series extends BuildSeries {
 		}
 		
 		if (options.detectFlies) {
-			exp.cleanPreviousFliesDetections();
+			exp.cleanPreviousDetectedFliesROIs();
 			findFlies(exp);
 			exp.xmlSaveFlyPositionsForAllCages();
 		}
@@ -129,14 +130,14 @@ public class DetectFlies2_series extends BuildSeries {
 			vBackgroundImage.close();
 			vBackgroundImage = null;
 		}
-		detect.initTempRectROIs(exp, seqNegative);
+		find_flies.initTempRectROIs(exp, seqNegative);
 
 		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectFlies1");
 	    processor.setPriority(Processor.NORM_PRIORITY);
         try {
 			int nframes = (int) ((exp.kymoLastCol_Ms - exp.kymoFirstCol_Ms) / exp.kymoBinColl_Ms +1);
-		   ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
+			ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 			futures.clear();
 			
 			viewerCamData = exp.seqCamData.seq.getFirstViewer();
@@ -152,7 +153,6 @@ public class DetectFlies2_series extends BuildSeries {
 				futures.add(processor.submit(new Runnable () {
 				@Override
 				public void run() {	
-					
 					IcyBufferedImage workImage = exp.seqCamData.getImageDirect(t_from);
 					if (workImage == null)
 						return;
@@ -160,7 +160,7 @@ public class DetectFlies2_series extends BuildSeries {
 					exp.seqCamData.currentFrame = t_from;
 					seqNegative.beginUpdate();
 					IcyBufferedImage negativeImage = exp.seqCamData.subtractImages(exp.seqCamData.refImage, currentImage);
-					detect.findFlies(negativeImage, t_from, t_it);
+					find_flies.findFlies(negativeImage, t_from, t_it);
 					seqNegative.setImage(0, 0, negativeImage);
 					seqNegative.endUpdate();
 				}
@@ -171,8 +171,8 @@ public class DetectFlies2_series extends BuildSeries {
 		} finally {
 			exp.seqCamData.seq.endUpdate();
 			seqNegative.close();
-			detect.copyDetectedROIsToSequence(exp);
-			detect.copyDetectedROIsToCages(exp);
+			find_flies.copyDetectedROIsToSequence(exp);
+			find_flies.copyDetectedROIsToCages(exp);
 		}
 		progressBar.close();
 		processor.shutdown();
@@ -230,14 +230,14 @@ public class DetectFlies2_series extends BuildSeries {
 					if (vBackgroundImage == null)
 						vBackgroundImage = new Viewer(exp.seqBackgroundImage, false);
 					exp.seqBackgroundImage.setName("referenceImage");
-					exp.seqBackgroundImage.setImage(0, 0,IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, detect.rectangleAllCages));
+					exp.seqBackgroundImage.setImage(0, 0,IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, find_flies.rectangleAllCages));
 					
 					if (seqPositive == null)
 						seqPositive = new Sequence();
 					if (vPositive == null)
 						vPositive = new Viewer(seqPositive, false);
 					seqPositive.setName("positiveImage");
-					seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, detect.rectangleAllCages));
+					seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, find_flies.rectangleAllCages));
 			
 					viewerCamData = exp.seqCamData.seq.getFirstViewer();
 					Point pt = viewerCamData.getLocation();
@@ -261,7 +261,7 @@ public class DetectFlies2_series extends BuildSeries {
 	private void buildBackgroundImage(Experiment exp) {
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		int nfliesRemoved = 0; //
-		detect.initParametersForDetection(exp, options);
+		find_flies.initParametersForDetection(exp, options);
 		
 		int t_from = (int) ((exp.cages.detectFirst_Ms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
 		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getImage(t_from, 0));
@@ -284,14 +284,14 @@ public class DetectFlies2_series extends BuildSeries {
 			viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t));
 
 			IcyBufferedImage positiveImage = exp.seqCamData.subtractImages(currentImage, exp.seqCamData.refImage);
-			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, detect.rectangleAllCages));
-			ROI2DArea roiAll = detect.binarizeImage(positiveImage, options.thresholdBckgnd);
+			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, find_flies.rectangleAllCages));
+			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd);
 			 
 			for (int icage = 0; icage <= ndetectcages - 1; icage++) {
 				Cage cage = exp.cages.cageList.get(icage);
 				if (cage.cageNFlies != 1)
 					continue;
-				BooleanMask2D bestMask = detect.findLargestBlob(roiAll, icage);
+				BooleanMask2D bestMask = find_flies.findLargestBlob(roiAll, icage);
 				if (bestMask != null) {
 					ROI2DArea flyROI = new ROI2DArea(bestMask);
 					if (!initialflyRemovedList.get(icage)) {
@@ -301,7 +301,7 @@ public class DetectFlies2_series extends BuildSeries {
 						nfliesRemoved++;
 						if (exp.seqBackgroundImage != null)
 							exp.seqBackgroundImage.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage,
-									detect.rectangleAllCages));
+									find_flies.rectangleAllCages));
 						progress.setMessage("Build background image: n flies removed =" + nfliesRemoved);
 					}
 				}

@@ -93,8 +93,6 @@ public class Cages {
 		if (node == null)
 			return false;
 
-//		detect.saveToXML(node);	
-
 		int index = 0;
 		Element xmlVal = XMLUtil.addElement(node, ID_CAGES);
 		int ncages = cageList.size();
@@ -148,13 +146,9 @@ public class Cages {
 			return false;
 		cageList.clear();
 		
-//		detect.loadFromXML(node);
-		
 		Element xmlVal = XMLUtil.getElement(node, ID_CAGES);
 		if (xmlVal != null) {
 			int ncages = XMLUtil.getAttributeIntValue(xmlVal, ID_NCAGES, 0);
-			if (ncages > 0)
-				cageList.clear();
 			for (int index = 0; index < ncages; index++) {
 				Cage cage = new Cage();
 				cage.xmlLoadCage(xmlVal, index);

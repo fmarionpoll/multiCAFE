@@ -98,32 +98,32 @@ public class DetectFlies_Find {
 			BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, icage);
 			ROI2DArea flyROI = null;
 			Cage cage = cages.cageList.get(icage);
-			if (cage.cageNFlies < 1)
-				continue;
-			if ( bestMask != null ) {
-				flyROI = new ROI2DArea( bestMask ); 
-				Rectangle2D rect = flyROI.getBounds2D();
-				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-				ROI2DPoint flyXYROI = new ROI2DPoint(flyPosition);
-				flyXYROI.setName("det"+cage.getCageNumber() +"_" + t );
-				flyXYROI.setT( t );
-				resultFlyPositionArrayList[icage][it] = flyXYROI;
-				
-				tempPosROI[icage] = flyXYROI; 
-				int npoints = cage.flyPositions.pointsList.size();
-				cage.flyPositions.add(flyPosition, t);
-				if (it > 0 && npoints > 0) {
-					Point2D prevPoint = cage.flyPositions.getValidPointAtOrBefore(npoints);
-					if (prevPoint.getX() >= 0) {
-						double distance = flyPosition.distance(prevPoint);
-						if (distance > options.jitter)
-							cage.flyPositions.lastTimeAlive = t;
+			if (cage.cageNFlies > 0) {
+				if ( bestMask != null ) {
+					flyROI = new ROI2DArea( bestMask ); 
+					Rectangle2D rect = flyROI.getBounds2D();
+					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
+					ROI2DPoint flyXYROI = new ROI2DPoint(flyPosition);
+					flyXYROI.setName("det"+cage.getCageNumber() +"_" + t );
+					flyXYROI.setT( t );
+					resultFlyPositionArrayList[icage][it] = flyXYROI;
+					
+					tempPosROI[icage] = flyXYROI; 
+					int npoints = cage.flyPositions.pointsList.size();
+					cage.flyPositions.add(flyPosition, t);
+					if (it > 0 && npoints > 0) {
+						Point2D prevPoint = cage.flyPositions.getValidPointAtOrBefore(npoints);
+						if (prevPoint.getX() >= 0) {
+							double distance = flyPosition.distance(prevPoint);
+							if (distance > options.jitter)
+								cage.flyPositions.lastTimeAlive = t;
+						}
 					}
 				}
-			}
-			else {
-				Point2D flyPosition = new Point2D.Double(-1, -1);
-				cage.flyPositions.add(flyPosition, t);
+				else {
+					Point2D flyPosition = new Point2D.Double(-1, -1);
+					cage.flyPositions.add(flyPosition, t);
+				}
 			}
 		}
 	}
@@ -133,12 +133,15 @@ public class DetectFlies_Find {
 		int nbcages = cages.cageList.size();
 		tempPosROI = new ROI2DPoint [nbcages];
 		for (int i=0; i < nbcages; i++) {
-			tempPosROI[i] = new ROI2DPoint(0, 0);
-			tempPosROI[i].setName("fly_"+i);
 			Cage cage = cages.cageList.get(i);
-			XYTaSeries positions = new XYTaSeries();
-			cage.flyPositions = positions;
-			seq.addROI(tempPosROI[i]);	
+			if (cage.cageNFlies > 0) {
+				tempPosROI[i] = new ROI2DPoint(0, 0);
+				tempPosROI[i].setName("fly_"+i);
+				XYTaSeries positions = new XYTaSeries();
+				positions.ensureCapacity(exp.cages.detect_nframes);
+				cage.flyPositions = positions;
+				seq.addROI(tempPosROI[i]);
+			}
 		}
 		// create array for the results - 1 point = 1 slice
 		resultFlyPositionArrayList = new ROI[nbcages][exp.cages.detect_nframes];

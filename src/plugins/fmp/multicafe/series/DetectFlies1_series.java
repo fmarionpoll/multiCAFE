@@ -30,8 +30,7 @@ public class DetectFlies1_series extends BuildSeries {
 	// -----------------------------------------------------
 	
 	void analyzeExperiment(Experiment exp) {
-		exp.xmlLoadExperiment();
-		exp.seqCamData.loadSequence(exp.getExperimentFileName()) ;
+		exp.openSequenceCamData();
 		exp.xmlReadDrosoTrack(null);
 		if (options.isFrameFixed) {
 			exp.cages.detectFirst_Ms = options.t_firstMs;
@@ -58,9 +57,9 @@ public class DetectFlies1_series extends BuildSeries {
     }
 		
 	private void runDetectFlies(Experiment exp) {
+		exp.cleanPreviousDetectedFliesROIs();
 		find_flies.initParametersForDetection(exp, options);
 		find_flies.initTempRectROIs(exp, exp.seqCamData.seq);
-		exp.cleanPreviousFliesDetections();
 		
 		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
 		try {

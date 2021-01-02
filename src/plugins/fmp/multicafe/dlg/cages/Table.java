@@ -96,12 +96,12 @@ public class Table extends JPanel {
 					for (Cage cageTo: exp.cages.cageList) {
 						if (!cageFrom.cageRoi.getName().equals (cageTo.cageRoi.getName()))
 							continue;
-						cageFrom.valid = true;
-						cageTo.cageNFlies = cageFrom.cageNFlies;
-						cageTo.cageAge = cageFrom.cageAge;
-						cageTo.strCageComment = cageFrom.strCageComment;
-						cageTo.strCageSex = cageFrom.strCageSex;
-						cageTo.strCageStrain = cageFrom.strCageStrain;
+						cageFrom.valid 			= true;
+						cageTo.cageNFlies 		= cageFrom.cageNFlies;
+						cageTo.cageAge 			= cageFrom.cageAge;
+						cageTo.strCageComment 	= cageFrom.strCageComment;
+						cageTo.strCageSex 		= cageFrom.strCageSex;
+						cageTo.strCageStrain 	= cageFrom.strCageStrain;
 					}
 				}
 				viewModel.fireTableDataChanged();
@@ -118,10 +118,10 @@ public class Table extends JPanel {
 						if (cage.cageRoi.getName().equals(cage0.cageRoi.getName()))
 							continue;
 						switch (columnIndex) {
-			            case 1: cage.cageNFlies = cage0.cageNFlies; break;
-			            case 2: cage.strCageStrain = cage0.strCageStrain; break;
-			            case 3: cage.strCageSex = cage0.strCageSex; break;
-			            case 4: cage.cageAge = cage0.cageAge; break;
+			            case 1: cage.cageNFlies 	= cage0.cageNFlies; break;
+			            case 2: cage.strCageStrain 	= cage0.strCageStrain; break;
+			            case 3: cage.strCageSex 	= cage0.strCageSex; break;
+			            case 4: cage.cageAge 		= cage0.cageAge; break;
 			            case 5: cage.strCageComment = cage0.strCageComment; break;
 			            default: break;
 			        	}					

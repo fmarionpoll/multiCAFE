@@ -751,11 +751,7 @@ public class Experiment {
 		return ImageUtil.save(image, "jpg", outputfile);
 	}
 
-	public 	void cleanPreviousFliesDetections() {
-		for (Cage cage: cages.cageList) {
-			cage.flyPositions = new XYTaSeries();
-			cage.detectedROIsList.clear();
-		}
+	public 	void cleanPreviousDetectedFliesROIs() {
 		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: list) {
 			if (roi.getName().contains("det")) {
