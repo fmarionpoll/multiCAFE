@@ -25,6 +25,13 @@ public class Comparators {
 			return o1.getName().compareTo(o2.getName());
 		}
 	}
+	
+	public static class ROI2DtComparator implements Comparator<ROI2D> {
+		@Override
+		public int compare(ROI2D o1, ROI2D o2) {
+			return o1.getT()-o2.getT();
+		}
+	}
 
 	public static class SequenceNameComparator implements Comparator<Sequence> {
 		@Override

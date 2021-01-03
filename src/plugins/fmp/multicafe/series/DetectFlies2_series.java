@@ -136,7 +136,7 @@ public class DetectFlies2_series extends BuildSeries {
 	    processor.setThreadName("detectFlies1");
 	    processor.setPriority(Processor.NORM_PRIORITY);
         try {
-			int nframes = (int) ((exp.kymoLastCol_Ms - exp.kymoFirstCol_Ms) / exp.kymoBinColl_Ms +1);
+			int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);
 			ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 			futures.clear();
 			
@@ -289,7 +289,7 @@ public class DetectFlies2_series extends BuildSeries {
 			 
 			for (int icage = 0; icage <= ndetectcages - 1; icage++) {
 				Cage cage = exp.cages.cageList.get(icage);
-				if (cage.cageNFlies != 1)
+				if (cage.cageNFlies <1)
 					continue;
 				BooleanMask2D bestMask = find_flies.findLargestBlob(roiAll, icage);
 				if (bestMask != null) {

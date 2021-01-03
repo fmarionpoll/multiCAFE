@@ -12,7 +12,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import icy.gui.util.FontUtil;
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
@@ -41,7 +40,7 @@ public class LoadSave extends JPanel {
 		panel1.add(openButtonCapillaries);
 		panel1.add(saveButtonCapillaries);
 		panel1.validate();
-		add( GuiUtil.besidesPanel( panel1));
+		add( panel1);
 			
 		this.parent0 = parent0;
 		defineActionListeners();

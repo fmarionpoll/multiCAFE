@@ -183,6 +183,7 @@ public class Cages {
 	
 	private void transferDataToCages_v0(List<ROI2D> cageLimitROIList, List<XYTaSeries> flyPositionsList) {
 		cageList.clear();
+		Collections.sort(cageLimitROIList, new Comparators.ROI2DNameComparator());
 		int ncages = cageLimitROIList.size();
 		for (int index=0; index< ncages; index++) {
 			Cage cage = new Cage();

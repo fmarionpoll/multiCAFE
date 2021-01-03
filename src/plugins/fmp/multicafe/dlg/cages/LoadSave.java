@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import icy.gui.util.FontUtil;
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 
@@ -33,7 +32,7 @@ public class LoadSave extends JPanel {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 
-		JLabel 	loadsaveText = new JLabel ("-> File (xml) ", SwingConstants.RIGHT);
+		JLabel loadsaveText = new JLabel ("-> File (xml) ", SwingConstants.RIGHT);
 		loadsaveText.setFont(FontUtil.setStyle(loadsaveText.getFont(), Font.ITALIC));
 		
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.RIGHT);
@@ -43,12 +42,10 @@ public class LoadSave extends JPanel {
 		panel1.add(openCagesButton);
 		panel1.add(saveCagesButton);
 		panel1.validate();
-		add( GuiUtil.besidesPanel( panel1));
-		
-//		JLabel emptyText1	= new JLabel (" ");
-//		add(GuiUtil.besidesPanel( emptyText1, loadsaveText1, openCagesButton, saveCagesButton));
-		add(GuiUtil.besidesPanel( new JLabel (" ")));
-		add(GuiUtil.besidesPanel( saveRoisCheckBox));
+		add(panel1);
+
+		add(new JLabel (" "));
+		add(saveRoisCheckBox);
 		
 		defineActionListeners();
 	}

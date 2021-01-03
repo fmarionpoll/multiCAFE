@@ -95,12 +95,11 @@ public class DetectFlies_Find {
 	public void findFlies (IcyBufferedImage workimage, int t, int it) {
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		for ( int icage = 0; icage < cages.cageList.size(); icage++ ) {		
-			BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, icage);
-			ROI2DArea flyROI = null;
 			Cage cage = cages.cageList.get(icage);
 			if (cage.cageNFlies > 0) {
+				BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, icage);
 				if ( bestMask != null ) {
-					flyROI = new ROI2DArea( bestMask ); 
+					ROI2DArea flyROI = new ROI2DArea( bestMask ); 
 					Rectangle2D rect = flyROI.getBounds2D();
 					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 					ROI2DPoint flyXYROI = new ROI2DPoint(flyPosition);

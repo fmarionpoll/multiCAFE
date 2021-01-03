@@ -75,7 +75,6 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		JPanel panel1 = new JPanel(flowLayout);
 		panel1.add(startComputationButton);
 		panel1.add(allCheckBox);
-		panel1.validate();
 		add(panel1);
 		
 		JPanel panel2 = new JPanel(flowLayout);
@@ -193,7 +192,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		
 		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
 		options.t_firstMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
-		options.t_lastMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
+		options.t_lastMs 		= parent0.paneSequence.tabAnalyze.getEndMs();
 		options.t_binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
 
 		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
