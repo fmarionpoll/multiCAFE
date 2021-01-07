@@ -65,7 +65,6 @@ public class SequenceCamData {
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
-	//public String 					resultsString			= "results";
 	volatile public List <String>	listFiles 				= new ArrayList<String>();
 	protected String 				csFileName 				= null;
 	protected String				directory 				= null;
