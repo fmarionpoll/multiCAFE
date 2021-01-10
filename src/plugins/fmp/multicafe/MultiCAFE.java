@@ -16,7 +16,7 @@ import icy.gui.viewer.ViewerEvent.ViewerEventType;
 import icy.gui.viewer.ViewerListener;
 import icy.plugin.abstract_.PluginActionable;
 import icy.sequence.DimensionId;
-
+import icy.sequence.Sequence;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafe.dlg.cages.MCCages_;
 import plugins.fmp.multicafe.dlg.capillaries.MCCapillaries_;
@@ -31,7 +31,7 @@ import plugins.fmp.multicafe.workinprogress_gpu.MCSpots_;
 
 
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 31-Dec-2020", true, true, true, true);
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 10-Jan-2021", true, true, true, true);
 	public ExperimentList 	expList 		= new ExperimentList();
 	
 	public MCSequence_ 		paneSequence 	= new MCSequence_();
@@ -75,26 +75,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		mainFrame.center();
 		mainFrame.setVisible(true);
 		mainFrame.addToDesktopPane();
-	}
-
-	@Override	
-	public void viewerChanged(ViewerEvent event) {
-		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) {
-			if (event.getDim() == DimensionId.T) {
-				Experiment exp = expList.getCurrentExperiment();
-				Viewer v = event.getSource(); 
-				int id = v.getSequence().getId();
-				int t = v.getPositionT();
-				if (id == exp.seqCamData.seq.getId())
-					v.setTitle(exp.seqCamData.getDecoratedImageName(t));
-			}
-		}
-	}
-
-	@Override
-	public void viewerClosed(Viewer viewer) {
-		viewer.removeListener(this);
-	}
+	}	
 
 	@Override
 	public void propertyChange(PropertyChangeEvent arg0) {
@@ -123,8 +104,10 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 
 		exp.seqCamData = exp.openSequenceCamData(filename);
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
-			addSequence(exp.seqCamData.seq);
-			exp.seqCamData.seq.getFirstViewer().addListener( this );
+			Sequence seq = exp.seqCamData.seq;
+			addSequence(seq);
+			seq.getFirstViewer().addListener( this );
+			System.out.println("add viewer listener");
 		} else {
 			System.out.println("seqCamData or seq of seqCamData is null!");
 		}
@@ -165,6 +148,25 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			progress.close();
 
 		}
+	}
+	
+	@Override	
+	public void viewerChanged(ViewerEvent event) {
+		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) {
+			if (event.getDim() == DimensionId.T) {
+				Experiment exp = expList.getCurrentExperiment();
+				Viewer v = event.getSource(); 
+				int id = v.getSequence().getId();
+				int t = v.getPositionT();
+				if (id == exp.seqCamData.seq.getId())
+					v.setTitle("* "+exp.seqCamData.getDecoratedImageName(t));
+			}
+		}
+	}
+
+	@Override
+	public void viewerClosed(Viewer viewer) {
+		viewer.removeListener(this);
 	}
 
 }
