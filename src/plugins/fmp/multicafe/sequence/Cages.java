@@ -314,6 +314,16 @@ public class Cages {
 	}
 	
 	public void fromDetectedFliesToROIs(SequenceCamData seqCamData) {
+		removeAllRoiDetFromSequence(seqCamData);
+		
+		List<ROI> detectedFliesList = new ArrayList<ROI>();
+		for (Cage cage: cageList) {
+			detectedFliesList.addAll(cage.detectedROIsList);
+		}
+		seqCamData.seq.addROIs(detectedFliesList, true);
+	}
+	
+	public void removeAllRoiDetFromSequence(SequenceCamData seqCamData) {
 		ArrayList<ROI2D> seqlist = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: seqlist) {
 			if (!(roi instanceof ROI2DShape))
@@ -322,12 +332,6 @@ public class Cages {
 				continue;
 			seqCamData.seq.removeROI(roi);
 		}
-		
-		List<ROI> detectedFliesList = new ArrayList<ROI>();
-		for (Cage cage: cageList) {
-			detectedFliesList.addAll(cage.detectedROIsList);
-		}
-		seqCamData.seq.addROIs(detectedFliesList, true);
 	}
 	
 	public int removeAllRoiCagesFromSequence(SequenceCamData seqCamData) {
