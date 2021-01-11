@@ -296,7 +296,6 @@ public class Display extends JPanel implements ViewerListener {
 			int t = v.getPositionT();
 			selectKymograph(t);
 		}
-		
 	}
 
 	@Override
