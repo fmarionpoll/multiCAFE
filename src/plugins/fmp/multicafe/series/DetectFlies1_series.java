@@ -108,9 +108,9 @@ public class DetectFlies1_series extends BuildSeries {
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		exp.seqCamData.seq.endUpdate();
 		
-		find_flies.removeTempRectROIs(exp);
-		find_flies.copyDetectedROIsToSequence(exp);
-		find_flies.copyDetectedROIsToCages(exp);
+//		find_flies.removeTempRectROIs(exp);
+//		find_flies.copyDetectedROIsToSequence(exp);
+//		find_flies.copyDetectedROIsToCages(exp);
 		progressBar.close();
 		processor.shutdown();
 	}

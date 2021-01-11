@@ -171,8 +171,8 @@ public class DetectFlies2_series extends BuildSeries {
 		} finally {
 			exp.seqCamData.seq.endUpdate();
 			seqNegative.close();
-			find_flies.copyDetectedROIsToSequence(exp);
-			find_flies.copyDetectedROIsToCages(exp);
+//			find_flies.copyDetectedROIsToSequence(exp);
+//			find_flies.copyDetectedROIsToCages(exp);
 		}
 		progressBar.close();
 		processor.shutdown();

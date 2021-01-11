@@ -219,6 +219,19 @@ public class Cage {
 		}
 	}
 	
+	public ROI2DPoint getPositionAtT(int t) {
+		ROI2DPoint flyRoi = null;
+		for (XYTaValue aValue: flyPositions.pointsList) {
+			if(aValue.xytTime ==  t) {
+				flyRoi = new ROI2DPoint(aValue.xytPoint.getX(), aValue.xytPoint.getY());
+				flyRoi.setName("det"+getCageNumber() +"_" + t );
+				flyRoi.setT( t );
+				break;
+			}
+		}
+		return flyRoi;
+	}
+	
 	public void transferRoisToPositions() {
 		String filter = "det"+getCageNumber();
 		for (ROI2D roi: detectedROIsList) {

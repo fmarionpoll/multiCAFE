@@ -162,8 +162,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 				if (idViewer == idCurrentExp) {
 					int t = v.getPositionT(); 
 					v.setTitle(exp.seqCamData.getDecoratedImageName(t));
+					exp.updateROIsAt(t);
 				}
-
 			}
 		}
 	}

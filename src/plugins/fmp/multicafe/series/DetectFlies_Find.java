@@ -9,7 +9,7 @@ import java.util.List;
 import icy.image.IcyBufferedImage;
 import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
-import icy.roi.ROI2D;
+
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.Cages;
@@ -17,7 +17,7 @@ import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.XYTaSeries;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DArea;
-import plugins.kernel.roi.roi2d.ROI2DPoint;
+
 
 
 public class DetectFlies_Find {
@@ -27,8 +27,8 @@ public class DetectFlies_Find {
 	public Options_BuildSeries	options		= null;
 	
 	private Cages 		cages 				= null;
-	ROI2DPoint [] 		tempPosROI;
-	ROI [][] 			resultFlyPositionArrayList;
+//	ROI2DPoint [] 		tempPosROI;
+//	ROI [][] 			resultFlyPositionArrayList;
 	
 	// -----------------------------------------------------
 	
@@ -102,12 +102,13 @@ public class DetectFlies_Find {
 					ROI2DArea flyROI = new ROI2DArea( bestMask ); 
 					Rectangle2D rect = flyROI.getBounds2D();
 					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-					ROI2DPoint flyXYROI = new ROI2DPoint(flyPosition);
-					flyXYROI.setName("det"+cage.getCageNumber() +"_" + t );
-					flyXYROI.setT( t );
-					resultFlyPositionArrayList[icage][it] = flyXYROI;
 					
-					tempPosROI[icage] = flyXYROI; 
+					// TODO : store fly coordinates into cage data array instead of into ROI?
+//					ROI2DPoint flyXYROI = new ROI2DPoint(flyPosition);
+//					flyXYROI.setName("det"+cage.getCageNumber() +"_" + t );
+//					flyXYROI.setT( t );
+//					resultFlyPositionArrayList[icage][it] = flyXYROI;	
+//					tempPosROI[icage] = flyXYROI; 
 					int npoints = cage.flyPositions.pointsList.size();
 					cage.flyPositions.add(flyPosition, t);
 					if (it > 0 && npoints > 0) {
@@ -130,20 +131,20 @@ public class DetectFlies_Find {
 	public void initTempRectROIs(Experiment exp, Sequence seq) {
 		cages = exp.cages;
 		int nbcages = cages.cageList.size();
-		tempPosROI = new ROI2DPoint [nbcages];
+//		tempPosROI = new ROI2DPoint [nbcages];
 		for (int i=0; i < nbcages; i++) {
 			Cage cage = cages.cageList.get(i);
 			if (cage.cageNFlies > 0) {
-				tempPosROI[i] = new ROI2DPoint(0, 0);
-				tempPosROI[i].setName("fly_"+i);
+//				tempPosROI[i] = new ROI2DPoint(0, 0);
+//				tempPosROI[i].setName("fly_"+i);
 				XYTaSeries positions = new XYTaSeries();
 				positions.ensureCapacity(exp.cages.detect_nframes);
 				cage.flyPositions = positions;
-				seq.addROI(tempPosROI[i]);
+//				seq.addROI(tempPosROI[i]);
 			}
 		}
 		// create array for the results - 1 point = 1 slice
-		resultFlyPositionArrayList = new ROI[nbcages][exp.cages.detect_nframes];
+//		resultFlyPositionArrayList = new ROI[nbcages][exp.cages.detect_nframes];
 	}
 	
 	public void initParametersForDetection(Experiment exp, Options_BuildSeries	options) {
@@ -162,33 +163,33 @@ public class DetectFlies_Find {
 		}
 	}
 	
-	public void removeTempRectROIs(Experiment exp) {
-		for (int i=0; i < tempPosROI.length; i++)
-			exp.seqCamData.seq.removeROI(tempPosROI[i]);
-	}
+//	public void removeTempRectROIs(Experiment exp) {
+//		for (int i=0; i < tempPosROI.length; i++)
+//			exp.seqCamData.seq.removeROI(tempPosROI[i]);
+//	}
 	
-	public void copyDetectedROIsToSequence(Experiment exp) {
-		try {
-			int ncages = cages.cageList.size();
-			for (int icage=0; icage < ncages; icage++) {
-				for ( int it = 0; it < resultFlyPositionArrayList[icage].length ; it++ ) {
-					exp.seqCamData.seq.addROI( resultFlyPositionArrayList[icage][it] );
-				}
-			}
-		}
-		finally {
-			exp.seqCamData.seq.endUpdate();
-		}
-	}
+//	public void copyDetectedROIsToSequence(Experiment exp) {
+//		try {
+//			int ncages = cages.cageList.size();
+//			for (int icage=0; icage < ncages; icage++) {
+//				for ( int it = 0; it < resultFlyPositionArrayList[icage].length ; it++ ) {
+//					exp.seqCamData.seq.addROI( resultFlyPositionArrayList[icage][it] );
+//				}
+//			}
+//		}
+//		finally {
+//			exp.seqCamData.seq.endUpdate();
+//		}
+//	}
 	
-	public void copyDetectedROIsToCages(Experiment exp) {
-		int ncages = cages.cageList.size();
-		for (int icage=0; icage < ncages; icage++) {
-			Cage cage = cages.cageList.get(icage);
-			for ( int it = 0; it < resultFlyPositionArrayList[icage].length ; it++ ) {
-				cage.detectedROIsList.add((ROI2D) resultFlyPositionArrayList[icage][it] );
-			}
-		}
-	}
+//	public void copyDetectedROIsToCages(Experiment exp) {
+//		int ncages = cages.cageList.size();
+//		for (int icage=0; icage < ncages; icage++) {
+//			Cage cage = cages.cageList.get(icage);
+//			for ( int it = 0; it < resultFlyPositionArrayList[icage].length ; it++ ) {
+//				cage.detectedROIsList.add((ROI2D) resultFlyPositionArrayList[icage][it] );
+//			}
+//		}
+//	}
 	
 }

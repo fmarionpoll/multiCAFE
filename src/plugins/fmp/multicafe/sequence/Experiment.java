@@ -60,6 +60,7 @@ public class Experiment {
 	public long				kymoFirstCol_Ms			= 0;
 	public long				kymoLastCol_Ms			= 0;
 	public long				kymoBinColl_Ms			= 60000;
+	
 	// _________________________________________________
 	
 	public String			exp_boxID 				= new String("..");
@@ -73,7 +74,8 @@ public class Experiment {
 	public int				experimentID 			= 0;
 	
 	ImageTransformTools 	tImg 					= null;
-
+	ArrayList <ROI2D>		roisOnAllImages			= null;
+	
 	private final static String ID_VERSION			= "version"; 
 	private final static String ID_VERSIONNUM		= "1.0.0"; 
 	private final static String ID_TIMEFIRSTIMAGE	= "fileTimeImageFirstMinute"; 
@@ -794,4 +796,19 @@ public class Experiment {
 			cages.displayDetectedFliesAsRois(seqCamData.seq, isVisible);
 	}
 
+	// --------------------------
+	
+	public void updateROIsAt(int t) {
+		if (roisOnAllImages == null) {
+			roisOnAllImages = seqCamData.seq.getROI2Ds();
+			for (ROI2D roi: roisOnAllImages) {
+				if (roi.getT() != -1 ) {
+					seqCamData.seq.removeROI(roi);
+				}
+			}
+		}
+		seqCamData.seq.removeAllROI();
+		seqCamData.seq.addROIs(roisOnAllImages, false);
+		seqCamData.seq.addROIs(cages.getPositionsAtT(t), false);
+	}
 }

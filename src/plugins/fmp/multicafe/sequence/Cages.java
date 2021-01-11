@@ -17,6 +17,7 @@ import icy.util.XMLUtil;
 
 import plugins.fmp.multicafe.tools.Comparators;
 import plugins.kernel.roi.roi2d.ROI2DArea;
+import plugins.kernel.roi.roi2d.ROI2DPoint;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
@@ -31,6 +32,7 @@ public class Cages {
 	public long			detectBin_Ms		= 60000;
 	public int			detect_threshold	= 0;
 	public int			detect_nframes		= 0;
+	
 	// ----------------------------
 
 	private final String ID_CAGES 			= "Cages";
@@ -400,4 +402,15 @@ public class Cages {
 		}
 		return cageFound;
 	}
+
+	public List <ROI2DPoint> getPositionsAtT(int t) {
+		List <ROI2DPoint> pointsList = new ArrayList<ROI2DPoint> (cageList.size());
+		for (Cage cage: cageList) {
+			ROI2DPoint point = cage.getPositionAtT(t);
+			if (point != null)
+				pointsList.add(point);
+		}
+		return pointsList;
+	}
+
 }
