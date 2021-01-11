@@ -146,8 +146,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			exp.loadDrosotrack();
 			paneCages.tabGraphics.moveCheckbox.setEnabled(true);
 			paneCages.tabGraphics.displayResultsButton.setEnabled(true);
+			exp.updateROIsAt(0);
 			progress.close();
-
 		}
 	}
 	
