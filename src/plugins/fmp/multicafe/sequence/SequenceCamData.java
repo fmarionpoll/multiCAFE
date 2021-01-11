@@ -190,7 +190,7 @@ public class SequenceCamData {
 	public String getDecoratedImageName(int t) {
 		currentFrame = t; 
 		if (seq!= null)
-			return csFileName + " ["+(t+1)+ "/" + seq.getSizeT() + "]";
+			return csFileName + " ["+(t)+ "/" + (seq.getSizeT()-1) + "]";
 		else
 			return csFileName + "[]";
 	}

@@ -106,8 +106,9 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			Sequence seq = exp.seqCamData.seq;
 			addSequence(seq);
-			seq.getFirstViewer().addListener( this );
-			System.out.println("add viewer listener");
+			Viewer v = seq.getFirstViewer();
+			v.addListener( this );
+			v.setTitle(exp.seqCamData.getDecoratedImageName(0));
 		} else {
 			System.out.println("seqCamData or seq of seqCamData is null!");
 		}
@@ -154,12 +155,15 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	public void viewerChanged(ViewerEvent event) {
 		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) {
 			if (event.getDim() == DimensionId.T) {
-				Experiment exp = expList.getCurrentExperiment();
 				Viewer v = event.getSource(); 
-				int id = v.getSequence().getId();
-				int t = v.getPositionT();
-				if (id == exp.seqCamData.seq.getId())
-					v.setTitle("* "+exp.seqCamData.getDecoratedImageName(t));
+				int idViewer = v.getSequence().getId(); 
+				Experiment exp = expList.getCurrentExperiment();
+				int idCurrentExp = exp.seqCamData.seq.getId();
+				if (idViewer == idCurrentExp) {
+					int t = v.getPositionT(); 
+					v.setTitle(exp.seqCamData.getDecoratedImageName(t));
+				}
+
 			}
 		}
 	}
