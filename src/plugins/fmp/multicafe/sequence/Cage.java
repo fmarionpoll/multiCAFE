@@ -18,7 +18,6 @@ public class Cage {
 	public ROI2D 		cageRoi					= null;
 
 	public XYTaSeries 	flyPositions 			= new XYTaSeries();
-//	 ArrayList<ROI2D> detectedROIsList	= new ArrayList<ROI2D>();
 	public int 			cageNFlies  			= 1;
 	public int 			cageAge 				= 5;
 	public String 		strCageComment 			= "..";
@@ -30,8 +29,6 @@ public class Cage {
 	
 	private final String ID_CAGELIMITS 			= "CageLimits";
 	private final String ID_FLYPOSITIONS		= "FlyPositions";
-	private final String ID_ROISDETECTED		= "RoisDetected";
-	private final String ID_NBITEMS				= "nb_items";
 	private final String ID_NFLIES 				= "nflies"; 
 	private final String ID_AGE 				= "age"; 
 	private final String ID_COMMENT				= "comment";
@@ -172,6 +169,9 @@ public class Cage {
 	}
 	
 	public ROI2DPoint getPositionAtT(int t) {
+		int nitems = flyPositions.xytList.size();
+		if (nitems == 0 || t >= nitems)
+			return null;
 		XYTaValue aValue = flyPositions.xytList.get(t);
 		ROI2DPoint flyRoi = new ROI2DPoint(aValue.xyPoint.getX(), aValue.xyPoint.getY());
 		flyRoi.setName("det"+getCageNumber() +"_" + t );
