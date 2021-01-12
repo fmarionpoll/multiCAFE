@@ -18,7 +18,7 @@ public class Cage {
 	public ROI2D 		cageRoi					= null;
 
 	public XYTaSeries 	flyPositions 			= new XYTaSeries();
-	public ArrayList<ROI2D> detectedROIsList	= new ArrayList<ROI2D>();
+//	 ArrayList<ROI2D> detectedROIsList	= new ArrayList<ROI2D>();
 	public int 			cageNFlies  			= 1;
 	public int 			cageAge 				= 5;
 	public String 		strCageComment 			= "..";
@@ -48,8 +48,6 @@ public class Cage {
 		xmlSaveCageParameters(xmlVal);
 		if (cageNFlies > 0)
 			xmlSaveFlyPositions(xmlVal);
-		if (saveDetectedROIs)
-			xmlSaveDetecteRois(xmlVal);
 		return true;
 	}
 	
@@ -78,20 +76,6 @@ public class Cage {
 		return true;
 	}
 	
-	public boolean xmlSaveDetecteRois(Element xmlVal) {
-		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_ROISDETECTED);
-		XMLUtil.setAttributeIntValue(xmlVal2, ID_NBITEMS, detectedROIsList.size());
-		int i=0;
-		for (ROI roi: detectedROIsList) {
-			if (roi != null) {
-				Element subnode = XMLUtil.addElement(xmlVal2, "det"+i);
-				roi.saveToXML(subnode);
-			} 
-			i++;
-		}
-		return true;
-	}
-	
 	public boolean xmlLoadCage (Node node, int index) {
 		if (node == null)
 			return false;
@@ -100,11 +84,7 @@ public class Cage {
 			return false;
 		xmlLoadCageLimits(xmlVal);
 		xmlLoadCageParameters(xmlVal);
-		if (xmlLoadFlyPositions(xmlVal)) 
-			transferPositionsToRois();
-		else 
-			xmlLoadRoisDetected(xmlVal);
-			; // TODO?
+		xmlLoadFlyPositions(xmlVal); 
 		return true;
 	}
 	
@@ -134,19 +114,6 @@ public class Cage {
 		}
 		return false;
 	}
-	
-	public boolean xmlLoadRoisDetected(Element xmlVal) {
-		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_ROISDETECTED);
-		if (xmlVal2 != null) {
-			int nb_items =  XMLUtil.getAttributeIntValue(xmlVal2, ID_NBITEMS, detectedROIsList.size());
-			for (int i=0; i< nb_items; i++) {
-				Element subnode = XMLUtil.getElement(xmlVal2, "det"+i);
-				ROI roi = ROI.createFromXML(subnode);
-				detectedROIsList.add((ROI2D) roi);
-			}
-		}
-		return true;
-	}
 
 	public String getCageNumber() {
 		if (strCageNumber == null) 
@@ -168,7 +135,6 @@ public class Cage {
 	}
 	
 	public void clearMeasures () {
-		detectedROIsList.clear();
 		flyPositions.clear();
 	}
 	
@@ -203,37 +169,17 @@ public class Cage {
 		strCageNumber 	= cag.strCageNumber;
 		valid 			= false; 
 		flyPositions.copy(cag.flyPositions);
-		
-		detectedROIsList	= new ArrayList<ROI2D>();
-		detectedROIsList.addAll(cag.detectedROIsList);
-	}
-	
-	public void transferPositionsToRois() {
-		detectedROIsList.clear();
-		for (XYTaValue aValue: flyPositions.xytList) {
-			ROI2DPoint flyRoi = new ROI2DPoint(aValue.xyPoint.getX(), aValue.xyPoint.getY());
-			int t = aValue.indexT;
-			flyRoi.setName("det"+getCageNumber() +"_" + t );
-			flyRoi.setT( t );
-			detectedROIsList.add(flyRoi);
-		}
 	}
 	
 	public ROI2DPoint getPositionAtT(int t) {
-//		ROI2DPoint flyRoi = null;
 		XYTaValue aValue = flyPositions.xytList.get(t);
-//		for (XYTaValue aValue: flyPositions.xytList) {
-//			if(aValue.indexT ==  t) {
-				ROI2DPoint flyRoi = new ROI2DPoint(aValue.xyPoint.getX(), aValue.xyPoint.getY());
-				flyRoi.setName("det"+getCageNumber() +"_" + t );
-				flyRoi.setT( t );
-//				break;
-//			}
-//		}
+		ROI2DPoint flyRoi = new ROI2DPoint(aValue.xyPoint.getX(), aValue.xyPoint.getY());
+		flyRoi.setName("det"+getCageNumber() +"_" + t );
+		flyRoi.setT( t );
 		return flyRoi;
 	}
 	
-	public void transferRoisToPositions() {
+	public void transferRoisToPositions(List<ROI2D> detectedROIsList) {
 		String filter = "det"+getCageNumber();
 		for (ROI2D roi: detectedROIsList) {
 			String name = roi.getName();

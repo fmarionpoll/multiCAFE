@@ -12,7 +12,6 @@ import org.w3c.dom.Node;
 
 import icy.roi.ROI;
 import icy.roi.ROI2D;
-import icy.sequence.Sequence;
 import icy.util.XMLUtil;
 
 import plugins.fmp.multicafe.tools.Comparators;
@@ -133,7 +132,6 @@ public class Cages {
 		boolean flag = xmlLoadCages(doc); 
 		if (flag) {
 			fromCagesToROIs(seq);
-			fromDetectedFliesToROIs(seq);
 		}
 		else {
 			System.out.println("failed to load cages from file");
@@ -315,16 +313,6 @@ public class Cages {
 		return cageList;
 	}
 	
-	public void fromDetectedFliesToROIs(SequenceCamData seqCamData) {
-		removeAllRoiDetFromSequence(seqCamData);
-		
-		List<ROI> detectedFliesList = new ArrayList<ROI>();
-		for (Cage cage: cageList) {
-			detectedFliesList.addAll(cage.detectedROIsList);
-		}
-		seqCamData.seq.addROIs(detectedFliesList, true);
-	}
-	
 	public void removeAllRoiDetFromSequence(SequenceCamData seqCamData) {
 		ArrayList<ROI2D> seqlist = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: seqlist) {
@@ -376,19 +364,6 @@ public class Cages {
 		for (Capillary cap: capList) {
 			int cagenb = cap.getCageIndexFromRoiName();
 			cap.capCageID = cagenb;
-		}
-	}
-	
-	public void displayDetectedFliesAsRois(Sequence seq, boolean isVisible) {
-		for (Cage cage: cageList ) {
-			if (cage.detectedROIsList.size() >0) {
-				
-			} else {
-				if (isVisible) {
-					cage.transferPositionsToRois();
-					seq.addROIs(cage.detectedROIsList, false);
-				}
-			}
 		}
 	}
 	

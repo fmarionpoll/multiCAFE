@@ -790,11 +790,6 @@ public class Experiment {
 		cages.saveDetectedROIs = saveDetectedROIs;
 		return cages.xmlWriteCagesToFileNoQuestion(fileName);
 	}
-	
-	public void displayDetectedFliesAsRois(boolean isVisible) {
-		if (cages != null && cages.cageList.size() > 0)
-			cages.displayDetectedFliesAsRois(seqCamData.seq, isVisible);
-	}
 
 	// --------------------------
 	
