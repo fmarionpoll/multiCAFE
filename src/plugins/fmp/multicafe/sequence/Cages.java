@@ -183,7 +183,7 @@ public class Cages {
 	
 	private void transferDataToCages_v0(List<ROI2D> cageLimitROIList, List<XYTaSeries> flyPositionsList) {
 		cageList.clear();
-		Collections.sort(cageLimitROIList, new Comparators.ROI2DNameComparator());
+		Collections.sort(cageLimitROIList, new Comparators.ROI2D_Name_Comparator());
 		int ncages = cageLimitROIList.size();
 		for (int index=0; index< ncages; index++) {
 			Cage cage = new Cage();
@@ -242,10 +242,10 @@ public class Cages {
 	
 	public void getCagesFromROIs(SequenceCamData seqCamData) {
 		List <ROI2D> roiList = getRoisWithCageName(seqCamData);
-		Collections.sort(roiList, new Comparators.ROI2DNameComparator());
+		Collections.sort(roiList, new Comparators.ROI2D_Name_Comparator());
 		addMissingCages(roiList);
 		removeOrphanCages(roiList);
-		Collections.sort(cageList, new Comparators.CageNameComparator());
+		Collections.sort(cageList, new Comparators.Cage_Name_Comparator());
 	}
 	
 	public void setFirstAndLastCageToZeroFly() {

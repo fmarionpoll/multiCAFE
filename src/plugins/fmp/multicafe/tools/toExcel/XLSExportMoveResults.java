@@ -124,7 +124,7 @@ public class XLSExportMoveResults  extends XLSExport {
 			row.nflies = cage.cageNFlies;
 			rowsForOneExp.add(row);
 		}
-		Collections.sort(rowsForOneExp, new Comparators.XYTaSeriesComparator());
+		Collections.sort(rowsForOneExp, new Comparators.XYTaSeries_Name_Comparator());
 				
 		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
 		expi = exp;

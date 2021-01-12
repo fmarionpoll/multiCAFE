@@ -2,6 +2,7 @@ package plugins.fmp.multicafe.sequence;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.w3c.dom.Element;
@@ -9,6 +10,7 @@ import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
+import plugins.fmp.multicafe.tools.Comparators;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
 
@@ -115,13 +117,23 @@ public class XYTaSeries implements XMLPersistent {
 		for (int i = 0; i< nb_items; i++) {
 			xytList.add(new XYTaValue(i));
 		}
-		// TODO
+		boolean bAdded = false;
+		
 		for (int i=0; i< nb_items; i++) {
 			String elementi = "i"+i;
 			Element node_position_i = XMLUtil.getElement(node_position_list, elementi);
 			XYTaValue pos = new XYTaValue();
 			pos.loadFromXML(node_position_i);
-			xytList.set(pos.indexT, pos);
+			if (pos.indexT < nb_items) 
+				xytList.set(pos.indexT, pos);
+			else {
+				xytList.add(pos);
+				bAdded = true;
+			}
+		}
+		
+		if (bAdded) {
+			Collections.sort(xytList, new Comparators.XYTaValue_Tindex_Comparator());
 		}
 		return true;
 	}

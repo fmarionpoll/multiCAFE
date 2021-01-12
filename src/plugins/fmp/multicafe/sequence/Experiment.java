@@ -687,7 +687,7 @@ public class Experiment {
 			return;
 		
 		List<ROI2D> listROISCap = seqCamData.getROIs2DContainingString ("line");
-		Collections.sort(listROISCap, new Comparators.ROI2DNameComparator());
+		Collections.sort(listROISCap, new Comparators.ROI2D_Name_Comparator());
 		for (Capillary cap: capillaries.capillariesArrayList) {
 			cap.valid = false;
 			String capName = cap.replace_LR_with_12(cap.roi.getName());

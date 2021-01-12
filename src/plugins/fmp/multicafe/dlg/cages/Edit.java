@@ -98,7 +98,7 @@ public class Edit extends JPanel {
 
 			String filter = (String) foundCombo.getSelectedItem();
 			List<ROI2D> roiList = exp.seqCamData.seq.getROI2Ds();
-			Collections.sort(roiList, new Comparators.ROI2DtComparator());
+			Collections.sort(roiList, new Comparators.ROI2D_T_Comparator());
 			for ( ROI2D roi : roiList ) {
 				String csName = roi.getName();
 				if (roi instanceof ROI2DPoint && csName.equals( filter)) { 
@@ -112,7 +112,7 @@ public class Edit extends JPanel {
 	
 	void findFirstMissed (Experiment exp) {
 		List<ROI2D> roiList = exp.seqCamData.seq.getROI2Ds();
-		Collections.sort(roiList, new Comparators.ROI2DtComparator());
+		Collections.sort(roiList, new Comparators.ROI2D_T_Comparator());
 		
 		String filter = "det";
 		for ( ROI2D roi : roiList ) {
@@ -138,7 +138,7 @@ public class Edit extends JPanel {
 	void findAll(Experiment exp) {
 		foundCombo.removeAllItems();
 		List<ROI2D> roiList = exp.seqCamData.seq.getROI2Ds();
-		Collections.sort(roiList, new Comparators.ROI2DtComparator());
+		Collections.sort(roiList, new Comparators.ROI2D_T_Comparator());
 		
 		String filter = "det";
 		for ( ROI2D roi : roiList ) {

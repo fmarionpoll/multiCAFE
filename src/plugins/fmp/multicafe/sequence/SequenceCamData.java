@@ -597,7 +597,7 @@ public class SequenceCamData {
 	
 	public List<ROI2D> getROIs2DContainingString (String string) {
 		List<ROI2D> roiList = seq.getROI2Ds();
-		Collections.sort(roiList, new Comparators.ROI2DNameComparator());
+		Collections.sort(roiList, new Comparators.ROI2D_Name_Comparator());
 		List<ROI2D> capillaryRois = new ArrayList<ROI2D>();
 		for ( ROI2D roi : roiList ) {
 			if ((roi instanceof ROI2DShape) && roi.getName().contains(string)) 
@@ -608,7 +608,7 @@ public class SequenceCamData {
 	
 	public List<Cage> getCages () {
 		List<ROI2D> roiList = seq.getROI2Ds();
-		Collections.sort(roiList, new Comparators.ROI2DNameComparator());
+		Collections.sort(roiList, new Comparators.ROI2D_Name_Comparator());
 		List<Cage> cageList = new ArrayList<Cage>();
 		for ( ROI2D roi : roiList ) {
 			String csName = roi.getName();

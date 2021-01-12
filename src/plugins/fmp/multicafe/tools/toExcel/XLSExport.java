@@ -321,7 +321,7 @@ public class XLSExport {
 			row.cageID = cap.capCageID;
 			rowListForOneExp.add(row);
 		}
-		Collections.sort(rowListForOneExp, new Comparators.XLSResultsComparator());
+		Collections.sort(rowListForOneExp, new Comparators.XLSResults_Name_Comparator());
 		
 		// get first experiment
 		expi = exp;

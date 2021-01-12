@@ -81,7 +81,7 @@ public class SequenceKymos extends SequenceCamData  {
 			roi.setName("gulp"+String.format("%07d", (int) line.xpoints[0]));
 			roi.setColor(Color.red);
 		}
-		Collections.sort(listRois, new Comparators.ROI2DNameComparator());
+		Collections.sort(listRois, new Comparators.ROI2D_Name_Comparator());
 	}
 	
 	public void removeROIsAtT(int t) {
@@ -130,7 +130,7 @@ public class SequenceKymos extends SequenceCamData  {
 			roi.setName("gulp"+String.format("%07d", (int) line.xpoints[0]));
 			roi.setColor(Color.red);
 		}
-		Collections.sort(listRois, new Comparators.ROI2DNameComparator());
+		Collections.sort(listRois, new Comparators.ROI2D_Name_Comparator());
 	}
 
 	public boolean transferKymosRoisToCapillaries(Capillaries capillaries) {
