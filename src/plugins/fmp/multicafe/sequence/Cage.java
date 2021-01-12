@@ -18,7 +18,7 @@ public class Cage {
 	public ROI2D 		cageRoi					= null;
 
 	public XYTaSeries 	flyPositions 			= new XYTaSeries();
-	public List<ROI2D> 	detectedROIsList		= new ArrayList<ROI2D>();
+	public ArrayList<ROI2D> detectedROIsList	= new ArrayList<ROI2D>();
 	public int 			cageNFlies  			= 1;
 	public int 			cageAge 				= 5;
 	public String 		strCageComment 			= "..";
@@ -210,9 +210,9 @@ public class Cage {
 	
 	public void transferPositionsToRois() {
 		detectedROIsList.clear();
-		for (XYTaValue aValue: flyPositions.pointsList) {
-			ROI2DPoint flyRoi = new ROI2DPoint(aValue.xytPoint.getX(), aValue.xytPoint.getY());
-			int t = aValue.xytTime;
+		for (XYTaValue aValue: flyPositions.xytList) {
+			ROI2DPoint flyRoi = new ROI2DPoint(aValue.xyPoint.getX(), aValue.xyPoint.getY());
+			int t = aValue.indexT;
 			flyRoi.setName("det"+getCageNumber() +"_" + t );
 			flyRoi.setT( t );
 			detectedROIsList.add(flyRoi);
@@ -220,15 +220,16 @@ public class Cage {
 	}
 	
 	public ROI2DPoint getPositionAtT(int t) {
-		ROI2DPoint flyRoi = null;
-		for (XYTaValue aValue: flyPositions.pointsList) {
-			if(aValue.xytTime ==  t) {
-				flyRoi = new ROI2DPoint(aValue.xytPoint.getX(), aValue.xytPoint.getY());
+//		ROI2DPoint flyRoi = null;
+		XYTaValue aValue = flyPositions.xytList.get(t);
+//		for (XYTaValue aValue: flyPositions.xytList) {
+//			if(aValue.indexT ==  t) {
+				ROI2DPoint flyRoi = new ROI2DPoint(aValue.xyPoint.getX(), aValue.xyPoint.getY());
 				flyRoi.setName("det"+getCageNumber() +"_" + t );
 				flyRoi.setT( t );
-				break;
-			}
-		}
+//				break;
+//			}
+//		}
 		return flyRoi;
 	}
 	
@@ -242,9 +243,9 @@ public class Cage {
 			Point2D point = ((ROI2DPoint) roi).getPoint();
 			int t = roi.getT();
 			
-			for (XYTaValue aValue: flyPositions.pointsList) {
-				if (aValue.xytTime == t) {
-					aValue.xytPoint = point;
+			for (XYTaValue aValue: flyPositions.xytList) {
+				if (aValue.indexT == t) {
+					aValue.xyPoint = point;
 					break;
 				}
 			}

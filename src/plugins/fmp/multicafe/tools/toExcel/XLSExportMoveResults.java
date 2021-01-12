@@ -192,15 +192,15 @@ public class XLSExportMoveResults  extends XLSExport {
 					padWithLastPreviousValue(row, transfer_first_index);
 				for (long fromTime = expi.camFirstImage_Ms; fromTime <= expi.camLastImage_Ms; fromTime += options.buildExcelStepMs) {
 					int from_i = (int) ((fromTime - expi.camFirstImage_Ms) / options.buildExcelStepMs);
-					if (from_i >= results.pointsList.size())
+					if (from_i >= results.xytList.size())
 						break;
-					XYTaValue aVal = results.pointsList.get(from_i);
+					XYTaValue aVal = results.xytList.get(from_i);
 					int to_i = (int) ((fromTime - expAll.camFirstImage_Ms) / options.buildExcelStepMs) ;
-					if (to_i >= row.pointsList.size())
+					if (to_i >= row.xytList.size())
 						break;
 					if (to_i < 0)
 						continue;
-					row.pointsList.get(to_i).copy(aVal);
+					row.xytList.get(to_i).copy(aVal);
 				}
 				
 			} else {
@@ -208,14 +208,14 @@ public class XLSExportMoveResults  extends XLSExport {
 					XYTaValue posok = padWithLastPreviousValue(row, transfer_first_index);
 					int nvalues = transfer_nvalues;
 					if (posok != null) {
-						if (nvalues > row.pointsList.size())
-							nvalues = row.pointsList.size();
+						if (nvalues > row.xytList.size())
+							nvalues = row.xytList.size();
 						int tofirst = transfer_first_index;
 						int tolast = tofirst + nvalues;
-						if (tolast > row.pointsList.size())
-							tolast = row.pointsList.size();
+						if (tolast > row.xytList.size())
+							tolast = row.xytList.size();
 						for (int toi = tofirst; toi < tolast; toi++) 
-							row.pointsList.get(toi).copy(posok);
+							row.xytList.get(toi).copy(posok);
 					}
 				}
 			}
@@ -226,11 +226,11 @@ public class XLSExportMoveResults  extends XLSExport {
 		XYTaValue posok = null;
 		int index = getIndexOfFirstNonEmptyValueBackwards(row, transfer_first_index);
 		if (index >= 0) {
-			posok = row.pointsList.get(index);
+			posok = row.xytList.get(index);
 			for (int i=index+1; i< transfer_first_index; i++) {
-				XYTaValue pos = row.pointsList.get(i);
+				XYTaValue pos = row.xytList.get(i);
 				pos.copy(posok);
-				pos.xytPadded = true;
+				pos.bPadded = true;
 			}
 		}
 		return posok;
@@ -239,8 +239,8 @@ public class XLSExportMoveResults  extends XLSExport {
 	private int getIndexOfFirstNonEmptyValueBackwards(XYTaSeries row, int fromindex) {
 		int index = -1;
 		for (int i= fromindex; i>= 0; i--) {
-			XYTaValue pos = row.pointsList.get(i);
-			if (!Double.isNaN(pos.xytPoint.getX())) {
+			XYTaValue pos = row.xytList.get(i);
+			if (!Double.isNaN(pos.xyPoint.getX())) {
 				index = i;
 				break;
 			}
@@ -299,43 +299,43 @@ public class XLSExportMoveResults  extends XLSExport {
 			long last = expAll.camLastImage_Ms - expAll.camFirstImage_Ms;
 			for (long coltime= 0; coltime <= last; coltime+=options.buildExcelStepMs, pt.y++) {
 				int i_from = (int) (coltime  / options.buildExcelStepMs);
-				if (i_from >= row.pointsList.size())
+				if (i_from >= row.xytList.size())
 					break;
 				
 				double valueL = Double.NaN;
 				double valueR = Double.NaN;
-				XYTaValue pos = row.pointsList.get(i_from);
+				XYTaValue pos = row.xytList.get(i_from);
 				switch (row.exportType) {
 					case DISTANCE:
-						valueL = pos.xytDistance;
+						valueL = pos.distance;
 						valueR = valueL;
 						break;
 					case ISALIVE:
-						valueL = pos.xytAlive ? 1: 0;
+						valueL = pos.bAlive ? 1: 0;
 						valueR = valueL;
 						break;
 					case SLEEP:
-						valueL = pos.xytSleep? 1: 0;
+						valueL = pos.bSleep? 1: 0;
 						valueR = valueL;
 						break;
 					case XYTOPCAGE:
 					case XYTIPCAPS:
 					case XYIMAGE:
-						valueL = pos.xytPoint.getX();
-						valueR = pos.xytPoint.getY();
+						valueL = pos.xyPoint.getX();
+						valueR = pos.xyPoint.getY();
 					default:
 						break;
 				}
 				
 				if (!Double.isNaN(valueL)) {
 					XLSUtils.setValue(sheet, pt, transpose, valueL);
-					if (pos.xytPadded)
+					if (pos.bPadded)
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
 				if (!Double.isNaN(valueR)) {
 					pt.x++;
 					XLSUtils.setValue(sheet, pt, transpose, valueR);
-					if (pos.xytPadded)
+					if (pos.bPadded)
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 					pt.x--;
 				}

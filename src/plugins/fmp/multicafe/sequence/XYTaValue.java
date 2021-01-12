@@ -10,39 +10,39 @@ import icy.util.XMLUtil;
 
 
 public class XYTaValue implements XMLPersistent {
-	public Point2D 	xytPoint 	= new Point2D.Double(Double.NaN, Double.NaN);
-	public int 		xytTime 	= 0;
-	public boolean 	xytAlive 	= false;
-	public boolean 	xytSleep 	= false;
-	public boolean  xytPadded	= false;
-	public double	xytDistance = 0.;
+	public Point2D 	xyPoint 	= new Point2D.Double(Double.NaN, Double.NaN);
+	public int 		indexT 		= 0;
+	public boolean 	bAlive 		= false;
+	public boolean 	bSleep 		= false;
+	public boolean  bPadded		= false;
+	public double	distance 	= 0.;
 	
 	
 	public XYTaValue() {
 	}
 	
 	public XYTaValue(int time) {
-		this.xytTime = time;
+		this.indexT = time;
 	}
 	
-	public XYTaValue(Point2D point, int time) {
-		this.xytPoint = point;
-		this.xytTime = time;
+	public XYTaValue(Point2D point, int indexT) {
+		this.xyPoint = point;
+		this.indexT = indexT;
 	}
 	
 	public XYTaValue(Point2D point, int time, boolean alive) {
-		this.xytPoint = point;
-		this.xytTime = time;
-		this.xytAlive = alive;
+		this.xyPoint = point;
+		this.indexT = time;
+		this.bAlive = alive;
 	}
 	
 	public void copy (XYTaValue aVal) {
-		xytPoint = (Point2D) aVal.xytPoint.clone();
-		xytTime = aVal.xytTime;
-		xytAlive = aVal.xytAlive;
-		xytSleep = aVal.xytSleep;
-		xytPadded = aVal.xytPadded;
-		xytDistance = aVal.xytDistance;
+		xyPoint = (Point2D) aVal.xyPoint.clone();
+		indexT = aVal.indexT;
+		bAlive = aVal.bAlive;
+		bSleep = aVal.bSleep;
+		bPadded = aVal.bPadded;
+		distance = aVal.distance;
 	}
 	
 	@Override
@@ -54,10 +54,10 @@ public class XYTaValue implements XMLPersistent {
 		
 		double x =  XMLUtil.getAttributeDoubleValue( node_XYTa, "x", 0);
 		double y =  XMLUtil.getAttributeDoubleValue( node_XYTa, "y", 0);
-		xytPoint.setLocation(x, y);
-		xytTime =  XMLUtil.getAttributeIntValue(node_XYTa, "t", 0);
-		xytAlive = XMLUtil.getAttributeBooleanValue(node_XYTa, "a", false);
-		xytSleep = XMLUtil.getAttributeBooleanValue(node_XYTa, "s", false);
+		xyPoint.setLocation(x, y);
+		indexT =  XMLUtil.getAttributeIntValue(node_XYTa, "t", 0);
+		bAlive = XMLUtil.getAttributeBooleanValue(node_XYTa, "a", false);
+		bSleep = XMLUtil.getAttributeBooleanValue(node_XYTa, "s", false);
 		return false;
 	}
 
@@ -67,11 +67,11 @@ public class XYTaValue implements XMLPersistent {
 			return false;
 		
 		Element node_XYTa = XMLUtil.addElement(node, "XYTa");
-		XMLUtil.setAttributeDoubleValue(node_XYTa, "x", xytPoint.getX());
-		XMLUtil.setAttributeDoubleValue(node_XYTa, "y", xytPoint.getY());
-		XMLUtil.setAttributeIntValue(node_XYTa, "t", xytTime);
-		XMLUtil.setAttributeBooleanValue(node_XYTa, "a", xytAlive);
-		XMLUtil.setAttributeBooleanValue(node_XYTa, "s", xytSleep);
+		XMLUtil.setAttributeDoubleValue(node_XYTa, "x", xyPoint.getX());
+		XMLUtil.setAttributeDoubleValue(node_XYTa, "y", xyPoint.getY());
+		XMLUtil.setAttributeIntValue(node_XYTa, "t", indexT);
+		XMLUtil.setAttributeBooleanValue(node_XYTa, "a", bAlive);
+		XMLUtil.setAttributeBooleanValue(node_XYTa, "s", bSleep);
 		return false;
 	}
 }
