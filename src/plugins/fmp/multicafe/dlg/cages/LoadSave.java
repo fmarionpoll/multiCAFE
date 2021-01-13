@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -25,7 +24,6 @@ public class LoadSave extends JPanel {
 	private static final long serialVersionUID = -5257698990389571518L;
 	private JButton		openCagesButton			= new JButton("Load...");
 	private JButton		saveCagesButton			= new JButton("Save...");
-	public JCheckBox 	saveRoisCheckBox 		= new JCheckBox("save ROIs", false);
 	private MultiCAFE 	parent0					= null;
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -42,9 +40,6 @@ public class LoadSave extends JPanel {
 		panel1.add(saveCagesButton);
 		panel1.validate();
 		add(panel1);
-
-		add(new JLabel (" "));
-		add(saveRoisCheckBox);
 		
 		defineActionListeners();
 	}
@@ -79,7 +74,7 @@ public class LoadSave extends JPanel {
 	public void saveCagesAndMeasures(Experiment exp) {
 		if (exp != null) {
 			exp.cages.getCagesFromROIs(exp.seqCamData);
-			exp.xmlWriteDrosoTrackDefault(saveRoisCheckBox.isSelected());
+			exp.xmlWriteDrosoTrackDefault(false);
 		}
 	}
 	

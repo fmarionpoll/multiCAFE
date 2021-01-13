@@ -74,7 +74,6 @@ public class Experiment {
 	public int				experimentID 			= 0;
 	
 	ImageTransformTools 	tImg 					= null;
-	ArrayList<ROI2D>		roisOnAllImages			= null;
 	
 	private final static String ID_VERSION			= "version"; 
 	private final static String ID_VERSIONNUM		= "1.0.0"; 
@@ -795,25 +794,16 @@ public class Experiment {
 	}
 
 	// --------------------------
-	
+		
 	public void updateROIsAt(int t) {
-		if (roisOnAllImages == null) {
-			int nitems = capillaries.capillariesArrayList.size() + cages.cageList.size();
-			if (nitems > 0) {
-				roisOnAllImages = new ArrayList<ROI2D>(nitems);
-				List<ROI2D> rois = seqCamData.seq.getROI2Ds();
-				for (ROI2D roi: rois) {
-				    if (roi.getT() == -1 ) {
-				    	roisOnAllImages.add(roi);
-				    }
-				}
-			}
+		seqCamData.seq.beginUpdate();
+		List<ROI2D> rois = seqCamData.seq.getROI2Ds();
+		for (ROI2D roi: rois) {
+		    if (roi.getName().contains("det") ) 
+		    	seqCamData.seq.removeROI(roi);
 		}
-		if (roisOnAllImages != null) {
-			seqCamData.seq.removeAllROI();
-			seqCamData.seq.addROIs(roisOnAllImages, false);
-			seqCamData.seq.addROIs(cages.getPositionsAtT(t), false);
-		}
+		seqCamData.seq.addROIs(cages.getPositionsAtT(t), false);
+		seqCamData.seq.endUpdate();
 	}
 		
 	public void saveDetRoisToPositions() {

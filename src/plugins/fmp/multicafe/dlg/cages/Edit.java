@@ -7,7 +7,6 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -21,7 +20,6 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.tools.Comparators;
 import plugins.kernel.roi.roi2d.ROI2DPoint;
 
 
@@ -33,9 +31,10 @@ public class Edit extends JPanel {
 	private static final long serialVersionUID = -5257698990389571518L;
 	private MultiCAFE 	parent0;
 	private JButton 	findAllButton	= new JButton(new String("Find all missed points"));
-	private JButton 	findButton		= new JButton(new String("Select next missed point"));
-	private JButton 	validateButton 	= new JButton(new String("Validate changed ROIs"));
-	private JComboBox<String> foundCombo = new JComboBox<String>();
+	private JButton 	findNextButton	= new JButton(new String("Find next missed point"));
+	private JButton 	validateButton 	= new JButton(new String("Validate selected ROI"));
+	private JButton 	validateAndNextButton = new JButton(new String("Validate and find next"));
+	private JComboBox<String> foundCombo= new JComboBox<String>();
 	private	int foundT = -1;
 	private int foundCage = -1;
 	
@@ -54,11 +53,12 @@ public class Edit extends JPanel {
 		add(panel1);
 		
 		JPanel panel2 = new JPanel(flowLayout);
-		panel2.add(findButton);
+		panel2.add(findNextButton);
+		panel2.add(validateButton);
 		add(panel2);
 		
 		JPanel panel3 = new JPanel(flowLayout);
-		panel3.add(validateButton);
+		panel3.add(validateAndNextButton);
 		add(panel3);
 		
 		defineActionListeners();
@@ -72,11 +72,20 @@ public class Edit extends JPanel {
 					exp.saveDetRoisToPositions();
 			}});
 		
-		findButton.addActionListener(new ActionListener () {
+		findNextButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) 
 					findFirstMissed(exp);
+			}});
+		
+		validateAndNextButton.addActionListener(new ActionListener () {
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				Experiment exp = parent0.expList.getCurrentExperiment();
+				if (exp != null) {
+					exp.saveDetRoisToPositions();
+					findFirstMissed(exp);
+					}
 			}});
 		
 		findAllButton.addActionListener(new ActionListener () {
@@ -100,11 +109,10 @@ public class Edit extends JPanel {
 				return;
 			selectImageT(exp, indexT);
 			List<ROI2D> roiList = exp.seqCamData.seq.getROI2Ds();
-			Collections.sort(roiList, new Comparators.ROI2D_T_Comparator());
 			for ( ROI2D roi : roiList ) {
 				String csName = roi.getName();
-				if (roi instanceof ROI2DPoint && csName.equals( filter)) { 
-					moveROItoCageCenter(exp, roi);
+				if (roi instanceof ROI2DPoint && csName.equals( filter)) {
+					moveROItoCageCenter(exp, roi, indexT);
 					selectImageT(exp, roi.getT());
 					break;
 					}
@@ -127,15 +135,15 @@ public class Edit extends JPanel {
 		int dataSize = exp.seqCamData.nTotalFrames;
 		foundT = -1;
 		foundCage = -1;
-		for (int indexT = 0; indexT < dataSize; indexT++) {
+		for (int frame = 0; frame < dataSize; frame++) {
 			for (Cage cage: exp.cages.cageList) {
-				if (indexT >= cage.flyPositions.xytList.size())
+				if (frame >= cage.flyPositions.xytList.size())
 					continue;
-				Point2D point = cage.flyPositions.xytList.get(indexT).xyPoint;
+				Point2D point = cage.flyPositions.xytList.get(frame).xyPoint;
 				if (point.getX() == -1 && point.getY() == -1 ) {
-					foundT = indexT;
+					foundT = cage.flyPositions.xytList.get(frame).indexT;
 					foundCage = cage.getCageNumberInteger();
-					break;
+					return true;
 				}
 			}
 		}
@@ -150,13 +158,13 @@ public class Edit extends JPanel {
 	void findAllMissedPoints(Experiment exp) {
 		foundCombo.removeAllItems();
 		int dataSize = exp.seqCamData.nTotalFrames;
-		for (int indexT = 0; indexT < dataSize; indexT++) {
+		for (int frame = 0; frame < dataSize; frame++) {
 			for (Cage cage: exp.cages.cageList) {
-				if (indexT >= cage.flyPositions.xytList.size())
+				if (frame >= cage.flyPositions.xytList.size())
 					continue;
-				Point2D point = cage.flyPositions.xytList.get(indexT).xyPoint;
+				Point2D point = cage.flyPositions.xytList.get(frame).xyPoint;
 				if (point.getX() == -1 && point.getY() == -1 ) {
-					String name = "det"+cage.getCageNumber()+"_"+ indexT;
+					String name = "det"+cage.getCageNumber()+"_"+ cage.flyPositions.xytList.get(frame).indexT;
 					foundCombo.addItem(name);
 				}
 			}
@@ -175,16 +183,19 @@ public class Edit extends JPanel {
 		  }
 	}
 	
-	void moveROItoCageCenter(Experiment exp, ROI2D roi) {
+	void moveROItoCageCenter(Experiment exp, ROI2D roi, int frame) {
 		roi.setColor(Color.RED);
 		exp.seqCamData.seq.setSelectedROI(roi);
 		String csName = roi.getName();
 		int cageNumber = getCageNumberFromName(csName);
 		if (cageNumber >= 0) {
 			Cage cage = exp.cages.getCageFromNumber(cageNumber);
-			Rectangle rect = cage.cageRoi.getBounds();
-			Point2D point2 = new Point2D.Double(rect.x+rect.width/2, rect.y+rect.height/2);
-			roi.setPosition2D(point2);
+			Point2D point = cage.flyPositions.xytList.get(frame).xyPoint;
+			if (point.getX() == -1 && point.getY() == -1 ) {
+				Rectangle rect = cage.cageRoi.getBounds();
+				Point2D point2 = new Point2D.Double(rect.x+rect.width/2, rect.y+rect.height/2);
+				roi.setPosition2D(point2);
+			}
 		}
 	}
 
