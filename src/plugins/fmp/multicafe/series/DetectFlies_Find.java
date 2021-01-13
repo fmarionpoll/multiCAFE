@@ -141,7 +141,7 @@ public class DetectFlies_Find {
 	public void initParametersForDetection(Experiment exp, Options_BuildSeries	options) {
 		this.options = options;
 		exp.cages.detect_nframes = (int) (((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms) +1);
-		exp.cages.clearAllMeasures();
+		exp.cages.clearAllMeasures(options.detectCage);
 		cages = exp.cages;
 		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageList);
 		rectangleAllCages = null;

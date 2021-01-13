@@ -43,9 +43,11 @@ public class Cages {
 	
 	
 
-	public void clearAllMeasures() {
+	public void clearAllMeasures(int option_detectCage) {
 		for (Cage cage: cageList) {
-			cage.clearMeasures();
+			int cagenb = cage.getCageNumberInteger();
+			if (option_detectCage < 0 || option_detectCage == cagenb)
+				cage.clearMeasures();
 		}
 	}
 	
