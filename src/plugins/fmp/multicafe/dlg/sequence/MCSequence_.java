@@ -22,11 +22,11 @@ import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.frame.IcyFrame;
-import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
 import icy.sequence.Sequence;
 import icy.system.thread.ThreadUtil;
+
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
@@ -83,7 +83,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		
 		capPopupPanel = new PopupPanel(string);			
 		capPopupPanel.expand();
-		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
+		mainPanel.add(capPopupPanel);
 		GridLayout tabsLayout = new GridLayout(3, 1);
 		
 		tabOpen.init(tabsLayout, parent0);

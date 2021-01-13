@@ -15,7 +15,6 @@ import javax.swing.event.ChangeListener;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.frame.progress.ProgressFrame;
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceKymosUtils;
@@ -33,10 +32,9 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	public 	LoadSave 	tabFile 		= new LoadSave();
 			Adjust 		tabAdjust 		= new Adjust();
 			Infos		tabInfos		= new Infos();
-	private int ID_INFOS = 1;
-	private int ID_ADJUST = 2;
-	
-	private MultiCAFE parent0 = null;
+	private int 		ID_INFOS 		= 1;
+	private int 		ID_ADJUST 		= 2;
+	private MultiCAFE 	parent0 		= null;
 
 	
 	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
@@ -47,7 +45,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
-		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
+		mainPanel.add(capPopupPanel);
 		
 		GridLayout capLayout = new GridLayout(3, 1);
 		int order = 0;
@@ -73,8 +71,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		order++;
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		capPanel.add(GuiUtil.besidesPanel(tabsPane));
-		
+		capPanel.add(tabsPane);
 		tabsPane.addChangeListener(this );
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() {

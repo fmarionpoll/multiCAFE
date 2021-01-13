@@ -13,7 +13,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import icy.gui.component.PopupPanel;
-import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
@@ -40,7 +39,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
-		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
+		mainPanel.add(capPopupPanel);
 		GridLayout capLayout = new GridLayout(3, 1);
 		
 		tabCreate.init(capLayout, parent0);
@@ -61,7 +60,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 
 		tabsPane.addChangeListener(this);
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		capPanel.add(GuiUtil.besidesPanel(tabsPane));
+		capPanel.add(tabsPane);
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() {
 			@Override

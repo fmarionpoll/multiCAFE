@@ -13,7 +13,6 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 
@@ -47,7 +46,7 @@ public class Intervals extends JPanel {
 		panel1.add(new JLabel(" to "));
 		panel1.add(lastColumnJSpinner);
 		panel1.add(getFromCamDataButton);
-		add(GuiUtil.besidesPanel(panel1));
+		add(panel1);
 		
 		JPanel panel2 = new JPanel(layout1);
 		panel2.add(new JLabel("  bin size "));
@@ -58,7 +57,7 @@ public class Intervals extends JPanel {
 		
 		JPanel panel3 = new JPanel(layout1);
 		panel3.add(applyButton);
-		add(GuiUtil.besidesPanel(panel3));
+		add(panel3);
 		
 		getFromCamDataButton.setEnabled(false);
 		defineActionListeners();

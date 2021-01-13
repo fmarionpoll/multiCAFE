@@ -17,7 +17,6 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
-import icy.gui.util.GuiUtil;
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
@@ -58,18 +57,18 @@ public class Create extends JPanel implements PropertyChangeListener {
 		JPanel panel1 = new JPanel(layout1);
 		panel1.add(startComputationButton);
 		panel1.add(allSeriesCheckBox);
-		add(GuiUtil.besidesPanel(panel1));
+		add(panel1);
 		
 		JPanel panel2 = new JPanel(layout1);
 		panel2.add(new JLabel("area around ROIs", SwingConstants.RIGHT));
 		panel2.add(diskRadiusSpinner);  
 		panel2.add(doRegistrationCheckBox);
-		add(GuiUtil.besidesPanel(panel2));
+		add(panel2);
 		
 		JPanel panel3 = new JPanel(layout1);
 
 		panel3.add(doCreateCheckBox);
-		add(GuiUtil.besidesPanel(panel3));		
+		add(panel3);		
 		defineActionListeners();
 	}
 	

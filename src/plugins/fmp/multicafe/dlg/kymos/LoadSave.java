@@ -20,7 +20,6 @@ import javax.swing.SwingConstants;
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.FontUtil;
-import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
@@ -53,7 +52,7 @@ public class LoadSave extends JPanel {
 		panel1.add(openButtonKymos);
 		panel1.add(saveButtonKymos);
 		panel1.validate();
-		add( GuiUtil.besidesPanel( panel1));
+		add(panel1);
 		
 		defineActionListeners();
 	}

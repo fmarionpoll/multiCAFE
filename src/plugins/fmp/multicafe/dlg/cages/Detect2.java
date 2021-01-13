@@ -21,7 +21,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import icy.gui.dialog.MessageDialog;
-import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.util.StringUtil;
 
@@ -77,7 +76,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		panel1.add(allCheckBox);
 		panel1.add(backgroundCheckBox);
 		panel1.add(detectCheckBox);
-		add( GuiUtil.besidesPanel(panel1));
+		add(panel1);
 		
 		JPanel panel2 = new JPanel(flowLayout);
 		panel2.add(loadButton);
@@ -86,7 +85,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		panel2.add(thresholdBckgSpinner);
 		panel2.add(viewsCheckBox);
 		panel2.validate();
-		add( GuiUtil.besidesPanel(panel2));
+		add(panel2);
 		
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
 		objectUpsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);

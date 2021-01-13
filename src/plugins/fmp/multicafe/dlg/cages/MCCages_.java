@@ -13,7 +13,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import icy.gui.component.PopupPanel;
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 
 
@@ -49,7 +48,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
 		
-		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
+		mainPanel.add(capPopupPanel);
 		GridLayout capLayout = new GridLayout(4, 1);
 		
 		int iTab = 0;
@@ -97,7 +96,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Load/Save", null, tabFile, "Load/save cages and flies position");
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		capPanel.add(GuiUtil.besidesPanel(tabsPane));
+		capPanel.add(tabsPane);
 		tabsPane.setSelectedIndex(0);
 		
 		tabsPane.addChangeListener(new ChangeListener() {

@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
@@ -40,7 +39,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
-		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
+		mainPanel.add(capPopupPanel);
 
 		GridLayout capLayout = new GridLayout(3, 1);
 		
@@ -73,7 +72,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 		tabFileLevels.addPropertyChangeListener(this);
 		tabsPane.addTab("Load/Save", null, tabFileLevels, "Load/Save kymographs");
 						
-		capPanel.add(GuiUtil.besidesPanel(tabsPane));
+		capPanel.add(tabsPane);
 		tabDetectLevels.transformForLevelsComboBox.setSelectedItem(TransformOp.G2MINUS_RB);
 		tabsPane.setSelectedIndex(0);
 		

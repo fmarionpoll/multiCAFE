@@ -10,7 +10,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 
@@ -45,12 +44,12 @@ public class Infos  extends JPanel {
 		JPanel panel1 = new JPanel(flowlayout);
 		panel1.add(new JLabel("Comment1   ")); 
 		panel1.add(comment1_JCombo);
-		add( GuiUtil.besidesPanel(panel1));
+		add( panel1);
 		
 		JPanel panel2 = new JPanel(flowlayout);
 		panel2.add(new JLabel("Comment2   ")); 
 		panel2.add(comment2_JCombo);
-		add( GuiUtil.besidesPanel(panel2));
+		add( panel2);
 
 		boxID_JCombo.setEditable(true);
 		experiment_JCombo.setEditable(true);	

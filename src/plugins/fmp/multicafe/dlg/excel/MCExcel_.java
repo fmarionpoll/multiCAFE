@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
-import icy.gui.util.GuiUtil;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Dialog;
@@ -47,7 +46,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
-		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
+		mainPanel.add(capPopupPanel);
 		GridLayout capLayout = new GridLayout(3, 2);
 		
 		tabOptions.init(capLayout);
@@ -67,7 +66,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Move", null, tabMove, "Export fly positions to file");
 		tabMove.addPropertyChangeListener(this);
 		
-		capPanel.add(GuiUtil.besidesPanel(tabsPane));
+		capPanel.add(tabsPane);
 		tabsPane.setSelectedIndex(0);
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() {

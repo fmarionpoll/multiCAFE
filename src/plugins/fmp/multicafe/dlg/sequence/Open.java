@@ -14,7 +14,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 
 
@@ -47,7 +46,7 @@ public class Open extends JPanel implements PropertyChangeListener {
 		panel1.add(openButton);
 		panel1.add(addButton);
 		panel1.add( searchButton);
-		add( GuiUtil.besidesPanel(panel1));
+		add(panel1);
 		
 		JPanel panel2 = new JPanel(layout);
 		panel2.add(capillariesCheckBox);
@@ -56,7 +55,7 @@ public class Open extends JPanel implements PropertyChangeListener {
 		panel2.add(measuresCheckBox);
 		panel2.add(graphsCheckBox);
 		panel2.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		add( GuiUtil.besidesPanel(panel2));
+		add(panel2);
 
 		searchButton.addActionListener(new ActionListener()  {
             @Override

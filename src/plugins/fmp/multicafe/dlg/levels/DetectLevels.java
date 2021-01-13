@@ -18,7 +18,6 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 
-import icy.gui.util.GuiUtil;
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Capillary;
@@ -77,7 +76,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		panel0.add(leftCheckBox);
 		panel0.add(rightCheckBox);
 		panel0.add(maxContrastCheckBox);
-		add( GuiUtil.besidesPanel(panel0 ));
+		add(panel0);
 		
 		JPanel panel01 = new JPanel(layoutLeft);
 		panel01.add(directionComboBox);

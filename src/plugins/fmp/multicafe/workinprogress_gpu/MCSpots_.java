@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 
 
@@ -35,7 +34,7 @@ public class MCSpots_ extends JPanel implements PropertyChangeListener {
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
-		mainPanel.add(GuiUtil.besidesPanel(capPopupPanel));
+		mainPanel.add(capPopupPanel);
 
 		GridLayout capLayout = new GridLayout(3, 1);
 		
@@ -43,7 +42,7 @@ public class MCSpots_ extends JPanel implements PropertyChangeListener {
 		buildRef.addPropertyChangeListener(this);
 		tabsPane.addTab("Limits", null, buildRef, "Subtract first column");
 		
-		capPanel.add(GuiUtil.besidesPanel(tabsPane));
+		capPanel.add(tabsPane);
 		tabsPane.setSelectedIndex(0);
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() {

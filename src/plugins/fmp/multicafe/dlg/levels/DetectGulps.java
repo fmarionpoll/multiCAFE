@@ -17,7 +17,6 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
-import icy.gui.util.GuiUtil;
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Capillary;
@@ -67,9 +66,8 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		panel0.add(detectAllGulpsCheckBox);
 		panel0.add(buildDerivativeCheckBox);
 		panel0.add(detectGulpsCheckBox);
-		add( GuiUtil.besidesPanel(panel0 ));
+		add(panel0 );
 		
-//		add( GuiUtil.besidesPanel(new JLabel("threshold", SwingConstants.RIGHT), detectGulpsThresholdSpinner, transformForGulpsComboBox, displayTransform2Button));
 		JPanel panel01 = new JPanel(layoutLeft);
 		panel01.add(new JLabel("threshold", SwingConstants.RIGHT));
 		panel01.add(detectGulpsThresholdSpinner);

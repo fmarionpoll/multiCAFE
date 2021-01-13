@@ -52,7 +52,7 @@ public class Graphs extends JPanel {
 		panel.add(derivativeCheckbox);
 		panel.add(consumptionCheckbox);
 		panel.add(deltaCheckbox);
-		add( GuiUtil.besidesPanel(panel));
+		add(panel);
 		add(GuiUtil.besidesPanel(displayResultsButton, new JLabel(" "))); 
 		defineActionListeners();
 	}

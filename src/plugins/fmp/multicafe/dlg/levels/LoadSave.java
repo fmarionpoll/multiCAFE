@@ -14,7 +14,6 @@ import javax.swing.SwingUtilities;
 
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.FontUtil;
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 
@@ -45,7 +44,7 @@ public class LoadSave  extends JPanel {
 		panel1.add(loadMeasuresButton);
 		panel1.add(saveMeasuresButton);
 		panel1.validate();
-		add( GuiUtil.besidesPanel( panel1));
+		add(panel1);
 		
 		defineActionListeners();
 	}

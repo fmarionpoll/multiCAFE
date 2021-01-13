@@ -67,7 +67,7 @@ public class SelectFiles extends JPanel {
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		mainPanel.add(GuiUtil.besidesPanel(scrollPane));
-		
+	
 		mainPanel.add(GuiUtil.besidesPanel(clearSelectedButton, clearAllButton));
 		mainPanel.add(GuiUtil.besidesPanel(addSelectedButton, addAllButton));
 		

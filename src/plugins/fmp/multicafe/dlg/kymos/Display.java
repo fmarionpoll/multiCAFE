@@ -20,7 +20,6 @@ import javax.swing.SwingUtilities;
 
 import icy.canvas.IcyCanvas;
 import icy.canvas.Layer;
-import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.gui.viewer.ViewerEvent;
 import icy.gui.viewer.ViewerListener;
@@ -71,16 +70,16 @@ public class Display extends JPanel implements ViewerListener {
 		panel1.add(kymographNamesComboBox, BorderLayout.CENTER);
 		nextButton.setPreferredSize(new Dimension(bWidth, bHeight)); 
 		panel1.add(nextButton, BorderLayout.EAST);
-		add(GuiUtil.besidesPanel(panel1));
+		add(panel1);
 		
 		JPanel panel2 = new JPanel (layout);
-		add(GuiUtil.besidesPanel(panel2));
+		add(panel2);
 		
 		JPanel panel3 = new JPanel (layout);
 		panel3.add(viewLevelsCheckbox);
 		panel3.add(viewDerivativeCheckbox);
 		panel3.add(viewGulpsCheckbox);
-		add(GuiUtil.besidesPanel(panel3));
+		add(panel3);
 		
 		defineActionListeners();
 	}

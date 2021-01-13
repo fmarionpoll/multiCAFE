@@ -15,7 +15,6 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Capillaries;
 import plugins.fmp.multicafe.sequence.Capillary;
@@ -47,11 +46,11 @@ public class Infos extends JPanel {
 		panel0.add( new JLabel("length (pixels) ", SwingConstants.RIGHT));
 		panel0.add( capillaryPixelsTextField);
 		panel0.add( getLenButton);
-		add( GuiUtil.besidesPanel(panel0));
+		add( panel0);
 		
 		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 1));
 		panel1.add( editCapillariesButton);
-		add( GuiUtil.besidesPanel(panel1));
+		add(panel1);
 
 		defineActionListeners();
 	}

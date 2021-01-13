@@ -9,7 +9,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-import icy.gui.util.GuiUtil;
 
 
 public class Move  extends JPanel {
@@ -51,7 +50,7 @@ public class Move  extends JPanel {
 		flowLayout2.setVgap(0);
 		JPanel panel2 = new JPanel(flowLayout2);
 		panel2.add(exportToXLSButton);
-		add(GuiUtil.besidesPanel(panel2));
+		add(panel2);
 		
 		defineActionListeners();
 	}

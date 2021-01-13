@@ -26,18 +26,17 @@ public class LoadSave extends JPanel {
 	private JButton		openCagesButton			= new JButton("Load...");
 	private JButton		saveCagesButton			= new JButton("Save...");
 	public JCheckBox 	saveRoisCheckBox 		= new JCheckBox("save ROIs", false);
-	private MultiCAFE parent0;
+	private MultiCAFE 	parent0					= null;
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
 		setLayout(capLayout);
 		this.parent0 = parent0;
 
-		JLabel loadsaveText = new JLabel ("-> File (xml) ", SwingConstants.RIGHT);
-		loadsaveText.setFont(FontUtil.setStyle(loadsaveText.getFont(), Font.ITALIC));
-		
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.RIGHT);
 		flowLayout.setVgap(0);
 		JPanel panel1 = new JPanel(flowLayout);
+		JLabel loadsaveText = new JLabel ("-> File (xml) ", SwingConstants.RIGHT);
+		loadsaveText.setFont(FontUtil.setStyle(loadsaveText.getFont(), Font.ITALIC));
 		panel1.add(loadsaveText);
 		panel1.add(openCagesButton);
 		panel1.add(saveCagesButton);
