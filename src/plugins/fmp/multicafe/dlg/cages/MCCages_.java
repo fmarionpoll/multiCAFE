@@ -23,21 +23,24 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = 3457738144388946607L;
 	
-			BuildROIs 		tabBuildROIs= new BuildROIs();
-			BuildROIs2 		tabBuildROIs2= new BuildROIs2();
-			Display			tabInfos	= new Display();
-			Detect1 		tabDetect1 	= new Detect1();
-			Detect2 		tabDetect2 	= new Detect2();
-			Edit			tabEdit		= new Edit();
-			LoadSave 		tabFile 	= new LoadSave();
-	public 	Graphs 			tabGraphics = new Graphs();
+			BuildROIs 		tabBuildROIs	= new BuildROIs();
+			BuildROIs2 		tabBuildROIs2	= new BuildROIs2();
+			Display			tabInfos		= new Display();
+			Detect1 		tabDetect1 		= new Detect1();
+			Detect2 		tabDetect2 		= new Detect2();
+			Edit			tabEdit			= new Edit();
+			LoadSave 		tabFile 		= new LoadSave();
+	public 	Graphs 			tabGraphics 	= new Graphs();
 	public	PopupPanel 		capPopupPanel	= null;
-			JTabbedPane 	tabsPane	= new JTabbedPane();
-			int 			iTAB_INFOS 	= 2;
-			int 			iTAB_DETECT1= 3;
-			int 			iTAB_DETECT2= 4;
-			int 			iTAB_CAGE2	= 1;
-			MultiCAFE 		parent0		= null;
+			JTabbedPane 	tabsPane		= new JTabbedPane();
+			int				previouslySelected	= -1;
+	public 	boolean			trapROIsEdit	= false;
+			int 			iTAB_CAGE2		= 1;
+			int 			iTAB_INFOS 		= 2;
+			int 			iTAB_DETECT1	= 3;
+			int 			iTAB_DETECT2	= 4;
+			int				iTAB_EDIT		= 5;
+			MultiCAFE 		parent0			= null;
 
 	
 	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
@@ -81,6 +84,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 		tabsPane.addTab("Detect2", null, tabDetect2, "Detect flies position using background subtraction");
 		
 		iTab++;
+		iTAB_EDIT	= iTab;
 		tabEdit.init(capLayout, parent0);
 		tabEdit.addPropertyChangeListener(this);
 		tabsPane.addTab("Edit", null, tabEdit, "Edit flies detection");
@@ -109,6 +113,12 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 	    			parent0.paneCapillaries.capPopupPanel.collapse();
 	    			parent0.paneSequence.tabsPane.setSelectedIndex(3);
 	            }
+	            
+	            if (selectedIndex == iTAB_EDIT) {
+	            	trapROIsEdit = true;
+	            } else {
+	            	trapROIsEdit = false;
+	            }
 //	            if (selectedIndex == iTAB_INFOS && tabInfos.tableView.getRowCount() > 0) {
 //	            	tabInfos.tableView.changeSelection(0, 1, false, false);
 //	            }
@@ -117,6 +127,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 	            	activateOverlay = true;
 	            }
 	            tabBuildROIs2.overlayCheckBox.setSelected(activateOverlay);
+	            previouslySelected = selectedIndex;
 	        }
 	    });
 		

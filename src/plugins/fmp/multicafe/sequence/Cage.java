@@ -159,16 +159,16 @@ public class Cage {
 		return pt;
 	}
 	
-	public void copy (Cage cag) {
-		cageRoi			= cag.cageRoi;
-		cageNFlies  	= cag.cageNFlies;
-		strCageComment 	= cag.strCageComment;
-		strCageNumber 	= cag.strCageNumber;
+	public void copy (Cage cage) {
+		cageRoi			= cage.cageRoi;
+		cageNFlies  	= cage.cageNFlies;
+		strCageComment 	= cage.strCageComment;
+		strCageNumber 	= cage.strCageNumber;
 		valid 			= false; 
-		flyPositions.copy(cag.flyPositions);
+		flyPositions.copy(cage.flyPositions);
 	}
 	
-	public ROI2DPoint getPositionAtT(int t) {
+	public ROI2DPoint getRoiPointFromPositionAtT(int t) {
 		int nitems = flyPositions.xytList.size();
 		if (nitems == 0 || t >= nitems)
 			return null;
@@ -185,16 +185,15 @@ public class Cage {
 			String name = roi.getName();
 			if (!name .contains(filter))
 				continue;
-			
 			Point2D point = ((ROI2DPoint) roi).getPoint();
-			int t = roi.getT();
-			
-			for (XYTaValue aValue: flyPositions.xytList) {
-				if (aValue.indexT == t) {
-					aValue.xyPoint = point;
-					break;
-				}
-			}
+			int t = roi.getT();	
+//			for (XYTaValue aValue: flyPositions.xytList) {
+//				if (aValue.indexT == t) {
+//					aValue.xyPoint = point;
+//					break;
+//				}
+//			}
+			flyPositions.xytList.get(t).xyPoint = point;
 		}
 	}
 	

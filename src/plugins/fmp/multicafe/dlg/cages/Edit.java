@@ -66,12 +66,8 @@ public class Edit extends JPanel {
 		validateButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null) {
-					List<ROI2D> detectedROIsList= exp.seqCamData.seq.getROI2Ds();
-					for (Cage cage : exp.cages.cageList) {
-						cage.transferRoisToPositions(detectedROIsList);
-					}
-				}
+				if (exp != null) 
+					exp.saveDetRoisToPositions();
 			}});
 		
 		findButton.addActionListener(new ActionListener () {

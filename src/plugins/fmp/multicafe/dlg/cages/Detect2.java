@@ -35,11 +35,8 @@ import plugins.fmp.multicafe.series.DetectFlies2_series;
 
 
 public class Detect2 extends JPanel implements ChangeListener, PropertyChangeListener {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -5257698990389571518L;
-	private MultiCAFE parent0;
+	private MultiCAFE 	parent0					=null;
 	
 	private String 		detectString 			= "Detect..";
 	private JButton 	startComputationButton 	= new JButton(detectString);

@@ -379,13 +379,13 @@ public class Cages {
 	}
 
 	public List <ROI2DPoint> getPositionsAtT(int t) {
-		List <ROI2DPoint> pointsList = new ArrayList<ROI2DPoint> (cageList.size());
+		List <ROI2DPoint> roiPointList = new ArrayList<ROI2DPoint> (cageList.size());
 		for (Cage cage: cageList) {
-			ROI2DPoint point = cage.getPositionAtT(t);
-			if (point != null)
-				pointsList.add(point);
+			ROI2DPoint roiPoint = cage.getRoiPointFromPositionAtT(t);
+			if (roiPoint != null)
+				roiPointList.add(roiPoint);
 		}
-		return pointsList;
+		return roiPointList;
 	}
 
 }

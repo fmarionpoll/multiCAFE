@@ -800,7 +800,7 @@ public class Experiment {
 				roisOnAllImages = new ArrayList<ROI2D>(nitems);
 				List<ROI2D> rois = seqCamData.seq.getROI2Ds();
 				for (ROI2D roi: rois) {
-				    if (((ROI2D) roi).getT() == -1 ) {
+				    if (roi.getT() == -1 ) {
 				    	roisOnAllImages.add(roi);
 				    }
 				}
@@ -812,4 +812,12 @@ public class Experiment {
 			seqCamData.seq.addROIs(cages.getPositionsAtT(t), false);
 		}
 	}
+		
+	public void saveDetRoisToPositions() {
+		List<ROI2D> detectedROIsList= seqCamData.seq.getROI2Ds();
+		for (Cage cage : cages.cageList) {
+			cage.transferRoisToPositions(detectedROIsList);
+		}
+	}
+	
 }
