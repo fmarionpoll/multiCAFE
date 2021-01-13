@@ -51,6 +51,7 @@ public class DetectFlies1_series extends BuildSeries {
 		
 		runDetectFlies(exp);
 		
+		exp.orderFlyPositionsForAllCages();
 		if (!stopFlag)
 			exp.xmlSaveFlyPositionsForAllCages();
 		exp.seqCamData.closeSequence();
@@ -59,7 +60,7 @@ public class DetectFlies1_series extends BuildSeries {
 	private void runDetectFlies(Experiment exp) {
 		exp.cleanPreviousDetectedFliesROIs();
 		find_flies.initParametersForDetection(exp, options);
-		find_flies.initTempRectROIs(exp, exp.seqCamData.seq);
+		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
 		
 		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
 		try {

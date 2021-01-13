@@ -17,7 +17,7 @@ import plugins.kernel.roi.roi2d.ROI2DPoint;
 public class Cage {
 	public ROI2D 		cageRoi					= null;
 
-	public XYTaSeriesArrayList 	flyPositions 			= new XYTaSeriesArrayList();
+	public XYTaSeriesArrayList 	flyPositions 	= new XYTaSeriesArrayList();
 	public int 			cageNFlies  			= 1;
 	public int 			cageAge 				= 5;
 	public String 		strCageComment 			= "..";
@@ -54,7 +54,6 @@ public class Cage {
 		XMLUtil.setElementValue(xmlVal, ID_COMMENT, strCageComment);
 		XMLUtil.setElementValue(xmlVal, ID_SEX, strCageSex);
 		XMLUtil.setElementValue(xmlVal, ID_STRAIN, strCageStrain);
-		
 		return true;
 	}
 	

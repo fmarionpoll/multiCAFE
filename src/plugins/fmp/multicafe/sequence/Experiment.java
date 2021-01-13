@@ -753,13 +753,17 @@ public class Experiment {
 		return ImageUtil.save(image, "jpg", outputfile);
 	}
 
-	public 	void cleanPreviousDetectedFliesROIs() {
+	public void cleanPreviousDetectedFliesROIs() {
 		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: list) {
 			if (roi.getName().contains("det")) {
 				seqCamData.seq.removeROI(roi);
 			}
 		}
+	}
+	
+	public void orderFlyPositionsForAllCages() {
+		cages.orderFlyPositions();
 	}
 
 	public void xmlSaveFlyPositionsForAllCages() {			

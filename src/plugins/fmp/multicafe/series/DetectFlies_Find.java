@@ -104,7 +104,7 @@ public class DetectFlies_Find {
 					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 					
 					int npoints = cage.flyPositions.xytList.size();
-					cage.flyPositions.add(t, flyPosition);
+					cage.flyPositions.addPoint(t, flyPosition);
 					if (it > 0 && npoints > 0) {
 						Point2D prevPoint = cage.flyPositions.getValidPointAtOrBefore(npoints);
 						if (prevPoint.getX() >= 0) {
@@ -116,18 +116,18 @@ public class DetectFlies_Find {
 				}
 				else {
 					Point2D flyPosition = new Point2D.Double(-1, -1);
-					cage.flyPositions.add(t, flyPosition);
+					cage.flyPositions.addPoint(t, flyPosition);
 				}
 			}
 		}
 	}
 	
-	public void initTempRectROIs(Experiment exp, Sequence seq) {
+	public void initTempRectROIs(Experiment exp, Sequence seq, int option_cagenumber) {
 		cages = exp.cages;
 		int nbcages = cages.cageList.size();
 		for (int i=0; i < nbcages; i++) {
 			Cage cage = cages.cageList.get(i);
-			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
+			if (options.detectCage != -1 && cage.getCageNumberInteger() != option_cagenumber)
 				continue;
 			if (cage.cageNFlies > 0) {
 				XYTaSeriesArrayList positions = new XYTaSeriesArrayList();

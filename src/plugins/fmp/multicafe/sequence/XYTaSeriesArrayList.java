@@ -58,6 +58,14 @@ public class XYTaSeriesArrayList implements XMLPersistent {
 	
 	public void ensureCapacity(int nFrames) {
 		xytList.ensureCapacity(nFrames);
+		initArray(nFrames);
+	}
+	
+	void initArray(int nFrames) {
+		for (int i=0; i< nFrames; i++) {
+			XYTaValue value = new XYTaValue(i);
+			xytList.add(value);
+		}
 	}
 	
 	public Point2D getPoint(int i) {
@@ -80,9 +88,9 @@ public class XYTaSeriesArrayList implements XMLPersistent {
 		return xytList.get(i).indexT;
 	}
 
-	public void add(int frame, Point2D point) {
-		XYTaValue pos = new XYTaValue(point, frame);
-		xytList.add(frame, pos);
+	public void addPoint (int frame, Point2D point) {
+		XYTaValue pos = new XYTaValue(frame, point);
+		xytList.add(pos);
 	}
 	
 	public void copy (XYTaSeriesArrayList xySer) {

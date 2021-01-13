@@ -387,4 +387,9 @@ public class Cages {
 		return roiPointList;
 	}
 
+	public void orderFlyPositions() {
+		for (Cage cage: cageList) {
+			Collections.sort(cage.flyPositions.xytList, new Comparators.XYTaValue_Tindex_Comparator());
+		}
+	}
 }

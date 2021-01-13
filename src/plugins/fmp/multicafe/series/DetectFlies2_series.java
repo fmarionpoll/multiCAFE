@@ -69,7 +69,7 @@ public class DetectFlies2_series extends BuildSeries {
 		
 		exp.cleanPreviousDetectedFliesROIs();
 		find_flies.initParametersForDetection(exp, options);
-		find_flies.initTempRectROIs(exp, exp.seqCamData.seq);
+		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
 		options.threshold = options.thresholdDiff;
 		
 		try {
@@ -96,6 +96,7 @@ public class DetectFlies2_series extends BuildSeries {
 		if (options.detectFlies) {
 			exp.cleanPreviousDetectedFliesROIs();
 			findFlies(exp);
+			exp.orderFlyPositionsForAllCages();
 			exp.xmlSaveFlyPositionsForAllCages();
 		}
 		closeViewersAndSequences (exp);
@@ -130,7 +131,7 @@ public class DetectFlies2_series extends BuildSeries {
 			vBackgroundImage.close();
 			vBackgroundImage = null;
 		}
-		find_flies.initTempRectROIs(exp, seqNegative);
+		find_flies.initTempRectROIs(exp, seqNegative, options.detectCage);
 
 		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectFlies1");

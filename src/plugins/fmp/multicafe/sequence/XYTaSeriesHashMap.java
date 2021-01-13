@@ -81,7 +81,7 @@ public class XYTaSeriesHashMap implements XMLPersistent {
 	}
 
 	public void add(int indexT, Point2D point) {
-		XYTaValue pos = new XYTaValue(point, indexT);
+		XYTaValue pos = new XYTaValue(indexT, point);
 		// TODO: test if put or replace?
 		xytList.put(indexT, pos);
 	}
