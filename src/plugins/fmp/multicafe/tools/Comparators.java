@@ -6,7 +6,7 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe.sequence.Cage;
-import plugins.fmp.multicafe.sequence.XYTaSeries;
+import plugins.fmp.multicafe.sequence.XYTaSeriesArrayList;
 import plugins.fmp.multicafe.sequence.XYTaValue;
 import plugins.fmp.multicafe.tools.toExcel.XLSResults;
 
@@ -48,9 +48,9 @@ public class Comparators {
 		}
 	}
 	
-	public static class XYTaSeries_Name_Comparator implements Comparator <XYTaSeries> {
+	public static class XYTaSeries_Name_Comparator implements Comparator <XYTaSeriesArrayList> {
 		@Override
-		public int compare (XYTaSeries o1, XYTaSeries o2) {
+		public int compare (XYTaSeriesArrayList o1, XYTaSeriesArrayList o2) {
 			return o1.name.compareTo(o2.name);
 		}
 	}

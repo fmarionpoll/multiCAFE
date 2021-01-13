@@ -17,7 +17,7 @@ import plugins.kernel.roi.roi2d.ROI2DPoint;
 public class Cage {
 	public ROI2D 		cageRoi					= null;
 
-	public XYTaSeries 	flyPositions 			= new XYTaSeries();
+	public XYTaSeriesArrayList 	flyPositions 			= new XYTaSeriesArrayList();
 	public int 			cageNFlies  			= 1;
 	public int 			cageAge 				= 5;
 	public String 		strCageComment 			= "..";
@@ -25,7 +25,7 @@ public class Cage {
 	public String 		strCageStrain 			= "..";
 	private String 		strCageNumber 			= null;
 	public	boolean		valid					= false;
-	public	boolean		saveDetectedROIs		= false;
+	public	boolean		bDetect					= true;
 	
 	private final String ID_CAGELIMITS 			= "CageLimits";
 	private final String ID_FLYPOSITIONS		= "FlyPositions";

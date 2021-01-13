@@ -787,7 +787,6 @@ public class Experiment {
 	
 	public boolean xmlWriteDrosoTrackDefault(boolean saveDetectedROIs) {
 		String fileName = getResultsDirectory() + File.separator + ID_MCDROSOTRACK;
-		cages.saveDetectedROIs = saveDetectedROIs;
 		return cages.xmlWriteCagesToFileNoQuestion(fileName);
 	}
 

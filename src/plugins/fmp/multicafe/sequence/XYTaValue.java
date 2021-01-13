@@ -30,9 +30,9 @@ public class XYTaValue implements XMLPersistent {
 		this.indexT = indexT;
 	}
 	
-	public XYTaValue(Point2D point, int time, boolean alive) {
+	public XYTaValue(Point2D point, int indexT, boolean alive) {
 		this.xyPoint = point;
-		this.indexT = time;
+		this.indexT = indexT;
 		this.bAlive = alive;
 	}
 	

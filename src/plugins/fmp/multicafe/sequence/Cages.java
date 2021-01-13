@@ -24,7 +24,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 public class Cages {
 	
 	public List<Cage>	cageList			= new ArrayList<Cage>();
-	public boolean		saveDetectedROIs	= false;
+
 	// ---------- not saved to xml:
 	public long			detectFirst_Ms		= 0;
 	public long			detectLast_Ms		= 0;
@@ -99,7 +99,6 @@ public class Cages {
 		int ncages = cageList.size();
 		XMLUtil.setAttributeIntValue(xmlVal, ID_NCAGES, ncages);
 		for (Cage cage: cageList) {
-			cage.saveDetectedROIs = saveDetectedROIs;
 			cage.xmlSaveCage(xmlVal, index);
 			index++;
 		}
@@ -157,7 +156,7 @@ public class Cages {
 		} else {
 			List<ROI2D> cageLimitROIList = new ArrayList<ROI2D>();
 			if (xmlLoadCagesLimits_v0(node, cageLimitROIList)) {
-				List<XYTaSeries> flyPositionsList = new ArrayList<XYTaSeries>();
+				List<XYTaSeriesArrayList> flyPositionsList = new ArrayList<XYTaSeriesArrayList>();
 				xmlLoadFlyPositions_v0(node, flyPositionsList);
 				transferDataToCages_v0(cageLimitROIList, flyPositionsList);
 			}
@@ -181,7 +180,7 @@ public class Cages {
 		}
 	}
 	
-	private void transferDataToCages_v0(List<ROI2D> cageLimitROIList, List<XYTaSeries> flyPositionsList) {
+	private void transferDataToCages_v0(List<ROI2D> cageLimitROIList, List<XYTaSeriesArrayList> flyPositionsList) {
 		cageList.clear();
 		Collections.sort(cageLimitROIList, new Comparators.ROI2D_Name_Comparator());
 		int ncages = cageLimitROIList.size();
@@ -211,7 +210,7 @@ public class Cages {
 		return true;
 	}
 	
-	private boolean xmlLoadFlyPositions_v0(Node node, List<XYTaSeries> flyPositionsList) {
+	private boolean xmlLoadFlyPositions_v0(Node node, List<XYTaSeriesArrayList> flyPositionsList) {
 		if (node == null)
 			return false;
 		Element xmlVal = XMLUtil.getElement(node, ID_FLYDETECTED);
@@ -223,7 +222,7 @@ public class Cages {
 		int ielement = 0;
 		for (int i=0; i< nb_items; i++) {
 			Element subnode = XMLUtil.getElement(xmlVal, "cage"+ielement);
-			XYTaSeries pos = new XYTaSeries();
+			XYTaSeriesArrayList pos = new XYTaSeriesArrayList();
 			pos.loadFromXML(subnode);
 			flyPositionsList.add(pos);
 			ielement++;

@@ -18,7 +18,7 @@ import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.XYTaSeries;
+import plugins.fmp.multicafe.sequence.XYTaSeriesArrayList;
 import plugins.fmp.multicafe.tools.chart.YPosMultiChart;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
@@ -98,7 +98,7 @@ public class Graphs extends JPanel {
 		if (aliveCheckbox.isSelected()) {
 			double threshold = (double) aliveThresholdSpinner.getValue();		
 			for (Cage cage: exp.cages.cageList) {
-				XYTaSeries posSeries = cage.flyPositions;
+				XYTaSeriesArrayList posSeries = cage.flyPositions;
 				posSeries.moveThreshold = threshold;
 				posSeries.computeIsAlive();
 			}
@@ -107,7 +107,7 @@ public class Graphs extends JPanel {
 		}
 		if (sleepCheckbox.isSelected()) {	
 			for (Cage cage: exp.cages.cageList) {
-				XYTaSeries posSeries = cage.flyPositions;
+				XYTaSeriesArrayList posSeries = cage.flyPositions;
 				posSeries.computeSleep();
 			}
 			sleepChart = displayYPos("flies asleep", sleepChart, rectv, ptRelative, exp, EnumXLSExportType.SLEEP);	

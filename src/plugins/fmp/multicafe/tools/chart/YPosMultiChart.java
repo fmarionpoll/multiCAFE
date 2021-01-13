@@ -21,7 +21,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.sequence.Cage;
-import plugins.fmp.multicafe.sequence.XYTaSeries;
+import plugins.fmp.multicafe.sequence.XYTaSeriesArrayList;
 import plugins.fmp.multicafe.tools.MinMaxDouble;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
@@ -111,7 +111,7 @@ public class YPosMultiChart extends IcyFrame {
 	}
 	
 	private MinMaxDouble addPointsToXYSeries(Cage cage, EnumXLSExportType option, XYSeries seriesXY) {
-		XYTaSeries positionxyt = cage.flyPositions;
+		XYTaSeriesArrayList positionxyt = cage.flyPositions;
 		int itmax = positionxyt.xytList.size();
 		MinMaxDouble minmax =null;
 		if (itmax > 0) {

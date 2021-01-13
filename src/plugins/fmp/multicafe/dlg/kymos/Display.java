@@ -84,12 +84,7 @@ public class Display extends JPanel implements ViewerListener {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-//		updateButton.addActionListener(new ActionListener () { 
-//			@Override public void actionPerformed( final ActionEvent e ) { 
-//			displayUpdateOnSwingThread();
-//		} } );
-		
+	private void defineActionListeners() {		
 		kymographNamesComboBox.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 			displayUpdateOnSwingThread();

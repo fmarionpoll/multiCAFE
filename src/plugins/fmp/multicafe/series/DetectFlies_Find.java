@@ -14,7 +14,7 @@ import icy.sequence.Sequence;
 import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.Cages;
 import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.XYTaSeries;
+import plugins.fmp.multicafe.sequence.XYTaSeriesArrayList;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 
@@ -93,6 +93,9 @@ public class DetectFlies_Find {
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		for ( int icage = 0; icage < cages.cageList.size(); icage++ ) {		
 			Cage cage = cages.cageList.get(icage);
+			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
+				continue;
+			
 			if (cage.cageNFlies > 0) {
 				BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, icage);
 				if ( bestMask != null ) {
@@ -124,11 +127,12 @@ public class DetectFlies_Find {
 		int nbcages = cages.cageList.size();
 		for (int i=0; i < nbcages; i++) {
 			Cage cage = cages.cageList.get(i);
+			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
+				continue;
 			if (cage.cageNFlies > 0) {
-				XYTaSeries positions = new XYTaSeries();
+				XYTaSeriesArrayList positions = new XYTaSeriesArrayList();
 				positions.ensureCapacity(exp.cages.detect_nframes);
 				cage.flyPositions = positions;
-
 			}
 		}
 

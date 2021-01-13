@@ -20,10 +20,13 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import icy.util.StringUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
+import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
@@ -34,8 +37,7 @@ import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 
 
-public class Detect1 extends JPanel implements ChangeListener, PropertyChangeListener {
-
+public class Detect1 extends JPanel implements ChangeListener, PropertyChangeListener, PopupMenuListener {
 	/**
 	 * 
 	 */
@@ -47,6 +49,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 
 	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
 	private JComboBox<TransformOp> backgroundComboBox = new JComboBox<> (new TransformOp[]  {TransformOp.NONE, TransformOp.REF_PREVIOUS, TransformOp.REF_T0});
+	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 10));
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 9999, 1));
@@ -55,7 +58,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object < ");
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	
-	private JCheckBox 	whiteMiceCheckBox 		= new JCheckBox("white object");
+	private JCheckBox 	whiteObjectCheckBox 	= new JCheckBox("white object");
 	JCheckBox 			overlayCheckBox 		= new JCheckBox("overlay");
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	
@@ -74,8 +77,11 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		
 		JPanel panel1 = new JPanel(flowLayout);
 		panel1.add(startComputationButton);
+		panel1.add(allCagesComboBox);
 		panel1.add(allCheckBox);
 		add(panel1);
+		
+		allCagesComboBox.addPopupMenuListener(this);
 		
 		JPanel panel2 = new JPanel(flowLayout);
 		colorChannelComboBox.setSelectedIndex(1);
@@ -94,7 +100,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		panel3.add(objectLowsizeSpinner);
 		panel3.add(objectUpsizeCheckBox);
 		panel3.add(objectUpsizeSpinner);
-		panel3.add(whiteMiceCheckBox);
+		panel3.add(whiteObjectCheckBox);
 		add( panel3);
 		
 		JPanel panel4 = new JPanel(flowLayout);
@@ -177,9 +183,9 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private boolean initTrackParameters() {
 		if (thread == null)
 			return false;
-		thread.options = new Options_BuildSeries();
+		thread.options 			= new Options_BuildSeries();
 		Options_BuildSeries options = thread.options;
-		options.btrackWhite 	= whiteMiceCheckBox.isSelected();
+		options.btrackWhite 	= whiteObjectCheckBox.isSelected();
 		options.blimitLow 		= objectLowsizeCheckBox.isSelected();
 		options.blimitUp 		= objectUpsizeCheckBox.isSelected();
 		options.limitLow 		= (int) objectLowsizeSpinner.getValue();
@@ -195,15 +201,16 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.t_lastMs 		= parent0.paneSequence.tabAnalyze.getEndMs();
 		options.t_binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
 
-		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
-		options.resultsSubPath = (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
-		options.expList = new ExperimentList(); 
+		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
+		options.resultsSubPath 	= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
+		options.expList 		= new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
-		options.expList.index0 = parent0.expList.currentExperimentIndex;
+		options.expList.index0 	= parent0.expList.currentExperimentIndex;
 		if (allCheckBox.isSelected())
 			options.expList.index1 = options.expList.getSize()-1;
 		else
 			options.expList.index1 = options.expList.index0;
+		options.detectCage = allCagesComboBox.getSelectedIndex() - 1;
 		
 		thread.stopFlag 	= false;
 		return true;
@@ -211,7 +218,6 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	
 	void startComputation() {
 		currentExp = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		
 		Experiment exp = parent0.expList.getExperiment(currentExp);
 		if (exp == null) 
 			return;
@@ -221,7 +227,6 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		thread = new DetectFlies1_series();		
 		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
 		initTrackParameters();
-		
 		thread.buildBackground	= false;
 		thread.detectFlies		= true;
 		thread.addPropertyChangeListener(this);
@@ -243,6 +248,34 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 				parent0.paneSequence.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
+	}
+
+	@Override
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+		int nitems = 1;
+		currentExp = parent0.paneSequence.expListComboBox.getSelectedIndex();
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		if (exp != null )	
+			nitems =  exp.cages.cageList.size() +1;
+		if (allCagesComboBox.getItemCount() != nitems) {
+			allCagesComboBox.removeAllItems();
+			allCagesComboBox.addItem("all cages");
+			for (Cage cage: exp.cages.cageList) {
+				allCagesComboBox.addItem(cage.getCageNumber());
+			}
+		}
+	}
+
+	@Override
+	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void popupMenuCanceled(PopupMenuEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

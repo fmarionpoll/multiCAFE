@@ -11,7 +11,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -19,12 +19,15 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import icy.gui.dialog.MessageDialog;
 import icy.gui.viewer.Viewer;
 import icy.util.StringUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
+import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
@@ -34,7 +37,7 @@ import plugins.fmp.multicafe.series.DetectFlies2_series;
 
 
 
-public class Detect2 extends JPanel implements ChangeListener, PropertyChangeListener {
+public class Detect2 extends JPanel implements ChangeListener, PropertyChangeListener, PopupMenuListener {
 	private static final long serialVersionUID = -5257698990389571518L;
 	private MultiCAFE 	parent0					=null;
 	
@@ -55,6 +58,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("background", false);
 	private JCheckBox 	detectCheckBox 			= new JCheckBox("flies", true);
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
+	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	
 	private DetectFlies2_series detectFlies2Thread 	= null;
 	private int 		currentExp 				= -1;
@@ -70,10 +74,13 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		
 		JPanel panel1 = new JPanel(flowLayout);
 		panel1.add(startComputationButton);
+		panel1.add(allCagesComboBox);
 		panel1.add(allCheckBox);
 		panel1.add(backgroundCheckBox);
 		panel1.add(detectCheckBox);
 		add(panel1);
+		
+		allCagesComboBox.addPopupMenuListener(this);
 		
 		JPanel panel2 = new JPanel(flowLayout);
 		panel2.add(loadButton);
@@ -189,7 +196,8 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 			options.expList.index1 = options.expList.getSize()-1;
 		else 
 			options.expList.index1 = options.expList.index0;
-
+		options.detectCage 		= allCagesComboBox.getSelectedIndex() - 1;
+		
 		detectFlies2Thread.stopFlag = false;
 		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();
 		return true;
@@ -224,6 +232,34 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 				parent0.paneSequence.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
+	}
+
+	@Override
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+		int nitems = 1;
+		currentExp = parent0.paneSequence.expListComboBox.getSelectedIndex();
+		Experiment exp = parent0.expList.getExperiment(currentExp);
+		if (exp != null )	
+			nitems =  exp.cages.cageList.size() +1;
+		if (allCagesComboBox.getItemCount() != nitems) {
+			allCagesComboBox.removeAllItems();
+			allCagesComboBox.addItem("all cages");
+			for (Cage cage: exp.cages.cageList) {
+				allCagesComboBox.addItem(cage.getCageNumber());
+			}
+		}		
+	}
+
+	@Override
+	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void popupMenuCanceled(PopupMenuEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 
