@@ -356,7 +356,7 @@ public class Experiment {
 		}
 		return true;
 	}
-	
+	// TODO
 	public boolean xmlSaveExperiment () {
 		final Document doc = XMLUtil.createDocument(true);
 		if (doc != null) {
@@ -657,6 +657,7 @@ public class Experiment {
 		return (f.exists() && !f.isDirectory()); 
 	}
 	
+	// TODO
 	public boolean xmlSaveMCcapillaries() {
 		String xmlCapillaryFileName = experimentFileName + File.separator + capillaries.getXMLNameToAppend();
 		saveExpDescriptorsToCapillariesDescriptors();
