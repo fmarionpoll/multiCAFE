@@ -38,11 +38,13 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 public class Experiment {
 	
 	private String			experimentFileName		= null;
-	public SequenceCamData 	seqCamData 				= null;
-	public final static String 	RESULTS				= "results";
+	
+	public String			imageDataPath			= null;
+	public static String 	RESULTS					= "results";
 	public String			resultsSubPath			= RESULTS;
 	public List<String>		resultsDirList			= new ArrayList<String> ();
 		
+	public SequenceCamData 	seqCamData 				= null;
 	public SequenceKymos 	seqKymos				= null;
 	public Sequence 		seqBackgroundImage		= null;
 	public Capillaries 		capillaries 			= new Capillaries();
