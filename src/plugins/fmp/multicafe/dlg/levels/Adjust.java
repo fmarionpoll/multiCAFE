@@ -121,7 +121,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
-			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
+			Experiment exp = parent0.expList.getExperimentFromList(parent0.paneSequence.expListComboBox.getSelectedIndex());
 			parent0.paneSequence.openExperiment(exp);
 			
 			if (adjustButton.getText() .contains (stopString))
@@ -153,7 +153,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 	
 	private boolean initBuildParameters(Options_BuildSeries options) {
 		int index  = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperiment(index);
+		Experiment exp = parent0.expList.getExperimentFromList(index);
 		if (exp == null)
 			return false;
 		

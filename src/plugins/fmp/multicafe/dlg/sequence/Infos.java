@@ -67,7 +67,7 @@ public class Infos  extends JPanel {
 			if (nexpts > 0 && parent0.paneExcel.tabOptions.collateSeriesCheckBox.isSelected()) {
 				String exptName = (String) experiment_JCombo.getSelectedItem();
 				for (int i = 0; i < nexpts; i++) {
-					Experiment exp = parent0.expList.getExperiment(i);
+					Experiment exp = parent0.expList.getExperimentFromList(i);
 					if (newtext.equals(exp.exp_boxID) && exptName != null && exptName .equals(exp.experiment) ) {
 						addItem(experiment_JCombo, exp.experiment);
 						addItem(comment1_JCombo, exp.comment1);

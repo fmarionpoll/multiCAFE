@@ -88,7 +88,7 @@ public class SequenceCamData {
 	}
 
 	public SequenceCamData (String [] list, String directory) {
-		loadSequenceFromListAndDirectory(list, directory);
+		loadSequenceOfImagesFromListAndDirectory(list, directory);
 		seq.setName(listFiles.get(0));
 	}
 	
@@ -301,7 +301,7 @@ public class SequenceCamData {
 	    directory = selectedFiles[0].isDirectory() ? selectedFiles[0].getAbsolutePath() : selectedFiles[0].getParentFile().getAbsolutePath();
 		if (directory != null ) {
 			if (selectedFiles.length == 1) {
-				seq = loadSequence(selectedFiles[0].getAbsolutePath());
+				seq = loadSequenceOfImages(selectedFiles[0].getAbsolutePath());
 			}
 			else {
 				String [] list = new String [selectedFiles.length];
@@ -309,13 +309,13 @@ public class SequenceCamData {
 					if (!selectedFiles[i].getName().toLowerCase().contains(".avi"))
 						list[i] = selectedFiles[i].getAbsolutePath();
 				}
-				seq = loadSequenceFromListAndDirectory(list, directory);
+				seq = loadSequenceOfImagesFromListAndDirectory(list, directory);
 			}
 		}
 		return seq;
 	}
 	
-	public Sequence loadSequence(String textPath) {
+	public Sequence loadSequenceOfImages(String textPath) {
 		if (textPath == null) 
 			return loadSequenceFromDialog(null); 
 		File filepath = new File(textPath); 	
@@ -351,7 +351,7 @@ public class SequenceCamData {
 		return seq;
 	}
 
-	private Sequence loadSequenceFromListAndDirectory(String [] list, String directory) {
+	private Sequence loadSequenceOfImagesFromListAndDirectory(String [] list, String directory) {
 		status = EnumStatus.FAILURE;
 		list = keepOnlyAcceptedNamesFromArray(list);
 		list = StringSorter.sortNumerically(list);

@@ -1,6 +1,7 @@
 package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
+import java.awt.Rectangle;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -31,7 +32,7 @@ import plugins.fmp.multicafe.workinprogress_gpu.MCSpots_;
 
 
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 13-Jan-2021", true, true, true, true);
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 17-Jan-2021", true, true, true, true);
 	public ExperimentList 	expList 		= new ExperimentList();
 	
 	public MCSequence_ 		paneSequence 	= new MCSequence_();
@@ -102,17 +103,32 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (exp == null)
 			return null;
 
-		exp.seqCamData = exp.openSequenceCamData(filename);
+		exp.openSequenceCamData(filename);
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
-			Sequence seq = exp.seqCamData.seq;
-			addSequence(seq);
-			Viewer v = seq.getFirstViewer();
-			v.addListener( this );
-			v.setTitle(exp.seqCamData.getDecoratedImageName(0));
+			updateViewerForSequenceCam(exp);
 		} else {
 			System.out.println("seqCamData or seq of seqCamData is null!");
 		}
 		return exp;
+	}
+	
+	public void updateViewerForSequenceCam(Experiment exp) {
+		Sequence seq = exp.seqCamData.seq;
+		Viewer v = seq.getFirstViewer();
+		if (v != null) {
+			placeViewerNextToDialogBox(v, mainFrame);
+			v.toFront();
+			v.requestFocus();
+			v.addListener( this );
+			v.setTitle(exp.seqCamData.getDecoratedImageName(0));
+		}
+	}
+	
+	private void placeViewerNextToDialogBox(Viewer v, IcyFrame mainFrame) {
+		Rectangle rectv = v.getBoundsInternal();
+		Rectangle rect0 = mainFrame.getBoundsInternal();
+		rectv.setLocation(rect0.x+ rect0.width, rect0.y);
+		v.setBounds(rectv);
 	}
 
 	public void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {

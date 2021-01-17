@@ -117,11 +117,11 @@ public class Experiment {
 		this.experimentFileName = parent;
 	}
 	
-	public Experiment(SequenceCamData seq) {
-		seqCamData = seq;
+	public Experiment(SequenceCamData seqCamData) {
+		this.seqCamData = seqCamData;
 		seqKymos   = new SequenceKymos();
-		seqCamData.setParentDirectoryAsFileName() ;
-		experimentFileName = seqCamData.getDirectory();
+		this.seqCamData.setParentDirectoryAsFileName() ;
+		experimentFileName = this.seqCamData.getDirectory();
 		loadFileIntervalsFromSeqCamData();
 	}
 	
@@ -167,7 +167,7 @@ public class Experiment {
 			seqCamData = new SequenceCamData();
 		}
 		xmlLoadExperiment ();
-		if (null == seqCamData.loadSequence(experimentFileName))
+		if (null == seqCamData.loadSequenceOfImages(experimentFileName))
 			return false;
 		loadFileIntervalsFromSeqCamData();
 		if (seqKymos == null)
@@ -184,10 +184,10 @@ public class Experiment {
 	}
 	
 	public SequenceCamData openSequenceCamData(String filename) {
-		seqCamData = new SequenceCamData();
-		if (null == seqCamData.loadSequence(filename))
+		if (null == seqCamData.loadSequenceOfImages(filename))
 			return null;
 		experimentFileName = filename;
+		imageDataPath = filename;
 		xmlLoadExperiment();
 		seqCamData.setParentDirectoryAsFileName() ;
 		loadFileIntervalsFromSeqCamData();
@@ -198,7 +198,7 @@ public class Experiment {
 		xmlLoadExperiment();
 		if (seqCamData == null)
 			seqCamData = new SequenceCamData();
-		if (null == seqCamData.loadSequence(experimentFileName))
+		if (null == seqCamData.loadSequenceOfImages(experimentFileName))
 			return null;
 		seqCamData.setParentDirectoryAsFileName() ;
 		loadFileIntervalsFromSeqCamData();

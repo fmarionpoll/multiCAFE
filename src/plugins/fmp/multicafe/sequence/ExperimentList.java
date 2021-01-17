@@ -164,7 +164,7 @@ public class ExperimentList {
 		} else {
 			if (currentExperimentIndex > getSize()-1)
 				currentExperimentIndex = getSize()-1;
-			exp = getExperiment(currentExperimentIndex);
+			exp = getExperimentFromList(currentExperimentIndex);
 		}
 		return exp;
 	}
@@ -187,7 +187,7 @@ public class ExperimentList {
 		experimentList.clear();
 	}
 	
-	public Experiment getExperiment(int index) {
+	public Experiment getExperimentFromList(int index) {
 		if (index < 0)
 			return null;
 		if (index > experimentList.size() -1)
@@ -199,10 +199,10 @@ public class ExperimentList {
 	}
 	
 	public Experiment getCurrentExperiment() {
-		return getExperiment(currentExperimentIndex);
+		return getExperimentFromList(currentExperimentIndex);
 	}
 	
-	public Experiment addNewExperiment () {
+	public Experiment addNewExperimentToList () {
 		Experiment exp = new Experiment();
 		experimentList.add(exp);
 		return exp;
@@ -213,7 +213,7 @@ public class ExperimentList {
 		return experimentList.size()-1;
 	}
 
-	public Experiment addNewExperiment (String filename) {
+	public Experiment addNewExperimentToList (String filename) {
 		boolean exists = false;
 		String parent0 = getDirectoryName(filename);
 		Experiment exp = null;

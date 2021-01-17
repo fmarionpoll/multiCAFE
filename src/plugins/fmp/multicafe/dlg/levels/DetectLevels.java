@@ -220,7 +220,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 	
 	void series_detectLimitsStart() {
 		int current = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperiment(current);
+		Experiment exp = parent0.expList.getExperimentFromList(current);
 		if (exp == null)
 			return;
 		parent0.expList.currentExperimentIndex = current;
@@ -244,7 +244,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
-			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
+			Experiment exp = parent0.expList.getExperimentFromList(parent0.paneSequence.expListComboBox.getSelectedIndex());
 			if (exp != null) {
 				parent0.paneSequence.openExperiment(exp);
 				if (selectedFrame != 0) 

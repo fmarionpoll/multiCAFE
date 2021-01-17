@@ -114,7 +114,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		
 	private void startComputation() {
 		int current = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperiment(current);
+		Experiment exp = parent0.expList.getExperimentFromList(current);
 		if (exp == null) 
 			return;
 		parent0.expList.currentExperimentIndex = current;

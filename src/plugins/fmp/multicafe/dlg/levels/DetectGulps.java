@@ -138,7 +138,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		kymosDisplayFiltered2();
 		
 		int current = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperiment(current);
+		Experiment exp = parent0.expList.getExperimentFromList(current);
 		if (exp == null)
 			return;
 
@@ -193,7 +193,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
-			Experiment exp = parent0.expList.getExperiment(parent0.paneSequence.expListComboBox.getSelectedIndex());
+			Experiment exp = parent0.expList.getExperimentFromList(parent0.paneSequence.expListComboBox.getSelectedIndex());
 			parent0.paneSequence.openExperiment(exp);
 			detectButton.setText(detectString);
 		 }

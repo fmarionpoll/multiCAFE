@@ -218,7 +218,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	
 	void startComputation() {
 		currentExp = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperiment(currentExp);
+		Experiment exp = parent0.expList.getExperimentFromList(currentExp);
 		if (exp == null) 
 			return;
 		parent0.expList.currentExperimentIndex = currentExp;
@@ -243,7 +243,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
-			Experiment exp = parent0.expList.getExperiment(currentExp);
+			Experiment exp = parent0.expList.getExperimentFromList(currentExp);
 			if (exp != null)
 				parent0.paneSequence.openExperiment(exp);
 			startComputationButton.setText(detectString);
@@ -254,7 +254,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
 		int nitems = 1;
 		currentExp = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperiment(currentExp);
+		Experiment exp = parent0.expList.getExperimentFromList(currentExp);
 		if (exp != null )	
 			nitems =  exp.cages.cageList.size() +1;
 		if (allCagesComboBox.getItemCount() != nitems) {

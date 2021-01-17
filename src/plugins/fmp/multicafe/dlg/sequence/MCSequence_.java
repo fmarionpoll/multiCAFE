@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -21,10 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import icy.gui.component.PopupPanel;
-import icy.gui.frame.IcyFrame;
-import icy.gui.viewer.Viewer;
 import icy.preferences.XMLPreferences;
-import icy.sequence.Sequence;
 import icy.system.thread.ThreadUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
@@ -228,10 +224,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	public void openExperiment(Experiment exp) {
 		exp.xmlLoadExperiment();
-		exp.seqCamData = exp.openSequenceCamData(exp.getExperimentFileName());
+		exp.openSequenceCamData(exp.getExperimentFileName());
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			parent0.addSequence(exp.seqCamData.seq);
-			updateViewerForSequenceCam(exp.seqCamData.seq);
+			parent0.updateViewerForSequenceCam(exp);
 			loadMeasuresAndKymos();
 			parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 		}
@@ -285,26 +281,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		return true;
 	}
 				
-	void updateViewerForSequenceCam(Sequence seq) {
-		Viewer v = seq.getFirstViewer();
-		if (v != null) {
-			placeViewerNextToDialogBox(v, parent0.mainFrame);
-			v.toFront();
-			v.requestFocus();
-			v.addListener( parent0 );
-		}
-	}
-	
-	void placeViewerNextToDialogBox(Viewer v, IcyFrame mainFrame) {
-		Rectangle rectv = v.getBoundsInternal();
-		Rectangle rect0 = mainFrame.getBoundsInternal();
-		rectv.setLocation(rect0.x+ rect0.width, rect0.y);
-		v.setBounds(rectv);
-	}
 	
 	public void transferSequenceCamDataToDialogs(Experiment exp) {
 		tabIntervals.displayCamDataIntervals(exp);
-		updateViewerForSequenceCam(exp.seqCamData.seq);
+		parent0.updateViewerForSequenceCam(exp);
 		parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 	}
 
@@ -334,7 +314,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		int nitems = expListComboBox.getItemCount();
 		for (int i=0; i< nitems; i++) {
 			String filename = expListComboBox.getItemAt(i);
-			Experiment exp = expList.addNewExperiment(filename);
+			Experiment exp = expList.addNewExperimentToList(filename);
 			exp.xmlLoadExperiment();
 		}
 	}
