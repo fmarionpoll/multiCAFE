@@ -223,7 +223,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		if (exp == null)
 			return;
 		parent0.expList.currentExperimentIndex = current;
-		exp.saveExperimentMeasures(exp.getResultsDirectory());
+		exp.saveExperimentMeasures(exp.getExperimentDirectoryName());
 		parent0.paneSequence.tabClose.closeExp(exp);
 		exp.closeExperiment();
 		thread = new DetectLevels_series();

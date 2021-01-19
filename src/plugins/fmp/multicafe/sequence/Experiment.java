@@ -83,7 +83,7 @@ public class Experiment {
 	private final static String ID_LASTKYMOCOLMS 	= "lastKymoColMs";
 	private final static String ID_BINKYMOCOLMS 	= "binKymoColMs";	
 
-	private final static String ID_EXPTFILENAME 	= "exptFileName";
+	private final static String ID_IMAGESDIRECTORY 	= "imagesDirectory";
 	private final static String ID_MCEXPERIMENT 	= "MCexperiment";
 	private final static String ID_MCDROSOTRACK     = "MCdrosotrack.xml";
 	
@@ -163,15 +163,22 @@ public class Experiment {
 		return true;
 	}
 	
-	public SequenceCamData openSequenceCamData(String filename) {
+	public SequenceCamData loadImagesForSequenceCamData(String filename) {
 		if (filename .contains(RESULTS)) {
 			experimentDirectory = filename;
 			filename = Paths.get(filename).getParent().toString();
 		}
 		imagesDirectory = filename;
+		if (seqCamData == null)
+			seqCamData = new SequenceCamData();
 		if (null == seqCamData.loadSequenceOfImages(filename))
 			return null;
-		
+		return seqCamData;
+	}
+	
+	public SequenceCamData openSequenceCamData(String filename) {
+		if (null == loadImagesForSequenceCamData(filename))
+			return null;		
 		xmlLoadExperiment();
 		seqCamData.setParentDirectoryAsFileName() ;
 		loadFileIntervalsFromSeqCamData();
@@ -180,11 +187,7 @@ public class Experiment {
 	
 	public SequenceCamData openExperimentImagesData() {
 		xmlLoadExperiment();
-		if (seqCamData == null)
-			seqCamData = new SequenceCamData();
-		if (null == seqCamData.loadSequenceOfImages(imagesDirectory))
-			return null;
-		seqCamData.setParentDirectoryAsFileName() ;
+		loadImagesForSequenceCamData(experimentDirectory);
 		loadFileIntervalsFromSeqCamData();
 		return seqCamData;
 	}
@@ -197,25 +200,7 @@ public class Experiment {
 		camLastImage_Ms = lastImage_FileTime.toMillis();
 		camBinImage_Ms = (camLastImage_Ms - camFirstImage_Ms)/(seqCamData.seq.getSizeT()-1);
 	}
-	
-	public String getResultsDirectory() {
-		Path dir = Paths.get(experimentDirectory);
-		if (resultsSubPath == null)
-			resultsSubPath = RESULTS;
-		dir = dir.resolve(resultsSubPath);
-		String directory = dir.toAbsolutePath().toString();
-		if (Files.notExists(dir))  {
-			try {
-				Files.createDirectory(dir);
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("Creating directory failed: "+ directory);
-				return null;
-			}
-		}
-		return directory;
-	}
-	
+
 	public String getResultsDirectoryNameFromKymoFrameStep() {
 		return RESULTS + "_"+kymoBinColl_Ms/1000;
 	}
@@ -277,39 +262,10 @@ public class Experiment {
 		}
 		return step;
 	}
-	
-//	private boolean isSubPathWithinList(String testName) {
-//		boolean found = false;
-//		for (String test: resultsDirList) {
-//			if (test.equals(testName)) {
-//				found = true;
-//				break;
-//			}
-//		}
-//		return found;
-//	}
 
 	public boolean xmlLoadExperiment () {
-		if (experimentDirectory == null) {
+		if (experimentDirectory == null) 
 			experimentDirectory = seqCamData.getDataDirectory() + File.separator + RESULTS;
-		}
-		
-//		String experimentRootName = experimentDirectory;
-//		if (experimentRootName .contains(RESULTS)) {
-//			int i = experimentRootName.indexOf(RESULTS);
-//			experimentRootName = experimentRootName.substring(0, i-1);
-//		}
-//		fetchListOfResultsDirectories (experimentRootName);
-//		boolean flag = false;
-//		if (!isSubPathWithinList(resultsSubPath)) {
-//			if (resultsDirList.size() < 1)
-//				return false;
-//			flag = xmlLoadExperiment (resultsDirList.get(0));
-//			resultsSubPath = getResultsDirectoryNameFromKymoFrameStep();
-//		} else {
-//			flag = xmlLoadExperiment (resultsSubPath);
-//		}
-//		return flag;
 		return xmlLoadExperiment (getMCexperimentFileName(null));
 	}
 	
@@ -332,11 +288,11 @@ public class Experiment {
 		if (!version .equals(ID_VERSIONNUM))
 			return false;
 		camFirstImage_Ms= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, -1);
+		camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, -1);
 		if (camFirstImage_Ms < 0) 
 			camFirstImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, -1)*60000;
-		camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, -1)*60000;
 		if (camLastImage_Ms < 0)
-			camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1);
+			camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1)*60000;
 
 		kymoFirstCol_Ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, -1); 
 		kymoLastCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
@@ -372,12 +328,11 @@ public class Experiment {
 	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
 	        XMLUtil.setElementValue(node, ID_COMMENT2, comment2);
 	        
-	        if (experimentDirectory == null ) 
-	        	experimentDirectory = seqCamData.getDataDirectory();
-	        XMLUtil.setElementValue(node, ID_EXPTFILENAME, experimentDirectory);
+	        if (imagesDirectory == null ) 
+	        	imagesDirectory = seqCamData.getDataDirectory();
+	        XMLUtil.setElementValue(node, ID_IMAGESDIRECTORY, imagesDirectory);
 
-	        String directory = getResultsDirectory();
-	        String tempname = directory + File.separator + "MCexperiment.xml";
+	        String tempname = getMCexperimentFileName(null) ;
 	        return XMLUtil.saveDocument(doc, tempname);
 		}
 		return false;
@@ -388,7 +343,7 @@ public class Experiment {
 			seqKymos = new SequenceKymos();
 		if (!xmlLoadMCCapillaries_Measures()) 
 			return false;
-		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(getResultsDirectory(), capillaries);
+		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(experimentDirectory, capillaries);
 		boolean flag = seqKymos.loadImagesFromList(myList, true);
 		if (!flag)
 			return flag;
@@ -509,9 +464,9 @@ public class Experiment {
 	private boolean xmlLoadMCcapillaries() {
 		String xmlCapillaryFileName = getFileLocation(capillaries.getXMLNameToAppend());
 		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
-		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(getResultsDirectory());
+		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(experimentDirectory);
 		if (flag1 & flag2) {
-			seqKymos.seqDataDirectory = getResultsDirectory();
+			seqKymos.seqDataDirectory = experimentDirectory;
 			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.seqDataDirectory, capillaries);
 		}
 		return flag1 & flag2;
@@ -581,9 +536,9 @@ public class Experiment {
 	}
 	
 	public boolean xmlLoadMCCapillaries_Measures() {
-		boolean flag = capillaries.xmlLoadCapillaries_Measures2(getResultsDirectory());
+		boolean flag = capillaries.xmlLoadCapillaries_Measures2(experimentDirectory);
 		if (flag) {
-			seqKymos.seqDataDirectory = getResultsDirectory();
+			seqKymos.seqDataDirectory = experimentDirectory;
 			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.seqDataDirectory, capillaries);
 		}
 		return flag;
@@ -607,7 +562,6 @@ public class Experiment {
 			if (exp_boxID .contentEquals(".."))
 				xmlLoadExperiment ();
 		}
-		
 		return flag;
 	}
 	
@@ -626,12 +580,13 @@ public class Experiment {
 	}
 	
 	private String getFileLocation(String xmlFileName) {
-		// primary data
+		// current results directory
 		String xmlFullFileName = experimentDirectory + File.separator + xmlFileName;
 		if(fileExists (xmlFullFileName))
 			return xmlFullFileName;
-		// current results directory
-		xmlFullFileName = getResultsDirectory() + File.separator + xmlFileName;
+		
+		// primary data
+		xmlFullFileName = imagesDirectory + File.separator + xmlFileName;
 		if(fileExists (xmlFullFileName))
 			return xmlFullFileName;
 		// any results directory
@@ -643,7 +598,6 @@ public class Experiment {
 			return dir.toAbsolutePath().toString();	
 		}
 		return null;
-		
 	}
 	
 	private boolean fileExists (String fileName) {
@@ -656,7 +610,7 @@ public class Experiment {
 		String xmlCapillaryFileName = experimentDirectory + File.separator + capillaries.getXMLNameToAppend();
 		saveExpDescriptorsToCapillariesDescriptors();
 		boolean flag = capillaries.xmlSaveCapillaries_Descriptors(xmlCapillaryFileName);
-		flag &= capillaries.xmlSaveCapillaries_Measures(getResultsDirectory());
+		flag &= capillaries.xmlSaveCapillaries_Measures(experimentDirectory);
 		return flag;
 	}
 	
@@ -724,8 +678,7 @@ public class Experiment {
 	
 	public boolean loadReferenceImage() {
 		BufferedImage image = null;
-		String path = getResultsDirectory()+File.separator+"referenceImage.jpg";
-		File inputfile = new File(path);
+		File inputfile = new File(getReferenceImageFullName());
 		boolean exists = inputfile.exists();
 		if (!exists) 
 			return false;	
@@ -741,12 +694,15 @@ public class Experiment {
 	}
 	
 	public boolean saveReferenceImage() {
-		String path = getResultsDirectory()+File.separator+"referenceImage.jpg";
-		File outputfile = new File(path);
+		File outputfile = new File(getReferenceImageFullName());
 		RenderedImage image = ImageUtil.toRGBImage(seqCamData.refImage);
 		return ImageUtil.save(image, "jpg", outputfile);
 	}
-
+	
+	private String getReferenceImageFullName() {
+		return experimentDirectory+File.separator+"referenceImage.jpg";
+	}
+	
 	public void cleanPreviousDetectedFliesROIs() {
 		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: list) {
@@ -761,11 +717,13 @@ public class Experiment {
 	}
 
 	public void xmlSaveFlyPositionsForAllCages() {			
-		String fileName = getResultsDirectory() + File.separator + ID_MCDROSOTRACK;
-		cages.xmlWriteCagesToFileNoQuestion(fileName);
+		cages.xmlWriteCagesToFileNoQuestion(getMCDrosoTrackFullName());
 	}
 	
 	// --------------------------
+	private String getMCDrosoTrackFullName() {
+		return experimentDirectory+File.separator+"ID_MCDROSOTRACK";
+	}
 	
 	private String getXMLDrosoTrackLocation() {
 		String fileName = getFileLocation(ID_MCDROSOTRACK);
@@ -783,9 +741,8 @@ public class Experiment {
 		return cages.xmlReadCagesFromFileNoQuestion(filename, this);
 	}
 	
-	public boolean xmlWriteDrosoTrackDefault(boolean saveDetectedROIs) {
-		String fileName = getResultsDirectory() + File.separator + ID_MCDROSOTRACK;
-		return cages.xmlWriteCagesToFileNoQuestion(fileName);
+	public boolean xmlWriteDrosoTrackDefault() {
+		return cages.xmlWriteCagesToFileNoQuestion(getMCDrosoTrackFullName());
 	}
 
 	// --------------------------

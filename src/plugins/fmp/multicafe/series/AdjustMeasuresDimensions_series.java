@@ -11,7 +11,7 @@ public class AdjustMeasuresDimensions_series  extends BuildSeries {
 		exp.loadExperimentCapillariesData_ForSeries();
 		if (exp.loadKymographs()) {
 			exp.adjustCapillaryMeasuresDimensions();
-			exp.saveExperimentMeasures(exp.getResultsDirectory());
+			exp.saveExperimentMeasures(exp.getExperimentDirectoryName());
 		}
 		exp.seqCamData.closeSequence();
 		exp.seqKymos.closeSequence();

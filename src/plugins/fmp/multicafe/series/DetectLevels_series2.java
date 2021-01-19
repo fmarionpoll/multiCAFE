@@ -20,7 +20,7 @@ public class DetectLevels_series2 extends BuildSeries  {
 	ImageTransformTools tImg = new ImageTransformTools();
 	
 	void analyzeExperiment(Experiment exp) {
-		String resultsDirectory = exp.getResultsDirectory(); 
+		String resultsDirectory = exp.getExperimentDirectoryName(); 
 		exp.loadExperimentCapillariesData_ForSeries();
 		if (exp.loadKymographs()) {	
 			detectCapillaryLevels(exp);
