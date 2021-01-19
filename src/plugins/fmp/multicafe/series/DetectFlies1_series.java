@@ -30,7 +30,7 @@ public class DetectFlies1_series extends BuildSeries {
 	// -----------------------------------------------------
 	
 	void analyzeExperiment(Experiment exp) {
-		exp.openSequenceCamData();
+		exp.openExperimentImagesData();
 		exp.xmlReadDrosoTrack(null);
 		if (options.isFrameFixed) {
 			exp.cages.detectFirst_Ms = options.t_firstMs;
@@ -45,7 +45,7 @@ public class DetectFlies1_series extends BuildSeries {
 		exp.cages.detect_threshold = options.threshold;
 		
 		if (exp.cages.cageList.size() < 1 ) {
-			System.out.println("! skipped experiment with no cage: " + exp.getExperimentFileName());
+			System.out.println("! skipped experiment with no cage: " + exp.getExperimentDirectoryName());
 			return;
 		}
 		

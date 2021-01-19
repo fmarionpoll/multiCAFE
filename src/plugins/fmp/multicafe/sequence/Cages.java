@@ -108,9 +108,9 @@ public class Cages {
 		return XMLUtil.saveDocument(doc, tempname);
 	}
 		
-	public boolean xmlReadCagesFromFile(SequenceCamData seq) {
+	public boolean xmlReadCagesFromFile(Experiment exp) {
 		String [] filedummy = null;
-		String filename = seq.getSequenceFileName();
+		String filename = exp.getExperimentDirectoryName();
 		File file = new File(filename);
 		String directory = file.getParentFile().getAbsolutePath();
 		filedummy = Dialog.selectFiles(directory, "xml");
@@ -118,13 +118,13 @@ public class Cages {
 		if (filedummy != null) {
 			for (int i= 0; i< filedummy.length; i++) {
 				String csFile = filedummy[i];
-				wasOk &= xmlReadCagesFromFileNoQuestion(csFile, seq);
+				wasOk &= xmlReadCagesFromFileNoQuestion(csFile, exp);
 			}
 		}
 		return wasOk;
 	}
 	
-	public boolean xmlReadCagesFromFileNoQuestion(String tempname, SequenceCamData seq) {
+	public boolean xmlReadCagesFromFileNoQuestion(String tempname, Experiment exp) {
 		if (tempname == null) 
 			return false;
 		final Document doc = XMLUtil.loadDocument(tempname);
@@ -132,7 +132,7 @@ public class Cages {
 			return false;
 		boolean flag = xmlLoadCages(doc); 
 		if (flag) {
-			fromCagesToROIs(seq);
+			fromCagesToROIs(exp.seqCamData);
 		}
 		else {
 			System.out.println("failed to load cages from file");

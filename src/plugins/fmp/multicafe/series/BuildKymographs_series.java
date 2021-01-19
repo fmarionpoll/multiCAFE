@@ -29,7 +29,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 
 	void analyzeExperiment(Experiment exp) {
 		loadExperimentDataToBuildKymos(exp);
-		exp.displaySequenceData(options.parent0Rect, exp.seqCamData.seq);
+		exp.seqCamData.displayViewerAtRectangle(options.parent0Rect);
 		exp.kymoBinColl_Ms = options.t_binMs;
 		if (options.isFrameFixed) {
 			exp.kymoFirstCol_Ms = options.t_firstMs;
@@ -48,7 +48,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 	}
 	
 	private void loadExperimentDataToBuildKymos(Experiment exp) {
-		exp.openSequenceCamData();
+		exp.openExperimentImagesData();
 		exp.xmlLoadMCcapillaries_Only();
 	}
 			

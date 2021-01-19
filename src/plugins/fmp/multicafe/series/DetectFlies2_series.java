@@ -39,7 +39,7 @@ public class DetectFlies2_series extends BuildSeries {
 	// -----------------------------------------
 	
 	void analyzeExperiment(Experiment exp) {
-		exp.openSequenceCamData();
+		exp.openExperimentImagesData();
 		exp.xmlReadDrosoTrack(null);
 		if (options.isFrameFixed) {
 			exp.cages.detectFirst_Ms = options.t_firstMs;
@@ -54,7 +54,7 @@ public class DetectFlies2_series extends BuildSeries {
 		exp.cages.detect_threshold = options.threshold;
 		
 		if (exp.cages.cageList.size() < 1 ) {
-			System.out.println("! skipped experiment with no cage: " + exp.getExperimentFileName());
+			System.out.println("! skipped experiment with no cage: " + exp.getExperimentDirectoryName());
 		} else {
 			runDetectFlies(exp);
 		}
@@ -160,7 +160,7 @@ public class DetectFlies2_series extends BuildSeries {
 					IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(workImage);
 					exp.seqCamData.currentFrame = t_from;
 					seqNegative.beginUpdate();
-					IcyBufferedImage negativeImage = exp.seqCamData.subtractImages(exp.seqCamData.refImage, currentImage);
+					IcyBufferedImage negativeImage = exp.seqCamData.subtractImagesAsDouble(exp.seqCamData.refImage, currentImage);
 					find_flies.findFlies(negativeImage, t_from, t_it);
 					seqNegative.setImage(0, 0, negativeImage);
 					seqNegative.endUpdate();
@@ -284,7 +284,7 @@ public class DetectFlies2_series extends BuildSeries {
 			viewerCamData.setPositionT(t);
 			viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t));
 
-			IcyBufferedImage positiveImage = exp.seqCamData.subtractImages(currentImage, exp.seqCamData.refImage);
+			IcyBufferedImage positiveImage = exp.seqCamData.subtractImagesAsDouble(currentImage, exp.seqCamData.refImage);
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, find_flies.rectangleAllCages));
 			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd);
 			 

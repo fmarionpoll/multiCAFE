@@ -25,7 +25,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		expAll.resultsSubPath = expList.expListResultsSubPath;
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
-		int nbexpts = expList.getSize();
+		int nbexpts = expList.getExperimentListSize();
 		progress.setLength(nbexpts);
 
 		try { 

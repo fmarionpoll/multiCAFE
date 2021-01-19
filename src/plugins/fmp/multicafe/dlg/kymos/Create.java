@@ -95,7 +95,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.expList.currentExperimentIndex;
 		if (allSeriesCheckBox.isSelected())
-			options.expList.index1 = parent0.expList.getSize()-1;
+			options.expList.index1 = parent0.expList.getExperimentListSize()-1;
 		else
 			options.expList.index1 = options.expList.index0; 
 		

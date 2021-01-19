@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -188,9 +189,6 @@ public class SelectFiles extends JPanel {
 	private void addNamesToSelectedList(List<String> stringList) {
 		for (String name : stringList) {
 			String directoryName = Paths.get(name).getParent().toString();
-			if (directoryName .contains("results")) {
-				directoryName = Paths.get(name).getParent().getParent().toString();
-			}
 			parent1.selectedNames.add(directoryName);
 		}
 	}

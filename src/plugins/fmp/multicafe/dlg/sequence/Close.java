@@ -47,7 +47,7 @@ public class Close  extends JPanel {
 				exp.xmlSaveExperiment();
 				exp.saveExperimentMeasures(exp.getResultsDirectory());
 			}
-			exp.closeSequences();
+			exp.closeExperiment();
 		}
 		parent0.paneCages.tabGraphics.closeAll();
 		parent0.paneLevels.tabGraphs.closeAll();

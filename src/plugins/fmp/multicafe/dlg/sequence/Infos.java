@@ -63,7 +63,7 @@ public class Infos  extends JPanel {
 	private void defineActionListeners() {
 		boxID_JCombo.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			String newtext = (String) boxID_JCombo.getSelectedItem();
-			int nexpts = parent0.expList.getSize();
+			int nexpts = parent0.expList.getExperimentListSize();
 			if (nexpts > 0 && parent0.paneExcel.tabOptions.collateSeriesCheckBox.isSelected()) {
 				String exptName = (String) experiment_JCombo.getSelectedItem();
 				for (int i = 0; i < nexpts; i++) {

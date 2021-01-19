@@ -193,7 +193,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		options.expList.index0 = parent0.expList.currentExperimentIndex;
 		if (allCheckBox.isSelected())
-			options.expList.index1 = options.expList.getSize()-1;
+			options.expList.index1 = options.expList.getExperimentListSize()-1;
 		else 
 			options.expList.index1 = options.expList.index0;
 		options.detectCage 		= allCagesComboBox.getSelectedIndex() - 1;

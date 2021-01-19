@@ -1,7 +1,6 @@
 package plugins.fmp.multicafe.sequence;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -123,30 +122,18 @@ public class ExperimentList {
 					continue;
 				}
 				// it should never arrive here
-				System.out.println("error in chaining "+ exp.getExperimentFileName() +" with ->" + expi.getExperimentFileName());
+				System.out.println("error in chaining "+ exp.getExperimentDirectoryName() +" with ->" + expi.getExperimentDirectoryName());
 			}
 		}
 	}
 
-	public int getPositionOfCamFileName(String filename) {
+	public int getPositionOfExperiment(String filename) {
 		int position = -1;
 		if (filename != null) {
-			Path filepath = stripFilenameFromPath(filename);
 			for (int i=0; i< experimentList.size(); i++) {
 				Experiment exp =  experimentList.get(i);
-				if (exp.seqCamData == null)
-					continue;
-				String filename2 = exp.seqCamData.getSequenceFileName();
-				if (filename2 == null) {
-					filename2 = exp.getExperimentFileName(); 
-					if (filename2 == null) {
-						filename2 = exp.seqCamData.getDirectory();
-						if (filename2 == null)
-							continue;
-					}
-				}
-				Path filepath2 = stripFilenameFromPath(filename2);
-				if (filepath.compareTo(filepath2) == 0) {
+				String filename2 = exp.getExperimentDirectoryName();
+				if (filename.compareTo(filename2) == 0) {
 					position = i;
 					break;
 				}
@@ -157,29 +144,18 @@ public class ExperimentList {
 	
 	public Experiment getExperimentFromFileName(String filename) {
 		Experiment exp = null;
-		currentExperimentIndex = getPositionOfCamFileName(filename);
-		if (currentExperimentIndex < 0) {
-			exp = new Experiment();
-			currentExperimentIndex = addExperiment(exp);
-		} else {
-			if (currentExperimentIndex > getSize()-1)
-				currentExperimentIndex = getSize()-1;
+		currentExperimentIndex = getPositionOfExperiment(filename);
+		if (currentExperimentIndex >= 0) {
+			if (currentExperimentIndex > getExperimentListSize()-1)
+				currentExperimentIndex = getExperimentListSize()-1;
 			exp = getExperimentFromList(currentExperimentIndex);
 		}
 		return exp;
 	}
 	
-	private Path stripFilenameFromPath(String fileNameWithFullPath) {
-		Path path = Paths.get(fileNameWithFullPath);		
-		boolean isDirectory = Files.isDirectory(path);   // Check if it's a directory
-		if (isDirectory)
-			return path;
-		return path.getParent();
-	}
-	
 	// ---------------------
 	
-	public int getSize() {
+	public int getExperimentListSize() {
 		return experimentList.size();
 	}
 	
@@ -210,31 +186,25 @@ public class ExperimentList {
 	
 	public int addExperiment (Experiment exp) {
 		experimentList.add(exp);
-		return experimentList.size()-1;
+		currentExperimentIndex = getExperimentListSize()-1;
+		return currentExperimentIndex;
 	}
 
-	public Experiment addNewExperimentToList (String filename) {
+	public Experiment addNewExperimentToList (String expDirectory) {
 		boolean exists = false;
-		String parent0 = getDirectoryName(filename);
+		String expDirectory0 = getDirectoryName(expDirectory);
 		Experiment exp = null;
 				
 		for (int i=0; i < experimentList.size(); i++) {
 			exp = experimentList.get(i);
-			if (exp.getExperimentFileName() == null	&& exp.seqCamData != null) {
-				exp.setExperimentFileName(exp.seqCamData.getSequenceFileName());
-			}
-			
-			if (exp.getExperimentFileName() != null) {	
-				String parent = getDirectoryName(exp.getExperimentFileName());
-				exp.setExperimentFileName(parent);		
-				if (parent.contains(parent0)) {
-					exists = true;
-					break;
-				}
+			if (exp.getExperimentDirectoryName() .equals (expDirectory0)) {	
+				exists = true;
+				break;
 			}
 		}
+		
 		if (!exists) {
-			exp = new Experiment(filename);
+			exp = new Experiment(expDirectory0);
 			int experimentNewID  = 0;
 			for (Experiment expi: experimentList) {
 				if (expi.experimentID > experimentNewID)
@@ -246,7 +216,7 @@ public class ExperimentList {
 		return exp;
 	}
 	
-	String getDirectoryName(String filename) {
+	private String getDirectoryName(String filename) {
 		File f0 = new File(filename);
 		String parent0 = f0.getAbsolutePath();
 		if (!f0.isDirectory()) {

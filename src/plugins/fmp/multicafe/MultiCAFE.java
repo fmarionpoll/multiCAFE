@@ -100,9 +100,10 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 	
 	public Experiment openExperimentFromString(String filename) {
 		Experiment exp = expList.getExperimentFromFileName(filename);
-		if (exp == null)
-			return null;
-
+		if (exp == null) {
+			exp = new Experiment();
+			expList.addExperiment(exp);
+		}
 		exp.openSequenceCamData(filename);
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			updateViewerForSequenceCam(exp);

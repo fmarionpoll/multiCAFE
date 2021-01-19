@@ -39,7 +39,7 @@ public class XLSExportMoveResults  extends XLSExport {
 		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
-		int nbexpts = expList.getSize();
+		int nbexpts = expList.getExperimentListSize();
 		progress.setLength(nbexpts);
 
 		try { 
@@ -101,7 +101,7 @@ public class XLSExportMoveResults  extends XLSExport {
 		expAll.capillaries.copy(exp.capillaries);
 		expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
 		expAll.lastImage_FileTime 	= exp.lastImage_FileTime;
-		expAll.setExperimentFileName( exp.getExperimentFileName());
+		expAll.setExperimentDirectoryName( exp.getExperimentDirectoryName());
 		expAll.exp_boxID 			= exp.exp_boxID;
 		expAll.experiment 			= exp.experiment;
 		expAll.comment1 			= exp.comment1;

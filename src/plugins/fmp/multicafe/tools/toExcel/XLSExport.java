@@ -66,9 +66,9 @@ public class XLSExport {
 		}
 		pt.x = colseries;
 		
-		String filename = exp.getExperimentFileName();
+		String filename = exp.getExperimentDirectoryName();
 		if (filename == null)
-			filename = exp.seqCamData.getDirectory();
+			filename = exp.seqCamData.getDataDirectory();
 		Path path = Paths.get(filename);
 
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
@@ -300,7 +300,7 @@ public class XLSExport {
 		expAll.experiment 			= exp.experiment;
 		expAll.comment1 			= exp.comment1;
 		expAll.comment2 			= exp.comment2;	
-		expAll.setExperimentFileName(exp.getExperimentFileName());
+		expAll.setExperimentDirectoryName(exp.getExperimentDirectoryName());
 		
 		Experiment expi = exp.nextExperiment;
 		while (expi != null ) {
