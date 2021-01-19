@@ -39,10 +39,10 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 	JComboBox<TransformOp> 	transformForGulpsComboBox 	= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
 	JSpinner				startSpinner				= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
 	JSpinner				endSpinner					= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
-	JCheckBox				buildDerivativeCheckBox 	= new JCheckBox ("build derivative", true);
-	JCheckBox				detectGulpsCheckBox 		= new JCheckBox ("detect gulps", true);
+	JCheckBox				buildDerivativeCheckBox 	= new JCheckBox ("derivative", true);
+	JCheckBox				detectGulpsCheckBox 		= new JCheckBox ("gulps", true);
 	
-	private JCheckBox		partCheckBox 				= new JCheckBox ("detect from (pixel)", false);
+	private JCheckBox		partCheckBox 				= new JCheckBox ("from (pixel)", false);
 	private JButton			displayTransform2Button		= new JButton("Display");
 	private JSpinner		spanTransf2Spinner			= new JSpinner(new SpinnerNumberModel(3, 0, 500, 1));
 	private JSpinner 		detectGulpsThresholdSpinner	= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
@@ -58,9 +58,9 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		this.parent0 = parent0;
 		
 		FlowLayout layoutLeft = new FlowLayout(FlowLayout.LEFT); 
+		layoutLeft.setVgap(0);
 		
 		JPanel panel0 = new JPanel(layoutLeft);
-		((FlowLayout)panel0.getLayout()).setVgap(0);
 		panel0.add( detectButton);
 		panel0.add( allCheckBox);
 		panel0.add(detectAllGulpsCheckBox);
@@ -75,9 +75,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		panel01.add(displayTransform2Button);
 		add (panel01);
 		
-		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		((FlowLayout)panel1.getLayout()).setVgap(0);
-
+		JPanel panel1 = new JPanel(layoutLeft);
 		panel1.add(partCheckBox);
 		panel1.add(startSpinner);
 		panel1.add(new JLabel("to"));

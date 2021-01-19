@@ -86,8 +86,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		panel01.add(displayTransform1Button);
 		add (panel01);
 		
-		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		((FlowLayout)panel1.getLayout()).setVgap(0);	
+		JPanel panel1 = new JPanel(layoutLeft);
 		panel1.add(partCheckBox);
 		panel1.add(startSpinner);
 		panel1.add(new JLabel("to"));
