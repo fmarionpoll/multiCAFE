@@ -10,14 +10,12 @@ import java.util.List;
 import org.w3c.dom.Document;
 
 import icy.gui.frame.progress.AnnounceFrame;
-import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.geom.Polygon2D;
 import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
@@ -27,14 +25,6 @@ public class ROI2DUtilities  {
 	public static final String ID_ROI = "roi";
 	public static final String ID_CLASSNAME = "classname";
     
-	
-	public static List<BooleanMask2D> getMask2DFromROIs (List<Cage> cageList) {
-		List<BooleanMask2D> cageMaskList = new ArrayList<BooleanMask2D>();
-		for (Cage cage : cageList ) {
-			cageMaskList.add(cage.cageRoi.getBooleanMask2D( 0 , 0, 1, true ));
-		}
-		return cageMaskList;
-	}
 	
 	public static void interpolateMissingPointsAlongXAxis (ROI2DPolyLine roiLine, int nintervals) {
 		if (nintervals <= 1)

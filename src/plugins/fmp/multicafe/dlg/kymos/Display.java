@@ -131,10 +131,12 @@ public class Display extends JPanel implements ViewerListener {
 	}
 		
 	public void transferCapillaryNamesToComboBox(List <Capillary> capillaryArrayList) {
-		kymographNamesComboBox.removeAllItems();
-		Collections.sort(capillaryArrayList); 
-		for (Capillary cap: capillaryArrayList) 
-			kymographNamesComboBox.addItem(cap.roi.getName());	
+		SwingUtilities.invokeLater(new Runnable() { public void run() {
+			kymographNamesComboBox.removeAllItems();
+			Collections.sort(capillaryArrayList); 
+			for (Capillary cap: capillaryArrayList) 
+				kymographNamesComboBox.addItem(cap.roi.getName());
+		}});	
 	}
 	
 	public void displayRoisAccordingToUserSelection() {

@@ -168,16 +168,15 @@ public class SequenceCamData {
 				if (t0 <0)
 					t0 = 0;
 				IcyBufferedImage ibufImage0 = getImage(t0, 0);
-				image = subtractImagesAsDouble (image, ibufImage0);
+				image = subtractImagesAsInteger (image, ibufImage0);
 				}	
 				break;
 			case REF_T0:
 			case REF:
 				if (refImage == null)
 					refImage = getImage((int) seqAnalysisStart, 0);
-				image = subtractImagesAsDouble (image, refImage);
+				image = subtractImagesAsInteger (image, refImage);
 				break;
-
 			case NONE:
 			default:
 				break;
@@ -288,6 +287,31 @@ public class SequenceCamData {
 		}
 		result.dataChanged();
 		return result;
+	}
+	
+	public IcyBufferedImage subtractImagesAsInteger (IcyBufferedImage image1, IcyBufferedImage image2) {	
+		IcyBufferedImage result = new IcyBufferedImage(image1.getSizeX(), image1.getSizeY(), image1.getSizeC(), image1.getDataType_());
+		for (int c = 0; c < image1.getSizeC(); c++) {
+			int[] img1Array = Array1DUtil.arrayToIntArray(image1.getDataXY(c), image1.isSignedDataType());
+			int[] img2Array = Array1DUtil.arrayToIntArray(image2.getDataXY(c), image2.isSignedDataType());
+			ArrayMath.subtract(img1Array, img2Array, img1Array);
+
+			int[] dummyzerosArray = Array1DUtil.arrayToIntArray(result.getDataXY(c), result.isSignedDataType());
+			max(img1Array, dummyzerosArray, img1Array);
+			Object destArray = result.getDataXY(c);
+			Array1DUtil.intArrayToSafeArray(img1Array, destArray, true, result.isSignedDataType());
+			result.setDataXY(c, destArray);
+		}
+		result.dataChanged();
+		return result;
+	}
+	
+	private  void max(int[] a1, int[] a2, int[] output) {
+		for (int i = 0; i < a1.length; i++)
+			if (a1[i] >= a2[i])
+				output[i] = a1[i];
+			else
+				output[i] = a2[i];
 	}
 	
 	// --------------------------

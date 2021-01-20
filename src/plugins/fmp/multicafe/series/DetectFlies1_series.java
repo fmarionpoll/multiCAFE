@@ -85,29 +85,27 @@ public class DetectFlies1_series extends BuildSeries {
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		futures.clear();
 		
-		exp.seqCamData.seq.beginUpdate();
-		
+//		exp.seqCamData.seq.beginUpdate();
 		int it = 0;
 		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms, it++ ) {
 			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
 			final int t_it = it;
 			futures.add(processor.submit(new Runnable () {
-			@Override
-			public void run() {	
-				// TODO: getImageDirect (getImageDirectAndSubtractReference) does not communicate with viewer - remove visualization?
-				IcyBufferedImage workImage = exp.seqCamData.subtractReference(exp.seqCamData.getImage(t_from, 0), t_from, options.transformop); 
-				if (workImage == null)
-					return;
-				exp.seqCamData.currentFrame = t_from;
-				viewerCamData.setPositionT(t_from);
-				viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t_from));
-				find_flies.findFlies (workImage, t_from, t_it);
-			}
-			}));
+				@Override
+				public void run() {	
+					// TODO: getImageDirect (getImageDirectAndSubtractReference) does not communicate with viewer - remove visualization?
+					IcyBufferedImage workImage = exp.seqCamData.subtractReference(exp.seqCamData.getImage(t_from, 0), t_from, options.transformop); 
+					if (workImage == null)
+						return;
+					exp.seqCamData.currentFrame = t_from;
+					viewerCamData.setPositionT(t_from);
+					viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t_from));
+					find_flies.findFlies (workImage, t_from, t_it);
+				}}));
 		}
 		
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
-		exp.seqCamData.seq.endUpdate();
+//		exp.seqCamData.seq.endUpdate();
 
 		progressBar.close();
 		processor.shutdown();

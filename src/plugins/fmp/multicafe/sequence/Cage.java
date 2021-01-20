@@ -7,6 +7,7 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
@@ -16,7 +17,7 @@ import plugins.kernel.roi.roi2d.ROI2DPoint;
 
 public class Cage {
 	public ROI2D 		cageRoi					= null;
-
+	public BooleanMask2D cageMask				= null;
 	public XYTaSeriesArrayList 	flyPositions 	= new XYTaSeriesArrayList();
 	public int 			cageNFlies  			= 1;
 	public int 			cageAge 				= 5;
@@ -194,6 +195,10 @@ public class Cage {
 //			}
 			flyPositions.xytList.get(t).xyPoint = point;
 		}
+	}
+	
+	public void computeCageBooleanMask2D() {
+		cageMask = cageRoi.getBooleanMask2D( 0 , 0, 1, true );
 	}
 	
 	

@@ -730,7 +730,7 @@ public class Experiment {
 	
 	// --------------------------
 	private String getMCDrosoTrackFullName() {
-		return experimentDirectory+File.separator+"ID_MCDROSOTRACK";
+		return experimentDirectory+File.separator+ID_MCDROSOTRACK;
 	}
 	
 	private String getXMLDrosoTrackLocation() {

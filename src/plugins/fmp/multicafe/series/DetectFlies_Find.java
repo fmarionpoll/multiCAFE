@@ -15,7 +15,6 @@ import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.Cages;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.XYTaSeriesArrayList;
-import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
@@ -29,11 +28,11 @@ public class DetectFlies_Find {
 	
 	// -----------------------------------------------------
 	
-	public BooleanMask2D findLargestBlob(ROI2DArea roiAll, int iroi) {
-		ROI cageLimitROI = cages.cageList.get(iroi).cageRoi;
+	public BooleanMask2D findLargestBlob(ROI2DArea roiAll, Cage cage) {
+		ROI cageLimitROI = cage.cageRoi;
 		if ( cageLimitROI == null )
 			return null;
-		BooleanMask2D cageMask = cageMaskList.get(iroi);
+		BooleanMask2D cageMask = cage.cageMask;
 		if (cageMask == null)
 			return null;
 		ROI2DArea roi = new ROI2DArea(roiAll.getBooleanMask( true ).getIntersection( cageMask ) );
@@ -91,32 +90,28 @@ public class DetectFlies_Find {
 	
 	public void findFlies (IcyBufferedImage workimage, int t, int it) {
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
-		for ( int icage = 0; icage < cages.cageList.size(); icage++ ) {		
-			Cage cage = cages.cageList.get(icage);
+		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
+		for (Cage cage: cages.cageList) {		
 			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
 				continue;
-			
 			if (cage.cageNFlies > 0) {
-				BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, icage);
+				BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, cage);
 				if ( bestMask != null ) {
 					ROI2DArea flyROI = new ROI2DArea( bestMask ); 
 					Rectangle2D rect = flyROI.getBounds2D();
 					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-					
-					int npoints = cage.flyPositions.xytList.size();
 					cage.flyPositions.addPoint(t, flyPosition);
-					if (it > 0 && npoints > 0) {
-						Point2D prevPoint = cage.flyPositions.getValidPointAtOrBefore(npoints);
-						if (prevPoint.getX() >= 0) {
-							double distance = flyPosition.distance(prevPoint);
-							if (distance > options.jitter)
-								cage.flyPositions.lastTimeAlive = t;
-						}
-					}
+					/* NOT ADVISABLE TO COMPUTE THIS HERE 
+					 * TODO: check consequences of removing it here
+					 * int npoints = cage.flyPositions.xytList.size();
+					 * if (it > 0 && npoints > 0) { Point2D prevPoint =
+					 * cage.flyPositions.getValidPointAtOrBefore(npoints); if (prevPoint.getX() >=
+					 * 0) { double distance = flyPosition.distance(prevPoint); if (distance >
+					 * options.jitter) cage.flyPositions.lastTimeAlive = t; } }
+					 */
 				}
 				else {
-					Point2D flyPosition = new Point2D.Double(-1, -1);
-					cage.flyPositions.addPoint(t, flyPosition);
+					cage.flyPositions.addPoint(t, flyPositionMissed);
 				}
 			}
 		}
@@ -143,7 +138,7 @@ public class DetectFlies_Find {
 		exp.cages.detect_nframes = (int) (((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms) +1);
 		exp.cages.clearAllMeasures(options.detectCage);
 		cages = exp.cages;
-		cageMaskList = ROI2DUtilities.getMask2DFromROIs(cages.cageList);
+		cages.computeBooleanMasksForCages();
 		rectangleAllCages = null;
 		for (Cage cage: cages.cageList) {
 			Rectangle rect = cage.cageRoi.getBounds();

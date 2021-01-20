@@ -394,4 +394,11 @@ public class Cages {
 			Collections.sort(cage.flyPositions.xytList, new Comparators.XYTaValue_Tindex_Comparator());
 		}
 	}
+	
+	public void computeBooleanMasksForCages() {
+		for (Cage cage : cageList ) {
+			cage.computeCageBooleanMask2D(); 
+		}
+	}
+	
 }

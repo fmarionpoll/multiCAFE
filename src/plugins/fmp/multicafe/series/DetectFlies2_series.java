@@ -160,7 +160,7 @@ public class DetectFlies2_series extends BuildSeries {
 					IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(workImage);
 					exp.seqCamData.currentFrame = t_from;
 					seqNegative.beginUpdate();
-					IcyBufferedImage negativeImage = exp.seqCamData.subtractImagesAsDouble(exp.seqCamData.refImage, currentImage);
+					IcyBufferedImage negativeImage = exp.seqCamData.subtractImagesAsInteger(exp.seqCamData.refImage, currentImage);
 					find_flies.findFlies(negativeImage, t_from, t_it);
 					seqNegative.setImage(0, 0, negativeImage);
 					seqNegative.endUpdate();
@@ -284,7 +284,7 @@ public class DetectFlies2_series extends BuildSeries {
 			viewerCamData.setPositionT(t);
 			viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t));
 
-			IcyBufferedImage positiveImage = exp.seqCamData.subtractImagesAsDouble(currentImage, exp.seqCamData.refImage);
+			IcyBufferedImage positiveImage = exp.seqCamData.subtractImagesAsInteger(currentImage, exp.seqCamData.refImage);
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, find_flies.rectangleAllCages));
 			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd);
 			 
@@ -292,7 +292,7 @@ public class DetectFlies2_series extends BuildSeries {
 				Cage cage = exp.cages.cageList.get(icage);
 				if (cage.cageNFlies <1)
 					continue;
-				BooleanMask2D bestMask = find_flies.findLargestBlob(roiAll, icage);
+				BooleanMask2D bestMask = find_flies.findLargestBlob(roiAll, cage);
 				if (bestMask != null) {
 					ROI2DArea flyROI = new ROI2DArea(bestMask);
 					if (!initialflyRemovedList.get(icage)) {
