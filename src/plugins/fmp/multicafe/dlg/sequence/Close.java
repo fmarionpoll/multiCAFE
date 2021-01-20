@@ -44,7 +44,7 @@ public class Close  extends JPanel {
 		if (exp != null) {
 			parent0.paneSequence.tabInfosSeq.getExperimentInfosFromDialog(exp);
 			if (exp.seqCamData != null) {
-				exp.xmlSaveExperiment();
+				exp.xmlSaveMCExperiment();
 				exp.saveExperimentMeasures(exp.getExperimentDirectoryName());
 			}
 			exp.closeExperiment();

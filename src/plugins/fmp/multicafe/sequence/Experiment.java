@@ -116,7 +116,7 @@ public class Experiment {
 		this.seqCamData = seqCamData;
 		this.seqKymos   = new SequenceKymos();
 		this.seqCamData.setParentDirectoryAsFileName() ;
-		experimentDirectory = this.seqCamData.getDataDirectory() + File.separator + RESULTS;
+		experimentDirectory = this.seqCamData.getSeqDataDirectory() + File.separator + RESULTS;
 		loadFileIntervalsFromSeqCamData();
 	}
 	
@@ -146,7 +146,7 @@ public class Experiment {
 		if (seqCamData == null) {
 			seqCamData = new SequenceCamData();
 		}
-		xmlLoadExperiment ();
+		xmlLoadMCExperiment ();
 		if (null == seqCamData.loadSequenceOfImages(imagesDirectory))
 			return false;
 		loadFileIntervalsFromSeqCamData();
@@ -179,14 +179,14 @@ public class Experiment {
 	public SequenceCamData openSequenceCamData(String filename) {
 		if (null == loadImagesForSequenceCamData(filename))
 			return null;		
-		xmlLoadExperiment();
+		xmlLoadMCExperiment();
 		seqCamData.setParentDirectoryAsFileName() ;
 		loadFileIntervalsFromSeqCamData();
 		return seqCamData;
 	}
 	
 	public SequenceCamData openExperimentImagesData() {
-		xmlLoadExperiment();
+		xmlLoadMCExperiment();
 		loadImagesForSequenceCamData(experimentDirectory);
 		loadFileIntervalsFromSeqCamData();
 		return seqCamData;
@@ -263,13 +263,15 @@ public class Experiment {
 		return step;
 	}
 
-	public boolean xmlLoadExperiment () {
-		if (experimentDirectory == null) 
-			experimentDirectory = seqCamData.getDataDirectory() + File.separator + RESULTS;
-		return xmlLoadExperiment (getMCexperimentFileName(null));
+	public boolean xmlLoadMCExperiment () {
+		if (experimentDirectory == null && seqCamData != null) {
+			imagesDirectory = seqCamData.getSeqDataDirectory() ;
+			experimentDirectory = imagesDirectory + File.separator + RESULTS;
+		}
+		return xmlLoadExperiment(getMCExperimentFileName(null));
 	}
 	
-	private String getMCexperimentFileName(String subpath) {
+	private String getMCExperimentFileName(String subpath) {
 		if (subpath != null)
 			return experimentDirectory + File.separator + subpath + File.separator + "MCexperiment.xml";
 		else
@@ -307,7 +309,7 @@ public class Experiment {
 		return true;
 	}
 	// TODO
-	public boolean xmlSaveExperiment () {
+	public boolean xmlSaveMCExperiment () {
 		final Document doc = XMLUtil.createDocument(true);
 		if (doc != null) {
 			Node xmlRoot = XMLUtil.getRootElement(doc, true);
@@ -329,10 +331,10 @@ public class Experiment {
 	        XMLUtil.setElementValue(node, ID_COMMENT2, comment2);
 	        
 	        if (imagesDirectory == null ) 
-	        	imagesDirectory = seqCamData.getDataDirectory();
+	        	imagesDirectory = seqCamData.getSeqDataDirectory();
 	        XMLUtil.setElementValue(node, ID_IMAGESDIRECTORY, imagesDirectory);
 
-	        String tempname = getMCexperimentFileName(null) ;
+	        String tempname = getMCExperimentFileName(null) ;
 	        return XMLUtil.saveDocument(doc, tempname);
 		}
 		return false;
@@ -456,12 +458,7 @@ public class Experiment {
 		return true;
 	}
 	
-	public void loadExperimentCapillariesData_ForSeries() {
-		xmlLoadExperiment();
-		xmlLoadMCcapillaries();
-	}
-	
-	private boolean xmlLoadMCcapillaries() {
+	public boolean xmlLoadMCcapillaries() {
 		String xmlCapillaryFileName = getFileLocation(capillaries.getXMLNameToAppend());
 		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
 		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(experimentDirectory);
@@ -583,8 +580,12 @@ public class Experiment {
 		if(fileExists (xmlFullFileName))
 			return xmlFullFileName;
 		// primary data
-		if (imagesDirectory == null && seqCamData != null)
-			imagesDirectory = seqCamData.getDataDirectory() ;
+		if (imagesDirectory == null) {
+			if (seqCamData != null )
+				imagesDirectory = seqCamData.getSeqDataDirectory() ;
+			if (imagesDirectory == null)
+				imagesDirectory = getRootWithNoResultString(experimentDirectory);
+		}
 		xmlFullFileName = imagesDirectory + File.separator + xmlFileName;
 		if(fileExists (xmlFullFileName))
 			return xmlFullFileName;
@@ -602,6 +603,14 @@ public class Experiment {
 	private boolean fileExists (String fileName) {
 		File f = new File(fileName);
 		return (f.exists() && !f.isDirectory()); 
+	}
+	
+	private String getRootWithNoResultString(String directoryName) {
+		String name = directoryName.toLowerCase();
+		while (name .contains("result")) {
+			name = Paths.get(experimentDirectory).getParent().toString();
+		}
+		return name;
 	}
 	
 	// TODO

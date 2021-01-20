@@ -68,7 +68,7 @@ public class XLSExport {
 		
 		String filename = exp.getExperimentDirectoryName();
 		if (filename == null)
-			filename = exp.seqCamData.getDataDirectory();
+			filename = exp.seqCamData.getSeqDataDirectory();
 		Path path = Paths.get(filename);
 
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");

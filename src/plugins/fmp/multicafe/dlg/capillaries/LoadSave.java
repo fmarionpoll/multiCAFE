@@ -84,7 +84,7 @@ public class LoadSave extends JPanel {
 		parent0.paneSequence.getExperimentInfosFromDialog(exp);
 		exp.capillaries.transferDescriptionToCapillaries();
 	
-		exp.xmlSaveExperiment ();
+		exp.xmlSaveMCExperiment ();
 		exp.updateCapillariesFromCamData();
 		return exp.xmlSaveMCcapillaries();
 	}

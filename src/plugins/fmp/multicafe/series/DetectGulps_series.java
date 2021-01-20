@@ -25,7 +25,8 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 public class DetectGulps_series extends BuildSeries  {
 	
 	void analyzeExperiment(Experiment exp) {
-		exp.loadExperimentCapillariesData_ForSeries();
+		exp.xmlLoadMCExperiment();
+		exp.xmlLoadMCcapillaries();
 		if ( exp.loadKymographs()) {
 			buildFilteredImage(exp);
 			detectGulps(exp);

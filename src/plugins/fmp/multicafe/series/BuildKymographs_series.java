@@ -73,7 +73,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 				e.printStackTrace();
 			}
 		}
-		exp.xmlSaveExperiment();
+		exp.xmlSaveMCExperiment();
 	}
 	
 	private boolean buildKymo (Experiment exp) {

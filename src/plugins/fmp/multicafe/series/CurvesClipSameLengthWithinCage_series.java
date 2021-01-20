@@ -11,7 +11,8 @@ import plugins.fmp.multicafe.sequence.SequenceKymos;
 public class CurvesClipSameLengthWithinCage_series extends BuildSeries {
 
 	void analyzeExperiment(Experiment exp) {
-		exp.loadExperimentCapillariesData_ForSeries();
+		exp.xmlLoadMCExperiment();
+		exp.xmlLoadMCcapillaries();
 		if (exp.loadKymographs()) {
 			SequenceKymos seqKymos = exp.seqKymos;
 			
