@@ -154,6 +154,15 @@ public class SequenceCamData {
 	}
 
 	public String getDataDirectory () {
+		if (seqDataDirectory == null && seq != null) {
+			File f = new File(seq.getFilename());
+			String parent = f.getAbsolutePath();
+			if (!f.isDirectory()) {
+				Path path = Paths.get(parent);
+				parent = path.getParent().toString();
+			}
+			seqDataDirectory = parent;
+		}
 		return seqDataDirectory;
 	}
 

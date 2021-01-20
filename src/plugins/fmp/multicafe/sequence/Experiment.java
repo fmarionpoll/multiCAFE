@@ -582,8 +582,9 @@ public class Experiment {
 		String xmlFullFileName = experimentDirectory + File.separator + xmlFileName;
 		if(fileExists (xmlFullFileName))
 			return xmlFullFileName;
-		
 		// primary data
+		if (imagesDirectory == null && seqCamData != null)
+			imagesDirectory = seqCamData.getDataDirectory() ;
 		xmlFullFileName = imagesDirectory + File.separator + xmlFileName;
 		if(fileExists (xmlFullFileName))
 			return xmlFullFileName;

@@ -50,7 +50,6 @@ public class BuildKymographs_series  extends BuildSeries  {
 	private void loadExperimentDataToBuildKymos(Experiment exp) {
 		exp.openExperimentImagesData();
 		exp.xmlLoadMCcapillaries_Only();
-		exp.loadFileIntervalsFromSeqCamData();
 	}
 			
 	private void saveComputation(Experiment exp) {	
