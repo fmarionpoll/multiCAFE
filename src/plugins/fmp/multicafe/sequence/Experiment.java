@@ -559,8 +559,6 @@ public class Experiment {
 			experiment = capillaries.desc.old_experiment;
 			comment1 = capillaries.desc.old_comment1;
 			comment2 = capillaries.desc.old_comment2;
-			if (exp_boxID .contentEquals(".."))
-				xmlLoadExperiment ();
 		}
 		return flag;
 	}
