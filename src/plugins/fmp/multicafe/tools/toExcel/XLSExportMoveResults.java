@@ -101,7 +101,7 @@ public class XLSExportMoveResults  extends XLSExport {
 		expAll.capillaries.copy(exp.capillaries);
 		expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
 		expAll.lastImage_FileTime 	= exp.lastImage_FileTime;
-		expAll.setExperimentDirectoryName( exp.getExperimentDirectoryName());
+		expAll.setExperimentDirectory( exp.getExperimentDirectory());
 		expAll.exp_boxID 			= exp.exp_boxID;
 		expAll.experiment 			= exp.experiment;
 		expAll.comment1 			= exp.comment1;

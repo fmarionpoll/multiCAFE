@@ -68,7 +68,7 @@ public class LoadSave extends JPanel {
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
-				String path = exp.getExperimentDirectoryName();
+				String path = exp.getExperimentDirectory();
 				saveKymographFiles(path);
 				firePropertyChange("KYMOS_SAVE", false, true);
 			}
@@ -136,7 +136,7 @@ public class LoadSave extends JPanel {
 			}
 		}
 		
-		List<String> myList = exp.seqKymos.loadListOfKymographsFromCapillaries(exp.getExperimentDirectoryName(), exp.capillaries);
+		List<String> myList = exp.seqKymos.loadListOfKymographsFromCapillaries(exp.getExperimentDirectory(), exp.capillaries);
 		if (seqKymos.isInterrupted_loadImages) {
 			seqKymos.isInterrupted_loadImages = false;
 			return false;

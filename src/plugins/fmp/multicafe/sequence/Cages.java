@@ -110,7 +110,7 @@ public class Cages {
 		
 	public boolean xmlReadCagesFromFile(Experiment exp) {
 		String [] filedummy = null;
-		String filename = exp.getExperimentDirectoryName();
+		String filename = exp.getExperimentDirectory();
 		File file = new File(filename);
 		String directory = file.getParentFile().getAbsolutePath();
 		filedummy = Dialog.selectFiles(directory, "xml");

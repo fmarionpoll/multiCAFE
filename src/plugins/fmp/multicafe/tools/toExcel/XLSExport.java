@@ -66,7 +66,7 @@ public class XLSExport {
 		}
 		pt.x = colseries;
 		
-		String filename = exp.getExperimentDirectoryName();
+		String filename = exp.getExperimentDirectory();
 		if (filename == null)
 			filename = exp.seqCamData.getSeqDataDirectory();
 		Path path = Paths.get(filename);
@@ -300,7 +300,7 @@ public class XLSExport {
 		expAll.experiment 			= exp.experiment;
 		expAll.comment1 			= exp.comment1;
 		expAll.comment2 			= exp.comment2;	
-		expAll.setExperimentDirectoryName(exp.getExperimentDirectoryName());
+		expAll.setExperimentDirectory(exp.getExperimentDirectory());
 		
 		Experiment expi = exp.nextExperiment;
 		while (expi != null ) {

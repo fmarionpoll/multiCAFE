@@ -136,7 +136,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp == null)
 				return;
-			String oldtext = exp.getExperimentDirectoryName();
+			String oldtext = exp.getExperimentDirectory();
 
 			
 			String newtext = (String) expListComboBox.getSelectedItem();
@@ -211,7 +211,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData != null && seqCamData.seq != null) {
 			tabInfosSeq.disableChangeFile = true;
-			int item = addStringToCombo(exp.getExperimentDirectoryName());
+			int item = addStringToCombo(exp.getExperimentDirectory());
 			seqCamData.closeSequence();
 			expListComboBox.setSelectedIndex(item);
 			updateBrowseInterface();
@@ -266,7 +266,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return false;
-		String filename = exp.getExperimentDirectoryName();
+		String filename = exp.getExperimentDirectory();
 		if (filename == null) 
 			return false;
 		String strItem = Paths.get(filename).toString();

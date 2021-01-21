@@ -122,12 +122,20 @@ public class Experiment {
 	
 	// ----------------------------------
 	
-	public String getExperimentDirectoryName() {
+	public String getExperimentDirectory() {
 		return experimentDirectory;
 	}
 	
-	public void setExperimentDirectoryName(String fileName) {
+	public void setExperimentDirectory(String fileName) {
 		experimentDirectory = fileName;
+	}
+	
+	public void setImagesDirectory(String name) {
+		imagesDirectory = name;
+	}
+	
+	public String getImagesDirectory() {
+		return imagesDirectory;
 	}
 	
 	public void closeExperiment() {
@@ -306,6 +314,8 @@ public class Experiment {
 	        comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
 	        comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
 		}
+		
+		imagesDirectory = XMLUtil.getElementValue(node, ID_IMAGESDIRECTORY, imagesDirectory);
 		return true;
 	}
 	// TODO
@@ -605,7 +615,7 @@ public class Experiment {
 		return (f.exists() && !f.isDirectory()); 
 	}
 	
-	private String getRootWithNoResultString(String directoryName) {
+	String getRootWithNoResultString(String directoryName) {
 		String name = directoryName.toLowerCase();
 		while (name .contains("result")) {
 			name = Paths.get(experimentDirectory).getParent().toString();

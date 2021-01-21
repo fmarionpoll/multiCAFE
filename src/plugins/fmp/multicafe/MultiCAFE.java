@@ -93,7 +93,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				Experiment exp = expList.getCurrentExperiment();
 				if (exp != null)
-					exp.saveExperimentMeasures(exp.getExperimentDirectoryName());
+					exp.saveExperimentMeasures(exp.getExperimentDirectory());
 			}});
 		}
 	} 

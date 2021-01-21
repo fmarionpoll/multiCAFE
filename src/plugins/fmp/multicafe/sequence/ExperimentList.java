@@ -71,7 +71,7 @@ public class ExperimentList {
 		boolean flag = true;
 		for (Experiment exp: experimentList) {
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
-			//exp.resultsSubPath = expListResultsSubPath;
+			exp.setImagesDirectory(exp.getRootWithNoResultString(exp.getExperimentDirectory()));
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())
 				maxSizeOfCapillaryArrays = exp.capillaries.capillariesArrayList.size();
@@ -122,7 +122,7 @@ public class ExperimentList {
 					continue;
 				}
 				// it should never arrive here
-				System.out.println("error in chaining "+ exp.getExperimentDirectoryName() +" with ->" + expi.getExperimentDirectoryName());
+				System.out.println("error in chaining "+ exp.getExperimentDirectory() +" with ->" + expi.getExperimentDirectory());
 			}
 		}
 	}
@@ -132,7 +132,7 @@ public class ExperimentList {
 		if (filename != null) {
 			for (int i=0; i< experimentList.size(); i++) {
 				Experiment exp =  experimentList.get(i);
-				String filename2 = exp.getExperimentDirectoryName();
+				String filename2 = exp.getExperimentDirectory();
 				if (filename.compareTo(filename2) == 0) {
 					position = i;
 					break;
@@ -197,7 +197,7 @@ public class ExperimentList {
 				
 		for (int i=0; i < experimentList.size(); i++) {
 			exp = experimentList.get(i);
-			if (exp.getExperimentDirectoryName() .equals (expDirectory0)) {	
+			if (exp.getExperimentDirectory() .equals (expDirectory0)) {	
 				exists = true;
 				break;
 			}

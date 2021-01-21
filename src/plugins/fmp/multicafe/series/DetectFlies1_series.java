@@ -45,7 +45,7 @@ public class DetectFlies1_series extends BuildSeries {
 		exp.cages.detect_threshold = options.threshold;
 		
 		if (exp.cages.cageList.size() < 1 ) {
-			System.out.println("! skipped experiment with no cage: " + exp.getExperimentDirectoryName());
+			System.out.println("! skipped experiment with no cage: " + exp.getExperimentDirectory());
 			return;
 		}
 		

@@ -56,7 +56,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 		if (options.doCreateResults_bin) {
 			exp.resultsSubPath = exp.getResultsDirectoryNameFromKymoFrameStep();
 		}
-		String directory = exp.getExperimentDirectoryName();
+		String directory = exp.getExperimentDirectory();
 		if (directory == null)
 			return;
 		
