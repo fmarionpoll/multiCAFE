@@ -229,9 +229,10 @@ public class Experiment {
 		return directory;
 	}
 	
-	public List<String> fetchListOfResultsDirectories(String experimentDir) {
-		Path pathExperimentDir = Paths.get(experimentDir);
+	public List<String> fetchListOfResultsSubDirectories(String directory) {
+		Path pathExperimentDir = Paths.get(directory);
 		List<Path> subfolders;
+		List<String> resultsDirList = new ArrayList<String>();
 		try {
 			subfolders = Files.walk(pathExperimentDir, 1)
 			        .filter(Files::isDirectory)
@@ -240,6 +241,37 @@ public class Experiment {
 			resultsDirList.clear();
 			for (Path dirPath: subfolders) {
 				String subString = dirPath.subpath(dirPath.getNameCount() - 1, dirPath.getNameCount()).toString();
+				if (subString.contains(RESULTS)) {
+					boolean found = false;
+					for (String item: resultsDirList) {
+						if (item.equals(subString)) {
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+						resultsDirList.add(subString);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Collections.sort(resultsDirList, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER));
+		return resultsDirList;
+	}
+	
+	public static List<String> fetchListOfResultsDirectories(String directory) {
+		Path pathExperimentDir = Paths.get(directory);
+		List<Path> subfolders;
+		List<String> resultsDirList = new ArrayList<String>();
+		try {
+			subfolders = Files.walk(pathExperimentDir, 1)
+			        .filter(Files::isDirectory)
+			        .collect(Collectors.toList());
+			subfolders.remove(0);
+			resultsDirList.clear();
+			for (Path dirPath: subfolders) {
+				String subString = dirPath.toString();
 				if (subString.contains(RESULTS)) {
 					boolean found = false;
 					for (String item: resultsDirList) {

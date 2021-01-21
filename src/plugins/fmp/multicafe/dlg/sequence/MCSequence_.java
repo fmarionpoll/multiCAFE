@@ -12,6 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -207,7 +208,17 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	private void openSeqCamData() {
-		Experiment exp = parent0.openExperimentFromString(null);
+		SequenceCamData seqCamDataDummy = new SequenceCamData();
+		seqCamDataDummy.loadSequenceFromDialog(null);
+		
+	    String imagesPath = seqCamDataDummy.getSeqDataDirectory();
+	    List<String> expList = Experiment.fetchListOfResultsDirectories(imagesPath);
+	    // get directory
+	    // get results directory
+	    String name = imagesPath;
+	    if (expList.size() > 0)
+	    	name = expList.get(0);
+		Experiment exp = parent0.openExperimentFromString(name);
 		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData != null && seqCamData.seq != null) {
 			tabInfosSeq.disableChangeFile = true;
