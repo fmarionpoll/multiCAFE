@@ -218,6 +218,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	    String name = imagesPath;
 	    if (expList.size() > 0)
 	    	name = expList.get(0);
+	    else
+	    	name += File.separator + "results";
 		Experiment exp = parent0.openExperimentFromString(name);
 		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData != null && seqCamData.seq != null) {
