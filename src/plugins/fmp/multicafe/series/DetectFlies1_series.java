@@ -85,7 +85,7 @@ public class DetectFlies1_series extends BuildSeries {
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		futures.clear();
 		
-//		exp.seqCamData.seq.beginUpdate();
+		exp.seqCamData.seq.beginUpdate();
 		int it = 0;
 		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms, it++ ) {
 			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
@@ -105,7 +105,7 @@ public class DetectFlies1_series extends BuildSeries {
 		}
 		
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
-//		exp.seqCamData.seq.endUpdate();
+		exp.seqCamData.seq.endUpdate();
 
 		progressBar.close();
 		processor.shutdown();

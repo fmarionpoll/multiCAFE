@@ -101,14 +101,6 @@ public class DetectFlies_Find {
 					Rectangle2D rect = flyROI.getBounds2D();
 					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 					cage.flyPositions.addPoint(t, flyPosition);
-					/* NOT ADVISABLE TO COMPUTE THIS HERE 
-					 * TODO: check consequences of removing it here
-					 * int npoints = cage.flyPositions.xytList.size();
-					 * if (it > 0 && npoints > 0) { Point2D prevPoint =
-					 * cage.flyPositions.getValidPointAtOrBefore(npoints); if (prevPoint.getX() >=
-					 * 0) { double distance = flyPosition.distance(prevPoint); if (distance >
-					 * options.jitter) cage.flyPositions.lastTimeAlive = t; } }
-					 */
 				}
 				else {
 					cage.flyPositions.addPoint(t, flyPositionMissed);
