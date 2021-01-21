@@ -115,7 +115,6 @@ public class Experiment {
 	public Experiment(SequenceCamData seqCamData) {
 		this.seqCamData = seqCamData;
 		this.seqKymos   = new SequenceKymos();
-		this.seqCamData.setParentDirectoryAsFileName() ;
 		experimentDirectory = this.seqCamData.getSeqDataDirectory() + File.separator + RESULTS;
 		loadFileIntervalsFromSeqCamData();
 	}
@@ -188,7 +187,6 @@ public class Experiment {
 		if (null == loadImagesForSequenceCamData(filename))
 			return null;		
 		xmlLoadMCExperiment();
-		seqCamData.setParentDirectoryAsFileName() ;
 		loadFileIntervalsFromSeqCamData();
 		return seqCamData;
 	}
@@ -723,7 +721,7 @@ public class Experiment {
 	public String getDecoratedImageNameFromCapillary(int t) {
 		if (capillaries != null & capillaries.capillariesArrayList.size() > 0)
 			return capillaries.capillariesArrayList.get(t).roi.getName() + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
-		return seqKymos.csFileName + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
+		return seqKymos.csCamFileName + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
 	}
 	
 	public boolean loadReferenceImage() {

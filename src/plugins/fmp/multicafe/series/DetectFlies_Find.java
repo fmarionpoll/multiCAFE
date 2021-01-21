@@ -19,6 +19,7 @@ import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
 
+
 public class DetectFlies_Find {
 	
 	public List<BooleanMask2D> 	cageMaskList 		= new ArrayList<BooleanMask2D>();
@@ -91,7 +92,7 @@ public class DetectFlies_Find {
 	public void findFlies (IcyBufferedImage workimage, int t, int it) {
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
-		for (Cage cage: cages.cageList) {		
+ 		for (Cage cage: cages.cageList) {		
 			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
 				continue;
 			if (cage.cageNFlies > 0) {
@@ -133,6 +134,8 @@ public class DetectFlies_Find {
 		cages.computeBooleanMasksForCages();
 		rectangleAllCages = null;
 		for (Cage cage: cages.cageList) {
+			if (cage.cageNFlies < 1) 
+				continue;
 			Rectangle rect = cage.cageRoi.getBounds();
 			if (rectangleAllCages == null)
 				rectangleAllCages = new Rectangle(rect);

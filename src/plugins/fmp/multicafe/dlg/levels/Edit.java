@@ -174,7 +174,7 @@ public class Edit  extends JPanel {
 		if (optionSelected .contains("gulp")) {
 			List<ROI> listGulpsSelected = selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
 			deleteGulps(seqKymos, listGulpsSelected);
-			seqKymos.removeROIsAtT(t);
+			seqKymos.removeROIsPolylineAtT(t);
 			List<ROI2D> listOfRois = cap.transferMeasuresToROIs();
 			seqKymos.seq.addROIs (listOfRois, false);
 		} else {

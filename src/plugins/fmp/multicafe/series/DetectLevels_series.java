@@ -45,7 +45,7 @@ public class DetectLevels_series extends BuildSeries  {
 		tImg.setSequence(seqKymos);
 		
 		for (int indexKymo = firstKymo; indexKymo <= lastKymo; indexKymo++) {
-			seqKymos.removeROIsAtT(indexKymo);
+			seqKymos.removeROIsPolylineAtT(indexKymo);
 			
 			IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.getImageDirect(indexKymo), options.transformForLevels);
 			int c = 0;

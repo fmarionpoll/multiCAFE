@@ -14,35 +14,30 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.XYTaSeriesArrayList;
-import plugins.fmp.multicafe.tools.chart.YPosMultiChart;
+import plugins.fmp.multicafe.tools.chart.YPositionsCharts;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
 
 public class Graphs extends JPanel {
-
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7079184380174992501L;
-
-	private YPosMultiChart ypositionsChart	= null;
-	private YPosMultiChart distanceChart	= null;
-	private YPosMultiChart aliveChart		= null;
-	private YPosMultiChart sleepChart		= null;
-	
-	private MultiCAFE parent0 = null;
-	
-	public JCheckBox	moveCheckbox		= new JCheckBox("y position", true);	
+	private YPositionsCharts ypositionsChart= null;
+	private YPositionsCharts distanceChart	= null;
+	private YPositionsCharts aliveChart		= null;
+	private YPositionsCharts sleepChart		= null;
+	private MultiCAFE 	parent0 			= null;
+	public 	JCheckBox	moveCheckbox		= new JCheckBox("y position", true);	
 	private JCheckBox	distanceCheckbox	= new JCheckBox("distance t/t+1", false);
-	JCheckBox			aliveCheckbox		= new JCheckBox("fly alive", true);
-	JCheckBox			sleepCheckbox		= new JCheckBox("sleep", true);
-	JSpinner 			aliveThresholdSpinner = new JSpinner(new SpinnerNumberModel(50.0, 0., 100000., .1));
-	public JButton 		displayResultsButton= new JButton("Display results");
+			JCheckBox	aliveCheckbox		= new JCheckBox("fly alive", true);
+			JCheckBox	sleepCheckbox		= new JCheckBox("sleep", true);
+			JSpinner 	aliveThresholdSpinner = new JSpinner(new SpinnerNumberModel(50.0, 0., 100000., .1));
+	public 	JButton 	displayResultsButton= new JButton("Display results");
 
 
 	
@@ -63,11 +58,11 @@ public class Graphs extends JPanel {
 		panel2.add(new JLabel("Alive threshold"));
 		panel2.add(aliveThresholdSpinner);
 		add(panel2);
+
+		JPanel panel3 = new JPanel (flowLayout);
+		panel3.add(displayResultsButton);
+		add(panel3);
 		
-		add(GuiUtil.besidesPanel(displayResultsButton, new JLabel(" "))); 
-		
-//		JPanel panel4 = new JPanel(flowLayout);
-//		add(panel4);
 		defineActionListeners();
 	}
 	
@@ -88,11 +83,11 @@ public class Graphs extends JPanel {
 		final int deltay = 230;
 	
 		if (moveCheckbox.isSelected() ) {
-			ypositionsChart = displayYPos("flies Y positions", ypositionsChart, rectv, ptRelative,  exp, EnumXLSExportType.XYTOPCAGE);
+			displayYPos("flies Y positions", ypositionsChart, rectv, ptRelative, exp, EnumXLSExportType.XYTOPCAGE);
 			ptRelative.y += deltay;
 		}
 		if (distanceCheckbox.isSelected()) {
-			distanceChart = displayYPos("distance between positions at t+1 and t", distanceChart, rectv, ptRelative, exp, EnumXLSExportType.DISTANCE);
+			displayYPos("distance between positions at t+1 and t", distanceChart, rectv, ptRelative, exp, EnumXLSExportType.DISTANCE);
 			ptRelative.y += deltay;
 		}
 		if (aliveCheckbox.isSelected()) {
@@ -102,7 +97,7 @@ public class Graphs extends JPanel {
 				posSeries.moveThreshold = threshold;
 				posSeries.computeIsAlive();
 			}
-			aliveChart = displayYPos("flies alive", aliveChart, rectv, ptRelative, exp, EnumXLSExportType.ISALIVE);	
+			displayYPos("flies alive", aliveChart, rectv, ptRelative, exp, EnumXLSExportType.ISALIVE);	
 			ptRelative.y += deltay;
 		}
 		if (sleepCheckbox.isSelected()) {	
@@ -110,43 +105,32 @@ public class Graphs extends JPanel {
 				XYTaSeriesArrayList posSeries = cage.flyPositions;
 				posSeries.computeSleep();
 			}
-			sleepChart = displayYPos("flies asleep", sleepChart, rectv, ptRelative, exp, EnumXLSExportType.SLEEP);	
+			displayYPos("flies asleep", sleepChart, rectv, ptRelative, exp, EnumXLSExportType.SLEEP);	
 			ptRelative.y += deltay;
 		}
 	}
 
-	
-	private YPosMultiChart displayYPos(String title, YPosMultiChart iChart, Rectangle rectv, Point ptRelative, Experiment exp, EnumXLSExportType option) {
+	private void displayYPos(String title, YPositionsCharts iChart, Rectangle rectv, Point ptRelative, Experiment exp, EnumXLSExportType option) {
 		if (iChart == null || !iChart.mainChartPanel.isValid()) {
-			iChart = new YPosMultiChart();
+			iChart = new YPositionsCharts();
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		}
 		iChart.displayData(exp.cages.cageList, option);
 		iChart.mainChartFrame.toFront();
-		return iChart;
 	}
-
 	
 	public void closeAll() {
-		if (ypositionsChart != null) {
-			ypositionsChart.mainChartFrame.close();
-			ypositionsChart = null;
-		}
-		
-		if (distanceChart != null) {
-			distanceChart.mainChartFrame.close();
-			distanceChart = null;
-		}
-
-		if (aliveChart != null) {
-			aliveChart.mainChartFrame.close();
-			aliveChart = null;
-		}
-		
-		if (sleepChart != null) {
-			sleepChart.mainChartFrame.close();
-			sleepChart = null;
+		close (ypositionsChart); 
+		close (distanceChart);
+		close (aliveChart); 
+		close (sleepChart);
+	}
+	
+	private void close (YPositionsCharts chart) {
+		if (chart != null) {
+			chart.mainChartFrame.close();
+			chart = null;
 		}
 	}
 }

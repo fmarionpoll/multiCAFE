@@ -70,7 +70,7 @@ public class SequenceCamData {
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
 	volatile public List <String>	listFiles 				= new ArrayList<String>();
-	protected String 				csFileName 				= null;
+	protected String 				csCamFileName 				= null;
 	protected String				seqDataDirectory 		= null;
 	
 	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif", "avi"};  
@@ -191,9 +191,9 @@ public class SequenceCamData {
 	public String getDecoratedImageName(int t) {
 		currentFrame = t; 
 		if (seq!= null)
-			return csFileName + " ["+(t)+ "/" + (seq.getSizeT()-1) + "]";
+			return csCamFileName + " ["+(t)+ "/" + (seq.getSizeT()-1) + "]";
 		else
-			return csFileName + "[]";
+			return csCamFileName + "[]";
 	}
 	
 	public String getFileName(int t) {
@@ -221,7 +221,7 @@ public class SequenceCamData {
 		if (status == EnumStatus.FILESTACK) 
 			csName = listFiles.get(t);
 		else if (status == EnumStatus.AVIFILE)
-			csName = csFileName;
+			csName = csCamFileName;
 		if (csName != null) {
 			Path path = Paths.get(csName);
 			return path.getName(path.getNameCount()-1).toString();
@@ -374,6 +374,7 @@ public class SequenceCamData {
 				}
 			}
 		}
+		setParentDirectoryAsCSCamFileName();
 		return seq;
 	}
 
@@ -476,24 +477,19 @@ public class SequenceCamData {
 	
 	// --------------------------
 	
-	public void setCSFileName(String name) {
-		csFileName = name;		
+	public String getCSCamFileName() {
+		return csCamFileName;		
 	}
 	
-	public String getCSFileName() {
-		return csFileName;		
-	}
-	
-	public void setParentDirectoryAsFileName() {
+	protected void setParentDirectoryAsCSCamFileName() {
 		if (seq == null)
 			return;
 		String directory = seq.getFilename();
 		Path path = Paths.get(directory);
-		String dirupup = path.getName(path.getNameCount()-2).toString();
-		seq.setName(dirupup);
-		if (dirupup.equals("grabs"))
-			dirupup = path.getName(path.getNameCount()-3).toString();
-		setCSFileName(dirupup);
+		csCamFileName = path.getName(path.getNameCount()-2).toString();
+		seq.setName(csCamFileName);
+		if (csCamFileName.equals("grabs"))
+			csCamFileName = path.getName(path.getNameCount()-3).toString();
 	}
 	
 	// ---------------------------
@@ -587,15 +583,7 @@ public class SequenceCamData {
 		}
 		return filetime;
 	}
-	
-	public void removeROIsAtT(int t) {
-		final List<ROI> allROIs = seq.getROIs();
-        for (ROI roi : allROIs) {
-        	if (roi instanceof ROI2D && ((ROI2D) roi).getT() == t)
-        		seq.removeROI(roi, false);
-        }    
-	}
-	
+
 	public void removeRoisContainingString(int t, String string) {
 		for (ROI roi: seq.getROIs()) {
 			if (roi instanceof ROI2D 

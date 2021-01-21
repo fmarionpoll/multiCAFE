@@ -18,6 +18,7 @@ import plugins.fmp.multicafe.tools.OverlayThreshold;
 
 
 
+
 public class DetectFlies1_series extends BuildSeries {
 
 	private Viewer 				viewerCamData 	= null;
@@ -100,7 +101,7 @@ public class DetectFlies1_series extends BuildSeries {
 					exp.seqCamData.currentFrame = t_from;
 					viewerCamData.setPositionT(t_from);
 					viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t_from));
-					find_flies.findFlies (workImage, t_from, t_it);
+					find_flies.findFlies (workImage, t_from, t_it);					
 				}}));
 		}
 		

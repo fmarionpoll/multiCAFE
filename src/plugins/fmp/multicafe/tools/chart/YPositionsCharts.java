@@ -26,7 +26,7 @@ import plugins.fmp.multicafe.tools.MinMaxDouble;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
 
-public class YPosMultiChart extends IcyFrame {
+public class YPositionsCharts extends IcyFrame {
 
 	public JPanel 	mainChartPanel = null;
 	private ArrayList<ChartPanel> chartsInMainChartPanel = null;

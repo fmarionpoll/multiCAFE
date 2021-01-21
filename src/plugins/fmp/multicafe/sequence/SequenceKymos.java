@@ -84,7 +84,7 @@ public class SequenceKymos extends SequenceCamData  {
 		Collections.sort(listRois, new Comparators.ROI2D_Name_Comparator());
 	}
 	
-	public void removeROIsAtT(int t) {
+	public void removeROIsPolylineAtT(int t) {
 		List<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (!(roi instanceof ROI2DPolyLine))
@@ -232,7 +232,7 @@ public class SequenceKymos extends SequenceCamData  {
 			isRunning_loadImages = false;
 			return false;
 		}
-		setParentDirectoryAsFileName();
+		setParentDirectoryAsCSCamFileName();
 		status = EnumStatus.KYMOGRAPH;
 		isRunning_loadImages = false;
 		return flag;

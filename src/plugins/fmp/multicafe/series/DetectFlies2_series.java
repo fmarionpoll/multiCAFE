@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Future;
 import javax.swing.SwingUtilities;
 
@@ -26,7 +25,6 @@ import plugins.kernel.roi.roi2d.ROI2DArea;
 
 public class DetectFlies2_series extends BuildSeries {
 
-	private List<Boolean> initialflyRemovedList = new ArrayList<Boolean>();
 	private Viewer viewerCamData;
 	private Viewer vPositive = null;
 	private Viewer vBackgroundImage = null;;
@@ -261,53 +259,51 @@ public class DetectFlies2_series extends BuildSeries {
 
 	private void buildBackgroundImage(Experiment exp) {
 		ProgressFrame progress = new ProgressFrame("Build background image...");
-		int nfliesRemoved = 0; //
 		find_flies.initParametersForDetection(exp, options);
 		
 		int t_from = (int) ((exp.cages.detectFirst_Ms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
-		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getImage(t_from, 0));
-		initialflyRemovedList.clear();
-		int ndetectcages = exp.cages.cageList.size();
-		for (int i = 0; i < ndetectcages; i++)
-			initialflyRemovedList.add(false);
-
-		viewerCamData = exp.seqCamData.seq.getFirstViewer();
-		displayRefViewers(exp);
-		long limit = 50 * exp.cages.detectBin_Ms;
+		long limit = 50 ;
 		if (limit > exp.getSeqCamSizeT())
 			limit = exp.getSeqCamSizeT();
+		limit = limit * exp.cages.detectBin_Ms;
+		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getImage(t_from, 0));
+		viewerCamData = exp.seqCamData.seq.getFirstViewer();
+		displayRefViewers(exp);
 		
-		for (long indexms = exp.cages.detectFirst_Ms + exp.cages.detectBin_Ms; indexms<= limit && !stopFlag; indexms += exp.cages.detectBin_Ms) {
-			int t = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
+		int nFliesToRemove = 0;
+		for (Cage cage: exp.cages.cageList) {
+			cage.initialflyRemoved = false;
+			if (cage.cageNFlies > 0)
+				nFliesToRemove += cage.cageNFlies;
+		}
+		
+		for (long indexms = exp.cages.detectFirst_Ms - exp.camFirstImage_Ms ; indexms<= limit && !stopFlag; indexms += exp.cages.detectBin_Ms) {
+			int t = (int) (indexms /exp.camBinImage_Ms);
 			IcyBufferedImage currentImage = exp.seqCamData.getImage(t, 0);
 			exp.seqCamData.currentFrame = t;
 			viewerCamData.setPositionT(t);
 			viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t));
-
 			IcyBufferedImage positiveImage = exp.seqCamData.subtractImagesAsInteger(currentImage, exp.seqCamData.refImage);
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, find_flies.rectangleAllCages));
-			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd);
-			 
-			for (int icage = 0; icage <= ndetectcages - 1; icage++) {
-				Cage cage = exp.cages.cageList.get(icage);
+			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd); 
+			for (Cage cage: exp.cages.cageList) {
 				if (cage.cageNFlies <1)
 					continue;
 				BooleanMask2D bestMask = find_flies.findLargestBlob(roiAll, cage);
 				if (bestMask != null) {
 					ROI2DArea flyROI = new ROI2DArea(bestMask);
-					if (!initialflyRemovedList.get(icage)) {
+					if (!cage.initialflyRemoved) {
 						Rectangle rect = flyROI.getBounds();
 						patchRectToReferenceImage(exp.seqCamData, currentImage, rect);
-						initialflyRemovedList.set(icage, true);
-						nfliesRemoved++;
+						cage.initialflyRemoved = true;
+						nFliesToRemove--;
 						if (exp.seqBackgroundImage != null)
 							exp.seqBackgroundImage.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage,
 									find_flies.rectangleAllCages));
-						progress.setMessage("Build background image: n flies removed =" + nfliesRemoved);
 					}
 				}
 			}
-			if (nfliesRemoved == ndetectcages)
+			if (nFliesToRemove < 1)
 				break;
 		}
 		progress.close();

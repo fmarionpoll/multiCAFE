@@ -275,7 +275,7 @@ public class Display extends JPanel implements ViewerListener {
 		if (v != null) {
 			if( v.getPositionT() != isel)
 				v.setPositionT(isel);
-			String name = exp.seqCamData.getCSFileName() +": " + (String) kymographNamesComboBox.getSelectedItem();
+			String name = exp.seqCamData.getCSCamFileName() +": " + (String) kymographNamesComboBox.getSelectedItem();
 			v.setTitle(name);
 			parent0.paneKymos.tabDisplay.displayRoisAccordingToUserSelection();
 		}

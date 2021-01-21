@@ -27,6 +27,7 @@ public class Cage {
 	private String 		strCageNumber 			= null;
 	public	boolean		valid					= false;
 	public	boolean		bDetect					= true;
+	public  boolean 	initialflyRemoved		= false;
 	
 	private final String ID_CAGELIMITS 			= "CageLimits";
 	private final String ID_FLYPOSITIONS		= "FlyPositions";
