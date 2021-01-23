@@ -34,7 +34,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 	public	PopupPanel 		capPopupPanel	= null;
 			JTabbedPane 	tabsPane		= new JTabbedPane();
 			int				previouslySelected	= -1;
-	public 	boolean			trapROIsEdit	= false;
+	public 	boolean			bTrapROIsEdit	= false;
 			int 			iTAB_CAGE2		= 1;
 			int 			iTAB_INFOS 		= 2;
 			int 			iTAB_DETECT1	= 3;
@@ -115,9 +115,15 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 	            }
 	            
 	            if (selectedIndex == iTAB_EDIT) {
-	            	trapROIsEdit = true;
+	            	bTrapROIsEdit = true;
+	            	parent0.paneSequence.tabDisplay.displayROIsCategory (false, "line");
+	            	parent0.paneSequence.tabDisplay.displayROIsCategory(false, "cage");
 	            } else {
-	            	trapROIsEdit = false;
+	            	if (bTrapROIsEdit) {
+	            		parent0.paneSequence.tabDisplay.displayROIsCategory (parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.isSelected(), "line");
+		            	parent0.paneSequence.tabDisplay.displayROIsCategory(parent0.paneSequence.tabDisplay.viewCagesCheckbox.isSelected(), "cage");
+	            	}
+	            	bTrapROIsEdit = false;
 	            }
 //	            if (selectedIndex == iTAB_INFOS && tabInfos.tableView.getRowCount() > 0) {
 //	            	tabInfos.tableView.changeSelection(0, 1, false, false);

@@ -26,9 +26,9 @@ public class Display  extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 8137492850312895195L;
-	public JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries", true);
-	JCheckBox 			viewCagesCheckbox 		= new JCheckBox("cages", true);
-	JCheckBox 			viewFlyCheckbox 		= new JCheckBox("flies position", false);
+	public 	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries", true);
+	public JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages", true);
+			JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position", false);
 
 	private MultiCAFE parent0 = null;
 

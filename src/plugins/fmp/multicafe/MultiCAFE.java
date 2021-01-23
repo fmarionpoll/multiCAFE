@@ -32,7 +32,7 @@ import plugins.fmp.multicafe.workinprogress_gpu.MCSpots_;
 
 
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 21-Jan-2021", true, true, true, true);
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 22-Jan-2021", true, true, true, true);
 	public ExperimentList 	expList 		= new ExperimentList();
 	
 	public MCSequence_ 		paneSequence 	= new MCSequence_();
@@ -182,7 +182,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 				if (idViewer == idCurrentExp) {
 					int t = v.getPositionT(); 
 					v.setTitle(exp.seqCamData.getDecoratedImageName(t));
-					if (paneCages.trapROIsEdit) 
+					if (paneCages.bTrapROIsEdit) 
 						exp.saveDetRoisToPositions();
 					exp.updateROIsAt(t);
 				}
