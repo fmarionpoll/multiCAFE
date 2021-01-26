@@ -45,13 +45,13 @@ public class Close  extends JPanel {
 			parent0.paneSequence.tabInfosSeq.getExperimentInfosFromDialog(exp);
 			if (exp.seqCamData != null) {
 				exp.xmlSaveMCExperiment();
-				exp.saveExperimentMeasures(exp.getExperimentDirectory());
+				exp.saveExperimentMeasures(exp.getKymosDirectory());
 			}
 			exp.closeExperiment();
 		}
 		parent0.paneCages.tabGraphics.closeAll();
 		parent0.paneLevels.tabGraphs.closeAll();
-		parent0.paneKymos.tabDisplay.kymographNamesComboBox.removeAllItems();
+		parent0.paneKymos.tabDisplay.kymosComboBox.removeAllItems();
 	}
 	
 	public void closeCurrentExperiment() {

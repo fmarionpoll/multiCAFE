@@ -213,7 +213,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		options.detectL 			= leftCheckBox.isSelected();
 		options.detectR				= rightCheckBox.isSelected();
 		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
-		options.binSubPath 			= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
+		options.binSubPath 			= (String) parent0.paneKymos.tabDisplay.binsCombo.getSelectedItem() ;
 		return options;
 	}
 	
@@ -223,7 +223,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		if (exp == null)
 			return;
 		parent0.expList.currentExperimentIndex = current;
-		exp.saveExperimentMeasures(exp.getExperimentDirectory());
+		exp.saveExperimentMeasures(exp.getKymosDirectory());
 		parent0.paneSequence.tabClose.closeExp(exp);
 		exp.closeExperiment();
 		thread = new DetectLevels_series();
@@ -265,7 +265,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					if (parent0.paneKymos.tabDisplay.kymographNamesComboBox.getItemCount() >= selectedFrame) {
+					if (parent0.paneKymos.tabDisplay.kymosComboBox.getItemCount() >= selectedFrame) {
 						parent0.paneKymos.tabDisplay.selectKymograph(selectedFrame);
 						System.out.println("--- select "+ selectedFrame);
 						flag = true;

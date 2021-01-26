@@ -141,7 +141,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 			return;
 
 		parent0.expList.currentExperimentIndex = current;
-		exp.saveExperimentMeasures(exp.getExperimentDirectory());
+		exp.saveExperimentMeasures(exp.getKymosDirectory());
 		parent0.paneSequence.tabClose.closeExp(exp);
 		thread = new DetectGulps_series();
 		exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
@@ -155,7 +155,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		else
 			options.expList.index1 = parent0.expList.currentExperimentIndex;
 
-		options.firstkymo 		= parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
+		options.firstkymo 		= parent0.paneKymos.tabDisplay.kymosComboBox.getSelectedIndex();
 		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
 		options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps 	= detectAllGulpsCheckBox.isSelected();
@@ -168,7 +168,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		options.startPixel		= (int) startSpinner.getValue();
 		options.endPixel		= (int) endSpinner.getValue();
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
-		options.binSubPath 		= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
+		options.binSubPath 		= (String) parent0.paneKymos.tabDisplay.binsCombo.getSelectedItem() ;
 		
 		thread.addPropertyChangeListener(this);
 		thread.execute();

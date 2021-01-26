@@ -355,7 +355,6 @@ public class XLSExport {
 		EnumXLSExportType measureOption = getMeasureOption (xlsOption);
 		
 		while (expi != null) {
-			expi.resultsSubPath = expAll.resultsSubPath;
 			int nOutputFrames = (int) ((expi.kymoLastCol_Ms - expi.kymoFirstCol_Ms) / options.buildExcelStepMs +1);
 			XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
 			
@@ -368,7 +367,7 @@ public class XLSExport {
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
-						results.data = cap.getMeasures(measureOption, exp.kymoBinColl_Ms, options.buildExcelStepMs);
+						results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
 						resultsArrayList.add(results);
 					}
 					break;
@@ -381,9 +380,9 @@ public class XLSExport {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
 						if (options.t0) 
-							results.data = exp.seqKymos.subtractT0(cap.getMeasures(measureOption, exp.kymoBinColl_Ms, options.buildExcelStepMs));
+							results.data = exp.seqKymos.subtractT0(cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs));
 						else
-							results.data = cap.getMeasures(measureOption, exp.kymoBinColl_Ms, options.buildExcelStepMs);
+							results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
 						resultsArrayList.add(results);
 					}
 					if (options.subtractEvaporation)
@@ -396,7 +395,7 @@ public class XLSExport {
 					for (Capillary cap: expi.capillaries.capillariesArrayList) {
 						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
-						results.data = cap.getMeasures(measureOption, exp.kymoBinColl_Ms, options.buildExcelStepMs);
+						results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
 						resultsArrayList.add(results);
 					}
 					if (options.subtractEvaporation)
@@ -539,7 +538,7 @@ public class XLSExport {
 				int lastIntervalFlyAlive = expi.cages.getLastIntervalFlyAlive(cagenumber);
 				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.camBinImage_Ms 
 						+ (expi.camFirstImage_Ms - expAll.camFirstImage_Ms));		
-				ilastalive = (int) (lastMinuteAlive / expAll.kymoBinColl_Ms);
+				ilastalive = (int) (lastMinuteAlive / expAll.kymoBinCol_Ms);
 			}
 			if (ilastalive > 0)
 				ilastalive += 1;

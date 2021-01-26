@@ -22,7 +22,6 @@ public class XLSExportCapillariesResults extends XLSExport {
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
 		expList.chainExperiments(options.collateSeries);
 		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
-		expAll.resultsSubPath = expList.expListResultsSubPath;
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
 		int nbexpts = expList.getExperimentListSize();

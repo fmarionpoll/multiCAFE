@@ -37,7 +37,7 @@ public class DetectFlies2_series extends BuildSeries {
 	// -----------------------------------------
 	
 	void analyzeExperiment(Experiment exp) {
-		exp.openExperimentImagesData();
+		exp.openSequenceCamData();
 		exp.xmlReadDrosoTrack(null);
 		if (options.isFrameFixed) {
 			exp.cages.detectFirst_Ms = options.t_firstMs;

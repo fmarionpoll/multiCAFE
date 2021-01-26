@@ -24,8 +24,7 @@ public class DetectLevels_series2 extends BuildSeries  {
 		exp.xmlLoadMCcapillaries();
 		if (exp.loadKymographs()) {	
 			detectCapillaryLevels(exp);
-			String resultsDirectory = exp.getExperimentDirectory(); 
-			//exp.saveExperimentMeasures(resultsDirectory);
+			String resultsDirectory = exp.getKymosDirectory(); 
 			exp.capillaries.xmlSaveCapillaries_Measures(resultsDirectory);
 		}
 		exp.seqKymos.closeSequence();

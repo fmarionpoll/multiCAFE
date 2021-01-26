@@ -28,7 +28,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 	JTabbedPane 		tabsPane 		= new JTabbedPane();
 	public Create 		tabCreate 		= new Create();
 	public Display		tabDisplay 		= new Display();
-	public Intervals	tabIntervals 	= new Intervals();
+//	public IntervalsKymos	tabIntervals = new IntervalsKymos();
 	public LoadSave 	tabFile 		= new LoadSave();
 	
 	private MultiCAFE parent0 = null;
@@ -50,9 +50,9 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		tabDisplay.addPropertyChangeListener(this);
 		tabsPane.addTab("Display", null, tabDisplay, "Display options of data & kymographs");
 
-		tabIntervals.init(capLayout, parent0);
-		tabIntervals.addPropertyChangeListener(this);
-		tabsPane.addTab("Intervals", null, tabIntervals, "Time resolution of kymograph");
+//		tabIntervals.init(capLayout, parent0);
+//		tabIntervals.addPropertyChangeListener(this);
+//		tabsPane.addTab("Intervals", null, tabIntervals, "Time resolution of kymograph");
 
 		tabFile.init(capLayout, parent0);
 		tabFile.addPropertyChangeListener(this);
@@ -92,11 +92,14 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp == null)
 				return;
-			String localString = (String) tabDisplay.availableResultsCombo.getSelectedItem();
+			String localString = (String) tabDisplay.binsCombo.getSelectedItem();
 			parent0.paneSequence.tabClose.closeCurrentExperiment();
-			parent0.expList.expListResultsSubPath = localString;
-			exp.binSubPath = localString;
+			if (localString.contains("."))
+				localString = null;
+			parent0.expList.expListBinSubPath = localString;
+			exp.setBinSubDirectory(localString);
 			parent0.paneSequence.openExperiment(exp);
+//			tabIntervals.displayKymoIntervals (exp);
 		}
 	}
 	

@@ -180,7 +180,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
 		options.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
-		options.binSubPath 		= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
+		options.binSubPath 		= (String) parent0.paneKymos.tabDisplay.binsCombo.getSelectedItem() ;
 		
 		options.forceBuildBackground = backgroundCheckBox.isSelected();
 		options.detectFlies		= detectCheckBox.isSelected();

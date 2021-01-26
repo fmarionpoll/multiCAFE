@@ -34,7 +34,7 @@ public class Open extends JPanel implements PropertyChangeListener {
 	public JCheckBox	graphsCheckBox			= new JCheckBox("graphs", true);
 	
 	public List<String> selectedNames 			= new ArrayList<String> ();
-	private SelectFiles dialog 		= null;
+	private SelectFiles dialogSelect 			= null;
 	
 	
 	
@@ -64,8 +64,8 @@ public class Open extends JPanel implements PropertyChangeListener {
             @Override
             public void actionPerformed(ActionEvent arg0) {
             	selectedNames = new ArrayList<String> ();
-            	dialog = new SelectFiles();
-            	dialog.initialize(parent0);
+            	dialogSelect = new SelectFiles();
+            	dialogSelect.initialize(parent0);
             }});
 		
 		openButton.addActionListener(new ActionListener()  {
@@ -100,7 +100,7 @@ public class Open extends JPanel implements PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("SEARCH_CLOSED")) {
-			dialog.close();
+			dialogSelect.close();
         	firePropertyChange("SEARCH_CLOSED", false, true);
 		}
 		

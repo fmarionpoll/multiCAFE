@@ -36,7 +36,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 			Experiment exp = expList.getExperimentFromList(index);
 			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1+1));
 			System.out.println((index+1)+": " +exp.getExperimentDirectory());
-			exp.binSubPath = options.binSubPath;
+			exp.setBinSubDirectory(options.binSubPath);
 			analyzeExperiment(exp);
 			
 			long endTime2InNs = System.nanoTime();

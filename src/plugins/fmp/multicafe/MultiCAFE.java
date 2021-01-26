@@ -93,7 +93,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				Experiment exp = expList.getCurrentExperiment();
 				if (exp != null)
-					exp.saveExperimentMeasures(exp.getExperimentDirectory());
+					exp.saveExperimentMeasures(exp.getKymosDirectory());
 			}});
 		}
 	} 
@@ -104,8 +104,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			exp = new Experiment(filename);
 			expList.addExperiment(exp);
 		}
-		
-		exp.openSequenceCamData(filename);
+		exp.setExperimentDirectory(filename);
+		exp.openSequenceCamData();
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			updateViewerForSequenceCam(exp);
 		} else {
@@ -136,7 +136,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		v.setBounds(rectv);
 	}
 
-	public void loadPreviousMeasures(boolean loadCapillaries, boolean loadKymographs, boolean loadCages, boolean loadMeasures) {
+	public void loadPreviousMeasures(boolean bLoadCapillaries, boolean bLoadKymographs, boolean bLoadCages, boolean bLoadMeasures) {
 		Experiment exp = expList.getCurrentExperiment();
 		if (exp == null)
 			return;
@@ -145,16 +145,16 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (flag)
 			paneCapillaries.displayCapillariesInformation(exp);
 
-		if (loadCapillaries) {
+		if (bLoadCapillaries) {
 			paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
 		}
 
-		if (loadKymographs) {
+		if (bLoadKymographs) {
 			if (paneKymos.tabFile.loadDefaultKymos(exp)) {
 		        paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
 			}
 			paneSequence.tabIntervals.displayCamDataIntervals(exp);
-			paneKymos.tabIntervals.displayKymoIntervals(exp);
+//			paneKymos.tabIntervals.displayKymoIntervals(exp);
 
 			if (paneSequence.tabOpen.graphsCheckBox.isSelected())
 				SwingUtilities.invokeLater(new Runnable() { public void run() {
@@ -162,7 +162,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 				}});
 		}
 		
-		if (loadCages) {
+		if (bLoadCages) {
 			ProgressFrame progress = new ProgressFrame("load fly positions");
 			exp.loadDrosotrack();
 			paneCages.tabGraphics.moveCheckbox.setEnabled(true);

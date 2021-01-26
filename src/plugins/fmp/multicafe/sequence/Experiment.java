@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,8 +37,9 @@ public class Experiment {
 	public final String 	RESULTS					= "results";
 	public final String 	BIN						= "bin";
 	
-	public String			resultsSubPath			= RESULTS;
-	
+	private String			imagesDirectory			= null;
+	private String			experimentDirectory		= null;
+	private String			binSubDirectory			= null;
 		
 	public SequenceCamData 	seqCamData 				= null;
 	public SequenceKymos 	seqKymos				= null;
@@ -50,16 +52,14 @@ public class Experiment {
 	
 	// __________________________________________________
 	
-	private String			imagesDirectory			= null;
+	
 	public 	long			camFirstImage_Ms		= 0;
 	public 	long			camLastImage_Ms			= 0;
 	public 	long			camBinImage_Ms			= 0;
 	
-	private String			experimentDirectory		= null;
-	public String			binSubPath			= BIN;
 	public 	long			kymoFirstCol_Ms			= 0;
 	public 	long			kymoLastCol_Ms			= 0;
-	public 	long			kymoBinColl_Ms			= 60000;
+	public 	long			kymoBinCol_Ms			= 60000;
 	
 	// _________________________________________________
 	
@@ -129,7 +129,22 @@ public class Experiment {
 	}
 	
 	public void setExperimentDirectory(String fileName) {
-		experimentDirectory = fileName;
+		experimentDirectory = getParentIf(fileName, BIN);
+	}
+	
+	public String getKymosDirectory() {
+		String filename = experimentDirectory;
+		if (binSubDirectory != null)
+			filename += File.separator + binSubDirectory;
+		return filename;
+	}
+	
+	public void setBinSubDirectory (String bin) {
+		binSubDirectory = bin;
+	}
+	
+	public String getBinSubDirectory () {
+		return binSubDirectory;
 	}
 	
 	public void setImagesDirectory(String name) {
@@ -174,33 +189,30 @@ public class Experiment {
 	}
 	
 	public String getDataDirectory(String filename) {
-		if (filename .contains(RESULTS)) {
-			experimentDirectory = filename; // TODO ???
+		filename = getParentIf(filename, BIN);
+		filename = getParentIf(filename, RESULTS);
+		return filename;
+	}
+	
+	private String getParentIf(String filename, String filter) {
+		if (filename .contains(filter)) {
 			filename = Paths.get(filename).getParent().toString();
 		}
 		return filename;
 	}
 	
-	public SequenceCamData loadImagesForSequenceCamData(String filename) {
+	private SequenceCamData loadImagesForSequenceCamData(String filename) {
 		imagesDirectory = getDataDirectory(filename);
 		if (seqCamData == null)
 			seqCamData = new SequenceCamData();
-		if (null == seqCamData.loadSequenceOfImages(filename))
+		if (null == seqCamData.loadSequenceOfImages(imagesDirectory))
 			return null;
 		return seqCamData;
 	}
-	
-	public SequenceCamData openSequenceCamData(String filename) {
-		if (null == loadImagesForSequenceCamData(filename))
-			return null;		
-		xmlLoadMCExperiment();
-		loadFileIntervalsFromSeqCamData();
-		return seqCamData;
-	}
-	
-	public SequenceCamData openExperimentImagesData() {
-		xmlLoadMCExperiment();
+		
+	public SequenceCamData openSequenceCamData() {
 		loadImagesForSequenceCamData(experimentDirectory);
+		xmlLoadMCExperiment();
 		loadFileIntervalsFromSeqCamData();
 		return seqCamData;
 	}
@@ -215,13 +227,13 @@ public class Experiment {
 	}
 
 	public String getBinNameFromKymoFrameStep() {
-		return BIN + "_"+kymoBinColl_Ms/1000;
+		return BIN + "_"+kymoBinCol_Ms/1000;
 	}
 	
 	public String getDirectoryToSaveResults() {
 		Path dir = Paths.get(experimentDirectory);
-		if (binSubPath != null) {
-			dir = dir.resolve(binSubPath);
+		if (binSubDirectory != null) {
+			dir = dir.resolve(binSubDirectory);
 		}
 		String directory = dir.toAbsolutePath().toString();
 		if (Files.notExists(dir))  {
@@ -236,8 +248,8 @@ public class Experiment {
 		return directory;
 	}
 		
-	public List<String> fetchListOfResultsDirectories(String directory, String filter) {	
-		List<Path> subfolders = getAllSubPaths(directory);
+	public List<String> fetchListOfSubDirectoriesMatchingFilter(String directory, String filter) {	
+		List<Path> subfolders = getAllSubPaths(directory, 1);
 		if (subfolders == null)
 			return null;
 		List<String> dirList = getSubListContainingString(subfolders, filter);
@@ -245,11 +257,35 @@ public class Experiment {
 		return dirList;
 	}
 	
-	private List<Path> getAllSubPaths(String directory) {
+	public HashSet<String> getDirectoriesWithFilesType (String rootDirectory, String filter) {
+		HashSet<String> hSet = new HashSet<String>();
+		try {
+			Files.walk(Paths.get(rootDirectory))
+				.filter(Files::isRegularFile)
+				.filter(p -> p.getFileName().toString().toLowerCase().endsWith(filter))
+				.forEach(p->hSet.add( p.toFile().getParent().toString()));
+		} catch (IOException e) {
+			// Auto-generated catch block
+			e.printStackTrace();
+		}
+		return hSet;
+	}
+	
+	public List<String>  reduceFullNameToLastDirectory(List<String> dirList) {	
+		List<String> shortList = new ArrayList<String> (dirList.size());
+		for (String name: dirList) {
+			Path pathName = Paths.get(name);
+			shortList.add(pathName.getName(pathName.getNameCount()-1).toString());
+		}
+		Collections.sort(shortList, String.CASE_INSENSITIVE_ORDER);
+		return shortList;
+	}
+	
+	private List<Path> getAllSubPaths(String directory, int depth) {
 		Path pathExperimentDir = Paths.get(directory);
 		List<Path> subfolders = null;
 		try {
-			subfolders = Files.walk(pathExperimentDir, 2) //1)
+			subfolders = Files.walk(pathExperimentDir, depth) 
 		        .filter(Files::isDirectory)
 		        .collect(Collectors.toList());
 		} catch (IOException e) {
@@ -282,7 +318,7 @@ public class Experiment {
 		int step = -1;
 		if (resultsPath.contains(BIN)) {
 			if (resultsPath.length() < (BIN.length() +2)) {
-				step = (int) kymoBinColl_Ms;
+				step = (int) kymoBinCol_Ms;
 			} else {
 				step = Integer.valueOf(resultsPath.substring(BIN.length()+1))*1000;
 			}
@@ -316,7 +352,7 @@ public class Experiment {
 		
 		// any directory (below)
 		Path dirPath = Paths.get(experimentDirectory);
-		List<Path> subFolders = getAllSubPaths(experimentDirectory);
+		List<Path> subFolders = getAllSubPaths(experimentDirectory, 1);
 		List<String> resultsDirList = getSubListContainingString(subFolders, RESULTS);
 		List<String> binDirList = getSubListContainingString(subFolders, BIN);
 		resultsDirList.addAll(binDirList);
@@ -378,7 +414,7 @@ public class Experiment {
 
 		kymoFirstCol_Ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, -1); 
 		kymoLastCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
-		kymoBinColl_Ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
+		kymoBinCol_Ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
 		
 		if (exp_boxID .contentEquals("..")) {
 			exp_boxID	= XMLUtil.getElementValue(node, ID_BOXID, "..");
@@ -405,7 +441,7 @@ public class Experiment {
 			
 			XMLUtil.setElementLongValue(node, ID_FIRSTKYMOCOLMS, kymoFirstCol_Ms); 
 			XMLUtil.setElementLongValue(node, ID_LASTKYMOCOLMS, kymoLastCol_Ms);
-			XMLUtil.setElementLongValue(node, ID_BINKYMOCOLMS, kymoBinColl_Ms); 	
+			XMLUtil.setElementLongValue(node, ID_BINKYMOCOLMS, kymoBinCol_Ms); 	
 			
 			XMLUtil.setElementValue(node, ID_BOXID, exp_boxID);
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
@@ -423,15 +459,14 @@ public class Experiment {
 	}
 	
  	public boolean loadKymographs() {
-		if (seqKymos == null)
+		if (seqKymos == null) {
 			seqKymos = new SequenceKymos();
-		if (!xmlLoadMCCapillaries_Measures()) 
-			return false;
-		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(experimentDirectory, capillaries);
+		}
+		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(getKymosDirectory(), capillaries);
 		boolean flag = seqKymos.loadImagesFromList(myList, true);
 		if (!flag)
 			return flag;
-		seqKymos.transferCapillariesMeasuresToKymos(capillaries);
+//		seqKymos.transferCapillariesMeasuresToKymos(capillaries);
 		return flag;
 	}
 	
@@ -496,9 +531,9 @@ public class Experiment {
 	public boolean xmlLoadMCcapillaries() {
 		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend());
 		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
-		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(experimentDirectory);
+		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(getKymosDirectory());
 		if (flag1 & flag2) {
-			seqKymos.seqDataDirectory = experimentDirectory;
+			seqKymos.seqDataDirectory = getKymosDirectory();
 			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.seqDataDirectory, capillaries);
 		}
 		return flag1 & flag2;
@@ -568,12 +603,7 @@ public class Experiment {
 	}
 	
 	public boolean xmlLoadMCCapillaries_Measures() {
-		boolean flag = capillaries.xmlLoadCapillaries_Measures2(experimentDirectory);
-		if (flag) {
-			seqKymos.seqDataDirectory = experimentDirectory;
-			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.seqDataDirectory, capillaries);
-		}
-		return flag;
+		return capillaries.xmlLoadCapillaries_Measures2(getKymosDirectory());
 	}
 	
 	public boolean xmlLoadMCcapillaries_Only() {
@@ -609,13 +639,12 @@ public class Experiment {
 		return false;
 	}
 	
-
 	// TODO
 	public boolean xmlSaveMCcapillaries() {
-		String xmlCapillaryFileName = experimentDirectory + File.separator + capillaries.getXMLNameToAppend();
+		String xmlCapillaryFileName = getKymosDirectory() + File.separator + capillaries.getXMLNameToAppend();
 		saveExpDescriptorsToCapillariesDescriptors();
 		boolean flag = capillaries.xmlSaveCapillaries_Descriptors(xmlCapillaryFileName);
-		flag &= capillaries.xmlSaveCapillaries_Measures(experimentDirectory);
+		flag &= capillaries.xmlSaveCapillaries_Measures(getKymosDirectory());
 		return flag;
 	}
 	

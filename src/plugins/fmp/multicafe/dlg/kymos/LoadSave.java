@@ -89,7 +89,6 @@ public class LoadSave extends JPanel {
 				e1.printStackTrace();
 			}
 		}
-
 		String outputpath =  directory;
 		JFileChooser f = new JFileChooser(outputpath);
 		f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
@@ -135,8 +134,9 @@ public class LoadSave extends JPanel {
 					break;
 			}
 		}
-		
-		List<String> myList = exp.seqKymos.loadListOfKymographsFromCapillaries(exp.getExperimentDirectory(), exp.capillaries);
+
+		String kymosDirectory = exp.getKymosDirectory();
+		List<String> myList = exp.seqKymos.loadListOfKymographsFromCapillaries(kymosDirectory, exp.capillaries);
 		if (seqKymos.isInterrupted_loadImages) {
 			seqKymos.isInterrupted_loadImages = false;
 			return false;

@@ -15,7 +15,7 @@ public class ExperimentList {
 	public 	int 	index0 						= 0;
 	public 	int 	index1 						= 0;
 	public	int		maxSizeOfCapillaryArrays 	= 0;
-	public 	String 	expListResultsSubPath 		= null; 
+	public 	String 	expListBinSubPath 			= null; 
 	public int		currentExperimentIndex		= -1;
 	
 
@@ -169,8 +169,6 @@ public class ExperimentList {
 		if (index > experimentList.size() -1)
 			index = experimentList.size() -1;
 		Experiment exp = experimentList.get(index);
-		if (expListResultsSubPath != null)
-			exp.resultsSubPath = expListResultsSubPath;
 		return exp;
 	}
 	

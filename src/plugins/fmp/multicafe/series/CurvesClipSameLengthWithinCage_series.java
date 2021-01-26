@@ -34,7 +34,7 @@ public class CurvesClipSameLengthWithinCage_series extends BuildSeries {
 					}
 				}
 			}
-			exp.capillaries.xmlSaveCapillaries_Measures(exp.getExperimentDirectory());
+			exp.capillaries.xmlSaveCapillaries_Measures(exp.getKymosDirectory());
 		}
 		exp.seqCamData.closeSequence();
 		exp.seqKymos.closeSequence();

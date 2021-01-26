@@ -63,7 +63,7 @@ public class LoadSave  extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) {
-					exp.saveExperimentMeasures(exp.getExperimentDirectory());
+					exp.saveExperimentMeasures(exp.getKymosDirectory());
 					firePropertyChange("MEASURES_SAVE", false, true);
 				}
 			}});	

@@ -30,7 +30,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 	void analyzeExperiment(Experiment exp) {
 		loadExperimentDataToBuildKymos(exp);
 		exp.seqCamData.displayViewerAtRectangle(options.parent0Rect);
-		exp.kymoBinColl_Ms = options.t_binMs;
+		exp.kymoBinCol_Ms = options.t_binMs;
 		if (options.isFrameFixed) {
 			exp.kymoFirstCol_Ms = options.t_firstMs;
 			exp.kymoLastCol_Ms = options.t_lastMs;
@@ -48,13 +48,13 @@ public class BuildKymographs_series  extends BuildSeries  {
 	}
 	
 	private void loadExperimentDataToBuildKymos(Experiment exp) {
-		exp.openExperimentImagesData();
+		exp.openSequenceCamData();
 		exp.xmlLoadMCcapillaries_Only();
 	}
 			
 	private void saveComputation(Experiment exp) {	
-		if (options.doCreateResults_bin) {
-			exp.binSubPath = exp.getBinNameFromKymoFrameStep();
+		if (options.doCreateBinDir) {
+			exp.setBinSubDirectory (exp.getBinNameFromKymoFrameStep());
 		}
 		String directory = exp.getDirectoryToSaveResults(); 
 		if (directory == null)
@@ -108,7 +108,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 			return false;
 		}
 		
-		int nframes = (int) ((exp.kymoLastCol_Ms - exp.kymoFirstCol_Ms) / exp.kymoBinColl_Ms +1);
+		int nframes = (int) ((exp.kymoLastCol_Ms - exp.kymoFirstCol_Ms) / exp.kymoBinCol_Ms +1);
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("buildkymo2");
 	    processor.setPriority(Processor.NORM_PRIORITY);
@@ -118,7 +118,7 @@ public class BuildKymographs_series  extends BuildSeries  {
 		seqCamData.seq.beginUpdate();
 		
 		int ipixelcolumn = 0;
-		for (long indexms = exp.kymoFirstCol_Ms ; indexms <= exp.kymoLastCol_Ms; indexms += exp.kymoBinColl_Ms, ipixelcolumn++ ) {
+		for (long indexms = exp.kymoFirstCol_Ms ; indexms <= exp.kymoLastCol_Ms; indexms += exp.kymoBinCol_Ms, ipixelcolumn++ ) {
 			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
 			final int t_out = ipixelcolumn;
 			

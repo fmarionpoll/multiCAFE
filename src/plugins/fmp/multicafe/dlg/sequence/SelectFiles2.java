@@ -30,11 +30,12 @@ public class SelectFiles2 extends JPanel {
 	private JButton		newResultsButton		= new JButton("Add new directory");
 	private JButton 	openSelectedButton		= new JButton("Open selected");
 	private JList<String> directoriesJList		= new JList<String>(new DefaultListModel<String>());
-			String 		selectedItem 			= null;
+			MCSequence_ parent1					= null;
 	
 	
 	public void initialize (MCSequence_ paneSequence, List<String> expList) {
-		addPropertyChangeListener(paneSequence);
+		parent1 = paneSequence;
+		addPropertyChangeListener(parent1);
 
 		dialogFrame = new IcyFrame ("Select directory or create new one", true, true);
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
@@ -61,8 +62,7 @@ public class SelectFiles2 extends JPanel {
 		dialogFrame.requestFocus();
 		dialogFrame.center();
 		dialogFrame.setVisible(true);
-		
-		selectedItem = null;
+
 	}
 	
 	void close() {
@@ -73,9 +73,8 @@ public class SelectFiles2 extends JPanel {
 		openSelectedButton.addActionListener(new ActionListener()  {
 	        @Override
 	        public void actionPerformed(ActionEvent arg0) {
-	        	selectedItem = directoriesJList.getSelectedValue();
+	        	parent1.name = directoriesJList.getSelectedValue();
 				firePropertyChange("DIRECTORY_SELECTED", false, true);
-				close();
 	        }});
 
 		 

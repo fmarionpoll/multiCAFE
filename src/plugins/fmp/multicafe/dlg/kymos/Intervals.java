@@ -28,9 +28,9 @@ public class Intervals extends JPanel {
 	private 	JComboBox<String> binUnit 	= new JComboBox<String> (new String[] {"ms", "s", "min", "h", "day"});
 	JButton		applyButton					= new JButton("Apply");
 	JButton		getFromCamDataButton		= new JButton("Get from stack of images");
-	JSpinner 	firstColumnJSpinner	= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
-	JSpinner 	lastColumnJSpinner	= new JSpinner(new SpinnerNumberModel(99999999., 0., 99999999., 1.));
-	JSpinner 	binColumnJSpinner				= new JSpinner(new SpinnerNumberModel(1., 1., 1000., 1.));
+	JSpinner 	firstColumnJSpinner			= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
+	JSpinner 	lastColumnJSpinner			= new JSpinner(new SpinnerNumberModel(99999999., 0., 99999999., 1.));
+	JSpinner 	binColumnJSpinner			= new JSpinner(new SpinnerNumberModel(1., 1., 1000., 1.));
 	
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {
@@ -69,7 +69,7 @@ public class Intervals extends JPanel {
 			long binsize_Ms = getBinSize_Ms();
 			exp.kymoFirstCol_Ms = (long) (((double) firstColumnJSpinner.getValue()) * binsize_Ms);
 			exp.kymoLastCol_Ms  = (long) (((double) lastColumnJSpinner.getValue()) * binsize_Ms);
-			exp.kymoBinColl_Ms = (long) (((double) binColumnJSpinner.getValue()) * binsize_Ms);
+			exp.kymoBinCol_Ms = (long) (((double) binColumnJSpinner.getValue()) * binsize_Ms);
 		}});
 	}
 	
@@ -101,9 +101,9 @@ public class Intervals extends JPanel {
 		if (exp.kymoLastCol_Ms < 0) 
 			exp.kymoLastCol_Ms = (long) (((double)exp.seqKymos.imageWidthMax) * binsize_Ms);
 		lastColumnJSpinner.setValue((double) exp.kymoLastCol_Ms/binsize_Ms);
-		if (exp.kymoBinColl_Ms <= 0)
-			exp.kymoBinColl_Ms = (long) binsize_Ms;
-		binColumnJSpinner.setValue((double) exp.kymoBinColl_Ms/binsize_Ms);
+		if (exp.kymoBinCol_Ms <= 0)
+			exp.kymoBinCol_Ms = (long) binsize_Ms;
+		binColumnJSpinner.setValue((double) exp.kymoBinCol_Ms/binsize_Ms);
 	}
 
 }

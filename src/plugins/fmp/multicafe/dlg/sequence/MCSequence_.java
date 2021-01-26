@@ -51,7 +51,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private JButton			nextButton		= new JButton(">");
 	public 	JComboBox <String> expListComboBox	= new JComboBox <String>();
 	private MultiCAFE 		parent0 		= null;
-	private	SelectFiles2 	selectFilesDialog = null;
+	private	SelectFiles2 	dialogSelect2 	= null;
+			String			name			= null;
 	
 	
 	
@@ -204,7 +205,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			}
 		}
 		else if (event.getPropertyName().equals("DIRECTORY_SELECTED")) {
-			openSeqCamData(selectFilesDialog.selectedItem);
+			dialogSelect2.close();
+			openSeqCamData(name);
 		}
 	}
 	
@@ -215,14 +217,14 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	    String imagesPath = exp.seqCamData.getSeqDataDirectory();
 	    if (imagesPath == null)
 	    	return;
-	    List<String> expList = exp.fetchListOfResultsDirectories(imagesPath, exp.RESULTS);
+	    List<String> expList = exp.fetchListOfSubDirectoriesMatchingFilter(imagesPath, exp.RESULTS);
 	    String name = imagesPath;
 	    if (expList.size() > 0) {
-	    	selectFilesDialog = new SelectFiles2();
-	    	selectFilesDialog.initialize(this, expList);
+	    	dialogSelect2 = new SelectFiles2();
+	    	dialogSelect2.initialize(this, expList);
 	    }
 	    else {
-	    	name += File.separator + "results";
+	    	name += File.separator + exp.RESULTS;
 	    	openSeqCamData(name);
 	    }
 	}
@@ -243,7 +245,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	public void openExperiment(Experiment exp) {
 		exp.xmlLoadMCExperiment();
-		exp.openExperimentImagesData();
+		exp.openSequenceCamData();
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			parent0.addSequence(exp.seqCamData.seq);
 			parent0.updateViewerForSequenceCam(exp);
@@ -254,7 +256,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	void openSequenceCamFromCombo() {
 		Experiment exp = parent0.openExperimentFromString((String) expListComboBox.getSelectedItem());
-		transferSequenceCamDataToDialogs(exp);;
+		transferSequenceCamDataToDialogs(exp);
 		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
 			loadMeasuresAndKymos();
 			parent0.paneLevels.transferSeqKymoDataToDialogs(exp);
