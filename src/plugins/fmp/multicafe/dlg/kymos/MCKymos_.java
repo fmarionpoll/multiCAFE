@@ -95,7 +95,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			String localString = (String) tabDisplay.availableResultsCombo.getSelectedItem();
 			parent0.paneSequence.tabClose.closeCurrentExperiment();
 			parent0.expList.expListResultsSubPath = localString;
-			exp.resultsSubPath = localString;
+			exp.binSubPath = localString;
 			parent0.paneSequence.openExperiment(exp);
 		}
 	}

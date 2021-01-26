@@ -254,10 +254,10 @@ public class XLSExportMoveResults  extends XLSExport {
 			int ilastalive = 0;
 			if (cage.cageNFlies > 0) {
 				Experiment expi = exp;
-				while (expi.nextExperiment != null && expi.nextExperiment.isFlyAlive(cagenumber)) {
+				while (expi.nextExperiment != null && expi.nextExperiment.cages.isFlyAlive(cagenumber)) {
 					expi = expi.nextExperiment;
 				}
-				long lastIntervalFlyAlive_Ms = expi.getLastIntervalFlyAlive(cagenumber) 
+				long lastIntervalFlyAlive_Ms = expi.cages.getLastIntervalFlyAlive(cagenumber) 
 						* expi.cages.detectBin_Ms;
 				long lastMinuteAlive = lastIntervalFlyAlive_Ms + expi.camFirstImage_Ms - expAll.camFirstImage_Ms;		
 				ilastalive = (int) (lastMinuteAlive / options.buildExcelStepMs);

@@ -38,19 +38,20 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = -6826269677524125173L;
 	
-	public	PopupPanel capPopupPanel	= null;
-	public JTabbedPane 		tabsPane 		= new JTabbedPane();
-	public Open 			tabOpen 		= new Open();
-	public Infos			tabInfosSeq		= new Infos();
-	public Intervals		tabIntervals	= new Intervals();
-	public Analyze			tabAnalyze		= new Analyze();
-	public Display			tabDisplay 		= new Display();
-	public Close 			tabClose 		= new Close();
+	public	PopupPanel 		capPopupPanel	= null;
+	public 	JTabbedPane 	tabsPane 		= new JTabbedPane();
+	public 	Open 			tabOpen 		= new Open();
+	public 	Infos			tabInfosSeq		= new Infos();
+	public 	Intervals		tabIntervals	= new Intervals();
+	public 	Analyze			tabAnalyze		= new Analyze();
+	public 	Display			tabDisplay 		= new Display();
+	public 	Close 			tabClose 		= new Close();
 	private JLabel			text 			= new JLabel("Experiment ");
 	private JButton  		previousButton	= new JButton("<");
 	private JButton			nextButton		= new JButton(">");
-	public JComboBox <String> expListComboBox	= new JComboBox <String>();
+	public 	JComboBox <String> expListComboBox	= new JComboBox <String>();
 	private MultiCAFE 		parent0 		= null;
+	private	SelectFiles2 	selectFilesDialog = null;
 	
 	
 	
@@ -138,13 +139,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			if (exp == null)
 				return;
 			String oldtext = exp.getExperimentDirectory();
-
-			
 			String newtext = (String) expListComboBox.getSelectedItem();
 			File newFile = new File(newtext);
 			if (newFile.isFile())
 				newFile = newFile.getParentFile();
-			
 			if (!newtext.contentEquals(oldtext)) {
         		ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 	        		parent0.paneSequence.tabClose.closeExp(exp); 
@@ -175,11 +173,11 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			tabClose.closeAll();
 			expListComboBox.removeAllItems();
 			expListComboBox.updateUI();
-			openSeqCamData();
+			openSeqCamDataCallDialog();
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) {
 			tabClose.closeCurrentExperiment();
-			openSeqCamData();
+			openSeqCamDataCallDialog();
 		}
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) {
 			System.out.println("SEQ_CLOSE");
@@ -205,21 +203,31 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 				openSequenceCamFromCombo();
 			}
 		}
+		else if (event.getPropertyName().equals("DIRECTORY_SELECTED")) {
+			openSeqCamData(selectFilesDialog.selectedItem);
+		}
 	}
 	
-	private void openSeqCamData() {
-		SequenceCamData seqCamDataDummy = new SequenceCamData();
-		seqCamDataDummy.loadSequenceFromDialog(null);
+	private void openSeqCamDataCallDialog() {
+		Experiment exp = new Experiment();
+		exp.seqCamData.loadSequenceFromDialog(null);
 		
-	    String imagesPath = seqCamDataDummy.getSeqDataDirectory();
-	    List<String> expList = Experiment.fetchListOfResultsDirectories(imagesPath);
-	    // get directory
-	    // get results directory
+	    String imagesPath = exp.seqCamData.getSeqDataDirectory();
+	    if (imagesPath == null)
+	    	return;
+	    List<String> expList = exp.fetchListOfResultsDirectories(imagesPath, exp.RESULTS);
 	    String name = imagesPath;
-	    if (expList.size() > 0)
-	    	name = expList.get(0);
-	    else
+	    if (expList.size() > 0) {
+	    	selectFilesDialog = new SelectFiles2();
+	    	selectFilesDialog.initialize(this, expList);
+	    }
+	    else {
 	    	name += File.separator + "results";
+	    	openSeqCamData(name);
+	    }
+	}
+	
+	private void openSeqCamData(String name) {
 		Experiment exp = parent0.openExperimentFromString(name);
 		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData != null && seqCamData.seq != null) {

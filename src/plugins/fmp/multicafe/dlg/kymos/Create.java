@@ -31,19 +31,15 @@ public class Create extends JPanel implements PropertyChangeListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1771360416354320887L;
-	private String 			detectString 				= "Start";
-	
-	JButton 				startComputationButton 	= new JButton("Start");
-
-	JSpinner 				diskRadiusSpinner 			= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
-	JCheckBox 				doRegistrationCheckBox 		= new JCheckBox("registration", false);
-	
-	JCheckBox 				doCreateCheckBox 			= new JCheckBox("force creation of results_bin", false);
-	JCheckBox				allSeriesCheckBox 				= new JCheckBox("ALL series (current to last)", false);
-	
-	EnumStatusComputation 	sComputation 				= EnumStatusComputation.START_COMPUTATION; 
-	private MultiCAFE 		parent0						= null;
-	private BuildKymographs_series threadBuildKymo 				= null;
+	private String 			detectString 			= "Start";
+			JButton 		startComputationButton 	= new JButton("Start");
+			JSpinner		diskRadiusSpinner 		= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
+			JCheckBox 		doRegistrationCheckBox 	= new JCheckBox("registration", false);
+			JCheckBox 		doCreateCheckBox 		= new JCheckBox("force creation of results_bin", false);
+			JCheckBox		allSeriesCheckBox 		= new JCheckBox("ALL series (current to last)", false);
+	EnumStatusComputation 	sComputation 			= EnumStatusComputation.START_COMPUTATION; 
+	private MultiCAFE 		parent0					= null;
+	private BuildKymographs_series threadBuildKymo 	= null;
 
 	// -----------------------------------------------------
 	
@@ -98,17 +94,16 @@ public class Create extends JPanel implements PropertyChangeListener {
 			options.expList.index1 = parent0.expList.getExperimentListSize()-1;
 		else
 			options.expList.index1 = options.expList.index0; 
-		
 		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
 		options.t_firstMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
-		options.t_lastMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
+		options.t_lastMs 		= parent0.paneSequence.tabAnalyze.getEndMs();
 		options.t_binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
 				
 		options.diskRadius 		= (int) diskRadiusSpinner.getValue();
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();
 		options.doCreateResults_bin = doCreateCheckBox.isSelected();
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
-		options.resultsSubPath 	= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
+		options.binSubPath 	= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
 		return true;
 	}
 		

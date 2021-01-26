@@ -32,12 +32,12 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Experiment {
 	
-	private String			experimentDirectory		= null;
-	private String			imagesDirectory			= null;
 	
-	public static String 	RESULTS					= "results";
+	public final String 	RESULTS					= "results";
+	public final String 	BIN						= "bin";
+	
 	public String			resultsSubPath			= RESULTS;
-	public List<String>		resultsDirList			= new ArrayList<String> ();
+	
 		
 	public SequenceCamData 	seqCamData 				= null;
 	public SequenceKymos 	seqKymos				= null;
@@ -50,13 +50,16 @@ public class Experiment {
 	
 	// __________________________________________________
 	
-	public long				camFirstImage_Ms		= 0;
-	public long				camLastImage_Ms			= 0;
-	public long				camBinImage_Ms			= 0;
+	private String			imagesDirectory			= null;
+	public 	long			camFirstImage_Ms		= 0;
+	public 	long			camLastImage_Ms			= 0;
+	public 	long			camBinImage_Ms			= 0;
 	
-	public long				kymoFirstCol_Ms			= 0;
-	public long				kymoLastCol_Ms			= 0;
-	public long				kymoBinColl_Ms			= 60000;
+	private String			experimentDirectory		= null;
+	public String			binSubPath			= BIN;
+	public 	long			kymoFirstCol_Ms			= 0;
+	public 	long			kymoLastCol_Ms			= 0;
+	public 	long			kymoBinColl_Ms			= 60000;
 	
 	// _________________________________________________
 	
@@ -170,12 +173,16 @@ public class Experiment {
 		return true;
 	}
 	
-	public SequenceCamData loadImagesForSequenceCamData(String filename) {
+	public String getDataDirectory(String filename) {
 		if (filename .contains(RESULTS)) {
-			experimentDirectory = filename;
+			experimentDirectory = filename; // TODO ???
 			filename = Paths.get(filename).getParent().toString();
 		}
-		imagesDirectory = filename;
+		return filename;
+	}
+	
+	public SequenceCamData loadImagesForSequenceCamData(String filename) {
+		imagesDirectory = getDataDirectory(filename);
 		if (seqCamData == null)
 			seqCamData = new SequenceCamData();
 		if (null == seqCamData.loadSequenceOfImages(filename))
@@ -207,13 +214,15 @@ public class Experiment {
 		camBinImage_Ms = (camLastImage_Ms - camFirstImage_Ms)/(seqCamData.seq.getSizeT()-1);
 	}
 
-	public String getResultsDirectoryNameFromKymoFrameStep() {
-		return RESULTS + "_"+kymoBinColl_Ms/1000;
+	public String getBinNameFromKymoFrameStep() {
+		return BIN + "_"+kymoBinColl_Ms/1000;
 	}
 	
 	public String getDirectoryToSaveResults() {
 		Path dir = Paths.get(experimentDirectory);
-		dir = dir.resolve(resultsSubPath);
+		if (binSubPath != null) {
+			dir = dir.resolve(binSubPath);
+		}
 		String directory = dir.toAbsolutePath().toString();
 		if (Files.notExists(dir))  {
 			try {
@@ -226,81 +235,114 @@ public class Experiment {
 		}
 		return directory;
 	}
+		
+	public List<String> fetchListOfResultsDirectories(String directory, String filter) {	
+		List<Path> subfolders = getAllSubPaths(directory);
+		if (subfolders == null)
+			return null;
+		List<String> dirList = getSubListContainingString(subfolders, filter);
+		Collections.sort(dirList, String.CASE_INSENSITIVE_ORDER);
+		return dirList;
+	}
 	
-	public List<String> fetchListOfResultsSubDirectories(String directory) {
+	private List<Path> getAllSubPaths(String directory) {
 		Path pathExperimentDir = Paths.get(directory);
-		List<Path> subfolders;
-		List<String> resultsDirList = new ArrayList<String>();
+		List<Path> subfolders = null;
 		try {
-			subfolders = Files.walk(pathExperimentDir, 1)
-			        .filter(Files::isDirectory)
-			        .collect(Collectors.toList());
-			subfolders.remove(0);
-			resultsDirList.clear();
-			for (Path dirPath: subfolders) {
-				String subString = dirPath.subpath(dirPath.getNameCount() - 1, dirPath.getNameCount()).toString();
-				if (subString.contains(RESULTS)) {
-					boolean found = false;
-					for (String item: resultsDirList) {
-						if (item.equals(subString)) {
-							found = true;
-							break;
-						}
-					}
-					if (!found)
-						resultsDirList.add(subString);
-				}
-			}
+			subfolders = Files.walk(pathExperimentDir, 2) //1)
+		        .filter(Files::isDirectory)
+		        .collect(Collectors.toList());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Collections.sort(resultsDirList, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER));
-		return resultsDirList;
+		subfolders.remove(0);
+		return subfolders;
 	}
 	
-	public static List<String> fetchListOfResultsDirectories(String directory) {
-		Path pathExperimentDir = Paths.get(directory);
-		List<Path> subfolders;
-		List<String> resultsDirList = new ArrayList<String>();
-		try {
-			subfolders = Files.walk(pathExperimentDir, 1)
-			        .filter(Files::isDirectory)
-			        .collect(Collectors.toList());
-			subfolders.remove(0);
-			resultsDirList.clear();
-			for (Path dirPath: subfolders) {
-				String subString = dirPath.toString();
-				if (subString.contains(RESULTS)) {
-					boolean found = false;
-					for (String item: resultsDirList) {
-						if (item.equals(subString)) {
-							found = true;
-							break;
-						}
+	private List<String> getSubListContainingString (List<Path> subfolders, String filter) {
+		List<String> dirList = new ArrayList<String>();
+		for (Path dirPath: subfolders) {
+			String subString = dirPath.toString();
+			if (subString.contains(filter)) {
+				boolean found = false;
+				for (String item: dirList) {
+					if (item.equals(subString)) {
+						found = true;
+						break;
 					}
-					if (!found)
-						resultsDirList.add(subString);
 				}
+				if (!found)
+					dirList.add(subString);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-		Collections.sort(resultsDirList, Collections.reverseOrder(String.CASE_INSENSITIVE_ORDER));
-		return resultsDirList;
+		return dirList;
 	}
 	
-	public int getBinStepFromResultsDirectoryName(String resultsPath) {
+	public int getBinStepFromDirectoryName(String resultsPath) {
 		int step = -1;
-		if (resultsPath.contains(RESULTS)) {
-			if (resultsPath.length() < (RESULTS.length() +2)) {
+		if (resultsPath.contains(BIN)) {
+			if (resultsPath.length() < (BIN.length() +2)) {
 				step = (int) kymoBinColl_Ms;
 			} else {
-				step = Integer.valueOf(resultsPath.substring(RESULTS.length()+1))*1000;
+				step = Integer.valueOf(resultsPath.substring(BIN.length()+1))*1000;
 			}
 		}
 		return step;
 	}
 
+	public String getSubName(Path path, int subnameIndex) {
+		String name = "-";
+		if (path.getNameCount() >= subnameIndex)
+			name = path.getName(path.getNameCount() -subnameIndex).toString();
+		return name;
+	}
+	
+	private String findFileLocation(String xmlFileName) {
+		// current directory
+		String xmlFullFileName = experimentDirectory + File.separator + xmlFileName;
+		if(fileExists (xmlFullFileName))
+			return xmlFullFileName;
+		
+		// primary data (up)
+		if (imagesDirectory == null) {
+			if (seqCamData != null )
+				imagesDirectory = seqCamData.getSeqDataDirectory() ;
+			if (imagesDirectory == null)
+				imagesDirectory = getRootWithNoResultNorBinString(experimentDirectory);
+		}
+		xmlFullFileName = imagesDirectory + File.separator + xmlFileName;
+		if(fileExists (xmlFullFileName))
+			return xmlFullFileName;
+		
+		// any directory (below)
+		Path dirPath = Paths.get(experimentDirectory);
+		List<Path> subFolders = getAllSubPaths(experimentDirectory);
+		List<String> resultsDirList = getSubListContainingString(subFolders, RESULTS);
+		List<String> binDirList = getSubListContainingString(subFolders, BIN);
+		resultsDirList.addAll(binDirList);
+		for (String resultsSub : resultsDirList) {
+			Path dir = dirPath.resolve(resultsSub+ File.separator + xmlFileName);
+			if (Files.notExists(dir))
+				continue;
+			return dir.toAbsolutePath().toString();	
+		}
+		return null;
+	}
+	
+	private boolean fileExists (String fileName) {
+		File f = new File(fileName);
+		return (f.exists() && !f.isDirectory()); 
+	}
+	
+	String getRootWithNoResultNorBinString(String directoryName) {
+		String name = directoryName.toLowerCase();
+		while (name .contains(RESULTS) || name .contains(BIN)) {
+			name = Paths.get(experimentDirectory).getParent().toString();
+		}
+		return name;
+	}
+	
+	// -------------------------------
 	public boolean xmlLoadMCExperiment () {
 		if (experimentDirectory == null && seqCamData != null) {
 			imagesDirectory = seqCamData.getSeqDataDirectory() ;
@@ -407,13 +449,6 @@ public class Experiment {
 	
 	// ----------------------------------
 	
-	public String getSubName(Path path, int subnameIndex) {
-		String name = "-";
-		if (path.getNameCount() >= subnameIndex)
-			name = path.getName(path.getNameCount() -subnameIndex).toString();
-		return name;
-	}
-
 	public FileTime getFileTimeImageFirst(boolean globalValue) {
 		FileTime filetime = firstImage_FileTime;
 		if (globalValue && previousExperiment != null)
@@ -435,47 +470,7 @@ public class Experiment {
 	public void setFileTimeImageLast(FileTime fileTimeImageLast) {
 		this.lastImage_FileTime = fileTimeImageLast;
 	}
-	
-	// -----------------------
-	
-	public boolean isFlyAlive(int cagenumber) {
-		boolean isalive = false;
-		for (Cage cage: cages.cageList) {
-			String cagenumberString = cage.cageRoi.getName().substring(4);
-			if (Integer.valueOf(cagenumberString) == cagenumber) {
-				isalive = (cage.flyPositions.getLastIntervalAlive() > 0);
-				break;
-			}
-		}
-		return isalive;
-	}
-	
-	public int getLastIntervalFlyAlive(int cagenumber) {
-		int flypos = -1;
-		for (Cage cage: cages.cageList) {
-			String cagenumberString = cage.cageRoi.getName().substring(4);
-			if (Integer.valueOf(cagenumberString) == cagenumber) {
-				flypos = cage.flyPositions.getLastIntervalAlive();
-				break;
-			}
-		}
-		return flypos;
-	}
-	
-	public boolean isDataAvailable(int cagenumber) {
-		boolean isavailable = false;
-		for (Cage cage: cages.cageList) {
-			String cagenumberString = cage.cageRoi.getName().substring(4);
-			if (Integer.valueOf(cagenumberString) == cagenumber) {
-				isavailable = true;
-				break;
-			}
-		}
-		return isavailable;
-	}
-	
-	// --------------------------------------------
-	
+		
 	public int getSeqCamSizeT() {
 		int lastFrame = 0;
 		if (seqCamData != null && seqCamData.seq != null)
@@ -499,7 +494,7 @@ public class Experiment {
 	}
 	
 	public boolean xmlLoadMCcapillaries() {
-		String xmlCapillaryFileName = getFileLocation(capillaries.getXMLNameToAppend());
+		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend());
 		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
 		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(experimentDirectory);
 		if (flag1 & flag2) {
@@ -582,7 +577,7 @@ public class Experiment {
 	}
 	
 	public boolean xmlLoadMCcapillaries_Only() {
-		String xmlCapillaryFileName = getFileLocation(capillaries.getXMLNameToAppend());
+		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend());
 		if (xmlCapillaryFileName == null && seqCamData != null) {
 			return xmlLoadOldCapillaries();
 		}
@@ -601,12 +596,12 @@ public class Experiment {
 	}
 	
 	private boolean xmlLoadOldCapillaries() {
-		String filename = getFileLocation("capillarytrack.xml");
+		String filename = findFileLocation("capillarytrack.xml");
 		if (capillaries.xmlLoadOldCapillaries_Only(filename)) {
 			xmlSaveMCcapillaries();
 			return true;
 		}
-		filename = getFileLocation("roislines.xml");
+		filename = findFileLocation("roislines.xml");
 		if (seqCamData.xmlReadROIs(filename)) {
 			xmlReadRoiLineParameters(filename);
 			return true;
@@ -614,45 +609,7 @@ public class Experiment {
 		return false;
 	}
 	
-	private String getFileLocation(String xmlFileName) {
-		// current results directory
-		String xmlFullFileName = experimentDirectory + File.separator + xmlFileName;
-		if(fileExists (xmlFullFileName))
-			return xmlFullFileName;
-		// primary data
-		if (imagesDirectory == null) {
-			if (seqCamData != null )
-				imagesDirectory = seqCamData.getSeqDataDirectory() ;
-			if (imagesDirectory == null)
-				imagesDirectory = getRootWithNoResultString(experimentDirectory);
-		}
-		xmlFullFileName = imagesDirectory + File.separator + xmlFileName;
-		if(fileExists (xmlFullFileName))
-			return xmlFullFileName;
-		// any results directory
-		Path dirPath = Paths.get(experimentDirectory);
-		for (String resultsSub : resultsDirList) {
-			Path dir = dirPath.resolve(resultsSub+ File.separator + xmlFileName);
-			if (Files.notExists(dir))
-				continue;
-			return dir.toAbsolutePath().toString();	
-		}
-		return null;
-	}
-	
-	private boolean fileExists (String fileName) {
-		File f = new File(fileName);
-		return (f.exists() && !f.isDirectory()); 
-	}
-	
-	String getRootWithNoResultString(String directoryName) {
-		String name = directoryName.toLowerCase();
-		while (name .contains("result")) {
-			name = Paths.get(experimentDirectory).getParent().toString();
-		}
-		return name;
-	}
-	
+
 	// TODO
 	public boolean xmlSaveMCcapillaries() {
 		String xmlCapillaryFileName = experimentDirectory + File.separator + capillaries.getXMLNameToAppend();
@@ -774,9 +731,9 @@ public class Experiment {
 	}
 	
 	private String getXMLDrosoTrackLocation() {
-		String fileName = getFileLocation(ID_MCDROSOTRACK);
+		String fileName = findFileLocation(ID_MCDROSOTRACK);
 		if (fileName == null)  
-			fileName = getFileLocation("drosotrack.xml");
+			fileName = findFileLocation("drosotrack.xml");
 		return fileName;
 	}
 	

@@ -401,4 +401,40 @@ public class Cages {
 		}
 	}
 	
+	public int getLastIntervalFlyAlive(int cagenumber) {
+		int flypos = -1;
+		for (Cage cage: cageList) {
+			String cagenumberString = cage.cageRoi.getName().substring(4);
+			if (Integer.valueOf(cagenumberString) == cagenumber) {
+				flypos = cage.flyPositions.getLastIntervalAlive();
+				break;
+			}
+		}
+		return flypos;
+	}
+	
+	public boolean isFlyAlive(int cagenumber) {
+		boolean isalive = false;
+		for (Cage cage: cageList) {
+			String cagenumberString = cage.cageRoi.getName().substring(4);
+			if (Integer.valueOf(cagenumberString) == cagenumber) {
+				isalive = (cage.flyPositions.getLastIntervalAlive() > 0);
+				break;
+			}
+		}
+		return isalive;
+	}
+	
+	public boolean isDataAvailable(int cagenumber) {
+		boolean isavailable = false;
+		for (Cage cage: cageList) {
+			String cagenumberString = cage.cageRoi.getName().substring(4);
+			if (Integer.valueOf(cagenumberString) == cagenumber) {
+				isavailable = true;
+				break;
+			}
+		}
+		return isavailable;
+	}
+
 }

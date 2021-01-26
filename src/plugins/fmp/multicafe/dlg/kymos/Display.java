@@ -124,7 +124,7 @@ public class Display extends JPanel implements ViewerListener {
 			if (!actionAllowed || exp == null)
 				return;
 			String localString = (String) availableResultsCombo.getSelectedItem();
-			if (localString != null && !localString.contentEquals(exp.resultsSubPath)) {
+			if (localString != null && !localString.contentEquals(exp.binSubPath)) {
 				firePropertyChange("SEQ_CHGBIN", false, true);
 			}
 		} } );
@@ -302,12 +302,12 @@ public class Display extends JPanel implements ViewerListener {
 	public void updateResultsAvailable(Experiment exp) {
 		actionAllowed = false;
 		availableResultsCombo.removeAllItems();
-		List<String> list = new ArrayList<String> (exp.resultsDirList);
+		List<String> list = exp.fetchListOfResultsDirectories(exp.getExperimentDirectory(), exp.BIN);
 		for (int i = 0; i < list.size(); i++) {
 			String dirName = list.get(i);
 			availableResultsCombo.addItem(dirName);
 		}
-		availableResultsCombo.setSelectedItem(exp.resultsSubPath);
+		availableResultsCombo.setSelectedItem(exp.binSubPath);
 		actionAllowed = true;
 	}
 }

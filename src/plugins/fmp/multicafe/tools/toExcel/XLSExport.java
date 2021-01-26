@@ -533,10 +533,10 @@ public class XLSExport {
 			int ilastalive = 0;
 			if (cage.cageNFlies > 0) {
 				Experiment expi = exp;
-				while (expi.nextExperiment != null && expi.nextExperiment.isFlyAlive(cagenumber)) {
+				while (expi.nextExperiment != null && expi.nextExperiment.cages.isFlyAlive(cagenumber)) {
 					expi = expi.nextExperiment;
 				}
-				int lastIntervalFlyAlive = expi.getLastIntervalFlyAlive(cagenumber);
+				int lastIntervalFlyAlive = expi.cages.getLastIntervalFlyAlive(cagenumber);
 				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.camBinImage_Ms 
 						+ (expi.camFirstImage_Ms - expAll.camFirstImage_Ms));		
 				ilastalive = (int) (lastMinuteAlive / expAll.kymoBinColl_Ms);

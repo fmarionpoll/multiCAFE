@@ -24,7 +24,7 @@ public class Options_BuildSeries implements XMLPersistent {
 	public ArrayList<ROI2D> listROIStoBuildKymos= new ArrayList<ROI2D> ();
 	public ExperimentList	expList;
 	public Rectangle 		parent0Rect 		= null;
-	public String 			resultsSubPath 		= null;
+	public String 			binSubPath 			= null;
 	
 	public boolean 		loopRunning 			= false;	
 	

@@ -170,7 +170,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		detectFlies2Thread.options = new Options_BuildSeries();
 		Options_BuildSeries options = detectFlies2Thread.options;
 		
-		options.btrackWhite 		= true;
+		options.btrackWhite 	= true;
 		options.blimitLow 		= objectLowsizeCheckBox.isSelected();
 		options.blimitUp 		= objectUpsizeCheckBox.isSelected();
 		options.limitLow 		= (int) objectLowsizeSpinner.getValue();
@@ -180,13 +180,13 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
 		options.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
-		options.resultsSubPath 	= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
+		options.binSubPath 		= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
 		
 		options.forceBuildBackground = backgroundCheckBox.isSelected();
 		options.detectFlies		= detectCheckBox.isSelected();
 		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
 		options.t_firstMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
-		options.t_lastMs 			= parent0.paneSequence.tabAnalyze.getEndMs();
+		options.t_lastMs 		= parent0.paneSequence.tabAnalyze.getEndMs();
 		options.t_binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
 
 		options.expList = new ExperimentList(); 

@@ -32,7 +32,7 @@ import plugins.fmp.multicafe.workinprogress_gpu.MCSpots_;
 
 
 public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 22-Jan-2021", true, true, true, true);
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 26-Jan-2021", true, true, true, true);
 	public ExperimentList 	expList 		= new ExperimentList();
 	
 	public MCSequence_ 		paneSequence 	= new MCSequence_();
@@ -104,6 +104,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 			exp = new Experiment(filename);
 			expList.addExperiment(exp);
 		}
+		
 		exp.openSequenceCamData(filename);
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			updateViewerForSequenceCam(exp);

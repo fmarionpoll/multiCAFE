@@ -155,20 +155,20 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		else
 			options.expList.index1 = parent0.expList.currentExperimentIndex;
 
-		options.firstkymo 				= parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
+		options.firstkymo 		= parent0.paneKymos.tabDisplay.kymographNamesComboBox.getSelectedIndex();
 		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
 		options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
-		options.detectAllGulps 			= detectAllGulpsCheckBox.isSelected();
-		options.spanDiff				= (int) spanTransf2Spinner.getValue();
-		options.buildGulps				= detectGulpsCheckBox.isSelected();
+		options.detectAllGulps 	= detectAllGulpsCheckBox.isSelected();
+		options.spanDiff		= (int) spanTransf2Spinner.getValue();
+		options.buildGulps		= detectGulpsCheckBox.isSelected();
 		if (!detectGulps)
-			options.buildGulps = false;
-		options.buildDerivative			= buildDerivativeCheckBox.isSelected();
-		options.analyzePartOnly			= partCheckBox.isSelected();
-		options.startPixel				= (int) startSpinner.getValue();
-		options.endPixel				= (int) endSpinner.getValue();
-		options.parent0Rect 			= parent0.mainFrame.getBoundsInternal();
-		options.resultsSubPath 			= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
+			options.buildGulps 	= false;
+		options.buildDerivative	= buildDerivativeCheckBox.isSelected();
+		options.analyzePartOnly	= partCheckBox.isSelected();
+		options.startPixel		= (int) startSpinner.getValue();
+		options.endPixel		= (int) endSpinner.getValue();
+		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
+		options.binSubPath 		= (String) parent0.paneKymos.tabDisplay.availableResultsCombo.getSelectedItem() ;
 		
 		thread.addPropertyChangeListener(this);
 		thread.execute();

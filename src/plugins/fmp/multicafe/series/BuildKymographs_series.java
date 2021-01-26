@@ -54,9 +54,9 @@ public class BuildKymographs_series  extends BuildSeries  {
 			
 	private void saveComputation(Experiment exp) {	
 		if (options.doCreateResults_bin) {
-			exp.resultsSubPath = exp.getResultsDirectoryNameFromKymoFrameStep();
+			exp.binSubPath = exp.getBinNameFromKymoFrameStep();
 		}
-		String directory = exp.getExperimentDirectory();
+		String directory = exp.getDirectoryToSaveResults(); 
 		if (directory == null)
 			return;
 		

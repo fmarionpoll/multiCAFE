@@ -71,7 +71,7 @@ public class ExperimentList {
 		boolean flag = true;
 		for (Experiment exp: experimentList) {
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
-			exp.setImagesDirectory(exp.getRootWithNoResultString(exp.getExperimentDirectory()));
+			exp.setImagesDirectory(exp.getRootWithNoResultNorBinString(exp.getExperimentDirectory()));
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())
 				maxSizeOfCapillaryArrays = exp.capillaries.capillariesArrayList.size();

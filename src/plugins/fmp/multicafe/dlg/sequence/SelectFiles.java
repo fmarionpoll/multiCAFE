@@ -44,7 +44,8 @@ public class SelectFiles extends JPanel {
 	private JButton 	addAllButton			= new JButton("Add all");
 	private JList<String> directoriesJList		= new JList<String>(new DefaultListModel<String>());
 	private MultiCAFE 	parent0 				= null;
-	Open parent1 = null;
+			Open 		parent1 				= null;
+
 	
 	
 	public void initialize (MultiCAFE parent0) {
