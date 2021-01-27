@@ -46,6 +46,8 @@ public class Directories {
 	}
 	
 	public static List<String> getSubListContainingString (List<Path> subfolders, String filter) {
+		if (subfolders == null)
+			return null;
 		HashSet<String> dirList = new HashSet<String>();
 		for (Path dirPath: subfolders) {
 			String subString = dirPath.toString();
@@ -59,7 +61,6 @@ public class Directories {
 	public static List<Path> getAllSubPaths(String directory, int depth) {
 		Path pathExperimentDir = Paths.get(directory);
 		List<Path> subfolders = null;
-	
 		try {
 			subfolders = Files.walk(pathExperimentDir, depth) 
 			    .filter(Files::isDirectory)
@@ -68,8 +69,8 @@ public class Directories {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		subfolders.remove(0);
+		if (subfolders != null)
+			subfolders.remove(0);
 		return subfolders;
 	}
 	

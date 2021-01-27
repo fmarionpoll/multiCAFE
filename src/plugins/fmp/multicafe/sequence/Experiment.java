@@ -147,7 +147,8 @@ public class Experiment {
 	}
 	
 	public void setImagesDirectory(String name) {
-		imagesDirectory = name;
+		imagesDirectory = getParentIf(name, BIN);
+		imagesDirectory = getParentIf(imagesDirectory, RESULTS);
 	}
 	
 	public String getImagesDirectory() {
@@ -286,6 +287,8 @@ public class Experiment {
 		// any directory (below)
 		Path dirPath = Paths.get(experimentDirectory);
 		List<Path> subFolders = Directories.getAllSubPaths(experimentDirectory, 1);
+		if (subFolders == null)
+			return null;
 		List<String> resultsDirList = Directories.getSubListContainingString(subFolders, RESULTS);
 		List<String> binDirList = Directories.getSubListContainingString(subFolders, BIN);
 		resultsDirList.addAll(binDirList);

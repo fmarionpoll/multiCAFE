@@ -54,7 +54,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private MultiCAFE 		parent0 		= null;
 	private	SelectFiles2 	dialogSelect2 	= null;
 			String			name			= null;
-			String 			imagesPath		= null;
+			String 			imagesDirectory		= null;
 	
 	
 	
@@ -210,7 +210,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			}
 		}
 		else if (event.getPropertyName().equals("DIRECTORY_SELECTED")) {
-			name = imagesPath + File.separator + name;
+			name = imagesDirectory + File.separator + name;
 			dialogSelect2.close();
 			openSeqCamData(name);
 		}
@@ -219,12 +219,14 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private void openSeqCamDataCallDialog() {
 		Experiment exp = new Experiment();
 		exp.seqCamData.loadSequenceFromDialog(null);
-		
-	    imagesPath = exp.seqCamData.getSeqDataDirectory();
-	    if (imagesPath == null)
+		// make sure path does not include bin or result
+	    String  imagesDir = exp.seqCamData.getSeqDataDirectory();
+	    exp.setImagesDirectory(imagesDir);
+	    imagesDirectory = exp.getImagesDirectory();
+	    if (imagesDirectory == null)
 	    	return;
-	    List<String> expList = Directories.fetchListOfSubDirectoriesMatchingFilter(imagesPath, exp.RESULTS);
-	    String name = imagesPath;
+	    List<String> expList = Directories.fetchListOfSubDirectoriesMatchingFilter(imagesDirectory, exp.RESULTS);
+	    String name = imagesDirectory;
 	    if (expList.size() > 0) {
 	    	dialogSelect2 = new SelectFiles2();
 	    	dialogSelect2.initialize(this, expList);
