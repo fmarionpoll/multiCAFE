@@ -10,10 +10,8 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -25,6 +23,7 @@ import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe.tools.Comparators;
+import plugins.fmp.multicafe.tools.Directories;
 import plugins.fmp.multicafe.tools.ImageTransformTools;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DShape;
@@ -247,72 +246,6 @@ public class Experiment {
 		}
 		return directory;
 	}
-		
-	public List<String> fetchListOfSubDirectoriesMatchingFilter(String directory, String filter) {	
-		List<Path> subfolders = getAllSubPaths(directory, 1);
-		if (subfolders == null)
-			return null;
-		List<String> dirList = getSubListContainingString(subfolders, filter);
-		Collections.sort(dirList, String.CASE_INSENSITIVE_ORDER);
-		return dirList;
-	}
-	
-	public HashSet<String> getDirectoriesWithFilesType (String rootDirectory, String filter) {
-		HashSet<String> hSet = new HashSet<String>();
-		try {
-			Files.walk(Paths.get(rootDirectory))
-				.filter(Files::isRegularFile)
-				.filter(p -> p.getFileName().toString().toLowerCase().endsWith(filter))
-				.forEach(p->hSet.add( p.toFile().getParent().toString()));
-		} catch (IOException e) {
-			// Auto-generated catch block
-			e.printStackTrace();
-		}
-		return hSet;
-	}
-	
-	public List<String>  reduceFullNameToLastDirectory(List<String> dirList) {	
-		List<String> shortList = new ArrayList<String> (dirList.size());
-		for (String name: dirList) {
-			Path pathName = Paths.get(name);
-			shortList.add(pathName.getName(pathName.getNameCount()-1).toString());
-		}
-		Collections.sort(shortList, String.CASE_INSENSITIVE_ORDER);
-		return shortList;
-	}
-	
-	private List<Path> getAllSubPaths(String directory, int depth) {
-		Path pathExperimentDir = Paths.get(directory);
-		List<Path> subfolders = null;
-		try {
-			subfolders = Files.walk(pathExperimentDir, depth) 
-		        .filter(Files::isDirectory)
-		        .collect(Collectors.toList());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		subfolders.remove(0);
-		return subfolders;
-	}
-	
-	private List<String> getSubListContainingString (List<Path> subfolders, String filter) {
-		List<String> dirList = new ArrayList<String>();
-		for (Path dirPath: subfolders) {
-			String subString = dirPath.toString();
-			if (subString.contains(filter)) {
-				boolean found = false;
-				for (String item: dirList) {
-					if (item.equals(subString)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found)
-					dirList.add(subString);
-			}
-		}
-		return dirList;
-	}
 	
 	public int getBinStepFromDirectoryName(String resultsPath) {
 		int step = -1;
@@ -352,9 +285,9 @@ public class Experiment {
 		
 		// any directory (below)
 		Path dirPath = Paths.get(experimentDirectory);
-		List<Path> subFolders = getAllSubPaths(experimentDirectory, 1);
-		List<String> resultsDirList = getSubListContainingString(subFolders, RESULTS);
-		List<String> binDirList = getSubListContainingString(subFolders, BIN);
+		List<Path> subFolders = Directories.getAllSubPaths(experimentDirectory, 1);
+		List<String> resultsDirList = Directories.getSubListContainingString(subFolders, RESULTS);
+		List<String> binDirList = Directories.getSubListContainingString(subFolders, BIN);
 		resultsDirList.addAll(binDirList);
 		for (String resultsSub : resultsDirList) {
 			Path dir = dirPath.resolve(resultsSub+ File.separator + xmlFileName);

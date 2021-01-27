@@ -6,16 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JList;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
 
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
+import plugins.fmp.multicafe.tools.Directories;
 
 
 
@@ -27,9 +25,12 @@ public class SelectFiles2 extends JPanel {
 	private static final long serialVersionUID = 4172927636287523049L;
 	
 	private	IcyFrame 	dialogFrame 			= null;
-	private JButton		newResultsButton		= new JButton("Add new directory");
-	private JButton 	openSelectedButton		= new JButton("Open selected");
-	private JList<String> directoriesJList		= new JList<String>(new DefaultListModel<String>());
+	private	JLabel		comment1				= new JLabel("Select  existing item or enter");
+	private	JLabel		comment2				= new JLabel("'results' name to create");
+	private	JLabel		comment3				= new JLabel("a new experiment");
+
+	private JButton 	openSelectedButton		= new JButton("Validate choice");
+	private JComboBox<String> dirJCombo			= new JComboBox<String>();
 			MCSequence_ parent1					= null;
 	
 	
@@ -37,23 +38,21 @@ public class SelectFiles2 extends JPanel {
 		parent1 = paneSequence;
 		addPropertyChangeListener(parent1);
 
-		dialogFrame = new IcyFrame ("Select directory or create new one", true, true);
+		List<String> list = Directories.reduceFullNameToLastDirectory(expList);
+		for (String fileName: list) {
+			dirJCombo.addItem(fileName);
+		}
+		
+		dialogFrame = new IcyFrame ("Select or Create", true, true);
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
 		dialogFrame.setLayout(new BorderLayout());
 		dialogFrame.add(mainPanel, BorderLayout.CENTER);
 		
-		directoriesJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		directoriesJList.setLayoutOrientation(JList.VERTICAL);
-		directoriesJList.setVisibleRowCount(20);
-		for (String fileName: expList) {
-			addNameToListIfNew(fileName);
-		}
-		mainPanel.add(GuiUtil.besidesPanel(openSelectedButton, newResultsButton));
-		
-		JScrollPane scrollPane = new JScrollPane(directoriesJList);
-		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		mainPanel.add(GuiUtil.besidesPanel(scrollPane));	
+		mainPanel.add(comment1);
+		mainPanel.add(comment2);
+		mainPanel.add(comment3);
+		mainPanel.add(dirJCombo);
+		mainPanel.add(openSelectedButton);
 		
 		addActionListeners();
 		
@@ -63,6 +62,8 @@ public class SelectFiles2 extends JPanel {
 		dialogFrame.center();
 		dialogFrame.setVisible(true);
 
+		dirJCombo.setEditable(true);
+		dirJCombo.showPopup();	
 	}
 	
 	void close() {
@@ -73,28 +74,10 @@ public class SelectFiles2 extends JPanel {
 		openSelectedButton.addActionListener(new ActionListener()  {
 	        @Override
 	        public void actionPerformed(ActionEvent arg0) {
-	        	parent1.name = directoriesJList.getSelectedValue();
+	        	parent1.name = (String) dirJCombo.getSelectedItem();
 				firePropertyChange("DIRECTORY_SELECTED", false, true);
+				close();
 	        }});
-
-		 
 	}
-
-	private void addNameToListIfNew(String fileName) {	
-		int ilast = ((DefaultListModel<String>) directoriesJList.getModel()).getSize();
-		boolean found = false;
-		for (int i=0; i < ilast; i++) {
-			String oo = ((DefaultListModel<String>) directoriesJList.getModel()).getElementAt(i);
-			if (oo.equalsIgnoreCase (fileName)) {
-				found = true;
-				break;
-			}
-		}
-		if (!found)
-			((DefaultListModel<String>) directoriesJList.getModel()).addElement(fileName);
-	}
-
-
-	
 
 }

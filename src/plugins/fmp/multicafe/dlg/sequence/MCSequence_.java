@@ -29,6 +29,7 @@ import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
 import plugins.fmp.multicafe.sequence.SequenceNameListRenderer;
+import plugins.fmp.multicafe.tools.Directories;
 
 
 
@@ -53,6 +54,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private MultiCAFE 		parent0 		= null;
 	private	SelectFiles2 	dialogSelect2 	= null;
 			String			name			= null;
+			String 			imagesPath		= null;
 	
 	
 	
@@ -131,7 +133,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	private void defineActionListeners() {
-		expListComboBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		expListComboBox.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 			if (expListComboBox.getItemCount() == 0 || tabInfosSeq.disableChangeFile) {
 				updateBrowseInterface();
 				return;
@@ -155,13 +158,15 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			updateBrowseInterface();
 		}});
 		
-		nextButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		nextButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 			if (expListComboBox.getSelectedIndex() < (expListComboBox.getItemCount() -1)) 
 				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()+1);
 			updateBrowseInterface();
 		}});
 		
-		previousButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		previousButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 			if (expListComboBox.getSelectedIndex() > 0) 
 				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()-1);
 			updateBrowseInterface();
@@ -206,6 +211,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		}
 		else if (event.getPropertyName().equals("DIRECTORY_SELECTED")) {
 			dialogSelect2.close();
+			name = imagesPath + File.separator + name;
 			openSeqCamData(name);
 		}
 	}
@@ -214,10 +220,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		Experiment exp = new Experiment();
 		exp.seqCamData.loadSequenceFromDialog(null);
 		
-	    String imagesPath = exp.seqCamData.getSeqDataDirectory();
+	    imagesPath = exp.seqCamData.getSeqDataDirectory();
 	    if (imagesPath == null)
 	    	return;
-	    List<String> expList = exp.fetchListOfSubDirectoriesMatchingFilter(imagesPath, exp.RESULTS);
+	    List<String> expList = Directories.fetchListOfSubDirectoriesMatchingFilter(imagesPath, exp.RESULTS);
 	    String name = imagesPath;
 	    if (expList.size() > 0) {
 	    	dialogSelect2 = new SelectFiles2();

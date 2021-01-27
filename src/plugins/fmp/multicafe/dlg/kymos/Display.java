@@ -31,6 +31,7 @@ import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.tools.Directories;
 
 
 
@@ -301,9 +302,8 @@ public class Display extends JPanel implements ViewerListener {
 	public void updateResultsAvailable(Experiment exp) {
 		actionAllowed = false;
 		binsCombo.removeAllItems();
-		HashSet <String> hSet = exp.getDirectoriesWithFilesType (exp.getExperimentDirectory(), ".tiff");
-		List<String> list = exp.reduceFullNameToLastDirectory(new ArrayList<String>(hSet));
-//		List<String> list = exp.reduceFullNameToLastDirectory(exp.fetchListOfSubDirectoriesMatchingFilter(exp.getExperimentDirectory(), exp.BIN));
+		HashSet <String> hSet = Directories.getDirectoriesWithFilesType (exp.getExperimentDirectory(), ".tiff");
+		List<String> list = Directories.reduceFullNameToLastDirectory(new ArrayList<String>(hSet));
 		for (int i = 0; i < list.size(); i++) {
 			String dirName = list.get(i);
 			if (dirName == null)
