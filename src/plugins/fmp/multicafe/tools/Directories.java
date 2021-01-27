@@ -46,22 +46,14 @@ public class Directories {
 	}
 	
 	public static List<String> getSubListContainingString (List<Path> subfolders, String filter) {
-		List<String> dirList = new ArrayList<String>();
+		HashSet<String> dirList = new HashSet<String>();
 		for (Path dirPath: subfolders) {
 			String subString = dirPath.toString();
 			if (subString.contains(filter)) {
-				boolean found = false;
-				for (String item: dirList) {
-					if (item.equals(subString)) {
-						found = true;
-						break;
-					}
-				}
-				if (!found)
-					dirList.add(subString);
+				dirList.add(subString);
 			}
 		}
-		return dirList;
+		return new ArrayList<String>(dirList);
 	}
 	
 	public static List<Path> getAllSubPaths(String directory, int depth) {

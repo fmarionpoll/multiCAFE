@@ -210,8 +210,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 			}
 		}
 		else if (event.getPropertyName().equals("DIRECTORY_SELECTED")) {
-			dialogSelect2.close();
 			name = imagesPath + File.separator + name;
+			dialogSelect2.close();
 			openSeqCamData(name);
 		}
 	}
