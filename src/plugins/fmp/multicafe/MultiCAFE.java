@@ -147,16 +147,13 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		if (flag)
 			paneCapillaries.displayCapillariesInformation(exp);
 
-		if (bLoadCapillaries) {
-			paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
-		}
-
 		if (bLoadKymographs) {
-			if (paneKymos.tabFile.loadDefaultKymos(exp)) {
-		        paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp.capillaries.capillariesArrayList);
-			}
+			paneKymos.tabFile.loadDefaultKymos(exp); 
+			if (bLoadCapillaries) 
+				paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
+		    paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp);
 			paneSequence.tabIntervals.displayCamDataIntervals(exp);
-//			paneKymos.tabIntervals.displayKymoIntervals(exp);
+			exp.transferCapillariesToROIs();
 
 			if (paneSequence.tabOpen.graphsCheckBox.isSelected())
 				SwingUtilities.invokeLater(new Runnable() { public void run() {

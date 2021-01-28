@@ -40,7 +40,7 @@ public class Directories {
 		return hSet;
 	}
 	
-	static public List<String> fetchListOfSubDirectoriesMatchingFilter(String directory, String filter) {	
+	static public List<String> fetchSubDirectoriesMatchingFilter(String directory, String filter) {	
 		List<Path> subfolders = getAllSubPaths(directory, 1);
 		if (subfolders == null)
 			return null;

@@ -62,6 +62,8 @@ public class LoadSave extends JPanel {
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
 				loadDefaultKymos(exp);
+				parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
+				exp.seqKymos.transferCapillariesMeasuresToKymos(exp.capillaries);
 				firePropertyChange("KYMOS_OPEN", false, true);
 			}
 		}});
@@ -122,6 +124,52 @@ public class LoadSave extends JPanel {
 			return flag;
 		}
 		
+		stopPendingLoads(seqKymos);
+		checkKymosDirectory(exp);
+		
+		List<String> myList = exp.seqKymos.loadListOfKymographsFromCapillaries(exp.getKymosDirectory(), exp.capillaries);
+//		if (seqKymos.isInterrupted_loadImages) {
+//			seqKymos.isInterrupted_loadImages = false;
+//			return false;
+//		}
+	
+		flag = seqKymos.loadImagesFromList(myList, true);
+//		if (seqKymos.isInterrupted_loadImages) {
+//			seqKymos.isInterrupted_loadImages = false;
+//			return false;
+//		}
+		return flag;
+	}
+	
+	private void checkKymosDirectory(Experiment exp) {
+		String kymosSubDirectory = exp.getBinSubDirectory();
+		if (kymosSubDirectory == null) {
+			List<String> listTIFFlocations = exp.getListOfSubDirectoriesWithTIFF();
+			if (listTIFFlocations.size() < 1)
+				return;
+			boolean found = false;
+			for (String subDir : listTIFFlocations) {
+				if (subDir .contains(exp.RESULTS)) {
+					kymosSubDirectory = subDir;
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				int lowest = exp.getBinStepFromDirectoryName( listTIFFlocations.get(0)) + 1;
+				for (String subDir: listTIFFlocations) {
+					int val = exp.getBinStepFromDirectoryName( subDir);
+					if (val < lowest) {
+						lowest = val;
+						kymosSubDirectory = subDir;
+					}
+				}
+			}
+		}
+		exp.setBinSubDirectory(kymosSubDirectory);
+	}
+	
+	private void stopPendingLoads(SequenceKymos seqKymos) {
 		if (seqKymos.isRunning_loadImages) {
 			seqKymos.isInterrupted_loadImages = true;
 			for (int i= 0; i < 10; i++) {
@@ -134,21 +182,5 @@ public class LoadSave extends JPanel {
 					break;
 			}
 		}
-
-		String kymosDirectory = exp.getKymosDirectory();
-		List<String> myList = exp.seqKymos.loadListOfKymographsFromCapillaries(kymosDirectory, exp.capillaries);
-		if (seqKymos.isInterrupted_loadImages) {
-			seqKymos.isInterrupted_loadImages = false;
-			return false;
-		}
-	
-		flag = seqKymos.loadImagesFromList(myList, true);
-		if (seqKymos.isInterrupted_loadImages) {
-			seqKymos.isInterrupted_loadImages = false;
-			return false;
-		}
-
-		seqKymos.transferCapillariesMeasuresToKymos(exp.capillaries);
-		return flag;
 	}
 }

@@ -86,7 +86,7 @@ public class ROI2DUtilities  {
 		}
 	}
 	
-	public static void removeROIsWithMissingChar(List<ROI2D> listRois, char character) {
+	public static void removeROIsMissingChar(List<ROI2D> listRois, char character) {
 		Iterator <ROI2D> iterator = listRois.iterator();
 		while(iterator.hasNext()) {
 			ROI2D roi = iterator.next();

@@ -157,10 +157,11 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	public void transferCapillariesMeasuresToKymos(Capillaries capillaries) {
 		List<ROI2D> seqRoisList = seq.getROI2Ds(false);
-		ROI2DUtilities.removeROIsWithMissingChar(seqRoisList, '_');
+		ROI2DUtilities.removeROIsMissingChar(seqRoisList, '_');
 		List<ROI2D> newRoisList = new ArrayList<ROI2D>();
-		for (Capillary cap: capillaries.capillariesArrayList) {
-			List<ROI2D> listOfRois = cap.transferMeasuresToROIs();
+		int ncapillaries = capillaries.capillariesArrayList.size();
+		for (int i=0; i < ncapillaries; i++) {
+			List<ROI2D> listOfRois = capillaries.capillariesArrayList.get(i).transferMeasuresToROIs();
 			newRoisList.addAll(listOfRois);
 		}
 		ROI2DUtilities.mergeROIsListNoDuplicate(seqRoisList, newRoisList, seq);
@@ -177,32 +178,14 @@ public class SequenceKymos extends SequenceCamData  {
 	// ----------------------------
 
 	public List <String> loadListOfKymographsFromCapillaries(String dir, Capillaries capillaries) {
-		isRunning_loadImages = true;
 		String directoryFull = dir +File.separator ;	
-		List<String> myListOfFileNames = new ArrayList<String>(capillaries.capillariesArrayList.size());
-		Collections.sort(capillaries.capillariesArrayList);
-		for (Capillary cap: capillaries.capillariesArrayList) {
-			if (isInterrupted_loadImages)
-				break;
-			String tempname = directoryFull+cap.getCapillaryName()+ ".tiff";
-			boolean found = isFileFound(tempname);
-			if (!found) {
-				tempname = directoryFull+cap.roi.getName()+ ".tiff";
-				found = isFileFound(tempname);
-			}
-			if (found) {
-				cap.filenameTIFF = tempname;
-				myListOfFileNames.add(tempname);
-			}
+		int ncapillaries = capillaries.capillariesArrayList.size();
+		List<String> myListOfFileNames = new ArrayList<String>(ncapillaries);
+		for (int i=0; i< ncapillaries; i++) {
+			String tempname = directoryFull+ capillaries.capillariesArrayList.get(i).getCapillaryName()+ ".tiff";
+			myListOfFileNames.add(tempname);
 		}
-		isRunning_loadImages = false;
-		isInterrupted_loadImages = false;
 		return myListOfFileNames;
-	}
-	
-	private boolean isFileFound(String tempname) {
-		File tempfile = new File(tempname);
-		return tempfile.exists(); 
 	}
 	
 	// -------------------------
@@ -217,21 +200,21 @@ public class SequenceKymos extends SequenceCamData  {
 			for (String name : myListOfFileNames)
 				filesArray.add(new File(name));
 			List<Rectangle> rectList = getMaxSizeofTiffFiles(filesArray);
-			if (isInterrupted_loadImages) {
-				isRunning_loadImages = false;
-				return false;
-			}
+//			if (isInterrupted_loadImages) {
+//				isRunning_loadImages = false;
+//				return false;
+//			}
 			adjustImagesToMaxSize(filesArray, rectList);
-			if (isInterrupted_loadImages) {
-				isRunning_loadImages = false;
-				return false;
-			}
+//			if (isInterrupted_loadImages) {
+//				isRunning_loadImages = false;
+//				return false;
+//			}
 		}
 		loadSequenceOfImagesFromList(myListOfFileNames, true);
-		if (isInterrupted_loadImages) {
-			isRunning_loadImages = false;
-			return false;
-		}
+//		if (isInterrupted_loadImages) {
+//			isRunning_loadImages = false;
+//			return false;
+//		}
 		setParentDirectoryAsCSCamFileName();
 		status = EnumStatus.KYMOGRAPH;
 		isRunning_loadImages = false;
@@ -277,9 +260,9 @@ public class SequenceKymos extends SequenceCamData  {
 		progress.setLength(files.size());
 		
 		for (int i= 0; i < files.size(); i++) {
-			if (isInterrupted_loadImages) {
-				return;
-			}
+//			if (isInterrupted_loadImages) {
+//				return;
+//			}
 			if (rectList.get(i).width == imageWidthMax && rectList.get(i).height == imageHeightMax)
 				continue;
 			

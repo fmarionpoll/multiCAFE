@@ -223,7 +223,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	    if (imagesDirectory == null)
 	    	return;
 	    exp.setImagesDirectory(imagesDirectory);
-	    List<String> expList = Directories.fetchListOfSubDirectoriesMatchingFilter(imagesDirectory, exp.RESULTS);
+	    List<String> expList = Directories.fetchSubDirectoriesMatchingFilter(imagesDirectory, exp.RESULTS);
 	    String name = imagesDirectory;
 	    if (expList.size() > 0) {
 	    	dialogSelect2 = new SelectFiles2();

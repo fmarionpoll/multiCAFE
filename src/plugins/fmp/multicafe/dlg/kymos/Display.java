@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -31,7 +30,6 @@ import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
-import plugins.fmp.multicafe.tools.Directories;
 
 
 
@@ -131,12 +129,16 @@ public class Display extends JPanel implements ViewerListener {
 		}});
 	}
 		
-	public void transferCapillaryNamesToComboBox(List <Capillary> capillaryArrayList) {
+	public void transferCapillaryNamesToComboBox(Experiment exp ) {
 		SwingUtilities.invokeLater(new Runnable() { public void run() {
+			
 			kymosComboBox.removeAllItems();
-			Collections.sort(capillaryArrayList); 
-			for (Capillary cap: capillaryArrayList) 
+			Collections.sort(exp.capillaries.capillariesArrayList); 
+			int ncapillaries = exp.capillaries.capillariesArrayList.size();
+			for (int i=0; i< ncapillaries; i++) {
+				Capillary cap = exp.capillaries.capillariesArrayList.get(i);
 				kymosComboBox.addItem(cap.roi.getName());
+			}
 		}});	
 	}
 	
@@ -302,8 +304,7 @@ public class Display extends JPanel implements ViewerListener {
 	public void updateResultsAvailable(Experiment exp) {
 		actionAllowed = false;
 		binsCombo.removeAllItems();
-		HashSet <String> hSet = Directories.getDirectoriesWithFilesType (exp.getExperimentDirectory(), ".tiff");
-		List<String> list = Directories.reduceFullNameToLastDirectory(new ArrayList<String>(hSet));
+		List<String> list = exp.getListOfSubDirectoriesWithTIFF();
 		for (int i = 0; i < list.size(); i++) {
 			String dirName = list.get(i);
 			if (dirName == null || dirName .contains(exp.RESULTS))
@@ -319,7 +320,7 @@ public class Display extends JPanel implements ViewerListener {
 	
 	public String getBinSubdirectory() {
 		String name = (String) binsCombo.getSelectedItem();
-		if (!name .contains("bin"))
+		if (!name .contains("bin_"))
 			name = null;
 		return name;
 	}

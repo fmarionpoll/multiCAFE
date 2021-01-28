@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class Experiment {
 	
 	
 	public final String 	RESULTS					= "results";
-	public final String 	BIN						= "bin";
+	public final String 	BIN						= "bin_";
 	
 	private String			imagesDirectory			= null;
 	private String			experimentDirectory		= null;
@@ -227,7 +228,13 @@ public class Experiment {
 	}
 
 	public String getBinNameFromKymoFrameStep() {
-		return BIN + "_"+kymoBinCol_Ms/1000;
+		return BIN + kymoBinCol_Ms/1000;
+	}
+	
+	public List<String> getListOfSubDirectoriesWithTIFF() {
+		HashSet <String> hSet = Directories.getDirectoriesWithFilesType (getExperimentDirectory(), ".tiff");
+		List<String> list = Directories.reduceFullNameToLastDirectory(new ArrayList<String>(hSet));
+		return list;
 	}
 	
 	public String getDirectoryToSaveResults() {
@@ -251,10 +258,10 @@ public class Experiment {
 	public int getBinStepFromDirectoryName(String resultsPath) {
 		int step = -1;
 		if (resultsPath.contains(BIN)) {
-			if (resultsPath.length() < (BIN.length() +2)) {
+			if (resultsPath.length() < (BIN.length() +1)) {
 				step = (int) kymoBinCol_Ms;
 			} else {
-				step = Integer.valueOf(resultsPath.substring(BIN.length()+1))*1000;
+				step = Integer.valueOf(resultsPath.substring(BIN.length()))*1000;
 			}
 		}
 		return step;

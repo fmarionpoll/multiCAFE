@@ -125,10 +125,12 @@ public class Capillaries {
 	
 	public boolean xmlLoadCapillaries_Measures2(String directory) {
 		boolean flag = true;
-		for (Capillary cap: capillariesArrayList) {
-			String csFile = directory + File.separator + cap.getCapillaryName() + ".xml";
+		int ncapillaries = capillariesArrayList.size();
+		for (int i=0; i< ncapillaries; i++) {
+			String csFile = directory + File.separator + capillariesArrayList.get(i).getCapillaryName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
+			Capillary cap = capillariesArrayList.get(i);
 			flag &= cap.loadFromXML(node);
 		}
 		return flag;
