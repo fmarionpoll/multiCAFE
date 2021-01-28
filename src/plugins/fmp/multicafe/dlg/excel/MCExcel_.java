@@ -165,7 +165,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	}
 	
 	private XLSExportOptions getGulpsOptions() {
-		XLSExportOptions options = new XLSExportOptions();
+		XLSExportOptions options= new XLSExportOptions();
 		options.topLevel 		= false; 
 		options.topLevelDelta   = false;
 		options.bottomLevel 	= false; 
@@ -185,8 +185,8 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	
 	private void getCommonOptions(XLSExportOptions options) {
 		options.transpose 		= tabOptions.transposeCheckBox.isSelected();
-		options.buildExcelStepMs = tabOptions.getExcelBuildStep() ;
-		options.buildExcelUnitMs = tabOptions.binUnit.getMsUnitValue();
+		options.buildExcelStepMs= tabOptions.getExcelBuildStep() ;
+		options.buildExcelUnitMs= tabOptions.binUnit.getMsUnitValue();
 		options.fixedIntervals 	= tabOptions.isFixedFrame.isSelected();
 		options.startAll_Ms 	= tabOptions.getStartAllMs();
 		options.endAll_Ms 		= tabOptions.getEndAllMs();
@@ -195,6 +195,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		options.padIntervals 	= tabOptions.padIntervalsCheckBox.isSelected();
 		options.absoluteTime	= tabOptions.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= tabOptions.exportAllFilesCheckBox.isSelected();
+		
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);
 		options.expList.expListBinSubPath = parent0.paneKymos.tabDisplay.getBinSubdirectory() ;

@@ -101,17 +101,10 @@ public class Experiment {
 		seqKymos   = new SequenceKymos();
 	}
 	
-	public Experiment(String filename) {
+	public Experiment(String expDirectory) {
 		seqCamData = new SequenceCamData();
 		seqKymos   = new SequenceKymos();
-		
-		File f = new File(filename);
-		String parent = f.getAbsolutePath();
-		if (!f.isDirectory()) {
-			Path path = Paths.get(parent);
-			parent = path.getParent().toString();
-		}
-		this.experimentDirectory = parent;
+		this.experimentDirectory = expDirectory;
 	}
 	
 	public Experiment(SequenceCamData seqCamData) {
@@ -218,7 +211,7 @@ public class Experiment {
 	}
 		
 	public SequenceCamData openSequenceCamData() {
-		loadImagesForSequenceCamData(experimentDirectory);
+		loadImagesForSequenceCamData(imagesDirectory);
 		xmlLoadMCExperiment();
 		loadFileIntervalsFromSeqCamData();
 		return seqCamData;
@@ -354,7 +347,7 @@ public class Experiment {
 	        comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
 		}
 		
-		imagesDirectory = XMLUtil.getElementValue(node, ID_IMAGESDIRECTORY, imagesDirectory);
+		//imagesDirectory = XMLUtil.getElementValue(node, ID_IMAGESDIRECTORY, imagesDirectory);
 		return true;
 	}
 	// TODO

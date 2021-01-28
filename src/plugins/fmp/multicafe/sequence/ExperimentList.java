@@ -71,7 +71,9 @@ public class ExperimentList {
 		boolean flag = true;
 		for (Experiment exp: experimentList) {
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
-			exp.setImagesDirectory(exp.getRootWithNoResultNorBinString(exp.getExperimentDirectory()));
+//			String expDirectory = exp.getExperimentDirectory();
+//			String imagesDirectory = exp.getRootWithNoResultNorBinString(expDirectory);
+//			exp.setImagesDirectory(imagesDirectory);
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())
 				maxSizeOfCapillaryArrays = exp.capillaries.capillariesArrayList.size();
@@ -203,6 +205,8 @@ public class ExperimentList {
 		
 		if (!exists) {
 			exp = new Experiment(expDirectory0);
+			exp.setExperimentDirectory(expDirectory0);
+			exp.setImagesDirectory(exp.getImagesDirectoryAsParentFromFileName(expDirectory0));
 			int experimentNewID  = 0;
 			for (Experiment expi: experimentList) {
 				if (expi.experimentID > experimentNewID)
@@ -216,12 +220,12 @@ public class ExperimentList {
 	
 	private String getDirectoryName(String filename) {
 		File f0 = new File(filename);
-		String parent0 = f0.getAbsolutePath();
+		String directoryPathName = f0.getAbsolutePath();
 		if (!f0.isDirectory()) {
-			Path path = Paths.get(parent0);
-			parent0 = path.getParent().toString();
+			Path path = Paths.get(directoryPathName);
+			directoryPathName = path.getParent().toString();
 		}
-		return parent0;
+		return directoryPathName;
 	}
 	
 }

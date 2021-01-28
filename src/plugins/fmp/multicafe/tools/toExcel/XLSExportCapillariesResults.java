@@ -18,7 +18,7 @@ public class XLSExportCapillariesResults extends XLSExport {
 		int column = 1;
 		int iSeries = 0;
 		boolean loadCapillaries = true;
-		boolean loadDrosoTrack = true; //options.onlyalive;
+		boolean loadDrosoTrack = true;
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
 		expList.chainExperiments(options.collateSeries);
 		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
