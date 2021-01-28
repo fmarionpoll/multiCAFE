@@ -23,7 +23,7 @@ public class Open extends JPanel implements PropertyChangeListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 6565346204580890307L;
-	private JButton 	newButton				= new JButton("New...");
+
 	private JButton 	openButton				= new JButton("Open...");
 	private JButton 	addButton				= new JButton("Add...");
 	private JButton		searchButton 			= new JButton("Search...");
@@ -44,8 +44,6 @@ public class Open extends JPanel implements PropertyChangeListener {
 		layout.setVgap(0);
 		
 		JPanel panel1 = new JPanel(layout);
-		panel1.add(newButton);
-		newButton.setEnabled(false);
 		panel1.add(openButton);
 		panel1.add(addButton);
 		panel1.add( searchButton);
