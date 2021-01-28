@@ -44,7 +44,7 @@ public class SelectFiles2 extends JPanel {
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(comment, BorderLayout.PAGE_START);
 		mainPanel.add(dirJCombo, BorderLayout.CENTER);
-		mainPanel.add(validateButton, BorderLayout.LINE_END);
+		mainPanel.add(validateButton, BorderLayout.PAGE_END);
 	
 		dialogFrame.pack();
 		dialogFrame.addToDesktopPane();

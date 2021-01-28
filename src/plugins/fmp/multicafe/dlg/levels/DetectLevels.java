@@ -213,7 +213,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		options.detectL 			= leftCheckBox.isSelected();
 		options.detectR				= rightCheckBox.isSelected();
 		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
-		options.binSubPath 			= (String) parent0.paneKymos.tabDisplay.binsCombo.getSelectedItem() ;
+		options.binSubPath 			= (String) parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
 		return options;
 	}
 	

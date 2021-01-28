@@ -15,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import icy.gui.dialog.MessageDialog;
 import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
@@ -156,8 +157,6 @@ public class XLSExport {
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGECOMMENT.getValue(), transpose, name1);
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, sheetName);
 			}
-			
-			
 		}
 		pt.x = col0;
 		pt.y = rowmax +1;
@@ -356,56 +355,65 @@ public class XLSExport {
 		
 		while (expi != null) {
 			int nOutputFrames = (int) ((expi.kymoLastCol_Ms - expi.kymoFirstCol_Ms) / options.buildExcelStepMs +1);
-			XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
-			
-			switch (xlsOption) {
-				case TOPRAW:
-				case BOTTOMLEVEL:
-				case ISGULPS:
-				case TTOGULP:
-				case TTOGULP_LR:
-					for (Capillary cap: expi.capillaries.capillariesArrayList) {
-						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
-						results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
-						resultsArrayList.add(results);
-					}
-					break;
-					
-				case TOPLEVEL:
-				case TOPLEVEL_LR:
-				case TOPLEVELDELTA:
-				case TOPLEVELDELTA_LR:
-					for (Capillary cap: expi.capillaries.capillariesArrayList) {
-						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
-						if (options.t0) 
-							results.data = exp.seqKymos.subtractT0(cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs));
-						else
-							results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
-						resultsArrayList.add(results);
-					}
-					if (options.subtractEvaporation)
-						resultsArrayList.subtractEvaporation();
-					break;
-					
-				case DERIVEDVALUES:
-				case SUMGULPS:
-				case SUMGULPS_LR:
-					for (Capillary cap: expi.capillaries.capillariesArrayList) {
-						resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-						XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
-						results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
-						resultsArrayList.add(results);
-					}
-					if (options.subtractEvaporation)
-						resultsArrayList.subtractEvaporation();
-					break;
-				default:
-					break;
+			if (nOutputFrames <= 1) {
+				String error = "ERROR in "+ expi.getExperimentDirectory() 
+						+ "\n nOutputFrames="+ nOutputFrames 
+						+ " kymoFirstCol_Ms=" + expi.kymoFirstCol_Ms 
+						+ " kymoLastCol_Ms=" + expi.kymoLastCol_Ms
+						+ "\n -> REBUILD KYMOGRAPH";
+				MessageDialog.showDialog(error, MessageDialog.ERROR_MESSAGE);
+				System.out.println(error);
 			}
-				
-			addResultsTo_rowsForOneExp(expi, resultsArrayList);
+			else {
+				XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
+				switch (xlsOption) {
+					case TOPRAW:
+					case BOTTOMLEVEL:
+					case ISGULPS:
+					case TTOGULP:
+					case TTOGULP_LR:
+						for (Capillary cap: expi.capillaries.capillariesArrayList) {
+							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
+							XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
+							results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
+							resultsArrayList.add(results);
+						}
+						break;
+						
+					case TOPLEVEL:
+					case TOPLEVEL_LR:
+					case TOPLEVELDELTA:
+					case TOPLEVELDELTA_LR:
+						for (Capillary cap: expi.capillaries.capillariesArrayList) {
+							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
+							XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
+							if (options.t0) 
+								results.data = exp.seqKymos.subtractT0(cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs));
+							else
+								results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
+							resultsArrayList.add(results);
+						}
+						if (options.subtractEvaporation)
+							resultsArrayList.subtractEvaporation();
+						break;
+						
+					case DERIVEDVALUES:
+					case SUMGULPS:
+					case SUMGULPS_LR:
+						for (Capillary cap: expi.capillaries.capillariesArrayList) {
+							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
+							XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
+							results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
+							resultsArrayList.add(results);
+						}
+						if (options.subtractEvaporation)
+							resultsArrayList.subtractEvaporation();
+						break;
+					default:
+						break;
+				}
+				addResultsTo_rowsForOneExp(expi, resultsArrayList);
+			}
 			expi = expi.nextExperiment;
 		}
 		

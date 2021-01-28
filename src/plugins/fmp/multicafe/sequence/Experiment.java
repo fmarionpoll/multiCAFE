@@ -148,7 +148,6 @@ public class Experiment {
 	
 	public void setImagesDirectory(String name) {
 		imagesDirectory = name;
-		System.out.println("imagesDirectory ="+imagesDirectory);
 	}
 	
 	public String getImagesDirectory() {
@@ -282,12 +281,7 @@ public class Experiment {
 			return xmlFullFileName;
 		
 		// primary data (up)
-		if (imagesDirectory == null) {
-			if (seqCamData != null )
-				imagesDirectory = seqCamData.getSeqDataDirectory() ;
-			if (imagesDirectory == null)
-				imagesDirectory = getRootWithNoResultNorBinString(experimentDirectory);
-		}
+		imagesDirectory = getRootWithNoResultNorBinString(experimentDirectory);
 		xmlFullFileName = imagesDirectory + File.separator + xmlFileName;
 		if(fileExists (xmlFullFileName))
 			return xmlFullFileName;

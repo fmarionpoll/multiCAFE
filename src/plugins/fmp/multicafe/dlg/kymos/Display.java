@@ -43,6 +43,7 @@ public class Display extends JPanel implements ViewerListener {
 	 */
 	private static final long serialVersionUID = -2103052112476748890L;
 	public 	JComboBox<String> kymosComboBox = new JComboBox<String> (new String[] {"none"});
+	private MultiCAFE 	parent0 			= null;
 			JButton 	updateButton 			= new JButton("Update");
 			JButton  	previousButton		 	= new JButton("<");
 			JButton		nextButton				= new JButton(">");
@@ -50,7 +51,6 @@ public class Display extends JPanel implements ViewerListener {
 			JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
 			JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
 			JComboBox<String> binsCombo	= new JComboBox <String>();
-	private MultiCAFE 	parent0 			= null;
 			boolean 	actionAllowed			= true;
 
 	
@@ -306,7 +306,7 @@ public class Display extends JPanel implements ViewerListener {
 		List<String> list = Directories.reduceFullNameToLastDirectory(new ArrayList<String>(hSet));
 		for (int i = 0; i < list.size(); i++) {
 			String dirName = list.get(i);
-			if (dirName == null)
+			if (dirName == null || dirName .contains(exp.RESULTS))
 				dirName = ".";
 			binsCombo.addItem(dirName);
 		}
@@ -319,7 +319,7 @@ public class Display extends JPanel implements ViewerListener {
 	
 	public String getBinSubdirectory() {
 		String name = (String) binsCombo.getSelectedItem();
-		if (name .contains("results"))
+		if (!name .contains("bin"))
 			name = null;
 		return name;
 	}
