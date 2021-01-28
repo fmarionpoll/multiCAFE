@@ -35,7 +35,6 @@ public class Create extends JPanel implements PropertyChangeListener {
 			JButton 		startComputationButton 	= new JButton("Start");
 			JSpinner		diskRadiusSpinner 		= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
 			JCheckBox 		doRegistrationCheckBox 	= new JCheckBox("registration", false);
-			JCheckBox 		doCreateCheckBox 		= new JCheckBox("force creation of results_bin", true);
 			JCheckBox		allSeriesCheckBox 		= new JCheckBox("ALL series (current to last)", false);
 	EnumStatusComputation 	sComputation 			= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE 		parent0					= null;
@@ -60,11 +59,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 		panel2.add(diskRadiusSpinner);  
 		panel2.add(doRegistrationCheckBox);
 		add(panel2);
-		
-		JPanel panel3 = new JPanel(layout1);
-
-		panel3.add(doCreateCheckBox);
-		add(panel3);		
+			
 		defineActionListeners();
 	}
 	
@@ -101,7 +96,7 @@ public class Create extends JPanel implements PropertyChangeListener {
 				
 		options.diskRadius 		= (int) diskRadiusSpinner.getValue();
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();
-		options.doCreateBinDir 	= doCreateCheckBox.isSelected();
+		options.doCreateBinDir 	= true;
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubPath 		= (String) parent0.paneKymos.tabDisplay.binsCombo.getSelectedItem() ;
 		return true;
