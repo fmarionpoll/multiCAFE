@@ -168,7 +168,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		options.startPixel		= (int) startSpinner.getValue();
 		options.endPixel		= (int) endSpinner.getValue();
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
-		options.binSubPath 		= (String) parent0.paneKymos.tabDisplay.binsCombo.getSelectedItem() ;
+		options.binSubPath 		= (String) parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
 		
 		thread.addPropertyChangeListener(this);
 		thread.execute();

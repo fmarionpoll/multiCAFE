@@ -42,16 +42,16 @@ public class Display extends JPanel implements ViewerListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -2103052112476748890L;
-	public JComboBox<String> kymosComboBox = new JComboBox<String> (new String[] {"none"});
-	JButton 	updateButton 			= new JButton("Update");
-	JButton  	previousButton		 	= new JButton("<");
-	JButton		nextButton				= new JButton(">");
-	JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("top/bottom level (green)", true);
-	JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
-	JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
-	public JComboBox<String> binsCombo	= new JComboBox <String>();
-	private MultiCAFE parent0 			= null;
-	boolean 	actionAllowed			= true;
+	public 	JComboBox<String> kymosComboBox = new JComboBox<String> (new String[] {"none"});
+			JButton 	updateButton 			= new JButton("Update");
+			JButton  	previousButton		 	= new JButton("<");
+			JButton		nextButton				= new JButton(">");
+			JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("top/bottom level (green)", true);
+			JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
+			JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
+			JComboBox<String> binsCombo	= new JComboBox <String>();
+	private MultiCAFE 	parent0 			= null;
+			boolean 	actionAllowed			= true;
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) {	
@@ -315,6 +315,13 @@ public class Display extends JPanel implements ViewerListener {
 			select = ".";
 		binsCombo.setSelectedItem(select);
 		actionAllowed = true;
+	}
+	
+	public String getBinSubdirectory() {
+		String name = (String) binsCombo.getSelectedItem();
+		if (name .contains("results"))
+			name = null;
+		return name;
 	}
 	
 }

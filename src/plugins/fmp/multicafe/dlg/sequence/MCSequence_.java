@@ -219,12 +219,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	private void openSeqCamDataCallDialog() {
 		Experiment exp = new Experiment();
 		exp.seqCamData.loadSequenceFromDialog(null);
-		// make sure path does not include bin or result
-	    String  imagesDir = exp.seqCamData.getSeqDataDirectory();
-	    exp.setImagesDirectory(imagesDir);
-	    imagesDirectory = exp.getImagesDirectory();
+		imagesDirectory = exp.getImagesDirectoryAsParentFromFileName(exp.seqCamData.getSeqDataDirectory());
 	    if (imagesDirectory == null)
 	    	return;
+	    exp.setImagesDirectory(imagesDirectory);
 	    List<String> expList = Directories.fetchListOfSubDirectoriesMatchingFilter(imagesDirectory, exp.RESULTS);
 	    String name = imagesDirectory;
 	    if (expList.size() > 0) {

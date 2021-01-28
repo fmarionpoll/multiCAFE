@@ -147,8 +147,8 @@ public class Experiment {
 	}
 	
 	public void setImagesDirectory(String name) {
-		imagesDirectory = getParentIf(name, BIN);
-		imagesDirectory = getParentIf(imagesDirectory, RESULTS);
+		imagesDirectory = name;
+		System.out.println("imagesDirectory ="+imagesDirectory);
 	}
 	
 	public String getImagesDirectory() {
@@ -188,10 +188,18 @@ public class Experiment {
 		return true;
 	}
 	
-	public String getDataDirectory(String filename) {
+	public String getImagesDirectoryAsParentFromFileName(String filename) {
 		filename = getParentIf(filename, BIN);
 		filename = getParentIf(filename, RESULTS);
 		return filename;
+	}
+	
+	String getRootWithNoResultNorBinString(String directoryName) {
+		String name = directoryName.toLowerCase();
+		while (name .contains(RESULTS) || name .contains(BIN)) {
+			name = Paths.get(experimentDirectory).getParent().toString();
+		}
+		return name;
 	}
 	
 	private String getParentIf(String filename, String filter) {
@@ -202,7 +210,7 @@ public class Experiment {
 	}
 	
 	private SequenceCamData loadImagesForSequenceCamData(String filename) {
-		imagesDirectory = getDataDirectory(filename);
+		imagesDirectory = getImagesDirectoryAsParentFromFileName(filename);
 		if (seqCamData == null)
 			seqCamData = new SequenceCamData();
 		if (null == seqCamData.loadSequenceOfImages(imagesDirectory))
@@ -305,14 +313,7 @@ public class Experiment {
 		File f = new File(fileName);
 		return (f.exists() && !f.isDirectory()); 
 	}
-	
-	String getRootWithNoResultNorBinString(String directoryName) {
-		String name = directoryName.toLowerCase();
-		while (name .contains(RESULTS) || name .contains(BIN)) {
-			name = Paths.get(experimentDirectory).getParent().toString();
-		}
-		return name;
-	}
+
 	
 	// -------------------------------
 	public boolean xmlLoadMCExperiment () {
@@ -399,11 +400,7 @@ public class Experiment {
 			seqKymos = new SequenceKymos();
 		}
 		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(getKymosDirectory(), capillaries);
-		boolean flag = seqKymos.loadImagesFromList(myList, true);
-		if (!flag)
-			return flag;
-//		seqKymos.transferCapillariesMeasuresToKymos(capillaries);
-		return flag;
+		return seqKymos.loadImagesFromList(myList, true);
 	}
 	
 	public boolean loadDrosotrack() {
