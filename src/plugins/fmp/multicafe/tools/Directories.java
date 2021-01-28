@@ -23,11 +23,15 @@ public class Directories {
 	
 	static public HashSet<String> getDirectoriesWithFilesType (String rootDirectory, String filter) {
 		HashSet<String> hSet = new HashSet<String>();
+
 		try {
-			Files.walk(Paths.get(rootDirectory))
+			Path rootPath = Paths.get(rootDirectory);
+			if (Files.exists(rootPath))  {
+				Files.walk(rootPath)
 				.filter(Files::isRegularFile)
 				.filter(p -> p.getFileName().toString().toLowerCase().endsWith(filter))
 				.forEach(p->hSet.add( p.toFile().getParent().toString()));
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -62,9 +66,11 @@ public class Directories {
 		Path pathExperimentDir = Paths.get(directory);
 		List<Path> subfolders = null;
 		try {
-			subfolders = Files.walk(pathExperimentDir, depth) 
-			    .filter(Files::isDirectory)
-			    .collect(Collectors.toList());
+			if (Files.exists(pathExperimentDir) ) {
+				subfolders = Files.walk(pathExperimentDir, depth) 
+				    .filter(Files::isDirectory)
+				    .collect(Collectors.toList());
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

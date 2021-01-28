@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,14 +144,16 @@ public class SelectFiles extends JPanel {
 		lastUsedPathString = dir.getAbsolutePath();
 		guiPrefs.put("lastUsedPath", lastUsedPathString);
 		try {
-			Files.walk(Paths.get(lastUsedPathString))
-			.filter(Files::isRegularFile)		
-			.forEach((f)->{
-			    String fileName = f.toString();
-			    if( fileName.contains(pattern)) {
-			    	addNameToListIfNew(fileName);
-			    }
-			});
+			Path lastPath = Paths.get(lastUsedPathString);
+			if (Files.exists(lastPath)) {
+				Files.walk(lastPath)
+				.filter(Files::isRegularFile)		
+				.forEach((f)->{
+				    String fileName = f.toString();
+				    if( fileName.contains(pattern)) 
+				    	addNameToListIfNew(fileName);
+				});
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

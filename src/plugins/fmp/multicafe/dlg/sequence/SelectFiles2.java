@@ -53,7 +53,6 @@ public class SelectFiles2 extends JPanel {
 		dialogFrame.setVisible(true);
 
 		dirJCombo.setEditable(true);
-		dirJCombo.showPopup();
 		
 		addActionListeners();
 	}
