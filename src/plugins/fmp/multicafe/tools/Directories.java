@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe.tools;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,11 +8,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Directories {
-	static public List<String>  reduceFullNameToLastDirectory(List<String> dirList) {	
+	static public List<String> reduceFullNameToLastDirectory(List<String> dirList) {	
 		List<String> shortList = new ArrayList<String> (dirList.size());
 		for (String name: dirList) {
 			Path pathName = Paths.get(name);
@@ -23,7 +25,6 @@ public class Directories {
 	
 	static public HashSet<String> getDirectoriesWithFilesType (String rootDirectory, String filter) {
 		HashSet<String> hSet = new HashSet<String>();
-
 		try {
 			Path rootPath = Paths.get(rootDirectory);
 			if (Files.exists(rootPath))  {
@@ -36,7 +37,6 @@ public class Directories {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
 		return hSet;
 	}
 	
@@ -80,5 +80,14 @@ public class Directories {
 		return subfolders;
 	}
 	
+	public static void removeFilesNotFoundOnDisk(List<String> fileNameList) {
+		Iterator<String> it = fileNameList.iterator();
+		while(it.hasNext()){
+		   String fileName = it.next();
+		   File file = new File(fileName);
+		   if (!file.exists())
+			   it.remove();
+		}
+	}
 	
 }

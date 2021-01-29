@@ -27,6 +27,7 @@ import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.tools.Directories;
 
 
 public class LoadSave extends JPanel {
@@ -61,8 +62,8 @@ public class LoadSave extends JPanel {
 		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
-				loadDefaultKymos(exp);
-				firePropertyChange("KYMOS_OPEN", false, true);
+				if (loadDefaultKymos(exp))
+					firePropertyChange("KYMOS_OPEN", false, true);
 			}
 		}});
 		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
@@ -121,13 +122,16 @@ public class LoadSave extends JPanel {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
-
 		checkKymosDirectory(exp);
-		
 		List<String> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosDirectory(), exp.capillaries);
-		flag = seqKymos.loadImagesFromList(myList, true);
-
-		parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp);
+		Directories.removeFilesNotFoundOnDisk(myList);
+		if (myList.size() > 0) {
+			flag = seqKymos.loadImagesFromList(myList, true);
+			parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp);
+		} 
+		else {
+			seqKymos.closeSequence();
+		}
 		return flag;
 	}
 	

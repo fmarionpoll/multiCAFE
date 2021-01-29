@@ -204,24 +204,14 @@ public class SequenceKymos extends SequenceCamData  {
 			return flag;
 		if (adjustImagesSize) {
 			List <File> filesArray = new ArrayList<File> (myListOfFileNames.size());
-			for (String name : myListOfFileNames)
-				filesArray.add(new File(name));
+			for (String name : myListOfFileNames) {
+				File file = new File(name);
+				filesArray.add(file);
+			}
 			List<Rectangle> rectList = getMaxSizeofTiffFiles(filesArray);
-//			if (isInterrupted_loadImages) {
-//				isRunning_loadImages = false;
-//				return false;
-//			}
 			adjustImagesToMaxSize(filesArray, rectList);
-//			if (isInterrupted_loadImages) {
-//				isRunning_loadImages = false;
-//				return false;
-//			}
 		}
 		loadSequenceOfImagesFromList(myListOfFileNames, true);
-//		if (isInterrupted_loadImages) {
-//			isRunning_loadImages = false;
-//			return false;
-//		}
 		setParentDirectoryAsCSCamFileName();
 		status = EnumStatus.KYMOGRAPH;
 		isRunning_loadImages = false;
@@ -236,9 +226,6 @@ public class SequenceKymos extends SequenceCamData  {
 		ProgressFrame progress = new ProgressFrame("Read kymographs width and height");
 		progress.setLength(files.size());
 		for (int i= 0; i < files.size(); i++) {
-//			if (isInterrupted_loadImages) {
-//				return null;
-//			}
 			String path = files.get(i).getPath();
 			OMEXMLMetadata metaData = null;
 			try {
@@ -266,7 +253,6 @@ public class SequenceKymos extends SequenceCamData  {
 		imageWidthMax = 0;
 		imageHeightMax = 0;
 		List<Rectangle> rectList = new ArrayList<Rectangle>(files.size());
-		
 		for (int i= 0; i < files.size(); i++) {
 			String path = files.get(i).getPath();
 			Dimension dim = getImageDim(path);

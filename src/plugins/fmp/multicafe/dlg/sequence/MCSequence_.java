@@ -319,18 +319,16 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	void loadMeasuresAndKymos(Experiment exp) {
 		if (exp == null)
 			return;
-
 		parent0.paneCapillaries.tabFile.loadCapillaries_File(exp);
-		
 		if (tabOpen.isCheckedLoadKymographs()) {
-			parent0.paneKymos.tabFile.loadDefaultKymos(exp); 
-			if (tabOpen.isCheckedLoadMeasures())
-				parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
-
-			if (parent0.paneSequence.tabOpen.graphsCheckBox.isSelected())
-				SwingUtilities.invokeLater(new Runnable() { public void run() {
-					parent0.paneLevels.tabGraphs.xyDisplayGraphs(exp);
-				}});
+			if (!parent0.paneKymos.tabFile.loadDefaultKymos(exp)) { 
+				if (tabOpen.isCheckedLoadMeasures())
+					parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
+				if (parent0.paneSequence.tabOpen.graphsCheckBox.isSelected())
+					SwingUtilities.invokeLater(new Runnable() { public void run() {
+						parent0.paneLevels.tabGraphs.xyDisplayGraphs(exp);
+					}});
+			}
 		}
 		if (tabOpen.isCheckedLoadCages()) {
 			parent0.paneCages.tabFile.loadCages(exp);

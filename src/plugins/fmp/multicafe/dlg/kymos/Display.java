@@ -319,7 +319,7 @@ public class Display extends JPanel implements ViewerListener {
 	
 	public String getBinSubdirectory() {
 		String name = (String) binsCombo.getSelectedItem();
-		if (!name .contains("bin_"))
+		if (name != null && !name .contains("bin_"))
 			name = null;
 		return name;
 	}
