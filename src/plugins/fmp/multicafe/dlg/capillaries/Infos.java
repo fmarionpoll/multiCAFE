@@ -59,7 +59,7 @@ public class Infos extends JPanel {
 		getLenButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				exp.updateCapillariesFromCamData();
+				exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
 				if (exp != null && exp.capillaries.capillariesArrayList.size() > 0) {
 					Capillary cap = exp.capillaries.capillariesArrayList.get(0);
 					ArrayList<Point2D> pts = cap.roi.getPoints();

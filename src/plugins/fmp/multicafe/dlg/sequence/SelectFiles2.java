@@ -1,7 +1,5 @@
 package plugins.fmp.multicafe.dlg.sequence;
 
-
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -35,17 +33,13 @@ public class SelectFiles2 extends JPanel {
 		addPropertyChangeListener(parent1);
 
 		loadComboWithDirectoriesShortNames(expList);
-		
 		dialogFrame = new IcyFrame ("Select or Create", true, true);
-		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
-		dialogFrame.setLayout(new BorderLayout());
-		dialogFrame.add(mainPanel, BorderLayout.CENTER);
-
-		mainPanel.setLayout(new BorderLayout());
-		mainPanel.add(comment, BorderLayout.PAGE_START);
-		mainPanel.add(dirJCombo, BorderLayout.CENTER);
-		mainPanel.add(validateButton, BorderLayout.PAGE_END);
-	
+		
+		JPanel panel = GuiUtil.generatePanel();
+		panel.add(GuiUtil.besidesPanel(comment));
+		panel.add(GuiUtil.besidesPanel(dirJCombo, validateButton));
+		dialogFrame.add(panel);
+		
 		dialogFrame.pack();
 		dialogFrame.addToDesktopPane();
 		dialogFrame.requestFocus();
@@ -71,7 +65,7 @@ public class SelectFiles2 extends JPanel {
 	}
 	
 	void loadComboWithDirectoriesShortNames(List<String> expList) {
-		dirJCombo.removeAll();
+		dirJCombo.removeAllItems();
 		List<String> list = Directories.reduceFullNameToLastDirectory(expList);
 		for (String fileName: list) {
 			dirJCombo.addItem(fileName);

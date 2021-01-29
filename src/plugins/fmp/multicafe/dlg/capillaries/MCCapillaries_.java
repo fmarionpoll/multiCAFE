@@ -87,7 +87,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) {
-			setCapillariesInfosToDialogs();
+			Experiment exp = parent0.expList.getCurrentExperiment();
+			displayCapillariesInformation(exp);
 		  	tabsPane.setSelectedIndex(ID_INFOS);
 		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
 		}			  
@@ -105,18 +106,14 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	public void displayCapillariesInformation(Experiment exp) {
 		SwingUtilities.invokeLater(new Runnable() { public void run() {
 			ProgressFrame progress = new ProgressFrame("Display capillaries information");
-			SequenceKymosUtils.transferKymoCapillariesToCamData (exp);
-			tabInfos.setAllDescriptors(exp.capillaries);
-			tabCreate.setGroupingAndNumber(exp.capillaries);
+			setDialogCapillariesInfos( exp);
 			parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
-			parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
 			parent0.paneSequence.tabIntervals.displayCamDataIntervals(exp);
 			progress.close();
 		}});
 	}
 	
-	private void setCapillariesInfosToDialogs() {
-		Experiment exp = parent0.expList.getCurrentExperiment();
+	private void setDialogCapillariesInfos(Experiment exp) {
 		if (exp != null) {
 			SequenceKymosUtils.transferCamDataROIStoKymo(exp);
 			exp.capillaries.desc_old.copy(exp.capillaries.desc);
@@ -126,11 +123,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		}
 	}
 	
-	boolean saveCapillaries(Experiment exp) {
-		return tabFile.saveCapillaries(exp);
-	}
-	
-	public void getCapillariesInfos(Experiment exp) {
+	public void getDialogCapillariesInfos(Experiment exp) {
 		tabInfos.getDescriptors(exp.capillaries);
 		tabCreate.getGrouping(exp.capillaries);
 	}

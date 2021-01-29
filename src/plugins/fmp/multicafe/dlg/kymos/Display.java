@@ -131,7 +131,6 @@ public class Display extends JPanel implements ViewerListener {
 		
 	public void transferCapillaryNamesToComboBox(Experiment exp ) {
 		SwingUtilities.invokeLater(new Runnable() { public void run() {
-			
 			kymosComboBox.removeAllItems();
 			Collections.sort(exp.capillaries.capillariesArrayList); 
 			int ncapillaries = exp.capillaries.capillariesArrayList.size();

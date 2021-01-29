@@ -1,12 +1,19 @@
 package plugins.fmp.multicafe.sequence;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.ImageInputStream;
 
 import loci.formats.FormatException;
 import ome.xml.meta.OMEXMLMetadata;
@@ -177,7 +184,7 @@ public class SequenceKymos extends SequenceCamData  {
 
 	// ----------------------------
 
-	public List <String> loadListOfKymographsFromCapillaries(String dir, Capillaries capillaries) {
+	public List <String> loadListOfPotentialKymographsFromCapillaries(String dir, Capillaries capillaries) {
 		String directoryFull = dir +File.separator ;	
 		int ncapillaries = capillaries.capillariesArrayList.size();
 		List<String> myListOfFileNames = new ArrayList<String>(ncapillaries);
@@ -221,7 +228,7 @@ public class SequenceKymos extends SequenceCamData  {
 		return flag;
 	}
 	
-	List<Rectangle> getMaxSizeofTiffFiles(List<File> files) {
+	List<Rectangle> getMaxSizeofTiffFiles2(List<File> files) {
 		imageWidthMax = 0;
 		imageHeightMax = 0;
 		List<Rectangle> rectList = new ArrayList<Rectangle>(files.size());
@@ -229,13 +236,14 @@ public class SequenceKymos extends SequenceCamData  {
 		ProgressFrame progress = new ProgressFrame("Read kymographs width and height");
 		progress.setLength(files.size());
 		for (int i= 0; i < files.size(); i++) {
-			if (isInterrupted_loadImages) {
-				return null;
-			}
+//			if (isInterrupted_loadImages) {
+//				return null;
+//			}
 			String path = files.get(i).getPath();
 			OMEXMLMetadata metaData = null;
 			try {
 				metaData = Loader.getOMEXMLMetaData(path);
+				
 			} catch (UnsupportedFormatException | IOException e) {
 				e.printStackTrace();
 			}
@@ -246,8 +254,7 @@ public class SequenceKymos extends SequenceCamData  {
 			if (imageHeight > imageHeightMax)
 				imageHeightMax = imageHeight;
 			Rectangle rect = new Rectangle(0, 0, imageWidth, imageHeight);
-			rectList.add(rect);
-			progress.incPosition();
+			rectList.add(rect);progress.incPosition();
 		}
 		Rectangle rect = new Rectangle(0, 0, imageWidthMax, imageHeightMax);
 		rectList.add(rect);
@@ -255,14 +262,70 @@ public class SequenceKymos extends SequenceCamData  {
 		return rectList;
 	}
 	
+	List<Rectangle> getMaxSizeofTiffFiles(List<File> files) {
+		imageWidthMax = 0;
+		imageHeightMax = 0;
+		List<Rectangle> rectList = new ArrayList<Rectangle>(files.size());
+		
+		for (int i= 0; i < files.size(); i++) {
+			String path = files.get(i).getPath();
+			Dimension dim = getImageDim(path);
+			int imageWidth = dim.width;
+			int imageHeight= dim.height;
+			if (imageWidth > imageWidthMax)
+				imageWidthMax = imageWidth;
+			if (imageHeight > imageHeightMax)
+				imageHeightMax = imageHeight;
+			Rectangle rect = new Rectangle(0, 0, imageWidth, imageHeight);
+			rectList.add(rect);
+		}
+		Rectangle rect = new Rectangle(0, 0, imageWidthMax, imageHeightMax);
+		rectList.add(rect);
+		return rectList;
+	}
+	
+	private Dimension getImageDim(final String path) {
+	    Dimension result = null;
+	    String suffix = this.getFileSuffix(path);
+	    Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
+	    if (iter.hasNext()) {
+	        ImageReader reader = iter.next();
+	        try {
+	            ImageInputStream stream = new FileImageInputStream(new File(path));
+	            reader.setInput(stream);
+	            int width = reader.getWidth(reader.getMinIndex());
+	            int height = reader.getHeight(reader.getMinIndex());
+	            result = new Dimension(width, height);
+	        } catch (IOException e) {
+	            System.out.println(e.getMessage());
+	        } finally {
+	            reader.dispose();
+	        }
+	    } else {
+	    	System.out.println("No reader found for given format: " + suffix);
+	    }
+	    return result;
+	}
+	
+	private String getFileSuffix(final String path) {
+	    String result = null;
+	    if (path != null) {
+	        result = "";
+	        if (path.lastIndexOf('.') != -1) {
+	            result = path.substring(path.lastIndexOf('.'));
+	            if (result.startsWith(".")) {
+	                result = result.substring(1);
+	            }
+	        }
+	    }
+	    return result;
+	}
+	
 	void adjustImagesToMaxSize(List<File> files, List<Rectangle> rectList) {
 		ProgressFrame progress = new ProgressFrame("Make kymographs the same width and height");
 		progress.setLength(files.size());
 		
 		for (int i= 0; i < files.size(); i++) {
-//			if (isInterrupted_loadImages) {
-//				return;
-//			}
 			if (rectList.get(i).width == imageWidthMax && rectList.get(i).height == imageHeightMax)
 				continue;
 			

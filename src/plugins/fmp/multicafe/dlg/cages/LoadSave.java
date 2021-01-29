@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.FontUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
@@ -48,8 +49,7 @@ public class LoadSave extends JPanel {
 		openCagesButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null)
-					exp.xmlReadDrosoTrack(null);
+				loadCages(exp);
 				firePropertyChange("LOAD_DATA", false, true);
 				parent0.paneCages.tabsPane.setSelectedIndex(3);
 			}});
@@ -62,12 +62,18 @@ public class LoadSave extends JPanel {
 			}});
 	}
 
-	boolean loadCages(String csFileName) {	
-		boolean flag = false;
-		Experiment exp = parent0.expList.getCurrentExperiment();
+	public boolean loadCages(Experiment exp) {	
 		if (exp == null)
 			return false;
-		flag = exp.xmlReadDrosoTrack(csFileName);
+		ProgressFrame progress = new ProgressFrame("load fly positions");
+		
+		boolean flag = exp.xmlReadDrosoTrack(null);
+		if (flag) {
+//			parent0.paneCages.tabGraphics.moveCheckbox.setEnabled(true);
+//			parent0.paneCages.tabGraphics.displayResultsButton.setEnabled(true);
+			exp.updateROIsAt(0);
+		}
+		progress.close();
 		return flag;
 	}
 	

@@ -33,6 +33,7 @@ import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
 import plugins.fmp.multicafe.tools.Blobs;
 import plugins.fmp.multicafe.tools.OverlayThreshold;
+import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 
@@ -84,7 +85,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) {
-					exp.seqCamData.removeRoisContainingString(-1, "cage");
+					ROI2DUtilities.removeRoisContainingString(-1, "cage", exp.seqCamData.seq);
 					exp.cages.removeCages();
 					createROIsFromSelectedPolygon(exp);
 					exp.cages.getCagesFromROIs(exp.seqCamData);
@@ -201,7 +202,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener {
 		if (roiSnip == null)
 			return;
 		
-		List <ROI2D> roiList = seqCamData.getROIs2DContainingString("cage");
+		List <ROI2D> roiList = ROI2DUtilities.getROIs2DContainingString("cage", seqCamData.seq);
 		for (ROI2D cageRoi: roiList) {
 			if (roiSnip.intersects(cageRoi) && cageRoi instanceof ROI2DPolygon) {
 				Polygon2D oldPolygon = ((ROI2DPolygon) cageRoi).getPolygon2D();

@@ -19,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import icy.gui.component.PopupPanel;
 import icy.preferences.XMLPreferences;
@@ -255,7 +256,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
 			parent0.addSequence(exp.seqCamData.seq);
 			parent0.updateViewerForSequenceCam(exp);
-			loadMeasuresAndKymos();
+			loadMeasuresAndKymos(exp);
 			parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 		}
 	}
@@ -263,10 +264,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	void openSequenceCamFromCombo() {
 		Experiment exp = parent0.openExperimentFromString((String) expListComboBox.getSelectedItem());
 		transferSequenceCamDataToDialogs(exp);
-		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
-			loadMeasuresAndKymos();
+//		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
+			loadMeasuresAndKymos(exp);
 			parent0.paneLevels.transferSeqKymoDataToDialogs(exp);
-		}});
+//		}});
 		tabsPane.setSelectedIndex(1);
 	}
 	
@@ -315,12 +316,25 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 	}
 
-	void loadMeasuresAndKymos() {
-		parent0.loadPreviousMeasures(
-					tabOpen.isCheckedLoadPreviousProfiles(), 
-					tabOpen.isCheckedLoadKymographs(),
-					tabOpen.isCheckedLoadCages(),
-					tabOpen.isCheckedLoadMeasures());
+	void loadMeasuresAndKymos(Experiment exp) {
+		if (exp == null)
+			return;
+
+		parent0.paneCapillaries.tabFile.loadCapillaries_File(exp);
+		
+		if (tabOpen.isCheckedLoadKymographs()) {
+			parent0.paneKymos.tabFile.loadDefaultKymos(exp); 
+			if (tabOpen.isCheckedLoadMeasures())
+				parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
+
+			if (parent0.paneSequence.tabOpen.graphsCheckBox.isSelected())
+				SwingUtilities.invokeLater(new Runnable() { public void run() {
+					parent0.paneLevels.tabGraphs.xyDisplayGraphs(exp);
+				}});
+		}
+		if (tabOpen.isCheckedLoadCages()) {
+			parent0.paneCages.tabFile.loadCages(exp);
+		}
 	}
 	
 	public void getExperimentInfosFromDialog(Experiment exp) {

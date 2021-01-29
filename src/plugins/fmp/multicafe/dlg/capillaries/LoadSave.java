@@ -15,7 +15,7 @@ import icy.gui.util.FontUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
-import plugins.fmp.multicafe.sequence.SequenceKymosUtils;
+
 
 
 public class LoadSave extends JPanel {
@@ -49,44 +49,39 @@ public class LoadSave extends JPanel {
 	private void defineActionListeners() {	
 		openButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp != null) {
+			if (exp != null) 
 				loadCapillaries_File(exp);
-				firePropertyChange("CAP_ROIS_OPEN", false, true);
-			}
 		}}); 
 		
 		saveButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp != null) {
-				saveCapillaries(exp);
-				firePropertyChange("CAP_ROIS_SAVE", false, true);
-			}
+			if (exp != null) 
+				saveCapillaries_file(exp);
 		}});	
 	}
 	
-	boolean loadCapillaries_File(Experiment exp) {	
+	public boolean loadCapillaries_File(Experiment exp) {	
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null) {
 			exp.seqKymos = new SequenceKymos();
 			seqKymos = exp.seqKymos;
 		}
-		boolean flag = false;
-		flag = exp.xmlLoadMCcapillaries_Only();
-		if (flag &= exp.xmlLoadMCCapillaries_Measures()) {
-			SequenceKymosUtils.transferKymoCapillariesToCamData (exp);
-			return true;
-		}
+		boolean flag = exp.xmlLoadMCcapillaries_Only();
+		exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
+		firePropertyChange("CAP_ROIS_OPEN", false, true);
 		return flag;
 	}
 	
-	public boolean saveCapillaries(Experiment exp) {
-		parent0.paneCapillaries.getCapillariesInfos(exp);  // get data into desc
+	public boolean saveCapillaries_file(Experiment exp) {
+		parent0.paneCapillaries.getDialogCapillariesInfos(exp);  // get data into desc
 		parent0.paneSequence.getExperimentInfosFromDialog(exp);
 		exp.capillaries.transferDescriptionToCapillaries();
 	
 		exp.xmlSaveMCExperiment ();
-		exp.updateCapillariesFromCamData();
-		return exp.xmlSaveMCcapillaries();
+		exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
+		boolean flag = exp.xmlSaveMCcapillaries();
+		firePropertyChange("CAP_ROIS_SAVE", false, true);
+		return flag;
 	}
 
 }

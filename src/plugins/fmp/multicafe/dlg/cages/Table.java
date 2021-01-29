@@ -134,7 +134,7 @@ public class Table extends JPanel {
 		dialogFrame.close();
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
-		parent0.paneCapillaries.tabFile.saveCapillaries(exp);
+		parent0.paneCapillaries.tabFile.saveCapillaries_file(exp);
 	}
 	
 	private void setFixedColumnProperties (TableColumn column) {

@@ -9,9 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -23,11 +21,11 @@ import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafe.tools.Comparators;
+
 import plugins.fmp.multicafe.tools.Directories;
 import plugins.fmp.multicafe.tools.ImageTransformTools;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
-import plugins.kernel.roi.roi2d.ROI2DShape;
+
 
 
 
@@ -260,7 +258,8 @@ public class Experiment {
 		if (resultsPath.contains(BIN)) {
 			if (resultsPath.length() < (BIN.length() +1)) {
 				step = (int) kymoBinCol_Ms;
-			} else {
+			} 
+			else {
 				step = Integer.valueOf(resultsPath.substring(BIN.length()))*1000;
 			}
 		}
@@ -308,7 +307,6 @@ public class Experiment {
 		return (f.exists() && !f.isDirectory()); 
 	}
 
-	
 	// -------------------------------
 	public boolean xmlLoadMCExperiment () {
 		if (experimentDirectory == null && seqCamData != null) {
@@ -393,7 +391,7 @@ public class Experiment {
 		if (seqKymos == null) {
 			seqKymos = new SequenceKymos();
 		}
-		List<String> myList = seqKymos.loadListOfKymographsFromCapillaries(getKymosDirectory(), capillaries);
+		List<String> myList = seqKymos.loadListOfPotentialKymographsFromCapillaries(getKymosDirectory(), capillaries);
 		return seqKymos.loadImagesFromList(myList, true);
 	}
 	
@@ -461,19 +459,11 @@ public class Experiment {
 		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(getKymosDirectory());
 		if (flag1 & flag2) {
 			seqKymos.seqDataDirectory = getKymosDirectory();
-			seqKymos.loadListOfKymographsFromCapillaries(seqKymos.seqDataDirectory, capillaries);
+			seqKymos.loadListOfPotentialKymographsFromCapillaries(seqKymos.seqDataDirectory, capillaries);
 		}
 		return flag1 & flag2;
 	}
 	
-	public boolean transferCapillariesToROIs() {
-		boolean flag = true;
-		if (seqKymos != null && seqKymos.seq != null) {
-			seqKymos.transferCapillariesMeasuresToKymos(capillaries);
-		}
-		return flag;
-	}
-
 	public void saveExperimentMeasures(String directory) {
 		if (seqKymos != null && seqKymos.seq != null) {
 			seqKymos.validateRois();
@@ -590,53 +580,7 @@ public class Experiment {
 		}
 		return false;
 	}
-	
-	public void updateCapillariesFromCamData() {
-		if (seqCamData == null)
-			return;
-		
-		List<ROI2D> listROISCap = seqCamData.getROIs2DContainingString ("line");
-		Collections.sort(listROISCap, new Comparators.ROI2D_Name_Comparator());
-		for (Capillary cap: capillaries.capillariesArrayList) {
-			cap.valid = false;
-			String capName = cap.replace_LR_with_12(cap.roi.getName());
-			Iterator <ROI2D> iterator = listROISCap.iterator();
-			while(iterator.hasNext()) { 
-				ROI2D roi = iterator.next();
-				String roiName = cap.replace_LR_with_12(roi.getName());
-				if (roiName.equals (capName)) {
-					cap.roi = (ROI2DShape) roi;
-					cap.valid = true;
-				}
-				if (cap.valid) {
-					iterator.remove();
-					break;
-				}
-			}
-		}
-		Iterator <Capillary> iterator = capillaries.capillariesArrayList.iterator();
-		while (iterator.hasNext()) {
-			Capillary cap = iterator.next();
-			if (!cap.valid )
-				iterator.remove();
-		}
-		
-		if (listROISCap.size() > 0) {
-			for (ROI2D roi: listROISCap) {
-				Capillary cap = new Capillary((ROI2DShape) roi);
-				capillaries.capillariesArrayList.add(cap);
-			}
-		}
-		Collections.sort(capillaries.capillariesArrayList);
-		return;
-	}
-	
-	public String getDecoratedImageNameFromCapillary(int t) {
-		if (capillaries != null & capillaries.capillariesArrayList.size() > 0)
-			return capillaries.capillariesArrayList.get(t).roi.getName() + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
-		return seqKymos.csCamFileName + " ["+(t+1)+ "/" + seqKymos.seq.getSizeT() + "]";
-	}
-	
+
 	public boolean loadReferenceImage() {
 		BufferedImage image = null;
 		File inputfile = new File(getReferenceImageFullName());

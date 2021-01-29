@@ -69,7 +69,7 @@ public class BuildROIs extends JPanel {
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) {
-					exp.seqCamData.removeRoisContainingString(-1, "cage");
+					ROI2DUtilities.removeRoisContainingString(-1, "cage", exp.seqCamData.seq);
 					exp.cages.removeCages();
 					createROIsFromSelectedPolygon(exp);
 					exp.cages.getCagesFromROIs(exp.seqCamData);

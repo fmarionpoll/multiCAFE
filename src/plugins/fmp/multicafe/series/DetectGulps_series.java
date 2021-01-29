@@ -18,6 +18,7 @@ import plugins.fmp.multicafe.sequence.CapillaryLimit;
 import plugins.fmp.multicafe.sequence.Experiment;
 
 import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
@@ -73,12 +74,12 @@ public class DetectGulps_series extends BuildSeries  {
 			@Override
 			public void run() {
 				if (options.buildDerivative) {
-					seqKymos.removeRoisContainingString(t_from, "derivative");
+					ROI2DUtilities.removeRoisContainingString(t_from, "derivative", seqKymos.seq);
 					getDerivativeProfile(seqKymos.seq, t_from, cap, jitter);	
 				}
 				if (options.buildGulps) {
 					cap.cleanGulps();
-					seqKymos.removeRoisContainingString(t_from, "gulp");
+					ROI2DUtilities.removeRoisContainingString(t_from, "gulp", seqKymos.seq);
 					cap.getGulps(t_from);
 					if (cap.gulpsRois.rois.size() > 0)
 						seqKymos.seq.addROIs(cap.gulpsRois.rois, false);

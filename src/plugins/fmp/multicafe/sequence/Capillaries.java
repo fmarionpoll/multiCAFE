@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -12,8 +13,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import icy.roi.ROI;
+import icy.roi.ROI2D;
+import icy.sequence.Sequence;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
+import plugins.fmp.multicafe.tools.Comparators;
+import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
@@ -308,5 +313,47 @@ public class Capillaries {
 			}
 		}
 		return capFound;
+	}
+
+	public void updateCapillariesFromSequence(Sequence seq) {
+		List<ROI2D> listROISCap = ROI2DUtilities.getROIs2DContainingString ("line", seq);
+		Collections.sort(listROISCap, new Comparators.ROI2D_Name_Comparator());
+		for (Capillary cap: capillariesArrayList) {
+			cap.valid = false;
+			String capName = cap.replace_LR_with_12(cap.roi.getName());
+			Iterator <ROI2D> iterator = listROISCap.iterator();
+			while(iterator.hasNext()) { 
+				ROI2D roi = iterator.next();
+				String roiName = cap.replace_LR_with_12(roi.getName());
+				if (roiName.equals (capName)) {
+					cap.roi = (ROI2DShape) roi;
+					cap.valid = true;
+				}
+				if (cap.valid) {
+					iterator.remove();
+					break;
+				}
+			}
+		}
+		Iterator <Capillary> iterator = capillariesArrayList.iterator();
+		while (iterator.hasNext()) {
+			Capillary cap = iterator.next();
+			if (!cap.valid )
+				iterator.remove();
+		}
+		if (listROISCap.size() > 0) {
+			for (ROI2D roi: listROISCap) {
+				Capillary cap = new Capillary((ROI2DShape) roi);
+				capillariesArrayList.add(cap);
+			}
+		}
+		Collections.sort(capillariesArrayList);
+		return;
+	}
+
+	public void transferCapillaryRoiToSequence(Sequence seq) {
+		for (Capillary cap: capillariesArrayList) {
+			seq.addROI(cap.roi);
+		}
 	}
 }

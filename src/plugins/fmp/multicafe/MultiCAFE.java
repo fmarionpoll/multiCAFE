@@ -6,10 +6,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import icy.gui.frame.IcyFrame;
-import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import icy.gui.viewer.ViewerEvent;
@@ -138,38 +136,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		v.setBounds(rectv);
 	}
 
-	public void loadPreviousMeasures(boolean bLoadCapillaries, boolean bLoadKymographs, boolean bLoadCages, boolean bLoadMeasures) {
-		Experiment exp = expList.getCurrentExperiment();
-		if (exp == null)
-			return;
-		
-		boolean flag = exp.xmlLoadMCcapillaries_Only();
-		if (flag)
-			paneCapillaries.displayCapillariesInformation(exp);
-
-		if (bLoadKymographs) {
-			paneKymos.tabFile.loadDefaultKymos(exp); 
-			if (bLoadCapillaries) 
-				paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
-		    paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp);
-			paneSequence.tabIntervals.displayCamDataIntervals(exp);
-			exp.transferCapillariesToROIs();
-
-			if (paneSequence.tabOpen.graphsCheckBox.isSelected())
-				SwingUtilities.invokeLater(new Runnable() { public void run() {
-				    paneLevels.tabGraphs.xyDisplayGraphs(exp);
-				}});
-		}
-		
-		if (bLoadCages) {
-			ProgressFrame progress = new ProgressFrame("load fly positions");
-			exp.loadDrosotrack();
-			paneCages.tabGraphics.moveCheckbox.setEnabled(true);
-			paneCages.tabGraphics.displayResultsButton.setEnabled(true);
-			exp.updateROIsAt(0);
-			progress.close();
-		}
-	}
 	
 	@Override	
 	public void viewerChanged(ViewerEvent event) {

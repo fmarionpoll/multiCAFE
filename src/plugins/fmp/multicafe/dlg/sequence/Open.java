@@ -91,7 +91,7 @@ public class Open extends JPanel implements PropertyChangeListener {
 		return cagesCheckBox.isSelected();
 	}
 	
-	boolean isCheckedLoadMeasures() {
+	public boolean isCheckedLoadMeasures() {
 		return measuresCheckBox.isSelected();
 	}
 

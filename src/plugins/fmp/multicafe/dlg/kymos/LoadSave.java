@@ -62,8 +62,6 @@ public class LoadSave extends JPanel {
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null) {
 				loadDefaultKymos(exp);
-				parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
-				exp.seqKymos.transferCapillariesMeasuresToKymos(exp.capillaries);
 				firePropertyChange("KYMOS_OPEN", false, true);
 			}
 		}});
@@ -123,21 +121,13 @@ public class LoadSave extends JPanel {
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
-		
-		stopPendingLoads(seqKymos);
+
 		checkKymosDirectory(exp);
 		
-		List<String> myList = exp.seqKymos.loadListOfKymographsFromCapillaries(exp.getKymosDirectory(), exp.capillaries);
-//		if (seqKymos.isInterrupted_loadImages) {
-//			seqKymos.isInterrupted_loadImages = false;
-//			return false;
-//		}
-	
+		List<String> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosDirectory(), exp.capillaries);
 		flag = seqKymos.loadImagesFromList(myList, true);
-//		if (seqKymos.isInterrupted_loadImages) {
-//			seqKymos.isInterrupted_loadImages = false;
-//			return false;
-//		}
+
+		parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp);
 		return flag;
 	}
 	
@@ -169,18 +159,4 @@ public class LoadSave extends JPanel {
 		exp.setBinSubDirectory(kymosSubDirectory);
 	}
 	
-	private void stopPendingLoads(SequenceKymos seqKymos) {
-		if (seqKymos.isRunning_loadImages) {
-			seqKymos.isInterrupted_loadImages = true;
-			for (int i= 0; i < 10; i++) {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				if (!seqKymos.isRunning_loadImages)
-					break;
-			}
-		}
-	}
 }

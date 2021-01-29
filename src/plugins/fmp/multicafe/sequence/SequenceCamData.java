@@ -37,7 +37,6 @@ import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.math.ArrayMath;
-import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
@@ -48,7 +47,7 @@ import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.fmp.multicafe.tools.StringSorter;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
-import plugins.kernel.roi.roi2d.ROI2DShape;
+
 
 
 
@@ -583,26 +582,6 @@ public class SequenceCamData {
 		}
 		return filetime;
 	}
-
-	public void removeRoisContainingString(int t, String string) {
-		for (ROI roi: seq.getROIs()) {
-			if (roi instanceof ROI2D 
-					&& roi.getName().contains(string)
-					&&  (t < 0 || ((ROI2D) roi).getT() == t ))
-				seq.removeROI(roi);
-		}
-	}
-	
-	public List<ROI2D> getROIs2DContainingString (String string) {
-		List<ROI2D> roiList = seq.getROI2Ds();
-		Collections.sort(roiList, new Comparators.ROI2D_Name_Comparator());
-		List<ROI2D> capillaryRois = new ArrayList<ROI2D>();
-		for ( ROI2D roi : roiList ) {
-			if ((roi instanceof ROI2DShape) && roi.getName().contains(string)) 
-				capillaryRois.add(roi);
-		}
-		return capillaryRois;
-	}
 	
 	public List<Cage> getCages () {
 		List<ROI2D> roiList = seq.getROI2Ds();
@@ -620,14 +599,6 @@ public class SequenceCamData {
 			}
 		}
 		return cageList;
-	}
-	
-	public void getCamDataROIS (Capillaries capillaries) {
-		capillaries.capillariesArrayList.clear();
-		List<ROI2D> listROISCap = getROIs2DContainingString ("line");
-		for (ROI2D roi:listROISCap) {
-			capillaries.capillariesArrayList.add(new Capillary((ROI2DShape)roi));
-		}
 	}
 	
 	public IcyBufferedImage getImageCopy(int t) {	

@@ -4,6 +4,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
+import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
 
@@ -245,4 +247,25 @@ public class ROI2DUtilities  {
 			}
 		return null; 
 	}
+
+	public static List<ROI2D> getROIs2DContainingString (String string, Sequence seq) {
+		List<ROI2D> roiList = seq.getROI2Ds();
+		Collections.sort(roiList, new Comparators.ROI2D_Name_Comparator());
+		List<ROI2D> capillaryRois = new ArrayList<ROI2D>();
+		for ( ROI2D roi : roiList ) {
+			if ((roi instanceof ROI2DShape) && roi.getName().contains(string)) 
+				capillaryRois.add(roi);
+		}
+		return capillaryRois;
+	}
+	
+	public static void removeRoisContainingString(int t, String string, Sequence seq) {
+		for (ROI roi: seq.getROIs()) {
+			if (roi instanceof ROI2D 
+					&& roi.getName().contains(string)
+					&&  (t < 0 || ((ROI2D) roi).getT() == t ))
+				seq.removeROI(roi);
+		}
+	}
+
 }

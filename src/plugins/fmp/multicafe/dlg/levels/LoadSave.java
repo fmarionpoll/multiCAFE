@@ -53,10 +53,7 @@ public class LoadSave  extends JPanel {
 		loadMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null && loadCapillaries_Measures(exp)) {
-					exp.transferCapillariesToROIs();
-					firePropertyChange("MEASURES_OPEN", false, true);
-				}
+				loadCapillaries_Measures(exp);
 			}}); 
 		
 		saveMeasuresButton.addActionListener(new ActionListener () { 
@@ -78,6 +75,7 @@ public class LoadSave  extends JPanel {
 					ProgressFrame progress = new ProgressFrame("load capillary measures");
 					parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
 					parent0.paneSequence.tabIntervals.displayCamDataIntervals(exp);
+					exp.seqKymos.transferCapillariesMeasuresToKymos(exp.capillaries);
 					progress.close();
 				}});
 			}
