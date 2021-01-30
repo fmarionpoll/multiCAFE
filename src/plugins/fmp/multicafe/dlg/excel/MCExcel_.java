@@ -104,7 +104,6 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 				XLSExportCapillariesResults xlsExport2 = new XLSExportCapillariesResults();
 				xlsExport2.exportToFile(file, getLevelsOptions());
 			}});
-			firePropertyChange("SAVE_KYMOSMEASURES", false, true);	
 		}
 		else if (evt.getPropertyName().equals("EXPORT_GULPSDATA")) {
 			String file = defineXlsFileName(exp, "_gulps.xlsx");
@@ -114,8 +113,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
 				XLSExportGulpsResults xlsExport2 = new XLSExportGulpsResults();
 				xlsExport2.exportToFile(file, getGulpsOptions());
-			}});
-			firePropertyChange("SAVE_KYMOSMEASURES", false, true);	
+			}});	
 		}
 	}
 	

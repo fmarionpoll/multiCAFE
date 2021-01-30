@@ -99,8 +99,12 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			parent0.expList.expListBinSubPath = localString;
 			exp.setBinSubDirectory(localString);
 			parent0.paneSequence.openExperiment(exp);
-//			tabIntervals.displayKymoIntervals (exp);
+			updateDialogs(exp);
 		}
+	}
+	
+	public void updateDialogs(Experiment exp) {
+		tabIntervals.displayKymoIntervals (exp);
 	}
 	
 	void tabbedCapillariesAndKymosSelected() {

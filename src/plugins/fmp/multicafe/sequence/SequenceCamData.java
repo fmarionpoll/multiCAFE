@@ -397,7 +397,6 @@ public class SequenceCamData {
 		} else {
 			listFiles = myListOfFilesNames;
 		}
-
 		List<Sequence> lseq = Loader.loadSequences(null, listFiles, 0, false, false, false, true);
 		if (lseq.size() > 0) {
 			seq = lseq.get(0);

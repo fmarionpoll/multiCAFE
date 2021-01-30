@@ -10,7 +10,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.util.FontUtil;
@@ -59,29 +58,31 @@ public class LoadSave  extends JPanel {
 		saveMeasuresButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null) {
-					exp.saveExperimentMeasures(exp.getKymosDirectory());
-					firePropertyChange("MEASURES_SAVE", false, true);
-				}
+				saveCapillaries_Measures(exp);
+				firePropertyChange("MEASURES_SAVE", false, true);
 			}});	
 	}
 
 	public boolean loadCapillaries_Measures(Experiment exp) {
 		boolean flag = true;
 		if (exp.seqKymos != null ) {
-			boolean readOK = exp.xmlLoadMCCapillaries_Measures();
-			if (readOK) {
-				SwingUtilities.invokeLater(new Runnable() { public void run() {
-					ProgressFrame progress = new ProgressFrame("load capillary measures");
-					parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
-					parent0.paneSequence.tabIntervals.displayCamDataIntervals(exp);
-					exp.seqKymos.transferCapillariesMeasuresToKymos(exp.capillaries);
-					progress.close();
-				}});
+			ProgressFrame progress = new ProgressFrame("load capillary measures");
+			flag = exp.xmlLoadMCCapillaries_Measures();
+			if (flag) {
+				exp.seqKymos.transferCapillariesMeasuresToKymos(exp.capillaries);
 			}
+			progress.close();
 		}
 		return flag;
 	}
 	
-	
+	public boolean saveCapillaries_Measures(Experiment exp) {
+		boolean flag = true;
+		if (exp.seqKymos != null ) {
+			ProgressFrame progress = new ProgressFrame("save capillary measures");
+			flag = exp.saveExperimentMeasures(exp.getKymosDirectory());
+			progress.close();
+		}
+		return flag;
+	}
 }

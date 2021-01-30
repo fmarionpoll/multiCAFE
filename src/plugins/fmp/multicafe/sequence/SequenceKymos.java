@@ -1,7 +1,6 @@
 package plugins.fmp.multicafe.sequence;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +15,6 @@ import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 
 import loci.formats.FormatException;
-import ome.xml.meta.OMEXMLMetadata;
 
 import icy.common.exception.UnsupportedFormatException;
 import icy.file.Loader;
@@ -25,10 +23,10 @@ import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
-import icy.sequence.MetaDataUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
+
 import plugins.fmp.multicafe.tools.Comparators;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
@@ -184,104 +182,68 @@ public class SequenceKymos extends SequenceCamData  {
 
 	// ----------------------------
 
-	public List <String> loadListOfPotentialKymographsFromCapillaries(String dir, Capillaries capillaries) {
+	public List <FileProperties> loadListOfPotentialKymographsFromCapillaries(String dir, Capillaries capillaries) {
 		String directoryFull = dir +File.separator ;	
 		int ncapillaries = capillaries.capillariesArrayList.size();
-		List<String> myListOfFileNames = new ArrayList<String>(ncapillaries);
+		List<FileProperties> myListOfFiles = new ArrayList<FileProperties>(ncapillaries);
 		for (int i=0; i< ncapillaries; i++) {
-			String tempname = directoryFull+ capillaries.capillariesArrayList.get(i).getCapillaryName()+ ".tiff";
-			myListOfFileNames.add(tempname);
+			FileProperties temp = new FileProperties();
+			temp.fileName  = directoryFull+ capillaries.capillariesArrayList.get(i).getCapillaryName()+ ".tiff";
+			myListOfFiles.add(temp);
 		}
-		return myListOfFileNames;
+		return myListOfFiles;
 	}
 	
 	// -------------------------
 	
-	public boolean loadImagesFromList(List <String> myListOfFileNames, boolean adjustImagesSize) {
+	public boolean loadImagesFromList(List <FileProperties> myListOfFileProperties, boolean adjustImagesSize) {
 		isRunning_loadImages = true;
-		boolean flag = (myListOfFileNames.size() > 0);
+		boolean flag = (myListOfFileProperties.size() > 0);
 		if (!flag)
 			return flag;
 		if (adjustImagesSize) {
-			List <File> filesArray = new ArrayList<File> (myListOfFileNames.size());
-			for (String name : myListOfFileNames) {
-				File file = new File(name);
-				filesArray.add(file);
-			}
-			List<Rectangle> rectList = getMaxSizeofTiffFiles(filesArray);
-			adjustImagesToMaxSize(filesArray, rectList);
+			adjustImagesToMaxSize(myListOfFileProperties, getMaxSizeofTiffFiles(myListOfFileProperties));
 		}
-		loadSequenceOfImagesFromList(myListOfFileNames, true);
-		setParentDirectoryAsCSCamFileName();
-		status = EnumStatus.KYMOGRAPH;
+		List <String> myList = new ArrayList <String> ();
+		for (FileProperties prop: myListOfFileProperties) {
+			if (prop.exists)
+				myList.add(prop.fileName);
+		}
+		if (myList.size() > 0) {
+			loadSequenceOfImagesFromList(myList, true);
+			setParentDirectoryAsCSCamFileName();
+			status = EnumStatus.KYMOGRAPH;
+		}
 		isRunning_loadImages = false;
 		return flag;
 	}
 	
-	List<Rectangle> getMaxSizeofTiffFiles2(List<File> files) {
+	Rectangle getMaxSizeofTiffFiles(List<FileProperties> files) {
 		imageWidthMax = 0;
 		imageHeightMax = 0;
-		List<Rectangle> rectList = new ArrayList<Rectangle>(files.size());
-		
-		ProgressFrame progress = new ProgressFrame("Read kymographs width and height");
-		progress.setLength(files.size());
 		for (int i= 0; i < files.size(); i++) {
-			String path = files.get(i).getPath();
-			OMEXMLMetadata metaData = null;
-			try {
-				metaData = Loader.getOMEXMLMetaData(path);
-				
-			} catch (UnsupportedFormatException | IOException e) {
-				e.printStackTrace();
-			}
-			int imageWidth = MetaDataUtil.getSizeX(metaData, 0);
-			int imageHeight= MetaDataUtil.getSizeY(metaData, 0);
-			if (imageWidth > imageWidthMax)
-				imageWidthMax = imageWidth;
-			if (imageHeight > imageHeightMax)
-				imageHeightMax = imageHeight;
-			Rectangle rect = new Rectangle(0, 0, imageWidth, imageHeight);
-			rectList.add(rect);progress.incPosition();
+			FileProperties fileProp = files.get(i);
+			if (!fileProp.exists)
+				continue;
+			getImageDim(fileProp);
+			if (fileProp.imageWidth > imageWidthMax)
+				imageWidthMax = fileProp.imageWidth;
+			if (fileProp.imageHeight > imageHeightMax)
+				imageHeightMax = fileProp.imageHeight;
 		}
-		Rectangle rect = new Rectangle(0, 0, imageWidthMax, imageHeightMax);
-		rectList.add(rect);
-		progress.close();
-		return rectList;
+		return new Rectangle(0, 0, imageWidthMax, imageHeightMax);
 	}
 	
-	List<Rectangle> getMaxSizeofTiffFiles(List<File> files) {
-		imageWidthMax = 0;
-		imageHeightMax = 0;
-		List<Rectangle> rectList = new ArrayList<Rectangle>(files.size());
-		for (int i= 0; i < files.size(); i++) {
-			String path = files.get(i).getPath();
-			Dimension dim = getImageDim(path);
-			int imageWidth = dim.width;
-			int imageHeight= dim.height;
-			if (imageWidth > imageWidthMax)
-				imageWidthMax = imageWidth;
-			if (imageHeight > imageHeightMax)
-				imageHeightMax = imageHeight;
-			Rectangle rect = new Rectangle(0, 0, imageWidth, imageHeight);
-			rectList.add(rect);
-		}
-		Rectangle rect = new Rectangle(0, 0, imageWidthMax, imageHeightMax);
-		rectList.add(rect);
-		return rectList;
-	}
-	
-	private Dimension getImageDim(final String path) {
-	    Dimension result = null;
-	    String suffix = this.getFileSuffix(path);
+	private FileProperties getImageDim(final FileProperties path) {
+	    String suffix = this.getFileSuffix(path.fileName);
 	    Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
 	    if (iter.hasNext()) {
 	        ImageReader reader = iter.next();
 	        try {
-	            ImageInputStream stream = new FileImageInputStream(new File(path));
+	            ImageInputStream stream = new FileImageInputStream(path.file);
 	            reader.setInput(stream);
-	            int width = reader.getWidth(reader.getMinIndex());
-	            int height = reader.getHeight(reader.getMinIndex());
-	            result = new Dimension(width, height);
+	            path.imageWidth = reader.getWidth(reader.getMinIndex());
+	            path.imageHeight = reader.getHeight(reader.getMinIndex());
 	        } catch (IOException e) {
 	            System.out.println(e.getMessage());
 	        } finally {
@@ -290,7 +252,7 @@ public class SequenceKymos extends SequenceCamData  {
 	    } else {
 	    	System.out.println("No reader found for given format: " + suffix);
 	    }
-	    return result;
+	    return path;
 	}
 	
 	private String getFileSuffix(final String path) {
@@ -307,19 +269,22 @@ public class SequenceKymos extends SequenceCamData  {
 	    return result;
 	}
 	
-	void adjustImagesToMaxSize(List<File> files, List<Rectangle> rectList) {
+	void adjustImagesToMaxSize(List<FileProperties> files, Rectangle rect) {
 		ProgressFrame progress = new ProgressFrame("Make kymographs the same width and height");
 		progress.setLength(files.size());
 		
 		for (int i= 0; i < files.size(); i++) {
-			if (rectList.get(i).width == imageWidthMax && rectList.get(i).height == imageHeightMax)
+			FileProperties fileProp = files.get(i);
+			if (!fileProp.exists)
+				continue;
+			if (fileProp.imageWidth == rect.width && fileProp.imageHeight == rect.height)
 				continue;
 			
-			progress.setMessage("adjust image "+files.get(i));
-			System.out.print("adjust image "+files.get(i));
+			progress.setMessage("adjust image "+fileProp.fileName);
+			System.out.print("adjust image "+fileProp.fileName);
 			IcyBufferedImage ibufImage1 = null;
 			try {
-				ibufImage1 = Loader.loadImage(files.get(i).getAbsolutePath());
+				ibufImage1 = Loader.loadImage(fileProp.fileName);
 			} catch (UnsupportedFormatException | IOException e) {
 				e.printStackTrace();
 			}
@@ -327,7 +292,7 @@ public class SequenceKymos extends SequenceCamData  {
 			IcyBufferedImage ibufImage2 = new IcyBufferedImage(imageWidthMax, imageHeightMax, ibufImage1.getSizeC(), ibufImage1.getDataType_());
 			transferImage1To2(ibufImage1, ibufImage2);
 			try {
-				Saver.saveImage(ibufImage2, files.get(i), true);
+				Saver.saveImage(ibufImage2, fileProp.file, true);
 			} catch (FormatException | IOException e) {
 				e.printStackTrace();
 			}

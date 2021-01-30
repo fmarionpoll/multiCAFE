@@ -38,7 +38,6 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 
 	
 	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
-		
 		this.parent0 = parent0;
 		capPopupPanel = new PopupPanel(string);
 		
@@ -61,7 +60,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		order++;
 		
 		tabAdjust.init(capLayout, parent0);
-		tabAdjust.addPropertyChangeListener(parent0);
+		tabAdjust.addPropertyChangeListener(this);
 		tabsPane.addTab("Adjust", null, tabAdjust, "Adjust ROIS position to the capillaries");
 		order++;
 		
@@ -90,7 +89,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			displayCapillariesInformation(exp);
 		  	tabsPane.setSelectedIndex(ID_INFOS);
-		  	firePropertyChange("CAPILLARIES_OPEN", false, true);
+		  	parent0.paneSequence.tabIntervals.displayCamDataIntervals(exp);
 		}			  
 		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) {
 			tabsPane.setSelectedIndex(ID_INFOS);
@@ -106,14 +105,14 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	public void displayCapillariesInformation(Experiment exp) {
 		SwingUtilities.invokeLater(new Runnable() { public void run() {
 			ProgressFrame progress = new ProgressFrame("Display capillaries information");
-			setDialogCapillariesInfos( exp);
+			updateDialogs( exp);
 			parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
-			parent0.paneSequence.tabIntervals.displayCamDataIntervals(exp);
+			parent0.paneSequence.updateDialogs(exp);
 			progress.close();
 		}});
 	}
 	
-	private void setDialogCapillariesInfos(Experiment exp) {
+	public void updateDialogs(Experiment exp) {
 		if (exp != null) {
 			SequenceKymosUtils.transferCamDataROIStoKymo(exp);
 			exp.capillaries.desc_old.copy(exp.capillaries.desc);

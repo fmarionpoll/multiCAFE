@@ -12,6 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import plugins.fmp.multicafe.sequence.FileProperties;
+
 public class Directories {
 	static public List<String> reduceFullNameToLastDirectory(List<String> dirList) {	
 		List<String> shortList = new ArrayList<String> (dirList.size());
@@ -80,14 +82,17 @@ public class Directories {
 		return subfolders;
 	}
 	
-	public static void removeFilesNotFoundOnDisk(List<String> fileNameList) {
-		Iterator<String> it = fileNameList.iterator();
+	public static int getFilesAndTestExist(List<FileProperties> fileNameList) {
+		Iterator<FileProperties> it = fileNameList.iterator();
+		int ntotal = 0;
 		while(it.hasNext()){
-		   String fileName = it.next();
-		   File file = new File(fileName);
-		   if (!file.exists())
-			   it.remove();
+			FileProperties fP = it.next();
+			fP.file = new File(fP.fileName);
+			fP.exists = fP.file.exists();
+			if (fP.file.exists())
+				ntotal ++;
 		}
+		return ntotal;
 	}
 	
 }

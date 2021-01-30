@@ -49,14 +49,18 @@ public class LoadSave extends JPanel {
 	private void defineActionListeners() {	
 		openButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp != null) 
+			if (exp != null) { 
 				loadCapillaries_File(exp);
+				firePropertyChange("CAP_ROIS_OPEN", false, true);
+			}
 		}}); 
 		
 		saveButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
 			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp != null) 
+			if (exp != null) {
 				saveCapillaries_file(exp);
+				firePropertyChange("CAP_ROIS_SAVE", false, true);
+			}
 		}});	
 	}
 	
@@ -68,7 +72,6 @@ public class LoadSave extends JPanel {
 		}
 		boolean flag = exp.xmlLoadMCcapillaries_Only();
 		exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
-		firePropertyChange("CAP_ROIS_OPEN", false, true);
 		return flag;
 	}
 	
@@ -80,7 +83,6 @@ public class LoadSave extends JPanel {
 		exp.xmlSaveMCExperiment ();
 		exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
 		boolean flag = exp.xmlSaveMCcapillaries();
-		firePropertyChange("CAP_ROIS_SAVE", false, true);
 		return flag;
 	}
 

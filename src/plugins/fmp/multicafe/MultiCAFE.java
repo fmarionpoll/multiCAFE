@@ -2,9 +2,6 @@ package plugins.fmp.multicafe;
 
 import java.awt.BorderLayout;
 import java.awt.Rectangle;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.swing.JPanel;
 
 import icy.gui.frame.IcyFrame;
@@ -16,7 +13,7 @@ import icy.gui.viewer.ViewerListener;
 import icy.plugin.abstract_.PluginActionable;
 import icy.sequence.DimensionId;
 import icy.sequence.Sequence;
-import icy.system.thread.ThreadUtil;
+
 import plugins.fmp.multicafe.dlg.cages.MCCages_;
 import plugins.fmp.multicafe.dlg.capillaries.MCCapillaries_;
 import plugins.fmp.multicafe.dlg.excel.MCExcel_;
@@ -29,7 +26,7 @@ import plugins.fmp.multicafe.workinprogress_gpu.MCSpots_;
 
 
 
-public class MultiCAFE extends PluginActionable implements ViewerListener, PropertyChangeListener {
+public class MultiCAFE extends PluginActionable implements ViewerListener {
 	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 28-Jan-2021", true, true, true, true);
 	public ExperimentList 	expList 		= new ExperimentList();
 	
@@ -50,51 +47,20 @@ public class MultiCAFE extends PluginActionable implements ViewerListener, Prope
 		mainFrame.add(mainPanel, BorderLayout.CENTER);
 
 		paneSequence.init(mainPanel, "SOURCE DATA", this);
-		paneSequence.addPropertyChangeListener(this);
-
 		paneCapillaries.init(mainPanel, "CAPILLARIES", this);
-		paneCapillaries.addPropertyChangeListener(this);	
-		
 		paneKymos.init(mainPanel, "KYMOGRAPHS", this);
-		paneKymos.addPropertyChangeListener(this);
-		
 		paneLevels.init(mainPanel, "MEASURE LEVELS & GULPS", this);
-		paneLevels.addPropertyChangeListener(this);
-
+		
 //		paneSpots.init(mainPanel, "MEASURE SPOTS", this);
-//		paneSpots.addPropertyChangeListener(this);
 
 		paneCages.init(mainPanel, "DETECT FLIES", this);
-		paneCages.addPropertyChangeListener(this);
-		
 		paneExcel.init(mainPanel, "EXPORT TO XLSX FILE", this);
-		paneExcel.addPropertyChangeListener(this);
 		
 		mainFrame.pack();
 		mainFrame.center();
 		mainFrame.setVisible(true);
 		mainFrame.addToDesktopPane();
-	}	
-
-	@Override
-	public void propertyChange(PropertyChangeEvent arg0) {
-		if (arg0.getPropertyName().equals("CAPILLARIES_OPEN")) {
-			Experiment exp = expList.getCurrentExperiment();
-			if (exp != null) {
-				paneSequence.tabIntervals.displayCamDataIntervals(exp);
-			}
-		}
-		else if (arg0.getPropertyName() .equals("KYMO_DISPLAYFILTERED")) {
-			paneKymos.tabDisplay.displayUpdateOnSwingThread();
-		}
-		else if (arg0.getPropertyName() .equals("SAVE_KYMOSMEASURES")) {
-			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-				Experiment exp = expList.getCurrentExperiment();
-				if (exp != null)
-					exp.saveExperimentMeasures(exp.getKymosDirectory());
-			}});
-		}
-	} 
+	}	 
 	
 	public Experiment openExperimentFromString(String filename) {
 		Experiment exp = expList.getExperimentFromFileName(filename);

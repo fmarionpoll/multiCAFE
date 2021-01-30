@@ -21,20 +21,21 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	 * 
 	 */
 	private static final long serialVersionUID = -7339633966002954720L;
-	public	PopupPanel capPopupPanel	= null;
+	public	PopupPanel 	capPopupPanel	= null;
 	private JTabbedPane tabsPane 		= new JTabbedPane();
-	public LoadSave 	tabFileLevels	= new LoadSave();
-	DetectLevels 		tabDetectLevels = new DetectLevels();
-//	DetectLevels2 		tabDetectLevels2 = new DetectLevels2();
+	public 	LoadSave 	tabFileLevels	= new LoadSave();
+			DetectLevels tabDetectLevels = new DetectLevels();
+//			DetectLevels2 		tabDetectLevels2 = new DetectLevels2();
 	
-	DetectGulps 		tabDetectGulps 	= new DetectGulps();
-	Edit				tabEdit			= new Edit();
-	Adjust				tabAdjust		= new Adjust();
-	public Graphs 		tabGraphs 		= new Graphs();
+			DetectGulps tabDetectGulps 	= new DetectGulps();
+			Edit		tabEdit			= new Edit();
+			Adjust		tabAdjust		= new Adjust();
+	public 	Graphs 		tabGraphs 		= new Graphs();
+			MultiCAFE	parent0 		= null;
 
 	
 	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
-		
+		this.parent0 = parent0;
 		capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
@@ -90,14 +91,14 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	public void propertyChange(PropertyChangeEvent arg0) {
 
 		if (arg0.getPropertyName().equals("KYMO_DISPLAY_FILTERED1")) {
-			firePropertyChange("KYMO_DISPLAYFILTERED", false, true);
+			parent0.paneKymos.tabDisplay.displayUpdateOnSwingThread();
 		}
 		else if (arg0.getPropertyName().equals("MEASURES_SAVE")) {
 			tabsPane.setSelectedIndex(0);
 		}
 	}
 	
-	public void transferSeqKymoDataToDialogs(Experiment exp) {
+	public void updateDialogs(Experiment exp) {
 		int lastpixel = exp.seqKymos.imageWidthMax - 1;
 		tabDetectLevels.startSpinner.setValue(0);
 		tabDetectLevels.endSpinner.setValue(lastpixel);

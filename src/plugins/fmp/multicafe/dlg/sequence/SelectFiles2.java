@@ -16,7 +16,6 @@ import plugins.fmp.multicafe.tools.Directories;
 
 
 public class SelectFiles2 extends JPanel {
-
 	/**
 	 * 
 	 */

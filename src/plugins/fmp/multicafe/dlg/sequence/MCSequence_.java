@@ -263,10 +263,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	
 	void openSequenceCamFromCombo() {
 		Experiment exp = parent0.openExperimentFromString((String) expListComboBox.getSelectedItem());
-		transferSequenceCamDataToDialogs(exp);
+		updateDialogs(exp);
 //		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
 			loadMeasuresAndKymos(exp);
-			parent0.paneLevels.transferSeqKymoDataToDialogs(exp);
+			parent0.paneLevels.updateDialogs(exp);
 //		}});
 		tabsPane.setSelectedIndex(1);
 	}
@@ -310,8 +310,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 	}
 				
 	
-	public void transferSequenceCamDataToDialogs(Experiment exp) {
+	public void updateDialogs(Experiment exp) {
 		tabIntervals.displayCamDataIntervals(exp);
+		tabInfosSeq.setExperimentsInfosToDialog(exp);
+
 		parent0.updateViewerForSequenceCam(exp);
 		parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 	}
@@ -320,10 +322,16 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener {
 		if (exp == null)
 			return;
 		parent0.paneCapillaries.tabFile.loadCapillaries_File(exp);
+		parent0.paneCapillaries.updateDialogs(exp);
+		
 		if (tabOpen.isCheckedLoadKymographs()) {
-			if (!parent0.paneKymos.tabFile.loadDefaultKymos(exp)) { 
-				if (tabOpen.isCheckedLoadMeasures())
+			boolean flag = parent0.paneKymos.tabFile.loadDefaultKymos(exp);
+			parent0.paneKymos.updateDialogs(exp);
+			if (flag) { 
+				if (tabOpen.isCheckedLoadMeasures()) {
 					parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
+					parent0.paneLevels.updateDialogs(exp);
+				}
 				if (parent0.paneSequence.tabOpen.graphsCheckBox.isSelected())
 					SwingUtilities.invokeLater(new Runnable() { public void run() {
 						parent0.paneLevels.tabGraphs.xyDisplayGraphs(exp);

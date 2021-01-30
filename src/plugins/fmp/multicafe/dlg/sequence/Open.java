@@ -24,7 +24,7 @@ public class Open extends JPanel implements PropertyChangeListener {
 	 */
 	private static final long serialVersionUID = 6565346204580890307L;
 
-	private JButton 	openButton				= new JButton("Open...");
+	private JButton 	openButton				= new JButton("Open/New...");
 	private JButton 	addButton				= new JButton("Add...");
 	private JButton		searchButton 			= new JButton("Search...");
 	JCheckBox			kymographsCheckBox		= new JCheckBox("kymographs", true);

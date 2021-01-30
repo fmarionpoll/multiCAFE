@@ -391,7 +391,8 @@ public class Experiment {
 		if (seqKymos == null) {
 			seqKymos = new SequenceKymos();
 		}
-		List<String> myList = seqKymos.loadListOfPotentialKymographsFromCapillaries(getKymosDirectory(), capillaries);
+		List<FileProperties> myList = seqKymos.loadListOfPotentialKymographsFromCapillaries(getKymosDirectory(), capillaries);
+		Directories.getFilesAndTestExist(myList);
 		return seqKymos.loadImagesFromList(myList, true);
 	}
 	
@@ -464,12 +465,14 @@ public class Experiment {
 		return flag1 & flag2;
 	}
 	
-	public void saveExperimentMeasures(String directory) {
+	public boolean saveExperimentMeasures(String directory) {
+		boolean flag = false;
 		if (seqKymos != null && seqKymos.seq != null) {
 			seqKymos.validateRois();
 			seqKymos.transferKymosRoisToCapillaries(capillaries);
-			capillaries.xmlSaveCapillaries_Measures(directory);
+			flag = capillaries.xmlSaveCapillaries_Measures(directory);
 		}
+		return flag;
 	}
 		
 	public void kymosBuildFiltered(int zChannelSource, int zChannelDestination, TransformOp transformop, int spanDiff) {
