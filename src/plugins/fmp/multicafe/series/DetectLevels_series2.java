@@ -67,7 +67,7 @@ public class DetectLevels_series2 extends BuildSeries  {
 			
 			cap.ptsDerivative = null;
 			cap.gulpsRois = null;
-			options.copy(cap.limitsOptions);
+			options.copyTo(cap.limitsOptions);
 			if (options.analyzePartOnly) {
 				firstColumn = options.startPixel;
 				lastColumn = options.endPixel;

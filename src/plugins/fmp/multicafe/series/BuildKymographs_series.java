@@ -126,7 +126,6 @@ public class BuildKymographs_series  extends BuildSeries  {
 			@Override
 			public void run() {	
 				final IcyBufferedImage  sourceImage = seqCamData.getImageDirect(t_from);
-
 				if (options.doRegistration ) 
 					adjustImage(seqForRegistration, sourceImage);
 				int widthSourceImage = sourceImage.getWidth();				
@@ -149,12 +148,10 @@ public class BuildKymographs_series  extends BuildSeries  {
 						}
 					}
 				}
-			}
-			}));
+			}}));
 		}
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		seqCamData.seq.endUpdate();
-		
         progressBar.close();
 
 		for (int icap=0; icap < nbcapillaries; icap++) {

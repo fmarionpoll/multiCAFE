@@ -6,15 +6,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.ImageInputStream;
-
 import loci.formats.FormatException;
+import ome.xml.meta.OMEXMLMetadata;
 
 import icy.common.exception.UnsupportedFormatException;
 import icy.file.Loader;
@@ -23,6 +18,7 @@ import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
+import icy.sequence.MetaDataUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
@@ -234,40 +230,38 @@ public class SequenceKymos extends SequenceCamData  {
 		return new Rectangle(0, 0, imageWidthMax, imageHeightMax);
 	}
 	
-	private FileProperties getImageDim(final FileProperties path) {
-	    String suffix = this.getFileSuffix(path.fileName);
-	    Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix);
-	    if (iter.hasNext()) {
-	        ImageReader reader = iter.next();
-	        try {
-	            ImageInputStream stream = new FileImageInputStream(path.file);
-	            reader.setInput(stream);
-	            path.imageWidth = reader.getWidth(reader.getMinIndex());
-	            path.imageHeight = reader.getHeight(reader.getMinIndex());
-	        } catch (IOException e) {
-	            System.out.println(e.getMessage());
-	        } finally {
-	            reader.dispose();
-	        }
-	    } else {
-	    	System.out.println("No reader found for given format: " + suffix);
-	    }
-	    return path;
+	boolean getImageDim(final FileProperties fileProp) {
+		boolean flag = true;
+		OMEXMLMetadata metaData = null;
+		try {
+			metaData = Loader.getOMEXMLMetaData(fileProp.fileName);
+			fileProp.imageWidth = MetaDataUtil.getSizeX(metaData, 0);
+			fileProp.imageHeight= MetaDataUtil.getSizeY(metaData, 0);
+		} catch (UnsupportedFormatException | IOException e) {
+			flag = false;
+			e.printStackTrace();
+		}
+		return flag;
 	}
 	
-	private String getFileSuffix(final String path) {
-	    String result = null;
-	    if (path != null) {
-	        result = "";
-	        if (path.lastIndexOf('.') != -1) {
-	            result = path.substring(path.lastIndexOf('.'));
-	            if (result.startsWith(".")) {
-	                result = result.substring(1);
-	            }
-	        }
-	    }
-	    return result;
-	}
+	/*
+	 * private boolean getImageDim1(final FileProperties fileProp) { boolean flag =
+	 * true; String suffix = this.getFileSuffix(fileProp.fileName);
+	 * Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix); if
+	 * (iter.hasNext()) { ImageReader reader = iter.next(); try { ImageInputStream
+	 * stream = new FileImageInputStream(fileProp.file); reader.setInput(stream);
+	 * fileProp.imageWidth = reader.getWidth(reader.getMinIndex());
+	 * fileProp.imageHeight = reader.getHeight(reader.getMinIndex()); } catch
+	 * (IOException e) { System.out.println(e.getMessage()); } finally {
+	 * reader.dispose(); } } else { flag = false;
+	 * System.out.println("No reader found for given format: " + suffix); } return
+	 * flag; }
+	 * 
+	 * private String getFileSuffix(final String path) { String result = null; if
+	 * (path != null) { result = ""; if (path.lastIndexOf('.') != -1) { result =
+	 * path.substring(path.lastIndexOf('.')); if (result.startsWith(".")) { result =
+	 * result.substring(1); } } } return result; }
+	 */
 	
 	void adjustImagesToMaxSize(List<FileProperties> files, Rectangle rect) {
 		ProgressFrame progress = new ProgressFrame("Make kymographs the same width and height");
@@ -293,7 +287,9 @@ public class SequenceKymos extends SequenceCamData  {
 			transferImage1To2(ibufImage1, ibufImage2);
 			try {
 				Saver.saveImage(ibufImage2, fileProp.file, true);
-			} catch (FormatException | IOException e) {
+			} catch (FormatException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			progress.incPosition();

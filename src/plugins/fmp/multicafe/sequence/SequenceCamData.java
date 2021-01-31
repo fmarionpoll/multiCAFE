@@ -211,6 +211,7 @@ public class SequenceCamData {
 		try {
 	    	image = ImageIO.read(new File(name));
 		} catch (IOException e) {
+			 e.printStackTrace();
 		}
 		return IcyBufferedImage.createFrom(image);
 	}

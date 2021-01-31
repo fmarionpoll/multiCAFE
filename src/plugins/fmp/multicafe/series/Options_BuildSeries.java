@@ -71,7 +71,7 @@ public class Options_BuildSeries implements XMLPersistent {
 
 	// -----------------------
 	
-	void copy(Options_BuildSeries destination) {
+	void copyTo(Options_BuildSeries destination) {
 		destination.detectTop 				= detectTop; 
 		destination.detectBottom 			= detectBottom; 
 		destination.transformForLevels 		= transformForLevels;
@@ -82,6 +82,19 @@ public class Options_BuildSeries implements XMLPersistent {
 		destination.detectGulpsThreshold 	= detectGulpsThreshold;
 		destination.transformForGulps 		= transformForGulps;
 		destination.detectAllGulps 			= detectAllGulps;
+	}
+	
+	void copyFrom(Options_BuildSeries destination) {
+		detectTop 				= destination.detectTop; 
+		detectBottom 			= destination.detectBottom; 
+		transformForLevels 		= destination.transformForLevels;
+		directionUp 			= destination.directionUp;
+		detectLevelThreshold 	= destination.detectLevelThreshold;
+		detectAllKymos 			= destination.detectAllKymos;
+		
+		detectGulpsThreshold 	= destination.detectGulpsThreshold;
+		transformForGulps 		= destination.transformForGulps;
+		detectAllGulps 			= destination.detectAllGulps;
 	}
 	
 	public void copyParameters (Options_BuildSeries det) {
