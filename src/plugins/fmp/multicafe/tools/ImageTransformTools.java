@@ -142,8 +142,8 @@ public class ImageTransformTools {
 		case REF_PREVIOUS: 
 			int t = vinputSequence.currentFrame;
 			if (t > 0) {
-//				referenceImage = vinputSequence.getImage(t-1, 0); 
-				referenceImage = vinputSequence.getImageDirect(t-1);
+				referenceImage = vinputSequence.getImage(t-1, 0); 
+//				referenceImage = vinputSequence.imageIORead(t-1);
 				transformedImage= functionSubtractRef(inputImage);
 				} 
 			break;
@@ -174,7 +174,7 @@ public class ImageTransformTools {
 	
 	public IcyBufferedImage transformImageFromVirtualSequence (int t, TransformOp transformop) {
 //		return transformImage(vinputSequence.getImage(t, 0), transformop);
-		return transformImage(vinputSequence.getImageDirect(t), transformop);
+		return transformImage(vinputSequence.imageIORead(t), transformop);
 	}
 	
 	private IcyBufferedImage functionSubtractCol(IcyBufferedImage sourceImage, int column) {

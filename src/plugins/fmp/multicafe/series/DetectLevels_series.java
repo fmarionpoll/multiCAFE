@@ -70,20 +70,21 @@ public class DetectLevels_series extends BuildSeries  {
 			futures.add(processor.submit(new Runnable () {
 				@Override
 				public void run() {
-					final IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.getImageDirect(t_index), options.transformForLevels);
+//					final IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.imageIORead(t_index), options.transformForLevels);
+					final IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.getImage(t_index, 0), options.transformForLevels);
 					int c = 0;
 					Object dataArray = sourceImage.getDataXY(c);
 					int[] sourceValues = Array1DUtil.arrayToIntArray(dataArray, sourceImage.isSignedDataType());
+
+					cap.indexImage= t_index;
+					cap.ptsDerivative = null;
+					cap.gulpsRois = null;
+					cap.limitsOptions.copyFrom(options);
 					
 					int firstColumn = 0;
 					int lastColumn = sourceImage.getSizeX()-1;
 					int xwidth = sourceImage.getSizeX();
 					int yheight = sourceImage.getSizeY();
-					
-					cap.indexImage= t_index;
-					cap.ptsDerivative = null;
-					cap.gulpsRois = null;
-					options.copyTo(cap.limitsOptions);
 					if (options.analyzePartOnly) {
 						firstColumn = options.startPixel;
 						lastColumn = options.endPixel;

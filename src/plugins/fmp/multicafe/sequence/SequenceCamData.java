@@ -204,7 +204,7 @@ public class SequenceCamData {
 		return csName;
 	}
 	
-	public IcyBufferedImage getImageDirect(int t) {
+	public IcyBufferedImage imageIORead(int t) {
 		currentFrame = t;
 		String name = listFiles.get(t);
 		BufferedImage image = null;
