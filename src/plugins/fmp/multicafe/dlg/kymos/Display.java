@@ -179,15 +179,17 @@ public class Display extends JPanel implements ViewerListener {
 		
 		ArrayList<Viewer>vList = seqKymos.seq.getViewers();
 		if (vList.size() == 0) {
-			Viewer viewer = exp.seqCamData.seq.getFirstViewer();
-			if (viewer == null)
+			Viewer v = new Viewer(seqKymos.seq, true);
+			v.setRepeat(false);
+			v.addListener(this);
+			
+			Viewer vCamData = exp.seqCamData.seq.getFirstViewer();
+			if (vCamData == null)
 				return;
-			Rectangle rectMaster = viewer.getBounds();
+			Rectangle rectMaster = vCamData.getBounds();
 			int deltax = 5 + rectMaster.width;
 			int deltay = 5;
 
-			Viewer v = new Viewer(seqKymos.seq, true);
-			v.addListener(this);
 			Rectangle rectDataView = v.getBounds();
 			rectDataView.height = rectMaster.height;
 			IcyBufferedImage img = seqKymos.seq.getFirstImage();
