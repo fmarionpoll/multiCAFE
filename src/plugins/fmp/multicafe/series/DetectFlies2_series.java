@@ -152,7 +152,7 @@ public class DetectFlies2_series extends BuildSeries {
 				futures.add(processor.submit(new Runnable () {
 				@Override
 				public void run() {	
-					IcyBufferedImage workImage = exp.seqCamData.getImageDirect(t_from);
+					IcyBufferedImage workImage = exp.seqCamData.imageIORead(t_from);
 					if (workImage == null)
 						return;
 					IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(workImage);
