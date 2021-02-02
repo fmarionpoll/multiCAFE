@@ -183,34 +183,39 @@ public class Display extends JPanel implements ViewerListener {
 			v.setRepeat(false);
 			v.addListener(this);
 			
-			Viewer vCamData = exp.seqCamData.seq.getFirstViewer();
-			if (vCamData == null)
-				return;
-			Rectangle rectMaster = vCamData.getBounds();
-			int deltax = 5 + rectMaster.width;
-			int deltay = 5;
-
-			Rectangle rectDataView = v.getBounds();
-			rectDataView.height = rectMaster.height;
-			IcyBufferedImage img = seqKymos.seq.getFirstImage();
-			rectDataView.width = 100;
-			if (img != null) {
-				rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
-			}
-			int desktopwidth = Icy.getMainInterface().getMainFrame().getDesktopWidth();
-			if (rectDataView.width > desktopwidth) {
-				int height = img.getSizeY() * desktopwidth / rectDataView.width;
-				int width = img.getSizeX() * height / rectDataView.height;
-				rectDataView.setSize(width, height *3 /2);
-				rectDataView.x = 0;
-				rectDataView.y = rectMaster.y + rectMaster.height;
-			} else {
-			rectDataView.translate(
-					rectMaster.x + deltax - rectDataView.x, 
-					rectMaster.y + deltay - rectDataView.y);
-			}
-			v.setBounds(rectDataView);
+			placeKymoViewerNextToCamViewer(exp, v);
 		}
+	}
+	
+	void placeKymoViewerNextToCamViewer(Experiment exp, Viewer v) {
+		Viewer vCamData = exp.seqCamData.seq.getFirstViewer();
+		if (vCamData == null)
+			return;
+		
+		Rectangle rectMaster = vCamData.getBounds();
+		int deltax = 5 + rectMaster.width;
+		int deltay = 5;
+
+		Rectangle rectDataView = v.getBounds();
+		rectDataView.height = rectMaster.height;
+		IcyBufferedImage img = exp.seqKymos.seq.getFirstImage();
+		rectDataView.width = 100;
+		if (img != null) {
+			rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
+		}
+		int desktopwidth = Icy.getMainInterface().getMainFrame().getDesktopWidth();
+		if (rectDataView.width > desktopwidth) {
+			int height = img.getSizeY() * desktopwidth / rectDataView.width;
+			int width = img.getSizeX() * height / rectDataView.height;
+			rectDataView.setSize(width, height *3 /2);
+			rectDataView.x = 0;
+			rectDataView.y = rectMaster.y + rectMaster.height;
+		} else {
+		rectDataView.translate(
+				rectMaster.x + deltax - rectDataView.x, 
+				rectMaster.y + deltay - rectDataView.y);
+		}
+		v.setBounds(rectDataView);
 	}
 	
 	void displayOFF() {
