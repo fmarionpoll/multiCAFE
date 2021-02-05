@@ -26,7 +26,6 @@ import icy.gui.viewer.ViewerListener;
 import icy.image.IcyBufferedImage;
 import icy.main.Icy;
 import icy.roi.ROI;
-
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
@@ -36,24 +35,26 @@ import plugins.fmp.multicafe.sequence.SequenceKymos;
 
 
 
-public class Display extends JPanel implements ViewerListener {
+public class Display extends JPanel implements ViewerListener 
+{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2103052112476748890L;
-	public 	JComboBox<String> kymosComboBox = new JComboBox<String> (new String[] {"none"});
-	private MultiCAFE 	parent0 			= null;
+	public 	JComboBox<String> kymosComboBox 	= new JComboBox<String> (new String[] {"none"});
+	private MultiCAFE 	parent0 				= null;
 			JButton 	updateButton 			= new JButton("Update");
 			JButton  	previousButton		 	= new JButton("<");
 			JButton		nextButton				= new JButton(">");
 			JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("top/bottom level (green)", true);
 			JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
 			JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
-			JComboBox<String> binsCombo	= new JComboBox <String>();
+			JComboBox<String> binsCombo		= new JComboBox <String>();
 			boolean 	actionAllowed			= true;
 
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {	
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{	
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
@@ -85,19 +86,26 @@ public class Display extends JPanel implements ViewerListener {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {		
-		kymosComboBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners()
+	{		
+		kymosComboBox.addActionListener(new ActionListener ()
+		{ 
+			@Override public void actionPerformed( final ActionEvent e )
+			{ 
 			displayUpdateOnSwingThread();
 		}});
 		
-		viewDerivativeCheckbox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		viewDerivativeCheckbox.addActionListener(new ActionListener ()
+		{ 
+			@Override public void actionPerformed( final ActionEvent e )
+			{ 
 			roisDisplay("deriv", viewDerivativeCheckbox.isSelected());
 		}});
 
-		viewGulpsCheckbox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		viewGulpsCheckbox.addActionListener(new ActionListener ()
+		{ 
+			@Override public void actionPerformed( final ActionEvent e )
+			{ 
 			roisDisplay("gulp", viewGulpsCheckbox.isSelected());
 		}});
 		

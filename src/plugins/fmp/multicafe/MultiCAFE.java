@@ -26,8 +26,9 @@ import plugins.fmp.multicafe.workinprogress_gpu.MCSpots_;
 
 
 
-public class MultiCAFE extends PluginActionable implements ViewerListener {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 2-Feb-2021", true, true, true, true);
+public class MultiCAFE extends PluginActionable implements ViewerListener 
+{
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE 30-Jan-2021", true, true, true, true);
 	public ExperimentList 	expList 		= new ExperimentList();
 	
 	public MCSequence_ 		paneSequence 	= new MCSequence_();
@@ -41,7 +42,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener {
 	//-------------------------------------------------------------------
 	
 	@Override
-	public void run() {		
+	public void run() 
+	{		
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
 		mainFrame.setLayout(new BorderLayout());
 		mainFrame.add(mainPanel, BorderLayout.CENTER);
@@ -62,28 +64,34 @@ public class MultiCAFE extends PluginActionable implements ViewerListener {
 		mainFrame.addToDesktopPane();
 	}	 
 	
-	public Experiment openExperimentFromString(String filename) {
+	public Experiment openExperimentFromString(String filename) 
+	{
 		Experiment exp = expList.getExperimentFromFileName(filename);
-		if (exp == null) {
+		if (exp == null) 
+		{
 			exp = new Experiment(filename);
 			expList.addExperiment(exp);
 		}
 		exp.setExperimentDirectory(filename);
 		exp.setImagesDirectory(exp.getImagesDirectoryAsParentFromFileName(filename));
 		exp.openSequenceCamData();
-		if (exp.seqCamData != null && exp.seqCamData.seq != null) {
+		if (exp.seqCamData != null && exp.seqCamData.seq != null) 
+		{
 			updateViewerForSequenceCam(exp);
 		} 
-		else {
+		else 
+		{
 			System.out.println("seqCamData or seq of seqCamData is null!");
 		}
 		return exp;
 	}
 	
-	public void updateViewerForSequenceCam(Experiment exp) {
+	public void updateViewerForSequenceCam(Experiment exp) 
+	{
 		Sequence seq = exp.seqCamData.seq;
 		Viewer v = seq.getFirstViewer();
-		if (v == null) {
+		if (v == null) 
+		{
 			v = new Viewer(exp.seqCamData.seq, true);
 		}
 		if (v != null) {
@@ -95,7 +103,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener {
 		}
 	}
 	
-	private void placeViewerNextToDialogBox(Viewer v, IcyFrame mainFrame) {
+	private void placeViewerNextToDialogBox(Viewer v, IcyFrame mainFrame) 
+	{
 		Rectangle rectv = v.getBoundsInternal();
 		Rectangle rect0 = mainFrame.getBoundsInternal();
 		rectv.setLocation(rect0.x+ rect0.width, rect0.y);
@@ -104,14 +113,18 @@ public class MultiCAFE extends PluginActionable implements ViewerListener {
 
 	
 	@Override	
-	public void viewerChanged(ViewerEvent event) {
-		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) {
-			if (event.getDim() == DimensionId.T) {
+	public void viewerChanged(ViewerEvent event) 
+	{
+		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) 
+		{
+			if (event.getDim() == DimensionId.T) 
+			{
 				Viewer v = event.getSource(); 
 				int idViewer = v.getSequence().getId(); 
 				Experiment exp = expList.getCurrentExperiment();
 				int idCurrentExp = exp.seqCamData.seq.getId();
-				if (idViewer == idCurrentExp) {
+				if (idViewer == idCurrentExp) 
+				{
 					int t = v.getPositionT(); 
 					v.setTitle(exp.seqCamData.getDecoratedImageName(t));
 					if (paneCages.bTrapROIsEdit) 
@@ -123,7 +136,8 @@ public class MultiCAFE extends PluginActionable implements ViewerListener {
 	}
 
 	@Override
-	public void viewerClosed(Viewer viewer) {
+	public void viewerClosed(Viewer viewer) 
+	{
 		viewer.removeListener(this);
 	}
 
