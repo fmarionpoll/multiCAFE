@@ -26,6 +26,7 @@ import icy.gui.viewer.ViewerListener;
 import icy.image.IcyBufferedImage;
 import icy.main.Icy;
 import icy.roi.ROI;
+
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.Experiment;
@@ -181,8 +182,7 @@ public class Display extends JPanel implements ViewerListener {
 		if (vList.size() == 0) {
 			Viewer v = new Viewer(seqKymos.seq, true);
 			v.setRepeat(false);
-			v.addListener(this);
-			
+			v.addListener(this);;
 			placeKymoViewerNextToCamViewer(exp, v);
 		}
 	}
