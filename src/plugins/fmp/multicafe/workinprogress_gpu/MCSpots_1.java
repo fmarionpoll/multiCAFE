@@ -32,8 +32,8 @@ import plugins.fmp.multicafe.sequence.SequenceKymos;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 
-public class MCSpots_1 extends JPanel {
-
+public class MCSpots_1 extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -44,11 +44,10 @@ public class MCSpots_1 extends JPanel {
 	private JButton 	removeBackGroundButton 	= new JButton("Remove background");
 	private double [][] avgX = null;
 	private double [][] avgY = null;
-	IcyFrame mainChartFrame = null;
+	IcyFrame mainChartFrame = null;	
 	
-	
-	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		add( GuiUtil.besidesPanel(subtractButton, buildHistogramButton));	
@@ -56,23 +55,30 @@ public class MCSpots_1 extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		subtractButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		subtractButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					subtractFirstColumn(exp);
 			}});
 		
-		buildHistogramButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		buildHistogramButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					buildHistogram(exp);
 			}});
 		
-		removeBackGroundButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		removeBackGroundButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					removeBackGround(exp);
@@ -81,7 +87,8 @@ public class MCSpots_1 extends JPanel {
 	
 	// -------------------------------------------------
 	
-	void subtractFirstColumn(Experiment exp) {
+	void subtractFirstColumn(Experiment exp) 
+	{
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
@@ -91,7 +98,8 @@ public class MCSpots_1 extends JPanel {
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
-	void buildHistogram(Experiment exp) {
+	void buildHistogram(Experiment exp) 
+	{
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
@@ -100,7 +108,8 @@ public class MCSpots_1 extends JPanel {
 		graphDisplay2Panels(exp, avgX, avgY);
 	}
 	
-	private void getAverageXandYProfile (SequenceKymos seqKymos, int imageIndex) {
+	private void getAverageXandYProfile (SequenceKymos seqKymos, int imageIndex) 
+	{
 		int height = seqKymos.seq.getSizeY();
 		int width = seqKymos.seq.getSizeX();
 		Rectangle rect = new Rectangle(0, 0, width, height);
@@ -123,8 +132,10 @@ public class MCSpots_1 extends JPanel {
 		int z = 0;
 		IcyBufferedImage virtualImage = seqKymos.seq.getImage(imageIndex, z) ;
 		
-		for (int chan= 0; chan< 3; chan++) {
-			if (virtualImage == null) {
+		for (int chan= 0; chan< 3; chan++) 
+		{
+			if (virtualImage == null) 
+			{
 				System.out.println("An error occurred while reading image: " + seqKymos.currentFrame );
 				return;
 			}
@@ -135,13 +146,15 @@ public class MCSpots_1 extends JPanel {
 			double deltaYUp 	= (refpoint[3].y - refpoint[0].y +1);
 			double deltaYDown 	= (refpoint[2].y - refpoint[1].y +1);
 			
-			for (int ix = 0; ix < nXpoints; ix++) {
+			for (int ix = 0; ix < nXpoints; ix++) 
+			{
 				double xUp 		= refpoint[0].x + deltaXUp * ix / nXpoints;
 				double yUp 		= refpoint[0].y + deltaYUp * ix / nXpoints;
 				double xDown 	= refpoint[1].x + deltaXDown * ix / nXpoints;
 				double yDown 	= refpoint[1].y + deltaYDown * ix / nXpoints;
 
-				for (int iy = 0; iy < nYpoints; iy++) {
+				for (int iy = 0; iy < nYpoints; iy++) 
+				{
 					double x = xUp + (xDown - xUp +1) * iy / nYpoints;
 					double y = yUp + (yDown - yUp +1) * iy / nYpoints;
 					
@@ -158,27 +171,31 @@ public class MCSpots_1 extends JPanel {
 		}
 		
 		// compute average
-		for (int chan = 0; chan <3; chan++) {
-			for (int ix = 0; ix < nXpoints; ix++) {
+		for (int chan = 0; chan <3; chan++) 
+		{
+			for (int ix = 0; ix < nXpoints; ix++) 
+			{
 				double n 		= countXArray[ix][chan];
 				avgX[ix][chan] = sumXArray[ix][chan]/n; 
 			}
 			
-			for (int iy = 0; iy < nYpoints; iy++) {
+			for (int iy = 0; iy < nYpoints; iy++) 
+			{
 				double n 		= countYArray[iy][chan];
 				avgY[iy][chan] = sumYArray[iy][chan]/n;
 			}
 		}
 	}
 	
-	private void removeBackGround(Experiment exp) {
+	private void removeBackGround(Experiment exp) 
+	{
 		double [] avgColor = new double [3];
 		int width = exp.seqKymos.seq.getSizeX();
-		for (int chan = 0; chan <3; chan++) {
+		for (int chan = 0; chan <3; chan++) 
+		{
 			double sum = 0;
-			for (int ix = 0; ix < width; ix++) {
+			for (int ix = 0; ix < width; ix++) 
 				sum += avgX[ix][chan]; 
-			}
 			avgColor[chan] = sum/width;
 		}
 		// now either create a reference image with this color or write a new transform
@@ -190,9 +207,11 @@ public class MCSpots_1 extends JPanel {
 	}
 	
 		
-	private void graphDisplay2Panels (Experiment exp, double [][] arrayX, double [][] arrayY) {
+	private void graphDisplay2Panels (Experiment exp, double [][] arrayX, double [][] arrayY) 
+	{
 		Point pt = null;
-		if (mainChartFrame != null) {
+		if (mainChartFrame != null) 
+		{
 			pt = mainChartFrame.getLocation();
 			mainChartFrame.removeAll();
 			mainChartFrame.close();
@@ -213,7 +232,8 @@ public class MCSpots_1 extends JPanel {
 		xyDataSetList.add(xyDataset);
 		totalpoints += xyDataset.getSeries(0).getItemCount();
 		
-		for (int i=0; i<xyDataSetList.size(); i++) {
+		for (int i=0; i<xyDataSetList.size(); i++) 
+		{
 			xyDataset = xyDataSetList.get(i);
 			int npoints = xyDataset.getSeries(0).getItemCount();
 			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, true, true);
@@ -227,7 +247,8 @@ public class MCSpots_1 extends JPanel {
 
 		mainChartFrame.add(mainPanel);
 		mainChartFrame.pack();
-		if (pt == null) {
+		if (pt == null) 
+		{
 			SequenceKymos seqKymos = exp.seqKymos;
 			Viewer v = seqKymos.seq.getFirstViewer();
 			Rectangle rectv = v.getBounds();
@@ -240,9 +261,11 @@ public class MCSpots_1 extends JPanel {
 		mainChartFrame.requestFocus();
 	}
 	
-	private XYSeriesCollection graphCreateXYDataSet(double [][] array, String rootName) {
+	private XYSeriesCollection graphCreateXYDataSet(double [][] array, String rootName) 
+	{
 		XYSeriesCollection xyDataset = new XYSeriesCollection();
-		for (int chan = 0; chan < 4; chan++) {
+		for (int chan = 0; chan < 4; chan++) 
+		{
 			XYSeries seriesXY = new XYSeries(rootName+chan);
 			if (chan == 3)
 				seriesXY.setDescription("1-2 + 3-2");

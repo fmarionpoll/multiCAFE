@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe.tools;
 
-public enum EnumStatusPane {
+public enum EnumStatusPane 
+{
 	DISABLED, INIT, FULL
 }

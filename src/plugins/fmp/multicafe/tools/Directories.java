@@ -41,7 +41,8 @@ public class Directories
 				.filter(p -> p.getFileName().toString().toLowerCase().endsWith(filter))
 				.forEach(p->hSet.add( p.toFile().getParent().toString()));
 			}
-		} catch (IOException e) 
+		} 
+		catch (IOException e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -2,8 +2,8 @@ package plugins.fmp.multicafe.sequence;
 
 import java.io.File;
 
-public class FileProperties {
-	
+public class FileProperties 
+{
 	public String	fileName 	= null;
 	public File		file		= null;
 	public boolean	exists		= false;

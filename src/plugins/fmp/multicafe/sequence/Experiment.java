@@ -198,9 +198,7 @@ public class Experiment
 	{
 		String name = directoryName.toLowerCase();
 		while (name .contains(RESULTS) || name .contains(BIN)) 
-		{
 			name = Paths.get(experimentDirectory).getParent().toString();
-		}
 		return name;
 	}
 	

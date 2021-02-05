@@ -8,8 +8,8 @@ package plugins.fmp.multicafe.tools;
  * @author Nicolas HERVE - nherve@ina.fr
  */
 
-public interface NHDistance<T> {
-	
+public interface NHDistance<T> 
+{	
 	/**
 	 * Compute distance.
 	 * 

@@ -23,20 +23,20 @@ import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
 
-public class DetectFlies2_series extends BuildSeries {
-
+public class DetectFlies2_series extends BuildSeries 
+{
 	private Viewer viewerCamData;
 	private Viewer vPositive = null;
 	private Viewer vBackgroundImage = null;;
-	private DetectFlies_Find find_flies = new DetectFlies_Find();
-	
+	private DetectFlies_Find find_flies = new DetectFlies_Find();	
 	public Sequence seqNegative = new Sequence();
 	public Sequence seqPositive = new Sequence();
 	public boolean viewInternalImages = false;
 
 	// -----------------------------------------
 	
-	void analyzeExperiment(Experiment exp) {
+	void analyzeExperiment(Experiment exp) 
+	{
 		exp.openSequenceCamData();
 		exp.xmlReadDrosoTrack(null);
 		if (options.isFrameFixed) {
@@ -44,22 +44,28 @@ public class DetectFlies2_series extends BuildSeries {
 			exp.cages.detectLast_Ms = options.t_lastMs;
 			if (exp.cages.detectLast_Ms > exp.camLastImage_Ms)
 				exp.cages.detectLast_Ms = exp.camLastImage_Ms;
-		} else {
+		} 
+		else 
+		{
 			exp.cages.detectFirst_Ms = exp.camFirstImage_Ms;
 			exp.cages.detectLast_Ms = exp.camLastImage_Ms;
 		}
 		exp.cages.detectBin_Ms = options.t_binMs;
 		exp.cages.detect_threshold = options.threshold;
 		
-		if (exp.cages.cageList.size() < 1 ) {
+		if (exp.cages.cageList.size() < 1 ) 
+		{
 			System.out.println("! skipped experiment with no cage: " + exp.getExperimentDirectory());
-		} else {
+		} 
+		else 
+		{
 			runDetectFlies(exp);
 		}
 		exp.seqCamData.closeSequence();
 	}
 	
-	private void runDetectFlies(Experiment exp) {
+	private void runDetectFlies(Experiment exp) 
+	{
 		if (seqNegative == null)
 			seqNegative = new Sequence();
 		if (seqPositive == null)
@@ -69,29 +75,35 @@ public class DetectFlies2_series extends BuildSeries {
 		find_flies.initParametersForDetection(exp, options);
 		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
 		options.threshold = options.thresholdDiff;
-		
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
+		try 
+		{
+			SwingUtilities.invokeAndWait(new Runnable() 
+			{
+				public void run() 
+				{
 					viewerCamData = new Viewer(exp.seqCamData.seq, true);
 					Rectangle rectv = viewerCamData.getBoundsInternal();
 					rectv.setLocation(options.parent0Rect.x+ options.parent0Rect.width, options.parent0Rect.y);
 					viewerCamData.setBounds(rectv);
 				}});
-		} catch (InvocationTargetException | InterruptedException e) {
+		} 
+		catch (InvocationTargetException | InterruptedException e) 
+		{
 			e.printStackTrace();
 		}
 		
 		boolean flag = options.forceBuildBackground;
 		flag |= (!exp.loadReferenceImage());
 		flag |= (exp.seqCamData.refImage == null);
-		if (flag) {
+		if (flag) 
+		{
 			System.out.println(" buildbackground");
 			buildBackgroundImage(exp);
 			exp.saveReferenceImage();
 		}
 		
-		if (options.detectFlies) {
+		if (options.detectFlies) 
+		{
 			exp.cleanPreviousDetectedFliesROIs();
 			findFlies(exp);
 			exp.orderFlyPositionsForAllCages();
@@ -100,32 +112,39 @@ public class DetectFlies2_series extends BuildSeries {
 		closeViewersAndSequences (exp);
 	}
 	
-	private void closeViewersAndSequences (Experiment exp) {
-		if (seqNegative != null) {
+	private void closeViewersAndSequences (Experiment exp) 
+	{
+		if (seqNegative != null) 
+		{
 			seqNegative.close();
 			seqNegative = null;
 		}
-		if (seqPositive != null) {
+		if (seqPositive != null) 
+		{
 			if (vPositive != null)
 				vPositive.close();
 			seqPositive.close();
 			seqPositive = null;
 		}
-		if (exp.seqBackgroundImage != null) {
+		if (exp.seqBackgroundImage != null) 
+		{
 			exp.seqBackgroundImage.close();
 			exp.seqBackgroundImage = null;
 		}
 	}
 
-	private void findFlies(Experiment exp) {
+	private void findFlies(Experiment exp) 
+	{
 		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
 
 		exp.seqBackgroundImage.close();
-		if (vPositive != null) {
+		if (vPositive != null) 
+		{
 			vPositive.close();
 			vPositive = null;
 		}
-		if (vBackgroundImage != null) {
+		if (vBackgroundImage != null) 
+		{
 			vBackgroundImage.close();
 			vBackgroundImage = null;
 		}
@@ -134,7 +153,8 @@ public class DetectFlies2_series extends BuildSeries {
 		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectFlies1");
 	    processor.setPriority(Processor.NORM_PRIORITY);
-        try {
+        try 
+        {
 			int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);
 			ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 			futures.clear();
@@ -146,28 +166,32 @@ public class DetectFlies2_series extends BuildSeries {
 
 			// ----------------- loop over all images of the stack
 			int it = 0;
-			for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms, it++ ) {
+			for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms, it++ ) 
+			{
 				final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
 				final int t_it = it;
-				futures.add(processor.submit(new Runnable () {
-				@Override
-				public void run() {	
-					IcyBufferedImage workImage = exp.seqCamData.imageIORead(t_from);
-					if (workImage == null)
-						return;
-					IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(workImage);
-					exp.seqCamData.currentFrame = t_from;
-					seqNegative.beginUpdate();
-					IcyBufferedImage negativeImage = exp.seqCamData.subtractImagesAsInteger(exp.seqCamData.refImage, currentImage);
-					find_flies.findFlies(negativeImage, t_from, t_it);
-					seqNegative.setImage(0, 0, negativeImage);
-					seqNegative.endUpdate();
-				}
-				}));
+				futures.add(processor.submit(new Runnable () 
+				{
+					@Override
+					public void run() 
+					{	
+						IcyBufferedImage workImage = exp.seqCamData.imageIORead(t_from);
+						if (workImage == null)
+							return;
+						IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(workImage);
+						exp.seqCamData.currentFrame = t_from;
+						seqNegative.beginUpdate();
+						IcyBufferedImage negativeImage = exp.seqCamData.subtractImagesAsInteger(exp.seqCamData.refImage, currentImage);
+						find_flies.findFlies(negativeImage, t_from, t_it);
+						seqNegative.setImage(0, 0, negativeImage);
+						seqNegative.endUpdate();
+					}}));
 			}
 			waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 			
-		} finally {
+		} 
+        finally 
+        {
 			exp.seqCamData.seq.endUpdate();
 			seqNegative.close();
 //			find_flies.copyDetectedROIsToSequence(exp);
@@ -177,16 +201,20 @@ public class DetectFlies2_series extends BuildSeries {
 		processor.shutdown();
 	}
 
-	private void patchRectToReferenceImage(SequenceCamData seqCamData, IcyBufferedImage currentImage, Rectangle rect) {
+	private void patchRectToReferenceImage(SequenceCamData seqCamData, IcyBufferedImage currentImage, Rectangle rect) 
+	{
 		int cmax = currentImage.getSizeC();
-		for (int c = 0; c < cmax; c++) {
+		for (int c = 0; c < cmax; c++) 
+		{
 			int[] intCurrentImage = Array1DUtil.arrayToIntArray(currentImage.getDataXY(c),
 					currentImage.isSignedDataType());
 			int[] intRefImage = Array1DUtil.arrayToIntArray(seqCamData.refImage.getDataXY(c),
 					seqCamData.refImage.isSignedDataType());
 			int xwidth = currentImage.getSizeX();
-			for (int x = 0; x < rect.width; x++) {
-				for (int y = 0; y < rect.height; y++) {
+			for (int x = 0; x < rect.width; x++) 
+			{
+				for (int y = 0; y < rect.height; y++) 
+				{
 					int xi = rect.x + x;
 					int yi = rect.y + y;
 					int coord = xi + yi * xwidth;
@@ -201,29 +229,39 @@ public class DetectFlies2_series extends BuildSeries {
 		seqCamData.refImage.dataChanged();
 	}
 
-	private void displayDetectViewer(Experiment exp) {
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
+	private void displayDetectViewer(Experiment exp) 
+	{
+		try 
+		{
+			SwingUtilities.invokeAndWait(new Runnable() 
+			{
+				public void run() 
+				{
 					Viewer vNegative = new Viewer(seqNegative, false);
 					seqNegative.setName("detectionImage");
 					seqNegative.setImage(0, 0, exp.seqCamData.refImage);
 					Point pt = viewerCamData.getLocation();
-					if (vNegative != null) {
+					if (vNegative != null) 
+					{
 						vNegative.setLocation(pt);
 						vNegative.setVisible(true);
 					}
 				}});
-		} catch (InvocationTargetException | InterruptedException e) {
+		} 
+		catch (InvocationTargetException | InterruptedException e) 
+		{
 			e.printStackTrace();
 		}
 
 	}
 
-	public void displayRefViewers(Experiment exp) {
+	public void displayRefViewers(Experiment exp) 
+	{
 		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
+			SwingUtilities.invokeAndWait(new Runnable() 
+			{
+				public void run() 
+				{
 					if (exp.seqBackgroundImage == null)
 						exp.seqBackgroundImage = new Sequence();
 					if (vBackgroundImage == null)
@@ -243,21 +281,26 @@ public class DetectFlies2_series extends BuildSeries {
 					int height = viewerCamData.getHeight();
 					pt.y += height;
 			
-					if (vPositive != null) {
+					if (vPositive != null) 
+					{
 						vPositive.setVisible(true);
 						vPositive.setLocation(pt);
 					}
-					if (vBackgroundImage != null) {
+					if (vBackgroundImage != null) 
+					{
 						vBackgroundImage.setVisible(true);
 						vBackgroundImage.setLocation(pt);
 					}
 				}});
-		} catch (InvocationTargetException | InterruptedException e) {
+		} 
+		catch (InvocationTargetException | InterruptedException e) 
+		{
 			e.printStackTrace();
 		}
 	}
 
-	private void buildBackgroundImage(Experiment exp) {
+	private void buildBackgroundImage(Experiment exp) 
+	{
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		find_flies.initParametersForDetection(exp, options);
 		
@@ -271,13 +314,15 @@ public class DetectFlies2_series extends BuildSeries {
 		displayRefViewers(exp);
 		
 		int nFliesToRemove = 0;
-		for (Cage cage: exp.cages.cageList) {
+		for (Cage cage: exp.cages.cageList) 
+		{
 			cage.initialflyRemoved = false;
 			if (cage.cageNFlies > 0)
 				nFliesToRemove += cage.cageNFlies;
 		}
 		
-		for (long indexms = exp.cages.detectFirst_Ms - exp.camFirstImage_Ms ; indexms<= limit && !stopFlag; indexms += exp.cages.detectBin_Ms) {
+		for (long indexms = exp.cages.detectFirst_Ms - exp.camFirstImage_Ms ; indexms<= limit && !stopFlag; indexms += exp.cages.detectBin_Ms) 
+		{
 			int t = (int) (indexms /exp.camBinImage_Ms);
 			IcyBufferedImage currentImage = exp.seqCamData.getImage(t, 0);
 			exp.seqCamData.currentFrame = t;
@@ -286,13 +331,16 @@ public class DetectFlies2_series extends BuildSeries {
 			IcyBufferedImage positiveImage = exp.seqCamData.subtractImagesAsInteger(currentImage, exp.seqCamData.refImage);
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, find_flies.rectangleAllCages));
 			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd); 
-			for (Cage cage: exp.cages.cageList) {
+			for (Cage cage: exp.cages.cageList) 
+			{
 				if (cage.cageNFlies <1)
 					continue;
 				BooleanMask2D bestMask = find_flies.findLargestBlob(roiAll, cage);
-				if (bestMask != null) {
+				if (bestMask != null) 
+				{
 					ROI2DArea flyROI = new ROI2DArea(bestMask);
-					if (!cage.initialflyRemoved) {
+					if (!cage.initialflyRemoved) 
+					{
 						Rectangle rect = flyROI.getBounds();
 						patchRectToReferenceImage(exp.seqCamData, currentImage, rect);
 						cage.initialflyRemoved = true;

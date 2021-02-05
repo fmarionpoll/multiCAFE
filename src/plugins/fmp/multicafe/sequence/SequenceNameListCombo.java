@@ -7,42 +7,53 @@ import javax.swing.ComboBoxModel;
 
 
 
-public class SequenceNameListCombo extends JComboBox<String> { 
+public class SequenceNameListCombo extends JComboBox<String> 
+{ 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7489975211080267194L;
 	
-	public SequenceNameListCombo() { 
+	public SequenceNameListCombo() 
+	{ 
 		super();		
 	} 
 	
-	public SequenceNameListCombo(final Object items[]){ 
+	public SequenceNameListCombo(final Object items[])
+	{ 
 		super(); 
 	} 
 	
-	public SequenceNameListCombo(Vector<?> items) { 
+	public SequenceNameListCombo(Vector<?> items) 
+	{ 
 		super(); 
 	} 
 	
-	public SequenceNameListCombo(ComboBoxModel<?> aModel) { 
+	public SequenceNameListCombo(ComboBoxModel<?> aModel) 
+	{ 
 		super(); 
 	} 
 	
 	private boolean layingOut = false; 
 	
-	public void doLayout(){ 
-		try { 
+	public void doLayout()
+	{ 
+		try 
+		{ 
 			layingOut = true; 
 		    super.doLayout(); 
-		} finally { 
+		} 
+		finally 
+		{ 
 		    layingOut = false; 
 		} 
 	} 
 	
-	public Dimension getSize(){ 
+	public Dimension getSize()
+	{ 
 		Dimension dim = super.getSize(); 
-		if (!layingOut) {
+		if (!layingOut) 
+		{
 			int preferredWidth = getPreferredSize().width;
 		    dim.width = Math.max(dim.width, preferredWidth);
 		}

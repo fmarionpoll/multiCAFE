@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
-public class ImageOperationsStruct {
-	
+public class ImageOperationsStruct 
+{
 	int 				fromFrame		= -1;
 	int 				colordistanceType 	= 0;
 	int					simplethreshold = 255;
@@ -17,47 +17,54 @@ public class ImageOperationsStruct {
 		
 	// -----------------------------------
 	
-	public ImageOperationsStruct () {
+	public ImageOperationsStruct () 
+	{
 		this.fromFrame = -1;
 		this.transformop = TransformOp.NONE;
 		this.thresholdtype = EnumThresholdType.NONE;
 		this.colorthreshold = 0;
 	}
 	
-	public ImageOperationsStruct (int framenumber, TransformOp transformop, EnumThresholdType thresholdtype, int thresholdvalue) {
+	public ImageOperationsStruct (int framenumber, TransformOp transformop, EnumThresholdType thresholdtype, int thresholdvalue) 
+	{
 		this.fromFrame = framenumber;
 		this.transformop = transformop;
 		this.thresholdtype = thresholdtype;
 		this.colorthreshold = thresholdvalue;
 	}
 	
-	public ImageOperationsStruct (int framenumber, TransformOp transformop) {
+	public ImageOperationsStruct (int framenumber, TransformOp transformop) 
+	{
 		this.fromFrame = framenumber;
 		this.transformop = transformop;
 		this.thresholdtype = EnumThresholdType.NONE;
 		this.colorthreshold = 0;
 	}
 	
-	public boolean isValidTransformCache(ImageOperationsStruct op) {
+	public boolean isValidTransformCache(ImageOperationsStruct op) 
+	{
 		if (op.fromFrame != this.fromFrame)
-			return false;
-		
+			return false;	
 		if (op.transformop != this.transformop)
 			return false;
 		return true;
 	}
 	
-	public void copyTransformOpTo (ImageOperationsStruct op) {
+	public void copyTransformOpTo (ImageOperationsStruct op) 
+	{
 		op.transformop = transformop;
 		op.fromFrame = fromFrame;
 	}
 	
-	public void copyThresholdOpTo (ImageOperationsStruct op) {
+	public void copyThresholdOpTo (ImageOperationsStruct op) 
+	{
 		op.thresholdtype = thresholdtype;
-		if (thresholdtype == EnumThresholdType.SINGLE) {
+		if (thresholdtype == EnumThresholdType.SINGLE) 
+		{
 			op.simplethreshold = simplethreshold;
 		}
-		else if (thresholdtype == EnumThresholdType.COLORARRAY) {
+		else if (thresholdtype == EnumThresholdType.COLORARRAY) 
+		{
 			op.colorthreshold = colorthreshold;
 			if (op.colorarray == null)
 				op.colorarray = new ArrayList <Color> ();
@@ -70,14 +77,15 @@ public class ImageOperationsStruct {
 		op.fromFrame = fromFrame;
 	}
 	
-	public boolean isValidThresholdCache(ImageOperationsStruct op) {
+	public boolean isValidThresholdCache(ImageOperationsStruct op) 
+	{
 		if (op.fromFrame != this.fromFrame)
 			return false;
-		
 		if (op.thresholdtype != this.thresholdtype)
 			return false;
 		
-		if (op.thresholdtype == EnumThresholdType.COLORARRAY) {
+		if (op.thresholdtype == EnumThresholdType.COLORARRAY) 
+		{
 			if (op.colorthreshold != this.colorthreshold)
 				return false;
 			if (op.colordistanceType != this.colordistanceType)
@@ -85,7 +93,8 @@ public class ImageOperationsStruct {
 			if (op.colorarray.size() != this.colorarray.size())
 				return false;
 		}
-		else {
+		else 
+		{
 			if (op.simplethreshold != this.simplethreshold)
 				return false;
 		}

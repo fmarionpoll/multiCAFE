@@ -9,7 +9,8 @@ import java.util.List;
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafe.tools.toExcel.XLSExportOptions;
 
-public class ExperimentList {
+public class ExperimentList 
+{
 	
 	protected List<Experiment> experimentList 	= new ArrayList<Experiment> ();
 	public 	int 	index0 						= 0;
@@ -20,17 +21,20 @@ public class ExperimentList {
 	
 
 
-	public ExperimentList () {
+	public ExperimentList () 
+	{
 	}
 	
-	public Experiment getMsColStartAndEndFromAllExperiments(XLSExportOptions options) {
+	public Experiment getMsColStartAndEndFromAllExperiments(XLSExportOptions options) 
+	{
 		Experiment expAll = new Experiment();
 		Experiment exp0 = experimentList.get(0);
-	
-		if (options.absoluteTime) {
+		if (options.absoluteTime) 
+		{
 			expAll.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
 			expAll.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
-			for (Experiment exp: experimentList) {
+			for (Experiment exp: experimentList) 
+			{
 				if (expAll.getFileTimeImageFirst(false).compareTo(exp.getFileTimeImageFirst(true)) > 0) 
 					expAll.setFileTimeImageFirst(exp.getFileTimeImageFirst(true));
 				if (expAll.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
@@ -39,16 +43,19 @@ public class ExperimentList {
 			expAll.camFirstImage_Ms = expAll.getFileTimeImageFirst(false).toMillis();
 			expAll.camLastImage_Ms = expAll.getFileTimeImageLast(false).toMillis();	
 		} 
-		else {
+		else 
+		{
 			expAll.camFirstImage_Ms = 0;
 			expAll.camLastImage_Ms = 0;
-			for (Experiment exp: experimentList) {
+			for (Experiment exp: experimentList) 
+			{
 				if (options.collateSeries && exp.previousExperiment != null)
 					continue;
 				double last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
 				double first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
 				double diff = last - first;
-				if (diff < 1) {
+				if (diff < 1) 
+				{
 					System.out.println("error when computing FileTime difference between last and first image; set dt between images = 1 ms");
 					diff = exp.seqCamData.seq.getSizeT();
 				}
@@ -56,20 +63,21 @@ public class ExperimentList {
 					expAll.camLastImage_Ms = (long) diff;
 			}
 		}
-		
 		expAll.kymoFirstCol_Ms = expAll.camFirstImage_Ms;
 		expAll.kymoLastCol_Ms = expAll.camLastImage_Ms;
 		return expAll;
 	}
 		
-	public boolean loadAllExperiments(boolean loadCapillaries, boolean loadDrosoTrack) {
+	public boolean loadAllExperiments(boolean loadCapillaries, boolean loadDrosoTrack) 
+	{
 		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
 		int nexpts = experimentList.size();
 		int index = 1;
 		maxSizeOfCapillaryArrays = 0;
 		progress.setLength(nexpts);
 		boolean flag = true;
-		for (Experiment exp: experimentList) {
+		for (Experiment exp: experimentList) 
+		{
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
 //			String expDirectory = exp.getExperimentDirectory();
 //			String imagesDirectory = exp.getRootWithNoResultNorBinString(expDirectory);
@@ -85,14 +93,18 @@ public class ExperimentList {
 		return flag;
 	}
 	
-	public void chainExperiments(boolean collate) {
-		for (Experiment exp: experimentList) {
-			if (!collate) {
+	public void chainExperiments(boolean collate) 
+	{
+		for (Experiment exp: experimentList) 
+		{
+			if (!collate) 
+			{
 				exp.previousExperiment = null;
 				exp.nextExperiment = null;
 				continue;
 			}
-			for (Experiment expi: experimentList) {
+			for (Experiment expi: experimentList) 
+			{
 				if (expi.experimentID == exp.experimentID 
 					|| !expi.experiment .equals(exp.experiment) 
 					|| !expi.exp_boxID .equals(exp.exp_boxID)
@@ -101,10 +113,12 @@ public class ExperimentList {
 					)
 					continue;
 				// same exp series: if before, insert eventually
-				if (expi.camLastImage_Ms < exp.camFirstImage_Ms) {
+				if (expi.camLastImage_Ms < exp.camFirstImage_Ms) 
+				{
 					if (exp.previousExperiment == null)
 						exp.previousExperiment = expi;
-					else if (expi.camLastImage_Ms > exp.previousExperiment.camLastImage_Ms ) {
+					else if (expi.camLastImage_Ms > exp.previousExperiment.camLastImage_Ms ) 
+					{
 						(exp.previousExperiment).nextExperiment = expi;
 						expi.previousExperiment = exp.previousExperiment;
 						expi.nextExperiment = exp;
@@ -113,10 +127,12 @@ public class ExperimentList {
 					continue;
 				}
 				// same exp series: if after, insert eventually
-				if (expi.camFirstImage_Ms > exp.camLastImage_Ms) {
+				if (expi.camFirstImage_Ms > exp.camLastImage_Ms) 
+				{
 					if (exp.nextExperiment == null)
 						exp.nextExperiment = expi;
-					else if (expi.camFirstImage_Ms < exp.nextExperiment.camFirstImage_Ms ) {
+					else if (expi.camFirstImage_Ms < exp.nextExperiment.camFirstImage_Ms ) 
+					{
 						(exp.nextExperiment).previousExperiment = expi;
 						expi.nextExperiment = (exp.nextExperiment);
 						expi.previousExperiment = exp;
@@ -130,13 +146,17 @@ public class ExperimentList {
 		}
 	}
 
-	public int getPositionOfExperiment(String filename) {
+	public int getPositionOfExperiment(String filename) 
+	{
 		int position = -1;
-		if (filename != null) {
-			for (int i=0; i< experimentList.size(); i++) {
+		if (filename != null) 
+		{
+			for (int i=0; i< experimentList.size(); i++) 
+			{
 				Experiment exp =  experimentList.get(i);
 				String filename2 = exp.getExperimentDirectory();
-				if (filename.compareTo(filename2) == 0) {
+				if (filename.compareTo(filename2) == 0) 
+				{
 					position = i;
 					break;
 				}
@@ -145,10 +165,12 @@ public class ExperimentList {
 		return position;
 	}
 	
-	public Experiment getExperimentFromFileName(String filename) {
+	public Experiment getExperimentFromFileName(String filename) 
+	{
 		Experiment exp = null;
 		currentExperimentIndex = getPositionOfExperiment(filename);
-		if (currentExperimentIndex >= 0) {
+		if (currentExperimentIndex >= 0) 
+		{
 			if (currentExperimentIndex > getExperimentListSize()-1)
 				currentExperimentIndex = getExperimentListSize()-1;
 			exp = getExperimentFromList(currentExperimentIndex);
@@ -158,15 +180,18 @@ public class ExperimentList {
 	
 	// ---------------------
 	
-	public int getExperimentListSize() {
+	public int getExperimentListSize() 
+	{
 		return experimentList.size();
 	}
 	
-	public void clear() {
+	public void clear() 
+	{
 		experimentList.clear();
 	}
 	
-	public Experiment getExperimentFromList(int index) {
+	public Experiment getExperimentFromList(int index) 
+	{
 		if (index < 0)
 			return null;
 		if (index > experimentList.size() -1)
@@ -175,41 +200,48 @@ public class ExperimentList {
 		return exp;
 	}
 	
-	public Experiment getCurrentExperiment() {
+	public Experiment getCurrentExperiment() 
+	{
 		return getExperimentFromList(currentExperimentIndex);
 	}
 	
-	public Experiment addNewExperimentToList () {
+	public Experiment addNewExperimentToList () 
+	{
 		Experiment exp = new Experiment();
 		experimentList.add(exp);
 		return exp;
 	}
 	
-	public int addExperiment (Experiment exp) {
+	public int addExperiment (Experiment exp) 
+	{
 		experimentList.add(exp);
 		currentExperimentIndex = getExperimentListSize()-1;
 		return currentExperimentIndex;
 	}
 
-	public Experiment addNewExperimentToList (String expDirectory) {
+	public Experiment addNewExperimentToList (String expDirectory) 
+	{
 		boolean exists = false;
 		String expDirectory0 = getDirectoryName(expDirectory);
-		Experiment exp = null;
-				
-		for (int i=0; i < experimentList.size(); i++) {
+		Experiment exp = null;			
+		for (int i=0; i < experimentList.size(); i++) 
+		{
 			exp = experimentList.get(i);
-			if (exp.getExperimentDirectory() .equals (expDirectory0)) {	
+			if (exp.getExperimentDirectory() .equals (expDirectory0)) 
+			{	
 				exists = true;
 				break;
 			}
 		}
 		
-		if (!exists) {
+		if (!exists) 
+		{
 			exp = new Experiment(expDirectory0);
 			exp.setExperimentDirectory(expDirectory0);
 			exp.setImagesDirectory(exp.getImagesDirectoryAsParentFromFileName(expDirectory0));
 			int experimentNewID  = 0;
-			for (Experiment expi: experimentList) {
+			for (Experiment expi: experimentList) 
+			{
 				if (expi.experimentID > experimentNewID)
 					experimentNewID = expi.experimentID;
 			}
@@ -219,10 +251,12 @@ public class ExperimentList {
 		return exp;
 	}
 	
-	private String getDirectoryName(String filename) {
+	private String getDirectoryName(String filename) 
+	{
 		File f0 = new File(filename);
 		String directoryPathName = f0.getAbsolutePath();
-		if (!f0.isDirectory()) {
+		if (!f0.isDirectory()) 
+		{
 			Path path = Paths.get(directoryPathName);
 			directoryPathName = path.getParent().toString();
 		}

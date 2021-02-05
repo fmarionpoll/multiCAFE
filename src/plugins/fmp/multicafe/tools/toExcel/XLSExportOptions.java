@@ -2,8 +2,8 @@ package plugins.fmp.multicafe.tools.toExcel;
 
 import plugins.fmp.multicafe.sequence.ExperimentList;
 
-public class XLSExportOptions {
-	
+public class XLSExportOptions 
+{	
 	public boolean 	xyImage 			= true;
 	public boolean 	xyTopCage 			= true;
 	public boolean 	xyTipCapillaries	= true;

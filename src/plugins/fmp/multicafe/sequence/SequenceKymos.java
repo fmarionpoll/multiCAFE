@@ -29,7 +29,8 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
-public class SequenceKymos extends SequenceCamData  {	
+public class SequenceKymos extends SequenceCamData  
+{	
 	public boolean 	isRunning_loadImages 		= false;
 	public boolean 	isInterrupted_loadImages 	= false;
 	public int 		imageWidthMax 				= 0;
@@ -37,32 +38,38 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	// -----------------------------------------------------
 	
-	public SequenceKymos() {
+	public SequenceKymos() 
+	{
 		super ();
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
-	public SequenceKymos(String name, IcyBufferedImage image) {
+	public SequenceKymos(String name, IcyBufferedImage image) 
+	{
 		super (name, image);
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
-	public SequenceKymos (String [] list, String directory) {
+	public SequenceKymos (String [] list, String directory) 
+	{
 		super(list, directory);
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
-	public SequenceKymos (List<String> listFullPaths) {
+	public SequenceKymos (List<String> listFullPaths) 
+	{
 		super(listFullPaths, true);
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
 	// ----------------------------
 	
-	public void validateRoisAtT(int t) {
+	public void validateRoisAtT(int t) 
+	{
 		List<ROI2D> listRois = seq.getROI2Ds();
 		int width = seq.getWidth();
-		for (ROI2D roi: listRois) {
+		for (ROI2D roi: listRois) 
+		{
 			if (!(roi instanceof ROI2DPolyLine))
 				continue;
 			if (roi.getT() == -1)
@@ -70,7 +77,8 @@ public class SequenceKymos extends SequenceCamData  {
 			if (roi.getT() != t)
 				continue;
 			// interpolate missing points if necessary
-			if (roi.getName().contains("level") || roi.getName().contains("gulp")) {
+			if (roi.getName().contains("level") || roi.getName().contains("gulp")) 
+			{
 				ROI2DUtilities.interpolateMissingPointsAlongXAxis ((ROI2DPolyLine) roi, width);
 				continue;
 			}
@@ -85,9 +93,11 @@ public class SequenceKymos extends SequenceCamData  {
 		Collections.sort(listRois, new Comparators.ROI2D_Name_Comparator());
 	}
 	
-	public void removeROIsPolylineAtT(int t) {
+	public void removeROIsPolylineAtT(int t) 
+	{
 		List<ROI2D> listRois = seq.getROI2Ds();
-		for (ROI2D roi: listRois) {
+		for (ROI2D roi: listRois) 
+		{
 			if (!(roi instanceof ROI2DPolyLine))
 				continue;
 			if (roi.getT() == t)
@@ -96,10 +106,12 @@ public class SequenceKymos extends SequenceCamData  {
 		//Collections.sort(listRois, new Comparators.ROI2DNameComparator());
 	}
 	
-	public void updateROIFromCapillaryMeasure(Capillary cap, CapillaryLimit caplimits) {
+	public void updateROIFromCapillaryMeasure(Capillary cap, CapillaryLimit caplimits) 
+	{
 		int t = cap.indexImage;
 		List<ROI2D> listRois = seq.getROI2Ds();
-		for (ROI2D roi: listRois) {
+		for (ROI2D roi: listRois) 
+		{
 			if (!(roi instanceof ROI2DPolyLine))
 				continue;
 			if (roi.getT() != t)
@@ -112,14 +124,17 @@ public class SequenceKymos extends SequenceCamData  {
 		}
 	}
 	
-	public void validateRois() {
+	public void validateRois() 
+	{
 		List<ROI2D> listRois = seq.getROI2Ds();
 		int width = seq.getWidth();
-		for (ROI2D roi: listRois) {
+		for (ROI2D roi: listRois) 
+		{
 			if (!(roi instanceof ROI2DPolyLine))
 				continue;
 			// interpolate missing points if necessary
-			if (roi.getName().contains("level") || roi.getName().contains("gulp")) {
+			if (roi.getName().contains("level") || roi.getName().contains("gulp")) 
+			{
 				ROI2DUtilities.interpolateMissingPointsAlongXAxis ((ROI2DPolyLine) roi, width);
 				continue;
 			}
@@ -134,17 +149,18 @@ public class SequenceKymos extends SequenceCamData  {
 		Collections.sort(listRois, new Comparators.ROI2D_Name_Comparator());
 	}
 
-	public boolean transferKymosRoisToCapillaries(Capillaries capillaries) {
+	public boolean transferKymosRoisToCapillaries(Capillaries capillaries) 
+	{
 		List<ROI> allRois = seq.getROIs();
 		if (allRois.size() < 1)
 			return false;
-		for (int kymo=0; kymo< seq.getSizeT(); kymo++) {
+		for (int kymo=0; kymo< seq.getSizeT(); kymo++) 
+		{
 			List<ROI> roisAtT = new ArrayList<ROI> ();
-			for (ROI roi: allRois) {
-				if (roi instanceof ROI2D) {
-					if (((ROI2D)roi).getT() == kymo)
-						roisAtT.add(roi);
-				}
+			for (ROI roi: allRois) 
+			{
+				if (roi instanceof ROI2D && ((ROI2D)roi).getT() == kymo)
+					roisAtT.add(roi);
 			}
 			if (capillaries.capillariesArrayList.size() <= kymo) 
 				capillaries.capillariesArrayList.add(new Capillary());
@@ -156,12 +172,14 @@ public class SequenceKymos extends SequenceCamData  {
 		return true;
 	}
 	
-	public void transferCapillariesMeasuresToKymos(Capillaries capillaries) {
+	public void transferCapillariesMeasuresToKymos(Capillaries capillaries) 
+	{
 		List<ROI2D> seqRoisList = seq.getROI2Ds(false);
 		ROI2DUtilities.removeROIsMissingChar(seqRoisList, '_');
 		List<ROI2D> newRoisList = new ArrayList<ROI2D>();
 		int ncapillaries = capillaries.capillariesArrayList.size();
-		for (int i=0; i < ncapillaries; i++) {
+		for (int i=0; i < ncapillaries; i++) 
+		{
 			List<ROI2D> listOfRois = capillaries.capillariesArrayList.get(i).transferMeasuresToROIs();
 			newRoisList.addAll(listOfRois);
 		}
@@ -170,7 +188,8 @@ public class SequenceKymos extends SequenceCamData  {
 		seq.addROIs(seqRoisList, false);
 	}
 	
-	public void saveKymosCurvesToCapillariesMeasures(Experiment exp) {
+	public void saveKymosCurvesToCapillariesMeasures(Experiment exp) 
+	{
 		exp.seqKymos.validateRois();
 		exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
 		exp.xmlSaveMCcapillaries();
@@ -178,11 +197,13 @@ public class SequenceKymos extends SequenceCamData  {
 
 	// ----------------------------
 
-	public List <FileProperties> loadListOfPotentialKymographsFromCapillaries(String dir, Capillaries capillaries) {
+	public List <FileProperties> loadListOfPotentialKymographsFromCapillaries(String dir, Capillaries capillaries) 
+	{
 		String directoryFull = dir +File.separator ;	
 		int ncapillaries = capillaries.capillariesArrayList.size();
 		List<FileProperties> myListOfFiles = new ArrayList<FileProperties>(ncapillaries);
-		for (int i=0; i< ncapillaries; i++) {
+		for (int i=0; i< ncapillaries; i++) 
+		{
 			FileProperties temp = new FileProperties();
 			temp.fileName  = directoryFull+ capillaries.capillariesArrayList.get(i).getCapillaryName()+ ".tiff";
 			myListOfFiles.add(temp);
@@ -192,20 +213,22 @@ public class SequenceKymos extends SequenceCamData  {
 	
 	// -------------------------
 	
-	public boolean loadImagesFromList(List <FileProperties> myListOfFileProperties, boolean adjustImagesSize) {
+	public boolean loadImagesFromList(List <FileProperties> myListOfFileProperties, boolean adjustImagesSize) 
+	{
 		isRunning_loadImages = true;
 		boolean flag = (myListOfFileProperties.size() > 0);
 		if (!flag)
 			return flag;
-		if (adjustImagesSize) {
+		if (adjustImagesSize) 
 			adjustImagesToMaxSize(myListOfFileProperties, getMaxSizeofTiffFiles(myListOfFileProperties));
-		}
 		List <String> myList = new ArrayList <String> ();
-		for (FileProperties prop: myListOfFileProperties) {
+		for (FileProperties prop: myListOfFileProperties) 
+		{
 			if (prop.exists)
 				myList.add(prop.fileName);
 		}
-		if (myList.size() > 0) {
+		if (myList.size() > 0) 
+		{
 			loadSequenceOfImagesFromList(myList, true);
 			setParentDirectoryAsCSCamFileName();
 			status = EnumStatus.KYMOGRAPH;
@@ -214,10 +237,12 @@ public class SequenceKymos extends SequenceCamData  {
 		return flag;
 	}
 	
-	Rectangle getMaxSizeofTiffFiles(List<FileProperties> files) {
+	Rectangle getMaxSizeofTiffFiles(List<FileProperties> files) 
+	{
 		imageWidthMax = 0;
 		imageHeightMax = 0;
-		for (int i= 0; i < files.size(); i++) {
+		for (int i= 0; i < files.size(); i++) 
+		{
 			FileProperties fileProp = files.get(i);
 			if (!fileProp.exists)
 				continue;
@@ -230,14 +255,18 @@ public class SequenceKymos extends SequenceCamData  {
 		return new Rectangle(0, 0, imageWidthMax, imageHeightMax);
 	}
 	
-	boolean getImageDim(final FileProperties fileProp) {
+	boolean getImageDim(final FileProperties fileProp) 
+	{
 		boolean flag = true;
 		OMEXMLMetadata metaData = null;
-		try {
+		try 
+		{
 			metaData = Loader.getOMEXMLMetaData(fileProp.fileName);
 			fileProp.imageWidth = MetaDataUtil.getSizeX(metaData, 0);
 			fileProp.imageHeight= MetaDataUtil.getSizeY(metaData, 0);
-		} catch (UnsupportedFormatException | IOException e) {
+		} 
+		catch (UnsupportedFormatException | IOException e) 
+		{
 			flag = false;
 			e.printStackTrace();
 		}
@@ -263,11 +292,12 @@ public class SequenceKymos extends SequenceCamData  {
 	 * result.substring(1); } } } return result; }
 	 */
 	
-	void adjustImagesToMaxSize(List<FileProperties> files, Rectangle rect) {
+	void adjustImagesToMaxSize(List<FileProperties> files, Rectangle rect) 
+	{
 		ProgressFrame progress = new ProgressFrame("Make kymographs the same width and height");
 		progress.setLength(files.size());
-		
-		for (int i= 0; i < files.size(); i++) {
+		for (int i= 0; i < files.size(); i++) 
+		{
 			FileProperties fileProp = files.get(i);
 			if (!fileProp.exists)
 				continue;
@@ -277,19 +307,26 @@ public class SequenceKymos extends SequenceCamData  {
 			progress.setMessage("adjust image "+fileProp.fileName);
 			System.out.print("adjust image "+fileProp.fileName);
 			IcyBufferedImage ibufImage1 = null;
-			try {
+			try 
+			{
 				ibufImage1 = Loader.loadImage(fileProp.fileName);
-			} catch (UnsupportedFormatException | IOException e) {
+			} 
+			catch (UnsupportedFormatException | IOException e) 
+			{
 				e.printStackTrace();
 			}
 			
 			IcyBufferedImage ibufImage2 = new IcyBufferedImage(imageWidthMax, imageHeightMax, ibufImage1.getSizeC(), ibufImage1.getDataType_());
 			transferImage1To2(ibufImage1, ibufImage2);
-			try {
+			try 
+			{
 				Saver.saveImage(ibufImage2, fileProp.file, true);
-			} catch (FormatException e) {
+			} catch (FormatException e) 
+			{
 				e.printStackTrace();
-			} catch (IOException e) {
+			} 
+			catch (IOException e) 
+			{
 				e.printStackTrace();
 			}
 			progress.incPosition();
@@ -297,7 +334,8 @@ public class SequenceKymos extends SequenceCamData  {
 		progress.close();
 	}
 	
-	private static void transferImage1To2(IcyBufferedImage source, IcyBufferedImage result) {
+	private static void transferImage1To2(IcyBufferedImage source, IcyBufferedImage result) 
+	{
         final int sizeY 		= source.getSizeY();
         final int endC 			= source.getSizeC();
         final int sourceSizeX 	= source.getSizeX();
@@ -305,13 +343,16 @@ public class SequenceKymos extends SequenceCamData  {
         final DataType dataType = source.getDataType_();
         final boolean signed 	= dataType.isSigned();
         result.lockRaster();
-        try {
-            for (int ch = 0; ch < endC; ch++) {
+        try 
+        {
+            for (int ch = 0; ch < endC; ch++) 
+            {
                 final Object src = source.getDataXY(ch);
                 final Object dst = result.getDataXY(ch);
                 int srcOffset = 0;
                 int dstOffset = 0;
-                for (int curY = 0; curY < sizeY; curY++) {
+                for (int curY = 0; curY < sizeY; curY++) 
+                {
                     Array1DUtil.arrayToArray(src, srcOffset, dst, dstOffset, sourceSizeX, signed);
                     result.setDataXY(ch, dst);
                     srcOffset += sourceSizeX;
@@ -319,7 +360,8 @@ public class SequenceKymos extends SequenceCamData  {
                 }
             }
         }
-        finally {
+        finally 
+        {
             result.releaseRaster(true);
         }
         result.dataChanged();
@@ -327,11 +369,13 @@ public class SequenceKymos extends SequenceCamData  {
 		
 	// ----------------------------
 
-	public List<Integer> subtractTi(List<Integer > array) {
+	public List<Integer> subtractTi(List<Integer > array) 
+	{
 		if (array == null || array.size() < 1)
 			return null;
 		int item0 = array.get(0);
-		for (int index= 0; index < array.size(); index++) {
+		for (int index= 0; index < array.size(); index++) 
+		{
 			int value = array.get(index);
 			array.set(index, value-item0);
 			item0 = value;
@@ -339,7 +383,8 @@ public class SequenceKymos extends SequenceCamData  {
 		return array;
 	}
 		
-/*	public List<Integer> subtractDeltaT(List<Integer > array, int arrayStep, int deltaT) {
+/*	public List<Integer> subtractDeltaT(List<Integer > array, int arrayStep, int deltaT) 
+ * {
 		if (array == null)
 			return null;
 		for (int index=0; index < array.size(); index++) {
@@ -354,32 +399,38 @@ public class SequenceKymos extends SequenceCamData  {
 	}
 */	
 	
-	public List<Integer> subtractT0 (List<Integer> array) {
+	public List<Integer> subtractT0 (List<Integer> array) 
+	{
 		if (array == null || array.size() < 1)
 			return null;
 		int item0 = array.get(0);
-		for (int index= 0; index < array.size(); index++) {
+		for (int index= 0; index < array.size(); index++) 
+		{
 			int value = array.get(index);
 			array.set(index, value-item0);
 		}
 		return array;
 	}
 	
-	public List<Integer> subtractT0AndAddConstant (List<Integer> array, int constant) {
+	public List<Integer> subtractT0AndAddConstant (List<Integer> array, int constant) 
+	{
 		if (array == null || array.size() < 1)
 			return null;
 		int item0 = array.get(0) - constant;
-		for (int index= 0; index < array.size(); index++) {
+		for (int index= 0; index < array.size(); index++) 
+		{
 			int value = array.get(index);
 			array.set(index, value-item0);
 		}
 		return array;
 	}
 	
-	public List<Integer> addConstant (List<Integer> array, int constant) {
+	public List<Integer> addConstant (List<Integer> array, int constant) 
+	{
 		if (array == null || array.size() < 1)
 			return null;
-		for (int index= 0; index < array.size(); index++) {
+		for (int index= 0; index < array.size(); index++) 
+		{
 			int value = array.get(index);
 			array.set(index, value + constant);
 		}

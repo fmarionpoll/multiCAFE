@@ -23,12 +23,15 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
-public class DetectGulps_series extends BuildSeries  {
+public class DetectGulps_series extends BuildSeries  
+{
 	
-	void analyzeExperiment(Experiment exp) {
+	void analyzeExperiment(Experiment exp) 
+	{
 		exp.xmlLoadMCExperiment();
 		exp.xmlLoadMCcapillaries();
-		if ( exp.loadKymographs()) {
+		if ( exp.loadKymographs()) 
+		{
 			buildFilteredImage(exp);
 			detectGulps(exp);
 			exp.xmlSaveMCcapillaries();
@@ -36,16 +39,17 @@ public class DetectGulps_series extends BuildSeries  {
 		exp.seqKymos.closeSequence();
 	}
 
-	private void buildFilteredImage(Experiment exp) {
+	private void buildFilteredImage(Experiment exp) 
+	{
 		if (exp.seqKymos == null)
 			return;
 		int zChannelDestination = 2;
 		exp.kymosBuildFiltered(0, zChannelDestination, options.transformForGulps, options.spanDiff);
 	}
 	
-	public void detectGulps(Experiment exp) {			
-		SequenceKymos seqKymos = exp.seqKymos;
-		
+	public void detectGulps(Experiment exp) 
+	{			
+		SequenceKymos seqKymos = exp.seqKymos;	
 		int jitter = 5;
 		int firstkymo = 0;
 		int lastkymo = seqKymos.seq.getSizeT() -1;
@@ -65,27 +69,31 @@ public class DetectGulps_series extends BuildSeries  {
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		futures.clear();
 		
-		for (int frame = firstkymo; frame <= lastkymo; frame++) {
+		for (int frame = firstkymo; frame <= lastkymo; frame++) 
+		{
 			final Capillary cap = exp.capillaries.capillariesArrayList.get(frame);
 			cap.setGulpsOptions(options);
 			
 			final int t_from = frame;;
-			futures.add(processor.submit(new Runnable () {
-			@Override
-			public void run() {
-				if (options.buildDerivative) {
-					ROI2DUtilities.removeRoisContainingString(t_from, "derivative", seqKymos.seq);
-					getDerivativeProfile(seqKymos.seq, t_from, cap, jitter);	
-				}
-				if (options.buildGulps) {
-					cap.cleanGulps();
-					ROI2DUtilities.removeRoisContainingString(t_from, "gulp", seqKymos.seq);
-					cap.getGulps(t_from);
-					if (cap.gulpsRois.rois.size() > 0)
-						seqKymos.seq.addROIs(cap.gulpsRois.rois, false);
-				}
-			}
-			}));
+			futures.add(processor.submit(new Runnable () 
+			{
+				@Override
+				public void run() 
+				{
+					if (options.buildDerivative) 
+					{
+						ROI2DUtilities.removeRoisContainingString(t_from, "derivative", seqKymos.seq);
+						getDerivativeProfile(seqKymos.seq, t_from, cap, jitter);	
+					}
+					if (options.buildGulps) 
+					{
+						cap.cleanGulps();
+						ROI2DUtilities.removeRoisContainingString(t_from, "gulp", seqKymos.seq);
+						cap.getGulps(t_from);
+						if (cap.gulpsRois.rois.size() > 0)
+							seqKymos.seq.addROIs(cap.gulpsRois.rois, false);
+					}
+				}}));
 		}
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		seqKymos.seq.endUpdate();
@@ -93,7 +101,8 @@ public class DetectGulps_series extends BuildSeries  {
 		processor.shutdown();
 	}	
 
-	private void getDerivativeProfile(Sequence seq, int indexkymo, Capillary cap, int jitter) {	
+	private void getDerivativeProfile(Sequence seq, int indexkymo, Capillary cap, int jitter) 
+	{	
 		int z = seq.getSizeZ() -1;
 		IcyBufferedImage image = seq.getImage(indexkymo, z, 0);
 		List<Point2D> listOfMaxPoints = new ArrayList<>();
@@ -105,7 +114,8 @@ public class DetectGulps_series extends BuildSeries  {
 		Polyline2D 	polyline = cap.ptsTop.polylineLimit;
 		if (polyline == null)
 			return;
-		for (ix = 1; ix < polyline.npoints; ix++) {
+		for (ix = 1; ix < polyline.npoints; ix++) 
+		{
 			// for each point of topLevelArray, define a bracket of rows to look at ("jitter" = 10)
 			int low = (int) polyline.ypoints[ix]- jitter;
 			int high = low + 2*jitter;
@@ -114,7 +124,8 @@ public class DetectGulps_series extends BuildSeries  {
 			if (high >= yheight) 
 				high = yheight-1;
 			int max = kymoImageValues [ix + low*xwidth];
-			for (iy = low+1; iy < high; iy++) {
+			for (iy = low+1; iy < high; iy++) 
+			{
 				int val = kymoImageValues [ix  + iy*xwidth];
 				if (max < val) 
 					max = val;

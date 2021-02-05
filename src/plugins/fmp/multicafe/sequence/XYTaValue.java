@@ -9,7 +9,8 @@ import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 
 
-public class XYTaValue implements XMLPersistent {
+public class XYTaValue implements XMLPersistent 
+{
 	public Point2D 	xyPoint 	= new Point2D.Double(Double.NaN, Double.NaN);
 	public int 		indexT 		= 0;
 	public boolean 	bAlive 		= false;
@@ -18,25 +19,30 @@ public class XYTaValue implements XMLPersistent {
 	public double	distance 	= 0.;
 	
 	
-	public XYTaValue() {
+	public XYTaValue() 
+	{
 	}
 	
-	public XYTaValue(int indexT) {
+	public XYTaValue(int indexT) 
+	{
 		this.indexT = indexT;
 	}
 	
-	public XYTaValue(int indexT, Point2D point) {
+	public XYTaValue(int indexT, Point2D point) 
+	{
 		this.xyPoint = point;
 		this.indexT = indexT;
 	}
 	
-	public XYTaValue(int indexT, Point2D point, boolean alive) {
+	public XYTaValue(int indexT, Point2D point, boolean alive) 
+	{
 		this.xyPoint = point;
 		this.indexT = indexT;
 		this.bAlive = alive;
 	}
 	
-	public void copy (XYTaValue aVal) {
+	public void copy (XYTaValue aVal) 
+	{
 		xyPoint = (Point2D) aVal.xyPoint.clone();
 		indexT = aVal.indexT;
 		bAlive = aVal.bAlive;
@@ -46,12 +52,11 @@ public class XYTaValue implements XMLPersistent {
 	}
 	
 	@Override
-	public boolean loadFromXML(Node node) {
+	public boolean loadFromXML(Node node) 
+	{
 		if (node == null)
-			return false;
-		
-		Element node_XYTa = XMLUtil.getElement(node, "XYTa");
-		
+			return false;	
+		Element node_XYTa = XMLUtil.getElement(node, "XYTa");	
 		double x =  XMLUtil.getAttributeDoubleValue( node_XYTa, "x", 0);
 		double y =  XMLUtil.getAttributeDoubleValue( node_XYTa, "y", 0);
 		xyPoint.setLocation(x, y);
@@ -62,10 +67,10 @@ public class XYTaValue implements XMLPersistent {
 	}
 
 	@Override
-	public boolean saveToXML(Node node) {
+	public boolean saveToXML(Node node) 
+	{
 		if (node == null)
-			return false;
-		
+			return false;		
 		Element node_XYTa = XMLUtil.addElement(node, "XYTa");
 		XMLUtil.setAttributeDoubleValue(node_XYTa, "x", xyPoint.getX());
 		XMLUtil.setAttributeDoubleValue(node_XYTa, "y", xyPoint.getY());

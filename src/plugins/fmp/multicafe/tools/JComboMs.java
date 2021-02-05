@@ -2,7 +2,8 @@ package plugins.fmp.multicafe.tools;
 
 import javax.swing.JComboBox;
 
-public class JComboMs extends JComboBox<String>  {
+public class JComboMs extends JComboBox<String>  
+{
 	/**
 	 * 
 	 */
@@ -10,13 +11,15 @@ public class JComboMs extends JComboBox<String>  {
 	
 	String [] scale = new String[] {"ms", "s", "min", "h", "day"};
 	
-	public JComboMs() {
+	public JComboMs() 
+	{
 		super ();
 		for (int i=0; i < scale.length; i++)
 			addItem (scale[i]);
 	}
 	
-	public int getMsUnitValue() {
+	public int getMsUnitValue() 
+	{
 		int binsize = 1;
 		int iselected = getSelectedIndex();
 		switch (iselected) {

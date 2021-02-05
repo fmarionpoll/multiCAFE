@@ -20,8 +20,8 @@ import icy.system.IcyHandledException;
 
 // modeled after adufour opencl4icy
 
-public class OpenCLWrap {
-	
+public class OpenCLWrap 
+{	
 	private CLContext   context;
 	private CLQueue     queue;
 	private CLProgram   program;
@@ -29,9 +29,11 @@ public class OpenCLWrap {
 	private boolean     runnable = false;
 
 
-	public String initCL() {
+	public String initCL() 
+	{
 	    String output = "";	    
-	    try {
+	    try 
+	    {
 	        context = JavaCL.createBestContext();
 	        queue = context.createDefaultQueue();
 	        String programFile = ReadText.readText(OpenCLWrap.class.getResourceAsStream("CLfunctions.cl"));
@@ -40,40 +42,50 @@ public class OpenCLWrap {
 	        runnable = true;
 	        output = "found OpenCL drivers v. " + context.getDevices()[0].getOpenCLVersion();
 	    }
-	    catch (IOException e) {
+	    catch (IOException e) 
+	    {
 	        output = "Error (OpenCL lab): unable to load the OpenCL code.";
 	        e.printStackTrace();
 	    }
-	    catch (CLException e) {
+	    catch (CLException e) 
+	    {
 	        output = "Error (OpenCL lab): unable to create the OpenCL context.";
 	        e.printStackTrace();
 	    }
-	    catch (CLBuildException e) {
+	    catch (CLBuildException e) 
+	    {
 	        output = "Error (OpenCL lab): unable to create the OpenCL context.";
 	        e.printStackTrace();
 	    }
-	    catch (UnsatisfiedLinkError linkError) {
+	    catch (UnsatisfiedLinkError linkError) 
+	    {
 	        output = "Error (OpenCL lab): OpenCL drivers not found.";
 	    }
-	    catch (NoClassDefFoundError e) {
+	    catch (NoClassDefFoundError e) 
+	    {
 	        throw new IcyHandledException("Error: couldn't load the OpenCL drivers.\n(note: on Microsoft Windows, the drivers can only be loaded once)");
 	    }
 	    return output;
 	}
 
-	public void execute(EnumCLFunction function) {
+	public void execute(EnumCLFunction function) 
+	{
         if (!runnable) 
         	throw new IcyHandledException("Cannot run the plug-in. Probably because OpenCL was not found or not initialized correctly");
         
-        try {
+        try 
+        {
             kernel = program.createKernel(function.name());
         }
-        catch (CLBuildException e) {
+        catch (CLBuildException e) 
+        {
             System.out.print("Unable to load OpenCL function \"" + function.toString() + "\":\n" + e.getMessage());
         }
         
-        switch (function) {
-            case MULTIPLY2ARRAYS: {
+        switch (function) 
+        {
+            case MULTIPLY2ARRAYS: 
+            {
                 Multiply2Arrays.run(context, queue, kernel);
             }
             break;
@@ -83,7 +95,8 @@ public class OpenCLWrap {
         }
     }
 	
-    public void clean() {
+    public void clean() 
+    {
         if (queue != null) 
         	queue.release();
         if (context != null) 

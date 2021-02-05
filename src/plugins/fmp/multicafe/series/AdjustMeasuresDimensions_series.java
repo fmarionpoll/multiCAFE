@@ -5,12 +5,14 @@ import plugins.fmp.multicafe.sequence.Experiment;
 
 
 
-public class AdjustMeasuresDimensions_series  extends BuildSeries {
-
-	void analyzeExperiment(Experiment exp) {
+public class AdjustMeasuresDimensions_series  extends BuildSeries 
+{
+	void analyzeExperiment(Experiment exp) 
+	{
 		exp.xmlLoadMCExperiment();
 		exp.xmlLoadMCcapillaries();
-		if (exp.loadKymographs()) {
+		if (exp.loadKymographs()) 
+		{
 			exp.adjustCapillaryMeasuresDimensions();
 			exp.saveExperimentMeasures(exp.getKymosDirectory());
 		}

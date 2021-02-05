@@ -8,8 +8,8 @@ import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
 
-public class ImageThresholdTools {
-
+public class ImageThresholdTools 
+{
 	// parameters passed by caller
 	private int colorthreshold;
 	private int colordistanceType;
@@ -23,38 +23,47 @@ public class ImageThresholdTools {
 	
 	// ---------------------------------------------
 	
-	public void setSingleThreshold (int simplethreshold, boolean ifGreater) {
+	public void setSingleThreshold (int simplethreshold, boolean ifGreater) 
+	{
 		this.simplethreshold = simplethreshold;
 		this.ifGreater = ifGreater;
 	}
 	
-	public void setColorArrayThreshold (int colordistanceType, int colorthreshold, ArrayList<Color> colorarray) {
+	public void setColorArrayThreshold (int colordistanceType, int colorthreshold, ArrayList<Color> colorarray) 
+	{
 		this.colordistanceType = colordistanceType;
 		this.colorthreshold = colorthreshold;
 		this.colorarray = colorarray;
 	}
 
-	public IcyBufferedImage getBinaryInt_FromThreshold(IcyBufferedImage sourceImage) {	
+	public IcyBufferedImage getBinaryInt_FromThreshold(IcyBufferedImage sourceImage) 
+	{	
 		IcyBufferedImage binaryMap = new IcyBufferedImage(sourceImage.getSizeX(), sourceImage.getSizeY(), 1, DataType.UBYTE);
 		byte[] binaryMapDataBuffer = binaryMap.getDataXYAsByte(0);
 		int [] imageSourceDataBuffer = null;
 		DataType datatype = sourceImage.getDataType_();
-		if (datatype != DataType.INT) {
+		if (datatype != DataType.INT) 
+		{
 			Object sourceArray = sourceImage.getDataXY(0);
 			imageSourceDataBuffer = Array1DUtil.arrayToIntArray(sourceArray, sourceImage.isSignedDataType());
 		}
 		else
 			imageSourceDataBuffer = sourceImage.getDataXYAsInt(0);
-		if (ifGreater) {
-			for (int x = 0; x < binaryMapDataBuffer.length; x++)  {
+		if (ifGreater) 
+		{
+			for (int x = 0; x < binaryMapDataBuffer.length; x++)  
+			{
 				int val = imageSourceDataBuffer[x] & 0xFF;
 				if (val > simplethreshold)
 					binaryMapDataBuffer[x] = byteFALSE;
 				else
 					binaryMapDataBuffer[x] = byteTRUE;
 			}
-		} else {
-			for (int x = 0; x < binaryMapDataBuffer.length; x++)  {
+		} 
+		else 
+		{
+			for (int x = 0; x < binaryMapDataBuffer.length; x++)  
+			{
 				int val = imageSourceDataBuffer[x] & 0xFF;
 				if (val < simplethreshold)
 					binaryMapDataBuffer[x] = byteFALSE;
@@ -66,7 +75,8 @@ public class ImageThresholdTools {
 		return binaryMap;
 	}
 	
-	public IcyBufferedImage getBinaryInt_FromColorsThreshold(IcyBufferedImage sourceImage) {
+	public IcyBufferedImage getBinaryInt_FromColorsThreshold(IcyBufferedImage sourceImage) 
+	{
 		if (colorarray.size() == 0)
 			return null;
 
@@ -83,20 +93,23 @@ public class ImageThresholdTools {
 			
 		IcyBufferedImage binaryResultBuffer = new IcyBufferedImage(sourceImage.getSizeX(), sourceImage.getSizeY(), 1, DataType.UBYTE);	
 		IcyBufferedImage dummy = sourceImage;
-		if (sourceImage.getDataType_() == DataType.DOUBLE) {
+		if (sourceImage.getDataType_() == DataType.DOUBLE) 
+		{
 			dummy = IcyBufferedImageUtil.convertToType(sourceImage, DataType.BYTE, false);
 		}
 		byte [][] sourceBuffer = dummy.getDataXYCAsByte(); // [C][XY]
 		byte [] binaryResultArray = binaryResultBuffer.getDataXYAsByte(0);
-		
 		int npixels = binaryResultArray.length;
 		Color pixel = new Color(0,0,0);
-		for (int ipixel = 0; ipixel < npixels; ipixel++) {
+		for (int ipixel = 0; ipixel < npixels; ipixel++) 
+		{
 			byte val = byteFALSE; 
 			pixel = new Color(sourceBuffer[0][ipixel] & 0xFF, sourceBuffer[1][ipixel]  & 0xFF, sourceBuffer[2][ipixel]  & 0xFF);
-			for (int k = 0; k < colorarray.size(); k++) {
+			for (int k = 0; k < colorarray.size(); k++) 
+			{
 				Color color = colorarray.get(k);
-				if (distance.computeDistance(pixel, color) <= colorthreshold) {
+				if (distance.computeDistance(pixel, color) <= colorthreshold) 
+				{
 					val = byteTRUE; 
 					break;
 				}
@@ -106,20 +119,23 @@ public class ImageThresholdTools {
 		return binaryResultBuffer;
 	}
 	
-	public boolean[] getBoolMap_FromBinaryInt(IcyBufferedImage img) {
+	public boolean[] getBoolMap_FromBinaryInt(IcyBufferedImage img) 
+	{
 		boolean[]	boolMap = new boolean[ img.getSizeX() * img.getSizeY() ];
 		byte [] imageSourceDataBuffer = null;
 		DataType datatype = img.getDataType_();
-		
-		if (datatype != DataType.BYTE && datatype != DataType.UBYTE) {
+		if (datatype != DataType.BYTE && datatype != DataType.UBYTE) 
+		{
 			Object sourceArray = img.getDataXY(0);
 			imageSourceDataBuffer = Array1DUtil.arrayToByteArray(sourceArray);
 		}
-		else {
+		else 
+		{
 			imageSourceDataBuffer = img.getDataXYAsByte(0);
 		}
 		
-		for (int x = 0; x < boolMap.length; x++)  {
+		for (int x = 0; x < boolMap.length; x++)  
+		{
 			if (imageSourceDataBuffer[x] == byteFALSE)
 				boolMap[x] =  false;
 			else

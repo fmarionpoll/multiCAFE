@@ -28,8 +28,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
         threadRunning = true;
 		int nbiterations = 0;
 		ExperimentList expList = options.expList;
-		ProgressFrame progress = new ProgressFrame("Analyze series");
-			
+		ProgressFrame progress = new ProgressFrame("Analyze series");			
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) 
 		{
 			if (stopFlag)

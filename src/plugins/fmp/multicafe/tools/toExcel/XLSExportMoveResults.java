@@ -19,13 +19,15 @@ import plugins.fmp.multicafe.sequence.XYTaValue;
 import plugins.fmp.multicafe.tools.Comparators;
 
 
-public class XLSExportMoveResults  extends XLSExport {
+public class XLSExportMoveResults  extends XLSExport 
+{
 	ExperimentList expList = null;
 	List <XYTaSeriesArrayList> rowsForOneExp = new ArrayList <XYTaSeriesArrayList> ();
 
 	// -----------------------
 	
-	public void exportToFile(String filename, XLSExportOptions opt) {	
+	public void exportToFile(String filename, XLSExportOptions opt) 
+	{	
 		System.out.println("XLS move measures output");
 		options = opt;
 		expList = options.expList;
@@ -42,9 +44,11 @@ public class XLSExportMoveResults  extends XLSExport {
 		int nbexpts = expList.getExperimentListSize();
 		progress.setLength(nbexpts);
 
-		try { 
+		try 
+		{ 
 			workbook = xlsInitWorkbook();
-			for (int index = options.firstExp; index <= options.lastExp; index++) {
+			for (int index = options.firstExp; index <= options.lastExp; index++) 
+			{
 				Experiment exp = expList.getExperimentFromList(index);
 				if (exp.previousExperiment != null)
 					continue;
@@ -76,18 +80,21 @@ public class XLSExportMoveResults  extends XLSExport {
 	        fileOut.close();
 	        workbook.close();
 	        progress.close();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		System.out.println("XLS output finished");
 	}
 	
-	private int getMoveDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType datatype) {	
+	private int getMoveDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType datatype) 
+	{	
 		getDataFromOneSeriesOfExperiments(exp, datatype);
 		XSSFSheet sheet = xlsInitSheet(datatype.toString());
-		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
-		
-		if (options.onlyalive) {
+		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);	
+		if (options.onlyalive) 
+		{
 			trimDeadsFromRowMoveData(exp);
 			sheet = xlsInitSheet(datatype.toString()+"_alive");
 			xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
@@ -95,7 +102,8 @@ public class XLSExportMoveResults  extends XLSExport {
 		return colmax;
 	}
 	
-	private void getDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsoption) {	
+	private void getDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsoption) 
+	{	
 		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.cages.copy(exp.cages);
 		expAll.capillaries.copy(exp.capillaries);
@@ -108,7 +116,8 @@ public class XLSExportMoveResults  extends XLSExport {
 		expAll.comment2 			= exp.comment2;
 
 		Experiment expi = exp.nextExperiment;
-		while (expi != null ) {
+		while (expi != null ) 
+		{
 			expAll.cages.mergeLists(expi.cages);
 			expAll.lastImage_FileTime = expi.lastImage_FileTime;
 			expi = expi.nextExperiment;
@@ -118,7 +127,8 @@ public class XLSExportMoveResults  extends XLSExport {
 		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_Ms) / options.buildExcelStepMs +1);
 		int ncages = expAll.cages.cageList.size();
 		rowsForOneExp = new ArrayList <XYTaSeriesArrayList> (ncages);
-		for (int i=0; i< ncages; i++) {
+		for (int i=0; i< ncages; i++) 
+		{
 			Cage cage = expAll.cages.cageList.get(i);
 			XYTaSeriesArrayList row = new XYTaSeriesArrayList (cage.cageRoi.getName(), xlsoption, nFrames, options.buildExcelStepMs);
 			row.nflies = cage.cageNFlies;
@@ -128,16 +138,20 @@ public class XLSExportMoveResults  extends XLSExport {
 				
 		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
 		expi = exp;
-		while (expi != null) {
+		while (expi != null) 
+		{
 			int len = (int) ((expi.camLastImage_Ms - expi.camFirstImage_Ms)/ options.buildExcelStepMs +1);
 			if (len == 0)
 				continue;
 			List <XYTaSeriesArrayList> resultsArrayList = new ArrayList <XYTaSeriesArrayList> (expi.cages.cageList.size());
-			for (Cage cage: expi.cages.cageList) {
+			for (Cage cage: expi.cages.cageList) 
+			{
 				XYTaSeriesArrayList results = new XYTaSeriesArrayList(cage.cageRoi.getName(), xlsoption, len, options.buildExcelStepMs );
 				results.nflies = cage.cageNFlies;
-				if (results.nflies > 0) {				
-					switch (xlsoption) {
+				if (results.nflies > 0) 
+				{				
+					switch (xlsoption) 
+					{
 						case DISTANCE:
 							results.computeDistanceBetweenPoints(cage.flyPositions, (int) expi.camBinImage_Ms,  options.buildExcelStepMs);
 							break;
@@ -166,14 +180,15 @@ public class XLSExportMoveResults  extends XLSExport {
 			}
 			expi = expi.nextExperiment;
 		}
-		for (XYTaSeriesArrayList row: rowsForOneExp ) {
+		for (XYTaSeriesArrayList row: rowsForOneExp ) 
 			row.checkIsAliveFromAliveArray();
-		}
 	}
 	
-	private XYTaSeriesArrayList getResultsArrayWithThatName(String testname, List <XYTaSeriesArrayList> resultsArrayList) {
+	private XYTaSeriesArrayList getResultsArrayWithThatName(String testname, List <XYTaSeriesArrayList> resultsArrayList) 
+	{
 		XYTaSeriesArrayList resultsFound = null;
-		for (XYTaSeriesArrayList results: resultsArrayList) {
+		for (XYTaSeriesArrayList results: resultsArrayList) 
+		{
 			if (!results.name.equals(testname))
 				continue;
 			resultsFound = results;
@@ -182,15 +197,19 @@ public class XLSExportMoveResults  extends XLSExport {
 		return resultsFound;
 	}
 	
-	private void addMoveResultsTo_rowsForOneExp(Experiment expi, List <XYTaSeriesArrayList> resultsArrayList) {
+	private void addMoveResultsTo_rowsForOneExp(Experiment expi, List <XYTaSeriesArrayList> resultsArrayList) 
+	{
 		final int transfer_first_index = (int) (expi.camFirstImage_Ms - expAll.camFirstImage_Ms) / options.buildExcelStepMs ;
 		final int transfer_nvalues = (int) ((expi.camLastImage_Ms - expi.camLastImage_Ms)/options.buildExcelStepMs)+1;
-		for (XYTaSeriesArrayList row: rowsForOneExp ) {
+		for (XYTaSeriesArrayList row: rowsForOneExp ) 
+		{
 			XYTaSeriesArrayList results = getResultsArrayWithThatName(row.name,  resultsArrayList);
-			if (results != null) {
+			if (results != null) 
+			{
 				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
 					padWithLastPreviousValue(row, transfer_first_index);
-				for (long fromTime = expi.camFirstImage_Ms; fromTime <= expi.camLastImage_Ms; fromTime += options.buildExcelStepMs) {
+				for (long fromTime = expi.camFirstImage_Ms; fromTime <= expi.camLastImage_Ms; fromTime += options.buildExcelStepMs) 
+				{					
 					int from_i = (int) ((fromTime - expi.camFirstImage_Ms) / options.buildExcelStepMs);
 					if (from_i >= results.xytList.size())
 						break;
@@ -203,11 +222,15 @@ public class XLSExportMoveResults  extends XLSExport {
 					row.xytList.get(to_i).copy(aVal);
 				}
 				
-			} else {
-				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) {
+			} 
+			else 
+			{
+				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
+				{
 					XYTaValue posok = padWithLastPreviousValue(row, transfer_first_index);
 					int nvalues = transfer_nvalues;
-					if (posok != null) {
+					if (posok != null) 
+					{
 						if (nvalues > row.xytList.size())
 							nvalues = row.xytList.size();
 						int tofirst = transfer_first_index;
@@ -222,12 +245,15 @@ public class XLSExportMoveResults  extends XLSExport {
 		}
 	}
 	
-	private XYTaValue padWithLastPreviousValue(XYTaSeriesArrayList row, int transfer_first_index) {
+	private XYTaValue padWithLastPreviousValue(XYTaSeriesArrayList row, int transfer_first_index) 
+	{
 		XYTaValue posok = null;
 		int index = getIndexOfFirstNonEmptyValueBackwards(row, transfer_first_index);
-		if (index >= 0) {
+		if (index >= 0) 
+		{
 			posok = row.xytList.get(index);
-			for (int i=index+1; i< transfer_first_index; i++) {
+			for (int i=index+1; i< transfer_first_index; i++) 
+			{
 				XYTaValue pos = row.xytList.get(i);
 				pos.copy(posok);
 				pos.bPadded = true;
@@ -236,11 +262,14 @@ public class XLSExportMoveResults  extends XLSExport {
 		return posok;
 	}
 	
-	private int getIndexOfFirstNonEmptyValueBackwards(XYTaSeriesArrayList row, int fromindex) {
+	private int getIndexOfFirstNonEmptyValueBackwards(XYTaSeriesArrayList row, int fromindex) 
+	{
 		int index = -1;
-		for (int i= fromindex; i>= 0; i--) {
+		for (int i= fromindex; i>= 0; i--) 
+		{
 			XYTaValue pos = row.xytList.get(i);
-			if (!Double.isNaN(pos.xyPoint.getX())) {
+			if (!Double.isNaN(pos.xyPoint.getX())) 
+			{
 				index = i;
 				break;
 			}
@@ -248,13 +277,17 @@ public class XLSExportMoveResults  extends XLSExport {
 		return index;
 	}
 	
-	private void trimDeadsFromRowMoveData(Experiment exp) {
-		for (Cage cage: exp.cages.cageList) {
+	private void trimDeadsFromRowMoveData(Experiment exp) 
+	{
+		for (Cage cage: exp.cages.cageList) 
+		{
 			int cagenumber = Integer.valueOf(cage.cageRoi.getName().substring(4));
 			int ilastalive = 0;
-			if (cage.cageNFlies > 0) {
+			if (cage.cageNFlies > 0) 
+			{
 				Experiment expi = exp;
-				while (expi.nextExperiment != null && expi.nextExperiment.cages.isFlyAlive(cagenumber)) {
+				while (expi.nextExperiment != null && expi.nextExperiment.cages.isFlyAlive(cagenumber)) 
+				{
 					expi = expi.nextExperiment;
 				}
 				long lastIntervalFlyAlive_Ms = expi.cages.getLastIntervalFlyAlive(cagenumber) 
@@ -262,7 +295,8 @@ public class XLSExportMoveResults  extends XLSExport {
 				long lastMinuteAlive = lastIntervalFlyAlive_Ms + expi.camFirstImage_Ms - expAll.camFirstImage_Ms;		
 				ilastalive = (int) (lastMinuteAlive / options.buildExcelStepMs);
 			}
-			for (XYTaSeriesArrayList row : rowsForOneExp) {
+			for (XYTaSeriesArrayList row : rowsForOneExp) 
+			{
 				int rowCageNumber = Integer.valueOf(row.name.substring(4));
 				if ( rowCageNumber == cagenumber) {
 					row.clearValues(ilastalive+1);
@@ -271,14 +305,16 @@ public class XLSExportMoveResults  extends XLSExport {
 		}	
 	}
 	
-	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) {
+	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) 
+	{
 		Point pt = new Point(col0, 0);
 		writeExperimentDescriptors(expAll, charSeries, sheet, pt, xlsExportOption);
 		pt = writeData2(sheet, xlsExportOption, pt);
 		return pt.x;
 	}
 			
-	private Point writeData2 (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) {
+	private Point writeData2 (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) 
+	{
 		int rowseries = pt_main.x +2;
 		int columndataarea = pt_main.y;
 		Point pt = new Point(pt_main);
@@ -287,9 +323,11 @@ public class XLSExportMoveResults  extends XLSExport {
 		return pt_main;
 	}
 	
-	private void writeRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) {
+	private void writeRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
+	{
 		boolean transpose = options.transpose;
-		for (XYTaSeriesArrayList row: rowsForOneExp) {
+		for (XYTaSeriesArrayList row: rowsForOneExp) 
+		{
 			pt.y = column_dataArea;
 			int col = getColFromCageName(row.name)*2;
 			pt.x = rowSeries + col; 
@@ -297,7 +335,8 @@ public class XLSExportMoveResults  extends XLSExport {
 				continue;
 		
 			long last = expAll.camLastImage_Ms - expAll.camFirstImage_Ms;
-			for (long coltime= 0; coltime <= last; coltime+=options.buildExcelStepMs, pt.y++) {
+			for (long coltime= 0; coltime <= last; coltime+=options.buildExcelStepMs, pt.y++) 
+			{
 				int i_from = (int) (coltime  / options.buildExcelStepMs);
 				if (i_from >= row.xytList.size())
 					break;
@@ -305,7 +344,8 @@ public class XLSExportMoveResults  extends XLSExport {
 				double valueL = Double.NaN;
 				double valueR = Double.NaN;
 				XYTaValue pos = row.xytList.get(i_from);
-				switch (row.exportType) {
+				switch (row.exportType) 
+				{
 					case DISTANCE:
 						valueL = pos.distance;
 						valueR = valueL;
@@ -327,12 +367,14 @@ public class XLSExportMoveResults  extends XLSExport {
 						break;
 				}
 				
-				if (!Double.isNaN(valueL)) {
+				if (!Double.isNaN(valueL)) 
+				{
 					XLSUtils.setValue(sheet, pt, transpose, valueL);
 					if (pos.bPadded)
 						XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
 				}
-				if (!Double.isNaN(valueR)) {
+				if (!Double.isNaN(valueR)) 
+				{
 					pt.x++;
 					XLSUtils.setValue(sheet, pt, transpose, valueR);
 					if (pos.bPadded)

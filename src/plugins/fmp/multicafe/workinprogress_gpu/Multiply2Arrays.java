@@ -12,15 +12,17 @@ import com.nativelibs4java.opencl.CLMem.Usage;
 import com.nativelibs4java.opencl.CLQueue;
 
 
-public class Multiply2Arrays {
-	
+public class Multiply2Arrays 
+{	
 	public static int arraySize = 100;
 	
-	public void setArraySize(int arraySize) {
+	public void setArraySize(int arraySize) 
+	{
 		Multiply2Arrays.arraySize = arraySize;
 	}
 	
-	public static void run(CLContext context, CLQueue queue, CLKernel kernel) {
+	public static void run(CLContext context, CLQueue queue, CLKernel kernel) 
+	{
         int ARRAY_SIZE = arraySize;
         
         float[] a = new float[ARRAY_SIZE];
@@ -93,7 +95,8 @@ public class Multiply2Arrays {
         System.out.println("Computation time (OpenCL): " + (end - start) / 1000000 + " milliseconds");
     }
 	
-	private static void printFloatArray(float[] a, int i) {
+	private static void printFloatArray(float[] a, int i) 
+	{
         System.out.print("[ ");
         for (int j = 0; j < i; j++)
             System.out.print(a[j] + " ");

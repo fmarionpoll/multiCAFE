@@ -18,7 +18,8 @@ import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
 
-public class GaspardRigidRegistration {
+public class GaspardRigidRegistration 
+{
 
     /**
      * Enumeration of the various supported resizing policies for rigid registration

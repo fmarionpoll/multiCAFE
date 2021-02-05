@@ -12,7 +12,8 @@ import icy.util.XMLUtil;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
-public class Options_BuildSeries implements XMLPersistent {
+public class Options_BuildSeries implements XMLPersistent 
+{
 	public boolean			isFrameFixed		= false;
 	public long				t_firstMs			= 0;
 	public long				t_lastMs			= 0;
@@ -71,7 +72,8 @@ public class Options_BuildSeries implements XMLPersistent {
 
 	// -----------------------
 	
-	void copyTo(Options_BuildSeries destination) {
+	void copyTo(Options_BuildSeries destination) 
+	{
 		destination.detectTop 				= detectTop; 
 		destination.detectBottom 			= detectBottom; 
 		destination.transformForLevels 		= transformForLevels;
@@ -84,7 +86,8 @@ public class Options_BuildSeries implements XMLPersistent {
 		destination.detectAllGulps 			= detectAllGulps;
 	}
 	
-	void copyFrom(Options_BuildSeries destination) {
+	void copyFrom(Options_BuildSeries destination) 
+	{
 		detectTop 				= destination.detectTop; 
 		detectBottom 			= destination.detectBottom; 
 		transformForLevels 		= destination.transformForLevels;
@@ -97,7 +100,8 @@ public class Options_BuildSeries implements XMLPersistent {
 		detectAllGulps 			= destination.detectAllGulps;
 	}
 	
-	public void copyParameters (Options_BuildSeries det) {
+	public void copyParameters (Options_BuildSeries det) 
+	{
 		threshold = det.threshold;
 		thresholdBckgnd			= det.thresholdBckgnd;
 		thresholdDiff			= det.thresholdDiff;
@@ -117,9 +121,11 @@ public class Options_BuildSeries implements XMLPersistent {
 	}
 	
 	@Override
-	public boolean loadFromXML(Node node) {
+	public boolean loadFromXML(Node node) 
+	{
 		final Node nodeMeta = XMLUtil.getElement(node, "LimitsOptions");
-		if (nodeMeta != null) {
+		if (nodeMeta != null) 
+		{
 			detectTop = XMLUtil.getElementBooleanValue(nodeMeta, "detectTop", detectTop);
 			detectBottom = XMLUtil.getElementBooleanValue(nodeMeta, "detectBottom", detectBottom);
 			detectAllKymos = XMLUtil.getElementBooleanValue(nodeMeta, "detectAllImages", detectAllKymos);
@@ -135,7 +141,8 @@ public class Options_BuildSeries implements XMLPersistent {
 	    }
 		
 		Element xmlVal = XMLUtil.getElement(node, "DetectFliesParameters");
-		if (xmlVal != null) {
+		if (xmlVal != null) 
+		{
 			threshold =  XMLUtil.getElementIntValue(xmlVal, "threshold", -1);
 			btrackWhite = XMLUtil.getElementBooleanValue(xmlVal, "btrackWhite", false);
 			blimitLow = XMLUtil.getElementBooleanValue(xmlVal, "blimitLow",false);
@@ -151,9 +158,11 @@ public class Options_BuildSeries implements XMLPersistent {
 	}
 	
 	@Override
-	public boolean saveToXML(Node node) {
+	public boolean saveToXML(Node node) 
+	{
 		final Node nodeMeta = XMLUtil.setElement(node, "LimitsOptions");
-		if (nodeMeta != null) {
+		if (nodeMeta != null) 
+		{
 			XMLUtil.setElementBooleanValue(nodeMeta, "detectTop", detectTop);
 			XMLUtil.setElementBooleanValue(nodeMeta, "detectBottom", detectBottom);
 			XMLUtil.setElementBooleanValue(nodeMeta, "detectAllImages", detectAllKymos);
@@ -169,7 +178,8 @@ public class Options_BuildSeries implements XMLPersistent {
 	    }
 		
 		Element xmlVal = XMLUtil.addElement(node, "DetectFliesParameters");
-		if (xmlVal != null) {
+		if (xmlVal != null) 
+		{
 			XMLUtil.setElementIntValue(xmlVal, "threshold", threshold);
 			XMLUtil.setElementBooleanValue(xmlVal, "btrackWhite", btrackWhite);
 			XMLUtil.setElementBooleanValue(xmlVal, "blimitLow", blimitLow);
@@ -177,7 +187,8 @@ public class Options_BuildSeries implements XMLPersistent {
 			XMLUtil.setElementIntValue(xmlVal, "limitLow", limitLow);
 			XMLUtil.setElementIntValue(xmlVal, "limitUp", limitUp);
 			XMLUtil.setElementIntValue(xmlVal, "jitter", jitter); 
-			if (transformop != null) {
+			if (transformop != null) 
+			{
 				String transform1 = transformop.toString();
 				XMLUtil.setElementValue(xmlVal, "transformOp", transform1);
 			}

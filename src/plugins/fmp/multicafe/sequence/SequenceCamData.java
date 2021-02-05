@@ -703,15 +703,17 @@ public class SequenceCamData
 	{
 		try 
 		{
-			SwingUtilities.invokeAndWait(new Runnable() { public void run() 
-			{
-				Viewer v = seq.getFirstViewer();
-				if (v == null)
-					v = new Viewer(seq, true);
-				Rectangle rectv = v.getBoundsInternal();
-				rectv.setLocation(parent0Rect.x+ parent0Rect.width, parent0Rect.y);
-				v.setBounds(rectv);				
-			}});
+			SwingUtilities.invokeAndWait(new Runnable() 
+			{ 
+				public void run() 
+				{
+					Viewer v = seq.getFirstViewer();
+					if (v == null)
+						v = new Viewer(seq, true);
+					Rectangle rectv = v.getBoundsInternal();
+					rectv.setLocation(parent0Rect.x+ parent0Rect.width, parent0Rect.y);
+					v.setBounds(rectv);				
+				}});
 		} 
 		catch (InvocationTargetException | InterruptedException e) 
 		{

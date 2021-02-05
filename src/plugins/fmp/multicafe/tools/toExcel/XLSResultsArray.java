@@ -5,7 +5,8 @@ import java.util.List;
 
 import plugins.fmp.multicafe.sequence.Capillary;
 
-public class XLSResultsArray {
+public class XLSResultsArray 
+{
 	List <XLSResults> 	resultsArrayList 	= null;
 	XLSResults 			evapL				= null;
 	XLSResults 			evapR				= null;
@@ -13,15 +14,18 @@ public class XLSResultsArray {
 	String				stim				= null;
 	String				conc				= null;
 	
-	public XLSResultsArray (int size) {
+	public XLSResultsArray (int size) 
+	{
 		resultsArrayList = new ArrayList <XLSResults> (size);
 	}
 	
-	void add(XLSResults results) {
+	void add(XLSResults results) 
+	{
 		resultsArrayList.add(results);
 	}
 	
-	void checkIfSameStimulusAndConcentration(Capillary cap) {
+	void checkIfSameStimulusAndConcentration(Capillary cap) 
+	{
 		if (!sameLR)
 			return;
 		if (stim == null)
@@ -32,15 +36,18 @@ public class XLSResultsArray {
 		sameLR &= conc .equals(cap.capConcentration);
 	}
 	
-	XLSResults get(int index) {
+	XLSResults get(int index) 
+	{
 		if (index >= resultsArrayList.size())
 			return null;
 		return resultsArrayList.get(index);
 	}
 	
-	void subtractEvaporation() {
+	void subtractEvaporation() 
+	{
 		int dimension = 0;
-		for (XLSResults result: resultsArrayList) {
+		for (XLSResults result: resultsArrayList) 
+		{
 			if (result.data == null)
 				continue;
 			if (result.data.size() > dimension)
@@ -56,8 +63,10 @@ public class XLSResultsArray {
 		subtractEvaporationLocal();
 	}
 	
-	private void computeEvaporationFromResultsWithZeroFlies() {
-		for (XLSResults result: resultsArrayList) {
+	private void computeEvaporationFromResultsWithZeroFlies() 
+	{
+		for (XLSResults result: resultsArrayList) 
+		{
 			if (result.data == null || result.nflies > 0)
 				continue;
 			String side = result.name.substring(result.name.length() -1);
@@ -71,8 +80,10 @@ public class XLSResultsArray {
 	}
 	
 	
-	private void subtractEvaporationLocal() {
-		for (XLSResults result: resultsArrayList) {
+	private void subtractEvaporationLocal() 
+	{
+		for (XLSResults result: resultsArrayList) 
+		{
 			String side = result.name.substring(result.name.length() -1);
 			if (sameLR || side.contains("L"))
 				result.subtractEvap(evapL);

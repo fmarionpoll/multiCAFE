@@ -3,17 +3,17 @@ package plugins.fmp.multicafe.tools;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 
-public class Line2DPlus extends Line2D.Double {
-
+public class Line2DPlus extends Line2D.Double 
+{
 	private static final long serialVersionUID = 935528755853877320L;
 
-	public double getXfromY(double y) {
-
+	public double getXfromY(double y) 
+	{
 		double x = 0d;
-		if (getX1() == getX2()) {
+		if (getX1() == getX2()) 
 			x = getX1();
-		}
-		else {
+		else 
+		{
 			double slope = (getY1()-getY2())/(getX1()-getX2());
 			double intercept = getY1() - getX1()* slope; 
 			x = (y-intercept)/slope;
@@ -21,8 +21,8 @@ public class Line2DPlus extends Line2D.Double {
 		return x;
 	}
 
-	public Point2D.Double getIntersection(Line2D line) {
-
+	public Point2D.Double getIntersection(Line2D line) 
+	{
 		double x1 = getX1();
 		double x2 = getX2();
 		double y1 = getY1();
@@ -43,8 +43,8 @@ public class Line2DPlus extends Line2D.Double {
 		double ua = nume_a / denom;
 		double ub = nume_b / denom;
 
-		if ((ua >= 0.0f) && (ua <= 1.0f) && (ub >= 0.0f) && (ub <= 1.0f)) {
-
+		if ((ua >= 0.0f) && (ua <= 1.0f) && (ub >= 0.0f) && (ub <= 1.0f)) 
+		{
 			// Get the intersection point.
 			double intersectX = x1 + ua * (x2 - x1);
 			double intersectY = y1 + ua * (y2 - y1);

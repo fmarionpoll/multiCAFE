@@ -16,13 +16,15 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
-public class DetectLevels_series2 extends BuildSeries  {
-	ImageTransformTools tImg = new ImageTransformTools();
-	
-	void analyzeExperiment(Experiment exp) {
+public class DetectLevels_series2 extends BuildSeries  
+{
+	ImageTransformTools tImg = new ImageTransformTools();	
+	void analyzeExperiment(Experiment exp) 
+	{
 		exp.xmlLoadMCExperiment();
 		exp.xmlLoadMCcapillaries();
-		if (exp.loadKymographs()) {	
+		if (exp.loadKymographs()) 
+		{	
 			detectCapillaryLevels(exp);
 			String resultsDirectory = exp.getKymosDirectory(); 
 			exp.capillaries.xmlSaveCapillaries_Measures(resultsDirectory);
@@ -30,11 +32,13 @@ public class DetectLevels_series2 extends BuildSeries  {
 		exp.seqKymos.closeSequence();
 	}
 	
-	private void detectCapillaryLevels(Experiment exp) {
+	private void detectCapillaryLevels(Experiment exp) 
+	{
 		SequenceKymos seqKymos = exp.seqKymos;
 		int firstkymo = 0;
 		int lastkymo = seqKymos.seq.getSizeT() -1;
-		if (! options.detectAllKymos) {
+		if (! options.detectAllKymos) 
+		{
 			firstkymo = options.firstKymo;
 			lastkymo = firstkymo;
 		}
@@ -46,7 +50,8 @@ public class DetectLevels_series2 extends BuildSeries  {
 		tImg.setSpanDiff(options.spanDiffTop);
 		tImg.setSequence(seqKymos);
 		
-		for (int frame = firstkymo; frame <= lastkymo; frame++) {
+		for (int frame = firstkymo; frame <= lastkymo; frame++) 
+		{
 			seqKymos.removeROIsPolylineAtT(frame);
 			final int t_from = frame;
 			
@@ -64,16 +69,18 @@ public class DetectLevels_series2 extends BuildSeries  {
 				return;
 			if (!options.detectL && cap.getCapillaryName().endsWith("1"))
 				return;
-			
 			cap.ptsDerivative = null;
 			cap.gulpsRois = null;
 			options.copyTo(cap.limitsOptions);
-			if (options.analyzePartOnly) {
+			if (options.analyzePartOnly) 
+			{
 				firstColumn = options.startPixel;
 				lastColumn = options.endPixel;
 				if (lastColumn > xwidth-1)
 					lastColumn = xwidth -1;
-			} else {
+			} 
+			else 
+			{
 				cap.ptsTop = null;
 				cap.ptsBottom = null;
 			}
@@ -85,12 +92,12 @@ public class DetectLevels_series2 extends BuildSeries  {
 			List<Point2D> limitBottom = new ArrayList<Point2D>(nColumns);
 
 			// scan each image column
-			for (int iColumn = firstColumn; iColumn <= lastColumn; iColumn++) {
-				
+			for (int iColumn = firstColumn; iColumn <= lastColumn; iColumn++) 
+			{
 				int ytop = detectThresholdFromTop(iColumn, oldiytop, jitter, sourceValues, xwidth, yheight, options);
 				int ybottom = detectThresholdFromBottom(iColumn, oldiybottom, jitter, sourceValues, xwidth, yheight, options);
-				
-				if (ybottom <= ytop) {
+				if (ybottom <= ytop) 
+				{
 					ybottom = oldiybottom;
 					ytop = oldiytop;
 				}
@@ -100,10 +107,13 @@ public class DetectLevels_series2 extends BuildSeries  {
 				oldiybottom = ybottom;
 			}
 			
-			if (options.analyzePartOnly) {
+			if (options.analyzePartOnly) 
+			{
 				cap.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
 				cap.ptsBottom.polylineLimit.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
-			} else {
+			} 
+			else 
+			{
 				cap.ptsTop    = getLimits(limitTop, cap.getLast2ofCapillaryName()+"_toplevel", t_from, seqKymos);
 				cap.ptsBottom = getLimits(limitBottom, cap.getLast2ofCapillaryName()+"_bottomlevel", t_from, seqKymos);
 			}
@@ -112,7 +122,8 @@ public class DetectLevels_series2 extends BuildSeries  {
 
 	}
 	
-	private CapillaryLimit getLimits (List<Point2D> limit, String name, int t_from, SequenceKymos seqKymos ) {
+	private CapillaryLimit getLimits (List<Point2D> limit, String name, int t_from, SequenceKymos seqKymos ) 
+	{
 		ROI2DPolyLine roiTrack = new ROI2DPolyLine (limit);
 		roiTrack.setName(name);
 		roiTrack.setStroke(1);
@@ -121,7 +132,8 @@ public class DetectLevels_series2 extends BuildSeries  {
 		return new CapillaryLimit(roiTrack.getName(), roiTrack.getPolyline2D());
 	}
 
-	private int checkLimits (int rowIndex, int maximumRowIndex) {
+	private int checkLimits (int rowIndex, int maximumRowIndex) 
+	{
 		if (rowIndex < 0)
 			rowIndex = 0;
 		if (rowIndex > maximumRowIndex)
@@ -129,10 +141,12 @@ public class DetectLevels_series2 extends BuildSeries  {
 		return rowIndex;
 	}
 
-	private int detectThresholdFromTop(int ix, int oldiytop, int jitter, int [] tabValues, int xwidth, int yheight, Options_BuildSeries options) {
+	private int detectThresholdFromTop(int ix, int oldiytop, int jitter, int [] tabValues, int xwidth, int yheight, Options_BuildSeries options) 
+	{
 		int y = yheight-1;
 		oldiytop = checkLimits(oldiytop - jitter, yheight-1);
-		for (int iy = oldiytop; iy < yheight; iy++) {
+		for (int iy = oldiytop; iy < yheight; iy++) 
+		{
 			boolean flag = false;
 			if (options.directionUp)
 				flag = tabValues [ix + iy* xwidth] > options.detectLevelThreshold;
@@ -146,10 +160,12 @@ public class DetectLevels_series2 extends BuildSeries  {
 		return y;
 	}
 	
-	private int detectThresholdFromBottom(int ix, int oldiybottom, int jitter, int[] tabValues, int xwidth, int yheight, Options_BuildSeries options) {
+	private int detectThresholdFromBottom(int ix, int oldiybottom, int jitter, int[] tabValues, int xwidth, int yheight, Options_BuildSeries options) 
+	{
 		int y = 0;
 		oldiybottom = yheight - 1; // no memory needed  - the bottom is quite stable
-		for (int iy = oldiybottom; iy >= 0 ; iy--) {
+		for (int iy = oldiybottom; iy >= 0 ; iy--) 
+		{
 			boolean flag = false;
 			if (options.directionUp)
 				flag = tabValues [ix + iy* xwidth] > options.detectLevelThreshold;

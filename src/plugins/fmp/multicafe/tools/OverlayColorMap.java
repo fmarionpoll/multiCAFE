@@ -5,16 +5,18 @@ import java.awt.Color;
 import icy.image.colormap.IcyColorMap;
 import icy.util.ColorUtil;
 
-public class OverlayColorMap extends IcyColorMap {
+public class OverlayColorMap extends IcyColorMap 
+{
 	/*
     * Creates a simple color map using a linear gradient from 'colorFrom' to 'colorTo'.
     */
-	public OverlayColorMap(String mapName, Color colorMask) {
+	public OverlayColorMap(String mapName, Color colorMask) 
+	{
 		   this(mapName, colorMask, IcyColorMapType.RGB);
 	}
 	
-	public OverlayColorMap(String mapName, Color colorMask, IcyColorMapType type) {
-	   
+	public OverlayColorMap(String mapName, Color colorMask, IcyColorMapType type) 
+	{   
 		super(mapName, type);
 		beginUpdate();
 		try

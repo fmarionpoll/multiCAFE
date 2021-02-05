@@ -11,60 +11,81 @@ import java.util.Comparator;
  */
 
 /** A simple QuickSort for String arrays. */
-public class StringSorter {
-	
-	public static void sort(String[] a) {
+public class StringSorter 
+{	
+	public static void sort(String[] a) 
+	{
 		/** Sort the array. */
 		if (!alreadySorted(a))
 			sort(a, 0, a.length - 1);
 	}
 	
-	static void sort(String[] a, int from, int to) {
+	static void sort(String[] a, int from, int to) 
+	{
 		int i = from, j = to;
 		String center = a[ (from + to) / 2 ];
-		do {
-			while ( i < to && center.compareTo(a[i]) > 0 ) i++;
-			while ( j > from && center.compareTo(a[j]) < 0 ) j--;
-			if (i < j) {String temp = a[i]; a[i] = a[j]; a[j] = temp; }
-			if (i <= j) { i++; j--; }
+		do 
+		{
+			while ( i < to && center.compareTo(a[i]) > 0 ) 
+				i++;
+			while ( j > from && center.compareTo(a[j]) < 0 ) 
+				j--;
+			if (i < j) 
+			{
+				String temp = a[i]; a[i] = a[j]; 
+				a[j] = temp; 
+			}
+			if (i <= j) 
+			{ 
+				i++; 
+				j--; 
+			}
 		} while(i <= j);
-		if (from < j) sort(a, from, j);
-		if (i < to) sort(a,  i, to);
+		if (from < j) 
+			sort(a, from, j);
+		if (i < to) 
+			sort(a,  i, to);
 	}
 		
-	static boolean alreadySorted(String[] a) {
-		for ( int i=1; i<a.length; i++ ) {
+	static boolean alreadySorted(String[] a) 
+	{
+		for ( int i=1; i<a.length; i++ ) 
+		{
 			if (a[i].compareTo(a[i-1]) < 0 )
 			return false;
 		}
 		return true;
 	}
 	
-	public static int[] rank(final String[] data) {
+	public static int[] rank(final String[] data) 
+	{
 		/** Returns a sorted list of indices of the specified String array. */
 		int n = data.length;
 		final Integer[] indexes = new Integer[n];
 		for (int i=0; i<n; i++)
 			indexes[i] = i;
-		Arrays.sort(indexes, new Comparator<Integer>() {
-			public int compare(final Integer o1, final Integer o2) {
+		Arrays.sort(indexes, new Comparator<Integer>() 
+		{
+			public int compare(final Integer o1, final Integer o2) 
+			{
 				return data[o1].compareToIgnoreCase(data[o2]);
-			}
-		});
+			}});
 		int[] indexes2 = new int[n];
 		for (int i=0; i<n; i++)
 			indexes2[i] = indexes[i].intValue();
 		return indexes2;
 	}
 	
-	public static int[] rank(double[] values) {
+	public static int[] rank(double[] values) 
+	{
 		/** Returns a sorted list of indices of the specified double array.
 		Modified from: http://stackoverflow.com/questions/951848 by N.Vischer.
 		 */
 		int n = values.length;
 		final Integer[] indexes = new Integer[n];
 		final Double[] data = new Double[n];
-		for (int i=0; i<n; i++) {
+		for (int i=0; i<n; i++) 
+		{
 			indexes[i] = i;
 			data[i] = values[i];
 		}
@@ -108,25 +129,29 @@ public class StringSorter {
 		int[] maxDigits = new int[maxNums];
 
 		//a) record position and digit count of 1st, 2nd, .. n-th number in string
-		for (int jj = 0; jj < names.length; jj++) {
+		for (int jj = 0; jj < names.length; jj++) 
+		{
 			String name = names[jj];
 			boolean inNumber = false;
 			int nNumbers = 0;
 			int nDigits = 0;
-			for (int pos = 0; pos < name.length(); pos++) {
+			for (int pos = 0; pos < name.length(); pos++) 
+			{
 				boolean isDigit = name.charAt(pos) >= '0' && name.charAt(pos) <= '9';
-				if (isDigit) {
+				if (isDigit) 
+				{
 					nDigits++;
-					if (!inNumber) {
+					if (!inNumber) 
+					{
 						numberStarts[jj][nNumbers] = pos;
 						inNumber = true;
 					}
 				}
-				if (inNumber && (!isDigit || (pos == name.length() - 1))) {
+				if (inNumber && (!isDigit || (pos == name.length() - 1))) 
+				{
 					inNumber = false;
-					if (maxDigits[nNumbers] < nDigits) {
+					if (maxDigits[nNumbers] < nDigits) 
 						maxDigits[nNumbers] = nDigits;
-					}
 					numberLengths[jj][nNumbers] = nDigits;
 					nNumbers++;
 					nDigits = 0;
@@ -135,17 +160,19 @@ public class StringSorter {
 		}
 		
 		//b) perform padding
-		for (int jj = 0; jj < names.length; jj++) {
+		for (int jj = 0; jj < names.length; jj++) 
+		{
 			String name = names[jj];
 			int numIndex = 0;
 			StringBuilder destName = new StringBuilder();
-			for (int srcPtr = 0; srcPtr < name.length(); srcPtr++) {
-				if (srcPtr == numberStarts[jj][numIndex]) {
+			for (int srcPtr = 0; srcPtr < name.length(); srcPtr++) 
+			{
+				if (srcPtr == numberStarts[jj][numIndex]) 
+				{
 					int numLen = numberLengths[jj][numIndex];
 					if (numLen > 0) {
-						for (int pad = 0; pad < (maxDigits[numIndex] - numLen); pad++) {
+						for (int pad = 0; pad < (maxDigits[numIndex] - numLen); pad++) 
 							destName.append('0');
-						}
 					}
 					numIndex++;
 				}

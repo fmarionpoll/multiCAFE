@@ -15,9 +15,8 @@ import plugins.fmp.multicafe.MultiCAFE;
 
 
 
-
-public class MCSpots_ extends JPanel implements PropertyChangeListener {
-
+public class MCSpots_ extends JPanel implements PropertyChangeListener 
+{
 	/**
 	 * 
 	 */
@@ -25,11 +24,9 @@ public class MCSpots_ extends JPanel implements PropertyChangeListener {
 	private static final long serialVersionUID = -2230724185086264742L;
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
 	MCSpots_1 				buildRef 		= new MCSpots_1();
-
-
 	
-	void init (JPanel mainPanel, String string, MultiCAFE parent0) {
-		
+	void init (JPanel mainPanel, String string, MultiCAFE parent0) 
+	{	
 		capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
@@ -45,9 +42,11 @@ public class MCSpots_ extends JPanel implements PropertyChangeListener {
 		capPanel.add(tabsPane);
 		tabsPane.setSelectedIndex(0);
 		
-		capPopupPanel.addComponentListener(new ComponentAdapter() {
+		capPopupPanel.addComponentListener(new ComponentAdapter() 
+		{
 			@Override
-			public void componentResized(ComponentEvent e) {
+			public void componentResized(ComponentEvent e) 
+			{
 				parent0.mainFrame.revalidate();
 				parent0.mainFrame.pack();
 				parent0.mainFrame.repaint();
@@ -56,7 +55,8 @@ public class MCSpots_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	@Override
-	public void propertyChange(PropertyChangeEvent arg0) {
+	public void propertyChange(PropertyChangeEvent arg0) 
+	{
 
 	}
 

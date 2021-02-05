@@ -1,6 +1,7 @@
 package plugins.fmp.multicafe.tools.toExcel;
 
-public enum EnumXLSExportType {
+public enum EnumXLSExportType 
+{
 	TOPRAW ("topraw"),
 	TOPLEVEL ("toplevel"),
 	BOTTOMLEVEL ("bottomlevel"), 
@@ -25,19 +26,22 @@ public enum EnumXLSExportType {
 	
 	private String label;
 	
-	EnumXLSExportType (String label) { 
+	EnumXLSExportType (String label) 
+	{ 
 		this.label = label;
 	}
 	
-	public String toString() { 
+	public String toString() 
+	{ 
 		return label;
 	}
 	
-	public static EnumXLSExportType findByText(String abbr){
-	    for(EnumXLSExportType v : values()) { 
-	    	if( v.toString().equals(abbr)) { 
-	    		return v; 
-    		}  
+	public static EnumXLSExportType findByText(String abbr)
+	{
+	    for(EnumXLSExportType v : values()) 
+	    { 
+	    	if( v.toString().equals(abbr)) 
+	    		return v;   
     	}
 	    return null;
 	}

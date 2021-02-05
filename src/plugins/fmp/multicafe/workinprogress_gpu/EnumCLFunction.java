@@ -1,22 +1,24 @@
 package plugins.fmp.multicafe.workinprogress_gpu;
 
 
-
-
-public enum EnumCLFunction { 
+public enum EnumCLFunction 
+{ 
 	MULTIPLY2ARRAYS ("Multiply2Arrays");
 	
 	private String label;
 	
-	EnumCLFunction (String label) { 
+	EnumCLFunction (String label) 
+	{ 
 		this.label = label;
-		}
+	}
 	
-	public String toString() { 
+	public String toString() 
+	{ 
 		return label;
-		}	
+	}	
 	
-	public static EnumCLFunction findByText(String abbr){
+	public static EnumCLFunction findByText(String abbr)
+	{
 	    for(EnumCLFunction v : values()) 
 	    	if( v.toString().equals(abbr))  
 	    		return v;   

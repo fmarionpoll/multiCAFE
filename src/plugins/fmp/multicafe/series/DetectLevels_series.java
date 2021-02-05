@@ -125,8 +125,7 @@ public class DetectLevels_series extends BuildSeries
 						limitBottom.add(new Point2D.Double(iColumn, ybottom));
 						oldiytop = ytop;
 						oldiybottom = ybottom;
-					}
-					
+					}					
 					if (options.analyzePartOnly) 
 					{
 						cap.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);

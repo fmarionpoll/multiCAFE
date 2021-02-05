@@ -26,8 +26,8 @@ import plugins.fmp.multicafe.tools.MinMaxDouble;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
 
-public class YPositionsCharts extends IcyFrame {
-
+public class YPositionsCharts extends IcyFrame 
+{
 	public JPanel 	mainChartPanel = null;
 	private ArrayList<ChartPanel> chartsInMainChartPanel = null;
 	List<XYSeriesCollection> xyDataSetList = null;
@@ -36,7 +36,8 @@ public class YPositionsCharts extends IcyFrame {
 	private String 	title;
 	private Point 	pt = new Point (0,0);
 	
-	public void createPanel(String cstitle) {
+	public void createPanel(String cstitle) 
+	{
 		title = cstitle; 
 		mainChartFrame = GuiUtil.generateTitleFrame(title, new JPanel(), new Dimension(300, 70), true, true, true, true);	    
 		mainChartPanel = new JPanel(); 
@@ -44,23 +45,28 @@ public class YPositionsCharts extends IcyFrame {
 		mainChartFrame.add(mainChartPanel);
 	}
 	
-	public void setLocationRelativeToRectangle(Rectangle rectv, Point deltapt) {
+	public void setLocationRelativeToRectangle(Rectangle rectv, Point deltapt) 
+	{
 		pt = new Point(rectv.x + deltapt.x, rectv.y + deltapt.y);
 	}
 	
-	public void displayData(List<Cage> cageList, EnumXLSExportType option) {
+	public void displayData(List<Cage> cageList, EnumXLSExportType option) 
+	{
 		if (xyDataSetList == null)
 			displayNewData(cageList, option);
 		else
 			fetchNewData(cageList, option);
 	}
 	
-	private void displayNewData(List<Cage> cageList, EnumXLSExportType option) {
+	private void displayNewData(List<Cage> cageList, EnumXLSExportType option) 
+	{
 		xyDataSetList = new ArrayList <XYSeriesCollection>();
 		MinMaxDouble valMinMax = new MinMaxDouble();
 		int count = 0;
-		for (Cage cage: cageList) {
-			if (cage.flyPositions != null && cage.flyPositions.xytList.size() > 0) {	
+		for (Cage cage: cageList) 
+		{
+			if (cage.flyPositions != null && cage.flyPositions.xytList.size() > 0) 
+			{	
 				YPosMultiChartStructure struct = getDataSet(cage, option);
 				XYSeriesCollection xyDataset = struct.xyDataset;
 				valMinMax = struct.minmax;
@@ -74,7 +80,8 @@ public class YPositionsCharts extends IcyFrame {
 		int width = 100;
 		boolean displayLabels = false; 
 		
-		for (XYSeriesCollection xyDataset: xyDataSetList) {
+		for (XYSeriesCollection xyDataset: xyDataSetList) 
+		{
 			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, true, true);
 			xyChart.setAntiAlias( true );
 			xyChart.setTextAntiAlias( true );
@@ -93,14 +100,19 @@ public class YPositionsCharts extends IcyFrame {
 		mainChartFrame.setVisible(true);
 	}
 	
-	private void fetchNewData (List<Cage> cageList, EnumXLSExportType option) {
-		for (Cage cage: cageList) {
+	private void fetchNewData (List<Cage> cageList, EnumXLSExportType option) 
+	{
+		for (Cage cage: cageList) 
+		{
 			String name = cage.cageRoi.getName();
-			for (XYSeriesCollection xySeriesList: xyDataSetList) {
+			for (XYSeriesCollection xySeriesList: xyDataSetList) 
+			{
 				int countseries = xySeriesList.getSeriesCount();
-				for (int i = 0; i< countseries; i++) {
+				for (int i = 0; i< countseries; i++) 
+				{
 					XYSeries xySeries = xySeriesList.getSeries(i);
-					if (name .equals(xySeries.getDescription())) {
+					if (name .equals(xySeries.getDescription())) 
+					{
 						xySeries.clear();
 						addPointsToXYSeries(cage, option, xySeries);
 						break;
@@ -110,15 +122,19 @@ public class YPositionsCharts extends IcyFrame {
 		}
 	}
 	
-	private MinMaxDouble addPointsToXYSeries(Cage cage, EnumXLSExportType option, XYSeries seriesXY) {
+	private MinMaxDouble addPointsToXYSeries(Cage cage, EnumXLSExportType option, XYSeries seriesXY) 
+	{
 		XYTaSeriesArrayList positionxyt = cage.flyPositions;
 		int itmax = positionxyt.xytList.size();
 		MinMaxDouble minmax =null;
-		if (itmax > 0) {
-			switch (option) {
+		if (itmax > 0) 
+		{
+			switch (option) 
+			{
 			case DISTANCE:
 				double previousY = positionxyt.xytList.get(0).xyPoint.getY();
-				for ( int it = 0; it < itmax;  it++) {
+				for ( int it = 0; it < itmax;  it++) 
+				{
 					double currentY = positionxyt.xytList.get(it).xyPoint.getY();
 					double ypos = currentY - previousY;
 					double t = positionxyt.xytList.get(it).indexT;
@@ -131,7 +147,8 @@ public class YPositionsCharts extends IcyFrame {
 				break;
 				
 			case ISALIVE:
-				for ( int it = 0; it < itmax;  it++) {
+				for ( int it = 0; it < itmax;  it++) 
+				{
 					boolean alive = positionxyt.xytList.get(it).bAlive;
 					double ypos = alive? 1.0: 0.0;
 					double t = positionxyt.xytList.get(it).indexT;
@@ -141,7 +158,8 @@ public class YPositionsCharts extends IcyFrame {
 				break;
 				
 			case SLEEP:
-				for ( int it = 0; it < itmax;  it++) {
+				for ( int it = 0; it < itmax;  it++) 
+				{
 					boolean sleep = positionxyt.xytList.get(it).bSleep;
 					double ypos = sleep ? 1.0: 0.0;
 					double t = positionxyt.xytList.get(it).indexT;
@@ -153,7 +171,8 @@ public class YPositionsCharts extends IcyFrame {
 			default:
 				Rectangle rect1 = cage.cageRoi.getBounds();
 				double yOrigin = rect1.getY()+rect1.getHeight();	
-				for ( int it = 0; it < itmax;  it++) {
+				for ( int it = 0; it < itmax;  it++) 
+				{
 					Point2D point = positionxyt.xytList.get(it).xyPoint;
 					double ypos = yOrigin - point.getY();
 					double t = positionxyt.xytList.get(it).indexT;
@@ -166,7 +185,8 @@ public class YPositionsCharts extends IcyFrame {
 		return minmax;
 	}
 	
-	private YPosMultiChartStructure getDataSet(Cage cage, EnumXLSExportType option) {
+	private YPosMultiChartStructure getDataSet(Cage cage, EnumXLSExportType option) 
+	{
 		XYSeriesCollection xyDataset = new XYSeriesCollection();	
 		String name = cage.cageRoi.getName();
 		XYSeries seriesXY = new XYSeries(name);
@@ -176,10 +196,10 @@ public class YPositionsCharts extends IcyFrame {
 		return new YPosMultiChartStructure(minmax, xyDataset);
 	}
 	
-	private void cleanChartsPanel (ArrayList<ChartPanel> chartsPanel) {
-		if (chartsPanel != null && chartsPanel.size() > 0) {
+	private void cleanChartsPanel (ArrayList<ChartPanel> chartsPanel) 
+	{
+		if (chartsPanel != null && chartsPanel.size() > 0) 
 			chartsPanel.clear();
-		}
 	}
 
 }

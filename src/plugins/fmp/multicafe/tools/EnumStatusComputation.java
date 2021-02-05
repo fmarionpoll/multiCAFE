@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe.tools;
 
-public enum EnumStatusComputation {
+public enum EnumStatusComputation 
+{
 	START_COMPUTATION, STOP_COMPUTATION
 }

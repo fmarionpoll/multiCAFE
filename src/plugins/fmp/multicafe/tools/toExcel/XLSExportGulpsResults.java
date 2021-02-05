@@ -7,11 +7,12 @@ import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafe.sequence.Experiment;
 
 
-public class XLSExportGulpsResults  extends XLSExport {
-
+public class XLSExportGulpsResults  extends XLSExport 
+{
 	// -----------------------
 	
-	public void exportToFile(String filename, XLSExportOptions opt) {	
+	public void exportToFile(String filename, XLSExportOptions opt) 
+	{	
 		System.out.println("XLS capillary measures output");
 		options = opt;
 		expList = options.expList;
@@ -28,9 +29,11 @@ public class XLSExportGulpsResults  extends XLSExport {
 		int nbexpts = expList.getExperimentListSize();
 		progress.setLength(nbexpts);
 
-		try { 
+		try 
+		{ 
 			workbook = xlsInitWorkbook();
-			for (int index = options.firstExp; index <= options.lastExp; index++) {
+			for (int index = options.firstExp; index <= options.lastExp; index++) 
+			{
 				Experiment exp = expList.getExperimentFromList(index);
 				if (exp.previousExperiment != null)
 					continue;
@@ -59,7 +62,9 @@ public class XLSExportGulpsResults  extends XLSExport {
 	        fileOut.close();
 	        workbook.close();
 	        progress.close();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		System.out.println("XLS output finished");

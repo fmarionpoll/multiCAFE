@@ -8,14 +8,15 @@ import icy.file.FileUtil;
 import icy.gui.dialog.ConfirmDialog;
 
 
-public class Dialog {
-	public static String saveFileAs(String defaultName, String directory, String csExt) {		
+public class Dialog 
+{
+	public static String saveFileAs(String defaultName, String directory, String csExt) 
+	{		
 		// load last preferences for loader
 		String csFile = null;
 		final JFileChooser fileChooser = new JFileChooser();
-		if (directory != null) {
+		if (directory != null) 
 			fileChooser.setCurrentDirectory(new File(directory));
-		}
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY );
 		FileNameExtensionFilter xlsFilter = new FileNameExtensionFilter(csExt+" files",  csExt, csExt);
 		fileChooser.addChoosableFileFilter(xlsFilter);
@@ -47,9 +48,9 @@ public class Dialog {
 		return csFile;
 	}
 	
-	public static String[] selectFiles(String directory, String csExt) {
+	public static String[] selectFiles(String directory, String csExt) 
+	{
 		final JFileChooser fileChooser = new JFileChooser();
-
 		final String path = directory;
 		fileChooser.setCurrentDirectory(new File(path));
 		fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY );
@@ -64,10 +65,8 @@ public class Dialog {
 		{
 			File[] files = fileChooser.getSelectedFiles();
 			liststrings = new String[files.length];
-			
-			for (int i=0; i< files.length; i++) {
+			for (int i=0; i< files.length; i++) 
 				liststrings[i] = files[i].getAbsolutePath();
-			}
 		}
 		return liststrings;
 	}

@@ -20,8 +20,8 @@ import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
 
-public class DetectFlies_Find {
-	
+public class DetectFlies_Find 
+{	
 	public List<BooleanMask2D> 	cageMaskList 		= new ArrayList<BooleanMask2D>();
 	public Rectangle 			rectangleAllCages 	= null;
 	public Options_BuildSeries	options				= null;
@@ -29,7 +29,8 @@ public class DetectFlies_Find {
 	
 	// -----------------------------------------------------
 	
-	public BooleanMask2D findLargestBlob(ROI2DArea roiAll, Cage cage) {
+	public BooleanMask2D findLargestBlob(ROI2DArea roiAll, Cage cage) 
+	{
 		ROI cageLimitROI = cage.cageRoi;
 		if ( cageLimitROI == null )
 			return null;
@@ -40,7 +41,8 @@ public class DetectFlies_Find {
 		// find largest component in the threshold
 		int max = 0;
 		BooleanMask2D bestMask = null;
-		for ( BooleanMask2D mask : roi.getBooleanMask( true ).getComponents() ) {
+		for ( BooleanMask2D mask : roi.getBooleanMask( true ).getComponents() ) 
+		{
 			int len = mask.getPoints().length;
 			if (options.blimitLow && len < options.limitLow)
 				len = 0;
@@ -53,9 +55,9 @@ public class DetectFlies_Find {
 			if (width < height)
 				ratio = height/width;
 			if (ratio > 4)
-				len = 0;
-			
-			if ( len > max ) {
+				len = 0;	
+			if ( len > max ) 
+			{
 				bestMask = mask;
 				max = len;
 			}
@@ -63,15 +65,18 @@ public class DetectFlies_Find {
 		return bestMask;
 	}
 	
-	public ROI2DArea binarizeImage(IcyBufferedImage img, int threshold) {
+	public ROI2DArea binarizeImage(IcyBufferedImage img, int threshold) 
+	{
 		if (img == null)
 			return null;
 		boolean[] mask = new boolean[ img.getSizeX() * img.getSizeY() ];
-		if (options.btrackWhite) {
+		if (options.btrackWhite) 
+		{
 			byte[] arrayRed 	= img.getDataXYAsByte( 0);
 			byte[] arrayGreen 	= img.getDataXYAsByte( 1);
 			byte[] arrayBlue 	= img.getDataXYAsByte( 2);
-			for ( int i = 0 ; i < arrayRed.length ; i++ ) {
+			for ( int i = 0 ; i < arrayRed.length ; i++ ) 
+			{
 				float r = ( arrayRed[i] 	& 0xFF );
 				float g = ( arrayGreen[i] 	& 0xFF );
 				float b = ( arrayBlue[i] 	& 0xFF );
@@ -79,45 +84,53 @@ public class DetectFlies_Find {
 				mask[i] = ( intensity ) > threshold ;
 			}
 		}
-		else {
+		else 
+		{
 			byte[] arrayChan = img.getDataXYAsByte( options.videoChannel);
-			for ( int i = 0 ; i < arrayChan.length ; i++ ) {
+			for ( int i = 0 ; i < arrayChan.length ; i++ ) 
 				mask[i] = ( ((int) arrayChan[i] ) & 0xFF ) < threshold ;
-			}
 		}
 		BooleanMask2D bmask = new BooleanMask2D( img.getBounds(), mask); 
 		return new ROI2DArea( bmask );
 	}
 	
-	public void findFlies (IcyBufferedImage workimage, int t, int it) {
+	public void findFlies (IcyBufferedImage workimage, int t, int it) 
+	{
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
- 		for (Cage cage: cages.cageList) {		
+ 		for (Cage cage: cages.cageList) 
+ 		{		
 			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
 				continue;
-			if (cage.cageNFlies > 0) {
+			if (cage.cageNFlies > 0) 
+			{
 				BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, cage);
-				if ( bestMask != null ) {
+				if ( bestMask != null ) 
+				{
 					ROI2DArea flyROI = new ROI2DArea( bestMask ); 
 					Rectangle2D rect = flyROI.getBounds2D();
 					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 					cage.flyPositions.addPoint(t, flyPosition);
 				}
-				else {
+				else 
+				{
 					cage.flyPositions.addPoint(t, flyPositionMissed);
 				}
 			}
 		}
 	}
 	
-	public void initTempRectROIs(Experiment exp, Sequence seq, int option_cagenumber) {
+	public void initTempRectROIs(Experiment exp, Sequence seq, int option_cagenumber) 
+	{
 		cages = exp.cages;
 		int nbcages = cages.cageList.size();
-		for (int i=0; i < nbcages; i++) {
+		for (int i=0; i < nbcages; i++) 
+		{
 			Cage cage = cages.cageList.get(i);
 			if (options.detectCage != -1 && cage.getCageNumberInteger() != option_cagenumber)
 				continue;
-			if (cage.cageNFlies > 0) {
+			if (cage.cageNFlies > 0) 
+			{
 				XYTaSeriesArrayList positions = new XYTaSeriesArrayList();
 				positions.ensureCapacity(exp.cages.detect_nframes);
 				cage.flyPositions = positions;
@@ -126,14 +139,16 @@ public class DetectFlies_Find {
 
 	}
 	
-	public void initParametersForDetection(Experiment exp, Options_BuildSeries	options) {
+	public void initParametersForDetection(Experiment exp, Options_BuildSeries	options) 
+	{
 		this.options = options;
 		exp.cages.detect_nframes = (int) (((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms) +1);
 		exp.cages.clearAllMeasures(options.detectCage);
 		cages = exp.cages;
 		cages.computeBooleanMasksForCages();
 		rectangleAllCages = null;
-		for (Cage cage: cages.cageList) {
+		for (Cage cage: cages.cageList) 
+		{
 			if (cage.cageNFlies < 1) 
 				continue;
 			Rectangle rect = cage.cageRoi.getBounds();

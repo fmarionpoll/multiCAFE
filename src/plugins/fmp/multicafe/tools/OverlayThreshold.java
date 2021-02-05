@@ -20,23 +20,27 @@ import icy.sequence.SequenceListener;
 import plugins.fmp.multicafe.sequence.SequenceCamData;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
-public class OverlayThreshold extends Overlay implements SequenceListener {
+public class OverlayThreshold extends Overlay implements SequenceListener 
+{
 	private ImageOperations 	imgOp 	= null;
 	private float 				opacity = 0.3f;
 	private OverlayColorMask	map 	= new OverlayColorMask ("", new Color(0x00FF0000, true));
 	
 	// ---------------------------------------------
 	
-	public OverlayThreshold() {
+	public OverlayThreshold() 
+	{
 		super("ThresholdOverlay");	
 	}
 	
-	public OverlayThreshold(SequenceCamData seq) {
+	public OverlayThreshold(SequenceCamData seq) 
+	{
 		super("ThresholdOverlay");
 		setSequence(seq);
 	}
 	
-	public void setSequence (SequenceCamData seq) {
+	public void setSequence (SequenceCamData seq) 
+	{
 		if (seq == null)
 			return;
 		if (imgOp == null)
@@ -44,28 +48,35 @@ public class OverlayThreshold extends Overlay implements SequenceListener {
 		imgOp.setSequence(seq);
 	}
 	
-	public void setTransform (TransformOp transf) {
+	public void setTransform (TransformOp transf) 
+	{
 		imgOp.setTransform( transf);
 	}
 	
-	public void setThresholdSingle (int threshold, boolean ifGreater) {
+	public void setThresholdSingle (int threshold, boolean ifGreater) 
+	{
 		imgOp.setThresholdSingle(threshold, ifGreater);
 	}
 	
-	public void setThresholdTransform (int threshold, TransformOp transformop, boolean ifGreater) {
+	public void setThresholdTransform (int threshold, TransformOp transformop, boolean ifGreater) 
+	{
 		imgOp.setThresholdSingle(threshold, ifGreater);
 		imgOp.setTransform(transformop);
 	}
 	
-	public void setThresholdColor (ArrayList <Color> colorarray, int distancetype, int threshold) {
+	public void setThresholdColor (ArrayList <Color> colorarray, int distancetype, int threshold) 
+	{
 		imgOp.setColorArrayThreshold(colorarray, distancetype, threshold);
 	}
 	
 	@Override
-	public void paint(Graphics2D g, Sequence sequence, IcyCanvas canvas) {
-		if ((canvas instanceof IcyCanvas2D) && g != null) {
+	public void paint(Graphics2D g, Sequence sequence, IcyCanvas canvas) 
+	{
+		if ((canvas instanceof IcyCanvas2D) && g != null) 
+		{
 			IcyBufferedImage thresholdedImage = imgOp.run();
-			if (thresholdedImage != null) {
+			if (thresholdedImage != null) 
+			{
 				thresholdedImage.setColorMap(0, map);
 				BufferedImage bufferedImage = IcyBufferedImageUtil.getARGBImage(thresholdedImage);
 				Composite bck = g.getComposite();
@@ -77,7 +88,8 @@ public class OverlayThreshold extends Overlay implements SequenceListener {
 	}
 
 	@Override
-	public void sequenceChanged(SequenceEvent sequenceEvent) {
+	public void sequenceChanged(SequenceEvent sequenceEvent) 
+	{
 		if (sequenceEvent.getSourceType() != SequenceEventSourceType.SEQUENCE_OVERLAY) 
 			return;
         if (sequenceEvent.getSource() == this && sequenceEvent.getType() == SequenceEventType.REMOVED) {
@@ -87,7 +99,8 @@ public class OverlayThreshold extends Overlay implements SequenceListener {
 	}
 
 	@Override
-	public void sequenceClosed(Sequence sequence) {
+	public void sequenceClosed(Sequence sequence) 
+	{
 		sequence.removeListener(this);
         remove();
 	}

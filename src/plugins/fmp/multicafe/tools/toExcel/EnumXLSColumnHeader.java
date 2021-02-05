@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public enum EnumXLSColumnHeader {
+public enum EnumXLSColumnHeader 
+{
 	PATH("path", 0),
 	DATE( "date", 1), 
 	BOXID("box_ID", 2), 
@@ -20,16 +21,19 @@ public enum EnumXLSColumnHeader {
 	private final int 		value;
 	
 	
-	EnumXLSColumnHeader (String label, int value) { 
+	EnumXLSColumnHeader (String label, int value) 
+	{ 
 		this.name = label;
 		this.value = value;
 	}
 	
-	public String getName() {
+	public String getName() 
+	{
 		return name;
 	}
 
-	public int getValue() {
+	public int getValue() 
+	{
 		return value;
 	}
 	
@@ -38,11 +42,13 @@ public enum EnumXLSColumnHeader {
 	static final Map<Integer, EnumXLSColumnHeader> values = Arrays.stream(EnumXLSColumnHeader.values())
 		      .collect(Collectors.toMap(EnumXLSColumnHeader::getValue, Function.identity()));
 	
-	public static EnumXLSColumnHeader fromName(final String name) {
+	public static EnumXLSColumnHeader fromName(final String name) 
+	{
 	    return names.get(name);
 	}
 
-	public static EnumXLSColumnHeader fromValue(final int value) {
+	public static EnumXLSColumnHeader fromValue(final int value) 
+	{
 	    return values.get(value);
 	}
 }

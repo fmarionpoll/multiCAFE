@@ -11,60 +11,75 @@ import plugins.fmp.multicafe.sequence.XYTaValue;
 import plugins.fmp.multicafe.tools.toExcel.XLSResults;
 
 
-public class Comparators {
-
+public class Comparators 
+{
 	public static class ROI_Name_Comparator implements Comparator<ROI> {
 		@Override
-		public int compare(ROI o1, ROI o2) {
+		public int compare(ROI o1, ROI o2) 
+		{
 			return o1.getName().compareTo(o2.getName());
 		}
 	}
 	
-	public static class ROI2D_Name_Comparator implements Comparator<ROI2D> {
+	public static class ROI2D_Name_Comparator implements Comparator<ROI2D> 
+	{
 		@Override
-		public int compare(ROI2D o1, ROI2D o2) {
+		public int compare(ROI2D o1, ROI2D o2) 
+		{
 			return o1.getName().compareTo(o2.getName());
 		}
 	}
 	
-	public static class ROI2D_T_Comparator implements Comparator<ROI2D> {
+	public static class ROI2D_T_Comparator implements Comparator<ROI2D> 
+	{
 		@Override
-		public int compare(ROI2D o1, ROI2D o2) {
+		public int compare(ROI2D o1, ROI2D o2) 
+		{
 			return o1.getT()-o2.getT();
 		}
 	}
 
-	public static class Sequence_Name_Comparator implements Comparator<Sequence> {
+	public static class Sequence_Name_Comparator implements Comparator<Sequence> 
+	{
 		@Override
-		public int compare(Sequence o1, Sequence o2) {
+		public int compare(Sequence o1, Sequence o2) 
+		{
 			return o1.getName().compareTo(o2.getName());
 		}
 	}
 	
-	public static class XLSResults_Name_Comparator implements Comparator <XLSResults> {
+	public static class XLSResults_Name_Comparator implements Comparator <XLSResults> 
+	{
 		@Override
-		public int compare (XLSResults o1, XLSResults o2) {
+		public int compare (XLSResults o1, XLSResults o2) 
+		{
 			return o1.name.compareTo(o2.name);
 		}
 	}
 	
-	public static class XYTaSeries_Name_Comparator implements Comparator <XYTaSeriesArrayList> {
+	public static class XYTaSeries_Name_Comparator implements Comparator <XYTaSeriesArrayList> 
+	{
 		@Override
-		public int compare (XYTaSeriesArrayList o1, XYTaSeriesArrayList o2) {
+		public int compare (XYTaSeriesArrayList o1, XYTaSeriesArrayList o2) 
+		{
 			return o1.name.compareTo(o2.name);
 		}
 	}
 	
-	public static class Cage_Name_Comparator implements Comparator <Cage> {
+	public static class Cage_Name_Comparator implements Comparator <Cage> 
+	{
 		@Override
-		public int compare (Cage o1, Cage o2) {
+		public int compare (Cage o1, Cage o2) 
+		{
 			return o1.cageRoi.getName().compareTo(o2.cageRoi.getName());
 		}
 	}
 	
-	public static class XYTaValue_Tindex_Comparator implements Comparator <XYTaValue> {
+	public static class XYTaValue_Tindex_Comparator implements Comparator <XYTaValue> 
+	{
 		@Override
-		public int compare (XYTaValue o1, XYTaValue o2) {
+		public int compare (XYTaValue o1, XYTaValue o2) 
+		{
 			return o1.indexT - o2.indexT;
 		}
 	}

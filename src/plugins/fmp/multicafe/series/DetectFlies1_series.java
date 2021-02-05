@@ -19,8 +19,8 @@ import plugins.fmp.multicafe.tools.OverlayThreshold;
 
 
 
-public class DetectFlies1_series extends BuildSeries {
-
+public class DetectFlies1_series extends BuildSeries 
+{
 	private Viewer 				viewerCamData 	= null;
 	private OverlayThreshold 	ov 				= null;
 	
@@ -30,52 +30,60 @@ public class DetectFlies1_series extends BuildSeries {
 	
 	// -----------------------------------------------------
 	
-	void analyzeExperiment(Experiment exp) {
+	void analyzeExperiment(Experiment exp) 
+	{
 		exp.openSequenceCamData();
 		exp.xmlReadDrosoTrack(null);
-		if (options.isFrameFixed) {
+		if (options.isFrameFixed) 
+		{
 			exp.cages.detectFirst_Ms = options.t_firstMs;
 			exp.cages.detectLast_Ms = options.t_lastMs;
 			if (exp.cages.detectLast_Ms > exp.camLastImage_Ms)
 				exp.cages.detectLast_Ms = exp.camLastImage_Ms;
-		} else {
+		} 
+		else 
+		{
 			exp.cages.detectFirst_Ms = exp.camFirstImage_Ms;
 			exp.cages.detectLast_Ms = exp.camLastImage_Ms;
 		}
 		exp.cages.detectBin_Ms = options.t_binMs;
 		exp.cages.detect_threshold = options.threshold;
-		
-		if (exp.cages.cageList.size() < 1 ) {
+		if (exp.cages.cageList.size() < 1 ) 
+		{
 			System.out.println("! skipped experiment with no cage: " + exp.getExperimentDirectory());
 			return;
 		}
-		
 		runDetectFlies(exp);
-		
 		exp.orderFlyPositionsForAllCages();
 		if (!stopFlag)
 			exp.xmlSaveFlyPositionsForAllCages();
 		exp.seqCamData.closeSequence();
     }
 		
-	private void runDetectFlies(Experiment exp) {
+	private void runDetectFlies(Experiment exp) 
+	{
 		exp.cleanPreviousDetectedFliesROIs();
 		find_flies.initParametersForDetection(exp, options);
 		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
-		
 		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() { public void run() {
-				viewerCamData = new Viewer(exp.seqCamData.seq, true);
-				Rectangle rectv = viewerCamData.getBoundsInternal();
-				rectv.setLocation(options.parent0Rect.x+ options.parent0Rect.width, options.parent0Rect.y);
-				viewerCamData.setBounds(rectv);
-				ov = new OverlayThreshold(exp.seqCamData);
-				exp.seqCamData.seq.addOverlay(ov);	
-				ov.setThresholdSingle(exp.cages.detect_threshold, true);
-				ov.painterChanged();
-			}});
-		} catch (InvocationTargetException | InterruptedException e) {
+		try 
+		{
+			SwingUtilities.invokeAndWait(new Runnable() 
+			{ 
+				public void run() 
+				{
+					viewerCamData = new Viewer(exp.seqCamData.seq, true);
+					Rectangle rectv = viewerCamData.getBoundsInternal();
+					rectv.setLocation(options.parent0Rect.x+ options.parent0Rect.width, options.parent0Rect.y);
+					viewerCamData.setBounds(rectv);
+					ov = new OverlayThreshold(exp.seqCamData);
+					exp.seqCamData.seq.addOverlay(ov);	
+					ov.setThresholdSingle(exp.cages.detect_threshold, true);
+					ov.painterChanged();
+				}});
+		} 
+		catch (InvocationTargetException | InterruptedException e) 
+		{
 			e.printStackTrace();
 		} 
 		
@@ -88,12 +96,15 @@ public class DetectFlies1_series extends BuildSeries {
 		
 		exp.seqCamData.seq.beginUpdate();
 		int it = 0;
-		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms, it++ ) {
+		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms, it++ ) 
+		{
 			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
 			final int t_it = it;
-			futures.add(processor.submit(new Runnable () {
+			futures.add(processor.submit(new Runnable () 
+			{
 				@Override
-				public void run() {	
+				public void run() 
+				{	
 					// TODO: getImageDirect (getImageDirectAndSubtractReference) does not communicate with viewer - remove visualization?
 					IcyBufferedImage workImage = exp.seqCamData.subtractReference(exp.seqCamData.getImage(t_from, 0), t_from, options.transformop); 
 					if (workImage == null)
