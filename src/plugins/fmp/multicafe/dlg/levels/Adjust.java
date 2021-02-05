@@ -24,7 +24,8 @@ import plugins.fmp.multicafe.series.CurvesClipSameLengthWithinCage_series;
 import plugins.fmp.multicafe.series.CurvesRestoreLength_series;
 
 
-public class Adjust extends JPanel  implements PropertyChangeListener {
+public class Adjust extends JPanel  implements PropertyChangeListener 
+{
 	/**
 	 * 
 	 */
@@ -47,7 +48,8 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 	
 	
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);	
 		this.parent0 = parent0;
 		
@@ -70,33 +72,42 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 		defineListeners();
 	}
 	
-	private void defineListeners() {
-		adjustButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
+	private void defineListeners() 
+	{
+		adjustButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
 				if (adjustButton.getText() .equals(adjustString))
 					series_adjustDimensionsStart();
 				else 
 					series_adjustDimensionsStop();
 			}});
 		
-		restoreButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
+		restoreButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
 				if (restoreButton.getText() .equals(restoreString))
 					series_restoreStart();
 				else 
 					series_restoreStop();
 			}});
 		
-		clipButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
+		clipButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
 				if (restoreButton.getText() .equals(restoreString))
 					series_clipStart();
 				else 
 					series_clipStop();
 			}});
 			
-		allSeriesCheckBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
+		allSeriesCheckBox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
 				Color color = Color.BLACK;
 				if (allSeriesCheckBox.isSelected()) 
 					color = Color.RED;
@@ -107,7 +118,8 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 		}});
 	}
 
-	void restoreCroppedPoints(Experiment exp) {
+	void restoreCroppedPoints(Experiment exp) 
+	{
 		SequenceKymos seqKymos = exp.seqKymos;
 		int t = seqKymos.currentFrame;
 		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
@@ -119,11 +131,12 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 	}
 	
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
+	public void propertyChange(PropertyChangeEvent evt) 
+	{
+		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
+		 {
 			Experiment exp = parent0.expList.getExperimentFromList(parent0.paneSequence.expListComboBox.getSelectedIndex());
-			parent0.paneSequence.openExperiment(exp);
-			
+			parent0.paneSequence.openExperiment(exp);	
 			if (adjustButton.getText() .contains (stopString))
 				adjustButton.setText(adjustString);
 			else if (restoreButton.getText().contains(stopString))
@@ -133,32 +146,35 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 		 }	 
 	}
 	
-	private void series_adjustDimensionsStop() {	
+	private void series_adjustDimensionsStop() 
+	{	
 		if (threadAdjust != null && !threadAdjust.stopFlag) {
 			threadAdjust.stopFlag = true;
 		}
 	}
 	
-	private void series_restoreStop() {
+	private void series_restoreStop() 
+	{
 		if (threadRestore != null && !threadRestore.stopFlag) {
 			threadRestore.stopFlag = true;
 		}
 	}
 	
-	private void series_clipStop() {
+	private void series_clipStop() 
+	{
 		if (threadClip != null && !threadClip.stopFlag) {
 			threadClip.stopFlag = true;
 		}
 	}
 	
-	private boolean initBuildParameters(Options_BuildSeries options) {
+	private boolean initBuildParameters(Options_BuildSeries options) 
+	{
 		int index  = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperimentFromList(index);
 		if (exp == null)
 			return false;
 		
-		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
-		
+		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
 		parent0.expList.currentExperimentIndex = index;
 		parent0.paneSequence.tabClose.closeExp(exp);
 		options.expList = parent0.expList; 
@@ -178,30 +194,36 @@ public class Adjust extends JPanel  implements PropertyChangeListener {
 		return true;
 	}
 	
-	private void series_adjustDimensionsStart() {
+	private void series_adjustDimensionsStart() 
+	{
 		threadAdjust = new AdjustMeasuresDimensions_series();
 		Options_BuildSeries options= threadAdjust.options;
-		if (initBuildParameters (options)) {
+		if (initBuildParameters (options)) 
+		{
 			threadAdjust.addPropertyChangeListener(this);
 			threadAdjust.execute();
 			adjustButton.setText(stopString + adjustString);
 		}
 	}
 	
-	private void series_restoreStart() {
+	private void series_restoreStart() 
+	{
 		threadRestore = new CurvesRestoreLength_series();
 		Options_BuildSeries options= threadRestore.options;
-		if (initBuildParameters (options)) {
+		if (initBuildParameters (options)) 
+		{
 			threadRestore.addPropertyChangeListener(this);
 			threadRestore.execute();
 			restoreButton.setText(stopString + restoreString);
 		}
 	}
 	
-	private void series_clipStart() {
+	private void series_clipStart() 
+	{
 		threadClip = new CurvesClipSameLengthWithinCage_series();
 		Options_BuildSeries options= threadClip.options;
-		if (initBuildParameters (options)) {
+		if (initBuildParameters (options)) 
+		{
 			threadClip.addPropertyChangeListener(this);
 			threadClip.execute();
 			clipButton.setText(stopString + clipString);

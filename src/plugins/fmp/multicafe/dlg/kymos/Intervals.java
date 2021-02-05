@@ -19,7 +19,8 @@ import plugins.fmp.multicafe.sequence.Experiment;
 
 
 
-public class Intervals extends JPanel {
+public class Intervals extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -33,7 +34,8 @@ public class Intervals extends JPanel {
 	JSpinner 	binColumnJSpinner			= new JSpinner(new SpinnerNumberModel(1., 1., 1000., 1.));
 	
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 
@@ -63,19 +65,25 @@ public class Intervals extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		applyButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
-			Experiment exp = parent0.expList.getCurrentExperiment();
-			setKymoIntervalsFromDialog(exp);
-		}});
+	private void defineActionListeners() 
+	{
+		applyButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
+				Experiment exp = parent0.expList.getCurrentExperiment();
+				setKymoIntervalsFromDialog(exp);
+			}});
 	}
 	
-	public int getBuildStep() {
+	public int getBuildStep() 
+	{
 		int buildStep = ((int) binColumnJSpinner.getValue()) * getBinSize_Ms();
 		return buildStep;
 	}
 	
-	private int getBinSize_Ms() {
+	private int getBinSize_Ms() 
+	{
 		int binsize = 1;
 		int iselected = binUnit.getSelectedIndex();
 		switch (iselected) {
@@ -90,14 +98,16 @@ public class Intervals extends JPanel {
 		return binsize;
 	}
 	
-	void setKymoIntervalsFromDialog(Experiment exp) {
+	void setKymoIntervalsFromDialog(Experiment exp) 
+	{
 		long binsize_Ms = getBinSize_Ms();
 		exp.kymoFirstCol_Ms = (long) (((double) firstColumnJSpinner.getValue()) * binsize_Ms);
 		exp.kymoLastCol_Ms  = (long) (((double) lastColumnJSpinner.getValue()) * binsize_Ms);
 		exp.kymoBinCol_Ms = (long) (((double) binColumnJSpinner.getValue()) * binsize_Ms);
 	}
 	
-	void displayKymoIntervals (Experiment exp) {
+	void displayKymoIntervals (Experiment exp) 
+	{
 		double binsize_Ms = getBinSize_Ms();
 		firstColumnJSpinner.setValue(0.);
 		lastColumnJSpinner.setValue((double) exp.seqKymos.imageWidthMax);

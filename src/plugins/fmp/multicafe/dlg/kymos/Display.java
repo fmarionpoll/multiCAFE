@@ -35,24 +35,26 @@ import plugins.fmp.multicafe.sequence.SequenceKymos;
 
 
 
-public class Display extends JPanel implements ViewerListener {
+public class Display extends JPanel implements ViewerListener 
+{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2103052112476748890L;
-	public 	JComboBox<String> kymosComboBox = new JComboBox<String> (new String[] {"none"});
-	private MultiCAFE 	parent0 			= null;
+	public 	JComboBox<String> kymosComboBox 	= new JComboBox<String> (new String[] {"none"});
+	private MultiCAFE 	parent0 				= null;
 			JButton 	updateButton 			= new JButton("Update");
 			JButton  	previousButton		 	= new JButton("<");
 			JButton		nextButton				= new JButton(">");
 			JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("top/bottom level (green)", true);
 			JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
 			JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
-			JComboBox<String> binsCombo	= new JComboBox <String>();
+			JComboBox<String> binsCombo		= new JComboBox <String>();
 			boolean 	actionAllowed			= true;
 
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {	
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{	
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
@@ -84,42 +86,58 @@ public class Display extends JPanel implements ViewerListener {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {		
-		kymosComboBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners()
+	{		
+		kymosComboBox.addActionListener(new ActionListener ()
+		{ 
+			@Override public void actionPerformed( final ActionEvent e )
+			{ 
 			displayUpdateOnSwingThread();
 		}});
 		
-		viewDerivativeCheckbox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		viewDerivativeCheckbox.addActionListener(new ActionListener ()
+		{ 
+			@Override public void actionPerformed( final ActionEvent e )
+			{ 
 			roisDisplay("deriv", viewDerivativeCheckbox.isSelected());
 		}});
 
-		viewGulpsCheckbox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		viewGulpsCheckbox.addActionListener(new ActionListener ()
+		{ 
+			@Override public void actionPerformed( final ActionEvent e )
+			{ 
 			roisDisplay("gulp", viewGulpsCheckbox.isSelected());
 		}});
 		
-		viewLevelsCheckbox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		viewLevelsCheckbox.addActionListener(new ActionListener ()
+{ 
+			@Override public void actionPerformed( final ActionEvent e )
+{ 
 			roisDisplay("level", viewLevelsCheckbox.isSelected());
 		}});
 		
-		nextButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		nextButton.addActionListener(new ActionListener ()
+		{ 
+			@Override public void actionPerformed( final ActionEvent e )
+			{ 
 			int isel = kymosComboBox.getSelectedIndex()+1;
 			if (isel < kymosComboBox.getItemCount())
 				selectKymograph(isel);
 		}});
 		
-		previousButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		previousButton.addActionListener(new ActionListener ()
+		{ 
+			@Override public void actionPerformed( final ActionEvent e )
+			{ 
 			int isel = kymosComboBox.getSelectedIndex()-1;
 			if (isel < kymosComboBox.getItemCount())
 				selectKymograph(isel);
 		}});
 		
-		binsCombo.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
+		binsCombo.addActionListener(new ActionListener ()
+		{ 
+			@Override public void actionPerformed( final ActionEvent e )
+			{
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (!actionAllowed || exp == null)
 				return;
@@ -129,25 +147,30 @@ public class Display extends JPanel implements ViewerListener {
 		}});
 	}
 		
-	public void transferCapillaryNamesToComboBox(Experiment exp ) {
-		SwingUtilities.invokeLater(new Runnable() { public void run() {
+	public void transferCapillaryNamesToComboBox(Experiment exp )
+	{
+		SwingUtilities.invokeLater(new Runnable() { public void run()
+		{
 			kymosComboBox.removeAllItems();
 			Collections.sort(exp.capillaries.capillariesArrayList); 
 			int ncapillaries = exp.capillaries.capillariesArrayList.size();
-			for (int i=0; i< ncapillaries; i++) {
+			for (int i=0; i< ncapillaries; i++)
+			{
 				Capillary cap = exp.capillaries.capillariesArrayList.get(i);
 				kymosComboBox.addItem(cap.roi.getName());
 			}
 		}});	
 	}
 	
-	public void displayRoisAccordingToUserSelection() {
+	public void displayRoisAccordingToUserSelection()
+	{
 		roisDisplay("deriv", viewDerivativeCheckbox.isSelected());
 		roisDisplay("gulp", viewGulpsCheckbox.isSelected());
 		roisDisplay("level", viewLevelsCheckbox.isSelected());
 	}
 	
-	private void roisDisplay(String filter, boolean visible) {
+	private void roisDisplay(String filter, boolean visible)
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null) 
 			return;		
@@ -156,10 +179,13 @@ public class Display extends JPanel implements ViewerListener {
 			return;
 		IcyCanvas canvas = v.getCanvas();
 		List<Layer> layers = canvas.getLayers(false);
-		if (layers != null) {	
-			for (Layer layer: layers) {
+		if (layers != null)
+		{	
+			for (Layer layer: layers)
+			{
 				ROI roi = layer.getAttachedROI();
-				if (roi != null) {
+				if (roi != null)
+				{
 					String cs = roi.getName();
 					if (cs.contains(filter))  
 						layer.setVisible(visible);
@@ -168,17 +194,20 @@ public class Display extends JPanel implements ViewerListener {
 		}
 	}
 
-	void displayON() {
+	void displayON()
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqKymos == null || seqKymos.seq == null ) {
+		if (seqKymos == null || seqKymos.seq == null )
+		{
 			return;
 		}
 		
 		ArrayList<Viewer>vList = seqKymos.seq.getViewers();
-		if (vList.size() == 0) {
+		if (vList.size() == 0)
+		{
 			Viewer v = new Viewer(seqKymos.seq, true);
 			v.setRepeat(false);
 			v.addListener(this);
@@ -187,7 +216,8 @@ public class Display extends JPanel implements ViewerListener {
 		}
 	}
 	
-	void placeKymoViewerNextToCamViewer(Experiment exp, Viewer v) {
+	void placeKymoViewerNextToCamViewer(Experiment exp, Viewer v)
+	{
 		Viewer vCamData = exp.seqCamData.seq.getFirstViewer();
 		if (vCamData == null)
 			return;
@@ -200,17 +230,21 @@ public class Display extends JPanel implements ViewerListener {
 		rectDataView.height = rectMaster.height;
 		IcyBufferedImage img = exp.seqKymos.seq.getFirstImage();
 		rectDataView.width = 100;
-		if (img != null) {
+		if (img != null)
+		{
 			rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
 		}
 		int desktopwidth = Icy.getMainInterface().getMainFrame().getDesktopWidth();
-		if (rectDataView.width > desktopwidth) {
+		if (rectDataView.width > desktopwidth)
+		{
 			int height = img.getSizeY() * desktopwidth / rectDataView.width;
 			int width = img.getSizeX() * height / rectDataView.height;
 			rectDataView.setSize(width, height *3 /2);
 			rectDataView.x = 0;
 			rectDataView.y = rectMaster.y + rectMaster.height;
-		} else {
+		} 
+		else
+		{
 		rectDataView.translate(
 				rectMaster.x + deltax - rectDataView.x, 
 				rectMaster.y + deltay - rectDataView.y);
@@ -218,38 +252,44 @@ public class Display extends JPanel implements ViewerListener {
 		v.setBounds(rectDataView);
 	}
 	
-	void displayOFF() {
+	void displayOFF()
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null || exp.seqKymos == null) 
 			return;
 		ArrayList<Viewer>vList =  exp.seqKymos.seq.getViewers();
-		if (vList.size() > 0) {
+		if (vList.size() > 0)
+		{
 			for (Viewer v: vList) 
 				v.close();
 			vList.clear();
 		}
 	}
 	
-	public void displayUpdateOnSwingThread() {		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				displayUpdate();
-			}});
+	public void displayUpdateOnSwingThread()
+	{		
+		SwingUtilities.invokeLater(new Runnable() { public void run()
+		{
+			displayUpdate();
+		}});
 	}
 	
-	void displayUpdate() {	
+	void displayUpdate()
+	{	
 		if (kymosComboBox.getItemCount() < 1)
 			return;	
 		displayON();
 		int itemupfront = kymosComboBox.getSelectedIndex();
-		if (itemupfront < 0) {
+		if (itemupfront < 0)
+		{
 			itemupfront = 0;
 			kymosComboBox.setSelectedIndex(0);
 		}
 		selectKymograph(itemupfront); 
 	}
 
-	void displayViews (boolean bEnable) {
+	void displayViews (boolean bEnable)
+	{
 		updateButton.setEnabled(bEnable);
 		previousButton.setEnabled(bEnable);
 		nextButton.setEnabled(bEnable);
@@ -260,7 +300,8 @@ public class Display extends JPanel implements ViewerListener {
 			displayOFF();
 	}
 
-	public void selectKymograph(int isel) {
+	public void selectKymograph(int isel)
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null) 
 			return;
@@ -274,13 +315,15 @@ public class Display extends JPanel implements ViewerListener {
 			isel = seqKymos.seq.getSizeT() -1;
 		
 		int icurrent = kymosComboBox.getSelectedIndex();
-		if (icurrent != isel) {
+		if (icurrent != isel)
+		{
 			seqKymos.validateRoisAtT(icurrent);
 			kymosComboBox.setSelectedIndex(isel);
 		}
 		seqKymos.currentFrame = isel;
 		Viewer v = seqKymos.seq.getFirstViewer();
-		if (v != null) {
+		if (v != null)
+		{
 			if( v.getPositionT() != isel)
 				v.setPositionT(isel);
 			String name = exp.seqCamData.getCSCamFileName() +": " + (String) kymosComboBox.getSelectedItem();
@@ -290,12 +333,13 @@ public class Display extends JPanel implements ViewerListener {
 	}
 
 	@Override
-	public void viewerChanged(ViewerEvent event) {
-		if ( event.getType() == ViewerEvent.ViewerEventType.POSITION_CHANGED ) {
+	public void viewerChanged(ViewerEvent event)
+	{
+		if ( event.getType() == ViewerEvent.ViewerEventType.POSITION_CHANGED )
+		{
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp == null) 
 				return;
-
 			Viewer v = exp.seqKymos.seq.getFirstViewer();
 			int t = v.getPositionT();
 			selectKymograph(t);
@@ -303,15 +347,18 @@ public class Display extends JPanel implements ViewerListener {
 	}
 
 	@Override
-	public void viewerClosed(Viewer viewer) {
+	public void viewerClosed(Viewer viewer)
+	{
 		viewer.removeListener(this);
 	}
 
-	public void updateResultsAvailable(Experiment exp) {
+	public void updateResultsAvailable(Experiment exp)
+	{
 		actionAllowed = false;
 		binsCombo.removeAllItems();
 		List<String> list = exp.getListOfSubDirectoriesWithTIFF();
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = 0; i < list.size(); i++)
+		{
 			String dirName = list.get(i);
 			if (dirName == null || dirName .contains(exp.RESULTS))
 				dirName = ".";
@@ -324,7 +371,8 @@ public class Display extends JPanel implements ViewerListener {
 		actionAllowed = true;
 	}
 	
-	public String getBinSubdirectory() {
+	public String getBinSubdirectory()
+	{
 		String name = (String) binsCombo.getSelectedItem();
 		if (name != null && !name .contains("bin_"))
 			name = null;

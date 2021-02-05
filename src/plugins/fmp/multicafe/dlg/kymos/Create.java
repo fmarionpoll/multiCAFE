@@ -26,7 +26,8 @@ import plugins.fmp.multicafe.tools.EnumStatusComputation;
 
 
 
-public class Create extends JPanel implements PropertyChangeListener { 
+public class Create extends JPanel implements PropertyChangeListener 
+{ 
 	/**
 	 * 
 	 */
@@ -42,7 +43,8 @@ public class Create extends JPanel implements PropertyChangeListener {
 
 	// -----------------------------------------------------
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);	
 		this.parent0 = parent0;
 		
@@ -63,17 +65,22 @@ public class Create extends JPanel implements PropertyChangeListener {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		startComputationButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		startComputationButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				if (startComputationButton.getText() .equals(detectString))
 					startComputation();
 				else
 					stopComputation();
 		}});
 
-		allSeriesCheckBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
+		allSeriesCheckBox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
 				Color color = Color.BLACK;
 				if (allSeriesCheckBox.isSelected()) 
 					color = Color.RED;
@@ -82,7 +89,8 @@ public class Create extends JPanel implements PropertyChangeListener {
 		}});
 	}
 		
-	private boolean initBuildParameters(Experiment exp, Options_BuildSeries options) {
+	private boolean initBuildParameters(Experiment exp, Options_BuildSeries options) 
+	{
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.expList.currentExperimentIndex;
 		if (allSeriesCheckBox.isSelected())
@@ -102,7 +110,8 @@ public class Create extends JPanel implements PropertyChangeListener {
 		return true;
 	}
 		
-	private void startComputation() {
+	private void startComputation() 
+	{
 		int current = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperimentFromList(current);
 		if (exp == null) 
@@ -122,19 +131,20 @@ public class Create extends JPanel implements PropertyChangeListener {
 		startComputationButton.setText("STOP");
 	}
 	
-	private void stopComputation() {	
+	private void stopComputation() 
+	{	
 		if (threadBuildKymo != null && !threadBuildKymo.stopFlag) {
 			threadBuildKymo.stopFlag = true;
 		}
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(PropertyChangeEvent evt) 
+	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
 			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp != null) {
+			if (exp != null) 
 				parent0.paneSequence.openExperiment(exp);
-			}
 			startComputationButton.setText(detectString);
 		 }
 	}

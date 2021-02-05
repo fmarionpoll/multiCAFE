@@ -6,7 +6,8 @@ import javax.swing.table.AbstractTableModel;
 
 
 
-public class CageTableModel extends AbstractTableModel {
+public class CageTableModel extends AbstractTableModel
+{
 	/**
 	 * 
 	 */
@@ -15,19 +16,23 @@ public class CageTableModel extends AbstractTableModel {
 	
 	
 	
-	public CageTableModel (ExperimentList expList) {
+	public CageTableModel (ExperimentList expList) 
+	{
 		super();
 		this.expList = expList;
 	}
 		
 	@Override
-    public int getColumnCount() {
+    public int getColumnCount() 
+	{
 		return 6;
 	}
 	
     @Override
-    public Class<?> getColumnClass(int columnIndex) {
-    	switch (columnIndex) {
+    public Class<?> getColumnClass(int columnIndex) 
+    {
+    	switch (columnIndex) 
+    	{
     	case 0: return String.class;
     	case 1: return Integer.class;
     	case 2: return String.class;
@@ -39,8 +44,10 @@ public class CageTableModel extends AbstractTableModel {
     }
     
     @Override
-    public String getColumnName(int column) {
-    	switch (column) {
+    public String getColumnName(int column) 
+    {
+    	switch (column) 
+    	{
     	case 0:	return "Name";
     	case 1: return "n flies";
     	case 2: return "strain";
@@ -52,7 +59,8 @@ public class CageTableModel extends AbstractTableModel {
     }
     
     @Override
-    public int getRowCount() {
+    public int getRowCount() 
+    {
     	if (expList != null && expList.currentExperimentIndex >= 0 )
     		return expList
     				.getCurrentExperiment()
@@ -61,14 +69,17 @@ public class CageTableModel extends AbstractTableModel {
     }
     
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
+    public Object getValueAt(int rowIndex, int columnIndex) 
+    {
     	Cage cage = null;
-    	if (expList != null && expList.currentExperimentIndex >=0 ) {
+    	if (expList != null && expList.currentExperimentIndex >=0 ) 
+    	{
     		cage = expList
     				.getCurrentExperiment()
     				.cages.cageList.get(rowIndex);
     	}
-    	if (cage != null) {
+    	if (cage != null) 
+    	{
         	switch (columnIndex) {
             case 0: return cage.cageRoi.getName();
             case 1: return cage.cageNFlies;
@@ -82,8 +93,10 @@ public class CageTableModel extends AbstractTableModel {
     }
     
     @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) {
-    	switch (columnIndex) {
+    public boolean isCellEditable(int rowIndex, int columnIndex) 
+    {
+    	switch (columnIndex) 
+    	{
         case 0: 
         	return false;
         default: 
@@ -92,13 +105,17 @@ public class CageTableModel extends AbstractTableModel {
     }
     
     @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) 
+    {
         Cage cage = null;
-    	if (expList != null && expList.currentExperimentIndex >=0 ) {
+    	if (expList != null && expList.currentExperimentIndex >=0 ) 
+    	{
     		cage = expList.getCurrentExperiment().cages.cageList.get(rowIndex);
     	}
-    	if (cage != null) {
-        	switch (columnIndex) {
+    	if (cage != null) 
+    	{
+        	switch (columnIndex) 
+        	{
             case 0: cage.cageRoi.setName(aValue.toString()); break;
             case 1: cage.cageNFlies = (int) aValue; break;
             case 2: cage.strCageStrain = aValue.toString(); break;

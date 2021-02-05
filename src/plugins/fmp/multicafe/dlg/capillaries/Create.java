@@ -32,7 +32,8 @@ import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
-public class Create extends JPanel {
+public class Create extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -49,9 +50,9 @@ public class Create extends JPanel {
 	private JSpinner 	width_intervalJSpinner 	= new JSpinner(new SpinnerNumberModel(53, 0, 10000, 1)); 
 	private MultiCAFE 	parent0 				= null;
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
-		setLayout(capLayout);
-		
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
+		setLayout(capLayout);	
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
 		flowLayout.setVgap(0);
 		
@@ -84,21 +85,32 @@ public class Create extends JPanel {
 		this.parent0 = parent0;
 	}
 	
-	private void defineActionListeners() {
-		addPolygon2DButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		addPolygon2DButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				create2DPolygon();
 			}});
 		
-		createROIsFromPolygonButton2.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		createROIsFromPolygonButton2.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				roisGenerateFromPolygon();
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null) {
+				if (exp != null) 
+				{
 					SequenceKymosUtils.transferCamDataROIStoKymo(exp);
 					firePropertyChange("CAPILLARIES_NEW", false, true);
 				}
 			}});
 		
-		selectRegularButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		selectRegularButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				boolean status = false;
 				width_between_capillariesJSpinner.setEnabled(status);
 				width_intervalJSpinner.setEnabled(status);
@@ -107,45 +119,54 @@ public class Create extends JPanel {
 	
 	// set/ get	
 
-	private int getNbCapillaries( ) {
+	private int getNbCapillaries( ) 
+	{
 		return (int) nbcapillariesJSpinner.getValue();
 	}
 
-	private int getWidthSmallInterval ( ) {
+	private int getWidthSmallInterval ( ) 
+	{
 		return (int) width_between_capillariesJSpinner.getValue();
 	}
 	
-	private int getWidthLongInterval() {
+	private int getWidthLongInterval() 
+	{
 		return (int) width_intervalJSpinner.getValue();
 	}
 	
-	private boolean getGroupedBy2() {
+	private boolean getGroupedBy2() 
+	{
 		return selectGroupedby2Button.isSelected();
 	}
 	
-	private void setGroupedBy2(boolean flag) {
+	private void setGroupedBy2(boolean flag) 
+	{
 		selectGroupedby2Button.setSelected(flag);
 		selectRegularButton.setSelected(!flag);
 	}
 	
-	void setGroupingAndNumber(Capillaries cap) {
+	void setGroupingAndNumber(Capillaries cap) 
+	{
 		setGroupedBy2(cap.desc.grouping == 2);
 	}
 	
-	Capillaries getGrouping(Capillaries cap) {
+	Capillaries getGrouping(Capillaries cap) 
+	{
 		cap.desc.grouping = getGroupedBy2() ? 2: 1;
 		return cap;
 	}
 
 	// ---------------------------------
-	private void create2DPolygon() {
+	private void create2DPolygon() 
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
 		final String dummyname = "perimeter_enclosing_capillaries";
 		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
-		for (ROI2D roi: listRois) {
+		for (ROI2D roi: listRois) 
+		{
 			if (roi.getName() .equals(dummyname))
 				return;
 		}
@@ -162,20 +183,23 @@ public class Create extends JPanel {
 		seqCamData.seq.setSelectedROI(roi);
 	}
 	
-	private void rotate (Polygon2D roiPolygon) {
+	private void rotate (Polygon2D roiPolygon) 
+	{
 		int isel = orientationJCombo.getSelectedIndex();
 		if (isel == 0)
 			return;
 		
 		Polygon2D roiPolygon_orig = (Polygon2D) roiPolygon.clone();
-		for (int i=0; i<roiPolygon.npoints; i++) {
+		for (int i=0; i<roiPolygon.npoints; i++) 
+		{
 			int j = (i + isel) % 4;
 			roiPolygon.xpoints[j] = roiPolygon_orig.xpoints[i];
 			roiPolygon.ypoints[j] = roiPolygon_orig.ypoints[i];
 		}
 	}
 	
-	private void roisGenerateFromPolygon() {
+	private void roisGenerateFromPolygon() 
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
@@ -187,16 +211,23 @@ public class Create extends JPanel {
 		int width_between_capillaries = 1;	// default value for statusGroup2Mode = false
 		int width_interval = 0;				// default value for statusGroup2Mode = false
 
-		try { 
+		try 
+		{ 
 			nbcapillaries = getNbCapillaries();
-			if(statusGroup2Mode) {
+			if(statusGroup2Mode) 
+			{
 				width_between_capillaries = getWidthSmallInterval();
 				width_interval = getWidthLongInterval();
 			}
-		} catch( Exception e ) { new AnnounceFrame("Can't interpret one of the ROI parameters value"); }
+		} 
+		catch( Exception e ) 
+		{ 
+			new AnnounceFrame("Can't interpret one of the ROI parameters value"); 
+		}
 
 		ROI2D roi = seqCamData.seq.getSelectedROI2D();
-		if ( ! ( roi instanceof ROI2DPolygon ) ) {
+		if ( ! ( roi instanceof ROI2DPolygon ) ) 
+		{
 			new AnnounceFrame("The frame must be a ROI2D POLYGON");
 			return;
 		}
@@ -206,18 +237,22 @@ public class Create extends JPanel {
 		
 		seqCamData.seq.removeROI(roi);
 
-		if (statusGroup2Mode) {	
+		if (statusGroup2Mode) 
+		{	
 			double span = (nbcapillaries/2)* (width_between_capillaries + width_interval) - width_interval;
-			for (int i=0; i< nbcapillaries; i+= 2) {
+			for (int i=0; i< nbcapillaries; i+= 2) 
+			{
 				double span0 = (width_between_capillaries + width_interval)*i/2;
 				addROILine(seqCamData, "line"+i/2+"L", roiPolygon, span0, span);
 				span0 += width_between_capillaries ;
 				addROILine(seqCamData, "line"+i/2+"R", roiPolygon, span0, span);
 			}
 		}
-		else {
+		else 
+		{
 			double span = nbcapillaries-1;
-			for (int i=0; i< nbcapillaries; i++) {
+			for (int i=0; i< nbcapillaries; i++) 
+			{
 				double span0 = width_between_capillaries*i;
 				addROILine(seqCamData, "line"+i, roiPolygon, span0, span);
 			}
@@ -225,7 +260,8 @@ public class Create extends JPanel {
 	}
 
 	
-	private void addROILine(SequenceCamData seqCamData, String name, Polygon2D roiPolygon, double span0, double span) {
+	private void addROILine(SequenceCamData seqCamData, String name, Polygon2D roiPolygon, double span0, double span) 
+	{
 		double x0 = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
 		double y0 = roiPolygon.ypoints[0] + (roiPolygon.ypoints[3]-roiPolygon.ypoints[0]) * span0 /span;
 		if (x0 < 0) 

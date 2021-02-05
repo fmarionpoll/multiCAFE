@@ -29,7 +29,8 @@ import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 
 
-public class DetectGulps extends JPanel  implements PropertyChangeListener {
+public class DetectGulps extends JPanel  implements PropertyChangeListener 
+{
 	/**
 	 * 
 	 */
@@ -53,7 +54,8 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 	private MultiCAFE 		parent0;
 	
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
@@ -86,29 +88,37 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-
-		transformForGulpsComboBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		transformForGulpsComboBox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				kymosDisplayFiltered2();
 				series_detectGulpsStart(false);
 			}});
 		
-		detectButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
+		detectButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
 				if (detectButton.getText() .equals(detectString))
 					series_detectGulpsStart(true);
 				else 
 					series_detectGulpsStop();
 			}});
 		
-		displayTransform2Button.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
+		displayTransform2Button.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
 				kymosDisplayFiltered2();
 			}});
 		
-		allCheckBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
+		allCheckBox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
 				Color color = Color.BLACK;
 				if (allCheckBox.isSelected()) 
 					color = Color.RED;
@@ -118,23 +128,23 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		
 	}
 		
-	void kymosDisplayFiltered2() {
+	void kymosDisplayFiltered2() 
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null) 
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
-			return;
-		
+			return;	
 		TransformOp transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		int zChannelDestination = 2;
 		exp.kymosBuildFiltered(0, zChannelDestination, transform, (int) spanTransf2Spinner.getValue());
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
-	void series_detectGulpsStart(boolean detectGulps) {
-		kymosDisplayFiltered2();
-		
+	void series_detectGulpsStart(boolean detectGulps) 
+	{
+		kymosDisplayFiltered2();	
 		int current = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperimentFromList(current);
 		if (exp == null)
@@ -175,22 +185,26 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener {
 		detectButton.setText("STOP");
 	}
 
-	void setInfos(Capillary cap) {
+	void setInfos(Capillary cap) 
+	{
 		Options_BuildSeries options = cap.getGulpsOptions();
 		detectGulpsThresholdSpinner.setValue(options.detectGulpsThreshold);
 		transformForGulpsComboBox.setSelectedItem(options.transformForGulps);
 		detectAllGulpsCheckBox.setSelected(options.detectAllGulps);
 	}
 
-	private void series_detectGulpsStop() {	
+	private void series_detectGulpsStop() 
+	{	
 		if (thread != null && !thread.stopFlag) {
 			thread.stopFlag = true;
 		}
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
+	public void propertyChange(PropertyChangeEvent evt) 
+	{
+		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
+		 {
 			Experiment exp = parent0.expList.getExperimentFromList(parent0.paneSequence.expListComboBox.getSelectedIndex());
 			parent0.paneSequence.openExperiment(exp);
 			detectButton.setText(detectString);

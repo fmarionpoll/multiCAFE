@@ -18,18 +18,18 @@ import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.SequenceKymos;
 
-public class Filter  extends JPanel {
-
+public class Filter  extends JPanel 
+{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4413321640245046423L;
-	
+	private static final long serialVersionUID = -4413321640245046423L;	
 	private MultiCAFE parent0;
 	private JButton 	startButton = new JButton("Start");
 	private JTextField spanText 	= new JTextField("10");
 
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);	
 		this.parent0 = parent0;
 		add(GuiUtil.besidesPanel(new JLabel("use N pixels="), spanText, new JLabel(" ")));
@@ -37,11 +37,15 @@ public class Filter  extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		startButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		startButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null) {
+				if (exp != null) 
+				{
 					SequenceKymos seqKymos = exp.seqKymos; 
 					int span = getSpan();
 					int c = 1;
@@ -52,11 +56,13 @@ public class Filter  extends JPanel {
 			}});
 	}
 
-	int getSpan( ) {
+	int getSpan( ) 
+	{
 		return Integer.valueOf( spanText.getText() );
 	}
 	
-	private void crossCorrelatePixels (SequenceKymos kymographSeq, int span, int t, int c) {
+	private void crossCorrelatePixels (SequenceKymos kymographSeq, int span, int t, int c) 
+	{
 		IcyBufferedImage image = null;
 		image = kymographSeq.seq.getImage(t, 0, c);
 		double [] tabValues = Array1DUtil.arrayToDoubleArray(image.getDataXY(0), image.isSignedDataType()); 
@@ -70,21 +76,27 @@ public class Filter  extends JPanel {
 		double [] correl = new double [npoints];
 		int [] ishift = new int [xwidth];
 		ishift[0] = 0;
-		for (int iy = 0; iy < yheight; iy++) {
+		for (int iy = 0; iy < yheight; iy++) 
+		{
 			col0[iy] = tabValues [iy* xwidth];
 		}
 		
-		for (int ix = 1; ix<xwidth; ix++) {
-			for (int iy = 0; iy < yheight; iy++) {
+		for (int ix = 1; ix<xwidth; ix++) 
+		{
+			for (int iy = 0; iy < yheight; iy++) 
+			{
 				col1[iy] = tabValues [ix + iy* xwidth];
 			}
-			for (int starty=0; starty<npoints; starty++) {
+			for (int starty=0; starty<npoints; starty++) 
+			{
 				correl[starty] = correlationBetween2Arrays (col0, col1, startx, starty, len);
 			}
 			int imax = 0;
 			double vmax = correl[0];
-			for (int i=1; i<npoints; i++) {
-				if (correl[i] > vmax) {
+			for (int i=1; i<npoints; i++) 
+			{
+				if (correl[i] > vmax) 
+				{
 					vmax = correl[i];
 					imax = i;
 				}
@@ -96,21 +108,24 @@ public class Filter  extends JPanel {
 		shiftColumnsOfPixels(ishift, kymographSeq);
 	}
 	
-	private void shiftColumnsOfPixels(int [] shift, SequenceKymos kymographSeq) {
-		
+	private void shiftColumnsOfPixels(int [] shift, SequenceKymos kymographSeq) 
+	{	
 		IcyBufferedImage image0 = kymographSeq.seq.getFirstImage();
 		IcyBufferedImage image1 = IcyBufferedImageUtil.getCopy(image0); 
 		int xwidth = image0.getSizeX();
 		int yheight = image0.getSizeY();
 		
-		for (int chan=0; chan < kymographSeq.seq.getSizeC(); chan++) {
+		for (int chan=0; chan < kymographSeq.seq.getSizeC(); chan++) 
+		{
 			Object dataObject0 = image0.getDataXY(chan);
 			double[] dataArray0 = Array1DUtil.arrayToDoubleArray(dataObject0, image0.isSignedDataType());
 			Object dataObject1 = image1.getDataXY(chan);
 			double[] dataArray1 = Array1DUtil.arrayToDoubleArray(dataObject1, image1.isSignedDataType());
-			for (int ix=0; ix< xwidth; ix++) {
+			for (int ix=0; ix< xwidth; ix++) 
+			{
 				int iydest = shift[ix];
-				for (int iy = 0; iy < yheight; iy++, iydest++) {
+				for (int iy = 0; iy < yheight; iy++, iydest++) 
+				{
 					if (iydest >= 0 && iydest < yheight)
 						dataArray0 [ix + iydest* xwidth] = dataArray1 [ix + iy* xwidth];
 				}
@@ -120,14 +135,16 @@ public class Filter  extends JPanel {
 		}
 	}
 	
-	private double correlationBetween2Arrays(double[] xs, double[] ys, int startx, int starty, int len) {
+	private double correlationBetween2Arrays(double[] xs, double[] ys, int startx, int starty, int len) 
+	{
 	    double sx = 0.0;
 	    double sy = 0.0;
 	    double sxx = 0.0;
 	    double syy = 0.0;
 	    double sxy = 0.0;
 
-	    for(int i = 0; i < len; ++i, startx++, starty++) {
+	    for(int i = 0; i < len; ++i, startx++, starty++) 
+	    {
 	      double x = xs[startx];
 	      double y = ys[starty];
 

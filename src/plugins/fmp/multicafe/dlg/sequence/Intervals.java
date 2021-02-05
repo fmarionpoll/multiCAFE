@@ -18,7 +18,8 @@ import plugins.fmp.multicafe.tools.JComboMs;
 
 
 
-public class Intervals extends JPanel {
+public class Intervals extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -31,7 +32,8 @@ public class Intervals extends JPanel {
 	JButton		refreshButton 		= new JButton("Refresh values");
 	private MultiCAFE 	parent0 	= null;
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 
@@ -59,24 +61,32 @@ public class Intervals extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		applyButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
-			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp == null)
-				return;
-			exp.camBinImage_Ms = (long) (((double) binSize.getValue())* binUnit.getMsUnitValue());
+	private void defineActionListeners() 
+	{
+		applyButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
+				Experiment exp = parent0.expList.getCurrentExperiment();
+				if (exp == null)
+					return;
+				exp.camBinImage_Ms = (long) (((double) binSize.getValue())* binUnit.getMsUnitValue());
 			}});
-		
-		refreshButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
-			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp == null)
-				return;
-			exp.loadFileIntervalsFromSeqCamData();
-			refreshBinSize(exp);
+			
+		refreshButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
+				Experiment exp = parent0.expList.getCurrentExperiment();
+				if (exp == null)
+					return;
+				exp.loadFileIntervalsFromSeqCamData();
+				refreshBinSize(exp);
 			}});
 	}
 	
-	public void displayCamDataIntervals (Experiment exp) {
+	public void displayCamDataIntervals (Experiment exp) 
+	{
 		startFrameJSpinner.setValue(0);
 		endFrameJSpinner.setValue(exp.getSeqCamSizeT());
 		if (exp.camBinImage_Ms == 0)
@@ -84,7 +94,8 @@ public class Intervals extends JPanel {
 		refreshBinSize(exp);
 	}
 	
-	private void refreshBinSize(Experiment exp) {
+	private void refreshBinSize(Experiment exp) 
+	{
 		binUnit.setSelectedIndex(1);
 		binSize.setValue(exp.camBinImage_Ms/(double)binUnit.getMsUnitValue());
 	}

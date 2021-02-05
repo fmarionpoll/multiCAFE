@@ -18,27 +18,31 @@ import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
-public class CapillaryGulps  implements XMLPersistent  {
-	
+public class CapillaryGulps  implements XMLPersistent  
+{	
 	private final String ID_GULPS = "gulpsMC";
 	public List<ROI2D> rois = null; 
 
 	// -------------------------------
 	
-	public void copy(CapillaryGulps capG) {
+	public void copy(CapillaryGulps capG) 
+	{
 		rois = new ArrayList <ROI2D> ();
 		rois.addAll(capG.rois);		
 	}
 	
 	@Override
-	public boolean loadFromXML(Node node) {
+	public boolean loadFromXML(Node node) 
+	{
 		boolean flag = false;
 		rois = new ArrayList <ROI2D> ();
 		final Node nodeROIs = XMLUtil.getElement(node, ID_GULPS);
-		if (nodeROIs != null) {
+		if (nodeROIs != null) 
+		{
 			flag = true;
 			List<ROI> roislocal = ROI.loadROIsFromXML(nodeROIs);
-			for (ROI roislocal_i : roislocal) {
+			for (ROI roislocal_i : roislocal) 
+			{
         	   ROI2D roi = (ROI2D) roislocal_i;
         	   rois.add(roi);
            }
@@ -47,12 +51,15 @@ public class CapillaryGulps  implements XMLPersistent  {
 	}
 
 	@Override
-	public boolean saveToXML(Node node) {
+	public boolean saveToXML(Node node) 
+	{
 		boolean flag = false;
 		final Node nodeROIs = XMLUtil.setElement(node, ID_GULPS);
-        if (nodeROIs != null){
+        if (nodeROIs != null)
+        {
         	flag = true;
-        	if (rois != null && rois.size() > 0) {
+        	if (rois != null && rois.size() > 0) 
+        	{
         		List<ROI> roislocal = new ArrayList<ROI> (rois.size());
         		for (ROI2D roi: rois)
         			roislocal.add((ROI) roi);
@@ -62,13 +69,16 @@ public class CapillaryGulps  implements XMLPersistent  {
         return flag;
 	}
 	
-	boolean isThereAnyMeasuresDone() {
+	boolean isThereAnyMeasuresDone() 
+	{
 		return (rois != null && rois.size() > 0);
 	}
 	
-	public List<Integer> getMeasures(EnumXLSExportType option, int npoints, long seriesBinMs, long outputBinMs) {	
+	public List<Integer> getMeasures(EnumXLSExportType option, int npoints, long seriesBinMs, long outputBinMs) 
+	{	
 		ArrayList<Integer> datai = null;
-		switch (option) {
+		switch (option) 
+		{
 		case SUMGULPS:
 			datai = getCumSumFromRoisArray(npoints);
 			break;
@@ -86,19 +96,23 @@ public class CapillaryGulps  implements XMLPersistent  {
 		return adaptArray(datai, seriesBinMs, outputBinMs);
 	}
 	
-	private ArrayList<Integer> adaptArray(ArrayList<Integer> data_in, long seriesBinMs, long outputBinMs) {
+	private ArrayList<Integer> adaptArray(ArrayList<Integer> data_in, long seriesBinMs, long outputBinMs) 
+	{
 		long npoints = data_in.size() * seriesBinMs / outputBinMs;
 		ArrayList<Integer> data_out = new ArrayList<Integer>((int)npoints);
-		for (double iMs = 0; iMs <= npoints; iMs += outputBinMs) {
+		for (double iMs = 0; iMs <= npoints; iMs += outputBinMs) 
+		{
 			int index = (int) ((iMs * outputBinMs) / seriesBinMs);
 			data_out.add( data_in.get(index));
 		}
 		return data_out;
 	}
 	
-	public List<Integer> getMeasures(EnumXLSExportType option, int npoints) {
+	public List<Integer> getMeasures(EnumXLSExportType option, int npoints) 
+	{
 		ArrayList<Integer> datai = null;
-		switch (option) {
+		switch (option) 
+		{
 		case SUMGULPS:
 			datai = getCumSumFromRoisArray(npoints);
 			break;
@@ -116,27 +130,28 @@ public class CapillaryGulps  implements XMLPersistent  {
 		return datai;
 	}
 	
-	ArrayList<Integer> getCumSumFromRoisArray(int npoints) {
+	ArrayList<Integer> getCumSumFromRoisArray(int npoints) 
+	{
 		if (rois == null)
 			return null;
 		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
-		for (ROI roi: rois) {
+		for (ROI roi: rois) 
 			ROI2DUtilities.addROItoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
-		}
 		return arrayInt;
 	}
 	
-	ArrayList<Integer> getIsGulpsFromRoisArray(int npoints) {
+	ArrayList<Integer> getIsGulpsFromRoisArray(int npoints) 
+	{
 		if (rois == null)
 			return null;
 		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
-		for (ROI roi: rois) {
+		for (ROI roi: rois) 
 			ROI2DUtilities.addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
-		}
 		return arrayInt;
 	}
 	
-	ArrayList<Integer> getTToNextGulp(List<Integer> datai, int npoints) {
+	ArrayList<Integer> getTToNextGulp(List<Integer> datai, int npoints) 
+	{
 		int nintervals = -1;
 		ArrayList<Integer> data_out = null;
 		for (int index= datai.size()-1; index>= 0; index--) {

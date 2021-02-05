@@ -32,7 +32,8 @@ import plugins.fmp.multicafe.sequence.SequenceKymos;
 
 
 
-public class Edit  extends JPanel {
+public class Edit  extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -48,7 +49,8 @@ public class Edit  extends JPanel {
 	
 	
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);	
 		this.parent0 = parent0;
 		
@@ -64,34 +66,40 @@ public class Edit  extends JPanel {
 		panel2.setLayout(new BorderLayout());
 		panel2.add(cropButton, BorderLayout.CENTER); 
 		panel2.add(restoreButton, BorderLayout.EAST);
-		
-
 		add(GuiUtil.besidesPanel(new JLabel(" "), panel2));
 
 		defineListeners();
 	}
 	
-	private void defineListeners() {
-		deleteButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineListeners() 
+	{
+		deleteButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
 				deletePointsIncluded(exp);
 			}});
 		
-		cropButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		cropButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
 				cropPointsToLeftLimit(exp);
 			}});
 		
-		restoreButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		restoreButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
 				restoreCroppedPoints(exp);
 			}});
 	}
 
-	void cropPointsToLeftLimit(Experiment exp) {
+	void cropPointsToLeftLimit(Experiment exp) 
+	{
 		SequenceKymos seqKymos = exp.seqKymos;
 		int t = seqKymos.currentFrame;
 		ROI2D roiRef = seqKymos.seq.getSelectedROI2D();
@@ -109,13 +117,15 @@ public class Edit  extends JPanel {
 		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsDerivative);
 	}
 	
-	int findLastXLeftOfRoi(Capillary cap, ROI2D roiRef) {
+	int findLastXLeftOfRoi(Capillary cap, ROI2D roiRef) 
+	{
 		int lastX = -1;
 		Rectangle2D rectRef = roiRef.getBounds2D();
 		double xleft = rectRef.getX();
 		
 		Polyline2D polyline = cap.ptsTop.polylineLimit;
-		for (int i=0; i < polyline.npoints; i++) {
+		for (int i=0; i < polyline.npoints; i++) 
+		{
 			if (polyline.xpoints[i] < xleft)
 				continue;
 			lastX = i-1;
@@ -124,7 +134,8 @@ public class Edit  extends JPanel {
 		return lastX;
 	}
 	
-	void restoreCroppedPoints(Experiment exp) {
+	void restoreCroppedPoints(Experiment exp) 
+	{
 		SequenceKymos seqKymos = exp.seqKymos;
 		int t = seqKymos.currentFrame;
 		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
@@ -135,15 +146,19 @@ public class Edit  extends JPanel {
 		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsDerivative);
 	}
 		
-	List <ROI> selectGulpsWithinRoi(ROI2D roiReference, Sequence seq, int t) {
+	List <ROI> selectGulpsWithinRoi(ROI2D roiReference, Sequence seq, int t) 
+	{
 		List <ROI> allRois = seq.getROIs();
 		List<ROI> listGulpsSelected = new ArrayList<ROI>();
-		for (ROI roi: allRois) {
+		for (ROI roi: allRois) 
+		{
 			roi.setSelected(false);
-			if (roi instanceof ROI2D) {
+			if (roi instanceof ROI2D) 
+			{
 				if (((ROI2D) roi).getT() != t)
 					continue;
-				if (roi.getName().contains("gulp")) {
+				if (roi.getName().contains("gulp")) 
+				{
 					listGulpsSelected.add(roi);
 					roi.setSelected(true);
 				}
@@ -152,16 +167,17 @@ public class Edit  extends JPanel {
 		return listGulpsSelected;
 	}
 	
-	void deleteGulps(SequenceKymos seqKymos, List <ROI> listGulpsSelected) {
+	void deleteGulps(SequenceKymos seqKymos, List <ROI> listGulpsSelected) 
+	{
 		Sequence seq = seqKymos.seq;
 		if (seq == null || listGulpsSelected == null)
 			return;
-		for (ROI roi: listGulpsSelected) {
+		for (ROI roi: listGulpsSelected) 
 			seq.removeROI(roi);
-		}
 	}
 	
-	void deletePointsIncluded(Experiment exp) {
+	void deletePointsIncluded(Experiment exp) 
+	{
 		SequenceKymos seqKymos = exp.seqKymos;
 		int t = seqKymos.currentFrame;
 		ROI2D roi = seqKymos.seq.getSelectedROI2D();
@@ -171,13 +187,16 @@ public class Edit  extends JPanel {
 		seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
 		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
 		String optionSelected = (String) roiTypeCombo.getSelectedItem();
-		if (optionSelected .contains("gulp")) {
+		if (optionSelected .contains("gulp")) 
+		{
 			List<ROI> listGulpsSelected = selectGulpsWithinRoi(roi, seqKymos.seq, seqKymos.currentFrame);
 			deleteGulps(seqKymos, listGulpsSelected);
 			seqKymos.removeROIsPolylineAtT(t);
 			List<ROI2D> listOfRois = cap.transferMeasuresToROIs();
 			seqKymos.seq.addROIs (listOfRois, false);
-		} else {
+		} 
+		else 
+		{
 			if (optionSelected .contains("top")) 
 				removeAndUpdate(seqKymos, cap, cap.ptsTop, roi);
 			if (optionSelected.contains("bottom"))
@@ -187,35 +206,44 @@ public class Edit  extends JPanel {
 		}
 	}
 	
-	private void removeAndUpdate(SequenceKymos seqKymos, Capillary cap, CapillaryLimit caplimits, ROI2D roi) {
+	private void removeAndUpdate(SequenceKymos seqKymos, Capillary cap, CapillaryLimit caplimits, ROI2D roi) 
+	{
 		removeMeasuresEnclosedInRoi(caplimits, roi);
 		seqKymos.updateROIFromCapillaryMeasure(cap, caplimits);
 	}
 	
-	void removeMeasuresEnclosedInRoi(CapillaryLimit caplimits, ROI2D roi) {
+	void removeMeasuresEnclosedInRoi(CapillaryLimit caplimits, ROI2D roi) 
+	{
 		Polyline2D polyline = caplimits.polylineLimit;
 		int npointsOutside = polyline.npoints - getPointsWithinROI(polyline, roi);
-		if (npointsOutside > 0) {
+		if (npointsOutside > 0) 
+		{
 			double [] xpoints = new double [npointsOutside];
 			double [] ypoints = new double [npointsOutside];
 			int index = 0;
-			for (int i=0; i < polyline.npoints; i++) {
-				if (!isInside[i]) {
+			for (int i=0; i < polyline.npoints; i++) 
+			{
+				if (!isInside[i]) 
+				{
 					xpoints[index] = polyline.xpoints[i];
 					ypoints[index] = polyline.ypoints[i];
 					index++;
 				}
 			}
 			caplimits.polylineLimit = new Level2D(xpoints, ypoints, npointsOutside);	
-		} else {
+		} 
+		else 
+		{
 			caplimits.polylineLimit = null;
 		}
 	}
 	
-	int getPointsWithinROI(Polyline2D polyline, ROI2D roi) {
+	int getPointsWithinROI(Polyline2D polyline, ROI2D roi) 
+	{
 		isInside = new boolean [polyline.npoints];
 		int npointsInside= 0;
-		for (int i=0; i< polyline.npoints; i++) {
+		for (int i=0; i< polyline.npoints; i++) 
+		{
 			isInside[i] = (roi.contains(polyline.xpoints[i], polyline.ypoints[i]));
 			npointsInside += isInside[i]? 1: 0;
 		}

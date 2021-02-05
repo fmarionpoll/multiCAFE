@@ -15,7 +15,8 @@ import plugins.fmp.multicafe.tools.Directories;
 
 
 
-public class SelectFiles2 extends JPanel {
+public class SelectFiles2 extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -27,7 +28,8 @@ public class SelectFiles2 extends JPanel {
 			MCSequence_ parent1				= null;
 	
 	
-	public void initialize (MCSequence_ paneSequence, List<String> expList) {
+	public void initialize (MCSequence_ paneSequence, List<String> expList) 
+	{
 		parent1 = paneSequence;
 		addPropertyChangeListener(parent1);
 
@@ -50,25 +52,29 @@ public class SelectFiles2 extends JPanel {
 		addActionListeners();
 	}
 	
-	void close() {
+	void close() 
+	{
 		dialogFrame.close();
 	}
 	
-	void addActionListeners() {
-		validateButton.addActionListener(new ActionListener()  {
+	void addActionListeners() 
+	{
+		validateButton.addActionListener(new ActionListener()  
+		{
 	        @Override
-	        public void actionPerformed(ActionEvent arg0) {
+	        public void actionPerformed(ActionEvent arg0) 
+	        {
 	        	parent1.name = (String) dirJCombo.getSelectedItem();
 				firePropertyChange("DIRECTORY_SELECTED", false, true);
 	        }});
 	}
 	
-	void loadComboWithDirectoriesShortNames(List<String> expList) {
+	void loadComboWithDirectoriesShortNames(List<String> expList) 
+	{
 		dirJCombo.removeAllItems();
 		List<String> list = Directories.reduceFullNameToLastDirectory(expList);
-		for (String fileName: list) {
+		for (String fileName: list) 
 			dirJCombo.addItem(fileName);
-		}
 	}
 
 }

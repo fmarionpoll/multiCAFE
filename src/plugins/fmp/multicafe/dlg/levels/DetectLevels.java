@@ -30,7 +30,8 @@ import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 
 
-public class DetectLevels extends JPanel implements PropertyChangeListener {
+public class DetectLevels extends JPanel implements PropertyChangeListener 
+{
 	/**
 	 * 
 	 */
@@ -62,7 +63,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 
 	// -----------------------------------------------------
 		
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
@@ -97,36 +99,46 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		
-		transformForLevelsComboBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{	
+		transformForLevelsComboBox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null && exp.seqCamData != null) {
+				if (exp != null && exp.seqCamData != null) 
+				{
 					kymosDisplayFiltered1(exp);
 					firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
 				}
 			}});
 		
-		detectButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		detectButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				if (detectButton.getText() .equals(detectString))
 					series_detectLimitsStart();
 				else 
 					series_detectLimitsStop();
 			}});	
 		
-		displayTransform1Button.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		displayTransform1Button.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null) { 
+				if (exp != null) 
+				{ 
 					kymosDisplayFiltered1(exp);
 					firePropertyChange("KYMO_DISPLAY_FILTERED1", false, true);
 				}
 			}});
 		
-		allCheckBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
+		allCheckBox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
 				Color color = Color.BLACK;
 				if (allCheckBox.isSelected()) 
 					color = Color.RED;
@@ -137,25 +149,30 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 	
 	// -------------------------------------------------
 	
-	int getDetectLevelThreshold() {
+	int getDetectLevelThreshold() 
+	{
 		return (int) thresholdSpinner.getValue();
 	}
 
-	void setDetectLevelThreshold (int threshold) {
+	void setDetectLevelThreshold (int threshold) 
+	{
 		thresholdSpinner.setValue(threshold);
 	}
 	
-	int getSpanDiffTop() {
+	int getSpanDiffTop() 
+	{
 		return (int) spanTopSpinner.getValue() ;
 	}
 		
-	void kymosDisplayFiltered1(Experiment exp) {
+	void kymosDisplayFiltered1(Experiment exp) 
+	{
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
 		TransformOp transform = (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		List<Capillary> capList = exp.capillaries.capillariesArrayList;
-		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) {
+		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) 
+		{
 			getInfosFromDialog(capList.get(t));		
 		}
 		int zChannelDestination = 1;
@@ -163,7 +180,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
-	void setInfosToDialog(Capillary cap) {
+	void setInfosToDialog(Capillary cap) 
+	{
 		Options_BuildSeries options = cap.limitsOptions;
 		transformForLevelsComboBox.setSelectedItem(options.transformForLevels);
 		int index =options.directionUp ? 0:1;
@@ -175,7 +193,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		rightCheckBox.setSelected(options.detectR);
 	}
 	
-	void getInfosFromDialog(Capillary cap) {
+	void getInfosFromDialog(Capillary cap) 
+	{
 		Options_BuildSeries options = cap.limitsOptions;
 		options.transformForLevels = (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
@@ -185,7 +204,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		options.detectR = rightCheckBox.isSelected();
 	}
 	
-	private Options_BuildSeries initBuildParameters(Experiment exp) {	
+	private Options_BuildSeries initBuildParameters(Experiment exp) 
+	{	
 		Options_BuildSeries options = new Options_BuildSeries();
 		options.expList = new ExperimentList(); 
 		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);
@@ -217,7 +237,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		return options;
 	}
 	
-	void series_detectLimitsStart() {
+	void series_detectLimitsStart() 
+	{
 		int current = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperimentFromList(current);
 		if (exp == null)
@@ -234,15 +255,17 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		detectButton.setText("STOP");
 	}
 
-	private void series_detectLimitsStop() {	
-		if (thread != null && !thread.stopFlag) {
+	private void series_detectLimitsStop() 
+	{	
+		if (thread != null && !thread.stopFlag) 
 			thread.stopFlag = true;
-		}
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
+	public void propertyChange(PropertyChangeEvent evt) 
+	{
+		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
+		 {
 			Experiment exp = parent0.expList.getExperimentFromList(parent0.paneSequence.expListComboBox.getSelectedIndex());
 			if (exp != null) {
 				parent0.paneSequence.openExperiment(exp);
@@ -253,19 +276,27 @@ public class DetectLevels extends JPanel implements PropertyChangeListener {
 		 }
 	}
 	
-	void selectFrame(int selectedFrame) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
+	void selectFrame(int selectedFrame) 
+	{
+		SwingUtilities.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
 				boolean flag = false;
 				int i = 10;
-				while (!flag && i > 0) {
-					try {
+				while (!flag && i > 0) 
+				{
+					try 
+					{
 						Thread.sleep(1000);
-					} catch (InterruptedException e) {
+					} 
+					catch (InterruptedException e) 
+					{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					if (parent0.paneKymos.tabDisplay.kymosComboBox.getItemCount() >= selectedFrame) {
+					if (parent0.paneKymos.tabDisplay.kymosComboBox.getItemCount() >= selectedFrame) 
+					{
 						parent0.paneKymos.tabDisplay.selectKymograph(selectedFrame);
 						System.out.println("--- select "+ selectedFrame);
 						flag = true;

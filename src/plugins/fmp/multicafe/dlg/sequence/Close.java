@@ -14,7 +14,8 @@ import plugins.fmp.multicafe.sequence.Experiment;
 
 
 
-public class Close  extends JPanel {
+public class Close  extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -23,27 +24,34 @@ public class Close  extends JPanel {
 	private MultiCAFE 	parent0 				= null;
 	
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0  = parent0;
 		add( GuiUtil.besidesPanel(closeAllButton, new JLabel(" ")));
-		closeAllButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		closeAllButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				closeAll();
 				firePropertyChange("CLOSE_ALL", false, true);
 			}});
 	}
 	
-	void closeAll() {
+	void closeAll() 
+	{
 		closeCurrentExperiment();
 		parent0.expList.clear();
 		parent0.expList.currentExperimentIndex = -1;
 	}
 	
-	public void closeExp(Experiment exp) {
-		if (exp != null) {
+	public void closeExp(Experiment exp) 
+	{
+		if (exp != null) 
+		{
 			parent0.paneSequence.tabInfosSeq.getExperimentInfosFromDialog(exp);
-			if (exp.seqCamData != null) {
+			if (exp.seqCamData != null) 
+			{
 				exp.xmlSaveMCExperiment();
 				exp.saveExperimentMeasures(exp.getKymosDirectory());
 			}
@@ -54,7 +62,8 @@ public class Close  extends JPanel {
 		parent0.paneKymos.tabDisplay.kymosComboBox.removeAllItems();
 	}
 	
-	public void closeCurrentExperiment() {
+	public void closeCurrentExperiment() 
+	{
 		if (parent0.expList.currentExperimentIndex < 0)
 			return;
 		Experiment exp = parent0.expList.getCurrentExperiment();

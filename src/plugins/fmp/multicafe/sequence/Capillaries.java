@@ -22,8 +22,8 @@ import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
-public class Capillaries {
-	
+public class Capillaries 
+{	
 	public CapillariesDescription 	desc				= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public List <Capillary> 		capillariesArrayList= new ArrayList <Capillary>();
@@ -36,14 +36,18 @@ public class Capillaries {
 
 	// ---------------------------------
 		
-	String getXMLNameToAppend() {
+	String getXMLNameToAppend() 
+	{
 		return "MCcapillaries.xml";
 	}
 
-	public boolean xmlSaveCapillaries_Descriptors(String csFileName) {
-		if (csFileName != null) {
+	public boolean xmlSaveCapillaries_Descriptors(String csFileName) 
+	{
+		if (csFileName != null) 
+		{
 			final Document doc = XMLUtil.createDocument(true);
-			if (doc != null) {
+			if (doc != null) 
+			{
 				Collections.sort(capillariesArrayList);
 				desc.xmlSaveCapillaryDescription (doc);
 				xmlSaveListOfCapillaries(doc);
@@ -53,11 +57,13 @@ public class Capillaries {
 		return false;
 	}
 	
-	public boolean xmlSaveCapillaries_Measures(String csFileName) {
+	public boolean xmlSaveCapillaries_Measures(String csFileName) 
+	{
 		if (csFileName == null)
 			return false;
 		Collections.sort(capillariesArrayList);
-		for (Capillary cap: capillariesArrayList) {
+		for (Capillary cap: capillariesArrayList) 
+		{
 			String tempname = csFileName + File.separator + cap.getCapillaryName()+ ".xml";
 			final Document capdoc = XMLUtil.createDocument(true);
 			cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
@@ -66,27 +72,30 @@ public class Capillaries {
 		return true;
 	}
 	
-	public boolean xmlLoadCapillaries_Descriptors(String csFileName) {	
+	public boolean xmlLoadCapillaries_Descriptors(String csFileName) 
+	{	
 		if (csFileName == null)
 			return false;
-				
 		final Document doc = XMLUtil.loadDocument(csFileName);
-		if (doc != null) {
+		if (doc != null) 
+		{
 			desc.xmlLoadCapillaryDescription(doc);
 			return xmlLoadCapillaries_v1(doc);		
 		}
 		return false;
 	}
 	
-	public boolean xmlLoadOldCapillaries_Only(String csFileName) {
+	public boolean xmlLoadOldCapillaries_Only(String csFileName) 
+	{
 		if (csFileName == null)
-			return false;
-				
+			return false;			
 		final Document doc = XMLUtil.loadDocument(csFileName);
-		if (doc != null) {
+		if (doc != null) 
+		{
 			desc.xmlLoadCapillaryDescription(doc);
 			xmlLoadCapillaries_v1(doc);
-			switch (desc.version) {
+			switch (desc.version) 
+			{
 			case 1: // old xml storage structure
 				xmlLoadCapillaries_v1(doc);
 				break;
@@ -97,18 +106,21 @@ public class Capillaries {
 				xmlLoadCapillaries_v2(doc, csFileName);
 				return false;
 			}		
-		return true;
+			return true;
 		}
 		return false;
 	}
 	
-	public boolean xmlLoadCapillaries_Measures(String csFileName) { // TODO
+	public boolean xmlLoadCapillaries_Measures(String csFileName) 
+	{ // TODO
 		if (csFileName == null)
 			return false;
 		
 		final Document doc = XMLUtil.loadDocument(csFileName);
-		if (doc != null) {
-			switch (desc.version) {
+		if (doc != null) 
+		{
+			switch (desc.version) 
+			{
 			case 2:	// current xml storage structure
 				xmlLoadCapillaries_v2(doc, csFileName);
 				break;
@@ -128,10 +140,12 @@ public class Capillaries {
 		return false;
 	}
 	
-	public boolean xmlLoadCapillaries_Measures2(String directory) {
+	public boolean xmlLoadCapillaries_Measures2(String directory) 
+	{
 		boolean flag = true;
 		int ncapillaries = capillariesArrayList.size();
-		for (int i=0; i< ncapillaries; i++) {
+		for (int i=0; i< ncapillaries; i++) 
+		{
 			String csFile = directory + File.separator + capillariesArrayList.get(i).getCapillaryName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
@@ -141,8 +155,10 @@ public class Capillaries {
 		return flag;
 	}
 		
-	private void transferDescToCapillariesVersionInfos0() {
-		for (Capillary cap: capillariesArrayList) {
+	private void transferDescToCapillariesVersionInfos0() 
+	{
+		for (Capillary cap: capillariesArrayList) 
+		{
 			if (cap.versionInfos == 0) {
 				transferDescriptionToCapillary(cap);
 				transferCapGroupToCapillary (cap);
@@ -150,7 +166,8 @@ public class Capillaries {
 		}
 	}
 	
-	private boolean xmlSaveListOfCapillaries(Document doc) {
+	private boolean xmlSaveListOfCapillaries(Document doc) 
+	{
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return false;
@@ -159,7 +176,8 @@ public class Capillaries {
 		XMLUtil.setElementIntValue(nodecaps, ID_NCAPILLARIES, capillariesArrayList.size());
 		int i= 0;
 		Collections.sort(capillariesArrayList);
-		for (Capillary cap: capillariesArrayList) {
+		for (Capillary cap: capillariesArrayList) 
+		{
 			Node nodecapillary = XMLUtil.setElement(node, ID_CAPILLARY_+i);
 			cap.saveToXML_CapillaryOnly(nodecapillary);
 			i++;
@@ -167,29 +185,35 @@ public class Capillaries {
 		return true;
 	}
 	
-	private void xmlLoadCapillaries_v0(Document doc, String csFileName) {
+	private void xmlLoadCapillaries_v0(Document doc, String csFileName) 
+	{
 		List<ROI> listOfCapillaryROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
 		capillariesArrayList.clear();
 		Path directorypath = Paths.get(csFileName).getParent();
 		String directory = directorypath + File.separator;
 		int t = 0;
-		for (ROI roiCapillary: listOfCapillaryROIs) {
+		for (ROI roiCapillary: listOfCapillaryROIs) 
+		{
 			xmlLoadIndividualCapillary_v0((ROI2DShape) roiCapillary, directory, t);
 			t++;
 		}
 	}
 	
-	private void xmlLoadIndividualCapillary_v0(ROI2DShape roiCapillary, String directory, int t) {
+	private void xmlLoadIndividualCapillary_v0(ROI2DShape roiCapillary, String directory, int t) 
+	{
 		Capillary cap = new Capillary((ROI2DShape) roiCapillary);
 		capillariesArrayList.add(cap);
 		String csFile = directory + roiCapillary.getName() + ".xml";
 		cap.indexImage = t;
 		final Document dockymo = XMLUtil.loadDocument(csFile);
-		if (dockymo != null) {
+		if (dockymo != null) 
+		{
 			NodeList nodeROISingle = dockymo.getElementsByTagName("roi");					
-			if (nodeROISingle.getLength() > 0) {	
+			if (nodeROISingle.getLength() > 0) 
+			{	
 				List<ROI> rois = new ArrayList<ROI>();
-                for (int i=0; i< nodeROISingle.getLength(); i++) {
+                for (int i=0; i< nodeROISingle.getLength(); i++) 
+                {
                 	Node element = nodeROISingle.item(i);
                     ROI roi_i = ROI.createFromXML(element);
                     if (roi_i != null)
@@ -200,23 +224,28 @@ public class Capillaries {
 		}
 	}
 
-	private boolean xmlLoadCapillaries_v1(Document doc) {
+	private boolean xmlLoadCapillaries_v1(Document doc) 
+	{
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return false;
 		Node nodecaps = XMLUtil.getElement(node, ID_LISTOFCAPILLARIES);
 		int nitems = XMLUtil.getElementIntValue(nodecaps, ID_NCAPILLARIES, 0);
 		capillariesArrayList = new ArrayList<Capillary> (nitems);
-		for (int i= 0; i< nitems; i++) {
+		for (int i= 0; i< nitems; i++) 
+		{
 			Node nodecapillary = XMLUtil.getElement(node, ID_CAPILLARY_+i);
 			Capillary cap = new Capillary();
 			cap.loadFromXML(nodecapillary);
-			if (desc.grouping == 2 && (cap.capStimulus != null && cap.capStimulus.equals(".."))) {
-				if (cap.getCapillarySide().equals("R")) {
+			if (desc.grouping == 2 && (cap.capStimulus != null && cap.capStimulus.equals(".."))) 
+			{
+				if (cap.getCapillarySide().equals("R")) 
+				{
 					cap.capStimulus = desc.stimulusR;
 					cap.capConcentration = desc.concentrationR;
 				} 
-				else {
+				else 
+				{
 					cap.capStimulus = desc.stimulusL;
 					cap.capConcentration = desc.concentrationL;
 				}
@@ -226,11 +255,13 @@ public class Capillaries {
 		return true;
 	}
 	
-	private void xmlLoadCapillaries_v2(Document doc, String csFileName) {
+	private void xmlLoadCapillaries_v2(Document doc, String csFileName) 
+	{
 		xmlLoadCapillaries_v1(doc);
 		Path directorypath = Paths.get(csFileName).getParent();
 		String directory = directorypath + File.separator;
-		for (Capillary cap: capillariesArrayList) {
+		for (Capillary cap: capillariesArrayList) 
+		{
 			String csFile = directory + cap.getCapillaryName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
@@ -238,20 +269,25 @@ public class Capillaries {
 		}
 	}	
 
-	public void copy (Capillaries cap) {
+	public void copy (Capillaries cap) 
+	{
 		desc.copy(cap.desc);
 		capillariesArrayList.clear();
-		for (Capillary ccap: cap.capillariesArrayList) {
+		for (Capillary ccap: cap.capillariesArrayList) 
+		{
 			Capillary capi = new Capillary();
 			capi.copy(ccap);
 			capillariesArrayList.add(capi);
 		}
 	}
 	
-	public boolean isPresent(Capillary capnew) {
+	public boolean isPresent(Capillary capnew) 
+	{
 		boolean flag = false;
-		for (Capillary cap: capillariesArrayList) {
-			if (cap.capillaryName.contentEquals(capnew.capillaryName)) {
+		for (Capillary cap: capillariesArrayList) 
+		{
+			if (cap.capillaryName.contentEquals(capnew.capillaryName)) 
+			{
 				flag = true;
 				break;
 			}
@@ -259,15 +295,19 @@ public class Capillaries {
 		return flag;
 	}
 
-	public void mergeLists(Capillaries caplist) {
-		for (Capillary capm : caplist.capillariesArrayList ) {
+	public void mergeLists(Capillaries caplist) 
+	{
+		for (Capillary capm : caplist.capillariesArrayList ) 
+		{
 			if (!isPresent(capm))
 				capillariesArrayList.add(capm);
 		}
 	}
 	
-	public void adjustToImageWidth (int imageWidth) {
-		for (Capillary cap: capillariesArrayList) {
+	public void adjustToImageWidth (int imageWidth) 
+	{
+		for (Capillary cap: capillariesArrayList) 
+		{
 			cap.ptsTop.adjustToImageWidth(imageWidth);
 			cap.ptsBottom.adjustToImageWidth(imageWidth);
 			cap.ptsDerivative.adjustToImageWidth(imageWidth);
@@ -275,39 +315,48 @@ public class Capillaries {
 		}
 	}
 
-	public void transferDescriptionToCapillaries() {
-		for (Capillary cap: capillariesArrayList) {
+	public void transferDescriptionToCapillaries() 
+	{
+		for (Capillary cap: capillariesArrayList) 
+		{
 			transferCapGroupToCapillary(cap);
 			transferDescriptionToCapillary (cap);
 		}
 	}
 	
-	private void transferDescriptionToCapillary (Capillary cap) {
+	private void transferDescriptionToCapillary (Capillary cap) 
+	{
 		cap.capVolume = desc.volume;
 		cap.capPixels = desc.pixels;
 		cap.descriptionOK = true;
 	}
 	
-	private void transferCapGroupToCapillary (Capillary cap) {
+	private void transferCapGroupToCapillary (Capillary cap) 
+	{
 		if (desc.grouping != 2)
 			return;
 		String	name = cap.roi.getName();
 		String letter = name.substring(name.length() - 1);
 		cap.capSide = letter;
-		if (letter .equals("R")) {	
+		if (letter .equals("R")) 
+		{	
 			String nameL = name.substring(0, name.length() - 1) + "L";
 			Capillary cap0 = getCapillaryFromName(nameL);
-			if (cap0 != null) {
+			if (cap0 != null) 
+			{
 				cap.capNFlies = cap0.capNFlies;
 				cap.capCageID = cap0.capCageID;
 			}
 		}
 	}
 	
-	private Capillary getCapillaryFromName(String name) {
+	private Capillary getCapillaryFromName(String name) 
+	{
 		Capillary capFound = null;
-		for (Capillary cap: capillariesArrayList) {
-			if (cap.roi.getName().equals(name)) {
+		for (Capillary cap: capillariesArrayList) 
+		{
+			if (cap.roi.getName().equals(name)) 
+			{
 				capFound = cap;
 				break;
 			}
@@ -315,34 +364,42 @@ public class Capillaries {
 		return capFound;
 	}
 
-	public void updateCapillariesFromSequence(Sequence seq) {
+	public void updateCapillariesFromSequence(Sequence seq) 
+	{
 		List<ROI2D> listROISCap = ROI2DUtilities.getROIs2DContainingString ("line", seq);
 		Collections.sort(listROISCap, new Comparators.ROI2D_Name_Comparator());
-		for (Capillary cap: capillariesArrayList) {
+		for (Capillary cap: capillariesArrayList) 
+		{
 			cap.valid = false;
 			String capName = cap.replace_LR_with_12(cap.roi.getName());
 			Iterator <ROI2D> iterator = listROISCap.iterator();
-			while(iterator.hasNext()) { 
+			while(iterator.hasNext()) 
+			{ 
 				ROI2D roi = iterator.next();
 				String roiName = cap.replace_LR_with_12(roi.getName());
-				if (roiName.equals (capName)) {
+				if (roiName.equals (capName)) 
+				{
 					cap.roi = (ROI2DShape) roi;
 					cap.valid = true;
 				}
-				if (cap.valid) {
+				if (cap.valid) 
+				{
 					iterator.remove();
 					break;
 				}
 			}
 		}
 		Iterator <Capillary> iterator = capillariesArrayList.iterator();
-		while (iterator.hasNext()) {
+		while (iterator.hasNext()) 
+		{
 			Capillary cap = iterator.next();
 			if (!cap.valid )
 				iterator.remove();
 		}
-		if (listROISCap.size() > 0) {
-			for (ROI2D roi: listROISCap) {
+		if (listROISCap.size() > 0) 
+		{
+			for (ROI2D roi: listROISCap) 
+			{
 				Capillary cap = new Capillary((ROI2DShape) roi);
 				capillariesArrayList.add(cap);
 			}
@@ -351,8 +408,10 @@ public class Capillaries {
 		return;
 	}
 
-	public void transferCapillaryRoiToSequence(Sequence seq) {
-		for (Capillary cap: capillariesArrayList) {
+	public void transferCapillaryRoiToSequence(Sequence seq) 
+	{
+		for (Capillary cap: capillariesArrayList) 
+		{
 			seq.addROI(cap.roi);
 		}
 	}

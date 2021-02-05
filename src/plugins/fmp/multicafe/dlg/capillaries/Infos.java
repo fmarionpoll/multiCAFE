@@ -22,7 +22,8 @@ import plugins.fmp.multicafe.sequence.Experiment;
 
 
 
-public class Infos extends JPanel {
+public class Infos extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -36,7 +37,8 @@ public class Infos extends JPanel {
 	private List <Capillary> 	capillariesArrayCopy 		= new ArrayList<Capillary>();
 	
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
@@ -55,12 +57,16 @@ public class Infos extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		getLenButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		getLenButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
-				if (exp != null && exp.capillaries.capillariesArrayList.size() > 0) {
+				if (exp != null && exp.capillaries.capillariesArrayList.size() > 0) 
+				{
 					Capillary cap = exp.capillaries.capillariesArrayList.get(0);
 					ArrayList<Point2D> pts = cap.roi.getPoints();
 					Point2D pt1 = pts.get(0);
@@ -72,8 +78,10 @@ public class Infos extends JPanel {
 				}
 			}});
 		
-		editCapillariesButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		editCapillariesButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				exp.capillaries.transferDescriptionToCapillaries();
 				dialog = new Table();
@@ -83,16 +91,19 @@ public class Infos extends JPanel {
 
 	// set/ get
 	
-	void setAllDescriptors(Capillaries cap) {
+	void setAllDescriptors(Capillaries cap) 
+	{
 		capillaryVolumeTextField.setValue( cap.desc.volume);
 		capillaryPixelsTextField.setValue( cap.desc.pixels);
 	}
 
-	private double getCapillaryVolume() {
+	private double getCapillaryVolume() 
+	{
 		return (double) capillaryVolumeTextField.getValue();
 	}
 	
-	private int getCapillaryPixelLength() {
+	private int getCapillaryPixelLength() 
+	{
 		return (int) capillaryPixelsTextField.getValue(); 
 	}
 	
@@ -100,9 +111,5 @@ public class Infos extends JPanel {
 		capList.desc.volume = getCapillaryVolume();
 		capList.desc.pixels = getCapillaryPixelLength();
 	}
-	
-
-	
-
 						
 }

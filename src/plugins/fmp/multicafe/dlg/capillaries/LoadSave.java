@@ -18,7 +18,8 @@ import plugins.fmp.multicafe.sequence.SequenceKymos;
 
 
 
-public class LoadSave extends JPanel {
+public class LoadSave extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -28,7 +29,8 @@ public class LoadSave extends JPanel {
 	private JButton		saveButtonCapillaries	= new JButton("Save...");
 	private MultiCAFE 	parent0 				= null;
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		
 		JLabel loadsaveText = new JLabel ("-> Capillaries (xml) ", SwingConstants.RIGHT);
@@ -46,27 +48,38 @@ public class LoadSave extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {	
-		openButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp != null) { 
-				loadCapillaries_File(exp);
-				firePropertyChange("CAP_ROIS_OPEN", false, true);
-			}
-		}}); 
+	private void defineActionListeners() 
+	{	
+		openButtonCapillaries.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				Experiment exp = parent0.expList.getCurrentExperiment();
+				if (exp != null) 
+				{ 
+					loadCapillaries_File(exp);
+					firePropertyChange("CAP_ROIS_OPEN", false, true);
+				}
+			}}); 
 		
-		saveButtonCapillaries.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp != null) {
-				saveCapillaries_file(exp);
-				firePropertyChange("CAP_ROIS_SAVE", false, true);
-			}
-		}});	
+		saveButtonCapillaries.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				Experiment exp = parent0.expList.getCurrentExperiment();
+				if (exp != null) 
+				{
+					saveCapillaries_file(exp);
+					firePropertyChange("CAP_ROIS_SAVE", false, true);
+				}
+			}});	
 	}
 	
-	public boolean loadCapillaries_File(Experiment exp) {	
+	public boolean loadCapillaries_File(Experiment exp) 
+	{	
 		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqKymos == null) {
+		if (seqKymos == null) 
+		{
 			exp.seqKymos = new SequenceKymos();
 			seqKymos = exp.seqKymos;
 		}
@@ -75,7 +88,8 @@ public class LoadSave extends JPanel {
 		return flag;
 	}
 	
-	public boolean saveCapillaries_file(Experiment exp) {
+	public boolean saveCapillaries_file(Experiment exp) 
+	{
 		parent0.paneCapillaries.getDialogCapillariesInfos(exp);  // get data into desc
 		parent0.paneSequence.getExperimentInfosFromDialog(exp);
 		exp.capillaries.transferDescriptionToCapillaries();

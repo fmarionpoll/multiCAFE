@@ -18,7 +18,8 @@ import plugins.fmp.multicafe.tools.JComboMs;
 
 
 
-public class Options extends JPanel {
+public class Options extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -39,7 +40,8 @@ public class Options extends JPanel {
 	
 	
 	
-	void init(GridLayout capLayout) {	
+	void init(GridLayout capLayout) 
+	{	
 		setLayout(capLayout);
 		
 		FlowLayout layout1 = new FlowLayout(FlowLayout.LEFT);
@@ -88,32 +90,42 @@ public class Options extends JPanel {
 		        padIntervalsCheckBox.setEnabled(isSelected);
 		    }});
 		
-		isFixedFrame.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
-			enableIntervalButtons(true);
+		isFixedFrame.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
+				enableIntervalButtons(true);
 			}});
 	
-		isFloatingFrame.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
-			enableIntervalButtons(false);
+		isFloatingFrame.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
+				enableIntervalButtons(false);
 			}});
 	}
 	
-	private void enableIntervalButtons(boolean isSelected) {
+	private void enableIntervalButtons(boolean isSelected) 
+	{
 		startJSpinner.setEnabled(isSelected);
         endJSpinner.setEnabled(isSelected);
         intervalsUnit.setEnabled(isSelected);
 	}
 	
-	int getExcelBuildStep() {
+	int getExcelBuildStep() 
+	{
 		int buildStep = ((int) binSize.getValue()) * binUnit.getMsUnitValue();
 		return buildStep;
 	}
 	
-	long getStartAllMs() {
+	long getStartAllMs() 
+	{
 		long startAll = (long) (((double) startJSpinner.getValue()) * intervalsUnit.getMsUnitValue());
 		return startAll;
 	}
 	
-	long getEndAllMs() {
+	long getEndAllMs() 
+	{
 		long endAll = (long) (((double) endJSpinner.getValue()) * intervalsUnit.getMsUnitValue());
 		return endAll;
 	}

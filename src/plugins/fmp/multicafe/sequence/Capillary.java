@@ -23,7 +23,8 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
 
-public class Capillary implements XMLPersistent, Comparable <Capillary>  {
+public class Capillary implements XMLPersistent, Comparable <Capillary>  
+{
 
 	public ROI2DShape 					roi 			= null;	// the capillary (source)
 	public int							indexImage 		= -1;
@@ -77,27 +78,32 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	
 	// ----------------------------------------------------
 	
-	Capillary(ROI2DShape roi) {
+	Capillary(ROI2DShape roi) 
+	{
 		this.roi = roi;
 		this.capillaryName = replace_LR_with_12(roi.getName());
 	}
 	
-	Capillary(String name) {
+	Capillary(String name) 
+	{
 		this.capillaryName = replace_LR_with_12(name);
 	}
 	
-	public Capillary() {
+	public Capillary() 
+	{
 	}
 
 	@Override
-	public int compareTo(Capillary o) {
+	public int compareTo(Capillary o) 
+	{
 		int compareValue = this.capillaryName.compareTo(o.capillaryName);
 		return compareValue;
 	}
 	
 	// ------------------------------------------
 	
-	public void copy(Capillary cap) {
+	public void copy(Capillary cap) 
+	{
 		indexImage 		= cap.indexImage;
 		capillaryName 	= cap.capillaryName;
 		version 		= cap.version;
@@ -120,23 +126,28 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		ptsDerivative.copy(cap.ptsDerivative); 
 	}
 	
-	public String getCapillaryName() {
+	public String getCapillaryName() 
+	{
 		return capillaryName;
 	}
 	
-	public void setCapillaryName(String name) {
+	public void setCapillaryName(String name) 
+	{
 		this.capillaryName = name;
 	}
 	
-	public String getLast2ofCapillaryName() {
+	public String getLast2ofCapillaryName() 
+	{
 		return roi.getName().substring(roi.getName().length() -2);
 	}
 	
-	public String getCapillarySide() {
+	public String getCapillarySide() 
+	{
 		return roi.getName().substring(roi.getName().length() -1);
 	}
 	
-	public String replace_LR_with_12(String name) {
+	public String replace_LR_with_12(String name) 
+	{
 		String newname = null;
 		if (name .endsWith("R"))
 			newname = name.replace("R", "2");
@@ -147,17 +158,20 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return newname;
 	}
 	
-	public int getCageIndexFromRoiName() {
+	public int getCageIndexFromRoiName() 
+	{
 		String name = roi.getName();
 		if (!name .contains("line"))
 			return -1;
 		return Integer.valueOf(name.substring(4, 5));
 	}
 	
-	public String getSideDescriptor(EnumXLSExportType xlsExportOption) {
+	public String getSideDescriptor(EnumXLSExportType xlsExportOption) 
+	{
 		String value = null;
 		capSide = getCapillarySide();
-		switch (xlsExportOption) {
+		switch (xlsExportOption) 
+		{
 		case DISTANCE:
 		case ISALIVE:
 			value = capSide + "(L=R)";
@@ -187,9 +201,11 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	
 	// -----------------------------------------
 	
-	public boolean isThereAnyMeasuresDone(EnumXLSExportType option) {
+	public boolean isThereAnyMeasuresDone(EnumXLSExportType option) 
+	{
 		boolean yes = false;
-		switch (option) {
+		switch (option) 
+		{
 		case DERIVEDVALUES:
 			yes= (ptsDerivative != null && ptsDerivative.isThereAnyMeasuresDone());
 			break;
@@ -207,9 +223,11 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return yes;
 	}
 	
-	public List<Integer> getMeasures(EnumXLSExportType option, long seriesBinMs, long outputBinMs) {
+	public List<Integer> getMeasures(EnumXLSExportType option, long seriesBinMs, long outputBinMs) 
+	{
 		List<Integer> datai = null;
-		switch (option) {
+		switch (option) 
+		{
 		case DERIVEDVALUES:
 			if (ptsDerivative != null) 
 				datai = ptsDerivative.getMeasures(seriesBinMs, outputBinMs);
@@ -229,13 +247,14 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			datai = ptsTop.getMeasures(seriesBinMs, outputBinMs);
 			break;
 		}
-		
 		return datai;
 	}
 	
-	public List<Integer> getMeasures(EnumXLSExportType option) {
+	public List<Integer> getMeasures(EnumXLSExportType option) 
+	{
 		List<Integer> datai = null;
-		switch (option) {
+		switch (option) 
+		{
 		case DERIVEDVALUES:
 			if (ptsDerivative != null)
 				datai = ptsDerivative.getMeasures();
@@ -258,7 +277,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return datai;
 	}
 	
-	public void cropMeasuresToNPoints (int npoints) {
+	public void cropMeasuresToNPoints (int npoints) 
+	{
 		if (ptsTop.polylineLimit != null)
 			ptsTop.cropToNPoints(npoints);
 		if (ptsBottom.polylineLimit != null)
@@ -267,7 +287,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			ptsDerivative.cropToNPoints(npoints);
 	}
 	
-	public void restoreCroppedMeasures () {
+	public void restoreCroppedMeasures () 
+	{
 		if (ptsTop.polylineLimit != null)
 			ptsTop.restoreNPoints();
 		if (ptsBottom.polylineLimit != null)
@@ -276,15 +297,18 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			ptsDerivative.restoreNPoints();
 	}
 	
-	public void setGulpsOptions (Options_BuildSeries options) {
+	public void setGulpsOptions (Options_BuildSeries options) 
+	{
 		limitsOptions = options;
 	}
 	
-	public Options_BuildSeries getGulpsOptions () {
+	public Options_BuildSeries getGulpsOptions () 
+	{
 		return limitsOptions;
 	}
 	
-	public void cleanGulps() {
+	public void cleanGulps() 
+	{
 		if (gulpsRois == null) {
 			gulpsRois = new CapillaryGulps();
 			gulpsRois.rois = new ArrayList <> ();
@@ -296,27 +320,32 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			gulpsRois.rois.clear();
 	}
 	
-	public void getGulps(int indexkymo) {
+	public void getGulps(int indexkymo) 
+	{
 		int indexpixel = 0;
 		int start = 1;
 		if (ptsTop.polylineLimit == null)
 			return;
 		int end = ptsTop.polylineLimit.npoints;
-		if (limitsOptions.analyzePartOnly) {
+		if (limitsOptions.analyzePartOnly) 
+		{
 			start = limitsOptions.startPixel;
 			end = limitsOptions.endPixel;
 		} 
 		
 		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
 		List<Point2D> gulpPoints = new ArrayList<>();
-		for (indexpixel = start; indexpixel < end; indexpixel++) {
+		for (indexpixel = start; indexpixel < end; indexpixel++) 
+		{
 			int derivativevalue = (int) ptsDerivative.polylineLimit.ypoints[indexpixel-1];
 			if (derivativevalue < limitsOptions.detectGulpsThreshold)
 				continue;
 			
-			if (gulpPoints.size() > 0) {
+			if (gulpPoints.size() > 0) 
+			{
 				Point2D prevPt = gulpPoints.get(gulpPoints.size() -1);
-				if ((int) prevPt.getX() <  (indexpixel-1)) {
+				if ((int) prevPt.getX() <  (indexpixel-1)) 
+				{
 					roiTrack.setPoints(gulpPoints);
 					gulpsRois.addGulp(roiTrack, indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
 					roiTrack = new ROI2DPolyLine ();
@@ -329,7 +358,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			gulpPoints.add(detectedPoint);
 		}
 		
-		if (gulpPoints.size() > 1) {
+		if (gulpPoints.size() > 1) 
+		{
 			roiTrack.setPoints(gulpPoints);
 			gulpsRois.addGulp(roiTrack, indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
 		}
@@ -337,15 +367,18 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 			System.out.print("only_1_point_detected");
 	}
 	
-	public int getLastMeasure(EnumXLSExportType option) {
+	public int getLastMeasure(EnumXLSExportType option) 
+	{
 		int lastMeasure = 0;
-		switch (option) {
+		switch (option) 
+		{
 		case DERIVEDVALUES:
 			if (ptsDerivative != null)
 				lastMeasure = ptsDerivative.getLastMeasure();
 			break;
 		case SUMGULPS:
-			if (gulpsRois != null) {
+			if (gulpsRois != null) 
+			{
 				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNPoints());
 				lastMeasure = datai.get(datai.size()-1);
 			}
@@ -361,9 +394,11 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return lastMeasure;
 	}
 	
-	public int getLastDeltaMeasure(EnumXLSExportType option) {
+	public int getLastDeltaMeasure(EnumXLSExportType option) 
+	{
 		int lastMeasure = 0;
-		switch (option) {
+		switch (option) 
+		{
 		case DERIVEDVALUES:
 			if (ptsDerivative != null)
 				lastMeasure = ptsDerivative.getLastDeltaMeasure();
@@ -385,9 +420,11 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return lastMeasure;
 	}
 	
-	public int getT0Measure(EnumXLSExportType option) {
+	public int getT0Measure(EnumXLSExportType option) 
+	{
 		int t0Measure = 0;
-		switch (option) {
+		switch (option) 
+		{
 		case DERIVEDVALUES:
 			if (ptsDerivative != null)
 				t0Measure = ptsDerivative.getT0Measure();
@@ -409,7 +446,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return t0Measure;
 	}
 	
-	public List<ROI2D> transferMeasuresToROIs() {
+	public List<ROI2D> transferMeasuresToROIs() 
+	{
 		List<ROI2D> listrois = new ArrayList<ROI2D> ();
 		if (ptsTop != null)
 			ptsTop.addToROIs(listrois, indexImage);
@@ -422,7 +460,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return listrois;
 	}
 	
-	public void transferROIsToMeasures(List<ROI> listRois) {
+	public void transferROIsToMeasures(List<ROI> listRois) 
+	{
 		if (ptsTop != null)
 			ptsTop.transferROIsToMeasures(listRois);
 		if (ptsBottom != null)
@@ -436,7 +475,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	// -------------------------------------------
 	
 	@Override
-	public boolean loadFromXML(Node node) {
+	public boolean loadFromXML(Node node) 
+	{
 		boolean result = loadFromXML_CapillaryOnly(node);	
 		String header = getLast2ofCapillaryName()+"_";
 		result |= ptsDerivative.loadCapillaryLimitFromXML(node, ID_DERIVATIVE, header) > 0;
@@ -447,7 +487,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	}
 	
 	@Override
-	public boolean saveToXML(Node node) {
+	public boolean saveToXML(Node node) 
+	{
 		saveToXML_CapillaryOnly(node);
 		if (ptsTop != null)
 			ptsTop.saveCapillaryLimit2XML(node, ID_TOPLEVEL);
@@ -460,10 +501,12 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
         return true;
 	}
 		
-	boolean loadFromXML_CapillaryOnly(Node node) {
+	boolean loadFromXML_CapillaryOnly(Node node) 
+	{
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
 	    boolean flag = (nodeMeta != null); 
-	    if (flag) {
+	    if (flag) 
+	    {
 	    	version 		= XMLUtil.getElementValue(nodeMeta, ID_VERSION, ID_VERSIONNUM);
 	    	indexImage 		= XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        capillaryName 	= XMLUtil.getElementValue(nodeMeta, ID_NAME, capillaryName);
@@ -485,9 +528,11 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	    return flag;
 	}
 	
-	void saveToXML_CapillaryOnly(Node node) {
+	void saveToXML_CapillaryOnly(Node node) 
+	{
 	    final Node nodeMeta = XMLUtil.setElement(node, ID_META);
-	    if (nodeMeta != null) {
+	    if (nodeMeta != null) 
+	    {
 	    	if (version == null)
 	    		version = ID_VERSIONNUM;
 	    	XMLUtil.setElementValue(nodeMeta, ID_VERSION, version);
@@ -511,17 +556,21 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 	    }
 	}
 
-	private void saveToXML_ROI(Node node, ROI roi) {
+	private void saveToXML_ROI(Node node, ROI roi) 
+	{
 		final Node nodeROI = XMLUtil.setElement(node, ID_ROI);
-        if (!roi.saveToXML(nodeROI)) {
+        if (!roi.saveToXML(nodeROI)) 
+        {
             XMLUtil.removeNode(node, nodeROI);
             System.err.println("Error: the roi " + roi.getName() + " was not correctly saved to XML !");
         }
 	}
  
-	private ROI loadFromXML_ROI(Node node) {
+	private ROI loadFromXML_ROI(Node node) 
+	{
 		final Node nodeROI = XMLUtil.getElement(node, ID_ROI);
-        if (nodeROI != null) {
+        if (nodeROI != null) 
+        {
 			ROI roi = ROI.createFromXML(nodeROI);
 	        return roi;
         }
@@ -530,16 +579,20 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 
 	// -------------------------------------------
 	
-	public Point2D getCapillaryTipWithinROI2D (ROI2D roi2D) {
+	public Point2D getCapillaryTipWithinROI2D (ROI2D roi2D) 
+	{
 		Point2D pt = null;		
-		if (roi instanceof ROI2DPolyLine) {
+		if (roi instanceof ROI2DPolyLine) 
+		{
 			Polyline2D line = (( ROI2DPolyLine) roi).getPolyline2D();
 			int last = line.npoints - 1;
 			if (roi2D.contains(line.xpoints[0],  line.ypoints[0]))
 				pt = new Point2D.Double(line.xpoints[0],  line.ypoints[0]);
 			else if (roi2D.contains(line.xpoints[last],  line.ypoints[last])) 
 				pt = new Point2D.Double(line.xpoints[last],  line.ypoints[last]);
-		} else if (roi instanceof ROI2DLine) {
+		} 
+		else if (roi instanceof ROI2DLine) 
+		{
 			Line2D line = (( ROI2DLine) roi).getLine();
 			if (roi2D.contains(line.getP1()))
 				pt = line.getP1();
@@ -549,16 +602,20 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>  {
 		return pt;
 	}
 	
-	public Point2D getCapillaryLowestPoint () {
+	public Point2D getCapillaryLowestPoint () 
+	{
 		Point2D pt = null;		
-		if (roi instanceof ROI2DPolyLine) {
+		if (roi instanceof ROI2DPolyLine) 
+		{
 			Polyline2D line = (( ROI2DPolyLine) roi).getPolyline2D();
 			int last = line.npoints - 1;
 			if (line.ypoints[0] > line.ypoints[last])
 				pt = new Point2D.Double(line.xpoints[0],  line.ypoints[0]);
 			else  
 				pt = new Point2D.Double(line.xpoints[last],  line.ypoints[last]);
-		} else if (roi instanceof ROI2DLine) {
+		} 
+		else if (roi instanceof ROI2DLine) 
+		{
 			Line2D line = (( ROI2DLine) roi).getLine();
 			if (line.getP1().getY() > line.getP2().getY())
 				pt = line.getP1();
