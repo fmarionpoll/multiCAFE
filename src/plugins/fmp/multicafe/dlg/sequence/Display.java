@@ -21,7 +21,8 @@ import plugins.fmp.multicafe.sequence.Experiment;
 
 
 
-public class Display  extends JPanel {
+public class Display  extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -33,7 +34,8 @@ public class Display  extends JPanel {
 	private MultiCAFE parent0 = null;
 
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {	
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{	
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
@@ -49,21 +51,32 @@ public class Display  extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		viewCapillariesCheckBox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			displayROIsCategory(viewCapillariesCheckBox.isSelected(), "line");
-		} } );
+	private void defineActionListeners() 
+	{
+		viewCapillariesCheckBox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				displayROIsCategory(viewCapillariesCheckBox.isSelected(), "line");
+			}});
 		
-		viewCagesCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
+		viewCagesCheckbox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 			displayROIsCategory(viewCagesCheckbox.isSelected(), "cage");
-		} } );
+			}});
 		
-		viewFlyCheckbox.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			displayROIsCategory(viewFlyCheckbox.isSelected(), "det");
-		} } );
+		viewFlyCheckbox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				displayROIsCategory(viewFlyCheckbox.isSelected(), "det");
+			}});
 	}
 	
-	public void displayROIsCategory(boolean isVisible, String pattern) {
+	public void displayROIsCategory(boolean isVisible, String pattern) 
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
@@ -72,7 +85,8 @@ public class Display  extends JPanel {
 		List<Layer> layers = canvas.getLayers(false);
 		if (layers == null)
 			return;
-		for (Layer layer: layers) {
+		for (Layer layer: layers) 
+		{
 			ROI roi = layer.getAttachedROI();
 			if (roi == null)
 				continue;

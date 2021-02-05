@@ -51,7 +51,8 @@ import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
 
-public class SequenceCamData {
+public class SequenceCamData 
+{
 	public Sequence					seq						= null;
 	public IcyBufferedImage 		refImage 				= null;
 	
@@ -77,20 +78,24 @@ public class SequenceCamData {
 	
 	// ----------------------------------------
 	
-	public SequenceCamData () {
+	public SequenceCamData () 
+	{
 		seq = new Sequence();
 	}
 	
-	public SequenceCamData(String name, IcyBufferedImage image) {
+	public SequenceCamData(String name, IcyBufferedImage image) 
+	{
 		seq = new Sequence (name, image);
 	}
 
-	public SequenceCamData (String csFile) {
+	public SequenceCamData (String csFile) 
+	{
 		seq = Loader.loadSequence(csFile, 0, true);
 		seq.setName(csFile);
 	}
 
-	public SequenceCamData (String [] list, String directory) {
+	public SequenceCamData (String [] list, String directory) 
+	{
 		loadSequenceOfImagesFromListAndDirectory(list, directory);
 		seq.setName(listFiles.get(0));
 	}
@@ -99,11 +104,13 @@ public class SequenceCamData {
 		listFiles.clear();
 		for (String cs: listNames)
 			listFiles.add(cs);
-		if (loadSequenceOfImagesFromList(listFiles, true) != null) {
+		if (loadSequenceOfImagesFromList(listFiles, true) != null) 
+		{
 			Path path = Paths.get(listFiles.get(0));
 			int iback = 2;
 			String dir = path.getName(path.getNameCount()-iback).toString();
-			if (dir != null) {
+			if (dir != null) 
+			{
 				if (dir.equals("grabs"))
 					dir = path.getName(path.getNameCount()-3).toString();
 				seq.setName(dir);
@@ -111,11 +118,13 @@ public class SequenceCamData {
 		}
 	}
 	
-	public SequenceCamData (List<String> listNames, boolean testLR) {
+	public SequenceCamData (List<String> listNames, boolean testLR) 
+	{
 		listFiles.clear();
 		for (String cs: listNames)
 			listFiles.add(cs);
-		if (loadSequenceOfImagesFromList(listFiles, testLR) != null) {
+		if (loadSequenceOfImagesFromList(listFiles, testLR) != null) 
+		{
 			Path path = Paths.get(listFiles.get(0));
 			String dir = path.getName(path.getNameCount()-2).toString();
 			if (dir != null) {
@@ -128,41 +137,50 @@ public class SequenceCamData {
 	
 	// -----------------------
 	
-	public static boolean isAcceptedFileType(String name) {
+	public static boolean isAcceptedFileType(String name) 
+	{
 		if (name==null) 
 			return false;
-		for (int i=0; i< acceptedTypes.length; i++) {
+		for (int i=0; i< acceptedTypes.length; i++) 
+		{
 			if (name.endsWith(acceptedTypes[i]))
 				return true;
 		}
 		return false;
 	}	
 	
-	public static int getCodeIfAcceptedFileType(String name) {
+	public static int getCodeIfAcceptedFileType(String name) 
+	{
 		/* 
 		 * Returns accepted type (0-n) or -1 if not found 
 		 */
 		int ifound = -1;
 		if (name==null) 
 			return ifound;
-		for (int i=0; i< acceptedTypes.length; i++) {
+		for (int i=0; i< acceptedTypes.length; i++) 
+		{
 			if (name.endsWith(acceptedTypes[i]))
 				return i;
 		}
 		return ifound;
 	}
 
-	public String getSeqDataDirectory () {
+	public String getSeqDataDirectory () 
+	{
 		return seqDataDirectory;
 	}
 
-	public IcyBufferedImage getImage(int t, int z) {
+	public IcyBufferedImage getImage(int t, int z) 
+	{
 		return seq.getImage(t, z);
 	}
 	
-	public IcyBufferedImage subtractReference(IcyBufferedImage image, int t, TransformOp transformop) {
-		switch (transformop) {
-			case REF_PREVIOUS: {
+	public IcyBufferedImage subtractReference(IcyBufferedImage image, int t, TransformOp transformop) 
+	{
+		switch (transformop) 
+		{
+			case REF_PREVIOUS: 
+				{
 				int t0 = t-seqAnalysisStep;
 				if (t0 <0)
 					t0 = 0;
@@ -183,11 +201,13 @@ public class SequenceCamData {
 		return image;
 	}
 		
-	public List <String> getListofFiles() {
+	public List <String> getListofFiles() 
+	{
 		return listFiles;
 	}
 
-	public String getDecoratedImageName(int t) {
+	public String getDecoratedImageName(int t) 
+	{
 		currentFrame = t; 
 		if (seq!= null)
 			return csCamFileName + " ["+(t)+ "/" + (seq.getSizeT()-1) + "]";
@@ -195,7 +215,8 @@ public class SequenceCamData {
 			return csCamFileName + "[]";
 	}
 	
-	public String getFileName(int t) {
+	public String getFileName(int t) 
+	{
 		String csName = null;
 		if (status == EnumStatus.FILESTACK) 
 			csName = listFiles.get(t);
@@ -204,11 +225,13 @@ public class SequenceCamData {
 		return csName;
 	}
 	
-	public IcyBufferedImage imageIORead(int t) {
+	public IcyBufferedImage imageIORead(int t) 
+	{
 		currentFrame = t;
 		String name = listFiles.get(t);
 		BufferedImage image = null;
-		try {
+		try 
+		{
 	    	image = ImageIO.read(new File(name));
 		} catch (IOException e) {
 			 e.printStackTrace();
@@ -216,27 +239,32 @@ public class SequenceCamData {
 		return IcyBufferedImage.createFrom(image);
 	}
 	
-	public String getFileNameNoPath(int t) {
+	public String getFileNameNoPath(int t) 
+	{
 		String csName = null;
 		if (status == EnumStatus.FILESTACK) 
 			csName = listFiles.get(t);
 		else if (status == EnumStatus.AVIFILE)
 			csName = csCamFileName;
-		if (csName != null) {
+		if (csName != null) 
+		{
 			Path path = Paths.get(csName);
 			return path.getName(path.getNameCount()-1).toString();
 		}
 		return csName;
 	}
 	
-	public boolean isFileStack() {
+	public boolean isFileStack() 
+	{
 		return (status == EnumStatus.FILESTACK);
 	}
 	
-	public List<String> keepOnlyAcceptedNamesFromList(List<String> rawlist, int filetype) {
+	public List<String> keepOnlyAcceptedNamesFromList(List<String> rawlist, int filetype) 
+	{
 		int count = rawlist.size();
 		List<String> outList = new ArrayList<String> (count);
-		for (String name: rawlist) {
+		for (String name: rawlist) 
+		{
 			int itype = getCodeIfAcceptedFileType(name);
 			if ( itype >= 0) {
 				if (filetype < 0)
@@ -248,10 +276,13 @@ public class SequenceCamData {
 		return outList;
 	}
 		
-	public String[] keepOnlyAcceptedNamesFromArray(String[] rawlist) {
+	public String[] keepOnlyAcceptedNamesFromArray(String[] rawlist) 
+	{
 		int count = rawlist.length;
-		for (int i=0; i< rawlist.length; i++) {
-			if ( !isAcceptedFileType(rawlist[i]) ) {
+		for (int i=0; i< rawlist.length; i++) 
+		{
+			if ( !isAcceptedFileType(rawlist[i]) ) 
+			{
 				rawlist[i] = null;
 				count --;
 			}
@@ -263,7 +294,8 @@ public class SequenceCamData {
 		if (count < rawlist.length) {
 			list = new String[count];
 			int index = 0;
-			for (int i=0; i< rawlist.length; i++) {
+			for (int i=0; i< rawlist.length; i++) 
+			{
 				if (rawlist[i] != null)
 					list[index++] = rawlist[i];
 			}
@@ -272,9 +304,11 @@ public class SequenceCamData {
 	}
 
 	// TODO: use GPU
-	public IcyBufferedImage subtractImagesAsDouble (IcyBufferedImage image1, IcyBufferedImage image2) {	
+	public IcyBufferedImage subtractImagesAsDouble (IcyBufferedImage image1, IcyBufferedImage image2) 
+	{	
 		IcyBufferedImage result = new IcyBufferedImage(image1.getSizeX(), image1.getSizeY(), image1.getSizeC(), image1.getDataType_());
-		for (int c = 0; c < image1.getSizeC(); c++) {
+		for (int c = 0; c < image1.getSizeC(); c++) 
+		{
 			double[] img1DoubleArray = Array1DUtil.arrayToDoubleArray(image1.getDataXY(c), image1.isSignedDataType());
 			double[] img2DoubleArray = Array1DUtil.arrayToDoubleArray(image2.getDataXY(c), image2.isSignedDataType());
 			ArrayMath.subtract(img1DoubleArray, img2DoubleArray, img1DoubleArray);
@@ -289,9 +323,11 @@ public class SequenceCamData {
 		return result;
 	}
 	
-	public IcyBufferedImage subtractImagesAsInteger (IcyBufferedImage image1, IcyBufferedImage image2) {	
+	public IcyBufferedImage subtractImagesAsInteger (IcyBufferedImage image1, IcyBufferedImage image2) 
+	{	
 		IcyBufferedImage result = new IcyBufferedImage(image1.getSizeX(), image1.getSizeY(), image1.getSizeC(), image1.getDataType_());
-		for (int c = 0; c < image1.getSizeC(); c++) {
+		for (int c = 0; c < image1.getSizeC(); c++) 
+		{
 			int[] img1Array = Array1DUtil.arrayToIntArray(image1.getDataXY(c), image1.isSignedDataType());
 			int[] img2Array = Array1DUtil.arrayToIntArray(image2.getDataXY(c), image2.isSignedDataType());
 			ArrayMath.subtract(img1Array, img2Array, img1Array);
@@ -306,7 +342,8 @@ public class SequenceCamData {
 		return result;
 	}
 	
-	private  void max(int[] a1, int[] a2, int[] output) {
+	private  void max(int[] a1, int[] a2, int[] output) 
+	{
 		for (int i = 0; i < a1.length; i++)
 			if (a1[i] >= a2[i])
 				output[i] = a1[i];
@@ -316,7 +353,8 @@ public class SequenceCamData {
 	
 	// --------------------------
 	
-	public Sequence loadSequenceFromDialog(String path) {
+	public Sequence loadSequenceFromDialog(String path) 
+	{
 		LoaderDialog dialog = new LoaderDialog(false);
 		if (path != null) 
 			dialog.setCurrentDirectory(new File(path));
@@ -325,13 +363,17 @@ public class SequenceCamData {
 	    	return null;
 	    
 	    seqDataDirectory = selectedFiles[0].isDirectory() ? selectedFiles[0].getAbsolutePath() : selectedFiles[0].getParentFile().getAbsolutePath();
-		if (seqDataDirectory != null ) {
-			if (selectedFiles.length == 1) {
+		if (seqDataDirectory != null ) 
+		{
+			if (selectedFiles.length == 1) 
+			{
 				seq = loadSequenceOfImages(selectedFiles[0].getAbsolutePath());
 			}
-			else {
+			else 
+			{
 				String [] list = new String [selectedFiles.length];
-				for (int i = 0; i < selectedFiles.length; i++) {
+				for (int i = 0; i < selectedFiles.length; i++) 
+				{
 					if (!selectedFiles[i].getName().toLowerCase().contains(".avi"))
 						list[i] = selectedFiles[i].getAbsolutePath();
 				}
@@ -341,33 +383,43 @@ public class SequenceCamData {
 		return seq;
 	}
 	
-	protected Sequence loadSequenceOfImages(String textPath) {
+	protected Sequence loadSequenceOfImages(String textPath) 
+	{
 		if (textPath == null) 
 			return loadSequenceFromDialog(null); 
 		File filepath = new File(textPath); 	
 	    seqDataDirectory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
-		if (seqDataDirectory != null ) {
+		if (seqDataDirectory != null ) 
+		{
 			List<String> list = new ArrayList<String> ();
-			try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(seqDataDirectory))) {
-				for (Path entry: stream) {
+			try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(seqDataDirectory))) 
+			{
+				for (Path entry: stream) 
+				{
 					list.add(entry.toString());
 				}
-			} catch (IOException e) {
+			} 
+			catch (IOException e) 
+			{
 				e.printStackTrace();
 			}
 			
 			if (list.size() == 0)
 				return null;
-			else {
+			else 
+			{
 				list = keepOnlyAcceptedNamesFromList(list, 0);	
 				if (list.size() == 0)
 					return null;
 				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi"))
 					seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
-				else {
-					if (list.get(0).contains("avi")) {
+				else 
+				{
+					if (list.get(0).contains("avi")) 
+					{
 						seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
-					} else {
+					} else 
+					{
 						status = EnumStatus.FAILURE;
 						seq = loadSequenceOfImagesFromList(list, true);
 					}
@@ -378,12 +430,14 @@ public class SequenceCamData {
 		return seq;
 	}
 
-	private Sequence loadSequenceOfImagesFromListAndDirectory(String [] list, String directory) {
+	private Sequence loadSequenceOfImagesFromListAndDirectory(String [] list, String directory) 
+	{
 		status = EnumStatus.FAILURE;
 		list = keepOnlyAcceptedNamesFromArray(list);
 		list = StringSorter.sortNumerically(list);
 		listFiles = new ArrayList<String>(list.length);
-		for (int i=0; i<list.length; i++) {
+		for (int i=0; i<list.length; i++) 
+		{
 			if (list[i]!=null)
 				listFiles.add(directory + File.separator + list[i]);
 		}
@@ -391,22 +445,29 @@ public class SequenceCamData {
 		return loadSequenceOfImagesFromList(listFiles, true);
 	}
 	
-	protected Sequence loadSequenceOfImagesFromList(List<String> myListOfFilesNames, boolean testFilenameDecoratedwithLR) {
+	protected Sequence loadSequenceOfImagesFromList(List<String> myListOfFilesNames, boolean testFilenameDecoratedwithLR) 
+	{
 		seq = null;
-		if (testFilenameDecoratedwithLR && isLinexLRFileNames(myListOfFilesNames)) {
+		if (testFilenameDecoratedwithLR && isLinexLRFileNames(myListOfFilesNames)) 
+		{
 			listFiles = convertLinexLRFileNames(myListOfFilesNames);
-		} else {
+		} else 
+		{
 			listFiles = myListOfFilesNames;
 		}
 		List<Sequence> lseq = Loader.loadSequences(null, listFiles, 0, false, false, false, true);
-		if (lseq.size() > 0) {
+		if (lseq.size() > 0) 
+		{
 			seq = lseq.get(0);
-			if (lseq.size() > 1) {
+			if (lseq.size() > 1) 
+			{
 				seq = lseq.get(0);	
 				int tmax = lseq.get(0).getSizeT();
 				int tseq = 0;
-				for (int t = 0; t < tmax; t++) {
-					for (int i=0; i < lseq.size(); i++) {
+				for (int t = 0; t < tmax; t++) 
+				{
+					for (int i=0; i < lseq.size(); i++) 
+					{
 						IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
 						seq.setImage(tseq, 0, bufImg);
 						tseq++;
@@ -420,16 +481,19 @@ public class SequenceCamData {
 		return seq;
 	}
 	
-	private void initAnalysisParameters() {
+	private void initAnalysisParameters() 
+	{
 		seqAnalysisStart = 0;
 		seqAnalysisEnd = seq.getSizeT()-1;
 		seqAnalysisStep = 1;
 	}
 		
-	private boolean isLinexLRFileNames(List<String> myListOfFilesNames) {
+	private boolean isLinexLRFileNames(List<String> myListOfFilesNames) 
+	{
 		boolean flag = false;
 		int nfound = 0;
-		for (String filename: myListOfFilesNames) {	
+		for (String filename: myListOfFilesNames) 
+		{	
 			if (filename.contains("R.") || filename.contains("L."))
 				nfound++;
 			if (nfound >1) {
@@ -440,35 +504,45 @@ public class SequenceCamData {
 		return flag;
 	}
 	
-	private List<String> convertLinexLRFileNames(List<String> myListOfFilesNames) {
+	private List<String> convertLinexLRFileNames(List<String> myListOfFilesNames) 
+	{
 		List<String> newList = new ArrayList<String>();
-		for (String oldName: myListOfFilesNames) {
+		for (String oldName: myListOfFilesNames) 
+		{
 			newList.add(convertLinexLRFileName(oldName));
 		}
 		return newList; 
 	}
 	
-	private String convertLinexLRFileName(String oldName) {
+	private String convertLinexLRFileName(String oldName) 
+	{
 		String newName = oldName;
-		if (oldName.contains("R.")) {
+		if (oldName.contains("R.")) 
+		{
 			newName = oldName.replace("R.", "2.");
 			renameOldFile(oldName, newName);
 		}
-		else if (oldName.contains("L")) { 
+		else if (oldName.contains("L")) 
+		{ 
 			newName = oldName.replace("L.", "1.");
 			renameOldFile(oldName, newName);
 		}
 		return newName; 
 	}
 	
-	private void renameOldFile(String oldName, String newName) {
+	private void renameOldFile(String oldName, String newName) 
+	{
 		File oldfile = new File(oldName);
-		if (newName != null && oldfile.exists()) {
-			try {
+		if (newName != null && oldfile.exists()) 
+		{
+			try 
+			{
 				FileUtils.moveFile(
 					      FileUtils.getFile(oldName), 
 					      FileUtils.getFile(newName));
-			} catch (IOException e) {
+			} 
+			catch (IOException e) 
+			{
 				e.printStackTrace();
 			}
 		}
@@ -476,11 +550,13 @@ public class SequenceCamData {
 	
 	// --------------------------
 	
-	public String getCSCamFileName() {
+	public String getCSCamFileName() 
+	{
 		return csCamFileName;		
 	}
 	
-	protected void setParentDirectoryAsCSCamFileName() {
+	protected void setParentDirectoryAsCSCamFileName() 
+	{
 		if (seq == null)
 			return;
 		String directory = seq.getFilename();
@@ -493,17 +569,21 @@ public class SequenceCamData {
 	
 	// ---------------------------
 	
-	public void closeSequence() {
+	public void closeSequence() 
+	{
 		if (seq == null)
 			return;
 		seq.removeAllROI();
 		seq.close();
 	}
 
-	public boolean xmlReadROIs(String fileName) {
-		if (fileName != null)  {
+	public boolean xmlReadROIs(String fileName) 
+	{
+		if (fileName != null)  
+		{
 			final Document doc = XMLUtil.loadDocument(fileName);
-			if (doc != null) {
+			if (doc != null) 
+			{
 				List<ROI2D> seqRoisList = seq.getROI2Ds(false);
 				List<ROI2D> newRoisList = ROI2DUtilities.loadROIsFromXML(doc);
 				ROI2DUtilities.mergeROIsListNoDuplicate(seqRoisList, newRoisList, seq);
@@ -517,7 +597,8 @@ public class SequenceCamData {
 	
 	// --------------------------
 	
-	public FileTime getFileTimeFromStructuredName(int t) {
+	public FileTime getFileTimeFromStructuredName(int t) 
+	{
 		String fileName = getFileName(t);
 		if (fileName == null)
 			return null;
@@ -532,10 +613,12 @@ public class SequenceCamData {
 							+text.charAt(13)+"mm"
 							+text.charAt(16)+"ss";
 		Date date = null;
-		try {
+		try 
+		{
 			date = new SimpleDateFormat(dateFormat).parse(text);
 		} 
-		catch (ParseException e) {
+		catch (ParseException e) 
+		{
 			e.printStackTrace();
 			return null;
 		}
@@ -543,22 +626,26 @@ public class SequenceCamData {
 		return fileTime;
 	}
 	
-	public FileTime getFileTimeFromFileAttributes(int t) {
+	public FileTime getFileTimeFromFileAttributes(int t) 
+	{
 		FileTime filetime=null;
 		File file = new File(getFileName(t));
         Path filePath = file.toPath();
 
         BasicFileAttributes attributes = null;
-        try {
+        try 
+        {
             attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
         }
-        catch (IOException exception) {
+        catch (IOException exception) 
+        {
             System.out.println("Exception handled when trying to get file " +
                     "attributes: " + exception.getMessage());
         }
         
         long milliseconds = attributes.creationTime().to(TimeUnit.MILLISECONDS);
-        if((milliseconds > Long.MIN_VALUE) && (milliseconds < Long.MAX_VALUE)) {
+        if((milliseconds > Long.MIN_VALUE) && (milliseconds < Long.MAX_VALUE)) 
+        {
             Date creationDate = new Date(attributes.creationTime().to(TimeUnit.MILLISECONDS));
             filetime = FileTime.fromMillis(creationDate.getTime());
         }
@@ -567,7 +654,6 @@ public class SequenceCamData {
 
 	public FileTime getFileTimeFromJPEGMetaData(int t) {
 		FileTime filetime = null;
-		
 		File file = new File(getFileName(t));
 		Metadata metadata;
 		try {
@@ -575,24 +661,31 @@ public class SequenceCamData {
 			ExifSubIFDDirectory directory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 			Date date = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL); 
 			filetime = FileTime.fromMillis(date.getTime());
-		} catch (ImageProcessingException e) {
+		} 
+		catch (ImageProcessingException e) 
+		{
 			e.printStackTrace();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		return filetime;
 	}
 	
-	public List<Cage> getCages () {
+	public List<Cage> getCages () 
+	{
 		List<ROI2D> roiList = seq.getROI2Ds();
 		Collections.sort(roiList, new Comparators.ROI2D_Name_Comparator());
 		List<Cage> cageList = new ArrayList<Cage>();
-		for ( ROI2D roi : roiList ) {
+		for ( ROI2D roi : roiList ) 
+		{
 			String csName = roi.getName();
 			if (!(roi instanceof ROI2DPolygon))
 				continue;
 			if ((csName.length() > 4 && csName.substring( 0 , 4 ).contains("cage")
-				|| csName.contains("Polygon2D")) ) {
+				|| csName.contains("Polygon2D")) ) 
+			{
 				Cage cage = new Cage();
 				cage.cageRoi = roi;
 				cageList.add(cage);
@@ -601,13 +694,17 @@ public class SequenceCamData {
 		return cageList;
 	}
 	
-	public IcyBufferedImage getImageCopy(int t) {	
+	public IcyBufferedImage getImageCopy(int t) 
+	{	
 		return IcyBufferedImageUtil.getCopy(getImage(t, 0));
 	}
 
-	public void displayViewerAtRectangle(Rectangle parent0Rect) {
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() { public void run() {
+	public void displayViewerAtRectangle(Rectangle parent0Rect) 
+	{
+		try 
+		{
+			SwingUtilities.invokeAndWait(new Runnable() { public void run() 
+			{
 				Viewer v = seq.getFirstViewer();
 				if (v == null)
 					v = new Viewer(seq, true);
@@ -615,7 +712,9 @@ public class SequenceCamData {
 				rectv.setLocation(parent0Rect.x+ parent0Rect.width, parent0Rect.y);
 				v.setBounds(rectv);				
 			}});
-		} catch (InvocationTargetException | InterruptedException e) {
+		} 
+		catch (InvocationTargetException | InterruptedException e) 
+		{
 			e.printStackTrace();
 		} 
 	}

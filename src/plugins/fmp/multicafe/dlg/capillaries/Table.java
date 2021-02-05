@@ -24,7 +24,8 @@ import plugins.fmp.multicafe.sequence.Capillary;
 import plugins.fmp.multicafe.sequence.CapillaryTableModel;
 import plugins.fmp.multicafe.sequence.Experiment;
 
-public class Table  extends JPanel {
+public class Table  extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -42,7 +43,8 @@ public class Table  extends JPanel {
 	private List <Capillary> 	capillariesArrayCopy = null;
 	
 	
-	public void initialize (MultiCAFE parent0, List <Capillary> capCopy) {
+	public void initialize (MultiCAFE parent0, List <Capillary> capCopy) 
+	{
 		this.parent0 = parent0;
 		capillariesArrayCopy = capCopy;
 		
@@ -86,9 +88,12 @@ public class Table  extends JPanel {
 		pasteButton.setEnabled(capillariesArrayCopy.size() > 0);
 	}
 	
-	private void defineActionListeners() {
-		copyButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		copyButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				capillariesArrayCopy.clear();
 				for (Capillary cap: exp.capillaries.capillariesArrayList ) 
@@ -96,12 +101,16 @@ public class Table  extends JPanel {
 				pasteButton.setEnabled(true);
 			}});
 		
-		pasteButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		pasteButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				for (Capillary capFrom: capillariesArrayCopy ) {
+				for (Capillary capFrom: capillariesArrayCopy ) 
+				{
 					capFrom.valid = false;
-					for (Capillary capTo: exp.capillaries.capillariesArrayList) {
+					for (Capillary capTo: exp.capillaries.capillariesArrayList) 
+					{
 						if (!capFrom.roi.getName().equals (capTo.roi.getName()))
 							continue;
 						capFrom.valid = true;
@@ -115,14 +124,16 @@ public class Table  extends JPanel {
 				viewModel.fireTableDataChanged();
 			}});
 		
-		duplicateLRButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		duplicateLRButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				int rowIndex = tableView.getSelectedRow();
 				int columnIndex = tableView.getSelectedColumn();
-				if (rowIndex >= 0) {
-					Capillary cap0 = exp.capillaries.capillariesArrayList.get(rowIndex);
-					
+				if (rowIndex >= 0) 
+				{
+					Capillary cap0 = exp.capillaries.capillariesArrayList.get(rowIndex);	
 					String side = cap0.getCapillarySide();
 					int modulo2 = 0;
 					if (side.equals("L"))
@@ -132,22 +143,28 @@ public class Table  extends JPanel {
 					else
 						modulo2 = Integer.valueOf(cap0.getCapillarySide()) % 2;
 					
-					for (Capillary cap: exp.capillaries.capillariesArrayList) {
+					for (Capillary cap: exp.capillaries.capillariesArrayList) 
+					{
 						if (cap.getCapillaryName().equals(cap0.getCapillaryName()))
 							continue;
 						if ((exp.capillaries.desc.grouping == 2) && (!cap.getCapillarySide().equals(side)))
 							continue;
-						else {
-							try {
-							int mod = Integer.valueOf(cap.getCapillarySide()) % 2;
-							if (mod != modulo2)
-								continue;
-							} catch (NumberFormatException nfe) {
+						else 
+						{
+							try 
+							{
+								int mod = Integer.valueOf(cap.getCapillarySide()) % 2;
+								if (mod != modulo2)
+									continue;
+							} 
+							catch (NumberFormatException nfe) 
+							{
 								if (!cap.getCapillarySide().equals(side))
 									continue;
 							}
 						}
-			        	switch (columnIndex) {
+			        	switch (columnIndex) 
+			        	{
 			            case 2: cap.capNFlies = cap0.capNFlies; break;
 			            case 3: cap.capVolume = cap0.capVolume; break;
 			            case 4: cap.capStimulus = cap0.capStimulus; break;
@@ -158,17 +175,21 @@ public class Table  extends JPanel {
 				}
 			}});
 		
-		duplicateAllButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		duplicateAllButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				int rowIndex = tableView.getSelectedRow();
 				int columnIndex = tableView.getSelectedColumn();
-				if (rowIndex >= 0) {
+				if (rowIndex >= 0) 
+				{
 					Capillary cap0 = exp.capillaries.capillariesArrayList.get(rowIndex);	
 					for (Capillary cap: exp.capillaries.capillariesArrayList) {
 						if (cap.getCapillaryName().equals(cap0.getCapillaryName()))
 							continue;
-						switch (columnIndex) {
+						switch (columnIndex) 
+						{
 			            case 2: cap.capNFlies = cap0.capNFlies; break;
 			            case 3: cap.capVolume = cap0.capVolume; break;
 			            case 4: cap.capStimulus = cap0.capStimulus; break;
@@ -179,28 +200,35 @@ public class Table  extends JPanel {
 				}
 			}});
 		
-		getNfliesButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		getNfliesButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp.cages.cageList.size() > 0) {
+				if (exp.cages.cageList.size() > 0) 
+				{
 					exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
 					viewModel.fireTableDataChanged();
 				}
 			}});
 		
-		getCageNoButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		getCageNoButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				exp.cages.setCageNbFromName(exp.capillaries.capillariesArrayList);
 				viewModel.fireTableDataChanged();
 			}});
 	}
 	
-	void close() {
+	void close() 
+	{
 		dialogFrame.close();
 	}
 	
-	private void setFixedColumnProperties (TableColumn column) {
+	private void setFixedColumnProperties (TableColumn column) 
+	{
         column.setResizable(false);
         column.setPreferredWidth(50);
         column.setMaxWidth(50);

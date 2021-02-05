@@ -37,7 +37,8 @@ import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 
 
-public class Detect1 extends JPanel implements ChangeListener, PropertyChangeListener, PopupMenuListener {
+public class Detect1 extends JPanel implements ChangeListener, PropertyChangeListener, PopupMenuListener 
+{
 	/**
 	 * 
 	 */
@@ -68,7 +69,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 
 	// -----------------------------------------------------
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
@@ -115,11 +117,15 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		thresholdSpinner.addChangeListener(this);
 	}
 	
-	private void defineActionListeners() {
-		overlayCheckBox.addItemListener(new ItemListener() {
-		      public void itemStateChanged(ItemEvent e) {
+	private void defineActionListeners()
+	{
+		overlayCheckBox.addItemListener(new ItemListener() 
+		{
+		      public void itemStateChanged(ItemEvent e) 
+		      {
 		    	  Experiment exp = parent0.expList.getCurrentExperiment();
-		    	  	if (exp != null) {
+		    	  	if (exp != null) 
+		    	  	{
 			  			if (overlayCheckBox.isSelected()) {
 							if (ov == null)
 								ov = new OverlayThreshold(exp.seqCamData);
@@ -131,16 +137,20 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		    	  	}
 		      }});
 
-		startComputationButton.addActionListener(new ActionListener () {
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		startComputationButton.addActionListener(new ActionListener () 
+		{
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				if (startComputationButton.getText() .equals(detectString))
 					startComputation();
 				else
 					stopComputation();
 			}});
 		
-		allCheckBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
+		allCheckBox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
 				Color color = Color.BLACK;
 				if (allCheckBox.isSelected()) 
 					color = Color.RED;
@@ -149,13 +159,15 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		}});
 	}
 	
-	public void updateOverlay (Experiment exp) {
+	public void updateOverlay (Experiment exp) 
+	{
 		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData == null)
 			return;
 		if (ov == null) 
 			ov = new OverlayThreshold(seqCamData);
-		else {
+		else 
+		{
 			seqCamData.seq.removeOverlay(ov);
 			ov.setSequence(seqCamData);
 		}
@@ -164,23 +176,28 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		ov.painterChanged();	
 	}
 	
-	public void removeOverlay(Experiment exp) {
+	public void removeOverlay(Experiment exp) 
+	{
 		if (exp.seqCamData != null && exp.seqCamData.seq != null)
 			exp.seqCamData.seq.removeOverlay(ov);
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent e) {
-		if (e.getSource() == thresholdSpinner) {
+	public void stateChanged(ChangeEvent e) 
+	{
+		if (e.getSource() == thresholdSpinner) 
+		{
 			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp != null) {
+			if (exp != null) 
+			{
 				exp.cages.detect_threshold = (int) thresholdSpinner.getValue();
 				updateOverlay(exp);
 			}
 		}
 	}
 	
-	private boolean initTrackParameters() {
+	private boolean initTrackParameters() 
+	{
 		if (thread == null)
 			return false;
 		thread.options 			= new Options_BuildSeries();
@@ -216,7 +233,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		return true;
 	}
 	
-	void startComputation() {
+	void startComputation() 
+	{
 		currentExp = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperimentFromList(currentExp);
 		if (exp == null) 
@@ -241,8 +259,10 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
+	public void propertyChange(PropertyChangeEvent evt) 
+	{
+		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
+		 {
 			Experiment exp = parent0.expList.getExperimentFromList(currentExp);
 			if (exp != null)
 				parent0.paneSequence.openExperiment(exp);
@@ -251,16 +271,19 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	}
 
 	@Override
-	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) 
+	{
 		int nitems = 1;
 		currentExp = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperimentFromList(currentExp);
 		if (exp != null )	
 			nitems =  exp.cages.cageList.size() +1;
-		if (allCagesComboBox.getItemCount() != nitems) {
+		if (allCagesComboBox.getItemCount() != nitems) 
+		{
 			allCagesComboBox.removeAllItems();
 			allCagesComboBox.addItem("all cages");
-			for (Cage cage: exp.cages.cageList) {
+			for (Cage cage: exp.cages.cageList) 
+			{
 				allCagesComboBox.addItem(cage.getCageNumber());
 			}
 		}

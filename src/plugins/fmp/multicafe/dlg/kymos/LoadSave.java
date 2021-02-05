@@ -31,7 +31,8 @@ import plugins.fmp.multicafe.sequence.SequenceKymos;
 import plugins.fmp.multicafe.tools.Directories;
 
 
-public class LoadSave extends JPanel {
+public class LoadSave extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -40,7 +41,8 @@ public class LoadSave extends JPanel {
 	private JButton		saveButtonKymos			= new JButton("Save...");
 	private MultiCAFE 	parent0 				= null;
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
@@ -59,25 +61,35 @@ public class LoadSave extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {	
-		openButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp != null) {
-				if (loadDefaultKymos(exp))
-					firePropertyChange("KYMOS_OPEN", false, true);
-			}
-		}});
-		saveButtonKymos.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp != null) {
-				String path = exp.getExperimentDirectory();
-				saveKymographFiles(path);
-				firePropertyChange("KYMOS_SAVE", false, true);
-			}
-		}});
+	private void defineActionListeners() 
+	{	
+		openButtonKymos.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				Experiment exp = parent0.expList.getCurrentExperiment();
+				if (exp != null) 
+				{
+					if (loadDefaultKymos(exp))
+						firePropertyChange("KYMOS_OPEN", false, true);
+				}
+			}});
+		saveButtonKymos.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				Experiment exp = parent0.expList.getCurrentExperiment();
+				if (exp != null) 
+				{
+					String path = exp.getExperimentDirectory();
+					saveKymographFiles(path);
+					firePropertyChange("KYMOS_SAVE", false, true);
+				}
+			}});
 	}
 
-	void saveKymographFiles(String directory) {
+	void saveKymographFiles(String directory) 
+	{
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
@@ -85,9 +97,11 @@ public class LoadSave extends JPanel {
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (directory == null) {
 			directory = exp.getDirectoryToSaveResults();
-			try {
+			try 
+			{
 				Files.createDirectories(Paths.get(directory));
-			} catch (IOException e1) {
+			} catch (IOException e1) 
+			{
 				e1.printStackTrace();
 			}
 		}
@@ -95,70 +109,88 @@ public class LoadSave extends JPanel {
 		JFileChooser f = new JFileChooser(outputpath);
 		f.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); 
 		int returnedval = f.showSaveDialog(null);
-		if (returnedval == JFileChooser.APPROVE_OPTION) { 
+		if (returnedval == JFileChooser.APPROVE_OPTION) 
+		{ 
 			outputpath = f.getSelectedFile().getAbsolutePath();		
-			for (int t = 0; t < seqKymos.seq.getSizeT(); t++) {
+			for (int t = 0; t < seqKymos.seq.getSizeT(); t++) 
+			{
 				Capillary cap = exp.capillaries.capillariesArrayList.get(t);
 				progress.setMessage( "Save kymograph file : " + cap.getCapillaryName());
 				cap.filenameTIFF = outputpath + File.separator + cap.getCapillaryName() + ".tiff";
 				final File file = new File (cap.filenameTIFF);
 				IcyBufferedImage image = seqKymos.seq.getImage(t, 0);
-				ThreadUtil.bgRun( new Runnable() { @Override public void run() { 
-						try {
+				ThreadUtil.bgRun( new Runnable() 
+				{ 
+					@Override public void run() 
+					{ 
+						try 
+						{
 							Saver.saveImage(image, file, true);
-						} catch (FormatException | IOException e) {
+						} catch (FormatException | IOException e) 
+						{
 							e.printStackTrace();
 						}
-					System.out.println("File "+ cap.getCapillaryName() + " saved " );
+						System.out.println("File "+ cap.getCapillaryName() + " saved " );
 				}});
 			}
 		}
 		progress.close();
 	}
 	
-	public boolean loadDefaultKymos(Experiment exp) {		
+	public boolean loadDefaultKymos(Experiment exp) 
+	{		
 		boolean flag = false;
 		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqKymos == null || exp.capillaries == null) {
+		if (seqKymos == null || exp.capillaries == null) 
+		{
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
 		checkKymosDirectory(exp);
 		List<FileProperties> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosDirectory(), exp.capillaries);
 		int nItems = Directories.getFilesAndTestExist(myList);
-		if (nItems > 0) {
+		if (nItems > 0) 
+		{
 			flag = seqKymos.loadImagesFromList(myList, true);
 			parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp);
 		} 
-		else {
+		else 
+		{
 			seqKymos.closeSequence();
 		}
 		return flag;
 	}
 	
-	private void checkKymosDirectory(Experiment exp) {
+	private void checkKymosDirectory(Experiment exp) 
+	{
 		String kymosSubDirectory = exp.getBinSubDirectory();
 		if (kymosSubDirectory == null) {
 			List<String> listTIFFlocations = exp.getListOfSubDirectoriesWithTIFF();
 			if (listTIFFlocations.size() < 1)
 				return;
 			boolean found = false;
-			for (String subDir : listTIFFlocations) {
-				if (subDir .contains(exp.RESULTS)) {
+			for (String subDir : listTIFFlocations) 
+			{
+				if (subDir .contains(exp.RESULTS)) 
+				{
 					found = true;
 					break;
 				}
-				if (subDir .contains(exp.BIN)) {
+				if (subDir .contains(exp.BIN)) 
+				{
 					kymosSubDirectory = subDir;
 					found = true;
 					break;
 				}
 			}
-			if (!found) {
+			if (!found) 
+			{
 				int lowest = exp.getBinStepFromDirectoryName( listTIFFlocations.get(0)) + 1;
-				for (String subDir: listTIFFlocations) {
+				for (String subDir: listTIFFlocations) 
+				{
 					int val = exp.getBinStepFromDirectoryName( subDir);
-					if (val < lowest) {
+					if (val < lowest) 
+					{
 						lowest = val;
 						kymosSubDirectory = subDir;
 					}

@@ -22,7 +22,8 @@ import plugins.fmp.multicafe.tools.chart.YPositionsCharts;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
 
-public class Graphs extends JPanel {
+public class Graphs extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -41,7 +42,8 @@ public class Graphs extends JPanel {
 
 
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {	
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{	
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
@@ -66,15 +68,19 @@ public class Graphs extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		displayResultsButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		displayResultsButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				xyDisplayGraphs();
 				firePropertyChange("DISPLAY_RESULTS", false, true);
 			}});
 	}
 
-	private void xyDisplayGraphs() {
+	private void xyDisplayGraphs() 
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
@@ -82,15 +88,18 @@ public class Graphs extends JPanel {
 		Point ptRelative = new Point(0,30);
 		final int deltay = 230;
 	
-		if (moveCheckbox.isSelected() ) {
+		if (moveCheckbox.isSelected() ) 
+		{
 			displayYPos("flies Y positions", ypositionsChart, rectv, ptRelative, exp, EnumXLSExportType.XYTOPCAGE);
 			ptRelative.y += deltay;
 		}
-		if (distanceCheckbox.isSelected()) {
+		if (distanceCheckbox.isSelected()) 
+		{
 			displayYPos("distance between positions at t+1 and t", distanceChart, rectv, ptRelative, exp, EnumXLSExportType.DISTANCE);
 			ptRelative.y += deltay;
 		}
-		if (aliveCheckbox.isSelected()) {
+		if (aliveCheckbox.isSelected()) 
+		{
 			double threshold = (double) aliveThresholdSpinner.getValue();		
 			for (Cage cage: exp.cages.cageList) {
 				XYTaSeriesArrayList posSeries = cage.flyPositions;
@@ -100,8 +109,10 @@ public class Graphs extends JPanel {
 			displayYPos("flies alive", aliveChart, rectv, ptRelative, exp, EnumXLSExportType.ISALIVE);	
 			ptRelative.y += deltay;
 		}
-		if (sleepCheckbox.isSelected()) {	
-			for (Cage cage: exp.cages.cageList) {
+		if (sleepCheckbox.isSelected()) 
+		{	
+			for (Cage cage: exp.cages.cageList) 
+			{
 				XYTaSeriesArrayList posSeries = cage.flyPositions;
 				posSeries.computeSleep();
 			}
@@ -110,8 +121,10 @@ public class Graphs extends JPanel {
 		}
 	}
 
-	private void displayYPos(String title, YPositionsCharts iChart, Rectangle rectv, Point ptRelative, Experiment exp, EnumXLSExportType option) {
-		if (iChart == null || !iChart.mainChartPanel.isValid()) {
+	private void displayYPos(String title, YPositionsCharts iChart, Rectangle rectv, Point ptRelative, Experiment exp, EnumXLSExportType option) 
+	{
+		if (iChart == null || !iChart.mainChartPanel.isValid()) 
+		{
 			iChart = new YPositionsCharts();
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
@@ -120,15 +133,18 @@ public class Graphs extends JPanel {
 		iChart.mainChartFrame.toFront();
 	}
 	
-	public void closeAll() {
+	public void closeAll() 
+	{
 		close (ypositionsChart); 
 		close (distanceChart);
 		close (aliveChart); 
 		close (sleepChart);
 	}
 	
-	private void close (YPositionsCharts chart) {
-		if (chart != null) {
+	private void close (YPositionsCharts chart) 
+	{
+		if (chart != null) 
+		{
 			chart.mainChartFrame.close();
 			chart = null;
 		}

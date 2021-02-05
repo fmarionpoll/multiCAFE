@@ -19,13 +19,16 @@ import plugins.fmp.multicafe.tools.ImageTransformTools;
 
 
 
-public class DetectLevels_series extends BuildSeries  {
+public class DetectLevels_series extends BuildSeries  
+{
 	ImageTransformTools tImg = new ImageTransformTools();
 	
-	void analyzeExperiment(Experiment exp) {
+	void analyzeExperiment(Experiment exp) 
+	{
 		exp.xmlLoadMCExperiment();
 		exp.xmlLoadMCcapillaries();
-		if (exp.loadKymographs()) {	
+		if (exp.loadKymographs()) 
+		{	
 			detectCapillaryLevels(exp);
 			String kymosDirectory = exp.getKymosDirectory(); 
 			exp.capillaries.xmlSaveCapillaries_Measures(kymosDirectory);
@@ -33,12 +36,14 @@ public class DetectLevels_series extends BuildSeries  {
 		exp.seqKymos.closeSequence();
 	}
 	
-	private void detectCapillaryLevels(Experiment exp) {
+	private void detectCapillaryLevels(Experiment exp) 
+	{
 		SequenceKymos seqKymos = exp.seqKymos;
 		seqKymos.seq.removeAllROI();
 		int firstKymo = 0;
 		int lastKymo = seqKymos.seq.getSizeT() -1;
-		if (! options.detectAllKymos) {
+		if (! options.detectAllKymos) 
+		{
 			firstKymo = options.firstKymo;
 			lastKymo = firstKymo;
 		}
@@ -58,7 +63,8 @@ public class DetectLevels_series extends BuildSeries  {
 		tImg.setSpanDiff(options.spanDiffTop);
 		tImg.setSequence(seqKymos);
 		
-		for (int indexKymo = firstKymo; indexKymo <= lastKymo; indexKymo++) {
+		for (int indexKymo = firstKymo; indexKymo <= lastKymo; indexKymo++) 
+		{
 			final int t_index = indexKymo;
 			Capillary capi = exp.capillaries.capillariesArrayList.get(t_index);
 			if (!options.detectR && capi.getCapillaryName().endsWith("2"))
@@ -67,9 +73,11 @@ public class DetectLevels_series extends BuildSeries  {
 				return;
 			final Capillary cap = capi;
 			
-			futures.add(processor.submit(new Runnable () {
+			futures.add(processor.submit(new Runnable () 
+			{
 				@Override
-				public void run() {
+				public void run() 
+				{
 //					final IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.imageIORead(t_index), options.transformForLevels);
 					final IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.getImage(t_index, 0), options.transformForLevels);
 					int c = 0;
@@ -85,12 +93,14 @@ public class DetectLevels_series extends BuildSeries  {
 					int lastColumn = sourceImage.getSizeX()-1;
 					int xwidth = sourceImage.getSizeX();
 					int yheight = sourceImage.getSizeY();
-					if (options.analyzePartOnly) {
+					if (options.analyzePartOnly) 
+					{
 						firstColumn = options.startPixel;
 						lastColumn = options.endPixel;
 						if (lastColumn > xwidth-1)
 							lastColumn = xwidth -1;
-					} else {
+					} else 
+					{
 						cap.ptsTop = null;
 						cap.ptsBottom = null;
 					}
@@ -102,10 +112,12 @@ public class DetectLevels_series extends BuildSeries  {
 					List<Point2D> limitBottom = new ArrayList<Point2D>(nColumns);
 		
 					// scan each image column
-					for (int iColumn = firstColumn; iColumn <= lastColumn; iColumn++) {
+					for (int iColumn = firstColumn; iColumn <= lastColumn; iColumn++) 
+					{
 						int ytop = detectThresholdFromTop(iColumn, oldiytop, jitter, sourceValues, xwidth, yheight, options);
 						int ybottom = detectThresholdFromBottom(iColumn, oldiybottom, jitter, sourceValues, xwidth, yheight, options);
-						if (ybottom <= ytop) {
+						if (ybottom <= ytop) 
+						{
 							ybottom = oldiybottom;
 							ytop = oldiytop;
 						}
@@ -115,11 +127,14 @@ public class DetectLevels_series extends BuildSeries  {
 						oldiybottom = ybottom;
 					}
 					
-					if (options.analyzePartOnly) {
+					if (options.analyzePartOnly) 
+					{
 						cap.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
 						cap.ptsBottom.polylineLimit.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
 						
-					} else {
+					} 
+					else 
+					{
 						cap.ptsTop    = new CapillaryLimit(cap.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
 						cap.ptsBottom = new CapillaryLimit(cap.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
 					}
@@ -131,7 +146,8 @@ public class DetectLevels_series extends BuildSeries  {
 			progressBar.close();
 	}
 
-	private int checkLimits (int rowIndex, int maximumRowIndex) {
+	private int checkLimits (int rowIndex, int maximumRowIndex) 
+	{
 		if (rowIndex < 0)
 			rowIndex = 0;
 		if (rowIndex > maximumRowIndex)
@@ -139,10 +155,12 @@ public class DetectLevels_series extends BuildSeries  {
 		return rowIndex;
 	}
 
-	private int detectThresholdFromTop(int ix, int oldiytop, int jitter, int [] tabValues, int xwidth, int yheight, Options_BuildSeries options) {
+	private int detectThresholdFromTop(int ix, int oldiytop, int jitter, int [] tabValues, int xwidth, int yheight, Options_BuildSeries options) 
+	{
 		int y = yheight-1;
 		oldiytop = checkLimits(oldiytop - jitter, yheight-1);
-		for (int iy = oldiytop; iy < yheight; iy++) {
+		for (int iy = oldiytop; iy < yheight; iy++) 
+		{
 			boolean flag = false;
 			if (options.directionUp)
 				flag = tabValues [ix + iy* xwidth] > options.detectLevelThreshold;
@@ -156,11 +174,13 @@ public class DetectLevels_series extends BuildSeries  {
 		return y;
 	}
 	
-	private int detectThresholdFromBottom(int ix, int oldiybottom, int jitter, int[] tabValues, int xwidth, int yheight, Options_BuildSeries options) {
+	private int detectThresholdFromBottom(int ix, int oldiybottom, int jitter, int[] tabValues, int xwidth, int yheight, Options_BuildSeries options) 
+	{
 		int y = 0;
 		oldiybottom = yheight - 1; // no memory needed  - the bottom is quite stable
 		//oldiybottom = checkLimits(oldiybottom +jitter, yheight-1);
-		for (int iy = oldiybottom; iy >= 0 ; iy--) {
+		for (int iy = oldiybottom; iy >= 0 ; iy--) 
+		{
 			boolean flag = false;
 			if (options.directionUp)
 				flag = tabValues [ix + iy* xwidth] > options.detectLevelThreshold;

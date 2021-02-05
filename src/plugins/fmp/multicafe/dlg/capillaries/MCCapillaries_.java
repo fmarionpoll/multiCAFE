@@ -21,7 +21,8 @@ import plugins.fmp.multicafe.sequence.SequenceKymosUtils;
 
 
 
-public class MCCapillaries_ extends JPanel implements PropertyChangeListener, ChangeListener {
+public class MCCapillaries_ extends JPanel implements PropertyChangeListener, ChangeListener 
+{
 	/**
 	 * 
 	 */
@@ -37,7 +38,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	private MultiCAFE 	parent0 		= null;
 
 	
-	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
+	public void init (JPanel mainPanel, String string, MultiCAFE parent0) 
+	{
 		this.parent0 = parent0;
 		capPopupPanel = new PopupPanel(string);
 		
@@ -73,9 +75,11 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		capPanel.add(tabsPane);
 		tabsPane.addChangeListener(this );
 		
-		capPopupPanel.addComponentListener(new ComponentAdapter() {
+		capPopupPanel.addComponentListener(new ComponentAdapter() 
+		{
 			@Override
-			public void componentResized(ComponentEvent e) {
+			public void componentResized(ComponentEvent e) 
+			{
 				parent0.mainFrame.revalidate();
 				parent0.mainFrame.pack();
 				parent0.mainFrame.repaint();
@@ -84,17 +88,21 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	}
 	
 	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) {
+	public void propertyChange(PropertyChangeEvent event) 
+	{
+		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) 
+		{
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			displayCapillariesInformation(exp);
 		  	tabsPane.setSelectedIndex(ID_INFOS);
 		  	parent0.paneSequence.tabIntervals.displayCamDataIntervals(exp);
 		}			  
-		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) {
+		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) 
+		{
 			tabsPane.setSelectedIndex(ID_INFOS);
 		}
-		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) {
+		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) 
+		{
 			parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
 			firePropertyChange("CAPILLARIES_NEW", false, true);
 			tabsPane.setSelectedIndex(ID_INFOS);
@@ -102,18 +110,24 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 
 	}
 	
-	public void displayCapillariesInformation(Experiment exp) {
-		SwingUtilities.invokeLater(new Runnable() { public void run() {
-			ProgressFrame progress = new ProgressFrame("Display capillaries information");
-			updateDialogs( exp);
-			parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
-			parent0.paneSequence.updateDialogs(exp);
-			progress.close();
-		}});
+	public void displayCapillariesInformation(Experiment exp) 
+	{
+		SwingUtilities.invokeLater(new Runnable() 
+		{ 
+			public void run() 
+			{
+				ProgressFrame progress = new ProgressFrame("Display capillaries information");
+				updateDialogs( exp);
+				parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
+				parent0.paneSequence.updateDialogs(exp);
+				progress.close();
+			}});
 	}
 	
-	public void updateDialogs(Experiment exp) {
-		if (exp != null) {
+	public void updateDialogs(Experiment exp) 
+	{
+		if (exp != null) 
+		{
 			SequenceKymosUtils.transferCamDataROIStoKymo(exp);
 			exp.capillaries.desc_old.copy(exp.capillaries.desc);
 			tabInfos.setAllDescriptors(exp.capillaries);
@@ -122,13 +136,15 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		}
 	}
 	
-	public void getDialogCapillariesInfos(Experiment exp) {
+	public void getDialogCapillariesInfos(Experiment exp) 
+	{
 		tabInfos.getDescriptors(exp.capillaries);
 		tabCreate.getGrouping(exp.capillaries);
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent arg0) {
+	public void stateChanged(ChangeEvent arg0) 
+	{
 		JTabbedPane tabbedPane = (JTabbedPane) arg0.getSource();
         int selectedIndex = tabbedPane.getSelectedIndex();
         tabAdjust.roisDisplayrefBar(selectedIndex == ID_ADJUST);

@@ -12,8 +12,8 @@ import javax.swing.JPanel;
 
 
 
-public class Levels extends JPanel  {
-
+public class Levels extends JPanel  
+{
 	/**
 	 * 
 	 */
@@ -32,7 +32,8 @@ public class Levels extends JPanel  {
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
 	JCheckBox	subtractEvaporationCheckBox = new JCheckBox("subtract evaporation", false);
 	
-	void init(GridLayout capLayout) {	
+	void init(GridLayout capLayout) 
+	{	
 		setLayout(capLayout);
 		
 		FlowLayout flowLayout0 = new FlowLayout(FlowLayout.LEFT);
@@ -59,9 +60,12 @@ public class Levels extends JPanel  {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		exportToXLSButton2.addActionListener (new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		exportToXLSButton2.addActionListener (new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				firePropertyChange("EXPORT_KYMOSDATA", false, true);
 			}});
 	}

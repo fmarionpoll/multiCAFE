@@ -16,7 +16,8 @@ import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 
-public class MCLevels_ extends JPanel implements PropertyChangeListener {
+public class MCLevels_ extends JPanel implements PropertyChangeListener 
+{
 	/**
 	 * 
 	 */
@@ -34,7 +35,8 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 			MultiCAFE	parent0 		= null;
 
 	
-	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
+	public void init (JPanel mainPanel, String string, MultiCAFE parent0) 
+	{
 		this.parent0 = parent0;
 		capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
@@ -77,9 +79,11 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 		tabDetectLevels.transformForLevelsComboBox.setSelectedItem(TransformOp.G2MINUS_RB);
 		tabsPane.setSelectedIndex(0);
 		
-		capPopupPanel.addComponentListener(new ComponentAdapter() {
+		capPopupPanel.addComponentListener(new ComponentAdapter() 
+		{
 			@Override
-			public void componentResized(ComponentEvent e) {
+			public void componentResized(ComponentEvent e) 
+			{
 				parent0.mainFrame.revalidate();
 				parent0.mainFrame.pack();
 				parent0.mainFrame.repaint();
@@ -88,17 +92,20 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener {
 	}
 	
 	@Override
-	public void propertyChange(PropertyChangeEvent arg0) {
-
-		if (arg0.getPropertyName().equals("KYMO_DISPLAY_FILTERED1")) {
+	public void propertyChange(PropertyChangeEvent arg0) 
+	{
+		if (arg0.getPropertyName().equals("KYMO_DISPLAY_FILTERED1")) 
+		{
 			parent0.paneKymos.tabDisplay.displayUpdateOnSwingThread();
 		}
-		else if (arg0.getPropertyName().equals("MEASURES_SAVE")) {
+		else if (arg0.getPropertyName().equals("MEASURES_SAVE")) 
+		{
 			tabsPane.setSelectedIndex(0);
 		}
 	}
 	
-	public void updateDialogs(Experiment exp) {
+	public void updateDialogs(Experiment exp) 
+	{
 		int lastpixel = exp.seqKymos.imageWidthMax - 1;
 		tabDetectLevels.startSpinner.setValue(0);
 		tabDetectLevels.endSpinner.setValue(lastpixel);

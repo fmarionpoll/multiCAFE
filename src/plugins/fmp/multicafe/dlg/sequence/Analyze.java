@@ -14,7 +14,8 @@ import javax.swing.SpinnerNumberModel;
 
 import plugins.fmp.multicafe.tools.JComboMs;
 
-public class Analyze  extends JPanel {
+public class Analyze  extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -29,7 +30,8 @@ public class Analyze  extends JPanel {
 	JComboMs 	binUnit 				= new JComboMs();
 	
 	
-	void init(GridLayout capLayout) {
+	void init(GridLayout capLayout) 
+	{
 		setLayout(capLayout);
 
 		FlowLayout layout1 = new FlowLayout(FlowLayout.LEFT);
@@ -62,35 +64,47 @@ public class Analyze  extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		isFixedFrame.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
-			enableIntervalButtons(true);
+	private void defineActionListeners() 
+	{
+		isFixedFrame.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
+				enableIntervalButtons(true);
 			}});
 	
-		isFloatingFrame.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) {
-			enableIntervalButtons(false);
+		isFloatingFrame.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
+				enableIntervalButtons(false);
 			}});
 	}
 	
-	private void enableIntervalButtons(boolean isSelected) {
+	private void enableIntervalButtons(boolean isSelected) 
+	{
 		startJSpinner.setEnabled(isSelected);
         endJSpinner.setEnabled(isSelected);
         intervalsUnit.setEnabled(isSelected);
 	}
 
-	public boolean getIsFixedFrame() {
+	public boolean getIsFixedFrame() 
+	{
 		return isFixedFrame.isSelected();
 	}
 	
-	public long	getStartMs() {
+	public long	getStartMs() 
+	{
 		return (long) ((double)startJSpinner.getValue() * binUnit.getMsUnitValue());
 	}
 	
-	public long	getEndMs() {
+	public long	getEndMs() 
+	{
 		return (long) ((double)endJSpinner.getValue() * binUnit.getMsUnitValue());
 	}
 	
-	public long getBinMs() {
+	public long getBinMs() 
+	{
 		return (long)((int) binSize.getValue() * binUnit.getMsUnitValue());
 	}
 }

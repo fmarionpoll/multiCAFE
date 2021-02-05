@@ -21,7 +21,8 @@ import plugins.fmp.multicafe.sequence.Cage;
 import plugins.fmp.multicafe.sequence.CageTableModel;
 import plugins.fmp.multicafe.sequence.Experiment;
 
-public class Table extends JPanel {
+public class Table extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -37,7 +38,8 @@ public class Table extends JPanel {
 	
 	// -------------------------
 	
-	public void initialize (MultiCAFE parent0, List <Cage> cageCopy) {
+	public void initialize (MultiCAFE parent0, List <Cage> cageCopy) 
+	{
 		this.parent0 = parent0;
 		cageArrayCopy = cageCopy;
 		
@@ -77,23 +79,31 @@ public class Table extends JPanel {
 		pasteButton.setEnabled(cageArrayCopy.size() > 0);
 	}
 	
-	private void defineActionListeners() {
-		copyButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		copyButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				cageArrayCopy.clear();
-				for (Cage cage: exp.cages.cageList ) {
+				for (Cage cage: exp.cages.cageList ) 
+				{
 					cageArrayCopy.add(cage);
 				}
 				pasteButton.setEnabled(true);
 			}});
 		
-		pasteButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		pasteButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				for (Cage cageFrom: cageArrayCopy ) {
+				for (Cage cageFrom: cageArrayCopy ) 
+				{
 					cageFrom.valid = false;
-					for (Cage cageTo: exp.cages.cageList) {
+					for (Cage cageTo: exp.cages.cageList) 
+					{
 						if (!cageFrom.cageRoi.getName().equals (cageTo.cageRoi.getName()))
 							continue;
 						cageFrom.valid 			= true;
@@ -107,14 +117,18 @@ public class Table extends JPanel {
 				viewModel.fireTableDataChanged();
 			}});
 		
-		duplicateAllButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		duplicateAllButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				int rowIndex = tableView.getSelectedRow();
 				int columnIndex = tableView.getSelectedColumn();
-				if (rowIndex >= 0) {
+				if (rowIndex >= 0) 
+				{
 					Cage cage0 = exp.cages.cageList.get(rowIndex);	
-					for (Cage cage: exp.cages.cageList) {
+					for (Cage cage: exp.cages.cageList) 
+					{
 						if (cage.cageRoi.getName().equals(cage0.cageRoi.getName()))
 							continue;
 						switch (columnIndex) {
@@ -137,12 +151,12 @@ public class Table extends JPanel {
 		parent0.paneCapillaries.tabFile.saveCapillaries_file(exp);
 	}
 	
-	private void setFixedColumnProperties (TableColumn column) {
+	private void setFixedColumnProperties (TableColumn column) 
+	{
         column.setResizable(false);
         column.setPreferredWidth(50);
         column.setMaxWidth(50);
         column.setMinWidth(30);
 	}
-
 
 }

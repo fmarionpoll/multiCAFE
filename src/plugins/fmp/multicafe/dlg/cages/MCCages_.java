@@ -17,7 +17,8 @@ import plugins.fmp.multicafe.MultiCAFE;
 
 
 
-public class MCCages_ extends JPanel implements PropertyChangeListener {
+public class MCCages_ extends JPanel implements PropertyChangeListener 
+{
 	/**
 	 * 
 	 */
@@ -43,7 +44,8 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 			MultiCAFE 		parent0			= null;
 
 	
-	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
+	public void init (JPanel mainPanel, String string, MultiCAFE parent0) 
+	{
 		this.parent0 = parent0;
 		
 		capPopupPanel = new PopupPanel(string);
@@ -105,21 +107,27 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 		
 		tabsPane.addChangeListener(new ChangeListener() {
 			@Override 
-	        public void stateChanged(ChangeEvent e) {
+	        public void stateChanged(ChangeEvent e) 
+			{
 	            int selectedIndex = tabsPane.getSelectedIndex();
 	            tabDetect1.overlayCheckBox.setSelected(selectedIndex == iTAB_DETECT1);
-	            if (selectedIndex == iTAB_DETECT1 || selectedIndex == iTAB_DETECT2) {
+	            if (selectedIndex == iTAB_DETECT1 || selectedIndex == iTAB_DETECT2) 
+	            {
 	            	parent0.paneSequence.capPopupPanel.expand();
 	    			parent0.paneCapillaries.capPopupPanel.collapse();
 	    			parent0.paneSequence.tabsPane.setSelectedIndex(3);
 	            }
 	            
-	            if (selectedIndex == iTAB_EDIT) {
+	            if (selectedIndex == iTAB_EDIT) 
+	            {
 	            	bTrapROIsEdit = true;
 	            	parent0.paneSequence.tabDisplay.displayROIsCategory (false, "line");
 	            	parent0.paneSequence.tabDisplay.displayROIsCategory(false, "cage");
-	            } else {
-	            	if (bTrapROIsEdit) {
+	            } 
+	            else 
+	            {
+	            	if (bTrapROIsEdit) 
+	            	{
 	            		parent0.paneSequence.tabDisplay.displayROIsCategory (parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.isSelected(), "line");
 		            	parent0.paneSequence.tabDisplay.displayROIsCategory(parent0.paneSequence.tabDisplay.viewCagesCheckbox.isSelected(), "cage");
 	            	}
@@ -129,27 +137,28 @@ public class MCCages_ extends JPanel implements PropertyChangeListener {
 //	            	tabInfos.tableView.changeSelection(0, 1, false, false);
 //	            }
 	            boolean activateOverlay = false;
-	            if (selectedIndex == iTAB_CAGE2) {
+	            if (selectedIndex == iTAB_CAGE2) 
 	            	activateOverlay = true;
-	            }
 	            tabBuildROIs2.overlayCheckBox.setSelected(activateOverlay);
 	            previouslySelected = selectedIndex;
-	        }
-	    });
+	        }});
 		
-		capPopupPanel.addComponentListener(new ComponentAdapter() {
+		capPopupPanel.addComponentListener(new ComponentAdapter() 
+		{
 			@Override
-			public void componentResized(ComponentEvent e) {
+			public void componentResized(ComponentEvent e) 
+			{
 				parent0.mainFrame.revalidate();
 				parent0.mainFrame.pack();
 				parent0.mainFrame.repaint();
-			}
-		});
+			}});
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals("LOAD_DATA")) {
+	public void propertyChange(PropertyChangeEvent evt) 
+	{
+		if (evt.getPropertyName().equals("LOAD_DATA")) 
+		{
 			tabBuildROIs.updateNColumnsFieldFromSequence();
 		}
 	}

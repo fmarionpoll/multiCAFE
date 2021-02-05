@@ -18,22 +18,22 @@ import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
 
 
-public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeListener {
+public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeListener 
+{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1122367183829360097L;
-
 	public	PopupPanel capPopupPanel	= null;
 	JTabbedPane 		tabsPane 		= new JTabbedPane();
 	public Create 		tabCreate 		= new Create();
 	public Display		tabDisplay 		= new Display();
 	public Intervals	tabIntervals = new Intervals();
 	public LoadSave 	tabFile 		= new LoadSave();
-	
 	private MultiCAFE parent0 = null;
 
-	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
+	public void init (JPanel mainPanel, String string, MultiCAFE parent0) 
+	{
 		this.parent0 = parent0;
 		capPopupPanel = new PopupPanel(string);
 		JPanel capPanel = capPopupPanel.getMainPanel();
@@ -62,9 +62,11 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		capPanel.add(tabsPane);
 		
-		capPopupPanel.addComponentListener(new ComponentAdapter() {
+		capPopupPanel.addComponentListener(new ComponentAdapter() 
+		{
 			@Override
-			public void componentResized(ComponentEvent e) {
+			public void componentResized(ComponentEvent e) 
+			{
 				parent0.mainFrame.revalidate();
 				parent0.mainFrame.pack();
 				parent0.mainFrame.repaint();
@@ -74,8 +76,10 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		if (event.getPropertyName().equals("KYMOS_OPEN")) {
+	public void propertyChange(PropertyChangeEvent event) 
+	{
+		if (event.getPropertyName().equals("KYMOS_OPEN")) 
+		{
 			tabsPane.setSelectedIndex(2);
 		}
 //		else if (event.getPropertyName().equals("KYMOS_CREATE")) {
@@ -85,10 +89,12 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 //				tabsPane.setSelectedIndex(1);
 //			}
 //		}
-		else if (event.getPropertyName().equals("KYMOS_SAVE")) {
+		else if (event.getPropertyName().equals("KYMOS_SAVE")) 
+		{
 			tabsPane.setSelectedIndex(1);
 		}
-		else if (event.getPropertyName().equals("SEQ_CHGBIN")) {
+		else if (event.getPropertyName().equals("SEQ_CHGBIN")) 
+		{
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp == null)
 				return;
@@ -103,11 +109,13 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		}
 	}
 	
-	public void updateDialogs(Experiment exp) {
+	public void updateDialogs(Experiment exp) 
+	{
 		tabIntervals.displayKymoIntervals (exp);
 	}
 	
-	void tabbedCapillariesAndKymosSelected() {
+	void tabbedCapillariesAndKymosSelected() 
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null || exp.seqCamData == null)
 			return;
@@ -119,13 +127,15 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			parent0.paneSequence.capPopupPanel.expand();
 			parent0.paneCapillaries.capPopupPanel.collapse();
 			parent0.paneSequence.tabsPane.setSelectedIndex(3);
-		} else if (iselected == 1) {
+		} else if (iselected == 1) 
+		{
 			parent0.paneKymos.tabDisplay.displayUpdateOnSwingThread();
 		}
 	}
 	
 	@Override
-	public void stateChanged(ChangeEvent event) {
+	public void stateChanged(ChangeEvent event) 
+	{
 		if (event.getSource() == tabsPane)
 			tabbedCapillariesAndKymosSelected();
 	}

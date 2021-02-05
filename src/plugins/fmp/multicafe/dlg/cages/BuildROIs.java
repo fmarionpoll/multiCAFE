@@ -25,7 +25,8 @@ import plugins.fmp.multicafe.sequence.SequenceCamData;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
-public class BuildROIs extends JPanel {
+public class BuildROIs extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -44,7 +45,8 @@ public class BuildROIs extends JPanel {
 
 	private MultiCAFE parent0;
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
@@ -63,12 +65,16 @@ public class BuildROIs extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
+	private void defineActionListeners() 
+	{
 		
-		createROIsFromPolygonButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		createROIsFromPolygonButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null) {
+				if (exp != null) 
+				{
 					ROI2DUtilities.removeRoisContainingString(-1, "cage", exp.seqCamData.seq);
 					exp.cages.removeCages();
 					createROIsFromSelectedPolygon(exp);
@@ -77,17 +83,21 @@ public class BuildROIs extends JPanel {
 				}
 			}});
 		
-		addPolygon2DButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		addPolygon2DButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					create2DPolygon(exp);
 			}});
 	}
 	
-	void updateNColumnsFieldFromSequence() {
+	void updateNColumnsFieldFromSequence() 
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
-		if (exp != null) {
+		if (exp != null) 
+		{
 			int nrois = exp.cages.cageList.size();	
 			if (nrois > 0) {
 				nColumnsTextField.setValue(nrois);
@@ -96,10 +106,12 @@ public class BuildROIs extends JPanel {
 		}
 	}
 
-	private void create2DPolygon(Experiment exp) {
+	private void create2DPolygon(Experiment exp) 
+	{
 		final String dummyname = "perimeter_enclosing";
 		ArrayList<ROI2D> listRois = exp.seqCamData.seq.getROI2Ds();
-		for (ROI2D roi: listRois) {
+		for (ROI2D roi: listRois) 
+		{
 			if (roi.getName() .equals(dummyname))
 				return;
 		}
@@ -109,7 +121,8 @@ public class BuildROIs extends JPanel {
 		int rectleft = rect.x + rect.width /6;
 		int rectright = rect.x + rect.width*5 /6;
 		int recttop = rect.y + rect.height *2/3; 
-		if (exp.capillaries.capillariesArrayList.size() > 0) {
+		if (exp.capillaries.capillariesArrayList.size() > 0) 
+		{
 			Rectangle bound0 = exp.capillaries.capillariesArrayList.get(0).roi.getBounds();
 			int last = exp.capillaries.capillariesArrayList.size() - 1;
 			Rectangle bound1 = exp.capillaries.capillariesArrayList.get(last).roi.getBounds();
@@ -131,22 +144,26 @@ public class BuildROIs extends JPanel {
 		exp.seqCamData.seq.setSelectedROI(roi);
 	}
 		
-	private void createROIsFromSelectedPolygon(Experiment exp) {
+	private void createROIsFromSelectedPolygon(Experiment exp) 
+	{
 		// read values from text boxes
-		try { 
+		try 
+		{ 
 			ncolumns = (int) nColumnsTextField.getValue();
 			nrows = (int) nRowsTextField.getValue();
 			width_cage = (int) width_cageTextField.getValue();
 			width_interval = (int) width_intervalTextField.getValue();
 		} 
-		catch( Exception e ) { 
+		catch( Exception e ) 
+		{ 
 			new AnnounceFrame("Can't interpret one of the ROI parameters value"); 
 		}
 
 		SequenceCamData seqCamData = exp.seqCamData;
 		ROI2D roi = seqCamData.seq.getSelectedROI2D();
 		boolean flag = (roi.getName().length() > 4 && roi.getName().substring( 0 , 4 ).contains("cage"));
-		if ( ! ( roi instanceof ROI2DPolygon ) || flag) {
+		if ( ! ( roi instanceof ROI2DPolygon ) || flag) 
+		{
 			if ( ! ( roi instanceof ROI2DPolygon ) ) 
 				new AnnounceFrame("The frame must be a ROI2D POLYGON");
 			if (flag) 
@@ -168,7 +185,8 @@ public class BuildROIs extends JPanel {
 		double deltay_top = (roiPolygon.ypoints[3]- roiPolygon.ypoints[0]) / ncolumns ;
 		double deltay_bottom = (roiPolygon.ypoints[2]- roiPolygon.ypoints[1]) / ncolumns;
 		
-		for (int i=0; i< ncolumns; i++) {
+		for (int i=0; i< ncolumns; i++) 
+		{
 			double x0i = roiPolygon.xpoints[0] + deltax_top * i;
 			double x1i = roiPolygon.xpoints[1] + deltax_bottom * i;
 			double x3i = x0i + deltax_top;
@@ -179,7 +197,8 @@ public class BuildROIs extends JPanel {
 			double y3i = y0i + deltay_top ;
 			double y2i = y1i + deltay_bottom;
 			
-			for (int j = 0; j < nrows; j++) {
+			for (int j = 0; j < nrows; j++) 
+			{
 				double deltax_left = (x1i - x0i) / nrows;
 				double deltax_right = (x2i - x3i) / nrows;
 				double deltay_left = (y1i - y0i) / nrows;

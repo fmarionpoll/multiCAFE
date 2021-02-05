@@ -11,7 +11,8 @@ import javax.swing.JPanel;
 
 
 
-public class Move  extends JPanel {
+public class Move  extends JPanel 
+{
 
 	/**
 	 * 
@@ -28,7 +29,8 @@ public class Move  extends JPanel {
 	JButton 	exportToXLSButton 	= new JButton("save XLS");
 	JCheckBox	deadEmptyCheckBox   = new JCheckBox("dead=empty");	
 	
-	void init(GridLayout capLayout) {	
+	void init(GridLayout capLayout) 
+	{	
 		setLayout(capLayout);
 		
 		FlowLayout flowLayout1 = new FlowLayout(FlowLayout.LEFT);
@@ -55,9 +57,12 @@ public class Move  extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		exportToXLSButton.addActionListener (new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		exportToXLSButton.addActionListener (new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				firePropertyChange("EXPORT_MOVEDATA", false, true);
 			}});
 	}

@@ -19,7 +19,8 @@ import plugins.fmp.multicafe.sequence.Experiment;
 
 
 
-public class LoadSave  extends JPanel {
+public class LoadSave  extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -29,7 +30,8 @@ public class LoadSave  extends JPanel {
 	private JButton		saveMeasuresButton		= new JButton("Save");
 	private MultiCAFE 	parent0 				= null;
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 	
@@ -48,27 +50,35 @@ public class LoadSave  extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		loadMeasuresButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		loadMeasuresButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				loadCapillaries_Measures(exp);
 			}}); 
 		
-		saveMeasuresButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		saveMeasuresButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				saveCapillaries_Measures(exp);
 				firePropertyChange("MEASURES_SAVE", false, true);
 			}});	
 	}
 
-	public boolean loadCapillaries_Measures(Experiment exp) {
+	public boolean loadCapillaries_Measures(Experiment exp) 
+	{
 		boolean flag = true;
-		if (exp.seqKymos != null ) {
+		if (exp.seqKymos != null ) 
+		{
 			ProgressFrame progress = new ProgressFrame("load capillary measures");
 			flag = exp.xmlLoadMCCapillaries_Measures();
-			if (flag) {
+			if (flag) 
+			{
 				exp.seqKymos.transferCapillariesMeasuresToKymos(exp.capillaries);
 			}
 			progress.close();
@@ -76,9 +86,11 @@ public class LoadSave  extends JPanel {
 		return flag;
 	}
 	
-	public boolean saveCapillaries_Measures(Experiment exp) {
+	public boolean saveCapillaries_Measures(Experiment exp) 
+	{
 		boolean flag = true;
-		if (exp.seqKymos != null ) {
+		if (exp.seqKymos != null ) 
+		{
 			ProgressFrame progress = new ProgressFrame("save capillary measures");
 			flag = exp.saveExperimentMeasures(exp.getKymosDirectory());
 			progress.close();

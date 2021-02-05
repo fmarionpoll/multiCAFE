@@ -24,8 +24,8 @@ import plugins.fmp.multicafe.tools.toExcel.XLSExportMoveResults;
 import plugins.fmp.multicafe.tools.toExcel.XLSExportOptions;
 
 
-public class MCExcel_  extends JPanel implements PropertyChangeListener {
-
+public class MCExcel_  extends JPanel implements PropertyChangeListener 
+{
 	/**
 	 * 
 	 */
@@ -39,7 +39,8 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	private MultiCAFE 		parent0 = null;
 
 	
-	public void init (JPanel mainPanel, String string, MultiCAFE parent0) {
+	public void init (JPanel mainPanel, String string, MultiCAFE parent0) 
+	{
 		this.parent0 = parent0;
 		
 		capPopupPanel = new PopupPanel(string);
@@ -69,9 +70,11 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		capPanel.add(tabsPane);
 		tabsPane.setSelectedIndex(0);
 		
-		capPopupPanel.addComponentListener(new ComponentAdapter() {
+		capPopupPanel.addComponentListener(new ComponentAdapter() 
+		{
 			@Override
-			public void componentResized(ComponentEvent e) {
+			public void componentResized(ComponentEvent e) 
+			{
 				parent0.mainFrame.revalidate();
 				parent0.mainFrame.pack();
 				parent0.mainFrame.repaint();
@@ -80,44 +83,58 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {	
+	public void propertyChange(PropertyChangeEvent evt) 
+	{	
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null) 
 			return;
 		
-		if (evt.getPropertyName().equals("EXPORT_MOVEDATA")) {
+		if (evt.getPropertyName().equals("EXPORT_MOVEDATA")) 
+		{
 			String file = defineXlsFileName(exp, "_move.xlsx");
 			if (file == null)
 				return;
 			updateParametersCurrentExperiment(exp);
-			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-				XLSExportMoveResults xlsExport = new XLSExportMoveResults();
-				xlsExport.exportToFile(file, getMoveOptions());
-			}});
+			ThreadUtil.bgRun( new Runnable() 
+			{ 
+				@Override public void run() 
+				{
+					XLSExportMoveResults xlsExport = new XLSExportMoveResults();
+					xlsExport.exportToFile(file, getMoveOptions());
+				}});
 		} 
-		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) {
+		else if (evt.getPropertyName().equals("EXPORT_KYMOSDATA")) 
+		{
 			String file = defineXlsFileName(exp, "_feeding.xlsx");
 			if (file == null)
 				return;
 			updateParametersCurrentExperiment(exp);
-			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
+			ThreadUtil.bgRun( new Runnable() 
+			{ 
+				@Override public void run() 
+				{
 				XLSExportCapillariesResults xlsExport2 = new XLSExportCapillariesResults();
 				xlsExport2.exportToFile(file, getLevelsOptions());
 			}});
 		}
-		else if (evt.getPropertyName().equals("EXPORT_GULPSDATA")) {
+		else if (evt.getPropertyName().equals("EXPORT_GULPSDATA")) 
+		{
 			String file = defineXlsFileName(exp, "_gulps.xlsx");
 			if (file == null)
 				return;
 			updateParametersCurrentExperiment(exp);
-			ThreadUtil.bgRun( new Runnable() { @Override public void run() {
-				XLSExportGulpsResults xlsExport2 = new XLSExportGulpsResults();
-				xlsExport2.exportToFile(file, getGulpsOptions());
-			}});	
+			ThreadUtil.bgRun( new Runnable() 
+			{ 
+				@Override public void run() 
+				{
+					XLSExportGulpsResults xlsExport2 = new XLSExportGulpsResults();
+					xlsExport2.exportToFile(file, getGulpsOptions());
+				}});	
 		}
 	}
 	
-	private String defineXlsFileName(Experiment exp, String pattern) {
+	private String defineXlsFileName(Experiment exp, String pattern) 
+	{
 		String filename0 = exp.seqCamData.getFileName(0);
 		Path directory = Paths.get(filename0).getParent();
 		Path subpath = directory.getName(directory.getNameCount()-1);
@@ -125,12 +142,14 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		return Dialog.saveFileAs(tentativeName, directory.getParent().toString(), "xlsx");
 	}
 	
-	private void updateParametersCurrentExperiment(Experiment exp) {
+	private void updateParametersCurrentExperiment(Experiment exp) 
+	{
 		parent0.paneCapillaries.getDialogCapillariesInfos(exp);
 		parent0.paneSequence.tabInfosSeq.getExperimentInfosFromDialog(exp);
 	}
 	
-	private XLSExportOptions getMoveOptions() {
+	private XLSExportOptions getMoveOptions() 
+	{
 		XLSExportOptions options = new XLSExportOptions();
 		options.xyImage 		= tabMove.xyCenterCheckBox.isSelected(); 
 		options.xyTopCage		= tabMove.xyCageCheckBox.isSelected();
@@ -143,7 +162,8 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		return options;
 	}
 	
-	private XLSExportOptions getLevelsOptions() {
+	private XLSExportOptions getLevelsOptions() 
+	{
 		XLSExportOptions options = new XLSExportOptions();
 		options.sumGulps 		= false; 
 		options.isGulps 		= false;
@@ -162,7 +182,8 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		return options;
 	}
 	
-	private XLSExportOptions getGulpsOptions() {
+	private XLSExportOptions getGulpsOptions() 
+	{
 		XLSExportOptions options= new XLSExportOptions();
 		options.topLevel 		= false; 
 		options.topLevelDelta   = false;
@@ -181,7 +202,8 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener {
 		return options;
 	}
 	
-	private void getCommonOptions(XLSExportOptions options) {
+	private void getCommonOptions(XLSExportOptions options) 
+	{
 		options.transpose 		= tabOptions.transposeCheckBox.isSelected();
 		options.buildExcelStepMs= tabOptions.getExcelBuildStep() ;
 		options.buildExcelUnitMs= tabOptions.binUnit.getMsUnitValue();

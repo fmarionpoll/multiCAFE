@@ -22,7 +22,8 @@ import plugins.fmp.multicafe.tools.chart.XYMultiChart;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
 
-public class Graphs extends JPanel {
+public class Graphs extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -40,7 +41,8 @@ public class Graphs extends JPanel {
 	private JButton 	displayResultsButton 	= new JButton("Display results");
 	
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {	
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{	
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		setLayout(capLayout);
@@ -57,11 +59,15 @@ public class Graphs extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		displayResultsButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		displayResultsButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
-				if (exp != null) {
+				if (exp != null) 
+				{
 					exp.seqKymos.validateRois();
 					exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
 					xyDisplayGraphs(exp);
@@ -69,7 +75,8 @@ public class Graphs extends JPanel {
 			}});
 	}
 	
-	public void xyDisplayGraphs(Experiment exp) {
+	public void xyDisplayGraphs(Experiment exp) 
+	{
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		if (v == null)
 			return;
@@ -79,25 +86,29 @@ public class Graphs extends JPanel {
 		int dy = 5; // 230
 		if (limitsCheckbox.isSelected() 
 				&& isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVEL)
-				&& isThereAnyDataToDisplay(exp, EnumXLSExportType.BOTTOMLEVEL)) {
+				&& isThereAnyDataToDisplay(exp, EnumXLSExportType.BOTTOMLEVEL)) 
+		{
 			topandbottomChart = xyDisplayGraphsItem(exp, "top + bottom levels", 
 					EnumXLSExportType.TOPLEVEL, 
 					topandbottomChart, rectv, ptRelative);
 			ptRelative.translate(dx, dy);
 		}
-		if (deltaCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVELDELTA)) {
+		if (deltaCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVELDELTA)) 
+		{
 			deltaChart = xyDisplayGraphsItem(exp, "top delta t -(t-1)", 
 					EnumXLSExportType.TOPLEVELDELTA, 
 					deltaChart, rectv, ptRelative);
 			ptRelative.translate(dx, dy);
 		}
-		if (derivativeCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.DERIVEDVALUES)) {
+		if (derivativeCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.DERIVEDVALUES)) 
+		{
 			derivativeChart = xyDisplayGraphsItem(exp, "Derivative", 
 					EnumXLSExportType.DERIVEDVALUES, 
 					derivativeChart, rectv, ptRelative);
 			ptRelative.translate(dx, dy); 
 		}
-		if (consumptionCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.SUMGULPS)) {
+		if (consumptionCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.SUMGULPS)) 
+		{
 			sumgulpsChart = xyDisplayGraphsItem(exp, "Cumulated gulps", 
 					EnumXLSExportType.SUMGULPS, 
 					sumgulpsChart, rectv, ptRelative);
@@ -107,7 +118,8 @@ public class Graphs extends JPanel {
 	
 
 
-	private XYMultiChart xyDisplayGraphsItem(Experiment exp, String title, EnumXLSExportType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) {	
+	private XYMultiChart xyDisplayGraphsItem(Experiment exp, String title, EnumXLSExportType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) 
+	{	
 		if (iChart != null) 
 			iChart.mainChartFrame.dispose();
 		iChart = new XYMultiChart();
@@ -119,10 +131,12 @@ public class Graphs extends JPanel {
 		return iChart;
 	}
 	
-	private boolean isThereAnyDataToDisplay(Experiment exp, EnumXLSExportType option) {
+	private boolean isThereAnyDataToDisplay(Experiment exp, EnumXLSExportType option) 
+	{
 		boolean flag = false;
 		Capillaries capillaries = exp.capillaries;
-		for (Capillary cap: capillaries.capillariesArrayList) {
+		for (Capillary cap: capillaries.capillariesArrayList) 
+		{
 			flag = cap.isThereAnyMeasuresDone(option);
 			if (flag)
 				break;
@@ -130,7 +144,8 @@ public class Graphs extends JPanel {
 		return flag;
 	}
 	
-	public void closeAll() {
+	public void closeAll() 
+	{
 		if (topandbottomChart != null) 
 			topandbottomChart.mainChartFrame.dispose();
 		if (derivativeChart != null) 

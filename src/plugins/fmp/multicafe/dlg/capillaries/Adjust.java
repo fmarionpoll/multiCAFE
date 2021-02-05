@@ -28,7 +28,8 @@ import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 
 
-public class Adjust extends JPanel {
+public class Adjust extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -42,7 +43,8 @@ public class Adjust extends JPanel {
 	private ROI2DLine	roiRefLineUpper 	= new ROI2DLine ();
 	private ROI2DLine	roiRefLineLower 	= new ROI2DLine ();
 
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		add( GuiUtil.besidesPanel(
 				new JLabel(" "), 
@@ -54,12 +56,16 @@ public class Adjust extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		adjustButton.addActionListener(new ActionListener () { @Override public void actionPerformed( final ActionEvent e ) { 
-			Object o = e.getSource();
-			if ( o == adjustButton)  
-				roisCenterLinestoAllCapillaries();
-		}});
+	private void defineActionListeners() 
+	{
+		adjustButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				Object o = e.getSource();
+				if ( o == adjustButton)  
+					roisCenterLinestoAllCapillaries();
+			}});
 	}
 	
 	// -------------------------------------------------------
@@ -76,7 +82,8 @@ public class Adjust extends JPanel {
 		int t = seqCamData.currentFrame;
 		seqCamData.seq.setPositionT(t);
 		IcyBufferedImage vinputImage = seqCamData.seq.getImage(t, 0, chan) ;
-		if (vinputImage == null) {
+		if (vinputImage == null) 
+		{
 			System.out.println("An error occurred while reading image: " + t );
 			return;
 		}
@@ -85,15 +92,18 @@ public class Adjust extends JPanel {
 		
 		// loop through all lines
 		List <ROI2D> capillaryRois = ROI2DUtilities.getROIs2DContainingString ("line", seqCamData.seq);
-		for (ROI2D roi: capillaryRois) {
-			if (roi instanceof ROI2DLine) {
+		for (ROI2D roi: capillaryRois) 
+		{
+			if (roi instanceof ROI2DLine) 
+			{
 				Line2D line = roisCenterLinetoCapillary(sourceValues, xwidth, (ROI2DLine) roi, jitter);
 				((ROI2DLine) roi).setLine(line);
 			}
 		}
 	}
 	
-	private Line2D roisCenterLinetoCapillary(double [] sourceValues, int xwidth, ROI2DLine roi, int jitter) {
+	private Line2D roisCenterLinetoCapillary(double [] sourceValues, int xwidth, ROI2DLine roi, int jitter) 
+	{
 		
 		Line2DPlus line = new Line2DPlus ();
 		line.setLine(roi.getLine());
@@ -115,7 +125,8 @@ public class Adjust extends JPanel {
 		double sumVala = 0;
 		double [] arrayVala = new double [2*jitter +1];
 		int iarray = 0;
-		for (int ix=lowx; ix<=(lowx+2*jitter); ix++, iarray++) {
+		for (int ix=lowx; ix<=(lowx+2*jitter); ix++, iarray++) 
+		{
 			arrayVala[iarray] = sourceValues[iya*xwidth + ix];
 			sumVala += arrayVala[iarray];
 		}
@@ -123,8 +134,10 @@ public class Adjust extends JPanel {
 		
 		// find first left < avg
 		int ilefta = 0;
-		for (int i=0; i< 2*jitter; i++) {
-			if (arrayVala[i] < avgVala) {
+		for (int i=0; i< 2*jitter; i++) 
+		{
+			if (arrayVala[i] < avgVala) 
+			{
 				ilefta = i;
 				break;
 			}
@@ -132,8 +145,10 @@ public class Adjust extends JPanel {
 		
 		// find first right < avg
 		int irighta = 2*jitter;
-		for (int i=irighta; i >= 0; i--) {
-			if (arrayVala[i] < avgVala) {
+		for (int i=irighta; i >= 0; i--) 
+		{
+			if (arrayVala[i] < avgVala) 
+			{
 				irighta = i;
 				break;
 			}
@@ -159,7 +174,8 @@ public class Adjust extends JPanel {
 		double sumValb = 0;
 		double [] arrayValb = new double [2*jitter +1];
 		iarray = 0;
-		for (int ix=lowx; ix<=(lowx+2*jitter); ix++, iarray++) {
+		for (int ix=lowx; ix<=(lowx+2*jitter); ix++, iarray++) 
+		{
 			arrayValb[iarray] = sourceValues[iyb*xwidth + ix];
 			sumValb += arrayValb[iarray];
 		}
@@ -167,16 +183,20 @@ public class Adjust extends JPanel {
 		
 		// find first left < avg
 		int ileftb = 0;
-		for (int i=0; i< 2*jitter; i++) {
-			if (arrayValb[i] < avgValb) {
+		for (int i=0; i< 2*jitter; i++) 
+		{
+			if (arrayValb[i] < avgValb) 
+			{
 				ileftb = i;
 				break;
 			}
 		}
 		// find first right < avg
 		int irightb = 2*jitter;
-		for (int i=irightb; i >= 0; i--) {
-			if (arrayValb[i] < avgValb) {
+		for (int i=irightb; i >= 0; i--) 
+		{
+			if (arrayValb[i] < avgValb) 
+			{
 				irightb = i;
 				break;
 			}
@@ -201,7 +221,8 @@ public class Adjust extends JPanel {
 		return line_out;
 	}
 
-	void roisDisplayrefBar(boolean display) {
+	void roisDisplayrefBar(boolean display) 
+	{
 		Experiment exp = parent0.expList.getCurrentExperiment();
 		if (exp == null)
 			return;
@@ -219,7 +240,8 @@ public class Adjust extends JPanel {
 			
 			List <ROI2D> capillaryRois = ROI2DUtilities.getROIs2DContainingString ("line", seqCamData.seq);
 			Rectangle extRect = new Rectangle (capillaryRois.get(0).getBounds());
-			for (ROI2D roi: capillaryRois) {
+			for (ROI2D roi: capillaryRois) 
+			{
 				Rectangle rect = roi.getBounds();
 				extRect.add(rect);
 			}

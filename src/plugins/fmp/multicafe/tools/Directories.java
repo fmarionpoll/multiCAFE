@@ -14,10 +14,13 @@ import java.util.stream.Collectors;
 
 import plugins.fmp.multicafe.sequence.FileProperties;
 
-public class Directories {
-	static public List<String> reduceFullNameToLastDirectory(List<String> dirList) {	
+public class Directories 
+{
+	static public List<String> reduceFullNameToLastDirectory(List<String> dirList) 
+	{	
 		List<String> shortList = new ArrayList<String> (dirList.size());
-		for (String name: dirList) {
+		for (String name: dirList) 
+		{
 			Path pathName = Paths.get(name);
 			shortList.add(pathName.getName(pathName.getNameCount()-1).toString());
 		}
@@ -25,24 +28,29 @@ public class Directories {
 		return shortList;
 	}
 	
-	static public HashSet<String> getDirectoriesWithFilesType (String rootDirectory, String filter) {
+	static public HashSet<String> getDirectoriesWithFilesType (String rootDirectory, String filter) 
+	{
 		HashSet<String> hSet = new HashSet<String>();
-		try {
+		try 
+		{
 			Path rootPath = Paths.get(rootDirectory);
-			if (Files.exists(rootPath))  {
+			if (Files.exists(rootPath))  
+			{
 				Files.walk(rootPath)
 				.filter(Files::isRegularFile)
 				.filter(p -> p.getFileName().toString().toLowerCase().endsWith(filter))
 				.forEach(p->hSet.add( p.toFile().getParent().toString()));
 			}
-		} catch (IOException e) {
+		} catch (IOException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return hSet;
 	}
 	
-	static public List<String> fetchSubDirectoriesMatchingFilter(String directory, String filter) {	
+	static public List<String> fetchSubDirectoriesMatchingFilter(String directory, String filter) 
+	{	
 		List<Path> subfolders = getAllSubPaths(directory, 1);
 		if (subfolders == null)
 			return null;
@@ -51,11 +59,13 @@ public class Directories {
 		return dirList;
 	}
 	
-	public static List<String> getSubListContainingString (List<Path> subfolders, String filter) {
+	public static List<String> getSubListContainingString (List<Path> subfolders, String filter) 
+	{
 		if (subfolders == null)
 			return null;
 		HashSet<String> dirList = new HashSet<String>();
-		for (Path dirPath: subfolders) {
+		for (Path dirPath: subfolders) 
+		{
 			String subString = dirPath.toString();
 			if (subString.contains(filter)) {
 				dirList.add(subString);
@@ -64,16 +74,21 @@ public class Directories {
 		return new ArrayList<String>(dirList);
 	}
 	
-	public static List<Path> getAllSubPaths(String directory, int depth) {
+	public static List<Path> getAllSubPaths(String directory, int depth) 
+	{
 		Path pathExperimentDir = Paths.get(directory);
 		List<Path> subfolders = null;
-		try {
-			if (Files.exists(pathExperimentDir) ) {
+		try 
+		{
+			if (Files.exists(pathExperimentDir) ) 
+			{
 				subfolders = Files.walk(pathExperimentDir, depth) 
 				    .filter(Files::isDirectory)
 				    .collect(Collectors.toList());
 			}
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -82,10 +97,12 @@ public class Directories {
 		return subfolders;
 	}
 	
-	public static int getFilesAndTestExist(List<FileProperties> fileNameList) {
+	public static int getFilesAndTestExist(List<FileProperties> fileNameList) 
+	{
 		Iterator<FileProperties> it = fileNameList.iterator();
 		int ntotal = 0;
-		while(it.hasNext()){
+		while(it.hasNext())
+		{
 			FileProperties fP = it.next();
 			fP.file = new File(fP.fileName);
 			fP.exists = fP.file.exists();

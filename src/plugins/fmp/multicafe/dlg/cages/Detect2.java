@@ -37,7 +37,8 @@ import plugins.fmp.multicafe.series.DetectFlies2_series;
 
 
 
-public class Detect2 extends JPanel implements ChangeListener, PropertyChangeListener, PopupMenuListener {
+public class Detect2 extends JPanel implements ChangeListener, PropertyChangeListener, PopupMenuListener 
+{
 	private static final long serialVersionUID = -5257698990389571518L;
 	private MultiCAFE 	parent0					=null;
 	
@@ -65,7 +66,8 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	
 	// ----------------------------------------------------
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
@@ -113,40 +115,52 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		thresholdDiffSpinner.addChangeListener(this);
 	}
 	
-	private void defineActionListeners() {
-		startComputationButton.addActionListener(new ActionListener () {
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		startComputationButton.addActionListener(new ActionListener () 
+		{
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				if (startComputationButton.getText() .equals(detectString)) 
 					startComputation();
 				else
 					stopComputation();
 			}});
 		
-		saveButton.addActionListener(new ActionListener () {
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		saveButton.addActionListener(new ActionListener () 
+		{
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null)
 					exp.saveReferenceImage();
 			}});
 		
-		loadButton.addActionListener(new ActionListener () {
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		loadButton.addActionListener(new ActionListener () 
+		{
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				if (exp != null) { 
 					boolean flag = exp.loadReferenceImage(); 
-					if (flag) {
+					if (flag) 
+					{
 						Viewer v = new Viewer(exp.seqBackgroundImage, true);
 						Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBoundsInternal();
 						v.setBounds(rectv);
-					} else {
+					} 
+					else 
+					{
 						 MessageDialog.showDialog("Reference file not found on disk",
 	                                MessageDialog.ERROR_MESSAGE);
 					}
 				}
 			}});
 		
-		allCheckBox.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) {
+		allCheckBox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
 				Color color = Color.BLACK;
 				if (allCheckBox.isSelected()) 
 					color = Color.RED;
@@ -156,15 +170,18 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent e) {
-		if (e.getSource() == thresholdDiffSpinner) {
+	public void stateChanged(ChangeEvent e) 
+	{
+		if (e.getSource() == thresholdDiffSpinner) 
+		{
 			Experiment exp = parent0.expList.getCurrentExperiment();
 			if (exp != null)
 				exp.cages.detect_threshold = (int) thresholdDiffSpinner.getValue();
 		}
 	}
 	
-	private boolean initTrackParameters() {
+	private boolean initTrackParameters() 
+	{
 		if (detectFlies2Thread == null)
 			return false;
 		detectFlies2Thread.options = new Options_BuildSeries();
@@ -203,7 +220,8 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		return true;
 	}
 	
-	void startComputation() {
+	void startComputation() 
+	{
 		currentExp =parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperimentFromList(currentExp);
 		if (exp == null)
@@ -218,15 +236,17 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		startComputationButton.setText("STOP");
 	}
 	
-	private void stopComputation() {	
-		if (detectFlies2Thread != null && !detectFlies2Thread.stopFlag) {
+	private void stopComputation() 
+	{	
+		if (detectFlies2Thread != null && !detectFlies2Thread.stopFlag) 
 			detectFlies2Thread.stopFlag = true;
-		}
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
+	public void propertyChange(PropertyChangeEvent evt) 
+	{
+		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
+		 {
 			Experiment exp = parent0.expList.getExperimentFromList(currentExp);
 			if (exp != null)
 				parent0.paneSequence.openExperiment(exp);
@@ -235,29 +255,34 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	}
 
 	@Override
-	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) 
+	{
 		int nitems = 1;
 		currentExp = parent0.paneSequence.expListComboBox.getSelectedIndex();
 		Experiment exp = parent0.expList.getExperimentFromList(currentExp);
 		if (exp != null )	
 			nitems =  exp.cages.cageList.size() +1;
-		if (allCagesComboBox.getItemCount() != nitems) {
+		if (allCagesComboBox.getItemCount() != nitems) 
+		{
 			allCagesComboBox.removeAllItems();
 			allCagesComboBox.addItem("all cages");
-			for (Cage cage: exp.cages.cageList) {
+			for (Cage cage: exp.cages.cageList) 
+			{
 				allCagesComboBox.addItem(cage.getCageNumber());
 			}
 		}		
 	}
 
 	@Override
-	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) 
+	{
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void popupMenuCanceled(PopupMenuEvent e) {
+	public void popupMenuCanceled(PopupMenuEvent e) 
+	{
 		// TODO Auto-generated method stub
 		
 	}

@@ -6,7 +6,8 @@ import org.w3c.dom.Node;
 
 import icy.util.XMLUtil;
 
-public class CapillariesDescription {
+public class CapillariesDescription 
+{
 	public int version = 1;
 	public double 	volume 			= 5.;
 	public int 		pixels 			= 5;
@@ -48,7 +49,8 @@ public class CapillariesDescription {
 
 	
 
-	public void copy (CapillariesDescription desc) {
+	public void copy (CapillariesDescription desc) 
+	{
 		volume 			= desc.volume;
 		pixels 			= desc.pixels;
 		grouping 		= desc.grouping;
@@ -58,7 +60,8 @@ public class CapillariesDescription {
 		concentrationL 	= desc.concentrationL;
 	}
 	
-	public boolean isChanged (CapillariesDescription desc) {
+	public boolean isChanged (CapillariesDescription desc) 
+	{
 		boolean flag = false; 
 		flag |= (volume != desc.volume);
 		flag |= (pixels != desc.pixels) ;
@@ -70,7 +73,8 @@ public class CapillariesDescription {
 		return flag;
 	}
 	
-	boolean xmlSaveCapillaryDescription (Document doc) {
+	boolean xmlSaveCapillaryDescription (Document doc) 
+	{
 		Node node = XMLUtil.addElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return false;
@@ -93,13 +97,15 @@ public class CapillariesDescription {
 		return true;
 	}
 	
-	boolean xmlLoadCapillaryDescription (Document doc) {
+	boolean xmlLoadCapillaryDescription (Document doc) 
+	{
 		boolean flag = false;
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return flag;
 		version = XMLUtil.getElementIntValue(node, "version", 0);
-		switch (version) {
+		switch (version) 
+		{
 			case 0:
 				flag = xmlLoadCapillaryDescriptionv0(node);
 				break;
@@ -111,7 +117,8 @@ public class CapillariesDescription {
 		return flag;
 	}
 	
-	private boolean xmlLoadCapillaryDescriptionv0 (Node node) {
+	private boolean xmlLoadCapillaryDescriptionv0 (Node node) 
+	{
 		Element xmlElement = XMLUtil.getElement(node, ID_PARAMETERS);
 		if (xmlElement == null) 
 			return false;
@@ -129,7 +136,8 @@ public class CapillariesDescription {
 		pixels = (int) XMLUtil.getAttributeDoubleValue(xmlVal, ID_DESCNPIXELS, Double.NaN);
 
 		xmlVal = XMLUtil.getElement(xmlElement, ID_LRSTIMULUS);
-		if (xmlVal != null) {
+		if (xmlVal != null) 
+		{
 			stimulusR 		= XMLUtil.getAttributeValue(xmlVal, ID_STIMR, ID_STIMR);
 			concentrationR 	= XMLUtil.getAttributeValue(xmlVal, ID_CONCR, ID_CONCR);
 			stimulusL 		= XMLUtil.getAttributeValue(xmlVal, ID_STIML, ID_STIML);
@@ -137,7 +145,8 @@ public class CapillariesDescription {
 		}
 		
 		xmlVal = XMLUtil.getElement(xmlElement, ID_EXPERIMENT);
-		if (xmlVal != null) {
+		if (xmlVal != null) 
+		{
 			old_boxID 		= XMLUtil.getAttributeValue(xmlVal, ID_BOXID, ID_NOPE);
 			old_experiment 	= XMLUtil.getAttributeValue(xmlVal, ID_EXPT, ID_NOPE);
 			old_comment1 	= XMLUtil.getAttributeValue(xmlVal, ID_COMMENT1, ID_NOPE);
@@ -146,21 +155,24 @@ public class CapillariesDescription {
 		return true;
 	}
 	
-	private boolean xmlLoadCapillaryDescriptionv1 (Node node) {
+	private boolean xmlLoadCapillaryDescriptionv1 (Node node) 
+	{
 		Element xmlElement = XMLUtil.getElement(node, ID_PARAMETERS);
 		if (xmlElement == null) 
 			return false;
 
 		sourceName = XMLUtil.getElementValue(xmlElement, ID_FILE, null);
 		Element xmlVal 		= XMLUtil.getElement(xmlElement, "capillaries");
-		if (xmlVal != null) {
+		if (xmlVal != null) 
+		{
 			grouping		= XMLUtil.getElementIntValue(xmlVal, ID_DESCGROUPING, 2);
 			volume 			= XMLUtil.getElementDoubleValue(xmlVal, ID_DESCVOLUMEUL, Double.NaN);
 			pixels 			= XMLUtil.getElementIntValue(xmlVal, ID_DESCNPIXELS, 5);
 		}
 
 		xmlVal = XMLUtil.getElement(xmlElement, ID_LRSTIMULUS);
-		if (xmlVal != null) {
+		if (xmlVal != null) 
+		{
 			stimulusR 		= XMLUtil.getElementValue(xmlVal, ID_STIMR, ID_STIMR);
 			concentrationR 	= XMLUtil.getElementValue(xmlVal, ID_CONCR, ID_CONCR);
 			stimulusL 		= XMLUtil.getElementValue(xmlVal, ID_STIML, ID_STIML);
@@ -168,7 +180,8 @@ public class CapillariesDescription {
 		}
 		
 		xmlVal = XMLUtil.getElement(xmlElement, ID_EXPERIMENT);
-		if (xmlVal != null) {
+		if (xmlVal != null) 
+		{
 			old_boxID 		= XMLUtil.getElementValue(xmlVal, ID_BOXID, ID_NOPE);
 			old_experiment 	= XMLUtil.getElementValue(xmlVal, ID_EXPT, ID_NOPE);
 			old_comment1 	= XMLUtil.getElementValue(xmlVal, ID_COMMENT1, ID_NOPE);

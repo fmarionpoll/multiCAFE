@@ -9,8 +9,8 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
-public class Gulps extends JPanel {
-
+public class Gulps extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -25,7 +25,8 @@ public class Gulps extends JPanel {
 	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R & ratio", true);
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
 	
-	void init(GridLayout capLayout) {	
+	void init(GridLayout capLayout) 
+	{	
 		setLayout(capLayout);
 		
 		FlowLayout flowLayout0 = new FlowLayout(FlowLayout.LEFT);
@@ -51,9 +52,12 @@ public class Gulps extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		exportToXLSButton2.addActionListener (new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		exportToXLSButton2.addActionListener (new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				firePropertyChange("EXPORT_GULPSDATA", false, true);
 			}});
 	}

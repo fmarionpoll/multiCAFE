@@ -17,7 +17,8 @@ import plugins.fmp.multicafe.sequence.Experiment;
 
 
 
-public class Display  extends JPanel {
+public class Display  extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -29,18 +30,21 @@ public class Display  extends JPanel {
 	
     
 	
-	void init(MultiCAFE parent0) {
+	void init(MultiCAFE parent0) 
+	{
 		this.parent0 = parent0;
 		setLayout(new FlowLayout(FlowLayout.LEFT, 3, 1));	
 		add(editCagesButton);
 		add(new JLabel(" "));
-		
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {		
-		editCagesButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{		
+		editCagesButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				exp.capillaries.transferDescriptionToCapillaries();
 				exp.cages.transferNFliesFromCapillariesToCages(exp.capillaries.capillariesArrayList);

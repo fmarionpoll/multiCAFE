@@ -13,7 +13,8 @@ import plugins.fmp.multicafe.sequence.Experiment;
 import plugins.fmp.multicafe.sequence.ExperimentList;
 
 
-public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
+public abstract class BuildSeries extends SwingWorker<Integer, Integer> 
+{
 
 	public Options_BuildSeries 	options 		= new Options_BuildSeries();
 	public boolean 				stopFlag 		= false;
@@ -21,15 +22,16 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 		
 	
 	@Override
-	protected Integer doInBackground() throws Exception {
+	protected Integer doInBackground() throws Exception 
+	{
 		System.out.println("loop over experiments");
-		
         threadRunning = true;
 		int nbiterations = 0;
 		ExperimentList expList = options.expList;
 		ProgressFrame progress = new ProgressFrame("Analyze series");
 			
-		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) {
+		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) 
+		{
 			if (stopFlag)
 				break;
 			long startTimeInNs = System.nanoTime();
@@ -49,16 +51,23 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 	}
 
 	@Override
-	protected void done() {
+	protected void done() 
+	{
 		int statusMsg = 0;
-		try {
+		try 
+		{
 			statusMsg = get();
-		} catch (InterruptedException | ExecutionException e) {
+		} 
+		catch (InterruptedException | ExecutionException e) 
+		{
 			e.printStackTrace();
 		} 
-		if (!threadRunning || stopFlag) {
+		if (!threadRunning || stopFlag) 
+		{
 			firePropertyChange("thread_ended", null, statusMsg);
-		} else {
+		} 
+		else 
+		{
 			firePropertyChange("thread_done", null, statusMsg);
 		}
 		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true); 
@@ -66,28 +75,34 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer> {
 	
 	abstract void analyzeExperiment(Experiment exp);
 	
-    protected void waitAnalyzeExperimentCompletion(Processor processor, List<Future<?>> futures,  ProgressFrame progressBar) {
-   	 try {
-   		 int frame= 1;
-   		 int nframes = futures.size();
-   		 for (Future<?> future : futures) {
-   			 if (progressBar != null)
-   				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
-   			 if (!future.isDone()) {
-   				 if (stopFlag) {
-   					 processor.shutdownNow();
-   					 break;
-   				 } else 
-   					 future.get();
-   			 }
-   			 frame += 1; 
-           }
+    protected void waitAnalyzeExperimentCompletion(Processor processor, List<Future<?>> futures,  ProgressFrame progressBar) 
+    {
+   	 	try 
+   	 	{
+	   		 int frame= 1;
+	   		 int nframes = futures.size();
+	   		 for (Future<?> future : futures) 
+	   		 {
+	   			 if (progressBar != null)
+	   				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
+	   			 if (!future.isDone()) 
+	   			 {
+	   				 if (stopFlag) 
+	   				 {
+	   					 processor.shutdownNow();
+	   					 break;
+	   				 } else 
+	   					 future.get();
+	   			 }
+	   			 frame += 1; 
+	   		 }
         }
         catch (InterruptedException e) {
-       	 processor.shutdownNow();
+       	 	processor.shutdownNow();
         }
-        catch (Exception e) {
-       	 throw new RuntimeException(e);
+        catch (Exception e) 
+   	 	{
+       	 	throw new RuntimeException(e);
         }
    }
 	

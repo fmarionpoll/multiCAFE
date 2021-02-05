@@ -18,7 +18,8 @@ import plugins.fmp.multicafe.sequence.Experiment;
 
 
 
-public class LoadSave extends JPanel {
+public class LoadSave extends JPanel 
+{
 	/**
 	 * 
 	 */
@@ -27,7 +28,8 @@ public class LoadSave extends JPanel {
 	private JButton		saveCagesButton			= new JButton("Save...");
 	private MultiCAFE 	parent0					= null;
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
 
@@ -45,30 +47,37 @@ public class LoadSave extends JPanel {
 		defineActionListeners();
 	}
 	
-	private void defineActionListeners() {
-		openCagesButton.addActionListener(new ActionListener () {
-			@Override public void actionPerformed( final ActionEvent e ) { 
+	private void defineActionListeners() 
+	{
+		openCagesButton.addActionListener(new ActionListener () 
+		{
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				loadCages(exp);
 				firePropertyChange("LOAD_DATA", false, true);
 				parent0.paneCages.tabsPane.setSelectedIndex(3);
 			}});
 		
-		saveCagesButton.addActionListener(new ActionListener () {
-			@Override public void actionPerformed( final ActionEvent e ) { 
+		saveCagesButton.addActionListener(new ActionListener () 
+		{
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 				Experiment exp = parent0.expList.getCurrentExperiment();
 				saveCagesAndMeasures(exp);
 				parent0.paneCages.tabsPane.setSelectedIndex(3);
 			}});
 	}
 
-	public boolean loadCages(Experiment exp) {	
+	public boolean loadCages(Experiment exp) 
+	{	
 		if (exp == null)
 			return false;
 		ProgressFrame progress = new ProgressFrame("load fly positions");
 		
 		boolean flag = exp.xmlReadDrosoTrack(null);
-		if (flag) {
+		if (flag) 
+		{
 //			parent0.paneCages.tabGraphics.moveCheckbox.setEnabled(true);
 //			parent0.paneCages.tabGraphics.displayResultsButton.setEnabled(true);
 			exp.updateROIsAt(0);
@@ -77,8 +86,10 @@ public class LoadSave extends JPanel {
 		return flag;
 	}
 	
-	public void saveCagesAndMeasures(Experiment exp) {
-		if (exp != null) {
+	public void saveCagesAndMeasures(Experiment exp) 
+	{
+		if (exp != null) 
+		{
 			exp.cages.getCagesFromROIs(exp.seqCamData);
 			exp.xmlWriteDrosoTrackDefault();
 		}

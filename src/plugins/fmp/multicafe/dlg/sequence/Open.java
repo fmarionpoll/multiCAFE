@@ -18,7 +18,8 @@ import plugins.fmp.multicafe.MultiCAFE;
 
 
 
-public class Open extends JPanel implements PropertyChangeListener {
+public class Open extends JPanel implements PropertyChangeListener 
+{
 	/**
 	 * 
 	 */
@@ -38,7 +39,8 @@ public class Open extends JPanel implements PropertyChangeListener {
 	
 	
 	
-	void init(GridLayout capLayout, MultiCAFE parent0) {
+	void init(GridLayout capLayout, MultiCAFE parent0) 
+	{
 		setLayout(capLayout);
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
 		layout.setVgap(0);
@@ -58,46 +60,58 @@ public class Open extends JPanel implements PropertyChangeListener {
 		panel2.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		add(panel2);
 
-		searchButton.addActionListener(new ActionListener()  {
+		searchButton.addActionListener(new ActionListener()  
+		{
             @Override
-            public void actionPerformed(ActionEvent arg0) {
+            public void actionPerformed(ActionEvent arg0) 
+            {
             	selectedNames = new ArrayList<String> ();
             	dialogSelect = new SelectFiles();
             	dialogSelect.initialize(parent0);
             }});
 		
-		openButton.addActionListener(new ActionListener()  {
+		openButton.addActionListener(new ActionListener()  
+		{
             @Override
-            public void actionPerformed(ActionEvent arg0) {
+            public void actionPerformed(ActionEvent arg0) 
+            {
             	firePropertyChange("SEQ_OPENFILE", false, true);
             }});
 		
-		addButton.addActionListener(new ActionListener()  {
+		addButton.addActionListener(new ActionListener()  
+		{
             @Override
-            public void actionPerformed(ActionEvent arg0) {
+            public void actionPerformed(ActionEvent arg0) 
+            {
             	firePropertyChange("SEQ_ADDFILE", false, true);
             }});
 	}
 	
-	boolean isCheckedLoadPreviousProfiles() {
+	boolean isCheckedLoadPreviousProfiles() 
+	{
 		return capillariesCheckBox.isSelected();
 	}
 	
-	boolean isCheckedLoadKymographs() {
+	boolean isCheckedLoadKymographs() 
+	{
 		return kymographsCheckBox.isSelected();
 	}
 	
-	boolean isCheckedLoadCages() {
+	boolean isCheckedLoadCages() 
+	{
 		return cagesCheckBox.isSelected();
 	}
 	
-	public boolean isCheckedLoadMeasures() {
+	public boolean isCheckedLoadMeasures() 
+	{
 		return measuresCheckBox.isSelected();
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		if (event.getPropertyName().equals("SEARCH_CLOSED")) {
+	public void propertyChange(PropertyChangeEvent event) 
+	{
+		if (event.getPropertyName().equals("SEARCH_CLOSED")) 
+		{
 			dialogSelect.close();
         	firePropertyChange("SEARCH_CLOSED", false, true);
 		}
