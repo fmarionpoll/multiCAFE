@@ -162,7 +162,7 @@ public class XLSExport
 			if (exp.cages.cageList.size() > cap.capCageID) 
 			{
 				Cage cage = exp.cages.cageList.get(cap.capCageID);
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, cage.cageNFlies );
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, cap.capNFlies); // cage.cageNFlies );
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGECOMMENT.getValue(), transpose, cage.strCageComment);
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, cage.strCageStrain + "/" + cage.strCageSex + "/" + cage.cageAge );
 			} 
@@ -178,7 +178,7 @@ public class XLSExport
 		return pt;
 	}
 	
-	public int outputFieldDescriptors(XSSFSheet sheet) 
+	public int outputColumnHeaders(XSSFSheet sheet) 
 	{		
 		Point pt = new Point(0,0);
 		int x = 0;
@@ -277,7 +277,7 @@ public class XLSExport
 		if (sheet == null) 
 		{
 			sheet = workbook.createSheet(title);
-			int row = outputFieldDescriptors(sheet);
+			int row = outputColumnHeaders(sheet);
 			outputDataTimeIntervals(sheet, row);
 		}
 		return sheet;

@@ -92,6 +92,9 @@ public class Experiment
 	private final static String ID_COMMENT1 		= "comment";
 	private final static String ID_COMMENT2 		= "comment2";
 	
+	private final static int EXPT_DIRECTORY = 1;
+	private final static int IMG_DIRECTORY = 2;
+	private final static int SUB_DIRECTORY = 3;
 	// ----------------------------------
 	
 	public Experiment() 
@@ -295,34 +298,56 @@ public class Experiment
 		return name;
 	}
 	
-	private String findFileLocation(String xmlFileName) 
+	private String findFileLocation(String xmlFileName, int first, int second, int third) 
 	{
 		// current directory
-		String xmlFullFileName = experimentDirectory + File.separator + xmlFileName;
-		if(fileExists (xmlFullFileName))
-			return xmlFullFileName;
-		
-		// primary data (up)
-		imagesDirectory = getRootWithNoResultNorBinString(experimentDirectory);
-		xmlFullFileName = imagesDirectory + File.separator + xmlFileName;
-		if(fileExists (xmlFullFileName))
-			return xmlFullFileName;
-		
-		// any directory (below)
-		Path dirPath = Paths.get(experimentDirectory);
-		List<Path> subFolders = Directories.getAllSubPaths(experimentDirectory, 1);
-		if (subFolders == null)
-			return null;
-		List<String> resultsDirList = Directories.getSubListContainingString(subFolders, RESULTS);
-		List<String> binDirList = Directories.getSubListContainingString(subFolders, BIN);
-		resultsDirList.addAll(binDirList);
-		for (String resultsSub : resultsDirList) 
+		String xmlFullFileName = findFileLocation1(xmlFileName, first);
+		if (xmlFullFileName == null) 
+			xmlFullFileName = findFileLocation1(xmlFileName, second);
+		if (xmlFullFileName == null) 
+			xmlFullFileName = findFileLocation1(xmlFileName, third);
+		return xmlFullFileName;
+	}
+	
+	private String findFileLocation1(String xmlFileName, int item) 
+	{
+		String xmlFullFileName = File.separator + xmlFileName;
+		switch (item) 
 		{
-			Path dir = dirPath.resolve(resultsSub+ File.separator + xmlFileName);
-			if (Files.notExists(dir))
-				continue;
-			return dir.toAbsolutePath().toString();	
+		case IMG_DIRECTORY:
+			imagesDirectory = getRootWithNoResultNorBinString(experimentDirectory);
+			xmlFullFileName = imagesDirectory + File.separator + xmlFileName;
+			break;
+			
+		case SUB_DIRECTORY:
+			// any directory (below)
+			Path dirPath = Paths.get(experimentDirectory);
+			List<Path> subFolders = Directories.getAllSubPaths(experimentDirectory, 1);
+			if (subFolders == null)
+				return null;
+			List<String> resultsDirList = Directories.getSubListContainingString(subFolders, RESULTS);
+			List<String> binDirList = Directories.getSubListContainingString(subFolders, BIN);
+			resultsDirList.addAll(binDirList);
+			for (String resultsSub : resultsDirList) 
+			{
+				Path dir = dirPath.resolve(resultsSub+ File.separator + xmlFileName);
+				if (Files.notExists(dir))
+					continue;
+				xmlFullFileName = dir.toAbsolutePath().toString();	
+				break;
+			}
+			break;
+			
+		case EXPT_DIRECTORY:
+		default:
+			xmlFullFileName = experimentDirectory + xmlFullFileName;
+			break;	
 		}
+		
+		// current directory
+		
+		if(xmlFullFileName != null && fileExists (xmlFullFileName))
+			return xmlFullFileName;
 		return null;
 	}
 	
@@ -497,7 +522,7 @@ public class Experiment
 	
 	public boolean xmlLoadMCcapillaries() 
 	{
-		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend());
+		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, SUB_DIRECTORY, IMG_DIRECTORY);
 		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
 		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(getKymosDirectory());
 		if (flag1 & flag2) 
@@ -576,7 +601,7 @@ public class Experiment
 	}
 	
 	public boolean xmlLoadMCcapillaries_Only() {
-		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend());
+		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, SUB_DIRECTORY, IMG_DIRECTORY);
 		if (xmlCapillaryFileName == null && seqCamData != null) 
 		{
 			return xmlLoadOldCapillaries();
@@ -598,13 +623,13 @@ public class Experiment
 	
 	private boolean xmlLoadOldCapillaries() 
 	{
-		String filename = findFileLocation("capillarytrack.xml");
+		String filename = findFileLocation("capillarytrack.xml", IMG_DIRECTORY, EXPT_DIRECTORY, SUB_DIRECTORY);
 		if (capillaries.xmlLoadOldCapillaries_Only(filename)) 
 		{
 			xmlSaveMCcapillaries();
 			return true;
 		}
-		filename = findFileLocation("roislines.xml");
+		filename = findFileLocation("roislines.xml", IMG_DIRECTORY, EXPT_DIRECTORY, SUB_DIRECTORY);
 		if (seqCamData.xmlReadROIs(filename)) {
 			xmlReadRoiLineParameters(filename);
 			return true;
@@ -615,7 +640,8 @@ public class Experiment
 	// TODO
 	public boolean xmlSaveMCcapillaries() 
 	{
-		String xmlCapillaryFileName = getKymosDirectory() + File.separator + capillaries.getXMLNameToAppend();
+//		String xmlCapillaryFileName = getKymosDirectory() + File.separator + capillaries.getXMLNameToAppend();
+		String xmlCapillaryFileName = experimentDirectory + File.separator + capillaries.getXMLNameToAppend();
 		saveExpDescriptorsToCapillariesDescriptors();
 		boolean flag = capillaries.xmlSaveCapillaries_Descriptors(xmlCapillaryFileName);
 		flag &= capillaries.xmlSaveCapillaries_Measures(getKymosDirectory());
@@ -699,9 +725,9 @@ public class Experiment
 	
 	private String getXMLDrosoTrackLocation() 
 	{
-		String fileName = findFileLocation(ID_MCDROSOTRACK);
+		String fileName = findFileLocation(ID_MCDROSOTRACK, EXPT_DIRECTORY, SUB_DIRECTORY, IMG_DIRECTORY);
 		if (fileName == null)  
-			fileName = findFileLocation("drosotrack.xml");
+			fileName = findFileLocation("drosotrack.xml", IMG_DIRECTORY, EXPT_DIRECTORY, SUB_DIRECTORY);
 		return fileName;
 	}
 	
