@@ -202,7 +202,8 @@ public class Capillaries
 	private void xmlLoadIndividualCapillary_v0(ROI2DShape roiCapillary, String directory, int t) 
 	{
 		Capillary cap = new Capillary((ROI2DShape) roiCapillary);
-		capillariesArrayList.add(cap);
+		if (!isPresent(cap))
+			capillariesArrayList.add(cap);
 		String csFile = directory + roiCapillary.getName() + ".xml";
 		cap.indexImage = t;
 		final Document dockymo = XMLUtil.loadDocument(csFile);
@@ -250,7 +251,8 @@ public class Capillaries
 					cap.capConcentration = desc.concentrationL;
 				}
 			}
-			capillariesArrayList.add(cap);
+			if (!isPresent(cap))
+				capillariesArrayList.add(cap);
 		}
 		return true;
 	}
@@ -401,7 +403,8 @@ public class Capillaries
 			for (ROI2D roi: listROISCap) 
 			{
 				Capillary cap = new Capillary((ROI2DShape) roi);
-				capillariesArrayList.add(cap);
+				if (!isPresent(cap))
+					capillariesArrayList.add(cap);
 			}
 		}
 		Collections.sort(capillariesArrayList);
