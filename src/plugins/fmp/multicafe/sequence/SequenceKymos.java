@@ -305,7 +305,7 @@ public class SequenceKymos extends SequenceCamData
 				continue;
 			
 			progress.setMessage("adjust image "+fileProp.fileName);
-			System.out.print("adjust image "+fileProp.fileName);
+//			System.out.print("adjust image "+fileProp.fileName);
 			IcyBufferedImage ibufImage1 = null;
 			try 
 			{
