@@ -69,7 +69,7 @@ public class Graphs extends JPanel
 				if (exp != null) 
 				{
 					exp.seqKymos.validateRois();
-					exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
+					exp.seqKymos.transferKymosRoisToCapillaries_Measures(exp.capillaries);
 					xyDisplayGraphs(exp);
 				}
 			}});

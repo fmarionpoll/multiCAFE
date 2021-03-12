@@ -149,7 +149,7 @@ public class SequenceKymos extends SequenceCamData
 		Collections.sort(listRois, new Comparators.ROI2D_Name_Comparator());
 	}
 
-	public boolean transferKymosRoisToCapillaries(Capillaries capillaries) 
+	public boolean transferKymosRoisToCapillaries_Measures(Capillaries capillaries) 
 	{
 		List<ROI> allRois = seq.getROIs();
 		if (allRois.size() < 1)
@@ -191,8 +191,8 @@ public class SequenceKymos extends SequenceCamData
 	public void saveKymosCurvesToCapillariesMeasures(Experiment exp) 
 	{
 		exp.seqKymos.validateRois();
-		exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
-		exp.xmlSaveMCcapillaries();
+		exp.seqKymos.transferKymosRoisToCapillaries_Measures(exp.capillaries);
+		exp.xmlSaveMCCapillaries_Measures();
 	}
 
 	// ----------------------------

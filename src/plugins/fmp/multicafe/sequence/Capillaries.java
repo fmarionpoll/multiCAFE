@@ -150,7 +150,7 @@ public class Capillaries
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
 			Capillary cap = capillariesArrayList.get(i);
-			flag &= cap.loadFromXML(node);
+			flag &= cap.loadFromXML_MeasuresOnly(node);
 		}
 		return flag;
 	}

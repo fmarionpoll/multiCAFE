@@ -34,7 +34,7 @@ public class DetectGulps_series extends BuildSeries
 		{
 			buildFilteredImage(exp);
 			detectGulps(exp);
-			exp.xmlSaveMCcapillaries();
+			exp.xmlSaveMCCapillaries_Measures();
 		}
 		exp.seqKymos.closeSequence();
 	}

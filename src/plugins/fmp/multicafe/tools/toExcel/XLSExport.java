@@ -350,10 +350,10 @@ public class XLSExport
 		for (int i=0; i< ncapillaries; i++) 
 		{
 			Capillary cap = expAll.capillaries.capillariesArrayList.get(i);
-			XLSResults row = new XLSResults (cap.roi.getName(), cap.capNFlies, xlsOption, nFrames);
-			row.stimulus = cap.capStimulus;
-			row.concentration = cap.capConcentration;
-			row.cageID = cap.capCageID;
+			XLSResults row 		= new XLSResults (cap.roi.getName(), cap.capNFlies, xlsOption, nFrames);
+			row.stimulus 		= cap.capStimulus;
+			row.concentration 	= cap.capConcentration;
+			row.cageID 			= cap.capCageID;
 			rowListForOneExp.add(row);
 		}
 		Collections.sort(rowListForOneExp, new Comparators.XLSResults_Name_Comparator());

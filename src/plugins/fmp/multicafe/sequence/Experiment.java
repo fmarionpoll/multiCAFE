@@ -180,7 +180,7 @@ public class Experiment
 			seqKymos = new SequenceKymos();
 		if (loadCapillaries) 
 		{
-			xmlLoadMCcapillaries_Only();
+			xmlLoadMCCapillaries_Only();
 			if (!xmlLoadMCCapillaries_Measures()) 
 				return false;
 		}
@@ -539,7 +539,7 @@ public class Experiment
 		if (seqKymos != null && seqKymos.seq != null) 
 		{
 			seqKymos.validateRois();
-			seqKymos.transferKymosRoisToCapillaries(capillaries);
+			seqKymos.transferKymosRoisToCapillaries_Measures(capillaries);
 			flag = capillaries.xmlSaveCapillaries_Measures(directory);
 		}
 		return flag;
@@ -600,7 +600,7 @@ public class Experiment
 		return capillaries.xmlLoadCapillaries_Measures2(getKymosDirectory());
 	}
 	
-	public boolean xmlLoadMCcapillaries_Only() {
+	public boolean xmlLoadMCCapillaries_Only() {
 		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, SUB_DIRECTORY, IMG_DIRECTORY);
 		if (xmlCapillaryFileName == null && seqCamData != null) 
 		{
@@ -626,29 +626,41 @@ public class Experiment
 		String filename = findFileLocation("capillarytrack.xml", IMG_DIRECTORY, EXPT_DIRECTORY, SUB_DIRECTORY);
 		if (capillaries.xmlLoadOldCapillaries_Only(filename)) 
 		{
-			xmlSaveMCcapillaries();
+			xmlSaveMCCapillaries_Only();
+			try {
+		        Files.delete(Paths.get(filename));
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
 			return true;
 		}
 		filename = findFileLocation("roislines.xml", IMG_DIRECTORY, EXPT_DIRECTORY, SUB_DIRECTORY);
 		if (seqCamData.xmlReadROIs(filename)) {
 			xmlReadRoiLineParameters(filename);
+			try {
+		        Files.delete(Paths.get(filename));
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
 			return true;
 		}
 		return false;
 	}
 	
 	// TODO
-	public boolean xmlSaveMCcapillaries() 
+	public boolean xmlSaveMCCapillaries_Only() 
 	{
-//		String xmlCapillaryFileName = getKymosDirectory() + File.separator + capillaries.getXMLNameToAppend();
 		String xmlCapillaryFileName = experimentDirectory + File.separator + capillaries.getXMLNameToAppend();
-		saveExpDescriptorsToCapillariesDescriptors();
-		boolean flag = capillaries.xmlSaveCapillaries_Descriptors(xmlCapillaryFileName);
-		flag &= capillaries.xmlSaveCapillaries_Measures(getKymosDirectory());
-		return flag;
+		transferExpDescriptorsToCapillariesDescriptors();
+		return capillaries.xmlSaveCapillaries_Descriptors(xmlCapillaryFileName);
 	}
 	
-	private void saveExpDescriptorsToCapillariesDescriptors() 
+	public boolean xmlSaveMCCapillaries_Measures() 
+	{
+		return capillaries.xmlSaveCapillaries_Measures(getKymosDirectory());
+	}
+	
+	private void transferExpDescriptorsToCapillariesDescriptors() 
 	{
 		if (!exp_boxID 	.equals("..")) capillaries.desc.old_boxID = exp_boxID;
 		if (!experiment	.equals("..")) capillaries.desc.old_experiment = experiment;

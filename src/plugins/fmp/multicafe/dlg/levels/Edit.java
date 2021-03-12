@@ -107,7 +107,7 @@ public class Edit  extends JPanel
 			return;
 
 		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-		seqKymos.transferKymosRoisToCapillaries(exp.capillaries);		
+		seqKymos.transferKymosRoisToCapillaries_Measures(exp.capillaries);		
 		
 		int lastX = findLastXLeftOfRoi(cap, roiRef);
 		cap.cropMeasuresToNPoints(lastX+1);
@@ -184,7 +184,7 @@ public class Edit  extends JPanel
 		if (roi == null)
 			return;
 		
-		seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
+		seqKymos.transferKymosRoisToCapillaries_Measures(exp.capillaries);
 		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
 		String optionSelected = (String) roiTypeCombo.getSelectedItem();
 		if (optionSelected .contains("gulp")) 

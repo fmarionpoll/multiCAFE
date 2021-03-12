@@ -154,7 +154,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		exp.saveExperimentMeasures(exp.getKymosDirectory());
 		parent0.paneSequence.tabClose.closeExp(exp);
 		thread = new DetectGulps_series();
-		exp.seqKymos.transferKymosRoisToCapillaries(exp.capillaries);
+		exp.seqKymos.transferKymosRoisToCapillaries_Measures(exp.capillaries);
 		
 		Options_BuildSeries options = thread.options;
 		options.expList = new ExperimentList(); 

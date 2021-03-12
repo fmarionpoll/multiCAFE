@@ -83,7 +83,7 @@ public class LoadSave extends JPanel
 			exp.seqKymos = new SequenceKymos();
 			seqKymos = exp.seqKymos;
 		}
-		boolean flag = exp.xmlLoadMCcapillaries_Only();
+		boolean flag = exp.xmlLoadMCCapillaries_Only();
 		exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
 		return flag;
 	}
@@ -96,7 +96,7 @@ public class LoadSave extends JPanel
 	
 		exp.xmlSaveMCExperiment ();
 		exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
-		boolean flag = exp.xmlSaveMCcapillaries();
+		boolean flag = exp.xmlSaveMCCapillaries_Only();
 		return flag;
 	}
 

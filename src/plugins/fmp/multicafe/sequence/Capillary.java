@@ -478,11 +478,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public boolean loadFromXML(Node node) 
 	{
 		boolean result = loadFromXML_CapillaryOnly(node);	
-		String header = getLast2ofCapillaryName()+"_";
-		result |= ptsDerivative.loadCapillaryLimitFromXML(node, ID_DERIVATIVE, header) > 0;
-		result |= ptsTop.loadCapillaryLimitFromXML(node, ID_TOPLEVEL, header) > 0;
-		result |= ptsBottom.loadCapillaryLimitFromXML(node, ID_BOTTOMLEVEL, header) > 0;
-		result |= gulpsRois.loadFromXML(node);
+		result |= loadFromXML_MeasuresOnly( node);
 		return result;
 	}
 	
@@ -490,18 +486,11 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public boolean saveToXML(Node node) 
 	{
 		saveToXML_CapillaryOnly(node);
-		if (ptsTop != null)
-			ptsTop.saveCapillaryLimit2XML(node, ID_TOPLEVEL);
-		if (ptsBottom != null)
-			ptsBottom.saveCapillaryLimit2XML(node, ID_BOTTOMLEVEL);
-		if (ptsDerivative != null)
-			ptsDerivative.saveCapillaryLimit2XML(node, ID_DERIVATIVE);
-		if (gulpsRois != null)
-			gulpsRois.saveToXML(node);
+		saveToXML_MeasuresOnly(node); 
         return true;
 	}
 		
-	boolean loadFromXML_CapillaryOnly(Node node) 
+	public boolean loadFromXML_CapillaryOnly(Node node) 
 	{
 	    final Node nodeMeta = XMLUtil.getElement(node, ID_META);
 	    boolean flag = (nodeMeta != null); 
@@ -510,8 +499,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	    	version 		= XMLUtil.getElementValue(nodeMeta, ID_VERSION, ID_VERSIONNUM);
 	    	indexImage 		= XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        capillaryName 	= XMLUtil.getElementValue(nodeMeta, ID_NAME, capillaryName);
-	        filenameTIFF 	= XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);
-	        
+	        filenameTIFF 	= XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);	        
 	        descriptionOK 	= XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, false);
 	        versionInfos 	= XMLUtil.getElementIntValue(nodeMeta, ID_VERSIONINFOS, 0);
 	        capNFlies 		= XMLUtil.getElementIntValue(nodeMeta, ID_NFLIES, capNFlies);
@@ -528,7 +516,17 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	    return flag;
 	}
 	
-	void saveToXML_CapillaryOnly(Node node) 
+	public boolean loadFromXML_MeasuresOnly(Node node) 
+	{
+		String header = getLast2ofCapillaryName()+"_";
+		boolean result = ptsDerivative.loadCapillaryLimitFromXML(node, ID_DERIVATIVE, header) > 0;
+		result |= ptsTop.loadCapillaryLimitFromXML(node, ID_TOPLEVEL, header) > 0;
+		result |= ptsBottom.loadCapillaryLimitFromXML(node, ID_BOTTOMLEVEL, header) > 0;
+		result |= gulpsRois.loadFromXML(node);
+		return result;
+	}
+	
+	public void saveToXML_CapillaryOnly(Node node) 
 	{
 	    final Node nodeMeta = XMLUtil.setElement(node, ID_META);
 	    if (nodeMeta != null) 
@@ -556,6 +554,18 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	    }
 	}
 
+	public void saveToXML_MeasuresOnly(Node node) 
+	{
+		if (ptsTop != null)
+			ptsTop.saveCapillaryLimit2XML(node, ID_TOPLEVEL);
+		if (ptsBottom != null)
+			ptsBottom.saveCapillaryLimit2XML(node, ID_BOTTOMLEVEL);
+		if (ptsDerivative != null)
+			ptsDerivative.saveCapillaryLimit2XML(node, ID_DERIVATIVE);
+		if (gulpsRois != null)
+			gulpsRois.saveToXML(node);
+	}
+	
 	private void saveToXML_ROI(Node node, ROI roi) 
 	{
 		final Node nodeROI = XMLUtil.setElement(node, ID_ROI);
