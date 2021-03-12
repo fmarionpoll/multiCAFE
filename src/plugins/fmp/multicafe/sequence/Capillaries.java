@@ -97,13 +97,13 @@ public class Capillaries
 			switch (desc.version) 
 			{
 			case 1: // old xml storage structure
-				xmlLoadCapillaries_v1(doc);
+				xmlLoadCapillaries_Only_v1(doc);
 				break;
 			case 0: // old-old xml storage structure
 				xmlLoadCapillaries_v0(doc, csFileName);
 				break;
 			default:
-				xmlLoadCapillaries_v2(doc, csFileName);
+				xmlLoadCapillaries_Only_v2(doc, csFileName);
 				return false;
 			}		
 			return true;
@@ -257,6 +257,38 @@ public class Capillaries
 		return true;
 	}
 	
+	private boolean xmlLoadCapillaries_Only_v1(Document doc) 
+	{
+		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
+		if (node == null)
+			return false;
+		Node nodecaps = XMLUtil.getElement(node, ID_LISTOFCAPILLARIES);
+		int nitems = XMLUtil.getElementIntValue(nodecaps, ID_NCAPILLARIES, 0);
+		capillariesArrayList = new ArrayList<Capillary> (nitems);
+		for (int i= 0; i< nitems; i++) 
+		{
+			Node nodecapillary = XMLUtil.getElement(node, ID_CAPILLARY_+i);
+			Capillary cap = new Capillary();
+			cap.loadFromXML_CapillaryOnly(nodecapillary);
+			if (desc.grouping == 2 && (cap.capStimulus != null && cap.capStimulus.equals(".."))) 
+			{
+				if (cap.getCapillarySide().equals("R")) 
+				{
+					cap.capStimulus = desc.stimulusR;
+					cap.capConcentration = desc.concentrationR;
+				} 
+				else 
+				{
+					cap.capStimulus = desc.stimulusL;
+					cap.capConcentration = desc.concentrationL;
+				}
+			}
+			if (!isPresent(cap))
+				capillariesArrayList.add(cap);
+		}
+		return true;
+	}
+	
 	private void xmlLoadCapillaries_v2(Document doc, String csFileName) 
 	{
 		xmlLoadCapillaries_v1(doc);
@@ -268,6 +300,20 @@ public class Capillaries
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
 			cap.loadFromXML(node);
+		}
+	}
+	
+	private void xmlLoadCapillaries_Only_v2(Document doc, String csFileName) 
+	{
+		xmlLoadCapillaries_Only_v1(doc);
+		Path directorypath = Paths.get(csFileName).getParent();
+		String directory = directorypath + File.separator;
+		for (Capillary cap: capillariesArrayList) 
+		{
+			String csFile = directory + cap.getCapillaryName() + ".xml";
+			final Document capdoc = XMLUtil.loadDocument(csFile);
+			Node node = XMLUtil.getRootElement(capdoc, true);
+			cap.loadFromXML_CapillaryOnly(node);
 		}
 	}	
 
