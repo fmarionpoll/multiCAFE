@@ -11,6 +11,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -31,8 +32,8 @@ import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 public class Experiment 
 {
-	public final String 	RESULTS					= "results";
-	public final String 	BIN						= "bin_";
+	public final static String 	RESULTS					= "results";
+	public final static String 	BIN						= "bin_";
 	
 	private String			imagesDirectory			= null;
 	private String			experimentDirectory		= null;
@@ -190,7 +191,7 @@ public class Experiment
 		return true;
 	}
 	
-	public String getImagesDirectoryAsParentFromFileName(String filename) 
+	static public String getImagesDirectoryAsParentFromFileName(String filename) 
 	{
 		filename = getParentIf(filename, BIN);
 		filename = getParentIf(filename, RESULTS);
@@ -205,7 +206,7 @@ public class Experiment
 		return name;
 	}
 	
-	private String getParentIf(String filename, String filter) 
+	private static String getParentIf(String filename, String filter) 
 	{
 		if (filename .contains(filter)) 
 			filename = Paths.get(filename).getParent().toString();
@@ -217,26 +218,32 @@ public class Experiment
 		imagesDirectory = getImagesDirectoryAsParentFromFileName(filename);
 		if (seqCamData == null)
 			seqCamData = new SequenceCamData();
-		if (null == seqCamData.loadSequenceOfImages(imagesDirectory))
-			return null;
+		if (null == seqCamData.loadSequenceOfImages(imagesDirectory) || seqCamData.seq.getSizeT() == 0)
+			seqCamData = null;
 		return seqCamData;
 	}
 		
 	public SequenceCamData openSequenceCamData() 
 	{
 		loadImagesForSequenceCamData(imagesDirectory);
-		xmlLoadMCExperiment();
-		loadFileIntervalsFromSeqCamData();
+		if (seqCamData != null) 
+		{
+			xmlLoadMCExperiment();
+			loadFileIntervalsFromSeqCamData();
+		}
 		return seqCamData;
 	}
 	
 	public void loadFileIntervalsFromSeqCamData() 
 	{
-		firstImage_FileTime = seqCamData.getFileTimeFromStructuredName(0);
-		lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.seq.getSizeT()-1);
-		camFirstImage_Ms = firstImage_FileTime.toMillis();
-		camLastImage_Ms = lastImage_FileTime.toMillis();
-		camBinImage_Ms = (camLastImage_Ms - camFirstImage_Ms)/(seqCamData.seq.getSizeT()-1);
+		if (seqCamData != null) 
+		{
+			firstImage_FileTime = seqCamData.getFileTimeFromStructuredName(0);
+			lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.seq.getSizeT()-1);
+			camFirstImage_Ms = firstImage_FileTime.toMillis();
+			camLastImage_Ms = lastImage_FileTime.toMillis();
+			camBinImage_Ms = (camLastImage_Ms - camFirstImage_Ms)/(seqCamData.seq.getSizeT()-1);
+		}
 	}
 
 	public String getBinNameFromKymoFrameStep() 
@@ -244,11 +251,12 @@ public class Experiment
 		return BIN + kymoBinCol_Ms/1000;
 	}
 	
-	public List<String> getListOfSubDirectoriesWithTIFF() 
+	public List<String> getSortedListOfSubDirectoriesWithTIFF() 
 	{
 		HashSet <String> hSet = Directories.getDirectoriesWithFilesType (getExperimentDirectory(), ".tiff");
 		List<String> list = Directories.reduceFullNameToLastDirectory(new ArrayList<String>(hSet));
-		return list;
+		List<String> sortedNames = list.stream().sorted().collect(Collectors.toList());
+		return sortedNames;
 	}
 	
 	public String getDirectoryToSaveResults() 

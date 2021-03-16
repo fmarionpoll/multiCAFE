@@ -79,9 +79,6 @@ public class ExperimentList
 		for (Experiment exp: experimentList) 
 		{
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
-//			String expDirectory = exp.getExperimentDirectory();
-//			String imagesDirectory = exp.getRootWithNoResultNorBinString(expDirectory);
-//			exp.setImagesDirectory(imagesDirectory);
 			exp.setBinSubDirectory(expListBinSubPath);
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())

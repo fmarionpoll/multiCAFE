@@ -355,7 +355,7 @@ public class Display extends JPanel implements ViewerListener
 	{
 		actionAllowed = false;
 		binsCombo.removeAllItems();
-		List<String> list = exp.getListOfSubDirectoriesWithTIFF();
+		List<String> list = exp.getSortedListOfSubDirectoriesWithTIFF();
 		for (int i = 0; i < list.size(); i++)
 		{
 			String dirName = list.get(i);

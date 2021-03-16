@@ -476,17 +476,13 @@ public class SequenceCamData
 			}
 			nTotalFrames = listFiles.size();	
 			status = EnumStatus.FILESTACK;	
-			initAnalysisParameters();
+			seqAnalysisStart = 0;
+			seqAnalysisEnd = seq.getSizeT()-1;
+			seqAnalysisStep = 1;
 		}
 		return seq;
 	}
 	
-	private void initAnalysisParameters() 
-	{
-		seqAnalysisStart = 0;
-		seqAnalysisEnd = seq.getSizeT()-1;
-		seqAnalysisStep = 1;
-	}
 		
 	private boolean isLinexLRFileNames(List<String> myListOfFilesNames) 
 	{

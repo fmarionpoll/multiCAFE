@@ -5,11 +5,13 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -27,6 +29,8 @@ import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
 import icy.preferences.XMLPreferences;
 import plugins.fmp.multicafe.MultiCAFE;
+import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.tools.Directories;
 
 public class SelectFiles extends JPanel 
 {
@@ -213,14 +217,23 @@ public class SelectFiles extends JPanel
 		return dummy_selected;
 	}
 	
-	private void addNamesToSelectedList(List<String> stringList) {
+	private void addNamesToSelectedList(List<String> stringList) 
+	{
 		for (String name : stringList) 
 		{
 			String directoryName = Paths.get(name).getParent().toString();
-			parent1.selectedNames.add(directoryName);
+			if (isDirectoryWithJpg(directoryName))
+					parent1.selectedNames.add(directoryName);
 		}
 	}
 
-	
+	private boolean isDirectoryWithJpg(String directoryName) {
+		String imageDirectory = Experiment.getImagesDirectoryAsParentFromFileName(directoryName); 
+//		HashSet <String> hSet = Directories.getDirectoriesWithFilesType (imageDirectory, ".jpg");
+		File dir = new File(imageDirectory);
+		File[] files = dir.listFiles((d, name) -> name.endsWith(".jpg"));
+		boolean flag = (files.length > 0);
+		return flag;
+	}
 
 }

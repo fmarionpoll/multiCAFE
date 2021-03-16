@@ -48,7 +48,6 @@ public class Capillaries
 			final Document doc = XMLUtil.createDocument(true);
 			if (doc != null) 
 			{
-				Collections.sort(capillariesArrayList);
 				desc.xmlSaveCapillaryDescription (doc);
 				xmlSaveListOfCapillaries(doc);
 				return XMLUtil.saveDocument(doc, csFileName);
@@ -61,9 +60,11 @@ public class Capillaries
 	{
 		if (csFileName == null)
 			return false;
-		Collections.sort(capillariesArrayList);
+
 		for (Capillary cap: capillariesArrayList) 
 		{
+			if (cap.roi == null)
+				continue;
 			String tempname = csFileName + File.separator + cap.getCapillaryName()+ ".xml";
 			final Document capdoc = XMLUtil.createDocument(true);
 			cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
@@ -150,6 +151,7 @@ public class Capillaries
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
 			Capillary cap = capillariesArrayList.get(i);
+			cap.indexImage = i;
 			flag &= cap.loadFromXML_MeasuresOnly(node);
 		}
 		return flag;

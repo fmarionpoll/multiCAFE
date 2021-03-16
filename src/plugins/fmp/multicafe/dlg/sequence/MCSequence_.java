@@ -56,7 +56,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 	private MultiCAFE 		parent0 		= null;
 	private	SelectFiles2 	dialogSelect2 	= null;
 			String			name			= null;
-			String 			imagesDirectory		= null;
+			String 			imagesDirectory	= null;
 	
 	
 	
@@ -287,15 +287,22 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		}
 	}
 	
-	void openSequenceCamFromCombo() 
+	boolean openSequenceCamFromCombo() 
 	{
 		Experiment exp = parent0.openExperimentFromString((String) expListComboBox.getSelectedItem());
-		updateDialogs(exp);
-//		ThreadUtil.bgRun( new Runnable() { @Override public void run() {  
+		boolean flag = true;
+		if (exp.seqCamData != null) {
+			updateDialogs(exp);
 			loadMeasuresAndKymos(exp);
 			parent0.paneLevels.updateDialogs(exp);
-//		}});
-		tabsPane.setSelectedIndex(1);
+			tabsPane.setSelectedIndex(1);
+		}
+		else 
+		{
+			flag = false;
+			System.out.println("Error: no jpg files found for this experiment\n");
+		}
+		return flag;
 	}
 	
 	private int addStringToCombo(String strItem) 

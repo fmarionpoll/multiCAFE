@@ -96,8 +96,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	@Override
 	public int compareTo(Capillary o) 
 	{
-		int compareValue = this.capillaryName.compareTo(o.capillaryName);
-		return compareValue;
+		if (o != null)
+			return this.capillaryName.compareTo(o.capillaryName);
+		return 1;
 	}
 	
 	// ------------------------------------------

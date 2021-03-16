@@ -100,7 +100,8 @@ public class LoadSave extends JPanel
 			try 
 			{
 				Files.createDirectories(Paths.get(directory));
-			} catch (IOException e1) 
+			} 
+			catch (IOException e1) 
 			{
 				e1.printStackTrace();
 			}
@@ -165,20 +166,20 @@ public class LoadSave extends JPanel
 	{
 		String kymosSubDirectory = exp.getBinSubDirectory();
 		if (kymosSubDirectory == null) {
-			List<String> listTIFFlocations = exp.getListOfSubDirectoriesWithTIFF();
+			List<String> listTIFFlocations = exp.getSortedListOfSubDirectoriesWithTIFF();
 			if (listTIFFlocations.size() < 1)
 				return;
 			boolean found = false;
 			for (String subDir : listTIFFlocations) 
 			{
-				if (subDir .contains(exp.RESULTS)) 
-				{
-					found = true;
-					break;
-				}
 				if (subDir .contains(exp.BIN)) 
 				{
 					kymosSubDirectory = subDir;
+					found = true;
+					break;
+				}
+				if (subDir .contains(exp.RESULTS)) 
+				{
 					found = true;
 					break;
 				}
