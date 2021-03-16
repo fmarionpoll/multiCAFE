@@ -80,6 +80,8 @@ public class ExperimentList
 		{
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
 			exp.setBinSubDirectory(expListBinSubPath);
+			if (expListBinSubPath == null)
+				exp.checkKymosDirectory();
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())
 				maxSizeOfCapillaryArrays = exp.capillaries.capillariesArrayList.size();
@@ -102,13 +104,11 @@ public class ExperimentList
 			}
 			for (Experiment expi: experimentList) 
 			{
-				if (expi.experimentID == exp.experimentID 
-					|| !expi.experiment .equals(exp.experiment) 
-					|| !expi.exp_boxID .equals(exp.exp_boxID)
-					|| !expi.comment1 .equals(exp.comment1)
-					|| !expi.comment2 .equals(exp.comment2)
-					)
+				if (expi.experimentID == exp.experimentID)
 					continue;
+				if (!isSameDescriptors(exp, expi))
+					continue;
+				
 				// same exp series: if before, insert eventually
 				if (expi.camLastImage_Ms < exp.camFirstImage_Ms) 
 				{
@@ -142,8 +142,18 @@ public class ExperimentList
 			}
 		}
 	}
+	
+	private boolean isSameDescriptors(Experiment exp, Experiment expi) 
+	{
+		boolean flag = true;
+		flag &= expi.experiment .equals(exp.experiment); 
+		flag &= expi.exp_boxID .equals(exp.exp_boxID);
+		flag &= expi.comment1 .equals(exp.comment1);
+		flag &= expi.comment2 .equals(exp.comment2);
+		return flag;
+	}
 
-	public int getPositionOfExperiment(String filename) 
+	public int getExperimentIndex(String filename) 
 	{
 		int position = -1;
 		if (filename != null) 
@@ -162,10 +172,10 @@ public class ExperimentList
 		return position;
 	}
 	
-	public Experiment getExperimentFromFileName(String filename) 
+	public Experiment getExperiment(String filename) 
 	{
 		Experiment exp = null;
-		currentExperimentIndex = getPositionOfExperiment(filename);
+		currentExperimentIndex = getExperimentIndex(filename);
 		if (currentExperimentIndex >= 0) 
 		{
 			if (currentExperimentIndex > getExperimentListSize()-1)

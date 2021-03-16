@@ -161,7 +161,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 	        		parent0.paneSequence.tabClose.closeExp(exp); 
         		}});
         		tabInfosSeq.updateCombos();
-				parent0.expList.currentExperimentIndex = parent0.expList.getPositionOfExperiment(newtext);						
+				parent0.expList.currentExperimentIndex = parent0.expList.getExperimentIndex(newtext);						
 				openSequenceCamFromCombo();
 			}
 			updateBrowseInterface();
@@ -420,7 +420,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 	public Experiment getSelectedExperimentFromCombo() 
 	{
 		String newtext = (String) parent0.paneSequence.expListComboBox.getSelectedItem();
-		parent0.expList.currentExperimentIndex = parent0.expList.getPositionOfExperiment(newtext);	
+		parent0.expList.currentExperimentIndex = parent0.expList.getExperimentIndex(newtext);	
 		return parent0.expList.getCurrentExperiment();
 	}
 }

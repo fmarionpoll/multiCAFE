@@ -66,7 +66,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener
 	
 	public Experiment openExperimentFromString(String filename) 
 	{
-		Experiment exp = expList.getExperimentFromFileName(filename);
+		Experiment exp = expList.getExperiment(filename);
 		if (exp == null) 
 		{
 			exp = new Experiment(filename);
@@ -111,7 +111,6 @@ public class MultiCAFE extends PluginActionable implements ViewerListener
 		v.setBounds(rectv);
 	}
 
-	
 	@Override	
 	public void viewerChanged(ViewerEvent event) 
 	{

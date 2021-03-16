@@ -32,8 +32,8 @@ import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 public class Experiment 
 {
-	public final static String 	RESULTS					= "results";
-	public final static String 	BIN						= "bin_";
+	public final static String 	RESULTS				= "results";
+	public final static String 	BIN					= "bin_";
 	
 	private String			imagesDirectory			= null;
 	private String			experimentDirectory		= null;
@@ -149,6 +149,46 @@ public class Experiment
 		return binSubDirectory;
 	}
 	
+	public void checkKymosDirectory() 
+	{
+		String kymosSubDirectory = getBinSubDirectory();
+		if (kymosSubDirectory == null) {
+			List<String> listTIFFlocations = getSortedListOfSubDirectoriesWithTIFF();
+			if (listTIFFlocations.size() < 1)
+				return;
+			boolean found = false;
+			for (String subDir : listTIFFlocations) 
+			{
+				if (subDir .contains(Experiment.BIN)) 
+				{
+					kymosSubDirectory = subDir;
+					found = true;
+					break;
+				}
+				if (subDir .contains(Experiment.RESULTS)) 
+				{
+					found = true;
+					break;
+				}
+			}
+			if (!found) 
+			{
+				int lowest = getBinStepFromDirectoryName( listTIFFlocations.get(0)) + 1;
+				for (String subDir: listTIFFlocations) 
+				{
+					int val = getBinStepFromDirectoryName( subDir);
+					if (val < lowest) 
+					{
+						lowest = val;
+						kymosSubDirectory = subDir;
+					}
+				}
+			}
+		}
+		setBinSubDirectory(kymosSubDirectory);
+	}
+	
+	
 	public void setImagesDirectory(String name) 
 	{
 		imagesDirectory = name;
@@ -198,7 +238,7 @@ public class Experiment
 		return filename;
 	}
 	
-	String getRootWithNoResultNorBinString(String directoryName) 
+	private String getRootWithNoResultNorBinString(String directoryName) 
 	{
 		String name = directoryName.toLowerCase();
 		while (name .contains(RESULTS) || name .contains(BIN)) 

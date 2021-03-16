@@ -147,7 +147,7 @@ public class LoadSave extends JPanel
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
-		checkKymosDirectory(exp);
+		exp.checkKymosDirectory();
 		List<FileProperties> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosDirectory(), exp.capillaries);
 		int nItems = Directories.getFilesAndTestExist(myList);
 		if (nItems > 0) 
@@ -162,43 +162,6 @@ public class LoadSave extends JPanel
 		return flag;
 	}
 	
-	private void checkKymosDirectory(Experiment exp) 
-	{
-		String kymosSubDirectory = exp.getBinSubDirectory();
-		if (kymosSubDirectory == null) {
-			List<String> listTIFFlocations = exp.getSortedListOfSubDirectoriesWithTIFF();
-			if (listTIFFlocations.size() < 1)
-				return;
-			boolean found = false;
-			for (String subDir : listTIFFlocations) 
-			{
-				if (subDir .contains(Experiment.BIN)) 
-				{
-					kymosSubDirectory = subDir;
-					found = true;
-					break;
-				}
-				if (subDir .contains(Experiment.RESULTS)) 
-				{
-					found = true;
-					break;
-				}
-			}
-			if (!found) 
-			{
-				int lowest = exp.getBinStepFromDirectoryName( listTIFFlocations.get(0)) + 1;
-				for (String subDir: listTIFFlocations) 
-				{
-					int val = exp.getBinStepFromDirectoryName( subDir);
-					if (val < lowest) 
-					{
-						lowest = val;
-						kymosSubDirectory = subDir;
-					}
-				}
-			}
-		}
-		exp.setBinSubDirectory(kymosSubDirectory);
-	}
+	
 	
 }
