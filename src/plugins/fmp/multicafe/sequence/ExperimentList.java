@@ -235,7 +235,7 @@ public class ExperimentList
 		{
 			exp = new Experiment(expDirectory0);
 			exp.setExperimentDirectory(expDirectory0);
-			exp.setImagesDirectory(exp.getImagesDirectoryAsParentFromFileName(expDirectory0));
+			exp.setImagesDirectory(Experiment.getImagesDirectoryAsParentFromFileName(expDirectory0));
 			int experimentNewID  = 0;
 			for (Experiment expi: experimentList) 
 			{

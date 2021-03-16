@@ -241,11 +241,11 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 	{
 		Experiment exp = new Experiment();
 		exp.seqCamData.loadSequenceFromDialog(null);
-		imagesDirectory = exp.getImagesDirectoryAsParentFromFileName(exp.seqCamData.getSeqDataDirectory());
+		imagesDirectory = Experiment.getImagesDirectoryAsParentFromFileName(exp.seqCamData.getSeqDataDirectory());
 	    if (imagesDirectory == null)
 	    	return;
 	    exp.setImagesDirectory(imagesDirectory);
-	    List<String> expList = Directories.fetchSubDirectoriesMatchingFilter(imagesDirectory, exp.RESULTS);
+	    List<String> expList = Directories.fetchSubDirectoriesMatchingFilter(imagesDirectory, Experiment.RESULTS);
 	    String name = imagesDirectory;
 	    if (expList.size() > 0) 
 	    {
@@ -253,7 +253,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 	    	dialogSelect2.initialize(this, expList);
 	    }
 	    else {
-	    	name += File.separator + exp.RESULTS;
+	    	name += File.separator + Experiment.RESULTS;
 	    	openSeqCamData(name);
 	    }
 	}

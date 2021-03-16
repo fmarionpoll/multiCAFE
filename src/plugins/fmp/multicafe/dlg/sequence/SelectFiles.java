@@ -5,15 +5,12 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -30,7 +27,7 @@ import icy.gui.util.GuiUtil;
 import icy.preferences.XMLPreferences;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.tools.Directories;
+
 
 public class SelectFiles extends JPanel 
 {

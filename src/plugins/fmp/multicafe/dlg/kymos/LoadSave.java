@@ -172,13 +172,13 @@ public class LoadSave extends JPanel
 			boolean found = false;
 			for (String subDir : listTIFFlocations) 
 			{
-				if (subDir .contains(exp.BIN)) 
+				if (subDir .contains(Experiment.BIN)) 
 				{
 					kymosSubDirectory = subDir;
 					found = true;
 					break;
 				}
-				if (subDir .contains(exp.RESULTS)) 
+				if (subDir .contains(Experiment.RESULTS)) 
 				{
 					found = true;
 					break;

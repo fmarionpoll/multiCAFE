@@ -359,7 +359,7 @@ public class Display extends JPanel implements ViewerListener
 		for (int i = 0; i < list.size(); i++)
 		{
 			String dirName = list.get(i);
-			if (dirName == null || dirName .contains(exp.RESULTS))
+			if (dirName == null || dirName .contains(Experiment.RESULTS))
 				dirName = ".";
 			binsCombo.addItem(dirName);
 		}

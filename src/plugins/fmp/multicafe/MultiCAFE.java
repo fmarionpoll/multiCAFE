@@ -73,7 +73,7 @@ public class MultiCAFE extends PluginActionable implements ViewerListener
 			expList.addExperiment(exp);
 		}
 		exp.setExperimentDirectory(filename);
-		exp.setImagesDirectory(exp.getImagesDirectoryAsParentFromFileName(filename));
+		exp.setImagesDirectory(Experiment.getImagesDirectoryAsParentFromFileName(filename));
 		exp.openSequenceCamData();
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) 
 		{
