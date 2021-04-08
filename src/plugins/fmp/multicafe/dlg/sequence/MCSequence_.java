@@ -191,12 +191,16 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 			expListComboBox.updateUI();
 			openSeqCamDataCallDialog();
 			// getV2ImagesListFromDialog
+			// new experiment
+			// getResultsDirectoryDialog
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) 
 		{
 			tabClose.closeCurrentExperiment();
 			openSeqCamDataCallDialog();
 			// getV2ImagesListFromDialog
+			// new experiment?
+			// getResultsDirectoryDialog
 		}
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) 
 		{
@@ -245,8 +249,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		imagesDirectory = Experiment.getImagesDirectoryAsParentFromFileName(exp.seqCamData.getSeqDataDirectory());
 	    if (imagesDirectory == null)
 	    	return;
-	    
 	    exp.setImagesDirectory(imagesDirectory);
+	    
 	    List<String> expList = Directories.fetchSubDirectoriesMatchingFilter(imagesDirectory, Experiment.RESULTS);
 	    String name = imagesDirectory;
 	    if (expList.size() > 0) 
