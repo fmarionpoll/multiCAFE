@@ -2,7 +2,6 @@ package plugins.fmp.multicafe.dlg.sequence;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +15,6 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
@@ -49,9 +47,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 	public 	Analyze			tabAnalyze		= new Analyze();
 	public 	Display			tabDisplay 		= new Display();
 	public 	Close 			tabClose 		= new Close();
-	private JLabel			text 			= new JLabel("Experiment ");
+//	private JLabel			text 			= new JLabel("Experiment ");
 	private JButton  		previousButton	= new JButton("<");
 	private JButton			nextButton		= new JButton(">");
+//	private JButton			clearButton  	= new JButton("Close");
 	public 	JComboBox <String> expListComboBox	= new JComboBox <String>();
 	private MultiCAFE 		parent0 		= null;
 	private	SelectFiles2 	dialogSelect2 	= null;
@@ -66,24 +65,21 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		
 		SequenceNameListRenderer renderer = new SequenceNameListRenderer();
 		expListComboBox.setRenderer(renderer);
-		int bWidth = 28;
+		int bWidth = 26; //28;
 		int height = 20;
 		previousButton.setPreferredSize(new Dimension(bWidth, height));
 		nextButton.setPreferredSize(new Dimension(bWidth, height));
 		
-		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
-		flowLayout.setVgap(0);
-		JPanel leftPanel = new JPanel(flowLayout);
-		leftPanel.add(text);
-		leftPanel.add(previousButton);
+		JPanel sequencePanel2 = new JPanel(new BorderLayout());
+		sequencePanel2.add(previousButton, BorderLayout.LINE_START);
+		sequencePanel2.add(expListComboBox, BorderLayout.CENTER);
+		expListComboBox.setPrototypeDisplayValue("XXXXxxxxxxxxxxxxxxxxx______________XXXXXXXXXXXXXXX");
+		sequencePanel2.add(nextButton, BorderLayout.LINE_END);
 		
-		BorderLayout borderlayout1 = new BorderLayout();
-		JPanel sequencePanel = new JPanel(borderlayout1);
-		sequencePanel.add(leftPanel, BorderLayout.LINE_START);
-		
-		sequencePanel.add(nextButton, BorderLayout.LINE_END);
-		sequencePanel.add(expListComboBox, BorderLayout.CENTER);
-		expListComboBox.setPrototypeDisplayValue("XXXXXXXXxxxxxxxxxxxxxxxxx______________XXXXXXXXXXXXXXXXXXX");
+//		JPanel sequencePanel = new JPanel(new BorderLayout());
+//		sequencePanel.add(text, BorderLayout.LINE_START);
+//		sequencePanel.add(clearButton, BorderLayout.LINE_END);
+
 		
 		capPopupPanel = new PopupPanel(string);			
 		capPopupPanel.expand();
@@ -91,7 +87,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		GridLayout tabsLayout = new GridLayout(3, 1);
 		
 		tabOpen.init(tabsLayout, parent0);
-		tabsPane.addTab("Open/Add", null, tabOpen, "Open one or several stacks of .jpg files");
+		tabsPane.addTab("Open", null, tabOpen, "Open one or several stacks of .jpg files");
 		tabOpen.addPropertyChangeListener(this);
 		
 		tabInfosSeq.init(tabsLayout, parent0);
@@ -106,7 +102,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		tabsPane.addTab("Analyze", null, tabAnalyze, "Define analysis intervals");
 		tabAnalyze.addPropertyChangeListener(this);
 
-
 		tabDisplay.init(tabsLayout, parent0);
 		tabsPane.addTab("Display", null, tabDisplay, "Display ROIs");
 		tabDisplay.addPropertyChangeListener(this);
@@ -118,9 +113,9 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		JPanel capPanel = capPopupPanel.getMainPanel();
-		BorderLayout borderlayout2 = new BorderLayout();
-		capPanel.setLayout(borderlayout2);
-		capPanel.add(sequencePanel, BorderLayout.PAGE_START);
+		capPanel.setLayout(new BorderLayout());
+		capPanel.add(sequencePanel2, BorderLayout.PAGE_START);
+//		capPanel.add(sequencePanel, BorderLayout.CENTER);
 		capPanel.add(tabsPane, BorderLayout.PAGE_END);	
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() 
@@ -195,11 +190,13 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 			expListComboBox.removeAllItems();
 			expListComboBox.updateUI();
 			openSeqCamDataCallDialog();
+			// getV2ImagesListFromDialog
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) 
 		{
 			tabClose.closeCurrentExperiment();
 			openSeqCamDataCallDialog();
+			// getV2ImagesListFromDialog
 		}
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) 
 		{
@@ -230,10 +227,14 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 				openSequenceCamFromCombo();
 			}
 		}
-		else if (event.getPropertyName().equals("DIRECTORY_SELECTED")) {
-			name = imagesDirectory + File.separator + name;
+		else if (event.getPropertyName().equals("DIRECTORY_SELECTED")) 
+		{
+			name = imagesDirectory + File.separator + dialogSelect2.resultDirectory;
 			dialogSelect2.close();
-			openSeqCamData(name);
+//			Experiment exp = parent0.expList.getCurrentExperiment();
+//			if (exp == null)
+//				openSeqCamData(name);
+//			loadMeasuresAndKymos(exp);
 		}
 	}
 	
@@ -244,15 +245,18 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		imagesDirectory = Experiment.getImagesDirectoryAsParentFromFileName(exp.seqCamData.getSeqDataDirectory());
 	    if (imagesDirectory == null)
 	    	return;
+	    
 	    exp.setImagesDirectory(imagesDirectory);
 	    List<String> expList = Directories.fetchSubDirectoriesMatchingFilter(imagesDirectory, Experiment.RESULTS);
 	    String name = imagesDirectory;
 	    if (expList.size() > 0) 
 	    {
 	    	dialogSelect2 = new SelectFiles2();
-	    	dialogSelect2.initialize(this, expList);
+	    	dialogSelect2.addPropertyChangeListener(this);
+	    	dialogSelect2.initialize(expList);
 	    }
-	    else {
+	    else 
+	    {
 	    	name += File.separator + Experiment.RESULTS;
 	    	openSeqCamData(name);
 	    }

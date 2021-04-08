@@ -25,14 +25,11 @@ public class SelectFiles2 extends JPanel
 	private	JLabel		comment	 			= new JLabel("<html>Select  existing item or enter 'resultsNEW' name to create a new experiment</html>");
 	private JButton 	validateButton		= new JButton("Validate");
 	private JComboBox<String> dirJCombo		= new JComboBox<String>();
-			MCSequence_ parent1				= null;
+			String		resultDirectory		= null;
 	
 	
-	public void initialize (MCSequence_ paneSequence, List<String> expList) 
+	public void initialize ( List<String> expList) 
 	{
-		parent1 = paneSequence;
-		addPropertyChangeListener(parent1);
-
 		loadComboWithDirectoriesShortNames(expList);
 		dialogFrame = new IcyFrame ("Select or Create", true, true);
 		
@@ -64,7 +61,7 @@ public class SelectFiles2 extends JPanel
 	        @Override
 	        public void actionPerformed(ActionEvent arg0) 
 	        {
-	        	parent1.name = (String) dirJCombo.getSelectedItem();
+	        	resultDirectory = (String) dirJCombo.getSelectedItem();
 				firePropertyChange("DIRECTORY_SELECTED", false, true);
 	        }});
 	}

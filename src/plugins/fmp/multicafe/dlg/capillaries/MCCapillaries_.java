@@ -42,7 +42,6 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	{
 		this.parent0 = parent0;
 		capPopupPanel = new PopupPanel(string);
-		
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();

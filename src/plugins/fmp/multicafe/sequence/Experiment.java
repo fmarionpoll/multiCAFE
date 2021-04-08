@@ -575,8 +575,8 @@ public class Experiment
 		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(getKymosDirectory());
 		if (flag1 & flag2) 
 		{
-			seqKymos.seqDataDirectory = getKymosDirectory();
-			seqKymos.loadListOfPotentialKymographsFromCapillaries(seqKymos.seqDataDirectory, capillaries);
+			seqKymos.seqCamDataDirectory = getKymosDirectory();
+			seqKymos.loadListOfPotentialKymographsFromCapillaries(seqKymos.seqCamDataDirectory, capillaries);
 		}
 		return flag1 & flag2;
 	}

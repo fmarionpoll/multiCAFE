@@ -229,7 +229,7 @@ public class SequenceKymos extends SequenceCamData
 		}
 		if (myList.size() > 0) 
 		{
-			loadSequenceOfImagesFromList(myList, true);
+			seq = loadSequenceOfImagesFromList(myList, true);
 			setParentDirectoryAsCSCamFileName();
 			status = EnumStatus.KYMOGRAPH;
 		}

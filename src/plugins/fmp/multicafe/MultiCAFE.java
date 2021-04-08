@@ -3,6 +3,7 @@ package plugins.fmp.multicafe;
 import java.awt.BorderLayout;
 import java.awt.Rectangle;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
@@ -28,7 +29,7 @@ import plugins.fmp.multicafe.workinprogress_gpu.MCSpots_;
 
 public class MultiCAFE extends PluginActionable implements ViewerListener 
 {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE March 16, 2021", true, true, true, true);
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE April 7, 2021", true, true, true, true);
 	public ExperimentList 	expList 		= new ExperimentList();
 	
 	public MCSequence_ 		paneSequence 	= new MCSequence_();
@@ -39,25 +40,24 @@ public class MultiCAFE extends PluginActionable implements ViewerListener
 	public MCCages_ 		paneCages 		= new MCCages_();
 	public MCExcel_			paneExcel		= new MCExcel_();
 	
+	public 	JTabbedPane 	tabsPane 		= new JTabbedPane();
+	
 	//-------------------------------------------------------------------
 	
 	@Override
 	public void run() 
 	{		
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
-		mainFrame.setLayout(new BorderLayout());
-		mainFrame.add(mainPanel, BorderLayout.CENTER);
-
-		paneSequence.init(mainPanel, "SOURCE DATA", this);
-		paneCapillaries.init(mainPanel, "CAPILLARIES", this);
-		paneKymos.init(mainPanel, "KYMOGRAPHS", this);
-		paneLevels.init(mainPanel, "MEASURE LEVELS & GULPS", this);
-		
+		paneSequence.init(mainPanel, "Source", this);
+		paneCapillaries.init(mainPanel, "Capillaries: define, edit", this);
+		paneKymos.init(mainPanel, "Capillaries: build kymographs", this);
+		paneLevels.init(mainPanel, "Capillaries: measure levels", this);
 //		paneSpots.init(mainPanel, "MEASURE SPOTS", this);
-
-		paneCages.init(mainPanel, "DETECT FLIES", this);
-		paneExcel.init(mainPanel, "EXPORT TO XLSX FILE", this);
+		paneCages.init(mainPanel, "Cages", this);
+		paneExcel.init(mainPanel, "Export", this);
 		
+		mainFrame.setLayout(new BorderLayout());
+		mainFrame.add(mainPanel, BorderLayout.WEST);
 		mainFrame.pack();
 		mainFrame.center();
 		mainFrame.setVisible(true);

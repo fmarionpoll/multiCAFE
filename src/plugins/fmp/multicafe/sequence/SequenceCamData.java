@@ -32,6 +32,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 
 import icy.file.Loader;
+import icy.file.SequenceFileImporter;
 import icy.gui.dialog.LoaderDialog;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
@@ -70,8 +71,8 @@ public class SequenceCamData
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
 	volatile public List <String>	listFiles 				= new ArrayList<String>();
-	protected String 				csCamFileName 				= null;
-	protected String				seqDataDirectory 		= null;
+	protected String 				csCamFileName 			= null;
+	protected String				seqCamDataDirectory 	= null;
 	
 	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif", "avi"};  
 	// TODO: accept mpeg mv4?
@@ -104,7 +105,8 @@ public class SequenceCamData
 		listFiles.clear();
 		for (String cs: listNames)
 			listFiles.add(cs);
-		if (loadSequenceOfImagesFromList(listFiles, true) != null) 
+		seq = loadSequenceOfImagesFromList(listFiles, true) ; 
+		if (seq != null) 
 		{
 			Path path = Paths.get(listFiles.get(0));
 			int iback = 2;
@@ -123,7 +125,8 @@ public class SequenceCamData
 		listFiles.clear();
 		for (String cs: listNames)
 			listFiles.add(cs);
-		if (loadSequenceOfImagesFromList(listFiles, testLR) != null) 
+		seq = loadSequenceOfImagesFromList(listFiles, testLR);
+		if (seq != null) 
 		{
 			Path path = Paths.get(listFiles.get(0));
 			String dir = path.getName(path.getNameCount()-2).toString();
@@ -167,7 +170,7 @@ public class SequenceCamData
 
 	public String getSeqDataDirectory () 
 	{
-		return seqDataDirectory;
+		return seqCamDataDirectory;
 	}
 
 	public IcyBufferedImage getImage(int t, int z) 
@@ -259,7 +262,7 @@ public class SequenceCamData
 		return (status == EnumStatus.FILESTACK);
 	}
 	
-	public List<String> keepOnlyAcceptedNamesFromList(List<String> rawlist, int filetype) 
+	private List<String> keepOnlyAcceptedNamesFromList(List<String> rawlist, int filetype) 
 	{
 		int count = rawlist.size();
 		List<String> outList = new ArrayList<String> (count);
@@ -276,7 +279,7 @@ public class SequenceCamData
 		return outList;
 	}
 		
-	public String[] keepOnlyAcceptedNamesFromArray(String[] rawlist) 
+	private String[] keepOnlyAcceptedNamesFromArray(String[] rawlist) 
 	{
 		int count = rawlist.length;
 		for (int i=0; i< rawlist.length; i++) 
@@ -362,8 +365,8 @@ public class SequenceCamData
 	    if (selectedFiles.length == 0)
 	    	return null;
 	    
-	    seqDataDirectory = selectedFiles[0].isDirectory() ? selectedFiles[0].getAbsolutePath() : selectedFiles[0].getParentFile().getAbsolutePath();
-		if (seqDataDirectory != null ) 
+	    seqCamDataDirectory = selectedFiles[0].isDirectory() ? selectedFiles[0].getAbsolutePath() : selectedFiles[0].getParentFile().getAbsolutePath();
+		if (seqCamDataDirectory != null ) 
 		{
 			if (selectedFiles.length == 1) 
 			{
@@ -377,7 +380,7 @@ public class SequenceCamData
 					if (!selectedFiles[i].getName().toLowerCase().contains(".avi"))
 						list[i] = selectedFiles[i].getAbsolutePath();
 				}
-				seq = loadSequenceOfImagesFromListAndDirectory(list, seqDataDirectory);
+				seq = loadSequenceOfImagesFromListAndDirectory(list, seqCamDataDirectory);
 			}
 		}
 		return seq;
@@ -388,11 +391,11 @@ public class SequenceCamData
 		if (textPath == null) 
 			return loadSequenceFromDialog(null); 
 		File filepath = new File(textPath); 	
-	    seqDataDirectory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
-		if (seqDataDirectory != null ) 
+	    seqCamDataDirectory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
+		if (seqCamDataDirectory != null ) 
 		{
 			List<String> list = new ArrayList<String> ();
-			try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(seqDataDirectory))) 
+			try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(seqCamDataDirectory))) 
 			{
 				for (Path entry: stream) 
 				{
@@ -429,7 +432,53 @@ public class SequenceCamData
 		setParentDirectoryAsCSCamFileName();
 		return seq;
 	}
+	
+	// ---------------------------------------------------------
+	public List<String> getV2ImagesListFromDialog(String path) 
+	{
+		List<String> list = new ArrayList<String> ();
+		LoaderDialog dialog = new LoaderDialog(false);
+		if (path != null) 
+			dialog.setCurrentDirectory(new File(path));
+	    File[] selectedFiles = dialog.getSelectedFiles();
+	    if (selectedFiles.length == 0)
+	    	return null;
+	    
+	    File filepath = selectedFiles[0]; 	
+	    seqCamDataDirectory = filepath.isDirectory() ? filepath.getAbsolutePath() : filepath.getParentFile().getAbsolutePath();
+		if (seqCamDataDirectory != null ) 
+		{
+			if (selectedFiles.length == 1) 
+				list = getV2ImagesListFromPath(filepath);
+			list = keepOnlyAcceptedNamesFromList(list, 0);
+		}
+		return list;
+	}
+	
+	public List<String> getV2ImagesListFromPath(File filepath) 
+	{
+		List<String> list = new ArrayList<String> ();
+		seqCamDataDirectory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
+		if (seqCamDataDirectory != null ) 
+		{
+			try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(seqCamDataDirectory))) 
+			{
+				for (Path entry: stream) 
+				{
+					list.add(entry.toString());
+				}
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+			if (list.size() != 0)
+				list = keepOnlyAcceptedNamesFromList(list, 0);	
+		}
+		return list;
+	}
 
+	// --------------------------------------------------------
 	private Sequence loadSequenceOfImagesFromListAndDirectory(String [] list, String directory) 
 	{
 		status = EnumStatus.FAILURE;
@@ -447,7 +496,7 @@ public class SequenceCamData
 	
 	protected Sequence loadSequenceOfImagesFromList(List<String> myListOfFilesNames, boolean testFilenameDecoratedwithLR) 
 	{
-		seq = null;
+		long startTime = System.nanoTime();
 		if (testFilenameDecoratedwithLR && isLinexLRFileNames(myListOfFilesNames)) 
 		{
 			listFiles = convertLinexLRFileNames(myListOfFilesNames);
@@ -455,35 +504,23 @@ public class SequenceCamData
 		{
 			listFiles = myListOfFilesNames;
 		}
-		List<Sequence> lseq = Loader.loadSequences(null, listFiles, 0, false, false, false, true);
-		if (lseq.size() > 0) 
-		{
-			seq = lseq.get(0);
-			if (lseq.size() > 1) 
-			{
-				seq = lseq.get(0);	
-				int tmax = lseq.get(0).getSizeT();
-				int tseq = 0;
-				for (int t = 0; t < tmax; t++) 
-				{
-					for (int i=0; i < lseq.size(); i++) 
-					{
-						IcyBufferedImage bufImg = lseq.get(i).getImage(t, 0);
-						seq.setImage(tseq, 0, bufImg);
-						tseq++;
-					}
-				}
-			}
-			nTotalFrames = listFiles.size();	
-			status = EnumStatus.FILESTACK;	
-			seqAnalysisStart = 0;
-			seqAnalysisEnd = seq.getSizeT()-1;
-			seqAnalysisStep = 1;
-		}
+		long endTime = System.nanoTime();
+		System.out.println("load list of "+ listFiles.size() +" files "+ listFiles.get(0)); // "+ " - duration: "+((endTime-startTime)/ 1000000000f) + " s");
+		
+		startTime = endTime;
+		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(listFiles.get(0), true);
+		Sequence seq = Loader.loadSequence(seqFileImporter, listFiles, false);
+		endTime = System.nanoTime();
+		System.out.println("loading sequence done - duration: "+((endTime-startTime)/ 1000000000f) + " s");		
+
+		nTotalFrames = listFiles.size();	
+		status = EnumStatus.FILESTACK;	
+		seqAnalysisStart = 0;
+		seqAnalysisEnd = seq.getSizeT()-1;
+		seqAnalysisStep = 1;
 		return seq;
 	}
 	
-		
 	private boolean isLinexLRFileNames(List<String> myListOfFilesNames) 
 	{
 		boolean flag = false;
@@ -533,9 +570,7 @@ public class SequenceCamData
 		{
 			try 
 			{
-				FileUtils.moveFile(
-					      FileUtils.getFile(oldName), 
-					      FileUtils.getFile(newName));
+				FileUtils.moveFile(	FileUtils.getFile(oldName),  FileUtils.getFile(newName));
 			} 
 			catch (IOException e) 
 			{

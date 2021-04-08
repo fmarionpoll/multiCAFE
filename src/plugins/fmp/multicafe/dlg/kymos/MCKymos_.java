@@ -72,7 +72,6 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 				parent0.mainFrame.repaint();
 				tabbedCapillariesAndKymosSelected();
 			}});
-		
 	}
 
 	@Override
