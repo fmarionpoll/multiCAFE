@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import plugins.fmp.multicafe.sequence.FileProperties;
+import plugins.fmp.multicafe.experiment.FileProperties;
 
 public class Directories 
 {
@@ -51,15 +51,15 @@ public class Directories
 	
 	static public List<String> fetchSubDirectoriesMatchingFilter(String directory, String filter) 
 	{	
-		List<Path> subfolders = getAllSubPaths(directory, 1);
+		List<Path> subfolders = getAllSubPathsOfDirectory(directory, 1);
 		if (subfolders == null)
 			return null;
-		List<String> dirList = getSubListContainingString(subfolders, filter);
+		List<String> dirList = getPathsContainingString(subfolders, filter);
 		Collections.sort(dirList, String.CASE_INSENSITIVE_ORDER);
 		return dirList;
 	}
 	
-	public static List<String> getSubListContainingString (List<Path> subfolders, String filter) 
+	public static List<String> getPathsContainingString (List<Path> subfolders, String filter) 
 	{
 		if (subfolders == null)
 			return null;
@@ -74,7 +74,7 @@ public class Directories
 		return new ArrayList<String>(dirList);
 	}
 	
-	public static List<Path> getAllSubPaths(String directory, int depth) 
+	public static List<Path> getAllSubPathsOfDirectory(String directory, int depth) 
 	{
 		Path pathExperimentDir = Paths.get(directory);
 		List<Path> subfolders = null;
@@ -112,4 +112,18 @@ public class Directories
 		return ntotal;
 	}
 	
+	public static String clipNameToDirectory (String fileName)
+	{
+		File filepath = new File(fileName); 	
+		String strDirectory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
+		return strDirectory;
+	}
+	
+	public static List<String> getSortedListOfSubDirectoriesWithTIFF(String parentDirectory) 
+	{
+		HashSet <String> hSet = getDirectoriesWithFilesType (parentDirectory, ".tiff");
+		List<String> list = reduceFullNameToLastDirectory(new ArrayList<String>(hSet));
+		List<String> sortedNames = list.stream().sorted().collect(Collectors.toList());
+		return sortedNames;
+	}
 }

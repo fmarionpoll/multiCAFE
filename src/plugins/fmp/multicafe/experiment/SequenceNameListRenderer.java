@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.sequence;
+package plugins.fmp.multicafe.experiment;
 
 import java.awt.Component;
 
@@ -22,19 +22,22 @@ public class SequenceNameListRenderer extends DefaultListCellRenderer
       	if (index < 0) 
       		index = list.getSelectedIndex();	   
       	String lead = "["+(index+1)+":"+nitems+"] ";
-      	String tvalue = (String) value;
-      	if (tvalue != null) 
-      	{
-	      	int nch_lead = lead.length();
-	      	int nch_tvalue = tvalue.length();
-	      	int max = 70;
-	      	if ((nch_lead + nch_tvalue) > max) 
+      	if (value != null) {
+	      	String tvalue = (String) value.toString();
+	      	if (tvalue != null) 
 	      	{
-	      		int nchars = max - 3 - nch_lead;
-	      		tvalue = "..." + tvalue.substring(nch_tvalue - nchars);
+		      	int nch_lead = lead.length();
+		      	int nch_tvalue = tvalue.length();
+		      	int max = 70;
+		      	if ((nch_lead + nch_tvalue) > max) 
+		      	{
+		      		int nchars = max - 3 - nch_lead;
+		      		tvalue = "..." + tvalue.substring(nch_tvalue - nchars);
+		      	}
 	      	}
+	      	lead += tvalue;
       	}
-		setText(lead+tvalue);
+      	setText(lead);
 		return c;
    }
 }

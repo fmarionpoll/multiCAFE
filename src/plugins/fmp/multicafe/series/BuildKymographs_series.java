@@ -16,10 +16,10 @@ import icy.system.thread.Processor;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import loci.formats.FormatException;
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.SequenceCamData;
-import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.SequenceCamData;
+import plugins.fmp.multicafe.experiment.SequenceKymos;
 import plugins.fmp.multicafe.tools.Bresenham;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 

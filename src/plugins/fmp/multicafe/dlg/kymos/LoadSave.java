@@ -24,10 +24,10 @@ import icy.image.IcyBufferedImage;
 import icy.system.thread.ThreadUtil;
 import loci.formats.FormatException;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.FileProperties;
-import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.FileProperties;
+import plugins.fmp.multicafe.experiment.SequenceKymos;
 import plugins.fmp.multicafe.tools.Directories;
 
 
@@ -67,7 +67,7 @@ public class LoadSave extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 				if (exp != null) 
 				{
 					if (loadDefaultKymos(exp))
@@ -78,7 +78,7 @@ public class LoadSave extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 				if (exp != null) 
 				{
 					String path = exp.getExperimentDirectory();
@@ -91,7 +91,7 @@ public class LoadSave extends JPanel
 	void saveKymographFiles(String directory) 
 	{
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -147,7 +147,7 @@ public class LoadSave extends JPanel
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
-		exp.checkKymosDirectory();
+		exp.checkKymosDirectory(exp.getBinSubDirectory());
 		List<FileProperties> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosDirectory(), exp.capillaries);
 		int nItems = Directories.getFilesAndTestExist(myList);
 		if (nItems > 0) 

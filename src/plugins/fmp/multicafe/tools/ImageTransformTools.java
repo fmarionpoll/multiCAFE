@@ -5,7 +5,7 @@ import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
-import plugins.fmp.multicafe.sequence.SequenceCamData;
+import plugins.fmp.multicafe.experiment.SequenceCamData;
 
 
 

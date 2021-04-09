@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.sequence;
+package plugins.fmp.multicafe.experiment;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -56,10 +56,10 @@ public class CapillaryTableModel extends AbstractTableModel
     @Override
     public int getRowCount() 
     {
-    	if (expList != null && expList.currentExperimentIndex >= 0 )
-    		return expList
-    				.getCurrentExperiment()
-    				.capillaries.capillariesArrayList.size();
+    	if (expList != null && expList.getSelectedIndex() >= 0 ) {
+    		Experiment exp = (Experiment) expList.getSelectedItem();
+			return exp.capillaries.capillariesArrayList.size();
+    	}
         return 0;
     }
 
@@ -67,11 +67,10 @@ public class CapillaryTableModel extends AbstractTableModel
     public Object getValueAt(int rowIndex, int columnIndex) 
     {
     	Capillary cap = null;
-    	if (expList != null && expList.currentExperimentIndex >=0 ) 
+    	if (expList != null && expList.getSelectedIndex() >=0 ) 
     	{
-    		cap = expList
-    				.getCurrentExperiment()
-    				.capillaries.capillariesArrayList.get(rowIndex);
+    		Experiment exp = (Experiment) expList.getSelectedItem();
+    		cap = exp.capillaries.capillariesArrayList.get(rowIndex);
     	}
     	if (cap != null) 
     	{
@@ -104,8 +103,11 @@ public class CapillaryTableModel extends AbstractTableModel
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) 
     {
     	Capillary cap = null;
-    	if (expList != null && expList.currentExperimentIndex >=0 ) 
-    		cap = expList.getCurrentExperiment().capillaries.capillariesArrayList.get(rowIndex);
+    	if (expList != null && expList.getSelectedIndex() >=0 ) 
+    	{
+    		Experiment exp = (Experiment) expList.getSelectedItem();
+    		cap = exp.capillaries.capillariesArrayList.get(rowIndex);
+    	}
     	if (cap != null) 
     	{
         	switch (columnIndex) 

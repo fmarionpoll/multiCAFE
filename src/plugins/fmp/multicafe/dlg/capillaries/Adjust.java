@@ -21,8 +21,8 @@ import icy.image.IcyBufferedImage;
 import icy.roi.ROI2D;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.SequenceCamData;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.SequenceCamData;
 import plugins.fmp.multicafe.tools.Line2DPlus;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DLine;
@@ -70,7 +70,7 @@ public class Adjust extends JPanel
 	
 	// -------------------------------------------------------
 	private void roisCenterLinestoAllCapillaries() {
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		if (exp == null) 
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
@@ -223,7 +223,7 @@ public class Adjust extends JPanel
 
 	void roisDisplayrefBar(boolean display) 
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;

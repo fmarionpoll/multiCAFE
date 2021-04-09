@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.sequence;
+package plugins.fmp.multicafe.experiment;
 
 
 import java.io.File;

@@ -1,23 +1,26 @@
-package plugins.fmp.multicafe.sequence;
+package plugins.fmp.multicafe.experiment;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+
+import javax.swing.JComboBox;
+
 
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafe.tools.toExcel.XLSExportOptions;
 
-public class ExperimentList 
+public class ExperimentList extends JComboBox<Experiment>
 {
 	
-	protected List<Experiment> experimentList 	= new ArrayList<Experiment> ();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public 	int 	index0 						= 0;
 	public 	int 	index1 						= 0;
 	public	int		maxSizeOfCapillaryArrays 	= 0;
 	public 	String 	expListBinSubPath 			= null; 
-	public int		currentExperimentIndex		= -1;
 	
 
 
@@ -28,13 +31,14 @@ public class ExperimentList
 	public Experiment getMsColStartAndEndFromAllExperiments(XLSExportOptions options) 
 	{
 		Experiment expAll = new Experiment();
-		Experiment exp0 = experimentList.get(0);
+		Experiment exp0 = getItemAt(0);
 		if (options.absoluteTime) 
 		{
 			expAll.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
 			expAll.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
-			for (Experiment exp: experimentList) 
+			for (int i=0; i < getItemCount(); i++) 
 			{
+				Experiment exp = getItemAt(i);
 				if (expAll.getFileTimeImageFirst(false).compareTo(exp.getFileTimeImageFirst(true)) > 0) 
 					expAll.setFileTimeImageFirst(exp.getFileTimeImageFirst(true));
 				if (expAll.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
@@ -47,8 +51,9 @@ public class ExperimentList
 		{
 			expAll.camFirstImage_Ms = 0;
 			expAll.camLastImage_Ms = 0;
-			for (Experiment exp: experimentList) 
+			for (int i=0; i< getItemCount(); i++) 
 			{
+				Experiment exp = getItemAt(i);
 				if (options.collateSeries && exp.previousExperiment != null)
 					continue;
 				double last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
@@ -71,17 +76,18 @@ public class ExperimentList
 	public boolean loadAllExperiments(boolean loadCapillaries, boolean loadDrosoTrack) 
 	{
 		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
-		int nexpts = experimentList.size();
+		int nexpts = getItemCount();
 		int index = 1;
 		maxSizeOfCapillaryArrays = 0;
 		progress.setLength(nexpts);
 		boolean flag = true;
-		for (Experiment exp: experimentList) 
+		for (int i=0; i< getItemCount(); i++) 
 		{
+			Experiment exp = getItemAt(i);
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
 			exp.setBinSubDirectory(expListBinSubPath);
 			if (expListBinSubPath == null)
-				exp.checkKymosDirectory();
+				exp.checkKymosDirectory(exp.getBinSubDirectory());
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())
 				maxSizeOfCapillaryArrays = exp.capillaries.capillariesArrayList.size();
@@ -94,16 +100,18 @@ public class ExperimentList
 	
 	public void chainExperiments(boolean collate) 
 	{
-		for (Experiment exp: experimentList) 
+		for (int i=0; i< getItemCount(); i++) 
 		{
+			Experiment exp = getItemAt(i);
 			if (!collate) 
 			{
 				exp.previousExperiment = null;
 				exp.nextExperiment = null;
 				continue;
 			}
-			for (Experiment expi: experimentList) 
+			for (int j=0; j< getItemCount(); j++) 
 			{
+				Experiment expi = getItemAt(j);
 				if (expi.experimentID == exp.experimentID)
 					continue;
 				if (!isSameDescriptors(exp, expi))
@@ -153,16 +161,14 @@ public class ExperimentList
 		return flag;
 	}
 
-	public int getExperimentIndex(String filename) 
+	public int getExperimentIndexFromExptName(String filename) 
 	{
 		int position = -1;
 		if (filename != null) 
 		{
-			for (int i=0; i< experimentList.size(); i++) 
+			for (int i=0; i< getItemCount(); i++) 
 			{
-				Experiment exp =  experimentList.get(i);
-				String filename2 = exp.getExperimentDirectory();
-				if (filename.compareTo(filename2) == 0) 
+				if (filename.compareTo(getItemAt(i).toString()) == 0) 
 				{
 					position = i;
 					break;
@@ -172,58 +178,34 @@ public class ExperimentList
 		return position;
 	}
 	
-	public Experiment getExperiment(String filename) 
+	public Experiment getExperimentFromExptName(String filename) 
 	{
 		Experiment exp = null;
-		currentExperimentIndex = getExperimentIndex(filename);
-		if (currentExperimentIndex >= 0) 
-		{
-			if (currentExperimentIndex > getExperimentListSize()-1)
-				currentExperimentIndex = getExperimentListSize()-1;
-			exp = getExperimentFromList(currentExperimentIndex);
+		for (int i=0; i < getItemCount(); i++) {
+			String expString = getItemAt(i).toString();
+			if (filename.compareTo(expString) == 0) 
+			{
+				exp = getItemAt(i);
+				break;
+			}
 		}
 		return exp;
 	}
 	
 	// ---------------------
 	
-	public int getExperimentListSize() 
-	{
-		return experimentList.size();
-	}
-	
-	public void clear() 
-	{
-		experimentList.clear();
-	}
-	
-	public Experiment getExperimentFromList(int index) 
-	{
-		if (index < 0)
-			return null;
-		if (index > experimentList.size() -1)
-			index = experimentList.size() -1;
-		Experiment exp = experimentList.get(index);
-		return exp;
-	}
-	
-	public Experiment getCurrentExperiment() 
-	{
-		return getExperimentFromList(currentExperimentIndex);
-	}
-	
 	public Experiment addNewExperimentToList () 
 	{
 		Experiment exp = new Experiment();
-		experimentList.add(exp);
+		addItem(exp);
 		return exp;
 	}
 	
 	public int addExperiment (Experiment exp) 
 	{
-		experimentList.add(exp);
-		currentExperimentIndex = getExperimentListSize()-1;
-		return currentExperimentIndex;
+		addItem(exp);
+		String exptName = exp.toString();
+		return getExperimentIndexFromExptName(exptName);
 	}
 
 	public Experiment addNewExperimentToList (String expDirectory) 
@@ -231,9 +213,9 @@ public class ExperimentList
 		boolean exists = false;
 		String expDirectory0 = getDirectoryName(expDirectory);
 		Experiment exp = null;			
-		for (int i=0; i < experimentList.size(); i++) 
+		for (int i=0; i< getItemCount(); i++) 
 		{
-			exp = experimentList.get(i);
+			exp = getItemAt(i);
 			if (exp.getExperimentDirectory() .equals (expDirectory0)) 
 			{	
 				exists = true;
@@ -247,13 +229,14 @@ public class ExperimentList
 			exp.setExperimentDirectory(expDirectory0);
 			exp.setImagesDirectory(Experiment.getImagesDirectoryAsParentFromFileName(expDirectory0));
 			int experimentNewID  = 0;
-			for (Experiment expi: experimentList) 
+			for (int j=0; j< getItemCount(); j++) 
 			{
+				Experiment expi = getItemAt(j);
 				if (expi.experimentID > experimentNewID)
 					experimentNewID = expi.experimentID;
 			}
 			exp.experimentID = experimentNewID + 1;
-			experimentList.add(exp);
+			addItem(exp);
 		}
 		return exp;
 	}

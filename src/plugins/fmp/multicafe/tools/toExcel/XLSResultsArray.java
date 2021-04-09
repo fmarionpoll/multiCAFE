@@ -3,7 +3,7 @@ package plugins.fmp.multicafe.tools.toExcel;
 import java.util.ArrayList;
 import java.util.List;
 
-import plugins.fmp.multicafe.sequence.Capillary;
+import plugins.fmp.multicafe.experiment.Capillary;
 
 public class XLSResultsArray 
 {

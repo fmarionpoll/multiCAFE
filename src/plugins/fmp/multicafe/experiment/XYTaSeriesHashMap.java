@@ -1,29 +1,30 @@
-package plugins.fmp.multicafe.sequence;
-
+package plugins.fmp.multicafe.experiment;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafe.tools.Comparators;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
 
 
 
-public class XYTaSeriesArrayList implements XMLPersistent 
-{	
+public class XYTaSeriesHashMap implements XMLPersistent 
+{
+	
 	public Double 			moveThreshold 		= 50.;
 	public int				sleepThreshold		= 5;
 	public int 				lastTimeAlive 		= 0;
 	public int 				lastIntervalAlive 	= 0;
-	public ArrayList<XYTaValue> xytList  		= new ArrayList<XYTaValue>();
+	public HashMap<Integer, XYTaValue> xytList  = new HashMap<Integer, XYTaValue>();
 	
 	public String			name 				= null;
 	public EnumXLSExportType exportType 		= null;
@@ -39,18 +40,19 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	private String ID_ILAST				= "ilast";
 
 	
-	public XYTaSeriesArrayList() 
+	public XYTaSeriesHashMap() 
 	{
 	}
 	
-	public XYTaSeriesArrayList(String name, EnumXLSExportType exportType, int nFrames, int binsize) 
+	public XYTaSeriesHashMap(String name, EnumXLSExportType exportType, int nFrames, int binsize) 
 	{
 		this.name = name;
 		this.exportType = exportType;
 		this.binsize = binsize;
-		xytList = new ArrayList<XYTaValue>(nFrames);
-		for (int i = 0; i< nFrames; i++) 
-			xytList.add(new XYTaValue(i));
+		xytList = new HashMap<Integer, XYTaValue>(nFrames);
+//		for (int i = 0; i< nFrames; i++) {
+//			xytList.put(i, new XYTaValue(i));
+//		}
 	}
 	
 	public void clear() 
@@ -58,19 +60,9 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		xytList.clear();
 	}
 	
-	public void ensureCapacity(int nFrames) 
-	{
-		xytList.ensureCapacity(nFrames);
-		initArray(nFrames);
-	}
-	
-	void initArray(int nFrames) 
-	{
-		for (int i=0; i< nFrames; i++) {
-			XYTaValue value = new XYTaValue(i);
-			xytList.add(value);
-		}
-	}
+//	public void ensureCapacity(int nFrames) {
+//		xytList.ensureCapacity(nFrames);
+//	}
 	
 	public Point2D getPoint(int i) 
 	{
@@ -83,7 +75,8 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		for (int i = index; i>= 0; i--) 
 		{
 			XYTaValue xyVal = xytList.get(i);
-			if (xyVal.xyPoint.getX() >= 0 && xyVal.xyPoint.getY() >= 0) {
+			if (xyVal.xyPoint.getX() >= 0 && xyVal.xyPoint.getY() >= 0) 
+			{
 				point = xyVal.xyPoint;
 				break;
 			}	
@@ -96,20 +89,20 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		return xytList.get(i).indexT;
 	}
 
-	public void addPoint (int frame, Point2D point) 
+	public void add(int indexT, Point2D point) 
 	{
-		XYTaValue pos = new XYTaValue(frame, point);
-		xytList.add(pos);
+		XYTaValue pos = new XYTaValue(indexT, point);
+		// TODO: test if put or replace?
+		xytList.put(indexT, pos);
 	}
 	
-	public void copy (XYTaSeriesArrayList xySer) 
+	public void copy (XYTaSeriesHashMap xySer) 
 	{
 		moveThreshold = xySer.moveThreshold;
 		sleepThreshold = xySer.sleepThreshold;
 		lastTimeAlive = xySer.lastIntervalAlive;
-		xytList = new ArrayList<XYTaValue>(xySer.xytList.size());
-		for (XYTaValue val: xySer.xytList) 
-			xytList.add(val.indexT, val);
+		xytList = new HashMap<Integer, XYTaValue>(xySer.xytList.size());
+		xytList.putAll(xySer.xytList);
 		name = xySer.name;
 		exportType = xySer.exportType;
 		binsize = xySer.binsize;
@@ -129,30 +122,16 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		if (node_position_list == null) 
 			return false;
 		
-		xytList.clear();
 		int nb_items =  XMLUtil.getAttributeIntValue(node_position_list, ID_NBITEMS, 0);
-		xytList.ensureCapacity(nb_items);
-		for (int i = 0; i< nb_items; i++) 
-			xytList.add(new XYTaValue(i));
-		boolean bAdded = false;
-		
+		xytList = new HashMap<Integer, XYTaValue>(nb_items);
 		for (int i=0; i< nb_items; i++) 
 		{
 			String elementi = "i"+i;
 			Element node_position_i = XMLUtil.getElement(node_position_list, elementi);
 			XYTaValue pos = new XYTaValue();
 			pos.loadFromXML(node_position_i);
-			if (pos.indexT < nb_items) 
-				xytList.set(pos.indexT, pos);
-			else 
-			{
-				xytList.add(pos);
-				bAdded = true;
-			}
-		}
-		
-		if (bAdded)
-			Collections.sort(xytList, new Comparators.XYTaValue_Tindex_Comparator());
+			xytList.put(pos.indexT, pos);
+		}	
 		return true;
 	}
 
@@ -169,14 +148,15 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		
 		Element node_position_list = XMLUtil.addElement(node, ID_POSITIONSLIST);
 		XMLUtil.setAttributeIntValue(node_position_list, ID_NBITEMS, xytList.size());
-		
-		int i = 0;
-		for (XYTaValue pos: xytList) 
+		int index = 0;
+		Iterator<Entry<Integer, XYTaValue>> it = xytList.entrySet().iterator();
+		while(it.hasNext()) 
 		{
-			String elementi = "i"+i;
+			Entry<Integer, XYTaValue> pair = it.next(); 
+			XYTaValue pos = (XYTaValue) pair.getValue();
+			String elementi = "i"+index;
 			Element node_position_i = XMLUtil.addElement(node_position_list, elementi);
 			pos.saveToXML(node_position_i);
-			i++;
 		}
 		return true;
 	}
@@ -209,16 +189,18 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	{
 		lastIntervalAlive = 0;
 		boolean isalive = false;
-		for (int i= xytList.size() - 1; i >= 0; i--) 
+		int indexKey = 0;
+		while (xytList.containsKey(indexKey)) 
 		{
-			XYTaValue pos = xytList.get(i);
+			XYTaValue pos = xytList.get(indexKey);
 			if (!isalive && pos.bAlive) 
 			{
-				lastIntervalAlive = i;
+				lastIntervalAlive = indexKey;
 				lastTimeAlive = pos.indexT;
 				isalive = true;				
 			}
 			pos.bAlive = isalive;
+			indexKey += 1;
 		}
 	}
 
@@ -228,19 +210,22 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		{
 			Point2D previous = new Point2D.Double();
 			previous = xytList.get(0).xyPoint;
-			for (XYTaValue pos: xytList) 
+			int indexKey = 1;
+			while (xytList.containsKey(indexKey)) 
 			{
+				XYTaValue pos = xytList.get(indexKey);
 				pos.distance = pos.xyPoint.distance(previous);
 				if (previous.getX() < 0 || pos.xyPoint.getX() < 0)
 					pos.distance = Double.NaN;
 				previous = pos.xyPoint;
+				indexKey += 1;
 			}
 		}
 	}
 	
 	// -----------------------------------------------------------
 	
-	public void computeDistanceBetweenPoints(XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
+	public void computeDistanceBetweenPoints(XYTaSeriesHashMap flyPositions, int stepMs, int buildExcelStepMs) 
 	{
 		if (flyPositions.xytList.size() > 0) 
 		{
@@ -262,7 +247,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		}
 	}
 	
-	public void computeIsAlive(XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
+	public void computeIsAlive(XYTaSeriesHashMap flyPositions, int stepMs, int buildExcelStepMs) 
 	{
 		flyPositions.computeIsAlive();
 		int it_start = 0;
@@ -276,7 +261,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		}
 	}
 	
-	public void computeSleep(XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
+	public void computeSleep(XYTaSeriesHashMap flyPositions, int stepMs, int buildExcelStepMs) 
 	{
 		flyPositions.computeSleep();
 		int it_start = 0;
@@ -290,13 +275,14 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		}
 	}
 	
-	public void computeNewPointsOrigin(Point2D newOrigin, XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
+	public void computeNewPointsOrigin(Point2D newOrigin, XYTaSeriesHashMap flyPositions, int stepMs, int buildExcelStepMs) 
 	{
 		newOrigin.setLocation(newOrigin.getX()*pixelsize, newOrigin.getY()*pixelsize);
 		double deltaX = newOrigin.getX() - origin.getX();
 		double deltaY = newOrigin.getY() - origin.getY();
 		if (deltaX == 0 && deltaY == 0)
 			return;
+		
 		int it_start = 0;
 		int it_end = flyPositions.xytList.size()  * stepMs;
 		int it_out = 0;
@@ -314,20 +300,26 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	
 	public List<Double> getIsAliveAsDoubleArray() 
 	{
-		ArrayList<Double> dataArray = new ArrayList<Double>();
-		dataArray.ensureCapacity(xytList.size());
-		for (XYTaValue pos: xytList) 
+		ArrayList<Double> dataArray = new ArrayList<Double>(xytList.size());
+		int indexKey = 0;
+		while (xytList.containsKey(indexKey)) 
+		{
+			XYTaValue pos = xytList.get(indexKey);
 			dataArray.add(pos.bAlive ? 1.0: 0.0);
+			indexKey ++;
+		}
 		return dataArray;
 	}
 	
 	public List<Integer> getIsAliveAsIntegerArray() 
 	{
-		ArrayList<Integer> dataArray = new ArrayList<Integer>();
-		dataArray.ensureCapacity(xytList.size());
-		for (XYTaValue pos: xytList) 
+		ArrayList<Integer> dataArray = new ArrayList<Integer>(xytList.size());
+		int indexKey = 0;
+		while (xytList.containsKey(indexKey)) 
 		{
+			XYTaValue pos = xytList.get(indexKey);
 			dataArray.add(pos.bAlive ? 1: 0);
+			indexKey ++;
 		}
 		return dataArray;
 	}
@@ -395,8 +387,10 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		List <Integer> datai = getDistanceAsMoveOrNot();
 		int timeBinSize = getTimeBinSize() ;
 		int j = 0;
-		for (XYTaValue pos: xytList) 
+		int indexKey = 0;
+		while (xytList.containsKey(indexKey)) 
 		{
+			XYTaValue pos = xytList.get(indexKey);
 			int isleep = 1;
 			int k = 0;
 			for (int i= 0; i < sleepThreshold; i+= timeBinSize) 
@@ -410,6 +404,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 			}
 			pos.bSleep = (isleep == 1);
 			j++;
+			indexKey ++;
 		}
 	}
 	
@@ -417,8 +412,13 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	{
 		ArrayList<Double> dataArray = new ArrayList<Double>();
 		dataArray.ensureCapacity(xytList.size());
-		for (XYTaValue pos: xytList) 
+		int indexKey = 0;
+		while (xytList.containsKey(indexKey)) 
+		{
+			XYTaValue pos = xytList.get(indexKey);
 			dataArray.add(pos.bSleep ? 1.0: 0.0);
+			indexKey += 1;
+		}
 		return dataArray;
 	}
 	
@@ -439,8 +439,13 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		double deltaY = newOrigin.getY() - origin.getY();
 		if (deltaX == 0 && deltaY == 0)
 			return;
-		for (XYTaValue pos : xytList) 
+		int indexKey = 0;
+		while (xytList.containsKey(indexKey)) 
+		{
+			XYTaValue pos = xytList.get(indexKey);
 			pos.xyPoint.setLocation(pos.xyPoint.getX()-deltaX, pos.xyPoint.getY()-deltaY);
+			indexKey += 1;
+		}
 	}
 	
 	public void changePixelSize(double newpixelSize) 
@@ -448,8 +453,13 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		if (newpixelSize == pixelsize)
 			return;
 		double ratio = 1/pixelsize*newpixelSize;
-		for (XYTaValue pos : xytList) 
+		int indexKey = 0;
+		while (xytList.containsKey(indexKey)) 
+		{
+			XYTaValue pos = xytList.get(indexKey);
 			pos.xyPoint.setLocation(pos.xyPoint.getX()*ratio, pos.xyPoint.getY()*ratio);
+			indexKey += 1;
+		} 		
 		pixelsize = newpixelSize;
 		origin.setLocation(origin.getX()*ratio, origin.getY()*ratio);
 	}
@@ -458,11 +468,12 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	public void clearValues(int fromIndex) 
 	{
 		int toIndex = xytList.size();
-		if (fromIndex > 0 && fromIndex < toIndex) 
-			xytList.subList(fromIndex, toIndex).clear();
-		
+		int indexKey = fromIndex;
+		while (indexKey < toIndex) 
+		{
+			xytList.remove(indexKey);
+			indexKey++;
+		}
 	}
 
 }
-
-

@@ -15,9 +15,9 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Cage;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.XYTaSeriesArrayList;
+import plugins.fmp.multicafe.experiment.Cage;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.XYTaSeriesArrayList;
 import plugins.fmp.multicafe.tools.chart.YPositionsCharts;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
@@ -81,7 +81,7 @@ public class Graphs extends JPanel
 
 	private void xyDisplayGraphs() 
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		if (exp == null)
 			return;
 		final Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBounds();

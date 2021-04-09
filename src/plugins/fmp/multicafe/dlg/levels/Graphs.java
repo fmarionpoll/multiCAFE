@@ -15,9 +15,9 @@ import javax.swing.JPanel;
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Capillaries;
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.experiment.Capillaries;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.Experiment;
 import plugins.fmp.multicafe.tools.chart.XYMultiChart;
 import plugins.fmp.multicafe.tools.toExcel.EnumXLSExportType;
 
@@ -65,7 +65,7 @@ public class Graphs extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 				if (exp != null) 
 				{
 					exp.seqKymos.validateRois();

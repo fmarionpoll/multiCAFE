@@ -9,8 +9,8 @@ import javax.swing.SwingWorker;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.main.Icy;
 import icy.system.thread.Processor;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.ExperimentList;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.ExperimentList;
 
 
 public abstract class BuildSeries extends SwingWorker<Integer, Integer> 
@@ -34,7 +34,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 			if (stopFlag)
 				break;
 			long startTimeInNs = System.nanoTime();
-			Experiment exp = expList.getExperimentFromList(index);
+			Experiment exp = expList.getItemAt(index);
 			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1+1));
 			System.out.println((index+1)+": " +exp.getExperimentDirectory());
 			exp.setBinSubDirectory(options.binSubPath);

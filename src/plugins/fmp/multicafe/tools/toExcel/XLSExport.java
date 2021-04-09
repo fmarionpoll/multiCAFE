@@ -16,11 +16,11 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import icy.gui.dialog.MessageDialog;
-import plugins.fmp.multicafe.sequence.Cage;
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.ExperimentList;
-import plugins.fmp.multicafe.sequence.SequenceCamData;
+import plugins.fmp.multicafe.experiment.Cage;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.ExperimentList;
+import plugins.fmp.multicafe.experiment.SequenceCamData;
 import plugins.fmp.multicafe.tools.Comparators;
 
 

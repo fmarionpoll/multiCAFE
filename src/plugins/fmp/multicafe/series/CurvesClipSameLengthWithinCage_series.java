@@ -2,9 +2,9 @@ package plugins.fmp.multicafe.series;
 
 import java.util.ArrayList;
 
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.SequenceKymos;
 
 
 

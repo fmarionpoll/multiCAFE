@@ -23,11 +23,11 @@ import icy.sequence.Sequence;
 import icy.type.geom.Polyline2D;
 
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.CapillaryLimit;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.Level2D;
-import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.CapillaryLimit;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.Level2D;
+import plugins.fmp.multicafe.experiment.SequenceKymos;
 
 
 
@@ -77,7 +77,7 @@ public class Edit  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				deletePointsIncluded(exp);
 			}});
 		
@@ -85,7 +85,7 @@ public class Edit  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				cropPointsToLeftLimit(exp);
 			}});
 		
@@ -93,7 +93,7 @@ public class Edit  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				restoreCroppedPoints(exp);
 			}});
 	}

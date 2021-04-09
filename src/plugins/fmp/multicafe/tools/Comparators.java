@@ -5,9 +5,9 @@ import java.util.Comparator;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
-import plugins.fmp.multicafe.sequence.Cage;
-import plugins.fmp.multicafe.sequence.XYTaSeriesArrayList;
-import plugins.fmp.multicafe.sequence.XYTaValue;
+import plugins.fmp.multicafe.experiment.Cage;
+import plugins.fmp.multicafe.experiment.XYTaSeriesArrayList;
+import plugins.fmp.multicafe.experiment.XYTaValue;
 import plugins.fmp.multicafe.tools.toExcel.XLSResults;
 
 

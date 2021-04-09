@@ -10,11 +10,10 @@ import icy.image.IcyBufferedImage;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
 import icy.type.collection.array.Array1DUtil;
-
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.CapillaryLimit;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.CapillaryLimit;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.SequenceKymos;
 import plugins.fmp.multicafe.tools.ImageTransformTools;
 
 

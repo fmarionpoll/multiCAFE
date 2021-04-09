@@ -14,7 +14,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.experiment.Experiment;
 
 
 
@@ -71,7 +71,7 @@ public class Intervals extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 				setKymoIntervalsFromDialog(exp);
 			}});
 	}

@@ -15,9 +15,9 @@ import javax.swing.JPanel;
 
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.SequenceKymos;
 import plugins.fmp.multicafe.series.AdjustMeasuresDimensions_series;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.CurvesClipSameLengthWithinCage_series;
@@ -135,7 +135,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
-			Experiment exp = parent0.expList.getExperimentFromList(parent0.paneSequence.expListComboBox.getSelectedIndex());
+			Experiment exp = parent0.expList.getItemAt(parent0.expList.getSelectedIndex());
 			parent0.paneSequence.openExperiment(exp);	
 			if (adjustButton.getText() .contains (stopString))
 				adjustButton.setText(adjustString);
@@ -169,18 +169,17 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	
 	private boolean initBuildParameters(Options_BuildSeries options) 
 	{
-		int index  = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperimentFromList(index);
+		int index  = parent0.expList.getSelectedIndex();
+		Experiment exp = parent0.expList.getItemAt(index);
 		if (exp == null)
 			return false;
 		
-		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
-		parent0.expList.currentExperimentIndex = index;
+//		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
 		parent0.paneSequence.tabClose.closeExp(exp);
 		options.expList = parent0.expList; 
-		options.expList.index0 = parent0.expList.currentExperimentIndex;
+		options.expList.index0 = parent0.expList.getSelectedIndex();
 		if (allSeriesCheckBox.isSelected())
-			options.expList.index1 = parent0.expList.getExperimentListSize()-1;
+			options.expList.index1 = parent0.expList.getItemCount()-1;
 		else
 			options.expList.index1 = options.expList.index0; 
 		

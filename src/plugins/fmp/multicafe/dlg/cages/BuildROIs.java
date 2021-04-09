@@ -20,8 +20,8 @@ import icy.gui.util.GuiUtil;
 import icy.roi.ROI2D;
 import icy.type.geom.Polygon2D;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.SequenceCamData;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.SequenceCamData;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
@@ -72,7 +72,7 @@ public class BuildROIs extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				if (exp != null) 
 				{
 					ROI2DUtilities.removeRoisContainingString(-1, "cage", exp.seqCamData.seq);
@@ -87,7 +87,7 @@ public class BuildROIs extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				if (exp != null)
 					create2DPolygon(exp);
 			}});
@@ -95,7 +95,7 @@ public class BuildROIs extends JPanel
 	
 	void updateNColumnsFieldFromSequence() 
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		if (exp != null) 
 		{
 			int nrois = exp.cages.cageList.size();	

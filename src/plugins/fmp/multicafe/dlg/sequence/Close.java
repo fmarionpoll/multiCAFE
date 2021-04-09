@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.experiment.Experiment;
 
 
 
@@ -41,8 +41,7 @@ public class Close  extends JPanel
 	void closeAll() 
 	{
 		closeCurrentExperiment();
-		parent0.expList.clear();
-		parent0.expList.currentExperimentIndex = -1;
+		parent0.expList.removeAllItems();
 	}
 	
 	public void closeExp(Experiment exp) 
@@ -64,9 +63,9 @@ public class Close  extends JPanel
 	
 	public void closeCurrentExperiment() 
 	{
-		if (parent0.expList.currentExperimentIndex < 0)
+		if (parent0.expList.getSelectedIndex() < 0)
 			return;
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp != null)
 			closeExp(exp);
 	}

@@ -13,7 +13,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.experiment.Experiment;
 import plugins.fmp.multicafe.tools.JComboMs;
 
 
@@ -67,7 +67,7 @@ public class Intervals extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 				if (exp == null)
 					return;
 				exp.camBinImage_Ms = (long) (((double) binSize.getValue())* binUnit.getMsUnitValue());
@@ -77,7 +77,7 @@ public class Intervals extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 				if (exp == null)
 					return;
 				exp.loadFileIntervalsFromSeqCamData();

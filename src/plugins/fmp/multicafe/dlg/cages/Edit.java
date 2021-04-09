@@ -18,8 +18,8 @@ import icy.gui.viewer.Viewer;
 import icy.roi.ROI2D;
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Cage;
-import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.experiment.Cage;
+import plugins.fmp.multicafe.experiment.Experiment;
 import plugins.kernel.roi.roi2d.ROI2DPoint;
 
 
@@ -72,7 +72,7 @@ public class Edit extends JPanel
 		{
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				if (exp != null) 
 					exp.saveDetRoisToPositions();
 			}});
@@ -80,7 +80,7 @@ public class Edit extends JPanel
 		findNextButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				if (exp != null) 
 					findFirstMissed(exp);
 			}});
@@ -89,7 +89,7 @@ public class Edit extends JPanel
 		{
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				if (exp != null) {
 					exp.saveDetRoisToPositions();
 					findFirstMissed(exp);
@@ -100,7 +100,7 @@ public class Edit extends JPanel
 		{
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				if (exp != null) 
 					findAllMissedPoints(exp);
 			}});
@@ -112,7 +112,7 @@ public class Edit extends JPanel
 				if (foundCombo.getItemCount() == 0) {
 					return;
 			}
-			Experiment exp = parent0.expList.getCurrentExperiment();
+			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 			if (exp == null)
 				return;
 			String filter = (String) foundCombo.getSelectedItem();

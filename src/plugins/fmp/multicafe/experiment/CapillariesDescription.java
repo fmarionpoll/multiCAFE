@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.sequence;
+package plugins.fmp.multicafe.experiment;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

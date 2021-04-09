@@ -28,9 +28,9 @@ import icy.type.DataType;
 import icy.type.geom.Polygon2D;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.SequenceCamData;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.SequenceCamData;
 import plugins.fmp.multicafe.tools.Blobs;
 import plugins.fmp.multicafe.tools.OverlayThreshold;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
@@ -88,7 +88,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				if (exp != null) 
 				{
 					ROI2DUtilities.removeRoisContainingString(-1, "cage", exp.seqCamData.seq);
@@ -103,7 +103,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				if (exp != null)
 					updateOverlay(exp);
 			}});
@@ -112,7 +112,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =  parent0.paneSequence.getSelectedExperimentFromCombo();
+				Experiment exp =  (Experiment) parent0.expList.getSelectedItem();
 				deletePointsIncluded(exp);
 			}});
 	}
@@ -154,13 +154,13 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 	{
 		if (e.getSource() == thresholdSpinner) 
 		{
-			Experiment exp = parent0.expList.getCurrentExperiment();
+			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 			if (exp != null)
 				updateOverlay(exp);
 		}
 		else if (e.getSource() == overlayCheckBox)  
 		{
-    	  	Experiment exp = parent0.expList.getCurrentExperiment();
+    	  	Experiment exp = (Experiment) parent0.expList.getSelectedItem();
     	  	if (exp != null) 
     	  	{
 	  			if (overlayCheckBox.isSelected()) 

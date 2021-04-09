@@ -23,10 +23,10 @@ import icy.gui.frame.progress.AnnounceFrame;
 import icy.roi.ROI2D;
 import icy.type.geom.Polygon2D;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Capillaries;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.SequenceCamData;
-import plugins.fmp.multicafe.sequence.SequenceKymosUtils;
+import plugins.fmp.multicafe.experiment.Capillaries;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.SequenceCamData;
+import plugins.fmp.multicafe.experiment.SequenceKymosUtils;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
@@ -99,7 +99,7 @@ public class Create extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				roisGenerateFromPolygon();
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				if (exp != null) 
 				{
 					SequenceKymosUtils.transferCamDataROIStoKymo(exp);
@@ -159,7 +159,7 @@ public class Create extends JPanel
 	// ---------------------------------
 	private void create2DPolygon() 
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
@@ -200,7 +200,7 @@ public class Create extends JPanel
 	
 	private void roisGenerateFromPolygon() 
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;

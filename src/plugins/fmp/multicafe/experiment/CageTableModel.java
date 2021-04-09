@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.sequence;
+package plugins.fmp.multicafe.experiment;
 
 
 import javax.swing.table.AbstractTableModel;
@@ -61,10 +61,10 @@ public class CageTableModel extends AbstractTableModel
     @Override
     public int getRowCount() 
     {
-    	if (expList != null && expList.currentExperimentIndex >= 0 )
-    		return expList
-    				.getCurrentExperiment()
-    				.cages.cageList.size();
+    	if (expList != null && expList.getSelectedIndex() >= 0 ) {
+    		Experiment exp = (Experiment) expList.getSelectedItem();
+    		return exp.cages.cageList.size();
+    	}
         return 0;
     }
     
@@ -72,11 +72,10 @@ public class CageTableModel extends AbstractTableModel
     public Object getValueAt(int rowIndex, int columnIndex) 
     {
     	Cage cage = null;
-    	if (expList != null && expList.currentExperimentIndex >=0 ) 
+    	if (expList != null && expList.getSelectedIndex() >=0 ) 
     	{
-    		cage = expList
-    				.getCurrentExperiment()
-    				.cages.cageList.get(rowIndex);
+    		Experiment exp = (Experiment) expList.getSelectedItem();
+    		cage = exp.cages.cageList.get(rowIndex);
     	}
     	if (cage != null) 
     	{
@@ -108,9 +107,10 @@ public class CageTableModel extends AbstractTableModel
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) 
     {
         Cage cage = null;
-    	if (expList != null && expList.currentExperimentIndex >=0 ) 
+    	if (expList != null && expList.getSelectedIndex() >=0 ) 
     	{
-    		cage = expList.getCurrentExperiment().cages.cageList.get(rowIndex);
+    		Experiment exp = (Experiment) expList.getSelectedItem();
+    		cage = exp.cages.cageList.get(rowIndex);
     	}
     	if (cage != null) 
     	{

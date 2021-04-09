@@ -16,9 +16,9 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Capillaries;
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.experiment.Capillaries;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.Experiment;
 
 
 
@@ -63,7 +63,7 @@ public class Infos extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 				exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
 				if (exp != null && exp.capillaries.capillariesArrayList.size() > 0) 
 				{
@@ -82,7 +82,7 @@ public class Infos extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 				exp.capillaries.transferDescriptionToCapillaries();
 				dialog = new Table();
             	dialog.initialize(parent0, capillariesArrayCopy);

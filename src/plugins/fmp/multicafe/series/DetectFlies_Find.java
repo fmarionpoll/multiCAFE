@@ -11,10 +11,10 @@ import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
 
 import icy.sequence.Sequence;
-import plugins.fmp.multicafe.sequence.Cage;
-import plugins.fmp.multicafe.sequence.Cages;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.XYTaSeriesArrayList;
+import plugins.fmp.multicafe.experiment.Cage;
+import plugins.fmp.multicafe.experiment.Cages;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.XYTaSeriesArrayList;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 
 

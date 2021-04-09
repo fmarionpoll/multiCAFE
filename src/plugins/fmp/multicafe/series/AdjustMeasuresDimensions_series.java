@@ -1,7 +1,7 @@
 package plugins.fmp.multicafe.series;
 
 
-import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.experiment.Experiment;
 
 
 

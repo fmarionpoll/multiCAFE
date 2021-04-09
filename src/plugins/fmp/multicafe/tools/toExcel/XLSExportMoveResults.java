@@ -11,11 +11,11 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import icy.gui.frame.progress.ProgressFrame;
-import plugins.fmp.multicafe.sequence.Cage;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.ExperimentList;
-import plugins.fmp.multicafe.sequence.XYTaSeriesArrayList;
-import plugins.fmp.multicafe.sequence.XYTaValue;
+import plugins.fmp.multicafe.experiment.Cage;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.ExperimentList;
+import plugins.fmp.multicafe.experiment.XYTaSeriesArrayList;
+import plugins.fmp.multicafe.experiment.XYTaValue;
 import plugins.fmp.multicafe.tools.Comparators;
 
 
@@ -41,7 +41,7 @@ public class XLSExportMoveResults  extends XLSExport
 		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
-		int nbexpts = expList.getExperimentListSize();
+		int nbexpts = expList.getItemCount();
 		progress.setLength(nbexpts);
 
 		try 
@@ -49,7 +49,7 @@ public class XLSExportMoveResults  extends XLSExport
 			workbook = xlsInitWorkbook();
 			for (int index = options.firstExp; index <= options.lastExp; index++) 
 			{
-				Experiment exp = expList.getExperimentFromList(index);
+				Experiment exp = expList.getItemAt(index);
 				if (exp.previousExperiment != null)
 					continue;
 				

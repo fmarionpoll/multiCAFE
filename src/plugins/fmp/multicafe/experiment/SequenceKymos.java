@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.sequence;
+package plugins.fmp.multicafe.experiment;
 
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -50,13 +50,13 @@ public class SequenceKymos extends SequenceCamData
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
-	public SequenceKymos (String [] list, String directory) 
+	public SequenceKymos(String [] list, String directory) 
 	{
 		super(list, directory);
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
-	public SequenceKymos (List<String> listFullPaths) 
+	public SequenceKymos(List<String> listFullPaths) 
 	{
 		super(listFullPaths, true);
 		status = EnumStatus.KYMOGRAPH;

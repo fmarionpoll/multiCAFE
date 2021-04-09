@@ -17,7 +17,7 @@ import icy.gui.viewer.Viewer;
 import icy.roi.ROI;
 
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.experiment.Experiment;
 
 
 
@@ -77,7 +77,7 @@ public class Display  extends JPanel
 	
 	public void displayROIsCategory(boolean isVisible, String pattern) 
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp == null)
 			return;
 		Viewer v = exp.seqCamData.seq.getFirstViewer();

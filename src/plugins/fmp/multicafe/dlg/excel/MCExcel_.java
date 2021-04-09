@@ -15,9 +15,9 @@ import javax.swing.JTabbedPane;
 import icy.gui.component.PopupPanel;
 import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Dialog;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.ExperimentList;
+import plugins.fmp.multicafe.experiment.Dialog;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.ExperimentList;
 import plugins.fmp.multicafe.tools.toExcel.XLSExportCapillariesResults;
 import plugins.fmp.multicafe.tools.toExcel.XLSExportGulpsResults;
 import plugins.fmp.multicafe.tools.toExcel.XLSExportMoveResults;
@@ -85,7 +85,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) 
 	{	
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp == null) 
 			return;
 		
@@ -217,14 +217,14 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.exportAllFiles 	= tabOptions.exportAllFilesCheckBox.isSelected();
 		
 		options.expList = new ExperimentList(); 
-		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);
+//		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);
 		options.expList.expListBinSubPath = parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
 		if (tabOptions.exportAllFilesCheckBox.isSelected()) {
 			options.firstExp 	= 0;
-			options.lastExp 	= options.expList.getExperimentListSize() - 1;
+			options.lastExp 	= options.expList.getItemCount() - 1;
 		} else {
-			options.firstExp 	= parent0.expList.currentExperimentIndex;
-			options.lastExp 	= parent0.expList.currentExperimentIndex;
+			options.firstExp 	= parent0.expList.getSelectedIndex();
+			options.lastExp 	= parent0.expList.getSelectedIndex();
 		}
 	}
 }

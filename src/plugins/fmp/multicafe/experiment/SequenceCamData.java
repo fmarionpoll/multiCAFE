@@ -1,4 +1,4 @@
- package plugins.fmp.multicafe.sequence;
+ package plugins.fmp.multicafe.experiment;
 
 
 import java.awt.Rectangle;
@@ -43,6 +43,7 @@ import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe.tools.Comparators;
+import plugins.fmp.multicafe.tools.Directories;
 import plugins.fmp.multicafe.tools.ImageOperationsStruct;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.fmp.multicafe.tools.StringSorter;
@@ -262,7 +263,7 @@ public class SequenceCamData
 		return (status == EnumStatus.FILESTACK);
 	}
 	
-	private List<String> keepOnlyAcceptedNamesFromList(List<String> rawlist, int filetype) 
+	public static List<String> keepOnlyAcceptedNames(List<String> rawlist, int filetype) 
 	{
 		int count = rawlist.size();
 		List<String> outList = new ArrayList<String> (count);
@@ -365,7 +366,7 @@ public class SequenceCamData
 	    if (selectedFiles.length == 0)
 	    	return null;
 	    
-	    seqCamDataDirectory = selectedFiles[0].isDirectory() ? selectedFiles[0].getAbsolutePath() : selectedFiles[0].getParentFile().getAbsolutePath();
+	    seqCamDataDirectory = Directories.clipNameToDirectory(selectedFiles[0].toString());
 		if (seqCamDataDirectory != null ) 
 		{
 			if (selectedFiles.length == 1) 
@@ -390,8 +391,8 @@ public class SequenceCamData
 	{
 		if (textPath == null) 
 			return loadSequenceFromDialog(null); 
-		File filepath = new File(textPath); 	
-	    seqCamDataDirectory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
+
+	    seqCamDataDirectory = Directories.clipNameToDirectory(textPath); 
 		if (seqCamDataDirectory != null ) 
 		{
 			List<String> list = new ArrayList<String> ();
@@ -411,9 +412,10 @@ public class SequenceCamData
 				return null;
 			else 
 			{
-				list = keepOnlyAcceptedNamesFromList(list, 0);	
+				list = keepOnlyAcceptedNames(list, 0);	
 				if (list.size() == 0)
 					return null;
+				File filepath = new File(textPath);
 				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi"))
 					seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
 				else 
@@ -421,7 +423,8 @@ public class SequenceCamData
 					if (list.get(0).contains("avi")) 
 					{
 						seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
-					} else 
+					} 
+					else 
 					{
 						status = EnumStatus.FAILURE;
 						seq = loadSequenceOfImagesFromList(list, true);
@@ -433,52 +436,8 @@ public class SequenceCamData
 		return seq;
 	}
 	
-	// ---------------------------------------------------------
-	public List<String> getV2ImagesListFromDialog(String path) 
-	{
-		List<String> list = new ArrayList<String> ();
-		LoaderDialog dialog = new LoaderDialog(false);
-		if (path != null) 
-			dialog.setCurrentDirectory(new File(path));
-	    File[] selectedFiles = dialog.getSelectedFiles();
-	    if (selectedFiles.length == 0)
-	    	return null;
-	    
-	    File filepath = selectedFiles[0]; 	
-	    seqCamDataDirectory = filepath.isDirectory() ? filepath.getAbsolutePath() : filepath.getParentFile().getAbsolutePath();
-		if (seqCamDataDirectory != null ) 
-		{
-			if (selectedFiles.length == 1) 
-				list = getV2ImagesListFromPath(filepath);
-			list = keepOnlyAcceptedNamesFromList(list, 0);
-		}
-		return list;
-	}
-	
-	public List<String> getV2ImagesListFromPath(File filepath) 
-	{
-		List<String> list = new ArrayList<String> ();
-		seqCamDataDirectory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();
-		if (seqCamDataDirectory != null ) 
-		{
-			try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(seqCamDataDirectory))) 
-			{
-				for (Path entry: stream) 
-				{
-					list.add(entry.toString());
-				}
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-			if (list.size() != 0)
-				list = keepOnlyAcceptedNamesFromList(list, 0);	
-		}
-		return list;
-	}
-
 	// --------------------------------------------------------
+	
 	private Sequence loadSequenceOfImagesFromListAndDirectory(String [] list, String directory) 
 	{
 		status = EnumStatus.FAILURE;
@@ -752,4 +711,45 @@ public class SequenceCamData
 		} 
 	}
 	
+	// ------------------------
+
+	public static List<String> getV2ImagesListFromDialog(String strPath) 
+	{
+		List<String> list = new ArrayList<String> ();
+		LoaderDialog dialog = new LoaderDialog(false);
+		if (strPath != null) 
+			dialog.setCurrentDirectory(new File(strPath));
+	    File[] selectedFiles = dialog.getSelectedFiles();
+	    if (selectedFiles.length == 0)
+	    	return null;
+	    
+	    String strDirectory = Directories.clipNameToDirectory(selectedFiles[0].toString());
+		if (strDirectory != null ) 
+		{
+			if (selectedFiles.length == 1) 
+				list = getV2ImagesListFromPath(strDirectory);
+			list = SequenceCamData.keepOnlyAcceptedNames(list, 0);
+		}
+		return list;
+	}
+	
+	public static List<String> getV2ImagesListFromPath(String strDirectory) 
+	{
+		List<String> list = new ArrayList<String> ();
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(strDirectory))) 
+		{
+			for (Path entry: stream) 
+			{
+				list.add(entry.toString());
+			}
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+		if (list.size() != 0)
+			list = SequenceCamData.keepOnlyAcceptedNames(list, 0);	
+	
+		return list;
+	}
 }

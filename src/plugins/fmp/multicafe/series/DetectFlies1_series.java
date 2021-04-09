@@ -12,8 +12,7 @@ import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
-
-import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.experiment.Experiment;
 import plugins.fmp.multicafe.tools.OverlayThreshold;
 
 

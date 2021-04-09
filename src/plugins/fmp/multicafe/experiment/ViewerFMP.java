@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.sequence;
+package plugins.fmp.multicafe.experiment;
 
 import icy.gui.viewer.Viewer;
 import icy.sequence.Sequence;

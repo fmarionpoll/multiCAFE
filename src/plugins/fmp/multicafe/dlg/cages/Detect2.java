@@ -27,9 +27,9 @@ import icy.gui.viewer.Viewer;
 import icy.util.StringUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Cage;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.ExperimentList;
+import plugins.fmp.multicafe.experiment.Cage;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.ExperimentList;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectFlies2_series;
 
@@ -131,7 +131,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		{
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				if (exp != null)
 					exp.saveReferenceImage();
 			}});
@@ -140,7 +140,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		{
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = parent0.expList.getCurrentExperiment();
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 				if (exp != null) { 
 					boolean flag = exp.loadReferenceImage(); 
 					if (flag) 
@@ -174,7 +174,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	{
 		if (e.getSource() == thresholdDiffSpinner) 
 		{
-			Experiment exp = parent0.expList.getCurrentExperiment();
+			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 			if (exp != null)
 				exp.cages.detect_threshold = (int) thresholdDiffSpinner.getValue();
 		}
@@ -207,10 +207,10 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.t_binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
 
 		options.expList = new ExperimentList(); 
-		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
-		options.expList.index0 = parent0.expList.currentExperimentIndex;
+//		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
+		options.expList.index0 = parent0.expList.getSelectedIndex();
 		if (allCheckBox.isSelected())
-			options.expList.index1 = options.expList.getExperimentListSize()-1;
+			options.expList.index1 = options.expList.getItemCount()-1;
 		else 
 			options.expList.index1 = options.expList.index0;
 		options.detectCage 		= allCagesComboBox.getSelectedIndex() - 1;
@@ -222,11 +222,10 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	
 	void startComputation() 
 	{
-		currentExp =parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperimentFromList(currentExp);
+		currentExp =parent0.expList.getSelectedIndex();
+		Experiment exp = parent0.expList.getItemAt(currentExp);
 		if (exp == null)
 			return;
-		parent0.expList.currentExperimentIndex = currentExp;
 		parent0.paneSequence.tabClose.closeExp(exp);
 		
 		detectFlies2Thread = new DetectFlies2_series();		
@@ -247,7 +246,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
-			Experiment exp = parent0.expList.getExperimentFromList(currentExp);
+			Experiment exp = parent0.expList.getItemAt(currentExp);
 			if (exp != null)
 				parent0.paneSequence.openExperiment(exp);
 			startComputationButton.setText(detectString);
@@ -258,8 +257,8 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	public void popupMenuWillBecomeVisible(PopupMenuEvent e) 
 	{
 		int nitems = 1;
-		currentExp = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperimentFromList(currentExp);
+		currentExp = parent0.expList.getSelectedIndex();
+		Experiment exp = parent0.expList.getItemAt(currentExp);
 		if (exp != null )	
 			nitems =  exp.cages.cageList.size() +1;
 		if (allCagesComboBox.getItemCount() != nitems) 

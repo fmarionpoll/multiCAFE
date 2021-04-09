@@ -3,36 +3,42 @@ package plugins.fmp.multicafe.dlg.sequence;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
 import icy.gui.component.PopupPanel;
-import icy.preferences.XMLPreferences;
+import icy.gui.frame.IcyFrame;
+import icy.gui.viewer.Viewer;
+import icy.gui.viewer.ViewerEvent;
+import icy.gui.viewer.ViewerListener;
+import icy.gui.viewer.ViewerEvent.ViewerEventType;
+import icy.sequence.DimensionId;
+import icy.sequence.Sequence;
 import icy.system.thread.ThreadUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.ExperimentList;
-import plugins.fmp.multicafe.sequence.SequenceCamData;
-import plugins.fmp.multicafe.sequence.SequenceNameListRenderer;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.SequenceCamData;
+import plugins.fmp.multicafe.experiment.SequenceNameListRenderer;
 import plugins.fmp.multicafe.tools.Directories;
 
 
 
-public class MCSequence_ extends JPanel implements PropertyChangeListener 
+public class MCSequence_ extends JPanel implements PropertyChangeListener, ItemListener, ViewerListener
 {
 	/**
 	 * 
@@ -51,7 +57,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 	private JButton  		previousButton	= new JButton("<");
 	private JButton			nextButton		= new JButton(">");
 //	private JButton			clearButton  	= new JButton("Close");
-	public 	JComboBox <String> expListComboBox	= new JComboBox <String>();
+	
 	private MultiCAFE 		parent0 		= null;
 	private	SelectFiles2 	dialogSelect2 	= null;
 			String			name			= null;
@@ -64,7 +70,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		this.parent0 = parent0;
 		
 		SequenceNameListRenderer renderer = new SequenceNameListRenderer();
-		expListComboBox.setRenderer(renderer);
+		parent0.expList.setRenderer(renderer);
 		int bWidth = 26; //28;
 		int height = 20;
 		previousButton.setPreferredSize(new Dimension(bWidth, height));
@@ -72,8 +78,8 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		
 		JPanel sequencePanel2 = new JPanel(new BorderLayout());
 		sequencePanel2.add(previousButton, BorderLayout.LINE_START);
-		sequencePanel2.add(expListComboBox, BorderLayout.CENTER);
-		expListComboBox.setPrototypeDisplayValue("XXXXxxxxxxxxxxxxxxxxx______________XXXXXXXXXXXXXXX");
+		sequencePanel2.add(parent0.expList, BorderLayout.CENTER);
+//		parent0.expList.setPrototypeDisplayValue("XXXXxxxxxxxxxxxxxxxxx______________XXXXXXXXXXXXXXX");
 		sequencePanel2.add(nextButton, BorderLayout.LINE_END);
 		
 //		JPanel sequencePanel = new JPanel(new BorderLayout());
@@ -128,57 +134,37 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 				parent0.mainFrame.repaint();
 			}
 		});
+		
+		parent0.expList.addItemListener(this);
+		
 		defineActionListeners();		
 	}
 	
 	private void defineActionListeners() 
 	{
-		expListComboBox.addActionListener(new ActionListener () 
+		parent0.expList.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-			if (expListComboBox.getItemCount() == 0 || tabInfosSeq.disableChangeFile) 
-			{
 				updateBrowseInterface();
-				return;
-			}
-			Experiment exp = parent0.expList.getCurrentExperiment();
-			if (exp == null)
-				return;
-			String oldtext = exp.getExperimentDirectory();
-			String newtext = (String) expListComboBox.getSelectedItem();
-			File newFile = new File(newtext);
-			if (newFile.isFile())
-				newFile = newFile.getParentFile();
-			if (!newtext.contentEquals(oldtext)) {
-        		ThreadUtil.bgRun( new Runnable() { @Override public void run() 
-        		{
-	        		parent0.paneSequence.tabClose.closeExp(exp); 
-        		}});
-        		tabInfosSeq.updateCombos();
-				parent0.expList.currentExperimentIndex = parent0.expList.getExperimentIndex(newtext);						
-				openSequenceCamFromCombo();
-			}
-			updateBrowseInterface();
-		}});
-		
+			}});
 		nextButton.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-			if (expListComboBox.getSelectedIndex() < (expListComboBox.getItemCount() -1)) 
-				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()+1);
+			if (parent0.expList.getSelectedIndex() < (parent0.expList.getItemCount() -1)) 
+				parent0.expList.setSelectedIndex(parent0.expList.getSelectedIndex()+1);
 			updateBrowseInterface();
-		}});
+			}});
 		
 		previousButton.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-			if (expListComboBox.getSelectedIndex() > 0) 
-				expListComboBox.setSelectedIndex(expListComboBox.getSelectedIndex()-1);
+			if (parent0.expList.getSelectedIndex() > 0) 
+				parent0.expList.setSelectedIndex(parent0.expList.getSelectedIndex()-1);
 			updateBrowseInterface();
-		}});
+			}});
 	}
 	
 	@Override
@@ -187,20 +173,14 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		if (event.getPropertyName() .equals ("SEQ_OPENFILE")) 
 		{
 			tabClose.closeAll();
-			expListComboBox.removeAllItems();
-			expListComboBox.updateUI();
-			openSeqCamDataCallDialog();
-			// getV2ImagesListFromDialog
-			// new experiment
-			// getResultsDirectoryDialog
+			parent0.expList.removeAllItems();
+			parent0.expList.updateUI();
+			addExperiment();
 		}
 		else if (event.getPropertyName().equals("SEQ_ADDFILE")) 
 		{
-			tabClose.closeCurrentExperiment();
-			openSeqCamDataCallDialog();
-			// getV2ImagesListFromDialog
-			// new experiment?
-			// getResultsDirectoryDialog
+			int item = addExperiment();
+			parent0.expList.setSelectedIndex(item);
 		}
 		else if (event.getPropertyName().equals("SEQ_CLOSE")) 
 		{
@@ -209,51 +189,53 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		else if (event.getPropertyName().equals("CLOSE_ALL")) 
 		{
 			tabsPane.setSelectedIndex(0);
-			expListComboBox.removeAllItems();
-			expListComboBox.updateUI();
+			parent0.expList.removeAllItems();
+			parent0.expList.updateUI();
 		}
 		else if (event.getPropertyName().equals("SEARCH_CLOSED")) 
 		{
-			int index = expListComboBox.getSelectedIndex();
+			int index = parent0.expList.getSelectedIndex();
 			if (index < 0)
 				index = 0;
 			tabInfosSeq.disableChangeFile = true;
 			for (String name: tabOpen.selectedNames) 
 			{
-				 addStringToCombo(name);
+				Experiment exp = new Experiment(name);
+				parent0.expList.addItem(exp);
 			}
 			tabOpen.selectedNames.clear();
-			if (expListComboBox.getItemCount() > 0) 
+			if (parent0.expList.getItemCount() > 0) 
 			{
-				expListComboBox.setSelectedIndex(index);
-				updateBrowseInterface();
+				parent0.expList.setSelectedIndex(index);
 				tabInfosSeq.disableChangeFile = false;
-				openSequenceCamFromCombo();
 			}
 		}
 		else if (event.getPropertyName().equals("DIRECTORY_SELECTED")) 
 		{
 			name = imagesDirectory + File.separator + dialogSelect2.resultDirectory;
 			dialogSelect2.close();
-//			Experiment exp = parent0.expList.getCurrentExperiment();
+//			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 //			if (exp == null)
 //				openSeqCamData(name);
 //			loadMeasuresAndKymos(exp);
 		}
 	}
 	
-	private void openSeqCamDataCallDialog() 
+	private int addExperiment()
 	{
-		Experiment exp = new Experiment();
-		exp.seqCamData.loadSequenceFromDialog(null);
-		imagesDirectory = Experiment.getImagesDirectoryAsParentFromFileName(exp.seqCamData.getSeqDataDirectory());
-	    if (imagesDirectory == null)
-	    	return;
-	    exp.setImagesDirectory(imagesDirectory);
-	    
-	    List<String> expList = Directories.fetchSubDirectoriesMatchingFilter(imagesDirectory, Experiment.RESULTS);
-	    String name = imagesDirectory;
-	    if (expList.size() > 0) 
+		List<String> imagesList = SequenceCamData.getV2ImagesListFromDialog(null);
+		String imagesDirectory = Directories.clipNameToDirectory(imagesList.get(0));
+		String resultsDirectory = getV2ResultsDirectoryDialog(imagesDirectory, Experiment.RESULTS);
+		String binDirectory = getV2BinDirectoryDialog(resultsDirectory);
+	    Experiment exp = new Experiment (imagesList, resultsDirectory, binDirectory);
+	    return parent0.expList.addExperiment(exp);
+	}
+	
+	private String getV2ResultsDirectoryDialog(String parentDirectory, String filter) 
+	{
+		List<String> expList = Directories.fetchSubDirectoriesMatchingFilter(parentDirectory, filter);
+	    String name = parentDirectory;
+	    if (expList.size() > 1) 
 	    {
 	    	dialogSelect2 = new SelectFiles2();
 	    	dialogSelect2.addPropertyChangeListener(this);
@@ -261,27 +243,29 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 	    }
 	    else 
 	    {
-	    	name += File.separator + Experiment.RESULTS;
-	    	openSeqCamData(name);
+	    	name += File.separator + filter;
 	    }
+	    return name;
 	}
 	
-	private void openSeqCamData(String name) 
+	private String getV2BinDirectoryDialog(String parentDirectory) 
 	{
-		Experiment exp = parent0.openExperimentFromString(name);
-		SequenceCamData seqCamData = exp.seqCamData;
-		if (seqCamData != null && seqCamData.seq != null) 
-		{
-			tabInfosSeq.disableChangeFile = true;
-			int item = addStringToCombo(exp.getExperimentDirectory());
-			seqCamData.closeSequence();
-			expListComboBox.setSelectedIndex(item);
-			updateBrowseInterface();
-			tabInfosSeq.disableChangeFile = false;
-			openSequenceCamFromCombo();	
-		}
+		List<String> expList = Directories.getSortedListOfSubDirectoriesWithTIFF(parentDirectory);
+	    String name = parentDirectory;
+	    if (expList.size() > 1) 
+	    {
+	    	dialogSelect2 = new SelectFiles2();
+	    	dialogSelect2.addPropertyChangeListener(this);
+	    	dialogSelect2.initialize(expList);
+	    }
+	    else 
+	    {
+	    	name += File.separator + Experiment.BIN+ "60";
+	    }
+	    return name;
 	}
 	
+
 	public void openExperiment(Experiment exp) 
 	{
 		exp.xmlLoadMCExperiment();
@@ -289,15 +273,15 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		if (exp.seqCamData != null && exp.seqCamData.seq != null) 
 		{
 			parent0.addSequence(exp.seqCamData.seq);
-			parent0.updateViewerForSequenceCam(exp);
+			updateViewerForSequenceCam(exp);
 			loadMeasuresAndKymos(exp);
 			parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 		}
 	}
 	
-	boolean openSequenceCamFromCombo() 
+	boolean openExperimentFromCombo() 
 	{
-		Experiment exp = parent0.openExperimentFromString((String) expListComboBox.getSelectedItem());
+		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		boolean flag = true;
 		if (exp.seqCamData != null) {
 			updateDialogs(exp);
@@ -312,59 +296,13 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 		}
 		return flag;
 	}
-	
-	private int addStringToCombo(String strItem) 
-	{
-		int item = findIndexItemInCombo(strItem);
-		if(item < 0) 
-		{ 
-			expListComboBox.addItem(strItem);
-			item = findIndexItemInCombo(strItem);
-		}
-		return item;
-	}
-	
-	private int findIndexItemInCombo(String strItem) 
-	{
-		int nitems = expListComboBox.getItemCount();
-		int item = -1;
-		for (int i=0; i < nitems; i++) 
-		{
-			if (strItem.equalsIgnoreCase(expListComboBox.getItemAt(i))) 
-			{
-				item = i;
-				break;
-			}
-		}
-		return item;
-	}
-	
-	boolean addSequenceCamToCombo() 
-	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
-		if (exp == null)
-			return false;
-		String filename = exp.getExperimentDirectory();
-		if (filename == null) 
-			return false;
-		String strItem = Paths.get(filename).toString();
-		if (strItem != null) 
-		{
-			addStringToCombo(strItem);
-			expListComboBox.setSelectedItem(strItem);
-			XMLPreferences guiPrefs = parent0.getPreferences("gui");
-			guiPrefs.put("lastUsedPath", strItem);
-		}
-		return true;
-	}
-				
-	
+		
 	public void updateDialogs(Experiment exp) 
 	{
 		tabIntervals.displayCamDataIntervals(exp);
 		tabInfosSeq.setExperimentsInfosToDialog(exp);
 
-		parent0.updateViewerForSequenceCam(exp);
+		updateViewerForSequenceCam(exp);
 		parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 	}
 
@@ -405,30 +343,101 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener
 	
 	void updateBrowseInterface() 
 	{
-		int isel = expListComboBox.getSelectedIndex();		
+		int isel = parent0.expList.getSelectedIndex();		
 	    boolean flag1 = (isel == 0? false: true);
-		boolean flag2 = (isel == (expListComboBox.getItemCount() -1)? false: true);
+		boolean flag2 = (isel == (parent0.expList.getItemCount() -1)? false: true);
 		previousButton.setEnabled(flag1);
 		nextButton.setEnabled(flag2);
 	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.SELECTED) {
+			tabInfosSeq.updateCombos();
+			openExperimentFromCombo();
+		} else {
+			Experiment exp = (Experiment) e.getItem();
+			ThreadUtil.bgRun( new Runnable() { @Override public void run() 
+    		{
+        		parent0.paneSequence.tabClose.closeExp(exp); 
+    		}});
+		}
+		updateBrowseInterface();
+	}
 	
-	public void transferExperimentNamesToExpList(ExperimentList expList, boolean clearOldList) 
+	public Experiment openExperimentFromString(String filename) 
 	{
-		if (clearOldList)
-			expList.clear();
-		int nitems = expListComboBox.getItemCount();
-		for (int i=0; i< nitems; i++) 
+		Experiment exp = parent0.expList.getExperimentFromExptName(filename);
+		if (exp == null) 
 		{
-			String filename = expListComboBox.getItemAt(i);
-			Experiment exp = expList.addNewExperimentToList(filename);
-			exp.xmlLoadMCExperiment();
+			exp = new Experiment(filename);
+			parent0.expList.addExperiment(exp);
+		}
+		exp.setExperimentDirectory(filename);
+		exp.setImagesDirectory(Experiment.getImagesDirectoryAsParentFromFileName(filename));
+		exp.openSequenceCamData();
+		if (exp.seqCamData != null && exp.seqCamData.seq != null) 
+		{
+			updateViewerForSequenceCam(exp);
+		} 
+		else 
+		{
+			System.out.println("seqCamData or seq of seqCamData is null!");
+		}
+		return exp;
+	}
+	
+	public void updateViewerForSequenceCam(Experiment exp) 
+	{
+		Sequence seq = exp.seqCamData.seq;
+		Viewer v = seq.getFirstViewer();
+		if (v == null) 
+		{
+			v = new Viewer(exp.seqCamData.seq, true);
+		}
+		if (v != null) {
+			placeViewerNextToDialogBox(v, parent0.mainFrame);
+			v.toFront();
+			v.requestFocus();
+			v.addListener( this );
+			v.setTitle(exp.seqCamData.getDecoratedImageName(0));
+		}
+	}
+	
+	private void placeViewerNextToDialogBox(Viewer v, IcyFrame mainFrame) 
+	{
+		Rectangle rectv = v.getBoundsInternal();
+		Rectangle rect0 = mainFrame.getBoundsInternal();
+		rectv.setLocation(rect0.x+ rect0.width, rect0.y);
+		v.setBounds(rectv);
+	}
+
+	@Override	
+	public void viewerChanged(ViewerEvent event) 
+	{
+		if ((event.getType() == ViewerEventType.POSITION_CHANGED)) 
+		{
+			if (event.getDim() == DimensionId.T) 
+			{
+				Viewer v = event.getSource(); 
+				int idViewer = v.getSequence().getId(); 
+				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				int idCurrentExp = exp.seqCamData.seq.getId();
+				if (idViewer == idCurrentExp) 
+				{
+					int t = v.getPositionT(); 
+					v.setTitle(exp.seqCamData.getDecoratedImageName(t));
+					if (parent0.paneCages.bTrapROIsEdit) 
+						exp.saveDetRoisToPositions();
+					exp.updateROIsAt(t);
+				}
+			}
 		}
 	}
 
-	public Experiment getSelectedExperimentFromCombo() 
+	@Override
+	public void viewerClosed(Viewer viewer) 
 	{
-		String newtext = (String) parent0.paneSequence.expListComboBox.getSelectedItem();
-		parent0.expList.currentExperimentIndex = parent0.expList.getExperimentIndex(newtext);	
-		return parent0.expList.getCurrentExperiment();
+		viewer.removeListener(this);
 	}
 }

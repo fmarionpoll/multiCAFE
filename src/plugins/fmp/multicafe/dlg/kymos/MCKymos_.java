@@ -15,7 +15,7 @@ import javax.swing.event.ChangeListener;
 import icy.gui.component.PopupPanel;
 import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.experiment.Experiment;
 
 
 public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeListener 
@@ -82,7 +82,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			tabsPane.setSelectedIndex(2);
 		}
 //		else if (event.getPropertyName().equals("KYMOS_CREATE")) {
-//			Experiment exp = parent0.expList.getCurrentExperiment();
+//			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 //			if (exp != null) {
 //				tabDisplay.transferCapillaryNamesToComboBox(exp);
 //				tabsPane.setSelectedIndex(1);
@@ -94,7 +94,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		}
 		else if (event.getPropertyName().equals("SEQ_CHGBIN")) 
 		{
-			Experiment exp = parent0.expList.getCurrentExperiment();
+			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 			if (exp == null)
 				return;
 			String localString = (String) tabDisplay.binsCombo.getSelectedItem();
@@ -115,7 +115,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 	
 	void tabbedCapillariesAndKymosSelected() 
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp == null || exp.seqCamData == null)
 			return;
 		int iselected = tabsPane.getSelectedIndex();

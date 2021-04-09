@@ -19,10 +19,10 @@ import javax.swing.SwingConstants;
 
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.ExperimentList;
-import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.ExperimentList;
+import plugins.fmp.multicafe.experiment.SequenceKymos;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectGulps_series;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
@@ -130,7 +130,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		
 	void kymosDisplayFiltered2() 
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp == null) 
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -145,12 +145,11 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	void series_detectGulpsStart(boolean detectGulps) 
 	{
 		kymosDisplayFiltered2();	
-		int current = parent0.paneSequence.expListComboBox.getSelectedIndex();
-		Experiment exp = parent0.expList.getExperimentFromList(current);
+		int current = parent0.expList.getSelectedIndex();
+		Experiment exp = parent0.expList.getItemAt(current);
 		if (exp == null)
 			return;
 
-		parent0.expList.currentExperimentIndex = current;
 		exp.saveExperimentMeasures(exp.getKymosDirectory());
 		parent0.paneSequence.tabClose.closeExp(exp);
 		thread = new DetectGulps_series();
@@ -158,12 +157,12 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		
 		Options_BuildSeries options = thread.options;
 		options.expList = new ExperimentList(); 
-		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
-		options.expList.index0 = parent0.expList.currentExperimentIndex;
+//		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
+		options.expList.index0 = parent0.expList.getSelectedIndex();
 		if (allCheckBox.isSelected()) 
-			options.expList.index1 = options.expList.getExperimentListSize()-1;
+			options.expList.index1 = options.expList.getItemCount()-1;
 		else
-			options.expList.index1 = parent0.expList.currentExperimentIndex;
+			options.expList.index1 = parent0.expList.getSelectedIndex();
 
 		options.firstkymo 		= parent0.paneKymos.tabDisplay.kymosComboBox.getSelectedIndex();
 		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
@@ -205,7 +204,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
-			Experiment exp = parent0.expList.getExperimentFromList(parent0.paneSequence.expListComboBox.getSelectedIndex());
+			Experiment exp = parent0.expList.getItemAt(parent0.expList.getSelectedIndex());
 			parent0.paneSequence.openExperiment(exp);
 			detectButton.setText(detectString);
 		 }

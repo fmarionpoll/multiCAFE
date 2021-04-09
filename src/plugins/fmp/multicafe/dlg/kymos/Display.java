@@ -27,9 +27,10 @@ import icy.image.IcyBufferedImage;
 import icy.main.Icy;
 import icy.roi.ROI;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.sequence.Capillary;
-import plugins.fmp.multicafe.sequence.Experiment;
-import plugins.fmp.multicafe.sequence.SequenceKymos;
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.Experiment;
+import plugins.fmp.multicafe.experiment.SequenceKymos;
+import plugins.fmp.multicafe.tools.Directories;
 
 
 
@@ -138,7 +139,7 @@ public class Display extends JPanel implements ViewerListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{
-			Experiment exp = parent0.expList.getCurrentExperiment();
+			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 			if (!actionAllowed || exp == null)
 				return;
 			String localString = (String) binsCombo.getSelectedItem();
@@ -171,7 +172,7 @@ public class Display extends JPanel implements ViewerListener
 	
 	private void roisDisplay(String filter, boolean visible)
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp == null) 
 			return;		
 		Viewer v= exp.seqKymos.seq.getFirstViewer();
@@ -196,7 +197,7 @@ public class Display extends JPanel implements ViewerListener
 
 	void displayON()
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -253,7 +254,7 @@ public class Display extends JPanel implements ViewerListener
 	
 	void displayOFF()
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp == null || exp.seqKymos == null) 
 			return;
 		ArrayList<Viewer>vList =  exp.seqKymos.seq.getViewers();
@@ -301,7 +302,7 @@ public class Display extends JPanel implements ViewerListener
 
 	public void selectKymograph(int isel)
 	{
-		Experiment exp = parent0.expList.getCurrentExperiment();
+		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp == null) 
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -336,7 +337,7 @@ public class Display extends JPanel implements ViewerListener
 	{
 		if ( event.getType() == ViewerEvent.ViewerEventType.POSITION_CHANGED )
 		{
-			Experiment exp = parent0.expList.getCurrentExperiment();
+			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 			if (exp == null) 
 				return;
 			Viewer v = exp.seqKymos.seq.getFirstViewer();
@@ -355,7 +356,7 @@ public class Display extends JPanel implements ViewerListener
 	{
 		actionAllowed = false;
 		binsCombo.removeAllItems();
-		List<String> list = exp.getSortedListOfSubDirectoriesWithTIFF();
+		List<String> list = Directories.getSortedListOfSubDirectoriesWithTIFF(exp.getExperimentDirectory());
 		for (int i = 0; i < list.size(); i++)
 		{
 			String dirName = list.get(i);

@@ -4,7 +4,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import org.apache.poi.ss.util.CellReference;
 import icy.gui.frame.progress.ProgressFrame;
-import plugins.fmp.multicafe.sequence.Experiment;
+import plugins.fmp.multicafe.experiment.Experiment;
 
 
 
@@ -25,7 +25,7 @@ public class XLSExportCapillariesResults extends XLSExport
 		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
-		int nbexpts = expList.getExperimentListSize();
+		int nbexpts = expList.getItemCount();
 		progress.setLength(nbexpts);
 
 		try 
@@ -33,7 +33,7 @@ public class XLSExportCapillariesResults extends XLSExport
 			workbook = xlsInitWorkbook();
 			for (int index = options.firstExp; index <= options.lastExp; index++) 
 			{
-				Experiment exp = expList.getExperimentFromList(index);
+				Experiment exp = expList.getItemAt(index);
 				if (exp.previousExperiment != null)
 					continue;
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);

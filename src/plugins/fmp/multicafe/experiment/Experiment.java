@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.sequence;
+package plugins.fmp.multicafe.experiment;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -9,9 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -95,7 +93,7 @@ public class Experiment
 	
 	private final static int EXPT_DIRECTORY = 1;
 	private final static int IMG_DIRECTORY = 2;
-	private final static int SUB_DIRECTORY = 3;
+	private final static int BIN_DIRECTORY = 3;
 	// ----------------------------------
 	
 	public Experiment() 
@@ -119,9 +117,26 @@ public class Experiment
 		loadFileIntervalsFromSeqCamData();
 	}
 	
+	public Experiment(List<String> listPrimaryDataNames, String experimentDirectory, String binDirectory) 
+	{
+		seqCamData = new SequenceCamData(listPrimaryDataNames);
+		this.imagesDirectory = Directories.clipNameToDirectory(listPrimaryDataNames.get(0));
+		this.experimentDirectory = experimentDirectory;
+		Path binDirectoryPath = Paths.get(binDirectory);
+		Path lastSubPath = binDirectoryPath.getName(binDirectoryPath.getNameCount()-1);
+		this.binSubDirectory = lastSubPath.toString();
+		seqKymos = new SequenceKymos();
+		loadFileIntervalsFromSeqCamData();
+	}
+	
 	// ----------------------------------
 	
 	public String getExperimentDirectory() 
+	{
+		return experimentDirectory;
+	}
+	
+	public String toString () 
 	{
 		return experimentDirectory;
 	}
@@ -149,11 +164,10 @@ public class Experiment
 		return binSubDirectory;
 	}
 	
-	public void checkKymosDirectory() 
+	public void checkKymosDirectory(String kymosSubDirectory) 
 	{
-		String kymosSubDirectory = getBinSubDirectory();
 		if (kymosSubDirectory == null) {
-			List<String> listTIFFlocations = getSortedListOfSubDirectoriesWithTIFF();
+			List<String> listTIFFlocations = Directories.getSortedListOfSubDirectoriesWithTIFF(getExperimentDirectory());
 			if (listTIFFlocations.size() < 1)
 				return;
 			boolean found = false;
@@ -291,14 +305,6 @@ public class Experiment
 		return BIN + kymoBinCol_Ms/1000;
 	}
 	
-	public List<String> getSortedListOfSubDirectoriesWithTIFF() 
-	{
-		HashSet <String> hSet = Directories.getDirectoriesWithFilesType (getExperimentDirectory(), ".tiff");
-		List<String> list = Directories.reduceFullNameToLastDirectory(new ArrayList<String>(hSet));
-		List<String> sortedNames = list.stream().sorted().collect(Collectors.toList());
-		return sortedNames;
-	}
-	
 	public String getDirectoryToSaveResults() 
 	{
 		Path dir = Paths.get(experimentDirectory);
@@ -367,14 +373,14 @@ public class Experiment
 			xmlFullFileName = imagesDirectory + File.separator + xmlFileName;
 			break;
 			
-		case SUB_DIRECTORY:
+		case BIN_DIRECTORY:
 			// any directory (below)
 			Path dirPath = Paths.get(experimentDirectory);
-			List<Path> subFolders = Directories.getAllSubPaths(experimentDirectory, 1);
+			List<Path> subFolders = Directories.getAllSubPathsOfDirectory(experimentDirectory, 1);
 			if (subFolders == null)
 				return null;
-			List<String> resultsDirList = Directories.getSubListContainingString(subFolders, RESULTS);
-			List<String> binDirList = Directories.getSubListContainingString(subFolders, BIN);
+			List<String> resultsDirList = Directories.getPathsContainingString(subFolders, RESULTS);
+			List<String> binDirList = Directories.getPathsContainingString(subFolders, BIN);
 			resultsDirList.addAll(binDirList);
 			for (String resultsSub : resultsDirList) 
 			{
@@ -570,7 +576,7 @@ public class Experiment
 	
 	public boolean xmlLoadMCcapillaries() 
 	{
-		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, SUB_DIRECTORY, IMG_DIRECTORY);
+		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
 		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
 		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(getKymosDirectory());
 		if (flag1 & flag2) 
@@ -649,7 +655,7 @@ public class Experiment
 	}
 	
 	public boolean xmlLoadMCCapillaries_Only() {
-		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, SUB_DIRECTORY, IMG_DIRECTORY);
+		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
 		if (xmlCapillaryFileName == null && seqCamData != null) 
 		{
 			return xmlLoadOldCapillaries();
@@ -671,7 +677,7 @@ public class Experiment
 	
 	private boolean xmlLoadOldCapillaries() 
 	{
-		String filename = findFileLocation("capillarytrack.xml", IMG_DIRECTORY, EXPT_DIRECTORY, SUB_DIRECTORY);
+		String filename = findFileLocation("capillarytrack.xml", IMG_DIRECTORY, EXPT_DIRECTORY, BIN_DIRECTORY);
 		if (capillaries.xmlLoadOldCapillaries_Only(filename)) 
 		{
 			xmlSaveMCCapillaries_Only();
@@ -682,7 +688,7 @@ public class Experiment
 		    }
 			return true;
 		}
-		filename = findFileLocation("roislines.xml", IMG_DIRECTORY, EXPT_DIRECTORY, SUB_DIRECTORY);
+		filename = findFileLocation("roislines.xml", IMG_DIRECTORY, EXPT_DIRECTORY, BIN_DIRECTORY);
 		if (seqCamData.xmlReadROIs(filename)) {
 			xmlReadRoiLineParameters(filename);
 			try {
@@ -785,9 +791,9 @@ public class Experiment
 	
 	private String getXMLDrosoTrackLocation() 
 	{
-		String fileName = findFileLocation(ID_MCDROSOTRACK, EXPT_DIRECTORY, SUB_DIRECTORY, IMG_DIRECTORY);
+		String fileName = findFileLocation(ID_MCDROSOTRACK, EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
 		if (fileName == null)  
-			fileName = findFileLocation("drosotrack.xml", IMG_DIRECTORY, EXPT_DIRECTORY, SUB_DIRECTORY);
+			fileName = findFileLocation("drosotrack.xml", IMG_DIRECTORY, EXPT_DIRECTORY, BIN_DIRECTORY);
 		return fileName;
 	}
 	
