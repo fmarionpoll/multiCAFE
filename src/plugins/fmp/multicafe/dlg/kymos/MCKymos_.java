@@ -98,12 +98,12 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			if (exp == null)
 				return;
 			String localString = (String) tabDisplay.binsCombo.getSelectedItem();
-			parent0.paneSequence.panelFiles.closeCurrentExperiment();
+			parent0.paneExperiment.panelFiles.closeCurrentExperiment();
 			if (localString.contains("."))
 				localString = null;
 			parent0.expList.expListBinSubPath = localString;
 			exp.setBinSubDirectory(localString);
-			parent0.paneSequence.panelFiles.openExperiment(exp);
+			parent0.paneExperiment.panelFiles.openExperiment(exp);
 			updateDialogs(exp);
 		}
 	}
@@ -123,9 +123,9 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			Viewer v = exp.seqCamData.seq.getFirstViewer();
 			if (v != null)
 				v.toFront();
-			parent0.paneSequence.capPopupPanel.expand();
+			parent0.paneExperiment.capPopupPanel.expand();
 			parent0.paneCapillaries.capPopupPanel.collapse();
-			parent0.paneSequence.tabsPane.setSelectedIndex(3);
+			parent0.paneExperiment.tabsPane.setSelectedIndex(3);
 		} else if (iselected == 1) 
 		{
 			parent0.paneKymos.tabDisplay.displayUpdateOnSwingThread();

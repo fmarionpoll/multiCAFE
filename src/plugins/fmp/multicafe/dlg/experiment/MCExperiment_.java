@@ -27,7 +27,7 @@ import plugins.fmp.multicafe.experiment.Experiment;
 
 
 
-public class MCSequence_ extends JPanel implements PropertyChangeListener, ViewerListener
+public class MCExperiment_ extends JPanel implements PropertyChangeListener, ViewerListener
 {
 	/**
 	 * 
@@ -40,7 +40,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener, Viewe
 	public 	Infos			tabInfosSeq		= new Infos();
 	public 	Intervals		tabIntervals	= new Intervals();
 	public 	Analyze			tabAnalyze		= new Analyze();
-	public 	Display			tabDisplay 		= new Display();
 	public 	PanelFiles		panelFiles		= new PanelFiles();
 	
 	private MultiCAFE 		parent0 		= null;
@@ -58,10 +57,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener, Viewe
 		
 		JPanel filesPanel = panelFiles.initPanel(parent0, this);
 		
-		tabOptions.init(tabsLayout, parent0);
-		tabsPane.addTab("Options", null, tabOptions, "Options to display data");
-		tabOptions.addPropertyChangeListener(this);
-		
 		tabInfosSeq.init(tabsLayout, parent0);
 		tabsPane.addTab("Infos", null, tabInfosSeq, "Define infos for this experiment/box");
 		tabInfosSeq.addPropertyChangeListener(this);
@@ -74,10 +69,10 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener, Viewe
 		tabsPane.addTab("Analyze", null, tabAnalyze, "Define analysis intervals");
 		tabAnalyze.addPropertyChangeListener(this);
 
-		tabDisplay.init(tabsLayout, parent0);
-		tabsPane.addTab("Display", null, tabDisplay, "Display ROIs");
-		tabDisplay.addPropertyChangeListener(this);
-
+		tabOptions.init(tabsLayout, parent0);
+		tabsPane.addTab("Options", null, tabOptions, "Options to display data");
+		tabOptions.addPropertyChangeListener(this);
+		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		JPanel capPanel = capPopupPanel.getMainPanel();

@@ -46,10 +46,10 @@ public class PanelFiles extends JPanel implements PropertyChangeListener, ItemLi
 	String 					imagesDirectory	= null;
 	
 	private MultiCAFE 	parent0 = null;
-	private MCSequence_ parent1 = null;
+	private MCExperiment_ parent1 = null;
 	
 //	
-	JPanel initPanel( MultiCAFE parent0, MCSequence_ parent1) 
+	JPanel initPanel( MultiCAFE parent0, MCExperiment_ parent1) 
 	{
 		this.parent0 = parent0;
 		this.parent1 = parent1;
@@ -134,7 +134,7 @@ public class PanelFiles extends JPanel implements PropertyChangeListener, ItemLi
 			Experiment exp = (Experiment) e.getItem();
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() 
     		{
-        		parent0.paneSequence.panelFiles.closeExp(exp); 
+        		parent0.paneExperiment.panelFiles.closeExp(exp); 
     		}});
 		}
 		updateBrowseInterface();
@@ -150,7 +150,7 @@ public class PanelFiles extends JPanel implements PropertyChangeListener, ItemLi
 	{
 		if (exp != null) 
 		{
-			parent0.paneSequence.tabInfosSeq.getExperimentInfosFromDialog(exp);
+			parent0.paneExperiment.tabInfosSeq.getExperimentInfosFromDialog(exp);
 			if (exp.seqCamData != null) 
 			{
 				exp.xmlSaveMCExperiment();
@@ -189,7 +189,6 @@ public class PanelFiles extends JPanel implements PropertyChangeListener, ItemLi
 			parent1.updateDialogs(exp);
 			loadMeasuresAndKymos(exp);
 			parent0.paneLevels.updateDialogs(exp);
-			parent1.tabsPane.setSelectedIndex(1);
 		}
 		else 
 		{
@@ -219,24 +218,24 @@ public class PanelFiles extends JPanel implements PropertyChangeListener, ItemLi
 		parent0.paneCapillaries.tabFile.loadCapillaries_File(exp);
 		parent0.paneCapillaries.updateDialogs(exp);
 		
-		if (parent1.tabOptions.isCheckedLoadKymographs()) 
+		if (parent1.tabOptions.kymographsCheckBox.isSelected()) 
 		{
 			boolean flag = parent0.paneKymos.tabFile.loadDefaultKymos(exp);
 			parent0.paneKymos.updateDialogs(exp);
 			if (flag) { 
-				if (parent1.tabOptions.isCheckedLoadMeasures()) 
+				if (parent1.tabOptions.measuresCheckBox.isSelected()) 
 				{
 					parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
 					parent0.paneLevels.updateDialogs(exp);
 				}
-				if (parent0.paneSequence.tabOptions.graphsCheckBox.isSelected())
+				if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected())
 					SwingUtilities.invokeLater(new Runnable() { public void run() 
 					{
 						parent0.paneLevels.tabGraphs.xyDisplayGraphs(exp);
 					}});
 			}
 		}
-		if (parent1.tabOptions.isCheckedLoadCages()) 
+		if (parent1.tabOptions.cagesCheckBox.isSelected()) 
 		{
 			parent0.paneCages.tabFile.loadCages(exp);
 		}

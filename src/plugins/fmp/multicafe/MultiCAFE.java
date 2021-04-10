@@ -11,7 +11,7 @@ import icy.plugin.abstract_.PluginActionable;
 import plugins.fmp.multicafe.dlg.cages.MCCages_;
 import plugins.fmp.multicafe.dlg.capillaries.MCCapillaries_;
 import plugins.fmp.multicafe.dlg.excel.MCExcel_;
-import plugins.fmp.multicafe.dlg.experiment.MCSequence_;
+import plugins.fmp.multicafe.dlg.experiment.MCExperiment_;
 import plugins.fmp.multicafe.dlg.kymos.MCKymos_;
 import plugins.fmp.multicafe.dlg.levels.MCLevels_;
 import plugins.fmp.multicafe.experiment.ExperimentList;
@@ -24,7 +24,7 @@ public class MultiCAFE extends PluginActionable
 	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE April 10, 2021", true, true, true, true);
 	public ExperimentList 	expList 		= new ExperimentList();
 	
-	public MCSequence_ 		paneSequence 	= new MCSequence_();
+	public MCExperiment_ 	paneExperiment 	= new MCExperiment_();
 	public MCCapillaries_ 	paneCapillaries	= new MCCapillaries_();
 	public MCKymos_			paneKymos		= new MCKymos_();
 	public MCLevels_ 		paneLevels 		= new MCLevels_();
@@ -40,7 +40,7 @@ public class MultiCAFE extends PluginActionable
 	public void run() 
 	{		
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
-		paneSequence.init(mainPanel, "Source", this);
+		paneExperiment.init(mainPanel, "Source", this);
 		paneCapillaries.init(mainPanel, "Capillaries: define, edit", this);
 		paneKymos.init(mainPanel, "Capillaries: build kymographs", this);
 		paneLevels.init(mainPanel, "Capillaries: measure levels", this);

@@ -145,7 +145,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 	private void updateParametersCurrentExperiment(Experiment exp) 
 	{
 		parent0.paneCapillaries.getDialogCapillariesInfos(exp);
-		parent0.paneSequence.tabInfosSeq.getExperimentInfosFromDialog(exp);
+		parent0.paneExperiment.tabInfosSeq.getExperimentInfosFromDialog(exp);
 	}
 	
 	private XLSExportOptions getMoveOptions() 

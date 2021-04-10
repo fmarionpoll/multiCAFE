@@ -136,7 +136,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
 			Experiment exp = parent0.expList.getItemAt(parent0.expList.getSelectedIndex());
-			parent0.paneSequence.panelFiles.openExperiment(exp);	
+			parent0.paneExperiment.panelFiles.openExperiment(exp);	
 			if (adjustButton.getText() .contains (stopString))
 				adjustButton.setText(adjustString);
 			else if (restoreButton.getText().contains(stopString))
@@ -175,7 +175,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 			return false;
 		
 //		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
-		parent0.paneSequence.panelFiles.closeExp(exp);
+		parent0.paneExperiment.panelFiles.closeExp(exp);
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.expList.getSelectedIndex();
 		if (allSeriesCheckBox.isSelected())
@@ -183,10 +183,10 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 		else
 			options.expList.index1 = options.expList.index0; 
 		
-		options.isFrameFixed= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
-		options.t_firstMs 	= parent0.paneSequence.tabAnalyze.getStartMs();
-		options.t_lastMs 	= parent0.paneSequence.tabAnalyze.getEndMs();
-		options.t_binMs		= parent0.paneSequence.tabAnalyze.getBinMs();
+		options.isFrameFixed= parent0.paneExperiment.tabAnalyze.getIsFixedFrame();
+		options.t_firstMs 	= parent0.paneExperiment.tabAnalyze.getStartMs();
+		options.t_lastMs 	= parent0.paneExperiment.tabAnalyze.getEndMs();
+		options.t_binMs		= parent0.paneExperiment.tabAnalyze.getBinMs();
 				
 		options.parent0Rect = parent0.mainFrame.getBoundsInternal();
 		options.binSubPath 	= parent0.paneKymos.tabDisplay.getBinSubdirectory() ;

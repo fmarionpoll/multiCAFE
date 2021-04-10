@@ -97,10 +97,10 @@ public class Create extends JPanel implements PropertyChangeListener
 			options.expList.index1 = parent0.expList.getItemCount()-1;
 		else
 			options.expList.index1 = options.expList.index0; 
-		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
-		options.t_firstMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
-		options.t_lastMs 		= parent0.paneSequence.tabAnalyze.getEndMs();
-		options.t_binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
+		options.isFrameFixed 	= parent0.paneExperiment.tabAnalyze.getIsFixedFrame();
+		options.t_firstMs 		= parent0.paneExperiment.tabAnalyze.getStartMs();
+		options.t_lastMs 		= parent0.paneExperiment.tabAnalyze.getEndMs();
+		options.t_binMs			= parent0.paneExperiment.tabAnalyze.getBinMs();
 				
 		options.diskRadius 		= (int) diskRadiusSpinner.getValue();
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();
@@ -116,7 +116,7 @@ public class Create extends JPanel implements PropertyChangeListener
 		Experiment exp = parent0.expList.getItemAt(current);
 		if (exp == null) 
 			return;
-		parent0.paneSequence.panelFiles.closeExp(exp);
+		parent0.paneExperiment.panelFiles.closeExp(exp);
 //		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
@@ -143,7 +143,7 @@ public class Create extends JPanel implements PropertyChangeListener
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
 			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 			if (exp != null) 
-				parent0.paneSequence.panelFiles.openExperiment(exp);
+				parent0.paneExperiment.panelFiles.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}

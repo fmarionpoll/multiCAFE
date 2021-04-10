@@ -201,10 +201,10 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		
 		options.forceBuildBackground = backgroundCheckBox.isSelected();
 		options.detectFlies		= detectCheckBox.isSelected();
-		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
-		options.t_firstMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
-		options.t_lastMs 		= parent0.paneSequence.tabAnalyze.getEndMs();
-		options.t_binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
+		options.isFrameFixed 	= parent0.paneExperiment.tabAnalyze.getIsFixedFrame();
+		options.t_firstMs 		= parent0.paneExperiment.tabAnalyze.getStartMs();
+		options.t_lastMs 		= parent0.paneExperiment.tabAnalyze.getEndMs();
+		options.t_binMs			= parent0.paneExperiment.tabAnalyze.getBinMs();
 
 		options.expList = new ExperimentList(); 
 //		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
@@ -226,7 +226,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		Experiment exp = parent0.expList.getItemAt(currentExp);
 		if (exp == null)
 			return;
-		parent0.paneSequence.panelFiles.closeExp(exp);
+		parent0.paneExperiment.panelFiles.closeExp(exp);
 		
 		detectFlies2Thread = new DetectFlies2_series();		
 		initTrackParameters();
@@ -248,7 +248,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		 {
 			Experiment exp = parent0.expList.getItemAt(currentExp);
 			if (exp != null)
-				parent0.paneSequence.panelFiles.openExperiment(exp);
+				parent0.paneExperiment.panelFiles.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}

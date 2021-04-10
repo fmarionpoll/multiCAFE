@@ -113,23 +113,23 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 	            tabDetect1.overlayCheckBox.setSelected(selectedIndex == iTAB_DETECT1);
 	            if (selectedIndex == iTAB_DETECT1 || selectedIndex == iTAB_DETECT2) 
 	            {
-	            	parent0.paneSequence.capPopupPanel.expand();
+	            	parent0.paneExperiment.capPopupPanel.expand();
 	    			parent0.paneCapillaries.capPopupPanel.collapse();
-	    			parent0.paneSequence.tabsPane.setSelectedIndex(3);
+	    			parent0.paneExperiment.tabsPane.setSelectedIndex(3);
 	            }
 	            
 	            if (selectedIndex == iTAB_EDIT) 
 	            {
 	            	bTrapROIsEdit = true;
-	            	parent0.paneSequence.tabDisplay.displayROIsCategory (false, "line");
-	            	parent0.paneSequence.tabDisplay.displayROIsCategory(false, "cage");
+	            	parent0.paneExperiment.tabOptions.displayROIsCategory (false, "line");
+	            	parent0.paneExperiment.tabOptions.displayROIsCategory(false, "cage");
 	            } 
 	            else 
 	            {
 	            	if (bTrapROIsEdit) 
 	            	{
-	            		parent0.paneSequence.tabDisplay.displayROIsCategory (parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.isSelected(), "line");
-		            	parent0.paneSequence.tabDisplay.displayROIsCategory(parent0.paneSequence.tabDisplay.viewCagesCheckbox.isSelected(), "cage");
+	            		parent0.paneExperiment.tabOptions.displayROIsCategory (parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.isSelected(), "line");
+		            	parent0.paneExperiment.tabOptions.displayROIsCategory(parent0.paneExperiment.tabOptions.viewCagesCheckbox.isSelected(), "cage");
 	            	}
 	            	bTrapROIsEdit = false;
 	            }

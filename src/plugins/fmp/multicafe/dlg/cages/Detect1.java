@@ -213,10 +213,10 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.transformop		= (TransformOp) backgroundComboBox.getSelectedItem();
 		options.threshold		= (int) thresholdSpinner.getValue();
 		
-		options.isFrameFixed 	= parent0.paneSequence.tabAnalyze.getIsFixedFrame();
-		options.t_firstMs 		= parent0.paneSequence.tabAnalyze.getStartMs();
-		options.t_lastMs 		= parent0.paneSequence.tabAnalyze.getEndMs();
-		options.t_binMs			= parent0.paneSequence.tabAnalyze.getBinMs();
+		options.isFrameFixed 	= parent0.paneExperiment.tabAnalyze.getIsFixedFrame();
+		options.t_firstMs 		= parent0.paneExperiment.tabAnalyze.getStartMs();
+		options.t_lastMs 		= parent0.paneExperiment.tabAnalyze.getEndMs();
+		options.t_binMs			= parent0.paneExperiment.tabAnalyze.getBinMs();
 
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubPath 		= parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
@@ -239,7 +239,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		if (exp == null) 
 			return;
-		parent0.paneSequence.panelFiles.closeExp(exp);
+		parent0.paneExperiment.panelFiles.closeExp(exp);
 		
 		thread = new DetectFlies1_series();		
 //		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
@@ -264,7 +264,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		 {
 			Experiment exp = parent0.expList.getItemAt(currentExp);
 			if (exp != null)
-				parent0.paneSequence.panelFiles.openExperiment(exp);
+				parent0.paneExperiment.panelFiles.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}

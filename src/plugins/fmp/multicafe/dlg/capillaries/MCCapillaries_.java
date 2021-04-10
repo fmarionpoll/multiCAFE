@@ -94,7 +94,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 			displayCapillariesInformation(exp);
 		  	tabsPane.setSelectedIndex(ID_INFOS);
-		  	parent0.paneSequence.tabIntervals.displayCamDataIntervals(exp);
+		  	parent0.paneExperiment.tabIntervals.displayCamDataIntervals(exp);
 		}			  
 		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) 
 		{
@@ -102,7 +102,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		}
 		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) 
 		{
-			parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
+			parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(true);
 			firePropertyChange("CAPILLARIES_NEW", false, true);
 			tabsPane.setSelectedIndex(ID_INFOS);
 		}
@@ -117,8 +117,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			{
 				ProgressFrame progress = new ProgressFrame("Display capillaries information");
 				updateDialogs( exp);
-				parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(true);
-				parent0.paneSequence.updateDialogs(exp);
+				parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(true);
+				parent0.paneExperiment.updateDialogs(exp);
 				progress.close();
 			}});
 	}
@@ -131,7 +131,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			exp.capillaries.desc_old.copy(exp.capillaries.desc);
 			tabInfos.setAllDescriptors(exp.capillaries);
 			tabCreate.setGroupingAndNumber(exp.capillaries);
-			parent0.paneSequence.tabInfosSeq.setExperimentsInfosToDialog(exp);
+			parent0.paneExperiment.tabInfosSeq.setExperimentsInfosToDialog(exp);
 		}
 	}
 	
@@ -147,7 +147,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		JTabbedPane tabbedPane = (JTabbedPane) arg0.getSource();
         int selectedIndex = tabbedPane.getSelectedIndex();
         tabAdjust.roisDisplayrefBar(selectedIndex == ID_ADJUST);
-        parent0.paneSequence.tabDisplay.viewCapillariesCheckBox.setSelected(selectedIndex == ID_INFOS);
+        parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(selectedIndex == ID_INFOS);
 	}
 
 }

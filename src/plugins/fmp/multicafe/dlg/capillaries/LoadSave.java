@@ -91,7 +91,7 @@ public class LoadSave extends JPanel
 	public boolean saveCapillaries_file(Experiment exp) 
 	{
 		parent0.paneCapillaries.getDialogCapillariesInfos(exp);  // get data into desc
-		parent0.paneSequence.getExperimentInfosFromDialog(exp);
+		parent0.paneExperiment.getExperimentInfosFromDialog(exp);
 		exp.capillaries.transferDescriptionToCapillaries();
 	
 		exp.xmlSaveMCExperiment ();

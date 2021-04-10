@@ -4,6 +4,7 @@ package plugins.fmp.multicafe.dlg.experiment;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,7 +45,7 @@ public class SelectFiles extends JPanel
 	private JButton 	addAllButton			= new JButton("Add all");
 	private JList<String> directoriesJList		= new JList<String>(new DefaultListModel<String>());
 	private MultiCAFE 	parent0 				= null;
-			Options 		parent1 				= null;
+	private PanelFiles 	parent1 				= null;
 
 	
 	
@@ -52,7 +53,7 @@ public class SelectFiles extends JPanel
 	{
 		filterCombo.setEditable(true);
 		this.parent0 = parent0;
-		parent1 = parent0.paneSequence.tabOptions;
+		this.parent1 = parent0.paneExperiment.panelFiles;
 		addPropertyChangeListener(parent1);
 
 		dialogFrame = new IcyFrame ("Select files", true, true);
@@ -98,6 +99,7 @@ public class SelectFiles extends JPanel
     			final String pattern = (String) filterCombo.getSelectedItem();
    	    		getListofFilesMatchingPattern(pattern);
             }});
+
 		clearSelectedButton.addActionListener(new ActionListener()  
 		{
             @Override
