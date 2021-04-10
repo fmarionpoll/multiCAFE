@@ -136,7 +136,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
 			Experiment exp = parent0.expList.getItemAt(parent0.expList.getSelectedIndex());
-			parent0.paneSequence.openExperiment(exp);	
+			parent0.paneSequence.panelFiles.openExperiment(exp);	
 			if (adjustButton.getText() .contains (stopString))
 				adjustButton.setText(adjustString);
 			else if (restoreButton.getText().contains(stopString))
@@ -175,7 +175,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 			return false;
 		
 //		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
-		parent0.paneSequence.tabClose.closeExp(exp);
+		parent0.paneSequence.panelFiles.closeExp(exp);
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.expList.getSelectedIndex();
 		if (allSeriesCheckBox.isSelected())

@@ -244,7 +244,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		if (exp == null)
 			return;
 		exp.saveExperimentMeasures(exp.getKymosDirectory());
-		parent0.paneSequence.tabClose.closeExp(exp);
+		parent0.paneSequence.panelFiles.closeExp(exp);
 		exp.closeExperiment();
 		thread = new DetectLevels_series();
 		thread.options = initBuildParameters(exp);
@@ -267,7 +267,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		 {
 			Experiment exp = parent0.expList.getItemAt(parent0.expList.getSelectedIndex());
 			if (exp != null) {
-				parent0.paneSequence.openExperiment(exp);
+				parent0.paneSequence.panelFiles.openExperiment(exp);
 				if (selectedFrame != 0) 
 					selectFrame(selectedFrame);
 			}

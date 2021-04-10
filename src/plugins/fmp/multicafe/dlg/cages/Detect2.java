@@ -226,7 +226,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		Experiment exp = parent0.expList.getItemAt(currentExp);
 		if (exp == null)
 			return;
-		parent0.paneSequence.tabClose.closeExp(exp);
+		parent0.paneSequence.panelFiles.closeExp(exp);
 		
 		detectFlies2Thread = new DetectFlies2_series();		
 		initTrackParameters();
@@ -248,7 +248,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		 {
 			Experiment exp = parent0.expList.getItemAt(currentExp);
 			if (exp != null)
-				parent0.paneSequence.openExperiment(exp);
+				parent0.paneSequence.panelFiles.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}

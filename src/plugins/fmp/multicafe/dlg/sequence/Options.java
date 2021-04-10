@@ -3,14 +3,11 @@ package plugins.fmp.multicafe.dlg.sequence;
 import java.awt.ComponentOrientation;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
@@ -18,16 +15,16 @@ import plugins.fmp.multicafe.MultiCAFE;
 
 
 
-public class Open extends JPanel implements PropertyChangeListener 
+public class Options extends JPanel implements PropertyChangeListener 
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6565346204580890307L;
 
-	private JButton 	openButton				= new JButton("Open/New...");
-	private JButton 	addButton				= new JButton("Add...");
-	private JButton		searchButton 			= new JButton("Search...");
+//	private JButton 	openButton				= new JButton("Open/New...");
+//	private JButton 	addButton				= new JButton("Add...");
+//	private JButton		searchButton 			= new JButton("Search...");
 	JCheckBox			kymographsCheckBox		= new JCheckBox("kymographs", true);
 	JCheckBox			capillariesCheckBox		= new JCheckBox("capillaries", true);
 	JCheckBox			cagesCheckBox			= new JCheckBox("cages", true);
@@ -45,11 +42,11 @@ public class Open extends JPanel implements PropertyChangeListener
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
 		layout.setVgap(0);
 		
-		JPanel panel1 = new JPanel(layout);
-		panel1.add(openButton);
-		panel1.add(addButton);
-		panel1.add( searchButton);
-		add(panel1);
+//		JPanel panel1 = new JPanel(layout);
+//		panel1.add(openButton);
+//		panel1.add(addButton);
+//		panel1.add( searchButton);
+//		add(panel1);
 		
 		JPanel panel2 = new JPanel(layout);
 		panel2.add(capillariesCheckBox);
@@ -60,31 +57,7 @@ public class Open extends JPanel implements PropertyChangeListener
 		panel2.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		add(panel2);
 
-		searchButton.addActionListener(new ActionListener()  
-		{
-            @Override
-            public void actionPerformed(ActionEvent arg0) 
-            {
-            	selectedNames = new ArrayList<String> ();
-            	dialogSelect = new SelectFiles();
-            	dialogSelect.initialize(parent0);
-            }});
-		
-		openButton.addActionListener(new ActionListener()  
-		{
-            @Override
-            public void actionPerformed(ActionEvent arg0) 
-            {
-            	firePropertyChange("SEQ_OPENFILE", false, true);
-            }});
-		
-		addButton.addActionListener(new ActionListener()  
-		{
-            @Override
-            public void actionPerformed(ActionEvent arg0) 
-            {
-            	firePropertyChange("SEQ_ADDFILE", false, true);
-            }});
+
 	}
 	
 	boolean isCheckedLoadPreviousProfiles() 

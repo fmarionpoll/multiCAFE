@@ -239,7 +239,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		if (exp == null) 
 			return;
-		parent0.paneSequence.tabClose.closeExp(exp);
+		parent0.paneSequence.panelFiles.closeExp(exp);
 		
 		thread = new DetectFlies1_series();		
 //		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
@@ -264,7 +264,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		 {
 			Experiment exp = parent0.expList.getItemAt(currentExp);
 			if (exp != null)
-				parent0.paneSequence.openExperiment(exp);
+				parent0.paneSequence.panelFiles.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}

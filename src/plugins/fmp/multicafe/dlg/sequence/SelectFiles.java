@@ -44,7 +44,7 @@ public class SelectFiles extends JPanel
 	private JButton 	addAllButton			= new JButton("Add all");
 	private JList<String> directoriesJList		= new JList<String>(new DefaultListModel<String>());
 	private MultiCAFE 	parent0 				= null;
-			Open 		parent1 				= null;
+			Options 		parent1 				= null;
 
 	
 	
@@ -52,7 +52,7 @@ public class SelectFiles extends JPanel
 	{
 		filterCombo.setEditable(true);
 		this.parent0 = parent0;
-		parent1 = parent0.paneSequence.tabOpen;
+		parent1 = parent0.paneSequence.tabOptions;
 		addPropertyChangeListener(parent1);
 
 		dialogFrame = new IcyFrame ("Select files", true, true);

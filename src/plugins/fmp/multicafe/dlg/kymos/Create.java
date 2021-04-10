@@ -116,7 +116,7 @@ public class Create extends JPanel implements PropertyChangeListener
 		Experiment exp = parent0.expList.getItemAt(current);
 		if (exp == null) 
 			return;
-		parent0.paneSequence.tabClose.closeExp(exp);
+		parent0.paneSequence.panelFiles.closeExp(exp);
 //		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
@@ -143,7 +143,7 @@ public class Create extends JPanel implements PropertyChangeListener
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
 			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 			if (exp != null) 
-				parent0.paneSequence.openExperiment(exp);
+				parent0.paneSequence.panelFiles.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}

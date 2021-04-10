@@ -151,7 +151,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 			return;
 
 		exp.saveExperimentMeasures(exp.getKymosDirectory());
-		parent0.paneSequence.tabClose.closeExp(exp);
+		parent0.paneSequence.panelFiles.closeExp(exp);
 		thread = new DetectGulps_series();
 		exp.seqKymos.transferKymosRoisToCapillaries_Measures(exp.capillaries);
 		
@@ -205,7 +205,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
 			Experiment exp = parent0.expList.getItemAt(parent0.expList.getSelectedIndex());
-			parent0.paneSequence.openExperiment(exp);
+			parent0.paneSequence.panelFiles.openExperiment(exp);
 			detectButton.setText(detectString);
 		 }
 	}
