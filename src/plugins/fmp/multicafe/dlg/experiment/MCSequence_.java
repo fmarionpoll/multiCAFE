@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.dlg.sequence;
+package plugins.fmp.multicafe.dlg.experiment;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -46,8 +46,7 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener, Viewe
 	private MultiCAFE 		parent0 		= null;
 
 
-	
-	
+
 	public void init (JPanel mainPanel, String string, MultiCAFE parent0) 
 	{
 		this.parent0 = parent0;
@@ -98,7 +97,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener, Viewe
 			}
 		});
 		
-		
 		defineActionListeners();		
 	}
 	
@@ -124,8 +122,6 @@ public class MCSequence_ extends JPanel implements PropertyChangeListener, Viewe
 		parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 	}
 
-
-	
 	public void getExperimentInfosFromDialog(Experiment exp) 
 	{
 		tabInfosSeq.getExperimentInfosFromDialog(exp);

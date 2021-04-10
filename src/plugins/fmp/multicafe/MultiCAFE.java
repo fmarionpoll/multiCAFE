@@ -11,9 +11,9 @@ import icy.plugin.abstract_.PluginActionable;
 import plugins.fmp.multicafe.dlg.cages.MCCages_;
 import plugins.fmp.multicafe.dlg.capillaries.MCCapillaries_;
 import plugins.fmp.multicafe.dlg.excel.MCExcel_;
+import plugins.fmp.multicafe.dlg.experiment.MCSequence_;
 import plugins.fmp.multicafe.dlg.kymos.MCKymos_;
 import plugins.fmp.multicafe.dlg.levels.MCLevels_;
-import plugins.fmp.multicafe.dlg.sequence.MCSequence_;
 import plugins.fmp.multicafe.experiment.ExperimentList;
 import plugins.fmp.multicafe.workinprogress_gpu.MCSpots_;
 
@@ -21,7 +21,7 @@ import plugins.fmp.multicafe.workinprogress_gpu.MCSpots_;
 
 public class MultiCAFE extends PluginActionable  
 {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE April 7, 2021", true, true, true, true);
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE April 10, 2021", true, true, true, true);
 	public ExperimentList 	expList 		= new ExperimentList();
 	
 	public MCSequence_ 		paneSequence 	= new MCSequence_();

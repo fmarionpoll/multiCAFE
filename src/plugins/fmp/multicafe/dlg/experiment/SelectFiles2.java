@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.dlg.sequence;
+package plugins.fmp.multicafe.dlg.experiment;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
