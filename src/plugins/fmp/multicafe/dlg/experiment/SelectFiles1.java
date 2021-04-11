@@ -30,7 +30,7 @@ import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.experiment.Experiment;
 
 
-public class SelectFiles extends JPanel 
+public class SelectFiles1 extends JPanel 
 {
 	/**
 	 * 
@@ -45,7 +45,7 @@ public class SelectFiles extends JPanel
 	private JButton 	addAllButton			= new JButton("Add all");
 	private JList<String> directoriesJList		= new JList<String>(new DefaultListModel<String>());
 	private MultiCAFE 	parent0 				= null;
-	private PanelFiles 	parent1 				= null;
+	private LoadSave 	parent1 				= null;
 
 	
 	

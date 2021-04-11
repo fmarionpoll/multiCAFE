@@ -25,7 +25,7 @@ import plugins.fmp.multicafe.experiment.SequenceCamData;
 import plugins.fmp.multicafe.experiment.SequenceNameListRenderer;
 import plugins.fmp.multicafe.tools.Directories;
 
-public class PanelFiles extends JPanel implements PropertyChangeListener, ItemListener 
+public class LoadSave extends JPanel implements PropertyChangeListener, ItemListener 
 {
 	/**
 	 * 
@@ -37,7 +37,7 @@ public class PanelFiles extends JPanel implements PropertyChangeListener, ItemLi
 	private JButton			searchButton 	= new JButton("Search...");
 	private JButton			closeButton		= new JButton("Close");
 	public List<String> 	selectedNames 	= new ArrayList<String> ();
-	private SelectFiles 	dialogSelect 	= null;
+	private SelectFiles1 	dialogSelect 	= null;
 	
 	private JButton  		previousButton	= new JButton("<");
 	private JButton			nextButton		= new JButton(">");
@@ -64,7 +64,6 @@ public class PanelFiles extends JPanel implements PropertyChangeListener, ItemLi
 		JPanel sequencePanel0 = new JPanel(new BorderLayout());
 		sequencePanel0.add(previousButton, BorderLayout.LINE_START);
 		sequencePanel0.add(parent0.expList, BorderLayout.CENTER);
-//		parent0.expList.setPrototypeDisplayValue("XXXXxxxxxxxxxxxxxxxxx______________XXXXXXXXXXXXXXX");
 		sequencePanel0.add(nextButton, BorderLayout.LINE_END);
 		
 		JPanel sequencePanel = new JPanel(new BorderLayout());
@@ -257,7 +256,7 @@ public class PanelFiles extends JPanel implements PropertyChangeListener, ItemLi
             public void actionPerformed(ActionEvent arg0) 
             {
             	selectedNames = new ArrayList<String> ();
-            	dialogSelect = new SelectFiles();
+            	dialogSelect = new SelectFiles1();
             	dialogSelect.initialize(parent0);
             }});
 		

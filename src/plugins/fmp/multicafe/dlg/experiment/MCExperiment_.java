@@ -40,7 +40,7 @@ public class MCExperiment_ extends JPanel implements PropertyChangeListener, Vie
 	public 	Infos			tabInfosSeq		= new Infos();
 	public 	Intervals		tabIntervals	= new Intervals();
 	public 	Analyze			tabAnalyze		= new Analyze();
-	public 	PanelFiles		panelFiles		= new PanelFiles();
+	public 	LoadSave		panelFiles		= new LoadSave();
 	
 	private MultiCAFE 		parent0 		= null;
 

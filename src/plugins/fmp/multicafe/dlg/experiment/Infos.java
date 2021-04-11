@@ -6,9 +6,10 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.experiment.Experiment;
@@ -25,6 +26,11 @@ public class Infos  extends JPanel
 	private JComboBox<String>	comment2_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	boxID_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	experiment_JCombo 	= new JComboBox<String>();
+	private JCheckBox			experimentCheck		= new JCheckBox("Experiment");
+	private JCheckBox			boxIDCheck			= new JCheckBox("Box ID");
+	private JCheckBox			comment1Check		= new JCheckBox("Comment1");
+	private JCheckBox			comment2Check		= new JCheckBox("Comment2");
+	
 	private MultiCAFE 			parent0 			= null;
 	boolean 					disableChangeFile 	= false;
 	
@@ -37,27 +43,35 @@ public class Infos  extends JPanel
 		FlowLayout flowlayout = new FlowLayout(FlowLayout.LEFT);
 		flowlayout.setVgap(0);
 		JPanel panel0 = new JPanel (flowlayout);
-		panel0.add(new JLabel("Experiment "));
+		panel0.add(experimentCheck);
+		experimentCheck.setHorizontalTextPosition(SwingConstants.RIGHT);
 		panel0.add(experiment_JCombo);
-		panel0.add(new JLabel("  Box ID "));
+		panel0.add(boxIDCheck);
+		boxIDCheck.setHorizontalTextPosition(SwingConstants.RIGHT);
 		panel0.add(boxID_JCombo);
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowlayout);
-		panel1.add(new JLabel("Comment1   ")); 
+		panel1.add(comment1Check);
+		comment1Check.setHorizontalTextPosition(SwingConstants.RIGHT);
 		panel1.add(comment1_JCombo);
-		add( panel1);
-		
+		add (panel1);
+
 		JPanel panel2 = new JPanel(flowlayout);
-		panel2.add(new JLabel("Comment2   ")); 
+		panel2.add(comment2Check);
+		comment2Check.setHorizontalTextPosition(SwingConstants.RIGHT);
 		panel2.add(comment2_JCombo);
 		add( panel2);
 
 		boxID_JCombo.setEditable(true);
 		experiment_JCombo.setEditable(true);	
-		
 		comment1_JCombo.setEditable(true);
 		comment2_JCombo.setEditable(true);
+		
+		experimentCheck.setEnabled(false);
+		boxIDCheck.setEnabled(false);
+		comment1Check.setEnabled(false);
+		comment2Check.setEnabled(false);
 		
 		defineActionListeners();
 	}
