@@ -53,7 +53,7 @@ public class MCExperiment_ extends JPanel implements PropertyChangeListener, Vie
 		capPopupPanel = new PopupPanel(string);			
 		capPopupPanel.expand();
 		mainPanel.add(capPopupPanel);
-		GridLayout tabsLayout = new GridLayout(3, 1);
+		GridLayout tabsLayout = new GridLayout(2, 1);
 		
 		JPanel filesPanel = panelFiles.initPanel(parent0, this);
 		

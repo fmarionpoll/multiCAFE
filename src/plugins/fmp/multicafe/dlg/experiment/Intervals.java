@@ -29,7 +29,7 @@ public class Intervals extends JPanel
 	JSpinner 	binSize				= new JSpinner(new SpinnerNumberModel(1., 0., 1000., 1.));
 	JComboMs 	binUnit 			= new JComboMs();
 	JButton		applyButton 		= new JButton("Apply changes");
-	JButton		refreshButton 		= new JButton("Refresh values");
+	JButton		refreshButton 		= new JButton("Refresh");
 	private MultiCAFE 	parent0 	= null;
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) 
@@ -53,10 +53,10 @@ public class Intervals extends JPanel
 		panel1.add(binUnit);
 		add(panel1);
 
-		JPanel panel2 = new JPanel(layout1);
-		panel2.add(refreshButton);
-		panel2.add(applyButton);
-		add(panel2);
+//		JPanel panel2 = new JPanel(layout1);
+		panel1.add(refreshButton);
+		panel1.add(applyButton);
+//		add(panel2);
 	
 		defineActionListeners();
 	}

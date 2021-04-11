@@ -1,77 +1,156 @@
 package plugins.fmp.multicafe.dlg.experiment;
 
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import icy.gui.frame.IcyFrame;
-import icy.gui.util.GuiUtil;
-import plugins.fmp.multicafe.tools.Directories;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
 
 
-
-public class SelectFiles2 extends JPanel 
-{
+public class SelectFiles2 extends JDialog implements ActionListener, PropertyChangeListener {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 4172927636287523049L;
-	private	IcyFrame 	dialogFrame 		= null;
-	private	JLabel		comment	 			= new JLabel("<html>Select  existing item or enter 'resultsNEW' name to create a new experiment</html>");
-	private JButton 	validateButton		= new JButton("Validate");
-	private JComboBox<String> dirJCombo		= new JComboBox<String>();
-			String		resultDirectory		= null;
+	private static final long serialVersionUID = 1L;
 	
+	private String typedText = null;
+	private JTextField textField;
 	
-	public void initialize ( List<String> expList) 
-	{
-		loadComboWithDirectoriesShortNames(expList);
-		dialogFrame = new IcyFrame ("Select or Create", true, true);
-		
-		JPanel panel = GuiUtil.generatePanel();
-		panel.add(GuiUtil.besidesPanel(comment));
-		panel.add(GuiUtil.besidesPanel(dirJCombo, validateButton));
-		dialogFrame.add(panel);
-		
-		dialogFrame.pack();
-		dialogFrame.addToDesktopPane();
-		dialogFrame.requestFocus();
-		dialogFrame.center();
-		dialogFrame.setVisible(true);
-
-		dirJCombo.setEditable(true);
-		
-		addActionListeners();
+	private String magicWord;
+	private JOptionPane optionPane;
+	
+	private String btnString1 = "Enter";
+	private String btnString2 = "Cancel";
+	
+	/**
+	* Returns null if the typed string was invalid;
+	* otherwise, returns the string as the user entered it.
+	*/
+	public String getValidatedText() {
+		return typedText;
 	}
 	
-	void close() 
-	{
-		dialogFrame.close();
+	/** Creates the reusable dialog. */
+	public SelectFiles2 (Frame aFrame, String aWord) {
+		super(aFrame, true);
+		
+		magicWord = aWord.toUpperCase();
+		setTitle("Quiz");
+		textField = new JTextField(10);
+		
+		//Create an array of the text and components to be displayed.
+		String msgString1 = "What was Dr. SEUSS's real last name?";
+		String msgString2 = "(The answer is \"" + magicWord
+		+ "\".)";
+		Object[] array = {msgString1, msgString2, textField};
+		
+		//Create an array specifying the number of dialog buttons and their text.
+		Object[] options = {btnString1, btnString2};
+		
+		//Create the JOptionPane.
+		optionPane = new JOptionPane(array,
+		      JOptionPane.QUESTION_MESSAGE,
+		      JOptionPane.YES_NO_OPTION,
+		      null,
+		      options,
+		      options[0]);
+		
+		//Make this dialog display it.
+		setContentPane(optionPane);
+		
+		//Handle window closing correctly.
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent we) {
+				/*
+				* Instead of directly closing the window,
+				* we're going to change the JOptionPane's
+				* value property.
+				*/
+				optionPane.setValue(new Integer(JOptionPane.CLOSED_OPTION));
+				}
+			});
+		
+		//Ensure the text field always gets the first focus.
+		addComponentListener(new ComponentAdapter() {
+			public void componentShown(ComponentEvent ce) {
+				textField.requestFocusInWindow();
+				}
+			});
+		
+		//Register an event handler that puts the text into the option pane.
+		textField.addActionListener(this);
+		
+		//Register an event handler that reacts to option pane state changes.
+		optionPane.addPropertyChangeListener(this);
 	}
 	
-	void addActionListeners() 
-	{
-		validateButton.addActionListener(new ActionListener()  
-		{
-	        @Override
-	        public void actionPerformed(ActionEvent arg0) 
-	        {
-	        	resultDirectory = (String) dirJCombo.getSelectedItem();
-				firePropertyChange("DIRECTORY_SELECTED", false, true);
-	        }});
+	/** This method handles events for the text field. */
+	public void actionPerformed(ActionEvent e) {
+		optionPane.setValue(btnString1);
 	}
 	
-	void loadComboWithDirectoriesShortNames(List<String> expList) 
-	{
-		dirJCombo.removeAllItems();
-		List<String> list = Directories.reduceFullNameToLastDirectory(expList);
-		for (String fileName: list) 
-			dirJCombo.addItem(fileName);
+	/** This method reacts to state changes in the option pane. */
+	public void propertyChange(PropertyChangeEvent e) {
+		String prop = e.getPropertyName();
+		
+		if (isVisible()
+		&& (e.getSource() == optionPane)
+		&& (JOptionPane.VALUE_PROPERTY.equals(prop) 
+		|| JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {
+			Object value = optionPane.getValue();
+			if (value == JOptionPane.UNINITIALIZED_VALUE) {
+				//ignore reset
+				return;
+			}
+		
+			//Reset the JOptionPane's value.
+			//If you don't do this, then if the user
+			//presses the same button next time, no
+			//property change event will be fired.
+			optionPane.setValue(
+			JOptionPane.UNINITIALIZED_VALUE);
+			
+			if (btnString1.equals(value)) {
+				typedText = textField.getText();
+				String ucText = typedText.toUpperCase();
+				if (magicWord.equals(ucText)) {
+					//we're done; clear and dismiss the dialog
+					clearAndHide();
+				} else {
+					//text was invalid
+					textField.selectAll();
+					JOptionPane.showMessageDialog(
+							SelectFiles2.this,
+					      "Sorry, \"" + typedText + "\" "
+					      + "isn't a valid response.\n"
+					      + "Please enter "
+					      + magicWord + ".",
+					      "Try again",
+					      JOptionPane.ERROR_MESSAGE);
+					typedText = null;
+					textField.requestFocusInWindow();
+				}
+			} else { //user closed dialog or clicked cancel
+				typedText = null;
+				clearAndHide();
+			}
+		}
+	}
+	
+	/** This method clears the dialog and hides it. */
+	public void clearAndHide() {
+		textField.setText(null);
+		setVisible(false);
 	}
 
 }

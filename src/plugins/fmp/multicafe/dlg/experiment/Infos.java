@@ -57,11 +57,11 @@ public class Infos  extends JPanel
 		panel1.add(comment1_JCombo);
 		add (panel1);
 
-		JPanel panel2 = new JPanel(flowlayout);
-		panel2.add(comment2Check);
+//		JPanel panel2 = new JPanel(flowlayout);
+		panel1.add(comment2Check);
 		comment2Check.setHorizontalTextPosition(SwingConstants.RIGHT);
-		panel2.add(comment2_JCombo);
-		add( panel2);
+		panel1.add(comment2_JCombo);
+//		add( panel2);
 
 		boxID_JCombo.setEditable(true);
 		experiment_JCombo.setEditable(true);	

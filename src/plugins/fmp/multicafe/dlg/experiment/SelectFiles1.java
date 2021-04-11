@@ -123,7 +123,7 @@ public class SelectFiles1 extends JPanel
             	List<String> selectedItems = directoriesJList.getSelectedValuesList();
     			addNamesToSelectedList(selectedItems);
     			removeListofNamesFromList(selectedItems);
-    			firePropertyChange("SEARCH_CLOSED", false, true);
+    			firePropertyChange("SELECT1_CLOSED", false, true);
     			close();
             }});
 		addAllButton.addActionListener(new ActionListener()  
@@ -139,7 +139,7 @@ public class SelectFiles1 extends JPanel
     				}
     			addNamesToSelectedList(allItems);
     			((DefaultListModel<String>) directoriesJList.getModel()).removeAllElements();
-    			firePropertyChange("SEARCH_CLOSED", false, true);
+    			firePropertyChange("SELECT1_CLOSED", false, true);
     			close();
             }});
 	}

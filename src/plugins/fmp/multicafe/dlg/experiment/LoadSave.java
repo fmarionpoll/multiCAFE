@@ -11,14 +11,17 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import icy.system.thread.ThreadUtil;
+
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.experiment.Experiment;
 import plugins.fmp.multicafe.experiment.SequenceCamData;
@@ -32,8 +35,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	 */
 	private static final long serialVersionUID = -690874563607080412L;
 	
-	private JButton 		openButton		= new JButton("Open...");
-	private JButton 		addButton		= new JButton("Add...");
+	private JButton 		createButton		= new JButton("Create...");
+	private JButton 		addButton		= new JButton("Open...");
 	private JButton			searchButton 	= new JButton("Search...");
 	private JButton			closeButton		= new JButton("Close");
 	public List<String> 	selectedNames 	= new ArrayList<String> ();
@@ -41,9 +44,12 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 	private JButton  		previousButton	= new JButton("<");
 	private JButton			nextButton		= new JButton(">");
-	private	SelectFiles2 	dialogSelect2 	= null;
-	String					name			= null;
-	String 					imagesDirectory	= null;
+	//
+	private String 			imagesDirectory	= null;
+	private List<String> 	imagesList		= null;
+	private String 			resultsDirectory = null;
+	private String 			binSubDirectory = null;
+    
 	
 	private MultiCAFE 	parent0 = null;
 	private MCExperiment_ parent1 = null;
@@ -70,14 +76,14 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
 		layout.setVgap(0);
 		JPanel subPanel = new JPanel(layout);
-		subPanel.add(openButton);
 		subPanel.add(addButton);
 		subPanel.add(searchButton);
+		subPanel.add(createButton);
 		sequencePanel.add(subPanel, BorderLayout.LINE_START);
 		sequencePanel.add(closeButton, BorderLayout.LINE_END);
 	
 		defineActionListeners();
-		openButton.addPropertyChangeListener(parent1);
+		createButton.addPropertyChangeListener(parent1);
 		addButton.addPropertyChangeListener(parent1);
 		searchButton.addPropertyChangeListener(parent1);
 		closeButton.addPropertyChangeListener(parent1);
@@ -89,20 +95,9 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		return twoLinesPanel;
 	}
 	
-	
-	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals("DIRECTORY_SELECTED")) 
-		{
-			name = imagesDirectory + File.separator + dialogSelect2.resultDirectory;
-			dialogSelect2.close();
-//			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
-//			if (exp == null)
-//				openSeqCamData(name);
-//			loadMeasuresAndKymos(exp);
-		}
-		else if (evt.getPropertyName().equals("SEARCH_CLOSED")) 
+		if (evt.getPropertyName().equals("SELECT1_CLOSED")) 
 		{
 			int index = parent0.expList.getSelectedIndex();
 			if (index < 0)
@@ -239,6 +234,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			parent0.paneCages.tabFile.loadCages(exp);
 		}
 	}
+	
 	// ------------------------
 	
 	private void defineActionListeners() 
@@ -260,17 +256,16 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             	dialogSelect.initialize(parent0);
             }});
 		
-		openButton.addActionListener(new ActionListener()  
+		createButton.addActionListener(new ActionListener()  
 		{
             @Override
             public void actionPerformed(ActionEvent arg0) 
             {
-            	closeAll();
-    			parent0.expList.removeAllItems();
-    			parent0.expList.updateUI();
-    			Experiment exp = getDirectoriesFromSourceName();
-    			int item = parent0.expList.addExperiment(exp);
-    			parent0.expList.setSelectedIndex(item);
+//            	closeAll();
+//    			parent0.expList.removeAllItems();
+//    			parent0.expList.updateUI();
+    			getDirectoriesFromSourceName();
+    			addExperimentFrom3Names();
             }});
 		
 		addButton.addActionListener(new ActionListener()  
@@ -278,9 +273,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             @Override
             public void actionPerformed(ActionEvent arg0) 
             {
-            	Experiment exp = getDirectoriesFromSourceName();
-    			int item = parent0.expList.addExperiment(exp);
-    			parent0.expList.setSelectedIndex(item);
+            	getDirectoriesFromSourceName();
+            	addExperimentFrom3Names();
             }});
 		
 		closeButton.addActionListener(new ActionListener () 
@@ -312,47 +306,114 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			}});
 	}
 	
-	private Experiment getDirectoriesFromSourceName()
+	private void addExperimentFrom3Names() 
 	{
-		List<String> imagesList = SequenceCamData.getV2ImagesListFromDialog(null);
-		String imagesDirectory = Directories.clipNameToDirectory(imagesList.get(0));
-		String resultsDirectory = getV2ResultsDirectoryDialog(imagesDirectory, Experiment.RESULTS);
-		String binDirectory = getV2BinDirectoryDialog(resultsDirectory);
-	    Experiment exp = new Experiment (imagesList, resultsDirectory, binDirectory);
-	    return exp;
+		// TODO this will be called by open 2 times???
+		Experiment exp = new Experiment (imagesList, resultsDirectory, binSubDirectory);
+		int item = parent0.expList.addExperiment(exp);
+		parent0.expList.setSelectedIndex(item);
 	}
 	
-	private String getV2BinDirectoryDialog(String parentDirectory) 
+	private void getDirectoriesFromSourceName()
+	{
+		imagesList = SequenceCamData.getV2ImagesListFromDialog(null);
+		imagesDirectory = Directories.clipNameToDirectory(imagesList.get(0));
+		resultsDirectory = getV2ResultsDirectoryDialog(imagesDirectory, Experiment.RESULTS);
+		binSubDirectory = getV2BinSubDirectory(resultsDirectory);
+		// TODO wrong if data are stored in "results"
+	}
+	
+	private String getV2BinSubDirectory(String parentDirectory) 
 	{
 		List<String> expList = Directories.getSortedListOfSubDirectoriesWithTIFF(parentDirectory);
-	    String name = parentDirectory;
-	    if (expList.size() > 1) 
-	    {
-	    	dialogSelect2 = new SelectFiles2();
-	    	dialogSelect2.addPropertyChangeListener(this);
-	    	dialogSelect2.initialize(expList);
+	    String name = null;
+	    if (expList.size() > 1) {
+	    	name = selectSubDir(expList, "Bin directory", "Select existing item", Experiment.BIN);
+	    	// if results, delete tiff files within results
+	    	for (int i= 0; i< expList.size(); i++) 
+	    	{
+	    		if (expList.get(i).compareTo(Experiment.RESULTS) == 0)
+	    			deleteTIFFfiles(parentDirectory);
+	    	}
+	    }
+	    else if (expList.size() == 1) {
+	    	name = expList.get(0);
+	    	if (!name.contains(Experiment.BIN)) {
+	    		// TODO move TIFF files from results to bin_60
+	    		name = Experiment.BIN+ "60";
+	    		String binDirectory = parentDirectory + File.separator + name;
+	    		moveTIFFfiles(parentDirectory, binDirectory );
+	    	}
 	    }
 	    else 
-	    {
-	    	name += File.separator + Experiment.BIN+ "60";
-	    }
+	    	name = Experiment.BIN+ "60";
 	    return name;
+	}
+	
+	private void deleteTIFFfiles(String directory) 
+	{
+		File folder = new File(directory);
+		for (File file : folder.listFiles()) {
+			String name = file.getName();
+			if (name.toLowerCase().endsWith(".tiff")) {
+				file.delete();
+		   }
+		}
+	}
+	
+	private void moveTIFFfiles(String directory, String subdirectory)
+	{
+		File folder = new File(directory);
+		File subfolder = new File(subdirectory);
+		if (!subfolder.exists()) 
+		{
+			subfolder.mkdir();
+		}
+		for (File file : folder.listFiles()) {
+			String name = file.getName();
+			if (name.toLowerCase().endsWith(".tiff")) 
+			{
+				file.renameTo (new File(subdirectory + File.separator + file.getName()));
+				file.delete();
+			}
+			if (name.toLowerCase().startsWith("line")) 
+			{
+				file.renameTo (new File(subdirectory + File.separator + file.getName()));
+				file.delete();
+			}
+		}
+	}
+	
+	private String selectSubDir(List<String> expList, String title, String message, String type)
+	{
+		Object[] array = expList.toArray();
+		String s = (String) JOptionPane.showInputDialog(
+				null,
+				message,
+		        title,
+		        JOptionPane.PLAIN_MESSAGE,
+		        null,
+		        array,
+		        expList.get(0));
+
+//		//If a string was returned, say so.
+//		if ((s != null) && (s.length() > 0)) {
+//		    setLabel("Green eggs and... " + s + "!");
+//		    return;
+//		}
+		return s;
 	}
 	
 	private String getV2ResultsDirectoryDialog(String parentDirectory, String filter) 
 	{
 		List<String> expList = Directories.fetchSubDirectoriesMatchingFilter(parentDirectory, filter);
-	    String name = parentDirectory;
+	    String name = null;
 	    if (expList.size() > 1) 
-	    {
-	    	dialogSelect2 = new SelectFiles2();
-	    	dialogSelect2.addPropertyChangeListener(this);
-	    	dialogSelect2.initialize(expList);
-	    }
+	    	name = selectSubDir(expList, "Results directory", "Select existing item", Experiment.RESULTS);
+	    else if (expList.size() == 1)
+	    	name = expList.get(0);
 	    else 
-	    {
-	    	name += File.separator + filter;
-	    }
+	    	name = parentDirectory + File.separator + filter;
 	    return name;
 	}
 
