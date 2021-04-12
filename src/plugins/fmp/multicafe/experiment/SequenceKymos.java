@@ -199,7 +199,9 @@ public class SequenceKymos extends SequenceCamData
 
 	public List <FileProperties> loadListOfPotentialKymographsFromCapillaries(String dir, Capillaries capillaries) 
 	{
-		String directoryFull = dir +File.separator ;	
+		renameCapillary_Files(dir) ;
+		
+		String directoryFull = dir +File.separator ;
 		int ncapillaries = capillaries.capillariesArrayList.size();
 		List<FileProperties> myListOfFiles = new ArrayList<FileProperties>(ncapillaries);
 		for (int i=0; i< ncapillaries; i++) 
@@ -209,6 +211,22 @@ public class SequenceKymos extends SequenceCamData
 			myListOfFiles.add(temp);
 		}
 		return myListOfFiles;
+	}
+	
+	private void renameCapillary_Files(String directory) 
+	{
+		File folder = new File(directory);
+
+		for (File file : folder.listFiles()) {
+			String name = file.getName();
+			if (name.toLowerCase().endsWith(".tiff") 
+				|| name.toLowerCase().startsWith("line")) 
+			{
+				String destinationName = Capillary.replace_LR_with_12(name);
+				if (!name .contains(destinationName))
+					file.renameTo (new File(directory + File.separator + destinationName));
+			}
+		}
 	}
 	
 	// -------------------------

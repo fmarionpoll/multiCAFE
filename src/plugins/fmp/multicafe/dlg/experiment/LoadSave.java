@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -23,6 +24,7 @@ import javax.swing.SwingUtilities;
 import icy.system.thread.ThreadUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
+import plugins.fmp.multicafe.experiment.Capillary;
 import plugins.fmp.multicafe.experiment.Experiment;
 import plugins.fmp.multicafe.experiment.SequenceCamData;
 import plugins.fmp.multicafe.experiment.SequenceNameListRenderer;
@@ -36,7 +38,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	private static final long serialVersionUID = -690874563607080412L;
 	
 	private JButton 		createButton		= new JButton("Create...");
-	private JButton 		addButton		= new JButton("Open...");
+	private JButton 		openButton		= new JButton("Open...");
 	private JButton			searchButton 	= new JButton("Search...");
 	private JButton			closeButton		= new JButton("Close");
 	public List<String> 	selectedNames 	= new ArrayList<String> ();
@@ -76,7 +78,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
 		layout.setVgap(0);
 		JPanel subPanel = new JPanel(layout);
-		subPanel.add(addButton);
+		subPanel.add(openButton);
 		subPanel.add(searchButton);
 		subPanel.add(createButton);
 		sequencePanel.add(subPanel, BorderLayout.LINE_START);
@@ -84,7 +86,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 		defineActionListeners();
 		createButton.addPropertyChangeListener(parent1);
-		addButton.addPropertyChangeListener(parent1);
+		openButton.addPropertyChangeListener(parent1);
 		searchButton.addPropertyChangeListener(parent1);
 		closeButton.addPropertyChangeListener(parent1);
 		parent0.expList.addItemListener(this);
@@ -92,6 +94,11 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		JPanel twoLinesPanel = new JPanel (new GridLayout(2, 1));
 		twoLinesPanel.add(sequencePanel0);
 		twoLinesPanel.add(sequencePanel);
+		
+		// ------------
+		createButton.setEnabled(false);
+		// ------------
+		
 		return twoLinesPanel;
 	}
 	
@@ -211,7 +218,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			return;
 		parent0.paneCapillaries.tabFile.loadCapillaries_File(exp);
 		parent0.paneCapillaries.updateDialogs(exp);
-		
 		if (parent1.tabOptions.kymographsCheckBox.isSelected()) 
 		{
 			boolean flag = parent0.paneKymos.tabFile.loadDefaultKymos(exp);
@@ -261,14 +267,11 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             @Override
             public void actionPerformed(ActionEvent arg0) 
             {
-//            	closeAll();
-//    			parent0.expList.removeAllItems();
-//    			parent0.expList.updateUI();
     			getDirectoriesFromSourceName();
     			addExperimentFrom3Names();
             }});
 		
-		addButton.addActionListener(new ActionListener()  
+		openButton.addActionListener(new ActionListener()  
 		{
             @Override
             public void actionPerformed(ActionEvent arg0) 
@@ -320,7 +323,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		imagesDirectory = Directories.clipNameToDirectory(imagesList.get(0));
 		resultsDirectory = getV2ResultsDirectoryDialog(imagesDirectory, Experiment.RESULTS);
 		binSubDirectory = getV2BinSubDirectory(resultsDirectory);
-		// TODO wrong if data are stored in "results"
+		// TODO wrong if any bin
 	}
 	
 	private String getV2BinSubDirectory(String parentDirectory) 
@@ -328,7 +331,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		List<String> expList = Directories.getSortedListOfSubDirectoriesWithTIFF(parentDirectory);
 	    String name = null;
 	    if (expList.size() > 1) {
-	    	name = selectSubDir(expList, "Bin directory", "Select existing item", Experiment.BIN);
+	    	name = selectSubDir(expList, "Bin directory", "Select existing item", Experiment.BIN, false);
 	    	// if results, delete tiff files within results
 	    	for (int i= 0; i< expList.size(); i++) 
 	    	{
@@ -339,7 +342,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	    else if (expList.size() == 1) {
 	    	name = expList.get(0);
 	    	if (!name.contains(Experiment.BIN)) {
-	    		// TODO move TIFF files from results to bin_60
 	    		name = Experiment.BIN+ "60";
 	    		String binDirectory = parentDirectory + File.separator + name;
 	    		moveTIFFfiles(parentDirectory, binDirectory );
@@ -366,42 +368,41 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		File folder = new File(directory);
 		File subfolder = new File(subdirectory);
 		if (!subfolder.exists()) 
-		{
 			subfolder.mkdir();
-		}
+
 		for (File file : folder.listFiles()) {
 			String name = file.getName();
 			if (name.toLowerCase().endsWith(".tiff")) 
 			{
-				file.renameTo (new File(subdirectory + File.separator + file.getName()));
+				String destinationName = Capillary.replace_LR_with_12(name);
+				file.renameTo (new File(subdirectory + File.separator + destinationName));
 				file.delete();
 			}
 			if (name.toLowerCase().startsWith("line")) 
 			{
-				file.renameTo (new File(subdirectory + File.separator + file.getName()));
+				String destinationName =  Capillary.replace_LR_with_12(name);
+				file.renameTo (new File(subdirectory + File.separator + destinationName));
 				file.delete();
 			}
 		}
 	}
 	
-	private String selectSubDir(List<String> expList, String title, String message, String type)
+	private String selectSubDir(List<String> expList, String title, String message, String type, boolean editable)
 	{
 		Object[] array = expList.toArray();
-		String s = (String) JOptionPane.showInputDialog(
-				null,
-				message,
-		        title,
-		        JOptionPane.PLAIN_MESSAGE,
-		        null,
-		        array,
-		        expList.get(0));
-
-//		//If a string was returned, say so.
-//		if ((s != null) && (s.length() > 0)) {
-//		    setLabel("Green eggs and... " + s + "!");
-//		    return;
-//		}
-		return s;
+		JComboBox<Object> jcb = new JComboBox <Object> (array);
+		jcb.setEditable(editable);
+//		String s = (String) JOptionPane.showInputDialog(
+//				null,
+//				message,
+//		        title,
+//		        JOptionPane.PLAIN_MESSAGE,
+//		        null,
+//		        array,
+//		        expList.get(0));
+//		return s;
+		JOptionPane.showMessageDialog( null, jcb, "select or type a value", JOptionPane.QUESTION_MESSAGE);
+		return (String) jcb.getSelectedItem();
 	}
 	
 	private String getV2ResultsDirectoryDialog(String parentDirectory, String filter) 
@@ -409,7 +410,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		List<String> expList = Directories.fetchSubDirectoriesMatchingFilter(parentDirectory, filter);
 	    String name = null;
 	    if (expList.size() > 1) 
-	    	name = selectSubDir(expList, "Results directory", "Select existing item", Experiment.RESULTS);
+	    	name = selectSubDir(expList, "Results directory", "Select existing item", Experiment.RESULTS, true);
 	    else if (expList.size() == 1)
 	    	name = expList.get(0);
 	    else 

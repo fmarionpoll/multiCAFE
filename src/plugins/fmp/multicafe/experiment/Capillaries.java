@@ -421,12 +421,12 @@ public class Capillaries
 		for (Capillary cap: capillariesArrayList) 
 		{
 			cap.valid = false;
-			String capName = cap.replace_LR_with_12(cap.roi.getName());
+			String capName = Capillary.replace_LR_with_12(cap.roi.getName());
 			Iterator <ROI2D> iterator = listROISCap.iterator();
 			while(iterator.hasNext()) 
 			{ 
 				ROI2D roi = iterator.next();
-				String roiName = cap.replace_LR_with_12(roi.getName());
+				String roiName = Capillary.replace_LR_with_12(roi.getName());
 				if (roiName.equals (capName)) 
 				{
 					cap.roi = (ROI2DShape) roi;
