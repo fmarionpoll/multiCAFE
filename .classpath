@@ -5,7 +5,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/data/Icy-app/icy.jar" sourcepath="/Icy-Kernel"/>
+	<classpathentry kind="lib" path="C:/data/Icy-app/icy.jar" sourcepath="/icy"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/adufour/ezplug/EzPlug.jar"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/adufour/poi/POI.jar"/>
 	<classpathentry kind="lib" path="C:/data/Icy-app/plugins/stef/library/FlanaganPlugin.jar"/>

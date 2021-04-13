@@ -162,7 +162,6 @@ public class ImageTransformTools
 			if (t > 0) 
 			{
 				referenceImage = vinputSequence.getImage(t-1, 0); 
-//				referenceImage = vinputSequence.imageIORead(t-1);
 				transformedImage= functionSubtractRef(inputImage);
 				} 
 			break;	

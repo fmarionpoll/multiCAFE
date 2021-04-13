@@ -21,6 +21,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import icy.sequence.Sequence;
+import icy.sequence.SequenceEvent;
+import icy.sequence.SequenceListener;
+import icy.sequence.SequenceEvent.SequenceEventSourceType;
 import icy.system.thread.ThreadUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
@@ -30,14 +34,14 @@ import plugins.fmp.multicafe.experiment.SequenceCamData;
 import plugins.fmp.multicafe.experiment.SequenceNameListRenderer;
 import plugins.fmp.multicafe.tools.Directories;
 
-public class LoadSave extends JPanel implements PropertyChangeListener, ItemListener 
+public class LoadSave extends JPanel implements PropertyChangeListener, ItemListener, SequenceListener 
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -690874563607080412L;
 	
-	private JButton 		createButton		= new JButton("Create...");
+	private JButton 		createButton	= new JButton("Create...");
 	private JButton 		openButton		= new JButton("Open...");
 	private JButton			searchButton 	= new JButton("Search...");
 	private JButton			closeButton		= new JButton("Close");
@@ -46,11 +50,10 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 	private JButton  		previousButton	= new JButton("<");
 	private JButton			nextButton		= new JButton(">");
-	//
-    
-	
+
 	private MultiCAFE 	parent0 = null;
 	private MCExperiment_ parent1 = null;
+	private int listenerIndex = -1;
 	
 //	
 	JPanel initPanel( MultiCAFE parent0, MCExperiment_ parent1) 
@@ -81,10 +84,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		sequencePanel.add(closeButton, BorderLayout.LINE_END);
 	
 		defineActionListeners();
-		createButton.addPropertyChangeListener(parent1);
-		openButton.addPropertyChangeListener(parent1);
-		searchButton.addPropertyChangeListener(parent1);
-		closeButton.addPropertyChangeListener(parent1);
 		parent0.expList.addItemListener(this);
 		
 		JPanel twoLinesPanel = new JPanel (new GridLayout(2, 1));
@@ -117,7 +116,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				eDAF.imagesList = SequenceCamData.getV2ImagesListFromPath(eDAF.imagesDirectory);
 				eDAF.imagesList = SequenceCamData.keepOnlyAcceptedNames_List(eDAF.imagesList, 0);
 				
-				eDAF.resultsDirectory = name; //getV2ResultsDirectoryDialog(eDAF.imagesDirectory, Experiment.RESULTS);
+				eDAF.resultsDirectory = name; 
 				eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
 				int item = addExperimentFrom3Names(eDAF);
 				if (i == 0)
@@ -149,7 +148,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
         		parent0.paneExperiment.panelFiles.closeExp(exp); 
     		}});
 		}
-		updateBrowseInterface();
 	}
 	
 	void closeAll() 
@@ -179,7 +177,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	{
 		if (parent0.expList.getSelectedIndex() < 0)
 			return;
-		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+		Experiment exp =(Experiment) parent0.expList.getSelectedItem();
 		if (exp != null)
 			closeExp(exp);
 	}
@@ -191,6 +189,14 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		boolean flag2 = (isel == (parent0.expList.getItemCount() -1)? false: true);
 		previousButton.setEnabled(flag1);
 		nextButton.setEnabled(flag2);
+		
+		if (isel >= 0 && listenerIndex != isel) 
+		{
+			System.out.println("...............set sequence listener to index " + isel);
+			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+			exp.seqCamData.seq.addListener(this);
+		}
+		listenerIndex = isel;
 	}
 	
 	boolean openExperimentFromCombo() 
@@ -212,15 +218,15 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 	public void openExperiment(Experiment exp) 
 	{
-		exp.xmlLoadMCExperiment();
-		exp.openSequenceCamData();
-		if (exp.seqCamData != null && exp.seqCamData.seq != null) 
-		{
-			parent0.addSequence(exp.seqCamData.seq);
-			parent1.updateViewerForSequenceCam(exp);
-			loadMeasuresAndKymos(exp);
-			parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
-		}
+//		exp.xmlLoadMCExperiment();
+//		exp.openSequenceCamData();
+//		if (exp.seqCamData != null && exp.seqCamData.seq != null) 
+//		{
+//			parent0.addSequence(exp.seqCamData.seq);
+//			parent1.updateViewerForSequenceCam(exp);
+//			loadMeasuresAndKymos(exp);
+//			parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
+//		}
 	}
 	
 	void loadMeasuresAndKymos(Experiment exp) 
@@ -325,6 +331,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	private int addExperimentFrom3Names(FileListAndDirectories eDAF) 
 	{
 		Experiment exp = new Experiment (eDAF.imagesList, eDAF.resultsDirectory, eDAF.binSubDirectory);
+		exp.seqCamData.seq = SequenceCamData.loadV2SequenceFromImagesList(eDAF.imagesList);
 		int item = parent0.expList.addExperiment(exp);
 		return item;
 	}
@@ -352,13 +359,10 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	    		moveTIFFfiles(parentDirectory, name );
 	    	}
 	    	// else, delete tiff files into "results"
-	    	else
-	    	{
+	    	else {
 		    	for (int i= 0; i< expList.size(); i++) 
-		    	{
 		    		if (expList.get(i).compareTo(Experiment.RESULTS) == 0) 
 		    			deleteTIFFfiles(parentDirectory);
-		    	}
 	    	}
 	    }
 	    else if (expList.size() == 1) {
@@ -392,15 +396,9 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 
 		for (File file : folder.listFiles()) {
 			String name = file.getName();
-			if (name.toLowerCase().endsWith(".tiff")) 
+			if (name.toLowerCase().endsWith(".tiff") || name.toLowerCase().startsWith("line")) 
 			{
 				String destinationName = Capillary.replace_LR_with_12(name);
-				file.renameTo (new File(subdirectory + File.separator + destinationName));
-				file.delete();
-			}
-			if (name.toLowerCase().startsWith("line")) 
-			{
-				String destinationName =  Capillary.replace_LR_with_12(name);
 				file.renameTo (new File(subdirectory + File.separator + destinationName));
 				file.delete();
 			}
@@ -429,7 +427,26 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	    return name;
 	}
 
+	@Override
+	public void sequenceChanged(SequenceEvent sequenceEvent) {
 
+		if (sequenceEvent.getSourceType() == SequenceEventSourceType.SEQUENCE_DATA )
+		{
+			Sequence sequence = sequenceEvent.getSequence();
+			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+			if (sequence == exp.seqCamData.seq)
+			{
+//				System.out.println(".............update interface");
+//				loadMeasuresAndKymos(exp);
+			}
+		}
+	}
+
+	@Override
+	public void sequenceClosed(Sequence sequence) {
+		System.out.println(".............remove sequence listener");
+		sequence.removeListener(this);
+	}
 
 	
 }

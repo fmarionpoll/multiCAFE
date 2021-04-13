@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +60,6 @@ public class SequenceKymos extends SequenceCamData
 		listNames = SequenceCamData.keepOnlyAcceptedNames_List(listNames, 3);
 		setV2ImagesList(convertLinexLRFileNames(listNames));
 		seq = loadV2SequenceFromImagesList(imagesList);
-		
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
@@ -250,12 +251,21 @@ public class SequenceKymos extends SequenceCamData
 			myList = SequenceCamData.keepOnlyAcceptedNames_List(myList, 3);
 			setV2ImagesList(convertLinexLRFileNames(myList));
 			seq = loadV2SequenceFromImagesList(imagesList);
-			
-			setParentDirectoryAsCSCamFileName();
+			setParentDirectoryAsCSCamFileName(imagesList.get(0));
 			status = EnumStatus.KYMOGRAPH;
 		}
 		isRunning_loadImages = false;
 		return flag;
+	}
+	
+	protected void setParentDirectoryAsCSCamFileName(String filename) 
+	{
+		if (filename != null) 
+		{
+			Path path = Paths.get(filename);
+			csCamFileName = path.getName(path.getNameCount()-2).toString();
+			seq.setName(csCamFileName);
+		}
 	}
 	
 	Rectangle getMaxSizeofTiffFiles(List<ImageFileDescriptor> files) 

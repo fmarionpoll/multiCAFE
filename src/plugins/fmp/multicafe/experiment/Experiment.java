@@ -23,6 +23,7 @@ import icy.util.XMLUtil;
 
 import plugins.fmp.multicafe.tools.Directories;
 import plugins.fmp.multicafe.tools.ImageTransformTools;
+import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 
@@ -238,8 +239,8 @@ public class Experiment
 		}
 		seqCamData.setV2ImagesList(imagesList);
 		seqCamData.attachV2Sequence(SequenceCamData.loadV2SequenceFromImagesList(imagesList));
-		
 		loadFileIntervalsFromSeqCamData();
+		
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
 		if (loadCapillaries) 
@@ -704,7 +705,8 @@ public class Experiment
 			return true;
 		}
 		filename = findFileLocation("roislines.xml", IMG_DIRECTORY, EXPT_DIRECTORY, BIN_DIRECTORY);
-		if (seqCamData.xmlReadROIs(filename)) {
+		if (xmlReadCamDataROIs(filename)) 
+		{
 			xmlReadRoiLineParameters(filename);
 			try {
 		        Files.delete(Paths.get(filename));
@@ -712,6 +714,36 @@ public class Experiment
 		        e.printStackTrace();
 		    }
 			return true;
+		}
+		return false;
+	}
+	
+	private boolean xmlReadCamDataROIs(String fileName) 
+	{
+		Sequence seq = seqCamData.seq;
+		if (fileName != null)  
+		{
+			final Document doc = XMLUtil.loadDocument(fileName);
+			if (doc != null) 
+			{
+				List<ROI2D> seqRoisList = seq.getROI2Ds(false);
+				List<ROI2D> newRoisList = ROI2DUtilities.loadROIsFromXML(doc);
+				ROI2DUtilities.mergeROIsListNoDuplicate(seqRoisList, newRoisList, seq);
+				seq.removeAllROI();
+				seq.addROIs(seqRoisList, false);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean xmlReadRoiLineParameters(String filename) 
+	{
+		if (filename != null)  
+		{
+			final Document doc = XMLUtil.loadDocument(filename);
+			if (doc != null) 
+				return capillaries.desc.xmlLoadCapillaryDescription(doc); 
 		}
 		return false;
 	}
@@ -735,17 +767,6 @@ public class Experiment
 		if (!experiment	.equals("..")) capillaries.desc.old_experiment = experiment;
 		if (!comment1	.equals("..")) capillaries.desc.old_comment1 = comment1;
 		if (!comment2	.equals("..")) capillaries.desc.old_comment2 = comment2;	
-	}
-	
-	public boolean xmlReadRoiLineParameters(String pathname) 
-	{
-		if (pathname != null)  
-		{
-			final Document doc = XMLUtil.loadDocument(pathname);
-			if (doc != null) 
-				return capillaries.desc.xmlLoadCapillaryDescription(doc); 
-		}
-		return false;
 	}
 
 	public boolean loadReferenceImage() 

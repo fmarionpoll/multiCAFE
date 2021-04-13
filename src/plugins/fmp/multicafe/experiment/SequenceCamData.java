@@ -23,8 +23,6 @@ import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
-import org.w3c.dom.Document;
-
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Metadata;
@@ -36,17 +34,19 @@ import icy.gui.dialog.LoaderDialog;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
+import icy.image.ImageUtil;
 import icy.math.ArrayMath;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
+import icy.system.thread.ThreadUtil;
 import icy.type.collection.array.Array1DUtil;
-import icy.util.XMLUtil;
+import plugins.kernel.roi.roi2d.ROI2DPolygon;
+
 import plugins.fmp.multicafe.tools.Comparators;
 import plugins.fmp.multicafe.tools.Directories;
 import plugins.fmp.multicafe.tools.ImageOperationsStruct;
-import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
-import plugins.kernel.roi.roi2d.ROI2DPolygon;
+
 
 
 
@@ -80,17 +80,19 @@ public class SequenceCamData
 	public SequenceCamData () 
 	{
 		seq = new Sequence();
+		status = EnumStatus.FILESTACK;
 	}
 	
 	public SequenceCamData(String name, IcyBufferedImage image) 
 	{
 		seq = new Sequence (name, image);
+		status = EnumStatus.FILESTACK;
 	}
 
 	public SequenceCamData (List<String> listNames) 
 	{
 		setV2ImagesList(listNames);
-		seq = loadV2SequenceFromImagesList(imagesList);
+		status = EnumStatus.FILESTACK;
 	}
 	
 	// -----------------------
@@ -115,12 +117,94 @@ public class SequenceCamData
 	{
 		return seqCamDataDirectory;
 	}
+	
+	public List <String> getImagesList() 
+	{
+		return imagesList;
+	}
 
+	public String getDecoratedImageName(int t) 
+	{
+		currentFrame = t; 
+		if (seq!= null)
+			return csCamFileName + " ["+(t)+ "/" + (seq.getSizeT()-1) + "]";
+		else
+			return csCamFileName + "[]";
+	}
+	
+	public String getCSCamFileName() 
+	{
+		return csCamFileName;		
+	}
+	public String getFileName(int t) 
+	{
+		String csName = null;
+		if (status == EnumStatus.FILESTACK) 
+			csName = imagesList.get(t);
+//		else if (status == EnumStatus.AVIFILE)
+//			csName = csFileName;
+		return csName;
+	}
+	
+	public String getFileNameNoPath(int t) 
+	{
+		String csName = null;
+		if (status == EnumStatus.FILESTACK) 
+			csName = imagesList.get(t);
+		else if (status == EnumStatus.AVIFILE)
+			csName = csCamFileName;
+		if (csName != null) 
+		{
+			Path path = Paths.get(csName);
+			return path.getName(path.getNameCount()-1).toString();
+		}
+		return csName;
+	}
+	
+	public static List<String> keepOnlyAcceptedNames_List(List<String> rawlist, int filetype) 
+	{
+		int count = rawlist.size();
+		List<String> outList = new ArrayList<String> (count);
+		for (String name: rawlist) 
+		{
+			int itype = getCodeIfAcceptedFileType(name);
+			if ( itype >= 0) {
+				if (filetype < 0)
+					filetype = itype;
+				if (itype == filetype)
+					outList.add(name);
+			}
+		}
+		return outList;
+	}
+	
+	// ------------------------------------------------------
+	
+	public IcyBufferedImage imageIORead(int t) 
+	{
+		currentFrame = t;
+		String name = imagesList.get(t);
+		BufferedImage image = null;
+		try 
+		{
+	    	image = ImageIO.read(new File(name));
+		} catch (IOException e) {
+			 e.printStackTrace();
+		}
+		return IcyBufferedImage.createFrom(image);
+	}
+	
 	public IcyBufferedImage getImage(int t, int z) 
 	{
 		return seq.getImage(t, z);
 	}
 	
+	public IcyBufferedImage getImageCopy(int t) 
+	{	
+		return IcyBufferedImageUtil.getCopy(getImage(t, 0));
+	}
+
+	// TODO: use GPU
 	public IcyBufferedImage subtractReference(IcyBufferedImage image, int t, TransformOp transformop) 
 	{
 		switch (transformop) 
@@ -147,82 +231,6 @@ public class SequenceCamData
 		return image;
 	}
 		
-	public List <String> getImagesList() 
-	{
-		return imagesList;
-	}
-
-	public String getDecoratedImageName(int t) 
-	{
-		currentFrame = t; 
-		if (seq!= null)
-			return csCamFileName + " ["+(t)+ "/" + (seq.getSizeT()-1) + "]";
-		else
-			return csCamFileName + "[]";
-	}
-	
-	public String getFileName(int t) 
-	{
-		String csName = null;
-		if (status == EnumStatus.FILESTACK) 
-			csName = imagesList.get(t);
-//		else if (status == EnumStatus.AVIFILE)
-//			csName = csFileName;
-		return csName;
-	}
-	
-	public IcyBufferedImage imageIORead(int t) 
-	{
-		currentFrame = t;
-		String name = imagesList.get(t);
-		BufferedImage image = null;
-		try 
-		{
-	    	image = ImageIO.read(new File(name));
-		} catch (IOException e) {
-			 e.printStackTrace();
-		}
-		return IcyBufferedImage.createFrom(image);
-	}
-	
-	public String getFileNameNoPath(int t) 
-	{
-		String csName = null;
-		if (status == EnumStatus.FILESTACK) 
-			csName = imagesList.get(t);
-		else if (status == EnumStatus.AVIFILE)
-			csName = csCamFileName;
-		if (csName != null) 
-		{
-			Path path = Paths.get(csName);
-			return path.getName(path.getNameCount()-1).toString();
-		}
-		return csName;
-	}
-	
-	public boolean isFileStack() 
-	{
-		return (status == EnumStatus.FILESTACK);
-	}
-	
-	public static List<String> keepOnlyAcceptedNames_List(List<String> rawlist, int filetype) 
-	{
-		int count = rawlist.size();
-		List<String> outList = new ArrayList<String> (count);
-		for (String name: rawlist) 
-		{
-			int itype = getCodeIfAcceptedFileType(name);
-			if ( itype >= 0) {
-				if (filetype < 0)
-					filetype = itype;
-				if (itype == filetype)
-					outList.add(name);
-			}
-		}
-		return outList;
-	}
-		
-	// TODO: use GPU
 	public IcyBufferedImage subtractImagesAsDouble (IcyBufferedImage image1, IcyBufferedImage image2) 
 	{	
 		IcyBufferedImage result = new IcyBufferedImage(image1.getSizeX(), image1.getSizeY(), image1.getSizeC(), image1.getDataType_());
@@ -261,7 +269,7 @@ public class SequenceCamData
 		return result;
 	}
 	
-	private  void max(int[] a1, int[] a2, int[] output) 
+	private void max(int[] a1, int[] a2, int[] output) 
 	{
 		for (int i = 0; i < a1.length; i++)
 			if (a1[i] >= a2[i])
@@ -269,52 +277,7 @@ public class SequenceCamData
 			else
 				output[i] = a2[i];
 	}
-	
-	// --------------------------------------------------------
-
-	public String getCSCamFileName() 
-	{
-		return csCamFileName;		
-	}
-	
-	protected void setParentDirectoryAsCSCamFileName() 
-	{
-		if (seq == null)
-			return;
-		String directory = seq.getFilename();
-		Path path = Paths.get(directory);
-		csCamFileName = path.getName(path.getNameCount()-2).toString();
-		seq.setName(csCamFileName);
-	}
-	
-	// ---------------------------
-	
-	public void closeSequence() 
-	{
-		if (seq == null)
-			return;
-		seq.removeAllROI();
-		seq.close();
-	}
-
-	public boolean xmlReadROIs(String fileName) 
-	{
-		if (fileName != null)  
-		{
-			final Document doc = XMLUtil.loadDocument(fileName);
-			if (doc != null) 
-			{
-				List<ROI2D> seqRoisList = seq.getROI2Ds(false);
-				List<ROI2D> newRoisList = ROI2DUtilities.loadROIsFromXML(doc);
-				ROI2DUtilities.mergeROIsListNoDuplicate(seqRoisList, newRoisList, seq);
-				seq.removeAllROI();
-				seq.addROIs(seqRoisList, false);
-				return true;
-			}
-		}
-		return false;
-	}
-	
+			
 	// --------------------------
 	
 	public FileTime getFileTimeFromStructuredName(int t) 
@@ -393,7 +356,7 @@ public class SequenceCamData
 		return filetime;
 	}
 	
-	public List<Cage> getCages () 
+	public List<Cage> getCagesFromROIs () 
 	{
 		List<ROI2D> roiList = seq.getROI2Ds();
 		Collections.sort(roiList, new Comparators.ROI2D_Name_Comparator());
@@ -412,11 +375,6 @@ public class SequenceCamData
 			}
 		}
 		return cageList;
-	}
-	
-	public IcyBufferedImage getImageCopy(int t) 
-	{	
-		return IcyBufferedImageUtil.getCopy(getImage(t, 0));
 	}
 
 	public void displayViewerAtRectangle(Rectangle parent0Rect) 
@@ -442,6 +400,14 @@ public class SequenceCamData
 	}
 	
 	// ------------------------
+
+	public void closeSequence() 
+	{
+		if (seq == null)
+			return;
+		seq.removeAllROI();
+		seq.close();
+	}
 
 	public void setV2ImagesList(List <String> extImagesList) 
 	{
@@ -470,14 +436,37 @@ public class SequenceCamData
 	public static Sequence loadV2SequenceFromImagesList(List <String> imagesList) 
 	{
 		System.out.println("load list of "+ imagesList.size() +" files "+ imagesList.get(0));
-		long startTime =  System.nanoTime();
 		
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
-		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList, false);
-		
-		long endTime = System.nanoTime();
-		System.out.println("loading sequence done - duration: "+((endTime-startTime)/ 1000000000f) + " s");		
-
+		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
+		ThreadUtil.bgRun( new Runnable() { 
+			@Override public void run() 
+			{
+				long startTime2 =  System.nanoTime();
+				seq.setVolatile(true);
+				try
+				{
+					seq.beginUpdate();
+					for (int t=1; t< imagesList.size(); t++)
+					{
+						BufferedImage img = ImageUtil.load(imagesList.get(t));
+						if (img != null)
+						{
+							IcyBufferedImage icyImg = IcyBufferedImage.createFrom(img);
+							icyImg.setVolatile(true);
+							seq.setImage(t, 0, icyImg);
+						}
+					}
+				}
+				finally
+				{
+					seq.endUpdate();
+					seq.dataChanged();
+				}
+				long endTime2 = System.nanoTime();
+				System.out.println("loading images for sequence - duration: "+((endTime2-startTime2)/ 1000000000f) + " s");
+			}});
+			
 		return seq;
 	}
 	
@@ -490,6 +479,7 @@ public class SequenceCamData
 	    File[] selectedFiles = dialog.getSelectedFiles();
 	    if (selectedFiles.length == 0)
 	    	return null;
+	    
 	    // TODO check strPath and provide a way to skip the dialog part (or different routine)
 	    String strDirectory = Directories.clipNameToDirectory(selectedFiles[0].toString());
 	    

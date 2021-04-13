@@ -6,9 +6,6 @@ import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -27,7 +24,7 @@ import plugins.fmp.multicafe.experiment.Experiment;
 
 
 
-public class MCExperiment_ extends JPanel implements PropertyChangeListener, ViewerListener
+public class MCExperiment_ extends JPanel implements ViewerListener
 {
 	/**
 	 * 
@@ -59,19 +56,19 @@ public class MCExperiment_ extends JPanel implements PropertyChangeListener, Vie
 		
 		tabInfosSeq.init(tabsLayout, parent0);
 		tabsPane.addTab("Infos", null, tabInfosSeq, "Define infos for this experiment/box");
-		tabInfosSeq.addPropertyChangeListener(this);
+//		tabInfosSeq.addPropertyChangeListener(this);
 		
 		tabIntervals.init(tabsLayout, parent0);
 		tabsPane.addTab("Intervals", null, tabIntervals, "View/define stack image intervals");
-		tabIntervals.addPropertyChangeListener(this);
+//		tabIntervals.addPropertyChangeListener(this);
 		
 		tabAnalyze.init(tabsLayout);
 		tabsPane.addTab("Analyze", null, tabAnalyze, "Define analysis intervals");
-		tabAnalyze.addPropertyChangeListener(this);
+//		tabAnalyze.addPropertyChangeListener(this);
 
 		tabOptions.init(tabsLayout, parent0);
 		tabsPane.addTab("Options", null, tabOptions, "Options to display data");
-		tabOptions.addPropertyChangeListener(this);
+//		tabOptions.addPropertyChangeListener(this);
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
@@ -98,16 +95,7 @@ public class MCExperiment_ extends JPanel implements PropertyChangeListener, Vie
 	private void defineActionListeners() 
 	{
 	}
-	
-	@Override
-	public void propertyChange(PropertyChangeEvent event) 
-	{
-		if (event.getPropertyName().equals("SEQ_CLOSE")) 
-		{
-			System.out.println("SEQ_CLOSE");
-		}
-	}
-		
+			
 	public void updateDialogs(Experiment exp) 
 	{
 		tabIntervals.displayCamDataIntervals(exp);
@@ -125,6 +113,8 @@ public class MCExperiment_ extends JPanel implements PropertyChangeListener, Vie
 	public void updateViewerForSequenceCam(Experiment exp) 
 	{
 		Sequence seq = exp.seqCamData.seq;
+		if (seq == null)
+			return;
 		Viewer v = seq.getFirstViewer();
 		if (v == null) 
 		{

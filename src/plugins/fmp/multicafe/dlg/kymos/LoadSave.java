@@ -155,9 +155,7 @@ public class LoadSave extends JPanel
 			parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp);
 		} 
 		else 
-		{
 			seqKymos.closeSequence();
-		}
 		return flag;
 	}
 	

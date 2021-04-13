@@ -106,7 +106,7 @@ public class Intervals extends JPanel
 		exp.kymoBinCol_Ms = (long) (((double) binColumnJSpinner.getValue()) * binsize_Ms);
 	}
 	
-	void displayKymoIntervals (Experiment exp) 
+	void displayDlgKymoIntervals (Experiment exp) 
 	{
 		double binsize_Ms = getBinSize_Ms();
 		firstColumnJSpinner.setValue(0.);
