@@ -23,7 +23,6 @@ import java.util.concurrent.TimeUnit;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
-import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -46,7 +45,6 @@ import plugins.fmp.multicafe.tools.Comparators;
 import plugins.fmp.multicafe.tools.Directories;
 import plugins.fmp.multicafe.tools.ImageOperationsStruct;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
-import plugins.fmp.multicafe.tools.StringSorter;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
@@ -71,12 +69,11 @@ public class SequenceCamData
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
-	volatile public List <String>	listFiles 				= new ArrayList<String>();
+	volatile public List <String>	imagesList 				= new ArrayList<String>();
 	protected String 				csCamFileName 			= null;
 	protected String				seqCamDataDirectory 	= null;
 	
-	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif", "avi"};  
-	// TODO: accept mpeg mv4?
+	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif"};  
 	
 	// ----------------------------------------
 	
@@ -90,68 +87,13 @@ public class SequenceCamData
 		seq = new Sequence (name, image);
 	}
 
-	public SequenceCamData (String csFile) 
+	public SequenceCamData (List<String> listNames) 
 	{
-		seq = Loader.loadSequence(csFile, 0, true);
-		seq.setName(csFile);
-	}
-
-	public SequenceCamData (String [] list, String directory) 
-	{
-		loadSequenceOfImagesFromListAndDirectory(list, directory);
-		seq.setName(listFiles.get(0));
-	}
-	
-	public SequenceCamData (List<String> listNames) {
-		listFiles.clear();
-		for (String cs: listNames)
-			listFiles.add(cs);
-		seq = loadSequenceOfImagesFromList(listFiles, true) ; 
-		if (seq != null) 
-		{
-			Path path = Paths.get(listFiles.get(0));
-			int iback = 2;
-			String dir = path.getName(path.getNameCount()-iback).toString();
-			if (dir != null) 
-			{
-				if (dir.equals("grabs"))
-					dir = path.getName(path.getNameCount()-3).toString();
-				seq.setName(dir);
-			}
-		}
-	}
-	
-	public SequenceCamData (List<String> listNames, boolean testLR) 
-	{
-		listFiles.clear();
-		for (String cs: listNames)
-			listFiles.add(cs);
-		seq = loadSequenceOfImagesFromList(listFiles, testLR);
-		if (seq != null) 
-		{
-			Path path = Paths.get(listFiles.get(0));
-			String dir = path.getName(path.getNameCount()-2).toString();
-			if (dir != null) {
-				if (dir.equals("grabs"))
-					dir = path.getName(path.getNameCount()-3).toString();
-				seq.setName(dir);
-			}
-		}
+		setV2ImagesList(listNames);
+		seq = loadV2SequenceFromImagesList(imagesList);
 	}
 	
 	// -----------------------
-	
-	public static boolean isAcceptedFileType(String name) 
-	{
-		if (name==null) 
-			return false;
-		for (int i=0; i< acceptedTypes.length; i++) 
-		{
-			if (name.endsWith(acceptedTypes[i]))
-				return true;
-		}
-		return false;
-	}	
 	
 	public static int getCodeIfAcceptedFileType(String name) 
 	{
@@ -205,9 +147,9 @@ public class SequenceCamData
 		return image;
 	}
 		
-	public List <String> getListofFiles() 
+	public List <String> getImagesList() 
 	{
-		return listFiles;
+		return imagesList;
 	}
 
 	public String getDecoratedImageName(int t) 
@@ -223,7 +165,7 @@ public class SequenceCamData
 	{
 		String csName = null;
 		if (status == EnumStatus.FILESTACK) 
-			csName = listFiles.get(t);
+			csName = imagesList.get(t);
 //		else if (status == EnumStatus.AVIFILE)
 //			csName = csFileName;
 		return csName;
@@ -232,7 +174,7 @@ public class SequenceCamData
 	public IcyBufferedImage imageIORead(int t) 
 	{
 		currentFrame = t;
-		String name = listFiles.get(t);
+		String name = imagesList.get(t);
 		BufferedImage image = null;
 		try 
 		{
@@ -247,7 +189,7 @@ public class SequenceCamData
 	{
 		String csName = null;
 		if (status == EnumStatus.FILESTACK) 
-			csName = listFiles.get(t);
+			csName = imagesList.get(t);
 		else if (status == EnumStatus.AVIFILE)
 			csName = csCamFileName;
 		if (csName != null) 
@@ -263,7 +205,7 @@ public class SequenceCamData
 		return (status == EnumStatus.FILESTACK);
 	}
 	
-	public static List<String> keepOnlyAcceptedNames(List<String> rawlist, int filetype) 
+	public static List<String> keepOnlyAcceptedNames_List(List<String> rawlist, int filetype) 
 	{
 		int count = rawlist.size();
 		List<String> outList = new ArrayList<String> (count);
@@ -280,33 +222,6 @@ public class SequenceCamData
 		return outList;
 	}
 		
-	private String[] keepOnlyAcceptedNamesFromArray(String[] rawlist) 
-	{
-		int count = rawlist.length;
-		for (int i=0; i< rawlist.length; i++) 
-		{
-			if ( !isAcceptedFileType(rawlist[i]) ) 
-			{
-				rawlist[i] = null;
-				count --;
-			}
-		}
-		if (count==0) 
-			return null;
-
-		String[] list = rawlist;
-		if (count < rawlist.length) {
-			list = new String[count];
-			int index = 0;
-			for (int i=0; i< rawlist.length; i++) 
-			{
-				if (rawlist[i] != null)
-					list[index++] = rawlist[i];
-			}
-		}
-		return list;
-	}
-
 	// TODO: use GPU
 	public IcyBufferedImage subtractImagesAsDouble (IcyBufferedImage image1, IcyBufferedImage image2) 
 	{	
@@ -355,191 +270,8 @@ public class SequenceCamData
 				output[i] = a2[i];
 	}
 	
-	// --------------------------
-	
-	public Sequence loadSequenceFromDialog(String path) 
-	{
-		LoaderDialog dialog = new LoaderDialog(false);
-		if (path != null) 
-			dialog.setCurrentDirectory(new File(path));
-	    File[] selectedFiles = dialog.getSelectedFiles();
-	    if (selectedFiles.length == 0)
-	    	return null;
-	    
-	    seqCamDataDirectory = Directories.clipNameToDirectory(selectedFiles[0].toString());
-		if (seqCamDataDirectory != null ) 
-		{
-			if (selectedFiles.length == 1) 
-			{
-				seq = loadSequenceOfImages(selectedFiles[0].getAbsolutePath());
-			}
-			else 
-			{
-				String [] list = new String [selectedFiles.length];
-				for (int i = 0; i < selectedFiles.length; i++) 
-				{
-					if (!selectedFiles[i].getName().toLowerCase().contains(".avi"))
-						list[i] = selectedFiles[i].getAbsolutePath();
-				}
-				seq = loadSequenceOfImagesFromListAndDirectory(list, seqCamDataDirectory);
-			}
-		}
-		return seq;
-	}
-	
-	protected Sequence loadSequenceOfImages(String textPath) 
-	{
-		if (textPath == null) 
-			return loadSequenceFromDialog(null); 
-
-	    seqCamDataDirectory = Directories.clipNameToDirectory(textPath); 
-		if (seqCamDataDirectory != null ) 
-		{
-			List<String> list = new ArrayList<String> ();
-			try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(seqCamDataDirectory))) 
-			{
-				for (Path entry: stream) 
-				{
-					list.add(entry.toString());
-				}
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-			
-			if (list.size() == 0)
-				return null;
-			else 
-			{
-				list = keepOnlyAcceptedNames(list, 0);	
-				if (list.size() == 0)
-					return null;
-				File filepath = new File(textPath);
-				if (!(filepath.isDirectory()) && filepath.getName().toLowerCase().contains(".avi"))
-					seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
-				else 
-				{
-					if (list.get(0).contains("avi")) 
-					{
-						seq = Loader.loadSequence(filepath.getAbsolutePath(), 0, true);
-					} 
-					else 
-					{
-						status = EnumStatus.FAILURE;
-						seq = loadSequenceOfImagesFromList(list, true);
-					}
-				}
-			}
-		}
-		setParentDirectoryAsCSCamFileName();
-		return seq;
-	}
-	
 	// --------------------------------------------------------
-	
-	private Sequence loadSequenceOfImagesFromListAndDirectory(String [] list, String directory) 
-	{
-		status = EnumStatus.FAILURE;
-		list = keepOnlyAcceptedNamesFromArray(list);
-		list = StringSorter.sortNumerically(list);
-		listFiles = new ArrayList<String>(list.length);
-		for (int i=0; i<list.length; i++) 
-		{
-			if (list[i]!=null)
-				listFiles.add(directory + File.separator + list[i]);
-		}
-		nTotalFrames = list.length;	
-		return loadSequenceOfImagesFromList(listFiles, true);
-	}
-	
-	protected Sequence loadSequenceOfImagesFromList(List<String> myListOfFilesNames, boolean testFilenameDecoratedwithLR) 
-	{
-		long startTime = System.nanoTime();
-		if (testFilenameDecoratedwithLR && isLinexLRFileNames(myListOfFilesNames)) 
-		{
-			listFiles = convertLinexLRFileNames(myListOfFilesNames);
-		} else 
-		{
-			listFiles = myListOfFilesNames;
-		}
-		long endTime = System.nanoTime();
-		System.out.println("load list of "+ listFiles.size() +" files "+ listFiles.get(0)); // "+ " - duration: "+((endTime-startTime)/ 1000000000f) + " s");
-		
-		startTime = endTime;
-		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(listFiles.get(0), true);
-		Sequence seq = Loader.loadSequence(seqFileImporter, listFiles, false);
-		endTime = System.nanoTime();
-		System.out.println("loading sequence done - duration: "+((endTime-startTime)/ 1000000000f) + " s");		
 
-		nTotalFrames = listFiles.size();	
-		status = EnumStatus.FILESTACK;	
-		seqAnalysisStart = 0;
-		seqAnalysisEnd = seq.getSizeT()-1;
-		seqAnalysisStep = 1;
-		return seq;
-	}
-	
-	private boolean isLinexLRFileNames(List<String> myListOfFilesNames) 
-	{
-		boolean flag = false;
-		int nfound = 0;
-		for (String filename: myListOfFilesNames) 
-		{	
-			if (filename.contains("R.") || filename.contains("L."))
-				nfound++;
-			if (nfound >1) {
-				flag = true;
-				break;
-			}
-		}
-		return flag;
-	}
-	
-	private List<String> convertLinexLRFileNames(List<String> myListOfFilesNames) 
-	{
-		List<String> newList = new ArrayList<String>();
-		for (String oldName: myListOfFilesNames) 
-		{
-			newList.add(convertLinexLRFileName(oldName));
-		}
-		return newList; 
-	}
-	
-	private String convertLinexLRFileName(String oldName) 
-	{
-		String newName = oldName;
-		if (oldName.contains("R.")) 
-		{
-			newName = oldName.replace("R.", "2.");
-			renameOldFile(oldName, newName);
-		}
-		else if (oldName.contains("L")) 
-		{ 
-			newName = oldName.replace("L.", "1.");
-			renameOldFile(oldName, newName);
-		}
-		return newName; 
-	}
-	
-	private void renameOldFile(String oldName, String newName) 
-	{
-		File oldfile = new File(oldName);
-		if (newName != null && oldfile.exists()) 
-		{
-			try 
-			{
-				FileUtils.moveFile(	FileUtils.getFile(oldName),  FileUtils.getFile(newName));
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-		}
-	}
-	
-	// --------------------------
-	
 	public String getCSCamFileName() 
 	{
 		return csCamFileName;		
@@ -553,8 +285,6 @@ public class SequenceCamData
 		Path path = Paths.get(directory);
 		csCamFileName = path.getName(path.getNameCount()-2).toString();
 		seq.setName(csCamFileName);
-		if (csCamFileName.equals("grabs"))
-			csCamFileName = path.getName(path.getNameCount()-3).toString();
 	}
 	
 	// ---------------------------
@@ -713,6 +443,44 @@ public class SequenceCamData
 	
 	// ------------------------
 
+	public void setV2ImagesList(List <String> extImagesList) 
+	{
+		imagesList.clear();
+		imagesList.addAll(extImagesList);
+		nTotalFrames = imagesList.size();
+		status = EnumStatus.FILESTACK;
+	}
+	
+	public void attachV2Sequence(Sequence seq)
+	{
+		this.seq = seq;
+		
+		status = EnumStatus.FILESTACK;	
+		seqAnalysisStart = 0;
+		seqAnalysisEnd = seq.getSizeT()-1;
+		seqAnalysisStep = 1;
+		
+//		Path path = Paths.get(imagesList.get(0));
+//		int iback = 2;
+//		String dir = path.getName(path.getNameCount()-iback).toString();
+//		if (dir != null) 
+//			seq.setName(dir);
+	}
+	
+	public static Sequence loadV2SequenceFromImagesList(List <String> imagesList) 
+	{
+		System.out.println("load list of "+ imagesList.size() +" files "+ imagesList.get(0));
+		long startTime =  System.nanoTime();
+		
+		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
+		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList, false);
+		
+		long endTime = System.nanoTime();
+		System.out.println("loading sequence done - duration: "+((endTime-startTime)/ 1000000000f) + " s");		
+
+		return seq;
+	}
+	
 	public static List<String> getV2ImagesListFromDialog(String strPath) 
 	{
 		List<String> list = new ArrayList<String> ();
@@ -722,13 +490,14 @@ public class SequenceCamData
 	    File[] selectedFiles = dialog.getSelectedFiles();
 	    if (selectedFiles.length == 0)
 	    	return null;
-	    
+	    // TODO check strPath and provide a way to skip the dialog part (or different routine)
 	    String strDirectory = Directories.clipNameToDirectory(selectedFiles[0].toString());
+	    
 		if (strDirectory != null ) 
 		{
 			if (selectedFiles.length == 1) 
 				list = getV2ImagesListFromPath(strDirectory);
-			list = SequenceCamData.keepOnlyAcceptedNames(list, 0);
+			list = SequenceCamData.keepOnlyAcceptedNames_List(list, 0);
 		}
 		return list;
 	}
@@ -748,8 +517,9 @@ public class SequenceCamData
 			e.printStackTrace();
 		}
 		if (list.size() != 0)
-			list = SequenceCamData.keepOnlyAcceptedNames(list, 0);	
+			list = SequenceCamData.keepOnlyAcceptedNames_List(list, 0);	
 	
 		return list;
 	}
+
 }

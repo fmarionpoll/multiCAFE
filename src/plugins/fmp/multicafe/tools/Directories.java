@@ -8,11 +8,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import plugins.fmp.multicafe.experiment.FileProperties;
+
 
 public class Directories 
 {
@@ -95,21 +94,6 @@ public class Directories
 		if (subfolders != null)
 			subfolders.remove(0);
 		return subfolders;
-	}
-	
-	public static int getFilesAndTestExist(List<FileProperties> fileNameList) 
-	{
-		Iterator<FileProperties> it = fileNameList.iterator();
-		int ntotal = 0;
-		while(it.hasNext())
-		{
-			FileProperties fP = it.next();
-			fP.file = new File(fP.fileName);
-			fP.exists = fP.file.exists();
-			if (fP.file.exists())
-				ntotal ++;
-		}
-		return ntotal;
 	}
 	
 	public static String clipNameToDirectory (String fileName)

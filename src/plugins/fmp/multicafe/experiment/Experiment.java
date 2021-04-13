@@ -119,14 +119,15 @@ public class Experiment
 	
 	public Experiment(List<String> listPrimaryDataNames, String experimentDirectory, String binDirectory) 
 	{
-		seqCamData = new SequenceCamData(listPrimaryDataNames);
-		this.strDirectoryImages = Directories.clipNameToDirectory(listPrimaryDataNames.get(0));
-		this.strDirectoryExperiment = experimentDirectory;
+		strDirectoryImages = Directories.clipNameToDirectory(listPrimaryDataNames.get(0));
+		strDirectoryExperiment = experimentDirectory;
 		Path binDirectoryPath = Paths.get(binDirectory);
 		Path lastSubPath = binDirectoryPath.getName(binDirectoryPath.getNameCount()-1);
-		this.strDirectoryBin = lastSubPath.toString();
-		seqKymos = new SequenceKymos();
+		strDirectoryBin = lastSubPath.toString();
+		
+		seqCamData = new SequenceCamData(listPrimaryDataNames);
 		loadFileIntervalsFromSeqCamData();
+		seqKymos = new SequenceKymos();
 	}
 	
 	// ----------------------------------
@@ -228,8 +229,16 @@ public class Experiment
 		if (seqCamData == null) 
 			seqCamData = new SequenceCamData();
 		xmlLoadMCExperiment ();
-		if (null == seqCamData.loadSequenceOfImages(strDirectoryImages))
+		
+		List<String> imagesList = SequenceCamData.getV2ImagesListFromPath(strDirectoryImages);
+		if (imagesList.size() < 1) 
+		{
+			seqCamData = null;
 			return false;
+		}
+		seqCamData.setV2ImagesList(imagesList);
+		seqCamData.attachV2Sequence(SequenceCamData.loadV2SequenceFromImagesList(imagesList));
+		
 		loadFileIntervalsFromSeqCamData();
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
@@ -272,8 +281,14 @@ public class Experiment
 		strDirectoryImages = getImagesDirectoryAsParentFromFileName(filename);
 		if (seqCamData == null)
 			seqCamData = new SequenceCamData();
-		if (null == seqCamData.loadSequenceOfImages(strDirectoryImages) || seqCamData.seq.getSizeT() == 0)
+		List<String> imagesList = SequenceCamData.getV2ImagesListFromPath(strDirectoryImages);
+		if (imagesList.size() < 1) 
+		{
 			seqCamData = null;
+		} else {
+			seqCamData.setV2ImagesList(imagesList);
+			seqCamData.attachV2Sequence(SequenceCamData.loadV2SequenceFromImagesList(imagesList));
+		}
 		return seqCamData;
 	}
 		
@@ -293,10 +308,10 @@ public class Experiment
 		if (seqCamData != null) 
 		{
 			firstImage_FileTime = seqCamData.getFileTimeFromStructuredName(0);
-			lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.seq.getSizeT()-1);
+			lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.nTotalFrames-1);
 			camFirstImage_Ms = firstImage_FileTime.toMillis();
 			camLastImage_Ms = lastImage_FileTime.toMillis();
-			camBinImage_Ms = (camLastImage_Ms - camFirstImage_Ms)/(seqCamData.seq.getSizeT()-1);
+			camBinImage_Ms = (camLastImage_Ms - camFirstImage_Ms)/(seqCamData.nTotalFrames-1);
 		}
 	}
 
@@ -502,8 +517,8 @@ public class Experiment
  	{
 		if (seqKymos == null) 
 			seqKymos = new SequenceKymos();
-		List<FileProperties> myList = seqKymos.loadListOfPotentialKymographsFromCapillaries(getKymosDirectory(), capillaries);
-		Directories.getFilesAndTestExist(myList);
+		List<ImageFileDescriptor> myList = seqKymos.loadListOfPotentialKymographsFromCapillaries(getKymosDirectory(), capillaries);
+		ImageFileDescriptor.getFilesAndTestExist(myList);
 		return seqKymos.loadImagesFromList(myList, true);
 	}
 	

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
+
 import loci.formats.FormatException;
 import ome.xml.meta.OMEXMLMetadata;
 
@@ -50,15 +52,13 @@ public class SequenceKymos extends SequenceCamData
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
-	public SequenceKymos(String [] list, String directory) 
+	public SequenceKymos(List<String> listNames) 
 	{
-		super(list, directory);
-		status = EnumStatus.KYMOGRAPH;
-	}
-	
-	public SequenceKymos(List<String> listFullPaths) 
-	{
-		super(listFullPaths, true);
+		super();
+		listNames = SequenceCamData.keepOnlyAcceptedNames_List(listNames, 3);
+		setV2ImagesList(convertLinexLRFileNames(listNames));
+		seq = loadV2SequenceFromImagesList(imagesList);
+		
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
@@ -197,16 +197,16 @@ public class SequenceKymos extends SequenceCamData
 
 	// ----------------------------
 
-	public List <FileProperties> loadListOfPotentialKymographsFromCapillaries(String dir, Capillaries capillaries) 
+	public List <ImageFileDescriptor> loadListOfPotentialKymographsFromCapillaries(String dir, Capillaries capillaries) 
 	{
 		renameCapillary_Files(dir) ;
 		
 		String directoryFull = dir +File.separator ;
 		int ncapillaries = capillaries.capillariesArrayList.size();
-		List<FileProperties> myListOfFiles = new ArrayList<FileProperties>(ncapillaries);
+		List<ImageFileDescriptor> myListOfFiles = new ArrayList<ImageFileDescriptor>(ncapillaries);
 		for (int i=0; i< ncapillaries; i++) 
 		{
-			FileProperties temp = new FileProperties();
+			ImageFileDescriptor temp = new ImageFileDescriptor();
 			temp.fileName  = directoryFull+ capillaries.capillariesArrayList.get(i).getCapillaryName()+ ".tiff";
 			myListOfFiles.add(temp);
 		}
@@ -231,23 +231,26 @@ public class SequenceKymos extends SequenceCamData
 	
 	// -------------------------
 	
-	public boolean loadImagesFromList(List <FileProperties> myListOfFileProperties, boolean adjustImagesSize) 
+	public boolean loadImagesFromList(List <ImageFileDescriptor> kymoImagesDesc, boolean adjustImagesSize) 
 	{
 		isRunning_loadImages = true;
-		boolean flag = (myListOfFileProperties.size() > 0);
+		boolean flag = (kymoImagesDesc.size() > 0);
 		if (!flag)
 			return flag;
 		if (adjustImagesSize) 
-			adjustImagesToMaxSize(myListOfFileProperties, getMaxSizeofTiffFiles(myListOfFileProperties));
+			adjustImagesToMaxSize(kymoImagesDesc, getMaxSizeofTiffFiles(kymoImagesDesc));
 		List <String> myList = new ArrayList <String> ();
-		for (FileProperties prop: myListOfFileProperties) 
+		for (ImageFileDescriptor prop: kymoImagesDesc) 
 		{
 			if (prop.exists)
 				myList.add(prop.fileName);
 		}
 		if (myList.size() > 0) 
-		{
-			seq = loadSequenceOfImagesFromList(myList, true);
+		{		
+			myList = SequenceCamData.keepOnlyAcceptedNames_List(myList, 3);
+			setV2ImagesList(convertLinexLRFileNames(myList));
+			seq = loadV2SequenceFromImagesList(imagesList);
+			
 			setParentDirectoryAsCSCamFileName();
 			status = EnumStatus.KYMOGRAPH;
 		}
@@ -255,13 +258,13 @@ public class SequenceKymos extends SequenceCamData
 		return flag;
 	}
 	
-	Rectangle getMaxSizeofTiffFiles(List<FileProperties> files) 
+	Rectangle getMaxSizeofTiffFiles(List<ImageFileDescriptor> files) 
 	{
 		imageWidthMax = 0;
 		imageHeightMax = 0;
 		for (int i= 0; i < files.size(); i++) 
 		{
-			FileProperties fileProp = files.get(i);
+			ImageFileDescriptor fileProp = files.get(i);
 			if (!fileProp.exists)
 				continue;
 			getImageDim(fileProp);
@@ -273,7 +276,7 @@ public class SequenceKymos extends SequenceCamData
 		return new Rectangle(0, 0, imageWidthMax, imageHeightMax);
 	}
 	
-	boolean getImageDim(final FileProperties fileProp) 
+	boolean getImageDim(final ImageFileDescriptor fileProp) 
 	{
 		boolean flag = true;
 		OMEXMLMetadata metaData = null;
@@ -290,33 +293,14 @@ public class SequenceKymos extends SequenceCamData
 		}
 		return flag;
 	}
-	
-	/*
-	 * private boolean getImageDim1(final FileProperties fileProp) { boolean flag =
-	 * true; String suffix = this.getFileSuffix(fileProp.fileName);
-	 * Iterator<ImageReader> iter = ImageIO.getImageReadersBySuffix(suffix); if
-	 * (iter.hasNext()) { ImageReader reader = iter.next(); try { ImageInputStream
-	 * stream = new FileImageInputStream(fileProp.file); reader.setInput(stream);
-	 * fileProp.imageWidth = reader.getWidth(reader.getMinIndex());
-	 * fileProp.imageHeight = reader.getHeight(reader.getMinIndex()); } catch
-	 * (IOException e) { System.out.println(e.getMessage()); } finally {
-	 * reader.dispose(); } } else { flag = false;
-	 * System.out.println("No reader found for given format: " + suffix); } return
-	 * flag; }
-	 * 
-	 * private String getFileSuffix(final String path) { String result = null; if
-	 * (path != null) { result = ""; if (path.lastIndexOf('.') != -1) { result =
-	 * path.substring(path.lastIndexOf('.')); if (result.startsWith(".")) { result =
-	 * result.substring(1); } } } return result; }
-	 */
-	
-	void adjustImagesToMaxSize(List<FileProperties> files, Rectangle rect) 
+
+	void adjustImagesToMaxSize(List<ImageFileDescriptor> files, Rectangle rect) 
 	{
 		ProgressFrame progress = new ProgressFrame("Make kymographs the same width and height");
 		progress.setLength(files.size());
 		for (int i= 0; i < files.size(); i++) 
 		{
-			FileProperties fileProp = files.get(i);
+			ImageFileDescriptor fileProp = files.get(i);
 			if (!fileProp.exists)
 				continue;
 			if (fileProp.imageWidth == rect.width && fileProp.imageHeight == rect.height)
@@ -338,7 +322,7 @@ public class SequenceKymos extends SequenceCamData
 			transferImage1To2(ibufImage1, ibufImage2);
 			try 
 			{
-				Saver.saveImage(ibufImage2, fileProp.file, true);
+				Saver.saveImage(ibufImage2, new File(fileProp.fileName), true);
 			} catch (FormatException e) 
 			{
 				e.printStackTrace();
@@ -401,22 +385,6 @@ public class SequenceKymos extends SequenceCamData
 		return array;
 	}
 		
-/*	public List<Integer> subtractDeltaT(List<Integer > array, int arrayStep, int deltaT) 
- * {
-		if (array == null)
-			return null;
-		for (int index=0; index < array.size(); index++) {
-			int value = 0;
-			int timeIndex = index * arrayStep + deltaT;
-			int indexDelta = timeIndex/arrayStep;
-			if (indexDelta < array.size()) 
-				value = array.get(indexDelta) - array.get(index);
-			array.set(index, value);
-		}
-		return array;
-	}
-*/	
-	
 	public List<Integer> subtractT0 (List<Integer> array) 
 	{
 		if (array == null || array.size() < 1)
@@ -455,5 +423,46 @@ public class SequenceKymos extends SequenceCamData
 		return array;
 	}
 
+	// ----------------------------
+	
+	private List<String> convertLinexLRFileNames(List<String> myListOfFilesNames) 
+	{
+		List<String> newList = new ArrayList<String>();
+		for (String oldName: myListOfFilesNames) 
+			newList.add(convertLinexLRFileName(oldName));
+		return newList; 
+	}
+	
+	private String convertLinexLRFileName(String oldName) 
+	{
+		String newName = oldName;
+		if (oldName.contains("R.")) 
+		{
+			newName = oldName.replace("R.", "2.");
+			renameOldFile(oldName, newName);
+		}
+		else if (oldName.contains("L")) 
+		{ 
+			newName = oldName.replace("L.", "1.");
+			renameOldFile(oldName, newName);
+		}
+		return newName; 
+	}
+	
+	private void renameOldFile(String oldName, String newName) 
+	{
+		File oldfile = new File(oldName);
+		if (newName != null && oldfile.exists()) 
+		{
+			try 
+			{
+				FileUtils.moveFile(	FileUtils.getFile(oldName),  FileUtils.getFile(newName));
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+	}
 	
 }

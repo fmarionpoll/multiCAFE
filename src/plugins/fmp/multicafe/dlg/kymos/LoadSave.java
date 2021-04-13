@@ -26,9 +26,8 @@ import loci.formats.FormatException;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.experiment.Capillary;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.FileProperties;
+import plugins.fmp.multicafe.experiment.ImageFileDescriptor;
 import plugins.fmp.multicafe.experiment.SequenceKymos;
-import plugins.fmp.multicafe.tools.Directories;
 
 
 public class LoadSave extends JPanel 
@@ -148,8 +147,8 @@ public class LoadSave extends JPanel
 			return flag;
 		}
 		exp.checkKymosDirectory(exp.getBinSubDirectory());
-		List<FileProperties> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosDirectory(), exp.capillaries);
-		int nItems = Directories.getFilesAndTestExist(myList);
+		List<ImageFileDescriptor> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosDirectory(), exp.capillaries);
+		int nItems = ImageFileDescriptor.getFilesAndTestExist(myList);
 		if (nItems > 0) 
 		{
 			flag = seqKymos.loadImagesFromList(myList, true);
