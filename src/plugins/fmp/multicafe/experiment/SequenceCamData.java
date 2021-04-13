@@ -435,14 +435,13 @@ public class SequenceCamData
 	
 	public static Sequence loadV2SequenceFromImagesList(List <String> imagesList) 
 	{
-		System.out.println("load list of "+ imagesList.size() +" files "+ imagesList.get(0));
-		
+//		System.out.println("load list of "+ imagesList.size() +" files "+ imagesList.get(0));	
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
 		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
 		ThreadUtil.bgRun( new Runnable() { 
 			@Override public void run() 
 			{
-				long startTime2 =  System.nanoTime();
+//				long startTime2 =  System.nanoTime();
 				seq.setVolatile(true);
 				try
 				{
@@ -460,11 +459,10 @@ public class SequenceCamData
 				}
 				finally
 				{
+//					long endTime2 = System.nanoTime();
+//					System.out.println("loading images for sequence - duration: "+((endTime2-startTime2)/ 1000000000f) + " s");
 					seq.endUpdate();
-					seq.dataChanged();
 				}
-				long endTime2 = System.nanoTime();
-				System.out.println("loading images for sequence - duration: "+((endTime2-startTime2)/ 1000000000f) + " s");
 			}});
 			
 		return seq;

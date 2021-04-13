@@ -436,7 +436,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 			if (sequence == exp.seqCamData.seq)
 			{
-//				System.out.println(".............update interface");
+				System.out.println(".............update interface");
 //				loadMeasuresAndKymos(exp);
 			}
 		}
