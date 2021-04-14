@@ -9,7 +9,7 @@ import org.w3c.dom.Node;
 import icy.file.xml.XMLPersistent;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafe.experiment.ExperimentList;
+import plugins.fmp.multicafe.experiment.ExperimentCombo;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 public class Options_BuildSeries implements XMLPersistent 
@@ -23,7 +23,7 @@ public class Options_BuildSeries implements XMLPersistent
 	public boolean 			doRegistration 		= false;
 	public boolean			doCreateBinDir	= false;
 	public ArrayList<ROI2D> listROIStoBuildKymos= new ArrayList<ROI2D> ();
-	public ExperimentList	expList;
+	public ExperimentCombo	expList;
 	public Rectangle 		parent0Rect 		= null;
 	public String 			binSubPath 			= null;
 	

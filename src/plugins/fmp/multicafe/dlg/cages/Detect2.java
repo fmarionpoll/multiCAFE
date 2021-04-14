@@ -29,7 +29,7 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.experiment.Cage;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.ExperimentList;
+import plugins.fmp.multicafe.experiment.ExperimentCombo;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectFlies2_series;
 
@@ -206,7 +206,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.t_lastMs 		= parent0.paneExperiment.tabAnalyze.getEndMs();
 		options.t_binMs			= parent0.paneExperiment.tabAnalyze.getBinMs();
 
-		options.expList = new ExperimentList(); 
+		options.expList = new ExperimentCombo(); 
 //		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		options.expList.index0 = parent0.expList.getSelectedIndex();
 		if (allCheckBox.isSelected())

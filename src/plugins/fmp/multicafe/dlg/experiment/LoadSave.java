@@ -109,7 +109,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			for (int i=0; i < selectedNames.size(); i++) 
 			{
 				String name = selectedNames.get(i);		// name = directory of "results"
-				FileListAndDirectories eDAF = new FileListAndDirectories();
+				ExperimentDirectories eDAF = new ExperimentDirectories();
 				Path imageDir = new File(name).toPath().getParent();
 				eDAF.imagesDirectory = imageDir.toString();
 				
@@ -284,7 +284,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             @Override
             public void actionPerformed(ActionEvent arg0) 
             {
-            	FileListAndDirectories eDAF = getDirectoriesFromSourceName(null);
+            	ExperimentDirectories eDAF = getDirectoriesFromSourceName(null);
             	int item = addExperimentFrom3Names(eDAF);
             	parent0.expList.setSelectedIndex(item);
             }});
@@ -294,7 +294,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             @Override
             public void actionPerformed(ActionEvent arg0) 
             {
-            	FileListAndDirectories eDAF = getDirectoriesFromSourceName(null);
+            	ExperimentDirectories eDAF = getDirectoriesFromSourceName(null);
             	int item = addExperimentFrom3Names(eDAF);
             	parent0.expList.setSelectedIndex(item);
             }});
@@ -328,7 +328,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			}});
 	}
 	
-	private int addExperimentFrom3Names(FileListAndDirectories eDAF) 
+	private int addExperimentFrom3Names(ExperimentDirectories eDAF) 
 	{
 		Experiment exp = new Experiment (eDAF.imagesList, eDAF.resultsDirectory, eDAF.binSubDirectory);
 		exp.seqCamData.seq = SequenceCamData.loadV2SequenceFromImagesList(eDAF.imagesList);
@@ -336,9 +336,9 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		return item;
 	}
 	
-	private FileListAndDirectories getDirectoriesFromSourceName(String name)
+	private ExperimentDirectories getDirectoriesFromSourceName(String name)
 	{
-		FileListAndDirectories eDAF = new FileListAndDirectories();
+		ExperimentDirectories eDAF = new ExperimentDirectories();
 		eDAF.imagesList = SequenceCamData.getV2ImagesListFromDialog(name);
 		eDAF.imagesDirectory = Directories.clipNameToDirectory(eDAF.imagesList.get(0));
 		eDAF.resultsDirectory = getV2ResultsDirectoryDialog(eDAF.imagesDirectory, Experiment.RESULTS);

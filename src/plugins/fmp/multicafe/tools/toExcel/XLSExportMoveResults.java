@@ -13,7 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafe.experiment.Cage;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.ExperimentList;
+import plugins.fmp.multicafe.experiment.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.XYTaSeriesArrayList;
 import plugins.fmp.multicafe.experiment.XYTaValue;
 import plugins.fmp.multicafe.tools.Comparators;
@@ -21,7 +21,7 @@ import plugins.fmp.multicafe.tools.Comparators;
 
 public class XLSExportMoveResults  extends XLSExport 
 {
-	ExperimentList expList = null;
+	ExperimentCombo expList = null;
 	List <XYTaSeriesArrayList> rowsForOneExp = new ArrayList <XYTaSeriesArrayList> ();
 
 	// -----------------------

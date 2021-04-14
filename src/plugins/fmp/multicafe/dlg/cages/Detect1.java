@@ -28,7 +28,7 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.experiment.Cage;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.ExperimentList;
+import plugins.fmp.multicafe.experiment.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.SequenceCamData;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectFlies1_series;
@@ -220,7 +220,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubPath 		= parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
-		options.expList 		= new ExperimentList(); 
+		options.expList 		= new ExperimentCombo(); 
 //		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		options.expList.index0 	= parent0.expList.getSelectedIndex();
 		if (allCheckBox.isSelected())

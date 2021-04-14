@@ -10,7 +10,7 @@ import icy.gui.frame.progress.ProgressFrame;
 import icy.main.Icy;
 import icy.system.thread.Processor;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.ExperimentList;
+import plugins.fmp.multicafe.experiment.ExperimentCombo;
 
 
 public abstract class BuildSeries extends SwingWorker<Integer, Integer> 
@@ -27,7 +27,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 		System.out.println("loop over experiments");
         threadRunning = true;
 		int nbiterations = 0;
-		ExperimentList expList = options.expList;
+		ExperimentCombo expList = options.expList;
 		ProgressFrame progress = new ProgressFrame("Analyze series");			
 		for (int index = expList.index0; index <= expList.index1; index++, nbiterations++) 
 		{

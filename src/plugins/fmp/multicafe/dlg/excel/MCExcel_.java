@@ -17,7 +17,7 @@ import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.experiment.Dialog;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.ExperimentList;
+import plugins.fmp.multicafe.experiment.ExperimentCombo;
 import plugins.fmp.multicafe.tools.toExcel.XLSExportCapillariesResults;
 import plugins.fmp.multicafe.tools.toExcel.XLSExportGulpsResults;
 import plugins.fmp.multicafe.tools.toExcel.XLSExportMoveResults;
@@ -216,7 +216,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.absoluteTime	= tabOptions.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= tabOptions.exportAllFilesCheckBox.isSelected();
 		
-		options.expList = new ExperimentList(); 
+		options.expList = new ExperimentCombo(); 
 //		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);
 		options.expList.expListBinSubPath = parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
 		if (tabOptions.exportAllFilesCheckBox.isSelected()) {

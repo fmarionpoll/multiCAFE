@@ -21,7 +21,7 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.experiment.Capillary;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.ExperimentList;
+import plugins.fmp.multicafe.experiment.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.SequenceKymos;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectGulps_series;
@@ -156,7 +156,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		exp.seqKymos.transferKymosRoisToCapillaries_Measures(exp.capillaries);
 		
 		Options_BuildSeries options = thread.options;
-		options.expList = new ExperimentList(); 
+		options.expList = new ExperimentCombo(); 
 //		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
 		options.expList.index0 = parent0.expList.getSelectedIndex();
 		if (allCheckBox.isSelected()) 

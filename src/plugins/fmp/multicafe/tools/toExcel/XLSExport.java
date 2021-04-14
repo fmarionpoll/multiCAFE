@@ -19,7 +19,7 @@ import icy.gui.dialog.MessageDialog;
 import plugins.fmp.multicafe.experiment.Cage;
 import plugins.fmp.multicafe.experiment.Capillary;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.ExperimentList;
+import plugins.fmp.multicafe.experiment.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.SequenceCamData;
 import plugins.fmp.multicafe.tools.Comparators;
 
@@ -36,7 +36,7 @@ public class XLSExport
     XSSFFont 					font_blue 			= null;
     XSSFWorkbook 				workbook			= null;		
     
-	ExperimentList 				expList 			= null;
+	ExperimentCombo 				expList 			= null;
 	List <XLSResults> 			rowListForOneExp 	= new ArrayList <XLSResults> ();
 
 

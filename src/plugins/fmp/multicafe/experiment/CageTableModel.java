@@ -12,11 +12,11 @@ public class CageTableModel extends AbstractTableModel
 	 * 
 	 */
 	private static final long serialVersionUID = -3501225818220221949L;
-	private ExperimentList expList 	= null;
+	private ExperimentCombo expList 	= null;
 	
 	
 	
-	public CageTableModel (ExperimentList expList) 
+	public CageTableModel (ExperimentCombo expList) 
 	{
 		super();
 		this.expList = expList;

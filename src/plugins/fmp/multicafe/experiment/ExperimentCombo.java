@@ -10,7 +10,7 @@ import javax.swing.JComboBox;
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafe.tools.toExcel.XLSExportOptions;
 
-public class ExperimentList extends JComboBox<Experiment>
+public class ExperimentCombo extends JComboBox<Experiment>
 {
 	
 	/**
@@ -24,7 +24,7 @@ public class ExperimentList extends JComboBox<Experiment>
 	
 
 
-	public ExperimentList () 
+	public ExperimentCombo () 
 	{
 	}
 	

@@ -9,11 +9,11 @@ public class CapillaryTableModel extends AbstractTableModel
 	 * 
 	 */
 	private static final long serialVersionUID = 6325792669154093747L;
-	private ExperimentList expList 	= null;
+	private ExperimentCombo expList 	= null;
 	
 	
 	
-	public CapillaryTableModel (ExperimentList expList) 
+	public CapillaryTableModel (ExperimentCombo expList) 
 	{
 		super();
 		this.expList = expList;
