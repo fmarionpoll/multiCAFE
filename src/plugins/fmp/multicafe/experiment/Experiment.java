@@ -203,8 +203,7 @@ public class Experiment
 		}
 		setBinSubDirectory(kymosSubDirectory);
 	}
-	
-	
+		
 	public void setImagesDirectory(String name) 
 	{
 		strDirectoryImages = name;
