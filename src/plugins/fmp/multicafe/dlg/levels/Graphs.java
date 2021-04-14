@@ -65,7 +65,7 @@ public class Graphs extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment)  parent0.expList.getSelectedItem();
 				if (exp != null) 
 				{
 					exp.seqKymos.validateRois();
@@ -144,7 +144,7 @@ public class Graphs extends JPanel
 		return flag;
 	}
 	
-	public void closeAll() 
+	public void closeAllCharts() 
 	{
 		if (topandbottomChart != null) 
 			topandbottomChart.mainChartFrame.dispose();

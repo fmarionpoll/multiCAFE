@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,7 +29,7 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 
 import icy.file.Loader;
 import icy.file.SequenceFileImporter;
-import icy.gui.dialog.LoaderDialog;
+import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
@@ -43,11 +42,8 @@ import icy.type.collection.array.Array1DUtil;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 import plugins.fmp.multicafe.tools.Comparators;
-import plugins.fmp.multicafe.tools.Directories;
 import plugins.fmp.multicafe.tools.ImageOperationsStruct;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
-
-
 
 
 
@@ -71,10 +67,9 @@ public class SequenceCamData
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
 	volatile public List <String>	imagesList 				= new ArrayList<String>();
 	protected String 				csCamFileName 			= null;
-	protected String				seqCamDataDirectory 	= null;
 	
-	private final static String[] 	acceptedTypes 			= {".jpg", ".jpeg", ".bmp", "tiff", "tif"};  
-	
+	public boolean 				stopFlag 		= false;
+	public boolean 				threadRunning 	= false;
 	// ----------------------------------------
 	
 	public SequenceCamData () 
@@ -97,25 +92,10 @@ public class SequenceCamData
 	
 	// -----------------------
 	
-	public static int getCodeIfAcceptedFileType(String name) 
+	public String getImagesDirectory () 
 	{
-		/* 
-		 * Returns accepted type (0-n) or -1 if not found 
-		 */
-		int ifound = -1;
-		if (name==null) 
-			return ifound;
-		for (int i=0; i< acceptedTypes.length; i++) 
-		{
-			if (name.endsWith(acceptedTypes[i]))
-				return i;
-		}
-		return ifound;
-	}
-
-	public String getSeqDataDirectory () 
-	{
-		return seqCamDataDirectory;
+		Path strPath = Paths.get(imagesList.get(0));
+		return strPath.getParent().toString();
 	}
 	
 	public List <String> getImagesList() 
@@ -127,15 +107,21 @@ public class SequenceCamData
 	{
 		currentFrame = t; 
 		if (seq!= null)
-			return csCamFileName + " ["+(t)+ "/" + (seq.getSizeT()-1) + "]";
+			return getCSCamFileName() + " ["+(t)+ "/" + (seq.getSizeT()-1) + "]";
 		else
-			return csCamFileName + "[]";
+			return getCSCamFileName() + "[]";
 	}
 	
 	public String getCSCamFileName() 
 	{
+		if (csCamFileName == null) 
+		{
+			Path path = Paths.get(imagesList.get(0));
+			csCamFileName = path.subpath(path.getNameCount()-4, path.getNameCount()-1).toString();
+		}
 		return csCamFileName;		
 	}
+	
 	public String getFileName(int t) 
 	{
 		String csName = null;
@@ -149,33 +135,13 @@ public class SequenceCamData
 	public String getFileNameNoPath(int t) 
 	{
 		String csName = null;
-		if (status == EnumStatus.FILESTACK) 
-			csName = imagesList.get(t);
-		else if (status == EnumStatus.AVIFILE)
-			csName = csCamFileName;
+		csName = imagesList.get(t);
 		if (csName != null) 
 		{
 			Path path = Paths.get(csName);
 			return path.getName(path.getNameCount()-1).toString();
 		}
 		return csName;
-	}
-	
-	public static List<String> keepOnlyAcceptedNames_List(List<String> rawlist, int filetype) 
-	{
-		int count = rawlist.size();
-		List<String> outList = new ArrayList<String> (count);
-		for (String name: rawlist) 
-		{
-			int itype = getCodeIfAcceptedFileType(name);
-			if ( itype >= 0) {
-				if (filetype < 0)
-					filetype = itype;
-				if (itype == filetype)
-					outList.add(name);
-			}
-		}
-		return outList;
 	}
 	
 	// ------------------------------------------------------
@@ -405,6 +371,8 @@ public class SequenceCamData
 	{
 		if (seq == null)
 			return;
+		if (threadRunning)
+			stopFlag = true;
 		seq.removeAllROI();
 		seq.close();
 	}
@@ -433,21 +401,34 @@ public class SequenceCamData
 //			seq.setName(dir);
 	}
 	
-	public static Sequence loadV2SequenceFromImagesList(List <String> imagesList) 
+	public boolean loadImages() 
 	{
-//		System.out.println("load list of "+ imagesList.size() +" files "+ imagesList.get(0));	
+		if (imagesList.size() == 0)
+			return false;
+		attachV2Sequence(loadV2SequenceFromImagesList(imagesList));
+		return (seq != null);
+	}
+	
+	public Sequence loadV2SequenceFromImagesList(List <String> imagesList) 
+	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
 		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
 		ThreadUtil.bgRun( new Runnable() { 
 			@Override public void run() 
 			{
-//				long startTime2 =  System.nanoTime();
+				ProgressFrame progress = new ProgressFrame("Load image files");
 				seq.setVolatile(true);
+				threadRunning = true;
+				stopFlag = false;
 				try
 				{
 					seq.beginUpdate();
-					for (int t=1; t< imagesList.size(); t++)
+					int nimages = imagesList.size();
+					for (int t=1; t < nimages; t++)
 					{
+						if (stopFlag)
+							break;
+						progress.setMessage("Loading file: " + (t+1) + "//" + nimages);
 						BufferedImage img = ImageUtil.load(imagesList.get(t));
 						if (img != null)
 						{
@@ -459,55 +440,14 @@ public class SequenceCamData
 				}
 				finally
 				{
-//					long endTime2 = System.nanoTime();
-//					System.out.println("loading images for sequence - duration: "+((endTime2-startTime2)/ 1000000000f) + " s");
 					seq.endUpdate();
+					progress.close();
+					threadRunning = false;
 				}
 			}});
 			
 		return seq;
 	}
 	
-	public static List<String> getV2ImagesListFromDialog(String strPath) 
-	{
-		List<String> list = new ArrayList<String> ();
-		LoaderDialog dialog = new LoaderDialog(false);
-		if (strPath != null) 
-			dialog.setCurrentDirectory(new File(strPath));
-	    File[] selectedFiles = dialog.getSelectedFiles();
-	    if (selectedFiles.length == 0)
-	    	return null;
-	    
-	    // TODO check strPath and provide a way to skip the dialog part (or different routine)
-	    String strDirectory = Directories.clipNameToDirectory(selectedFiles[0].toString());
-	    
-		if (strDirectory != null ) 
-		{
-			if (selectedFiles.length == 1) 
-				list = getV2ImagesListFromPath(strDirectory);
-			list = SequenceCamData.keepOnlyAcceptedNames_List(list, 0);
-		}
-		return list;
-	}
-	
-	public static List<String> getV2ImagesListFromPath(String strDirectory) 
-	{
-		List<String> list = new ArrayList<String> ();
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(strDirectory))) 
-		{
-			for (Path entry: stream) 
-			{
-				list.add(entry.toString());
-			}
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
-		if (list.size() != 0)
-			list = SequenceCamData.keepOnlyAcceptedNames_List(list, 0);	
-	
-		return list;
-	}
 
 }

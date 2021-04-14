@@ -118,7 +118,6 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 				ProgressFrame progress = new ProgressFrame("Display capillaries information");
 				updateDialogs( exp);
 				parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(true);
-				parent0.paneExperiment.updateDialogs(exp);
 				progress.close();
 			}});
 	}

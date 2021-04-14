@@ -239,7 +239,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		if (exp == null) 
 			return;
-		parent0.paneExperiment.panelFiles.closeExp(exp);
+		parent0.paneExperiment.panelFiles.closeViewsForCurrentExperiment(exp);
 		
 		thread = new DetectFlies1_series();		
 //		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	

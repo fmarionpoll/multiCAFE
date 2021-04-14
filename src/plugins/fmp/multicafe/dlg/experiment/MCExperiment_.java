@@ -89,19 +89,17 @@ public class MCExperiment_ extends JPanel implements ViewerListener
 			}
 		});
 		
-		defineActionListeners();		
+//		defineActionListeners();		
 	}
 	
-	private void defineActionListeners() 
-	{
-	}
+//	private void defineActionListeners() 
+//	{
+//	}
 			
-	public void updateDialogs(Experiment exp) 
+	public void updateExpDialogs(Experiment exp) 
 	{
 		tabIntervals.displayCamDataIntervals(exp);
 		tabInfosSeq.setExperimentsInfosToDialog(exp);
-
-		updateViewerForSequenceCam(exp);
 		parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 	}
 

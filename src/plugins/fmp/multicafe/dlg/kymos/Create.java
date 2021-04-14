@@ -116,7 +116,7 @@ public class Create extends JPanel implements PropertyChangeListener
 		Experiment exp = parent0.expList.getItemAt(current);
 		if (exp == null) 
 			return;
-		parent0.paneExperiment.panelFiles.closeExp(exp);
+		parent0.paneExperiment.panelFiles.closeViewsForCurrentExperiment(exp);
 //		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		

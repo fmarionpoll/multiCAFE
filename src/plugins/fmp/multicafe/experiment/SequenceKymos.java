@@ -26,7 +26,7 @@ import icy.sequence.MetaDataUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
-
+import plugins.fmp.multicafe.dlg.experiment.ExperimentDirectories;
 import plugins.fmp.multicafe.tools.Comparators;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
@@ -57,9 +57,7 @@ public class SequenceKymos extends SequenceCamData
 	public SequenceKymos(List<String> listNames) 
 	{
 		super();
-		listNames = SequenceCamData.keepOnlyAcceptedNames_List(listNames, 3);
 		setV2ImagesList(convertLinexLRFileNames(listNames));
-		seq = loadV2SequenceFromImagesList(imagesList);
 		status = EnumStatus.KYMOGRAPH;
 	}
 	
@@ -248,7 +246,7 @@ public class SequenceKymos extends SequenceCamData
 		}
 		if (myList.size() > 0) 
 		{		
-			myList = SequenceCamData.keepOnlyAcceptedNames_List(myList, 3);
+			myList = ExperimentDirectories.keepOnlyAcceptedNames_List(myList, "tiff");
 			setV2ImagesList(convertLinexLRFileNames(myList));
 			seq = loadV2SequenceFromImagesList(imagesList);
 			setParentDirectoryAsCSCamFileName(imagesList.get(0));

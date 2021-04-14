@@ -21,6 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import icy.gui.viewer.Viewer;
 import icy.sequence.Sequence;
 import icy.sequence.SequenceEvent;
 import icy.sequence.SequenceListener;
@@ -30,7 +31,6 @@ import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.experiment.Capillary;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.SequenceCamData;
 import plugins.fmp.multicafe.experiment.SequenceNameListRenderer;
 import plugins.fmp.multicafe.tools.Directories;
 
@@ -51,9 +51,9 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	private JButton  		previousButton	= new JButton("<");
 	private JButton			nextButton		= new JButton(">");
 
-	private MultiCAFE 	parent0 = null;
-	private MCExperiment_ parent1 = null;
-	private int listenerIndex = -1;
+	private MultiCAFE 		parent0 		= null;
+	private MCExperiment_ 	parent1 		= null;
+	private int 			listenerIndex 	= -1;
 	
 //	
 	JPanel initPanel( MultiCAFE parent0, MCExperiment_ parent1) 
@@ -111,14 +111,17 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				String name = selectedNames.get(i);		// name = directory of "results"
 				ExperimentDirectories eDAF = new ExperimentDirectories();
 				Path imageDir = new File(name).toPath().getParent();
-				eDAF.imagesDirectory = imageDir.toString();
 				
-				eDAF.imagesList = SequenceCamData.getV2ImagesListFromPath(eDAF.imagesDirectory);
-				eDAF.imagesList = SequenceCamData.keepOnlyAcceptedNames_List(eDAF.imagesList, 0);
+				eDAF.cameraImagesDirectory = imageDir.toString();
+				eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromPath(eDAF.cameraImagesDirectory);
+				eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
 				
 				eDAF.resultsDirectory = name; 
 				eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
-				int item = addExperimentFrom3Names(eDAF);
+				eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(eDAF.binSubDirectory);
+				eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff");
+				
+				int item = addExperimentFrom3NamesAnd2Lists(eDAF);
 				if (i == 0)
 					parent0.expList.setSelectedIndex(item);
             	
@@ -145,18 +148,18 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			Experiment exp = (Experiment) e.getItem();
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() 
     		{
-        		parent0.paneExperiment.panelFiles.closeExp(exp); 
+        		parent0.paneExperiment.panelFiles.closeViewsForCurrentExperiment(exp); 
     		}});
 		}
 	}
 	
-	void closeAll() 
+	void closeAllExperiments() 
 	{
 		closeCurrentExperiment();
 		parent0.expList.removeAllItems();
 	}
 	
-	public void closeExp(Experiment exp) 
+	public void closeViewsForCurrentExperiment(Experiment exp) 
 	{
 		if (exp != null) 
 		{
@@ -164,12 +167,12 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			if (exp.seqCamData != null) 
 			{
 				exp.xmlSaveMCExperiment();
-				exp.saveExperimentMeasures(exp.getKymosDirectory());
+				exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
 			}
-			exp.closeExperiment();
+			exp.closeSequences();
 		}
-		parent0.paneCages.tabGraphics.closeAll();
-		parent0.paneLevels.tabGraphs.closeAll();
+		parent0.paneCages.tabGraphics.closeAllCharts();
+		parent0.paneLevels.tabGraphs.closeAllCharts();
 		parent0.paneKymos.tabDisplay.kymosComboBox.removeAllItems();
 	}
 	
@@ -179,7 +182,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			return;
 		Experiment exp =(Experiment) parent0.expList.getSelectedItem();
 		if (exp != null)
-			closeExp(exp);
+			closeViewsForCurrentExperiment(exp);
 	}
 	
 	void updateBrowseInterface() 
@@ -192,7 +195,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		
 		if (isel >= 0 && listenerIndex != isel) 
 		{
-			System.out.println("...............set sequence listener to index " + isel);
 			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 			exp.seqCamData.seq.addListener(this);
 		}
@@ -203,8 +205,13 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	{
 		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		boolean flag = true;
-		if (exp.seqCamData != null) {
-			parent1.updateDialogs(exp);
+		if (exp.seqCamData != null) 
+		{
+			exp.loadCamDataImages();
+			exp.xmlLoadMCCapillaries_Only();
+			exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
+			parent1.updateViewerForSequenceCam(exp);
+			parent1.updateExpDialogs(exp);
 			loadMeasuresAndKymos(exp);
 			parent0.paneLevels.updateDialogs(exp);
 		}
@@ -233,7 +240,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	{
 		if (exp == null)
 			return;
-		parent0.paneCapillaries.tabFile.loadCapillaries_File(exp);
 		parent0.paneCapillaries.updateDialogs(exp);
 		if (parent1.tabOptions.kymographsCheckBox.isSelected()) 
 		{
@@ -244,12 +250,12 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				{
 					parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
 					parent0.paneLevels.updateDialogs(exp);
+					if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected())
+						SwingUtilities.invokeLater(new Runnable() { public void run() 
+						{
+							parent0.paneLevels.tabGraphs.xyDisplayGraphs(exp);
+						}});
 				}
-				if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected())
-					SwingUtilities.invokeLater(new Runnable() { public void run() 
-					{
-						parent0.paneLevels.tabGraphs.xyDisplayGraphs(exp);
-					}});
 			}
 		}
 		if (parent1.tabOptions.cagesCheckBox.isSelected()) 
@@ -285,7 +291,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             public void actionPerformed(ActionEvent arg0) 
             {
             	ExperimentDirectories eDAF = getDirectoriesFromSourceName(null);
-            	int item = addExperimentFrom3Names(eDAF);
+            	int item = addExperimentFrom3NamesAnd2Lists(eDAF);
             	parent0.expList.setSelectedIndex(item);
             }});
 		
@@ -295,7 +301,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             public void actionPerformed(ActionEvent arg0) 
             {
             	ExperimentDirectories eDAF = getDirectoriesFromSourceName(null);
-            	int item = addExperimentFrom3Names(eDAF);
+            	int item = addExperimentFrom3NamesAnd2Lists(eDAF);
             	parent0.expList.setSelectedIndex(item);
             }});
 		
@@ -303,7 +309,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				closeAll();
+				closeAllExperiments();
 				parent1.tabsPane.setSelectedIndex(0);
 				parent0.expList.removeAllItems();
 				parent0.expList.updateUI();
@@ -328,10 +334,9 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			}});
 	}
 	
-	private int addExperimentFrom3Names(ExperimentDirectories eDAF) 
+	private int addExperimentFrom3NamesAnd2Lists(ExperimentDirectories eDAF) 
 	{
-		Experiment exp = new Experiment (eDAF.imagesList, eDAF.resultsDirectory, eDAF.binSubDirectory);
-		exp.seqCamData.seq = SequenceCamData.loadV2SequenceFromImagesList(eDAF.imagesList);
+		Experiment exp = new Experiment (eDAF);
 		int item = parent0.expList.addExperiment(exp);
 		return item;
 	}
@@ -339,10 +344,15 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	private ExperimentDirectories getDirectoriesFromSourceName(String name)
 	{
 		ExperimentDirectories eDAF = new ExperimentDirectories();
-		eDAF.imagesList = SequenceCamData.getV2ImagesListFromDialog(name);
-		eDAF.imagesDirectory = Directories.clipNameToDirectory(eDAF.imagesList.get(0));
-		eDAF.resultsDirectory = getV2ResultsDirectoryDialog(eDAF.imagesDirectory, Experiment.RESULTS);
+		eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromDialog(name);
+		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
+		eDAF.cameraImagesDirectory = Directories.clipNameToDirectory(eDAF.cameraImagesList.get(0));
+		
+		eDAF.resultsDirectory = getV2ResultsDirectoryDialog(eDAF.cameraImagesDirectory, Experiment.RESULTS);
 		eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
+		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory;
+		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
+		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff");
 		// TODO wrong if any bin
 		return eDAF;
 	}
@@ -432,19 +442,19 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 
 		if (sequenceEvent.getSourceType() == SequenceEventSourceType.SEQUENCE_DATA )
 		{
-			Sequence sequence = sequenceEvent.getSequence();
 			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
-			if (sequence == exp.seqCamData.seq)
+			if (sequenceEvent.getSequence() == exp.seqCamData.seq)
 			{
-				System.out.println(".............update interface");
 //				loadMeasuresAndKymos(exp);
+				Viewer v = exp.seqCamData.seq.getFirstViewer();
+				int t = v.getPositionT(); 
+				v.setTitle(exp.seqCamData.getDecoratedImageName(t));
 			}
 		}
 	}
 
 	@Override
 	public void sequenceClosed(Sequence sequence) {
-		System.out.println(".............remove sequence listener");
 		sequence.removeListener(this);
 	}
 

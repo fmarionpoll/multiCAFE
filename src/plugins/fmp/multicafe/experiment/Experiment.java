@@ -20,7 +20,7 @@ import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
-
+import plugins.fmp.multicafe.dlg.experiment.ExperimentDirectories;
 import plugins.fmp.multicafe.tools.Directories;
 import plugins.fmp.multicafe.tools.ImageTransformTools;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
@@ -114,21 +114,22 @@ public class Experiment
 	{
 		this.seqCamData = seqCamData;
 		this.seqKymos   = new SequenceKymos();
-		strDirectoryExperiment = this.seqCamData.getSeqDataDirectory() + File.separator + RESULTS;
+		strDirectoryExperiment = this.seqCamData.getImagesDirectory() + File.separator + RESULTS;
 		loadFileIntervalsFromSeqCamData();
 	}
 	
-	public Experiment(List<String> listPrimaryDataNames, String experimentDirectory, String binDirectory) 
+	public Experiment(ExperimentDirectories eADF) 
 	{
-		strDirectoryImages = Directories.clipNameToDirectory(listPrimaryDataNames.get(0));
-		strDirectoryExperiment = experimentDirectory;
+		strDirectoryImages = Directories.clipNameToDirectory(eADF.cameraImagesList.get(0));
+		strDirectoryExperiment = eADF.resultsDirectory;
+		String binDirectory = strDirectoryExperiment + File.separator + eADF.binSubDirectory;
 		Path binDirectoryPath = Paths.get(binDirectory);
 		Path lastSubPath = binDirectoryPath.getName(binDirectoryPath.getNameCount()-1);
 		strDirectoryBin = lastSubPath.toString();
 		
-		seqCamData = new SequenceCamData(listPrimaryDataNames);
+		seqCamData = new SequenceCamData(eADF.cameraImagesList);
 		loadFileIntervalsFromSeqCamData();
-		seqKymos = new SequenceKymos();
+		seqKymos = new SequenceKymos(eADF.kymosImagesList);
 	}
 	
 	// ----------------------------------
@@ -148,7 +149,7 @@ public class Experiment
 		strDirectoryExperiment = getParentIf(fileName, BIN);
 	}
 	
-	public String getKymosDirectory() 
+	public String getKymosBinFullDirectory() 
 	{
 		String filename = strDirectoryExperiment;
 		if (strDirectoryBin != null)
@@ -214,7 +215,7 @@ public class Experiment
 		return strDirectoryImages;
 	}
 	
-	public void closeExperiment() 
+	public void closeSequences() 
 	{
 		if (seqKymos != null) 
 			seqKymos.closeSequence();
@@ -230,14 +231,16 @@ public class Experiment
 			seqCamData = new SequenceCamData();
 		xmlLoadMCExperiment ();
 		
-		List<String> imagesList = SequenceCamData.getV2ImagesListFromPath(strDirectoryImages);
+		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(strDirectoryImages);
+		imagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(imagesList, "jpg");
 		if (imagesList.size() < 1) 
 		{
 			seqCamData = null;
 			return false;
 		}
+		
 		seqCamData.setV2ImagesList(imagesList);
-		seqCamData.attachV2Sequence(SequenceCamData.loadV2SequenceFromImagesList(imagesList));
+		seqCamData.attachV2Sequence(seqCamData.loadV2SequenceFromImagesList(imagesList));
 		loadFileIntervalsFromSeqCamData();
 		
 		if (seqKymos == null)
@@ -281,15 +284,32 @@ public class Experiment
 		strDirectoryImages = getImagesDirectoryAsParentFromFileName(filename);
 		if (seqCamData == null)
 			seqCamData = new SequenceCamData();
-		List<String> imagesList = SequenceCamData.getV2ImagesListFromPath(strDirectoryImages);
+		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(strDirectoryImages);
+		imagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(imagesList, "jpg");
 		if (imagesList.size() < 1) 
 		{
 			seqCamData = null;
-		} else {
+		} 
+		else 
+		{
 			seqCamData.setV2ImagesList(imagesList);
-			seqCamData.attachV2Sequence(SequenceCamData.loadV2SequenceFromImagesList(imagesList));
+			seqCamData.attachV2Sequence(seqCamData.loadV2SequenceFromImagesList(imagesList));
 		}
 		return seqCamData;
+	}
+	
+	public boolean loadCamDataImages() 
+	{
+		if (seqCamData != null)
+			seqCamData.loadImages();
+		return (seqCamData != null && seqCamData.seq != null);
+	}
+	
+	public boolean loadKymosImages() 
+	{
+		if (seqKymos != null)
+			seqKymos.loadImages();
+		return (seqKymos != null && seqKymos.seq != null);
 	}
 		
 	public SequenceCamData openSequenceCamData() 
@@ -431,7 +451,7 @@ public class Experiment
 	{
 		if (strDirectoryExperiment == null && seqCamData != null) 
 		{
-			strDirectoryImages = seqCamData.getSeqDataDirectory() ;
+			strDirectoryImages = seqCamData.getImagesDirectory() ;
 			strDirectoryExperiment = strDirectoryImages + File.separator + RESULTS;
 		}
 		return xmlLoadExperiment(getMCExperimentFileName(null));
@@ -504,7 +524,7 @@ public class Experiment
 	        XMLUtil.setElementValue(node, ID_COMMENT2, comment2);
 	        
 	        if (strDirectoryImages == null ) 
-	        	strDirectoryImages = seqCamData.getSeqDataDirectory();
+	        	strDirectoryImages = seqCamData.getImagesDirectory();
 	        XMLUtil.setElementValue(node, ID_IMAGESDIRECTORY, strDirectoryImages);
 
 	        String tempname = getMCExperimentFileName(null) ;
@@ -517,7 +537,7 @@ public class Experiment
  	{
 		if (seqKymos == null) 
 			seqKymos = new SequenceKymos();
-		List<ImageFileDescriptor> myList = seqKymos.loadListOfPotentialKymographsFromCapillaries(getKymosDirectory(), capillaries);
+		List<ImageFileDescriptor> myList = seqKymos.loadListOfPotentialKymographsFromCapillaries(getKymosBinFullDirectory(), capillaries);
 		ImageFileDescriptor.getFilesAndTestExist(myList);
 		return seqKymos.loadImagesFromList(myList, true);
 	}
@@ -593,12 +613,10 @@ public class Experiment
 	{
 		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
 		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
-		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(getKymosDirectory());
+		String kymosImagesDirectory = getKymosBinFullDirectory();
+		boolean flag2 = capillaries.xmlLoadCapillaries_Measures2(kymosImagesDirectory);
 		if (flag1 & flag2) 
-		{
-			seqKymos.seqCamDataDirectory = getKymosDirectory();
-			seqKymos.loadListOfPotentialKymographsFromCapillaries(seqKymos.seqCamDataDirectory, capillaries);
-		}
+			seqKymos.loadListOfPotentialKymographsFromCapillaries(kymosImagesDirectory, capillaries);
 		return flag1 & flag2;
 	}
 	
@@ -666,7 +684,7 @@ public class Experiment
 	
 	public boolean xmlLoadMCCapillaries_Measures() 
 	{
-		return capillaries.xmlLoadCapillaries_Measures2(getKymosDirectory());
+		return capillaries.xmlLoadCapillaries_Measures2(getKymosBinFullDirectory());
 	}
 	
 	public boolean xmlLoadMCCapillaries_Only() {
@@ -757,7 +775,7 @@ public class Experiment
 	
 	public boolean xmlSaveMCCapillaries_Measures() 
 	{
-		return capillaries.xmlSaveCapillaries_Measures(getKymosDirectory());
+		return capillaries.xmlSaveCapillaries_Measures(getKymosBinFullDirectory());
 	}
 	
 	private void transferExpDescriptorsToCapillariesDescriptors() 

@@ -14,7 +14,6 @@ import javax.swing.SwingConstants;
 import icy.gui.util.FontUtil;
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.SequenceKymos;
 
 
 
@@ -77,12 +76,6 @@ public class LoadSave extends JPanel
 	
 	public boolean loadCapillaries_File(Experiment exp) 
 	{	
-		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqKymos == null) 
-		{
-			exp.seqKymos = new SequenceKymos();
-			seqKymos = exp.seqKymos;
-		}
 		boolean flag = exp.xmlLoadMCCapillaries_Only();
 		exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
 		return flag;

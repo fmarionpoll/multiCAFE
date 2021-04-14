@@ -133,7 +133,7 @@ public class Graphs extends JPanel
 		iChart.mainChartFrame.toFront();
 	}
 	
-	public void closeAll() 
+	public void closeAllCharts() 
 	{
 		close (ypositionsChart); 
 		close (distanceChart);

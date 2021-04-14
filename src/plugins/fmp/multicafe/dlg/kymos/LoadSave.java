@@ -147,7 +147,7 @@ public class LoadSave extends JPanel
 			return flag;
 		}
 		exp.checkKymosDirectory(exp.getBinSubDirectory());
-		List<ImageFileDescriptor> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosDirectory(), exp.capillaries);
+		List<ImageFileDescriptor> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosBinFullDirectory(), exp.capillaries);
 		int nItems = ImageFileDescriptor.getFilesAndTestExist(myList);
 		if (nItems > 0) 
 		{

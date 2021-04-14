@@ -92,7 +92,7 @@ public class LoadSave  extends JPanel
 		if (exp.seqKymos != null ) 
 		{
 			ProgressFrame progress = new ProgressFrame("save capillary measures");
-			flag = exp.saveExperimentMeasures(exp.getKymosDirectory());
+			flag = exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
 			progress.close();
 		}
 		return flag;

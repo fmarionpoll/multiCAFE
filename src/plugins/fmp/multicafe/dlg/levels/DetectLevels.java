@@ -243,9 +243,10 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		Experiment exp = parent0.expList.getItemAt(current);
 		if (exp == null)
 			return;
-		exp.saveExperimentMeasures(exp.getKymosDirectory());
-		parent0.paneExperiment.panelFiles.closeExp(exp);
-		exp.closeExperiment();
+		exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
+		// TODO check if this is valid; check for other series
+		//parent0.paneExperiment.panelFiles.closeExperiment(exp);
+		//exp.closeSequences();
 		thread = new DetectLevels_series();
 		thread.options = initBuildParameters(exp);
 		
