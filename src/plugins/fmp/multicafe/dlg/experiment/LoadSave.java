@@ -11,7 +11,6 @@ import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,35 +104,26 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			if (index < 0)
 				index = 0;
 			parent1.tabInfosSeq.disableChangeFile = true;
+			if (selectedNames.size() < 1)
+				return;
 			
-			for (int i=0; i < selectedNames.size(); i++) 
+			ExperimentDirectories eDAF = getDirectoriesFromExptPath(selectedNames.get(0));
+        	int item = addExperimentFrom3NamesAnd2Lists(eDAF);
+        	parent0.expList.setSelectedIndex(item);
+        	
+        	SwingUtilities.invokeLater(new Runnable() { public void run() 
 			{
-				String name = selectedNames.get(i);		// name = directory of "results"
-				ExperimentDirectories eDAF = new ExperimentDirectories();
-				Path imageDir = new File(name).toPath().getParent();
-				
-				eDAF.cameraImagesDirectory = imageDir.toString();
-				eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromPath(eDAF.cameraImagesDirectory);
-				eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
-				
-				eDAF.resultsDirectory = name; 
-				eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
-				eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(eDAF.binSubDirectory);
-				eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff");
-				
-				int item = addExperimentFrom3NamesAnd2Lists(eDAF);
-				if (i == 0)
-					parent0.expList.setSelectedIndex(item);
-            	
-//				Experiment exp = new Experiment(name);
-//				parent0.expList.addItem(exp);
-			}
-			selectedNames.clear();
-			if (parent0.expList.getItemCount() > 0) 
-			{
-				parent0.expList.setSelectedIndex(index);
+				for (int i=1; i < selectedNames.size(); i++) 
+				{
+					ExperimentDirectories eDAF = getDirectoriesFromExptPath(selectedNames.get(i));
+		        	addExperimentFrom3NamesAnd2Lists(eDAF);
+				}
+				selectedNames.clear();
 				parent1.tabInfosSeq.disableChangeFile = false;
-			}
+				updateBrowseInterface();
+				}});
+   
+			parent0.expList.setSelectedIndex(index);
 		}
 	}
 	
@@ -259,9 +249,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			}
 		}
 		if (parent1.tabOptions.cagesCheckBox.isSelected()) 
-		{
 			parent0.paneCages.tabFile.loadCages(exp);
-		}
 	}
 	
 	// ------------------------
@@ -290,7 +278,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             @Override
             public void actionPerformed(ActionEvent arg0) 
             {
-            	ExperimentDirectories eDAF = getDirectoriesFromSourceName(null);
+            	ExperimentDirectories eDAF = getDirectoriesFromDialog(null);
             	int item = addExperimentFrom3NamesAnd2Lists(eDAF);
             	parent0.expList.setSelectedIndex(item);
             }});
@@ -300,7 +288,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             @Override
             public void actionPerformed(ActionEvent arg0) 
             {
-            	ExperimentDirectories eDAF = getDirectoriesFromSourceName(null);
+            	ExperimentDirectories eDAF = getDirectoriesFromDialog(null);
             	int item = addExperimentFrom3NamesAnd2Lists(eDAF);
             	parent0.expList.setSelectedIndex(item);
             }});
@@ -341,14 +329,33 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		return item;
 	}
 	
-	private ExperimentDirectories getDirectoriesFromSourceName(String name)
+	private ExperimentDirectories getDirectoriesFromDialog(String rootDirectory)
 	{
 		ExperimentDirectories eDAF = new ExperimentDirectories();
-		eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromDialog(name);
+		
+		eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromDialog(rootDirectory);
 		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
 		eDAF.cameraImagesDirectory = Directories.clipNameToDirectory(eDAF.cameraImagesList.get(0));
 		
 		eDAF.resultsDirectory = getV2ResultsDirectoryDialog(eDAF.cameraImagesDirectory, Experiment.RESULTS);
+		eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
+		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory;
+		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
+		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff");
+		// TODO wrong if any bin
+		return eDAF;
+	}
+	
+	private ExperimentDirectories getDirectoriesFromExptPath(String exptDirectory)
+	{
+		ExperimentDirectories eDAF = new ExperimentDirectories();
+
+		String strDirectory = Experiment.getImagesDirectoryAsParentFromFileName(exptDirectory);
+		eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromPath(strDirectory);
+		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
+		eDAF.cameraImagesDirectory = Directories.clipNameToDirectory(eDAF.cameraImagesList.get(0));
+		
+		eDAF.resultsDirectory = exptDirectory;
 		eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
 		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory;
 		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
@@ -445,10 +452,16 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 			if (sequenceEvent.getSequence() == exp.seqCamData.seq)
 			{
-//				loadMeasuresAndKymos(exp);
 				Viewer v = exp.seqCamData.seq.getFirstViewer();
 				int t = v.getPositionT(); 
 				v.setTitle(exp.seqCamData.getDecoratedImageName(t));
+			}
+			else if (sequenceEvent.getSequence() == exp.seqKymos.seq)
+			{
+				Viewer v = exp.seqKymos.seq.getFirstViewer();
+				int t = v.getPositionT(); 
+				String title = parent0.paneKymos.tabDisplay.getKymographTitle(t);
+				v.setTitle(title);
 			}
 		}
 	}

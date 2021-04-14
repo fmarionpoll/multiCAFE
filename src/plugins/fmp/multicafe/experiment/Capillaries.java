@@ -112,36 +112,7 @@ public class Capillaries
 		return false;
 	}
 	
-	public boolean xmlLoadCapillaries_Measures(String csFileName) 
-	{ // TODO
-		if (csFileName == null)
-			return false;
-		
-		final Document doc = XMLUtil.loadDocument(csFileName);
-		if (doc != null) 
-		{
-			switch (desc.version) 
-			{
-			case 2:	// current xml storage structure
-				xmlLoadCapillaries_v2(doc, csFileName);
-				break;
-			case 1: // old xml storage structure
-				xmlLoadCapillaries_v1(doc);
-				break;
-			case 0: // old-old xml storage structure
-				xmlLoadCapillaries_v0(doc, csFileName);
-				break;
-			default:
-				return false;
-			}		
-			Collections.sort(capillariesArrayList);
-			transferDescToCapillariesVersionInfos0();
-			return true;
-		}
-		return false;
-	}
-	
-	public boolean xmlLoadCapillaries_Measures2(String directory) 
+	public boolean xmlLoadCapillaries_Measures(String directory) 
 	{
 		boolean flag = true;
 		int ncapillaries = capillariesArrayList.size();
@@ -155,17 +126,6 @@ public class Capillaries
 			flag &= cap.loadFromXML_MeasuresOnly(node);
 		}
 		return flag;
-	}
-		
-	private void transferDescToCapillariesVersionInfos0() 
-	{
-		for (Capillary cap: capillariesArrayList) 
-		{
-			if (cap.versionInfos == 0) {
-				transferDescriptionToCapillary(cap);
-				transferCapGroupToCapillary (cap);
-			}
-		}
 	}
 	
 	private boolean xmlSaveListOfCapillaries(Document doc) 
@@ -290,21 +250,7 @@ public class Capillaries
 		}
 		return true;
 	}
-	
-	private void xmlLoadCapillaries_v2(Document doc, String csFileName) 
-	{
-		xmlLoadCapillaries_v1(doc);
-		Path directorypath = Paths.get(csFileName).getParent();
-		String directory = directorypath + File.separator;
-		for (Capillary cap: capillariesArrayList) 
-		{
-			String csFile = directory + cap.getCapillaryName() + ".xml";
-			final Document capdoc = XMLUtil.loadDocument(csFile);
-			Node node = XMLUtil.getRootElement(capdoc, true);
-			cap.loadFromXML(node);
-		}
-	}
-	
+
 	private void xmlLoadCapillaries_Only_v2(Document doc, String csFileName) 
 	{
 		xmlLoadCapillaries_Only_v1(doc);
@@ -319,6 +265,8 @@ public class Capillaries
 		}
 	}	
 
+	// -----------------------
+	
 	public void copy (Capillaries cap) 
 	{
 		desc.copy(cap.desc);

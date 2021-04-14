@@ -80,34 +80,36 @@ public class Graphs extends JPanel
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		if (v == null)
 			return;
+		
 		final Rectangle rectv = v.getBounds();
 		Point ptRelative = new Point(0, rectv.height); 
 		int dx = 5;
-		int dy = 5; // 230
-		if (limitsCheckbox.isSelected() 
-				&& isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVEL)
-				&& isThereAnyDataToDisplay(exp, EnumXLSExportType.BOTTOMLEVEL)) 
+		int dy = 5; 
+		
+		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVEL)
+				&& isThereAnyDataToDisplay(exp, EnumXLSExportType.BOTTOMLEVEL))  
 		{
 			topandbottomChart = xyDisplayGraphsItem(exp, "top + bottom levels", 
 					EnumXLSExportType.TOPLEVEL, 
 					topandbottomChart, rectv, ptRelative);
 			ptRelative.translate(dx, dy);
 		}
-		if (deltaCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVELDELTA)) 
+		
+		if (deltaCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVELDELTA))  
 		{
 			deltaChart = xyDisplayGraphsItem(exp, "top delta t -(t-1)", 
 					EnumXLSExportType.TOPLEVELDELTA, 
 					deltaChart, rectv, ptRelative);
 			ptRelative.translate(dx, dy);
 		}
-		if (derivativeCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.DERIVEDVALUES)) 
+		if (derivativeCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumXLSExportType.DERIVEDVALUES))   
 		{
 			derivativeChart = xyDisplayGraphsItem(exp, "Derivative", 
 					EnumXLSExportType.DERIVEDVALUES, 
 					derivativeChart, rectv, ptRelative);
 			ptRelative.translate(dx, dy); 
 		}
-		if (consumptionCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.SUMGULPS)) 
+		if (consumptionCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumXLSExportType.SUMGULPS))  
 		{
 			sumgulpsChart = xyDisplayGraphsItem(exp, "Cumulated gulps", 
 					EnumXLSExportType.SUMGULPS, 
@@ -116,8 +118,6 @@ public class Graphs extends JPanel
 		}
 	}
 	
-
-
 	private XYMultiChart xyDisplayGraphsItem(Experiment exp, String title, EnumXLSExportType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) 
 	{	
 		if (iChart != null) 
@@ -129,19 +129,6 @@ public class Graphs extends JPanel
 		iChart.displayData(exp, option);
 		iChart.mainChartFrame.toFront();
 		return iChart;
-	}
-	
-	private boolean isThereAnyDataToDisplay(Experiment exp, EnumXLSExportType option) 
-	{
-		boolean flag = false;
-		Capillaries capillaries = exp.capillaries;
-		for (Capillary cap: capillaries.capillariesArrayList) 
-		{
-			flag = cap.isThereAnyMeasuresDone(option);
-			if (flag)
-				break;
-		}
-		return flag;
 	}
 	
 	public void closeAllCharts() 
@@ -159,6 +146,19 @@ public class Graphs extends JPanel
 		derivativeChart = null;
 		sumgulpsChart  = null;
 		deltaChart = null;
+	}
+
+	private boolean isThereAnyDataToDisplay(Experiment exp, EnumXLSExportType option) 
+	{
+		boolean flag = false;
+		Capillaries capillaries = exp.capillaries;
+		for (Capillary cap: capillaries.capillariesArrayList) 
+		{
+			flag = cap.isThereAnyMeasuresDone(option);
+			if (flag)
+				break;
+		}
+		return flag;
 	}
 }
 

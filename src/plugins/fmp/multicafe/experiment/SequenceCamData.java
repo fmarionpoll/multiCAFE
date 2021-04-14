@@ -445,7 +445,7 @@ public class SequenceCamData
 					threadRunning = false;
 				}
 			}});
-			
+
 		return seq;
 	}
 	

@@ -326,14 +326,17 @@ public class Display extends JPanel implements ViewerListener
 		{
 			if( v.getPositionT() != isel)
 				v.setPositionT(isel);
-			String name = ((String) kymosComboBox.getSelectedItem()).substring(4) + ": " +kymosComboBox.getSelectedIndex() + " / " + kymosComboBox.getItemCount();
-			v.setTitle(name);
+			
+			v.setTitle(getKymographTitle(isel));
 			parent0.paneKymos.tabDisplay.displayRoisAccordingToUserSelection();
 		}
 	}
 	
 
-	
+	public String getKymographTitle(int t)
+	{
+		return ((String) kymosComboBox.getSelectedItem()).substring(4);
+	}
 
 	@Override
 	public void viewerChanged(ViewerEvent event)
