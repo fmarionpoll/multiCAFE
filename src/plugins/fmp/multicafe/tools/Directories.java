@@ -96,7 +96,7 @@ public class Directories
 		return subfolders;
 	}
 	
-	public static String clipNameToDirectory (String fileName)
+	public static String getDirectoryFromName (String fileName)
 	{
 		File filepath = new File(fileName); 	
 		String strDirectory = filepath.isDirectory()? filepath.getAbsolutePath(): filepath.getParentFile().getAbsolutePath();

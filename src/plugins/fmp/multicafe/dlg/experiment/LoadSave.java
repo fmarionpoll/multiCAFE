@@ -335,7 +335,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		
 		eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromDialog(rootDirectory);
 		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
-		eDAF.cameraImagesDirectory = Directories.clipNameToDirectory(eDAF.cameraImagesList.get(0));
+		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0));
 		
 		eDAF.resultsDirectory = getV2ResultsDirectoryDialog(eDAF.cameraImagesDirectory, Experiment.RESULTS);
 		eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
@@ -353,7 +353,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		String strDirectory = Experiment.getImagesDirectoryAsParentFromFileName(exptDirectory);
 		eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromPath(strDirectory);
 		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
-		eDAF.cameraImagesDirectory = Directories.clipNameToDirectory(eDAF.cameraImagesList.get(0));
+		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0));
 		
 		eDAF.resultsDirectory = exptDirectory;
 		eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);

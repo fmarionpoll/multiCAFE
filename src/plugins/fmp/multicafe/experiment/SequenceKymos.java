@@ -215,7 +215,7 @@ public class SequenceKymos extends SequenceCamData
 	{
 		File folder = new File(directory);
 		File[] listFiles = folder.listFiles();
-		if (listFiles.length < 1)
+		if (listFiles == null || listFiles.length < 1)
 			return;
 		for (File file : folder.listFiles()) {
 			String name = file.getName();

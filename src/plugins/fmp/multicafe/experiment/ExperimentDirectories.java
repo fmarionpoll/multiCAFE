@@ -28,18 +28,19 @@ public class ExperimentDirectories
 	public static List<String> getV2ImagesListFromPath(String strDirectory) 
 	{
 		List<String> list = new ArrayList<String> ();
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(strDirectory))) 
+		Path pathDir = Paths.get(strDirectory);
+		if (Files.exists(pathDir)) 
 		{
-			for (Path entry: stream) 
+			try (DirectoryStream<Path> stream = Files.newDirectoryStream(pathDir)) 
 			{
-				list.add(entry.toString());
+				for (Path entry: stream) 
+					list.add(entry.toString());
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
 			}
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
 		}
-	
 		return list;
 	}
 	
@@ -54,7 +55,7 @@ public class ExperimentDirectories
 	    	return null;
 	    
 	    // TODO check strPath and provide a way to skip the dialog part (or different routine)
-	    String strDirectory = Directories.clipNameToDirectory(selectedFiles[0].toString());
+	    String strDirectory = Directories.getDirectoryFromName(selectedFiles[0].toString());
 		if (strDirectory != null ) 
 		{
 			if (selectedFiles.length == 1) 

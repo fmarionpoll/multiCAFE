@@ -114,6 +114,7 @@ public class BuildKymographs_series  extends BuildSeries
 			seqForRegistration.addImage(0, sourceImage0);
 			seqForRegistration.addImage(1, sourceImage0);
 		}
+		exp.seqKymos.seq = new Sequence();
 		
 		int nbcapillaries = exp.capillaries.capillariesArrayList.size();
 		if (nbcapillaries == 0) 
@@ -169,7 +170,7 @@ public class BuildKymographs_series  extends BuildSeries
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		seqCamData.seq.endUpdate();
         progressBar.close();
-        
+        /// ---------------------------------------------------------
 		for (int icap=0; icap < nbcapillaries; icap++) 
 		{
 			Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
@@ -214,21 +215,21 @@ public class BuildKymographs_series  extends BuildSeries
 			dataType = DataType.UBYTE;
 
 		int nbcapillaries = exp.capillaries.capillariesArrayList.size();
-		int maskSizeMax = 0;
+		int imageHeight = 0;
 		for (int i=0; i < nbcapillaries; i++) 
 		{
 			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
 			cap.masksList = new ArrayList<ArrayList<int[]>>();
 			getPointsfromROIPolyLineUsingBresenham(cap.roi, cap.masksList, options.diskRadius, sizex, sizey);
-			if (cap.masksList.size() > maskSizeMax)
-				maskSizeMax = cap.masksList.size();
+			if (cap.masksList.size() > imageHeight)
+				imageHeight = cap.masksList.size();
 		}
 		
-		int len = imageWidth * maskSizeMax;
+		int len = imageWidth * imageHeight;
 		for (int i=0; i < nbcapillaries; i++) 
 		{
 			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
-			cap.bufKymoImage = new IcyBufferedImage(imageWidth, maskSizeMax, numC, dataType);
+			cap.bufKymoImage = new IcyBufferedImage(imageWidth, imageHeight, numC, dataType);
 			cap.kymoImageInteger = new ArrayList <int []>(len * numC);
 			for (int chan = 0; chan < numC; chan++) 
 			{
