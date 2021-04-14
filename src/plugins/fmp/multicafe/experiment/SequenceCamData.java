@@ -416,7 +416,7 @@ public class SequenceCamData
 		ThreadUtil.bgRun( new Runnable() { 
 			@Override public void run() 
 			{
-				ProgressFrame progress = new ProgressFrame("Load image files");
+				ProgressFrame progress = new ProgressFrame("Load images");
 				seq.setVolatile(true);
 				threadRunning = true;
 				stopFlag = false;
@@ -428,7 +428,7 @@ public class SequenceCamData
 					{
 						if (stopFlag)
 							break;
-						progress.setMessage("Loading file: " + (t+1) + "//" + nimages);
+						progress.setMessage("Loading image: " + (t+1) + "//" + nimages);
 						BufferedImage img = ImageUtil.load(imagesList.get(t));
 						if (img != null)
 						{

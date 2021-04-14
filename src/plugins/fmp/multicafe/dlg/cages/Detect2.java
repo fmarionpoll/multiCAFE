@@ -27,9 +27,9 @@ import icy.gui.viewer.Viewer;
 import icy.util.StringUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
+import plugins.fmp.multicafe.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.Cage;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.ExperimentCombo;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectFlies2_series;
 
@@ -226,7 +226,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		Experiment exp = parent0.expList.getItemAt(currentExp);
 		if (exp == null)
 			return;
-		parent0.paneExperiment.panelFiles.closeViewsForCurrentExperiment(exp);
+		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		
 		detectFlies2Thread = new DetectFlies2_series();		
 		initTrackParameters();
@@ -248,7 +248,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		 {
 			Experiment exp = parent0.expList.getItemAt(currentExp);
 			if (exp != null)
-				parent0.paneExperiment.panelFiles.openExperiment(exp);
+				parent0.paneExperiment.panelLoadSave.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}

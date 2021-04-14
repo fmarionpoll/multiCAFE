@@ -1,7 +1,10 @@
-package plugins.fmp.multicafe.experiment;
+package plugins.fmp.multicafe.dlg.JComponents;
 
 
 import javax.swing.table.AbstractTableModel;
+
+import plugins.fmp.multicafe.experiment.Cage;
+import plugins.fmp.multicafe.experiment.Experiment;
 
 
 

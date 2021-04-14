@@ -20,7 +20,6 @@ import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafe.dlg.experiment.ExperimentDirectories;
 import plugins.fmp.multicafe.tools.Directories;
 import plugins.fmp.multicafe.tools.ImageTransformTools;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
@@ -167,6 +166,15 @@ public class Experiment
 		return strDirectoryBin;
 	}
 	
+	public boolean createDirectoryIfDoesNotExist(String directory) 
+    {
+		File folder = new File(directory);
+		boolean flag = true;
+		if (!folder.exists()) 
+			flag = folder.mkdir();
+		return flag;
+    }
+	  
 	public void checkKymosDirectory(String kymosSubDirectory) 
 	{
 		if (kymosSubDirectory == null) {

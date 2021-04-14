@@ -20,8 +20,8 @@ import javax.swing.table.TableColumnModel;
 
 import icy.gui.frame.IcyFrame;
 import plugins.fmp.multicafe.MultiCAFE;
+import plugins.fmp.multicafe.dlg.JComponents.CapillaryTableModel;
 import plugins.fmp.multicafe.experiment.Capillary;
-import plugins.fmp.multicafe.experiment.CapillaryTableModel;
 import plugins.fmp.multicafe.experiment.Experiment;
 
 public class Table  extends JPanel 

@@ -9,7 +9,7 @@ import org.w3c.dom.Node;
 import icy.file.xml.XMLPersistent;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafe.experiment.ExperimentCombo;
+import plugins.fmp.multicafe.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe.tools.ImageTransformTools.TransformOp;
 
 public class Options_BuildSeries implements XMLPersistent 

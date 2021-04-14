@@ -20,9 +20,9 @@ import javax.swing.SwingUtilities;
 
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
+import plugins.fmp.multicafe.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.Capillary;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.SequenceKymos;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectLevels_series;
@@ -268,7 +268,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		 {
 			Experiment exp = parent0.expList.getItemAt(parent0.expList.getSelectedIndex());
 			if (exp != null) {
-				parent0.paneExperiment.panelFiles.openExperiment(exp);
+				parent0.paneExperiment.panelLoadSave.openExperiment(exp);
 				if (selectedFrame != 0) 
 					selectFrame(selectedFrame);
 			}

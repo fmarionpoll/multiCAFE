@@ -53,7 +53,7 @@ public class SelectFiles1 extends JPanel
 	{
 		filterCombo.setEditable(true);
 		this.parent0 = parent0;
-		this.parent1 = parent0.paneExperiment.panelFiles;
+		this.parent1 = parent0.paneExperiment.panelLoadSave;
 		addPropertyChangeListener(parent1);
 
 		dialogFrame = new IcyFrame ("Select files", true, true);

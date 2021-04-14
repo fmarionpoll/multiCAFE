@@ -51,8 +51,10 @@ public class BuildKymographs_series  extends BuildSeries
 	
 	private void loadExperimentDataToBuildKymos(Experiment exp) 
 	{
-		exp.openSequenceCamData();
+//		exp.openSequenceCamData();
+		//exp.loadCamDataImages();
 		exp.xmlLoadMCCapillaries_Only();
+		
 	}
 			
 	private void saveComputation(Experiment exp) 
@@ -167,6 +169,7 @@ public class BuildKymographs_series  extends BuildSeries
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		seqCamData.seq.endUpdate();
         progressBar.close();
+        
 		for (int icap=0; icap < nbcapillaries; icap++) 
 		{
 			Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
@@ -177,6 +180,7 @@ public class BuildKymographs_series  extends BuildSeries
 				Array1DUtil.intArrayToSafeArray(tabValues, 0, destArray, 0, -1, cap.bufKymoImage.isSignedDataType(), cap.bufKymoImage.isSignedDataType());
 				cap.bufKymoImage.setDataXY(chan, destArray);
 			}
+			cap.bufKymoImage.setVolatile(true);
 			seqKymos.seq.setImage(icap, 0, cap.bufKymoImage);
 		}
 		return true;

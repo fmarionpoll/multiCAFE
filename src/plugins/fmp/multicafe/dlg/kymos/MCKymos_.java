@@ -98,12 +98,12 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			if (exp == null)
 				return;
 			String localString = (String) tabDisplay.binsCombo.getSelectedItem();
-			parent0.paneExperiment.panelFiles.closeCurrentExperiment();
+			parent0.paneExperiment.panelLoadSave.closeCurrentExperiment();
 			if (localString.contains("."))
 				localString = null;
 			parent0.expList.expListBinSubPath = localString;
 			exp.setBinSubDirectory(localString);
-			parent0.paneExperiment.panelFiles.openExperiment(exp);
+			parent0.paneExperiment.panelLoadSave.openExperiment(exp);
 			updateDialogs(exp);
 		}
 	}

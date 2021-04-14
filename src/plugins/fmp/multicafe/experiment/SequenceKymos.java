@@ -26,7 +26,6 @@ import icy.sequence.MetaDataUtil;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
-import plugins.fmp.multicafe.dlg.experiment.ExperimentDirectories;
 import plugins.fmp.multicafe.tools.Comparators;
 import plugins.fmp.multicafe.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
@@ -215,7 +214,9 @@ public class SequenceKymos extends SequenceCamData
 	private void renameCapillary_Files(String directory) 
 	{
 		File folder = new File(directory);
-
+		File[] listFiles = folder.listFiles();
+		if (listFiles.length < 1)
+			return;
 		for (File file : folder.listFiles()) {
 			String name = file.getName();
 			if (name.toLowerCase().endsWith(".tiff") 

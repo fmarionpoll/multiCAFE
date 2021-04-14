@@ -17,8 +17,8 @@ import javax.swing.table.TableColumnModel;
 
 import icy.gui.frame.IcyFrame;
 import plugins.fmp.multicafe.MultiCAFE;
+import plugins.fmp.multicafe.dlg.JComponents.CageTableModel;
 import plugins.fmp.multicafe.experiment.Cage;
-import plugins.fmp.multicafe.experiment.CageTableModel;
 import plugins.fmp.multicafe.experiment.Experiment;
 
 public class Table extends JPanel 

@@ -89,7 +89,7 @@ public class Create extends JPanel implements PropertyChangeListener
 		}});
 	}
 		
-	private boolean initBuildParameters(Experiment exp, Options_BuildSeries options) 
+	private boolean initBuildParameters(Options_BuildSeries options) 
 	{
 		options.expList = parent0.expList; 
 		options.expList.index0 = parent0.expList.getSelectedIndex();
@@ -106,23 +106,17 @@ public class Create extends JPanel implements PropertyChangeListener
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();
 		options.doCreateBinDir 	= true;
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
-		options.binSubPath 		= (String) parent0.paneKymos.tabDisplay.binsCombo.getSelectedItem() ;
+		options.binSubPath 		= Experiment.BIN+options.t_binMs/1000 ;
 		return true;
 	}
 		
 	private void startComputation() 
 	{
-		int current = parent0.expList.getSelectedIndex();
-		Experiment exp = parent0.expList.getItemAt(current);
-		if (exp == null) 
-			return;
-		parent0.paneExperiment.panelFiles.closeViewsForCurrentExperiment(exp);
-//		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
 		threadBuildKymo = new BuildKymographs_series();	
 		Options_BuildSeries options = threadBuildKymo.options;
-		initBuildParameters(exp, options);
+		initBuildParameters(options);
 		
 		threadBuildKymo.addPropertyChangeListener(this);
 		threadBuildKymo.execute();
@@ -141,9 +135,10 @@ public class Create extends JPanel implements PropertyChangeListener
 	public void propertyChange(PropertyChangeEvent evt) 
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
-			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
-			if (exp != null) 
-				parent0.paneExperiment.panelFiles.openExperiment(exp);
+//			parent0.expList.setSelectedIndex(selectedExperimentIndex);
+//			Experiment exp =(Experiment) parent0.expList.getSelectedItem();
+//			if (exp != null) 
+//				parent0.paneExperiment.panelLoadSave.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}

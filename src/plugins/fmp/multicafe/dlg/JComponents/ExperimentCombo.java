@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.experiment;
+package plugins.fmp.multicafe.dlg.JComponents;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -8,6 +8,7 @@ import javax.swing.JComboBox;
 
 
 import icy.gui.frame.progress.ProgressFrame;
+import plugins.fmp.multicafe.experiment.Experiment;
 import plugins.fmp.multicafe.tools.toExcel.XLSExportOptions;
 
 public class ExperimentCombo extends JComboBox<Experiment>

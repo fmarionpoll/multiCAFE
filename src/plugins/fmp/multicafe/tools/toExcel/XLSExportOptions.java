@@ -1,6 +1,6 @@
 package plugins.fmp.multicafe.tools.toExcel;
 
-import plugins.fmp.multicafe.experiment.ExperimentCombo;
+import plugins.fmp.multicafe.dlg.JComponents.ExperimentCombo;
 
 public class XLSExportOptions 
 {	

@@ -19,9 +19,9 @@ import javax.swing.SwingConstants;
 
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
+import plugins.fmp.multicafe.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.Capillary;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.SequenceKymos;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectGulps_series;
@@ -151,7 +151,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 			return;
 
 		exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
-		parent0.paneExperiment.panelFiles.closeViewsForCurrentExperiment(exp);
+		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		thread = new DetectGulps_series();
 		exp.seqKymos.transferKymosRoisToCapillaries_Measures(exp.capillaries);
 		
@@ -205,7 +205,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
 			Experiment exp = parent0.expList.getItemAt(parent0.expList.getSelectedIndex());
-			parent0.paneExperiment.panelFiles.openExperiment(exp);
+			parent0.paneExperiment.panelLoadSave.openExperiment(exp);
 			detectButton.setText(detectString);
 		 }
 	}

@@ -28,9 +28,10 @@ import icy.sequence.SequenceEvent.SequenceEventSourceType;
 import icy.system.thread.ThreadUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
+import plugins.fmp.multicafe.dlg.JComponents.SequenceNameListRenderer;
 import plugins.fmp.multicafe.experiment.Capillary;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.SequenceNameListRenderer;
+import plugins.fmp.multicafe.experiment.ExperimentDirectories;
 import plugins.fmp.multicafe.tools.Directories;
 
 public class LoadSave extends JPanel implements PropertyChangeListener, ItemListener, SequenceListener 
@@ -89,9 +90,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		twoLinesPanel.add(sequencePanel0);
 		twoLinesPanel.add(sequencePanel);
 		
-		// ------------
+		// TODO implement and test
 		createButton.setEnabled(false);
-		// ------------
 		
 		return twoLinesPanel;
 	}
@@ -138,7 +138,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			Experiment exp = (Experiment) e.getItem();
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() 
     		{
-        		parent0.paneExperiment.panelFiles.closeViewsForCurrentExperiment(exp); 
+        		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp); 
     		}});
 		}
 	}
@@ -450,13 +450,15 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		if (sequenceEvent.getSourceType() == SequenceEventSourceType.SEQUENCE_DATA )
 		{
 			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
-			if (sequenceEvent.getSequence() == exp.seqCamData.seq)
+			if (exp.seqCamData.seq != null 
+			&& sequenceEvent.getSequence() == exp.seqCamData.seq)
 			{
 				Viewer v = exp.seqCamData.seq.getFirstViewer();
 				int t = v.getPositionT(); 
 				v.setTitle(exp.seqCamData.getDecoratedImageName(t));
 			}
-			else if (sequenceEvent.getSequence() == exp.seqKymos.seq)
+			else if (exp.seqKymos.seq != null 
+				&& sequenceEvent.getSequence() == exp.seqKymos.seq)
 			{
 				Viewer v = exp.seqKymos.seq.getFirstViewer();
 				int t = v.getPositionT(); 

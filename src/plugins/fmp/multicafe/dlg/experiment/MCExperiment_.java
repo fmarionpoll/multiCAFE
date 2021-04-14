@@ -37,7 +37,7 @@ public class MCExperiment_ extends JPanel implements ViewerListener
 	public 	Infos			tabInfosSeq		= new Infos();
 	public 	Intervals		tabIntervals	= new Intervals();
 	public 	Analyze			tabAnalyze		= new Analyze();
-	public 	LoadSave		panelFiles		= new LoadSave();
+	public 	LoadSave		panelLoadSave	= new LoadSave();
 	
 	private MultiCAFE 		parent0 		= null;
 
@@ -52,7 +52,7 @@ public class MCExperiment_ extends JPanel implements ViewerListener
 		mainPanel.add(capPopupPanel);
 		GridLayout tabsLayout = new GridLayout(2, 1);
 		
-		JPanel filesPanel = panelFiles.initPanel(parent0, this);
+		JPanel filesPanel = panelLoadSave.initPanel(parent0, this);
 		
 		tabInfosSeq.init(tabsLayout, parent0);
 		tabsPane.addTab("Infos", null, tabInfosSeq, "Define infos for this experiment/box");

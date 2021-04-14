@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe.dlg.experiment;
+package plugins.fmp.multicafe.experiment;
 
 
 import java.io.File;

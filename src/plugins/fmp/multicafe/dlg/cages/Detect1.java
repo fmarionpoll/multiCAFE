@@ -26,9 +26,9 @@ import javax.swing.event.PopupMenuListener;
 import icy.util.StringUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
+import plugins.fmp.multicafe.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.Cage;
 import plugins.fmp.multicafe.experiment.Experiment;
-import plugins.fmp.multicafe.experiment.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.SequenceCamData;
 import plugins.fmp.multicafe.series.Options_BuildSeries;
 import plugins.fmp.multicafe.series.DetectFlies1_series;
@@ -239,7 +239,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		if (exp == null) 
 			return;
-		parent0.paneExperiment.panelFiles.closeViewsForCurrentExperiment(exp);
+		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		
 		thread = new DetectFlies1_series();		
 //		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
@@ -264,7 +264,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		 {
 			Experiment exp = parent0.expList.getItemAt(currentExp);
 			if (exp != null)
-				parent0.paneExperiment.panelFiles.openExperiment(exp);
+				parent0.paneExperiment.panelLoadSave.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}

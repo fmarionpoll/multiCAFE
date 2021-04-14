@@ -12,7 +12,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import plugins.fmp.multicafe.tools.JComboMs;
+import plugins.fmp.multicafe.dlg.JComponents.JComboMs;
 
 public class Analyze  extends JPanel 
 {

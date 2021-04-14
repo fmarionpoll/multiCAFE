@@ -1,6 +1,9 @@
-package plugins.fmp.multicafe.experiment;
+package plugins.fmp.multicafe.dlg.JComponents;
 
 import javax.swing.table.AbstractTableModel;
+
+import plugins.fmp.multicafe.experiment.Capillary;
+import plugins.fmp.multicafe.experiment.Experiment;
 
 
 public class CapillaryTableModel extends AbstractTableModel  

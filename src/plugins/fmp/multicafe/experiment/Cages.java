@@ -13,7 +13,7 @@ import org.w3c.dom.Node;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
-
+import plugins.fmp.multicafe.dlg.JComponents.Dialog;
 import plugins.fmp.multicafe.tools.Comparators;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 import plugins.kernel.roi.roi2d.ROI2DPoint;
