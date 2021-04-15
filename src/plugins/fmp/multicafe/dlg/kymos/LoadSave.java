@@ -146,7 +146,13 @@ public class LoadSave extends JPanel
 			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
-		exp.checkKymosDirectory(exp.getBinSubDirectory());
+		
+		String localString = (String) parent0.paneKymos.tabDisplay.binsComboBox.getSelectedItem();
+		if (localString == null)
+			exp.checkKymosDirectory(exp.getBinSubDirectory());
+		else
+			exp.setBinSubDirectory(localString);
+		
 		List<ImageFileDescriptor> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosBinFullDirectory(), exp.capillaries);
 		int nItems = ImageFileDescriptor.getFilesAndTestExist(myList);
 		if (nItems > 0) 

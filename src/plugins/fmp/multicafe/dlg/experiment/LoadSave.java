@@ -202,6 +202,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			exp.xmlLoadMCCapillaries_Only();
 			exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
 			parent1.updateViewerForSequenceCam(exp);
+			
 			parent1.updateExpDialogs(exp);
 			loadMeasuresAndKymos(exp);
 			parent0.paneLevels.updateDialogs(exp);
