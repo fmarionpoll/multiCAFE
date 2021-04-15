@@ -43,7 +43,7 @@ public class Infos extends JPanel
 		this.parent0 = parent0;
 		
 		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 1));
-		panel0.add( new JLabel("volume (µl) ", SwingConstants.RIGHT));
+		panel0.add( new JLabel("volume (Âµl) ", SwingConstants.RIGHT));
 		panel0.add( capillaryVolumeTextField);
 		panel0.add( new JLabel("length (pixels) ", SwingConstants.RIGHT));
 		panel0.add( capillaryPixelsTextField);

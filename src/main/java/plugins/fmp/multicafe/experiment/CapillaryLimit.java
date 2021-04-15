@@ -298,6 +298,6 @@ public class CapillaryLimit  implements XMLPersistent
 				polyline_old = polyline_old.expandPolylineToNewSize(imageSize);
 		}
 	}
-	
+
 	
 }

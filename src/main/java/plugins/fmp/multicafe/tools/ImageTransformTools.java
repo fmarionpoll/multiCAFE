@@ -24,7 +24,7 @@ public class ImageTransformTools
 		REF_T0("subtract t[start]"), REF_PREVIOUS("subtract t[i-step]"), REF("subtract ref"),
 		NORM_BRMINUSG("F. Rebaudo"),
 		COLORARRAY1("color array"), RGB_TO_HSV("HSV"), RGB_TO_H1H2H3("H1H2H3"), 
-		RTOGB ("R to G&B"),
+		RTOGB ("R to G,B"),
 		SUBFIRSTCOL("col-col0");
 		
 		private String label;
@@ -222,7 +222,7 @@ public class ImageTransformTools
 		return img2;
 	}
 	
-	// function proposed by François Rebaudo
+	// function proposed by Franï¿½ois Rebaudo
 	private IcyBufferedImage functionNormRGB_sumC1C2Minus2C3 (IcyBufferedImage sourceImage, int Rlayer, int Glayer, int Blayer) 
 	{
 		IcyBufferedImage img2 = new IcyBufferedImage (sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
