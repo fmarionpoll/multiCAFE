@@ -139,7 +139,7 @@ public class Display extends JPanel implements ViewerListener
 			@Override public void actionPerformed( final ActionEvent e )
 			{
 				String localString = (String) binsComboBox.getSelectedItem();
-				if (localString.contains("."))
+				if (localString != null && localString.contains("."))
 					localString = null;
 				changeBinSubdirectory(localString);
 			}});
@@ -216,7 +216,6 @@ public class Display extends JPanel implements ViewerListener
 		}
 	}
 	
-	
 	void placeKymoViewerNextToCamViewer(Experiment exp, Viewer v)
 	{
 		Viewer vCamData = exp.seqCamData.seq.getFirstViewer();
@@ -253,7 +252,6 @@ public class Display extends JPanel implements ViewerListener
 		v.setBounds(rectDataView);
 	}
 	
-	
 	void displayOFF()
 	{
 		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
@@ -268,7 +266,6 @@ public class Display extends JPanel implements ViewerListener
 		}
 	}
 	
-	
 	public void displayUpdateOnSwingThread()
 	{		
 		SwingUtilities.invokeLater(new Runnable() { public void run()
@@ -276,7 +273,6 @@ public class Display extends JPanel implements ViewerListener
 			displayUpdate();
 		}});
 	}
-	
 	
 	void displayUpdate()
 	{	
@@ -292,7 +288,6 @@ public class Display extends JPanel implements ViewerListener
 		selectKymographImage(item); 
 	}
 	
-
 	void displayViews (boolean bEnable)
 	{
 		updateButton.setEnabled(bEnable);
@@ -305,7 +300,6 @@ public class Display extends JPanel implements ViewerListener
 			displayOFF();
 	}
 	
-
 	public void selectKymographImage(int isel)
 	{
 		Experiment exp =(Experiment) parent0.expList.getSelectedItem();
@@ -338,13 +332,11 @@ public class Display extends JPanel implements ViewerListener
 		}
 	}
 	
-	
 	public String getKymographTitle(int t)
 	{
 		return ((String) imagesComboBox.getSelectedItem()).substring(4);
 	}
 	
-
 	@Override
 	public void viewerChanged(ViewerEvent event)
 	{
@@ -358,7 +350,6 @@ public class Display extends JPanel implements ViewerListener
 			selectKymographImage(t);
 		}
 	}
-	
 
 	@Override
 	public void viewerClosed(Viewer viewer)
@@ -366,7 +357,6 @@ public class Display extends JPanel implements ViewerListener
 		viewer.removeListener(this);
 	}
 	
-
 	public void updateResultsAvailable(Experiment exp)
 	{
 		actionAllowed = false;
@@ -386,7 +376,6 @@ public class Display extends JPanel implements ViewerListener
 		actionAllowed = true;
 	}
 	
-	
 	public String getBinSubdirectory()
 	{
 		String name = (String) binsComboBox.getSelectedItem();
@@ -398,7 +387,9 @@ public class Display extends JPanel implements ViewerListener
 	private void changeBinSubdirectory(String localString) 
 	{
 		Experiment exp = (Experiment)  parent0.expList.getSelectedItem();
-		if (exp == null || exp.getBinSubDirectory() .contains(localString))
+		if (exp == null 
+			|| localString == null 
+			|| exp.getBinSubDirectory() .contains(localString))
 			return;
 		
 		parent0.expList.expListBinSubPath = localString;
@@ -406,11 +397,7 @@ public class Display extends JPanel implements ViewerListener
 		exp.seqKymos.seq.close();
 		exp.loadKymographs();
 		displayON();
-		
-//		updateDialogs(exp);
+		parent0.paneKymos.updateDialogs(exp);
 	}
-	
-
-	
 
 }

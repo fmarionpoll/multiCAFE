@@ -402,53 +402,68 @@ public class SequenceCamData
 //			seq.setName(dir);
 	}
 	
-	public boolean loadImages() 
+	public boolean loadImages(boolean threaded) 
 	{
 		if (imagesList.size() == 0)
 			return false;
-		attachV2Sequence(loadV2SequenceFromImagesList(imagesList));
+		attachV2Sequence(loadV2SequenceFromImagesList(imagesList, threaded));
 		return (seq != null);
 	}
 	
-	public Sequence loadV2SequenceFromImagesList(List <String> imagesList) 
+	public Sequence loadV2SequenceFromImagesList(List <String> imagesList, boolean threaded) 
 	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
 		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
+		if (threaded) {
 		ThreadUtil.bgRun( new Runnable() { 
 			@Override public void run() 
 			{
-				ProgressFrame progress = new ProgressFrame("Load images");
-				seq.setVolatile(true);
-				threadRunning = true;
-				stopFlag = false;
-				try
-				{
-					seq.beginUpdate();
-					int nimages = imagesList.size();
-					for (int t=1; t < nimages; t++)
-					{
-						if (stopFlag)
-							break;
-						progress.setMessage("Loading image: " + (t+1) + "//" + nimages);
-						BufferedImage img = ImageUtil.load(imagesList.get(t));
-						if (img != null)
-						{
-							IcyBufferedImage icyImg = IcyBufferedImage.createFrom(img);
-							icyImg.setVolatile(true);
-							seq.setImage(t, 0, icyImg);
-						}
-					}
-				}
-				finally
-				{
-					seq.endUpdate();
-					progress.close();
-					threadRunning = false;
-				}
+				loadV2Images();
 			}});
-
+		}
+		else 
+		{
+			loadV2Images();
+		}
 		return seq;
 	}
 	
-
+	private void loadV2Images() 
+	{
+		ProgressFrame progress = new ProgressFrame("Load images");
+		seq.setVolatile(true);
+		threadRunning = true;
+		stopFlag = false;
+		try
+		{
+			seq.beginUpdate();
+			int nimages = imagesList.size();
+			for (int t=1; t < nimages; t++)
+			{
+				if (stopFlag)
+					break;
+				progress.setMessage("Loading image: " + (t+1) + "//" + nimages);
+				BufferedImage img = ImageUtil.load(imagesList.get(t));
+				if (img != null)
+				{
+					IcyBufferedImage icyImg = IcyBufferedImage.createFrom(img);
+					icyImg.setVolatile(true);
+					seq.setImage(t, 0, icyImg);
+				}
+			}
+		}
+		finally
+		{
+			seq.endUpdate();
+			progress.close();
+			threadRunning = false;
+		}
+	}
+	
+	public Sequence initV2SequenceFromFirstImage(List <String> imagesList) 
+	{
+		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
+		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
+		return seq;
+	}
 }

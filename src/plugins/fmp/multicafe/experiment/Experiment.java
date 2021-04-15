@@ -248,7 +248,7 @@ public class Experiment
 		}
 		
 		seqCamData.setV2ImagesList(imagesList);
-		seqCamData.attachV2Sequence(seqCamData.loadV2SequenceFromImagesList(imagesList));
+		seqCamData.attachV2Sequence(seqCamData.loadV2SequenceFromImagesList(imagesList, true));
 		loadFileIntervalsFromSeqCamData();
 		
 		if (seqKymos == null)
@@ -301,7 +301,7 @@ public class Experiment
 		else 
 		{
 			seqCamData.setV2ImagesList(imagesList);
-			seqCamData.attachV2Sequence(seqCamData.loadV2SequenceFromImagesList(imagesList));
+			seqCamData.attachV2Sequence(seqCamData.loadV2SequenceFromImagesList(imagesList, true));
 		}
 		return seqCamData;
 	}
@@ -309,14 +309,14 @@ public class Experiment
 	public boolean loadCamDataImages() 
 	{
 		if (seqCamData != null)
-			seqCamData.loadImages();
+			seqCamData.loadImages(true);
 		return (seqCamData != null && seqCamData.seq != null);
 	}
 	
 	public boolean loadKymosImages() 
 	{
 		if (seqKymos != null)
-			seqKymos.loadImages();
+			seqKymos.loadImages(true);
 		return (seqKymos != null && seqKymos.seq != null);
 	}
 		

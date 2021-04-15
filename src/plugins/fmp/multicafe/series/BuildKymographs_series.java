@@ -54,7 +54,7 @@ public class BuildKymographs_series  extends BuildSeries
 //		exp.openSequenceCamData();
 		//exp.loadCamDataImages();
 		exp.xmlLoadMCCapillaries_Only();
-		
+		exp.seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList());
 	}
 			
 	private void saveComputation(Experiment exp) 
@@ -203,6 +203,10 @@ public class BuildKymographs_series  extends BuildSeries
 	private void initArraysToBuildKymographImages(Experiment exp) 
 	{
 		SequenceCamData seqCamData = exp.seqCamData;
+		if (seqCamData.seq == null) 
+		{
+			seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList());
+		}
 		int sizex = seqCamData.seq.getSizeX();
 		int sizey = seqCamData.seq.getSizeY();	
 		int numC = seqCamData.seq.getSizeC();

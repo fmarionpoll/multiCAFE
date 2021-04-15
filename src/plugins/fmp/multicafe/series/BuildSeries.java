@@ -81,7 +81,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 			firePropertyChange("thread_done", null, statusMsg);
 		}
 		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
-		options.expList.setSelectedIndex(selectedExperimentIndex);
+		//options.expList.setSelectedIndex(selectedExperimentIndex);
     }
 	
 	abstract void analyzeExperiment(Experiment exp);
