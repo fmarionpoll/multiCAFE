@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,24 +34,21 @@ import plugins.fmp.multicafe.experiment.SequenceKymos;
 import plugins.fmp.multicafe.tools.Directories;
 
 
-
-
-
 public class Display extends JPanel implements ViewerListener 
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2103052112476748890L;
-	public 	JComboBox<String> kymosComboBox 	= new JComboBox<String> (new String[] {"none"});
-	private MultiCAFE 	parent0 				= null;
+	public 	JComboBox<String> imagesComboBox 	= new JComboBox <String> (new String[] {"none"});
+			JComboBox<String> binsComboBox		= new JComboBox <String>();
 			JButton 	updateButton 			= new JButton("Update");
 			JButton  	previousButton		 	= new JButton("<");
 			JButton		nextButton				= new JButton(">");
 			JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("top/bottom level (green)", true);
 			JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
 			JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
-			JComboBox<String> binsCombo		= new JComboBox <String>();
+	private MultiCAFE 	parent0 				= null;
 			boolean 	actionAllowed			= true;
 
 	
@@ -64,13 +62,13 @@ public class Display extends JPanel implements ViewerListener
 		
 		JPanel panel1 = new JPanel (layout);
 		panel1.add(new JLabel("views"));
-		panel1.add(binsCombo);
+		panel1.add(binsComboBox);
 		panel1.add(new JLabel(" kymograph"));
 		int bWidth = 30;
 		int bHeight = 21;
 		panel1.add(previousButton, BorderLayout.WEST); 
 		previousButton.setPreferredSize(new Dimension(bWidth, bHeight));
-		panel1.add(kymosComboBox, BorderLayout.CENTER);
+		panel1.add(imagesComboBox, BorderLayout.CENTER);
 		nextButton.setPreferredSize(new Dimension(bWidth, bHeight)); 
 		panel1.add(nextButton, BorderLayout.EAST);
 		add(panel1);
@@ -87,90 +85,92 @@ public class Display extends JPanel implements ViewerListener
 		defineActionListeners();
 	}
 	
+	
 	private void defineActionListeners()
 	{		
-		kymosComboBox.addActionListener(new ActionListener ()
+		imagesComboBox.addActionListener(new ActionListener ()
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{ 
 			displayUpdateOnSwingThread();
-		}});
+			}});
 		
 		viewDerivativeCheckbox.addActionListener(new ActionListener ()
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{ 
-			roisDisplay("deriv", viewDerivativeCheckbox.isSelected());
-		}});
+			displayROIs("deriv", viewDerivativeCheckbox.isSelected());
+			}});
 
 		viewGulpsCheckbox.addActionListener(new ActionListener ()
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{ 
-			roisDisplay("gulp", viewGulpsCheckbox.isSelected());
-		}});
+			displayROIs("gulp", viewGulpsCheckbox.isSelected());
+			}});
 		
 		viewLevelsCheckbox.addActionListener(new ActionListener ()
 { 
 			@Override public void actionPerformed( final ActionEvent e )
 { 
-			roisDisplay("level", viewLevelsCheckbox.isSelected());
-		}});
+			displayROIs("level", viewLevelsCheckbox.isSelected());
+			}});
 		
 		nextButton.addActionListener(new ActionListener ()
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{ 
-			int isel = kymosComboBox.getSelectedIndex()+1;
-			if (isel < kymosComboBox.getItemCount())
-				selectKymograph(isel);
-		}});
+			int isel = imagesComboBox.getSelectedIndex()+1;
+			if (isel < imagesComboBox.getItemCount())
+				selectKymographImage(isel);
+			}});
 		
 		previousButton.addActionListener(new ActionListener ()
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{ 
-			int isel = kymosComboBox.getSelectedIndex()-1;
-			if (isel < kymosComboBox.getItemCount())
-				selectKymograph(isel);
-		}});
+			int isel = imagesComboBox.getSelectedIndex()-1;
+			if (isel < imagesComboBox.getItemCount())
+				selectKymographImage(isel);
+			}});
 		
-		binsCombo.addActionListener(new ActionListener ()
+		binsComboBox.addActionListener(new ActionListener ()
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{
-			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
-			if (!actionAllowed || exp == null)
-				return;
-			String localString = (String) binsCombo.getSelectedItem();
-			if (localString != null) 
-				firePropertyChange("SEQ_CHGBIN", false, true);
-		}});
+				String localString = (String) binsComboBox.getSelectedItem();
+				if (localString.contains("."))
+					localString = null;
+				changeBinSubdirectory(localString);
+			}});
 	}
+	
 		
 	public void transferCapillaryNamesToComboBox(Experiment exp )
 	{
 		SwingUtilities.invokeLater(new Runnable() { public void run()
 		{
-			kymosComboBox.removeAllItems();
+			imagesComboBox.removeAllItems();
 			Collections.sort(exp.capillaries.capillariesArrayList); 
 			int ncapillaries = exp.capillaries.capillariesArrayList.size();
 			for (int i=0; i< ncapillaries; i++)
 			{
 				Capillary cap = exp.capillaries.capillariesArrayList.get(i);
-				kymosComboBox.addItem(cap.roi.getName());
+				imagesComboBox.addItem(cap.roi.getName());
 			}
 		}});	
 	}
 	
-	public void displayRoisAccordingToUserSelection()
+	
+	public void displayROIsAccordingToUserSelection()
 	{
-		roisDisplay("deriv", viewDerivativeCheckbox.isSelected());
-		roisDisplay("gulp", viewGulpsCheckbox.isSelected());
-		roisDisplay("level", viewLevelsCheckbox.isSelected());
+		displayROIs("deriv", viewDerivativeCheckbox.isSelected());
+		displayROIs("gulp", viewGulpsCheckbox.isSelected());
+		displayROIs("level", viewLevelsCheckbox.isSelected());
 	}
 	
-	private void roisDisplay(String filter, boolean visible)
+	
+	private void displayROIs(String filter, boolean visible)
 	{
 		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
 		if (exp == null) 
@@ -194,10 +194,10 @@ public class Display extends JPanel implements ViewerListener
 			}
 		}
 	}
-
+	
 	void displayON()
 	{
-		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -215,6 +215,7 @@ public class Display extends JPanel implements ViewerListener
 			placeKymoViewerNextToCamViewer(exp, v);
 		}
 	}
+	
 	
 	void placeKymoViewerNextToCamViewer(Experiment exp, Viewer v)
 	{
@@ -252,6 +253,7 @@ public class Display extends JPanel implements ViewerListener
 		v.setBounds(rectDataView);
 	}
 	
+	
 	void displayOFF()
 	{
 		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
@@ -266,6 +268,7 @@ public class Display extends JPanel implements ViewerListener
 		}
 	}
 	
+	
 	public void displayUpdateOnSwingThread()
 	{		
 		SwingUtilities.invokeLater(new Runnable() { public void run()
@@ -274,35 +277,38 @@ public class Display extends JPanel implements ViewerListener
 		}});
 	}
 	
+	
 	void displayUpdate()
 	{	
-		if (kymosComboBox.getItemCount() < 1)
+		if (imagesComboBox.getItemCount() < 1)
 			return;	
 		displayON();
-		int itemupfront = kymosComboBox.getSelectedIndex();
-		if (itemupfront < 0)
+		int item = imagesComboBox.getSelectedIndex();
+		if (item < 0)
 		{
-			itemupfront = 0;
-			kymosComboBox.setSelectedIndex(0);
+			item = 0;
+			imagesComboBox.setSelectedIndex(0);
 		}
-		selectKymograph(itemupfront); 
+		selectKymographImage(item); 
 	}
+	
 
 	void displayViews (boolean bEnable)
 	{
 		updateButton.setEnabled(bEnable);
 		previousButton.setEnabled(bEnable);
 		nextButton.setEnabled(bEnable);
-		kymosComboBox.setEnabled(bEnable);
+		imagesComboBox.setEnabled(bEnable);
 		if (bEnable)
 			displayUpdateOnSwingThread(); 
 		else
 			displayOFF();
 	}
+	
 
-	public void selectKymograph(int isel)
+	public void selectKymographImage(int isel)
 	{
-		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+		Experiment exp =(Experiment) parent0.expList.getSelectedItem();
 		if (exp == null) 
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -314,11 +320,11 @@ public class Display extends JPanel implements ViewerListener
 		if (isel >= seqKymos.seq.getSizeT() )
 			isel = seqKymos.seq.getSizeT() -1;
 		
-		int icurrent = kymosComboBox.getSelectedIndex();
+		int icurrent = imagesComboBox.getSelectedIndex();
 		if (icurrent != isel)
 		{
 			seqKymos.validateRoisAtT(icurrent);
-			kymosComboBox.setSelectedIndex(isel);
+			imagesComboBox.setSelectedIndex(isel);
 		}
 		seqKymos.currentFrame = isel;
 		Viewer v = seqKymos.seq.getFirstViewer();
@@ -328,15 +334,16 @@ public class Display extends JPanel implements ViewerListener
 				v.setPositionT(isel);
 			
 			v.setTitle(getKymographTitle(isel));
-			parent0.paneKymos.tabDisplay.displayRoisAccordingToUserSelection();
+			parent0.paneKymos.tabDisplay.displayROIsAccordingToUserSelection();
 		}
 	}
 	
-
+	
 	public String getKymographTitle(int t)
 	{
-		return ((String) kymosComboBox.getSelectedItem()).substring(4);
+		return ((String) imagesComboBox.getSelectedItem()).substring(4);
 	}
+	
 
 	@Override
 	public void viewerChanged(ViewerEvent event)
@@ -348,41 +355,62 @@ public class Display extends JPanel implements ViewerListener
 				return;
 			Viewer v = exp.seqKymos.seq.getFirstViewer();
 			int t = v.getPositionT();
-			selectKymograph(t);
+			selectKymographImage(t);
 		}
 	}
+	
 
 	@Override
 	public void viewerClosed(Viewer viewer)
 	{
 		viewer.removeListener(this);
 	}
+	
 
 	public void updateResultsAvailable(Experiment exp)
 	{
 		actionAllowed = false;
-		binsCombo.removeAllItems();
+		binsComboBox.removeAllItems();
 		List<String> list = Directories.getSortedListOfSubDirectoriesWithTIFF(exp.getExperimentDirectory());
 		for (int i = 0; i < list.size(); i++)
 		{
 			String dirName = list.get(i);
 			if (dirName == null || dirName .contains(Experiment.RESULTS))
 				dirName = ".";
-			binsCombo.addItem(dirName);
+			binsComboBox.addItem(dirName);
 		}
 		String select = exp.getBinSubDirectory();
 		if (select == null)
 			select = ".";
-		binsCombo.setSelectedItem(select);
+		binsComboBox.setSelectedItem(select);
 		actionAllowed = true;
 	}
 	
+	
 	public String getBinSubdirectory()
 	{
-		String name = (String) binsCombo.getSelectedItem();
+		String name = (String) binsComboBox.getSelectedItem();
 		if (name != null && !name .contains("bin_"))
 			name = null;
 		return name;
 	}
 	
+	private void changeBinSubdirectory(String localString) 
+	{
+		Experiment exp = (Experiment)  parent0.expList.getSelectedItem();
+		if (exp == null || exp.getBinSubDirectory() .contains(localString))
+			return;
+		
+		parent0.expList.expListBinSubPath = localString;
+		exp.setBinSubDirectory(localString);
+		exp.seqKymos.seq.close();
+		exp.loadKymographs();
+		displayON();
+		
+//		updateDialogs(exp);
+	}
+	
+
+	
+
 }

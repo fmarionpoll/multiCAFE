@@ -264,7 +264,7 @@ public class Experiment
 			xmlReadDrosoTrack(null);
 		return true;
 	}
-	
+		
 	static public String getImagesDirectoryAsParentFromFileName(String filename) 
 	{
 		filename = getParentIf(filename, BIN);
@@ -548,6 +548,14 @@ public class Experiment
 		ImageFileDescriptor.getFilesAndTestExist(myList);
 		return seqKymos.loadImagesFromList(myList, true);
 	}
+	
+//	public void reopenKymograph() 
+//	{
+//		String kymosDir = getKymosBinFullDirectory() ;
+//		List<String> kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
+//		kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(kymosImagesList, "tiff");
+//		seqKymos = new SequenceKymos(kymosImagesList);
+//	}
 	
 	public boolean loadDrosotrack() 
 	{

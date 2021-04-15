@@ -40,9 +40,9 @@ public class MultiCAFE extends PluginActionable
 	{		
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
 		paneExperiment.init(mainPanel, "Source", this);
-		paneCapillaries.init(mainPanel, "Capillaries: define, edit", this);
-		paneKymos.init(mainPanel, "Capillaries: build kymographs", this);
-		paneLevels.init(mainPanel, "Capillaries: measure levels", this);
+		paneCapillaries.init(mainPanel, "Capillaries", this);
+		paneKymos.init(mainPanel, "Kymographs", this);
+		paneLevels.init(mainPanel, "Levels", this);
 //		paneSpots.init(mainPanel, "MEASURE SPOTS", this);
 		paneCages.init(mainPanel, "Cages", this);
 		paneExcel.init(mainPanel, "Export", this);

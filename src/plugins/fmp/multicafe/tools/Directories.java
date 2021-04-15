@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -107,8 +108,10 @@ public class Directories
 	{
 		HashSet <String> hSet = getDirectoriesWithFilesType (parentDirectory, ".tiff");
 		List<String> list = reduceFullNameToLastDirectory(new ArrayList<String>(hSet));
-		List<String> sortedNames = list.stream().sorted().collect(Collectors.toList());
-		return sortedNames;
+		list.sort(Comparator
+				.comparing(s->Integer.parseUnsignedInt(s.substring(4, s.length())))
+				);
+		return list;
 	}
 
 }

@@ -68,8 +68,9 @@ public class SequenceCamData
 	volatile public List <String>	imagesList 				= new ArrayList<String>();
 	protected String 				csCamFileName 			= null;
 	
-	public boolean 				stopFlag 		= false;
-	public boolean 				threadRunning 	= false;
+	public boolean 					stopFlag 				= false;
+	public boolean 					threadRunning 			= false;
+	
 	// ----------------------------------------
 	
 	public SequenceCamData () 

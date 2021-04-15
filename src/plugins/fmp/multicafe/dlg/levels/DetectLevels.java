@@ -295,9 +295,9 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					if (parent0.paneKymos.tabDisplay.kymosComboBox.getItemCount() >= selectedFrame) 
+					if (parent0.paneKymos.tabDisplay.imagesComboBox.getItemCount() >= selectedFrame) 
 					{
-						parent0.paneKymos.tabDisplay.selectKymograph(selectedFrame);
+						parent0.paneKymos.tabDisplay.selectKymographImage(selectedFrame);
 						System.out.println("--- select "+ selectedFrame);
 						flag = true;
 					}

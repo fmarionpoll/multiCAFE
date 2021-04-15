@@ -163,7 +163,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		}
 		parent0.paneCages.tabGraphics.closeAllCharts();
 		parent0.paneLevels.tabGraphs.closeAllCharts();
-		parent0.paneKymos.tabDisplay.kymosComboBox.removeAllItems();
+		parent0.paneKymos.tabDisplay.imagesComboBox.removeAllItems();
 	}
 	
 	public void closeCurrentExperiment() 
