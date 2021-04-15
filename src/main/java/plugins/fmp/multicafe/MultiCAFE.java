@@ -6,6 +6,9 @@ import javax.swing.JTabbedPane;
 
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
+import icy.main.Icy;
+import icy.plugin.PluginLauncher;
+import icy.plugin.PluginLoader;
 import icy.plugin.abstract_.PluginActionable;
 import plugins.fmp.multicafe.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe.dlg.cages.MCCages_;
@@ -54,6 +57,14 @@ public class MultiCAFE extends PluginActionable
 		mainFrame.setVisible(true);
 		mainFrame.addToDesktopPane();
 	}	 
+	
+	public static void main (String[] args)
+	{
+		// start Icy
+		Icy.main(args);
+		// then start plugin
+		PluginLauncher.start(PluginLoader.getPlugin(MultiCAFE.class.getName()));
+	}
 
 }
 

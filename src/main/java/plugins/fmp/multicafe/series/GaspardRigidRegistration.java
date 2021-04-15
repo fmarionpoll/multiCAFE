@@ -89,10 +89,7 @@ public class GaspardRigidRegistration
      *            using all slices)
      * @param policy
      *            indicates how to deal with out-of-bound and missing pixels (see
-     *            {@link ResizePolicy}) for more details
-     * @param status
-     *            (<code>null</code> if not needed) a status object to let the user know where it's
-     *            at (just like All Saints).
+     *            {@link ResizePolicy}) for more details.
      * @return the smallest common bounds enclosing the registered data (or the original sequence
      *         bounds if no drift was detected)
      */
@@ -512,6 +509,8 @@ public class GaspardRigidRegistration
      *            the frame to translate (or -1 for all)
      * @param c
      *            the frame to translate (or -1 for all)
+     * @param vector
+     *            Vector2D
      * @param preserveImageSize
      * 			preserve image size
      */
@@ -844,7 +843,10 @@ public class GaspardRigidRegistration
      *            the channel to rotate (or -1 for all)
      * @param angle
      * 			angle
+     * @param preserveImageSize
+     * 			boolean
      * @return
+     * 			rotImg
      */
     public static IcyBufferedImage applyRotation2D(IcyBufferedImage img, int channel, double angle, boolean preserveImageSize)
     {
