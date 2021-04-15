@@ -1,0 +1,10 @@
+<root description="System workspace" name="sys">
+<task name="Plugins">
+<band name="Setup"/>
+<band name="New"/>
+<band name="Others">
+<item classname="plugins.fmp.multicafe.MultiCAFE" priority="low"/>
+<item classname="plugins.adufour.protocols.Protocols" priority="low"/>
+</band>
+</task>
+</root>
