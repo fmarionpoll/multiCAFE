@@ -72,7 +72,7 @@ public class BuildROIs extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{
 					ROI2DUtilities.removeRoisContainingString(-1, "cage", exp.seqCamData.seq);
@@ -87,7 +87,7 @@ public class BuildROIs extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 					create2DPolygon(exp);
 			}});
@@ -95,7 +95,7 @@ public class BuildROIs extends JPanel
 	
 	void updateNColumnsFieldFromSequence() 
 	{
-		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null) 
 		{
 			int nrois = exp.cages.cageList.size();	

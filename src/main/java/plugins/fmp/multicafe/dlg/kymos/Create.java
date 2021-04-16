@@ -91,10 +91,10 @@ public class Create extends JPanel implements PropertyChangeListener
 		
 	private boolean initBuildParameters(Options_BuildSeries options) 
 	{
-		options.expList = parent0.expList; 
-		options.expList.index0 = parent0.expList.getSelectedIndex();
+		options.expList = parent0.expListCombo; 
+		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
 		if (allSeriesCheckBox.isSelected())
-			options.expList.index1 = parent0.expList.getItemCount()-1;
+			options.expList.index1 = parent0.expListCombo.getItemCount()-1;
 		else
 			options.expList.index1 = options.expList.index0; 
 		options.isFrameFixed 	= parent0.paneExperiment.tabAnalyze.getIsFixedFrame();

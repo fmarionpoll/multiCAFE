@@ -123,7 +123,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		{
 		      public void itemStateChanged(ItemEvent e) 
 		      {
-		    	  Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+		    	  Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		    	  	if (exp != null) 
 		    	  	{
 			  			if (overlayCheckBox.isSelected()) {
@@ -187,7 +187,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	{
 		if (e.getSource() == thresholdSpinner) 
 		{
-			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 			if (exp != null) 
 			{
 				exp.cages.detect_threshold = (int) thresholdSpinner.getValue();
@@ -220,9 +220,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubPath 		= parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
-		options.expList 		= new ExperimentCombo(); 
-//		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
-		options.expList.index0 	= parent0.expList.getSelectedIndex();
+		options.expList 		= new ExperimentCombo(); 	
+		options.expList.index0 	= parent0.expListCombo.getSelectedIndex();
 		if (allCheckBox.isSelected())
 			options.expList.index1 = options.expList.getItemCount()-1;
 		else
@@ -235,14 +234,13 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	
 	void startComputation() 
 	{
-		currentExp = parent0.expList.getSelectedIndex();
-		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+		currentExp = parent0.expListCombo.getSelectedIndex();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;
 		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		
-		thread = new DetectFlies1_series();		
-//		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
+		thread = new DetectFlies1_series();			
 		initTrackParameters();
 		thread.buildBackground	= false;
 		thread.detectFlies		= true;
@@ -262,9 +260,9 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
-			Experiment exp = parent0.expList.getItemAt(currentExp);
-			if (exp != null)
-				parent0.paneExperiment.panelLoadSave.openExperiment(exp);
+//			parent0.expListCombo.setSelectedIndex(currentExp);
+//			if (exp != null)
+//				parent0.paneExperiment.panelLoadSave.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}
@@ -273,8 +271,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	public void popupMenuWillBecomeVisible(PopupMenuEvent e) 
 	{
 		int nitems = 1;
-		currentExp = parent0.expList.getSelectedIndex();
-		Experiment exp = parent0.expList.getItemAt(currentExp);
+		currentExp = parent0.expListCombo.getSelectedIndex();
+		Experiment exp = parent0.expListCombo.getItemAt(currentExp);
 		if (exp != null )	
 			nitems =  exp.cages.cageList.size() +1;
 		if (allCagesComboBox.getItemCount() != nitems) 

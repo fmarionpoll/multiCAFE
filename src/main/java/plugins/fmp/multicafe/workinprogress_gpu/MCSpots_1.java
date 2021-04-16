@@ -61,7 +61,7 @@ public class MCSpots_1 extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 					subtractFirstColumn(exp);
 			}});
@@ -70,7 +70,7 @@ public class MCSpots_1 extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 					buildHistogram(exp);
 			}});
@@ -79,7 +79,7 @@ public class MCSpots_1 extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 					removeBackGround(exp);
 			}});

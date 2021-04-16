@@ -5,6 +5,7 @@
 <section name="toolTips">
 <key name="mainMenuTip" value="false"/>
 <key name="virtualMode" value="false"/>
+<key name="viewerVirtual" value="false"/>
 </section>
 <section name="confirms">
 <key name="exit" value="false"/>
@@ -51,10 +52,12 @@
 </section>
 <section name="export"/>
 </section>
-<key name="lastUpdateCheckTime" value="1618523039894"/>
+<key name="lastUpdateCheckTime" value="1618575991137"/>
 <key name="virtualMode" value="true"/>
 </section>
-<section name="canvas"/>
+<section name="canvas">
+<section name="Canvas2D"/>
+</section>
 <section name="network"/>
 <section name="chat"/>
 <section name="repositories"/>
@@ -68,11 +71,11 @@
 </section>
 <section name="online"/>
 </section>
-<key name="id" value="206868998"/>
+<key name="id" value="34316387"/>
 <key name="os" value="win64"/>
 <key name="clientCpuNumber" value="12"/>
 <key name="clientTotalMemory" value="34308149248"/>
-<key name="appFolder" value="C:/Users/fred/.m2/repository/org/bioimageanalysis/icy/icy-kernel/2.1.0"/>
+<key name="appFolder" value="C:/Users/fred/.m2/repository/org/bioimageanalysis/icy/icy-kernel/2.1.4"/>
 <section name="loader">
 <section name="entry0">
 <key name="nbFile" value="0"/>
@@ -105,13 +108,32 @@
 <key name="nbFile" value="0"/>
 </section>
 </section>
-<key name="version" value="2.1.0.1"/>
+<key name="version" value="2.1.4.0"/>
+<key name="lastUploadDate" value="1618523127597"/>
+<section name="frame">
+<section name="imageLoader">
+<key name="width" value="600"/>
+<key name="heigth" value="400"/>
 </section>
-<section name="plugins"/>
+</section>
+<section name="gui.histo"/>
+<section name="magicWand"/>
+</section>
+<section name="plugins">
+<section name="fmp">
+<section name="multicafe">
+<section name="MultiCAFE">
+<section name="gui">
+<key name="lastUsedPath" value="E:\2020 Perrine\Marseille\21-01-29_Sucrose vs PGN+suc\1-1_500ug"/>
+</section>
+</section>
+</section>
+</section>
+</section>
 <section name="frame">
 <section name="main">
 <key name="XE" value="80"/>
-<key name="YE" value="50"/>
+<key name="YE" value="34"/>
 <key name="WidthE" value="1820"/>
 <key name="HeightE" value="940"/>
 <key name="MaximizedE" value="false"/>
@@ -166,6 +188,19 @@
 <key name="WidthI" value="400"/>
 <key name="HeightI" value="300"/>
 <key name="Panelized" value="true"/>
+<key name="Externalized" value="false"/>
+<key name="MaximizedI" value="false"/>
+<key name="MaximizedE" value="false"/>
+</section>
+<section name="preference">
+<key name="XE" value="100"/>
+<key name="YE" value="100"/>
+<key name="XI" value="100"/>
+<key name="YI" value="100"/>
+<key name="WidthE" value="640"/>
+<key name="HeightE" value="480"/>
+<key name="WidthI" value="640"/>
+<key name="HeightI" value="480"/>
 <key name="Externalized" value="false"/>
 <key name="MaximizedI" value="false"/>
 <key name="MaximizedE" value="false"/>

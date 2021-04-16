@@ -67,7 +67,7 @@ public class Intervals extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp == null)
 					return;
 				exp.camBinImage_Ms = (long) (((double) binSize.getValue())* binUnit.getMsUnitValue());
@@ -77,7 +77,7 @@ public class Intervals extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp == null)
 					return;
 				exp.loadFileIntervalsFromSeqCamData();

@@ -70,7 +70,7 @@ public class Adjust extends JPanel
 	
 	// -------------------------------------------------------
 	private void roisCenterLinestoAllCapillaries() {
-		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
@@ -223,7 +223,7 @@ public class Adjust extends JPanel
 
 	void roisDisplayrefBar(boolean display) 
 	{
-		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;

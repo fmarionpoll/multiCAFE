@@ -72,7 +72,7 @@ public class Edit extends JPanel
 		{
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 					exp.saveDetRoisToPositions();
 			}});
@@ -80,7 +80,7 @@ public class Edit extends JPanel
 		findNextButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 					findFirstMissed(exp);
 			}});
@@ -89,7 +89,7 @@ public class Edit extends JPanel
 		{
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) {
 					exp.saveDetRoisToPositions();
 					findFirstMissed(exp);
@@ -100,7 +100,7 @@ public class Edit extends JPanel
 		{
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 					findAllMissedPoints(exp);
 			}});
@@ -112,7 +112,7 @@ public class Edit extends JPanel
 				if (foundCombo.getItemCount() == 0) {
 					return;
 			}
-			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 			if (exp == null)
 				return;
 			String filter = (String) foundCombo.getSelectedItem();

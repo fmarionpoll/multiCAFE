@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import plugins.fmp.multicafe.experiment.Capillary;
+
 
 
 public class Directories 
@@ -108,10 +110,40 @@ public class Directories
 	{
 		HashSet <String> hSet = getDirectoriesWithFilesType (parentDirectory, ".tiff");
 		List<String> list = reduceFullNameToLastDirectory(new ArrayList<String>(hSet));
+		// TODO pb if no number
 		list.sort(Comparator
 				.comparing(s->Integer.parseUnsignedInt(s.substring(4, s.length())))
 				);
 		return list;
 	}
 
+	public static void deleteFilesWithExtension(String directory, String filter) 
+	{
+		File folder = new File(directory);
+		for (File file : folder.listFiles()) {
+			String name = file.getName();
+			if (name.toLowerCase().endsWith(filter)) {
+				file.delete();
+		   }
+		}
+	}
+	
+	public static void moveTIFFAndLINEfilesToSubdirectory(String directory, String subname)
+	{
+		String subdirectory = directory + File.separator + subname;
+		File folder = new File(directory);
+		File subfolder = new File(subdirectory);
+		if (!subfolder.exists()) 
+			subfolder.mkdir();
+
+		for (File file : folder.listFiles()) {
+			String name = file.getName();
+			if (name.toLowerCase().endsWith(".tiff") || name.toLowerCase().startsWith("line")) 
+			{
+				String destinationName = Capillary.replace_LR_with_12(name);
+				file.renameTo (new File(subdirectory + File.separator + destinationName));
+				file.delete();
+			}
+		}
+	}
 }

@@ -83,13 +83,13 @@ public class Infos  extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				String newtext = (String) boxID_JCombo.getSelectedItem();
-				int nexpts = parent0.expList.getItemCount();
+				int nexpts = parent0.expListCombo.getItemCount();
 				if (nexpts > 0 && parent0.paneExcel.tabOptions.collateSeriesCheckBox.isSelected()) 
 				{
 					String exptName = (String) experiment_JCombo.getSelectedItem();
 					for (int i = 0; i < nexpts; i++) 
 					{
-						Experiment exp = parent0.expList.getItemAt(i);
+						Experiment exp = parent0.expListCombo.getItemAt(i);
 						if (newtext.equals(exp.exp_boxID) && exptName != null && exptName .equals(exp.experiment) ) 
 						{
 							addItem(experiment_JCombo, exp.experiment);

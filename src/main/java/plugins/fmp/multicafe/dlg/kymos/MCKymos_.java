@@ -94,7 +94,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 	
 	void tabbedCapillariesAndKymosSelected() 
 	{
-		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+		Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 		if (exp == null || exp.seqCamData == null)
 			return;
 		int iselected = tabsPane.getSelectedIndex();

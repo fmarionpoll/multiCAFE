@@ -59,7 +59,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	
 	private MultiCAFE 	parent0 				= null;
 	private DetectLevels_series thread 			= null;
-	private int			selectedFrame			= 0;
+//	private int			selectedFrame			= 0;
 
 	// -----------------------------------------------------
 		
@@ -105,7 +105,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null && exp.seqCamData != null) 
 				{
 					kymosDisplayFiltered1(exp);
@@ -127,7 +127,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{ 
 					kymosDisplayFiltered1(exp);
@@ -208,18 +208,17 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	{	
 		Options_BuildSeries options = new Options_BuildSeries();
 		options.expList = new ExperimentCombo(); 
-//		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);
-		options.expList.index0 = parent0.expList.getSelectedIndex();
+		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
 		if (allCheckBox.isSelected()) 
 			options.expList.index1 = options.expList.getItemCount()-1;
 		else
-			options.expList.index1 = parent0.expList.getSelectedIndex();
+			options.expList.index1 = parent0.expListCombo.getSelectedIndex();
 
 		if (!allKymosCheckBox.isSelected())
 			options.firstKymo = exp.seqKymos.currentFrame;
 		else 
 			options.firstKymo = 0;
-		selectedFrame = options.firstKymo;
+//		selectedFrame = options.firstKymo;
 		
 		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
@@ -239,8 +238,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	
 	void series_detectLimitsStart() 
 	{
-		int current = parent0.expList.getSelectedIndex();
-		Experiment exp = parent0.expList.getItemAt(current);
+		int current = parent0.expListCombo.getSelectedIndex();
+		Experiment exp = parent0.expListCombo.getItemAt(current);
 		if (exp == null)
 			return;
 		exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
@@ -266,12 +265,12 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
-			Experiment exp = parent0.expList.getItemAt(parent0.expList.getSelectedIndex());
-			if (exp != null) {
-				parent0.paneExperiment.panelLoadSave.openExperiment(exp);
-				if (selectedFrame != 0) 
-					selectFrame(selectedFrame);
-			}
+//			Experiment exp = parent0.expListCombo.getItemAt(parent0.expListCombo.getSelectedIndex());
+//			if (exp != null) {
+//				parent0.paneExperiment.panelLoadSave.openExperiment(exp);
+//				if (selectedFrame != 0) 
+//					selectFrame(selectedFrame);
+//			}
 			detectButton.setText(detectString);
 		 }
 	}

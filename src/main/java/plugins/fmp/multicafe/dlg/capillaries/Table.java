@@ -48,7 +48,7 @@ public class Table  extends JPanel
 		this.parent0 = parent0;
 		capillariesArrayCopy = capCopy;
 		
-		viewModel = new CapillaryTableModel(parent0.expList);
+		viewModel = new CapillaryTableModel(parent0.expListCombo);
 	    tableView.setModel(viewModel);
 	    tableView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 400));
@@ -94,7 +94,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				capillariesArrayCopy.clear();
 				for (Capillary cap: exp.capillaries.capillariesArrayList ) 
 					capillariesArrayCopy.add(cap);
@@ -105,7 +105,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				for (Capillary capFrom: capillariesArrayCopy ) 
 				{
 					capFrom.valid = false;
@@ -128,7 +128,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				int rowIndex = tableView.getSelectedRow();
 				int columnIndex = tableView.getSelectedColumn();
 				if (rowIndex >= 0) 
@@ -179,7 +179,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				int rowIndex = tableView.getSelectedRow();
 				int columnIndex = tableView.getSelectedColumn();
 				if (rowIndex >= 0) 
@@ -204,7 +204,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp.cages.cageList.size() > 0) 
 				{
 					exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
@@ -216,7 +216,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				exp.cages.setCageNbFromName(exp.capillaries.capillariesArrayList);
 				viewModel.fireTableDataChanged();
 			}});

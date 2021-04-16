@@ -29,7 +29,6 @@ import icy.system.thread.ThreadUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
 import plugins.fmp.multicafe.dlg.JComponents.SequenceNameListRenderer;
-import plugins.fmp.multicafe.experiment.Capillary;
 import plugins.fmp.multicafe.experiment.Experiment;
 import plugins.fmp.multicafe.experiment.ExperimentDirectories;
 import plugins.fmp.multicafe.tools.Directories;
@@ -55,14 +54,15 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	private MCExperiment_ 	parent1 		= null;
 	private int 			listenerIndex 	= -1;
 	
-//	
+	
+
 	JPanel initPanel( MultiCAFE parent0, MCExperiment_ parent1) 
 	{
 		this.parent0 = parent0;
 		this.parent1 = parent1;
 
 		SequenceNameListRenderer renderer = new SequenceNameListRenderer();
-		parent0.expList.setRenderer(renderer);
+		parent0.expListCombo.setRenderer(renderer);
 		int bWidth = 26; 
 		int height = 20;
 		previousButton.setPreferredSize(new Dimension(bWidth, height));
@@ -70,7 +70,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		
 		JPanel sequencePanel0 = new JPanel(new BorderLayout());
 		sequencePanel0.add(previousButton, BorderLayout.LINE_START);
-		sequencePanel0.add(parent0.expList, BorderLayout.CENTER);
+		sequencePanel0.add(parent0.expListCombo, BorderLayout.CENTER);
 		sequencePanel0.add(nextButton, BorderLayout.LINE_END);
 		
 		JPanel sequencePanel = new JPanel(new BorderLayout());
@@ -84,7 +84,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		sequencePanel.add(closeButton, BorderLayout.LINE_END);
 	
 		defineActionListeners();
-		parent0.expList.addItemListener(this);
+		parent0.expListCombo.addItemListener(this);
 		
 		JPanel twoLinesPanel = new JPanel (new GridLayout(2, 1));
 		twoLinesPanel.add(sequencePanel0);
@@ -100,17 +100,14 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals("SELECT1_CLOSED")) 
 		{
-			int index = parent0.expList.getSelectedIndex();
-			if (index < 0)
-				index = 0;
 			parent1.tabInfosSeq.disableChangeFile = true;
 			if (selectedNames.size() < 1)
 				return;
 			
 			ExperimentDirectories eDAF = getDirectoriesFromExptPath(selectedNames.get(0), null);
-        	int item = addExperimentFrom3NamesAnd2Lists(eDAF);
-        	parent0.expList.setSelectedIndex(item);
-        	final String binSubDirectory = eDAF.binSubDirectory;
+        	int index = addExperimentFrom3NamesAnd2Lists(eDAF);
+        	parent0.expListCombo.setSelectedIndex(index);
+        	final String binSubDirectory = parent0.expListCombo.expListBinSubPath;
         	
         	SwingUtilities.invokeLater(new Runnable() { public void run() 
 			{	
@@ -123,8 +120,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				parent1.tabInfosSeq.disableChangeFile = false;
 				updateBrowseInterface();
 				}});
-   
-			parent0.expList.setSelectedIndex(index);
 		}
 	}
 	
@@ -139,7 +134,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			Experiment exp = (Experiment) e.getItem();
 			ThreadUtil.bgRun( new Runnable() { @Override public void run() 
     		{
-        		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp); 
+        		closeViewsForCurrentExperiment(exp); 
     		}});
 		}
 	}
@@ -147,7 +142,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	void closeAllExperiments() 
 	{
 		closeCurrentExperiment();
-		parent0.expList.removeAllItems();
+		parent0.expListCombo.removeAllItems();
 	}
 	
 	public void closeViewsForCurrentExperiment(Experiment exp) 
@@ -169,24 +164,24 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 	public void closeCurrentExperiment() 
 	{
-		if (parent0.expList.getSelectedIndex() < 0)
+		if (parent0.expListCombo.getSelectedIndex() < 0)
 			return;
-		Experiment exp =(Experiment) parent0.expList.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null)
 			closeViewsForCurrentExperiment(exp);
 	}
 	
 	void updateBrowseInterface() 
 	{
-		int isel = parent0.expList.getSelectedIndex();		
+		int isel = parent0.expListCombo.getSelectedIndex();		
 	    boolean flag1 = (isel == 0? false: true);
-		boolean flag2 = (isel == (parent0.expList.getItemCount() -1)? false: true);
+		boolean flag2 = (isel == (parent0.expListCombo.getItemCount() -1)? false: true);
 		previousButton.setEnabled(flag1);
 		nextButton.setEnabled(flag2);
 		
 		if (isel >= 0 && listenerIndex != isel) 
 		{
-			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 			exp.seqCamData.seq.addListener(this);
 		}
 		listenerIndex = isel;
@@ -194,7 +189,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 	boolean openExperimentFromCombo() 
 	{
-		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		boolean flag = true;
 		if (exp.seqCamData != null) 
 		{
@@ -213,19 +208,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			System.out.println("Error: no jpg files found for this experiment\n");
 		}
 		return flag;
-	}
-	
-	public void openExperiment(Experiment exp) 
-	{
-//		exp.xmlLoadMCExperiment();
-//		exp.openSequenceCamData();
-//		if (exp.seqCamData != null && exp.seqCamData.seq != null) 
-//		{
-//			parent0.addSequence(exp.seqCamData.seq);
-//			parent1.updateViewerForSequenceCam(exp);
-//			loadMeasuresAndKymos(exp);
-//			parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
-//		}
 	}
 	
 	void loadMeasuresAndKymos(Experiment exp) 
@@ -258,7 +240,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 	private void defineActionListeners() 
 	{
-		parent0.expList.addActionListener(new ActionListener () 
+		parent0.expListCombo.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
@@ -284,7 +266,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             	if (eDAF != null) 
             	{
 	            	int item = addExperimentFrom3NamesAnd2Lists(eDAF);
-	            	parent0.expList.setSelectedIndex(item);
+	            	parent0.expListCombo.setSelectedIndex(item);
             	}
             }});
 		
@@ -297,7 +279,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             	if (eDAF != null) 
             	{
             		int item = addExperimentFrom3NamesAnd2Lists(eDAF);
-            		parent0.expList.setSelectedIndex(item);
+            		parent0.expListCombo.setSelectedIndex(item);
             	}
             }});
 		
@@ -307,16 +289,16 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			{ 
 				closeAllExperiments();
 				parent1.tabsPane.setSelectedIndex(0);
-				parent0.expList.removeAllItems();
-				parent0.expList.updateUI();
+				parent0.expListCombo.removeAllItems();
+				parent0.expListCombo.updateUI();
 			}});
 		
 		nextButton.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-			if (parent0.expList.getSelectedIndex() < (parent0.expList.getItemCount() -1)) 
-				parent0.expList.setSelectedIndex(parent0.expList.getSelectedIndex()+1);
+			if (parent0.expListCombo.getSelectedIndex() < (parent0.expListCombo.getItemCount() -1)) 
+				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()+1);
 			updateBrowseInterface();
 			}});
 		
@@ -324,8 +306,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-			if (parent0.expList.getSelectedIndex() > 0) 
-				parent0.expList.setSelectedIndex(parent0.expList.getSelectedIndex()-1);
+			if (parent0.expListCombo.getSelectedIndex() > 0) 
+				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()-1);
 			updateBrowseInterface();
 			}});
 	}
@@ -333,7 +315,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	private int addExperimentFrom3NamesAnd2Lists(ExperimentDirectories eDAF) 
 	{
 		Experiment exp = new Experiment (eDAF);
-		int item = parent0.expList.addExperiment(exp);
+		int item = parent0.expListCombo.addExperiment(exp);
 		return item;
 	}
 	
@@ -348,7 +330,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0));
 		
 		eDAF.resultsDirectory = getV2ResultsDirectoryDialog(eDAF.cameraImagesDirectory, Experiment.RESULTS);
-		eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
+		eDAF.binSubDirectory = updateV2BinSubDirectory(eDAF.resultsDirectory);
 		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory;
 		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
 		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff");
@@ -367,7 +349,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		
 		eDAF.resultsDirectory = exptDirectory;
 		if (binSubDirectory == null)
-			eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
+			eDAF.binSubDirectory = updateV2BinSubDirectory(eDAF.resultsDirectory);
 		else 
 			eDAF.binSubDirectory = binSubDirectory;
 		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory;
@@ -377,61 +359,38 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		return eDAF;
 	}
 	
-	private String getV2BinSubDirectory(String parentDirectory) 
+	private String updateV2BinSubDirectory(String parentDirectory) 
 	{
 		List<String> expList = Directories.getSortedListOfSubDirectoriesWithTIFF(parentDirectory);
-	    String name = null;
+		cleanUpResultsDirectory(parentDirectory, expList);
+		
+	    String subDirectory = null;
 	    if (expList.size() > 1) {
-	    	name = selectSubDirDialog(expList, "Select item", Experiment.BIN, false);
-	    	// if returned "results", move tiff files to bin-60
-	    	if (name .contains(Experiment.RESULTS)) {
-	    		name = Experiment.BIN + "60";
-	    		moveTIFFfiles(parentDirectory, name );
-	    	}
-	    	// else, delete tiff files into "results"
-	    	else {
-		    	for (int i= 0; i< expList.size(); i++) 
-		    		if (expList.get(i).compareTo(Experiment.RESULTS) == 0) 
-		    			deleteTIFFfiles(parentDirectory);
-	    	}
+	    	if (parent0.expListCombo.expListBinSubPath == null)
+	    		subDirectory = selectSubDirDialog(expList, "Select item", Experiment.BIN, false);
 	    }
 	    else if (expList.size() == 1) {
-	    	name = expList.get(0);
-	    	if (!name.contains(Experiment.BIN)) 
-	    		moveTIFFfiles(parentDirectory, name );
+	    	subDirectory = expList.get(0);
+		    if (!subDirectory.contains(Experiment.BIN)) 
+		    	Directories.moveTIFFAndLINEfilesToSubdirectory(parentDirectory, subDirectory );
 	    }
 	    else 
-	    	name = Experiment.BIN + "60";
-	    return name;
+	    	subDirectory = Experiment.BIN + "60";
+	    if (parent0.expListCombo.expListBinSubPath != null) 
+	    	subDirectory = parent0.expListCombo.expListBinSubPath;
+	    return subDirectory;
 	}
 	
-	private void deleteTIFFfiles(String directory) 
+	private void cleanUpResultsDirectory(String parentDirectory, List <String> expList)
 	{
-		File folder = new File(directory);
-		for (File file : folder.listFiles()) {
-			String name = file.getName();
-			if (name.toLowerCase().endsWith(".tiff")) {
-				file.delete();
-		   }
-		}
-	}
-	
-	private void moveTIFFfiles(String directory, String subname)
-	{
-		String subdirectory = directory + File.separator + subname;
-		File folder = new File(directory);
-		File subfolder = new File(subdirectory);
-		if (!subfolder.exists()) 
-			subfolder.mkdir();
-
-		for (File file : folder.listFiles()) {
-			String name = file.getName();
-			if (name.toLowerCase().endsWith(".tiff") || name.toLowerCase().startsWith("line")) 
-			{
-				String destinationName = Capillary.replace_LR_with_12(name);
-				file.renameTo (new File(subdirectory + File.separator + destinationName));
-				file.delete();
-			}
+		if (expList == null)
+			return;
+		for (String subDirectory: expList) 
+		{
+	    	if (subDirectory .contains(Experiment.RESULTS)) {
+	    		subDirectory = Experiment.BIN + "60";
+	    		Directories.moveTIFFAndLINEfilesToSubdirectory(parentDirectory, subDirectory );
+	    	}
 		}
 	}
 	
@@ -462,7 +421,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 
 		if (sequenceEvent.getSourceType() == SequenceEventSourceType.SEQUENCE_DATA )
 		{
-			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 			if (exp.seqCamData.seq != null 
 			&& sequenceEvent.getSequence() == exp.seqCamData.seq)
 			{

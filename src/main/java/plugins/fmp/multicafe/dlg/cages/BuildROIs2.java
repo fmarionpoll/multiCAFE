@@ -88,7 +88,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{
 					ROI2DUtilities.removeRoisContainingString(-1, "cage", exp.seqCamData.seq);
@@ -103,7 +103,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 					updateOverlay(exp);
 			}});
@@ -112,7 +112,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =  (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp =  (Experiment) parent0.expListCombo.getSelectedItem();
 				deletePointsIncluded(exp);
 			}});
 	}
@@ -154,13 +154,13 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 	{
 		if (e.getSource() == thresholdSpinner) 
 		{
-			Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 			if (exp != null)
 				updateOverlay(exp);
 		}
 		else if (e.getSource() == overlayCheckBox)  
 		{
-    	  	Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+    	  	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
     	  	if (exp != null) 
     	  	{
 	  			if (overlayCheckBox.isSelected()) 

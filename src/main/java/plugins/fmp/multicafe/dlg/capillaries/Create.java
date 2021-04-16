@@ -99,7 +99,7 @@ public class Create extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				roisGenerateFromPolygon();
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{
 					SequenceKymosUtils.transferCamDataROIStoKymo(exp);
@@ -159,7 +159,7 @@ public class Create extends JPanel
 	// ---------------------------------
 	private void create2DPolygon() 
 	{
-		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
@@ -200,7 +200,7 @@ public class Create extends JPanel
 	
 	private void roisGenerateFromPolygon() 
 	{
-		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+		Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;

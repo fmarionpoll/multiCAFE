@@ -29,6 +29,13 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	{
 	}
 	
+	@Override
+	public void removeAllItems() 
+	{
+		super.removeAllItems();
+		expListBinSubPath = null;
+	}
+	
 	public Experiment getMsColStartAndEndFromAllExperiments(XLSExportOptions options) 
 	{
 		Experiment expAll = new Experiment();

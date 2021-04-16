@@ -23,8 +23,8 @@ import plugins.fmp.multicafe.workinprogress_gpu.MCSpots_;
 
 public class MultiCAFE extends PluginActionable  
 {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE April 14, 2021", true, true, true, true);
-	public ExperimentCombo 	expList 		= new ExperimentCombo();
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE April 15, 2021", true, true, true, true);
+	public ExperimentCombo 	expListCombo 	= new ExperimentCombo();
 	
 	public MCExperiment_ 	paneExperiment 	= new MCExperiment_();
 	public MCCapillaries_ 	paneCapillaries	= new MCCapillaries_();

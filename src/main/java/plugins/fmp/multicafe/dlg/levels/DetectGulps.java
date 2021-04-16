@@ -130,7 +130,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		
 	void kymosDisplayFiltered2() 
 	{
-		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+		Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -145,8 +145,8 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	void series_detectGulpsStart(boolean detectGulps) 
 	{
 		kymosDisplayFiltered2();	
-		int current = parent0.expList.getSelectedIndex();
-		Experiment exp = parent0.expList.getItemAt(current);
+		int current = parent0.expListCombo.getSelectedIndex();
+		Experiment exp = parent0.expListCombo.getItemAt(current);
 		if (exp == null)
 			return;
 
@@ -156,13 +156,12 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		exp.seqKymos.transferKymosRoisToCapillaries_Measures(exp.capillaries);
 		
 		Options_BuildSeries options = thread.options;
-		options.expList = new ExperimentCombo(); 
-//		parent0.paneSequence.transferExperimentNamesToExpList(options.expList, true);		
-		options.expList.index0 = parent0.expList.getSelectedIndex();
+		options.expList = new ExperimentCombo(); 	
+		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
 		if (allCheckBox.isSelected()) 
 			options.expList.index1 = options.expList.getItemCount()-1;
 		else
-			options.expList.index1 = parent0.expList.getSelectedIndex();
+			options.expList.index1 = parent0.expListCombo.getSelectedIndex();
 
 		options.firstkymo 		= parent0.paneKymos.tabDisplay.imagesComboBox.getSelectedIndex();
 		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
@@ -204,8 +203,8 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
-			Experiment exp = parent0.expList.getItemAt(parent0.expList.getSelectedIndex());
-			parent0.paneExperiment.panelLoadSave.openExperiment(exp);
+//			Experiment exp = parent0.expListCombo.getItemAt(parent0.expListCombo.getSelectedIndex());
+//			parent0.paneExperiment.panelLoadSave.openExperiment(exp);
 			detectButton.setText(detectString);
 		 }
 	}

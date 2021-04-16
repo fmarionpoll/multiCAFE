@@ -63,7 +63,7 @@ public class Infos extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
 				if (exp != null && exp.capillaries.capillariesArrayList.size() > 0) 
 				{
@@ -82,7 +82,7 @@ public class Infos extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				exp.capillaries.transferDescriptionToCapillaries();
 				dialog = new Table();
             	dialog.initialize(parent0, capillariesArrayCopy);

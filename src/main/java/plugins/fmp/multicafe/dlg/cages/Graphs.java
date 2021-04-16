@@ -81,7 +81,7 @@ public class Graphs extends JPanel
 
 	private void xyDisplayGraphs() 
 	{
-		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return;
 		final Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBounds();

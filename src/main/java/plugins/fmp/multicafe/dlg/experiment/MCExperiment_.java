@@ -87,15 +87,9 @@ public class MCExperiment_ extends JPanel implements ViewerListener
 				parent0.mainFrame.pack();
 				parent0.mainFrame.repaint();
 			}
-		});
-		
-//		defineActionListeners();		
+		});		
 	}
-	
-//	private void defineActionListeners() 
-//	{
-//	}
-			
+		
 	public void updateExpDialogs(Experiment exp) 
 	{
 		tabIntervals.displayCamDataIntervals(exp);
@@ -144,7 +138,7 @@ public class MCExperiment_ extends JPanel implements ViewerListener
 			{
 				Viewer v = event.getSource(); 
 				int idViewer = v.getSequence().getId(); 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				int idCurrentExp = exp.seqCamData.seq.getId();
 				if (idViewer == idCurrentExp) 
 				{

@@ -43,7 +43,7 @@ public class Table extends JPanel
 		this.parent0 = parent0;
 		cageArrayCopy = cageCopy;
 		
-		viewModel = new CageTableModel(parent0.expList);
+		viewModel = new CageTableModel(parent0.expListCombo);
 	    tableView.setModel(viewModel);
 	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 400));
 	    tableView.setFillsViewportHeight(true);
@@ -85,7 +85,7 @@ public class Table extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				cageArrayCopy.clear();
 				for (Cage cage: exp.cages.cageList ) 
 				{
@@ -98,7 +98,7 @@ public class Table extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				for (Cage cageFrom: cageArrayCopy ) 
 				{
 					cageFrom.valid = false;
@@ -121,7 +121,7 @@ public class Table extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				int rowIndex = tableView.getSelectedRow();
 				int columnIndex = tableView.getSelectedColumn();
 				if (rowIndex >= 0) 
@@ -146,7 +146,7 @@ public class Table extends JPanel
 	
 	void close() {
 		dialogFrame.close();
-		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
 		parent0.paneCapillaries.tabFile.saveCapillaries_file(exp);
 	}

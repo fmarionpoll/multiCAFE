@@ -85,7 +85,6 @@ public class Display extends JPanel implements ViewerListener
 		defineActionListeners();
 	}
 	
-	
 	private void defineActionListeners()
 	{		
 		imagesComboBox.addActionListener(new ActionListener ()
@@ -145,7 +144,6 @@ public class Display extends JPanel implements ViewerListener
 			}});
 	}
 	
-		
 	public void transferCapillaryNamesToComboBox(Experiment exp )
 	{
 		SwingUtilities.invokeLater(new Runnable() { public void run()
@@ -161,7 +159,6 @@ public class Display extends JPanel implements ViewerListener
 		}});	
 	}
 	
-	
 	public void displayROIsAccordingToUserSelection()
 	{
 		displayROIs("deriv", viewDerivativeCheckbox.isSelected());
@@ -169,10 +166,9 @@ public class Display extends JPanel implements ViewerListener
 		displayROIs("level", viewLevelsCheckbox.isSelected());
 	}
 	
-	
 	private void displayROIs(String filter, boolean visible)
 	{
-		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+		Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;		
 		Viewer v= exp.seqKymos.seq.getFirstViewer();
@@ -197,7 +193,7 @@ public class Display extends JPanel implements ViewerListener
 	
 	void displayON()
 	{
-		Experiment exp = (Experiment) parent0.expList.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -254,7 +250,7 @@ public class Display extends JPanel implements ViewerListener
 	
 	void displayOFF()
 	{
-		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+		Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 		if (exp == null || exp.seqKymos == null) 
 			return;
 		ArrayList<Viewer>vList =  exp.seqKymos.seq.getViewers();
@@ -302,7 +298,7 @@ public class Display extends JPanel implements ViewerListener
 	
 	public void selectKymographImage(int isel)
 	{
-		Experiment exp =(Experiment) parent0.expList.getSelectedItem();
+		Experiment exp =(Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -342,7 +338,7 @@ public class Display extends JPanel implements ViewerListener
 	{
 		if ( event.getType() == ViewerEvent.ViewerEventType.POSITION_CHANGED )
 		{
-			Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+			Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 			if (exp == null) 
 				return;
 			Viewer v = exp.seqKymos.seq.getFirstViewer();
@@ -386,13 +382,13 @@ public class Display extends JPanel implements ViewerListener
 	
 	private void changeBinSubdirectory(String localString) 
 	{
-		Experiment exp = (Experiment)  parent0.expList.getSelectedItem();
+		Experiment exp = (Experiment)  parent0.expListCombo.getSelectedItem();
 		if (exp == null 
 			|| localString == null 
 			|| exp.getBinSubDirectory() .contains(localString))
 			return;
 		
-		parent0.expList.expListBinSubPath = localString;
+		parent0.expListCombo.expListBinSubPath = localString;
 		exp.setBinSubDirectory(localString);
 		exp.seqKymos.seq.close();
 		exp.loadKymographs();

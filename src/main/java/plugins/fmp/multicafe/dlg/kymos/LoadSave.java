@@ -66,7 +66,7 @@ public class LoadSave extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{
 					if (loadDefaultKymos(exp))
@@ -77,7 +77,7 @@ public class LoadSave extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{
 					String path = exp.getExperimentDirectory();
@@ -90,7 +90,7 @@ public class LoadSave extends JPanel
 	void saveKymographFiles(String directory) 
 	{
 		ProgressFrame progress = new ProgressFrame("Save kymographs");
-		Experiment exp =(Experiment)  parent0.expList.getSelectedItem();
+		Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
@@ -147,9 +147,11 @@ public class LoadSave extends JPanel
 			return flag;
 		}
 		
-		String localString = (String) parent0.paneKymos.tabDisplay.binsComboBox.getSelectedItem();
-		if (localString == null)
+		String localString = parent0.expListCombo.expListBinSubPath;
+		if (localString == null) {
 			exp.checkKymosDirectory(exp.getBinSubDirectory());
+			parent0.expListCombo.expListBinSubPath = exp.getBinSubDirectory();
+		}
 		else
 			exp.setBinSubDirectory(localString);
 		

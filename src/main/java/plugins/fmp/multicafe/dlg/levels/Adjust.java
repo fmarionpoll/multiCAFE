@@ -135,8 +135,8 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
-			Experiment exp = parent0.expList.getItemAt(parent0.expList.getSelectedIndex());
-			parent0.paneExperiment.panelLoadSave.openExperiment(exp);	
+//			Experiment exp = parent0.expListCombo.getItemAt(parent0.expListCombo.getSelectedIndex());
+//			parent0.paneExperiment.panelLoadSave.openExperiment(exp);	
 			if (adjustButton.getText() .contains (stopString))
 				adjustButton.setText(adjustString);
 			else if (restoreButton.getText().contains(stopString))
@@ -169,17 +169,16 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	
 	private boolean initBuildParameters(Options_BuildSeries options) 
 	{
-		int index  = parent0.expList.getSelectedIndex();
-		Experiment exp = parent0.expList.getItemAt(index);
+		int index  = parent0.expListCombo.getSelectedIndex();
+		Experiment exp = parent0.expListCombo.getItemAt(index);
 		if (exp == null)
 			return false;
 		
-//		parent0.paneSequence.transferExperimentNamesToExpList(parent0.expList, true);	
 		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
-		options.expList = parent0.expList; 
-		options.expList.index0 = parent0.expList.getSelectedIndex();
+		options.expList = parent0.expListCombo; 
+		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
 		if (allSeriesCheckBox.isSelected())
-			options.expList.index1 = parent0.expList.getItemCount()-1;
+			options.expList.index1 = parent0.expListCombo.getItemCount()-1;
 		else
 			options.expList.index1 = options.expList.index0; 
 		
