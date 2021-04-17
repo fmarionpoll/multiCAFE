@@ -21,7 +21,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	public 	int 	index0 						= 0;
 	public 	int 	index1 						= 0;
 	public	int		maxSizeOfCapillaryArrays 	= 0;
-	public 	String 	expListBinSubPath 			= null; 
+	public 	String 	expListBinSubDirectory 			= null; 
 	
 
 
@@ -33,7 +33,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	public void removeAllItems() 
 	{
 		super.removeAllItems();
-		expListBinSubPath = null;
+		expListBinSubDirectory = null;
 	}
 	
 	public Experiment getMsColStartAndEndFromAllExperiments(XLSExportOptions options) 
@@ -93,8 +93,8 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		{
 			Experiment exp = getItemAt(i);
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
-			exp.setBinSubDirectory(expListBinSubPath);
-			if (expListBinSubPath == null)
+			exp.setBinSubDirectory(expListBinSubDirectory);
+			if (expListBinSubDirectory == null)
 				exp.checkKymosDirectory(exp.getBinSubDirectory());
 			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())

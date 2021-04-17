@@ -33,9 +33,9 @@ public class Experiment
 	public final static String 	RESULTS				= "results";
 	public final static String 	BIN					= "bin_";
 	
-	private String			strDirectoryImages		= null;
-	private String			strDirectoryExperiment	= null;
-	private String			strDirectoryBin			= null;
+	private String			strImagesDirectory		= null;
+	private String			strExperimentDirectory	= null;
+	private String			strBinSubDirectory		= null;
 		
 	public SequenceCamData 	seqCamData 				= null;
 	public SequenceKymos 	seqKymos				= null;
@@ -106,25 +106,25 @@ public class Experiment
 	{
 		seqCamData = new SequenceCamData();
 		seqKymos   = new SequenceKymos();
-		this.strDirectoryExperiment = expDirectory;
+		this.strExperimentDirectory = expDirectory;
 	}
 	
 	public Experiment(SequenceCamData seqCamData) 
 	{
 		this.seqCamData = seqCamData;
 		this.seqKymos   = new SequenceKymos();
-		strDirectoryExperiment = this.seqCamData.getImagesDirectory() + File.separator + RESULTS;
+		strExperimentDirectory = this.seqCamData.getImagesDirectory() + File.separator + RESULTS;
 		loadFileIntervalsFromSeqCamData();
 	}
 	
 	public Experiment(ExperimentDirectories eADF) 
 	{
-		strDirectoryImages = Directories.getDirectoryFromName(eADF.cameraImagesList.get(0));
-		strDirectoryExperiment = eADF.resultsDirectory;
-		String binDirectory = strDirectoryExperiment + File.separator + eADF.binSubDirectory;
+		strImagesDirectory = Directories.getDirectoryFromName(eADF.cameraImagesList.get(0));
+		strExperimentDirectory = eADF.resultsDirectory;
+		String binDirectory = strExperimentDirectory + File.separator + eADF.binSubDirectory;
 		Path binDirectoryPath = Paths.get(binDirectory);
 		Path lastSubPath = binDirectoryPath.getName(binDirectoryPath.getNameCount()-1);
-		strDirectoryBin = lastSubPath.toString();
+		strBinSubDirectory = lastSubPath.toString();
 		
 		seqCamData = new SequenceCamData(eADF.cameraImagesList);
 		loadFileIntervalsFromSeqCamData();
@@ -135,44 +135,54 @@ public class Experiment
 	
 	public String getExperimentDirectory() 
 	{
-		return strDirectoryExperiment;
+		return strExperimentDirectory;
 	}
 	
 	public String toString () 
 	{
-		return strDirectoryExperiment;
+		return strExperimentDirectory;
 	}
 	
 	public void setExperimentDirectory(String fileName) 
 	{
-		strDirectoryExperiment = getParentIf(fileName, BIN);
+		strExperimentDirectory = getParentIf(fileName, BIN);
 	}
 	
 	public String getKymosBinFullDirectory() 
 	{
-		String filename = strDirectoryExperiment;
-		if (strDirectoryBin != null)
-			filename += File.separator + strDirectoryBin;
+		String filename = strExperimentDirectory;
+		if (strBinSubDirectory != null)
+			filename += File.separator + strBinSubDirectory;
 		return filename;
 	}
 	
 	public void setBinSubDirectory (String bin) 
 	{
-		strDirectoryBin = bin;
+		strBinSubDirectory = bin;
 	}
 	
 	public String getBinSubDirectory () 
 	{
-		return strDirectoryBin;
+		return strBinSubDirectory;
 	}
 	
 	public boolean createDirectoryIfDoesNotExist(String directory) 
-    {
-		File folder = new File(directory);
-		boolean flag = true;
-		if (!folder.exists()) 
-			flag = folder.mkdir();
-		return flag;
+    {	
+		Path pathDir = Paths.get(directory);
+		if (Files.notExists(pathDir))  
+		{
+			try 
+			{
+				Files.createDirectory(pathDir);
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+				System.out.println("Creating directory failed: "+ directory);
+				return false;
+			}
+		}
+		return true;
     }
 	  
 	public void checkKymosDirectory(String kymosSubDirectory) 
@@ -215,12 +225,12 @@ public class Experiment
 		
 	public void setImagesDirectory(String name) 
 	{
-		strDirectoryImages = name;
+		strImagesDirectory = name;
 	}
 	
 	public String getImagesDirectory() 
 	{
-		return strDirectoryImages;
+		return strImagesDirectory;
 	}
 	
 	public void closeSequences() 
@@ -239,7 +249,7 @@ public class Experiment
 			seqCamData = new SequenceCamData();
 		xmlLoadMCExperiment ();
 		
-		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(strDirectoryImages);
+		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(strImagesDirectory);
 		imagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(imagesList, "jpg");
 		if (imagesList.size() < 1) 
 		{
@@ -276,7 +286,7 @@ public class Experiment
 	{
 		String name = directoryName.toLowerCase();
 		while (name .contains(RESULTS) || name .contains(BIN)) 
-			name = Paths.get(strDirectoryExperiment).getParent().toString();
+			name = Paths.get(strExperimentDirectory).getParent().toString();
 		return name;
 	}
 	
@@ -289,10 +299,10 @@ public class Experiment
 	
 	private SequenceCamData loadImagesForSequenceCamData(String filename) 
 	{
-		strDirectoryImages = getImagesDirectoryAsParentFromFileName(filename);
+		strImagesDirectory = getImagesDirectoryAsParentFromFileName(filename);
 		if (seqCamData == null)
 			seqCamData = new SequenceCamData();
-		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(strDirectoryImages);
+		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(strImagesDirectory);
 		imagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(imagesList, "jpg");
 		if (imagesList.size() < 1) 
 		{
@@ -322,7 +332,7 @@ public class Experiment
 		
 	public SequenceCamData openSequenceCamData() 
 	{
-		loadImagesForSequenceCamData(strDirectoryImages);
+		loadImagesForSequenceCamData(strImagesDirectory);
 		if (seqCamData != null) 
 		{
 			xmlLoadMCExperiment();
@@ -350,23 +360,12 @@ public class Experiment
 	
 	public String getDirectoryToSaveResults() 
 	{
-		Path dir = Paths.get(strDirectoryExperiment);
-		if (strDirectoryBin != null) 
-			dir = dir.resolve(strDirectoryBin);
+		Path dir = Paths.get(strExperimentDirectory);
+		if (strBinSubDirectory != null) 
+			dir = dir.resolve(strBinSubDirectory);
 		String directory = dir.toAbsolutePath().toString();
-		if (Files.notExists(dir))  
-		{
-			try 
-			{
-				Files.createDirectory(dir);
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-				System.out.println("Creating directory failed: "+ directory);
-				return null;
-			}
-		}
+		if (!createDirectoryIfDoesNotExist(directory))
+			directory = null;
 		return directory;
 	}
 	
@@ -412,14 +411,14 @@ public class Experiment
 		switch (item) 
 		{
 		case IMG_DIRECTORY:
-			strDirectoryImages = getRootWithNoResultNorBinString(strDirectoryExperiment);
-			xmlFullFileName = strDirectoryImages + File.separator + xmlFileName;
+			strImagesDirectory = getRootWithNoResultNorBinString(strExperimentDirectory);
+			xmlFullFileName = strImagesDirectory + File.separator + xmlFileName;
 			break;
 			
 		case BIN_DIRECTORY:
 			// any directory (below)
-			Path dirPath = Paths.get(strDirectoryExperiment);
-			List<Path> subFolders = Directories.getAllSubPathsOfDirectory(strDirectoryExperiment, 1);
+			Path dirPath = Paths.get(strExperimentDirectory);
+			List<Path> subFolders = Directories.getAllSubPathsOfDirectory(strExperimentDirectory, 1);
 			if (subFolders == null)
 				return null;
 			List<String> resultsDirList = Directories.getPathsContainingString(subFolders, RESULTS);
@@ -437,7 +436,7 @@ public class Experiment
 			
 		case EXPT_DIRECTORY:
 		default:
-			xmlFullFileName = strDirectoryExperiment + xmlFullFileName;
+			xmlFullFileName = strExperimentDirectory + xmlFullFileName;
 			break;	
 		}
 		
@@ -456,10 +455,10 @@ public class Experiment
 	// -------------------------------
 	public boolean xmlLoadMCExperiment () 
 	{
-		if (strDirectoryExperiment == null && seqCamData != null) 
+		if (strExperimentDirectory == null && seqCamData != null) 
 		{
-			strDirectoryImages = seqCamData.getImagesDirectory() ;
-			strDirectoryExperiment = strDirectoryImages + File.separator + RESULTS;
+			strImagesDirectory = seqCamData.getImagesDirectory() ;
+			strExperimentDirectory = strImagesDirectory + File.separator + RESULTS;
 		}
 		return xmlLoadExperiment(getMCExperimentFileName(null));
 	}
@@ -467,9 +466,9 @@ public class Experiment
 	private String getMCExperimentFileName(String subpath) 
 	{
 		if (subpath != null)
-			return strDirectoryExperiment + File.separator + subpath + File.separator + "MCexperiment.xml";
+			return strExperimentDirectory + File.separator + subpath + File.separator + "MCexperiment.xml";
 		else
-			return strDirectoryExperiment + File.separator + "MCexperiment.xml";
+			return strExperimentDirectory + File.separator + "MCexperiment.xml";
 	}
 	
 	private boolean xmlLoadExperiment (String csFileName) 
@@ -530,9 +529,9 @@ public class Experiment
 	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
 	        XMLUtil.setElementValue(node, ID_COMMENT2, comment2);
 	        
-	        if (strDirectoryImages == null ) 
-	        	strDirectoryImages = seqCamData.getImagesDirectory();
-	        XMLUtil.setElementValue(node, ID_IMAGESDIRECTORY, strDirectoryImages);
+	        if (strImagesDirectory == null ) 
+	        	strImagesDirectory = seqCamData.getImagesDirectory();
+	        XMLUtil.setElementValue(node, ID_IMAGESDIRECTORY, strImagesDirectory);
 
 	        String tempname = getMCExperimentFileName(null) ;
 	        return XMLUtil.saveDocument(doc, tempname);
@@ -769,7 +768,7 @@ public class Experiment
 	// TODO
 	public boolean xmlSaveMCCapillaries_Only() 
 	{
-		String xmlCapillaryFileName = strDirectoryExperiment + File.separator + capillaries.getXMLNameToAppend();
+		String xmlCapillaryFileName = strExperimentDirectory + File.separator + capillaries.getXMLNameToAppend();
 		transferExpDescriptorsToCapillariesDescriptors();
 		return capillaries.xmlSaveCapillaries_Descriptors(xmlCapillaryFileName);
 	}
@@ -814,7 +813,7 @@ public class Experiment
 	
 	private String getReferenceImageFullName() 
 	{
-		return strDirectoryExperiment+File.separator+"referenceImage.jpg";
+		return strExperimentDirectory+File.separator+"referenceImage.jpg";
 	}
 	
 	public void cleanPreviousDetectedFliesROIs() 
@@ -840,7 +839,7 @@ public class Experiment
 	// --------------------------
 	private String getMCDrosoTrackFullName() 
 	{
-		return strDirectoryExperiment+File.separator+ID_MCDROSOTRACK;
+		return strExperimentDirectory+File.separator+ID_MCDROSOTRACK;
 	}
 	
 	private String getXMLDrosoTrackLocation() 

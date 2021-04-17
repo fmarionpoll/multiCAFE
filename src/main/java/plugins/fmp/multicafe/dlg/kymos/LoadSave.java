@@ -147,10 +147,10 @@ public class LoadSave extends JPanel
 			return flag;
 		}
 		
-		String localString = parent0.expListCombo.expListBinSubPath;
+		String localString = parent0.expListCombo.expListBinSubDirectory;
 		if (localString == null) {
 			exp.checkKymosDirectory(exp.getBinSubDirectory());
-			parent0.expListCombo.expListBinSubPath = exp.getBinSubDirectory();
+			parent0.expListCombo.expListBinSubDirectory = exp.getBinSubDirectory();
 		}
 		else
 			exp.setBinSubDirectory(localString);

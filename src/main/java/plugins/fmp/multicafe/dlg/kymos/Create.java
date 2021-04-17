@@ -106,7 +106,7 @@ public class Create extends JPanel implements PropertyChangeListener
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();
 		options.doCreateBinDir 	= true;
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
-		options.binSubPath 		= Experiment.BIN+options.t_binMs/1000 ;
+		options.binSubDirectory 		= Experiment.BIN+options.t_binMs/1000 ;
 		return true;
 	}
 		

@@ -41,7 +41,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 			Experiment exp = expList.getItemAt(index);
 			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1+1));
 			System.out.println((index+1)+": " + exp.getExperimentDirectory());
-			exp.setBinSubDirectory(options.binSubPath);
+			exp.setBinSubDirectory(options.binSubDirectory);
 			boolean flag = exp.createDirectoryIfDoesNotExist(exp.getKymosBinFullDirectory());
 			if (flag) 
 			{

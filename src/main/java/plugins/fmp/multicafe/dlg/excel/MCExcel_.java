@@ -217,7 +217,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.exportAllFiles 	= tabOptions.exportAllFilesCheckBox.isSelected();
 		
 		options.expList = new ExperimentCombo(); 
-		options.expList.expListBinSubPath = parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
+		options.expList.expListBinSubDirectory = parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
 		if (tabOptions.exportAllFilesCheckBox.isSelected()) {
 			options.firstExp 	= 0;
 			options.lastExp 	= options.expList.getItemCount() - 1;

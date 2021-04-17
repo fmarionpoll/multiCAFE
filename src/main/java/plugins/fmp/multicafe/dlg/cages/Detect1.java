@@ -219,7 +219,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.t_binMs			= parent0.paneExperiment.tabAnalyze.getBinMs();
 
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
-		options.binSubPath 		= parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
+		options.binSubDirectory 		= parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
 		options.expList 		= new ExperimentCombo(); 	
 		options.expList.index0 	= parent0.expListCombo.getSelectedIndex();
 		if (allCheckBox.isSelected())

@@ -49,7 +49,6 @@ public class Display extends JPanel implements ViewerListener
 			JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
 			JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
 	private MultiCAFE 	parent0 				= null;
-			boolean 	actionAllowed			= true;
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) 
@@ -355,7 +354,6 @@ public class Display extends JPanel implements ViewerListener
 	
 	public void updateResultsAvailable(Experiment exp)
 	{
-		actionAllowed = false;
 		binsComboBox.removeAllItems();
 		List<String> list = Directories.getSortedListOfSubDirectoriesWithTIFF(exp.getExperimentDirectory());
 		for (int i = 0; i < list.size(); i++)
@@ -368,8 +366,7 @@ public class Display extends JPanel implements ViewerListener
 		String select = exp.getBinSubDirectory();
 		if (select == null)
 			select = ".";
-		binsComboBox.setSelectedItem(select);
-		actionAllowed = true;
+//		binsComboBox.setSelectedItem(select);
 	}
 	
 	public String getBinSubdirectory()
@@ -388,7 +385,7 @@ public class Display extends JPanel implements ViewerListener
 			|| exp.getBinSubDirectory() .contains(localString))
 			return;
 		
-		parent0.expListCombo.expListBinSubPath = localString;
+		parent0.expListCombo.expListBinSubDirectory = localString;
 		exp.setBinSubDirectory(localString);
 		exp.seqKymos.seq.close();
 		exp.loadKymographs();
