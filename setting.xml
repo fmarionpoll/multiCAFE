@@ -52,7 +52,7 @@
 </section>
 <section name="export"/>
 </section>
-<key name="lastUpdateCheckTime" value="1618575991137"/>
+<key name="lastUpdateCheckTime" value="1618651709810"/>
 <key name="virtualMode" value="true"/>
 </section>
 <section name="canvas">
@@ -109,7 +109,7 @@
 </section>
 </section>
 <key name="version" value="2.1.4.0"/>
-<key name="lastUploadDate" value="1618523127597"/>
+<key name="lastUploadDate" value="1618651702375"/>
 <section name="frame">
 <section name="imageLoader">
 <key name="width" value="600"/>
