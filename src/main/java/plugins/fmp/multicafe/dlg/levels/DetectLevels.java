@@ -20,7 +20,6 @@ import javax.swing.SwingUtilities;
 
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.Capillary;
 import plugins.fmp.multicafe.experiment.Experiment;
 import plugins.fmp.multicafe.experiment.SequenceKymos;
@@ -52,13 +51,13 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	private String 		detectString 			= "        Detect     ";
 	private JButton 	detectButton 			= new JButton(detectString);
 	private JCheckBox	partCheckBox 			= new JCheckBox (" from (pixel)", false);
-	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
+	private JCheckBox 	allSeriesCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
 	private JCheckBox	maxContrastCheckBox 	= new JCheckBox ("maximize contrast", false);
 	
 	private MultiCAFE 	parent0 				= null;
-	private DetectLevels_series thread 			= null;
+	private DetectLevels_series threadDetectLevels 			= null;
 //	private int			selectedFrame			= 0;
 
 	// -----------------------------------------------------
@@ -73,7 +72,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		JPanel panel0 = new JPanel(layoutLeft);
 		((FlowLayout)panel0.getLayout()).setVgap(0);
 		panel0.add(detectButton);
-		panel0.add(allCheckBox);
+		panel0.add(allSeriesCheckBox);
 		panel0.add(allKymosCheckBox);
 		panel0.add(leftCheckBox);
 		panel0.add(rightCheckBox);
@@ -118,9 +117,9 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				if (detectButton.getText() .equals(detectString))
-					series_detectLimitsStart();
+					startComputation();
 				else 
-					series_detectLimitsStop();
+					stopComputation();
 			}});	
 		
 		displayTransform1Button.addActionListener(new ActionListener () 
@@ -135,14 +134,14 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 				}
 			}});
 		
-		allCheckBox.addActionListener(new ActionListener () 
+		allSeriesCheckBox.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
 				Color color = Color.BLACK;
-				if (allCheckBox.isSelected()) 
+				if (allSeriesCheckBox.isSelected()) 
 					color = Color.RED;
-				allCheckBox.setForeground(color);
+				allSeriesCheckBox.setForeground(color);
 				detectButton.setForeground(color);
 		}});
 	}
@@ -207,9 +206,9 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	private Options_BuildSeries initBuildParameters(Experiment exp) 
 	{	
 		Options_BuildSeries options = new Options_BuildSeries();
-		options.expList = new ExperimentCombo(); 
+		options.expList = parent0.expListCombo; 
 		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
-		if (allCheckBox.isSelected()) 
+		if (allSeriesCheckBox.isSelected()) 
 			options.expList.index1 = options.expList.getItemCount()-1;
 		else
 			options.expList.index1 = parent0.expListCombo.getSelectedIndex();
@@ -218,7 +217,6 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 			options.firstKymo = exp.seqKymos.currentFrame;
 		else 
 			options.firstKymo = 0;
-//		selectedFrame = options.firstKymo;
 		
 		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
@@ -232,32 +230,28 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		options.detectL 			= leftCheckBox.isSelected();
 		options.detectR				= rightCheckBox.isSelected();
 		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
-		options.binSubDirectory 			= (String) parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
+		options.binSubDirectory 	= parent0.expListCombo.expListBinSubDirectory ;
 		return options;
 	}
 	
-	void series_detectLimitsStart() 
+	void startComputation() 
 	{
-		int current = parent0.expListCombo.getSelectedIndex();
-		Experiment exp = parent0.expListCombo.getItemAt(current);
-		if (exp == null)
-			return;
-		exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
-		// TODO check if this is valid; check for other series
-		//parent0.paneExperiment.panelFiles.closeExperiment(exp);
-		//exp.closeSequences();
-		thread = new DetectLevels_series();
-		thread.options = initBuildParameters(exp);
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		if (exp != null)
+			exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
 		
-		thread.addPropertyChangeListener(this);
-		thread.execute();
+		threadDetectLevels = new DetectLevels_series();
+		threadDetectLevels.options = initBuildParameters(exp);
+		
+		threadDetectLevels.addPropertyChangeListener(this);
+		threadDetectLevels.execute();
 		detectButton.setText("STOP");
 	}
 
-	private void series_detectLimitsStop() 
+	private void stopComputation() 
 	{	
-		if (thread != null && !thread.stopFlag) 
-			thread.stopFlag = true;
+		if (threadDetectLevels != null && !threadDetectLevels.stopFlag) 
+			threadDetectLevels.stopFlag = true;
 	}
 
 	@Override
@@ -265,12 +259,6 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
-//			Experiment exp = parent0.expListCombo.getItemAt(parent0.expListCombo.getSelectedIndex());
-//			if (exp != null) {
-//				parent0.paneExperiment.panelLoadSave.openExperiment(exp);
-//				if (selectedFrame != 0) 
-//					selectFrame(selectedFrame);
-//			}
 			detectButton.setText(detectString);
 		 }
 	}

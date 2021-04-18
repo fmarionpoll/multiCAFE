@@ -89,8 +89,9 @@ public class Create extends JPanel implements PropertyChangeListener
 		}});
 	}
 		
-	private boolean initBuildParameters(Options_BuildSeries options) 
+	private Options_BuildSeries initBuildParameters() 
 	{
+		Options_BuildSeries options  = new Options_BuildSeries();
 		options.expList = parent0.expListCombo; 
 		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
 		if (allSeriesCheckBox.isSelected())
@@ -106,8 +107,8 @@ public class Create extends JPanel implements PropertyChangeListener
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();
 		options.doCreateBinDir 	= true;
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
-		options.binSubDirectory 		= Experiment.BIN+options.t_binMs/1000 ;
-		return true;
+		options.binSubDirectory = Experiment.BIN+options.t_binMs/1000 ;
+		return options;
 	}
 		
 	private void startComputation() 
@@ -115,12 +116,10 @@ public class Create extends JPanel implements PropertyChangeListener
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
 		threadBuildKymo = new BuildKymographs_series();	
-		Options_BuildSeries options = threadBuildKymo.options;
-		initBuildParameters(options);
+		threadBuildKymo.options = initBuildParameters();
 		
 		threadBuildKymo.addPropertyChangeListener(this);
 		threadBuildKymo.execute();
-
 		startComputationButton.setText("STOP");
 	}
 	
@@ -135,10 +134,6 @@ public class Create extends JPanel implements PropertyChangeListener
 	public void propertyChange(PropertyChangeEvent evt) 
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) {
-//			parent0.expList.setSelectedIndex(selectedExperimentIndex);
-//			Experiment exp =(Experiment) parent0.expList.getSelectedItem();
-//			if (exp != null) 
-//				parent0.paneExperiment.panelLoadSave.openExperiment(exp);
 			startComputationButton.setText(detectString);
 		 }
 	}

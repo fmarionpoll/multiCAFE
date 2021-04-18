@@ -24,15 +24,22 @@ public class DetectLevels_series extends BuildSeries
 	
 	void analyzeExperiment(Experiment exp) 
 	{
-		exp.xmlLoadMCExperiment();
-		exp.xmlLoadMCcapillaries();
-		if (exp.loadKymographs()) 
-		{	
+		if (loadExperimentData(exp)) 
+		{ 
+			exp.seqKymos.displayViewerAtRectangle(options.parent0Rect);
 			detectCapillaryLevels(exp);
 			String kymosDirectory = exp.getKymosBinFullDirectory(); 
 			exp.capillaries.xmlSaveCapillaries_Measures(kymosDirectory);
 		}
 		exp.seqKymos.closeSequence();
+	}
+	
+	private boolean loadExperimentData(Experiment exp) 
+	{
+		exp.xmlLoadMCExperiment();
+		exp.xmlLoadMCcapillaries();
+		boolean flag = exp.loadKymographs(false);
+		return flag;
 	}
 	
 	private void detectCapillaryLevels(Experiment exp) 
@@ -77,7 +84,6 @@ public class DetectLevels_series extends BuildSeries
 				@Override
 				public void run() 
 				{
-//					final IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.imageIORead(t_index), options.transformForLevels);
 					final IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.getImage(t_index, 0), options.transformForLevels);
 					int c = 0;
 					Object dataArray = sourceImage.getDataXY(c);
@@ -176,7 +182,6 @@ public class DetectLevels_series extends BuildSeries
 	{
 		int y = 0;
 		oldiybottom = yheight - 1; // no memory needed  - the bottom is quite stable
-		//oldiybottom = checkLimits(oldiybottom +jitter, yheight-1);
 		for (int iy = oldiybottom; iy >= 0 ; iy--) 
 		{
 			boolean flag = false;

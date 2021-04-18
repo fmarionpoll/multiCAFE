@@ -231,7 +231,7 @@ public class SequenceKymos extends SequenceCamData
 	
 	// -------------------------
 	
-	public boolean loadImagesFromList(List <ImageFileDescriptor> kymoImagesDesc, boolean adjustImagesSize) 
+	public boolean loadImagesFromList(List <ImageFileDescriptor> kymoImagesDesc, boolean adjustImagesSize, boolean withThread) 
 	{
 		isRunning_loadImages = true;
 		boolean flag = (kymoImagesDesc.size() > 0);
@@ -249,7 +249,8 @@ public class SequenceKymos extends SequenceCamData
 		{		
 			myList = ExperimentDirectories.keepOnlyAcceptedNames_List(myList, "tiff");
 			setV2ImagesList(convertLinexLRFileNames(myList));
-			seq = loadV2SequenceFromImagesList(imagesList, true);
+			// threaded by default here
+			seq = loadV2SequenceFromImagesList(imagesList, withThread);
 			setParentDirectoryAsCSCamFileName(imagesList.get(0));
 			status = EnumStatus.KYMOGRAPH;
 		}

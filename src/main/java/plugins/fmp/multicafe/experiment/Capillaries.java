@@ -56,16 +56,17 @@ public class Capillaries
 		return false;
 	}
 	
-	public boolean xmlSaveCapillaries_Measures(String csFileName) 
+	public boolean xmlSaveCapillaries_Measures(String directory) 
 	{
-		if (csFileName == null)
+		if (directory == null)
 			return false;
-
+		System.out.println("save capillaries measures at - " + directory);
 		for (Capillary cap: capillariesArrayList) 
 		{
 			if (cap.roi == null)
 				continue;
-			String tempname = csFileName + File.separator + cap.getCapillaryName()+ ".xml";
+			String tempname = directory + File.separator + cap.getCapillaryName()+ ".xml";
+
 			final Document capdoc = XMLUtil.createDocument(true);
 			cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
 			XMLUtil.saveDocument(capdoc, tempname);
@@ -116,6 +117,9 @@ public class Capillaries
 	{
 		boolean flag = true;
 		int ncapillaries = capillariesArrayList.size();
+		
+		System.out.println("read capillaries measures at - " + directory);
+		
 		for (int i=0; i< ncapillaries; i++) 
 		{
 			String csFile = directory + File.separator + capillariesArrayList.get(i).getCapillaryName() + ".xml";

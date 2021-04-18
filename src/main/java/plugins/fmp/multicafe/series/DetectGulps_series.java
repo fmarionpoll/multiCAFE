@@ -29,7 +29,7 @@ public class DetectGulps_series extends BuildSeries
 	{
 		exp.xmlLoadMCExperiment();
 		exp.xmlLoadMCcapillaries();
-		if ( exp.loadKymographs()) 
+		if ( exp.loadKymographs(false)) 
 		{
 			buildFilteredImage(exp);
 			detectGulps(exp);

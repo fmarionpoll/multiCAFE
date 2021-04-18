@@ -197,9 +197,21 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			exp.xmlLoadMCCapillaries_Only();
 			exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
 			parent1.updateViewerForSequenceCam(exp);
-			
 			parent1.updateExpDialogs(exp);
-			loadMeasuresAndKymos(exp);
+			parent0.paneCapillaries.updateDialogs(exp);
+			
+			if (parent1.tabOptions.kymographsCheckBox.isSelected() && flag) 
+				flag &= loadKymos(exp);
+			if (parent1.tabOptions.measuresCheckBox.isSelected() && flag) 
+				flag &= loadMeasures(exp);
+			if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected() && flag)
+				displayGraphs(exp);
+			else 
+				parent0.paneLevels.tabGraphs.closeAllCharts();
+				
+			if (parent1.tabOptions.cagesCheckBox.isSelected()) 
+				parent0.paneCages.tabFile.loadCages(exp);
+			
 			parent0.paneLevels.updateDialogs(exp);
 		}
 		else 
@@ -210,30 +222,26 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		return flag;
 	}
 	
-	void loadMeasuresAndKymos(Experiment exp) 
+	private boolean loadKymos(Experiment exp) 
 	{
-		if (exp == null)
-			return;
-		parent0.paneCapillaries.updateDialogs(exp);
-		if (parent1.tabOptions.kymographsCheckBox.isSelected()) 
+		boolean flag = parent0.paneKymos.tabFile.loadDefaultKymos(exp);
+		parent0.paneKymos.updateDialogs(exp);
+		return flag;
+	}
+	
+	private boolean loadMeasures(Experiment exp) 
+	{
+		boolean flag = parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
+		parent0.paneLevels.updateDialogs(exp);
+		return flag;
+	}
+	
+	private void displayGraphs(Experiment exp) 
+	{
+		SwingUtilities.invokeLater(new Runnable() { public void run() 
 		{
-			boolean flag = parent0.paneKymos.tabFile.loadDefaultKymos(exp);
-			parent0.paneKymos.updateDialogs(exp);
-			if (flag) { 
-				if (parent1.tabOptions.measuresCheckBox.isSelected()) 
-				{
-					parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
-					parent0.paneLevels.updateDialogs(exp);
-					if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected())
-						SwingUtilities.invokeLater(new Runnable() { public void run() 
-						{
-							parent0.paneLevels.tabGraphs.xyDisplayGraphs(exp);
-						}});
-				}
-			}
-		}
-		if (parent1.tabOptions.cagesCheckBox.isSelected()) 
-			parent0.paneCages.tabFile.loadCages(exp);
+			parent0.paneLevels.tabGraphs.xyDisplayGraphs(exp);
+		}});	
 	}
 	
 	// ------------------------
@@ -321,41 +329,44 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 	private ExperimentDirectories getDirectoriesFromDialog(String rootDirectory)
 	{
-		ExperimentDirectories eDAF = new ExperimentDirectories();
+		ExperimentDirectories eDAF = new ExperimentDirectories(); //
 		
 		eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromDialog(rootDirectory);
 		if (eDAF.cameraImagesList == null || eDAF.cameraImagesList.size() < 1)
 			return null;
-		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
-		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0));
+		
+		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg"); //
+		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0)); //
 		
 		eDAF.resultsDirectory = getV2ResultsDirectoryDialog(eDAF.cameraImagesDirectory, Experiment.RESULTS);
-		
 		eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
-		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory;
-		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
-		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff");
+		
+		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory; //
+		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir); //
+		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff"); //
 		// TODO wrong if any bin
 		return eDAF;
 	}
 	
 	private ExperimentDirectories getDirectoriesFromExptPath(String exptDirectory, String binSubDirectory)
 	{
-		ExperimentDirectories eDAF = new ExperimentDirectories();
+		ExperimentDirectories eDAF = new ExperimentDirectories(); //
 
 		String strDirectory = Experiment.getImagesDirectoryAsParentFromFileName(exptDirectory);
 		eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromPath(strDirectory);
-		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
-		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0));
+		
+		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg"); //
+		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0)); //
 		
 		eDAF.resultsDirectory = exptDirectory;
 		if (binSubDirectory == null)
 			eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
 		else 
 			eDAF.binSubDirectory = binSubDirectory;
-		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory;
-		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
-		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff");
+		
+		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory; //
+		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir); //
+		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff"); //
 		// TODO wrong if any bin
 		return eDAF;
 	}

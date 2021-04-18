@@ -49,6 +49,7 @@ public class Display extends JPanel implements ViewerListener
 			JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
 			JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
 	private MultiCAFE 	parent0 				= null;
+	private boolean		isActionEnabled			= true;	
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) 
@@ -139,7 +140,8 @@ public class Display extends JPanel implements ViewerListener
 				String localString = (String) binsComboBox.getSelectedItem();
 				if (localString != null && localString.contains("."))
 					localString = null;
-				changeBinSubdirectory(localString);
+				if (isActionEnabled)
+					changeBinSubdirectory(localString);
 			}});
 	}
 	
@@ -329,7 +331,7 @@ public class Display extends JPanel implements ViewerListener
 	
 	public String getKymographTitle(int t)
 	{
-		return ((String) imagesComboBox.getSelectedItem()).substring(4);
+		return parent0.expListCombo.expListBinSubDirectory + ": " +((String) imagesComboBox.getSelectedItem()).substring(4);
 	}
 	
 	@Override
@@ -355,6 +357,10 @@ public class Display extends JPanel implements ViewerListener
 	public void updateResultsAvailable(Experiment exp)
 	{
 		binsComboBox.removeAllItems();
+		// isActionEnabled: hack to select the right directory and then add subsequent available dir without calling actionListener
+		// see https://stackoverflow.com/questions/13434688/calling-additem-on-an-empty-jcombobox-triggers-actionperformed-event 
+		// when JComboBox is empty, adding the first item will trigger setSelected(0)
+		isActionEnabled = false;
 		List<String> list = Directories.getSortedListOfSubDirectoriesWithTIFF(exp.getExperimentDirectory());
 		for (int i = 0; i < list.size(); i++)
 		{
@@ -363,10 +369,12 @@ public class Display extends JPanel implements ViewerListener
 				dirName = ".";
 			binsComboBox.addItem(dirName);
 		}
+		isActionEnabled = true;
+		
 		String select = exp.getBinSubDirectory();
 		if (select == null)
 			select = ".";
-//		binsComboBox.setSelectedItem(select);
+		binsComboBox.setSelectedItem(select);
 	}
 	
 	public String getBinSubdirectory()
@@ -388,7 +396,7 @@ public class Display extends JPanel implements ViewerListener
 		parent0.expListCombo.expListBinSubDirectory = localString;
 		exp.setBinSubDirectory(localString);
 		exp.seqKymos.seq.close();
-		exp.loadKymographs();
+		exp.loadKymographs(true);
 		displayON();
 		parent0.paneKymos.updateDialogs(exp);
 	}

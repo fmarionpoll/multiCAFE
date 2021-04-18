@@ -14,7 +14,7 @@ public class CurvesClipSameLengthWithinCage_series extends BuildSeries
 	{
 		exp.xmlLoadMCExperiment();
 		exp.xmlLoadMCcapillaries();
-		if (exp.loadKymographs()) 
+		if (exp.loadKymographs(false)) 
 		{
 			SequenceKymos seqKymos = exp.seqKymos;
 			ArrayList<Integer> listCageID = new ArrayList<Integer> (seqKymos.nTotalFrames);

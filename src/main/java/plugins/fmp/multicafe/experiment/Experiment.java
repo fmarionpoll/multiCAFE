@@ -539,23 +539,15 @@ public class Experiment
 		return false;
 	}
 	
- 	public boolean loadKymographs() 
+ 	public boolean loadKymographs(boolean withThread) 
  	{
 		if (seqKymos == null) 
 			seqKymos = new SequenceKymos();
 		List<ImageFileDescriptor> myList = seqKymos.loadListOfPotentialKymographsFromCapillaries(getKymosBinFullDirectory(), capillaries);
 		ImageFileDescriptor.getFilesAndTestExist(myList);
-		return seqKymos.loadImagesFromList(myList, true);
+		return seqKymos.loadImagesFromList(myList, true, withThread);
 	}
-	
-//	public void reopenKymograph() 
-//	{
-//		String kymosDir = getKymosBinFullDirectory() ;
-//		List<String> kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
-//		kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(kymosImagesList, "tiff");
-//		seqKymos = new SequenceKymos(kymosImagesList);
-//	}
-	
+		
 	public boolean loadDrosotrack() 
 	{
 		return xmlReadDrosoTrack(null);

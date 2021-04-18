@@ -11,7 +11,7 @@ public class AdjustMeasuresDimensions_series  extends BuildSeries
 	{
 		exp.xmlLoadMCExperiment();
 		exp.xmlLoadMCcapillaries();
-		if (exp.loadKymographs()) 
+		if (exp.loadKymographs(false)) 
 		{
 			exp.adjustCapillaryMeasuresDimensions();
 			exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());

@@ -28,10 +28,10 @@ public class Graphs extends JPanel
 	 * 
 	 */
 	private static final long serialVersionUID = -7079184380174992501L;
-	private XYMultiChart topandbottomChart 		= null;
-	private XYMultiChart deltaChart 			= null;
-	private XYMultiChart derivativeChart 		= null;
-	private XYMultiChart sumgulpsChart 			= null;
+	private XYMultiChart chartTopandbottom 		= null;
+	private XYMultiChart chartDelta 			= null;
+	private XYMultiChart chartDerivative 		= null;
+	private XYMultiChart chartSumgulps 			= null;
 	private MultiCAFE 	parent0 				= null;
 	
 	private JCheckBox 	limitsCheckbox 			= new JCheckBox("top/bottom", true);
@@ -89,33 +89,43 @@ public class Graphs extends JPanel
 		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVEL)
 				&& isThereAnyDataToDisplay(exp, EnumXLSExportType.BOTTOMLEVEL))  
 		{
-			topandbottomChart = xyDisplayGraphsItem(exp, "top + bottom levels", 
+			chartTopandbottom = xyDisplayGraphsItem(exp, "top + bottom levels", 
 					EnumXLSExportType.TOPLEVEL, 
-					topandbottomChart, rectv, ptRelative);
+					chartTopandbottom, rectv, ptRelative);
 			ptRelative.translate(dx, dy);
 		}
+		else if (chartTopandbottom != null) 
+			closeChart(chartTopandbottom);
 		
 		if (deltaCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVELDELTA))  
 		{
-			deltaChart = xyDisplayGraphsItem(exp, "top delta t -(t-1)", 
+			chartDelta = xyDisplayGraphsItem(exp, "top delta t -(t-1)", 
 					EnumXLSExportType.TOPLEVELDELTA, 
-					deltaChart, rectv, ptRelative);
+					chartDelta, rectv, ptRelative);
 			ptRelative.translate(dx, dy);
 		}
+		else if (chartDelta != null) 
+			closeChart(chartDelta);
+		
 		if (derivativeCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumXLSExportType.DERIVEDVALUES))   
 		{
-			derivativeChart = xyDisplayGraphsItem(exp, "Derivative", 
+			chartDerivative = xyDisplayGraphsItem(exp, "Derivative", 
 					EnumXLSExportType.DERIVEDVALUES, 
-					derivativeChart, rectv, ptRelative);
+					chartDerivative, rectv, ptRelative);
 			ptRelative.translate(dx, dy); 
 		}
+		else if (chartDerivative != null) 
+			closeChart(chartDerivative);
+		
 		if (consumptionCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumXLSExportType.SUMGULPS))  
 		{
-			sumgulpsChart = xyDisplayGraphsItem(exp, "Cumulated gulps", 
+			chartSumgulps = xyDisplayGraphsItem(exp, "Cumulated gulps", 
 					EnumXLSExportType.SUMGULPS, 
-					sumgulpsChart, rectv, ptRelative);
+					chartSumgulps, rectv, ptRelative);
 			ptRelative.translate(dx, dy); 
 		}
+		else if (chartSumgulps != null) 
+			closeChart(chartSumgulps);
 	}
 	
 	private XYMultiChart xyDisplayGraphsItem(Experiment exp, String title, EnumXLSExportType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) 
@@ -133,19 +143,18 @@ public class Graphs extends JPanel
 	
 	public void closeAllCharts() 
 	{
-		if (topandbottomChart != null) 
-			topandbottomChart.mainChartFrame.dispose();
-		if (derivativeChart != null) 
-			derivativeChart.mainChartFrame.close();
-		if (sumgulpsChart != null) 
-			sumgulpsChart.mainChartFrame.close();
-		if (deltaChart != null) 
-			deltaChart.mainChartFrame.close();
-
-		topandbottomChart  = null;
-		derivativeChart = null;
-		sumgulpsChart  = null;
-		deltaChart = null;
+		chartTopandbottom = closeChart (chartTopandbottom); 
+		chartDerivative = closeChart (chartDerivative); 
+		chartSumgulps = closeChart (chartSumgulps); 
+		chartDelta = closeChart (chartDelta);	
+	}
+	
+	private XYMultiChart closeChart(XYMultiChart chart) 
+	{
+		if (chart != null) 
+			chart.mainChartFrame.dispose();
+		chart = null;
+		return chart;
 	}
 
 	private boolean isThereAnyDataToDisplay(Experiment exp, EnumXLSExportType option) 

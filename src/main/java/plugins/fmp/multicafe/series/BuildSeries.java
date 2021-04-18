@@ -1,6 +1,7 @@
 package plugins.fmp.multicafe.series;
 
 
+
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -38,6 +39,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 			if (stopFlag)
 				break;
 			long startTimeInNs = System.nanoTime();
+			
 			Experiment exp = expList.getItemAt(index);
 			progress.setMessage("Processing file: " + (index +1) + "//" + (expList.index1+1));
 			System.out.println((index+1)+": " + exp.getExperimentDirectory());
@@ -56,7 +58,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 		}		
 		progress.close();
 		threadRunning = false;
-
+		expList.setSelectedIndex(selectedExperimentIndex);
 		return nbiterations;
 	}
 
@@ -117,4 +119,5 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
         }
    }
 
+    
 }

@@ -25,9 +25,10 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
 
-public class BuildKymographs_series  extends BuildSeries  
+public class BuildKymographs_series extends BuildSeries  
 {
-	void analyzeExperiment(Experiment exp) {
+	void analyzeExperiment(Experiment exp) 
+	{
 		loadExperimentDataToBuildKymos(exp);
 		exp.seqCamData.displayViewerAtRectangle(options.parent0Rect);
 		exp.kymoBinCol_Ms = options.t_binMs;
@@ -49,12 +50,11 @@ public class BuildKymographs_series  extends BuildSeries
 		exp.seqKymos.closeSequence();
 	}
 	
-	private void loadExperimentDataToBuildKymos(Experiment exp) 
+	private boolean loadExperimentDataToBuildKymos(Experiment exp) 
 	{
-//		exp.openSequenceCamData();
-		//exp.loadCamDataImages();
-		exp.xmlLoadMCCapillaries_Only();
+		boolean flag = exp.xmlLoadMCCapillaries_Only();
 		exp.seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList());
+		return flag;
 	}
 			
 	private void saveComputation(Experiment exp) 

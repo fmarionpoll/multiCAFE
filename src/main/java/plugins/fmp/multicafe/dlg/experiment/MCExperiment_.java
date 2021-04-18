@@ -8,6 +8,7 @@ import java.awt.event.ComponentEvent;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.frame.IcyFrame;
@@ -107,18 +108,24 @@ public class MCExperiment_ extends JPanel implements ViewerListener
 		Sequence seq = exp.seqCamData.seq;
 		if (seq == null)
 			return;
-		Viewer v = seq.getFirstViewer();
-		if (v == null) 
-		{
-			v = new Viewer(exp.seqCamData.seq, true);
-		}
-		if (v != null) {
-			placeViewerNextToDialogBox(v, parent0.mainFrame);
-			v.toFront();
-			v.requestFocus();
-			v.addListener( this );
-			v.setTitle(exp.seqCamData.getDecoratedImageName(0));
-		}
+		
+		final ViewerListener parent = this;
+		SwingUtilities.invokeLater(new Runnable() { public void run() 
+		{	
+			Viewer v = seq.getFirstViewer();
+			if (v == null) 
+			{
+				v = new Viewer(exp.seqCamData.seq, true);
+			}
+			
+			if (v != null) {
+				placeViewerNextToDialogBox(v, parent0.mainFrame);
+				v.toFront();
+				v.requestFocus();
+				v.addListener( parent );
+				v.setTitle(exp.seqCamData.getDecoratedImageName(0));
+			}
+		}});
 	}
 	
 	private void placeViewerNextToDialogBox(Viewer v, IcyFrame mainFrame) 
