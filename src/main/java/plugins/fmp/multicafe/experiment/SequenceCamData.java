@@ -29,15 +29,12 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 
 import icy.file.Loader;
 import icy.file.SequenceFileImporter;
-import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
-import icy.image.ImageUtil;
 import icy.math.ArrayMath;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
-import icy.system.thread.ThreadUtil;
 import icy.type.collection.array.Array1DUtil;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
@@ -394,72 +391,23 @@ public class SequenceCamData
 		seqAnalysisStart = 0;
 		seqAnalysisEnd = seq.getSizeT()-1;
 		seqAnalysisStep = 1;
-		
-//		Path path = Paths.get(imagesList.get(0));
-//		int iback = 2;
-//		String dir = path.getName(path.getNameCount()-iback).toString();
-//		if (dir != null) 
-//			seq.setName(dir);
 	}
 	
-	public boolean loadImages(boolean threaded) 
+	public boolean loadImages() 
 	{
 		if (imagesList.size() == 0)
 			return false;
-		attachV2Sequence(loadV2SequenceFromImagesList(imagesList, threaded));
+		attachV2Sequence(loadV2SequenceFromImagesList(imagesList));
 		return (seq != null);
 	}
 	
-	public Sequence loadV2SequenceFromImagesList(List <String> imagesList, boolean threaded) 
+	public Sequence loadV2SequenceFromImagesList(List <String> imagesList) 
 	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
-		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
-		if (threaded) {
-			ThreadUtil.bgRun( new Runnable() { 
-				@Override public void run() 
-				{
-					loadV2Images();
-				}});
-		}
-		else 
-		{
-			loadV2Images();
-		}
+		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList, false);
 		return seq;
 	}
-	
-	private void loadV2Images() 
-	{
-		ProgressFrame progress = new ProgressFrame("Load images");
-		seq.setVolatile(true);
-		threadRunning = true;
-		stopFlag = false;
-		try
-		{
-			seq.beginUpdate();
-			int nimages = imagesList.size();
-			for (int t=1; t < nimages; t++)
-			{
-				if (stopFlag)
-					break;
-				progress.setMessage("Loading image: " + (t+1) + "//" + nimages);
-				BufferedImage img = ImageUtil.load(imagesList.get(t));
-				if (img != null)
-				{
-					IcyBufferedImage icyImg = IcyBufferedImage.createFrom(img);
-					icyImg.setVolatile(true);
-					seq.setImage(t, 0, icyImg);
-				}
-			}
-		}
-		finally
-		{
-			seq.endUpdate();
-			progress.close();
-			threadRunning = false;
-		}
-	}
-	
+		
 	public Sequence initV2SequenceFromFirstImage(List <String> imagesList) 
 	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);

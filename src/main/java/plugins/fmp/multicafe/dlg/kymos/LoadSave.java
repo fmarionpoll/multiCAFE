@@ -159,7 +159,7 @@ public class LoadSave extends JPanel
 		int nItems = ImageFileDescriptor.getFilesAndTestExist(myList);
 		if (nItems > 0) 
 		{
-			flag = seqKymos.loadImagesFromList(myList, true, true);
+			flag = seqKymos.loadImagesFromList(myList, true);
 			parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp);
 		} 
 		else 

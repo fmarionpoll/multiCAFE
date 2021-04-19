@@ -10,7 +10,7 @@ public class CurvesRestoreLength_series extends BuildSeries
 	{
 		exp.xmlLoadMCExperiment();
 		exp.xmlLoadMCcapillaries();
-		if (exp.loadKymographs(false)) 
+		if (exp.loadKymographs()) 
 		{
 			SequenceKymos seqKymos = exp.seqKymos;
 			for (int t= 0; t< seqKymos.nTotalFrames; t++) 

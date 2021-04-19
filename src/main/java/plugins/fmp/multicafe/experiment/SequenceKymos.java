@@ -35,7 +35,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 public class SequenceKymos extends SequenceCamData  
 {	
 	public boolean 	isRunning_loadImages 		= false;
-	public boolean 	isInterrupted_loadImages 	= false;
+//	public boolean 	isInterrupted_loadImages 	= false;
 	public int 		imageWidthMax 				= 0;
 	public int 		imageHeightMax 				= 0;
 	
@@ -231,7 +231,7 @@ public class SequenceKymos extends SequenceCamData
 	
 	// -------------------------
 	
-	public boolean loadImagesFromList(List <ImageFileDescriptor> kymoImagesDesc, boolean adjustImagesSize, boolean withThread) 
+	public boolean loadImagesFromList(List <ImageFileDescriptor> kymoImagesDesc, boolean adjustImagesSize) 
 	{
 		isRunning_loadImages = true;
 		boolean flag = (kymoImagesDesc.size() > 0);
@@ -250,7 +250,7 @@ public class SequenceKymos extends SequenceCamData
 			myList = ExperimentDirectories.keepOnlyAcceptedNames_List(myList, "tiff");
 			setV2ImagesList(convertLinexLRFileNames(myList));
 			// threaded by default here
-			seq = loadV2SequenceFromImagesList(imagesList, withThread);
+			seq = loadV2SequenceFromImagesList(imagesList);
 			setParentDirectoryAsCSCamFileName(imagesList.get(0));
 			status = EnumStatus.KYMOGRAPH;
 		}

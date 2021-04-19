@@ -258,7 +258,7 @@ public class Experiment
 		}
 		
 		seqCamData.setV2ImagesList(imagesList);
-		seqCamData.attachV2Sequence(seqCamData.loadV2SequenceFromImagesList(imagesList, true));
+		seqCamData.attachV2Sequence(seqCamData.loadV2SequenceFromImagesList(imagesList));
 		loadFileIntervalsFromSeqCamData();
 		
 		if (seqKymos == null)
@@ -311,7 +311,7 @@ public class Experiment
 		else 
 		{
 			seqCamData.setV2ImagesList(imagesList);
-			seqCamData.attachV2Sequence(seqCamData.loadV2SequenceFromImagesList(imagesList, true));
+			seqCamData.attachV2Sequence(seqCamData.loadV2SequenceFromImagesList(imagesList));
 		}
 		return seqCamData;
 	}
@@ -319,14 +319,14 @@ public class Experiment
 	public boolean loadCamDataImages() 
 	{
 		if (seqCamData != null)
-			seqCamData.loadImages(true);
+			seqCamData.loadImages();
 		return (seqCamData != null && seqCamData.seq != null);
 	}
 	
 	public boolean loadKymosImages() 
 	{
 		if (seqKymos != null)
-			seqKymos.loadImages(true);
+			seqKymos.loadImages();
 		return (seqKymos != null && seqKymos.seq != null);
 	}
 		
@@ -539,13 +539,13 @@ public class Experiment
 		return false;
 	}
 	
- 	public boolean loadKymographs(boolean withThread) 
+ 	public boolean loadKymographs() 
  	{
 		if (seqKymos == null) 
 			seqKymos = new SequenceKymos();
 		List<ImageFileDescriptor> myList = seqKymos.loadListOfPotentialKymographsFromCapillaries(getKymosBinFullDirectory(), capillaries);
 		ImageFileDescriptor.getFilesAndTestExist(myList);
-		return seqKymos.loadImagesFromList(myList, true, withThread);
+		return seqKymos.loadImagesFromList(myList, true);
 	}
 		
 	public boolean loadDrosotrack() 

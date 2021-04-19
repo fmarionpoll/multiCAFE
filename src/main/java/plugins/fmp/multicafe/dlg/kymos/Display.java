@@ -40,6 +40,8 @@ public class Display extends JPanel implements ViewerListener
 	 * 
 	 */
 	private static final long serialVersionUID = -2103052112476748890L;
+	
+	public 	int			indexImagesCombo 		= -1;
 	public 	JComboBox<String> imagesComboBox 	= new JComboBox <String> (new String[] {"none"});
 			JComboBox<String> binsComboBox		= new JComboBox <String>();
 			JButton 	updateButton 			= new JButton("Update");
@@ -50,6 +52,7 @@ public class Display extends JPanel implements ViewerListener
 			JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
 	private MultiCAFE 	parent0 				= null;
 	private boolean		isActionEnabled			= true;	
+	
 
 	
 	void init(GridLayout capLayout, MultiCAFE parent0) 
@@ -85,13 +88,15 @@ public class Display extends JPanel implements ViewerListener
 		defineActionListeners();
 	}
 	
+	
 	private void defineActionListeners()
 	{		
 		imagesComboBox.addActionListener(new ActionListener ()
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{ 
-			displayUpdateOnSwingThread();
+				if (isActionEnabled)
+					displayUpdateOnSwingThread();
 			}});
 		
 		viewDerivativeCheckbox.addActionListener(new ActionListener ()
@@ -149,6 +154,7 @@ public class Display extends JPanel implements ViewerListener
 	{
 		SwingUtilities.invokeLater(new Runnable() { public void run()
 		{
+//			isActionEnabled = false;	
 			imagesComboBox.removeAllItems();
 			Collections.sort(exp.capillaries.capillariesArrayList); 
 			int ncapillaries = exp.capillaries.capillariesArrayList.size();
@@ -169,7 +175,7 @@ public class Display extends JPanel implements ViewerListener
 	
 	private void displayROIs(String filter, boolean visible)
 	{
-		Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+		Experiment exp = (Experiment)  parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;		
 		Viewer v= exp.seqKymos.seq.getFirstViewer();
@@ -199,9 +205,7 @@ public class Display extends JPanel implements ViewerListener
 			return;
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null || seqKymos.seq == null )
-		{
 			return;
-		}
 		
 		ArrayList<Viewer>vList = seqKymos.seq.getViewers();
 		if (vList.size() == 0)
@@ -228,9 +232,7 @@ public class Display extends JPanel implements ViewerListener
 		IcyBufferedImage img = exp.seqKymos.seq.getFirstImage();
 		rectDataView.width = 100;
 		if (img != null)
-		{
 			rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
-		}
 		int desktopwidth = Icy.getMainInterface().getMainFrame().getDesktopWidth();
 		if (rectDataView.width > desktopwidth)
 		{
@@ -277,15 +279,18 @@ public class Display extends JPanel implements ViewerListener
 			return;	
 		displayON();
 		int item = imagesComboBox.getSelectedIndex();
-		if (item < 0)
-		{
-			item = 0;
-			imagesComboBox.setSelectedIndex(0);
+		if (item < 0) {
+			item = indexImagesCombo >= 0 ? indexImagesCombo : 0;
+//			imagesComboBox.setSelectedIndex(item);
+//			System.out.println("image selected ./ transfer:" + indexImagesCombo);
+			indexImagesCombo = -1;
+			imagesComboBox.setSelectedIndex(item);
 		}
 		selectKymographImage(item); 
+		System.out.println("displayUpdate ................... image= "+item);
 	}
 	
-	void displayViews (boolean bEnable)
+	void displayViews(boolean bEnable)
 	{
 		updateButton.setEnabled(bEnable);
 		previousButton.setEnabled(bEnable);
@@ -331,7 +336,8 @@ public class Display extends JPanel implements ViewerListener
 	
 	public String getKymographTitle(int t)
 	{
-		return parent0.expListCombo.expListBinSubDirectory + ": " +((String) imagesComboBox.getSelectedItem()).substring(4);
+		return parent0.expListCombo.expListBinSubDirectory + ": " 
+				+((String) imagesComboBox.getSelectedItem()).substring(4);
 	}
 	
 	@Override
@@ -356,11 +362,11 @@ public class Display extends JPanel implements ViewerListener
 	
 	public void updateResultsAvailable(Experiment exp)
 	{
+		isActionEnabled = false;
 		binsComboBox.removeAllItems();
 		// isActionEnabled: hack to select the right directory and then add subsequent available dir without calling actionListener
 		// see https://stackoverflow.com/questions/13434688/calling-additem-on-an-empty-jcombobox-triggers-actionperformed-event 
 		// when JComboBox is empty, adding the first item will trigger setSelected(0)
-		isActionEnabled = false;
 		List<String> list = Directories.getSortedListOfSubDirectoriesWithTIFF(exp.getExperimentDirectory());
 		for (int i = 0; i < list.size(); i++)
 		{
@@ -396,7 +402,7 @@ public class Display extends JPanel implements ViewerListener
 		parent0.expListCombo.expListBinSubDirectory = localString;
 		exp.setBinSubDirectory(localString);
 		exp.seqKymos.seq.close();
-		exp.loadKymographs(true);
+		exp.loadKymographs();
 		displayON();
 		parent0.paneKymos.updateDialogs(exp);
 	}

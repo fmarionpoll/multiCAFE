@@ -16,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingUtilities;
 
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
@@ -51,15 +50,14 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	private String 		detectString 			= "        Detect     ";
 	private JButton 	detectButton 			= new JButton(detectString);
 	private JCheckBox	partCheckBox 			= new JCheckBox (" from (pixel)", false);
-	private JCheckBox 	allSeriesCheckBox 			= new JCheckBox("ALL (current to last)", false);
+	private JCheckBox 	allSeriesCheckBox 		= new JCheckBox("ALL (current to last)", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
 	private JCheckBox	maxContrastCheckBox 	= new JCheckBox ("maximize contrast", false);
 	
 	private MultiCAFE 	parent0 				= null;
 	private DetectLevels_series threadDetectLevels 			= null;
-//	private int			selectedFrame			= 0;
-
+	
 	// -----------------------------------------------------
 		
 	void init(GridLayout capLayout, MultiCAFE parent0) 
@@ -183,7 +181,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	{
 		Options_BuildSeries options = cap.limitsOptions;
 		transformForLevelsComboBox.setSelectedItem(options.transformForLevels);
-		int index =options.directionUp ? 0:1;
+		int index = options.directionUp ? 0:1;
 		directionComboBox.setSelectedIndex(index);
 		setDetectLevelThreshold(options.detectLevelThreshold);
 		thresholdSpinner.setValue(options.detectLevelThreshold);
@@ -208,13 +206,17 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		Options_BuildSeries options = new Options_BuildSeries();
 		options.expList = parent0.expListCombo; 
 		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
+		
 		if (allSeriesCheckBox.isSelected()) 
 			options.expList.index1 = options.expList.getItemCount()-1;
 		else
 			options.expList.index1 = parent0.expListCombo.getSelectedIndex();
 
-		if (!allKymosCheckBox.isSelected()) {
-			options.firstKymo = parent0.paneKymos.tabDisplay.imagesComboBox.getSelectedIndex();
+		options.detectAllKymos = allKymosCheckBox.isSelected();
+		parent0.paneKymos.tabDisplay.indexImagesCombo = parent0.paneKymos.tabDisplay.imagesComboBox.getSelectedIndex();
+		if (!allKymosCheckBox.isSelected()) 
+		{
+			options.firstKymo = parent0.paneKymos.tabDisplay.indexImagesCombo;
 			options.lastKymo = options.firstKymo;
 		}
 		else
@@ -222,12 +224,11 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 			options.firstKymo = 0;
 			options.lastKymo = parent0.paneKymos.tabDisplay.imagesComboBox.getItemCount()-1;
 		}
-		
+				
 		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();
-		options.detectAllKymos 		= allKymosCheckBox.isSelected();
-	
+		
 		options.analyzePartOnly		= partCheckBox.isSelected();
 		options.startPixel			= (int) ((int) startSpinner.getValue()); 
 		options.endPixel			= (int) ((int) endSpinner.getValue()); 
@@ -265,33 +266,32 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		 }
 	}
 	
-	void selectFrame(int selectedFrame) 
-	{
-		SwingUtilities.invokeLater(new Runnable() 
-		{
-			public void run() 
-			{
-				boolean flag = false;
-				int i = 10;
-				while (!flag && i > 0) 
-				{
-					try 
-					{
-						Thread.sleep(1000);
-					} 
-					catch (InterruptedException e) 
-					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (parent0.paneKymos.tabDisplay.imagesComboBox.getItemCount() >= selectedFrame) 
-					{
-						parent0.paneKymos.tabDisplay.selectKymographImage(selectedFrame);
-						System.out.println("--- select "+ selectedFrame);
-						flag = true;
-					}
-					i--;
-				}
-			}});
-	}
+//	void selectFrame(int selectedFrame) 
+//	{
+//		SwingUtilities.invokeLater(new Runnable() 
+//		{
+//			public void run() 
+//			{
+//				boolean flag = false;
+//				int i = 10;
+//				while (!flag && i > 0) 
+//				{
+//					try 
+//					{
+//						Thread.sleep(1000);
+//					} 
+//					catch (InterruptedException e) 
+//					{
+//						e.printStackTrace();
+//					}
+//					if (parent0.paneKymos.tabDisplay.imagesComboBox.getItemCount() >= selectedFrame) 
+//					{
+//						parent0.paneKymos.tabDisplay.selectKymographImage(selectedFrame);
+//						System.out.println("--- select "+ selectedFrame);
+//						flag = true;
+//					}
+//					i--;
+//				}
+//			}});
+//	}
 }
