@@ -169,9 +169,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		TransformOp transform = (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		List<Capillary> capList = exp.capillaries.capillariesArrayList;
 		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) 
-		{
 			getInfosFromDialog(capList.get(t));		
-		}
+		
 		int zChannelDestination = 1;
 		exp.kymosBuildFiltered(0, zChannelDestination, transform, getSpanDiffTop());
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
