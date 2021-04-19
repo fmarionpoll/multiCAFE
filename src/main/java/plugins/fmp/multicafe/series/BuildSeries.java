@@ -8,7 +8,6 @@ import java.util.concurrent.Future;
 
 import javax.swing.SwingWorker;
 import icy.gui.frame.progress.ProgressFrame;
-import icy.main.Icy;
 import icy.system.thread.Processor;
 import plugins.fmp.multicafe.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.Experiment;
@@ -82,8 +81,6 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 		{
 			firePropertyChange("thread_done", null, statusMsg);
 		}
-		Icy.getMainInterface().getMainFrame().getInspector().setVirtualMode(true);
-		//options.expList.setSelectedIndex(selectedExperimentIndex);
     }
 	
 	abstract void analyzeExperiment(Experiment exp);

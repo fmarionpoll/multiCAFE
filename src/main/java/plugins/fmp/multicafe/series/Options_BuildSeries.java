@@ -37,6 +37,7 @@ public class Options_BuildSeries implements XMLPersistent
 	public	boolean		detectR					= true;
 	public 	boolean 	detectAllKymos 			= true;
 	public 	int			firstKymo				= 0;
+	public  int			lastKymo				= 0;
 	public 	boolean		directionUp				= true;
 	public 	int			detectLevelThreshold 	= 35;
 	public 	TransformOp	transformForLevels 		= TransformOp.R2MINUS_GB;
@@ -51,7 +52,6 @@ public class Options_BuildSeries implements XMLPersistent
 	public boolean 		detectAllGulps 			= true;
 	public boolean		buildGulps				= true;
 	public boolean		buildDerivative			= true;
-	public int			firstkymo 				= 0;
 
 	public int 			threshold 				= -1;
 	public int			thresholdBckgnd			= 40;

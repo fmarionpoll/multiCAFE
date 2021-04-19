@@ -60,7 +60,7 @@ public class Capillaries
 	{
 		if (directory == null)
 			return false;
-		System.out.println("save capillaries measures at - " + directory);
+		System.out.println("save capillaries at: "+ directory);
 		for (Capillary cap: capillariesArrayList) 
 		{
 			if (cap.roi == null)
@@ -117,9 +117,7 @@ public class Capillaries
 	{
 		boolean flag = true;
 		int ncapillaries = capillariesArrayList.size();
-		
-		System.out.println("read capillaries measures at - " + directory);
-		
+
 		for (int i=0; i< ncapillaries; i++) 
 		{
 			String csFile = directory + File.separator + capillariesArrayList.get(i).getCapillaryName() + ".xml";

@@ -53,7 +53,7 @@ public class DetectGulps_series extends BuildSeries
 		int firstkymo = 0;
 		int lastkymo = seqKymos.seq.getSizeT() -1;
 		if (!options.detectAllGulps) {
-			firstkymo = options.firstkymo;
+			firstkymo = options.firstKymo;
 			lastkymo = firstkymo;
 		}
 		seqKymos.seq.beginUpdate();

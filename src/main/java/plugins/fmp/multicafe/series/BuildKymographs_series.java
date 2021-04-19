@@ -31,6 +31,22 @@ public class BuildKymographs_series extends BuildSeries
 	{
 		loadExperimentDataToBuildKymos(exp);
 		exp.seqCamData.displayViewerAtRectangle(options.parent0Rect);
+		getTimeLimitsOfSequence(exp);
+		if (buildKymo(exp)) 
+			saveComputation(exp);
+		exp.seqCamData.closeSequence();
+		exp.seqKymos.closeSequence();
+	}
+	
+	private boolean loadExperimentDataToBuildKymos(Experiment exp) 
+	{
+		boolean flag = exp.xmlLoadMCCapillaries_Only();
+		exp.seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList());
+		return flag;
+	}
+	
+	private void getTimeLimitsOfSequence(Experiment exp)
+	{
 		exp.kymoBinCol_Ms = options.t_binMs;
 		if (options.isFrameFixed) 
 		{
@@ -44,17 +60,6 @@ public class BuildKymographs_series extends BuildSeries
 			exp.kymoFirstCol_Ms = exp.camFirstImage_Ms;
 			exp.kymoLastCol_Ms = exp.camLastImage_Ms;
 		}
-		if (buildKymo(exp)) 
-			saveComputation(exp);
-		exp.seqCamData.closeSequence();
-		exp.seqKymos.closeSequence();
-	}
-	
-	private boolean loadExperimentDataToBuildKymos(Experiment exp) 
-	{
-		boolean flag = exp.xmlLoadMCCapillaries_Only();
-		exp.seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList());
-		return flag;
 	}
 			
 	private void saveComputation(Experiment exp) 

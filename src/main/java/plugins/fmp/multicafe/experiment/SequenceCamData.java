@@ -415,11 +415,11 @@ public class SequenceCamData
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
 		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
 		if (threaded) {
-		ThreadUtil.bgRun( new Runnable() { 
-			@Override public void run() 
-			{
-				loadV2Images();
-			}});
+			ThreadUtil.bgRun( new Runnable() { 
+				@Override public void run() 
+				{
+					loadV2Images();
+				}});
 		}
 		else 
 		{

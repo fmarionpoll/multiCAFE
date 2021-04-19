@@ -72,7 +72,7 @@ public class LoadSave  extends JPanel
 
 	public boolean loadCapillaries_Measures(Experiment exp) 
 	{
-		boolean flag = true;
+		boolean flag = false;
 		if (exp.seqKymos != null ) 
 		{
 			ProgressFrame progress = new ProgressFrame("load capillary measures");

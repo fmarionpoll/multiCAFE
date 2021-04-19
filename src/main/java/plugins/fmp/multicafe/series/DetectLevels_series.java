@@ -24,17 +24,16 @@ public class DetectLevels_series extends BuildSeries
 	
 	void analyzeExperiment(Experiment exp) 
 	{
-		if (loadExperimentData(exp)) 
+		if (loadExperimentDataToDetectLevels(exp)) 
 		{ 
 			exp.seqKymos.displayViewerAtRectangle(options.parent0Rect);
-			detectCapillaryLevels(exp);
-			String kymosDirectory = exp.getKymosBinFullDirectory(); 
-			exp.capillaries.xmlSaveCapillaries_Measures(kymosDirectory);
+			if (detectCapillaryLevels(exp)) 
+				exp.capillaries.xmlSaveCapillaries_Measures(exp.getKymosBinFullDirectory());
 		}
-		exp.seqKymos.closeSequence();
+		exp.closeSequences();
 	}
 	
-	private boolean loadExperimentData(Experiment exp) 
+	private boolean loadExperimentDataToDetectLevels(Experiment exp) 
 	{
 		exp.xmlLoadMCExperiment();
 		exp.xmlLoadMCcapillaries();
@@ -42,24 +41,17 @@ public class DetectLevels_series extends BuildSeries
 		return flag;
 	}
 	
-	private void detectCapillaryLevels(Experiment exp) 
+	private boolean detectCapillaryLevels(Experiment exp) 
 	{
 		SequenceKymos seqKymos = exp.seqKymos;
 		seqKymos.seq.removeAllROI();
-		int firstKymo = 0;
-		int lastKymo = seqKymos.seq.getSizeT() -1;
-		if (! options.detectAllKymos) 
-		{
-			firstKymo = options.firstKymo;
-			lastKymo = firstKymo;
-		}
 		
 		threadRunning = true;
 		stopFlag = false;
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
 		seqKymos.seq.beginUpdate();
 		
-		int nframes = lastKymo - firstKymo +1;
+		int nframes = options.lastKymo - options.firstKymo +1;
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("buildkymo2");
 	    processor.setPriority(Processor.NORM_PRIORITY);
@@ -69,22 +61,21 @@ public class DetectLevels_series extends BuildSeries
 		tImg.setSpanDiff(options.spanDiffTop);
 		tImg.setSequence(seqKymos);
 		
-		for (int indexKymo = firstKymo; indexKymo <= lastKymo; indexKymo++) 
+		for (int indexKymo = options.firstKymo; indexKymo <= options.lastKymo; indexKymo++) 
 		{
 			final int t_index = indexKymo;
 			Capillary capi = exp.capillaries.capillariesArrayList.get(t_index);
 			if (!options.detectR && capi.getCapillaryName().endsWith("2"))
-				return;
+				return false;
 			if (!options.detectL && capi.getCapillaryName().endsWith("1"))
-				return;
+				return false;
 			final Capillary cap = capi;
-			
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
 				public void run() 
 				{
-					final IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.getImage(t_index, 0), options.transformForLevels);
+					final IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.imageIORead(t_index), options.transformForLevels);
 					int c = 0;
 					Object dataArray = sourceImage.getDataXY(c);
 					int[] sourceValues = Array1DUtil.arrayToIntArray(dataArray, sourceImage.isSignedDataType());
@@ -104,7 +95,8 @@ public class DetectLevels_series extends BuildSeries
 						lastColumn = options.endPixel;
 						if (lastColumn > xwidth-1)
 							lastColumn = xwidth -1;
-					} else 
+					} 
+					else 
 					{
 						cap.ptsTop = null;
 						cap.ptsBottom = null;
@@ -135,19 +127,19 @@ public class DetectLevels_series extends BuildSeries
 					{
 						cap.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
 						cap.ptsBottom.polylineLimit.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
-						
 					} 
 					else 
 					{
 						cap.ptsTop    = new CapillaryLimit(cap.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
 						cap.ptsBottom = new CapillaryLimit(cap.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
 					}
-				
 				}}));
-			}
-			waitAnalyzeExperimentCompletion(processor, futures, progressBar);
-			seqKymos.seq.endUpdate();
-			progressBar.close();
+		}
+		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
+		seqKymos.seq.endUpdate();
+		progressBar.close();
+		
+		return true;
 	}
 
 	private int checkLimits (int rowIndex, int maximumRowIndex) 
