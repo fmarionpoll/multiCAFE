@@ -60,7 +60,7 @@ public class Capillaries
 	{
 		if (directory == null)
 			return false;
-		System.out.println("save capillaries at: "+ directory);
+		
 		for (Capillary cap: capillariesArrayList) 
 		{
 			if (cap.roi == null)

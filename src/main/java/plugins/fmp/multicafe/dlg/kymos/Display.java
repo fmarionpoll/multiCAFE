@@ -281,13 +281,10 @@ public class Display extends JPanel implements ViewerListener
 		int item = imagesComboBox.getSelectedIndex();
 		if (item < 0) {
 			item = indexImagesCombo >= 0 ? indexImagesCombo : 0;
-//			imagesComboBox.setSelectedIndex(item);
-//			System.out.println("image selected ./ transfer:" + indexImagesCombo);
 			indexImagesCombo = -1;
 			imagesComboBox.setSelectedIndex(item);
 		}
 		selectKymographImage(item); 
-		System.out.println("displayUpdate ................... image= "+item);
 	}
 	
 	void displayViews(boolean bEnable)

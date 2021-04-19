@@ -501,8 +501,6 @@ public class Experiment
 	        comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
 	        comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
 		}
-		
-		//imagesDirectory = XMLUtil.getElementValue(node, ID_IMAGESDIRECTORY, imagesDirectory);
 		return true;
 	}
 	// TODO

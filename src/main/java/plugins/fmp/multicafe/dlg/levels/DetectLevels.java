@@ -263,35 +263,9 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
 			detectButton.setText(detectString);
+			parent0.paneKymos.tabDisplay.selectKymographImage(parent0.paneKymos.tabDisplay.indexImagesCombo);
+			parent0.paneKymos.tabDisplay.indexImagesCombo = -1;
 		 }
 	}
-	
-//	void selectFrame(int selectedFrame) 
-//	{
-//		SwingUtilities.invokeLater(new Runnable() 
-//		{
-//			public void run() 
-//			{
-//				boolean flag = false;
-//				int i = 10;
-//				while (!flag && i > 0) 
-//				{
-//					try 
-//					{
-//						Thread.sleep(1000);
-//					} 
-//					catch (InterruptedException e) 
-//					{
-//						e.printStackTrace();
-//					}
-//					if (parent0.paneKymos.tabDisplay.imagesComboBox.getItemCount() >= selectedFrame) 
-//					{
-//						parent0.paneKymos.tabDisplay.selectKymographImage(selectedFrame);
-//						System.out.println("--- select "+ selectedFrame);
-//						flag = true;
-//					}
-//					i--;
-//				}
-//			}});
-//	}
+
 }

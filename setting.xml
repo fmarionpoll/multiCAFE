@@ -57,7 +57,9 @@
 <key name="loaderFolder" value="D:\Marie\analyse\caféine\data 22fev\data-bea-1A-22 fev19"/>
 </section>
 <section name="canvas">
-<section name="Canvas2D"/>
+<section name="Canvas2D">
+<key name="fitCanvas" value="true"/>
+</section>
 </section>
 <section name="network"/>
 <section name="chat"/>
@@ -72,10 +74,10 @@
 </section>
 <section name="online"/>
 </section>
-<key name="id" value="245879836"/>
+<key name="id" value="183872644"/>
 <key name="os" value="win64"/>
-<key name="clientCpuNumber" value="24"/>
-<key name="clientTotalMemory" value="34230362112"/>
+<key name="clientCpuNumber" value="12"/>
+<key name="clientTotalMemory" value="34308149248"/>
 <key name="appFolder" value="C:/Users/fred/.m2/repository/org/bioimageanalysis/icy/icy-kernel/2.1.4"/>
 <section name="loader">
 <section name="entry0">
@@ -127,7 +129,7 @@
 <section name="multicafe">
 <section name="MultiCAFE">
 <section name="gui">
-<key name="lastUsedPath" value="D:\Marie\analyse\caféine"/>
+<key name="lastUsedPath" value="E:\2020 Perrine\Marseille\21-01-29_Sucrose vs PGN+suc\9-1"/>
 </section>
 </section>
 </section>
@@ -135,14 +137,14 @@
 </section>
 <section name="frame">
 <section name="main">
-<key name="XE" value="80"/>
-<key name="YE" value="15"/>
-<key name="WidthE" value="1837"/>
+<key name="XE" value="-170"/>
+<key name="YE" value="57"/>
+<key name="WidthE" value="1914"/>
 <key name="HeightE" value="1017"/>
 <key name="MaximizedE" value="false"/>
 </section>
 <section name="inspector">
-<key name="XC" value="1529"/>
+<key name="XC" value="1606"/>
 <key name="YC" value="0"/>
 <key name="XE" value="600"/>
 <key name="YE" value="140"/>
