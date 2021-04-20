@@ -19,7 +19,6 @@ import javax.swing.SwingConstants;
 
 import icy.util.StringUtil;
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.Capillary;
 import plugins.fmp.multicafe.experiment.Experiment;
 import plugins.fmp.multicafe.experiment.SequenceKymos;
@@ -142,16 +141,19 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
-	private Options_BuildSeries initBuildParameters(Experiment exp) 
+	private Options_BuildSeries initBuildParameters(Experiment exp ) 
 	{	
 		Options_BuildSeries options = threadDetectGulps.options;
-		options.expList = new ExperimentCombo(); 	
+		options.expList = parent0.expListCombo; 
 		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
+		
 		if (allCheckBox.isSelected()) 
 			options.expList.index1 = options.expList.getItemCount()-1;
 		else
 			options.expList.index1 = parent0.expListCombo.getSelectedIndex();
 
+		options.detectAllKymos = allKymosCheckBox.isSelected();
+		parent0.paneKymos.tabDisplay.indexImagesCombo = parent0.paneKymos.tabDisplay.imagesComboBox.getSelectedIndex();
 		if (!allKymosCheckBox.isSelected()) {
 			options.firstKymo = parent0.paneKymos.tabDisplay.imagesComboBox.getSelectedIndex();
 			options.lastKymo = options.firstKymo;
@@ -166,32 +168,25 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		options.detectAllGulps 	= allKymosCheckBox.isSelected();
 		options.spanDiff		= (int) spanTransf2Spinner.getValue();
 		options.buildGulps		= detectGulpsCheckBox.isSelected();
-		if (!detectGulps)
-			options.buildGulps 	= false;
 		options.buildDerivative	= buildDerivativeCheckBox.isSelected();
 		options.analyzePartOnly	= partCheckBox.isSelected();
 		options.startPixel		= (int) startSpinner.getValue();
 		options.endPixel		= (int) endSpinner.getValue();
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubDirectory 		= (String) parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
-		
 		return options;
 	}
 	
 	void startComputation(boolean detectGulps) 
 	{
 		kymosDisplayFiltered2();	
-		int current = parent0.expListCombo.getSelectedIndex();
-		Experiment exp = parent0.expListCombo.getItemAt(current);
-		if (exp == null)
-			return;
-
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();	
 		exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
-		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
-		threadDetectGulps = new DetectGulps_series();
-		exp.seqKymos.transferKymosRoisToCapillaries_Measures(exp.capillaries);
-		threadDetectGulps.options = initBuildParameters(exp);
 		
+		threadDetectGulps = new DetectGulps_series();
+		threadDetectGulps.options = initBuildParameters(exp);
+		if (!detectGulps)
+			threadDetectGulps.options.buildGulps 	= false;
 		
 		threadDetectGulps.addPropertyChangeListener(this);
 		threadDetectGulps.execute();
@@ -218,9 +213,9 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
-//			Experiment exp = parent0.expListCombo.getItemAt(parent0.expListCombo.getSelectedIndex());
-//			parent0.paneExperiment.panelLoadSave.openExperiment(exp);
 			detectButton.setText(detectString);
+			parent0.paneKymos.tabDisplay.selectKymographImage(parent0.paneKymos.tabDisplay.indexImagesCombo);
+			parent0.paneKymos.tabDisplay.indexImagesCombo = -1;
 		 }
 	}
 	

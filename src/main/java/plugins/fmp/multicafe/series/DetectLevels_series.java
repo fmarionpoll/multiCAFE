@@ -37,8 +37,7 @@ public class DetectLevels_series extends BuildSeries
 	{
 		exp.xmlLoadMCExperiment();
 		exp.xmlLoadMCCapillaries_Only();
-		boolean flag = exp.loadKymographs();
-		return flag;
+		return exp.loadKymographs();
 	}
 	
 	private boolean detectCapillaryLevels(Experiment exp) 

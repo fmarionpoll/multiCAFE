@@ -604,7 +604,7 @@ public class Experiment
 		return true;
 	}
 	
-	public boolean xmlLoadMCcapillaries() 
+	public boolean xmlLoadMCCapillaries() 
 	{
 		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
 		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);

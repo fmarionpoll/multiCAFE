@@ -27,16 +27,24 @@ public class DetectGulps_series extends BuildSeries
 	
 	void analyzeExperiment(Experiment exp) 
 	{
-		exp.xmlLoadMCExperiment();
-		exp.xmlLoadMCcapillaries();
-		if ( exp.loadKymographs()) 
+		if (loadExperimentDataToDetectGulps(exp)) 
 		{
 			buildFilteredImage(exp);
 			detectGulps(exp);
-			exp.xmlSaveMCCapillaries_Measures();
+			exp.capillaries.xmlSaveCapillaries_Measures(exp.getKymosBinFullDirectory());
 		}
 		exp.seqKymos.closeSequence();
 	}
+	
+	private boolean loadExperimentDataToDetectGulps(Experiment exp) 
+	{
+		exp.xmlLoadMCExperiment();
+		boolean flag = exp.xmlLoadMCCapillaries_Only();
+		flag &= exp.loadKymographs();
+		flag &= exp.capillaries.xmlLoadCapillaries_Measures(exp.getKymosBinFullDirectory());
+		return flag;
+	}
+	
 
 	private void buildFilteredImage(Experiment exp) 
 	{

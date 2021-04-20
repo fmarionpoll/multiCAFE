@@ -22,7 +22,7 @@ public class DetectLevels_series2 extends BuildSeries
 	void analyzeExperiment(Experiment exp) 
 	{
 		exp.xmlLoadMCExperiment();
-		exp.xmlLoadMCcapillaries();
+		exp.xmlLoadMCCapillaries();
 		if (exp.loadKymographs()) 
 		{	
 			detectCapillaryLevels(exp);
