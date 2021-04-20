@@ -26,7 +26,6 @@ import javax.swing.event.PopupMenuListener;
 import icy.util.StringUtil;
 
 import plugins.fmp.multicafe.MultiCAFE;
-import plugins.fmp.multicafe.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe.experiment.Cage;
 import plugins.fmp.multicafe.experiment.Experiment;
 import plugins.fmp.multicafe.experiment.SequenceCamData;
@@ -196,12 +195,17 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		}
 	}
 	
-	private boolean initTrackParameters() 
+	private Options_BuildSeries initTrackParameters() 
 	{
-		if (thread == null)
-			return false;
-		thread.options 			= new Options_BuildSeries();
-		Options_BuildSeries options = thread.options;
+		Options_BuildSeries options = new Options_BuildSeries();
+		options.expList 		= parent0.expListCombo;	
+		options.expList.index0 	= parent0.expListCombo.getSelectedIndex();
+		if (allCheckBox.isSelected())
+			options.expList.index1 = options.expList.getItemCount()-1;
+		else
+			options.expList.index1 = parent0.expListCombo.getSelectedIndex();
+		parent0.paneKymos.tabDisplay.indexImagesCombo = parent0.paneKymos.tabDisplay.imagesComboBox.getSelectedIndex();
+		
 		options.btrackWhite 	= whiteObjectCheckBox.isSelected();
 		options.blimitLow 		= objectLowsizeCheckBox.isSelected();
 		options.blimitUp 		= objectUpsizeCheckBox.isSelected();
@@ -220,16 +224,10 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubDirectory 		= parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
-		options.expList 		= new ExperimentCombo(); 	
-		options.expList.index0 	= parent0.expListCombo.getSelectedIndex();
-		if (allCheckBox.isSelected())
-			options.expList.index1 = options.expList.getItemCount()-1;
-		else
-			options.expList.index1 = options.expList.index0;
-		options.detectCage = allCagesComboBox.getSelectedIndex() - 1;
 		
-		thread.stopFlag 	= false;
-		return true;
+		options.detectCage = allCagesComboBox.getSelectedIndex() - 1;
+	
+		return options;
 	}
 	
 	void startComputation() 
@@ -241,7 +239,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		
 		thread = new DetectFlies1_series();			
-		initTrackParameters();
+		thread.options 			= initTrackParameters();
+		thread.stopFlag 		= false;
 		thread.buildBackground	= false;
 		thread.detectFlies		= true;
 		thread.addPropertyChangeListener(this);
@@ -260,10 +259,9 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	{
 		 if (StringUtil.equals("thread_ended", evt.getPropertyName())) 
 		 {
-//			parent0.expListCombo.setSelectedIndex(currentExp);
-//			if (exp != null)
-//				parent0.paneExperiment.panelLoadSave.openExperiment(exp);
 			startComputationButton.setText(detectString);
+			parent0.paneKymos.tabDisplay.selectKymographImage(parent0.paneKymos.tabDisplay.indexImagesCombo);
+			parent0.paneKymos.tabDisplay.indexImagesCombo = -1;
 		 }
 	}
 

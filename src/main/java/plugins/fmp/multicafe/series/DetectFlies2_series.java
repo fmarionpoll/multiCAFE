@@ -165,11 +165,9 @@ public class DetectFlies2_series extends BuildSeries
 				displayDetectViewer(exp);
 
 			// ----------------- loop over all images of the stack
-			int it = 0;
-			for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms, it++ ) 
+			for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms ) 
 			{
 				final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
-				final int t_it = it;
 				futures.add(processor.submit(new Runnable () 
 				{
 					@Override
@@ -182,7 +180,7 @@ public class DetectFlies2_series extends BuildSeries
 						exp.seqCamData.currentFrame = t_from;
 						seqNegative.beginUpdate();
 						IcyBufferedImage negativeImage = exp.seqCamData.subtractImagesAsInteger(exp.seqCamData.refImage, currentImage);
-						find_flies.findFlies(negativeImage, t_from, t_it);
+						find_flies.findFlies(negativeImage, t_from);
 						seqNegative.setImage(0, 0, negativeImage);
 						seqNegative.endUpdate();
 					}}));

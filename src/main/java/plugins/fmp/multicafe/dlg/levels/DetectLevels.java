@@ -203,14 +203,14 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	private Options_BuildSeries initBuildParameters(Experiment exp) 
 	{	
 		Options_BuildSeries options = new Options_BuildSeries();
+		// list of stack experiments
 		options.expList = parent0.expListCombo; 
 		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
-		
 		if (allSeriesCheckBox.isSelected()) 
 			options.expList.index1 = options.expList.getItemCount()-1;
 		else
 			options.expList.index1 = parent0.expListCombo.getSelectedIndex();
-
+		// list of kymographs
 		options.detectAllKymos = allKymosCheckBox.isSelected();
 		parent0.paneKymos.tabDisplay.indexImagesCombo = parent0.paneKymos.tabDisplay.imagesComboBox.getSelectedIndex();
 		if (!allKymosCheckBox.isSelected()) 
@@ -223,7 +223,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 			options.firstKymo = 0;
 			options.lastKymo = parent0.paneKymos.tabDisplay.imagesComboBox.getItemCount()-1;
 		}
-				
+		// other parameters
 		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();

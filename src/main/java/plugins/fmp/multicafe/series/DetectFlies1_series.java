@@ -31,8 +31,9 @@ public class DetectFlies1_series extends BuildSeries
 	
 	void analyzeExperiment(Experiment exp) 
 	{
-		exp.openSequenceCamData();
-		exp.xmlReadDrosoTrack(null);
+		if (!loadExperimentData(exp))
+			return;
+		
 		if (options.isFrameFixed) 
 		{
 			exp.cages.detectFirst_Ms = options.t_firstMs;
@@ -58,7 +59,14 @@ public class DetectFlies1_series extends BuildSeries
 			exp.xmlSaveFlyPositionsForAllCages();
 		exp.seqCamData.closeSequence();
     }
-		
+	
+	private boolean loadExperimentData(Experiment exp) 
+	{
+		exp.seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList());
+		boolean flag = exp.xmlReadDrosoTrack(null);
+		return flag;
+	}
+	
 	private void runDetectFlies(Experiment exp) 
 	{
 		exp.cleanPreviousDetectedFliesROIs();
@@ -94,24 +102,24 @@ public class DetectFlies1_series extends BuildSeries
 		futures.clear();
 		
 		exp.seqCamData.seq.beginUpdate();
-		int it = 0;
-		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms, it++ ) 
+	
+		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms ) 
 		{
 			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
-			final int t_it = it;
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
 				public void run() 
 				{	
-					// TODO: getImageDirect (getImageDirectAndSubtractReference) does not communicate with viewer - remove visualization?
-					IcyBufferedImage workImage = exp.seqCamData.subtractReference(exp.seqCamData.getImage(t_from, 0), t_from, options.transformop); 
+					final IcyBufferedImage  sourceImage = exp.seqCamData.imageIORead(t_from);
+					IcyBufferedImage workImage = exp.seqCamData.subtractReference(sourceImage, t_from, options.transformop); 
 					if (workImage == null)
 						return;
+
 					exp.seqCamData.currentFrame = t_from;
 					viewerCamData.setPositionT(t_from);
 					viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t_from));
-					find_flies.findFlies (workImage, t_from, t_it);					
+					find_flies.findFlies (workImage, t_from);					
 				}}));
 		}
 		

@@ -94,7 +94,7 @@ public class DetectFlies_Find
 		return new ROI2DArea( bmask );
 	}
 	
-	public void findFlies (IcyBufferedImage workimage, int t, int it) 
+	public void findFlies (IcyBufferedImage workimage, int t) 
 	{
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
