@@ -67,12 +67,8 @@ public class DetectFlies1_series extends BuildSeries
 		return flag;
 	}
 	
-	private void runDetectFlies(Experiment exp) 
+	private void openViewer(Experiment exp) 
 	{
-		exp.cleanPreviousDetectedFliesROIs();
-		find_flies.initParametersForDetection(exp, options);
-		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
-		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
 		try 
 		{
 			SwingUtilities.invokeAndWait(new Runnable() 
@@ -93,6 +89,16 @@ public class DetectFlies1_series extends BuildSeries
 		{
 			e.printStackTrace();
 		} 
+		
+	}
+	
+	private void runDetectFlies(Experiment exp) 
+	{
+		exp.cleanPreviousDetectedFliesROIs();
+		find_flies.initParametersForDetection(exp, options);
+		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
+		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
+		openViewer(exp);
 		
 		int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());

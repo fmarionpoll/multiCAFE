@@ -63,8 +63,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	
 	private OverlayThreshold 	ov 				= null;
-	private DetectFlies1_series thread 			= null;
-	private int 				currentExp 		= -1;
+	private DetectFlies1_series detectFlies1Thread 			= null;
+	//private int 				currentExp 		= -1;
 
 	// -----------------------------------------------------
 	
@@ -232,25 +232,24 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	
 	void startComputation() 
 	{
-		currentExp = parent0.expListCombo.getSelectedIndex();
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;
 		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		
-		thread = new DetectFlies1_series();			
-		thread.options 			= initTrackParameters();
-		thread.stopFlag 		= false;
-		thread.buildBackground	= false;
-		thread.detectFlies		= true;
-		thread.addPropertyChangeListener(this);
-		thread.execute();
+		detectFlies1Thread = new DetectFlies1_series();			
+		detectFlies1Thread.options 			= initTrackParameters();
+		detectFlies1Thread.stopFlag 		= false;
+		detectFlies1Thread.buildBackground	= false;
+		detectFlies1Thread.detectFlies		= true;
+		detectFlies1Thread.addPropertyChangeListener(this);
+		detectFlies1Thread.execute();
 		startComputationButton.setText("STOP");
 	}
 	
 	private void stopComputation() {	
-		if (thread != null && !thread.stopFlag) {
-			thread.stopFlag = true;
+		if (detectFlies1Thread != null && !detectFlies1Thread.stopFlag) {
+			detectFlies1Thread.stopFlag = true;
 		}
 	}
 
@@ -269,8 +268,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	public void popupMenuWillBecomeVisible(PopupMenuEvent e) 
 	{
 		int nitems = 1;
-		currentExp = parent0.expListCombo.getSelectedIndex();
-		Experiment exp = parent0.expListCombo.getItemAt(currentExp);
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null )	
 			nitems =  exp.cages.cageList.size() +1;
 		if (allCagesComboBox.getItemCount() != nitems) 
@@ -287,7 +285,6 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	@Override
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
