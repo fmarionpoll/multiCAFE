@@ -54,7 +54,7 @@
 </section>
 <key name="lastUpdateCheckTime" value="1619072279554"/>
 <key name="virtualMode" value="true"/>
-<key name="loaderFolder" value="D:\Marie\analyse\caféine\data 22fev\data-bea-1A-22 fev19"/>
+<key name="loaderFolder" value="E:\2021 Alizée\data traites\WCs\0.1 mM"/>
 </section>
 <section name="canvas">
 <section name="Canvas2D">
@@ -74,10 +74,10 @@
 </section>
 <section name="online"/>
 </section>
-<key name="id" value="116651156"/>
+<key name="id" value="200957051"/>
 <key name="os" value="win64"/>
-<key name="clientCpuNumber" value="24"/>
-<key name="clientTotalMemory" value="34230362112"/>
+<key name="clientCpuNumber" value="12"/>
+<key name="clientTotalMemory" value="34308149248"/>
 <key name="appFolder" value="C:/Users/fred/.m2/repository/org/bioimageanalysis/icy/icy-kernel/2.1.4"/>
 <section name="loader">
 <section name="entry0">
@@ -133,25 +133,32 @@
 </section>
 </section>
 </section>
+<section name="multicafe2">
+<section name="MultiCAFE2">
+<section name="gui">
+<key name="lastUsedPath" value="E:\2021 Alizée\data traites"/>
+</section>
+</section>
+</section>
 </section>
 </section>
 <section name="frame">
 <section name="main">
-<key name="XE" value="4"/>
-<key name="YE" value="41"/>
+<key name="XE" value="50"/>
+<key name="YE" value="35"/>
 <key name="WidthE" value="1863"/>
 <key name="HeightE" value="954"/>
-<key name="MaximizedE" value="false"/>
+<key name="MaximizedE" value="true"/>
 </section>
 <section name="inspector">
-<key name="XC" value="1555"/>
+<key name="XC" value="1612"/>
 <key name="YC" value="0"/>
 <key name="XE" value="600"/>
 <key name="YE" value="140"/>
 <key name="XI" value="600"/>
 <key name="YI" value="140"/>
 <key name="WidthC" value="300"/>
-<key name="HeightC" value="792"/>
+<key name="HeightC" value="878"/>
 <key name="WidthE" value="300"/>
 <key name="HeightE" value="600"/>
 <key name="WidthI" value="300"/>
@@ -169,7 +176,7 @@
 <key name="XI" value="100"/>
 <key name="YI" value="100"/>
 <key name="WidthC" value="292"/>
-<key name="HeightC" value="702"/>
+<key name="HeightC" value="788"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="600"/>
 <key name="WidthI" value="400"/>
@@ -187,7 +194,7 @@
 <key name="XI" value="200"/>
 <key name="YI" value="200"/>
 <key name="WidthC" value="292"/>
-<key name="HeightC" value="702"/>
+<key name="HeightC" value="788"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="300"/>
 <key name="WidthI" value="400"/>

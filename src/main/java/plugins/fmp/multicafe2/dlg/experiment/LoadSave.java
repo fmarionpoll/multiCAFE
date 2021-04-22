@@ -79,8 +79,9 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		subPanel.add(openButton);
 		subPanel.add(searchButton);
 		subPanel.add(createButton);
+		subPanel.add(closeButton);
 		sequencePanel.add(subPanel, BorderLayout.LINE_START);
-		sequencePanel.add(closeButton, BorderLayout.LINE_END);
+//		sequencePanel.add(closeButton, BorderLayout.LINE_END);
 	
 		defineActionListeners();
 		parent0.expListCombo.addItemListener(this);
