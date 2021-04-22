@@ -74,10 +74,10 @@
 </section>
 <section name="online"/>
 </section>
-<key name="id" value="183872644"/>
+<key name="id" value="116651156"/>
 <key name="os" value="win64"/>
-<key name="clientCpuNumber" value="12"/>
-<key name="clientTotalMemory" value="34308149248"/>
+<key name="clientCpuNumber" value="24"/>
+<key name="clientTotalMemory" value="34230362112"/>
 <key name="appFolder" value="C:/Users/fred/.m2/repository/org/bioimageanalysis/icy/icy-kernel/2.1.4"/>
 <section name="loader">
 <section name="entry0">
@@ -129,7 +129,7 @@
 <section name="multicafe">
 <section name="MultiCAFE">
 <section name="gui">
-<key name="lastUsedPath" value="E:\2020 Perrine\Marseille\21-01-29_Sucrose vs PGN+suc\1-1_500ug"/>
+<key name="lastUsedPath" value="D:\Perrine\21-01-29_Sucrose vs PGN+suc\1-1_500ug"/>
 </section>
 </section>
 </section>
@@ -137,8 +137,8 @@
 </section>
 <section name="frame">
 <section name="main">
-<key name="XE" value="-2317"/>
-<key name="YE" value="68"/>
+<key name="XE" value="4"/>
+<key name="YE" value="41"/>
 <key name="WidthE" value="1863"/>
 <key name="HeightE" value="954"/>
 <key name="MaximizedE" value="false"/>

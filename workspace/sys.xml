@@ -3,7 +3,7 @@
 <band name="Setup"/>
 <band name="New"/>
 <band name="Others">
-<item classname="plugins.fmp.multicafe.MultiCAFE" priority="low"/>
+<item classname="plugins.fmp.multicafe2.MultiCAFE2" priority="low"/>
 <item classname="plugins.adufour.protocols.Protocols" priority="low"/>
 </band>
 </task>

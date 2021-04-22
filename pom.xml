@@ -12,12 +12,12 @@
     </parent>
 
     <!-- Project Information -->
-    <artifactId>multiCAFE</artifactId>
+    <artifactId>multiCAFE2</artifactId>
     <version>2.0.0</version>
     
     <packaging>jar</packaging>
 
-    <name>MultiCAFE experiment analysis plugin</name>
+    <name>MultiCAFE2 experiment analysis plugin</name>
     <description>Measure liquid consumption and activity of flies given access to capillaries filled with liquid and export data to Excel</description>
     <url></url>
     <inceptionYear>2021</inceptionYear>
