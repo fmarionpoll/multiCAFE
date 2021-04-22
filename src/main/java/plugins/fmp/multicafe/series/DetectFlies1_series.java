@@ -33,30 +33,13 @@ public class DetectFlies1_series extends BuildSeries
 	{
 		if (!loadExperimentData(exp))
 			return;
-		
-		if (options.isFrameFixed) 
-		{
-			exp.cages.detectFirst_Ms = options.t_firstMs;
-			exp.cages.detectLast_Ms = options.t_lastMs;
-			if (exp.cages.detectLast_Ms > exp.camLastImage_Ms)
-				exp.cages.detectLast_Ms = exp.camLastImage_Ms;
-		} 
-		else 
-		{
-			exp.cages.detectFirst_Ms = exp.camFirstImage_Ms;
-			exp.cages.detectLast_Ms = exp.camLastImage_Ms;
-		}
-		exp.cages.detectBin_Ms = options.t_binMs;
-		exp.cages.detect_threshold = options.threshold;
-		if (exp.cages.cageList.size() < 1 ) 
-		{
-			System.out.println("! skipped experiment with no cage: " + exp.getExperimentDirectory());
+		if (!checkBoundsForCages(exp))
 			return;
-		}
-		runDetectFlies(exp);
-		exp.orderFlyPositionsForAllCages();
+		
+		runDetectFlies1(exp);
+		exp.cages.orderFlyPositions();
 		if (!stopFlag)
-			exp.xmlSaveFlyPositionsForAllCages();
+			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
 		exp.seqCamData.closeSequence();
     }
 	
@@ -92,7 +75,7 @@ public class DetectFlies1_series extends BuildSeries
 		
 	}
 	
-	private void runDetectFlies(Experiment exp) 
+	private void runDetectFlies1(Experiment exp) 
 	{
 		exp.cleanPreviousDetectedFliesROIs();
 		find_flies.initParametersForDetection(exp, options);

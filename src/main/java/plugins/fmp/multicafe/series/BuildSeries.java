@@ -116,5 +116,29 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
         }
    }
 
+    protected boolean checkBoundsForCages(Experiment exp) 
+	{
+		boolean flag = true;
+		if (options.isFrameFixed) 
+		{
+			exp.cages.detectFirst_Ms = options.t_firstMs;
+			exp.cages.detectLast_Ms = options.t_lastMs;
+			if (exp.cages.detectLast_Ms > exp.camLastImage_Ms)
+				exp.cages.detectLast_Ms = exp.camLastImage_Ms;
+		} 
+		else 
+		{
+			exp.cages.detectFirst_Ms = exp.camFirstImage_Ms;
+			exp.cages.detectLast_Ms = exp.camLastImage_Ms;
+		}
+		exp.cages.detectBin_Ms = options.t_binMs;
+		exp.cages.detect_threshold = options.threshold;
+		if (exp.cages.cageList.size() < 1 ) 
+		{
+			System.out.println("! skipped experiment with no cage: " + exp.getExperimentDirectory());
+			flag = false;
+		}
+		return flag;
+	}
     
 }

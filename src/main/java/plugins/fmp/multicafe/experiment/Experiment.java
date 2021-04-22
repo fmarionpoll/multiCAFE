@@ -816,18 +816,8 @@ public class Experiment
 		}
 	}
 	
-	public void orderFlyPositionsForAllCages() 
-	{
-		cages.orderFlyPositions();
-	}
-
-	public void xmlSaveFlyPositionsForAllCages() 
-	{			
-		cages.xmlWriteCagesToFileNoQuestion(getMCDrosoTrackFullName());
-	}
-	
 	// --------------------------
-	private String getMCDrosoTrackFullName() 
+	public String getMCDrosoTrackFullName() 
 	{
 		return strExperimentDirectory+File.separator+ID_MCDROSOTRACK;
 	}
@@ -851,11 +841,6 @@ public class Experiment
 		return cages.xmlReadCagesFromFileNoQuestion(filename, this);
 	}
 	
-	public boolean xmlWriteDrosoTrackDefault() 
-	{
-		return cages.xmlWriteCagesToFileNoQuestion(getMCDrosoTrackFullName());
-	}
-
 	// --------------------------
 		
 	public void updateROIsAt(int t) 
