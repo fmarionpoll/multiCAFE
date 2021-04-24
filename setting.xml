@@ -52,9 +52,9 @@
 </section>
 <section name="export"/>
 </section>
-<key name="lastUpdateCheckTime" value="1619072279554"/>
+<key name="lastUpdateCheckTime" value="1619246380881"/>
 <key name="virtualMode" value="true"/>
-<key name="loaderFolder" value="E:\2021 Alizée\data traites\WCs\0.1 mM"/>
+<key name="loaderFolder" value="E:\2020 FMP\choix G1-G5-acarbose\G1acarb-G5acarb\cam01"/>
 </section>
 <section name="canvas">
 <section name="Canvas2D">
@@ -112,7 +112,7 @@
 </section>
 </section>
 <key name="version" value="2.1.4.0"/>
-<key name="lastUploadDate" value="1619072274742"/>
+<key name="lastUploadDate" value="1619286272167"/>
 <section name="frame">
 <section name="imageLoader">
 <key name="width" value="600"/>

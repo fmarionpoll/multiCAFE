@@ -395,11 +395,20 @@ public class XLSExport
 			int nOutputFrames = (int) ((expi.kymoLastCol_Ms - expi.kymoFirstCol_Ms) / options.buildExcelStepMs +1);
 			if (nOutputFrames <= 1) 
 			{
+				expi.kymoFirstCol_Ms = expi.camFirstImage_Ms;
+				if (expi.seqKymos.imageWidthMax == 0)
+					expi.loadKymographs();
+				expi.kymoLastCol_Ms = expi.camFirstImage_Ms + expi.seqKymos.imageWidthMax * expi.kymoBinCol_Ms;
+				nOutputFrames = (int) ((expi.kymoLastCol_Ms - expi.kymoFirstCol_Ms) / options.buildExcelStepMs +1);
+			}
+			
+			if (nOutputFrames <= 1) 
+			{
 				String error = "ERROR in "+ expi.getExperimentDirectory() 
 						+ "\n nOutputFrames="+ nOutputFrames 
 						+ " kymoFirstCol_Ms=" + expi.kymoFirstCol_Ms 
 						+ " kymoLastCol_Ms=" + expi.kymoLastCol_Ms
-						+ "\n -> REBUILD KYMOGRAPH";
+						+ "\n -> Contact support";
 				MessageDialog.showDialog(error, MessageDialog.ERROR_MESSAGE);
 				System.out.println(error);
 			}

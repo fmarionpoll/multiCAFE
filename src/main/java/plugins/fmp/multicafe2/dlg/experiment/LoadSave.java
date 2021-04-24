@@ -77,11 +77,10 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		layout.setVgap(0);
 		JPanel subPanel = new JPanel(layout);
 		subPanel.add(openButton);
-		subPanel.add(searchButton);
 		subPanel.add(createButton);
+		subPanel.add(searchButton);
 		subPanel.add(closeButton);
 		sequencePanel.add(subPanel, BorderLayout.LINE_START);
-//		sequencePanel.add(closeButton, BorderLayout.LINE_END);
 	
 		defineActionListeners();
 		parent0.expListCombo.addItemListener(this);
@@ -89,9 +88,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		JPanel twoLinesPanel = new JPanel (new GridLayout(2, 1));
 		twoLinesPanel.add(sequencePanel0);
 		twoLinesPanel.add(sequencePanel);
-		
-		// TODO implement and test
-		createButton.setEnabled(false);
 		
 		return twoLinesPanel;
 	}
@@ -270,7 +266,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             @Override
             public void actionPerformed(ActionEvent arg0) 
             {
-            	ExperimentDirectories eDAF = getDirectoriesFromDialog(null);
+            	ExperimentDirectories eDAF = getDirectoriesFromDialog(null, true);
             	if (eDAF != null) 
             	{
 	            	int item = addExperimentFrom3NamesAnd2Lists(eDAF);
@@ -283,7 +279,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             @Override
             public void actionPerformed(ActionEvent arg0) 
             {
-            	ExperimentDirectories eDAF = getDirectoriesFromDialog(null);
+            	ExperimentDirectories eDAF = getDirectoriesFromDialog(null, false);
             	if (eDAF != null) 
             	{
             		int item = addExperimentFrom3NamesAnd2Lists(eDAF);
@@ -326,8 +322,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		int item = parent0.expListCombo.addExperiment(exp);
 		return item;
 	}
-	
-	private ExperimentDirectories getDirectoriesFromDialog(String rootDirectory)
+		
+	private ExperimentDirectories getDirectoriesFromDialog(String rootDirectory, boolean createResults)
 	{
 		ExperimentDirectories eDAF = new ExperimentDirectories(); //
 		
@@ -338,7 +334,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg"); //
 		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0)); //
 		
-		eDAF.resultsDirectory = getV2ResultsDirectoryDialog(eDAF.cameraImagesDirectory, Experiment.RESULTS);
+		eDAF.resultsDirectory = getV2ResultsDirectoryDialog(eDAF.cameraImagesDirectory, Experiment.RESULTS, createResults);
 		eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
 		
 		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory; //
@@ -415,17 +411,20 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		return (String) jcb.getSelectedItem();
 	}
 	
-	private String getV2ResultsDirectoryDialog(String parentDirectory, String filter) 
+	private String getV2ResultsDirectoryDialog(String parentDirectory, String filter, boolean createResults) 
 	{
 		List<String> expList = Directories.fetchSubDirectoriesMatchingFilter(parentDirectory, filter);
+		expList = Directories.reduceFullNameToLastDirectory(expList);
 	    String name = null;
-	    if (expList.size() > 1) 
+	    if (createResults || expList.size() > 1) 
+	    {
 	    	name = selectSubDirDialog(expList, "Select item or type "+Experiment.RESULTS+"xxx", Experiment.RESULTS, true);
+	    }
 	    else if (expList.size() == 1)
 	    	name = expList.get(0);
 	    else 
-	    	name = parentDirectory + File.separator + filter;
-	    return name;
+	    	name = filter;
+	    return parentDirectory + File.separator + name;
 	}
 
 	@Override
