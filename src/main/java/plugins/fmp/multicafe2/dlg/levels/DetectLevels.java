@@ -49,14 +49,14 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	private JSpinner	spanTopSpinner			= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
 	private String 		detectString 			= "        Detect     ";
 	private JButton 	detectButton 			= new JButton(detectString);
-	private JCheckBox	partCheckBox 			= new JCheckBox (" from (pixel)", false);
+	private JCheckBox	fromCheckBox 			= new JCheckBox (" from (pixel)", false);
 	private JCheckBox 	allSeriesCheckBox 		= new JCheckBox("ALL (current to last)", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
 	private JCheckBox	maxContrastCheckBox 	= new JCheckBox ("maximize contrast", false);
 	
 	private MultiCAFE2 	parent0 				= null;
-	private DetectLevels_series threadDetectLevels 			= null;
+	private DetectLevels_series threadDetectLevels = null;
 	
 	// -----------------------------------------------------
 		
@@ -86,7 +86,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		add (panel01);
 		
 		JPanel panel1 = new JPanel(layoutLeft);
-		panel1.add(partCheckBox);
+		panel1.add(fromCheckBox);
 		panel1.add(startSpinner);
 		panel1.add(new JLabel("to"));
 		panel1.add(endSpinner);
@@ -228,9 +228,9 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();
 		
-		options.analyzePartOnly		= partCheckBox.isSelected();
-		options.startPixel			= (int) ((int) startSpinner.getValue()); 
-		options.endPixel			= (int) ((int) endSpinner.getValue()); 
+		options.analyzePartOnly		= fromCheckBox.isSelected();
+		options.startPixel			= (int) startSpinner.getValue(); 
+		options.endPixel			= (int) endSpinner.getValue(); 
 		options.spanDiffTop			= getSpanDiffTop();
 		options.detectL 			= leftCheckBox.isSelected();
 		options.detectR				= rightCheckBox.isSelected();
@@ -264,6 +264,9 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 			detectButton.setText(detectString);
 			parent0.paneKymos.tabDisplay.selectKymographImage(parent0.paneKymos.tabDisplay.indexImagesCombo);
 			parent0.paneKymos.tabDisplay.indexImagesCombo = -1;
+			
+			startSpinner.setValue(threadDetectLevels.options.startPixel); 
+			endSpinner.setValue(threadDetectLevels.options.endPixel); 
 		 }
 	}
 

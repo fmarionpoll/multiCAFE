@@ -49,8 +49,8 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	private String 			detectString 				= "        Detect     ";
 	private JButton 		detectButton 				= new JButton(detectString);
 	private JCheckBox 		allCheckBox 				= new JCheckBox("ALL (current to last)", false);
-	private DetectGulps_series 	threadDetectGulps 					= null;
-	private MultiCAFE2 		parent0;
+	private DetectGulps_series 	threadDetectGulps 		= null;
+	private MultiCAFE2 		parent0						= null;
 	
 	
 	void init(GridLayout capLayout, MultiCAFE2 parent0) 
@@ -216,6 +216,9 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 			detectButton.setText(detectString);
 			parent0.paneKymos.tabDisplay.selectKymographImage(parent0.paneKymos.tabDisplay.indexImagesCombo);
 			parent0.paneKymos.tabDisplay.indexImagesCombo = -1;
+			
+			startSpinner.setValue(threadDetectGulps.options.startPixel); 
+			endSpinner.setValue(threadDetectGulps.options.endPixel); 
 		 }
 	}
 	
