@@ -171,20 +171,19 @@ public class Directories
 		}
 	}
 	
-	public static void moveTIFFAndLINEfilesToSubdirectory(String directory, String subname)
+	public static void moveTIFFAndLINEfilesToSubdirectory(String directoryStr, String subname)
 	{
-		String subdirectory = directory + File.separator + subname;
-		File folder = new File(directory);
-		File subfolder = new File(subdirectory);
-		if (!subfolder.exists()) 
-			subfolder.mkdir();
-
-		for (File file : folder.listFiles()) {
+		File directoryFile = new File(directoryStr);
+		String subdirectoryStr = directoryStr + File.separator + subname;
+		File subDirectoryFile = new File(subdirectoryStr);
+		if (!subDirectoryFile.exists()) 
+			subDirectoryFile.mkdir();
+		for (File file : directoryFile.listFiles()) {
 			String name = file.getName();
 			if (name.toLowerCase().endsWith(".tiff") || name.toLowerCase().startsWith("line")) 
 			{
 				String destinationName = Capillary.replace_LR_with_12(name);
-				file.renameTo (new File(subdirectory + File.separator + destinationName));
+				file.renameTo (new File(subDirectoryFile + File.separator + destinationName));
 				file.delete();
 			}
 		}

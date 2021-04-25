@@ -325,34 +325,34 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		
 	private ExperimentDirectories getDirectoriesFromDialog(String rootDirectory, boolean createResults)
 	{
-		ExperimentDirectories eDAF = new ExperimentDirectories(); //
+		ExperimentDirectories eDAF = new ExperimentDirectories();
 		
 		eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromDialog(rootDirectory);
 		if (eDAF.cameraImagesList == null || eDAF.cameraImagesList.size() < 1)
 			return null;
 		
-		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg"); //
-		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0)); //
+		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
+		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0));
 		
 		eDAF.resultsDirectory = getV2ResultsDirectoryDialog(eDAF.cameraImagesDirectory, Experiment.RESULTS, createResults);
 		eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
 		
-		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory; //
-		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir); //
-		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff"); //
+		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory;
+		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
+		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff");
 		// TODO wrong if any bin
 		return eDAF;
 	}
 	
 	private ExperimentDirectories getDirectoriesFromExptPath(String exptDirectory, String binSubDirectory)
 	{
-		ExperimentDirectories eDAF = new ExperimentDirectories(); //
+		ExperimentDirectories eDAF = new ExperimentDirectories();
 
 		String strDirectory = Experiment.getImagesDirectoryAsParentFromFileName(exptDirectory);
 		eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromPath(strDirectory);
 		
-		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg"); //
-		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0)); //
+		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
+		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0));
 		
 		eDAF.resultsDirectory = exptDirectory;
 		if (binSubDirectory == null)
@@ -360,9 +360,9 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		else 
 			eDAF.binSubDirectory = binSubDirectory;
 		
-		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory; //
-		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir); //
-		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff"); //
+		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory;
+		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
+		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff"); 
 		// TODO wrong if any bin
 		return eDAF;
 	}
@@ -373,14 +373,16 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		cleanUpResultsDirectory(parentDirectory, expList);
 		
 	    String subDirectory = null;
-	    if (expList.size() > 1) {
+	    if (expList.size() > 1) 
+	    {
 	    	if (parent0.expListCombo.expListBinSubDirectory == null)
 	    		subDirectory = selectSubDirDialog(expList, "Select item", Experiment.BIN, false);
 	    }
-	    else if (expList.size() == 1) {
-	    	subDirectory = expList.get(0);
+	    else if (expList.size() == 1 ) 
+	    {
+	    	subDirectory = expList.get(0); 
 		    if (!subDirectory.contains(Experiment.BIN)) 
-		    	Directories.moveTIFFAndLINEfilesToSubdirectory(parentDirectory, subDirectory );
+		    	subDirectory = Experiment.BIN + "60";
 	    }
 	    else 
 	    	subDirectory = Experiment.BIN + "60";

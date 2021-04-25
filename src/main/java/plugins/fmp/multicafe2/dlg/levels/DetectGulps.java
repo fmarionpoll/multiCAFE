@@ -163,8 +163,8 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 			options.firstKymo = 0;
 			options.lastKymo = parent0.paneKymos.tabDisplay.imagesComboBox.getItemCount()-1;
 		}
-		options.detectGulpsThreshold 	= (int) detectGulpsThresholdSpinner.getValue();
-		options.transformForGulps 		= (TransformOp) transformForGulpsComboBox.getSelectedItem();
+		options.detectGulpsThreshold = (int) detectGulpsThresholdSpinner.getValue();
+		options.transformForGulps = (TransformOp) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps 	= allKymosCheckBox.isSelected();
 		options.spanDiff		= (int) spanTransf2Spinner.getValue();
 		options.buildGulps		= detectGulpsCheckBox.isSelected();
@@ -173,7 +173,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		options.startPixel		= (int) startSpinner.getValue();
 		options.endPixel		= (int) endSpinner.getValue();
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
-		options.binSubDirectory 		= (String) parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
+		options.binSubDirectory = (String) parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
 		return options;
 	}
 	
