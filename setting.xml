@@ -74,10 +74,10 @@
 </section>
 <section name="online"/>
 </section>
-<key name="id" value="200957051"/>
+<key name="id" value="233580361"/>
 <key name="os" value="win64"/>
-<key name="clientCpuNumber" value="12"/>
-<key name="clientTotalMemory" value="34308149248"/>
+<key name="clientCpuNumber" value="24"/>
+<key name="clientTotalMemory" value="34230362112"/>
 <key name="appFolder" value="C:/Users/fred/.m2/repository/org/bioimageanalysis/icy/icy-kernel/2.1.4"/>
 <section name="loader">
 <section name="entry0">
@@ -136,7 +136,7 @@
 <section name="multicafe2">
 <section name="MultiCAFE2">
 <section name="gui">
-<key name="lastUsedPath" value="E:\2020 Perrine\Oleuropein\conso_dose\19-04-18_Oleuropein_vs_sucrose"/>
+<key name="lastUsedPath" value="D:\2020 Perrine\MultiCAFE\Oleuropein\19-04-05"/>
 </section>
 </section>
 </section>
