@@ -100,22 +100,24 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			if (selectedNames.size() < 1)
 				return;
 			
-			ExperimentDirectories eDAF = getDirectoriesFromExptPath(selectedNames.get(0), null);
-        	int index = addExperimentFrom3NamesAnd2Lists(eDAF);
+			ExperimentDirectories eDAF0 = getDirectoriesFromExptPath(selectedNames.get(0), null);
+        	int index = addExperimentFrom3NamesAnd2Lists(eDAF0);
         	parent0.expListCombo.setSelectedIndex(index);
         	final String binSubDirectory = parent0.expListCombo.expListBinSubDirectory;
         	
         	SwingUtilities.invokeLater(new Runnable() { public void run() 
 			{	
-				for (int i=1; i < selectedNames.size(); i++) 
+	        	parent1.tabInfosSeq.disableChangeFile = false;
+	        	for (int i=1; i < selectedNames.size(); i++) 
 				{
 					ExperimentDirectories eDAF = getDirectoriesFromExptPath(selectedNames.get(i), binSubDirectory);
 		        	addExperimentFrom3NamesAnd2Lists(eDAF);
 				}
 				selectedNames.clear();
-				parent1.tabInfosSeq.disableChangeFile = false;
 				updateBrowseInterface();
-				}});
+		     	parent1.tabInfosSeq.disableChangeFile = true;
+				
+			}});
 		}
 	}
 	
@@ -319,7 +321,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	private int addExperimentFrom3NamesAnd2Lists(ExperimentDirectories eDAF) 
 	{
 		Experiment exp = new Experiment (eDAF);
-		int item = parent0.expListCombo.addExperiment(exp);
+		int item = parent0.expListCombo.addExperiment(exp, false);
 		return item;
 	}
 		
@@ -358,7 +360,11 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		if (binSubDirectory == null)
 			eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory);
 		else 
+		{
 			eDAF.binSubDirectory = binSubDirectory;
+			List<String> expList = Directories.getSortedListOfSubDirectoriesWithTIFF(exptDirectory);
+			cleanUpResultsDirectory(exptDirectory, expList);
+		}
 		
 		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory;
 		eDAF.kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);

@@ -1,9 +1,5 @@
 package plugins.fmp.multicafe2.dlg.JComponents;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import javax.swing.JComboBox;
 
 
@@ -206,64 +202,17 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	}
 	
 	// ---------------------
-	
-	public Experiment addNewExperimentToList () 
-	{
-		Experiment exp = new Experiment();
-		addItem(exp);
-		return exp;
-	}
-	
-	public int addExperiment (Experiment exp) 
-	{
-		addItem(exp);
-		String exptName = exp.toString();
-		return getExperimentIndexFromExptName(exptName);
-	}
-
-	public Experiment addNewExperimentToList (String expDirectory) 
-	{
-		boolean exists = false;
-		String expDirectory0 = getDirectoryName(expDirectory);
-		Experiment exp = null;			
-		for (int i=0; i< getItemCount(); i++) 
-		{
-			exp = getItemAt(i);
-			if (exp.getExperimentDirectory() .equals (expDirectory0)) 
-			{	
-				exists = true;
-				break;
-			}
-		}
 		
-		if (!exists) 
-		{
-			exp = new Experiment(expDirectory0);
-			exp.setExperimentDirectory(expDirectory0);
-			exp.setImagesDirectory(Experiment.getImagesDirectoryAsParentFromFileName(expDirectory0));
-			int experimentNewID  = 0;
-			for (int j=0; j< getItemCount(); j++) 
-			{
-				Experiment expi = getItemAt(j);
-				if (expi.experimentID > experimentNewID)
-					experimentNewID = expi.experimentID;
-			}
-			exp.experimentID = experimentNewID + 1;
-			addItem(exp);
-		}
-		return exp;
-	}
-	
-	private String getDirectoryName(String filename) 
+	public int addExperiment (Experiment exp, boolean allowDuplicates) 
 	{
-		File f0 = new File(filename);
-		String directoryPathName = f0.getAbsolutePath();
-		if (!f0.isDirectory()) 
+		String exptName = exp.toString();
+		int index = getExperimentIndexFromExptName(exptName);
+		if (allowDuplicates || index < 0)
 		{
-			Path path = Paths.get(directoryPathName);
-			directoryPathName = path.getParent().toString();
-		}
-		return directoryPathName;
+			addItem(exp);
+		}		
+		index = getExperimentIndexFromExptName(exptName);
+		return index;
 	}
 	
 }

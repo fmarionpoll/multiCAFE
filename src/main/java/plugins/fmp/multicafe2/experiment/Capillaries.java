@@ -200,23 +200,23 @@ public class Capillaries
 		for (int i= 0; i< nitems; i++) 
 		{
 			Node nodecapillary = XMLUtil.getElement(node, ID_CAPILLARY_+i);
-			Capillary cap = new Capillary();
-			cap.loadFromXML(nodecapillary);
-			if (desc.grouping == 2 && (cap.capStimulus != null && cap.capStimulus.equals(".."))) 
+			Capillary capNew = new Capillary();
+			capNew.loadFromXML(nodecapillary);
+			if (desc.grouping == 2 && (capNew.capStimulus != null && capNew.capStimulus.equals(".."))) 
 			{
-				if (cap.getCapillarySide().equals("R")) 
+				if (capNew.getCapillarySide().equals("R")) 
 				{
-					cap.capStimulus = desc.stimulusR;
-					cap.capConcentration = desc.concentrationR;
+					capNew.capStimulus = desc.stimulusR;
+					capNew.capConcentration = desc.concentrationR;
 				} 
 				else 
 				{
-					cap.capStimulus = desc.stimulusL;
-					cap.capConcentration = desc.concentrationL;
+					capNew.capStimulus = desc.stimulusL;
+					capNew.capConcentration = desc.concentrationL;
 				}
 			}
-			if (!isPresent(cap))
-				capillariesArrayList.add(cap);
+			if (!isPresent(capNew))
+				capillariesArrayList.add(capNew);
 		}
 		return true;
 	}
@@ -281,12 +281,12 @@ public class Capillaries
 		}
 	}
 	
-	public boolean isPresent(Capillary capnew) 
+	public boolean isPresent(Capillary capNew) 
 	{
 		boolean flag = false;
 		for (Capillary cap: capillariesArrayList) 
 		{
-			if (cap.capillaryName.contentEquals(capnew.capillaryName)) 
+			if (cap.capillaryName.contentEquals(capNew.capillaryName)) 
 			{
 				flag = true;
 				break;

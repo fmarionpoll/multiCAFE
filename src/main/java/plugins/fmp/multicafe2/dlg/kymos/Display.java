@@ -360,10 +360,10 @@ public class Display extends JPanel implements ViewerListener
 	public void updateResultsAvailable(Experiment exp)
 	{
 		isActionEnabled = false;
-		binsComboBox.removeAllItems();
 		// isActionEnabled: hack to select the right directory and then add subsequent available dir without calling actionListener
 		// see https://stackoverflow.com/questions/13434688/calling-additem-on-an-empty-jcombobox-triggers-actionperformed-event 
 		// when JComboBox is empty, adding the first item will trigger setSelected(0)
+		binsComboBox.removeAllItems();
 		List<String> list = Directories.getSortedListOfSubDirectoriesWithTIFF(exp.getExperimentDirectory());
 		for (int i = 0; i < list.size(); i++)
 		{
