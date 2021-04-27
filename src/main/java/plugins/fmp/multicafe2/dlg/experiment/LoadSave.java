@@ -356,7 +356,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
 		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0));
 		
-		eDAF.resultsDirectory = exptDirectory;
+		eDAF.resultsDirectory =  getV2ResultsDirectory(eDAF.cameraImagesDirectory, exptDirectory);
 		eDAF.binSubDirectory = getV2BinSubDirectory(eDAF.resultsDirectory, binSubDirectory);
 		
 		String kymosDir = eDAF.resultsDirectory + File.separator + eDAF.binSubDirectory;
@@ -364,6 +364,14 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff"); 
 		// TODO wrong if any bin
 		return eDAF;
+	}
+	
+	private String getV2ResultsDirectory(String parentDirectory, String resultsSubDirectory) 
+	{
+		 if (!resultsSubDirectory.contains(Experiment.RESULTS)) 
+			 resultsSubDirectory = parentDirectory + File.separator + Experiment.RESULTS;
+		
+	    return resultsSubDirectory;
 	}
 	
 	private String getV2BinSubDirectory(String parentDirectory, String binSubDirectory) 
@@ -401,7 +409,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		{
 	    	if (subDirectory .contains(Experiment.RESULTS)) {
 	    		subDirectory = Experiment.BIN + "60";
-	    		Directories.moveTIFFAndLINEfilesToSubdirectory(parentDirectory, subDirectory );
+	    		Directories.move_TIFFfiles_ToSubdirectory(parentDirectory, subDirectory );
+	    		Directories.move_xmlLINEfiles_ToSubdirectory(parentDirectory, subDirectory, true );
 	    	}
 		}
 	}
