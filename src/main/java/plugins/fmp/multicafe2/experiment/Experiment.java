@@ -704,6 +704,7 @@ public class Experiment
 		if (capillaries.xmlLoadOldCapillaries_Only(filename)) 
 		{
 			xmlSaveMCCapillaries_Only();
+			xmlSaveMCCapillaries_Measures();
 			try {
 		        Files.delete(Paths.get(filename));
 		    } catch (IOException e) {
@@ -767,6 +768,8 @@ public class Experiment
 	{
 		return capillaries.xmlSaveCapillaries_Measures(getKymosBinFullDirectory());
 	}
+	
+	// ----------------------------------
 	
 	private void transferExpDescriptorsToCapillariesDescriptors() 
 	{

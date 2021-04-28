@@ -495,7 +495,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	    boolean flag = (nodeMeta != null); 
 	    if (flag) 
 	    {
-	    	version 		= XMLUtil.getElementValue(nodeMeta, ID_VERSION, ID_VERSIONNUM);
+	    	version 		= XMLUtil.getElementValue(nodeMeta, ID_VERSION, "0.0.0");
 	    	indexImage 		= XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
 	        capillaryName 	= XMLUtil.getElementValue(nodeMeta, ID_NAME, capillaryName);
 	        filenameTIFF 	= XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);	        
