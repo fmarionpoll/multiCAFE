@@ -42,8 +42,8 @@ public class Display extends JPanel implements ViewerListener
 	private static final long serialVersionUID = -2103052112476748890L;
 	
 	public 	int			indexImagesCombo 		= -1;
-	public 	JComboBox<String> imagesComboBox 	= new JComboBox <String> (new String[] {"none"});
-			JComboBox<String> binsComboBox		= new JComboBox <String>();
+	public 	JComboBox<String> kymographsCombo 	= new JComboBox <String> (new String[] {"none"});
+			JComboBox<String> viewsCombo		= new JComboBox <String>();
 			JButton 	updateButton 			= new JButton("Update");
 			JButton  	previousButton		 	= new JButton("<");
 			JButton		nextButton				= new JButton(">");
@@ -65,13 +65,13 @@ public class Display extends JPanel implements ViewerListener
 		
 		JPanel panel1 = new JPanel (layout);
 		panel1.add(new JLabel("views"));
-		panel1.add(binsComboBox);
+		panel1.add(viewsCombo);
 		panel1.add(new JLabel(" kymograph"));
 		int bWidth = 30;
 		int bHeight = 21;
 		panel1.add(previousButton, BorderLayout.WEST); 
 		previousButton.setPreferredSize(new Dimension(bWidth, bHeight));
-		panel1.add(imagesComboBox, BorderLayout.CENTER);
+		panel1.add(kymographsCombo, BorderLayout.CENTER);
 		nextButton.setPreferredSize(new Dimension(bWidth, bHeight)); 
 		panel1.add(nextButton, BorderLayout.EAST);
 		add(panel1);
@@ -91,7 +91,7 @@ public class Display extends JPanel implements ViewerListener
 	
 	private void defineActionListeners()
 	{		
-		imagesComboBox.addActionListener(new ActionListener ()
+		kymographsCombo.addActionListener(new ActionListener ()
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{ 
@@ -124,8 +124,8 @@ public class Display extends JPanel implements ViewerListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{ 
-			int isel = imagesComboBox.getSelectedIndex()+1;
-			if (isel < imagesComboBox.getItemCount())
+			int isel = kymographsCombo.getSelectedIndex()+1;
+			if (isel < kymographsCombo.getItemCount())
 				selectKymographImage(isel);
 			}});
 		
@@ -133,16 +133,16 @@ public class Display extends JPanel implements ViewerListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{ 
-			int isel = imagesComboBox.getSelectedIndex()-1;
-			if (isel < imagesComboBox.getItemCount())
+			int isel = kymographsCombo.getSelectedIndex()-1;
+			if (isel < kymographsCombo.getItemCount())
 				selectKymographImage(isel);
 			}});
 		
-		binsComboBox.addActionListener(new ActionListener ()
+		viewsCombo.addActionListener(new ActionListener ()
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{
-				String localString = (String) binsComboBox.getSelectedItem();
+				String localString = (String) viewsCombo.getSelectedItem();
 				if (localString != null && localString.contains("."))
 					localString = null;
 				if (isActionEnabled)
@@ -153,15 +153,14 @@ public class Display extends JPanel implements ViewerListener
 	public void transferCapillaryNamesToComboBox(Experiment exp )
 	{
 		SwingUtilities.invokeLater(new Runnable() { public void run()
-		{
-//			isActionEnabled = false;	
-			imagesComboBox.removeAllItems();
+		{	
+			kymographsCombo.removeAllItems();
 			Collections.sort(exp.capillaries.capillariesArrayList); 
 			int ncapillaries = exp.capillaries.capillariesArrayList.size();
 			for (int i=0; i< ncapillaries; i++)
 			{
 				Capillary cap = exp.capillaries.capillariesArrayList.get(i);
-				imagesComboBox.addItem(cap.roi.getName());
+				kymographsCombo.addItem(cap.roi.getName());
 			}
 		}});	
 	}
@@ -275,14 +274,14 @@ public class Display extends JPanel implements ViewerListener
 	
 	void displayUpdate()
 	{	
-		if (imagesComboBox.getItemCount() < 1)
+		if (kymographsCombo.getItemCount() < 1)
 			return;	
 		displayON();
-		int item = imagesComboBox.getSelectedIndex();
+		int item = kymographsCombo.getSelectedIndex();
 		if (item < 0) {
 			item = indexImagesCombo >= 0 ? indexImagesCombo : 0;
 			indexImagesCombo = -1;
-			imagesComboBox.setSelectedIndex(item);
+			kymographsCombo.setSelectedIndex(item);
 		}
 		selectKymographImage(item); 
 	}
@@ -292,7 +291,7 @@ public class Display extends JPanel implements ViewerListener
 		updateButton.setEnabled(bEnable);
 		previousButton.setEnabled(bEnable);
 		nextButton.setEnabled(bEnable);
-		imagesComboBox.setEnabled(bEnable);
+		kymographsCombo.setEnabled(bEnable);
 		if (bEnable)
 			displayUpdateOnSwingThread(); 
 		else
@@ -313,11 +312,11 @@ public class Display extends JPanel implements ViewerListener
 		if (isel >= seqKymos.seq.getSizeT() )
 			isel = seqKymos.seq.getSizeT() -1;
 		
-		int icurrent = imagesComboBox.getSelectedIndex();
+		int icurrent = kymographsCombo.getSelectedIndex();
 		if (icurrent != isel)
 		{
 			seqKymos.validateRoisAtT(icurrent);
-			imagesComboBox.setSelectedIndex(isel);
+			kymographsCombo.setSelectedIndex(isel);
 		}
 		seqKymos.currentFrame = isel;
 		Viewer v = seqKymos.seq.getFirstViewer();
@@ -334,7 +333,7 @@ public class Display extends JPanel implements ViewerListener
 	public String getKymographTitle(int t)
 	{
 		return parent0.expListCombo.expListBinSubDirectory + ": " 
-				+((String) imagesComboBox.getSelectedItem()).substring(4);
+				+((String) kymographsCombo.getSelectedItem()).substring(4);
 	}
 	
 	@Override
@@ -363,26 +362,26 @@ public class Display extends JPanel implements ViewerListener
 		// isActionEnabled: hack to select the right directory and then add subsequent available dir without calling actionListener
 		// see https://stackoverflow.com/questions/13434688/calling-additem-on-an-empty-jcombobox-triggers-actionperformed-event 
 		// when JComboBox is empty, adding the first item will trigger setSelected(0)
-		binsComboBox.removeAllItems();
+		viewsCombo.removeAllItems();
 		List<String> list = Directories.getSortedListOfSubDirectoriesWithTIFF(exp.getExperimentDirectory());
 		for (int i = 0; i < list.size(); i++)
 		{
 			String dirName = list.get(i);
 			if (dirName == null || dirName .contains(Experiment.RESULTS))
 				dirName = ".";
-			binsComboBox.addItem(dirName);
+			viewsCombo.addItem(dirName);
 		}
 		isActionEnabled = true;
 		
 		String select = exp.getBinSubDirectory();
 		if (select == null)
 			select = ".";
-		binsComboBox.setSelectedItem(select);
+		viewsCombo.setSelectedItem(select);
 	}
 	
 	public String getBinSubdirectory()
 	{
-		String name = (String) binsComboBox.getSelectedItem();
+		String name = (String) viewsCombo.getSelectedItem();
 		if (name != null && !name .contains("bin_"))
 			name = null;
 		return name;

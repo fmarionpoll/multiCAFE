@@ -153,15 +153,15 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 			options.expList.index1 = parent0.expListCombo.getSelectedIndex();
 
 		options.detectAllKymos = allKymosCheckBox.isSelected();
-		parent0.paneKymos.tabDisplay.indexImagesCombo = parent0.paneKymos.tabDisplay.imagesComboBox.getSelectedIndex();
+		parent0.paneKymos.tabDisplay.indexImagesCombo = parent0.paneKymos.tabDisplay.kymographsCombo.getSelectedIndex();
 		if (!allKymosCheckBox.isSelected()) {
-			options.firstKymo = parent0.paneKymos.tabDisplay.imagesComboBox.getSelectedIndex();
+			options.firstKymo = parent0.paneKymos.tabDisplay.kymographsCombo.getSelectedIndex();
 			options.lastKymo = options.firstKymo;
 		}
 		else
 		{
 			options.firstKymo = 0;
-			options.lastKymo = parent0.paneKymos.tabDisplay.imagesComboBox.getItemCount()-1;
+			options.lastKymo = parent0.paneKymos.tabDisplay.kymographsCombo.getItemCount()-1;
 		}
 		options.detectGulpsThreshold = (int) detectGulpsThresholdSpinner.getValue();
 		options.transformForGulps = (TransformOp) transformForGulpsComboBox.getSelectedItem();

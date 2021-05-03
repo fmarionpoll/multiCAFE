@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -43,6 +44,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	private JButton 		openButton		= new JButton("Open...");
 	private JButton			searchButton 	= new JButton("Search...");
 	private JButton			closeButton		= new JButton("Close");
+	protected JCheckBox		filteredCheck	= new JCheckBox("List filtered");
+	
 	public List<String> 	selectedNames 	= new ArrayList<String> ();
 	private SelectFiles1 	dialogSelect 	= null;
 	
@@ -80,6 +83,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		subPanel.add(createButton);
 		subPanel.add(searchButton);
 		subPanel.add(closeButton);
+		subPanel.add(filteredCheck);
 		sequencePanel.add(subPanel, BorderLayout.LINE_START);
 	
 		defineActionListeners();
@@ -88,7 +92,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		JPanel twoLinesPanel = new JPanel (new GridLayout(2, 1));
 		twoLinesPanel.add(sequencePanel0);
 		twoLinesPanel.add(sequencePanel);
-		
+
 		return twoLinesPanel;
 	}
 	
@@ -96,7 +100,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	public void propertyChange(PropertyChangeEvent evt) {
 		if (evt.getPropertyName().equals("SELECT1_CLOSED")) 
 		{
-			parent1.tabInfosSeq.disableChangeFile = true;
+			parent1.tabInfos.disableChangeFile = true;
 			if (selectedNames.size() < 1)
 				return;
 			
@@ -107,7 +111,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
         	
         	SwingUtilities.invokeLater(new Runnable() { public void run() 
 			{	
-	        	parent1.tabInfosSeq.disableChangeFile = false;
+	        	parent1.tabInfos.disableChangeFile = false;
 	        	for (int i=1; i < selectedNames.size(); i++) 
 				{
 					ExperimentDirectories eDAF = getDirectoriesFromExptPath(selectedNames.get(i), binSubDirectory);
@@ -115,8 +119,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				}
 				selectedNames.clear();
 				updateBrowseInterface();
-		     	parent1.tabInfosSeq.disableChangeFile = true;
-				
+		     	parent1.tabInfos.disableChangeFile = true;
+		     	parent1.tabInfos.initCombosWithExpList();
 			}});
 		}
 	}
@@ -124,7 +128,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if (e.getStateChange() == ItemEvent.SELECTED) {
-			parent1.tabInfosSeq.updateCombos();
+			parent1.tabInfos.updateCombos();
 			openExperimentFromCombo();
 		} 
 		else 
@@ -141,13 +145,16 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	{
 		closeCurrentExperiment();
 		parent0.expListCombo.removeAllItems();
+		parent1.tabFilter.filterExperimentList(false);
+		parent1.tabInfos.clearCombos();
+		filteredCheck.setSelected(false);
 	}
 	
 	public void closeViewsForCurrentExperiment(Experiment exp) 
 	{
 		if (exp != null) 
 		{
-			parent0.paneExperiment.tabInfosSeq.getExperimentInfosFromDialog(exp);
+			parent0.paneExperiment.tabInfos.getExperimentInfosFromDialog(exp);
 			if (exp.seqCamData != null) 
 			{
 				exp.xmlSaveMCExperiment();
@@ -157,7 +164,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		}
 		parent0.paneCages.tabGraphics.closeAllCharts();
 		parent0.paneLevels.tabGraphs.closeAllCharts();
-		parent0.paneKymos.tabDisplay.imagesComboBox.removeAllItems();
+		parent0.paneKymos.tabDisplay.kymographsCombo.removeAllItems();
 	}
 	
 	public void closeCurrentExperiment() 
@@ -272,6 +279,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             	if (eDAF != null) 
             	{
 	            	int item = addExperimentFrom3NamesAnd2Lists(eDAF);
+	            	parent1.tabInfos.initCombosWithExpList();
 	            	parent0.expListCombo.setSelectedIndex(item);
             	}
             }});
@@ -285,6 +293,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             	if (eDAF != null) 
             	{
             		int item = addExperimentFrom3NamesAnd2Lists(eDAF);
+            		parent1.tabInfos.initCombosWithExpList();
             		parent0.expListCombo.setSelectedIndex(item);
             	}
             }});
@@ -316,6 +325,14 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()-1);
 			updateBrowseInterface();
 			}});
+		
+		filteredCheck.addActionListener(new ActionListener()  
+		{
+            @Override
+            public void actionPerformed(ActionEvent arg0) 
+            {
+            	parent1.tabFilter.filterExperimentList(filteredCheck.isSelected());
+            }});
 	}
 	
 	private int addExperimentFrom3NamesAnd2Lists(ExperimentDirectories eDAF) 

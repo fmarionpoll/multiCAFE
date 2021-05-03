@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe2.dlg.experiment;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -26,7 +27,7 @@ public class Intervals extends JPanel
 	private static final long serialVersionUID = -5739112045358747277L;
 	JSpinner 	startFrameJSpinner	= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
 	JSpinner 	endFrameJSpinner	= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
-	JSpinner 	binSize				= new JSpinner(new SpinnerNumberModel(1., 0., 1000., 1.));
+	JSpinner 	binSizeJSpinner		= new JSpinner(new SpinnerNumberModel(1., 0., 1000., 1.));
 	JComboMs 	binUnit 			= new JComboMs();
 	JButton		applyButton 		= new JButton("Apply changes");
 	JButton		refreshButton 		= new JButton("Refresh");
@@ -37,6 +38,10 @@ public class Intervals extends JPanel
 		setLayout(capLayout);
 		this.parent0 = parent0;
 
+		int bWidth = 50;
+		int bHeight = 21;
+		binSizeJSpinner.setPreferredSize(new Dimension(bWidth, bHeight));
+		
 		FlowLayout layout1 = new FlowLayout(FlowLayout.LEFT);
 		layout1.setVgap(0);
 		
@@ -49,7 +54,7 @@ public class Intervals extends JPanel
 		
 		JPanel panel1 = new JPanel(layout1);
 		panel1.add(new JLabel("Time between frames ", SwingConstants.RIGHT));
-		panel1.add(binSize);
+		panel1.add(binSizeJSpinner);
 		panel1.add(binUnit);
 		add(panel1);
 
@@ -70,7 +75,7 @@ public class Intervals extends JPanel
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp == null)
 					return;
-				exp.camBinImage_Ms = (long) (((double) binSize.getValue())* binUnit.getMsUnitValue());
+				exp.camBinImage_Ms = (long) (((double) binSizeJSpinner.getValue())* binUnit.getMsUnitValue());
 			}});
 			
 		refreshButton.addActionListener(new ActionListener () 
@@ -97,6 +102,6 @@ public class Intervals extends JPanel
 	private void refreshBinSize(Experiment exp) 
 	{
 		binUnit.setSelectedIndex(1);
-		binSize.setValue(exp.camBinImage_Ms/(double)binUnit.getMsUnitValue());
+		binSizeJSpinner.setValue(exp.camBinImage_Ms/(double)binUnit.getMsUnitValue());
 	}
 }

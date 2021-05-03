@@ -130,7 +130,6 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			exp.capillaries.desc_old.copy(exp.capillaries.desc);
 			tabInfos.setAllDescriptors(exp.capillaries);
 			tabCreate.setGroupingAndNumber(exp.capillaries);
-			parent0.paneExperiment.tabInfosSeq.setExperimentsInfosToDialog(exp);
 		}
 	}
 	
@@ -141,9 +140,9 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	}
 
 	@Override
-	public void stateChanged(ChangeEvent arg0) 
+	public void stateChanged(ChangeEvent e) 
 	{
-		JTabbedPane tabbedPane = (JTabbedPane) arg0.getSource();
+		JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
         int selectedIndex = tabbedPane.getSelectedIndex();
         tabAdjust.roisDisplayrefBar(selectedIndex == ID_ADJUST);
         parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(selectedIndex == ID_INFOS);

@@ -23,6 +23,7 @@ import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Directories;
 import plugins.fmp.multicafe2.tools.ImageTransformTools;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
+import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 import plugins.fmp.multicafe2.tools.ImageTransformTools.TransformOp;
 
 
@@ -59,10 +60,10 @@ public class Experiment
 	
 	// _________________________________________________
 	
-	public String			exp_boxID 				= new String("..");
-	public String			experiment				= new String("..");
-	public String 			comment1				= new String("..");
-	public String 			comment2				= new String("..");
+	private String			field_boxID 			= new String("..");
+	private String			field_experiment		= new String("..");
+	private String 			field_comment1			= new String("..");
+	private String 			field_comment2			= new String("..");
 	
 	public int				col						= -1;
 	public Experiment 		previousExperiment		= null;		// pointer to chain this experiment to another one before
@@ -115,6 +116,8 @@ public class Experiment
 		this.seqKymos   = new SequenceKymos();
 		strExperimentDirectory = this.seqCamData.getImagesDirectory() + File.separator + RESULTS;
 		loadFileIntervalsFromSeqCamData();
+		
+		xmlLoadExperiment(getMCExperimentFileName(null));
 	}
 	
 	public Experiment(ExperimentDirectories eADF) 
@@ -129,6 +132,8 @@ public class Experiment
 		seqCamData = new SequenceCamData(eADF.cameraImagesList);
 		loadFileIntervalsFromSeqCamData();
 		seqKymos = new SequenceKymos(eADF.kymosImagesList);
+		
+		xmlLoadExperiment(getMCExperimentFileName(null));
 	}
 	
 	// ----------------------------------
@@ -453,6 +458,7 @@ public class Experiment
 	}
 
 	// -------------------------------
+	
 	public boolean xmlLoadMCExperiment () 
 	{
 		if (strExperimentDirectory == null && seqCamData != null) 
@@ -494,12 +500,12 @@ public class Experiment
 		kymoLastCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
 		kymoBinCol_Ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
 		
-		if (exp_boxID .contentEquals("..")) 
+		if (field_boxID .contentEquals("..")) 
 		{
-			exp_boxID	= XMLUtil.getElementValue(node, ID_BOXID, "..");
-	        experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
-	        comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
-	        comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
+			field_boxID	= XMLUtil.getElementValue(node, ID_BOXID, "..");
+	        field_experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
+	        field_comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
+	        field_comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
 		}
 		return true;
 	}
@@ -522,10 +528,10 @@ public class Experiment
 			XMLUtil.setElementLongValue(node, ID_LASTKYMOCOLMS, kymoLastCol_Ms);
 			XMLUtil.setElementLongValue(node, ID_BINKYMOCOLMS, kymoBinCol_Ms); 	
 			
-			XMLUtil.setElementValue(node, ID_BOXID, exp_boxID);
-	        XMLUtil.setElementValue(node, ID_EXPERIMENT, experiment);
-	        XMLUtil.setElementValue(node, ID_COMMENT1, comment1);
-	        XMLUtil.setElementValue(node, ID_COMMENT2, comment2);
+			XMLUtil.setElementValue(node, ID_BOXID, field_boxID);
+	        XMLUtil.setElementValue(node, ID_EXPERIMENT, field_experiment);
+	        XMLUtil.setElementValue(node, ID_COMMENT1, field_comment1);
+	        XMLUtil.setElementValue(node, ID_COMMENT2, field_comment2);
 	        
 	        if (strImagesDirectory == null ) 
 	        	strImagesDirectory = seqCamData.getImagesDirectory();
@@ -586,7 +592,51 @@ public class Experiment
 			lastFrame = seqCamData.seq.getSizeT() -1;
 		return lastFrame;
 	}
-		
+	
+	public	String getField(EnumXLSColumnHeader field)
+	{
+		String strField = null;
+		switch (field)
+		{
+		case COMMENT1:
+			strField = field_comment1;
+			break;
+		case COMMENT2:
+			strField = field_comment2;
+			break;
+		case EXPT:
+			strField = field_experiment;
+			break;
+		case BOXID:
+			strField = field_boxID;
+			break;
+		default:
+			break;
+		}
+		return strField;
+	}
+	
+	public void setField (EnumXLSColumnHeader field, String strField)
+	{
+		switch (field)
+		{
+		case COMMENT1:
+			field_comment1 = strField;
+			break;
+		case COMMENT2:
+			field_comment2  = strField;
+			break;
+		case EXPT:
+			field_experiment = strField;
+			break;
+		case BOXID:
+			field_boxID  = strField; 
+			break;
+		default:
+				break;
+		}
+	}
+	
 	// --------------------------------------------
 	
 	public boolean adjustCapillaryMeasuresDimensions() 
@@ -688,12 +738,12 @@ public class Experiment
 			flag = xmlLoadOldCapillaries();
 		
 		// load mccapillaries description of experiment
-		if (exp_boxID .contentEquals("..")) 
+		if (field_boxID .contentEquals("..")) 
 		{
-			exp_boxID = capillaries.desc.old_boxID;
-			experiment = capillaries.desc.old_experiment;
-			comment1 = capillaries.desc.old_comment1;
-			comment2 = capillaries.desc.old_comment2;
+			field_boxID = capillaries.desc.old_boxID;
+			field_experiment = capillaries.desc.old_experiment;
+			field_comment1 = capillaries.desc.old_comment1;
+			field_comment2 = capillaries.desc.old_comment2;
 		}
 		return flag;
 	}
@@ -773,10 +823,10 @@ public class Experiment
 	
 	private void transferExpDescriptorsToCapillariesDescriptors() 
 	{
-		if (!exp_boxID 	.equals("..")) capillaries.desc.old_boxID = exp_boxID;
-		if (!experiment	.equals("..")) capillaries.desc.old_experiment = experiment;
-		if (!comment1	.equals("..")) capillaries.desc.old_comment1 = comment1;
-		if (!comment2	.equals("..")) capillaries.desc.old_comment2 = comment2;	
+		if (!field_boxID 	.equals("..")) capillaries.desc.old_boxID = field_boxID;
+		if (!field_experiment	.equals("..")) capillaries.desc.old_experiment = field_experiment;
+		if (!field_comment1	.equals("..")) capillaries.desc.old_comment1 = field_comment1;
+		if (!field_comment2	.equals("..")) capillaries.desc.old_comment2 = field_comment2;	
 	}
 
 	public boolean loadReferenceImage() 

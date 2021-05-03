@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe2.dlg.experiment;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -23,8 +24,8 @@ public class Analyze  extends JPanel
 	JRadioButton  	isFixedFrame		= new JRadioButton("from ", false);
 	JRadioButton  	isFloatingFrame		= new JRadioButton("all", true);
 
-	JSpinner 	startJSpinner			= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
-	JSpinner 	endJSpinner				= new JSpinner(new SpinnerNumberModel(99999999., 1., 99999999., 1.));
+	JSpinner 	startJSpinner			= new JSpinner(new SpinnerNumberModel(0., 0., 1000., 1.)); 
+	JSpinner 	endJSpinner				= new JSpinner(new SpinnerNumberModel(9999999., 1., 99999999., 1.));
 	JComboMs 	intervalsUnit 			= new JComboMs();
 	JSpinner 	binSize					= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
 	JComboMs 	binUnit 				= new JComboMs();
@@ -37,6 +38,12 @@ public class Analyze  extends JPanel
 		FlowLayout layout1 = new FlowLayout(FlowLayout.LEFT);
 		layout1.setVgap(0);
 
+		int bWidth = 50;
+		int bHeight = 21;
+		startJSpinner.setPreferredSize(new Dimension(bWidth, bHeight));
+		 bWidth = 80;
+		endJSpinner.setPreferredSize(new Dimension(bWidth, bHeight));
+		
 		JPanel panel1 = new JPanel(layout1);
 		panel1.add(new JLabel("Analyze "));
 		panel1.add(isFloatingFrame);

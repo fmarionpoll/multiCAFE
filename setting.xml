@@ -6,6 +6,7 @@
 <key name="mainMenuTip" value="false"/>
 <key name="virtualMode" value="false"/>
 <key name="viewerVirtual" value="false"/>
+<key name="magicWand" value="false"/>
 </section>
 <section name="confirms">
 <key name="exit" value="false"/>
@@ -52,9 +53,9 @@
 </section>
 <section name="export"/>
 </section>
-<key name="lastUpdateCheckTime" value="1619502483375"/>
+<key name="lastUpdateCheckTime" value="1619942574634"/>
 <key name="virtualMode" value="true"/>
-<key name="loaderFolder" value="E:\2020 Perrine\Oleuropein\conso_dose\19-04-18_Oleuropein_vs_sucrose"/>
+<key name="loaderFolder" value="E:\2021 Alizée\data\Cs\0.1 mM\cam01 13-04"/>
 </section>
 <section name="canvas">
 <section name="Canvas2D">
@@ -112,7 +113,7 @@
 </section>
 </section>
 <key name="version" value="2.1.4.0"/>
-<key name="lastUploadDate" value="1619423523664"/>
+<key name="lastUploadDate" value="1619942571013"/>
 <section name="frame">
 <section name="imageLoader">
 <key name="width" value="600"/>
@@ -136,7 +137,7 @@
 <section name="multicafe2">
 <section name="MultiCAFE2">
 <section name="gui">
-<key name="lastUsedPath" value="E:\2020 Perrine\Oleuropein\conso_dose\19-04-19_Blg+O+S_vs_sucrose_2"/>
+<key name="lastUsedPath" value="E:\2020 Perrine\Marseille"/>
 </section>
 </section>
 </section>
@@ -151,13 +152,13 @@
 <key name="MaximizedE" value="true"/>
 </section>
 <section name="inspector">
-<key name="XC" value="1607"/>
+<key name="XC" value="1585"/>
 <key name="YC" value="0"/>
 <key name="XE" value="600"/>
 <key name="YE" value="140"/>
 <key name="XI" value="600"/>
 <key name="YI" value="140"/>
-<key name="WidthC" value="305"/>
+<key name="WidthC" value="327"/>
 <key name="HeightC" value="878"/>
 <key name="WidthE" value="300"/>
 <key name="HeightE" value="600"/>
@@ -175,7 +176,7 @@
 <key name="YE" value="100"/>
 <key name="XI" value="100"/>
 <key name="YI" value="100"/>
-<key name="WidthC" value="297"/>
+<key name="WidthC" value="319"/>
 <key name="HeightC" value="788"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="600"/>
@@ -193,7 +194,7 @@
 <key name="YE" value="200"/>
 <key name="XI" value="200"/>
 <key name="YI" value="200"/>
-<key name="WidthC" value="297"/>
+<key name="WidthC" value="319"/>
 <key name="HeightC" value="788"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="300"/>

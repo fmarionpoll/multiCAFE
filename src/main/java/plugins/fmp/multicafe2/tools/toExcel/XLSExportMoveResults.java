@@ -110,10 +110,10 @@ public class XLSExportMoveResults  extends XLSExport
 		expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
 		expAll.lastImage_FileTime 	= exp.lastImage_FileTime;
 		expAll.setExperimentDirectory( exp.getExperimentDirectory());
-		expAll.exp_boxID 			= exp.exp_boxID;
-		expAll.experiment 			= exp.experiment;
-		expAll.comment1 			= exp.comment1;
-		expAll.comment2 			= exp.comment2;
+		expAll.setField(EnumXLSColumnHeader.BOXID, exp.getField(EnumXLSColumnHeader.BOXID));
+		expAll.setField(EnumXLSColumnHeader.EXPT, exp.getField(EnumXLSColumnHeader.EXPT));
+		expAll.setField(EnumXLSColumnHeader.COMMENT1, exp.getField(EnumXLSColumnHeader.COMMENT1));
+		expAll.setField(EnumXLSColumnHeader.COMMENT2, exp.getField(EnumXLSColumnHeader.COMMENT2));
 
 		Experiment expi = exp.nextExperiment;
 		while (expi != null ) 

@@ -6,13 +6,14 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
+import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 
 
 public class Infos  extends JPanel 
@@ -26,10 +27,10 @@ public class Infos  extends JPanel
 	private JComboBox<String>	comment2_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	boxID_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	experiment_JCombo 	= new JComboBox<String>();
-	private JCheckBox			experimentCheck		= new JCheckBox("Experiment");
-	private JCheckBox			boxIDCheck			= new JCheckBox("Box ID");
-	private JCheckBox			comment1Check		= new JCheckBox("Comment1");
-	private JCheckBox			comment2Check		= new JCheckBox("Comment2");
+	private JLabel				experimentCheck		= new JLabel("Experiment");
+	private JLabel				boxIDCheck			= new JLabel("Box ID");
+	private JLabel				comment1Check		= new JLabel("Comment1");
+	private JLabel				comment2Check		= new JLabel("Comt2");
 	
 	private MultiCAFE2 			parent0 			= null;
 	boolean 					disableChangeFile 	= false;
@@ -68,11 +69,6 @@ public class Infos  extends JPanel
 		comment1_JCombo.setEditable(true);
 		comment2_JCombo.setEditable(true);
 		
-		experimentCheck.setEnabled(false);
-		boxIDCheck.setEnabled(false);
-		comment1Check.setEnabled(false);
-		comment2Check.setEnabled(false);
-		
 		defineActionListeners();
 	}
 		
@@ -90,11 +86,12 @@ public class Infos  extends JPanel
 					for (int i = 0; i < nexpts; i++) 
 					{
 						Experiment exp = parent0.expListCombo.getItemAt(i);
-						if (newtext.equals(exp.exp_boxID) && exptName != null && exptName .equals(exp.experiment) ) 
+						if (newtext.equals(exp.getField(EnumXLSColumnHeader.BOXID)) 
+								&& exptName != null && exptName .equals(exp.getField(EnumXLSColumnHeader.EXPT)) ) 
 						{
-							addItem(experiment_JCombo, exp.experiment);
-							addItem(comment1_JCombo, exp.comment1);
-							addItem(comment2_JCombo, exp.comment2);
+							addItemToComboIfNew(exp.getField(EnumXLSColumnHeader.EXPT), experiment_JCombo);
+							addItemToComboIfNew(exp.getField(EnumXLSColumnHeader.COMMENT1), comment1_JCombo);
+							addItemToComboIfNew(exp.getField(EnumXLSColumnHeader.COMMENT2), comment2_JCombo);
 							break;
 						}
 					}
@@ -106,32 +103,32 @@ public class Infos  extends JPanel
 	
 	public void setExperimentsInfosToDialog(Experiment exp) 
 	{
-		if (exp.exp_boxID .equals(".."))
-			exp.exp_boxID = exp.capillaries.desc.old_boxID;
-		addItem(boxID_JCombo, exp.exp_boxID);
+		if (exp.getField(EnumXLSColumnHeader.BOXID) .equals(".."))
+			exp.setField(EnumXLSColumnHeader.BOXID, exp.capillaries.desc.old_boxID);
+		addItemToComboIfNew(exp.getField(EnumXLSColumnHeader.BOXID), boxID_JCombo);
 		
-		if (exp.experiment.equals(".."))
-			exp.experiment = exp.capillaries.desc.old_experiment;
-		addItem(experiment_JCombo, exp.experiment);
+		if (exp.getField(EnumXLSColumnHeader.EXPT).equals(".."))
+			exp.setField(EnumXLSColumnHeader.EXPT, exp.capillaries.desc.old_experiment);
+		addItemToComboIfNew(exp.getField(EnumXLSColumnHeader.EXPT), experiment_JCombo);
 		
-		if (exp.comment1 .equals(".."))
-			exp.comment1 = exp.capillaries.desc.old_comment1;
-		addItem(comment1_JCombo, exp.comment1);
+		if (exp.getField(EnumXLSColumnHeader.COMMENT1) .equals(".."))
+			exp.setField(EnumXLSColumnHeader.COMMENT1, exp.capillaries.desc.old_comment1);
+		addItemToComboIfNew(exp.getField(EnumXLSColumnHeader.COMMENT1), comment1_JCombo);
 		
-		if (exp.comment2 .equals(".."))
-			exp.comment2 = exp.capillaries.desc.old_comment2;
-		addItem(comment2_JCombo, exp.comment2);
+		if (exp.getField(EnumXLSColumnHeader.COMMENT2) .equals(".."))
+			exp.setField(EnumXLSColumnHeader.COMMENT2, exp.capillaries.desc.old_comment2);
+		addItemToComboIfNew(exp.getField(EnumXLSColumnHeader.COMMENT2), comment2_JCombo);
 	}
 
 	public void getExperimentInfosFromDialog(Experiment exp) 
 	{
-		exp.exp_boxID = (String) boxID_JCombo.getSelectedItem();
-		exp.experiment = (String) experiment_JCombo.getSelectedItem();
-		exp.comment1 = (String) comment1_JCombo.getSelectedItem();
-		exp.comment2 = (String) comment2_JCombo.getSelectedItem();
+		exp.setField(EnumXLSColumnHeader.BOXID, (String) boxID_JCombo.getSelectedItem());
+		exp.setField(EnumXLSColumnHeader.EXPT, (String) experiment_JCombo.getSelectedItem());
+		exp.setField(EnumXLSColumnHeader.COMMENT1, (String) comment1_JCombo.getSelectedItem());
+		exp.setField(EnumXLSColumnHeader.COMMENT2, (String) comment2_JCombo.getSelectedItem());
 	}
 	
-	private void addItem(JComboBox<String> combo, String text) 
+	private void addItemToComboIfNew(String text, JComboBox<String> combo) 
 	{
 		if (text == null)
 			return;
@@ -159,10 +156,26 @@ public class Infos  extends JPanel
 	
 	void updateCombos () 
 	{
-		addItem(boxID_JCombo, (String) boxID_JCombo.getSelectedItem());
-		addItem(experiment_JCombo, (String) experiment_JCombo.getSelectedItem());
-		addItem(comment1_JCombo, (String) comment1_JCombo.getSelectedItem());
-		addItem(comment2_JCombo, (String) comment2_JCombo.getSelectedItem());
+		addItemToComboIfNew((String) boxID_JCombo.getSelectedItem(), boxID_JCombo);
+		addItemToComboIfNew((String) experiment_JCombo.getSelectedItem(), experiment_JCombo);
+		addItemToComboIfNew((String) comment1_JCombo.getSelectedItem(), comment1_JCombo);
+		addItemToComboIfNew((String) comment2_JCombo.getSelectedItem(), comment2_JCombo);
+	}
+	
+	void initCombosWithExpList()
+	{
+		parent0.expListCombo.getHeaderToCombo(experiment_JCombo, EnumXLSColumnHeader.EXPT); 
+		parent0.expListCombo.getHeaderToCombo(comment1_JCombo, EnumXLSColumnHeader.COMMENT1);
+		parent0.expListCombo.getHeaderToCombo(comment2_JCombo, EnumXLSColumnHeader.COMMENT2);
+		parent0.expListCombo.getHeaderToCombo(boxID_JCombo, EnumXLSColumnHeader.BOXID);
+	}
+	
+	void clearCombos()
+	{
+		experiment_JCombo.removeAllItems(); 
+		comment1_JCombo.removeAllItems();
+		comment2_JCombo.removeAllItems();
+		boxID_JCombo.removeAllItems();
 	}
 
 }

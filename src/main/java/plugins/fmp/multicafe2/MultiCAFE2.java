@@ -23,7 +23,7 @@ import plugins.fmp.multicafe2.workinprogress_gpu.MCSpots_;
 
 public class MultiCAFE2 extends PluginActionable  
 {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE2 April 28, 2021", true, true, true, true);
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE2 May 2, 2021", true, true, true, true);
 	public ExperimentCombo 	expListCombo 	= new ExperimentCombo();
 	
 	public MCExperiment_ 	paneExperiment 	= new MCExperiment_();
@@ -34,7 +34,7 @@ public class MultiCAFE2 extends PluginActionable
 	public MCCages_ 		paneCages 		= new MCCages_();
 	public MCExcel_			paneExcel		= new MCExcel_();
 	
-	public 	JTabbedPane 	tabsPane 		= new JTabbedPane();
+	public JTabbedPane 		tabsPane 		= new JTabbedPane();
 	
 	//-------------------------------------------------------------------
 	
@@ -42,7 +42,7 @@ public class MultiCAFE2 extends PluginActionable
 	public void run() 
 	{		
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
-		paneExperiment.init(mainPanel, "Source", this);
+		paneExperiment.init(mainPanel, "Experiments", this);
 		paneCapillaries.init(mainPanel, "Capillaries", this);
 		paneKymos.init(mainPanel, "Kymographs", this);
 		paneLevels.init(mainPanel, "Levels", this);
@@ -56,6 +56,8 @@ public class MultiCAFE2 extends PluginActionable
 		mainFrame.center();
 		mainFrame.setVisible(true);
 		mainFrame.addToDesktopPane();
+		
+		paneExperiment.capPopupPanel.expand();
 	}	 
 	
 	public static void main (String[] args)

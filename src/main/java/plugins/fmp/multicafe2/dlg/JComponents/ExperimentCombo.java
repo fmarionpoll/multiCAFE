@@ -1,10 +1,13 @@
 package plugins.fmp.multicafe2.dlg.JComponents;
 
-import javax.swing.JComboBox;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JComboBox;
 
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafe2.experiment.Experiment;
+import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 import plugins.fmp.multicafe2.tools.toExcel.XLSExportOptions;
 
 public class ExperimentCombo extends JComboBox<Experiment>
@@ -17,9 +20,8 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	public 	int 	index0 						= 0;
 	public 	int 	index1 						= 0;
 	public	int		maxSizeOfCapillaryArrays 	= 0;
-	public 	String 	expListBinSubDirectory 			= null; 
+	public 	String 	expListBinSubDirectory 		= null; 
 	
-
 
 	public ExperimentCombo () 
 	{
@@ -163,10 +165,10 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	private boolean isSameDescriptors(Experiment exp, Experiment expi) 
 	{
 		boolean flag = true;
-		flag &= expi.experiment .equals(exp.experiment); 
-		flag &= expi.exp_boxID .equals(exp.exp_boxID);
-		flag &= expi.comment1 .equals(exp.comment1);
-		flag &= expi.comment2 .equals(exp.comment2);
+		flag &= expi.getField(EnumXLSColumnHeader.EXPT) .equals(exp.getField(EnumXLSColumnHeader.EXPT)) ; 
+		flag &= expi.getField(EnumXLSColumnHeader.BOXID) .equals(exp.getField(EnumXLSColumnHeader.BOXID)) ;
+		flag &= expi.getField(EnumXLSColumnHeader.COMMENT1) .equals(exp.getField(EnumXLSColumnHeader.COMMENT1));
+		flag &= expi.getField(EnumXLSColumnHeader.COMMENT2) .equals(exp.getField(EnumXLSColumnHeader.COMMENT2));
 		return flag;
 	}
 
@@ -210,9 +212,53 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		if (allowDuplicates || index < 0)
 		{
 			addItem(exp);
-		}		
-		index = getExperimentIndexFromExptName(exptName);
+			index = getExperimentIndexFromExptName(exptName);
+		}
 		return index;
 	}
 	
+	public List<String> getFieldFromAllExperiments(EnumXLSColumnHeader field) 
+	{
+		List<String> names = new ArrayList<>();
+		for (int i=0; i< getItemCount(); i++) 
+		{
+			Experiment exp = getItemAt(i);
+			String pattern = exp.getField(field);
+			if (!isFound (pattern, names))
+				names.add(pattern);
+		}
+		return names;
+	}
+	
+	public void getHeaderToCombo(JComboBox<String> combo, EnumXLSColumnHeader header)
+	{
+		combo.removeAllItems();
+		List<String> fieldList = getFieldFromAllExperiments(header);
+		for (String field: fieldList)
+		{
+			combo.addItem(field);
+		}
+	}
+
+	private boolean isFound (String pattern, List<String> names) 
+	{
+		boolean found = false;
+		for (String name: names) 
+		{
+			found = name.equalsIgnoreCase(pattern);
+			if (found)
+				break;
+		}
+		return found;
+	}
+	
+	public List<Experiment> getAllExperiments()
+	{
+		List<Experiment> expList = new ArrayList<Experiment>(getItemCount());
+		for (int i=0; i< getItemCount(); i++) 
+		{
+			expList.add(getItemAt(i));
+		}
+		return expList;
+	}
 }

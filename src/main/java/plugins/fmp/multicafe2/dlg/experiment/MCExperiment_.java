@@ -9,6 +9,8 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import icy.gui.component.PopupPanel;
 import icy.gui.frame.IcyFrame;
@@ -24,7 +26,7 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 
 
 
-public class MCExperiment_ extends JPanel implements ViewerListener
+public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListener
 {
 	/**
 	 * 
@@ -34,7 +36,8 @@ public class MCExperiment_ extends JPanel implements ViewerListener
 	public	PopupPanel 		capPopupPanel	= null;
 	public 	JTabbedPane 	tabsPane 		= new JTabbedPane();
 	public 	Options 		tabOptions 		= new Options();
-	public 	Infos			tabInfosSeq		= new Infos();
+	public 	Infos			tabInfos		= new Infos();
+	public 	Filter			tabFilter		= new Filter();
 	public 	Intervals		tabIntervals	= new Intervals();
 	public 	Analyze			tabAnalyze		= new Analyze();
 	public 	LoadSave		panelLoadSave	= new LoadSave();
@@ -48,36 +51,36 @@ public class MCExperiment_ extends JPanel implements ViewerListener
 		this.parent0 = parent0;
 
 		capPopupPanel = new PopupPanel(string);			
-		capPopupPanel.expand();
+		capPopupPanel.collapse();
 		mainPanel.add(capPopupPanel);
 		GridLayout tabsLayout = new GridLayout(2, 1);
 		
 		JPanel filesPanel = panelLoadSave.initPanel(parent0, this);
 		
-		tabInfosSeq.init(tabsLayout, parent0);
-		tabsPane.addTab("Infos", null, tabInfosSeq, "Define infos for this experiment/box");
-//		tabInfosSeq.addPropertyChangeListener(this);
+		tabInfos.init(tabsLayout, parent0);
+		tabsPane.addTab("Infos", null, tabInfos, "Define infos for this experiment/box");
+		
+		tabFilter.init(tabsLayout, parent0);
+		tabsPane.addTab("Filter", null, tabFilter, "Filter experiments based on descriptors");
+
 		
 		tabIntervals.init(tabsLayout, parent0);
 		tabsPane.addTab("Intervals", null, tabIntervals, "View/define stack image intervals");
-//		tabIntervals.addPropertyChangeListener(this);
 		
 		tabAnalyze.init(tabsLayout);
 		tabsPane.addTab("Analyze", null, tabAnalyze, "Define analysis intervals");
-//		tabAnalyze.addPropertyChangeListener(this);
 
 		tabOptions.init(tabsLayout, parent0);
 		tabsPane.addTab("Options", null, tabOptions, "Options to display data");
-//		tabOptions.addPropertyChangeListener(this);
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		JPanel capPanel = capPopupPanel.getMainPanel();
 		capPanel.setLayout(new BorderLayout());
-//		capPanel.add(sequencePanel0, BorderLayout.PAGE_START);
 		capPanel.add(filesPanel, BorderLayout.CENTER);
 		capPanel.add(tabsPane, BorderLayout.PAGE_END);	
 		
+		tabsPane.addChangeListener(this );
 		capPopupPanel.addComponentListener(new ComponentAdapter() 
 		{
 			@Override
@@ -93,13 +96,13 @@ public class MCExperiment_ extends JPanel implements ViewerListener
 	public void updateExpDialogs(Experiment exp) 
 	{
 		tabIntervals.displayCamDataIntervals(exp);
-		tabInfosSeq.setExperimentsInfosToDialog(exp);
+		tabInfos.setExperimentsInfosToDialog(exp);
 		parent0.paneKymos.tabDisplay.updateResultsAvailable(exp);
 	}
 
 	public void getExperimentInfosFromDialog(Experiment exp) 
 	{
-		tabInfosSeq.getExperimentInfosFromDialog(exp);
+		tabInfos.getExperimentInfosFromDialog(exp);
 	}
 	
 	public void updateViewerForSequenceCam(Experiment exp) 
@@ -163,6 +166,15 @@ public class MCExperiment_ extends JPanel implements ViewerListener
 	{
 		viewer.removeListener(this);
 	}
-	
+
+	@Override
+	public void stateChanged(ChangeEvent e) 
+	{
+		JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
+        if (tabbedPane.getSelectedIndex() == 1)
+			tabFilter.initLists();
+	}
+
+
 	
 }

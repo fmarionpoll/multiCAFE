@@ -103,8 +103,8 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 			if (v != null)
 				v.toFront();
 			parent0.paneExperiment.capPopupPanel.expand();
-			parent0.paneCapillaries.capPopupPanel.collapse();
-			parent0.paneExperiment.tabsPane.setSelectedIndex(3);
+//			parent0.paneCapillaries.capPopupPanel.collapse();
+			parent0.paneExperiment.tabsPane.setSelectedIndex(0);
 		} else if (iselected == 1) 
 		{
 			parent0.paneKymos.tabDisplay.displayUpdateOnSwingThread();
