@@ -36,7 +36,7 @@ public class XLSExport
     XSSFFont 					font_blue 			= null;
     XSSFWorkbook 				workbook			= null;		
     
-	ExperimentCombo 				expList 			= null;
+	ExperimentCombo 			expList 			= null;
 	List <XLSResults> 			rowListForOneExp 	= new ArrayList <XLSResults> ();
 
 
@@ -331,7 +331,7 @@ public class XLSExport
 		expAll.lastImage_FileTime 	= exp.lastImage_FileTime;
 		expAll.setField(EnumXLSColumnHeader.BOXID, exp.getField(EnumXLSColumnHeader.BOXID));
 		expAll.setField(EnumXLSColumnHeader.EXPT, exp.getField(EnumXLSColumnHeader.EXPT));
-		expAll.setField(EnumXLSColumnHeader.COMMENT2, exp.getField(EnumXLSColumnHeader.COMMENT1));
+		expAll.setField(EnumXLSColumnHeader.COMMENT1, exp.getField(EnumXLSColumnHeader.COMMENT1));
 		expAll.setField(EnumXLSColumnHeader.COMMENT2, exp.getField(EnumXLSColumnHeader.COMMENT2));	
 		expAll.setExperimentDirectory(exp.getExperimentDirectory());
 		

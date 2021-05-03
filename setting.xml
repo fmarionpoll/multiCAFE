@@ -53,7 +53,7 @@
 </section>
 <section name="export"/>
 </section>
-<key name="lastUpdateCheckTime" value="1619942574634"/>
+<key name="lastUpdateCheckTime" value="1620056759326"/>
 <key name="virtualMode" value="true"/>
 <key name="loaderFolder" value="E:\2021 Alizée\data\Cs\0.1 mM\cam01 13-04"/>
 </section>
@@ -113,7 +113,7 @@
 </section>
 </section>
 <key name="version" value="2.1.4.0"/>
-<key name="lastUploadDate" value="1619942571013"/>
+<key name="lastUploadDate" value="1620056755185"/>
 <section name="frame">
 <section name="imageLoader">
 <key name="width" value="600"/>
@@ -137,7 +137,7 @@
 <section name="multicafe2">
 <section name="MultiCAFE2">
 <section name="gui">
-<key name="lastUsedPath" value="E:\2020 Perrine\Marseille"/>
+<key name="lastUsedPath" value="E:\2021 Alizée\final"/>
 </section>
 </section>
 </section>
@@ -145,21 +145,21 @@
 </section>
 <section name="frame">
 <section name="main">
-<key name="XE" value="50"/>
-<key name="YE" value="35"/>
-<key name="WidthE" value="1863"/>
-<key name="HeightE" value="954"/>
-<key name="MaximizedE" value="true"/>
+<key name="XE" value="-2529"/>
+<key name="YE" value="80"/>
+<key name="WidthE" value="2489"/>
+<key name="HeightE" value="1224"/>
+<key name="MaximizedE" value="false"/>
 </section>
 <section name="inspector">
-<key name="XC" value="1585"/>
+<key name="XC" value="1823"/>
 <key name="YC" value="0"/>
 <key name="XE" value="600"/>
 <key name="YE" value="140"/>
 <key name="XI" value="600"/>
 <key name="YI" value="140"/>
-<key name="WidthC" value="327"/>
-<key name="HeightC" value="878"/>
+<key name="WidthC" value="658"/>
+<key name="HeightC" value="1062"/>
 <key name="WidthE" value="300"/>
 <key name="HeightE" value="600"/>
 <key name="WidthI" value="300"/>
@@ -176,8 +176,8 @@
 <key name="YE" value="100"/>
 <key name="XI" value="100"/>
 <key name="YI" value="100"/>
-<key name="WidthC" value="319"/>
-<key name="HeightC" value="788"/>
+<key name="WidthC" value="650"/>
+<key name="HeightC" value="972"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="600"/>
 <key name="WidthI" value="400"/>
@@ -194,8 +194,8 @@
 <key name="YE" value="200"/>
 <key name="XI" value="200"/>
 <key name="YI" value="200"/>
-<key name="WidthC" value="319"/>
-<key name="HeightC" value="788"/>
+<key name="WidthC" value="650"/>
+<key name="HeightC" value="972"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="300"/>
 <key name="WidthI" value="400"/>
