@@ -50,7 +50,7 @@ public class ImageTransformTools
 
 	public 	IcyBufferedImage 	referenceImage = null;
 	private int 				spanDiff = 3;
-	private SequenceCamData 	vinputSequence 	= null;
+	private SequenceCamData 	seqCamData 	= null;
 	
 	// -------------------------------------
 	public void setReferenceImage(IcyBufferedImage img) 
@@ -70,8 +70,7 @@ public class ImageTransformTools
 	
 	public void setSequence (SequenceCamData vinputSeq) 
 	{
-		vinputSequence = vinputSeq;
-//		referenceImage = vinputSequence.getImage(0, 0);
+		seqCamData = vinputSeq;
 	}
 		
 	public IcyBufferedImage transformImage (IcyBufferedImage inputImage, TransformOp transformop) 
@@ -158,10 +157,10 @@ public class ImageTransformTools
 			transformedImage= functionSubtractRef(inputImage); 
 			break;
 		case REF_PREVIOUS: 
-			int t = vinputSequence.currentFrame;
+			int t = seqCamData.currentFrame;
 			if (t > 0) 
 			{
-				referenceImage = vinputSequence.getImage(t-1, 0); 
+				referenceImage = seqCamData.getSeqImage(t-1, 0); 
 				transformedImage= functionSubtractRef(inputImage);
 				} 
 			break;	
@@ -189,8 +188,7 @@ public class ImageTransformTools
 	}
 	
 	public IcyBufferedImage transformImageFromVirtualSequence (int t, TransformOp transformop) {
-//		return transformImage(vinputSequence.getImage(t, 0), transformop);
-		return transformImage(vinputSequence.imageIORead(t), transformop);
+		return transformImage(seqCamData.getSeqImage(t, 0), transformop);
 	}
 	
 	private IcyBufferedImage functionSubtractCol(IcyBufferedImage sourceImage, int column) 
@@ -535,7 +533,7 @@ private IcyBufferedImage functionRGB_sumDiff (IcyBufferedImage sourceImage)
 	
 	private IcyBufferedImage functionSubtractRef(IcyBufferedImage sourceImage) {	
 		if (referenceImage == null)
-			referenceImage = vinputSequence.getImage(0, 0);
+			referenceImage = seqCamData.getSeqImage(0, 0);
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getSizeX(), sourceImage.getSizeY(),sourceImage.getSizeC(), sourceImage.getDataType_());
 		for (int c=0; c<sourceImage.getSizeC(); c++) 
 		{

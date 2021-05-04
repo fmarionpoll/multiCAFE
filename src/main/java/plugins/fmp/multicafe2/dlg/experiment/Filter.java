@@ -77,12 +77,7 @@ public class Filter  extends JPanel
 		comment2Combo.setPreferredSize(new Dimension(bWidth, bHeight));
 		panel1.add(clearButton);
 		add (panel1);
-		
-//		boxIDCombo.setEditable(true);
-//		experimentCombo.setEditable(true);	
-//		comment1Combo.setEditable(true);
-//		comment2Combo.setEditable(true);
-		
+	
 		defineActionListeners();
 	}
 	
@@ -113,6 +108,10 @@ public class Filter  extends JPanel
 			{ 
 				parent0.paneExperiment.panelLoadSave.filteredCheck.setSelected(false);
 				filterExperimentList(false);
+				experimentCheck.setSelected(false);
+				boxIDCheck.setSelected(false);
+				comment1Check.setSelected(false);
+				comment2Check.setSelected(false);
 			}});
 	}
 	

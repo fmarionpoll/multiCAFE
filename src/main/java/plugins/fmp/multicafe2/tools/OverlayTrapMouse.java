@@ -28,20 +28,6 @@ public class OverlayTrapMouse extends Overlay
     {
         super("Simple overlay");
     }
-    
-//	public void setMouseTrapOverlay (SequenceCamData seqCamData, boolean bActive, JButton pickColorButton, JComboBox<Color> colorPickCombo) {
-//		if (bActive) {
-//			if (seqCamData.trapMouseOverlay == null)
-//				seqCamData.trapMouseOverlay = new OverlayTrapMouse (pickColorButton, colorPickCombo);
-//			if (!seqCamData.seq.contains(seqCamData.trapMouseOverlay))
-//				seqCamData.seq.addOverlay(seqCamData.trapMouseOverlay);
-//		}
-//		else {
-//			if (seqCamData.trapMouseOverlay != null && seqCamData.seq.contains(seqCamData.trapMouseOverlay))
-//				seqCamData.seq.removeOverlay(seqCamData.trapMouseOverlay);
-//			seqCamData.trapMouseOverlay = null;
-//		}
-//	}
 	
     public OverlayTrapMouse(JButton pickColorButton, JComboBox<Color> colorPickCombo) 
     {
@@ -80,9 +66,9 @@ public class OverlayTrapMouse extends Overlay
             onMouseMoved(canvas.getSequence(), canvas.getPositionT(), imagePoint);
     }
  
-    private void onMouseClicked(Sequence sequence, int posT, Point5D.Double imagePoint) 
+    private void onMouseClicked(Sequence seq, int posT, Point5D.Double imagePoint) 
     {
-        Color c = getRGB(sequence, posT, imagePoint);
+        Color c = getRGB(seq, posT, imagePoint);
         if (c != null && pickColorButton != null) 
         {
             pickColorButton.setBackground(c);
@@ -109,9 +95,9 @@ public class OverlayTrapMouse extends Overlay
     }
 
 
-    private void onMouseMoved(Sequence sequence, int posT, Point5D.Double imagePoint) 
+    private void onMouseMoved(Sequence seq, int posT, Point5D.Double imagePoint) 
     {
-        Color c = getRGB(sequence, posT, imagePoint);
+        Color c = getRGB(seq, posT, imagePoint);
         if (c != null && pickColorButton != null) 
         {
         	pickColorButton.setBackground(c);
@@ -120,12 +106,12 @@ public class OverlayTrapMouse extends Overlay
         }
     }
 
-    private Color getRGB(Sequence sequence, int posT, Point5D.Double imagePoint) 
+    private Color getRGB(Sequence seq, int posT, Point5D.Double imagePoint) 
     {
         int x = (int) imagePoint.getX();
         int y = (int) imagePoint.getY();
         setPt(imagePoint);
-        IcyBufferedImage image = sequence.getImage(posT, 0);
+        IcyBufferedImage image = seq.getImage(posT, 0);
         boolean isInside = image.isInside(new Point(x, y));
         if (isInside)
         {

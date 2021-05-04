@@ -501,7 +501,7 @@ public class GaspardRigidRegistration
     /**
      * Translates the specified sequence
      * 
-     * @param seq
+     * @param sequence
      *            the sequence to translate
      * @param t
      *            the frame to translate (or -1 for all)
@@ -514,19 +514,19 @@ public class GaspardRigidRegistration
      * @param preserveImageSize
      * 			preserve image size
      */
-    public static void applyTranslation2D(Sequence seq, int t, int z, int c, Vector2d vector, boolean preserveImageSize)
+    public static void applyTranslation2D(Sequence sequence, int t, int z, int c, Vector2d vector, boolean preserveImageSize)
     {
         if (vector.lengthSquared() == 0.0) return;
         
-        int minT = (t == -1 ? 0 : t), maxT = (t == -1 ? seq.getSizeT() - 1 : t);
-        int minZ = (z == -1 ? 0 : z), maxZ = (z == -1 ? seq.getSizeZ() - 1 : z);
+        int minT = (t == -1 ? 0 : t), maxT = (t == -1 ? sequence.getSizeT() - 1 : t);
+        int minZ = (z == -1 ? 0 : z), maxZ = (z == -1 ? sequence.getSizeZ() - 1 : z);
         
         for (int time = minT; time <= maxT; time++)
             for (int slice = minZ; slice <= maxZ; slice++)
             {
-                IcyBufferedImage image = seq.getImage(time, slice);
+                IcyBufferedImage image = sequence.getImage(time, slice);
                 image = applyTranslation2D(image, c, vector, preserveImageSize);
-                seq.setImage(time, slice, image);
+                sequence.setImage(time, slice, image);
             }
     }
  

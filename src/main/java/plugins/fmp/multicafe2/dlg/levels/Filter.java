@@ -61,10 +61,10 @@ public class Filter  extends JPanel
 		return Integer.valueOf( spanText.getText() );
 	}
 	
-	private void crossCorrelatePixels (SequenceKymos kymographSeq, int span, int t, int c) 
+	private void crossCorrelatePixels (SequenceKymos kymo, int span, int t, int c) 
 	{
 		IcyBufferedImage image = null;
-		image = kymographSeq.seq.getImage(t, 0, c);
+		image = kymo.seq.getImage(t, 0, c);
 		double [] tabValues = Array1DUtil.arrayToDoubleArray(image.getDataXY(0), image.isSignedDataType()); 
 		int xwidth = image.getSizeX();
 		int yheight = image.getSizeY();
@@ -105,7 +105,7 @@ public class Filter  extends JPanel
 		}
 		String cs = "image shifts: " + Arrays.toString(ishift);
 		System.out.println(cs);
-		shiftColumnsOfPixels(ishift, kymographSeq);
+		shiftColumnsOfPixels(ishift, kymo);
 	}
 	
 	private void shiftColumnsOfPixels(int [] shift, SequenceKymos kymographSeq) 

@@ -74,7 +74,7 @@ public class BuildKymographs_series extends BuildSeries
 			Capillary cap = exp.capillaries.capillariesArrayList.get(t);
 			String filename = directory + File.separator + cap.getCapillaryName() + ".tiff";
 			File file = new File (filename);
-			IcyBufferedImage image = exp.seqKymos.seq.getImage(t, 0);
+			IcyBufferedImage image = exp.seqKymos.getSeqImage(t, 0);
 			try 
 			{
 				Saver.saveImage(image, file, true);
@@ -110,7 +110,7 @@ public class BuildKymographs_series extends BuildSeries
 		}
 		
 		int startFrame = (int) ((exp.kymoFirstCol_Ms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
-		IcyBufferedImage sourceImage0 = seqCamData.seq.getImage(startFrame, 0); 
+		IcyBufferedImage sourceImage0 = seqCamData.getSeqImage(startFrame, 0); 
 		seqCamData.seq.removeAllROI();
 		
 		final Sequence seqForRegistration = new Sequence();
@@ -146,7 +146,7 @@ public class BuildKymographs_series extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					IcyBufferedImage  sourceImage = seqCamData.imageIORead(t_from);
+					IcyBufferedImage  sourceImage = seqCamData.getSeqImage(t_from, 0);
 					if (options.doRegistration ) 
 						adjustImage(seqForRegistration, sourceImage);
 					int widthSourceImage = sourceImage.getWidth();				

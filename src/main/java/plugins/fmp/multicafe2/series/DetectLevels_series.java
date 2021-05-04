@@ -74,7 +74,7 @@ public class DetectLevels_series extends BuildSeries
 				@Override
 				public void run() 
 				{
-					final IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.imageIORead(t_index), options.transformForLevels);
+					final IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.getSeqImage(t_index, 0), options.transformForLevels);
 					int c = 0;
 					Object dataArray = sourceImage.getDataXY(c);
 					int[] sourceValues = Array1DUtil.arrayToIntArray(dataArray, sourceImage.isSignedDataType());

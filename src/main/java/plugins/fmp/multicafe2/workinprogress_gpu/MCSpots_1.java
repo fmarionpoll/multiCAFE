@@ -130,7 +130,7 @@ public class MCSpots_1 extends JPanel
 		avgY = new double [nYpoints][4];
 		
 		int z = 0;
-		IcyBufferedImage virtualImage = seqKymos.seq.getImage(imageIndex, z) ;
+		IcyBufferedImage virtualImage = seqKymos.getSeqImage(imageIndex, z) ;
 		
 		for (int chan= 0; chan< 3; chan++) 
 		{

@@ -2,7 +2,6 @@
 
 
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -19,7 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -143,28 +141,15 @@ public class SequenceCamData
 	
 	// ------------------------------------------------------
 	
-	public IcyBufferedImage imageIORead(int t) 
+	public IcyBufferedImage getSeqImage(int t, int z) 
 	{
 		currentFrame = t;
-		String name = imagesList.get(t);
-		BufferedImage image = null;
-		try 
-		{
-	    	image = ImageIO.read(new File(name));
-		} catch (IOException e) {
-			 e.printStackTrace();
-		}
-		return IcyBufferedImage.createFrom(image);
-	}
-	
-	public IcyBufferedImage getImage(int t, int z) 
-	{
 		return seq.getImage(t, z);
 	}
 	
 	public IcyBufferedImage getImageCopy(int t) 
 	{	
-		return IcyBufferedImageUtil.getCopy(getImage(t, 0));
+		return IcyBufferedImageUtil.getCopy(getSeqImage(t, 0));
 	}
 
 	// TODO: use GPU
@@ -177,14 +162,14 @@ public class SequenceCamData
 				int t0 = t-seqAnalysisStep;
 				if (t0 <0)
 					t0 = 0;
-				IcyBufferedImage ibufImage0 = getImage(t0, 0);
+				IcyBufferedImage ibufImage0 = getSeqImage(t0, 0);
 				image = subtractImagesAsInteger (image, ibufImage0);
 				}	
 				break;
 			case REF_T0:
 			case REF:
 				if (refImage == null)
-					refImage = getImage((int) seqAnalysisStart, 0);
+					refImage = getSeqImage((int) seqAnalysisStart, 0);
 				image = subtractImagesAsInteger (image, refImage);
 				break;
 			case NONE:

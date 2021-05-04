@@ -171,7 +171,7 @@ public class DetectFlies2_series extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					IcyBufferedImage workImage = exp.seqCamData.imageIORead(t_from);
+					IcyBufferedImage workImage = exp.seqCamData.getSeqImage(t_from, 0);
 					if (workImage == null)
 						return;
 					
@@ -300,7 +300,7 @@ public class DetectFlies2_series extends BuildSeries
 		if (limit > exp.seqCamData.nTotalFrames)
 			limit = exp.seqCamData.nTotalFrames;
 		limit = limit * exp.cages.detectBin_Ms +exp.cages.detectFirst_Ms ;
-		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getImage(t_from, 0));
+		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getSeqImage(t_from, 0));
 		viewerCamData = exp.seqCamData.seq.getFirstViewer();
 		displayRefViewers(exp);
 		
@@ -320,7 +320,7 @@ public class DetectFlies2_series extends BuildSeries
 				continue;
 			t_previous = t;
 			
-			final IcyBufferedImage  currentImage = exp.seqCamData.imageIORead(t);
+			final IcyBufferedImage  currentImage = exp.seqCamData.getSeqImage(t, 0);
 			IcyBufferedImage positiveImage = exp.seqCamData.subtractImagesAsInteger(currentImage, exp.seqCamData.refImage);
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, find_flies.rectangleAllCages));
 			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd); 
