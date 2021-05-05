@@ -2,6 +2,7 @@
 
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -18,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -59,11 +61,11 @@ public class SequenceCamData
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
-	volatile public List <String>	imagesList 				= new ArrayList<String>();
 	protected String 				csCamFileName 			= null;
 	
-	public boolean 					stopFlag 				= false;
-	public boolean 					threadRunning 			= false;
+	volatile public List <String>	imagesList 				= new ArrayList<String>();
+	volatile public boolean 		stopFlag 				= false;
+	volatile public boolean 		threadRunning 			= false;
 	
 	// ----------------------------------------
 	
@@ -398,4 +400,18 @@ public class SequenceCamData
 		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
 		return seq;
 	}
+	
+	public IcyBufferedImage imageIORead(int t) 
+	{
+		String name = imagesList.get(t);
+		BufferedImage image = null;
+		try 
+		{
+	    	image = ImageIO.read(new File(name));
+		} catch (IOException e) {
+			 e.printStackTrace();
+		}
+		return IcyBufferedImage.createFrom(image);
+	}
+	
 }

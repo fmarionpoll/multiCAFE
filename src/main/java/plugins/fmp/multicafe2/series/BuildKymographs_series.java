@@ -146,7 +146,7 @@ public class BuildKymographs_series extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					IcyBufferedImage  sourceImage = seqCamData.getSeqImage(t_from, 0);
+					IcyBufferedImage  sourceImage = seqCamData.imageIORead(t_from);
 					if (options.doRegistration ) 
 						adjustImage(seqForRegistration, sourceImage);
 					int widthSourceImage = sourceImage.getWidth();				
@@ -173,6 +173,7 @@ public class BuildKymographs_series extends BuildSeries
 				}}));
 		}
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
+		
 		seqCamData.seq.endUpdate();
         progressBar.close();
         /// ---------------------------------------------------------

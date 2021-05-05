@@ -158,6 +158,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			if (exp.seqCamData != null) 
 			{
 				exp.xmlSaveMCExperiment();
+//				parent0.paneCapillaries.tabFile.saveCapillaries_file(exp);
 				exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
 			}
 			exp.closeSequences();
