@@ -1,16 +1,20 @@
 package plugins.fmp.multicafe2.series;
 
-
-
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.imageio.ImageIO;
 import javax.swing.SwingWorker;
 import icy.gui.frame.progress.ProgressFrame;
+import icy.image.IcyBufferedImage;
 import icy.system.thread.Processor;
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.experiment.Experiment;
+
 
 
 public abstract class BuildSeries extends SwingWorker<Integer, Integer> 
@@ -139,6 +143,20 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 			flag = false;
 		}
 		return flag;
+	}
+    
+    public IcyBufferedImage imageIORead(String name) 
+	{
+    	BufferedImage image = null;
+		try 
+		{
+	    	image = ImageIO.read(new File(name));
+		} 
+		catch (IOException e) 
+		{
+			 e.printStackTrace();
+		}
+		return IcyBufferedImage.createFrom(image);
 	}
     
 }

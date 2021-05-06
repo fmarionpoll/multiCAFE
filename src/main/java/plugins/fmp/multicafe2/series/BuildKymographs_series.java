@@ -146,7 +146,7 @@ public class BuildKymographs_series extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					IcyBufferedImage  sourceImage = seqCamData.imageIORead(t_from);
+					IcyBufferedImage sourceImage = imageIORead(seqCamData.getFileName(t_from));
 					if (options.doRegistration ) 
 						adjustImage(seqForRegistration, sourceImage);
 					int widthSourceImage = sourceImage.getWidth();				

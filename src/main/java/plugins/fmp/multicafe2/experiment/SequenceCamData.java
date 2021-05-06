@@ -1,8 +1,6 @@
  package plugins.fmp.multicafe2.experiment;
 
-
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -19,7 +17,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -122,7 +119,7 @@ public class SequenceCamData
 	public String getFileName(int t) 
 	{
 		String csName = null;
-		if (status == EnumStatus.FILESTACK) 
+		if (status == EnumStatus.FILESTACK || status == EnumStatus.KYMOGRAPH) 
 			csName = imagesList.get(t);
 //		else if (status == EnumStatus.AVIFILE)
 //			csName = csFileName;
@@ -399,19 +396,6 @@ public class SequenceCamData
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
 		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
 		return seq;
-	}
-	
-	public IcyBufferedImage imageIORead(int t) 
-	{
-		String name = imagesList.get(t);
-		BufferedImage image = null;
-		try 
-		{
-	    	image = ImageIO.read(new File(name));
-		} catch (IOException e) {
-			 e.printStackTrace();
-		}
-		return IcyBufferedImage.createFrom(image);
 	}
 	
 }

@@ -100,7 +100,7 @@ public class DetectFlies1_series extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					final IcyBufferedImage  sourceImage = exp.seqCamData.imageIORead(t_from);
+					IcyBufferedImage sourceImage = imageIORead(exp.seqCamData.getFileName(t_from));
 					IcyBufferedImage workImage = exp.seqCamData.subtractReference(sourceImage, t_from, options.transformop); 
 					if (workImage == null)
 						return;

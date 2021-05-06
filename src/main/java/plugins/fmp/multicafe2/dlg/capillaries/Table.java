@@ -39,6 +39,7 @@ public class Table  extends JPanel
 	private JButton				duplicateAllButton = new JButton("Duplicate cell to all");
 	private JButton				getNfliesButton = new JButton("Get n flies from cage");
 	private JButton				getCageNoButton	= new JButton("Set cage n#");
+	private JButton				noFliesButton = new JButton("Cages0/0: no flies");
 	private MultiCAFE2 			parent0 		= null; 
 	private List <Capillary> 	capillariesArrayCopy = null;
 	
@@ -63,13 +64,14 @@ public class Table  extends JPanel
 		JPanel panel1 = new JPanel (flowLayout);
 		panel1.add(copyButton);
         panel1.add(pasteButton);
-        topPanel.add(panel1);
+        panel1.add(duplicateLRButton);
+        panel1.add(duplicateAllButton);
+       topPanel.add(panel1);
         
         JPanel panel2 = new JPanel (flowLayout);
         panel2.add(getCageNoButton);
         panel2.add(getNfliesButton);
-        panel2.add(duplicateLRButton);
-        panel2.add(duplicateAllButton);
+        panel2.add(noFliesButton);
         topPanel.add(panel2);
         
         JPanel tablePanel = new JPanel();
@@ -123,6 +125,27 @@ public class Table  extends JPanel
 				}
 				viewModel.fireTableDataChanged();
 			}});
+		
+		noFliesButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				int ncapillaries =  exp.capillaries.capillariesArrayList.size();
+				for (int i=0; i < ncapillaries; i++) 
+				{
+					Capillary cap = exp.capillaries.capillariesArrayList.get(i);
+					if (i< 2 || i >= ncapillaries-2) {
+						cap.capNFlies = 0;
+					}
+					else 
+					{
+						cap.capNFlies = 1;
+					}
+				}
+				viewModel.fireTableDataChanged();
+			}});
+
 		
 		duplicateLRButton.addActionListener(new ActionListener () 
 		{ 

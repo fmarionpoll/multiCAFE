@@ -69,12 +69,13 @@ public class DetectLevels_series extends BuildSeries
 			if (!options.detectL && capi.getCapillaryName().endsWith("1"))
 				return false;
 			final Capillary cap = capi;
+			final String name = seqKymos.getFileName(t_index);
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
 				public void run() 
 				{
-					final IcyBufferedImage  rawImage = seqKymos.imageIORead(t_index);
+					IcyBufferedImage rawImage = imageIORead(name);
 					final IcyBufferedImage sourceImage = tImg.transformImage (rawImage, options.transformForLevels);
 					int c = 0;
 					Object dataArray = sourceImage.getDataXY(c);
