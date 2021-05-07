@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -31,6 +32,8 @@ public class Infos  extends JPanel
 	private JLabel				boxIDCheck			= new JLabel("Box ID");
 	private JLabel				comment1Check		= new JLabel("Comment1");
 	private JLabel				comment2Check		= new JLabel("Comt2");
+	private JButton		openButton	= new JButton("Load...");
+	private JButton		saveButton	= new JButton("Save...");
 	
 	private MultiCAFE2 			parent0 			= null;
 	boolean 					disableChangeFile 	= false;
@@ -42,7 +45,7 @@ public class Infos  extends JPanel
 		setLayout(capLayout);
 
 		FlowLayout flowlayout = new FlowLayout(FlowLayout.LEFT);
-		flowlayout.setVgap(0);
+		flowlayout.setVgap (1);
 		JPanel panel0 = new JPanel (flowlayout);
 		panel0.add(experimentCheck);
 		experimentCheck.setHorizontalTextPosition(SwingConstants.RIGHT);
@@ -50,19 +53,18 @@ public class Infos  extends JPanel
 		panel0.add(boxIDCheck);
 		boxIDCheck.setHorizontalTextPosition(SwingConstants.RIGHT);
 		panel0.add(boxID_JCombo);
+		panel0.add(openButton);
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowlayout);
 		panel1.add(comment1Check);
 		comment1Check.setHorizontalTextPosition(SwingConstants.RIGHT);
 		panel1.add(comment1_JCombo);
-		add (panel1);
-
-//		JPanel panel2 = new JPanel(flowlayout);
 		panel1.add(comment2Check);
 		comment2Check.setHorizontalTextPosition(SwingConstants.RIGHT);
 		panel1.add(comment2_JCombo);
-//		add( panel2);
+		panel1.add(saveButton);
+		add (panel1);
 
 		boxID_JCombo.setEditable(true);
 		experiment_JCombo.setEditable(true);	
@@ -97,6 +99,29 @@ public class Infos  extends JPanel
 					}
 				}
 			}});
+		
+		openButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				if (exp != null) {
+					exp.xmlLoadMCExperiment ();
+					setExperimentsInfosToDialog(exp);
+				}
+			}});
+		
+		saveButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				if (exp != null) {
+					getExperimentInfosFromDialog(exp);
+					exp.xmlSaveMCExperiment();
+				}
+			}});
+			
 	}
 		
 	// set/ get

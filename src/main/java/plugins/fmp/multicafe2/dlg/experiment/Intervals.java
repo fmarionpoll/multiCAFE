@@ -43,7 +43,7 @@ public class Intervals extends JPanel
 		binSizeJSpinner.setPreferredSize(new Dimension(bWidth, bHeight));
 		
 		FlowLayout layout1 = new FlowLayout(FlowLayout.LEFT);
-		layout1.setVgap(0);
+		layout1.setVgap(1);
 		
 		JPanel panel0 = new JPanel(layout1);
 		panel0.add(new JLabel("Frame ", SwingConstants.RIGHT));

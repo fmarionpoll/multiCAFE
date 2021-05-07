@@ -77,7 +77,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		
 		JPanel sequencePanel = new JPanel(new BorderLayout());
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
-		layout.setVgap(0);
+		layout.setVgap(1);
 		JPanel subPanel = new JPanel(layout);
 		subPanel.add(openButton);
 		subPanel.add(createButton);
@@ -158,8 +158,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			if (exp.seqCamData != null) 
 			{
 				exp.xmlSaveMCExperiment();
-//				parent0.paneCapillaries.tabFile.saveCapillaries_file(exp);
-				exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
 			}
 			exp.closeSequences();
 		}

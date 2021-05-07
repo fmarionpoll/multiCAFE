@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import plugins.fmp.multicafe2.MultiCAFE2;
+import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 
@@ -40,7 +41,7 @@ public class Filter  extends JPanel
 	
 	private MultiCAFE2 			parent0 			= null;
 			boolean 			disableChangeFile 	= false;
-			List<Experiment> 	expList 			= new ArrayList<Experiment>();
+			ExperimentCombo 	savedExpList 		= new ExperimentCombo();
 	
 	
 	void init(GridLayout capLayout, MultiCAFE2 parent0) 
@@ -49,7 +50,7 @@ public class Filter  extends JPanel
 		setLayout(capLayout);
 			
 		FlowLayout flowlayout = new FlowLayout(FlowLayout.LEFT);
-		flowlayout.setVgap(0);
+		flowlayout.setVgap(1);
 		
 		int bWidth = 100;
 		int bHeight = 21;
@@ -83,11 +84,14 @@ public class Filter  extends JPanel
 	
 	public void initLists() 
 	{
-		expList = parent0.expListCombo.getAllExperiments();
-		parent0.expListCombo.getHeaderToCombo(experimentCombo, EnumXLSColumnHeader.EXPT); 
-		parent0.expListCombo.getHeaderToCombo(comment1Combo, EnumXLSColumnHeader.COMMENT1);
-		parent0.expListCombo.getHeaderToCombo(comment2Combo, EnumXLSColumnHeader.COMMENT2);
-		parent0.expListCombo.getHeaderToCombo(boxIDCombo, EnumXLSColumnHeader.BOXID);
+		if (!parent0.paneExperiment.panelLoadSave.filteredCheck.isSelected())
+		{
+			savedExpList.setExperimentsFromList(parent0.expListCombo.getExperimentsAsList());
+		}
+		savedExpList.getHeaderToCombo(experimentCombo, EnumXLSColumnHeader.EXPT); 
+		savedExpList.getHeaderToCombo(comment1Combo, EnumXLSColumnHeader.COMMENT1);
+		savedExpList.getHeaderToCombo(comment2Combo, EnumXLSColumnHeader.COMMENT2);
+		savedExpList.getHeaderToCombo(boxIDCombo, EnumXLSColumnHeader.BOXID);
 	}
 	
 	
@@ -97,8 +101,6 @@ public class Filter  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				parent0.paneExperiment.panelLoadSave.filteredCheck.setEnabled(true);
-				parent0.paneExperiment.panelLoadSave.filteredCheck.setSelected(true);
 				filterExperimentList(true);
 			}});
 		
@@ -106,33 +108,46 @@ public class Filter  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				parent0.paneExperiment.panelLoadSave.filteredCheck.setSelected(false);
 				filterExperimentList(false);
-				experimentCheck.setSelected(false);
-				boxIDCheck.setSelected(false);
-				comment1Check.setSelected(false);
-				comment2Check.setSelected(false);
+				clearAllCheckBoxes();
 			}});
 	}
 	
-	public void filterExperimentList(boolean yes)
+	public void filterExperimentList(boolean isFilterON)
 	{
-		if (yes)
+		if (isFilterON)
+			parent0.expListCombo.setExperimentsFromList (filterAllItems());
+		else 
 		{
-			initializeExperimentComboWithList(filterAllItems());
+			parent0.expListCombo.setExperimentsFromList (savedExpList.getExperimentsAsList());
+			clearAllCheckBoxes ();
 		}
-		else
-		{
-			initializeExperimentComboWithList(expList);
-		}
+		
+		if (parent0.expListCombo.getItemCount() > 0)
+			parent0.expListCombo.setSelectedIndex(0);
+		initLists();
+		parent0.paneExperiment.panelLoadSave.filteredCheck.setSelected(isFilterON);
+	}
+	
+	private void clearAllCheckBoxes () 
+	{
+		boolean select = false;
+		experimentCheck.setSelected(select);
+		boxIDCheck.setSelected(select);
+		comment1Check.setSelected(select);
+		comment2Check.setSelected(select);
 	}
 	
 	private List<Experiment> filterAllItems() 
 	{
 		List<Experiment> filteredList = new ArrayList<Experiment>();
-		if (expList.size() == 0)
-			expList = parent0.expListCombo.getAllExperiments();
-		filteredList.addAll(expList);
+		if (savedExpList.getItemCount() == 0) 
+		{
+			savedExpList.setExperimentsFromList(parent0.expListCombo.getExperimentsAsList());
+		}
+		System.out.println("create filtered list from savedExptList with n=" + savedExpList.getItemCount());
+		filteredList.addAll(savedExpList.getExperimentsAsList());
+		
 		if (experimentCheck.isSelected())
 			filterItem(filteredList, EnumXLSColumnHeader.EXPT, (String) experimentCombo.getSelectedItem());
 		if (boxIDCheck.isSelected())
@@ -142,17 +157,6 @@ public class Filter  extends JPanel
 		if (comment2Check.isSelected())
 			filterItem(filteredList, EnumXLSColumnHeader.COMMENT2, (String) comment2Combo.getSelectedItem());
 		return filteredList;
-	}
-	
-	void initializeExperimentComboWithList (List<Experiment> listExp)
-	{
-		parent0.expListCombo.removeAllItems();
-		for (Experiment exp: listExp)
-		{
-			parent0.expListCombo.addItem(exp);
-		}
-		if (parent0.expListCombo.getItemCount() > 0)
-			parent0.expListCombo.setSelectedIndex(0);
 	}
 	
 	void filterItem(List<Experiment> filteredList, EnumXLSColumnHeader header, String filter)

@@ -235,9 +235,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		combo.removeAllItems();
 		List<String> fieldList = getFieldFromAllExperiments(header);
 		for (String field: fieldList)
-		{
 			combo.addItem(field);
-		}
 	}
 
 	private boolean isFound (String pattern, List<String> names) 
@@ -252,7 +250,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		return found;
 	}
 	
-	public List<Experiment> getAllExperiments()
+	public List<Experiment> getExperimentsAsList()
 	{
 		List<Experiment> expList = new ArrayList<Experiment>(getItemCount());
 		for (int i=0; i< getItemCount(); i++) 
@@ -261,4 +259,13 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		}
 		return expList;
 	}
+	
+	public void setExperimentsFromList (List<Experiment> listExp)
+	{
+		removeAllItems();
+		for (Experiment exp: listExp)
+			addItem(exp);
+	}
+
+	
 }

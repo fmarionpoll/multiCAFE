@@ -45,7 +45,7 @@ public class Options extends JPanel
 		this.parent0 = parent0;
 		
 		FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
-		layout.setVgap(0);
+		layout.setVgap(1);
 		
 		JPanel panel2 = new JPanel(layout);
 		panel2.add(new JLabel("Load: "));
