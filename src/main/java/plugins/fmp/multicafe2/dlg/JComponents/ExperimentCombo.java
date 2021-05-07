@@ -252,11 +252,10 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	
 	public List<Experiment> getExperimentsAsList()
 	{
-		List<Experiment> expList = new ArrayList<Experiment>(getItemCount());
-		for (int i=0; i< getItemCount(); i++) 
-		{
+		int nitems = getItemCount();
+		List<Experiment> expList = new ArrayList<Experiment>(nitems);
+		for (int i=0; i< nitems; i++) 
 			expList.add(getItemAt(i));
-		}
 		return expList;
 	}
 	

@@ -129,7 +129,7 @@ public class Filter  extends JPanel
 			parent0.paneExperiment.panelLoadSave.filteredCheck.setSelected(setFilter);
 	}
 	
-	private void clearAllCheckBoxes () 
+	void clearAllCheckBoxes () 
 	{
 		boolean select = false;
 		experimentCheck.setSelected(select);

@@ -145,7 +145,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	{
 		closeCurrentExperiment();
 		parent0.expListCombo.removeAllItems();
-		parent1.tabFilter.filterExperimentList(false);
+		parent1.tabFilter.clearAllCheckBoxes ();
+		parent1.tabFilter.savedExpList.removeAllItems();
 		parent1.tabInfos.clearCombos();
 		filteredCheck.setSelected(false);
 	}
