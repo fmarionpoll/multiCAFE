@@ -148,14 +148,17 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 				Viewer v = event.getSource(); 
 				int idViewer = v.getSequence().getId(); 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				int idCurrentExp = exp.seqCamData.seq.getId();
-				if (idViewer == idCurrentExp) 
+				if (exp != null)
 				{
-					int t = v.getPositionT(); 
-					v.setTitle(exp.seqCamData.getDecoratedImageName(t));
-					if (parent0.paneCages.bTrapROIsEdit) 
-						exp.saveDetRoisToPositions();
-					exp.updateROIsAt(t);
+					int idCurrentExp = exp.seqCamData.seq.getId();
+					if (idViewer == idCurrentExp) 
+					{
+						int t = v.getPositionT(); 
+						v.setTitle(exp.seqCamData.getDecoratedImageName(t));
+						if (parent0.paneCages.bTrapROIsEdit) 
+							exp.saveDetRoisToPositions();
+						exp.updateROIsAt(t);
+					}
 				}
 			}
 		}

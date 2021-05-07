@@ -138,7 +138,8 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null) { 
+				if (exp != null) 
+				{ 
 					boolean flag = exp.loadReferenceImage(); 
 					if (flag) 
 					{

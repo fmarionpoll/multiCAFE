@@ -122,17 +122,18 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		      public void itemStateChanged(ItemEvent e) 
 		      {
 		    	  Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-		    	  	if (exp != null) 
-		    	  	{
-			  			if (overlayCheckBox.isSelected()) {
-							if (ov == null)
-								ov = new OverlayThreshold(exp.seqCamData);
-							exp.seqCamData.seq.addOverlay(ov);
-							updateOverlay(exp);
-						}
-						else
-							removeOverlay(exp);
-		    	  	}
+		    	  if (exp != null) 
+		    	  {
+		    		  if (overlayCheckBox.isSelected()) 
+		    		  {
+		    			  if (ov == null)
+		    				  ov = new OverlayThreshold(exp.seqCamData);
+		    			  exp.seqCamData.seq.addOverlay(ov);
+		    			  updateOverlay(exp);
+		    		  }
+		    		  else
+		    			  removeOverlay(exp);
+		    	  }
 		      }});
 
 		startComputationButton.addActionListener(new ActionListener () 

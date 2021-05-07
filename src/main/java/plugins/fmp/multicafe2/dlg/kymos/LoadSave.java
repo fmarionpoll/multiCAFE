@@ -67,12 +67,10 @@ public class LoadSave extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-				if (exp != null) 
-				{
-					if (loadDefaultKymos(exp))
-						firePropertyChange("KYMOS_OPEN", false, true);
-				}
+				if (exp != null && loadDefaultKymos(exp))
+					firePropertyChange("KYMOS_OPEN", false, true);
 			}});
+		
 		saveButtonKymos.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 

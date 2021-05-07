@@ -77,7 +77,8 @@ public class Edit  extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				deletePointsIncluded(exp);
+				if (exp != null)
+					deletePointsIncluded(exp);
 			}});
 		
 		cropButton.addActionListener(new ActionListener () 
@@ -85,7 +86,8 @@ public class Edit  extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				cropPointsToLeftLimit(exp);
+				if (exp != null)
+					cropPointsToLeftLimit(exp);
 			}});
 		
 		restoreButton.addActionListener(new ActionListener () 
@@ -93,7 +95,8 @@ public class Edit  extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				restoreCroppedPoints(exp);
+				if (exp != null)
+					restoreCroppedPoints(exp);
 			}});
 	}
 

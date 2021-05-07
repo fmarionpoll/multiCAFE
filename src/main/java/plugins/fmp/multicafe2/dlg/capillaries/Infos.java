@@ -64,17 +64,20 @@ public class Infos extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-				exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
-				if (exp != null && exp.capillaries.capillariesArrayList.size() > 0) 
+				if (exp != null)
 				{
-					Capillary cap = exp.capillaries.capillariesArrayList.get(0);
-					ArrayList<Point2D> pts = cap.roi.getPoints();
-					Point2D pt1 = pts.get(0);
-					Point2D pt2 = pts.get(pts.size() -1);
-					double npixels = Math.sqrt(
-							(pt2.getY() - pt1.getY()) * (pt2.getY() - pt1.getY()) 
-							+ (pt2.getX() - pt1.getX()) * (pt2.getX() - pt1.getX()));
-					capillaryPixelsTextField.setValue((int) npixels);
+					exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
+					if (exp.capillaries.capillariesArrayList.size() > 0) 
+					{
+						Capillary cap = exp.capillaries.capillariesArrayList.get(0);
+						ArrayList<Point2D> pts = cap.roi.getPoints();
+						Point2D pt1 = pts.get(0);
+						Point2D pt2 = pts.get(pts.size() -1);
+						double npixels = Math.sqrt(
+								(pt2.getY() - pt1.getY()) * (pt2.getY() - pt1.getY()) 
+								+ (pt2.getX() - pt1.getX()) * (pt2.getX() - pt1.getX()));
+						capillaryPixelsTextField.setValue((int) npixels);
+					}
 				}
 			}});
 		
@@ -83,9 +86,12 @@ public class Infos extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-				exp.capillaries.transferDescriptionToCapillaries();
-				dialog = new Table();
-            	dialog.initialize(parent0, capillariesArrayCopy);
+				if (exp != null)
+				{
+					exp.capillaries.transferDescriptionToCapillaries();
+					dialog = new Table();
+					dialog.initialize(parent0, capillariesArrayCopy);
+				}
 			}});
 	}
 

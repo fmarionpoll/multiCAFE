@@ -54,9 +54,12 @@ public class LoadSave extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				loadCages(exp);
-				firePropertyChange("LOAD_DATA", false, true);
-				parent0.paneCages.tabsPane.setSelectedIndex(3);
+				if (exp != null)
+				{
+					loadCages(exp);
+					firePropertyChange("LOAD_DATA", false, true);
+					parent0.paneCages.tabsPane.setSelectedIndex(3);
+				}
 			}});
 		
 		saveCagesButton.addActionListener(new ActionListener () 
@@ -64,8 +67,11 @@ public class LoadSave extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				saveCagesAndMeasures(exp);
-				parent0.paneCages.tabsPane.setSelectedIndex(3);
+				if (exp != null)
+				{
+					saveCagesAndMeasures(exp);
+					parent0.paneCages.tabsPane.setSelectedIndex(3);
+				}
 			}});
 	}
 

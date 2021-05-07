@@ -161,8 +161,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			}
 			exp.closeSequences();
 		}
-//		parent0.paneCages.tabGraphics.closeAllCharts();
-//		parent0.paneLevels.tabGraphs.closeAllCharts();
 		parent0.paneKymos.tabDisplay.kymographsCombo.removeAllItems();
 	}
 	
@@ -186,7 +184,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		if (isel >= 0 && listenerIndex != isel) 
 		{
 			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-			exp.seqCamData.seq.addListener(this);
+			if (exp != null)
+				exp.seqCamData.seq.addListener(this);
 		}
 		listenerIndex = isel;
 	}
@@ -194,6 +193,9 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	boolean openExperimentFromCombo() 
 	{
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		if (exp == null)
+			return false;
+		
 		exp.xmlLoadMCExperiment();
 		boolean flag = true;
 		if (exp.seqCamData != null) 
@@ -211,8 +213,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				flag &= loadMeasures(exp);
 			if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected() && flag)
 				displayGraphs(exp);
-//			else 
-//				parent0.paneLevels.tabGraphs.closeAllCharts();
 				
 			if (parent1.tabOptions.cagesCheckBox.isSelected()) 
 				parent0.paneCages.tabFile.loadCages(exp);
@@ -465,20 +465,23 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		if (sequenceEvent.getSourceType() == SequenceEventSourceType.SEQUENCE_DATA )
 		{
 			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-			if (exp.seqCamData.seq != null 
-			&& sequenceEvent.getSequence() == exp.seqCamData.seq)
+			if (exp != null)
 			{
-				Viewer v = exp.seqCamData.seq.getFirstViewer();
-				int t = v.getPositionT(); 
-				v.setTitle(exp.seqCamData.getDecoratedImageName(t));
-			}
-			else if (exp.seqKymos.seq != null 
-				&& sequenceEvent.getSequence() == exp.seqKymos.seq)
-			{
-				Viewer v = exp.seqKymos.seq.getFirstViewer();
-				int t = v.getPositionT(); 
-				String title = parent0.paneKymos.tabDisplay.getKymographTitle(t);
-				v.setTitle(title);
+				if (exp.seqCamData.seq != null 
+				&& sequenceEvent.getSequence() == exp.seqCamData.seq)
+				{
+					Viewer v = exp.seqCamData.seq.getFirstViewer();
+					int t = v.getPositionT(); 
+					v.setTitle(exp.seqCamData.getDecoratedImageName(t));
+				}
+				else if (exp.seqKymos.seq != null 
+					&& sequenceEvent.getSequence() == exp.seqKymos.seq)
+				{
+					Viewer v = exp.seqKymos.seq.getFirstViewer();
+					int t = v.getPositionT(); 
+					String title = parent0.paneKymos.tabDisplay.getKymographTitle(t);
+					v.setTitle(title);
+				}
 			}
 		}
 	}

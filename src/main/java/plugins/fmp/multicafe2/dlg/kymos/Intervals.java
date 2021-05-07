@@ -72,7 +72,8 @@ public class Intervals extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-				setKymoIntervalsFromDialog(exp);
+				if (exp != null)
+					setKymoIntervalsFromDialog(exp);
 			}});
 	}
 	

@@ -90,10 +90,11 @@ public class Edit extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null) {
+				if (exp != null) 
+				{
 					exp.saveDetRoisToPositions();
 					findFirstMissed(exp);
-					}
+				}
 			}});
 		
 		findAllButton.addActionListener(new ActionListener () 

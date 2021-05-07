@@ -57,7 +57,8 @@ public class LoadSave  extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-				loadCapillaries_Measures(exp);
+				if (exp != null)
+					loadCapillaries_Measures(exp);
 			}}); 
 		
 		saveMeasuresButton.addActionListener(new ActionListener () 
@@ -65,8 +66,11 @@ public class LoadSave  extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-				saveCapillaries_Measures(exp);
-				firePropertyChange("MEASURES_SAVE", false, true);
+				if (exp != null)
+				{
+					saveCapillaries_Measures(exp);
+					firePropertyChange("MEASURES_SAVE", false, true);
+				}
 			}});	
 	}
 

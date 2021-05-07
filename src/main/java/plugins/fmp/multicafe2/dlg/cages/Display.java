@@ -46,10 +46,13 @@ public class Display  extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				exp.capillaries.transferDescriptionToCapillaries();
-				exp.cages.transferNFliesFromCapillariesToCages(exp.capillaries.capillariesArrayList);
-				dialog = new Table();
-            	dialog.initialize(parent0, cagesArrayCopy);
+				if (exp != null)
+				{
+					exp.capillaries.transferDescriptionToCapillaries();
+					exp.cages.transferNFliesFromCapillariesToCages(exp.capillaries.capillariesArrayList);
+					dialog = new Table();
+	            	dialog.initialize(parent0, cagesArrayCopy);
+				}
 			}});
 	}
 	

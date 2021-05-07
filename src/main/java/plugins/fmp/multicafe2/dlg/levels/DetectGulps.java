@@ -180,7 +180,9 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	void startComputation(boolean detectGulps) 
 	{
 		kymosDisplayFiltered2();	
-		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();	
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		if (exp == null)
+			return;
 		exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
 		
 		threadDetectGulps = new DetectGulps_series();

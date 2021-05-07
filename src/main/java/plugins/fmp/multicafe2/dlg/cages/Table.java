@@ -86,12 +86,15 @@ public class Table extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				cageArrayCopy.clear();
-				for (Cage cage: exp.cages.cageList ) 
+				if (exp != null)
 				{
-					cageArrayCopy.add(cage);
+					cageArrayCopy.clear();
+					for (Cage cage: exp.cages.cageList ) 
+					{
+						cageArrayCopy.add(cage);
+					}
+					pasteButton.setEnabled(true);
 				}
-				pasteButton.setEnabled(true);
 			}});
 		
 		pasteButton.addActionListener(new ActionListener () 
@@ -99,22 +102,25 @@ public class Table extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				for (Cage cageFrom: cageArrayCopy ) 
+				if (exp != null)
 				{
-					cageFrom.valid = false;
-					for (Cage cageTo: exp.cages.cageList) 
+					for (Cage cageFrom: cageArrayCopy ) 
 					{
-						if (!cageFrom.cageRoi.getName().equals (cageTo.cageRoi.getName()))
-							continue;
-						cageFrom.valid 			= true;
-						cageTo.cageNFlies 		= cageFrom.cageNFlies;
-						cageTo.cageAge 			= cageFrom.cageAge;
-						cageTo.strCageComment 	= cageFrom.strCageComment;
-						cageTo.strCageSex 		= cageFrom.strCageSex;
-						cageTo.strCageStrain 	= cageFrom.strCageStrain;
+						cageFrom.valid = false;
+						for (Cage cageTo: exp.cages.cageList) 
+						{
+							if (!cageFrom.cageRoi.getName().equals (cageTo.cageRoi.getName()))
+								continue;
+							cageFrom.valid 			= true;
+							cageTo.cageNFlies 		= cageFrom.cageNFlies;
+							cageTo.cageAge 			= cageFrom.cageAge;
+							cageTo.strCageComment 	= cageFrom.strCageComment;
+							cageTo.strCageSex 		= cageFrom.strCageSex;
+							cageTo.strCageStrain 	= cageFrom.strCageStrain;
+						}
 					}
+					viewModel.fireTableDataChanged();
 				}
-				viewModel.fireTableDataChanged();
 			}});
 		
 		duplicateAllButton.addActionListener(new ActionListener () 
@@ -122,23 +128,26 @@ public class Table extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				int rowIndex = tableView.getSelectedRow();
-				int columnIndex = tableView.getSelectedColumn();
-				if (rowIndex >= 0) 
+				if (exp != null)
 				{
-					Cage cage0 = exp.cages.cageList.get(rowIndex);	
-					for (Cage cage: exp.cages.cageList) 
+					int rowIndex = tableView.getSelectedRow();
+					int columnIndex = tableView.getSelectedColumn();
+					if (rowIndex >= 0) 
 					{
-						if (cage.cageRoi.getName().equals(cage0.cageRoi.getName()))
-							continue;
-						switch (columnIndex) {
-			            case 1: cage.cageNFlies 	= cage0.cageNFlies; break;
-			            case 2: cage.strCageStrain 	= cage0.strCageStrain; break;
-			            case 3: cage.strCageSex 	= cage0.strCageSex; break;
-			            case 4: cage.cageAge 		= cage0.cageAge; break;
-			            case 5: cage.strCageComment = cage0.strCageComment; break;
-			            default: break;
-			        	}					
+						Cage cage0 = exp.cages.cageList.get(rowIndex);	
+						for (Cage cage: exp.cages.cageList) 
+						{
+							if (cage.cageRoi.getName().equals(cage0.cageRoi.getName()))
+								continue;
+							switch (columnIndex) {
+				            case 1: cage.cageNFlies 	= cage0.cageNFlies; break;
+				            case 2: cage.strCageStrain 	= cage0.strCageStrain; break;
+				            case 3: cage.strCageSex 	= cage0.strCageSex; break;
+				            case 4: cage.cageAge 		= cage0.cageAge; break;
+				            case 5: cage.strCageComment = cage0.strCageComment; break;
+				            default: break;
+				        	}					
+						}
 					}
 				}
 			}});
@@ -147,8 +156,11 @@ public class Table extends JPanel
 	void close() {
 		dialogFrame.close();
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-		exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
-		parent0.paneCapillaries.tabFile.saveCapillaries_file(exp);
+		if (exp != null)
+		{
+			exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
+			parent0.paneCapillaries.tabFile.saveCapillaries_file(exp);
+		}
 	}
 	
 	private void setFixedColumnProperties (TableColumn column) 

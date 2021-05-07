@@ -113,7 +113,8 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp =  (Experiment) parent0.expListCombo.getSelectedItem();
-				deletePointsIncluded(exp);
+				if (exp != null)
+					deletePointsIncluded(exp);
 			}});
 	}
 

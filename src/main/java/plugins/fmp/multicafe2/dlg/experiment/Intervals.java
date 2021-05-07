@@ -73,9 +73,8 @@ public class Intervals extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-				if (exp == null)
-					return;
-				exp.camBinImage_Ms = (long) (((double) binSizeJSpinner.getValue())* binUnit.getMsUnitValue());
+				if (exp != null)
+					exp.camBinImage_Ms = (long) (((double) binSizeJSpinner.getValue())* binUnit.getMsUnitValue());
 			}});
 			
 		refreshButton.addActionListener(new ActionListener () 
@@ -83,10 +82,11 @@ public class Intervals extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-				if (exp == null)
-					return;
-				exp.loadFileIntervalsFromSeqCamData();
-				refreshBinSize(exp);
+				if (exp != null)
+				{
+					exp.loadFileIntervalsFromSeqCamData();
+					refreshBinSize(exp);
+				}
 			}});
 	}
 	

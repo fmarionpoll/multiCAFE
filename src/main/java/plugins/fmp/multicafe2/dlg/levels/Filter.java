@@ -49,9 +49,8 @@ public class Filter  extends JPanel
 					SequenceKymos seqKymos = exp.seqKymos; 
 					int span = getSpan();
 					int c = 1;
-					for (int t=0; t < seqKymos.seq.getSizeT(); t++) {
+					for (int t=0; t < seqKymos.seq.getSizeT(); t++) 
 						crossCorrelatePixels(seqKymos, t, span, c);
-					}
 				}
 			}});
 	}
