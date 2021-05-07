@@ -109,13 +109,12 @@ public class Filter  extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				filterExperimentList(false);
-				clearAllCheckBoxes();
 			}});
 	}
 	
-	public void filterExperimentList(boolean isFilterON)
+	public void filterExperimentList(boolean setFilter)
 	{
-		if (isFilterON)
+		if (setFilter)
 			parent0.expListCombo.setExperimentsFromList (filterAllItems());
 		else 
 		{
@@ -126,7 +125,8 @@ public class Filter  extends JPanel
 		if (parent0.expListCombo.getItemCount() > 0)
 			parent0.expListCombo.setSelectedIndex(0);
 		initLists();
-		parent0.paneExperiment.panelLoadSave.filteredCheck.setSelected(isFilterON);
+		if (setFilter != parent0.paneExperiment.panelLoadSave.filteredCheck.isSelected())
+			parent0.paneExperiment.panelLoadSave.filteredCheck.setSelected(setFilter);
 	}
 	
 	private void clearAllCheckBoxes () 
@@ -140,14 +140,7 @@ public class Filter  extends JPanel
 	
 	private List<Experiment> filterAllItems() 
 	{
-		List<Experiment> filteredList = new ArrayList<Experiment>();
-		if (savedExpList.getItemCount() == 0) 
-		{
-			savedExpList.setExperimentsFromList(parent0.expListCombo.getExperimentsAsList());
-		}
-		System.out.println("create filtered list from savedExptList with n=" + savedExpList.getItemCount());
-		filteredList.addAll(savedExpList.getExperimentsAsList());
-		
+		List<Experiment> filteredList = new ArrayList<Experiment>(savedExpList.getExperimentsAsList());		
 		if (experimentCheck.isSelected())
 			filterItem(filteredList, EnumXLSColumnHeader.EXPT, (String) experimentCombo.getSelectedItem());
 		if (boxIDCheck.isSelected())

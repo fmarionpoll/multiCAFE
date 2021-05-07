@@ -194,6 +194,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	boolean openExperimentFromCombo() 
 	{
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		exp.xmlLoadMCExperiment();
 		boolean flag = true;
 		if (exp.seqCamData != null) 
 		{
@@ -311,9 +312,10 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-			if (parent0.expListCombo.getSelectedIndex() < (parent0.expListCombo.getItemCount() -1)) 
+			if (parent0.expListCombo.getSelectedIndex() < (parent0.expListCombo.getItemCount()-1)) 
 				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()+1);
-			updateBrowseInterface();
+			else 
+				updateBrowseInterface();
 			}});
 		
 		previousButton.addActionListener(new ActionListener () 
@@ -322,7 +324,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			{ 
 			if (parent0.expListCombo.getSelectedIndex() > 0) 
 				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()-1);
-			updateBrowseInterface();
+			else 
+				updateBrowseInterface();
 			}});
 		
 		filteredCheck.addActionListener(new ActionListener()  
