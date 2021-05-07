@@ -14,6 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import icy.sequence.Sequence;
+import icy.sequence.SequenceEvent;
+import icy.sequence.SequenceListener;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
@@ -22,7 +25,7 @@ import plugins.fmp.multicafe2.tools.chart.YPositionsCharts;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
-public class Graphs extends JPanel 
+public class Graphs extends JPanel implements SequenceListener
 {
 	/**
 	 * 
@@ -87,6 +90,7 @@ public class Graphs extends JPanel
 		final Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBounds();
 		Point ptRelative = new Point(0,30);
 		final int deltay = 230;
+		exp.seqCamData.seq.addListener(this);
 	
 		if (moveCheckbox.isSelected() ) 
 		{
@@ -148,5 +152,17 @@ public class Graphs extends JPanel
 			chart.mainChartFrame.close();
 			chart = null;
 		}
+	}
+
+	@Override
+	public void sequenceChanged(SequenceEvent sequenceEvent) 
+	{
+	}
+
+	@Override
+	public void sequenceClosed(Sequence sequence) 
+	{
+		sequence.removeListener(this);
+		closeAllCharts();
 	}
 }

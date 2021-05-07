@@ -14,6 +14,9 @@ import javax.swing.JPanel;
 
 import icy.gui.util.GuiUtil;
 import icy.gui.viewer.Viewer;
+import icy.sequence.Sequence;
+import icy.sequence.SequenceEvent;
+import icy.sequence.SequenceListener;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Capillaries;
 import plugins.fmp.multicafe2.experiment.Capillary;
@@ -22,7 +25,7 @@ import plugins.fmp.multicafe2.tools.chart.XYMultiChart;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
-public class Graphs extends JPanel 
+public class Graphs extends JPanel implements SequenceListener
 {
 	/**
 	 * 
@@ -85,6 +88,7 @@ public class Graphs extends JPanel
 		Point ptRelative = new Point(0, rectv.height); 
 		int dx = 5;
 		int dy = 5; 
+		exp.seqKymos.seq.addListener(this);
 		
 		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVEL)
 				&& isThereAnyDataToDisplay(exp, EnumXLSExportType.BOTTOMLEVEL))  
@@ -168,6 +172,18 @@ public class Graphs extends JPanel
 				break;
 		}
 		return flag;
+	}
+
+	@Override
+	public void sequenceChanged(SequenceEvent sequenceEvent) 
+	{
+	}
+
+	@Override
+	public void sequenceClosed(Sequence sequence) 
+	{
+		sequence.removeListener(this);
+		closeAllCharts();
 	}
 }
 

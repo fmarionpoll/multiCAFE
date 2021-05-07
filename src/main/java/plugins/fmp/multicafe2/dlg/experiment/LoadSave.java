@@ -161,8 +161,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			}
 			exp.closeSequences();
 		}
-		parent0.paneCages.tabGraphics.closeAllCharts();
-		parent0.paneLevels.tabGraphs.closeAllCharts();
+//		parent0.paneCages.tabGraphics.closeAllCharts();
+//		parent0.paneLevels.tabGraphs.closeAllCharts();
 		parent0.paneKymos.tabDisplay.kymographsCombo.removeAllItems();
 	}
 	
@@ -210,8 +210,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				flag &= loadMeasures(exp);
 			if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected() && flag)
 				displayGraphs(exp);
-			else 
-				parent0.paneLevels.tabGraphs.closeAllCharts();
+//			else 
+//				parent0.paneLevels.tabGraphs.closeAllCharts();
 				
 			if (parent1.tabOptions.cagesCheckBox.isSelected()) 
 				parent0.paneCages.tabFile.loadCages(exp);
