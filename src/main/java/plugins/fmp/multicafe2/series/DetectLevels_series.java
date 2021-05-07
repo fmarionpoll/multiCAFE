@@ -36,7 +36,7 @@ public class DetectLevels_series extends BuildSeries
 	private boolean loadExperimentDataToDetectLevels(Experiment exp) 
 	{
 		exp.xmlLoadMCExperiment();
-		exp.xmlLoadMCCapillaries_Only();
+		exp.xmlLoadMCCapillaries();
 		return exp.loadKymographs();
 	}
 	
@@ -68,7 +68,7 @@ public class DetectLevels_series extends BuildSeries
 				return false;
 			if (!options.detectL && capi.getCapillaryName().endsWith("1"))
 				return false;
-			final Capillary cap = capi;
+//			final Capillary cap = capi;
 			final String name = seqKymos.getFileName(t_index);
 			futures.add(processor.submit(new Runnable () 
 			{
@@ -81,10 +81,10 @@ public class DetectLevels_series extends BuildSeries
 					Object dataArray = sourceImage.getDataXY(c);
 					int[] sourceValues = Array1DUtil.arrayToIntArray(dataArray, sourceImage.isSignedDataType());
 
-					cap.indexImage= t_index;
-					cap.ptsDerivative = null;
-					cap.gulpsRois = null;
-					cap.limitsOptions.copyFrom(options);
+					capi.indexImage= t_index;
+					capi.ptsDerivative = null;
+					capi.gulpsRois = null;
+					capi.limitsOptions.copyFrom(options);
 					
 					int firstColumn = 0;
 					int lastColumn = sourceImage.getSizeX()-1;
@@ -99,8 +99,8 @@ public class DetectLevels_series extends BuildSeries
 					} 
 					else 
 					{
-						cap.ptsTop = null;
-						cap.ptsBottom = null;
+						capi.ptsTop = null;
+						capi.ptsBottom = null;
 					}
 					int oldiytop = 0;		// assume that curve goes from left to right with jitter 
 					int oldiybottom = yheight-1;
@@ -126,13 +126,13 @@ public class DetectLevels_series extends BuildSeries
 					}					
 					if (options.analyzePartOnly) 
 					{
-						cap.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
-						cap.ptsBottom.polylineLimit.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
+						capi.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
+						capi.ptsBottom.polylineLimit.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
 					} 
 					else 
 					{
-						cap.ptsTop    = new CapillaryLimit(cap.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
-						cap.ptsBottom = new CapillaryLimit(cap.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
+						capi.ptsTop    = new CapillaryLimit(capi.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
+						capi.ptsBottom = new CapillaryLimit(capi.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
 					}
 				}}));
 		}
