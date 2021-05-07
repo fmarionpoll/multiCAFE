@@ -85,9 +85,7 @@ public class Filter  extends JPanel
 	public void initLists() 
 	{
 		if (!parent0.paneExperiment.panelLoadSave.filteredCheck.isSelected())
-		{
 			savedExpList.setExperimentsFromList(parent0.expListCombo.getExperimentsAsList());
-		}
 		savedExpList.getHeaderToCombo(experimentCombo, EnumXLSColumnHeader.EXPT); 
 		savedExpList.getHeaderToCombo(comment1Combo, EnumXLSColumnHeader.COMMENT1);
 		savedExpList.getHeaderToCombo(comment2Combo, EnumXLSColumnHeader.COMMENT2);
@@ -115,7 +113,9 @@ public class Filter  extends JPanel
 	public void filterExperimentList(boolean setFilter)
 	{
 		if (setFilter)
+		{
 			parent0.expListCombo.setExperimentsFromList (filterAllItems());
+		}
 		else 
 		{
 			parent0.expListCombo.setExperimentsFromList (savedExpList.getExperimentsAsList());
@@ -124,7 +124,6 @@ public class Filter  extends JPanel
 		
 		if (parent0.expListCombo.getItemCount() > 0)
 			parent0.expListCombo.setSelectedIndex(0);
-		initLists();
 		if (setFilter != parent0.paneExperiment.panelLoadSave.filteredCheck.isSelected())
 			parent0.paneExperiment.panelLoadSave.filteredCheck.setSelected(setFilter);
 	}

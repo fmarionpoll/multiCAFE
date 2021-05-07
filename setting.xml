@@ -113,7 +113,7 @@
 </section>
 </section>
 <key name="version" value="2.1.4.0"/>
-<key name="lastUploadDate" value="1620305689194"/>
+<key name="lastUploadDate" value="1620392543194"/>
 <section name="frame">
 <section name="imageLoader">
 <key name="width" value="600"/>
@@ -145,8 +145,8 @@
 </section>
 <section name="frame">
 <section name="main">
-<key name="XE" value="-22"/>
-<key name="YE" value="21"/>
+<key name="XE" value="5"/>
+<key name="YE" value="17"/>
 <key name="WidthE" value="1879"/>
 <key name="HeightE" value="1039"/>
 <key name="MaximizedE" value="false"/>
