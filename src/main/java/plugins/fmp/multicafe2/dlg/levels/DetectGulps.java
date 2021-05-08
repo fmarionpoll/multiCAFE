@@ -130,15 +130,17 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	void kymosDisplayFiltered2() 
 	{
 		Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-		if (exp == null) 
-			return;
-		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqKymos == null)
-			return;	
-		TransformOp transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
-		int zChannelDestination = 2;
-		exp.kymosBuildFiltered(0, zChannelDestination, transform, (int) spanTransf2Spinner.getValue());
-		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
+		if (exp != null) 
+		{
+			SequenceKymos seqKymos = exp.seqKymos;
+			if (seqKymos != null)
+			{
+				TransformOp transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
+				int zChannelDestination = 2;
+				exp.kymosBuildFiltered(0, zChannelDestination, transform, (int) spanTransf2Spinner.getValue());
+				seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
+			}
+		}
 	}
 	
 	private Options_BuildSeries initBuildParameters(Experiment exp ) 
@@ -181,18 +183,17 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	{
 		kymosDisplayFiltered2();	
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-		if (exp == null)
-			return;
-		exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
-		
-		threadDetectGulps = new DetectGulps_series();
-		threadDetectGulps.options = initBuildParameters(exp);
-		if (!detectGulps)
-			threadDetectGulps.options.buildGulps 	= false;
-		
-		threadDetectGulps.addPropertyChangeListener(this);
-		threadDetectGulps.execute();
-		detectButton.setText("STOP");
+		if (exp != null)
+		{
+			exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
+			threadDetectGulps = new DetectGulps_series();
+			threadDetectGulps.options = initBuildParameters(exp);
+			if (!detectGulps)
+				threadDetectGulps.options.buildGulps 	= false;
+			threadDetectGulps.addPropertyChangeListener(this);
+			threadDetectGulps.execute();
+			detectButton.setText("STOP");
+		}
 	}
 
 	void setInfos(Capillary cap) 

@@ -200,19 +200,20 @@ public class Display extends JPanel implements ViewerListener
 	void displayON()
 	{
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-		if (exp == null)
-			return;
-		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqKymos == null || seqKymos.seq == null )
-			return;
-		
-		ArrayList<Viewer>vList = seqKymos.seq.getViewers();
-		if (vList.size() == 0)
+		if (exp != null)
 		{
-			Viewer v = new Viewer(seqKymos.seq, true);
-			v.setRepeat(false);
-			v.addListener(this);;
-			placeKymoViewerNextToCamViewer(exp, v);
+			SequenceKymos seqKymos = exp.seqKymos;
+			if (seqKymos == null || seqKymos.seq == null )
+				return;
+			
+			ArrayList<Viewer>vList = seqKymos.seq.getViewers();
+			if (vList.size() == 0)
+			{
+				Viewer v = new Viewer(seqKymos.seq, true);
+				v.setRepeat(false);
+				v.addListener(this);;
+				placeKymoViewerNextToCamViewer(exp, v);
+			}
 		}
 	}
 	
@@ -342,11 +343,12 @@ public class Display extends JPanel implements ViewerListener
 		if ( event.getType() == ViewerEvent.ViewerEventType.POSITION_CHANGED )
 		{
 			Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-			if (exp == null) 
-				return;
-			Viewer v = exp.seqKymos.seq.getFirstViewer();
-			int t = v.getPositionT();
-			selectKymographImage(t);
+			if (exp != null) 
+			{
+				Viewer v = exp.seqKymos.seq.getFirstViewer();
+				int t = v.getPositionT();
+				selectKymographImage(t);
+			}
 		}
 	}
 

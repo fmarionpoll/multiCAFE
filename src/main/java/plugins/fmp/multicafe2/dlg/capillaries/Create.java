@@ -200,7 +200,7 @@ public class Create extends JPanel
 	
 	private void roisGenerateFromPolygon() 
 	{
-		Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;

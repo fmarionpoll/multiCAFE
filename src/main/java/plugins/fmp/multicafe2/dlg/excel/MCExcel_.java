@@ -84,7 +84,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) 
 	{	
-		Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+		Experiment exp = (Experiment)  parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;
 		

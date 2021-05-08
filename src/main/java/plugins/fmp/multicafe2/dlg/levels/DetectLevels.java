@@ -243,13 +243,14 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	{
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();	
 		if (exp != null)
-			return;
-		threadDetectLevels = new DetectLevels_series();
-		threadDetectLevels.options = initBuildParameters(exp);
-		
-		threadDetectLevels.addPropertyChangeListener(this);
-		threadDetectLevels.execute();
-		detectButton.setText("STOP");
+		{
+			threadDetectLevels = new DetectLevels_series();
+			threadDetectLevels.options = initBuildParameters(exp);
+			
+			threadDetectLevels.addPropertyChangeListener(this);
+			threadDetectLevels.execute();
+			detectButton.setText("STOP");
+		}
 	}
 
 	private void stopComputation() 

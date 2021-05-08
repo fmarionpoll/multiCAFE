@@ -53,7 +53,7 @@ public class LoadSave extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{ 
 					loadCapillaries_File(exp);
@@ -65,7 +65,7 @@ public class LoadSave extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{
 					saveCapillaries_file(exp);

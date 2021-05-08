@@ -110,7 +110,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment) parent0.expListCombo.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 				{
 					for (Capillary capFrom: capillariesArrayCopy ) 
@@ -136,7 +136,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
-				Experiment exp =(Experiment) parent0.expListCombo.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 				{
 					int ncapillaries =  exp.capillaries.capillariesArrayList.size();
@@ -160,7 +160,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment) parent0.expListCombo.getSelectedItem();
+				Experiment exp = (Experiment)parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 				{
 					int rowIndex = tableView.getSelectedRow();
@@ -214,7 +214,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 				{
 					int rowIndex = tableView.getSelectedRow();
@@ -242,7 +242,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null && exp.cages.cageList.size() > 0) 
 				{
 					exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
@@ -254,7 +254,7 @@ public class Table  extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 				{
 					exp.cages.setCageNbFromName(exp.capillaries.capillariesArrayList);

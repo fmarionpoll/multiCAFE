@@ -91,7 +91,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	{
 		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) 
 		{
-			Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 			if (exp != null)
 			{
 				displayCapillariesInformation(exp);
