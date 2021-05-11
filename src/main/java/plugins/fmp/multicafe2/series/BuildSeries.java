@@ -20,10 +20,10 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 public abstract class BuildSeries extends SwingWorker<Integer, Integer> 
 {
 
-	public Options_BuildSeries 	options 		= new Options_BuildSeries();
-	public boolean 				stopFlag 		= false;
-	public boolean 				threadRunning 	= false;
-	int selectedExperimentIndex = -1;
+	public 	Options_BuildSeries	options 		= new Options_BuildSeries();
+	public	 boolean 			stopFlag 		= false;
+	public 	boolean 			threadRunning 	= false;
+			int 				selectedExperimentIndex = -1;
 		
 	
 	@Override

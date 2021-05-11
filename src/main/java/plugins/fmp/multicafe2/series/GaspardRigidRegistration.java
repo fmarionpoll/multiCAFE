@@ -462,7 +462,8 @@ public class GaspardRigidRegistration
         {
             int referenceFrame = t - 1;
             
-            if (Thread.currentThread().isInterrupted()) return change;
+            if (Thread.currentThread().isInterrupted()) 
+            	return change;
             
             Vector2d translation = new Vector2d();
             int n = 0;

@@ -148,7 +148,7 @@ public class BuildKymographs_series extends BuildSeries
 				{	
 					IcyBufferedImage sourceImage = imageIORead(seqCamData.getFileName(t_from));
 					if (options.doRegistration ) 
-						adjustImage(seqForRegistration, sourceImage);
+						sourceImage = adjustImage(seqForRegistration, sourceImage);
 					int widthSourceImage = sourceImage.getWidth();				
 					ArrayList<int []> sourceImageInteger = transferImageToIntegerArrayList (sourceImage);
 					for (int icap=0; icap < nbcapillaries; icap++) 
@@ -280,7 +280,7 @@ public class BuildKymographs_series extends BuildSeries
 		}
 	}
 
-	private void adjustImage(Sequence seqForRegistration, IcyBufferedImage  workImage) 
+	private IcyBufferedImage adjustImage(Sequence seqForRegistration, IcyBufferedImage  workImage) 
 	{
 		seqForRegistration.setImage(1, 0, workImage);
 		int referenceChannel = 1;
@@ -289,7 +289,7 @@ public class BuildKymographs_series extends BuildSeries
         boolean rotate = GaspardRigidRegistration.correctTemporalRotation2D(seqForRegistration, referenceChannel, referenceSlice);
         if (rotate) 
         	GaspardRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
-        workImage = seqForRegistration.getLastImage(1);
+        return seqForRegistration.getLastImage(1);
 	}
 
 }

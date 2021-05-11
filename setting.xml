@@ -53,7 +53,7 @@
 </section>
 <section name="export"/>
 </section>
-<key name="lastUpdateCheckTime" value="1620369477558"/>
+<key name="lastUpdateCheckTime" value="1620655303461"/>
 <key name="virtualMode" value="true"/>
 <key name="loaderFolder" value="E:\bea erecta\27 avril 21 etuve D\cam16"/>
 </section>
@@ -113,7 +113,7 @@
 </section>
 </section>
 <key name="version" value="2.1.4.0"/>
-<key name="lastUploadDate" value="1620392543194"/>
+<key name="lastUploadDate" value="1620655294435"/>
 <section name="frame">
 <section name="imageLoader">
 <key name="width" value="600"/>
@@ -145,8 +145,8 @@
 </section>
 <section name="frame">
 <section name="main">
-<key name="XE" value="5"/>
-<key name="YE" value="17"/>
+<key name="XE" value="-2215"/>
+<key name="YE" value="94"/>
 <key name="WidthE" value="1879"/>
 <key name="HeightE" value="1039"/>
 <key name="MaximizedE" value="false"/>
