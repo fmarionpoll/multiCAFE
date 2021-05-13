@@ -33,12 +33,13 @@ public class Capillaries
 	private final static String ID_NCAPILLARIES 		= "N_capillaries";
 	private final static String ID_LISTOFCAPILLARIES 	= "List_of_capillaries";
 	private final static String ID_CAPILLARY_ 			= "capillary_";
+	private final static String ID_MCCAPILLARIES_XML 	= "MCcapillaries.xml";
 
 	// ---------------------------------
 		
 	String getXMLNameToAppend() 
 	{
-		return "MCcapillaries.xml";
+		return ID_MCCAPILLARIES_XML;
 	}
 
 	public boolean xmlSaveCapillaries_Descriptors(String csFileName) 

@@ -171,7 +171,7 @@ public class Directories
 		}
 	}
 	
-	public static void move_TIFFfiles_ToSubdirectory(String directoryStr, String subname)
+	public static void move_TIFFfiles_To_Subdirectory(String directoryStr, String subname)
 	{
 		File directoryFile = new File(directoryStr);
 		String subdirectoryStr = directoryStr + File.separator + subname;
@@ -189,7 +189,7 @@ public class Directories
 		}
 	}
 	
-	public static void move_xmlLINEfiles_ToSubdirectory(String directoryStr, String subname, boolean clipName)
+	public static void move_xmlLINEfiles_To_Subdirectory(String directoryStr, String subname, boolean clipName)
 	{
 		File directoryFile = new File(directoryStr);
 		String subdirectoryStr = directoryStr + File.separator + subname;

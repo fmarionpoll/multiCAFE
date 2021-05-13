@@ -85,7 +85,8 @@ public class Experiment
 
 	private final static String ID_IMAGESDIRECTORY 	= "imagesDirectory";
 	private final static String ID_MCEXPERIMENT 	= "MCexperiment";
-	private final static String ID_MCDROSOTRACK     = "MCdrosotrack.xml";
+	private final static String ID_MCEXPERIMENT_XML = "MCexperiment.xml";
+	private final static String ID_MCDROSOTRACK_XML = "MCdrosotrack.xml";
 	
 	private final static String ID_BOXID 			= "boxID";
 	private final static String ID_EXPERIMENT 		= "experiment";
@@ -117,7 +118,7 @@ public class Experiment
 		strExperimentDirectory = this.seqCamData.getImagesDirectory() + File.separator + RESULTS;
 		loadFileIntervalsFromSeqCamData();
 		
-		xmlLoadExperiment(getMCExperimentFileName(null));
+		xmlLoadExperiment(concatenateExptDirectoryWithSubpathAndName(null, ID_MCEXPERIMENT_XML));
 	}
 	
 	public Experiment(ExperimentDirectories eADF) 
@@ -133,7 +134,7 @@ public class Experiment
 		loadFileIntervalsFromSeqCamData();
 		seqKymos = new SequenceKymos(eADF.kymosImagesList);
 		
-		xmlLoadExperiment(getMCExperimentFileName(null));
+		xmlLoadExperiment(concatenateExptDirectoryWithSubpathAndName(null, ID_MCEXPERIMENT_XML));
 	}
 	
 	// ----------------------------------
@@ -399,18 +400,18 @@ public class Experiment
 		return name;
 	}
 	
-	private String findFileLocation(String xmlFileName, int first, int second, int third) 
+	private String findFile_3Locations(String xmlFileName, int first, int second, int third) 
 	{
 		// current directory
-		String xmlFullFileName = findFileLocation1(xmlFileName, first);
+		String xmlFullFileName = findFile_1Location(xmlFileName, first);
 		if (xmlFullFileName == null) 
-			xmlFullFileName = findFileLocation1(xmlFileName, second);
+			xmlFullFileName = findFile_1Location(xmlFileName, second);
 		if (xmlFullFileName == null) 
-			xmlFullFileName = findFileLocation1(xmlFileName, third);
+			xmlFullFileName = findFile_1Location(xmlFileName, third);
 		return xmlFullFileName;
 	}
 	
-	private String findFileLocation1(String xmlFileName, int item) 
+	private String findFile_1Location(String xmlFileName, int item) 
 	{
 		String xmlFullFileName = File.separator + xmlFileName;
 		switch (item) 
@@ -466,15 +467,16 @@ public class Experiment
 			strImagesDirectory = seqCamData.getImagesDirectory() ;
 			strExperimentDirectory = strImagesDirectory + File.separator + RESULTS;
 		}
-		return xmlLoadExperiment(getMCExperimentFileName(null));
+		boolean found = xmlLoadExperiment(concatenateExptDirectoryWithSubpathAndName(null, ID_MCEXPERIMENT_XML));
+		return found;
 	}
 	
-	private String getMCExperimentFileName(String subpath) 
+	private String concatenateExptDirectoryWithSubpathAndName(String subpath, String name) 
 	{
 		if (subpath != null)
-			return strExperimentDirectory + File.separator + subpath + File.separator + "MCexperiment.xml";
+			return strExperimentDirectory + File.separator + subpath + File.separator + name;
 		else
-			return strExperimentDirectory + File.separator + "MCexperiment.xml";
+			return strExperimentDirectory + File.separator + name;
 	}
 	
 	private boolean xmlLoadExperiment (String csFileName) 
@@ -537,7 +539,7 @@ public class Experiment
 	        	strImagesDirectory = seqCamData.getImagesDirectory();
 	        XMLUtil.setElementValue(node, ID_IMAGESDIRECTORY, strImagesDirectory);
 
-	        String tempname = getMCExperimentFileName(null) ;
+	        String tempname = concatenateExptDirectoryWithSubpathAndName(null, ID_MCEXPERIMENT_XML) ;
 	        return XMLUtil.saveDocument(doc, tempname);
 		}
 		return false;
@@ -656,7 +658,7 @@ public class Experiment
 	
 	public boolean xmlLoadMCCapillaries() 
 	{
-		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
+		String xmlCapillaryFileName = findFile_3Locations(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
 		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
 		String kymosImagesDirectory = getKymosBinFullDirectory();
 		boolean flag2 = capillaries.xmlLoadCapillaries_Measures(kymosImagesDirectory);
@@ -728,7 +730,7 @@ public class Experiment
 	}
 	
 	public boolean xmlLoadMCCapillaries_Only() {
-		String xmlCapillaryFileName = findFileLocation(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
+		String xmlCapillaryFileName = findFile_3Locations(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
 		if (xmlCapillaryFileName == null && seqCamData != null) 
 		{
 			return xmlLoadOldCapillaries();
@@ -750,7 +752,7 @@ public class Experiment
 	
 	private boolean xmlLoadOldCapillaries() 
 	{
-		String filename = findFileLocation("capillarytrack.xml", IMG_DIRECTORY, EXPT_DIRECTORY, BIN_DIRECTORY);
+		String filename = findFile_3Locations("capillarytrack.xml", IMG_DIRECTORY, EXPT_DIRECTORY, BIN_DIRECTORY);
 		if (capillaries.xmlLoadOldCapillaries_Only(filename)) 
 		{
 			xmlSaveMCCapillaries_Only();
@@ -762,7 +764,7 @@ public class Experiment
 		    }
 			return true;
 		}
-		filename = findFileLocation("roislines.xml", IMG_DIRECTORY, EXPT_DIRECTORY, BIN_DIRECTORY);
+		filename = findFile_3Locations("roislines.xml", IMG_DIRECTORY, EXPT_DIRECTORY, BIN_DIRECTORY);
 		if (xmlReadCamDataROIs(filename)) 
 		{
 			xmlReadRoiLineParameters(filename);
@@ -872,14 +874,14 @@ public class Experiment
 	// --------------------------
 	public String getMCDrosoTrackFullName() 
 	{
-		return strExperimentDirectory+File.separator+ID_MCDROSOTRACK;
+		return strExperimentDirectory+File.separator+ID_MCDROSOTRACK_XML;
 	}
 	
 	private String getXMLDrosoTrackLocation() 
 	{
-		String fileName = findFileLocation(ID_MCDROSOTRACK, EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
+		String fileName = findFile_3Locations(ID_MCDROSOTRACK_XML, EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
 		if (fileName == null)  
-			fileName = findFileLocation("drosotrack.xml", IMG_DIRECTORY, EXPT_DIRECTORY, BIN_DIRECTORY);
+			fileName = findFile_3Locations("drosotrack.xml", IMG_DIRECTORY, EXPT_DIRECTORY, BIN_DIRECTORY);
 		return fileName;
 	}
 	
