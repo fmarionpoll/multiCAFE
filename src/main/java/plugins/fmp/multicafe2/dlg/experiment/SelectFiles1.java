@@ -12,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -150,32 +152,64 @@ public class SelectFiles1 extends JPanel
 	    	 ((DefaultListModel<String>) directoriesJList.getModel()).removeElement(oo);
 	}
 	
+	private void setPreferencesPath(String pathString)
+	{
+		XMLPreferences guiPrefs = parent0.getPreferences("gui");
+		guiPrefs.put("lastUsedPath", pathString);
+	}
+	
+	private String getPreferencesPath()
+	{
+		XMLPreferences guiPrefs = parent0.getPreferences("gui");
+		return guiPrefs.get("lastUsedPath", "");
+	}
+	
  	private void getListofFilesMatchingPattern(String pattern) 
  	{
- 		XMLPreferences guiPrefs = parent0.getPreferences("gui");
-		String lastUsedPathString = guiPrefs.get("lastUsedPath", "");
-		File dir = chooseDirectory(lastUsedPathString);
+		File dir = chooseDirectory(getPreferencesPath());
 		if (dir == null) 
 			return;
-		lastUsedPathString = dir.getAbsolutePath();
-		guiPrefs.put("lastUsedPath", lastUsedPathString);
-		try 
+		
+		final String lastUsedPathString = dir.getAbsolutePath();
+		setPreferencesPath(lastUsedPathString);
+		Path lastPath = Paths.get(lastUsedPathString);
+		boolean option1 = true;
+		
+		if (option1) 
 		{
-			Path lastPath = Paths.get(lastUsedPathString);
-			if (Files.exists(lastPath)) 
-			{
-				Files.walk(lastPath)
-				.filter(Files::isRegularFile)		
-				.forEach((f)->{
-				    String fileName = f.toString();
-				    if( fileName.contains(pattern)) 
-				    	addNameToListIfNew(fileName);
-				});
+			List<Path> result = null;
+	        try (Stream<Path> walk = Files.walk(lastPath)) {
+	            result = walk
+	                    .filter(Files::isRegularFile)   // is a file
+	                    .filter(p -> p.getFileName().toString().contains(pattern))
+	                    .collect(Collectors.toList());
+	        } catch (IOException e) {
+				e.printStackTrace();
 			}
-		} 
-		catch (IOException e) 
+	        if (result != null)
+	        	for (Path path: result)
+	        		addNameToListIfNew(path.toString());
+		}
+		else 
 		{
-			e.printStackTrace();
+			final String patternLowerCase = pattern.toLowerCase();
+			try 
+			{
+				if (Files.exists(lastPath)) 
+				{
+					Files.walk(lastPath)
+					.filter(Files::isRegularFile)		
+					.forEach((f)->{
+					    String fileName = f.toString().toLowerCase();
+					    if( fileName.contains(patternLowerCase)) 
+					    	addNameToListIfNew(fileName);
+					});
+				}
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 	

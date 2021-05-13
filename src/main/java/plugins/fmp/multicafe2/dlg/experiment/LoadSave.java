@@ -350,10 +350,9 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		ExperimentDirectories eDAF = new ExperimentDirectories();
 		
 		eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromDialog(rootDirectory);
-		if (eDAF.cameraImagesList == null || eDAF.cameraImagesList.size() < 1)
+		if (!checkCameraImagesList(eDAF)) 
 			return null;
 		
-		eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
 		eDAF.cameraImagesDirectory = Directories.getDirectoryFromName(eDAF.cameraImagesList.get(0));
 		
 		eDAF.resultsDirectory = getV2ResultsDirectoryDialog(eDAF.cameraImagesDirectory, Experiment.RESULTS, createResults);
@@ -364,6 +363,39 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		eDAF.kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.kymosImagesList, "tiff");
 		// TODO wrong if any bin
 		return eDAF;
+	}
+	
+	private boolean checkCameraImagesList(ExperimentDirectories eDAF) 
+	{
+		boolean isOK = false;
+		if (!(eDAF.cameraImagesList == null)) 
+		{
+			boolean imageFound = false;
+			String jpg = "jpg";
+			String grabs = "grabs";
+			String grabsDirectory = null;
+			for (String name: eDAF.cameraImagesList) 
+			{
+				if (name.toLowerCase().endsWith(jpg)) 
+				{
+					imageFound = true;
+					break;
+				}
+				if (name.toLowerCase().endsWith(grabs))
+					grabsDirectory = name;
+			}
+			if (imageFound) 
+			{
+				eDAF.cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(eDAF.cameraImagesList, "jpg");
+				isOK = true;
+			}
+			else if (grabsDirectory != null)
+			{
+				eDAF.cameraImagesList = ExperimentDirectories.getV2ImagesListFromPath(grabsDirectory);
+				isOK = checkCameraImagesList(eDAF);
+			}
+		}
+		return isOK;
 	}
 	
 	private ExperimentDirectories getDirectoriesFromExptPath(String exptDirectory, String binSubDirectory)
