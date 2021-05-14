@@ -29,6 +29,20 @@ public class ExperimentDirectories
 	
 	  
 	
+	
+	public static List<String> keepOnlyAcceptedNames_List(List<String> namesList, String strExtension) 
+	{
+		int count = namesList.size();
+		List<String> outList = new ArrayList<String> (count);
+		String ext = strExtension.toLowerCase();
+		for (String name: namesList) 
+		{
+			if (name.toLowerCase().endsWith(ext))
+				outList.add(name);
+		}
+		return outList;
+	}
+	
 	public static List<String> getV2ImagesListFromPath(String strDirectory) 
 	{
 		List<String> list = new ArrayList<String> ();
@@ -48,7 +62,7 @@ public class ExperimentDirectories
 		return list;
 	}
 	
-	public static List<String> getV2ImagesListFromDialog(String strPath) 
+	public List<String> getV2ImagesListFromDialog(String strPath) 
 	{
 		List<String> list = new ArrayList<String> ();
 		LoaderDialog dialog = new LoaderDialog(false);
@@ -66,19 +80,6 @@ public class ExperimentDirectories
 				list = getV2ImagesListFromPath(strDirectory);
 		}
 		return list;
-	}
-	
-	public static List<String> keepOnlyAcceptedNames_List(List<String> namesList, String strExtension) 
-	{
-		int count = namesList.size();
-		List<String> outList = new ArrayList<String> (count);
-		String ext = strExtension.toLowerCase();
-		for (String name: namesList) 
-		{
-			if (name.toLowerCase().endsWith(ext))
-				outList.add(name);
-		}
-		return outList;
 	}
 	
 	public boolean checkCameraImagesList() 
@@ -102,12 +103,12 @@ public class ExperimentDirectories
 			}
 			if (imageFound) 
 			{
-				cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(cameraImagesList, "jpg");
+				cameraImagesList = keepOnlyAcceptedNames_List(cameraImagesList, "jpg");
 				isOK = true;
 			}
 			else if (grabsDirectory != null)
 			{
-				cameraImagesList = ExperimentDirectories.getV2ImagesListFromPath(grabsDirectory);
+				cameraImagesList = getV2ImagesListFromPath(grabsDirectory);
 				isOK = checkCameraImagesList();
 			}
 		}
@@ -116,7 +117,7 @@ public class ExperimentDirectories
 
 	public boolean getDirectoriesFromDialog(ExperimentCombo expListCombo, String rootDirectory, boolean createResults)
 	{
-		cameraImagesList = ExperimentDirectories.getV2ImagesListFromDialog(rootDirectory);
+		cameraImagesList = getV2ImagesListFromDialog(rootDirectory);
 		if (!checkCameraImagesList()) 
 			return false;
 		
@@ -126,8 +127,8 @@ public class ExperimentDirectories
 		binSubDirectory = getV2BinSubDirectory(expListCombo, resultsDirectory, null);
 		
 		String kymosDir = resultsDirectory + File.separator + binSubDirectory;
-		kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
-		kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(kymosImagesList, "tiff");
+		kymosImagesList = getV2ImagesListFromPath(kymosDir);
+		kymosImagesList = keepOnlyAcceptedNames_List(kymosImagesList, "tiff");
 		// TODO wrong if any bin
 		return true;
 	}
@@ -135,17 +136,17 @@ public class ExperimentDirectories
 	public boolean getDirectoriesFromExptPath(ExperimentCombo expListCombo, String exptDirectory, String binSubDirectory)
 	{
 		String strDirectory = Experiment.getImagesDirectoryAsParentFromFileName(exptDirectory);
-		cameraImagesList = ExperimentDirectories.getV2ImagesListFromPath(strDirectory);
+		cameraImagesList = getV2ImagesListFromPath(strDirectory);
 		
-		cameraImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(cameraImagesList, "jpg");
+		cameraImagesList = keepOnlyAcceptedNames_List(cameraImagesList, "jpg");
 		cameraImagesDirectory = Directories.getDirectoryFromName(cameraImagesList.get(0));
 		
 		resultsDirectory =  getV2ResultsDirectory(cameraImagesDirectory, exptDirectory);
 		this.binSubDirectory = getV2BinSubDirectory(expListCombo, resultsDirectory, binSubDirectory);
 		
 		String kymosDir = resultsDirectory + File.separator + this.binSubDirectory;
-		kymosImagesList = ExperimentDirectories.getV2ImagesListFromPath(kymosDir);
-		kymosImagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(kymosImagesList, "tiff"); 
+		kymosImagesList = getV2ImagesListFromPath(kymosDir);
+		kymosImagesList = keepOnlyAcceptedNames_List(kymosImagesList, "tiff"); 
 		// TODO wrong if any bin
 		return true;
 	}
