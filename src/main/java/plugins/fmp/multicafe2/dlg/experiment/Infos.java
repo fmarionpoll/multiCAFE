@@ -28,10 +28,10 @@ public class Infos  extends JPanel
 	private JComboBox<String>	comment2_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	boxID_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	experiment_JCombo 	= new JComboBox<String>();
-	private JLabel				experimentCheck		= new JLabel("Experiment");
+	private JLabel				experimentCheck		= new JLabel("Strain");
 	private JLabel				boxIDCheck			= new JLabel("Box ID");
-	private JLabel				comment1Check		= new JLabel("Comment1");
-	private JLabel				comment2Check		= new JLabel("Comt2");
+	private JLabel				comment1Check		= new JLabel("Stim");
+	private JLabel				comment2Check		= new JLabel("Conc");
 	private JButton		openButton	= new JButton("Load...");
 	private JButton		saveButton	= new JButton("Save...");
 	

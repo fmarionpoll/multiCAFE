@@ -29,7 +29,7 @@ import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
 import icy.preferences.XMLPreferences;
 import plugins.fmp.multicafe2.MultiCAFE2;
-import plugins.fmp.multicafe2.experiment.Experiment;
+import plugins.fmp.multicafe2.experiment.ExperimentDirectories;
 
 
 public class SelectFiles1 extends JPanel 
@@ -98,8 +98,13 @@ public class SelectFiles1 extends JPanel
             @Override
             public void actionPerformed(ActionEvent arg0)  
             {	
-    			final String pattern = (String) filterCombo.getSelectedItem();
-   	    		getListofFilesMatchingPattern(pattern);
+    			String pattern = (String) filterCombo.getSelectedItem();
+    			// ugly patch to cope with one of the previous versions of multicafe that saved files under an other name
+    			if (pattern.contains("MCexperiment"))
+    				pattern = "MCexpe";
+    			if (pattern.contains("MCcapillaries"))
+    				pattern = "MCcapi"
+;   	    		getListofFilesMatchingPattern(pattern);
             }});
 
 		clearSelectedButton.addActionListener(new ActionListener()  
@@ -110,6 +115,7 @@ public class SelectFiles1 extends JPanel
             	List<String> selectedItems = directoriesJList.getSelectedValuesList();
     		    removeListofNamesFromList (selectedItems);
             }});
+		
 		clearAllButton.addActionListener(new ActionListener()  
 		{
             @Override
@@ -117,6 +123,7 @@ public class SelectFiles1 extends JPanel
             {
             	((DefaultListModel<String>) directoriesJList.getModel()).removeAllElements();
             }});
+		
 		addSelectedButton.addActionListener(new ActionListener()  
 		{
             @Override
@@ -128,6 +135,7 @@ public class SelectFiles1 extends JPanel
     			firePropertyChange("SELECT1_CLOSED", false, true);
     			close();
             }});
+		
 		addAllButton.addActionListener(new ActionListener()  
 		{
             @Override
@@ -261,7 +269,7 @@ public class SelectFiles1 extends JPanel
 	}
 
 	private boolean isDirectoryWithJpg(String directoryName) {
-		String imageDirectory = Experiment.getImagesDirectoryAsParentFromFileName(directoryName); 
+		String imageDirectory = ExperimentDirectories.getImagesDirectoryAsParentFromFileName(directoryName); 
 //		HashSet <String> hSet = Directories.getDirectoriesWithFilesType (imageDirectory, ".jpg");
 		File dir = new File(imageDirectory);
 		File[] files = dir.listFiles((d, name) -> name.endsWith(".jpg"));

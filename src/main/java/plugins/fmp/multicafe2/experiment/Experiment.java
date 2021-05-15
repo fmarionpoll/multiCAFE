@@ -151,7 +151,7 @@ public class Experiment
 	
 	public void setExperimentDirectory(String fileName) 
 	{
-		strExperimentDirectory = getParentIf(fileName, BIN);
+		strExperimentDirectory = ExperimentDirectories.getParentIf(fileName, BIN);
 	}
 	
 	public String getKymosBinFullDirectory() 
@@ -280,13 +280,6 @@ public class Experiment
 			xmlReadDrosoTrack(null);
 		return true;
 	}
-		
-	static public String getImagesDirectoryAsParentFromFileName(String filename) 
-	{
-		filename = getParentIf(filename, BIN);
-		filename = getParentIf(filename, RESULTS);
-		return filename;
-	}
 	
 	private String getRootWithNoResultNorBinString(String directoryName) 
 	{
@@ -296,16 +289,9 @@ public class Experiment
 		return name;
 	}
 	
-	private static String getParentIf(String filename, String filter) 
-	{
-		if (filename .contains(filter)) 
-			filename = Paths.get(filename).getParent().toString();
-		return filename;
-	}
-	
 	private SequenceCamData loadImagesForSequenceCamData(String filename) 
 	{
-		strImagesDirectory = getImagesDirectoryAsParentFromFileName(filename);
+		strImagesDirectory = ExperimentDirectories.getImagesDirectoryAsParentFromFileName(filename);
 		if (seqCamData == null)
 			seqCamData = new SequenceCamData();
 		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(strImagesDirectory);
@@ -353,9 +339,16 @@ public class Experiment
 		{
 			firstImage_FileTime = seqCamData.getFileTimeFromStructuredName(0);
 			lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.nTotalFrames-1);
-			camFirstImage_Ms = firstImage_FileTime.toMillis();
-			camLastImage_Ms = lastImage_FileTime.toMillis();
-			camBinImage_Ms = (camLastImage_Ms - camFirstImage_Ms)/(seqCamData.nTotalFrames-1);
+			if (firstImage_FileTime != null && lastImage_FileTime != null)
+			{
+				camFirstImage_Ms = firstImage_FileTime.toMillis();
+				camLastImage_Ms = lastImage_FileTime.toMillis();
+				camBinImage_Ms = (camLastImage_Ms - camFirstImage_Ms)/(seqCamData.nTotalFrames-1);
+			}
+			else
+			{
+				System.out.println("error / file intervals of " + seqCamData.getImagesDirectory());
+			}
 		}
 	}
 

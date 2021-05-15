@@ -100,6 +100,7 @@ public class Filter  extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				filterExperimentList(true);
+				parent0.paneExperiment.tabsPane.setSelectedIndex(0);
 			}});
 		
 		clearButton.addActionListener(new ActionListener () 

@@ -135,7 +135,7 @@ public class ExperimentDirectories
 	
 	public boolean getDirectoriesFromExptPath(ExperimentCombo expListCombo, String exptDirectory, String binSubDirectory)
 	{
-		String strDirectory = Experiment.getImagesDirectoryAsParentFromFileName(exptDirectory);
+		String strDirectory = getImagesDirectoryAsParentFromFileName(exptDirectory);
 		cameraImagesList = getV2ImagesListFromPath(strDirectory);
 		
 		cameraImagesList = keepOnlyAcceptedNames_List(cameraImagesList, "jpg");
@@ -180,11 +180,26 @@ public class ExperimentDirectories
 	    return subDirectory;
 	}
 	
+	static public String getParentIf(String filename, String filter) 
+	{
+		if (filename .contains(filter)) 
+			filename = Paths.get(filename).getParent().toString();
+		return filename;
+	}
+	
+	static public String getImagesDirectoryAsParentFromFileName(String filename) 
+	{
+		filename = getParentIf(filename, Experiment.BIN);
+		filename = getParentIf(filename, Experiment.RESULTS);
+		return filename;
+	}
+	
 	private String getV2ResultsDirectory(String parentDirectory, String resultsSubDirectory) 
 	{
-		 if (!resultsSubDirectory.contains(Experiment.RESULTS)) 
-			 resultsSubDirectory = parentDirectory + File.separator + Experiment.RESULTS;
+		resultsSubDirectory = getParentIf(resultsSubDirectory, Experiment.BIN);
 		
+		 if (!resultsSubDirectory.contains(Experiment.RESULTS))
+			 resultsSubDirectory = parentDirectory + File.separator + Experiment.RESULTS;
 	    return resultsSubDirectory;
 	}
 	

@@ -409,7 +409,7 @@ public class XLSExport
 						+ " kymoFirstCol_Ms=" + expi.kymoFirstCol_Ms 
 						+ " kymoLastCol_Ms=" + expi.kymoLastCol_Ms
 						+ "\n -> Contact support";
-				MessageDialog.showDialog(error, MessageDialog.ERROR_MESSAGE);
+//				MessageDialog.showDialog(error, MessageDialog.ERROR_MESSAGE);
 				System.out.println(error);
 			}
 			else 
