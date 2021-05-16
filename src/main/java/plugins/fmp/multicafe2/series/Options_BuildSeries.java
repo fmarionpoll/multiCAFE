@@ -10,7 +10,10 @@ import icy.file.xml.XMLPersistent;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
-import plugins.fmp.multicafe2.tools.ImageTransformTools.TransformOp;
+import plugins.fmp.multicafe2.tools.EnumTransformOp;
+
+
+
 
 public class Options_BuildSeries implements XMLPersistent 
 {
@@ -40,14 +43,14 @@ public class Options_BuildSeries implements XMLPersistent
 	public  int			lastKymo				= 0;
 	public 	boolean		directionUp				= true;
 	public 	int			detectLevelThreshold 	= 35;
-	public 	TransformOp	transformForLevels 		= TransformOp.R2MINUS_GB;
+	public 	EnumTransformOp	transformForLevels 		= EnumTransformOp.R2MINUS_GB;
 	public 	boolean 	analyzePartOnly			= false;
 	public 	int 		startPixel 				= -1;
 	public 	int 		endPixel 				= -1;
 	public  int			spanDiffTop				= 3;
 	
 	public int 			detectGulpsThreshold	= 90;
-	public TransformOp 	transformForGulps 		= TransformOp.XDIFFN;
+	public EnumTransformOp 	transformForGulps 		= EnumTransformOp.XDIFFN;
 	public int			spanDiff				= 3;
 	public boolean 		detectAllGulps 			= true;
 	public boolean		buildGulps				= true;
@@ -66,7 +69,7 @@ public class Options_BuildSeries implements XMLPersistent
 	public boolean		forceBuildBackground	= false;
 	public boolean		detectFlies				= true;
 	
-	public TransformOp 	transformop; 
+	public EnumTransformOp 	transformop; 
 	public int			videoChannel 			= 0;
 	public boolean 		backgroundSubstraction 	= false;
 
@@ -132,12 +135,12 @@ public class Options_BuildSeries implements XMLPersistent
 			directionUp = XMLUtil.getElementBooleanValue(nodeMeta, "directionUp", directionUp);
 			firstKymo = XMLUtil.getElementIntValue(nodeMeta, "firstImage", firstKymo);
 			detectLevelThreshold = XMLUtil.getElementIntValue(nodeMeta, "detectLevelThreshold", detectLevelThreshold);
-			transformForLevels = TransformOp.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transformForLevels.toString()));       
+			transformForLevels = EnumTransformOp.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transformForLevels.toString()));       
 			
 			detectAllGulps = XMLUtil.getElementBooleanValue(nodeMeta, "detectAllGulps", detectAllGulps);
 	    	buildGulps = XMLUtil.getElementBooleanValue(nodeMeta, "buildGulps", buildGulps);
 	    	buildDerivative = XMLUtil.getElementBooleanValue(nodeMeta, "buildDerivative", buildDerivative);
-	    	transformForGulps = TransformOp.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transformForGulps.toString()));       
+	    	transformForGulps = EnumTransformOp.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transformForGulps.toString()));       
 	    }
 		
 		Element xmlVal = XMLUtil.getElement(node, "DetectFliesParameters");
@@ -151,7 +154,7 @@ public class Options_BuildSeries implements XMLPersistent
 			limitUp =  XMLUtil.getElementIntValue(xmlVal, "limitUp", -1);
 			jitter =  XMLUtil.getElementIntValue(xmlVal, "jitter", 10); 
 			String op1 = XMLUtil.getElementValue(xmlVal, "transformOp", null);
-			transformop = TransformOp.findByText(op1);
+			transformop = EnumTransformOp.findByText(op1);
 			videoChannel = XMLUtil.getAttributeIntValue(xmlVal, "videoChannel", 0);
 		}
 		return true;

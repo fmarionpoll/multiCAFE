@@ -13,7 +13,8 @@ import javax.swing.JTabbedPane;
 import icy.gui.component.PopupPanel;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.ImageTransformTools.TransformOp;
+import plugins.fmp.multicafe2.tools.EnumTransformOp;
+
 
 
 public class MCLevels_ extends JPanel implements PropertyChangeListener 
@@ -76,7 +77,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 		tabsPane.addTab("Load/Save", null, tabFileLevels, "Load/Save kymographs");
 						
 		capPanel.add(tabsPane);
-		tabDetectLevels.transformForLevelsComboBox.setSelectedItem(TransformOp.G2MINUS_RB);
+		tabDetectLevels.transformForLevelsComboBox.setSelectedItem(EnumTransformOp.G2MINUS_RB);
 		tabsPane.setSelectedIndex(0);
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() 

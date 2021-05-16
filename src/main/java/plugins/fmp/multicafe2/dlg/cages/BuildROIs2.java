@@ -33,7 +33,7 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.Blobs;
 import plugins.fmp.multicafe2.tools.OverlayThreshold;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
-import plugins.fmp.multicafe2.tools.ImageTransformTools.TransformOp;
+import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
@@ -48,11 +48,11 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(60, 0, 10000, 1));
 	public 	JCheckBox 	overlayCheckBox			= new JCheckBox("Overlay ", false);
 	private JButton 	deleteButton 			= new JButton("Cut points within selected polygon");
-	JComboBox<TransformOp> transformForLevelsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
-			TransformOp.R_RGB, TransformOp.G_RGB, TransformOp.B_RGB, 
-			TransformOp.R2MINUS_GB, TransformOp.G2MINUS_RB, TransformOp.B2MINUS_RG, TransformOp.RGB,
-			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, 
-			TransformOp.H_HSB, TransformOp.S_HSB, TransformOp.B_HSB	});
+	JComboBox<EnumTransformOp> transformForLevelsComboBox = new JComboBox<EnumTransformOp> (new EnumTransformOp[] {
+			EnumTransformOp.R_RGB, EnumTransformOp.G_RGB, EnumTransformOp.B_RGB, 
+			EnumTransformOp.R2MINUS_GB, EnumTransformOp.G2MINUS_RB, EnumTransformOp.B2MINUS_RG, EnumTransformOp.RGB,
+			EnumTransformOp.GBMINUS_2R, EnumTransformOp.RBMINUS_2G, EnumTransformOp.RGMINUS_2B, 
+			EnumTransformOp.H_HSB, EnumTransformOp.S_HSB, EnumTransformOp.B_HSB	});
 	private OverlayThreshold 	ov 				= null;
 	private MultiCAFE2 			parent0			= null;
 	
@@ -137,7 +137,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 		exp.cages.detect_threshold = (int) thresholdSpinner.getValue();
 		ov.setThresholdTransform(
 				exp.cages.detect_threshold,  
-				(TransformOp) transformForLevelsComboBox.getSelectedItem(),
+				(EnumTransformOp) transformForLevelsComboBox.getSelectedItem(),
 				false);
 		seqCamData.seq.overlayChanged(ov);
 		seqCamData.seq.dataChanged();		

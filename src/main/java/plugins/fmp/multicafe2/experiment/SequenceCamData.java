@@ -35,7 +35,7 @@ import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.fmp.multicafe2.tools.ImageOperationsStruct;
-import plugins.fmp.multicafe2.tools.ImageTransformTools.TransformOp;
+import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
@@ -152,7 +152,7 @@ public class SequenceCamData
 	}
 
 	// TODO: use GPU
-	public IcyBufferedImage subtractReference(IcyBufferedImage image, int t, TransformOp transformop) 
+	public IcyBufferedImage subtractReference(IcyBufferedImage image, int t, EnumTransformOp transformop) 
 	{
 		switch (transformop) 
 		{

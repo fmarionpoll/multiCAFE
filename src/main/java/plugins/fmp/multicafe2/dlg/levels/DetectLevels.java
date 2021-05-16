@@ -24,7 +24,7 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.series.DetectLevels_series;
 import plugins.fmp.multicafe2.series.Options_BuildSeries;
-import plugins.fmp.multicafe2.tools.ImageTransformTools.TransformOp;
+import plugins.fmp.multicafe2.tools.EnumTransformOp;
 
 
 
@@ -36,11 +36,11 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	private static final long serialVersionUID 	= -6329863521455897561L;
 	JSpinner			startSpinner			= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
 	JSpinner			endSpinner				= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
-	JComboBox<TransformOp> transformForLevelsComboBox = new JComboBox<TransformOp> (new TransformOp[] {
-			TransformOp.R_RGB, TransformOp.G_RGB, TransformOp.B_RGB, 
-			TransformOp.R2MINUS_GB, TransformOp.G2MINUS_RB, TransformOp.B2MINUS_RG, TransformOp.RGB,
-			TransformOp.GBMINUS_2R, TransformOp.RBMINUS_2G, TransformOp.RGMINUS_2B, TransformOp.RGB_DIFFS,
-			TransformOp.H_HSB, TransformOp.S_HSB, TransformOp.B_HSB	});
+	JComboBox<EnumTransformOp> transformForLevelsComboBox = new JComboBox<EnumTransformOp> (new EnumTransformOp[] {
+			EnumTransformOp.R_RGB, EnumTransformOp.G_RGB, EnumTransformOp.B_RGB, 
+			EnumTransformOp.R2MINUS_GB, EnumTransformOp.G2MINUS_RB, EnumTransformOp.B2MINUS_RG, EnumTransformOp.RGB,
+			EnumTransformOp.GBMINUS_2R, EnumTransformOp.RBMINUS_2G, EnumTransformOp.RGMINUS_2B, EnumTransformOp.RGB_DIFFS,
+			EnumTransformOp.H_HSB, EnumTransformOp.S_HSB, EnumTransformOp.B_HSB	});
 
 	private JComboBox<String> directionComboBox	= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JCheckBox	allKymosCheckBox 		= new JCheckBox ("all kymographs", true);
@@ -166,7 +166,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
-		TransformOp transform = (TransformOp) transformForLevelsComboBox.getSelectedItem();
+		EnumTransformOp transform = (EnumTransformOp) transformForLevelsComboBox.getSelectedItem();
 		List<Capillary> capList = exp.capillaries.capillariesArrayList;
 		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) 
 			getInfosFromDialog(capList.get(t));		
@@ -192,7 +192,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	void getInfosFromDialog(Capillary cap) 
 	{
 		Options_BuildSeries options = cap.limitsOptions;
-		options.transformForLevels = (TransformOp) transformForLevelsComboBox.getSelectedItem();
+		options.transformForLevels = (EnumTransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
 		options.detectLevelThreshold = getDetectLevelThreshold();
 		options.detectAllKymos = allKymosCheckBox.isSelected();
@@ -224,7 +224,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 			options.lastKymo = parent0.paneKymos.tabDisplay.kymographsCombo.getItemCount()-1;
 		}
 		// other parameters
-		options.transformForLevels 	= (TransformOp) transformForLevelsComboBox.getSelectedItem();
+		options.transformForLevels 	= (EnumTransformOp) transformForLevelsComboBox.getSelectedItem();
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();
 		

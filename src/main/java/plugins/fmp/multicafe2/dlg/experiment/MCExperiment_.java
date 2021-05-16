@@ -38,6 +38,7 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 	public 	Options 		tabOptions 		= new Options();
 	public 	Infos			tabInfos		= new Infos();
 	public 	Filter			tabFilter		= new Filter();
+	public 	Edit			tabEdit			= new Edit();
 	public 	Intervals		tabIntervals	= new Intervals();
 	public 	Analyze			tabAnalyze		= new Analyze();
 	public 	LoadSave		panelLoadSave	= new LoadSave();
@@ -63,7 +64,9 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 		tabFilter.init(tabsLayout, parent0);
 		tabsPane.addTab("Filter", null, tabFilter, "Filter experiments based on descriptors");
 
-		
+		tabEdit.init(tabsLayout, parent0);
+		tabsPane.addTab("Edit", null, tabEdit, "Edit descriptors");
+
 		tabIntervals.init(tabsLayout, parent0);
 		tabsPane.addTab("Intervals", null, tabIntervals, "View/define stack image intervals");
 		
@@ -174,10 +177,13 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 	public void stateChanged(ChangeEvent e) 
 	{
 		JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
-        if (tabbedPane.getSelectedIndex() == 1)
-			tabFilter.initLists();
+		if (tabbedPane.getSelectedIndex() == 0)
+			tabInfos.initInfosCombos();
+		else if (tabbedPane.getSelectedIndex() == 1)
+			tabFilter.initFilterCombos();
+        else if (tabbedPane.getSelectedIndex() == 2)
+			tabEdit.initEditCombos();
 	}
-
 
 	
 }

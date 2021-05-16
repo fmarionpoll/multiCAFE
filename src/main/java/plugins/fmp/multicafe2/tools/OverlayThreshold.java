@@ -17,7 +17,6 @@ import icy.sequence.SequenceEvent;
 import icy.sequence.SequenceEvent.SequenceEventSourceType;
 import icy.sequence.SequenceEvent.SequenceEventType;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
-import plugins.fmp.multicafe2.tools.ImageTransformTools.TransformOp;
 import icy.sequence.SequenceListener;
 
 public class OverlayThreshold extends Overlay implements SequenceListener 
@@ -48,7 +47,7 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 		imgOp.setSequence(seq);
 	}
 	
-	public void setTransform (TransformOp transf) 
+	public void setTransform (EnumTransformOp transf) 
 	{
 		imgOp.setTransform( transf);
 	}
@@ -58,7 +57,7 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 		imgOp.setThresholdSingle(threshold, ifGreater);
 	}
 	
-	public void setThresholdTransform (int threshold, TransformOp transformop, boolean ifGreater) 
+	public void setThresholdTransform (int threshold, EnumTransformOp transformop, boolean ifGreater) 
 	{
 		imgOp.setThresholdSingle(threshold, ifGreater);
 		imgOp.setTransform(transformop);

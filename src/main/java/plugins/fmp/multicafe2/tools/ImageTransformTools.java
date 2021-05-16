@@ -11,43 +11,6 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 
 public class ImageTransformTools 
 {
-	public enum TransformOp 
-	{ 
-		NONE("none"),
-		R_RGB("R(RGB)"), G_RGB("G(RGB)"), B_RGB("B(RGB)"),  
-		R2MINUS_GB ("2R-(G+B)"), G2MINUS_RB("2G-(R+B)"), B2MINUS_RG("2B-(R+G)"),
-		GBMINUS_2R ("(G+B)-2R"), RBMINUS_2G("(R+B)-2G"), RGMINUS_2B("(R+G)-2B"),
-		RGB_DIFFS("Sum(diffRGB)"),
-		RGB ("(R+G+B)/3"),
-		H_HSB ("H(HSB)"), S_HSB ("S(HSB)"), B_HSB("B(HSB)"),  
-		XDIFFN("XDiffn"), YDIFFN("YDiffn"), XYDIFFN( "XYDiffn"), 
-		REF_T0("subtract t[start]"), REF_PREVIOUS("subtract t[i-step]"), REF("subtract ref"),
-		NORM_BRMINUSG("F. Rebaudo"),
-		COLORARRAY1("color array"), RGB_TO_HSV("HSV"), RGB_TO_H1H2H3("H1H2H3"), 
-		RTOGB ("R to G,B"),
-		SUBFIRSTCOL("col-col0");
-		
-		private String label;
-		TransformOp (String label) 
-		{ 
-			this.label = label; 
-		}
-		public String toString() 
-		{ 
-			return label; 
-		}
-		
-		public static TransformOp findByText(String abbr)
-		{
-		    for(TransformOp v : values())
-		    { 
-		    	if ( v.toString().equals(abbr)) 
-		    		return v;  
-		    }
-		    return null;
-		}
-	}
-
 	public 	IcyBufferedImage 	referenceImage = null;
 	private int 				spanDiff = 3;
 	private SequenceCamData 	seqCamData 	= null;
@@ -73,7 +36,7 @@ public class ImageTransformTools
 		seqCamData = vinputSeq;
 	}
 		
-	public IcyBufferedImage transformImage (IcyBufferedImage inputImage, TransformOp transformop) 
+	public IcyBufferedImage transformImage (IcyBufferedImage inputImage, EnumTransformOp transformop) 
 	{
 		IcyBufferedImage transformedImage = null;
 		switch (transformop) 
@@ -85,57 +48,57 @@ public class ImageTransformTools
 		
 		case R_RGB: 	
 			transformedImage= functionRGB_keepOneChan(inputImage, 0); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		case G_RGB: 	
 			transformedImage= functionRGB_keepOneChan(inputImage, 1); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		case B_RGB: 	
 			transformedImage= functionRGB_keepOneChan(inputImage, 2); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		case RGB: 		
 			transformedImage= functionRGB_grey (inputImage); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		
 		case H_HSB: 	
 			transformedImage= functionRGBtoHSB(inputImage, 0); 
-			transformImage(transformedImage, TransformOp.RTOGB);
+			transformImage(transformedImage, EnumTransformOp.RTOGB);
 			break;
 		case S_HSB: 	
 			transformedImage= functionRGBtoHSB(inputImage, 1); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		case B_HSB: 	
 			transformedImage= functionRGBtoHSB(inputImage, 2); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 
 		case R2MINUS_GB: 
 			transformedImage= functionRGB_2C3MinusC1C2 (inputImage, 1, 2, 0); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		case G2MINUS_RB: 
 			transformedImage= functionRGB_2C3MinusC1C2 (inputImage, 0, 2, 1); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		case B2MINUS_RG: 
 			transformedImage= functionRGB_2C3MinusC1C2 (inputImage, 0, 1, 2); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		case GBMINUS_2R: 
 			transformedImage= functionRGB_C1C2minus2C3 (inputImage, 1, 2, 0); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		case RBMINUS_2G: 
 			transformedImage= functionRGB_C1C2minus2C3 (inputImage, 0, 2, 1); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		case RGMINUS_2B: 
 			transformedImage= functionRGB_C1C2minus2C3 (inputImage, 0, 1, 2); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 			
 		case RGB_DIFFS:
@@ -144,7 +107,7 @@ public class ImageTransformTools
 
 		case NORM_BRMINUSG: 
 			transformedImage= functionNormRGB_sumC1C2Minus2C3(inputImage, 1, 2, 0); 
-			transformImage(transformedImage, TransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		case RTOGB: 	
 			transformedImage= functionTransferRedToGreenAndBlue(inputImage); 
@@ -187,7 +150,7 @@ public class ImageTransformTools
 		return transformedImage;
 	}
 	
-	public IcyBufferedImage transformImageFromVirtualSequence (int t, TransformOp transformop) {
+	public IcyBufferedImage transformImageFromVirtualSequence (int t, EnumTransformOp transformop) {
 		return transformImage(seqCamData.getSeqImage(t, 0), transformop);
 	}
 	

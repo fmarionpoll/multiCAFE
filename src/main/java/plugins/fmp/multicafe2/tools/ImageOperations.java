@@ -5,7 +5,8 @@ import java.util.ArrayList;
 
 import icy.image.IcyBufferedImage;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
-import plugins.fmp.multicafe2.tools.ImageTransformTools.TransformOp;
+
+
 
 public class ImageOperations 
 {
@@ -26,7 +27,7 @@ public class ImageOperations
 		imgTransf.setSequence(seq);
 	}
 	
-	public void setTransform (TransformOp transformop) 
+	public void setTransform (EnumTransformOp transformop) 
 	{
 		opTransf.transformop = transformop;
 	}

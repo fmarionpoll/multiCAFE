@@ -28,7 +28,7 @@ public class Infos  extends JPanel
 	private JComboBox<String>	comment2_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	boxID_JCombo		= new JComboBox<String>();
 	private JComboBox<String> 	experiment_JCombo 	= new JComboBox<String>();
-	private JLabel				experimentCheck		= new JLabel("Strain");
+	private JLabel				experimentCheck		= new JLabel("Expt");
 	private JLabel				boxIDCheck			= new JLabel("Box ID");
 	private JLabel				comment1Check		= new JLabel("Stim");
 	private JLabel				comment2Check		= new JLabel("Conc");
@@ -181,7 +181,7 @@ public class Infos  extends JPanel
 		}
 	}	
 	
-	void updateCombos () 
+	void updateCombosIfNew () 
 	{
 		addItemToComboIfNew((String) boxID_JCombo.getSelectedItem(), boxID_JCombo);
 		addItemToComboIfNew((String) experiment_JCombo.getSelectedItem(), experiment_JCombo);
@@ -189,7 +189,7 @@ public class Infos  extends JPanel
 		addItemToComboIfNew((String) comment2_JCombo.getSelectedItem(), comment2_JCombo);
 	}
 	
-	void initCombosWithExpList()
+	void initInfosCombos()
 	{
 		parent0.expListCombo.getHeaderToCombo(experiment_JCombo, EnumXLSColumnHeader.EXPT); 
 		parent0.expListCombo.getHeaderToCombo(comment1_JCombo, EnumXLSColumnHeader.COMMENT1);

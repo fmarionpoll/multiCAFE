@@ -123,7 +123,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 					selectedNames.clear();
 					updateBrowseInterface();
 			     	parent1.tabInfos.disableChangeFile = true;
-			     	parent1.tabInfos.initCombosWithExpList();
+			     	parent1.tabInfos.initInfosCombos();
 				}});
 			}
 		}
@@ -133,7 +133,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	public void itemStateChanged(ItemEvent e) 
 	{
 		if (e.getStateChange() == ItemEvent.SELECTED) {
-			parent1.tabInfos.updateCombos();
+			parent1.tabInfos.updateCombosIfNew();
 			openExperimentFromCombo();
 		} 
 		else 
@@ -151,7 +151,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		closeCurrentExperiment();
 		parent0.expListCombo.removeAllItems();
 		parent1.tabFilter.clearAllCheckBoxes ();
-		parent1.tabFilter.savedExpList.removeAllItems();
+		parent1.tabFilter.filterExpList.removeAllItems();
 		parent1.tabInfos.clearCombos();
 		filteredCheck.setSelected(false);
 	}
@@ -285,7 +285,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             	if (eDAF.getDirectoriesFromDialog(parent0.expListCombo, null, true)) 
             	{
 	            	int item = addExperimentFrom3NamesAnd2Lists(eDAF);
-	            	parent1.tabInfos.initCombosWithExpList();
+	            	parent1.tabInfos.initInfosCombos();
 	            	parent0.expListCombo.setSelectedIndex(item);
             	}
             }});
@@ -299,7 +299,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
             	if (eDAF.getDirectoriesFromDialog(parent0.expListCombo, null, false)) 
             	{
             		int item = addExperimentFrom3NamesAnd2Lists(eDAF);
-            		parent1.tabInfos.initCombosWithExpList();
+            		parent1.tabInfos.initInfosCombos();
             		parent0.expListCombo.setSelectedIndex(item);
             	}
             }});

@@ -41,7 +41,7 @@ public class Filter  extends JPanel
 	
 	private MultiCAFE2 			parent0 			= null;
 			boolean 			disableChangeFile 	= false;
-			ExperimentCombo 	savedExpList 		= new ExperimentCombo();
+			ExperimentCombo 	filterExpList 		= new ExperimentCombo();
 	
 	
 	void init(GridLayout capLayout, MultiCAFE2 parent0) 
@@ -82,14 +82,14 @@ public class Filter  extends JPanel
 		defineActionListeners();
 	}
 	
-	public void initLists() 
+	public void initFilterCombos() 
 	{
 		if (!parent0.paneExperiment.panelLoadSave.filteredCheck.isSelected())
-			savedExpList.setExperimentsFromList(parent0.expListCombo.getExperimentsAsList());
-		savedExpList.getHeaderToCombo(experimentCombo, EnumXLSColumnHeader.EXPT); 
-		savedExpList.getHeaderToCombo(comment1Combo, EnumXLSColumnHeader.COMMENT1);
-		savedExpList.getHeaderToCombo(comment2Combo, EnumXLSColumnHeader.COMMENT2);
-		savedExpList.getHeaderToCombo(boxIDCombo, EnumXLSColumnHeader.BOXID);
+			filterExpList.setExperimentsFromList(parent0.expListCombo.getExperimentsAsList());
+		filterExpList.getHeaderToCombo(experimentCombo, EnumXLSColumnHeader.EXPT); 
+		filterExpList.getHeaderToCombo(comment1Combo, EnumXLSColumnHeader.COMMENT1);
+		filterExpList.getHeaderToCombo(comment2Combo, EnumXLSColumnHeader.COMMENT2);
+		filterExpList.getHeaderToCombo(boxIDCombo, EnumXLSColumnHeader.BOXID);
 	}
 	
 	
@@ -119,7 +119,7 @@ public class Filter  extends JPanel
 		}
 		else 
 		{
-			parent0.expListCombo.setExperimentsFromList (savedExpList.getExperimentsAsList());
+			parent0.expListCombo.setExperimentsFromList (filterExpList.getExperimentsAsList());
 			clearAllCheckBoxes ();
 		}
 		
@@ -140,7 +140,7 @@ public class Filter  extends JPanel
 	
 	private List<Experiment> filterAllItems() 
 	{
-		List<Experiment> filteredList = new ArrayList<Experiment>(savedExpList.getExperimentsAsList());		
+		List<Experiment> filteredList = new ArrayList<Experiment>(filterExpList.getExperimentsAsList());		
 		if (experimentCheck.isSelected())
 			filterItem(filteredList, EnumXLSColumnHeader.EXPT, (String) experimentCombo.getSelectedItem());
 		if (boxIDCheck.isSelected())

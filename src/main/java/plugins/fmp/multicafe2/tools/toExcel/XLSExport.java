@@ -15,7 +15,6 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import icy.gui.dialog.MessageDialog;
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Capillary;
@@ -77,13 +76,8 @@ public class XLSExport
 
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		String date = df.format(exp.getFileTimeImageFirst(false).toMillis());
-		
-		int subpath_i = 2;
+
 		String name0 = path.toString();
-		if (name0 .contains("grabs"))
-			subpath_i++;
-		String name1 = exp.getSubName(path, subpath_i);
-		
 		int pos = name0.indexOf("cam");
 		String cam = "-"; 
 		if (pos > 0) 
@@ -120,38 +114,7 @@ public class XLSExport
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT1.getValue(), transpose, 	exp.getField(EnumXLSColumnHeader.COMMENT1));
 
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, cap.getSideDescriptor(xlsExportOption));
-			switch (xlsExportOption) {
-			case TOPLEVEL_LR:
-			case TOPLEVELDELTA_LR:
-			case SUMGULPS_LR:
-				if (cap.getCapillarySide().equals("L")) 
-				{
-					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "L+R");
-					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
-				} 
-				else 
-				{
-					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "(L-R)/(L+R)");
-					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
-				}
-				break;
-			case TTOGULP_LR:
-				if (cap.getCapillarySide().equals("L")) 
-				{
-					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "min_t_to_gulp");
-					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
-				} 
-				else 
-				{
-					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "max_t_to_gulp");
-					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
-				}
-				break;
-			default:
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, 	cap.capStimulus);
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, 	cap.capConcentration);	
-				break;
-			}
+			setValueDataOption(sheet, xlsExportOption, cap, transpose, x, y);
 
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAM.getValue(), transpose, 		cam);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEINDEX.getValue(), transpose, 	cap.capCageID);
@@ -159,23 +122,79 @@ public class XLSExport
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPVOLUME.getValue(), transpose, 	exp.capillaries.desc.volume);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPPIXELS.getValue(), transpose, 	exp.capillaries.desc.pixels);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT2.getValue(), transpose, 	exp.getField(EnumXLSColumnHeader.COMMENT2));
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, 	cap.capNFlies); 
 			if (exp.cages.cageList.size() > cap.capCageID) 
 			{
 				Cage cage = exp.cages.cageList.get(cap.capCageID);
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, cap.capNFlies); // cage.cageNFlies );
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGECOMMENT.getValue(), transpose, cage.strCageComment);
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, cage.strCageStrain + "/" + cage.strCageSex + "/" + cage.cageAge );
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, cage.strCageComment + "/"+ cage.strCageStrain + "/" + cage.strCageSex + "/" + cage.cageAge );
 			} 
 			else 
-			{
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, cap.capNFlies);
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGECOMMENT.getValue(), transpose, name1);
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, sheetName);
-			}
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGECOMMENT.getValue(), transpose, getChoiceTestType(capList, t));
 		}
 		pt.x = col0;
 		pt.y = rowmax +1;
 		return pt;
+	}
+	
+	private String getChoiceTestType(List<Capillary> capList, int t)
+	{
+		Capillary cap = capList.get(t);
+		String choiceText = "..";
+		String side = cap.getCapillarySide();
+		if (side.contains("L"))
+			t = t+1;
+		else
+			t = t-1;
+		if (t >= 0 && t < capList.size()) {
+			Capillary othercap = capList.get(t);
+			String otherSide = othercap.getCapillarySide();
+			if (!otherSide .contains(side))
+			{
+				if (cap.capStimulus.equals(othercap.capStimulus)
+					&& cap.capConcentration.equals(othercap.capConcentration))
+					choiceText  = "no-choice";
+				else
+					choiceText = "choice";
+			}
+		}
+		return choiceText;
+	}
+	
+	private void setValueDataOption(XSSFSheet sheet, EnumXLSExportType xlsExportOption, Capillary cap, boolean transpose, int x, int y)
+	{
+		switch (xlsExportOption) {
+		case TOPLEVEL_LR:
+		case TOPLEVELDELTA_LR:
+		case SUMGULPS_LR:
+			if (cap.getCapillarySide().equals("L")) 
+			{
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "L+R");
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
+			} 
+			else 
+			{
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "(L-R)/(L+R)");
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
+			}
+			break;
+		case TTOGULP_LR:
+			if (cap.getCapillarySide().equals("L")) 
+			{
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "min_t_to_gulp");
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
+			} 
+			else 
+			{
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "max_t_to_gulp");
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
+			}
+			break;
+		default:
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, 	cap.capStimulus);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, 	cap.capConcentration);	
+			break;
+		}
 	}
 	
 	public int outputColumnHeaders(XSSFSheet sheet) 

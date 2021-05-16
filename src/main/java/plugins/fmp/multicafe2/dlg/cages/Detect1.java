@@ -31,7 +31,8 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.series.DetectFlies1_series;
 import plugins.fmp.multicafe2.series.Options_BuildSeries;
 import plugins.fmp.multicafe2.tools.OverlayThreshold;
-import plugins.fmp.multicafe2.tools.ImageTransformTools.TransformOp;
+import plugins.fmp.multicafe2.tools.EnumTransformOp;
+
 
 
 
@@ -47,7 +48,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JButton 	startComputationButton 	= new JButton(detectString);
 
 	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
-	private JComboBox<TransformOp> backgroundComboBox = new JComboBox<> (new TransformOp[]  {TransformOp.NONE, TransformOp.REF_PREVIOUS, TransformOp.REF_T0});
+	private JComboBox<EnumTransformOp> backgroundComboBox = new JComboBox<> (new EnumTransformOp[]  {EnumTransformOp.NONE, EnumTransformOp.REF_PREVIOUS, EnumTransformOp.REF_T0});
 	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 10));
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
@@ -214,7 +215,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.limitRatio		= (int) limitRatioSpinner.getValue();
 		options.jitter 			= (int) jitterTextField.getValue();
 		options.videoChannel 	= colorChannelComboBox.getSelectedIndex();
-		options.transformop		= (TransformOp) backgroundComboBox.getSelectedItem();
+		options.transformop		= (EnumTransformOp) backgroundComboBox.getSelectedItem();
 		options.threshold		= (int) thresholdSpinner.getValue();
 		
 		options.isFrameFixed 	= parent0.paneExperiment.tabAnalyze.getIsFixedFrame();

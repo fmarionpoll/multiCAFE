@@ -5,25 +5,27 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+
 public enum EnumXLSColumnHeader 
 {
-	PATH		("path", 		0),
-	DATE		("date", 		1), 
-	BOXID		("box_ID", 		2), 
-	EXPT		("expmt", 		3), 
-	COMMENT1	("comment1", 	4),
-	CAPSTIM		("stim", 		5), 
-	CAPCONC		("conc", 		6), 
-	CAM 		("cam", 		7), 
-	CAP 		("cap", 		8),
-	CAGEINDEX	("cage", 		9), 
-	NFLIES		("nflies", 		10), 
-	CAGEID 		("cage_ID", 	11),
-	CAGECOMMENT	("cage_comment",12), 
-	CAPVOLUME	("cap_ul", 		13), 
-	CAPPIXELS 	("cap_npixels", 14), 
-	DUM4		("dum4", 		15), 
-	COMMENT2	("comment2", 	16);
+	PATH		("Path", 		0),
+	DATE		("Date", 		1), 
+	BOXID		("Box_ID", 		2), 
+	CAM 		("Cam", 		3), 
+	EXPT		("Expmt", 		4), 
+	CAGEID 		("Cage_ID", 	5),
+	COMMENT1	("Cmt1", 	6),
+	COMMENT2	("Cmt2", 	7),
+	CAP 		("Cap", 		8),
+	CAPVOLUME	("Cap_ul", 		9), 
+	CAPPIXELS 	("Cap_npixels", 10), 
+	CAGECOMMENT	("Choice",		11),  
+	CAPSTIM		("Cap_stim", 		12), 
+	CAPCONC		("Cap_conc", 		13),
+	NFLIES		("Nflies", 		14), 
+	CAGEINDEX	("Cage", 		15), 
+	DUM4		("Dum4", 		16); 
+	
 	
 	private final String 	name;
 	private final int 		value;
@@ -47,6 +49,7 @@ public enum EnumXLSColumnHeader
 	
 	static final Map<String, EnumXLSColumnHeader> names = Arrays.stream(EnumXLSColumnHeader.values())
 		      .collect(Collectors.toMap(EnumXLSColumnHeader::getName, Function.identity()));
+	
 	static final Map<Integer, EnumXLSColumnHeader> values = Arrays.stream(EnumXLSColumnHeader.values())
 		      .collect(Collectors.toMap(EnumXLSColumnHeader::getValue, Function.identity()));
 	
@@ -58,6 +61,21 @@ public enum EnumXLSColumnHeader
 	public static EnumXLSColumnHeader fromValue(final int value) 
 	{
 	    return values.get(value);
+	}
+	
+	public String toString() 
+	{ 
+		return name; 
+	}
+	
+	public static EnumXLSColumnHeader findByText(String abbr)
+	{
+	    for(EnumXLSColumnHeader v : values())
+	    { 
+	    	if ( v.toString().equals(abbr)) 
+	    		return v;  
+	    }
+	    return null;
 	}
 }
 

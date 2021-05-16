@@ -24,7 +24,8 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.series.DetectGulps_series;
 import plugins.fmp.multicafe2.series.Options_BuildSeries;
-import plugins.fmp.multicafe2.tools.ImageTransformTools.TransformOp;
+import plugins.fmp.multicafe2.tools.EnumTransformOp;
+
 
 
 
@@ -36,7 +37,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	private static final long 	serialVersionUID 		= -5590697762090397890L;
 	
 	JCheckBox				allKymosCheckBox 			= new JCheckBox ("all kymographs", true);
-	JComboBox<TransformOp> 	transformForGulpsComboBox 	= new JComboBox<TransformOp> (new TransformOp[] {TransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
+	JComboBox<EnumTransformOp> 	transformForGulpsComboBox 	= new JComboBox<EnumTransformOp> (new EnumTransformOp[] {EnumTransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
 	JSpinner				startSpinner				= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
 	JSpinner				endSpinner					= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	JCheckBox				buildDerivativeCheckBox 	= new JCheckBox ("derivative", true);
@@ -83,7 +84,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		panel1.add(endSpinner);
 		add( panel1);
 
-		transformForGulpsComboBox.setSelectedItem(TransformOp.XDIFFN);
+		transformForGulpsComboBox.setSelectedItem(EnumTransformOp.XDIFFN);
 		defineActionListeners();
 	}
 	
@@ -135,7 +136,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 			SequenceKymos seqKymos = exp.seqKymos;
 			if (seqKymos != null)
 			{
-				TransformOp transform = (TransformOp) transformForGulpsComboBox.getSelectedItem();
+				EnumTransformOp transform = (EnumTransformOp) transformForGulpsComboBox.getSelectedItem();
 				int zChannelDestination = 2;
 				exp.kymosBuildFiltered(0, zChannelDestination, transform, (int) spanTransf2Spinner.getValue());
 				seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
@@ -166,7 +167,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 			options.lastKymo = parent0.paneKymos.tabDisplay.kymographsCombo.getItemCount()-1;
 		}
 		options.detectGulpsThreshold = (int) detectGulpsThresholdSpinner.getValue();
-		options.transformForGulps = (TransformOp) transformForGulpsComboBox.getSelectedItem();
+		options.transformForGulps = (EnumTransformOp) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps 	= allKymosCheckBox.isSelected();
 		options.spanDiff		= (int) spanTransf2Spinner.getValue();
 		options.buildGulps		= detectGulpsCheckBox.isSelected();
