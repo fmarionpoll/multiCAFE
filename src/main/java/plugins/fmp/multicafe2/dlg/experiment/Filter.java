@@ -86,10 +86,10 @@ public class Filter  extends JPanel
 	{
 		if (!parent0.paneExperiment.panelLoadSave.filteredCheck.isSelected())
 			filterExpList.setExperimentsFromList(parent0.expListCombo.getExperimentsAsList());
-		filterExpList.getHeaderToCombo(experimentCombo, EnumXLSColumnHeader.EXPT); 
-		filterExpList.getHeaderToCombo(comment1Combo, EnumXLSColumnHeader.COMMENT1);
-		filterExpList.getHeaderToCombo(comment2Combo, EnumXLSColumnHeader.COMMENT2);
-		filterExpList.getHeaderToCombo(boxIDCombo, EnumXLSColumnHeader.BOXID);
+		filterExpList.getFieldValuesToCombo(experimentCombo, EnumXLSColumnHeader.EXPT); 
+		filterExpList.getFieldValuesToCombo(comment1Combo, EnumXLSColumnHeader.COMMENT1);
+		filterExpList.getFieldValuesToCombo(comment2Combo, EnumXLSColumnHeader.COMMENT2);
+		filterExpList.getFieldValuesToCombo(boxIDCombo, EnumXLSColumnHeader.BOXID);
 	}
 	
 	

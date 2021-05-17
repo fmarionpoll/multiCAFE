@@ -75,7 +75,7 @@ public class Edit   extends JPanel
 	public void initEditCombos() 
 	{
 		editExpList.setExperimentsFromList(parent0.expListCombo.getExperimentsAsList()); 
-		editExpList.getHeaderToCombo(descriptorsCombo, (EnumXLSColumnHeader) headersCombo.getSelectedItem());
+		editExpList.getFieldValuesToCombo(descriptorsCombo, (EnumXLSColumnHeader) headersCombo.getSelectedItem());
 	}
 	
 	
@@ -94,7 +94,7 @@ public class Edit   extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				editExpList.getHeaderToCombo(descriptorsCombo, (EnumXLSColumnHeader) headersCombo.getSelectedItem());
+				editExpList.getFieldValuesToCombo(descriptorsCombo, (EnumXLSColumnHeader) headersCombo.getSelectedItem());
 			}});
 	}
 	

@@ -217,25 +217,25 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		return index;
 	}
 	
-	public List<String> getFieldFromAllExperiments(EnumXLSColumnHeader field) 
+	public List<String> getFieldValuesFromAllExperiments(EnumXLSColumnHeader field) 
 	{
-		List<String> names = new ArrayList<>();
+		List<String> textList = new ArrayList<>();
 		for (int i=0; i< getItemCount(); i++) 
 		{
 			Experiment exp = getItemAt(i);
-			String pattern = exp.getField(field);
-			if (!isFound (pattern, names))
-				names.add(pattern);
+			String text = exp.getField(field);
+			if (!isFound (text, textList))
+				textList.add(text);
 		}
-		return names;
+		return textList;
 	}
 	
-	public void getHeaderToCombo(JComboBox<String> combo, EnumXLSColumnHeader header)
+	public void getFieldValuesToCombo(JComboBox<String> combo, EnumXLSColumnHeader header)
 	{
 		combo.removeAllItems();
-		List<String> fieldList = getFieldFromAllExperiments(header);
-		for (String field: fieldList)
-			combo.addItem(field);
+		List<String> textList = getFieldValuesFromAllExperiments(header);
+		for (String text: textList)
+			combo.addItem(text);
 	}
 
 	private boolean isFound (String pattern, List<String> names) 

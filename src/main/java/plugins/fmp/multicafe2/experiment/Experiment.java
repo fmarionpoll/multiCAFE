@@ -495,7 +495,7 @@ public class Experiment
 		kymoLastCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
 		kymoBinCol_Ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
 		
-		if (field_boxID .contentEquals("..")) 
+		if (field_boxID != null && field_boxID .contentEquals("..")) 
 		{
 			field_boxID	= XMLUtil.getElementValue(node, ID_BOXID, "..");
 	        field_experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");

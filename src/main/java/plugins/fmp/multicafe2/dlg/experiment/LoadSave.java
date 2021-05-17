@@ -23,7 +23,6 @@ import icy.sequence.Sequence;
 import icy.sequence.SequenceEvent;
 import icy.sequence.SequenceListener;
 import icy.sequence.SequenceEvent.SequenceEventSourceType;
-import icy.system.thread.ThreadUtil;
 
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.dlg.JComponents.SequenceNameListRenderer;
@@ -53,7 +52,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 
 	private MultiCAFE2 		parent0 		= null;
 	private MCExperiment_ 	parent1 		= null;
-	private int 			listenerIndex 	= -1;
 	
 	
 
@@ -107,8 +105,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			ExperimentDirectories eDAF0 = new ExperimentDirectories(); 
 			if (eDAF0.getDirectoriesFromExptPath(parent0.expListCombo, selectedNames.get(0), null))
 			{
-				int item = addExperimentFrom3NamesAnd2Lists(eDAF0);
-	        	parent0.expListCombo.setSelectedIndex(item);
+				final int item = addExperimentFrom3NamesAnd2Lists(eDAF0);
+	        	//parent0.expListCombo.setSelectedIndex(item);
 	        	final String binSubDirectory = parent0.expListCombo.expListBinSubDirectory;
 	        	
 	        	SwingUtilities.invokeLater(new Runnable() { public void run() 
@@ -124,6 +122,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 					updateBrowseInterface();
 			     	parent1.tabInfos.disableChangeFile = true;
 			     	parent1.tabInfos.initInfosCombos();
+			     	parent0.expListCombo.setSelectedIndex(item);
 				}});
 			}
 		}
@@ -132,17 +131,14 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	@Override
 	public void itemStateChanged(ItemEvent e) 
 	{
-		if (e.getStateChange() == ItemEvent.SELECTED) {
-			parent1.tabInfos.updateCombosIfNew();
+		if (e.getStateChange() == ItemEvent.SELECTED) 
+		{
 			openExperimentFromCombo();
 		} 
-		else 
+		else if (e.getStateChange() == ItemEvent.DESELECTED) 
 		{
 			Experiment exp = (Experiment) e.getItem();
-			ThreadUtil.bgRun( new Runnable() { @Override public void run() 
-    		{
-        		closeViewsForCurrentExperiment(exp); 
-    		}});
+        	closeViewsForCurrentExperiment(exp); 
 		}
 	}
 	
@@ -160,11 +156,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	{
 		if (exp != null) 
 		{
-			parent0.paneExperiment.tabInfos.getExperimentInfosFromDialog(exp);
 			if (exp.seqCamData != null) 
-			{
 				exp.xmlSaveMCExperiment();
-			}
 			exp.closeSequences();
 		}
 		parent0.paneKymos.tabDisplay.kymographsCombo.removeAllItems();
@@ -186,14 +179,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		boolean flag2 = (isel == (parent0.expListCombo.getItemCount() -1)? false: true);
 		previousButton.setEnabled(flag1);
 		nextButton.setEnabled(flag2);
-		
-		if (isel >= 0 && listenerIndex != isel) 
-		{
-			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-			if (exp != null)
-				exp.seqCamData.seq.addListener(this);
-		}
-		listenerIndex = isel;
 	}
 	
 	boolean openExperimentFromCombo() 
@@ -209,6 +194,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			exp.loadCamDataImages();
 			exp.xmlLoadMCCapillaries_Only();
 			exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
+			exp.seqCamData.seq.addListener(this);
+			
 			parent1.updateViewerForSequenceCam(exp);
 			parent1.updateExpDialogs(exp);
 			parent0.paneCapillaries.updateDialogs(exp);
@@ -266,6 +253,26 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				updateBrowseInterface();
 			}});
 		
+		nextButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+			if (parent0.expListCombo.getSelectedIndex() < (parent0.expListCombo.getItemCount()-1)) 
+				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()+1);
+			else 
+				updateBrowseInterface();
+			}});
+		
+		previousButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+			if (parent0.expListCombo.getSelectedIndex() > 0) 
+				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()-1);
+			else 
+				updateBrowseInterface();
+			}});
+		
 		searchButton.addActionListener(new ActionListener()  
 		{
             @Override
@@ -312,26 +319,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				parent1.tabsPane.setSelectedIndex(0);
 				parent0.expListCombo.removeAllItems();
 				parent0.expListCombo.updateUI();
-			}});
-		
-		nextButton.addActionListener(new ActionListener () 
-		{ 
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
-			if (parent0.expListCombo.getSelectedIndex() < (parent0.expListCombo.getItemCount()-1)) 
-				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()+1);
-			else 
-				updateBrowseInterface();
-			}});
-		
-		previousButton.addActionListener(new ActionListener () 
-		{ 
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
-			if (parent0.expListCombo.getSelectedIndex() > 0) 
-				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()-1);
-			else 
-				updateBrowseInterface();
 			}});
 		
 		filteredCheck.addActionListener(new ActionListener()  
