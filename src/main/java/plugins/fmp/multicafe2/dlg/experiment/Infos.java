@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -208,18 +210,15 @@ public class Infos  extends JPanel
 		DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) combo.getModel();
 		if (model.getIndexOf(text) == -1 ) 
 		{
-			int index = 0;
-			for (index=0; index < model.getSize(); index++)
-			{
-				String c = (String) model.getElementAt(index);
-				if (c.compareTo(text) < 0) 
-				{
-					model.insertElementAt(c, index);
-					return;
-				}
-			}
-		    model.addElement(text);
+			List<String> content = new ArrayList<> (model.getSize()+1);
+			for (int i=0; i< model.getSize(); i++)
+				content.add(model.getElementAt(i));
+			content.add(text);
+			java.util.Collections.sort(content);
+			model.removeAllElements();
+			model.addAll(content);		  
 		}
+//		combo.setModel(model);
 	}	
 		
 	void initInfosCombos()
