@@ -7,11 +7,9 @@ import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 
 public class SortedComboBoxModel extends DefaultComboBoxModel<String> {
-	  /**
-	 * 
-	 */
-private static final long serialVersionUID = 1L;
 
+	private static final long serialVersionUID = -729889390560323340L;
+	
 	public SortedComboBoxModel() {
 	    super();
 	}
@@ -35,22 +33,24 @@ private static final long serialVersionUID = 1L;
 	}
 
 	@Override
-	public void addElement(String element) {
-		insertElementAt(element, 0);
+	public void addElement(String text) {
+		insertElementAt(text, 0);
 	}
 
 	@Override
-	public void insertElementAt(String element, int index) {
+	public void insertElementAt(String text, int index) {
 		int size = getSize();
 		for (index = 0; index < size; index++) {
 			Comparable<String> c = (Comparable<String>) getElementAt(index);
 			if (
 //					c == null 
 //					|| 
-					c.compareTo(element) > 0
+					c.compareTo(text) > 0
 					) 
 				break;
 		}	
-		super.insertElementAt(element, index);
+		super.insertElementAt(text, index);
+		fireContentsChanged(text, -1, -1);
 	}
+	
 }

@@ -55,7 +55,7 @@
 </section>
 <key name="lastUpdateCheckTime" value="1621240423917"/>
 <key name="virtualMode" value="true"/>
-<key name="loaderFolder" value="E:\2021 Penelope\DRGP data ok\multiCAFE_2021.01.26"/>
+<key name="loaderFolder" value="E:\2021 Penelope\DRGP data ok\multiCAFE_2021.04.29"/>
 </section>
 <section name="canvas">
 <section name="Canvas2D">
@@ -137,7 +137,7 @@
 <section name="multicafe2">
 <section name="MultiCAFE2">
 <section name="gui">
-<key name="lastUsedPath" value="E:\2021 Penelope\DRGP data ok\multiCAFE_2021.02.04"/>
+<key name="lastUsedPath" value="E:\2021 Penelope\DRGP data ok\multiCAFE_2021.04.23"/>
 </section>
 </section>
 </section>
@@ -147,19 +147,19 @@
 <section name="main">
 <key name="XE" value="-2213"/>
 <key name="YE" value="98"/>
-<key name="WidthE" value="1903"/>
-<key name="HeightE" value="1035"/>
+<key name="WidthE" value="2129"/>
+<key name="HeightE" value="1292"/>
 <key name="MaximizedE" value="false"/>
 </section>
 <section name="inspector">
-<key name="XC" value="1426"/>
+<key name="XC" value="1652"/>
 <key name="YC" value="0"/>
 <key name="XE" value="600"/>
 <key name="YE" value="140"/>
 <key name="XI" value="600"/>
 <key name="YI" value="140"/>
 <key name="WidthC" value="469"/>
-<key name="HeightC" value="873"/>
+<key name="HeightC" value="1130"/>
 <key name="WidthE" value="300"/>
 <key name="HeightE" value="600"/>
 <key name="WidthI" value="300"/>
@@ -177,7 +177,7 @@
 <key name="XI" value="100"/>
 <key name="YI" value="100"/>
 <key name="WidthC" value="461"/>
-<key name="HeightC" value="783"/>
+<key name="HeightC" value="1040"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="600"/>
 <key name="WidthI" value="400"/>
@@ -195,7 +195,7 @@
 <key name="XI" value="200"/>
 <key name="YI" value="200"/>
 <key name="WidthC" value="461"/>
-<key name="HeightC" value="783"/>
+<key name="HeightC" value="1040"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="300"/>
 <key name="WidthI" value="400"/>

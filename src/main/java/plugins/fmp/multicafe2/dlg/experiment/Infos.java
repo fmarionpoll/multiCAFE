@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -27,20 +28,20 @@ public class Infos  extends JPanel
 	 */
 	private static final long serialVersionUID = 2190848825783418962L;
 
-	SortedComboBoxModel 		model1 			= new SortedComboBoxModel();
-	SortedComboBoxModel 		model2 			= new SortedComboBoxModel();
-	SortedComboBoxModel 		model3 			= new SortedComboBoxModel();
-	SortedComboBoxModel 		model4 			= new SortedComboBoxModel();
+//	SortedComboBoxModel 		model1 			= new SortedComboBoxModel();
+//	SortedComboBoxModel 		model2 			= new SortedComboBoxModel();
+//	SortedComboBoxModel 		model3 			= new SortedComboBoxModel();
+//	SortedComboBoxModel 		model4 			= new SortedComboBoxModel();
+//	
+//	private JComboBox<String>	cmt1Combo		= new JComboBox<String>(model1);
+//	private JComboBox<String>	comt2Combo		= new JComboBox<String>(model2);
+//	private JComboBox<String> 	boxIDCombo		= new JComboBox<String>(model3);
+//	private JComboBox<String> 	exptCombo 		= new JComboBox<String>(model4);
 	
-	private JComboBox<String>	cmt1Combo		= new JComboBox<String>(model1);
-	private JComboBox<String>	comt2Combo		= new JComboBox<String>(model2);
-	private JComboBox<String> 	boxIDCombo		= new JComboBox<String>(model3);
-	private JComboBox<String> 	exptCombo 		= new JComboBox<String>(model4);
-	
-//	private JComboBox<String>	cmt1Combo		= new JComboBox<String>();
-//	private JComboBox<String>	comt2Combo		= new JComboBox<String>();
-//	private JComboBox<String> 	boxIDCombo		= new JComboBox<String>();
-//	private JComboBox<String> 	exptCombo 		= new JComboBox<String>();
+	private JComboBox<String>	cmt1Combo		= new JComboBox<String>();
+	private JComboBox<String>	comt2Combo		= new JComboBox<String>();
+	private JComboBox<String> 	boxIDCombo		= new JComboBox<String>();
+	private JComboBox<String> 	exptCombo 		= new JComboBox<String>();
 	
 	private JLabel				experimentCheck	= new JLabel("Expt");
 	private JLabel				boxIDCheck		= new JLabel("Box ID");
@@ -91,52 +92,53 @@ public class Infos  extends JPanel
 		
 	private void defineItemListeners() 
 	{
-		boxIDCombo.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == ItemEvent.SELECTED) {
-                	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-    				if (exp != null) 
-    				{
-    					exp.setField(EnumXLSColumnHeader.BOXID, (String) boxIDCombo.getSelectedItem());
-//    					System.out.println("display combo item: " + (String) boxIDCombo.getSelectedItem());
-    				}
-                }
-            }
-        });
-		
-		exptCombo.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == ItemEvent.SELECTED) {
-                	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-    				if (exp != null)
-    					exp.setField(EnumXLSColumnHeader.EXPT, (String) exptCombo.getSelectedItem());
-                }
-            }
-        });
-		
-		cmt1Combo.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == ItemEvent.SELECTED) {
-                	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-    				if (exp != null)
-    					exp.setField(EnumXLSColumnHeader.COMMENT1, (String) cmt1Combo.getSelectedItem());
-                }
-            }
-        });
-		
-		comt2Combo.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == ItemEvent.SELECTED) {
-                	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-    				if (exp != null)
-    					exp.setField(EnumXLSColumnHeader.COMMENT2, (String) comt2Combo.getSelectedItem());
-                }
-            }
-        });
+//		boxIDCombo.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                if(e.getStateChange() == ItemEvent.SELECTED) {
+//                	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+//    				if (exp != null) 
+//    				{
+//    					exp.setField(EnumXLSColumnHeader.BOXID, (String) boxIDCombo.getSelectedItem());
+////    					System.out.println("display combo item: " + (String) boxIDCombo.getSelectedItem());
+//    					boxIDCombo.setSelectedItem(boxIDCombo.getSelectedItem());
+//    				}
+//                }
+//            }
+//        });
+//		
+//		exptCombo.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                if(e.getStateChange() == ItemEvent.SELECTED) {
+//                	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+//    				if (exp != null)
+//    					exp.setField(EnumXLSColumnHeader.EXPT, (String) exptCombo.getSelectedItem());
+//                }
+//            }
+//        });
+//		
+//		cmt1Combo.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                if(e.getStateChange() == ItemEvent.SELECTED) {
+//                	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+//    				if (exp != null)
+//    					exp.setField(EnumXLSColumnHeader.COMMENT1, (String) cmt1Combo.getSelectedItem());
+//                }
+//            }
+//        });
+//		
+//		comt2Combo.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                if(e.getStateChange() == ItemEvent.SELECTED) {
+//                	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+//    				if (exp != null)
+//    					exp.setField(EnumXLSColumnHeader.COMMENT2, (String) comt2Combo.getSelectedItem());
+//                }
+//            }
+//        });
 		
 	}
 	
@@ -199,25 +201,25 @@ public class Infos  extends JPanel
 	{
 		if (text == null)
 			return;
-		SortedComboBoxModel model = (SortedComboBoxModel) combo.getModel();
-		if (model.getIndexOf(text) == -1 )
-			model.addElement(text);
+//		SortedComboBoxModel model = (SortedComboBoxModel) combo.getModel();
+//		if (model.getIndexOf(text) == -1 )
+//			model.addElement(text);
 		
-//		DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) combo.getModel();
-//		if (model.getIndexOf(text) == -1 ) 
-//		{
-//			int index = 0;
-//			for (index=0; index < model.getSize(); index++)
-//			{
-//				String c = (String) model.getElementAt(index);
-//				if (c.compareTo(text) < 0) 
-//				{
-//					model.insertElementAt(c, index);
-//					return;
-//				}
-//			}
-//		    model.addElement(text);
-//		}
+		DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) combo.getModel();
+		if (model.getIndexOf(text) == -1 ) 
+		{
+			int index = 0;
+			for (index=0; index < model.getSize(); index++)
+			{
+				String c = (String) model.getElementAt(index);
+				if (c.compareTo(text) < 0) 
+				{
+					model.insertElementAt(c, index);
+					return;
+				}
+			}
+		    model.addElement(text);
+		}
 	}	
 		
 	void initInfosCombos()
