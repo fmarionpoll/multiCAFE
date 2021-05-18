@@ -112,6 +112,8 @@ public class XLSExport
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.BOXID.getValue(), transpose, 		exp.getField(EnumXLSColumnHeader.BOXID));
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXPT.getValue(), transpose, 		exp.getField(EnumXLSColumnHeader.EXPT));
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT1.getValue(), transpose, 	exp.getField(EnumXLSColumnHeader.COMMENT1));
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.STRAIN.getValue(), transpose, 	exp.getField(EnumXLSColumnHeader.STRAIN));
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.SEX.getValue(), transpose, 		exp.getField(EnumXLSColumnHeader.SEX));			
 
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, cap.getSideDescriptor(xlsExportOption));
 			setValueDataOption(sheet, xlsExportOption, cap, transpose, x, y);
@@ -352,6 +354,8 @@ public class XLSExport
 		expAll.setField(EnumXLSColumnHeader.EXPT, exp.getField(EnumXLSColumnHeader.EXPT));
 		expAll.setField(EnumXLSColumnHeader.COMMENT1, exp.getField(EnumXLSColumnHeader.COMMENT1));
 		expAll.setField(EnumXLSColumnHeader.COMMENT2, exp.getField(EnumXLSColumnHeader.COMMENT2));	
+		expAll.setField(EnumXLSColumnHeader.STRAIN, exp.getField(EnumXLSColumnHeader.STRAIN));
+		expAll.setField(EnumXLSColumnHeader.SEX, exp.getField(EnumXLSColumnHeader.SEX));
 		expAll.setExperimentDirectory(exp.getExperimentDirectory());
 		
 		Experiment expi = exp.nextExperiment;

@@ -14,17 +14,19 @@ public enum EnumXLSColumnHeader
 	CAM 		("Cam", 		3), 
 	EXPT		("Expmt", 		4), 
 	CAGEID 		("Cage_ID", 	5),
-	COMMENT1	("Cmt1", 	6),
-	COMMENT2	("Cmt2", 	7),
-	CAP 		("Cap", 		8),
-	CAPVOLUME	("Cap_ul", 		9), 
-	CAPPIXELS 	("Cap_npixels", 10), 
-	CAGECOMMENT	("Choice",		11),  
-	CAPSTIM		("Cap_stim", 		12), 
-	CAPCONC		("Cap_conc", 		13),
-	NFLIES		("Nflies", 		14), 
-	CAGEINDEX	("Cage", 		15), 
-	DUM4		("Dum4", 		16); 
+	COMMENT1	("Cmt1", 		6),
+	COMMENT2	("Cmt2", 		7),
+	STRAIN		("Strain", 		8),
+	SEX			("Sex", 		9), 
+	CAP 		("Cap", 		10),
+	CAPVOLUME	("Cap_ul", 		11), 
+	CAPPIXELS 	("Cap_npixels", 12), 
+	CAGECOMMENT	("Choice",		13),  
+	CAPSTIM		("Cap_stim", 	14), 
+	CAPCONC		("Cap_conc", 	15),
+	NFLIES		("Nflies", 		16), 
+	CAGEINDEX	("Cage", 		17), 
+	DUM4		("Dum4", 		18); 
 	
 	
 	private final String 	name;

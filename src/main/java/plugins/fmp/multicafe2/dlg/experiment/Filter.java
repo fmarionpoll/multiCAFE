@@ -1,8 +1,9 @@
 package plugins.fmp.multicafe2.dlg.experiment;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -13,10 +14,10 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
+import plugins.fmp.multicafe2.dlg.JComponents.SortedComboBoxModel;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 
@@ -28,14 +29,19 @@ public class Filter  extends JPanel
 	 */
 	private static final long serialVersionUID = 2190848825783418962L;
 
-	private JComboBox<String>	comment1Combo		= new JComboBox<String>();
-	private JComboBox<String>	comment2Combo		= new JComboBox<String>();
-	private JComboBox<String> 	boxIDCombo			= new JComboBox<String>();
-	private JComboBox<String> 	experimentCombo 	= new JComboBox<String>();
+	private JComboBox<String>	cmt1Combo		= new JComboBox<String>(new SortedComboBoxModel());
+	private JComboBox<String>	comt2Combo		= new JComboBox<String>(new SortedComboBoxModel());
+	private JComboBox<String> 	boxIDCombo		= new JComboBox<String>(new SortedComboBoxModel());
+	private JComboBox<String> 	exptCombo 		= new JComboBox<String>(new SortedComboBoxModel());
+	private JComboBox<String> 	strainCombo 	= new JComboBox<String>(new SortedComboBoxModel());
+	private JComboBox<String> 	sexCombo 		= new JComboBox<String>(new SortedComboBoxModel());
+	
 	private JCheckBox			experimentCheck		= new JCheckBox("Expmt");
 	private JCheckBox			boxIDCheck			= new JCheckBox("BoxID");
 	private JCheckBox			comment1Check		= new JCheckBox("Cmt1 ");
 	private JCheckBox			comment2Check		= new JCheckBox("Cmt2 ");
+	private JCheckBox			strainCheck			= new JCheckBox("Strain");
+	private JCheckBox			sexCheck			= new JCheckBox("Sex");
 	private JButton				applyButton 		= new JButton("Apply");
 	private JButton				clearButton			= new JButton("Clear");
 	
@@ -47,38 +53,56 @@ public class Filter  extends JPanel
 	void init(GridLayout capLayout, MultiCAFE2 parent0) 
 	{
 		this.parent0 = parent0;
-		setLayout(capLayout);
-			
-		FlowLayout flowlayout = new FlowLayout(FlowLayout.LEFT);
-		flowlayout.setVgap(1);
+		GridBagLayout layoutThis = new GridBagLayout();
+		setLayout(layoutThis);
 		
-		int bWidth = 100;
-		int bHeight = 21;
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.anchor = GridBagConstraints.BASELINE;
+		c.ipadx = 0;
+		c.ipady = 0;
+		c.insets = new Insets(1, 2, 1, 2); 
+		int delta1 = 1;
+		int delta2 = 3;
 		
-		JPanel panel0 = new JPanel (flowlayout);
-		panel0.add(experimentCheck);
-		experimentCheck.setHorizontalTextPosition(SwingConstants.RIGHT);
-		panel0.add(experimentCombo);
-		experimentCombo.setPreferredSize(new Dimension(bWidth, bHeight));
-		panel0.add(boxIDCheck);
-		boxIDCheck.setHorizontalTextPosition(SwingConstants.RIGHT);
-		panel0.add(boxIDCombo);
-		boxIDCombo.setPreferredSize(new Dimension(bWidth, bHeight));
-		panel0.add(applyButton);
-		add(panel0);
+		// line 0
+		c.gridx = 0;
+		c.gridy = 0;		
+		add(experimentCheck, c);
+		c.gridx += delta1;
+		add(exptCombo, c);
+		c.gridx += delta2;
+		add(boxIDCheck, c);
+		c.gridx += delta1;
+		add(boxIDCombo, c);
+		c.gridx += delta2;
+		add(applyButton, c);
 		
-		JPanel panel1 = new JPanel(flowlayout);
-		panel1.add(comment1Check);
-		comment1Check.setHorizontalTextPosition(SwingConstants.RIGHT);
-		panel1.add(comment1Combo);
-		comment1Combo.setPreferredSize(new Dimension(bWidth, bHeight));
-		panel1.add(comment2Check);
-		comment2Check.setHorizontalTextPosition(SwingConstants.RIGHT);
-		panel1.add(comment2Combo);
-		comment2Combo.setPreferredSize(new Dimension(bWidth, bHeight));
-		panel1.add(clearButton);
-		add (panel1);
-	
+		// line 1
+		c.gridy = 1;
+		c.gridx = 0;
+		add(comment1Check, c);
+		c.gridx += delta1;
+		add(cmt1Combo, c);
+		c.gridx += delta2;
+		add(comment2Check, c);
+		c.gridx += delta1;
+		add(comt2Combo, c);
+		c.gridx += delta2;
+		add(clearButton, c);
+		
+		// line 2
+		c.gridy = 2;
+		c.gridx = 0;
+		add(strainCheck, c);
+		c.gridx += delta1;
+		add(strainCombo, c);
+		c.gridx += delta2;
+		add(sexCheck, c);
+		c.gridx += delta1;
+		add(sexCombo, c);
+
 		defineActionListeners();
 	}
 	
@@ -86,10 +110,12 @@ public class Filter  extends JPanel
 	{
 		if (!parent0.paneExperiment.panelLoadSave.filteredCheck.isSelected())
 			filterExpList.setExperimentsFromList(parent0.expListCombo.getExperimentsAsList());
-		filterExpList.getFieldValuesToCombo(experimentCombo, EnumXLSColumnHeader.EXPT); 
-		filterExpList.getFieldValuesToCombo(comment1Combo, EnumXLSColumnHeader.COMMENT1);
-		filterExpList.getFieldValuesToCombo(comment2Combo, EnumXLSColumnHeader.COMMENT2);
+		filterExpList.getFieldValuesToCombo(exptCombo, EnumXLSColumnHeader.EXPT); 
+		filterExpList.getFieldValuesToCombo(cmt1Combo, EnumXLSColumnHeader.COMMENT1);
+		filterExpList.getFieldValuesToCombo(comt2Combo, EnumXLSColumnHeader.COMMENT2);
 		filterExpList.getFieldValuesToCombo(boxIDCombo, EnumXLSColumnHeader.BOXID);
+		filterExpList.getFieldValuesToCombo(sexCombo, EnumXLSColumnHeader.SEX);
+		filterExpList.getFieldValuesToCombo(strainCombo, EnumXLSColumnHeader.STRAIN);
 	}
 	
 	
@@ -119,8 +145,8 @@ public class Filter  extends JPanel
 		}
 		else 
 		{
-			parent0.expListCombo.setExperimentsFromList (filterExpList.getExperimentsAsList());
 			clearAllCheckBoxes ();
+			parent0.expListCombo.setExperimentsFromList (filterExpList.getExperimentsAsList());
 		}
 		
 		if (parent0.expListCombo.getItemCount() > 0)
@@ -136,29 +162,37 @@ public class Filter  extends JPanel
 		boxIDCheck.setSelected(select);
 		comment1Check.setSelected(select);
 		comment2Check.setSelected(select);
+		strainCheck.setSelected(select);
+		sexCheck.setSelected(select);
 	}
 	
 	private List<Experiment> filterAllItems() 
 	{
 		List<Experiment> filteredList = new ArrayList<Experiment>(filterExpList.getExperimentsAsList());		
 		if (experimentCheck.isSelected())
-			filterItem(filteredList, EnumXLSColumnHeader.EXPT, (String) experimentCombo.getSelectedItem());
+			filterItem(filteredList, EnumXLSColumnHeader.EXPT, (String) exptCombo.getSelectedItem());
 		if (boxIDCheck.isSelected())
 			filterItem(filteredList, EnumXLSColumnHeader.BOXID, (String) boxIDCombo.getSelectedItem());
 		if (comment1Check.isSelected())
-			filterItem(filteredList, EnumXLSColumnHeader.COMMENT1, (String) comment1Combo.getSelectedItem());
+			filterItem(filteredList, EnumXLSColumnHeader.COMMENT1, (String) cmt1Combo.getSelectedItem());
 		if (comment2Check.isSelected())
-			filterItem(filteredList, EnumXLSColumnHeader.COMMENT2, (String) comment2Combo.getSelectedItem());
+			filterItem(filteredList, EnumXLSColumnHeader.COMMENT2, (String) comt2Combo.getSelectedItem());
+		if (sexCheck.isSelected())
+			filterItem(filteredList, EnumXLSColumnHeader.SEX, (String) sexCombo.getSelectedItem());
+		if (strainCheck.isSelected())
+			filterItem(filteredList, EnumXLSColumnHeader.STRAIN, (String) strainCombo.getSelectedItem());
 		return filteredList;
+		
 	}
 	
 	void filterItem(List<Experiment> filteredList, EnumXLSColumnHeader header, String filter)
 	{
 		Iterator <Experiment> iterator = filteredList.iterator();
-		while(iterator.hasNext()) 
+		while (iterator.hasNext()) 
 		{
 			Experiment exp = iterator.next();
-			if (!exp.getField(header).equals(filter)) 
+			int compare = exp.getField(header).compareTo(filter);
+			if (compare != 0) 
 				iterator.remove();
 		}
 	}

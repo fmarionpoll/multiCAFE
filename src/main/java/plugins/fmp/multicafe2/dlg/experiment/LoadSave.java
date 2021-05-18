@@ -121,8 +121,11 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 					selectedNames.clear();
 					updateBrowseInterface();
 			     	parent1.tabInfos.disableChangeFile = true;
-			     	parent1.tabInfos.initInfosCombos();
+			     	parent1.tabInfos.initInfosCombos(); 
 			     	parent0.expListCombo.setSelectedIndex(item);
+			     	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+					if (exp != null)
+						parent1.tabInfos.setExperimentInfosToDialog(exp);
 				}});
 			}
 		}
@@ -217,6 +220,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			flag = false;
 			System.out.println("Error: no jpg files found for this experiment\n");
 		}
+		parent1.tabInfos.setExperimentInfosToDialog(exp);
 		return flag;
 	}
 	

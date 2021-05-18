@@ -64,6 +64,8 @@ public class Experiment
 	private String			field_experiment		= new String("..");
 	private String 			field_comment1			= new String("..");
 	private String 			field_comment2			= new String("..");
+	private String 			field_strain			= new String("..");
+	private String			field_sex				= new String("..");
 	
 	public int				col						= -1;
 	public Experiment 		previousExperiment		= null;		// pointer to chain this experiment to another one before
@@ -92,6 +94,8 @@ public class Experiment
 	private final static String ID_EXPERIMENT 		= "experiment";
 	private final static String ID_COMMENT1 		= "comment";
 	private final static String ID_COMMENT2 		= "comment2";
+	private final static String ID_STRAIN			= "strain";
+	private final static String ID_SEX				= "sex";
 	
 	private final static int EXPT_DIRECTORY = 1;
 	private final static int IMG_DIRECTORY = 2;
@@ -498,9 +502,11 @@ public class Experiment
 		if (field_boxID != null && field_boxID .contentEquals("..")) 
 		{
 			field_boxID	= XMLUtil.getElementValue(node, ID_BOXID, "..");
-	        field_experiment 	= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
+	        field_experiment= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
 	        field_comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
 	        field_comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
+	        field_strain 	= XMLUtil.getElementValue(node, ID_STRAIN, "..");
+	        field_sex 		= XMLUtil.getElementValue(node, ID_SEX, "..");
 		}
 		return true;
 	}
@@ -527,6 +533,8 @@ public class Experiment
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, field_experiment);
 	        XMLUtil.setElementValue(node, ID_COMMENT1, field_comment1);
 	        XMLUtil.setElementValue(node, ID_COMMENT2, field_comment2);
+	        XMLUtil.setElementValue(node, ID_STRAIN, field_strain);
+	        XMLUtil.setElementValue(node, ID_SEX, field_sex);
 	        
 	        if (strImagesDirectory == null ) 
 	        	strImagesDirectory = seqCamData.getImagesDirectory();
@@ -605,6 +613,12 @@ public class Experiment
 		case BOXID:
 			strField = field_boxID;
 			break;
+		case STRAIN:
+			strField = field_strain;
+			break;
+		case SEX:
+			strField = field_sex;
+			break;
 		default:
 			break;
 		}
@@ -627,8 +641,14 @@ public class Experiment
 		case BOXID:
 			field_boxID  = strField; 
 			break;
+		case STRAIN:
+			field_strain  = strField; 
+			break;
+		case SEX:
+			field_sex  = strField; 
+			break;
 		default:
-				break;
+			break;
 		}
 	}
 	
@@ -739,6 +759,8 @@ public class Experiment
 			field_experiment = capillaries.desc.old_experiment;
 			field_comment1 = capillaries.desc.old_comment1;
 			field_comment2 = capillaries.desc.old_comment2;
+			field_sex = capillaries.desc.old_sex;
+			field_strain = capillaries.desc.old_strain;
 		}
 		return flag;
 	}
@@ -822,6 +844,8 @@ public class Experiment
 		if (!field_experiment	.equals("..")) capillaries.desc.old_experiment = field_experiment;
 		if (!field_comment1	.equals("..")) capillaries.desc.old_comment1 = field_comment1;
 		if (!field_comment2	.equals("..")) capillaries.desc.old_comment2 = field_comment2;	
+		if (!field_strain	.equals("..")) capillaries.desc.old_strain = field_strain;
+		if (!field_sex	.equals("..")) capillaries.desc.old_sex = field_sex;
 	}
 
 	public boolean loadReferenceImage() 

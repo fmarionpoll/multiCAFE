@@ -17,6 +17,8 @@ public class CapillariesDescription
 	public String	old_experiment	= new String("..");
 	public String 	old_comment1	= new String("..");
 	public String 	old_comment2	= new String("..");
+	public String 	old_strain		= new String("..");
+	public String 	old_sex			= new String("..");
 	
 	public int		grouping 		= 2;
 	String 			stimulusR		= new String("..");
@@ -33,7 +35,7 @@ public class CapillariesDescription
 	private final static String ID_DESCCAPVOLUME 	= "capillaryVolume";
 	private final static String ID_DESCVOLUMEUL 	= "volume_ul";
 	private final static String ID_DESCCAPILLARYPIX = "capillaryPixels";
-	private final static String ID_DESCNPIXELS 	= "npixels";
+	private final static String ID_DESCNPIXELS 		= "npixels";
 
 	private final static String ID_LRSTIMULUS 		= "LRstimulus";
 	private final static String ID_STIMR 			= "stimR";
@@ -45,6 +47,9 @@ public class CapillariesDescription
 	private final static String ID_EXPT 			= "expt";
 	private final static String ID_COMMENT1 		= "comment";
 	private final static String ID_COMMENT2 		= "comment2";
+	private final static String ID_STRAIN 			= "strain";
+	private final static String ID_SEX 				= "sex";
+	
 	private final static String ID_NOPE 			= "..";
 
 	
@@ -93,6 +98,8 @@ public class CapillariesDescription
 		XMLUtil.setElementValue(xmlVal, ID_EXPT, old_experiment);
 		XMLUtil.setElementValue(xmlVal, ID_COMMENT1, old_comment1);
 		XMLUtil.setElementValue(xmlVal, ID_COMMENT2, old_comment2);
+		XMLUtil.setElementValue(xmlVal, ID_STRAIN, old_strain);
+		XMLUtil.setElementValue(xmlVal, ID_SEX, old_sex);
 			
 		return true;
 	}
@@ -151,6 +158,8 @@ public class CapillariesDescription
 			old_experiment 	= XMLUtil.getAttributeValue(xmlVal, ID_EXPT, ID_NOPE);
 			old_comment1 	= XMLUtil.getAttributeValue(xmlVal, ID_COMMENT1, ID_NOPE);
 			old_comment2 	= XMLUtil.getAttributeValue(xmlVal, ID_COMMENT2, ID_NOPE);
+			old_strain 	= XMLUtil.getAttributeValue(xmlVal, ID_STRAIN, ID_NOPE);
+			old_sex 	= XMLUtil.getAttributeValue(xmlVal, ID_SEX, ID_NOPE);
 		}
 		return true;
 	}

@@ -31,6 +31,8 @@ public class Edit   extends JPanel
 					, EnumXLSColumnHeader.BOXID
 					, EnumXLSColumnHeader.COMMENT1
 					, EnumXLSColumnHeader.COMMENT2
+					, EnumXLSColumnHeader.STRAIN
+					, EnumXLSColumnHeader.SEX
 //					, EnumXLSColumnHeader.CAPSTIM
 //					, EnumXLSColumnHeader.CAPCONC
 					});

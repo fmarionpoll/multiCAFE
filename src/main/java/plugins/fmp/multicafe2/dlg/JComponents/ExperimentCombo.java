@@ -169,6 +169,8 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		flag &= expi.getField(EnumXLSColumnHeader.BOXID) .equals(exp.getField(EnumXLSColumnHeader.BOXID)) ;
 		flag &= expi.getField(EnumXLSColumnHeader.COMMENT1) .equals(exp.getField(EnumXLSColumnHeader.COMMENT1));
 		flag &= expi.getField(EnumXLSColumnHeader.COMMENT2) .equals(exp.getField(EnumXLSColumnHeader.COMMENT2));
+		flag &= expi.getField(EnumXLSColumnHeader.STRAIN) .equals(exp.getField(EnumXLSColumnHeader.STRAIN));
+		flag &= expi.getField(EnumXLSColumnHeader.SEX) .equals(exp.getField(EnumXLSColumnHeader.SEX));
 		return flag;
 	}
 
@@ -234,6 +236,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	{
 		combo.removeAllItems();
 		List<String> textList = getFieldValuesFromAllExperiments(header);
+		java.util.Collections.sort(textList);
 		for (String text: textList)
 			combo.addItem(text);
 	}
@@ -241,11 +244,14 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	private boolean isFound (String pattern, List<String> names) 
 	{
 		boolean found = false;
-		for (String name: names) 
+		if (names.size() > 0) 
 		{
-			found = name.equalsIgnoreCase(pattern);
-			if (found)
-				break;
+			for (String name: names) 
+			{
+				found = name.equals(pattern);
+				if (found)
+					break;
+			}
 		}
 		return found;
 	}
