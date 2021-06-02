@@ -53,7 +53,7 @@
 </section>
 <section name="export"/>
 </section>
-<key name="lastUpdateCheckTime" value="1621319324352"/>
+<key name="lastUpdateCheckTime" value="1622613261519"/>
 <key name="virtualMode" value="true"/>
 <key name="loaderFolder" value="E:\2021 Penelope\DRGP data ok\multiCAFE_2021.04.29"/>
 </section>
@@ -113,7 +113,7 @@
 </section>
 </section>
 <key name="version" value="2.1.4.0"/>
-<key name="lastUploadDate" value="1621328403270"/>
+<key name="lastUploadDate" value="1622613229210"/>
 <section name="frame">
 <section name="imageLoader">
 <key name="width" value="600"/>
@@ -137,7 +137,7 @@
 <section name="multicafe2">
 <section name="MultiCAFE2">
 <section name="gui">
-<key name="lastUsedPath" value="E:\2021 Penelope\DRGP data ok"/>
+<key name="lastUsedPath" value="E:\2020 Perrine\MultiCAFE\Dose-Réponse\single"/>
 </section>
 </section>
 </section>
@@ -145,21 +145,21 @@
 </section>
 <section name="frame">
 <section name="main">
-<key name="XE" value="80"/>
-<key name="YE" value="25"/>
-<key name="WidthE" value="1868"/>
-<key name="HeightE" value="1005"/>
-<key name="MaximizedE" value="true"/>
+<key name="XE" value="-2518"/>
+<key name="YE" value="4"/>
+<key name="WidthE" value="2542"/>
+<key name="HeightE" value="1342"/>
+<key name="MaximizedE" value="false"/>
 </section>
 <section name="inspector">
-<key name="XC" value="1551"/>
+<key name="XC" value="2190"/>
 <key name="YC" value="0"/>
 <key name="XE" value="600"/>
 <key name="YE" value="140"/>
 <key name="XI" value="600"/>
 <key name="YI" value="140"/>
-<key name="WidthC" value="361"/>
-<key name="HeightC" value="878"/>
+<key name="WidthC" value="344"/>
+<key name="HeightC" value="1180"/>
 <key name="WidthE" value="300"/>
 <key name="HeightE" value="600"/>
 <key name="WidthI" value="300"/>
@@ -176,8 +176,8 @@
 <key name="YE" value="100"/>
 <key name="XI" value="100"/>
 <key name="YI" value="100"/>
-<key name="WidthC" value="353"/>
-<key name="HeightC" value="788"/>
+<key name="WidthC" value="336"/>
+<key name="HeightC" value="1090"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="600"/>
 <key name="WidthI" value="400"/>
@@ -194,8 +194,8 @@
 <key name="YE" value="200"/>
 <key name="XI" value="200"/>
 <key name="YI" value="200"/>
-<key name="WidthC" value="353"/>
-<key name="HeightC" value="788"/>
+<key name="WidthC" value="336"/>
+<key name="HeightC" value="1090"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="300"/>
 <key name="WidthI" value="400"/>

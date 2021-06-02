@@ -36,18 +36,18 @@ public class Filter  extends JPanel
 	private JComboBox<String> 	strainCombo 	= new JComboBox<String>(new SortedComboBoxModel());
 	private JComboBox<String> 	sexCombo 		= new JComboBox<String>(new SortedComboBoxModel());
 	
-	private JCheckBox			experimentCheck		= new JCheckBox("Expmt");
-	private JCheckBox			boxIDCheck			= new JCheckBox("BoxID");
-	private JCheckBox			comment1Check		= new JCheckBox("Cmt1 ");
-	private JCheckBox			comment2Check		= new JCheckBox("Cmt2 ");
-	private JCheckBox			strainCheck			= new JCheckBox("Strain");
-	private JCheckBox			sexCheck			= new JCheckBox("Sex");
-	private JButton				applyButton 		= new JButton("Apply");
-	private JButton				clearButton			= new JButton("Clear");
+	private JCheckBox			experimentCheck	= new JCheckBox(EnumXLSColumnHeader.EXPT.toString());
+	private JCheckBox			boxIDCheck		= new JCheckBox(EnumXLSColumnHeader.BOXID.toString());
+	private JCheckBox			comment1Check	= new JCheckBox(EnumXLSColumnHeader.COMMENT1.toString());
+	private JCheckBox			comment2Check	= new JCheckBox(EnumXLSColumnHeader.COMMENT2.toString());
+	private JCheckBox			strainCheck		= new JCheckBox(EnumXLSColumnHeader.STRAIN.toString());
+	private JCheckBox			sexCheck		= new JCheckBox(EnumXLSColumnHeader.SEX.toString());
+	private JButton				applyButton 	= new JButton("Apply");
+	private JButton				clearButton		= new JButton("Clear");
 	
-	private MultiCAFE2 			parent0 			= null;
+	private MultiCAFE2 			parent0 		= null;
 			boolean 			disableChangeFile 	= false;
-			ExperimentCombo 	filterExpList 		= new ExperimentCombo();
+			ExperimentCombo 	filterExpList 	= new ExperimentCombo();
 	
 	
 	void init(GridLayout capLayout, MultiCAFE2 parent0) 

@@ -32,12 +32,13 @@ public class Infos  extends JPanel
 	private JComboBox<String> 	strainCombo 	= new JComboBox<String>(new SortedComboBoxModel());
 	private JComboBox<String> 	sexCombo 		= new JComboBox<String>(new SortedComboBoxModel());
 	
-	private JLabel				experimentCheck	= new JLabel("Expt");
-	private JLabel				boxIDCheck		= new JLabel("Box ID");
-	private JLabel				comment1Check	= new JLabel("Stim");
-	private JLabel				comment2Check	= new JLabel("Conc");
-	private JLabel				strainCheck		= new JLabel("Strain");
-	private JLabel				sexCheck		= new JLabel("Sex");
+	private JLabel			experimentCheck	= new JLabel(EnumXLSColumnHeader.EXPT.toString());
+	private JLabel			boxIDCheck		= new JLabel(EnumXLSColumnHeader.BOXID.toString());
+	private JLabel			comment1Check	= new JLabel(EnumXLSColumnHeader.COMMENT1.toString());
+	private JLabel			comment2Check	= new JLabel(EnumXLSColumnHeader.COMMENT2.toString());
+	private JLabel			strainCheck		= new JLabel(EnumXLSColumnHeader.STRAIN.toString());
+	private JLabel			sexCheck		= new JLabel(EnumXLSColumnHeader.SEX.toString());
+	
 	
 	private JButton				openButton		= new JButton("Load...");
 	private JButton				saveButton		= new JButton("Save...");
