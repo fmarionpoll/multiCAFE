@@ -440,7 +440,7 @@ public class XLSExport
 			{
 				XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
 				switch (xlsOption) {
-					case TOPRAW:
+//					case TOPRAW:
 					case BOTTOMLEVEL:
 					case ISGULPS:
 					case TTOGULP:
@@ -454,6 +454,7 @@ public class XLSExport
 						}
 						break;
 						
+					case TOPRAW:
 					case TOPLEVEL:
 					case TOPLEVEL_LR:
 					case TOPLEVELDELTA:
