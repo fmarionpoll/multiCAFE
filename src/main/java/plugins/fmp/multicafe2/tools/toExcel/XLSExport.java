@@ -455,6 +455,17 @@ public class XLSExport
 						break;
 						
 					case TOPRAW:
+						for (Capillary cap: expi.capillaries.capillariesArrayList) 
+						{
+							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
+							XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
+							results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
+							if (options.t0) 
+								results.data = exp.seqKymos.subtractT0(results.data);
+							resultsArrayList.add(results);
+						}
+						break;
+						
 					case TOPLEVEL:
 					case TOPLEVEL_LR:
 					case TOPLEVELDELTA:
@@ -463,10 +474,9 @@ public class XLSExport
 						{
 							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 							XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
+							results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
 							if (options.t0) 
-								results.data = exp.seqKymos.subtractT0(cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs));
-							else
-								results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
+								results.data = exp.seqKymos.subtractT0(results.data);
 							resultsArrayList.add(results);
 						}
 						if (options.subtractEvaporation)
