@@ -122,9 +122,9 @@ public class ExperimentCombo extends JComboBox<Experiment>
 			}
 			for (int j=0; j< getItemCount(); j++) 
 			{
-				Experiment expi = getItemAt(j);
-				if (expi.experimentID == exp.experimentID)
+				if (i == j)
 					continue;
+				Experiment expi = getItemAt(j);
 				if (!isSameDescriptors(exp, expi))
 					continue;
 				
