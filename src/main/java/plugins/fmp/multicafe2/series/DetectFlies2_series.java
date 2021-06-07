@@ -162,7 +162,7 @@ public class DetectFlies2_series extends BuildSeries
 		
 		if (viewInternalImages)
 			displayDetectViewer(exp);
-
+		
 		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms ) 
 		{
 			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
@@ -171,17 +171,14 @@ public class DetectFlies2_series extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					//IcyBufferedImage workImage = exp.seqCamData.getSeqImage(t_from, 0);
 					IcyBufferedImage workImage = imageIORead(exp.seqCamData.getFileName(t_from));
 					if (workImage == null)
 						return;
 					
 					IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(workImage);				
-					seqNegative.beginUpdate();
 					IcyBufferedImage negativeImage = exp.seqCamData.subtractImagesAsInteger(exp.seqCamData.refImage, currentImage);
-					seqNegative.setImage(0, 0, negativeImage);
 					find_flies.findFlies(negativeImage, t_from);
-					seqNegative.endUpdate();
+					
 				}}));
 		}
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
