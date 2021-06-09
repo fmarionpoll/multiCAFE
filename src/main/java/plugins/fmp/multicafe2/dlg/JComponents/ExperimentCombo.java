@@ -113,51 +113,51 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	{
 		for (int i=0; i< getItemCount(); i++) 
 		{
-			Experiment exp = getItemAt(i);
+			Experiment expi = getItemAt(i);
 			if (!collate) 
 			{
-				exp.previousExperiment = null;
-				exp.nextExperiment = null;
+				expi.previousExperiment = null;
+				expi.nextExperiment = null;
 				continue;
 			}
 			for (int j=0; j< getItemCount(); j++) 
 			{
 				if (i == j)
 					continue;
-				Experiment expi = getItemAt(j);
-				if (!isSameDescriptors(exp, expi))
+				Experiment expj = getItemAt(j);
+				if (!isSameDescriptors(expi, expj))
 					continue;
 				
 				// same exp series: if before, insert eventually
-				if (expi.camLastImage_Ms < exp.camFirstImage_Ms) 
+				if (expj.camLastImage_Ms < expi.camFirstImage_Ms) 
 				{
-					if (exp.previousExperiment == null)
-						exp.previousExperiment = expi;
-					else if (expi.camLastImage_Ms > exp.previousExperiment.camLastImage_Ms ) 
+					if (expi.previousExperiment == null)
+						expi.previousExperiment = expj;
+					else if (expj.camLastImage_Ms > expi.previousExperiment.camLastImage_Ms ) 
 					{
-						(exp.previousExperiment).nextExperiment = expi;
-						expi.previousExperiment = exp.previousExperiment;
-						expi.nextExperiment = exp;
-						exp.previousExperiment = expi;
+						(expi.previousExperiment).nextExperiment = expj;
+						expj.previousExperiment = expi.previousExperiment;
+						expj.nextExperiment = expi;
+						expi.previousExperiment = expj;
 					}
 					continue;
 				}
 				// same exp series: if after, insert eventually
-				if (expi.camFirstImage_Ms > exp.camLastImage_Ms) 
+				if (expj.camFirstImage_Ms > expi.camLastImage_Ms) 
 				{
-					if (exp.nextExperiment == null)
-						exp.nextExperiment = expi;
-					else if (expi.camFirstImage_Ms < exp.nextExperiment.camFirstImage_Ms ) 
+					if (expi.nextExperiment == null)
+						expi.nextExperiment = expj;
+					else if (expj.camFirstImage_Ms < expi.nextExperiment.camFirstImage_Ms ) 
 					{
-						(exp.nextExperiment).previousExperiment = expi;
-						expi.nextExperiment = (exp.nextExperiment);
-						expi.previousExperiment = exp;
-						exp.nextExperiment = expi;
+						(expi.nextExperiment).previousExperiment = expj;
+						expj.nextExperiment = (expi.nextExperiment);
+						expj.previousExperiment = expi;
+						expi.nextExperiment = expj;
 					}
 					continue;
 				}
 				// it should never arrive here
-				System.out.println("error in chaining "+ exp.getExperimentDirectory() +" with ->" + expi.getExperimentDirectory());
+				System.out.println("error in chaining "+ expi.getExperimentDirectory() +" with ->" + expj.getExperimentDirectory());
 			}
 		}
 	}
