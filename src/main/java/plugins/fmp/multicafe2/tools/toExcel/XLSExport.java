@@ -428,13 +428,13 @@ public class XLSExport
 			if (nOutputFrames <= 1) 
 			{
 				nOutputFrames = expi.seqCamData.nTotalFrames;
-//				String error = "ERROR in "+ expi.getExperimentDirectory() 
-//						+ "\n nOutputFrames="+ nOutputFrames 
-//						+ " kymoFirstCol_Ms=" + expi.kymoFirstCol_Ms 
-//						+ " kymoLastCol_Ms=" + expi.kymoLastCol_Ms
+				String error = "ERROR in "+ expi.getExperimentDirectory() 
+						+ "\n nOutputFrames="+ nOutputFrames 
+						+ " kymoFirstCol_Ms=" + expi.kymoFirstCol_Ms 
+						+ " kymoLastCol_Ms=" + expi.kymoLastCol_Ms;
 //						+ "\n -> Contact support";
-////				MessageDialog.showDialog(error, MessageDialog.ERROR_MESSAGE);
-//				System.out.println(error);
+//				MessageDialog.showDialog(error, MessageDialog.ERROR_MESSAGE);
+				System.out.println(error);
 			}
 			else 
 			{
