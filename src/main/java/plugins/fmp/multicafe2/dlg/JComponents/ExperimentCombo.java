@@ -109,6 +109,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		return flag;
 	}
 	
+	/////
 	public void chainExperiments(boolean collate) 
 	{
 		for (int i=0; i< getItemCount(); i++) 

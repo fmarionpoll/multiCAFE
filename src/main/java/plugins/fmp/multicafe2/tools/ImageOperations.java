@@ -55,6 +55,8 @@ public class ImageOperations
 	
 	public IcyBufferedImage run (int frame) 
 	{	
+		if (frame <0)
+			frame = 0;
 		// step 1
 		opTransf.fromFrame = frame;
 		if (!opTransf.isValidTransformCache(seqCamData.cacheTransformOp)) 

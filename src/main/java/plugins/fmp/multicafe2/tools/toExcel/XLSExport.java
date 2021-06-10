@@ -350,7 +350,6 @@ public class XLSExport
 		if (!options.absoluteTime && options.t0)
 			expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
 		expAll.lastImage_FileTime 	= exp.lastImage_FileTime;
-		
 		expAll.setField(EnumXLSColumnHeader.BOXID, exp.getField(EnumXLSColumnHeader.BOXID));
 		expAll.setField(EnumXLSColumnHeader.EXPT, exp.getField(EnumXLSColumnHeader.EXPT));
 		expAll.setField(EnumXLSColumnHeader.COMMENT1, exp.getField(EnumXLSColumnHeader.COMMENT1));
@@ -429,15 +428,13 @@ public class XLSExport
 			if (nOutputFrames <= 1) 
 			{
 				nOutputFrames = expi.seqCamData.nTotalFrames;
-				String error = "ERROR in "+ expi.getExperimentDirectory() 
-						+ "\n nOutputFrames="+ nOutputFrames 
-						+ " kymoFirstCol_Ms=" + expi.kymoFirstCol_Ms 
-						+ " kymoLastCol_Ms=" + expi.kymoLastCol_Ms
-						;
+//				String error = "ERROR in "+ expi.getExperimentDirectory() 
+//						+ "\n nOutputFrames="+ nOutputFrames 
+//						+ " kymoFirstCol_Ms=" + expi.kymoFirstCol_Ms 
+//						+ " kymoLastCol_Ms=" + expi.kymoLastCol_Ms
 //						+ "\n -> Contact support";
 ////				MessageDialog.showDialog(error, MessageDialog.ERROR_MESSAGE);
-				
-				System.out.println(error);
+//				System.out.println(error);
 			}
 			else 
 			{
