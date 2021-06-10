@@ -1,6 +1,6 @@
 <root>
 <section name="icy">
-<key name="maxMemory" value="16736"/>
+<key name="maxMemory" value="16672"/>
 <section name="general">
 <section name="toolTips">
 <key name="mainMenuTip" value="false"/>
@@ -53,9 +53,9 @@
 </section>
 <section name="export"/>
 </section>
-<key name="lastUpdateCheckTime" value="1623097240410"/>
+<key name="lastUpdateCheckTime" value="1623316672419"/>
 <key name="virtualMode" value="true"/>
-<key name="loaderFolder" value="E:\2021 Penelope\DRGP data ok\multiCAFE_2021.04.29"/>
+<key name="loaderFolder" value="C:\Users\fred\Desktop\2021 Agros-erythritol\etuve\2021-06-09"/>
 </section>
 <section name="canvas">
 <section name="Canvas2D">
@@ -75,10 +75,10 @@
 </section>
 <section name="online"/>
 </section>
-<key name="id" value="270907154"/>
+<key name="id" value="58253069"/>
 <key name="os" value="win64"/>
-<key name="clientCpuNumber" value="12"/>
-<key name="clientTotalMemory" value="34308149248"/>
+<key name="clientCpuNumber" value="4"/>
+<key name="clientTotalMemory" value="17098485760"/>
 <key name="appFolder" value="C:/Users/fred/.m2/repository/org/bioimageanalysis/icy/icy-kernel/2.1.4"/>
 <section name="loader">
 <section name="entry0">
@@ -113,7 +113,7 @@
 </section>
 </section>
 <key name="version" value="2.1.4.0"/>
-<key name="lastUploadDate" value="1623097175387"/>
+<key name="lastUploadDate" value="1623323292881"/>
 <section name="frame">
 <section name="imageLoader">
 <key name="width" value="600"/>
@@ -137,7 +137,7 @@
 <section name="multicafe2">
 <section name="MultiCAFE2">
 <section name="gui">
-<key name="lastUsedPath" value="E:\2020 Perrine\MultiCAFE\SurvieConso\data\berberine"/>
+<key name="lastUsedPath" value="C:\Users\fred\Desktop\2021 Agros-erythritol"/>
 </section>
 </section>
 </section>
@@ -145,21 +145,21 @@
 </section>
 <section name="frame">
 <section name="main">
-<key name="XE" value="-2227"/>
-<key name="YE" value="47"/>
-<key name="WidthE" value="1908"/>
-<key name="HeightE" value="1239"/>
+<key name="XE" value="-80"/>
+<key name="YE" value="16"/>
+<key name="WidthE" value="1862"/>
+<key name="HeightE" value="1015"/>
 <key name="MaximizedE" value="false"/>
 </section>
 <section name="inspector">
-<key name="XC" value="1600"/>
+<key name="XC" value="1554"/>
 <key name="YC" value="0"/>
 <key name="XE" value="600"/>
 <key name="YE" value="140"/>
 <key name="XI" value="600"/>
 <key name="YI" value="140"/>
 <key name="WidthC" value="300"/>
-<key name="HeightC" value="1077"/>
+<key name="HeightC" value="853"/>
 <key name="WidthE" value="300"/>
 <key name="HeightE" value="600"/>
 <key name="WidthI" value="300"/>
@@ -177,7 +177,7 @@
 <key name="XI" value="100"/>
 <key name="YI" value="100"/>
 <key name="WidthC" value="292"/>
-<key name="HeightC" value="987"/>
+<key name="HeightC" value="763"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="600"/>
 <key name="WidthI" value="400"/>
@@ -195,7 +195,7 @@
 <key name="XI" value="200"/>
 <key name="YI" value="200"/>
 <key name="WidthC" value="292"/>
-<key name="HeightC" value="987"/>
+<key name="HeightC" value="763"/>
 <key name="WidthE" value="400"/>
 <key name="HeightE" value="300"/>
 <key name="WidthI" value="400"/>
