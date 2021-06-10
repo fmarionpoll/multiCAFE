@@ -146,7 +146,9 @@ public class BuildKymographs_series extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					IcyBufferedImage sourceImage = imageIORead(seqCamData.getFileName(t_from));
+					final int rt_from = t_from;
+					final int rt_out = t_out;
+					IcyBufferedImage sourceImage = imageIORead(seqCamData.getFileName(rt_from));
 					if (options.doRegistration ) 
 						sourceImage = adjustImage(seqForRegistration, sourceImage);
 					int widthSourceImage = sourceImage.getWidth();				
@@ -165,7 +167,7 @@ public class BuildKymographs_series extends BuildSeries
 								int sum = 0;
 								for (int[] m: mask)
 									sum += sourceImageOneChannel[m[0] + m[1]*widthSourceImage];
-								kymoImageOneChannel[cnt*widthKymoImage + t_out] = (int) (sum/mask.size()); 
+								kymoImageOneChannel[cnt*widthKymoImage + rt_out] = (int) (sum/mask.size()); 
 								cnt ++;
 							}
 						}
