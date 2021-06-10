@@ -136,6 +136,7 @@ public class BuildKymographs_series extends BuildSeries
 		futures.clear();
 
 		seqCamData.seq.beginUpdate();
+
 		int ipixelcolumn = 0;
 		for (long indexms = exp.kymoFirstCol_Ms ; indexms <= exp.kymoLastCol_Ms; indexms += exp.kymoBinCol_Ms, ipixelcolumn++ ) 
 		{
@@ -165,13 +166,15 @@ public class BuildKymographs_series extends BuildSeries
 								int sum = 0;
 								for (int[] m: mask)
 									sum += sourceImageOneChannel[m[0] + m[1]*widthSourceImage];
-								kymoImageOneChannel[cnt*widthKymoImage + t_out] = (int) (sum/mask.size()); 
+								if (mask.size() > 0)
+									kymoImageOneChannel[cnt*widthKymoImage + t_out] = (int) (sum/mask.size()); 
 								cnt ++;
 							}
 						}
 					}
 				}}));
 		}
+
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		
 		seqCamData.seq.endUpdate();
