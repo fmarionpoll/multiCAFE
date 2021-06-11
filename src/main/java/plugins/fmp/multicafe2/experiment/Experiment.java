@@ -510,7 +510,7 @@ public class Experiment
 		}
 		return true;
 	}
-	// TODO
+	
 	public boolean xmlSaveMCExperiment () 
 	{
 		final Document doc = XMLUtil.createDocument(true);
@@ -823,7 +823,6 @@ public class Experiment
 		return false;
 	}
 	
-	// TODO
 	public boolean xmlSaveMCCapillaries_Only() 
 	{
 		String xmlCapillaryFileName = strExperimentDirectory + File.separator + capillaries.getXMLNameToAppend();

@@ -233,6 +233,13 @@ public class ExperimentDirectories
 		}
 	}
 	
+	// TODO
+	private int estimateBin( ) 
+	{
+		int bin = 60;
+		return bin;
+	}
+	
 	private void move_XML_From_Bin_to_Results(String resultsDirectory, String binSubDirectory)
 	{
 		String binDirectory = resultsDirectory + File.separator + binSubDirectory;
