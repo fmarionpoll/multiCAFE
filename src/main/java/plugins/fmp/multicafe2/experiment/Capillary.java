@@ -10,7 +10,6 @@ import java.util.List;
 import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
-import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.type.geom.Polyline2D;
@@ -52,10 +51,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public CapillaryLimit				ptsDerivative 	= new CapillaryLimit(ID_DERIVATIVE); 
 	public CapillaryGulps 				gulpsRois 		= new CapillaryGulps(); 
 	
-	public List<ArrayList<int[]>> 		masksList 		= null;
-	public List <int []> 				kymoImageInteger = null;
-	
-	public IcyBufferedImage 			bufKymoImage 	= null;
 	public boolean						valid			= true;
 
 	private final String 				ID_META 		= "metaMC";
