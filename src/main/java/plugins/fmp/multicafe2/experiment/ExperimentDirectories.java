@@ -165,7 +165,7 @@ public class ExperimentDirectories
 		    }
 		    else if (expList.size() == 1 ) 
 		    {
-		    	subDirectory = expList.get(0); 
+		    	subDirectory = expList.get(0).toLowerCase(); 
 			    if (!subDirectory.contains(Experiment.BIN)) 
 			    	subDirectory = Experiment.BIN + "60";
 		    }

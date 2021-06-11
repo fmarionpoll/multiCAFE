@@ -108,8 +108,11 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		sleepThreshold = xySer.sleepThreshold;
 		lastTimeAlive = xySer.lastIntervalAlive;
 		xytList = new ArrayList<XYTaValue>(xySer.xytList.size());
-		for (XYTaValue val: xySer.xytList) 
-			xytList.add(val.indexT, val);
+		xytList.addAll(xytList);
+//		for (XYTaValue val: xySer.xytList) 
+//		{
+//			xytList.add(val.indexT, val);
+//		}
 		name = xySer.name;
 		exportType = xySer.exportType;
 		binsize = xySer.binsize;
