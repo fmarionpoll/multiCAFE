@@ -191,6 +191,8 @@ public class BuildKymographs_series extends BuildSeries
         progressBar.close();
         
         /// ---------------------------------------------------------
+        
+        seqKymos.seq.beginUpdate();
 		for (int icap=0; icap < nbcapillaries; icap++) 
 		{
 			ArrayList<int[]> cap_Integer = cap_kymoImageInteger.get(icap);
@@ -205,6 +207,7 @@ public class BuildKymographs_series extends BuildSeries
 			}
 			seqKymos.seq.setImage(icap, 0, cap_Image);
 		}
+		seqKymos.seq.endUpdate();
 		return true;
 	}
 	
