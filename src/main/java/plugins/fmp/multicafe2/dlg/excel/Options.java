@@ -24,19 +24,18 @@ public class Options extends JPanel
 	 * 
 	 */
 	private static final long serialVersionUID = 1814896922714679663L;
-	
-	JCheckBox 	exportAllFilesCheckBox 	= new JCheckBox("all experiments", true);
-	public JCheckBox collateSeriesCheckBox = new JCheckBox("collate series", false);
-	JCheckBox   padIntervalsCheckBox	= new JCheckBox("pad intervals", false);
-	JCheckBox	absoluteTimeCheckBox 	= new JCheckBox("absolute time", false);
-	JCheckBox	transposeCheckBox 		= new JCheckBox("transpose", true);
-	JSpinner 	binSize					= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
-	JComboMs 	binUnit 				= new JComboMs();
-	JComboMs 	intervalsUnit 			= new JComboMs();
-	JSpinner 	startJSpinner			= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
-	JSpinner 	endJSpinner				= new JSpinner(new SpinnerNumberModel(99999999., 1., 99999999., 1.));
-	JRadioButton  	isFixedFrame		= new JRadioButton("from ", false);
-	JRadioButton  	isFloatingFrame		= new JRadioButton("all", true);
+	public 	JCheckBox 	collateSeriesCheckBox 	= new JCheckBox("collate series", false);
+			JCheckBox 	exportAllFilesCheckBox 	= new JCheckBox("all experiments", true);
+			JCheckBox   padIntervalsCheckBox	= new JCheckBox("pad intervals", false);
+			JCheckBox	absoluteTimeCheckBox 	= new JCheckBox("absolute time", false);
+			JCheckBox	transposeCheckBox 		= new JCheckBox("transpose", true);
+			JSpinner 	binSize					= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
+			JComboMs 	binUnit 				= new JComboMs();
+			JComboMs 	intervalsUnit 			= new JComboMs();
+			JSpinner 	startJSpinner			= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
+			JSpinner 	endJSpinner				= new JSpinner(new SpinnerNumberModel(99999999., 1., 99999999., 1.));
+			JRadioButton isFixedFrame			= new JRadioButton("from ", false);
+			JRadioButton isFloatingFrame		= new JRadioButton("all", true);
 	
 	
 	

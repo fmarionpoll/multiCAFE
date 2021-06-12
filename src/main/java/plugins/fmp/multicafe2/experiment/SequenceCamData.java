@@ -92,8 +92,10 @@ public class SequenceCamData
 		return strPath.getParent().toString();
 	}
 	
-	public List <String> getImagesList() 
+	public List <String> getImagesList(boolean bsort) 
 	{
+		if (bsort)
+			Collections.sort(imagesList);		
 		return imagesList;
 	}
 

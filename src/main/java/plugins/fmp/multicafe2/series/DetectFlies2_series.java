@@ -51,7 +51,7 @@ public class DetectFlies2_series extends BuildSeries
 	
 	private boolean loadExperimentData(Experiment exp) 
 	{
-		exp.seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList());
+		exp.seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList(true));
 		boolean flag = exp.xmlReadDrosoTrack(null);
 		return flag;
 	}

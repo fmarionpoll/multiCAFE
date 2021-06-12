@@ -46,7 +46,7 @@ public class BuildKymographs_series extends BuildSeries
 	private boolean loadExperimentDataToBuildKymos(Experiment exp) 
 	{
 		boolean flag = exp.xmlLoadMCCapillaries_Only();
-		exp.seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList());
+		exp.seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList(true));
 		return flag;
 	}
 	
@@ -148,7 +148,7 @@ public class BuildKymographs_series extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					final int indexFrom = (int) ((iindexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
+					final int indexFrom = (int) ((iindexms - exp.camFirstImage_Ms) / exp.camBinImage_Ms);
 					if (indexFrom >= seqCamData.nTotalFrames)
 						return;
 					final int indexTo =  (int) ((iindexms - exp.kymoFirstCol_Ms ) / exp.kymoBinCol_Ms);	
@@ -215,9 +215,7 @@ public class BuildKymographs_series extends BuildSeries
 	{
 		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData.seq == null) 
-		{
-			seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList());
-		}
+			seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList(true));
 		int sizex = seqCamData.seq.getSizeX();
 		int sizey = seqCamData.seq.getSizeY();	
 		int numC = seqCamData.seq.getSizeC();

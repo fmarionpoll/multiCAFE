@@ -19,7 +19,7 @@ import plugins.fmp.multicafe2.experiment.XYTaValue;
 import plugins.fmp.multicafe2.tools.Comparators;
 
 
-public class XLSExportMoveResults  extends XLSExport 
+public class XLSExportMoveResults extends XLSExport 
 {
 	ExperimentCombo expList = null;
 	List <XYTaSeriesArrayList> rowsForOneExp = new ArrayList <XYTaSeriesArrayList> ();

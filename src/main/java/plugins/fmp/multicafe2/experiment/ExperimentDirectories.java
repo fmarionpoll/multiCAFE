@@ -225,19 +225,13 @@ public class ExperimentDirectories
 			return;
 		for (String subDirectory: expList) 
 		{
-	    	if (subDirectory .contains(Experiment.RESULTS)) {
+	    	if (subDirectory .contains(Experiment.RESULTS)) 
+	    	{	// TODO estimate bin size for ex by comparing x size and n jpg files?
 	    		subDirectory = Experiment.BIN + "60";
 	    		Directories.move_TIFFfiles_To_Subdirectory(parentDirectory, subDirectory );
 	    		Directories.move_xmlLINEfiles_To_Subdirectory(parentDirectory, subDirectory, true );
 	    	}
 		}
-	}
-	
-	// TODO
-	private int estimateBin( ) 
-	{
-		int bin = 60;
-		return bin;
 	}
 	
 	private void move_XML_From_Bin_to_Results(String resultsDirectory, String binSubDirectory)
