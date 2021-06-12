@@ -206,7 +206,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.transpose 		= tabOptions.transposeCheckBox.isSelected();
 		options.buildExcelStepMs= tabOptions.getExcelBuildStep() ;
 		options.buildExcelUnitMs= tabOptions.binUnit.getMsUnitValue();
-		options.fixedIntervals 	= tabOptions.isFixedFrame.isSelected();
+		options.fixedIntervals 	= tabOptions.isFixedFrameButton.isSelected();
 		options.startAll_Ms 	= tabOptions.getStartAllMs();
 		options.endAll_Ms 		= tabOptions.getEndAllMs();
 		

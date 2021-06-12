@@ -127,7 +127,7 @@ public class XLSExportMoveResults extends XLSExport
 		expAll.camFirstImage_Ms = expAll.firstImage_FileTime.toMillis();
 		expAll.camLastImage_Ms = expAll.lastImage_FileTime.toMillis();
 		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_Ms) / options.buildExcelStepMs +1);
-		int ncages = expAll.cages.cageList.size();
+ 		int ncages = expAll.cages.cageList.size();
 		rowsForOneExp = new ArrayList <XYTaSeriesArrayList> (ncages);
 		for (int i=0; i< ncages; i++) 
 		{
@@ -201,18 +201,36 @@ public class XLSExportMoveResults extends XLSExport
 	
 	private void addMoveResultsTo_rowsForOneExp(Experiment expi, List <XYTaSeriesArrayList> resultsArrayList) 
 	{
-		final int transfer_first_index = (int) (expi.camFirstImage_Ms - expAll.camFirstImage_Ms) / options.buildExcelStepMs ;
-		final int transfer_nvalues = (int) ((expi.camLastImage_Ms - expi.camLastImage_Ms)/options.buildExcelStepMs)+1;
+		long start_Ms = expi.camFirstImage_Ms;
+		long end_Ms = expi.camLastImage_Ms;
+		if (options.fixedIntervals) 
+		{
+			if (start_Ms < options.startAll_Ms)
+				start_Ms = options.startAll_Ms;
+			if (start_Ms > expi.camLastImage_Ms)
+				return;
+			
+			if (end_Ms > options.endAll_Ms)
+				end_Ms = options.endAll_Ms;
+			if (end_Ms > expi.camFirstImage_Ms)
+				return;
+		}
+		
+		final long from_first_Ms = start_Ms;
+		final long from_lastMs = end_Ms;
+		final int to_first_index = (int) (from_first_Ms - expAll.camFirstImage_Ms) / options.buildExcelStepMs ;
+		final int to_nvalues = (int) ((from_lastMs - from_first_Ms)/options.buildExcelStepMs)+1;
+
 		for (XYTaSeriesArrayList row: rowsForOneExp ) 
 		{
 			XYTaSeriesArrayList results = getResultsArrayWithThatName(row.name,  resultsArrayList);
 			if (results != null) 
 			{
 				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
-					padWithLastPreviousValue(row, transfer_first_index);
-				for (long fromTime = expi.camFirstImage_Ms; fromTime <= expi.camLastImage_Ms; fromTime += options.buildExcelStepMs) 
+					padWithLastPreviousValue(row, to_first_index);
+				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs) 
 				{					
-					int from_i = (int) ((fromTime - expi.camFirstImage_Ms) / options.buildExcelStepMs);
+					int from_i = (int) ((fromTime - from_first_Ms) / options.buildExcelStepMs);
 					if (from_i >= results.xytList.size())
 						break;
 					XYTaValue aVal = results.xytList.get(from_i);
@@ -229,13 +247,13 @@ public class XLSExportMoveResults extends XLSExport
 			{
 				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
 				{
-					XYTaValue posok = padWithLastPreviousValue(row, transfer_first_index);
-					int nvalues = transfer_nvalues;
+					XYTaValue posok = padWithLastPreviousValue(row, to_first_index);
+					int nvalues = to_nvalues;
 					if (posok != null) 
 					{
 						if (nvalues > row.xytList.size())
 							nvalues = row.xytList.size();
-						int tofirst = transfer_first_index;
+						int tofirst = to_first_index;
 						int tolast = tofirst + nvalues;
 						if (tolast > row.xytList.size())
 							tolast = row.xytList.size();
@@ -310,7 +328,7 @@ public class XLSExportMoveResults extends XLSExport
 	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) 
 	{
 		Point pt = new Point(col0, 0);
-		writeExperimentDescriptors(expAll, charSeries, sheet, pt, xlsExportOption);
+		desc_writeExperimentDescriptors(expAll, charSeries, sheet, pt, xlsExportOption);
 		pt = writeData2(sheet, xlsExportOption, pt);
 		return pt.x;
 	}
@@ -331,7 +349,7 @@ public class XLSExportMoveResults extends XLSExport
 		for (XYTaSeriesArrayList row: rowsForOneExp) 
 		{
 			pt.y = column_dataArea;
-			int col = getColFromCageName(row.name)*2;
+			int col = getRowIndexFromCageName(row.name)*2;
 			pt.x = rowSeries + col; 
 			if (row.nflies < 1)
 				continue;

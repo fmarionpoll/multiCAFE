@@ -19,7 +19,6 @@ import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.Comparators;
 
 
@@ -40,19 +39,8 @@ public class XLSExport
 
 
 	// ------------------------------------------------
-    
-	public long getnearest(long value, int step) 
-	{
-		long diff0 = (value /step)*step;
-		long diff1 = diff0 + step;
-		if ((value - diff0 ) < (diff1 - value))
-			value = diff0;
-		else
-			value = diff1;
-		return value;
-	}
-		
-	protected Point writeExperimentDescriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, EnumXLSExportType xlsExportOption) 
+    	
+	protected Point desc_writeExperimentDescriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, EnumXLSExportType xlsExportOption) 
 	{
 		boolean transpose = options.transpose;
 		int row = pt.y;
@@ -102,7 +90,7 @@ public class XLSExport
 		{ 
 			Capillary cap = capList.get(t);
 			String	name = cap.roi.getName();
-			int col = getColFromKymoFileName(name);
+			int col = getRowIndexFromKymoFileName(name);
 			if (col >= 0) 
 				pt.x = colseries + col;
 			int x = pt.x;
@@ -116,7 +104,7 @@ public class XLSExport
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.SEX.getValue(), transpose, 		exp.getField(EnumXLSColumnHeader.SEX));			
 
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, cap.getSideDescriptor(xlsExportOption));
-			setValueDataOption(sheet, xlsExportOption, cap, transpose, x, y);
+			desc_setValueDataOption(sheet, xlsExportOption, cap, transpose, x, y);
 
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAM.getValue(), transpose, 		cam);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEINDEX.getValue(), transpose, 	cap.capCageID);
@@ -132,14 +120,14 @@ public class XLSExport
 			} 
 			else 
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, sheetName);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGECOMMENT.getValue(), transpose, getChoiceTestType(capList, t));
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGECOMMENT.getValue(), transpose, desc_getChoiceTestType(capList, t));
 		}
 		pt.x = col0;
 		pt.y = rowmax +1;
 		return pt;
 	}
 	
-	private String getChoiceTestType(List<Capillary> capList, int t)
+	private String desc_getChoiceTestType(List<Capillary> capList, int t)
 	{
 		Capillary cap = capList.get(t);
 		String choiceText = "..";
@@ -163,7 +151,7 @@ public class XLSExport
 		return choiceText;
 	}
 	
-	private void setValueDataOption(XSSFSheet sheet, EnumXLSExportType xlsExportOption, Capillary cap, boolean transpose, int x, int y)
+	private void desc_setValueDataOption(XSSFSheet sheet, EnumXLSExportType xlsExportOption, Capillary cap, boolean transpose, int x, int y)
 	{
 		switch (xlsExportOption) {
 		case TOPLEVEL_LR:
@@ -199,7 +187,7 @@ public class XLSExport
 		}
 	}
 	
-	public int outputColumnHeaders(XSSFSheet sheet) 
+	public int topRow_Descriptor(XSSFSheet sheet) 
 	{		
 		Point pt = new Point(0,0);
 		int x = 0;
@@ -215,7 +203,7 @@ public class XLSExport
 		return pt.y;
 	}
 	
-	protected int getCageFromCapillaryName(String name) 
+	protected int desc_getCageFromCapillaryName(String name) 
 	{
 		if (!name .contains("line"))
 			return -1;
@@ -224,12 +212,7 @@ public class XLSExport
 		return numFromName;
 	}
 	
-	protected String getShortenedName(SequenceCamData seq, int t) 
-	{
-		return seq.getFileNameNoPath(t);
-	}
-	
-	protected int getColFromKymoFileName(String name) 
+	protected int getRowIndexFromKymoFileName(String name) 
 	{
 		if (!name .contains("line"))
 			return -1;
@@ -252,7 +235,7 @@ public class XLSExport
 		return numFromName;
 	}
 		
-	protected int getColFromCageName(String name) 
+	protected int getRowIndexFromCageName(String name) 
 	{
 		if (!name .contains("cage"))
 			return -1;
@@ -263,7 +246,7 @@ public class XLSExport
 	
 	protected Point getCellXCoordinateFromDataName(XLSResults xlsResults, Point pt_main, int colseries) 
 	{
-		int col = getColFromKymoFileName(xlsResults.name);
+		int col = getRowIndexFromKymoFileName(xlsResults.name);
 		if (col >= 0)
 			pt_main.x = colseries + col;
 		return pt_main;
@@ -298,13 +281,13 @@ public class XLSExport
 		if (sheet == null) 
 		{
 			sheet = workbook.createSheet(title);
-			int row = outputColumnHeaders(sheet);
-			outputDataTimeIntervals(sheet, row);
+			int row = topRow_Descriptor(sheet);
+			topRow_TimeIntervals(sheet, row);
 		}
 		return sheet;
 	}
 	
-	void outputDataTimeIntervals(XSSFSheet sheet, int row) 
+	void topRow_TimeIntervals(XSSFSheet sheet, int row) 
 	{
 		boolean transpose = options.transpose;
 		Point pt = new Point(0, row);
@@ -342,14 +325,14 @@ public class XLSExport
 		return colmax;
 	}
 	
-	private Experiment buildRowListForOneExperiment( Experiment exp, EnumXLSExportType xlsOption) 
+	private Experiment getDescriptorsForOneExperiment( Experiment exp, EnumXLSExportType xlsOption) 
 	{
 		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.cages.copy(exp.cages);
 		expAll.capillaries.copy(exp.capillaries);
 		if (!options.absoluteTime && options.t0)
 			expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
-		expAll.lastImage_FileTime 	= exp.lastImage_FileTime;
+		expAll.lastImage_FileTime = exp.lastImage_FileTime;
 		expAll.setField(EnumXLSColumnHeader.BOXID, exp.getField(EnumXLSColumnHeader.BOXID));
 		expAll.setField(EnumXLSColumnHeader.EXPT, exp.getField(EnumXLSColumnHeader.EXPT));
 		expAll.setField(EnumXLSColumnHeader.COMMENT1, exp.getField(EnumXLSColumnHeader.COMMENT1));
@@ -411,7 +394,7 @@ public class XLSExport
 	
 	private void getDataFromOneExperimentSeries(Experiment exp, EnumXLSExportType xlsOption) 
 	{	
-		Experiment expi = buildRowListForOneExperiment (exp, xlsOption);
+		Experiment expi = getDescriptorsForOneExperiment (exp, xlsOption);
 		EnumXLSExportType measureOption = getMeasureOption (xlsOption);
 		while (expi != null) 
 		{
@@ -662,7 +645,7 @@ public class XLSExport
 			
 			for (XLSResults row : rowListForOneExp) 
 			{
-				if (getCageFromCapillaryName (row.name) == cagenumber)
+				if (desc_getCageFromCapillaryName (row.name) == cagenumber)
 					row.clearValues(ilastalive);
 			}
 		}	
@@ -694,7 +677,7 @@ public class XLSExport
 	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) 
 	{
 		Point pt = new Point(col0, 0);
-		writeExperimentDescriptors(expAll, charSeries, sheet, pt, xlsExportOption);
+		desc_writeExperimentDescriptors(expAll, charSeries, sheet, pt, xlsExportOption);
 		pt = writeDataToSheet(sheet, xlsExportOption, pt);
 		return pt.x;
 	}
@@ -732,7 +715,7 @@ public class XLSExport
 	{
 		boolean transpose = options.transpose;
 		pt.y = column_dataArea;
-		int col = getColFromKymoFileName(row.name);
+		int col = getRowIndexFromKymoFileName(row.name);
 		pt.x = rowSeries + col; 
 		if (row.values_out == null)
 			return;

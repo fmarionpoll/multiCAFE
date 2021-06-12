@@ -38,49 +38,57 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	{
 		Experiment expAll = new Experiment();
 		Experiment exp0 = getItemAt(0);
-		if (options.absoluteTime) 
+		if (options.fixedIntervals) 
 		{
-			expAll.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
-			expAll.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
-			for (int i=0; i < getItemCount(); i++) 
-			{
-				Experiment exp = getItemAt(i);
-				if (expAll.getFileTimeImageFirst(false).compareTo(exp.getFileTimeImageFirst(true)) > 0) 
-					expAll.setFileTimeImageFirst(exp.getFileTimeImageFirst(true));
-				if (expAll.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
-					expAll.setFileTimeImageLast(exp.getFileTimeImageLast(true));
-			}
-			expAll.camFirstImage_Ms = expAll.getFileTimeImageFirst(false).toMillis();
-			expAll.camLastImage_Ms = expAll.getFileTimeImageLast(false).toMillis();	
-		} 
+			expAll.kymoFirstCol_Ms = options.startAll_Ms;
+			expAll.kymoLastCol_Ms = options.endAll_Ms;
+		}
 		else 
 		{
-			expAll.camFirstImage_Ms = 0;
-			expAll.camLastImage_Ms = 0;
-			for (int i=0; i< getItemCount(); i++) 
+			if (options.absoluteTime) 
 			{
-				Experiment exp = getItemAt(i);
-				if (options.collateSeries && exp.previousExperiment != null)
-					continue;
-				if (exp.kymoFirstCol_Ms == 0 && exp.kymoLastCol_Ms == 0) 
+				expAll.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
+				expAll.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
+				for (int i=0; i < getItemCount(); i++) 
 				{
-					exp.kymoFirstCol_Ms = exp.camFirstImage_Ms;
-					exp.kymoLastCol_Ms = exp.camFirstImage_Ms + exp.seqKymos.imageWidthMax * exp.kymoBinCol_Ms;
+					Experiment exp = getItemAt(i);
+					if (expAll.getFileTimeImageFirst(false).compareTo(exp.getFileTimeImageFirst(true)) > 0) 
+						expAll.setFileTimeImageFirst(exp.getFileTimeImageFirst(true));
+					if (expAll.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
+						expAll.setFileTimeImageLast(exp.getFileTimeImageLast(true));
 				}
-				double last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
-				double first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
-				double diff = last - first;
-				if (diff < 1) 
+				expAll.camFirstImage_Ms = expAll.getFileTimeImageFirst(false).toMillis();
+				expAll.camLastImage_Ms = expAll.getFileTimeImageLast(false).toMillis();	
+			} 
+			else 
+			{
+				expAll.camFirstImage_Ms = 0;
+				expAll.camLastImage_Ms = 0;
+				for (int i=0; i< getItemCount(); i++) 
 				{
-					System.out.println("error when computing FileTime difference between last and first image; set dt between images = 1 ms");
-					diff = exp.seqCamData.seq.getSizeT();
+					Experiment exp = getItemAt(i);
+					if (options.collateSeries && exp.previousExperiment != null)
+						continue;
+					if (exp.kymoFirstCol_Ms == 0 && exp.kymoLastCol_Ms == 0) 
+					{
+						exp.kymoFirstCol_Ms = exp.camFirstImage_Ms;
+						exp.kymoLastCol_Ms = exp.camFirstImage_Ms + exp.seqKymos.imageWidthMax * exp.kymoBinCol_Ms;
+					}
+					double last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
+					double first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
+					double diff = last - first;
+					if (diff < 1) 
+					{
+						System.out.println("error when computing FileTime difference between last and first image; set dt between images = 1 ms");
+						diff = exp.seqCamData.seq.getSizeT();
+					}
+					if (expAll.camLastImage_Ms < diff) 
+						expAll.camLastImage_Ms = (long) diff;
 				}
-				if (expAll.camLastImage_Ms < diff) 
-					expAll.camLastImage_Ms = (long) diff;
 			}
+			expAll.kymoFirstCol_Ms = expAll.camFirstImage_Ms;
+			expAll.kymoLastCol_Ms = expAll.camLastImage_Ms;
 		}
-		expAll.kymoFirstCol_Ms = expAll.camFirstImage_Ms;
-		expAll.kymoLastCol_Ms = expAll.camLastImage_Ms;
 		return expAll;
 	}
 		
@@ -109,7 +117,6 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		return flag;
 	}
 	
-	/////
 	public void chainExperiments(boolean collate) 
 	{
 		for (int i=0; i< getItemCount(); i++) 

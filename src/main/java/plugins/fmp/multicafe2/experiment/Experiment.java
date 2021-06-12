@@ -197,20 +197,22 @@ public class Experiment
 	  
 	public void checkKymosDirectory(String kymosSubDirectory) 
 	{
-		if (kymosSubDirectory == null) {
+		if (kymosSubDirectory == null) 
+		{
 			List<String> listTIFFlocations = Directories.getSortedListOfSubDirectoriesWithTIFF(getExperimentDirectory());
 			if (listTIFFlocations.size() < 1)
 				return;
 			boolean found = false;
 			for (String subDir : listTIFFlocations) 
 			{
-				if (subDir .contains(Experiment.BIN)) 
+				String test = subDir.toLowerCase();
+				if (test.contains(Experiment.BIN)) 
 				{
 					kymosSubDirectory = subDir;
 					found = true;
 					break;
 				}
-				if (subDir .contains(Experiment.RESULTS)) 
+				if (test.contains(Experiment.RESULTS)) 
 				{
 					found = true;
 					break;

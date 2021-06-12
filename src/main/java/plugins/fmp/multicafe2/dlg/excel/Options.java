@@ -34,8 +34,8 @@ public class Options extends JPanel
 			JComboMs 	intervalsUnit 			= new JComboMs();
 			JSpinner 	startJSpinner			= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
 			JSpinner 	endJSpinner				= new JSpinner(new SpinnerNumberModel(99999999., 1., 99999999., 1.));
-			JRadioButton isFixedFrame			= new JRadioButton("from ", false);
-			JRadioButton isFloatingFrame		= new JRadioButton("all", true);
+			JRadioButton isFixedFrameButton		= new JRadioButton("from ", false);
+			JRadioButton isFloatingFrameButton	= new JRadioButton("all", true);
 	
 	
 	
@@ -57,8 +57,8 @@ public class Options extends JPanel
 
 		JPanel panel1 = new JPanel(layout1);
 		panel1.add(new JLabel("Analyze "));
-		panel1.add(isFloatingFrame);
-		panel1.add(isFixedFrame);
+		panel1.add(isFloatingFrameButton);
+		panel1.add(isFixedFrameButton);
 		panel1.add(startJSpinner);
 		panel1.add(new JLabel(" to "));
 		panel1.add(endJSpinner);
@@ -74,8 +74,8 @@ public class Options extends JPanel
 
 		enableIntervalButtons(false);
 		ButtonGroup group = new ButtonGroup();
-		group.add(isFloatingFrame);
-		group.add(isFixedFrame);
+		group.add(isFloatingFrameButton);
+		group.add(isFixedFrameButton);
 		
 		defineActionListeners();
 	}
@@ -89,14 +89,14 @@ public class Options extends JPanel
 		        padIntervalsCheckBox.setEnabled(isSelected);
 		    }});
 		
-		isFixedFrame.addActionListener(new ActionListener () 
+		isFixedFrameButton.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
 				enableIntervalButtons(true);
 			}});
 	
-		isFloatingFrame.addActionListener(new ActionListener () 
+		isFloatingFrameButton.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
