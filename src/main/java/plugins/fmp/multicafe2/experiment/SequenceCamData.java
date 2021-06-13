@@ -241,18 +241,30 @@ public class SequenceCamData
 		if (len < 16)
 			return null;
 		int index0 = fileName.indexOf("-")+1;
-		String text = "20"+fileName.substring(index0, len-4);
+		int index1 = fileName.indexOf("_")+1;
+		int index = 0;
+		if (index0 > 0)
+			index = index0;
+		if (index1 > 0 && index1 < index0)
+			index = index1;
+	
+		String yearPattern = "yy";
+		String text = fileName.substring(index, len-4);
 		
+		if (Character.isDigit(text.charAt(3))) 
+			yearPattern = "yyyy";
 		String dateFormat = null;
 		if (text.length() <= (18))
-			dateFormat = "yyyyMMddHHmmss";
-		else
-			dateFormat = "yyyy"+text.charAt(4)+"MM"
-							+text.charAt(7)+"dd"
-							+text.charAt(10)+"HH"
-							+text.charAt(13)+"mm"
-							+text.charAt(16)+"ss";
-		
+			dateFormat = yearPattern+"MMddHHmmss";
+		else 
+		{
+			int offset = yearPattern.length();
+			dateFormat = yearPattern+text.charAt(offset)+"MM"
+							+text.charAt(offset+3)+"dd"
+							+text.charAt(offset+6)+"HH"
+							+text.charAt(offset+9)+"mm"
+							+text.charAt(offset+12)+"ss";
+		}
 		Date date = null;
 		try 
 		{

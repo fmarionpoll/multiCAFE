@@ -350,6 +350,8 @@ public class Experiment
 				camFirstImage_Ms = firstImage_FileTime.toMillis();
 				camLastImage_Ms = lastImage_FileTime.toMillis();
 				camBinImage_Ms = (camLastImage_Ms - camFirstImage_Ms)/(seqCamData.nTotalFrames-1);
+				if (camBinImage_Ms == 0)
+					System.out.println("error / file interval size");
 			}
 			else
 			{
