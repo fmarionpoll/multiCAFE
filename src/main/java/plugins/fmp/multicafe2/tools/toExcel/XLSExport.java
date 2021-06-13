@@ -304,7 +304,7 @@ public class XLSExport
 	
 	protected int getDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType xlsOption) 
 	{	
-		getDataFromOneExperimentSeries(exp, xlsOption);
+		getCapDataFromOneExperimentSeries(exp, xlsOption);
 		XSSFSheet sheet = xlsInitSheet(xlsOption.toString());
 		int colmax = xlsExportResultsArrayToSheet(sheet, xlsOption, col0, charSeries);
 		
@@ -324,8 +324,8 @@ public class XLSExport
 		
 		return colmax;
 	}
-	
-	private Experiment getDescriptorsForOneExperiment( Experiment exp, EnumXLSExportType xlsOption) 
+		
+	private void getDescriptorsForOneExperiment( Experiment exp, EnumXLSExportType xlsOption) 
 	{
 		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.cages.copy(exp.cages);
@@ -363,12 +363,6 @@ public class XLSExport
 			rowListForOneExp.add(row);
 		}
 		Collections.sort(rowListForOneExp, new Comparators.XLSResults_Name_Comparator());
-		
-		// get first experiment
-		expi = exp;
-		while (exp.previousExperiment != null) 
-			expi = exp;
-		return expi;
 	}
 	
 	private EnumXLSExportType getMeasureOption (EnumXLSExportType xlsOption) 
@@ -392,9 +386,11 @@ public class XLSExport
 		return measureOption;
 	}
 	
-	private void getDataFromOneExperimentSeries(Experiment exp, EnumXLSExportType xlsOption) 
+	private void getCapDataFromOneExperimentSeries(Experiment exp, EnumXLSExportType xlsOption) 
 	{	
-		Experiment expi = getDescriptorsForOneExperiment (exp, xlsOption);
+		Experiment expi = ExperimentCombo.getFirstChainedExperiment(exp); 
+		getDescriptorsForOneExperiment (expi, xlsOption);
+		
 		EnumXLSExportType measureOption = getMeasureOption (xlsOption);
 		while (expi != null) 
 		{
@@ -531,8 +527,25 @@ public class XLSExport
 				break;
 		}
 		
-		long to_first_index = (expi.camFirstImage_Ms - expAll.camFirstImage_Ms) / options.buildExcelStepMs ;
-		long to_nvalues 	= ((expi.camLastImage_Ms - expi.camFirstImage_Ms) / options.buildExcelStepMs)+1;
+		long start_Ms = expi.camFirstImage_Ms - expAll.camFirstImage_Ms;
+		long end_Ms = expi.camLastImage_Ms - expAll.camFirstImage_Ms;
+		if (options.fixedIntervals) 
+		{
+			if (start_Ms < options.startAll_Ms)
+				start_Ms = options.startAll_Ms;
+			if (start_Ms > expi.camLastImage_Ms)
+				return;
+			
+			if (end_Ms > options.endAll_Ms)
+				end_Ms = options.endAll_Ms;
+			if (end_Ms > expi.camFirstImage_Ms)
+				return;
+		}
+		
+		final long from_first_Ms = start_Ms + expAll.camFirstImage_Ms;
+		final long from_lastMs = end_Ms + expAll.camFirstImage_Ms;
+		final int to_first_index = (int) (from_first_Ms - expAll.camFirstImage_Ms) / options.buildExcelStepMs ;
+		final int to_nvalues = (int) ((from_lastMs - from_first_Ms)/options.buildExcelStepMs)+1;
 
 		for (XLSResults row: rowListForOneExp ) 
 		{
@@ -555,7 +568,8 @@ public class XLSExport
 						break;
 				}
 
-				for (long fromTime = expi.kymoFirstCol_Ms; fromTime <= expi.kymoLastCol_Ms; fromTime += options.buildExcelStepMs) 
+				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs) 
+//				for (long fromTime = expi.kymoFirstCol_Ms; fromTime <= expi.kymoLastCol_Ms; fromTime += options.buildExcelStepMs) 
 				{
 					int from_i = (int) ((fromTime - expi.kymoFirstCol_Ms) / options.buildExcelStepMs);
 					if (from_i >= results.data.size())

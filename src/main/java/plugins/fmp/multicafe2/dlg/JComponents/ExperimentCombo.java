@@ -170,6 +170,14 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		}
 	}
 	
+	public static Experiment getFirstChainedExperiment (Experiment exp)
+	{
+		Experiment expi = exp;
+		while (exp.previousExperiment != null) 
+			expi = exp;
+		return expi;
+	}
+	
 	private boolean isSameDescriptors(Experiment exp, Experiment expi) 
 	{
 		boolean flag = true;

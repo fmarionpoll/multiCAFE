@@ -90,7 +90,7 @@ public class XLSExportMoveResults extends XLSExport
 	
 	private int getMoveDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType datatype) 
 	{	
-		getDataFromOneSeriesOfExperiments(exp, datatype);
+		getMoveDataFromOneSeriesOfExperiments(exp, datatype);
 		XSSFSheet sheet = xlsInitSheet(datatype.toString());
 		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);	
 		if (options.onlyalive) 
@@ -102,12 +102,14 @@ public class XLSExportMoveResults extends XLSExport
 		return colmax;
 	}
 	
-	private void getDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsoption) 
-	{	
+	private void getMoveDescriptorsForOneExperiment( Experiment exp, EnumXLSExportType xlsOption) 
+	{
 		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.cages.copy(exp.cages);
 		expAll.capillaries.copy(exp.capillaries);
 		expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
+//		if (!options.absoluteTime && options.t0)
+//			expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
 		expAll.lastImage_FileTime 	= exp.lastImage_FileTime;
 		expAll.setExperimentDirectory( exp.getExperimentDirectory());
 		expAll.setField(EnumXLSColumnHeader.BOXID, exp.getField(EnumXLSColumnHeader.BOXID));
@@ -116,7 +118,7 @@ public class XLSExportMoveResults extends XLSExport
 		expAll.setField(EnumXLSColumnHeader.COMMENT2, exp.getField(EnumXLSColumnHeader.COMMENT2));
 		expAll.setField(EnumXLSColumnHeader.SEX, exp.getField(EnumXLSColumnHeader.SEX));
 		expAll.setField(EnumXLSColumnHeader.STRAIN, exp.getField(EnumXLSColumnHeader.STRAIN));
-
+	
 		Experiment expi = exp.nextExperiment;
 		while (expi != null ) 
 		{
@@ -127,19 +129,23 @@ public class XLSExportMoveResults extends XLSExport
 		expAll.camFirstImage_Ms = expAll.firstImage_FileTime.toMillis();
 		expAll.camLastImage_Ms = expAll.lastImage_FileTime.toMillis();
 		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_Ms) / options.buildExcelStepMs +1);
- 		int ncages = expAll.cages.cageList.size();
+		int ncages = expAll.cages.cageList.size();
 		rowsForOneExp = new ArrayList <XYTaSeriesArrayList> (ncages);
 		for (int i=0; i< ncages; i++) 
 		{
 			Cage cage = expAll.cages.cageList.get(i);
-			XYTaSeriesArrayList row = new XYTaSeriesArrayList (cage.cageRoi.getName(), xlsoption, nFrames, options.buildExcelStepMs);
+			XYTaSeriesArrayList row = new XYTaSeriesArrayList (cage.cageRoi.getName(), xlsOption, nFrames, options.buildExcelStepMs);
 			row.nflies = cage.cageNFlies;
 			rowsForOneExp.add(row);
 		}
 		Collections.sort(rowsForOneExp, new Comparators.XYTaSeries_Name_Comparator());
+	}
+	
+	private void getMoveDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsOption) 
+	{	
+		Experiment expi = ExperimentCombo.getFirstChainedExperiment(exp);  
+		getMoveDescriptorsForOneExperiment (expi, xlsOption);
 				
-		// load data for one experiment - assume that exp = first experiment in the chain and iterate through the chain
-		expi = exp;
 		while (expi != null) 
 		{
 			int len = (int) ((expi.camLastImage_Ms - expi.camFirstImage_Ms)/ options.buildExcelStepMs +1);
@@ -148,11 +154,11 @@ public class XLSExportMoveResults extends XLSExport
 			List <XYTaSeriesArrayList> resultsArrayList = new ArrayList <XYTaSeriesArrayList> (expi.cages.cageList.size());
 			for (Cage cage: expi.cages.cageList) 
 			{
-				XYTaSeriesArrayList results = new XYTaSeriesArrayList(cage.cageRoi.getName(), xlsoption, len, options.buildExcelStepMs );
+				XYTaSeriesArrayList results = new XYTaSeriesArrayList(cage.cageRoi.getName(), xlsOption, len, options.buildExcelStepMs );
 				results.nflies = cage.cageNFlies;
 				if (results.nflies > 0) 
 				{				
-					switch (xlsoption) 
+					switch (xlsOption) 
 					{
 						case DISTANCE:
 							results.computeDistanceBetweenPoints(cage.flyPositions, (int) expi.camBinImage_Ms,  options.buildExcelStepMs);
@@ -228,6 +234,7 @@ public class XLSExportMoveResults extends XLSExport
 			{
 				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
 					padWithLastPreviousValue(row, to_first_index);
+				
 				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs) 
 				{					
 					int from_i = (int) ((fromTime - from_first_Ms) / options.buildExcelStepMs);
