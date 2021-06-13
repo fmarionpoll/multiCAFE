@@ -201,8 +201,8 @@ public class XLSExportMoveResults extends XLSExport
 	
 	private void addMoveResultsTo_rowsForOneExp(Experiment expi, List <XYTaSeriesArrayList> resultsArrayList) 
 	{
-		long start_Ms = expi.camFirstImage_Ms;
-		long end_Ms = expi.camLastImage_Ms;
+		long start_Ms = expi.camFirstImage_Ms - expAll.camFirstImage_Ms;
+		long end_Ms = expi.camLastImage_Ms - expAll.camFirstImage_Ms;
 		if (options.fixedIntervals) 
 		{
 			if (start_Ms < options.startAll_Ms)
@@ -216,8 +216,8 @@ public class XLSExportMoveResults extends XLSExport
 				return;
 		}
 		
-		final long from_first_Ms = start_Ms;
-		final long from_lastMs = end_Ms;
+		final long from_first_Ms = start_Ms + expAll.camFirstImage_Ms;
+		final long from_lastMs = end_Ms + expAll.camFirstImage_Ms;
 		final int to_first_index = (int) (from_first_Ms - expAll.camFirstImage_Ms) / options.buildExcelStepMs ;
 		final int to_nvalues = (int) ((from_lastMs - from_first_Ms)/options.buildExcelStepMs)+1;
 
@@ -355,6 +355,8 @@ public class XLSExportMoveResults extends XLSExport
 				continue;
 		
 			long last = expAll.camLastImage_Ms - expAll.camFirstImage_Ms;
+			if (options.fixedIntervals)
+				last = options.endAll_Ms-options.startAll_Ms;
 			for (long coltime= 0; coltime <= last; coltime+=options.buildExcelStepMs, pt.y++) 
 			{
 				int i_from = (int) (coltime  / options.buildExcelStepMs);

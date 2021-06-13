@@ -231,19 +231,28 @@ public class SequenceCamData
 	
 	public FileTime getFileTimeFromStructuredName(int t) 
 	{
-		String fileName = getFileName(t);
-		if (fileName == null)
+		String fileName0 = getFileName(t);
+		if (fileName0 == null)
 			return null;
+		File f = new File(fileName0);
+		String fileName = f.getName();
+		
 		int len = fileName.length();
-		if (len < 23)
+		if (len < 16)
 			return null;
-		String text = "20"+fileName.substring(len-21, len-4);
-		String dateFormat = "yyyy"
-							+text.charAt(4)+"MM"
+		int index0 = fileName.indexOf("-")+1;
+		String text = "20"+fileName.substring(index0, len-4);
+		
+		String dateFormat = null;
+		if (text.length() <= (18))
+			dateFormat = "yyyyMMddHHmmss";
+		else
+			dateFormat = "yyyy"+text.charAt(4)+"MM"
 							+text.charAt(7)+"dd"
 							+text.charAt(10)+"HH"
 							+text.charAt(13)+"mm"
 							+text.charAt(16)+"ss";
+		
 		Date date = null;
 		try 
 		{
