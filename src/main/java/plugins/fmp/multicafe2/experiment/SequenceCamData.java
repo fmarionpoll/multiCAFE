@@ -251,10 +251,10 @@ public class SequenceCamData
 		String yearPattern = "yy";
 		String text = fileName.substring(index, len-4);
 		
-		if (Character.isDigit(text.charAt(3))) 
+		if (Character.isDigit(text.charAt(2))) 
 			yearPattern = "yyyy";
 		String dateFormat = null;
-		if (text.length() <= (18))
+		if (text.length() <= (14))
 			dateFormat = yearPattern+"MMddHHmmss";
 		else 
 		{
