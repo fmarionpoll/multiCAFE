@@ -147,7 +147,7 @@ public class BuildKymographs_series extends BuildSeries
 			if (indexFrom >= seqCamData.nTotalFrames)
 				continue;
 			final int indexTo =  (int) ((iindexms - exp.kymoFirstCol_Ms ) / exp.kymoBinCol_Ms);	
-//			System.out.println("from:" + indexFrom + " -> to:"+indexTo);
+			
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
@@ -221,7 +221,7 @@ public class BuildKymographs_series extends BuildSeries
 		int numC = seqCamData.seq.getSizeC();
 		if (numC <= 0)
 			numC = 3;
-		double fimagewidth =  1 + (exp.camLastImage_Ms - exp.camFirstImage_Ms ) / options.t_binMs;	
+		double fimagewidth =  1. + (exp.camLastImage_Ms - exp.camFirstImage_Ms ) / options.t_binMs;	
 		kymoImageWidth = (int) fimagewidth;
 		DataType dataType = seqCamData.seq.getDataType_();
 		if (dataType.toString().equals("undefined"))

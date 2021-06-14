@@ -63,18 +63,19 @@ public class DetectLevels_series extends BuildSeries
 		for (int indexKymo = options.firstKymo; indexKymo <= options.lastKymo; indexKymo++) 
 		{
 			final int t_index = indexKymo;
-			Capillary capi = exp.capillaries.capillariesArrayList.get(t_index);
-			if (!options.detectR && capi.getCapillaryName().endsWith("2"))
+			Capillary cap = exp.capillaries.capillariesArrayList.get(t_index);
+			if (!options.detectR && cap.getCapillaryName().endsWith("2"))
 				return false;
-			if (!options.detectL && capi.getCapillaryName().endsWith("1"))
+			if (!options.detectL && cap.getCapillaryName().endsWith("1"))
 				return false;
-//			final Capillary cap = capi;
 			final String name = seqKymos.getFileName(t_index);
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
 				public void run() 
-				{
+				{	
+					final Capillary capi = cap;
+				
 					IcyBufferedImage rawImage = imageIORead(name);
 					final IcyBufferedImage sourceImage = tImg.transformImage (rawImage, options.transformForLevels);
 					int c = 0;
