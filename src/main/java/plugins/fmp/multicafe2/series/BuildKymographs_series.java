@@ -143,17 +143,17 @@ public class BuildKymographs_series extends BuildSeries
 		for (long indexms = exp.kymoFirstCol_Ms ; indexms <= exp.kymoLastCol_Ms; indexms += exp.kymoBinCol_Ms) 
 		{
 			final long iindexms = indexms;
+			final int indexFrom = (int) ((iindexms - exp.camFirstImage_Ms) / exp.camBinImage_Ms);
+			if (indexFrom >= seqCamData.nTotalFrames)
+				continue;
+			final int indexTo =  (int) ((iindexms - exp.kymoFirstCol_Ms ) / exp.kymoBinCol_Ms);	
+//			System.out.println("from:" + indexFrom + " -> to:"+indexTo);
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
 				public void run() 
-				{	
-					final int indexFrom = (int) ((iindexms - exp.camFirstImage_Ms) / exp.camBinImage_Ms);
-					if (indexFrom >= seqCamData.nTotalFrames)
-						return;
-					final int indexTo =  (int) ((iindexms - exp.kymoFirstCol_Ms ) / exp.kymoBinCol_Ms);	
-					
-					String sourceImageName = seqCamData.getFileName(indexFrom);
+				{				
+					String sourceImageName = seqCamData.getFileName(indexFrom);			
 					IcyBufferedImage sourceImage = imageIORead(sourceImageName);
 					int sourceImageWidth = sourceImage.getWidth();				
 					if (options.doRegistration ) 

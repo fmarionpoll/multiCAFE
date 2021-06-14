@@ -52,7 +52,9 @@ public class ExperimentDirectories
 			try (DirectoryStream<Path> stream = Files.newDirectoryStream(pathDir)) 
 			{
 				for (Path entry: stream) 
+				{
 					list.add(entry.toString());
+				}
 			} 
 			catch (IOException e) 
 			{
@@ -137,9 +139,8 @@ public class ExperimentDirectories
 	{
 		String strDirectory = getImagesDirectoryAsParentFromFileName(exptDirectory);
 		cameraImagesList = getV2ImagesListFromPath(strDirectory);
-		
 		cameraImagesList = keepOnlyAcceptedNames_List(cameraImagesList, "jpg");
-		cameraImagesDirectory = Directories.getDirectoryFromName(cameraImagesList.get(0));
+		cameraImagesDirectory = strDirectory; //Directories.getDirectoryFromName(cameraImagesList.get(0));
 		
 		resultsDirectory =  getV2ResultsDirectory(cameraImagesDirectory, exptDirectory);
 		this.binSubDirectory = getV2BinSubDirectory(expListCombo, resultsDirectory, binSubDirectory);
