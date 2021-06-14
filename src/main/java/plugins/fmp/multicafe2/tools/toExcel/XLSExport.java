@@ -388,8 +388,8 @@ public class XLSExport
 	
 	private void getCapDataFromOneExperimentSeries(Experiment exp, EnumXLSExportType xlsOption) 
 	{	
+		getDescriptorsForOneExperiment (exp, xlsOption);
 		Experiment expi = ExperimentCombo.getFirstChainedExperiment(exp); 
-		getDescriptorsForOneExperiment (expi, xlsOption);
 		
 		EnumXLSExportType measureOption = getMeasureOption (xlsOption);
 		while (expi != null) 

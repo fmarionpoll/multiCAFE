@@ -143,8 +143,8 @@ public class XLSExportMoveResults extends XLSExport
 	
 	private void getMoveDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsOption) 
 	{	
+		getMoveDescriptorsForOneExperiment (exp, xlsOption);
 		Experiment expi = ExperimentCombo.getFirstChainedExperiment(exp);  
-		getMoveDescriptorsForOneExperiment (expi, xlsOption);
 				
 		while (expi != null) 
 		{
