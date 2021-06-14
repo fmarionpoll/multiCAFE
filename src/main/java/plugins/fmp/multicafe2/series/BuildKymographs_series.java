@@ -140,13 +140,14 @@ public class BuildKymographs_series extends BuildSeries
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		futures.clear();
 
-		for (long indexms = exp.kymoFirstCol_Ms ; indexms <= exp.kymoLastCol_Ms; indexms += exp.kymoBinCol_Ms) 
+		for (int iframe = 0 ; iframe < nframes; iframe++) 
 		{
-			final long iindexms = indexms;
+			long iindexms = iframe *  exp.kymoBinCol_Ms + exp.kymoFirstCol_Ms;
 			final int indexFrom = (int) ((iindexms - exp.camFirstImage_Ms) / exp.camBinImage_Ms);
 			if (indexFrom >= seqCamData.nTotalFrames)
 				continue;
-			final int indexTo =  (int) ((iindexms - exp.kymoFirstCol_Ms ) / exp.kymoBinCol_Ms);	
+			
+			final int indexTo =  iframe;	
 			
 			futures.add(processor.submit(new Runnable () 
 			{

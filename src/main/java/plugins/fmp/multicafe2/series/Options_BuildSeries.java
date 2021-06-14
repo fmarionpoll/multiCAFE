@@ -43,7 +43,7 @@ public class Options_BuildSeries implements XMLPersistent
 	public  int			lastKymo				= 0;
 	public 	boolean		directionUp				= true;
 	public 	int			detectLevelThreshold 	= 35;
-	public 	EnumTransformOp	transformForLevels 		= EnumTransformOp.R2MINUS_GB;
+	public 	EnumTransformOp	transformForLevels 	= EnumTransformOp.RGB_DIFFS;
 	public 	boolean 	analyzePartOnly			= false;
 	public 	int 		startPixel 				= -1;
 	public 	int 		endPixel 				= -1;
