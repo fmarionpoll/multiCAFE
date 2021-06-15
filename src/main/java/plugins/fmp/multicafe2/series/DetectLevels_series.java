@@ -28,7 +28,25 @@ public class DetectLevels_series extends BuildSeries
 		{ 
 			exp.seqKymos.displayViewerAtRectangle(options.parent0Rect);
 			if (detectCapillaryLevels(exp)) 
-				exp.capillaries.xmlSaveCapillaries_Measures(exp.getKymosBinFullDirectory());
+			{
+				int nframes = options.lastKymo - options.firstKymo +1;
+			    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+			    processor.setThreadName("save_data");
+			    processor.setPriority(Processor.NORM_PRIORITY);
+		        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
+				futures.clear();
+				
+				futures.add(processor.submit(new Runnable () 
+				{
+					@Override
+					public void run() 
+					{
+						exp.capillaries.xmlSaveCapillaries_Measures(exp.getKymosBinFullDirectory());
+					}
+					
+				}));
+				waitAnalyzeExperimentCompletion(processor, futures, null);
+			}
 		}
 		exp.closeSequences();
 	}
@@ -52,7 +70,7 @@ public class DetectLevels_series extends BuildSeries
 		
 		int nframes = options.lastKymo - options.firstKymo +1;
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
-	    processor.setThreadName("buildkymo2");
+	    processor.setThreadName("detectlevel");
 	    processor.setPriority(Processor.NORM_PRIORITY);
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		futures.clear();
