@@ -7,7 +7,7 @@ import java.util.List;
 
 public class XLSResults 
 {
-	public String				name 		= null;
+	public String		name 		= null;
 	String 				stimulus	= null;
 	String 				concentration = null;
 	int 				nadded		= 1;

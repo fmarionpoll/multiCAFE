@@ -50,7 +50,7 @@ public class Options_BuildSeries implements XMLPersistent
 	public  int			spanDiffTop				= 3;
 	
 	public int 			detectGulpsThreshold	= 90;
-	public EnumTransformOp 	transformForGulps 		= EnumTransformOp.XDIFFN;
+	public EnumTransformOp 	transformForGulps 	= EnumTransformOp.XDIFFN;
 	public int			spanDiff				= 3;
 	public boolean 		detectAllGulps 			= true;
 	public boolean		buildGulps				= true;
