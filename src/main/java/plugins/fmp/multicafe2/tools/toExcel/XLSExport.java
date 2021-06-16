@@ -574,6 +574,9 @@ public class XLSExport
 					int from_i = (int) ((fromTime - expi.kymoFirstCol_Ms) / options.buildExcelStepMs);
 					if (from_i >= results.data.size())
 						break;
+					// TODO check how this can happen
+					if (from_i< 0)
+						continue;
 					double value = results.data.get(from_i) * scalingFactorToPhysicalUnits + dvalue;
 					int to_i = (int) (from_i + to_first_index) ;
 					if (to_i >= row.values_out.length)
