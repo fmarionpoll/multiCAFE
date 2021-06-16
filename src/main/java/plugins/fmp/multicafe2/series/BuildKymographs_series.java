@@ -144,7 +144,6 @@ public class BuildKymographs_series extends BuildSeries
 		{
 			long iindexms = iframe *  exp.kymoBinCol_Ms + exp.kymoFirstCol_Ms;
 			final int indexFrom = (int) Math.round(((double)(iindexms - exp.camFirstImage_Ms)) / ((double) exp.camBinImage_Ms));
-//			System.out.println("frame:"+ iframe + " indexFrom:"+indexFrom + " from:" + ((double)iindexms) / ((double) exp.camBinImage_Ms));
 			if (indexFrom >= seqCamData.nTotalFrames)
 				continue;
 			

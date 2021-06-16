@@ -527,8 +527,8 @@ public class XLSExport
 				break;
 		}
 		
-		long start_Ms = expi.camFirstImage_Ms - expAll.camFirstImage_Ms;
-		long end_Ms = expi.camLastImage_Ms - expAll.camFirstImage_Ms;
+		long start_Ms = expi.kymoFirstCol_Ms - expAll.camFirstImage_Ms;
+		long end_Ms = expi.kymoLastCol_Ms - expAll.camFirstImage_Ms;
 		if (options.fixedIntervals) 
 		{
 			if (start_Ms < options.startAll_Ms)
@@ -568,23 +568,22 @@ public class XLSExport
 						break;
 				}
 
-				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs) 
+				int icolTo = 0;
+				if (options.collateSeries || options.absoluteTime)
+					icolTo = to_first_index;
+				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs,icolTo++) 
 				{
-					int from_i = (int) ((fromTime - expi.kymoFirstCol_Ms) / options.buildExcelStepMs);
+					int from_i = (int) Math.round(((double)(fromTime - expi.kymoFirstCol_Ms)) / ((double) options.buildExcelStepMs));
 					if (from_i >= results.data.size())
 						break;
 					// TODO check how this can happen
 					if (from_i< 0)
 						continue;
 					double value = results.data.get(from_i) * scalingFactorToPhysicalUnits + dvalue;
-					int to_i = (int) (from_i + to_first_index) ;
-					if (to_i >= row.values_out.length)
+					if (icolTo >= row.values_out.length)
 						break;
-					if (to_i < 0)
-						break;
-					row.values_out[to_i]= value;
+					row.values_out[icolTo]= value;
 				}
-				
 			} 
 			else 
 			{
