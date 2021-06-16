@@ -49,7 +49,6 @@ public class Experiment
 	
 	// __________________________________________________
 	
-	
 	public 	long			camFirstImage_Ms		= 0;
 	public 	long			camLastImage_Ms			= 0;
 	public 	long			camBinImage_Ms			= 0;

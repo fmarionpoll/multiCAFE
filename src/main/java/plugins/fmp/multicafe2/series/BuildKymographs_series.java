@@ -55,8 +55,8 @@ public class BuildKymographs_series extends BuildSeries
 		exp.kymoBinCol_Ms = options.t_binMs;
 		if (options.isFrameFixed) 
 		{
-			exp.kymoFirstCol_Ms = options.t_firstMs;
-			exp.kymoLastCol_Ms = options.t_lastMs;
+			exp.kymoFirstCol_Ms = options.t_firstMs + exp.camFirstImage_Ms;
+			exp.kymoLastCol_Ms = options.t_lastMs + exp.camFirstImage_Ms;
 			if (exp.kymoLastCol_Ms > exp.camLastImage_Ms)
 				exp.kymoLastCol_Ms = exp.camLastImage_Ms;
 		} 
@@ -114,7 +114,7 @@ public class BuildKymographs_series extends BuildSeries
 			return false;
 		}
 		
-		int startFrame = (int) (exp.kymoFirstCol_Ms /exp.camBinImage_Ms);
+		int startFrame = (int) ((exp.kymoFirstCol_Ms -exp.camFirstImage_Ms) /exp.camBinImage_Ms);
 		IcyBufferedImage sourceImage0 = seqCamData.getSeqImage(startFrame, 0); 
 		seqCamData.seq.removeAllROI();
 		
@@ -143,7 +143,7 @@ public class BuildKymographs_series extends BuildSeries
 		for (int iframe = 0 ; iframe < nframes; iframe++) 
 		{
 			long iindexms = iframe *  exp.kymoBinCol_Ms + exp.kymoFirstCol_Ms;
-			final int indexFrom = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_Ms));
+			final int indexFrom = (int) Math.round(((double)(iindexms - exp.camFirstImage_Ms)) / ((double) exp.camBinImage_Ms));
 //			System.out.println("frame:"+ iframe + " indexFrom:"+indexFrom + " from:" + ((double)iindexms) / ((double) exp.camBinImage_Ms));
 			if (indexFrom >= seqCamData.nTotalFrames)
 				continue;

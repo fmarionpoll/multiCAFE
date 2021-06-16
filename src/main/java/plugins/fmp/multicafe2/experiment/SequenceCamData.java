@@ -46,7 +46,6 @@ public class SequenceCamData
 	public IcyBufferedImage 		refImage 				= null;
 	
 	public long						seqAnalysisStart 		= 0;
-	public long 					seqAnalysisEnd			= 99999999;
 	public int 						seqAnalysisStep 		= 1;
 	
 	public int 						currentFrame 			= 0;
@@ -395,8 +394,6 @@ public class SequenceCamData
 		
 		status = EnumStatus.FILESTACK;	
 		seqAnalysisStart = 0;
-		seqAnalysisEnd = seq.getSizeT()-1;
-		seqAnalysisStep = 1;
 	}
 	
 	public boolean loadImages() 

@@ -397,10 +397,10 @@ public class XLSExport
 			int nOutputFrames = (int) ((expi.kymoLastCol_Ms - expi.kymoFirstCol_Ms) / options.buildExcelStepMs +1);
 			if (nOutputFrames <= 1) 
 			{
-				expi.kymoFirstCol_Ms = expi.camFirstImage_Ms;
+				//expi.kymoFirstCol_Ms = expi.camFirstImage_Ms;
 				if (expi.seqKymos.imageWidthMax == 0)
 					expi.loadKymographs();
-				expi.kymoLastCol_Ms = expi.camFirstImage_Ms + expi.seqKymos.imageWidthMax * expi.kymoBinCol_Ms;
+				expi.kymoLastCol_Ms = expi.kymoFirstCol_Ms + expi.seqKymos.imageWidthMax * expi.kymoBinCol_Ms;
 				nOutputFrames = (int) ((expi.kymoLastCol_Ms - expi.kymoFirstCol_Ms) / options.buildExcelStepMs +1);
 			}
 			
@@ -569,7 +569,6 @@ public class XLSExport
 				}
 
 				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs) 
-//				for (long fromTime = expi.kymoFirstCol_Ms; fromTime <= expi.kymoLastCol_Ms; fromTime += options.buildExcelStepMs) 
 				{
 					int from_i = (int) ((fromTime - expi.kymoFirstCol_Ms) / options.buildExcelStepMs);
 					if (from_i >= results.data.size())

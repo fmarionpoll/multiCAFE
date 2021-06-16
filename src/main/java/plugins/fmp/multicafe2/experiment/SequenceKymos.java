@@ -35,7 +35,6 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 public class SequenceKymos extends SequenceCamData  
 {	
 	public boolean 	isRunning_loadImages 		= false;
-//	public boolean 	isInterrupted_loadImages 	= false;
 	public int 		imageWidthMax 				= 0;
 	public int 		imageHeightMax 				= 0;
 	
