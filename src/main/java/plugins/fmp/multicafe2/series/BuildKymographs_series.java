@@ -114,7 +114,7 @@ public class BuildKymographs_series extends BuildSeries
 			return false;
 		}
 		
-		int startFrame = (int) ((exp.kymoFirstCol_Ms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
+		int startFrame = (int) (exp.kymoFirstCol_Ms /exp.camBinImage_Ms);
 		IcyBufferedImage sourceImage0 = seqCamData.getSeqImage(startFrame, 0); 
 		seqCamData.seq.removeAllROI();
 		
@@ -143,7 +143,8 @@ public class BuildKymographs_series extends BuildSeries
 		for (int iframe = 0 ; iframe < nframes; iframe++) 
 		{
 			long iindexms = iframe *  exp.kymoBinCol_Ms + exp.kymoFirstCol_Ms;
-			final int indexFrom = (int) ((iindexms - exp.camFirstImage_Ms) / exp.camBinImage_Ms);
+			final int indexFrom = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_Ms));
+//			System.out.println("frame:"+ iframe + " indexFrom:"+indexFrom + " from:" + ((double)iindexms) / ((double) exp.camBinImage_Ms));
 			if (indexFrom >= seqCamData.nTotalFrames)
 				continue;
 			
@@ -222,8 +223,8 @@ public class BuildKymographs_series extends BuildSeries
 		int numC = seqCamData.seq.getSizeC();
 		if (numC <= 0)
 			numC = 3;
-		double fimagewidth =  1. + (exp.camLastImage_Ms - exp.camFirstImage_Ms ) / options.t_binMs;	
-		kymoImageWidth = (int) fimagewidth;
+
+		kymoImageWidth = (int) ((exp.kymoLastCol_Ms - exp.kymoFirstCol_Ms) / exp.kymoBinCol_Ms +1);
 		DataType dataType = seqCamData.seq.getDataType_();
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;
