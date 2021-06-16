@@ -117,7 +117,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		return flag;
 	}
 	
-	public void chainExperiments(boolean collate) 
+	public void chainExperimentsUsingCamIndexes(boolean collate) 
 	{
 		for (int i=0; i< getItemCount(); i++) 
 		{
@@ -166,6 +166,59 @@ public class ExperimentCombo extends JComboBox<Experiment>
 				}
 				// it should never arrive here
 				System.out.println("error in chaining "+ expi.getExperimentDirectory() +" with ->" + expj.getExperimentDirectory());
+			}
+		}
+	}
+	
+	public void chainExperimentsUsingKymoIndexes(boolean collate) 
+	{
+		for (int i=0; i< getItemCount(); i++) 
+		{
+			Experiment expi = getItemAt(i);
+			if (!collate) 
+			{
+				expi.previousExperiment = null;
+				expi.nextExperiment = null;
+				continue;
+			}
+			for (int j=0; j< getItemCount(); j++) 
+			{
+				if (i == j)
+					continue;
+				Experiment expj = getItemAt(j);
+				if (!isSameDescriptors(expi, expj))
+					continue;
+				
+				// same exp series: if before, insert eventually
+				if (expj.kymoLastCol_Ms < expi.kymoFirstCol_Ms) 
+				{
+					if (expi.previousExperiment == null)
+						expi.previousExperiment = expj;
+					else if (expj.kymoLastCol_Ms > expi.previousExperiment.kymoLastCol_Ms ) 
+					{
+						(expi.previousExperiment).nextExperiment = expj;
+						expj.previousExperiment = expi.previousExperiment;
+						expj.nextExperiment = expi;
+						expi.previousExperiment = expj;
+					}
+					continue;
+				}
+				// same exp series: if after, insert eventually
+				if (expj.kymoFirstCol_Ms > expi.kymoLastCol_Ms) 
+				{
+					if (expi.nextExperiment == null)
+						expi.nextExperiment = expj;
+					else if (expj.kymoFirstCol_Ms < expi.nextExperiment.kymoFirstCol_Ms ) 
+					{
+						(expi.nextExperiment).previousExperiment = expj;
+						expj.nextExperiment = (expi.nextExperiment);
+						expj.previousExperiment = expi;
+						expi.nextExperiment = expj;
+					}
+					continue;
+				}
+				// it should never arrive here
+				System.out.println("error in chaining "+ expi.getExperimentDirectory() +" with ->" + expj.getExperimentDirectory() + " using kymograph indexes");
 			}
 		}
 	}

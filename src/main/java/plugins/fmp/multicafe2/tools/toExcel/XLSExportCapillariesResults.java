@@ -19,7 +19,7 @@ public class XLSExportCapillariesResults extends XLSExport
 		boolean loadCapillaries = true;
 		boolean loadDrosoTrack =  options.onlyalive;
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
-		expList.chainExperiments(options.collateSeries);
+		expList.chainExperimentsUsingKymoIndexes(options.collateSeries);
 		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
