@@ -445,15 +445,17 @@ public class SequenceKymos extends SequenceCamData
 	
 	private String convertLinexLRFileName(String oldName) 
 	{
+		Path path = Paths.get(oldName);
+		String test = path.getFileName().toString();
 		String newName = oldName;
-		if (oldName.contains("R.")) 
+		if (test.contains("R.")) 
 		{
-			newName = oldName.replace("R.", "2.");
+			newName = path.getParent() + File.separator + test.replace("R.", "2.");
 			renameOldFile(oldName, newName);
 		}
-		else if (oldName.contains("L")) 
+		else if (test.contains("L")) 
 		{ 
-			newName = oldName.replace("L.", "1.");
+			newName = path.getParent() + File.separator + test.replace("L.", "1.");
 			renameOldFile(oldName, newName);
 		}
 		return newName; 
