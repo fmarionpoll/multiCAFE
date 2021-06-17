@@ -49,9 +49,9 @@ public class Experiment
 	
 	// __________________________________________________
 	
-	public 	long			camFirstImage_Ms		= 0;
-	public 	long			camLastImage_Ms			= 0;
-	public 	long			camBinImage_Ms			= 0;
+	public 	long			camFirstImage_Ms		= -1;
+	public 	long			camLastImage_Ms			= -1;
+	public 	long			camBinImage_Ms			= -1;
 	
 	public 	long			kymoFirstCol_Ms			= 0;
 	public 	long			kymoLastCol_Ms			= 0;

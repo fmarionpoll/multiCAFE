@@ -59,17 +59,19 @@ public class ExperimentCombo extends JComboBox<Experiment>
 				}
 				expAll.camFirstImage_Ms = expAll.getFileTimeImageFirst(false).toMillis();
 				expAll.camLastImage_Ms = expAll.getFileTimeImageLast(false).toMillis();	
+				expAll.kymoFirstCol_Ms = expAll.camFirstImage_Ms;
+				expAll.kymoLastCol_Ms = expAll.camLastImage_Ms;
+								
 			} 
 			else 
 			{
 				expAll.camFirstImage_Ms = 0;
-				expAll.camLastImage_Ms = 0;
 				for (int i=0; i< getItemCount(); i++) 
 				{
 					Experiment exp = getItemAt(i);
 					if (options.collateSeries && exp.previousExperiment != null)
 						continue;
-					if (exp.kymoFirstCol_Ms == 0 && exp.kymoLastCol_Ms == 0) 
+					if (exp.kymoFirstCol_Ms < 0 && exp.kymoLastCol_Ms < 0) 
 					{
 						exp.kymoFirstCol_Ms = exp.camFirstImage_Ms;
 						exp.kymoLastCol_Ms = exp.camFirstImage_Ms + exp.seqKymos.imageWidthMax * exp.kymoBinCol_Ms;
@@ -85,9 +87,9 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					if (expAll.camLastImage_Ms < diff) 
 						expAll.camLastImage_Ms = (long) diff;
 				}
+				expAll.kymoFirstCol_Ms = expAll.camFirstImage_Ms;
+				expAll.kymoLastCol_Ms = expAll.camLastImage_Ms;
 			}
-			expAll.kymoFirstCol_Ms = expAll.camFirstImage_Ms;
-			expAll.kymoLastCol_Ms = expAll.camLastImage_Ms;
 		}
 		return expAll;
 	}

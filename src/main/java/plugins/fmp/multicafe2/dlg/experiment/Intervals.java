@@ -92,11 +92,17 @@ public class Intervals extends JPanel
 	
 	public void displayCamDataIntervals (Experiment exp) 
 	{
-		startFrameJSpinner.setValue(0);
-		endFrameJSpinner.setValue(exp.getSeqCamSizeT());
+		refreshBinSize(exp);
+		double divisor = exp.camBinImage_Ms;
+		int lFirst = (int) ((exp.kymoFirstCol_Ms - exp.camFirstImage_Ms)/divisor);
+		startFrameJSpinner.setValue(lFirst);
+		if(exp.kymoLastCol_Ms == 0)
+			exp.kymoLastCol_Ms = (long) (exp.getSeqCamSizeT() * divisor);
+		int lLast = (int) ((exp.kymoLastCol_Ms- exp.camFirstImage_Ms)/divisor);
+		endFrameJSpinner.setValue(lLast);
 		if (exp.camBinImage_Ms == 0)
 			exp.loadFileIntervalsFromSeqCamData();
-		refreshBinSize(exp);
+		
 	}
 	
 	private void refreshBinSize(Experiment exp) 
