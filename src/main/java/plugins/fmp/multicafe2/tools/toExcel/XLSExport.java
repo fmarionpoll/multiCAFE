@@ -63,7 +63,7 @@ public class XLSExport
 		Path path = Paths.get(filename);
 
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		String date = df.format(exp.getFileTimeImageFirst(false).toMillis());
+		String date = df.format(exp.firstImage_FileTime.toMillis());
 
 		String name0 = path.toString();
 		int pos = name0.indexOf("cam");
@@ -291,7 +291,7 @@ public class XLSExport
 	{
 		boolean transpose = options.transpose;
 		Point pt = new Point(0, row);
-		long duration = expAll.kymoLastCol_Ms - expAll.kymoFirstCol_Ms;
+		long duration = expAll.offsetLastCol_Ms - expAll.offsetFirstCol_Ms;
 		long interval = 0;
 		while (interval < duration) 
 		{
@@ -394,14 +394,14 @@ public class XLSExport
 		EnumXLSExportType measureOption = getMeasureOption (xlsOption);
 		while (expi != null) 
 		{
-			int nOutputFrames = (int) ((expi.kymoLastCol_Ms - expi.kymoFirstCol_Ms) / options.buildExcelStepMs +1);
+			int nOutputFrames = (int) ((expi.offsetLastCol_Ms - expi.offsetFirstCol_Ms) / options.buildExcelStepMs +1);
 			if (nOutputFrames <= 1) 
 			{
 				//expi.kymoFirstCol_Ms = expi.camFirstImage_Ms;
 				if (expi.seqKymos.imageWidthMax == 0)
 					expi.loadKymographs();
-				expi.kymoLastCol_Ms = expi.kymoFirstCol_Ms + expi.seqKymos.imageWidthMax * expi.kymoBinCol_Ms;
-				nOutputFrames = (int) ((expi.kymoLastCol_Ms - expi.kymoFirstCol_Ms) / options.buildExcelStepMs +1);
+				expi.offsetLastCol_Ms = expi.offsetFirstCol_Ms + expi.seqKymos.imageWidthMax * expi.kymoBinCol_Ms;
+				nOutputFrames = (int) ((expi.offsetLastCol_Ms - expi.offsetFirstCol_Ms) / options.buildExcelStepMs +1);
 			}
 			
 			if (nOutputFrames <= 1) 
@@ -409,8 +409,8 @@ public class XLSExport
 				nOutputFrames = expi.seqCamData.nTotalFrames;
 				String error = "ERROR in "+ expi.getExperimentDirectory() 
 						+ "\n nOutputFrames="+ nOutputFrames 
-						+ " kymoFirstCol_Ms=" + expi.kymoFirstCol_Ms 
-						+ " kymoLastCol_Ms=" + expi.kymoLastCol_Ms;
+						+ " kymoFirstCol_Ms=" + expi.offsetFirstCol_Ms 
+						+ " kymoLastCol_Ms=" + expi.offsetLastCol_Ms;
 //						+ "\n -> Contact support";
 //				MessageDialog.showDialog(error, MessageDialog.ERROR_MESSAGE);
 				System.out.println(error);
@@ -527,8 +527,8 @@ public class XLSExport
 				break;
 		}
 		
-		long start_Ms = expi.kymoFirstCol_Ms - expAll.camFirstImage_Ms;
-		long end_Ms = expi.kymoLastCol_Ms - expAll.camFirstImage_Ms;
+		long start_Ms = expi.offsetFirstCol_Ms - expAll.camFirstImage_Ms;
+		long end_Ms = expi.offsetLastCol_Ms - expAll.camFirstImage_Ms;
 		if (options.fixedIntervals) 
 		{
 			if (start_Ms < options.startAll_Ms)
@@ -573,7 +573,7 @@ public class XLSExport
 					icolTo = to_first_index;
 				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs,icolTo++) 
 				{
-					int from_i = (int) Math.round(((double)(fromTime - expi.kymoFirstCol_Ms)) / ((double) options.buildExcelStepMs));
+					int from_i = (int) Math.round(((double)(fromTime - expi.offsetFirstCol_Ms)) / ((double) options.buildExcelStepMs));
 					if (from_i >= results.data.size())
 						break;
 					// TODO check how this can happen
@@ -734,9 +734,9 @@ public class XLSExport
 		pt.x = rowSeries + col; 
 		if (row.values_out == null)
 			return;
-		for (long coltime=expAll.kymoFirstCol_Ms; coltime < expAll.kymoLastCol_Ms; coltime+=options.buildExcelStepMs, pt.y++) 
+		for (long coltime=expAll.offsetFirstCol_Ms; coltime < expAll.offsetLastCol_Ms; coltime+=options.buildExcelStepMs, pt.y++) 
 		{
-			int i_from = (int) ((coltime-expAll.kymoFirstCol_Ms) / options.buildExcelStepMs);
+			int i_from = (int) ((coltime-expAll.offsetFirstCol_Ms) / options.buildExcelStepMs);
 			if (i_from >= row.values_out.length) 
 				break;
 			double value = row.values_out[i_from];

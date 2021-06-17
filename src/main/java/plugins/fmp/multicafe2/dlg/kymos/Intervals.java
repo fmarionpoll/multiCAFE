@@ -102,8 +102,8 @@ public class Intervals extends JPanel
 	void setKymoIntervalsFromDialog(Experiment exp) 
 	{
 		long binsize_Ms = getBinSize_Ms();
-		exp.kymoFirstCol_Ms = (long) (((double) firstColumnJSpinner.getValue()) * binsize_Ms);
-		exp.kymoLastCol_Ms  = (long) (((double) lastColumnJSpinner.getValue()) * binsize_Ms);
+		exp.offsetFirstCol_Ms = (long) (((double) firstColumnJSpinner.getValue()) * binsize_Ms);
+		exp.offsetLastCol_Ms  = (long) (((double) lastColumnJSpinner.getValue()) * binsize_Ms);
 		exp.kymoBinCol_Ms = (long) (((double) binColumnJSpinner.getValue()) * binsize_Ms);
 	}
 	

@@ -40,55 +40,53 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		Experiment exp0 = getItemAt(0);
 		if (options.fixedIntervals) 
 		{
-			expAll.kymoFirstCol_Ms = options.startAll_Ms;
-			expAll.kymoLastCol_Ms = options.endAll_Ms;
+			expAll.offsetFirstCol_Ms = options.startAll_Ms;
+			expAll.offsetLastCol_Ms = options.endAll_Ms;
 		}
 		else 
 		{
 			if (options.absoluteTime) 
 			{
-				expAll.setFileTimeImageFirst(exp0.getFileTimeImageFirst(true));
-				expAll.setFileTimeImageLast(exp0.getFileTimeImageLast(true));
+				Experiment expFirst =  exp0.getFirstChainedExperiment(options.collateSeries);
+				expAll.setFileTimeImageFirst(expFirst.firstImage_FileTime);
+				Experiment expLast = exp0.getLastChainedExperiment(options.collateSeries);
+				expAll.setFileTimeImageLast(expLast.lastImage_FileTime);
 				for (int i=0; i < getItemCount(); i++) 
 				{
 					Experiment exp = getItemAt(i);
-					if (expAll.getFileTimeImageFirst(false).compareTo(exp.getFileTimeImageFirst(true)) > 0) 
-						expAll.setFileTimeImageFirst(exp.getFileTimeImageFirst(true));
-					if (expAll.getFileTimeImageLast(false) .compareTo(exp.getFileTimeImageLast(true)) <0)
-						expAll.setFileTimeImageLast(exp.getFileTimeImageLast(true));
+					expFirst = exp.getFirstChainedExperiment(options.collateSeries);
+					if (expAll.firstImage_FileTime.compareTo(expFirst.firstImage_FileTime) > 0) 
+						expAll.setFileTimeImageFirst(expFirst.firstImage_FileTime);
+					expLast = exp.getLastChainedExperiment(options.collateSeries);
+					if (expAll.lastImage_FileTime .compareTo(expLast.lastImage_FileTime) <0)
+						expAll.setFileTimeImageLast(expLast.lastImage_FileTime);
 				}
-				expAll.camFirstImage_Ms = expAll.getFileTimeImageFirst(false).toMillis();
-				expAll.camLastImage_Ms = expAll.getFileTimeImageLast(false).toMillis();	
-				expAll.kymoFirstCol_Ms = expAll.camFirstImage_Ms;
-				expAll.kymoLastCol_Ms = expAll.camLastImage_Ms;
-								
+				expAll.camFirstImage_Ms = expAll.firstImage_FileTime.toMillis();
+				expAll.camLastImage_Ms = expAll.lastImage_FileTime.toMillis();	
 			} 
 			else 
 			{
 				expAll.camFirstImage_Ms = 0;
+				expAll.camLastImage_Ms = exp0.offsetLastCol_Ms- exp0.offsetFirstCol_Ms;
+				long firstOffset_Ms = 0;
+				long lastOffset_Ms = 0;
+				
 				for (int i=0; i< getItemCount(); i++) 
 				{
 					Experiment exp = getItemAt(i);
-					if (options.collateSeries && exp.previousExperiment != null)
-						continue;
-					if (exp.kymoFirstCol_Ms < 0 && exp.kymoLastCol_Ms < 0) 
-					{
-						exp.kymoFirstCol_Ms = exp.camFirstImage_Ms;
-						exp.kymoLastCol_Ms = exp.camFirstImage_Ms + exp.seqKymos.imageWidthMax * exp.kymoBinCol_Ms;
-					}
-					double last = exp.getFileTimeImageLast(options.collateSeries).toMillis();
-					double first = exp.getFileTimeImageFirst(options.collateSeries).toMillis();
-					double diff = last - first;
+					Experiment expFirst =  exp.getFirstChainedExperiment(options.collateSeries);
+					firstOffset_Ms = expFirst.offsetFirstCol_Ms + expFirst.camFirstImage_Ms;
+					Experiment expLast =  exp.getLastChainedExperiment (options.collateSeries); 
+					lastOffset_Ms = expLast.offsetLastCol_Ms + expLast.camFirstImage_Ms;
+					long diff = lastOffset_Ms - firstOffset_Ms;
 					if (diff < 1) 
 					{
 						System.out.println("error when computing FileTime difference between last and first image; set dt between images = 1 ms");
 						diff = exp.seqCamData.seq.getSizeT();
 					}
 					if (expAll.camLastImage_Ms < diff) 
-						expAll.camLastImage_Ms = (long) diff;
+						expAll.camLastImage_Ms = diff;
 				}
-				expAll.kymoFirstCol_Ms = expAll.camFirstImage_Ms;
-				expAll.kymoLastCol_Ms = expAll.camLastImage_Ms;
 			}
 		}
 		return expAll;
@@ -192,11 +190,11 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					continue;
 				
 				// same exp series: if before, insert eventually
-				if (expj.kymoLastCol_Ms < expi.kymoFirstCol_Ms) 
+				if (expj.offsetLastCol_Ms < expi.offsetFirstCol_Ms) 
 				{
 					if (expi.previousExperiment == null)
 						expi.previousExperiment = expj;
-					else if (expj.kymoLastCol_Ms > expi.previousExperiment.kymoLastCol_Ms ) 
+					else if (expj.offsetLastCol_Ms > expi.previousExperiment.offsetLastCol_Ms ) 
 					{
 						(expi.previousExperiment).nextExperiment = expj;
 						expj.previousExperiment = expi.previousExperiment;
@@ -206,11 +204,11 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					continue;
 				}
 				// same exp series: if after, insert eventually
-				if (expj.kymoFirstCol_Ms > expi.kymoLastCol_Ms) 
+				if (expj.offsetFirstCol_Ms > expi.offsetLastCol_Ms) 
 				{
 					if (expi.nextExperiment == null)
 						expi.nextExperiment = expj;
-					else if (expj.kymoFirstCol_Ms < expi.nextExperiment.kymoFirstCol_Ms ) 
+					else if (expj.offsetFirstCol_Ms < expi.nextExperiment.offsetFirstCol_Ms ) 
 					{
 						(expi.nextExperiment).previousExperiment = expj;
 						expj.nextExperiment = (expi.nextExperiment);

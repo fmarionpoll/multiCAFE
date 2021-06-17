@@ -53,8 +53,8 @@ public class Experiment
 	public 	long			camLastImage_Ms			= -1;
 	public 	long			camBinImage_Ms			= -1;
 	
-	public 	long			kymoFirstCol_Ms			= 0;
-	public 	long			kymoLastCol_Ms			= 0;
+	public 	long			offsetFirstCol_Ms			= 0;
+	public 	long			offsetLastCol_Ms			= 0;
 	public 	long			kymoBinCol_Ms			= 60000;
 	
 	// _________________________________________________
@@ -498,8 +498,8 @@ public class Experiment
 		if (camLastImage_Ms < 0)
 			camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1)*60000;
 
-		kymoFirstCol_Ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, -1); 
-		kymoLastCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
+		offsetFirstCol_Ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, -1); 
+		offsetLastCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
 		kymoBinCol_Ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
 		
 		if (field_boxID != null && field_boxID .contentEquals("..")) 
@@ -528,8 +528,8 @@ public class Experiment
 			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGEMS, camFirstImage_Ms);
 			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGEMS, camLastImage_Ms);
 			
-			XMLUtil.setElementLongValue(node, ID_FIRSTKYMOCOLMS, kymoFirstCol_Ms); 
-			XMLUtil.setElementLongValue(node, ID_LASTKYMOCOLMS, kymoLastCol_Ms);
+			XMLUtil.setElementLongValue(node, ID_FIRSTKYMOCOLMS, offsetFirstCol_Ms); 
+			XMLUtil.setElementLongValue(node, ID_LASTKYMOCOLMS, offsetLastCol_Ms);
 			XMLUtil.setElementLongValue(node, ID_BINKYMOCOLMS, kymoBinCol_Ms); 	
 			
 			XMLUtil.setElementValue(node, ID_BOXID, field_boxID);
@@ -565,25 +565,25 @@ public class Experiment
 	
 	// ----------------------------------
 	
-	public FileTime getFileTimeImageFirst(boolean globalValue) 
+	public Experiment getFirstChainedExperiment(boolean globalValue) 
 	{
-		FileTime filetime = firstImage_FileTime;
+		Experiment exp = this;
 		if (globalValue && previousExperiment != null)
-			filetime = previousExperiment.getFileTimeImageFirst(globalValue);
-		return filetime;
+			exp = previousExperiment.getLastChainedExperiment(globalValue);
+		return exp;
 	}
 		
 	public void setFileTimeImageFirst(FileTime fileTimeImageFirst) 
 	{
 		this.firstImage_FileTime = fileTimeImageFirst;
 	}
-	
-	public FileTime getFileTimeImageLast(boolean globalValue) 
+		
+	public Experiment getLastChainedExperiment(boolean globalValue) 
 	{
-		FileTime filetime = lastImage_FileTime;
+		Experiment exp = this;
 		if (globalValue && nextExperiment != null)
-			filetime = nextExperiment.getFileTimeImageLast(globalValue);
-		return filetime;
+			exp = nextExperiment.getLastChainedExperiment(globalValue);
+		return exp;
 	}
 	
 	public void setFileTimeImageLast(FileTime fileTimeImageLast) 
