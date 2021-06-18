@@ -20,6 +20,7 @@ public class XLSExportCapillariesResults extends XLSExport
 		boolean loadDrosoTrack =  options.onlyalive;
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
 		expList.chainExperimentsUsingKymoIndexes(options.collateSeries);
+		expList.setFirstImageForAllExperiments(options.collateSeries);
 		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
@@ -34,7 +35,7 @@ public class XLSExportCapillariesResults extends XLSExport
 			for (int index = options.firstExp; index <= options.lastExp; index++) 
 			{
 				Experiment exp = expList.getItemAt(index);
-				if (exp.previousExperiment != null)
+				if (exp.expChainPrevious != null)
 					continue;
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
@@ -56,7 +57,7 @@ public class XLSExportCapillariesResults extends XLSExport
 				if (options.derivative) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.DERIVEDVALUES);	
 				
-				if (!options.collateSeries || exp.previousExperiment == null)
+				if (!options.collateSeries || exp.expChainPrevious == null)
 					column += expList.maxSizeOfCapillaryArrays +2;
 				iSeries++;
 				progress.incPosition();

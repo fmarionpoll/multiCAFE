@@ -50,7 +50,7 @@ public class XLSExportMoveResults extends XLSExport
 			for (int index = options.firstExp; index <= options.lastExp; index++) 
 			{
 				Experiment exp = expList.getItemAt(index);
-				if (exp.previousExperiment != null)
+				if (exp.expChainPrevious != null)
 					continue;
 				
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
@@ -69,7 +69,7 @@ public class XLSExportMoveResults extends XLSExport
 				if (options.sleep) 	
 					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.SLEEP);
 				
-				if (!options.collateSeries || exp.previousExperiment == null)
+				if (!options.collateSeries || exp.expChainPrevious == null)
 					column += expList.maxSizeOfCapillaryArrays +2;
 				iSeries++;
 				progress.incPosition();
@@ -119,12 +119,12 @@ public class XLSExportMoveResults extends XLSExport
 		expAll.setField(EnumXLSColumnHeader.SEX, exp.getField(EnumXLSColumnHeader.SEX));
 		expAll.setField(EnumXLSColumnHeader.STRAIN, exp.getField(EnumXLSColumnHeader.STRAIN));
 	
-		Experiment expi = exp.nextExperiment;
+		Experiment expi = exp.expChainNext;
 		while (expi != null ) 
 		{
 			expAll.cages.mergeLists(expi.cages);
 			expAll.lastImage_FileTime = expi.lastImage_FileTime;
-			expi = expi.nextExperiment;
+			expi = expi.expChainNext;
 		}
 		expAll.camFirstImage_Ms = expAll.firstImage_FileTime.toMillis();
 		expAll.camLastImage_Ms = expAll.lastImage_FileTime.toMillis();
@@ -144,7 +144,7 @@ public class XLSExportMoveResults extends XLSExport
 	private void getMoveDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsOption) 
 	{	
 		getMoveDescriptorsForOneExperiment (exp, xlsOption);
-		Experiment expi = ExperimentCombo.getFirstChainedExperiment(exp);  
+		Experiment expi = exp.getFirstChainedExperiment(true);  
 				
 		while (expi != null) 
 		{
@@ -186,7 +186,7 @@ public class XLSExportMoveResults extends XLSExport
 				// here add resultsArrayList to expAll
 				addMoveResultsTo_rowsForOneExp(expi, resultsArrayList);
 			}
-			expi = expi.nextExperiment;
+			expi = expi.expChainNext;
 		}
 		for (XYTaSeriesArrayList row: rowsForOneExp ) 
 			row.checkIsAliveFromAliveArray();
@@ -232,7 +232,7 @@ public class XLSExportMoveResults extends XLSExport
 			XYTaSeriesArrayList results = getResultsArrayWithThatName(row.name,  resultsArrayList);
 			if (results != null) 
 			{
-				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
+				if (options.collateSeries && options.padIntervals && expi.expChainPrevious != null) 
 					padWithLastPreviousValue(row, to_first_index);
 				
 				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs) 
@@ -252,7 +252,7 @@ public class XLSExportMoveResults extends XLSExport
 			} 
 			else 
 			{
-				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
+				if (options.collateSeries && options.padIntervals && expi.expChainPrevious != null) 
 				{
 					XYTaValue posok = padWithLastPreviousValue(row, to_first_index);
 					int nvalues = to_nvalues;
@@ -313,9 +313,9 @@ public class XLSExportMoveResults extends XLSExport
 			if (cage.cageNFlies > 0) 
 			{
 				Experiment expi = exp;
-				while (expi.nextExperiment != null && expi.nextExperiment.cages.isFlyAlive(cagenumber)) 
+				while (expi.expChainNext != null && expi.expChainNext.cages.isFlyAlive(cagenumber)) 
 				{
-					expi = expi.nextExperiment;
+					expi = expi.expChainNext;
 				}
 				long lastIntervalFlyAlive_Ms = expi.cages.getLastIntervalFlyAlive(cagenumber) 
 						* expi.cages.detectBin_Ms;

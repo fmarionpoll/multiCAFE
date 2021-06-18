@@ -63,7 +63,7 @@ public class XLSExport
 		Path path = Paths.get(filename);
 
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		String date = df.format(exp.firstImage_FileTime.toMillis());
+		String date = df.format(exp.chainFirstImage_Ms);
 
 		String name0 = path.toString();
 		int pos = name0.indexOf("cam");
@@ -330,9 +330,7 @@ public class XLSExport
 		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.cages.copy(exp.cages);
 		expAll.capillaries.copy(exp.capillaries);
-		if (!options.absoluteTime && options.t0)
-			expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
-		expAll.lastImage_FileTime = exp.lastImage_FileTime;
+		expAll.chainFirstImage_Ms = exp.chainFirstImage_Ms;
 		expAll.setField(EnumXLSColumnHeader.BOXID, exp.getField(EnumXLSColumnHeader.BOXID));
 		expAll.setField(EnumXLSColumnHeader.EXPT, exp.getField(EnumXLSColumnHeader.EXPT));
 		expAll.setField(EnumXLSColumnHeader.COMMENT1, exp.getField(EnumXLSColumnHeader.COMMENT1));
@@ -341,15 +339,13 @@ public class XLSExport
 		expAll.setField(EnumXLSColumnHeader.SEX, exp.getField(EnumXLSColumnHeader.SEX));
 		expAll.setExperimentDirectory(exp.getExperimentDirectory());
 		
-		Experiment expi = exp.nextExperiment;
+		Experiment expi = exp.expChainNext;
 		while (expi != null ) 
 		{
 			expAll.capillaries.mergeLists(expi.capillaries);
-			expAll.lastImage_FileTime = expi.lastImage_FileTime;
-			expi = expi.nextExperiment;
+			expi = expi.expChainNext;
 		}
-		expAll.camFirstImage_Ms = expAll.firstImage_FileTime.toMillis();
-		expAll.camLastImage_Ms = expAll.lastImage_FileTime.toMillis();
+
 		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_Ms)/options.buildExcelStepMs  +1) ;
 		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
 		rowListForOneExp = new ArrayList <XLSResults> (ncapillaries);
@@ -389,7 +385,7 @@ public class XLSExport
 	private void getCapDataFromOneExperimentSeries(Experiment exp, EnumXLSExportType xlsOption) 
 	{	
 		getDescriptorsForOneExperiment (exp, xlsOption);
-		Experiment expi = ExperimentCombo.getFirstChainedExperiment(exp); 
+		Experiment expi = exp.getFirstChainedExperiment(true); 
 		
 		EnumXLSExportType measureOption = getMeasureOption (xlsOption);
 		while (expi != null) 
@@ -477,7 +473,7 @@ public class XLSExport
 				}
 				addResultsTo_rowsForOneExp(expi, resultsArrayList);
 			}
-			expi = expi.nextExperiment;
+			expi = expi.expChainNext;
 		}
 		
 		switch (xlsOption) 
@@ -524,9 +520,9 @@ public class XLSExport
 				break;
 		}
 		
-		long offsetExpi = expi.camFirstImage_Ms - expi.firstChainImage_Ms;
-		long start_Ms = expi.offsetFirstCol_Ms + offsetExpi;
-		long end_Ms = expi.offsetLastCol_Ms + + offsetExpi;
+		long offsetChain = expi.camFirstImage_Ms - expi.chainFirstImage_Ms;
+		long start_Ms = expi.offsetFirstCol_Ms + offsetChain;
+		long end_Ms = expi.offsetLastCol_Ms + offsetChain;
 		if (options.fixedIntervals) 
 		{
 			if (start_Ms < options.startAll_Ms)
@@ -538,11 +534,11 @@ public class XLSExport
 				end_Ms = options.endAll_Ms;
 			if (end_Ms > expi.camFirstImage_Ms)
 				return;
-		}		
+		}
 		
 		// TODO check this 
-		final long from_first_Ms = start_Ms - offsetExpi;
-		final long from_lastMs = end_Ms - offsetExpi;
+		final long from_first_Ms = start_Ms - offsetChain;
+		final long from_lastMs = end_Ms - offsetChain;
 		final int to_first_index = (int) (start_Ms / options.buildExcelStepMs) ;
 		final int to_nvalues = (int) ((end_Ms - start_Ms)/options.buildExcelStepMs)+1;
 
@@ -560,7 +556,7 @@ public class XLSExport
 					case SUMGULPS_LR:
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
-						if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
+						if (options.collateSeries && options.padIntervals && expi.expChainPrevious != null) 
 							dvalue = padWithLastPreviousValue(row, to_first_index);
 						break;
 					default:
@@ -586,7 +582,7 @@ public class XLSExport
 			} 
 			else 
 			{
-				if (options.collateSeries && options.padIntervals && expi.previousExperiment != null) 
+				if (options.collateSeries && options.padIntervals && expi.expChainPrevious != null) 
 				{
 					double dvalue = padWithLastPreviousValue(row, to_first_index);
 					int tofirst = (int) to_first_index;
@@ -603,6 +599,9 @@ public class XLSExport
 	private double padWithLastPreviousValue(XLSResults row, long to_first_index) 
 	{
 		double dvalue = 0;
+		if (to_first_index >= row.values_out.length)
+			return dvalue;
+		
 		int index = getIndexOfFirstNonEmptyValueBackwards(row, to_first_index);
 		if (index >= 0) 
 		{
@@ -645,9 +644,9 @@ public class XLSExport
 			if (cage.cageNFlies > 0) 
 			{
 				Experiment expi = exp;
-				while (expi.nextExperiment != null && expi.nextExperiment.cages.isFlyAlive(cagenumber)) 
+				while (expi.expChainNext != null && expi.expChainNext.cages.isFlyAlive(cagenumber)) 
 				{
-					expi = expi.nextExperiment;
+					expi = expi.expChainNext;
 				}
 				int lastIntervalFlyAlive = expi.cages.getLastIntervalFlyAlive(cagenumber);
 				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.camBinImage_Ms 

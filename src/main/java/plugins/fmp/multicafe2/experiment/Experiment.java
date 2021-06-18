@@ -67,9 +67,9 @@ public class Experiment
 	private String			field_sex				= new String("..");
 	
 	public int				col						= -1;
-	public Experiment 		previousExperiment		= null;		// pointer to chain this experiment to another one before
-	public Experiment 		nextExperiment 			= null;		// pointer to chain this experiment to another one after
-	public long				firstChainImage_Ms 		= 0;
+	public Experiment 		expChainPrevious		= null;		// pointer to chain this experiment to another one before
+	public Experiment 		expChainNext 			= null;		// pointer to chain this experiment to another one after
+	public long				chainFirstImage_Ms 		= 0;
 	public int				experimentID 			= 0;
 	
 	ImageTransformTools 	tImg 					= null;
@@ -580,24 +580,24 @@ public class Experiment
 	public Experiment getFirstChainedExperiment(boolean globalValue) 
 	{
 		Experiment exp = this;
-		if (globalValue && previousExperiment != null)
-			exp = previousExperiment.getLastChainedExperiment(globalValue);
+		if (globalValue && expChainPrevious != null)
+			exp = expChainPrevious.getLastChainedExperiment(globalValue);
 		return exp;
-	}
-		
-	public void setFileTimeImageFirst(FileTime fileTimeImageFirst) 
-	{
-		this.firstImage_FileTime = fileTimeImageFirst;
 	}
 		
 	public Experiment getLastChainedExperiment(boolean globalValue) 
 	{
 		Experiment exp = this;
-		if (globalValue && nextExperiment != null)
-			exp = nextExperiment.getLastChainedExperiment(globalValue);
+		if (globalValue && expChainNext != null)
+			exp = expChainNext.getLastChainedExperiment(globalValue);
 		return exp;
 	}
 	
+	public void setFileTimeImageFirst(FileTime fileTimeImageFirst) 
+	{
+		this.firstImage_FileTime = fileTimeImageFirst;
+	}
+		
 	public void setFileTimeImageLast(FileTime fileTimeImageLast) 
 	{
 		this.lastImage_FileTime = fileTimeImageLast;
@@ -611,7 +611,7 @@ public class Experiment
 		return lastFrame;
 	}
 	
-	public	String getField(EnumXLSColumnHeader field)
+	public String getField(EnumXLSColumnHeader field)
 	{
 		String strField = null;
 		switch (field)

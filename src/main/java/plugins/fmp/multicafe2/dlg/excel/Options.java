@@ -33,7 +33,7 @@ public class Options extends JPanel
 			JComboMs 	binUnit 				= new JComboMs();
 			JComboMs 	intervalsUnit 			= new JComboMs();
 			JSpinner 	startJSpinner			= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
-			JSpinner 	endJSpinner				= new JSpinner(new SpinnerNumberModel(99999999., 1., 99999999., 1.));
+			JSpinner 	endJSpinner				= new JSpinner(new SpinnerNumberModel(240., 1., 99999999., 1.));
 			JRadioButton isFixedFrameButton		= new JRadioButton("from ", false);
 			JRadioButton isFloatingFrameButton	= new JRadioButton("all", true);
 	
@@ -63,6 +63,7 @@ public class Options extends JPanel
 		panel1.add(new JLabel(" to "));
 		panel1.add(endJSpinner);
 		panel1.add(intervalsUnit);
+		intervalsUnit.setSelectedIndex(2);
 		add(panel1); 
 		
 		JPanel panel2 = new JPanel(layout1);
