@@ -154,7 +154,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					continue;
 				}
 				// same exp series: if after, insert eventually
-				if (expj.camFirstImage_Ms > expi.camLastImage_Ms) 
+				if (expj.camFirstImage_Ms >= expi.camLastImage_Ms) 
 				{
 					if (expi.expChainNext == null)
 						expi.expChainNext = expj;
@@ -203,11 +203,11 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					continue;
 				
 				// same exp series: if before, insert eventually
-				if ((expj.offsetLastCol_Ms + expj.camFirstImage_Ms) < (expi.offsetFirstCol_Ms + expi.camFirstImage_Ms)) 
+				if ((expj.offsetLastCol_Ms + expj.camFirstImage_Ms) <= (expi.offsetFirstCol_Ms + expi.camFirstImage_Ms)) 
 				{
 					if (expi.expChainPrevious == null)
 						expi.expChainPrevious = expj;
-					else if ((expj.offsetLastCol_Ms + expj.camFirstImage_Ms)> (expi.expChainPrevious.offsetLastCol_Ms+ expi.camFirstImage_Ms) ) 
+					else if ((expj.offsetLastCol_Ms + expj.camFirstImage_Ms) > (expi.expChainPrevious.offsetLastCol_Ms+ expi.camFirstImage_Ms) ) 
 					{
 						(expi.expChainPrevious).expChainNext = expj;
 						expj.expChainPrevious = expi.expChainPrevious;
@@ -217,7 +217,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					continue;
 				}
 				// same exp series: if after, insert eventually
-				if ((expj.offsetFirstCol_Ms + expj.camFirstImage_Ms) > (expi.offsetLastCol_Ms+ expi.camFirstImage_Ms)) 
+				if ((expj.offsetFirstCol_Ms + expj.camFirstImage_Ms) >= (expi.offsetLastCol_Ms+ expi.camFirstImage_Ms)) 
 				{
 					if (expi.expChainNext == null)
 						expi.expChainNext = expj;
