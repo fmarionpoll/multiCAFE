@@ -187,7 +187,7 @@ public class XLSExport
 		}
 	}
 	
-	public int topRow_Descriptor(XSSFSheet sheet) 
+	int topRow_Descriptor(XSSFSheet sheet) 
 	{		
 		Point pt = new Point(0,0);
 		int x = 0;
@@ -201,6 +201,21 @@ public class XLSExport
 		}
 		pt.y = nextcol+1;
 		return pt.y;
+	}
+	
+	void topRow_TimeIntervals(XSSFSheet sheet, int row) 
+	{
+		boolean transpose = options.transpose;
+		Point pt = new Point(0, row);
+		long duration = expAll.camLastImage_Ms - expAll.camFirstImage_Ms;
+		long interval = 0;
+		while (interval < duration) 
+		{
+			int i = (int) (interval / options.buildExcelUnitMs);
+			XLSUtils.setValue(sheet, pt, transpose, "t"+i);
+			pt.y++;
+			interval += options.buildExcelStepMs;
+		}
 	}
 	
 	protected int desc_getCageFromCapillaryName(String name) 
@@ -285,21 +300,6 @@ public class XLSExport
 			topRow_TimeIntervals(sheet, row);
 		}
 		return sheet;
-	}
-	
-	void topRow_TimeIntervals(XSSFSheet sheet, int row) 
-	{
-		boolean transpose = options.transpose;
-		Point pt = new Point(0, row);
-		long duration = expAll.offsetLastCol_Ms - expAll.offsetFirstCol_Ms;
-		long interval = 0;
-		while (interval < duration) 
-		{
-			int i = (int) (interval / options.buildExcelUnitMs);
-			XLSUtils.setValue(sheet, pt, transpose, "t"+i);
-			pt.y++;
-			interval += options.buildExcelStepMs;
-		}
 	}
 	
 	protected int getDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType xlsOption) 
@@ -397,7 +397,6 @@ public class XLSExport
 			int nOutputFrames = (int) ((expi.offsetLastCol_Ms - expi.offsetFirstCol_Ms) / options.buildExcelStepMs +1);
 			if (nOutputFrames <= 1) 
 			{
-				//expi.kymoFirstCol_Ms = expi.camFirstImage_Ms;
 				if (expi.seqKymos.imageWidthMax == 0)
 					expi.loadKymographs();
 				expi.offsetLastCol_Ms = expi.offsetFirstCol_Ms + expi.seqKymos.imageWidthMax * expi.kymoBinCol_Ms;
@@ -411,8 +410,6 @@ public class XLSExport
 						+ "\n nOutputFrames="+ nOutputFrames 
 						+ " kymoFirstCol_Ms=" + expi.offsetFirstCol_Ms 
 						+ " kymoLastCol_Ms=" + expi.offsetLastCol_Ms;
-//						+ "\n -> Contact support";
-//				MessageDialog.showDialog(error, MessageDialog.ERROR_MESSAGE);
 				System.out.println(error);
 			}
 			else 
@@ -527,8 +524,9 @@ public class XLSExport
 				break;
 		}
 		
-		long start_Ms = expi.offsetFirstCol_Ms - expAll.camFirstImage_Ms;
-		long end_Ms = expi.offsetLastCol_Ms - expAll.camFirstImage_Ms;
+		long offsetExpi = expi.camFirstImage_Ms - expi.firstChainImage_Ms;
+		long start_Ms = expi.offsetFirstCol_Ms + offsetExpi;
+		long end_Ms = expi.offsetLastCol_Ms + + offsetExpi;
 		if (options.fixedIntervals) 
 		{
 			if (start_Ms < options.startAll_Ms)
@@ -540,12 +538,13 @@ public class XLSExport
 				end_Ms = options.endAll_Ms;
 			if (end_Ms > expi.camFirstImage_Ms)
 				return;
-		}
+		}		
 		
-		final long from_first_Ms = start_Ms + expAll.camFirstImage_Ms;
-		final long from_lastMs = end_Ms + expAll.camFirstImage_Ms;
-		final int to_first_index = (int) (from_first_Ms - expAll.camFirstImage_Ms) / options.buildExcelStepMs ;
-		final int to_nvalues = (int) ((from_lastMs - from_first_Ms)/options.buildExcelStepMs)+1;
+		// TODO check this 
+		final long from_first_Ms = start_Ms - offsetExpi;
+		final long from_lastMs = end_Ms - offsetExpi;
+		final int to_first_index = (int) (start_Ms / options.buildExcelStepMs) ;
+		final int to_nvalues = (int) ((end_Ms - start_Ms)/options.buildExcelStepMs)+1;
 
 		for (XLSResults row: rowListForOneExp ) 
 		{
@@ -571,9 +570,9 @@ public class XLSExport
 				int icolTo = 0;
 				if (options.collateSeries || options.absoluteTime)
 					icolTo = to_first_index;
-				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs,icolTo++) 
+				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs, icolTo++) 
 				{
-					int from_i = (int) Math.round(((double)(fromTime - expi.offsetFirstCol_Ms)) / ((double) options.buildExcelStepMs));
+					int from_i = (int) Math.round(((double)(fromTime)) / ((double) options.buildExcelStepMs));
 					if (from_i >= results.data.size())
 						break;
 					// TODO check how this can happen
@@ -734,9 +733,9 @@ public class XLSExport
 		pt.x = rowSeries + col; 
 		if (row.values_out == null)
 			return;
-		for (long coltime=expAll.offsetFirstCol_Ms; coltime < expAll.offsetLastCol_Ms; coltime+=options.buildExcelStepMs, pt.y++) 
+		for (long coltime=expAll.camFirstImage_Ms; coltime < expAll.camLastImage_Ms; coltime+=options.buildExcelStepMs, pt.y++) 
 		{
-			int i_from = (int) ((coltime-expAll.offsetFirstCol_Ms) / options.buildExcelStepMs);
+			int i_from = (int) ((coltime-expAll.camFirstImage_Ms) / options.buildExcelStepMs);
 			if (i_from >= row.values_out.length) 
 				break;
 			double value = row.values_out[i_from];

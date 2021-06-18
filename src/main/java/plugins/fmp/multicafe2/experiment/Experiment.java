@@ -53,8 +53,8 @@ public class Experiment
 	public 	long			camLastImage_Ms			= -1;
 	public 	long			camBinImage_Ms			= -1;
 	
-	public 	long			offsetFirstCol_Ms			= 0;
-	public 	long			offsetLastCol_Ms			= 0;
+	public 	long			offsetFirstCol_Ms		= 0;
+	public 	long			offsetLastCol_Ms		= 0;
 	public 	long			kymoBinCol_Ms			= 60000;
 	
 	// _________________________________________________
@@ -69,6 +69,7 @@ public class Experiment
 	public int				col						= -1;
 	public Experiment 		previousExperiment		= null;		// pointer to chain this experiment to another one before
 	public Experiment 		nextExperiment 			= null;		// pointer to chain this experiment to another one after
+	public long				firstChainImage_Ms 		= 0;
 	public int				experimentID 			= 0;
 	
 	ImageTransformTools 	tImg 					= null;
@@ -498,9 +499,11 @@ public class Experiment
 		if (camLastImage_Ms < 0)
 			camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1)*60000;
 
-		offsetFirstCol_Ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, -1); 
-		offsetLastCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
+		offsetFirstCol_Ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, 0); 
+		offsetLastCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, 0);
 		kymoBinCol_Ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
+		
+		ugly_checkOffsetValues();
 		
 		if (field_boxID != null && field_boxID .contentEquals("..")) 
 		{
@@ -512,6 +515,15 @@ public class Experiment
 	        field_sex 		= XMLUtil.getElementValue(node, ID_SEX, "..");
 		}
 		return true;
+	}
+	
+	private void ugly_checkOffsetValues()
+	{
+		if (offsetLastCol_Ms + camFirstImage_Ms > camLastImage_Ms)
+		{
+			offsetLastCol_Ms -= camFirstImage_Ms;
+			offsetFirstCol_Ms -= camFirstImage_Ms;
+		}
 	}
 	
 	public boolean xmlSaveMCExperiment () 

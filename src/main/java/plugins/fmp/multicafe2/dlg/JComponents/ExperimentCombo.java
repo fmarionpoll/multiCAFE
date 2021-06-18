@@ -40,8 +40,8 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		Experiment exp0 = getItemAt(0);
 		if (options.fixedIntervals) 
 		{
-			expAll.offsetFirstCol_Ms = options.startAll_Ms;
-			expAll.offsetLastCol_Ms = options.endAll_Ms;
+			expAll.camFirstImage_Ms = options.startAll_Ms;
+			expAll.camLastImage_Ms = options.endAll_Ms;
 		}
 		else 
 		{
@@ -76,12 +76,15 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					Experiment exp = getItemAt(i);
 					Experiment expFirst =  exp.getFirstChainedExperiment(options.collateSeries);
 					firstOffset_Ms = expFirst.offsetFirstCol_Ms + expFirst.camFirstImage_Ms;
+					exp.firstChainImage_Ms = expFirst.camFirstImage_Ms + expFirst.offsetFirstCol_Ms;
+					
 					Experiment expLast =  exp.getLastChainedExperiment (options.collateSeries); 
 					lastOffset_Ms = expLast.offsetLastCol_Ms + expLast.camFirstImage_Ms;
+					
 					long diff = lastOffset_Ms - firstOffset_Ms;
 					if (diff < 1) 
 					{
-						System.out.println("error when computing FileTime difference between last and first image; set dt between images = 1 ms");
+						System.out.println("Expt i=" + i + "  FileTime difference between last and first image < 1; set dt between images = 1 ms");
 						diff = exp.seqCamData.seq.getSizeT();
 					}
 					if (expAll.camLastImage_Ms < diff) 
@@ -190,11 +193,11 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					continue;
 				
 				// same exp series: if before, insert eventually
-				if (expj.offsetLastCol_Ms < expi.offsetFirstCol_Ms) 
+				if ((expj.offsetLastCol_Ms + expj.camFirstImage_Ms) < (expi.offsetFirstCol_Ms + expi.camFirstImage_Ms)) 
 				{
 					if (expi.previousExperiment == null)
 						expi.previousExperiment = expj;
-					else if (expj.offsetLastCol_Ms > expi.previousExperiment.offsetLastCol_Ms ) 
+					else if ((expj.offsetLastCol_Ms + expj.camFirstImage_Ms)> (expi.previousExperiment.offsetLastCol_Ms+ expi.camFirstImage_Ms) ) 
 					{
 						(expi.previousExperiment).nextExperiment = expj;
 						expj.previousExperiment = expi.previousExperiment;
@@ -204,11 +207,11 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					continue;
 				}
 				// same exp series: if after, insert eventually
-				if (expj.offsetFirstCol_Ms > expi.offsetLastCol_Ms) 
+				if ((expj.offsetFirstCol_Ms + expj.camFirstImage_Ms) > (expi.offsetLastCol_Ms+ expi.camFirstImage_Ms)) 
 				{
 					if (expi.nextExperiment == null)
 						expi.nextExperiment = expj;
-					else if (expj.offsetFirstCol_Ms < expi.nextExperiment.offsetFirstCol_Ms ) 
+					else if ((expj.offsetFirstCol_Ms+ expj.camFirstImage_Ms) < (expi.nextExperiment.offsetFirstCol_Ms+ expi.camFirstImage_Ms) ) 
 					{
 						(expi.nextExperiment).previousExperiment = expj;
 						expj.nextExperiment = (expi.nextExperiment);

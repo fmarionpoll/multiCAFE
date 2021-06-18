@@ -93,6 +93,7 @@ public class Intervals extends JPanel
 	public void displayCamDataIntervals (Experiment exp) 
 	{
 		refreshBinSize(exp);
+		
 		double divisor = exp.camBinImage_Ms;
 		int lFirst = (int) (exp.offsetFirstCol_Ms/divisor);
 		startFrameJSpinner.setValue(lFirst);
@@ -102,7 +103,6 @@ public class Intervals extends JPanel
 		endFrameJSpinner.setValue(lLast);
 		if (exp.camBinImage_Ms == 0)
 			exp.loadFileIntervalsFromSeqCamData();
-		
 	}
 	
 	private void refreshBinSize(Experiment exp) 

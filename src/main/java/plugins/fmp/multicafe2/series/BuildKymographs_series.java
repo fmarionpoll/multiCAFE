@@ -55,15 +55,15 @@ public class BuildKymographs_series extends BuildSeries
 		exp.kymoBinCol_Ms = options.t_binMs;
 		if (options.isFrameFixed) 
 		{
-			exp.offsetFirstCol_Ms = options.t_firstMs + exp.camFirstImage_Ms;
-			exp.offsetLastCol_Ms = options.t_lastMs + exp.camFirstImage_Ms;
-			if (exp.offsetLastCol_Ms > exp.camLastImage_Ms)
-				exp.offsetLastCol_Ms = exp.camLastImage_Ms;
+			exp.offsetFirstCol_Ms = options.t_firstMs;
+			exp.offsetLastCol_Ms = options.t_lastMs;
+			if (exp.offsetLastCol_Ms + exp.camFirstImage_Ms > exp.camLastImage_Ms)
+				exp.offsetLastCol_Ms = exp.camLastImage_Ms - exp.camFirstImage_Ms;
 		} 
 		else 
 		{
-			exp.offsetFirstCol_Ms = exp.camFirstImage_Ms;
-			exp.offsetLastCol_Ms = exp.camLastImage_Ms;
+			exp.offsetFirstCol_Ms = 0;
+			exp.offsetLastCol_Ms = exp.camLastImage_Ms - exp.camFirstImage_Ms;
 		}
 	}
 			
@@ -103,10 +103,6 @@ public class BuildKymographs_series extends BuildSeries
 		if (seqCamData == null || seqKymos == null)
 			return false;
 	
-		threadRunning = true;
-		stopFlag = false;
-		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
-		
 		initArraysToBuildKymographImages(exp);
 		if (exp.capillaries.capillariesArrayList.size() < 1) 
 		{
@@ -114,7 +110,7 @@ public class BuildKymographs_series extends BuildSeries
 			return false;
 		}
 		
-		int startFrame = (int) ((exp.offsetFirstCol_Ms -exp.camFirstImage_Ms) /exp.camBinImage_Ms);
+		int startFrame = (int) (exp.offsetFirstCol_Ms  /exp.camBinImage_Ms);
 		IcyBufferedImage sourceImage0 = seqCamData.getSeqImage(startFrame, 0); 
 		seqCamData.seq.removeAllROI();
 		
@@ -133,6 +129,9 @@ public class BuildKymographs_series extends BuildSeries
 			return false;
 		}
 		
+		threadRunning = true;
+		stopFlag = false;
+		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
 		int nframes = (int) ((exp.offsetLastCol_Ms - exp.offsetFirstCol_Ms) / exp.kymoBinCol_Ms +1);
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("buildkymo2");
@@ -142,13 +141,12 @@ public class BuildKymographs_series extends BuildSeries
 
 		for (int iframe = 0 ; iframe < nframes; iframe++) 
 		{
+			final int indexTo =  iframe;	
 			long iindexms = iframe *  exp.kymoBinCol_Ms + exp.offsetFirstCol_Ms;
-			final int indexFrom = (int) Math.round(((double)(iindexms - exp.camFirstImage_Ms)) / ((double) exp.camBinImage_Ms));
+			final int indexFrom = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_Ms));
 			if (indexFrom >= seqCamData.nTotalFrames)
 				continue;
-			
-			final int indexTo =  iframe;	
-			
+
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
