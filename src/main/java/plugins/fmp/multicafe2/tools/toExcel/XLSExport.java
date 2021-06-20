@@ -409,7 +409,7 @@ public class XLSExport
 					continue;
 				}
 			}
-			
+
 			if (nOutputFrames > 1)
 			{
 				XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
@@ -543,7 +543,7 @@ public class XLSExport
 		final long from_lastMs = end_Ms - offsetChain;
 		final int to_first_index = (int) (start_Ms / options.buildExcelStepMs) ;
 		final int to_nvalues = (int) ((end_Ms - start_Ms)/options.buildExcelStepMs)+1;
-
+		
 		for (XLSResults row: rowListForOneExp ) 
 		{
 			XLSResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
@@ -570,7 +570,7 @@ public class XLSExport
 					icolTo = to_first_index;
 				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs, icolTo++) 
 				{
-					int from_i = (int) Math.round(((double)(fromTime)) / ((double) options.buildExcelStepMs));
+					int from_i = (int) Math.round(((double)(fromTime - from_first_Ms)) / ((double) options.buildExcelStepMs));
 					if (from_i >= results.data.size())
 						break;
 					// TODO check how this can happen
@@ -581,6 +581,7 @@ public class XLSExport
 						break;
 					row.values_out[icolTo]= value;
 				}
+
 			} 
 			else 
 			{

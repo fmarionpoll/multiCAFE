@@ -137,6 +137,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 				expi.chainToNext = null;
 				continue;
 			}
+			
 			for (int j=0; j< getItemCount(); j++) 
 			{
 				if (i == j)
