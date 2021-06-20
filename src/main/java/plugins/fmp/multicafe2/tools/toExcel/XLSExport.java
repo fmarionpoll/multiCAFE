@@ -40,7 +40,7 @@ public class XLSExport
 
 	// ------------------------------------------------
     	
-	protected Point desc_writeExperimentDescriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, EnumXLSExportType xlsExportOption) 
+	protected Point writeExperiment_descriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, EnumXLSExportType xlsExportOption) 
 	{
 		boolean transpose = options.transpose;
 		int row = pt.y;
@@ -187,7 +187,7 @@ public class XLSExport
 		}
 	}
 	
-	int topRow_Descriptor(XSSFSheet sheet) 
+	int writeTopRow_descriptors(XSSFSheet sheet) 
 	{		
 		Point pt = new Point(0,0);
 		int x = 0;
@@ -203,7 +203,7 @@ public class XLSExport
 		return pt.y;
 	}
 	
-	void topRow_TimeIntervals(XSSFSheet sheet, int row) 
+	void writeTopRow_timeIntervals(XSSFSheet sheet, int row) 
 	{
 		boolean transpose = options.transpose;
 		Point pt = new Point(0, row);
@@ -296,8 +296,8 @@ public class XLSExport
 		if (sheet == null) 
 		{
 			sheet = workbook.createSheet(title);
-			int row = topRow_Descriptor(sheet);
-			topRow_TimeIntervals(sheet, row);
+			int row = writeTopRow_descriptors(sheet);
+			writeTopRow_timeIntervals(sheet, row);
 		}
 		return sheet;
 	}
@@ -351,7 +351,7 @@ public class XLSExport
 		rowListForOneExp = new ArrayList <XLSResults> (ncapillaries);
 		for (int i=0; i< ncapillaries; i++) 
 		{
-			Capillary cap = expAll.capillaries.capillariesArrayList.get(i);
+			Capillary cap 		= expAll.capillaries.capillariesArrayList.get(i);
 			XLSResults row 		= new XLSResults (cap.roi.getName(), cap.capNFlies, xlsOption, nFrames);
 			row.stimulus 		= cap.capStimulus;
 			row.concentration 	= cap.capConcentration;
@@ -397,18 +397,20 @@ public class XLSExport
 					expi.loadKymographs();
 				expi.offsetLastCol_Ms = expi.offsetFirstCol_Ms + expi.seqKymos.imageWidthMax * expi.kymoBinCol_Ms;
 				nOutputFrames = (int) ((expi.offsetLastCol_Ms - expi.offsetFirstCol_Ms) / options.buildExcelStepMs +1);
+				
+				if (nOutputFrames <= 1) 
+				{
+					nOutputFrames = expi.seqCamData.nTotalFrames;
+					String error = "ERROR in "+ expi.getExperimentDirectory() 
+							+ "\n nOutputFrames="+ nOutputFrames 
+							+ " kymoFirstCol_Ms=" + expi.offsetFirstCol_Ms 
+							+ " kymoLastCol_Ms=" + expi.offsetLastCol_Ms;
+					System.out.println(error);
+					continue;
+				}
 			}
 			
-			if (nOutputFrames <= 1) 
-			{
-				nOutputFrames = expi.seqCamData.nTotalFrames;
-				String error = "ERROR in "+ expi.getExperimentDirectory() 
-						+ "\n nOutputFrames="+ nOutputFrames 
-						+ " kymoFirstCol_Ms=" + expi.offsetFirstCol_Ms 
-						+ " kymoLastCol_Ms=" + expi.offsetLastCol_Ms;
-				System.out.println(error);
-			}
-			else 
+			if (nOutputFrames > 1)
 			{
 				XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
 				switch (xlsOption) {
@@ -690,12 +692,12 @@ public class XLSExport
 	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) 
 	{
 		Point pt = new Point(col0, 0);
-		desc_writeExperimentDescriptors(expAll, charSeries, sheet, pt, xlsExportOption);
-		pt = writeDataToSheet(sheet, xlsExportOption, pt);
+		writeExperiment_descriptors(expAll, charSeries, sheet, pt, xlsExportOption);
+		pt = writeExperiment_data(sheet, xlsExportOption, pt);
 		return pt.x;
 	}
 			
-	private Point writeDataToSheet (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) 
+	private Point writeExperiment_data (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) 
 	{
 		int rowSeries = pt_main.x +2;
 		int column_dataArea = pt_main.y;
@@ -705,53 +707,19 @@ public class XLSExport
 			case TOPLEVEL_LR:
 			case TOPLEVELDELTA_LR:
 			case SUMGULPS_LR:
-				writeLRRows(sheet, column_dataArea, rowSeries, pt);
+				writeExperiment_data_LRRows(sheet, column_dataArea, rowSeries, pt);
 				break;
 			case TTOGULP_LR:
-				writeTOGulpLR(sheet, column_dataArea, rowSeries, pt);
+				writeExperiment_data_TOGulpLR(sheet, column_dataArea, rowSeries, pt);
 				break;
 			default:
-				writeSimpleRows(sheet, column_dataArea, rowSeries, pt);
+				writeExperiment_data_simpleRows(sheet, column_dataArea, rowSeries, pt);
 				break;
 		}			
 		pt_main.x = pt.x+1;
 		return pt_main;
 	}
-	
-	private void writeSimpleRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
-	{
-		for (XLSResults row: rowListForOneExp) 
-			writeRow(sheet, column_dataArea, rowSeries, pt, row);
-	}
-	
-	private void writeRow(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt, XLSResults row) 
-	{
-		boolean transpose = options.transpose;
-		pt.y = column_dataArea;
-		int col = getRowIndexFromKymoFileName(row.name);
-		pt.x = rowSeries + col; 
-		if (row.values_out == null)
-			return;
-		for (long coltime=expAll.camFirstImage_Ms; coltime < expAll.camLastImage_Ms; coltime+=options.buildExcelStepMs, pt.y++) 
-		{
-			int i_from = (int) ((coltime-expAll.camFirstImage_Ms) / options.buildExcelStepMs);
-			if (i_from >= row.values_out.length) 
-				break;
-			double value = row.values_out[i_from];
-			if (!Double.isNaN(value)) 
-			{
-				XLSUtils.setValue(sheet, pt, transpose, value);
-				if (i_from < row.padded_out.length && row.padded_out[i_from])
-					XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
-			}
-//			else {
-//				System.out.println ("i=" + i_from +" isNaN");
-//
-//			}
-		}
-		pt.x++;
-	}
-	
+		
 	private XLSResults getNextRow(XLSResults rowL, int irow) 
 	{
 		int cageL = getCageFromKymoFileName(rowL.name);
@@ -766,7 +734,16 @@ public class XLSExport
 		return rowR;
 	}
 	
-	private void writeLRRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
+	private void writeExperiment_data_simpleRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
+	{
+		for (XLSResults row: rowListForOneExp) 
+		{
+			writeRow(sheet, column_dataArea, rowSeries, pt, row);
+		}
+		
+	}
+	
+	private void writeExperiment_data_LRRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
 	{
 		for (int irow = 0; irow < rowListForOneExp.size(); irow ++) 
 		{
@@ -787,11 +764,10 @@ public class XLSExport
 			{
 				writeRow(sheet, column_dataArea, rowSeries, pt, rowL);
 			}
-			
 		}
 	}
 	
-	private void writeTOGulpLR(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
+	private void writeExperiment_data_TOGulpLR(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
 	{
 		for (int irow = 0; irow < rowListForOneExp.size(); irow ++) 
 		{
@@ -819,4 +795,28 @@ public class XLSExport
 		}
 	}
 	
+	private void writeRow(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt, XLSResults row) 
+	{
+		boolean transpose = options.transpose;
+		pt.y = column_dataArea;
+		int col = getRowIndexFromKymoFileName(row.name);
+		pt.x = rowSeries + col; 
+		if (row.values_out == null)
+			return;
+		for (long coltime=expAll.camFirstImage_Ms; coltime < expAll.camLastImage_Ms; coltime+=options.buildExcelStepMs, pt.y++) 
+		{
+			int i_from = (int) ((coltime-expAll.camFirstImage_Ms) / options.buildExcelStepMs);
+			if (i_from >= row.values_out.length) 
+				break;
+			double value = row.values_out[i_from];
+			if (!Double.isNaN(value)) 
+			{
+				XLSUtils.setValue(sheet, pt, transpose, value);
+				if (i_from < row.padded_out.length && row.padded_out[i_from])
+					XLSUtils.getCell(sheet, pt, transpose).setCellStyle(xssfCellStyle_red);
+			}
+		}
+		pt.x++;
+	}
+
 }
