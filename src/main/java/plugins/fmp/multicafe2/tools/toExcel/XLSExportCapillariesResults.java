@@ -35,7 +35,7 @@ public class XLSExportCapillariesResults extends XLSExport
 			for (int index = options.firstExp; index <= options.lastExp; index++) 
 			{
 				Experiment exp = expList.getItemAt(index);
-				if (exp.expChainPrevious != null)
+				if (exp.chainToPrevious != null)
 					continue;
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
@@ -57,7 +57,7 @@ public class XLSExportCapillariesResults extends XLSExport
 				if (options.derivative) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.DERIVEDVALUES);	
 				
-				if (!options.collateSeries || exp.expChainPrevious == null)
+				if (!options.collateSeries || exp.chainToPrevious == null)
 					column += expList.maxSizeOfCapillaryArrays +2;
 				iSeries++;
 				progress.incPosition();

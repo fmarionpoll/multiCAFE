@@ -339,11 +339,11 @@ public class XLSExport
 		expAll.setField(EnumXLSColumnHeader.SEX, exp.getField(EnumXLSColumnHeader.SEX));
 		expAll.setExperimentDirectory(exp.getExperimentDirectory());
 		
-		Experiment expi = exp.expChainNext;
+		Experiment expi = exp.chainToNext;
 		while (expi != null ) 
 		{
 			expAll.capillaries.mergeLists(expi.capillaries);
-			expi = expi.expChainNext;
+			expi = expi.chainToNext;
 		}
 
 		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_Ms)/options.buildExcelStepMs  +1) ;
@@ -473,7 +473,7 @@ public class XLSExport
 				}
 				addResultsTo_rowsForOneExp(expi, resultsArrayList);
 			}
-			expi = expi.expChainNext;
+			expi = expi.chainToNext;
 		}
 		
 		switch (xlsOption) 
@@ -521,7 +521,7 @@ public class XLSExport
 		}
 		
 		long offsetChain = expi.camFirstImage_Ms - expi.chainFirstImage_Ms;
-		long start_Ms = expi.offsetFirstCol_Ms + offsetChain;
+		long start_Ms = expi.offsetFirstCol_Ms + offsetChain; // TODO check when collate?
 		long end_Ms = expi.offsetLastCol_Ms + offsetChain;
 		if (options.fixedIntervals) 
 		{
@@ -556,7 +556,7 @@ public class XLSExport
 					case SUMGULPS_LR:
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
-						if (options.collateSeries && options.padIntervals && expi.expChainPrevious != null) 
+						if (options.collateSeries && options.padIntervals && expi.chainToPrevious != null) 
 							dvalue = padWithLastPreviousValue(row, to_first_index);
 						break;
 					default:
@@ -582,7 +582,7 @@ public class XLSExport
 			} 
 			else 
 			{
-				if (options.collateSeries && options.padIntervals && expi.expChainPrevious != null) 
+				if (options.collateSeries && options.padIntervals && expi.chainToPrevious != null) 
 				{
 					double dvalue = padWithLastPreviousValue(row, to_first_index);
 					int tofirst = (int) to_first_index;
@@ -644,9 +644,9 @@ public class XLSExport
 			if (cage.cageNFlies > 0) 
 			{
 				Experiment expi = exp;
-				while (expi.expChainNext != null && expi.expChainNext.cages.isFlyAlive(cagenumber)) 
+				while (expi.chainToNext != null && expi.chainToNext.cages.isFlyAlive(cagenumber)) 
 				{
-					expi = expi.expChainNext;
+					expi = expi.chainToNext;
 				}
 				int lastIntervalFlyAlive = expi.cages.getLastIntervalFlyAlive(cagenumber);
 				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.camBinImage_Ms 

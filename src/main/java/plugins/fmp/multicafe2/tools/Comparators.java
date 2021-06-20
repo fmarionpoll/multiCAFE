@@ -6,6 +6,7 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.experiment.Cage;
+import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.XYTaSeriesArrayList;
 import plugins.fmp.multicafe2.experiment.XYTaValue;
 import plugins.fmp.multicafe2.tools.toExcel.XLSResults;
@@ -81,6 +82,16 @@ public class Comparators
 		public int compare (XYTaValue o1, XYTaValue o2) 
 		{
 			return o1.indexT - o2.indexT;
+		}
+	}
+	
+	public static class Experiment_Start_Comparator implements Comparator <Experiment>
+	{
+		@Override
+		public int compare(Experiment exp1, Experiment exp2)
+		{
+			return Long.compare(exp1.camFirstImage_Ms + exp1.offsetFirstCol_Ms, 
+					exp2.camFirstImage_Ms + exp2.offsetFirstCol_Ms);
 		}
 	}
 }

@@ -1,12 +1,14 @@
 package plugins.fmp.multicafe2.dlg.JComponents;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JComboBox;
 
 import icy.gui.frame.progress.ProgressFrame;
 import plugins.fmp.multicafe2.experiment.Experiment;
+import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 import plugins.fmp.multicafe2.tools.toExcel.XLSExportOptions;
 
@@ -127,8 +129,8 @@ public class ExperimentCombo extends JComboBox<Experiment>
 			Experiment expi = getItemAt(i);
 			if (!collate) 
 			{
-				expi.expChainPrevious = null;
-				expi.expChainNext = null;
+				expi.chainToPrevious = null;
+				expi.chainToNext = null;
 				continue;
 			}
 			for (int j=0; j< getItemCount(); j++) 
@@ -142,28 +144,28 @@ public class ExperimentCombo extends JComboBox<Experiment>
 				// same exp series: if before, insert eventually
 				if (expj.camLastImage_Ms < expi.camFirstImage_Ms) 
 				{
-					if (expi.expChainPrevious == null)
-						expi.expChainPrevious = expj;
-					else if (expj.camLastImage_Ms > expi.expChainPrevious.camLastImage_Ms ) 
+					if (expi.chainToPrevious == null)
+						expi.chainToPrevious = expj;
+					else if (expj.camLastImage_Ms > expi.chainToPrevious.camLastImage_Ms ) 
 					{
-						(expi.expChainPrevious).expChainNext = expj;
-						expj.expChainPrevious = expi.expChainPrevious;
-						expj.expChainNext = expi;
-						expi.expChainPrevious = expj;
+						(expi.chainToPrevious).chainToNext = expj;
+						expj.chainToPrevious = expi.chainToPrevious;
+						expj.chainToNext = expi;
+						expi.chainToPrevious = expj;
 					}
 					continue;
 				}
 				// same exp series: if after, insert eventually
 				if (expj.camFirstImage_Ms >= expi.camLastImage_Ms) 
 				{
-					if (expi.expChainNext == null)
-						expi.expChainNext = expj;
-					else if (expj.camFirstImage_Ms < expi.expChainNext.camFirstImage_Ms ) 
+					if (expi.chainToNext == null)
+						expi.chainToNext = expj;
+					else if (expj.camFirstImage_Ms < expi.chainToNext.camFirstImage_Ms ) 
 					{
-						(expi.expChainNext).expChainPrevious = expj;
-						expj.expChainNext = (expi.expChainNext);
-						expj.expChainPrevious = expi;
-						expi.expChainNext = expj;
+						(expi.chainToNext).chainToPrevious = expj;
+						expj.chainToNext = (expi.chainToNext);
+						expj.chainToPrevious = expi;
+						expi.chainToNext = expj;
 					}
 					continue;
 				}
@@ -185,15 +187,23 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	
 	public void chainExperimentsUsingKymoIndexes(boolean collate) 
 	{
+		for (int i=0; i< getItemCount(); i++)
+		{
+			Experiment expi = getItemAt(i);
+			expi.chainToPrevious = null;
+			expi.chainToNext = null;
+		}
+		if (!collate) 
+			return;
+		
 		for (int i=0; i< getItemCount(); i++) 
 		{
 			Experiment expi = getItemAt(i);
-			if (!collate) 
-			{
-				expi.expChainPrevious = null;
-				expi.expChainNext = null;
+			if (expi.chainToNext != null || expi.chainToPrevious != null)
 				continue;
-			}
+			List <Experiment> list = new ArrayList<Experiment> ();
+			list.add(expi);
+			
 			for (int j=0; j< getItemCount(); j++) 
 			{
 				if (i == j)
@@ -201,37 +211,22 @@ public class ExperimentCombo extends JComboBox<Experiment>
 				Experiment expj = getItemAt(j);
 				if (!isSameDescriptors(expi, expj))
 					continue;
-				
-				// same exp series: if before, insert eventually
-				if ((expj.offsetLastCol_Ms + expj.camFirstImage_Ms) <= (expi.offsetFirstCol_Ms + expi.camFirstImage_Ms)) 
-				{
-					if (expi.expChainPrevious == null)
-						expi.expChainPrevious = expj;
-					else if ((expj.offsetLastCol_Ms + expj.camFirstImage_Ms) > (expi.expChainPrevious.offsetLastCol_Ms+ expi.camFirstImage_Ms) ) 
-					{
-						(expi.expChainPrevious).expChainNext = expj;
-						expj.expChainPrevious = expi.expChainPrevious;
-						expj.expChainNext = expi;
-						expi.expChainPrevious = expj;
-					}
+				if (expj.chainToNext != null || expj.chainToPrevious != null)
 					continue;
-				}
-				// same exp series: if after, insert eventually
-				if ((expj.offsetFirstCol_Ms + expj.camFirstImage_Ms) >= (expi.offsetLastCol_Ms+ expi.camFirstImage_Ms)) 
-				{
-					if (expi.expChainNext == null)
-						expi.expChainNext = expj;
-					else if ((expj.offsetFirstCol_Ms+ expj.camFirstImage_Ms) < (expi.expChainNext.offsetFirstCol_Ms+ expi.camFirstImage_Ms) ) 
-					{
-						(expi.expChainNext).expChainPrevious = expj;
-						expj.expChainNext = (expi.expChainNext);
-						expj.expChainPrevious = expi;
-						expi.expChainNext = expj;
-					}
-					continue;
-				}
-				// it should never arrive here
-				System.out.println("error in chaining "+ expi.getExperimentDirectory() +" with ->" + expj.getExperimentDirectory() + " using kymograph indexes");
+				list.add(expj);
+			}
+			
+			if (list.size() < 2)
+				continue;
+			
+			Collections.sort(list, new Comparators.Experiment_Start_Comparator ());
+			for (int k = 0; k < list.size(); k++) 
+			{
+				Experiment expk = list.get(k);
+				if (k > 0)
+					expk.chainToPrevious = list.get(k-1);
+				if (k < (list.size() -1))	 
+					expk.chainToNext = list.get(k+1);
 			}
 		}
 	}
