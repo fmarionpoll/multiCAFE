@@ -3,6 +3,7 @@ package plugins.fmp.multicafe2.series;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -89,13 +90,13 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 	
 	abstract void analyzeExperiment(Experiment exp);
 	
-    protected void waitAnalyzeExperimentCompletion(Processor processor, List<Future<?>> futures,  ProgressFrame progressBar) 
+    protected void waitAnalyzeExperimentCompletion(Processor processor, ArrayList<Future<?>> futuresArray,  ProgressFrame progressBar) 
     {
    	 	try 
    	 	{
 	   		 int frame= 1;
-	   		 int nframes = futures.size();
-	   		 for (Future<?> future : futures) 
+	   		 int nframes = futuresArray.size();
+	   		 for (Future<?> future : futuresArray) 
 	   		 {
 	   			 if (progressBar != null)
 	   				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);

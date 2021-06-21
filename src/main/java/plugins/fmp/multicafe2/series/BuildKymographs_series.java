@@ -136,9 +136,12 @@ public class BuildKymographs_series extends BuildSeries
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("buildkymo2");
 	    processor.setPriority(Processor.NORM_PRIORITY);
-        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
-		futures.clear();
+        ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nframes);
+		futuresArray.clear();
 
+		// use Class ForkJoinTask instead?
+		// https://www.baeldung.com/java-completablefuture
+		
 		for (int iframe = 0 ; iframe < nframes; iframe++) 
 		{
 			final int indexTo =  iframe;	
@@ -147,7 +150,7 @@ public class BuildKymographs_series extends BuildSeries
 			if (indexFrom >= seqCamData.nTotalFrames)
 				continue;
 
-			futures.add(processor.submit(new Runnable () 
+			futuresArray.add(processor.submit(new Runnable () 
 			{
 				@Override
 				public void run() 
@@ -185,7 +188,7 @@ public class BuildKymographs_series extends BuildSeries
 				}}));
 		}
 
-		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
+		waitKymosCompletion(processor, futuresArray, progressBar);
 		
         progressBar.close();
         
@@ -209,6 +212,37 @@ public class BuildKymographs_series extends BuildSeries
 		seqKymos.seq.endUpdate();
 		return true;
 	}
+	
+	protected void waitKymosCompletion(Processor processor, ArrayList<Future<?>> futuresArray,  ProgressFrame progressBar) 
+    {
+   	 	try 
+   	 	{
+	   		 int frame= 1;
+	   		 int nframes = futuresArray.size();
+	   		 for (Future<?> future : futuresArray) 
+	   		 {
+	   			 if (progressBar != null)
+	   				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
+	   			 if (!future.isDone()) 
+	   			 {
+	   				 if (stopFlag) 
+	   				 {
+	   					 processor.shutdownNow();
+	   					 break;
+	   				 } else 
+	   					 future.get();
+	   			 }
+	   			 frame += 1; 
+	   		 }
+        }
+        catch (InterruptedException e) {
+       	 	processor.shutdownNow();
+        }
+        catch (Exception e) 
+   	 	{
+       	 	throw new RuntimeException(e);
+        }
+   }
 	
 	private void initArraysToBuildKymographImages(Experiment exp) 
 	{
