@@ -27,26 +27,26 @@ public class DetectLevels_series extends BuildSeries
 		if (loadExperimentDataToDetectLevels(exp)) 
 		{ 
 			exp.seqKymos.displayViewerAtRectangle(options.parent0Rect);
-			if (detectCapillaryLevels(exp)) 
-			{
-				int nframes = options.lastKymo - options.firstKymo +1;
-			    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
-			    processor.setThreadName("save_data");
-			    processor.setPriority(Processor.NORM_PRIORITY);
-		        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
-				futures.clear();
-				
-				futures.add(processor.submit(new Runnable () 
-				{
-					@Override
-					public void run() 
-					{
-						exp.capillaries.xmlSaveCapillaries_Measures(exp.getKymosBinFullDirectory());
-					}
-					
-				}));
-				waitAnalyzeExperimentCompletion(processor, futures, null);
-			}
+			detectCapillaryLevels(exp);
+//			if (detectCapillaryLevels(exp)) 
+//			{
+//				int nframes = options.lastKymo - options.firstKymo +1;
+//			    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+//			    processor.setThreadName("save_data");
+//			    processor.setPriority(Processor.NORM_PRIORITY);
+//		        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
+//				futures.clear();
+//				
+//				futures.add(processor.submit(new Runnable () 
+//				{
+//					@Override
+//					public void run() 
+//					{
+//						exp.capillaries.xmlSaveCapillaries_Measures(exp.getKymosBinFullDirectory());
+//					}
+//				}));
+//				waitAnalyzeExperimentCompletion(processor, futures, null);
+//			}
 		}
 		exp.closeSequences();
 	}
@@ -95,7 +95,7 @@ public class DetectLevels_series extends BuildSeries
 					final Capillary capi = cap;
 				
 					IcyBufferedImage rawImage = imageIORead(name);
-					final IcyBufferedImage sourceImage = tImg.transformImage (rawImage, options.transformForLevels);
+					IcyBufferedImage sourceImage = tImg.transformImage (rawImage, options.transformForLevels);
 					int c = 0;
 					Object dataArray = sourceImage.getDataXY(c);
 					int[] sourceValues = Array1DUtil.arrayToIntArray(dataArray, sourceImage.isSignedDataType());
@@ -153,6 +153,8 @@ public class DetectLevels_series extends BuildSeries
 						capi.ptsTop    = new CapillaryLimit(capi.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
 						capi.ptsBottom = new CapillaryLimit(capi.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
 					}
+					
+					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), capi);
 				}}));
 		}
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);

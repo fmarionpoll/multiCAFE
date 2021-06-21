@@ -63,15 +63,21 @@ public class Capillaries
 			return false;
 		
 		for (Capillary cap: capillariesArrayList) 
-		{
-			if (cap.roi == null)
-				continue;
-			String tempname = directory + File.separator + cap.getCapillaryName()+ ".xml";
+			xmlSaveCapillary_Measures(directory, cap);
 
-			final Document capdoc = XMLUtil.createDocument(true);
-			cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
-			XMLUtil.saveDocument(capdoc, tempname);
-		}
+		return true;
+	}
+	
+	public boolean xmlSaveCapillary_Measures(String directory, Capillary cap) 
+	{
+		if (directory == null || cap.roi == null)
+			return false;
+		String tempname = directory + File.separator + cap.getCapillaryName()+ ".xml";
+
+		final Document capdoc = XMLUtil.createDocument(true);
+		cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
+		XMLUtil.saveDocument(capdoc, tempname);
+		
 		return true;
 	}
 	
