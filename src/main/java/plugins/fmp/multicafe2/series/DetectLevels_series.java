@@ -139,7 +139,7 @@ public class DetectLevels_series extends BuildSeries
 						capi.ptsTop    = new CapillaryLimit(capi.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
 						capi.ptsBottom = new CapillaryLimit(capi.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
 					}
-					
+//					System.out.println("save capillary "+ capi.roi.getName() + " at directory "+exp.getKymosBinFullDirectory());
 					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), capi);
 				}}));
 		}
