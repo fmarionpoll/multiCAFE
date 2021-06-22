@@ -28,25 +28,6 @@ public class DetectLevels_series extends BuildSeries
 		{ 
 			exp.seqKymos.displayViewerAtRectangle(options.parent0Rect);
 			detectCapillaryLevels(exp);
-//			if (detectCapillaryLevels(exp)) 
-//			{
-//				int nframes = options.lastKymo - options.firstKymo +1;
-//			    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
-//			    processor.setThreadName("save_data");
-//			    processor.setPriority(Processor.NORM_PRIORITY);
-//		        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
-//				futures.clear();
-//				
-//				futures.add(processor.submit(new Runnable () 
-//				{
-//					@Override
-//					public void run() 
-//					{
-//						exp.capillaries.xmlSaveCapillaries_Measures(exp.getKymosBinFullDirectory());
-//					}
-//				}));
-//				waitAnalyzeExperimentCompletion(processor, futures, null);
-//			}
 		}
 		exp.closeSequences();
 	}
@@ -66,9 +47,15 @@ public class DetectLevels_series extends BuildSeries
 		threadRunning = true;
 		stopFlag = false;
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
+		int firstKymo = options.firstKymo;
+		if (firstKymo > seqKymos.seq.getSizeT() || firstKymo < 0)
+			firstKymo = 0;
+		int lastKymo = options.lastKymo;
+		if (lastKymo >= seqKymos.seq.getSizeT())
+			lastKymo = seqKymos.seq.getSizeT() -1;
 		seqKymos.seq.beginUpdate();
 		
-		int nframes = options.lastKymo - options.firstKymo +1;
+		int nframes = lastKymo - firstKymo +1;
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectlevel");
 	    processor.setPriority(Processor.NORM_PRIORITY);
@@ -78,10 +65,10 @@ public class DetectLevels_series extends BuildSeries
 		tImg.setSpanDiff(options.spanDiffTop);
 		tImg.setSequence(seqKymos);
 		
-		for (int indexKymo = options.firstKymo; indexKymo <= options.lastKymo; indexKymo++) 
+		for (int indexKymo = firstKymo; indexKymo <= lastKymo; indexKymo++) 
 		{
 			final int t_index = indexKymo;
-			Capillary cap = exp.capillaries.capillariesArrayList.get(t_index);
+			final Capillary cap = exp.capillaries.capillariesArrayList.get(t_index);
 			if (!options.detectR && cap.getCapillaryName().endsWith("2"))
 				return false;
 			if (!options.detectL && cap.getCapillaryName().endsWith("1"))
@@ -93,7 +80,6 @@ public class DetectLevels_series extends BuildSeries
 				public void run() 
 				{	
 					final Capillary capi = cap;
-				
 					IcyBufferedImage rawImage = imageIORead(name);
 					IcyBufferedImage sourceImage = tImg.transformImage (rawImage, options.transformForLevels);
 					int c = 0;

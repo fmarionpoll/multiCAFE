@@ -31,7 +31,6 @@ public class DetectGulps_series extends BuildSeries
 		{
 			buildFilteredImage(exp);
 			detectGulps(exp);
-			exp.capillaries.xmlSaveCapillaries_Measures(exp.getKymosBinFullDirectory());
 		}
 		exp.seqKymos.closeSequence();
 	}
@@ -76,12 +75,12 @@ public class DetectGulps_series extends BuildSeries
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		futures.clear();
 		
-		for (int frame = firstkymo; frame <= lastkymo; frame++) 
+		for (int indexKymo = firstkymo; indexKymo <= lastkymo; indexKymo++) 
 		{
-			final Capillary cap = exp.capillaries.capillariesArrayList.get(frame);
-			cap.setGulpsOptions(options);
+			final Capillary capi = exp.capillaries.capillariesArrayList.get(indexKymo);
+			capi.setGulpsOptions(options);
 			
-			final int t_from = frame;;
+			final int t_from = indexKymo;;
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
@@ -90,18 +89,21 @@ public class DetectGulps_series extends BuildSeries
 					if (options.buildDerivative) 
 					{
 						ROI2DUtilities.removeRoisContainingString(t_from, "derivative", seqKymos.seq);
-						getDerivativeProfile(seqKymos.seq, t_from, cap, jitter);	
+						getDerivativeProfile(seqKymos.seq, t_from, capi, jitter);	
 					}
 					if (options.buildGulps) 
 					{
-						cap.cleanGulps();
+						capi.cleanGulps();
 						ROI2DUtilities.removeRoisContainingString(t_from, "gulp", seqKymos.seq);
-						cap.getGulps(t_from);
-						if (cap.gulpsRois.rois.size() > 0)
-							seqKymos.seq.addROIs(cap.gulpsRois.rois, false);
+						capi.getGulps(t_from);
+						if (capi.gulpsRois.rois.size() > 0)
+							seqKymos.seq.addROIs(capi.gulpsRois.rois, false);
 					}
+					
+					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), capi);
 				}}));
 		}
+		
 		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
 		seqKymos.seq.endUpdate();
 		progressBar.close();

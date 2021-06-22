@@ -36,6 +36,7 @@ public class XLSExportMoveResults extends XLSExport
 		boolean loadDrosoTrack = true; 
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
 		expList.chainExperimentsUsingCamIndexes(options.collateSeries);
+		expList.setFirstImageForAllExperiments(options.collateSeries);
 		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
