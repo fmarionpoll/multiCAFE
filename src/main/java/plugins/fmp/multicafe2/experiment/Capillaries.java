@@ -131,7 +131,7 @@ public class Capillaries
 			Node node = XMLUtil.getRootElement(capdoc, true);
 			Capillary cap = capillariesArrayList.get(i);
 			cap.indexImage = i;
-			flag &= cap.loadFromXML_MeasuresOnly(node);
+			flag |= cap.loadFromXML_MeasuresOnly(node);
 		}
 		return flag;
 	}
