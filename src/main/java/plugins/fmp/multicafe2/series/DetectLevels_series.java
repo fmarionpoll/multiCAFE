@@ -55,6 +55,8 @@ public class DetectLevels_series extends BuildSeries
 			lastKymo = seqKymos.seq.getSizeT() -1;
 		seqKymos.seq.beginUpdate();
 		
+		// create an array of tasks for multi-thread processing
+        // => rationale: one task per kymograph image
 		int nframes = lastKymo - firstKymo +1;
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectlevel");
