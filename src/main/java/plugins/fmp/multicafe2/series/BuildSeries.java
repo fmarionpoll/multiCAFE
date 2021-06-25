@@ -89,44 +89,12 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 	
 	abstract void analyzeExperiment(Experiment exp);
 	
-    protected void waitAnalyzeExperimentCompletion(Processor processor, ArrayList<Future<?>> futuresArray,  ProgressFrame progressBar) 
-    {
-//   	 	try 
-//   	 	{
-//	   		 int frame= 1;
-//	   		 int nframes = futuresArray.size();
-//	   		 for (Future<?> future : futuresArray) 
-//	   		 {
-//	   			 if (progressBar != null)
-//	   				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
-//	   			 if (!future.isDone()) 
-//	   			 {
-//	   				 if (stopFlag) 
-//	   				 {
-//	   					 processor.shutdownNow();
-//	   					 break;
-//	   				 } else 
-//	   					 future.get();
-//	   			 }
-//	   			 frame += 1; 
-//	   		 }
-//        }
-//        catch (InterruptedException e) 
-//   	 	{
-//        	e.printStackTrace();
-//       	 	processor.shutdownNow();
-//        }
-//        catch (Exception e) 
-//   	 	{
-//        	e.printStackTrace();
-//       	 	throw new RuntimeException(e);
-//        }
-    	
+    protected void waitFuturesCompletion(Processor processor, ArrayList<Future<?>> futuresArray,  ProgressFrame progressBar) 
+    {  	
   		 int frame= 1;
   		 int nframes = futuresArray.size();
     	 while (!futuresArray.isEmpty())
          {
-             // get last in queue
              final Future<?> f = futuresArray.get(futuresArray.size() - 1);
              if (progressBar != null)
    				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);

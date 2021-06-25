@@ -104,7 +104,7 @@ public class DetectGulps_series extends BuildSeries
 				}}));
 		}
 		
-		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
+		waitFuturesCompletion(processor, futures, progressBar);
 		seqKymos.seq.endUpdate();
 		progressBar.close();
 		processor.shutdown();

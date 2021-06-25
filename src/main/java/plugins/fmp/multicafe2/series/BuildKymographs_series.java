@@ -74,25 +74,44 @@ public class BuildKymographs_series extends BuildSeries
 		String directory = exp.getDirectoryToSaveResults(); 
 		if (directory == null)
 			return;
+		
+		ProgressFrame progressBar = new ProgressFrame("Save kymographs");
+		int nframes = exp.seqKymos.seq.getSizeT();
+	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+	    processor.setThreadName("buildkymo2");
+	    processor.setPriority(Processor.NORM_PRIORITY);
+        ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nframes);
+		futuresArray.clear();
+		
 		for (int t = 0; t < exp.seqKymos.seq.getSizeT(); t++) 
 		{
-			Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-			String filename = directory + File.separator + cap.getCapillaryName() + ".tiff";
-			File file = new File (filename);
-			IcyBufferedImage image = exp.seqKymos.getSeqImage(t, 0);
-			try 
+			final int t_index = t;
+			futuresArray.add(processor.submit(new Runnable () 
 			{
-				Saver.saveImage(image, file, true);
-			} 
-			catch (FormatException e) 
-			{
-				e.printStackTrace();
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
+				
+				@Override
+				public void run() 
+				{	
+					Capillary cap = exp.capillaries.capillariesArrayList.get(t_index);
+					String filename = directory + File.separator + cap.getCapillaryName() + ".tiff";
+					File file = new File (filename);
+					IcyBufferedImage image = exp.seqKymos.getSeqImage(t_index, 0);
+					try 
+					{
+						Saver.saveImage(image, file, true);
+					} 
+					catch (FormatException e) 
+					{
+						e.printStackTrace();
+					} 
+					catch (IOException e) 
+					{
+						e.printStackTrace();
+					}
+				}}));
 		}
+		waitFuturesCompletion(processor, futuresArray, progressBar);
+		progressBar.close();
 		exp.xmlSaveMCExperiment();
 	}
 	
@@ -138,9 +157,6 @@ public class BuildKymographs_series extends BuildSeries
 	    processor.setPriority(Processor.NORM_PRIORITY);
         ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nframes);
 		futuresArray.clear();
-
-		// use Class ForkJoinTask instead?
-		// https://www.baeldung.com/java-completablefuture
 		
 		for (int iframe = 0 ; iframe < nframes; iframe++) 
 		{
@@ -187,8 +203,8 @@ public class BuildKymographs_series extends BuildSeries
 					}
 				}}));
 		}
-
-		waitKymosCompletion(processor, futuresArray, progressBar);
+		
+		waitFuturesCompletion(processor, futuresArray, progressBar);
 		
         progressBar.close();
         
@@ -212,38 +228,7 @@ public class BuildKymographs_series extends BuildSeries
 		seqKymos.seq.endUpdate();
 		return true;
 	}
-	
-	protected void waitKymosCompletion(Processor processor, ArrayList<Future<?>> futuresArray,  ProgressFrame progressBar) 
-    {
-   	 	try 
-   	 	{
-	   		 int frame= 1;
-	   		 int nframes = futuresArray.size();
-	   		 for (Future<?> future : futuresArray) 
-	   		 {
-	   			 if (progressBar != null)
-	   				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
-	   			 if (!future.isDone()) 
-	   			 {
-	   				 if (stopFlag) 
-	   				 {
-	   					 processor.shutdownNow();
-	   					 break;
-	   				 } else 
-	   					 future.get();
-	   			 }
-	   			 frame += 1; 
-	   		 }
-        }
-        catch (InterruptedException e) {
-       	 	processor.shutdownNow();
-        }
-        catch (Exception e) 
-   	 	{
-       	 	throw new RuntimeException(e);
-        }
-   }
-	
+		
 	private void initArraysToBuildKymographImages(Experiment exp) 
 	{
 		SequenceCamData seqCamData = exp.seqCamData;

@@ -143,10 +143,9 @@ public class DetectLevels_series extends BuildSeries
 					}
 
 					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), capi);
-//					System.out.println("save capillary "+ capi.roi.getName() + " at directory "+exp.getKymosBinFullDirectory());
 				}}));
 		}
-		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
+		waitFuturesCompletion(processor, futures, progressBar);
 		seqKymos.seq.endUpdate();
 		
 		progressBar.close();

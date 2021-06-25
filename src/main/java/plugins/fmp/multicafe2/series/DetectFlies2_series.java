@@ -181,7 +181,7 @@ public class DetectFlies2_series extends BuildSeries
 					
 				}}));
 		}
-		waitAnalyzeExperimentCompletion(processor, futures, progressBar);
+		waitFuturesCompletion(processor, futures, progressBar);
 		
 		exp.seqCamData.seq.endUpdate();
 		seqNegative.close();
