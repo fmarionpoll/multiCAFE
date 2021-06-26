@@ -37,7 +37,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	private static final long 	serialVersionUID 		= -5590697762090397890L;
 	
 	JCheckBox				allKymosCheckBox 			= new JCheckBox ("all kymographs", true);
-	JComboBox<EnumTransformOp> 	transformForGulpsComboBox 	= new JComboBox<EnumTransformOp> (new EnumTransformOp[] {EnumTransformOp.XDIFFN /*, TransformOp.YDIFFN, TransformOp.XYDIFFN	*/});
+	JComboBox<EnumTransformOp> 	transformForGulpsComboBox 	= new JComboBox<EnumTransformOp> (new EnumTransformOp[] {EnumTransformOp.XDIFFN , EnumTransformOp.YDIFFN, EnumTransformOp.XYDIFFN	});
 	JSpinner				startSpinner				= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
 	JSpinner				endSpinner					= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	JCheckBox				buildDerivativeCheckBox 	= new JCheckBox ("derivative", true);
