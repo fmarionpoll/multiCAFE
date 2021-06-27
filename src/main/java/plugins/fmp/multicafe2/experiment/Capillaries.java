@@ -194,38 +194,6 @@ public class Capillaries
 			}
 		}
 	}
-
-//	private boolean xmlLoadCapillaries_v1(Document doc) 
-//	{
-//		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
-//		if (node == null)
-//			return false;
-//		Node nodecaps = XMLUtil.getElement(node, ID_LISTOFCAPILLARIES);
-//		int nitems = XMLUtil.getElementIntValue(nodecaps, ID_NCAPILLARIES, 0);
-//		capillariesArrayList = new ArrayList<Capillary> (nitems);
-//		for (int i= 0; i< nitems; i++) 
-//		{
-//			Node nodecapillary = XMLUtil.getElement(node, ID_CAPILLARY_+i);
-//			Capillary capNew = new Capillary();
-//			capNew.loadFromXML(nodecapillary);
-//			if (desc.grouping == 2 && (capNew.capStimulus != null && capNew.capStimulus.equals(".."))) 
-//			{
-//				if (capNew.getCapillarySide().equals("R")) 
-//				{
-//					capNew.capStimulus = desc.stimulusR;
-//					capNew.capConcentration = desc.concentrationR;
-//				} 
-//				else 
-//				{
-//					capNew.capStimulus = desc.stimulusL;
-//					capNew.capConcentration = desc.concentrationL;
-//				}
-//			}
-//			if (!isPresent(capNew))
-//				capillariesArrayList.add(capNew);
-//		}
-//		return true;
-//	}
 	
 	private boolean xmlLoadCapillaries_Only_v1(Document doc) 
 	{

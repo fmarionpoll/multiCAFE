@@ -27,7 +27,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 
 	public ROI2DShape 					roi 			= null;	// the capillary (source)
 	public int							indexImage 		= -1;
-	String								capillaryName 	= null;
+	public String						capillaryName 	= null;
 	String 								version 		= null;
 	public String						filenameTIFF	= null;
 	// TODO: add frame start/end/step?
@@ -73,7 +73,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	// ----------------------------------------------------
 	
-	Capillary(ROI2DShape roi) 
+	public Capillary(ROI2DShape roi) 
 	{
 		this.roi = roi;
 		this.capillaryName = replace_LR_with_12(roi.getName());

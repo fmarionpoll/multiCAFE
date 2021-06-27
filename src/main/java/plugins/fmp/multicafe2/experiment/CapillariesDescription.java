@@ -21,10 +21,10 @@ public class CapillariesDescription
 	public String 	old_sex			= new String("..");
 	
 	public int		grouping 		= 2;
-	String 			stimulusR		= new String("..");
-	String 			concentrationR	= new String("..");
-	String 			stimulusL		= new String("..");
-	String 			concentrationL	= new String("..");
+	public String 	stimulusR		= new String("..");
+	public String 	concentrationR	= new String("..");
+	public String 	stimulusL		= new String("..");
+	public String 	concentrationL	= new String("..");
 	
 	private final static String ID_CAPILLARYTRACK 	= "capillaryTrack";
 	private final static String ID_PARAMETERS 		= "Parameters";	
@@ -78,7 +78,7 @@ public class CapillariesDescription
 		return flag;
 	}
 	
-	boolean xmlSaveCapillaryDescription (Document doc) 
+	public boolean xmlSaveCapillaryDescription (Document doc) 
 	{
 		Node node = XMLUtil.addElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
@@ -104,7 +104,7 @@ public class CapillariesDescription
 		return true;
 	}
 	
-	boolean xmlLoadCapillaryDescription (Document doc) 
+	public boolean xmlLoadCapillaryDescription (Document doc) 
 	{
 		boolean flag = false;
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);

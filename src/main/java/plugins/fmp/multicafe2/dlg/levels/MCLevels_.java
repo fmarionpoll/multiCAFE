@@ -27,7 +27,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 	private JTabbedPane tabsPane 		= new JTabbedPane();
 	public 	LoadSave 	tabFileLevels	= new LoadSave();
 			DetectLevels tabDetectLevels = new DetectLevels();
-//			DetectLevels2 		tabDetectLevels2 = new DetectLevels2();
+			DetectLevelsK tabDetectLevelsK = new DetectLevelsK();
 	
 			DetectGulps tabDetectGulps 	= new DetectGulps();
 			Edit		tabEdit			= new Edit();
@@ -51,9 +51,9 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 		tabDetectLevels.addPropertyChangeListener(this);
 		tabsPane.addTab("Levels", null, tabDetectLevels, "Find limits of the columns of liquid");
 		
-//		tabDetectLevels2.init(capLayout, parent0);
-//		tabDetectLevels2.addPropertyChangeListener(this);
-//		tabsPane.addTab("Levels2", null, tabDetectLevels2, "Find limits of the columns of liquid");
+		tabDetectLevelsK.init(capLayout, parent0);
+		tabDetectLevelsK.addPropertyChangeListener(this);
+		tabsPane.addTab("Levels-K", null, tabDetectLevelsK, "Find limits with KMeans");
 		
 		tabDetectGulps.init(capLayout, parent0);	
 		tabsPane.addTab("Gulps", null, tabDetectGulps, "Detect gulps");

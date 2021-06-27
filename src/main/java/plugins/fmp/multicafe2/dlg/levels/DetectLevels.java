@@ -53,7 +53,6 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	private JCheckBox 	allSeriesCheckBox 		= new JCheckBox("ALL (current to last)", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
-	private JCheckBox	maxContrastCheckBox 	= new JCheckBox ("maximize contrast", false);
 	
 	private MultiCAFE2 	parent0 				= null;
 	private DetectLevels_series threadDetectLevels = null;
@@ -74,7 +73,6 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		panel0.add(allKymosCheckBox);
 		panel0.add(leftCheckBox);
 		panel0.add(rightCheckBox);
-		panel0.add(maxContrastCheckBox);
 		add(panel0);
 		
 		JPanel panel01 = new JPanel(layoutLeft);
@@ -92,7 +90,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		panel1.add(endSpinner);
 		add( panel1);
 		
-		maxContrastCheckBox.setVisible(false);
+
 		defineActionListeners();
 	}
 	
