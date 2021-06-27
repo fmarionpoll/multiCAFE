@@ -194,7 +194,7 @@ public class CapillaryLimit  implements XMLPersistent
 		return roi;
 	}
 	
-	int loadCapillaryLimitFromXML(Node node, String nodename, String header) 
+	public int loadCapillaryLimitFromXML(Node node, String nodename, String header) 
 	{
 		final Node nodeMeta = XMLUtil.getElement(node, nodename);
 		int npoints = 0;
@@ -239,7 +239,7 @@ public class CapillaryLimit  implements XMLPersistent
     	return line;
     }
 	
-	void saveCapillaryLimit2XML(Node node, String nodename) 
+	public void saveCapillaryLimit2XML(Node node, String nodename) 
 	{
 		if (polylineLimit == null)
 			return;
