@@ -5,7 +5,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -21,25 +20,16 @@ import icy.sequence.Sequence;
 import icy.swimmingPool.SwimmingObject;
 
 import plugins.nherve.maskeditor.MaskEditor;
-import plugins.nherve.toolbox.image.feature.DefaultClusteringAlgorithmImpl;
-import plugins.nherve.toolbox.image.feature.IcySupportRegion;
-import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
-import plugins.nherve.toolbox.image.feature.Signature;
-import plugins.nherve.toolbox.image.feature.clustering.KMeans;
-import plugins.nherve.toolbox.image.feature.descriptor.ColorPixel;
-import plugins.nherve.toolbox.image.feature.descriptor.DefaultDescriptorImpl;
-import plugins.nherve.toolbox.image.feature.region.GridFactory;
 import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
 import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
 import plugins.nherve.toolbox.image.mask.MaskException;
-import plugins.nherve.toolbox.image.segmentation.DefaultSegmentationAlgorithm;
 import plugins.nherve.toolbox.image.segmentation.Segmentation;
 import plugins.nherve.toolbox.image.segmentation.SegmentationException;
 import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 import plugins.fmp.multicafe2.MultiCAFE2;
-import plugins.fmp.multicafe2.experiment.Experiment;
 
+import plugins.fmp.multicafe2.experiment.Experiment;
+import plugins.fmp.multicafe2.tools.ImageKMeans;
 
 public class DetectLevelsK  extends JPanel 
 {
@@ -50,9 +40,9 @@ public class DetectLevelsK  extends JPanel
 	JSpinner			startSpinner			= new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
 	JSpinner			endSpinner				= new JSpinner(new SpinnerNumberModel(3, 1, 1000, 1));
 	private JCheckBox	allKymosCheckBox 		= new JCheckBox ("all kymographs", true);
-	private String 		detectString 			= "        Detect     ";
+	private String 		detectString 			= "    Detect   ";
 	private JButton 	detectButton 			= new JButton(detectString);
-	private JCheckBox	fromCheckBox 			= new JCheckBox (" from (pixel)", false);
+	private JCheckBox	fromCheckBox 			= new JCheckBox ("from (pixel)", false);
 	private JCheckBox 	allSeriesCheckBox 		= new JCheckBox("ALL (current to last)", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
@@ -129,21 +119,8 @@ public class DetectLevelsK  extends JPanel
 		
 	}
 	
-	private Segmentation doClustering(Sequence currentSequence) 
-			throws SupportRegionException, SegmentationException, MaskException, NumberFormatException, SignatureException 
+	private int getColorSpaceFromCombo() 
 	{
-		Segmentation seg = null;
-		seg = doClusteringKM(currentSequence);
-		seg.reInitColors(currentSequence.getImage(0, 0));
-		return seg;
-	}
-
-	private Segmentation doClusteringKM(Sequence currentSequence) 
-			throws SupportRegionException, SegmentationException, MaskException, NumberFormatException, SignatureException 
-	{
-		int nbc2 = (int) tfNbCluster2.getValue();
-		int nbi2 = (int) tfNbIteration2.getValue();
-		double stab2 = (double) tfStabCrit2.getValue();
 		int cs = ColorSpaceTools.RGB;
 		switch(cbColorSpace.getSelectedIndex()) 
 		{
@@ -157,51 +134,17 @@ public class DetectLevelsK  extends JPanel
 			cs = ColorSpaceTools.RGB;
 			break;
 		}
-
-//			log("Working on " + ColorSpaceTools.COLOR_SPACES[cs]);
-
-		SegmentableIcyBufferedImage img = new SegmentableIcyBufferedImage(currentSequence.getFirstImage());
-
-		KMeans km2 = new KMeans(nbc2, nbi2, stab2);
-		km2.setLogEnabled(false);
-
-		Segmentation seg = null;
-
-		DefaultDescriptorImpl<SegmentableIcyBufferedImage, ? extends Signature> col = null;
-
-		ColorPixel cd = new ColorPixel(false);
-		cd.setColorSpace(cs);
-		col = cd;
-
-		col.setLogEnabled(false);
-
-		GridFactory factory = new GridFactory(GridFactory.ALGO_ONLY_PIXELS);
-		factory.setLogEnabled(false);
-		List<IcySupportRegion> lRegions = factory.extractRegions(img);
-		IcySupportRegion[] regions = new IcySupportRegion[lRegions.size()];
-		int r = 0;
-		for (IcySupportRegion sr : lRegions) 
-		{
-			regions[r++] = sr;
-		}
-
-		seg = doSingleClustering(img, regions, col, km2);
-		return seg;
+		return cs;
 	}
-	
-	private Segmentation doSingleClustering(SegmentableIcyBufferedImage img, IcySupportRegion[] regions, DefaultDescriptorImpl<SegmentableIcyBufferedImage, ? extends Signature> descriptor, DefaultClusteringAlgorithmImpl<VectorSignature> algo) throws SupportRegionException, SegmentationException 
-	{
-		DefaultSegmentationAlgorithm<SegmentableIcyBufferedImage> segAlgo = new DefaultSegmentationAlgorithm<SegmentableIcyBufferedImage>(descriptor, algo);
-		segAlgo.setLogEnabled(false);
 
-		Segmentation seg = segAlgo.segment(img, regions);
-
-		return seg;
-	}
-	
 	private void runKMeans(Experiment exp) 
 	{
 		displayButton.setEnabled(false);
+		final int nbc2 = (int) tfNbCluster2.getValue();
+		final int nbi2 = (int) tfNbIteration2.getValue();
+		final double stab2 = (double) tfStabCrit2.getValue();
+		final int cs = getColorSpaceFromCombo();
+		
 		currentlyRunning = new Thread() 
 		{
 			@Override
@@ -209,45 +152,14 @@ public class DetectLevelsK  extends JPanel
 			{
 				try {
 					final Sequence seq = exp.seqKymos.seq;
-					final Segmentation segmentation = doClustering(seq);
+					final Segmentation segmentation = ImageKMeans.doClustering(seq, nbc2, nbi2, stab2, cs);
 					if (cbSendMaskDirectly.isSelected()) 
-					{
-						final MaskEditor maskEditorPlugin = MaskEditor.getRunningInstance(true);
-						currentlyRunning = null;
-						Runnable r = new Runnable() 
-						{
-							@Override
-							public void run() 
-							{
-								maskEditorPlugin.setSegmentationForSequence(seq, segmentation);
-								maskEditorPlugin.switchOpacityOn();
-								displayButton.setEnabled(true);
-							}
-						};
-						SwingUtilities.invokeAndWait(r);
-					} 
+						callMaskEditor(seq, segmentation);
 					else 
-					{
-						SwimmingObject result = new SwimmingObject(segmentation);
-						Icy.getMainInterface().getSwimmingPool().add(result);
-						currentlyRunning = null;
-						Runnable r = new Runnable() 
-						{
-							@Override
-							public void run() 
-							{
-								displayButton.setEnabled(true);
-							}
-						};
-						SwingUtilities.invokeAndWait(r);
-					}
+						callDirect(segmentation);
 				} catch (SupportRegionException e1) {
 					System.out.println(e1.getClass().getName() + " : " + e1.getMessage());
 				} catch (SegmentationException e1) {
-					System.out.println(e1.getClass().getName() + " : " + e1.getMessage());
-				} catch (InterruptedException e1) {
-					System.out.println(e1.getClass().getName() + " : " + e1.getMessage());
-				} catch (InvocationTargetException e1) {
 					System.out.println(e1.getClass().getName() + " : " + e1.getMessage());
 				} catch (MaskException e1) {
 					System.out.println(e1.getClass().getName() + " : " + e1.getMessage());
@@ -259,5 +171,47 @@ public class DetectLevelsK  extends JPanel
 			}
 		};
 		currentlyRunning.start();
+	}
+	
+	void callMaskEditor(Sequence seq, Segmentation segmentation) 
+	{
+		final MaskEditor maskEditorPlugin = MaskEditor.getRunningInstance(true);
+		currentlyRunning = null;
+		Runnable r = new Runnable() 
+		{
+			@Override
+			public void run() 
+			{
+				maskEditorPlugin.setSegmentationForSequence(seq, segmentation);
+				maskEditorPlugin.switchOpacityOn();
+				displayButton.setEnabled(true);
+			}
+		};
+		try {
+			SwingUtilities.invokeAndWait(r);
+		} catch (InvocationTargetException | InterruptedException e) {
+			System.out.println(e.getClass().getName() + " : " + e.getMessage());
+		}
+	}
+	
+	void callDirect(Segmentation segmentation)
+	{
+		SwimmingObject result = new SwimmingObject(segmentation);
+		Icy.getMainInterface().getSwimmingPool().add(result);
+		currentlyRunning = null;
+		Runnable r = new Runnable() 
+		{
+			@Override
+			public void run() 
+			{
+				displayButton.setEnabled(true);
+			}
+		};
+		try {
+			SwingUtilities.invokeAndWait(r);
+		} catch (InvocationTargetException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getClass().getName() + " : " + e.getMessage());
+		}
 	}
 }
