@@ -130,15 +130,9 @@ public class BuildKymographs_series extends BuildSeries
 		}
 		
 		int startFrame = (int) (exp.offsetFirstCol_Ms  /exp.camBinImage_Ms);
-		IcyBufferedImage sourceImage0 = seqCamData.getSeqImage(startFrame, 0); 
+		final IcyBufferedImage referenceImage = seqCamData.getSeqImage(startFrame, 0); 
 		seqCamData.seq.removeAllROI();
 		
-		final Sequence seqForRegistration = new Sequence();
-		if (options.doRegistration) 
-		{
-			seqForRegistration.addImage(0, sourceImage0);
-			seqForRegistration.addImage(1, sourceImage0);
-		}
 		exp.seqKymos.seq = new Sequence();
 		
 		int nbcapillaries = exp.capillaries.capillariesArrayList.size();
@@ -175,7 +169,7 @@ public class BuildKymographs_series extends BuildSeries
 					IcyBufferedImage sourceImage = imageIORead(sourceImageName);
 					int sourceImageWidth = sourceImage.getWidth();				
 					if (options.doRegistration ) 
-						sourceImage = adjustImage(seqForRegistration, sourceImage);
+						sourceImage = adjustImage(sourceImage, referenceImage);
 
 					int len =  sourceImage.getSizeX() *  sourceImage.getSizeY();
 					for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) 
@@ -278,46 +272,57 @@ public class BuildKymographs_series extends BuildSeries
 		} 
 	}
 	
-	// TODO make it on a circle and not along a line with length = diskRadiux * 2 
 	private void getPointsfromROIPolyLineUsingBresenham ( ROI2DShape roi, List<ArrayList<int[]>> masks, double diskRadius, int sizex, int sizey) 
 	{
 		ArrayList<int[]> pixels = Bresenham.getPixelsAlongLineFromROI2D (roi);
-		double previousX = pixels.get(0)[0] - (pixels.get(1)[0] - pixels.get(0)[0]);
-		double previousY = pixels.get(0)[1] - (pixels.get(1)[1] - pixels.get(0)[1]);
+		int idiskRadius = (int) diskRadius;
 		for (int[] pixel: pixels) 
+			masks.add(getAllPixelsAroundPixel(pixel, idiskRadius, sizex, sizey));
+	}
+	
+	private ArrayList<int[]> getAllPixelsAroundPixel(int[] pixel, int diskRadius, int sizex, int sizey) 
+	{
+		ArrayList<int[]> maskAroundPixel = new ArrayList<int[]>();
+		double m1 = pixel[0];
+		double m2 = pixel[1];
+		double radiusSquared = diskRadius * diskRadius;
+		int minX = getValueWithinLimits(pixel[0] - diskRadius, 0, sizex-1);
+		int maxX = getValueWithinLimits(pixel[0] + diskRadius, minX, sizex-1);
+		int minY = getValueWithinLimits(pixel[1] - diskRadius, 0, sizey-1);
+		int maxY = getValueWithinLimits(pixel[1] + diskRadius, minX, sizey-1);
+		for (int x = minX; x <= maxX; x++)
 		{
-			ArrayList<int[]> mask = new ArrayList<int[]>();
-			double x = pixel[0];
-			double y = pixel[1];
-			double dx = x - previousX;
-			double dy = y - previousY;
-			double ux = dy/Math.sqrt(dx*dx + dy*dy);
-			double uy = -dx/Math.sqrt(dx*dx + dy*dy);
-			double tt = -diskRadius;
-			while (tt <= diskRadius) 
-			{
-				int xx = (int) Math.round(x + tt*ux);
-				int yy = (int) Math.round(y + tt*uy);
-				if (xx >= 0 && xx < sizex && yy >= 0 && yy < sizey)
-					mask.add(new int[]{xx, yy});
-				tt += 1d;
-			}
-			masks.add(mask);
-			previousX = x;
-			previousY = y;
+		    for (int y = minY; y <= maxY; y++)
+		    {
+		        double dx = x - m1;
+		        double dy = y - m2;
+		        double distanceSquared = dx * dx + dy * dy;
+		        if (distanceSquared <= radiusSquared)
+		        {
+		        	maskAroundPixel.add(new int[]{x, y});
+		        }
+		    }
 		}
+		return maskAroundPixel;
+	}
+	
+	private int getValueWithinLimits(int x, int min, int max)
+	{
+		if (x < min)
+			x = min;
+		if (x > max)
+			x = max;
+		return x;
 	}
 
-	private IcyBufferedImage adjustImage(Sequence seqForRegistration, IcyBufferedImage  workImage) 
+	private IcyBufferedImage adjustImage(IcyBufferedImage  workImage, IcyBufferedImage referenceImage) 
 	{
-		seqForRegistration.setImage(1, 0, workImage);
 		int referenceChannel = 1;
-		int referenceSlice = 0;
-		GaspardRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
-        boolean rotate = GaspardRigidRegistration.correctTemporalRotation2D(seqForRegistration, referenceChannel, referenceSlice);
+		GaspardRigidRegistration.correctTranslation2D(workImage, referenceImage, referenceChannel);
+        boolean rotate = GaspardRigidRegistration.correctRotation2D(workImage, referenceImage, referenceChannel);
         if (rotate) 
-        	GaspardRigidRegistration.correctTemporalTranslation2D(seqForRegistration, referenceChannel, referenceSlice);
-        return seqForRegistration.getLastImage(1);
+        	GaspardRigidRegistration.correctTranslation2D(workImage, referenceImage, referenceChannel);
+        return workImage;
 	}
 
 }

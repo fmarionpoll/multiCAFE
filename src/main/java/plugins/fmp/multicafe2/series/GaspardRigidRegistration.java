@@ -2,7 +2,6 @@ package plugins.fmp.multicafe2.series;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 import javax.swing.SwingConstants;
@@ -13,7 +12,6 @@ import flanagan.complex.Complex;
 
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
-import icy.sequence.Sequence;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
@@ -53,251 +51,6 @@ public class GaspardRigidRegistration
     }
     
     /**
-     * Register a sequence over time using a single frame as reference
-     * 
-     * @param sequence
-     *            the sequence to register
-     * @param referenceFrame
-     *            the reference frame used to register other frames
-     * @param referenceChannel
-     *            the channel used to calculate the transform (or -1 to calculate an average
-     *            transform using all channels)
-     * @param referenceSlice
-     *            the slice used to calculate the transform (or -1 to calculate an average transform
-     *            using all slices)
-     * @return <code>true</code> if the data has changed, <code>false</code> otherwise (i.e. the
-     *         registration cannot be improved)
-     */
-    public static boolean correctTemporalTranslation2D(Sequence sequence, int referenceFrame, int referenceChannel, int referenceSlice)
-    {
-        Rectangle newBounds = correctTemporalTranslation2D(sequence, referenceFrame, referenceChannel, referenceSlice, ResizePolicy.PRESERVE_SIZE);
-        return newBounds.equals(sequence.getBounds2D());
-    }
-    
-    /**
-     * Registers a 2D translation/drift in a sequence using a single frame as reference
-     * 
-     * @param sequence
-     *            the sequence to register
-     * @param referenceFrame
-     *            the reference frame used to register other frames
-     * @param referenceChannel
-     *            the channel used to calculate the transform (or -1 to calculate an average
-     *            transform using all channels)
-     * @param referenceSlice
-     *            the slice used to calculate the transform (or -1 to calculate an average transform
-     *            using all slices)
-     * @param policy
-     *            indicates how to deal with out-of-bound and missing pixels (see
-     *            {@link ResizePolicy}) for more details.
-     * @return the smallest common bounds enclosing the registered data (or the original sequence
-     *         bounds if no drift was detected)
-     */
-    public static Rectangle correctTemporalTranslation2D(Sequence sequence, int referenceFrame, int referenceChannel, int referenceSlice, ResizePolicy policy)
-    {
-//        if (status == null) status = new EzStatus();
-        
-        Rectangle initialBounds = sequence.getBounds2D();
-        int sizeT = sequence.getSizeT();
-        int sizeC = sequence.getSizeC();
-        DataType dataType = sequence.getDataType_();
-        
-        Sequence output = policy == ResizePolicy.PRESERVE_SIZE ? sequence : new Sequence();
-        
-        // Step 1: compute and accumulate all translations
-        
-        ArrayList<Rectangle> translatedBounds = new ArrayList<Rectangle>(sizeT);
-        
-        for (int t = 0; t < sizeT; t++)  // status.setCompletion(++t / (double) sizeT))
-        {
-            if (Thread.currentThread().isInterrupted()) return initialBounds;
-            
-            if (t == referenceFrame)
-            {
-                translatedBounds.add(initialBounds);
-            }
-            else
-            {
-                Point translation = findTranslation2D(sequence, referenceChannel, referenceSlice, t, referenceFrame);
-                
-                if (translation.x != 0 || translation.y != 0)
-                {
-                    translatedBounds.add(new Rectangle(translation.x, translation.y, initialBounds.width, initialBounds.height));
-                }
-                else
-                {
-                    translatedBounds.add(initialBounds);
-                }
-            }
-        }
-        
-        // Step 2: compute the final bounds
-        
-        Rectangle finalBounds = new Rectangle(initialBounds);
-        
-        if (policy == ResizePolicy.INTERSECT_BOUNDS) for (Rectangle bounds : translatedBounds)
-        {
-            finalBounds = finalBounds.intersection(bounds);
-        }
-        else if (policy == ResizePolicy.UNITE_BOUNDS) for (Rectangle bounds : translatedBounds)
-        {
-            finalBounds = finalBounds.union(bounds);
-        }
-        
-        // Step 3: build the final sequence
-        
-        for (int t = 0; t < sizeT; t++) //status.setCompletion(++t / (double) sizeT))
-        {
-            if (Thread.currentThread().isInterrupted()) return initialBounds;
-            
-            Point newOrigin = translatedBounds.get(t).getLocation();
-            newOrigin.translate(-finalBounds.x, -finalBounds.y);
-            
-            for (int z = 0; z < sequence.getSizeZ(t); z++)
-            {
-                IcyBufferedImage translatedImage = new IcyBufferedImage(finalBounds.width, finalBounds.height, sizeC, dataType);
-                translatedImage.copyData(sequence.getImage(t, z), null, newOrigin);
-                output.setImage(t, z, translatedImage);
-            }
-        }
-        
-        if (policy != ResizePolicy.PRESERVE_SIZE) sequence.copyDataFrom(output);
-        
-        return finalBounds;
-    }
-    
-    /**
-     * Registers a 2D translation/drift in a sequence using the previous frame as reference
-     * 
-     * @param sequence
-     *            the sequence to register
-     * @param referenceChannel
-     *            the channel used to calculate the transform (or -1 to calculate an average
-     *            transform using all channels)
-     * @param referenceSlice
-     *            the slice used to calculate the transform (or -1 to calculate an average transform
-     *            using all slices)
-     * @param policy
-     *            indicates how to deal with out-of-bound and missing pixels (see
-     *            {@link ResizePolicy}) for more details
-     * @return the smallest common bounds enclosing the registered data (or the original sequence
-     *         bounds if no drift was detected)
-     */
-    public static Rectangle correctTemporalTranslation2D(Sequence sequence, int referenceChannel, int referenceSlice, ResizePolicy policy)
-    {
-//        if (status == null) status = new EzStatus();
-        
-        Rectangle initialBounds = sequence.getBounds2D();
-        int sizeT = sequence.getSizeT();
-        int sizeC = sequence.getSizeC();
-        DataType dataType = sequence.getDataType_();
-        
-        Sequence output = policy == ResizePolicy.PRESERVE_SIZE ? sequence : new Sequence();
-        
-        // Step 1: compute and accumulate all translations
-        
-        ArrayList<Rectangle> translatedBounds = new ArrayList<Rectangle>(sizeT);
-        
-        // Don't process t=0, we know the answer...
-        translatedBounds.add(initialBounds);
-        
-        // Start directly at t=1
-        for (int t = 1; t < sizeT; t++) //status.setCompletion(++t / (double) sizeT))
-        {
-            if (Thread.currentThread().isInterrupted()) return initialBounds;
-            
-            Point translation = findTranslation2D(sequence, referenceChannel, referenceSlice, t, t - 1);
-            
-            if (translation.x != 0 || translation.y != 0)
-            {
-                translatedBounds.add(new Rectangle(translation.x, translation.y, initialBounds.width, initialBounds.height));
-            }
-            else
-            {
-                translatedBounds.add(initialBounds);
-            }
-        }
-        
-        // Step 2: compute the final bounds
-        
-        Rectangle cumulativeBounds = new Rectangle(initialBounds);
-        Rectangle finalBounds = new Rectangle(initialBounds);
-        
-        if (policy == ResizePolicy.INTERSECT_BOUNDS) for (Rectangle bounds : translatedBounds)
-        {
-            cumulativeBounds.translate(bounds.x, bounds.y);
-            finalBounds = finalBounds.intersection(cumulativeBounds);
-        }
-        else if (policy == ResizePolicy.UNITE_BOUNDS) for (Rectangle bounds : translatedBounds)
-        {
-            cumulativeBounds.translate(bounds.x, bounds.y);
-            finalBounds = finalBounds.union(cumulativeBounds);
-        }
-        
-        // Step 3: build the final sequence
-        
-        cumulativeBounds.setBounds(initialBounds);
-        
-        for (int t = 0; t < sizeT; t++) //status.setCompletion(++t / (double) sizeT))
-        {
-            if (Thread.currentThread().isInterrupted()) return initialBounds;
-            
-            Rectangle translated = translatedBounds.get(t);
-            cumulativeBounds.translate(translated.x, translated.y);
-            
-            for (int z = 0; z < sequence.getSizeZ(t); z++)
-            {
-                IcyBufferedImage translatedImage = new IcyBufferedImage(finalBounds.width, finalBounds.height, sizeC, dataType);
-                translatedImage.copyData(sequence.getImage(t, z), null, new Point(cumulativeBounds.x - finalBounds.x, cumulativeBounds.y - finalBounds.y));
-                output.setImage(t, z, translatedImage);
-            }
-        }
-        
-        if (policy != ResizePolicy.PRESERVE_SIZE) sequence.copyDataFrom(output);
-        
-        return finalBounds;
-    }
-    
-    /**
-     * Finds the 2D translation between two frames of a given sequence and return the result as a
-     * {@link Point} with integer coordinates (rounded). If the reference channel or slice is set to
-     * <code>-1</code> (i.e. "ALL"), then an average translation is computed from all selected
-     * channels and slices
-     * 
-     * @param sequence
-     * @param referenceChannel
-     * @param referenceSlice
-     * @param candidateFrame
-     * @param referenceFrame
-     * @return
-     */
-    private static Point findTranslation2D(Sequence sequence, int referenceChannel, int referenceSlice, int candidateFrame, int referenceFrame)
-    {
-        Vector2d translation = new Vector2d();
-        
-        int n = 0;
-        int minZ = referenceSlice == -1 ? 0 : referenceSlice;
-        int maxZ = referenceSlice == -1 ? sequence.getSizeZ(candidateFrame) : referenceSlice;
-        for (int z = minZ; z <= maxZ; z++)
-        {
-            int minC = referenceChannel == -1 ? 0 : referenceChannel;
-            int maxC = referenceChannel == -1 ? sequence.getSizeC() - 1 : referenceChannel;
-            
-            for (int c = minC; c <= maxC; c++)
-            {
-                IcyBufferedImage img = sequence.getImage(candidateFrame, z);
-                IcyBufferedImage ref = sequence.getImage(referenceFrame, z);
-                
-                translation.add(findTranslation2D(img, c, ref, c));
-                n++;
-            }
-        }
-        if (n > 1) translation.scale(1.0 / n);
-        
-        return new Point((int) Math.round(translation.x), (int) Math.round(translation.y));
-    }
-
-    /**
      * @param source
      *            the source image
      * @param sourceC
@@ -320,10 +73,6 @@ public class GaspardRigidRegistration
         
         float[] correlationMap = spectralCorrelation(_source, _target, width, height);
         
-        // IcyBufferedImage corr = new IcyBufferedImage(width, height, new
-        // float[][]{correlationMap});
-        // Icy.getMainInterface().addSequence(new Sequence(corr));
-        
         // Find maximum correlation
         
         int argMax = argMax(correlationMap, correlationMap.length);
@@ -337,6 +86,7 @@ public class GaspardRigidRegistration
         // recover (x,y)
         return new Vector2d(-transX, -transY);
     }
+    
     private static float[] spectralCorrelation(float[] a1, float[] a2, int width, int height)
     {
         // JTransforms's FFT takes dimensions as (rows, columns)
@@ -373,6 +123,7 @@ public class GaspardRigidRegistration
         
         return inverseFFT(sourceFFT, fft);
     }
+    
     /**
      * @param array
      * @param n
@@ -443,59 +194,40 @@ public class GaspardRigidRegistration
     /**
      * Register a sequence over time using the previous frame as reference
      * 
-     * @param sequence
-     *            the sequence to register
+     * @param workImage
+     *            the image to register
+     * @param ref
+     * 			  reference image
      * @param referenceChannel
      *            the channel used to calculate the transform (or -1 to calculate an average
      *            transform using all channels)
-     * @param referenceSlice
-     *            the slice used to calculate the transform (or -1 to calculate an average transform
-     *            using all slices)
      * @return <code>true</code> if the data has changed, <code>false</code> otherwise (i.e. the
      *         registration cannot be improved)
      */
-    public static boolean correctTemporalTranslation2D(Sequence sequence, int referenceChannel, int referenceSlice)
+       
+    public static boolean correctTranslation2D(IcyBufferedImage img, IcyBufferedImage ref, int referenceChannel)
     {
-        boolean change = false;
+        boolean change = false;        
+        if (Thread.currentThread().isInterrupted()) 
+        	return change;
         
-        for (int t = 1; t < sequence.getSizeT(); t++)
+        Vector2d translation = new Vector2d();
+        int n = 0;        
+        int minC = referenceChannel == -1 ? 0 : referenceChannel;
+        int maxC = referenceChannel == -1 ? img.getSizeC() - 1 : referenceChannel;
+        
+        for (int c = minC; c <= maxC; c++)
         {
-            int referenceFrame = t - 1;
-            
-            if (Thread.currentThread().isInterrupted()) 
-            	return change;
-            
-            Vector2d translation = new Vector2d();
-            int n = 0;
-            
-            int minZ = referenceSlice == -1 ? 0 : referenceSlice;
-            int maxZ = referenceSlice == -1 ? sequence.getSizeZ(t) : referenceSlice;
-            
-            for (int z = minZ; z <= maxZ; z++)
-            {
-                int minC = referenceChannel == -1 ? 0 : referenceChannel;
-                int maxC = referenceChannel == -1 ? sequence.getSizeC() - 1 : referenceChannel;
-                
-                for (int c = minC; c <= maxC; c++)
-                {
-                    IcyBufferedImage img = sequence.getImage(t, z);
-                    IcyBufferedImage ref = sequence.getImage(referenceFrame, z);
-                    
-                    translation.add(findTranslation2D(img, c, ref, c));
-                    n++;
-                }
-            }
-            
-            translation.scale(1.0 / n);
-            if (translation.lengthSquared() != 0)
-            {
-                change = true;
-                
-                for (int z = 0; z < sequence.getSizeZ(t); z++)
-                    sequence.setImage(t, z, applyTranslation2D(sequence.getImage(t, z), -1, translation, true));
-            }
+            translation.add(findTranslation2D(img, c, ref, c));
+            n++;
         }
-        
+                
+        translation.scale(1.0 / n);
+        if (translation.lengthSquared() != 0)
+        {
+            change = true;
+            img = applyTranslation2D(img, -1, translation, true);
+        }
         return change;
     }
     
@@ -515,23 +247,8 @@ public class GaspardRigidRegistration
      * @param preserveImageSize
      * 			preserve image size
      */
-    public static void applyTranslation2D(Sequence sequence, int t, int z, int c, Vector2d vector, boolean preserveImageSize)
-    {
-        if (vector.lengthSquared() == 0.0) return;
-        
-        int minT = (t == -1 ? 0 : t), maxT = (t == -1 ? sequence.getSizeT() - 1 : t);
-        int minZ = (z == -1 ? 0 : z), maxZ = (z == -1 ? sequence.getSizeZ() - 1 : z);
-        
-        for (int time = minT; time <= maxT; time++)
-            for (int slice = minZ; slice <= maxZ; slice++)
-            {
-                IcyBufferedImage image = sequence.getImage(time, slice);
-                image = applyTranslation2D(image, c, vector, preserveImageSize);
-                sequence.setImage(time, slice, image);
-            }
-    }
  
-    public static IcyBufferedImage applyTranslation2D(IcyBufferedImage image, int channel, Vector2d vector, boolean preserveImageSize)
+    public static IcyBufferedImage applyTranslation2D (IcyBufferedImage image, int channel, Vector2d vector, boolean preserveImageSize)
     {
         int dx = (int) Math.round(vector.x);
         int dy = (int) Math.round(vector.y);
@@ -564,60 +281,42 @@ public class GaspardRigidRegistration
     }
     
     /**
-     * Register a sequence over time using the previous frame as reference
+     * Register an image versus a reference image
      * 
      * @param sequence
      *            the sequence to register
      * @param referenceChannel
      *            the channel used to calculate the transform (or -1 to calculate an average
      *            transform using all channels)
-     * @param referenceSlice
-     *            the slice used to calculate the transform (or -1 to calculate an average transform
-     *            using all slices)
      * @return <code>true</code> if the data has changed, <code>false</code> otherwise (i.e. the
      *         registration cannot be improved)
-     */
-    public static boolean correctTemporalRotation2D(Sequence sequence, int referenceChannel, int referenceSlice)
+     */  
+  
+    
+    public static boolean correctRotation2D(IcyBufferedImage img, IcyBufferedImage ref, int referenceChannel)
     {
         boolean change = false;
+        if (Thread.currentThread().isInterrupted()) 
+        	return change;
+            
+        double angle = 0.0;
+        int n = 0;
         
-        for (int t = 1; t < sequence.getSizeT(); t++)
+        int minC = referenceChannel == -1 ? 0 : referenceChannel;
+        int maxC = referenceChannel == -1 ? ref.getSizeC() : referenceChannel;
+        
+        for (int c = minC; c <= maxC; c++)
         {
-            int referenceFrame = t - 1;
-            
-            if (Thread.currentThread().isInterrupted()) return change;
-            
-            double angle = 0.0;
-            int n = 0;
-            
-            int minZ = referenceSlice == -1 ? 0 : referenceSlice;
-            int maxZ = referenceSlice == -1 ? sequence.getSizeZ(t) : referenceSlice;
-            
-            for (int z = minZ; z <= maxZ; z++)
-            {
-                int minC = referenceChannel == -1 ? 0 : referenceChannel;
-                int maxC = referenceChannel == -1 ? sequence.getSizeC() : referenceChannel;
-                
-                for (int c = minC; c <= maxC; c++)
-                {
-                    IcyBufferedImage img = sequence.getImage(t, z);
-                    IcyBufferedImage ref = sequence.getImage(referenceFrame, z);
-                    
-                    angle += findRotation2D(img, c, ref, c);
-                    n++;
-                }
-            }
-            
-            angle /= n;
-            if (angle != 0.0)
-            {
-                change = true;
-                
-                for (int z = 0; z < sequence.getSizeZ(t); z++)
-                    sequence.setImage(t, z, applyRotation2D(sequence.getImage(t, z), -1, angle, true));
-            }
+            angle += findRotation2D(img, c, ref, c);
+            n++;
         }
         
+        angle /= n;
+        if (angle != 0.0)
+        {
+            change = true;
+            img = applyRotation2D(img, -1, angle, true);
+        }
         return change;
     }
     
@@ -804,39 +503,7 @@ public class GaspardRigidRegistration
         
         return value;
     }
-    
-    /**
-     * Rotates the specified sequence
-     * 
-     * @param seq
-     *            the sequence to translate
-     * @param t
-     *            the frame to translate (or -1 for all)
-     * @param z
-     *            the frame to translate (or -1 for all)
-     * @param c
-     *            the frame to translate (or -1 for all)
-     * @param angle
-     * 			  angle
-     * @param preserveImageSize
-     * 			  boolean
-     */
-    public static void applyRotation2D(Sequence seq, int t, int z, int c, double angle, boolean preserveImageSize)
-    {
-        if (angle == 0.0) return;
         
-        int minT = (t == -1 ? 0 : t), maxT = (t == -1 ? seq.getSizeT() - 1 : t);
-        int minZ = (z == -1 ? 0 : z), maxZ = (z == -1 ? seq.getSizeZ() - 1 : z);
-        
-        for (int time = minT; time <= maxT; time++)
-            for (int slice = minZ; slice <= maxZ; slice++)
-            {
-                IcyBufferedImage image = seq.getImage(time, slice);
-                image = applyRotation2D(image, c, angle, preserveImageSize);
-                seq.setImage(time, slice, image);
-            }
-    }
-    
     /**
      * @param img
      * 			image loaded
