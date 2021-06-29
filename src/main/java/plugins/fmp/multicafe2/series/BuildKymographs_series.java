@@ -278,6 +278,7 @@ public class BuildKymographs_series extends BuildSeries
 		} 
 	}
 	
+	// TODO make it on a circle and not along a line with length = diskRadiux * 2 
 	private void getPointsfromROIPolyLineUsingBresenham ( ROI2DShape roi, List<ArrayList<int[]>> masks, double diskRadius, int sizex, int sizey) 
 	{
 		ArrayList<int[]> pixels = Bresenham.getPixelsAlongLineFromROI2D (roi);
