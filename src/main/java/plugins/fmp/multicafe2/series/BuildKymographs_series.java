@@ -317,7 +317,7 @@ public class BuildKymographs_series extends BuildSeries
 
 	private IcyBufferedImage adjustImage(IcyBufferedImage  workImage, IcyBufferedImage referenceImage) 
 	{
-		int referenceChannel = 1;
+		int referenceChannel = 0;
 		GaspardRigidRegistration.correctTranslation2D(workImage, referenceImage, referenceChannel);
         boolean rotate = GaspardRigidRegistration.correctRotation2D(workImage, referenceImage, referenceChannel);
         if (rotate) 

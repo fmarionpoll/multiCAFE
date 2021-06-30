@@ -19,36 +19,6 @@ import icy.type.collection.array.Array1DUtil;
 public class GaspardRigidRegistration 
 {
 
-    /**
-     * Enumeration of the various supported resizing policies for rigid registration
-     * 
-     * @author Alexandre Dufour
-     */
-    public enum ResizePolicy
-    {
-        /**
-         * The final bounds of the registered sequence will be grown to ensure no information is
-         * lost, while missing pixels will be given an arbitrary value (typically 0).
-         */
-        UNITE_BOUNDS,
-        /**
-         * The final bounds of the registered sequence will be identical to that of the initial
-         * sequence, centered on the reference frame. Out-of-bounds pixels will be lost, while
-         * missing pixels will be given an arbitrary value (typically 0).
-         */
-        PRESERVE_SIZE,
-        /**
-         * The final bounds of the registered sequence will be the intersection of all translated
-         * bounds. Information will be lost, but the resulting sequence will have no missing pixel.
-         */
-        INTERSECT_BOUNDS;
-        
-        @Override
-        public String toString()
-        {
-            return super.toString().toLowerCase().replace('_', ' ');
-        }
-    }
     
     /**
      * @param source
@@ -63,7 +33,8 @@ public class GaspardRigidRegistration
      */
     public static Vector2d findTranslation2D(IcyBufferedImage source, int sourceC, IcyBufferedImage target, int targetC)
     {
-        if (!source.getBounds().equals(target.getBounds())) throw new UnsupportedOperationException("Cannot register images of different size (yet)");
+        if (!source.getBounds().equals(target.getBounds())) 
+        	throw new UnsupportedOperationException("Cannot register images of different size (yet)");
         
         int width = source.getWidth();
         int height = source.getHeight();
@@ -208,9 +179,6 @@ public class GaspardRigidRegistration
     public static boolean correctTranslation2D(IcyBufferedImage img, IcyBufferedImage ref, int referenceChannel)
     {
         boolean change = false;        
-        if (Thread.currentThread().isInterrupted()) 
-        	return change;
-        
         Vector2d translation = new Vector2d();
         int n = 0;        
         int minC = referenceChannel == -1 ? 0 : referenceChannel;
@@ -295,10 +263,7 @@ public class GaspardRigidRegistration
     
     public static boolean correctRotation2D(IcyBufferedImage img, IcyBufferedImage ref, int referenceChannel)
     {
-        boolean change = false;
-        if (Thread.currentThread().isInterrupted()) 
-        	return change;
-            
+        boolean change = false;            
         double angle = 0.0;
         int n = 0;
         

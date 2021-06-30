@@ -34,7 +34,7 @@ public class Create extends JPanel implements PropertyChangeListener
 	private static final long serialVersionUID = 1771360416354320887L;
 	private String 			detectString 			= "Start";
 			JButton 		startComputationButton 	= new JButton("Start");
-			JSpinner		diskRadiusSpinner 		= new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
+			JSpinner		diskRadiusSpinner 		= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
 			JCheckBox 		doRegistrationCheckBox 	= new JCheckBox("registration", false);
 			JCheckBox		allSeriesCheckBox 		= new JCheckBox("ALL series (current to last)", false);
 	EnumStatusComputation 	sComputation 			= EnumStatusComputation.START_COMPUTATION; 
