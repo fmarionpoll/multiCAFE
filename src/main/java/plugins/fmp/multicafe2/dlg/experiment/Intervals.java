@@ -25,8 +25,8 @@ public class Intervals extends JPanel
 	 * 
 	 */
 	private static final long serialVersionUID = -5739112045358747277L;
-	JSpinner 	startFrameJSpinner	= new JSpinner(new SpinnerNumberModel(0, 0, 10000, 1)); 
-	JSpinner 	endFrameJSpinner	= new JSpinner(new SpinnerNumberModel(99999999, 1, 99999999, 1));
+	JSpinner 	startFrameJSpinner	= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
+	JSpinner 	endFrameJSpinner	= new JSpinner(new SpinnerNumberModel(99999999., 1., 99999999., 1.));
 	JSpinner 	binSizeJSpinner		= new JSpinner(new SpinnerNumberModel(1., 0., 1000., 1.));
 	JComboMs 	binUnit 			= new JComboMs();
 	JButton		applyButton 		= new JButton("Apply changes");
@@ -72,7 +72,7 @@ public class Intervals extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
-				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				Experiment exp =(Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 					exp.camBinImage_Ms = (long) (((double) binSizeJSpinner.getValue())* binUnit.getMsUnitValue());
 			}});
@@ -95,12 +95,12 @@ public class Intervals extends JPanel
 		refreshBinSize(exp);
 		
 		double divisor = exp.camBinImage_Ms;
-		int lFirst = (int) (exp.offsetFirstCol_Ms/divisor);
-		startFrameJSpinner.setValue(lFirst);
+		double dFirst = exp.offsetFirstCol_Ms/divisor;
+		startFrameJSpinner.setValue(dFirst);
 		if(exp.offsetLastCol_Ms == 0)
 			exp.offsetLastCol_Ms = (long) (exp.getSeqCamSizeT() * divisor);
-		int lLast = (int) (exp.offsetLastCol_Ms/divisor);
-		endFrameJSpinner.setValue(lLast);
+		double dLast = exp.offsetLastCol_Ms/divisor;
+		endFrameJSpinner.setValue(dLast);
 		if (exp.camBinImage_Ms == 0)
 			exp.loadFileIntervalsFromSeqCamData();
 	}

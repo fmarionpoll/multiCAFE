@@ -24,10 +24,10 @@ public class Analyze  extends JPanel
 	JRadioButton  	isFixedFrame		= new JRadioButton("from ", false);
 	JRadioButton  	isFloatingFrame		= new JRadioButton("all", true);
 
-	JSpinner 	startJSpinner			= new JSpinner(new SpinnerNumberModel(0., 0., 1000., 1.)); 
+	JSpinner 	startJSpinner			= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
 	JSpinner 	endJSpinner				= new JSpinner(new SpinnerNumberModel(9999999., 1., 99999999., 1.));
 	JComboMs 	intervalsUnit 			= new JComboMs();
-	JSpinner 	binSize					= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
+	JSpinner 	binSize					= new JSpinner(new SpinnerNumberModel(1., 1., 10000., 1.));
 	JComboMs 	binUnit 				= new JComboMs();
 	
 	
@@ -112,7 +112,7 @@ public class Analyze  extends JPanel
 	
 	public long getBinMs() 
 	{
-		return (long)((int) binSize.getValue() * binUnit.getMsUnitValue());
+		return (long)((double) binSize.getValue() * binUnit.getMsUnitValue());
 	}
 }
 	
