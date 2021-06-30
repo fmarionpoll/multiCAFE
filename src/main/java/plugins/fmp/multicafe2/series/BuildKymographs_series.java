@@ -169,7 +169,7 @@ public class BuildKymographs_series extends BuildSeries
 					IcyBufferedImage sourceImage = imageIORead(sourceImageName);
 					int sourceImageWidth = sourceImage.getWidth();				
 					if (options.doRegistration ) 
-						sourceImage = adjustImage(sourceImage, referenceImage);
+						adjustImage(sourceImage, referenceImage);
 
 					int len =  sourceImage.getSizeX() *  sourceImage.getSizeY();
 					for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) 
@@ -315,14 +315,13 @@ public class BuildKymographs_series extends BuildSeries
 		return x;
 	}
 
-	private IcyBufferedImage adjustImage(IcyBufferedImage  workImage, IcyBufferedImage referenceImage) 
+	private void adjustImage(IcyBufferedImage workImage, IcyBufferedImage referenceImage) 
 	{
 		int referenceChannel = 0;
 		GaspardRigidRegistration.correctTranslation2D(workImage, referenceImage, referenceChannel);
         boolean rotate = GaspardRigidRegistration.correctRotation2D(workImage, referenceImage, referenceChannel);
         if (rotate) 
         	GaspardRigidRegistration.correctTranslation2D(workImage, referenceImage, referenceChannel);
-        return workImage;
 	}
 
 }

@@ -7,17 +7,17 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 /*
  Bresenham's algorithm
- algorithm to get successive pixel coordinates between 2 points connected by a line
- run-length slice line drawing algorithm as described by:
+ algorithm to get pixel coordinates between 2 points connected by a line
+ as described by:
  Michael ABRASH (1992) The Good, the Bad and the Run-sliced
  Dr Dobb's Journal 194: 171-191
  see also: https://www.javatpoint.com/computer-graphics-bresenhams-line-algorithm
  implementation adapted from https://gist.github.com/0x414c/3bbd1122a50e4be229ce
  from Alexey Gorishny
-
+ and
  drawFatLine (in C) from 
  https://github.com/ArminJo/STMF3-Discovery-Demos/blob/master/lib/graphics/src/thickLine.cpp
-
+ ---
  nice description of Bresenham's algorithm also here:
  http://members.chello.at/~easyfilter/bresenham.html
 */
@@ -64,7 +64,6 @@ public class Bresenham
             dx <<= 1;
             while (x != x2) 
             {
-//                target.set (x, y, color);
                 line.add(new int[]{x, y});
                 if (balance >= 0) 
                 {
@@ -74,7 +73,6 @@ public class Bresenham
                 balance += dy;
                 x += incx;
             }
-//            target.set (x, y, color);
             line.add(new int[]{x, y});
         } 
         else 
@@ -85,7 +83,6 @@ public class Bresenham
 
             while (y != y2) 
             {
-//                target.set (x, y, color);
                 line.add(new int[]{x, y});
                 if (balance >= 0) 
                 {
@@ -95,7 +92,6 @@ public class Bresenham
                 balance += dx;
                 y += incy;
             }
-//            target.set (x, y, color); 
             line.add(new int[]{x, y});
         }
         return line;

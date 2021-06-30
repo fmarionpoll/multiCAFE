@@ -62,7 +62,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 
 		SequenceNameListRenderer renderer = new SequenceNameListRenderer();
 		parent0.expListCombo.setRenderer(renderer);
-		int bWidth = 26; 
+		int bWidth = 30; 
 		int height = 20;
 		previousButton.setPreferredSize(new Dimension(bWidth, height));
 		nextButton.setPreferredSize(new Dimension(bWidth, height));
