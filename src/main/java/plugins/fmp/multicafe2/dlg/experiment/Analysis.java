@@ -15,7 +15,7 @@ import javax.swing.SpinnerNumberModel;
 
 import plugins.fmp.multicafe2.dlg.JComponents.JComboMs;
 
-public class Analyze  extends JPanel 
+public class Analysis  extends JPanel 
 {
 	/**
 	 * 

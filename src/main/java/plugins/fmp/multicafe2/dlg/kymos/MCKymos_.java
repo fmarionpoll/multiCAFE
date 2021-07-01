@@ -40,7 +40,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
 		mainPanel.add(capPopupPanel);
-		GridLayout capLayout = new GridLayout(3, 1);
+		GridLayout capLayout = new GridLayout(2, 1);
 		
 		tabCreate.init(capLayout, parent0);
 		tabCreate.addPropertyChangeListener(this);

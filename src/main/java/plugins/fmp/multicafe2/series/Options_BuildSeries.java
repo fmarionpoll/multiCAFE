@@ -24,6 +24,7 @@ public class Options_BuildSeries implements XMLPersistent
 	
 	public int 				diskRadius 			= 5;
 	public boolean 			doRegistration 		= false;
+	public int				referenceFrame		= 0;
 	public boolean			doCreateBinDir		= false;
 	public ArrayList<ROI2D> listROIStoBuildKymos= new ArrayList<ROI2D> ();
 	public ExperimentCombo	expList;

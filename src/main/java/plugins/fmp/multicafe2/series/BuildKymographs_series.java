@@ -129,10 +129,12 @@ public class BuildKymographs_series extends BuildSeries
 			return false;
 		}
 		
-		int startFrame = (int) (exp.offsetFirstCol_Ms  /exp.camBinImage_Ms);
-		final IcyBufferedImage referenceImage = seqCamData.getSeqImage(startFrame, 0); 
-		seqCamData.seq.removeAllROI();
+		int startFrame = options.referenceFrame;
+//		String referenceImageName = seqCamData.getFileName(startFrame);			
+//		final IcyBufferedImage referenceImage = imageIORead(referenceImageName);
+		final int sizeC = seqCamData.seq.getSizeC();
 		
+		seqCamData.seq.removeAllROI();
 		exp.seqKymos.seq = new Sequence();
 		
 		int nbcapillaries = exp.capillaries.capillariesArrayList.size();
@@ -164,19 +166,22 @@ public class BuildKymographs_series extends BuildSeries
 			{
 				@Override
 				public void run() 
-				{				
-					String sourceImageName = seqCamData.getFileName(indexFrom);			
-					IcyBufferedImage sourceImage = imageIORead(sourceImageName);
+				{						
+					IcyBufferedImage sourceImage = imageIORead(seqCamData.getFileName(indexFrom));
 					int sourceImageWidth = sourceImage.getWidth();				
 					if (options.doRegistration ) 
+					{
+						String referenceImageName = seqCamData.getFileName(startFrame);			
+						IcyBufferedImage referenceImage = imageIORead(referenceImageName);
 						adjustImage(sourceImage, referenceImage);
+					}
 
-					int len =  sourceImage.getSizeX() *  sourceImage.getSizeY();
-					for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) 
+					int len = sourceImage.getSizeX() *  sourceImage.getSizeY();
+					for (int chan = 0; chan < sizeC; chan++) 
 					{ 
 						int [] sourceImageChannel = new int[len];
 						sourceImageChannel = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(chan), sourceImageChannel, sourceImage.isSignedDataType()); 
-
+						
 						for (int icap=0; icap < nbcapillaries; icap++) 
 						{
 							ArrayList<int[]> cap_Integer = cap_kymoImageInteger.get(icap);
@@ -199,28 +204,30 @@ public class BuildKymographs_series extends BuildSeries
 		}
 		
 		waitFuturesCompletion(processor, futuresArray, progressBar);
-		
+		buildKymographImages(seqKymos.seq, sizeC, nbcapillaries);
         progressBar.close();
         
-        /// ---------------------------------------------------------
-        
-        seqKymos.seq.beginUpdate();
+		return true;
+	}
+	
+	private void buildKymographImages(Sequence seqKymo, int sizeC, int nbcapillaries)
+	{
+		seqKymo.beginUpdate();
 		for (int icap=0; icap < nbcapillaries; icap++) 
 		{
 			ArrayList<int[]> cap_Integer = cap_kymoImageInteger.get(icap);
 			IcyBufferedImage cap_Image = cap_bufKymoImage.get(icap);
 			boolean isSignedDataType = cap_Image.isSignedDataType();
-			for (int chan = 0; chan < seqCamData.seq.getSizeC(); chan++) 
+			for (int chan = 0; chan < sizeC; chan++) 
 			{
 				int [] tabValues = cap_Integer.get(chan); ; 
 				Object destArray = cap_Image.getDataXY(chan);
 				Array1DUtil.intArrayToSafeArray(tabValues, 0, destArray, 0, -1, isSignedDataType, isSignedDataType);
 				cap_Image.setDataXY(chan, destArray);
 			}
-			seqKymos.seq.setImage(icap, 0, cap_Image);
+			seqKymo.setImage(icap, 0, cap_Image);
 		}
-		seqKymos.seq.endUpdate();
-		return true;
+		seqKymo.endUpdate();
 	}
 		
 	private void initArraysToBuildKymographImages(Experiment exp) 

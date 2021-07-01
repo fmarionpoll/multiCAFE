@@ -37,6 +37,9 @@ public class Create extends JPanel implements PropertyChangeListener
 			JSpinner		diskRadiusSpinner 		= new JSpinner(new SpinnerNumberModel(3, 1, 100, 1));
 			JCheckBox 		doRegistrationCheckBox 	= new JCheckBox("registration", false);
 			JCheckBox		allSeriesCheckBox 		= new JCheckBox("ALL series (current to last)", false);
+			JLabel			startFrameLabel			= new JLabel ("starting at frame");
+			JSpinner		startFrameSpinner 		= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
+			
 	EnumStatusComputation 	sComputation 			= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE2 		parent0					= null;
 	private BuildKymographs_series threadBuildKymo 	= null;
@@ -54,14 +57,19 @@ public class Create extends JPanel implements PropertyChangeListener
 		JPanel panel1 = new JPanel(layout1);
 		panel1.add(startComputationButton);
 		panel1.add(allSeriesCheckBox);
+		panel1.add(new JLabel("area around ROIs", SwingConstants.RIGHT));
+		panel1.add(diskRadiusSpinner);  
 		add(panel1);
 		
 		JPanel panel2 = new JPanel(layout1);
-		panel2.add(new JLabel("area around ROIs", SwingConstants.RIGHT));
-		panel2.add(diskRadiusSpinner);  
 		panel2.add(doRegistrationCheckBox);
+		panel2.add(startFrameLabel);
+		panel2.add(startFrameSpinner);
 		add(panel2);
-			
+		
+		startFrameLabel.setVisible(false);
+		startFrameSpinner.setVisible(false);
+		
 		defineActionListeners();
 	}
 	
@@ -87,6 +95,17 @@ public class Create extends JPanel implements PropertyChangeListener
 				allSeriesCheckBox.setForeground(color);
 				startComputationButton.setForeground(color);
 		}});
+		
+		doRegistrationCheckBox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
+				boolean flag = doRegistrationCheckBox.isSelected();
+				startFrameLabel.setVisible(flag);
+				startFrameSpinner.setVisible(flag);
+				if (flag)
+					allSeriesCheckBox.setSelected(false);
+		}});
 	}
 		
 	private Options_BuildSeries initBuildParameters() 
@@ -105,6 +124,7 @@ public class Create extends JPanel implements PropertyChangeListener
 				
 		options.diskRadius 		= (int) diskRadiusSpinner.getValue();
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();
+		options.referenceFrame  = (int) startFrameSpinner.getValue();
 		options.doCreateBinDir 	= true;
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubDirectory = Experiment.BIN+options.t_binMs/1000 ;

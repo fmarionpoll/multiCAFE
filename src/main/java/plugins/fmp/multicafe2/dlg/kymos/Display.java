@@ -76,9 +76,6 @@ public class Display extends JPanel implements ViewerListener
 		panel1.add(nextButton, BorderLayout.EAST);
 		add(panel1);
 		
-		JPanel panel2 = new JPanel (layout);
-		add(panel2);
-		
 		JPanel panel3 = new JPanel (layout);
 		panel3.add(viewLevelsCheckbox);
 		panel3.add(viewDerivativeCheckbox);

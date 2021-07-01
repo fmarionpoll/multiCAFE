@@ -55,11 +55,8 @@ public class Intervals extends JPanel
 		panel2.add(binColumnJSpinner);
 		panel2.add(binUnit);
 		binUnit.setSelectedIndex(2);
+		panel2.add(applyButton);
 		add(panel2); 
-		
-		JPanel panel3 = new JPanel(layout1);
-		panel3.add(applyButton);
-		add(panel3);
 		
 		getFromCamDataButton.setEnabled(false);
 		defineActionListeners();

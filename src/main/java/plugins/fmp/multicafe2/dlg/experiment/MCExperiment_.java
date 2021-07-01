@@ -40,7 +40,7 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 	public 	Filter			tabFilter		= new Filter();
 	public 	Edit			tabEdit			= new Edit();
 	public 	Intervals		tabIntervals	= new Intervals();
-	public 	Analyze			tabAnalyze		= new Analyze();
+	public 	Analysis			tabAnalyze		= new Analysis();
 	public 	LoadSave		panelLoadSave	= new LoadSave();
 	
 	private MultiCAFE2 		parent0 		= null;
@@ -68,10 +68,10 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 		tabsPane.addTab("Edit", null, tabEdit, "Edit descriptors");
 
 		tabIntervals.init(tabsLayout, parent0);
-		tabsPane.addTab("Intervals", null, tabIntervals, "View/define stack image intervals");
+		tabsPane.addTab("Intervals", null, tabIntervals, "View/edit time-lapse intervals");
 		
 		tabAnalyze.init(tabsLayout);
-		tabsPane.addTab("Analyze", null, tabAnalyze, "Define analysis intervals");
+		tabsPane.addTab("Analysis", null, tabAnalyze, "Define analysis intervals");
 
 		tabOptions.init(tabsLayout, parent0);
 		tabsPane.addTab("Options", null, tabOptions, "Options to display data");

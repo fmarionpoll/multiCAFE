@@ -202,12 +202,8 @@ public class GaspardRigidRegistration
     /**
      * Translates the specified sequence
      * 
-     * @param sequence
-     *            the sequence to translate
-     * @param t
-     *            the frame to translate (or -1 for all)
-     * @param z
-     *            the frame to translate (or -1 for all)
+     * @param image
+     *            the image to translate
      * @param c
      *            the frame to translate (or -1 for all)
      * @param vector
@@ -220,8 +216,9 @@ public class GaspardRigidRegistration
     {
         int dx = (int) Math.round(vector.x);
         int dy = (int) Math.round(vector.y);
-        
-        if (dx == 0 && dy == 0) return image;
+        System.out.println("dx=" + dx + " dy="+dy);
+        if (dx == 0 && dy == 0) 
+        	return image;
         
         Rectangle newSize = image.getBounds();
         newSize.width += Math.abs(dx);
