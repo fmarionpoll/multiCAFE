@@ -58,10 +58,8 @@ public class Intervals extends JPanel
 		panel1.add(binUnit);
 		add(panel1);
 
-//		JPanel panel2 = new JPanel(layout1);
 		panel1.add(refreshButton);
 		panel1.add(applyButton);
-//		add(panel2);
 	
 		defineActionListeners();
 	}

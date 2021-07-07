@@ -126,7 +126,7 @@ public class ExperimentDirectories
 		cameraImagesDirectory = Directories.getDirectoryFromName(cameraImagesList.get(0));
 		
 		resultsDirectory = getV2ResultsDirectoryDialog(cameraImagesDirectory, Experiment.RESULTS, createResults);
-		binSubDirectory = getV2BinSubDirectory(expListCombo, resultsDirectory, null);
+		binSubDirectory = getV2BinSubDirectory(expListCombo.expListBinSubDirectory, resultsDirectory, null);
 		
 		String kymosDir = resultsDirectory + File.separator + binSubDirectory;
 		kymosImagesList = getV2ImagesListFromPath(kymosDir);
@@ -143,7 +143,23 @@ public class ExperimentDirectories
 		cameraImagesDirectory = strDirectory; //Directories.getDirectoryFromName(cameraImagesList.get(0));
 		
 		resultsDirectory =  getV2ResultsDirectory(cameraImagesDirectory, exptDirectory);
-		this.binSubDirectory = getV2BinSubDirectory(expListCombo, resultsDirectory, binSubDirectory);
+		this.binSubDirectory = getV2BinSubDirectory(expListCombo.expListBinSubDirectory, resultsDirectory, binSubDirectory);
+		
+		String kymosDir = resultsDirectory + File.separator + this.binSubDirectory;
+		kymosImagesList = getV2ImagesListFromPath(kymosDir);
+		kymosImagesList = keepOnlyAcceptedNames_List(kymosImagesList, "tiff"); 
+		// TODO wrong if any bin
+		return true;
+	}
+	
+	public boolean getDirectoriesFromGrabPath(String grabsDirectory)
+	{
+		cameraImagesList = getV2ImagesListFromPath(grabsDirectory);
+		cameraImagesList = keepOnlyAcceptedNames_List(cameraImagesList, "jpg");
+		cameraImagesDirectory = grabsDirectory; 
+		
+		resultsDirectory = getV2ResultsDirectory(cameraImagesDirectory, Experiment.RESULTS);
+		binSubDirectory = getV2BinSubDirectory(null, resultsDirectory, null);
 		
 		String kymosDir = resultsDirectory + File.separator + this.binSubDirectory;
 		kymosImagesList = getV2ImagesListFromPath(kymosDir);
@@ -152,7 +168,7 @@ public class ExperimentDirectories
 		return true;
 	}
 
-	private String getV2BinSubDirectory(ExperimentCombo expListCombo, String parentDirectory, String binSubDirectory) 
+	private String getV2BinSubDirectory(String expListBinSubDirectory, String parentDirectory, String binSubDirectory) 
 	{
 		List<String> expList = Directories.getSortedListOfSubDirectoriesWithTIFF(parentDirectory);
 		move_TIFFandLINEfiles_From_Results_to_BinDirectory(parentDirectory, expList);
@@ -161,7 +177,7 @@ public class ExperimentDirectories
 	    {
 		    if (expList.size() > 1) 
 		    {
-		    	if (expListCombo.expListBinSubDirectory == null)
+		    	if (expListBinSubDirectory == null)
 		    		subDirectory = selectSubDirDialog(expList, "Select item", Experiment.BIN, false);
 		    }
 		    else if (expList.size() == 1 ) 
@@ -173,8 +189,8 @@ public class ExperimentDirectories
 		    else 
 		    	subDirectory = Experiment.BIN + "60";
 	    }
-	    if (expListCombo.expListBinSubDirectory != null) 
-	    	subDirectory = expListCombo.expListBinSubDirectory;
+	    if (expListBinSubDirectory != null) 
+	    	subDirectory = expListBinSubDirectory;
 	    
 	    move_XML_From_Bin_to_Results(parentDirectory, subDirectory);
 	    
@@ -199,7 +215,7 @@ public class ExperimentDirectories
 	{
 		resultsSubDirectory = getParentIf(resultsSubDirectory, Experiment.BIN);
 		
-		 if (!resultsSubDirectory.contains(Experiment.RESULTS))
+		 if (!resultsSubDirectory.contains(Experiment.RESULTS) || !resultsSubDirectory.contains(parentDirectory))
 			 resultsSubDirectory = parentDirectory + File.separator + Experiment.RESULTS;
 	    return resultsSubDirectory;
 	}

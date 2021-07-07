@@ -2,6 +2,7 @@ package plugins.fmp.multicafe2.dlg.experiment;
 
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,12 +16,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
@@ -28,7 +31,9 @@ import javax.swing.ScrollPaneConstants;
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
 import icy.preferences.XMLPreferences;
+
 import plugins.fmp.multicafe2.MultiCAFE2;
+import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.ExperimentDirectories;
 
 
@@ -45,6 +50,8 @@ public class SelectFiles1 extends JPanel
 	private JButton 	clearAllButton			= new JButton("Clear all");
 	private JButton 	addSelectedButton		= new JButton("Add selected");
 	private JButton 	addAllButton			= new JButton("Add all");
+	private JRadioButton rbFile					= new JRadioButton("file", true);
+	private JRadioButton rbDirectory			= new JRadioButton("directory");
 	private JList<String> directoriesJList		= new JList<String>(new DefaultListModel<String>());
 	private MultiCAFE2 	parent0 				= null;
 	private LoadSave 	parent1 				= null;
@@ -57,14 +64,25 @@ public class SelectFiles1 extends JPanel
 		this.parent0 = parent0;
 		this.parent1 = parent0.paneExperiment.panelLoadSave;
 		addPropertyChangeListener(parent1);
-
-		dialogFrame = new IcyFrame ("Select files", true, true);
+		
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
+		
+		FlowLayout layout1 = new FlowLayout(FlowLayout.LEFT);
+		layout1.setVgap(1);
+		JPanel topPanel = new JPanel(layout1);
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(rbFile);
+		bg.add(rbDirectory);
+		topPanel.add(findButton);
+		topPanel.add(filterCombo);
+		topPanel.add(rbFile);
+		topPanel.add(rbDirectory);
+		mainPanel.add(GuiUtil.besidesPanel(topPanel));
+		filterCombo.setSelectedIndex(5);
+		
+		dialogFrame = new IcyFrame ("Select files", true, true);
 		dialogFrame.setLayout(new BorderLayout());
 		dialogFrame.add(mainPanel, BorderLayout.CENTER);
-		
-		mainPanel.add(GuiUtil.besidesPanel(findButton, filterCombo));
-		filterCombo.setSelectedIndex(5);
 		
 		directoriesJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		directoriesJList.setLayoutOrientation(JList.VERTICAL);
@@ -99,12 +117,16 @@ public class SelectFiles1 extends JPanel
             public void actionPerformed(ActionEvent arg0)  
             {	
     			String pattern = (String) filterCombo.getSelectedItem();
+    			
     			// ugly patch to cope with one of the previous versions of multicafe that saved files under an other name
     			if (pattern.contains("MCexperiment"))
     				pattern = "MCexpe";
-    			if (pattern.contains("MCcapillaries"))
-    				pattern = "MCcapi"
-;   	    		getListofFilesMatchingPattern(pattern);
+    			else if (pattern.contains("MCcapillaries"))
+    				pattern = "MCcapi";
+    			boolean isFileName = rbFile.isSelected();
+    			if (pattern.contains("grabs")) 
+    				isFileName = false;
+    			getListofFilesMatchingPattern(pattern, isFileName);
             }});
 
 		clearSelectedButton.addActionListener(new ActionListener()  
@@ -172,53 +194,77 @@ public class SelectFiles1 extends JPanel
 		return guiPrefs.get("lastUsedPath", "");
 	}
 	
- 	private void getListofFilesMatchingPattern(String pattern) 
+	private boolean getListofFilesMatchingFileNamePattern(String pattern, File directory) 
+ 	{
+		final String lastUsedPathString = directory.getAbsolutePath();
+		Path lastPath = Paths.get(lastUsedPathString);
+		
+		List<Path> result = null;
+        try (Stream<Path> walk = Files.walk(lastPath)) {
+            result = walk
+                    .filter(Files::isRegularFile)   // is a file
+                    .filter(p -> p.getFileName().toString().contains(pattern))
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+			e.printStackTrace();
+		}
+        boolean flag = false;
+        if (result != null && result.size() > 0) 
+        {
+        	flag = true;
+        	for (Path path: result)
+        		addNameToListIfNew(path.toString());
+        }
+        return flag;
+	}
+	
+	private void getListofFilesMatchingDirectoryNamePattern(String pattern, File directory) 
+ 	{
+		final String lastUsedPathString = directory.getAbsolutePath();
+		Path lastPath = Paths.get(lastUsedPathString);
+		
+		List<Path> result = null;
+        try (Stream<Path> walk = Files.walk(lastPath)) {
+            result = walk
+                    .filter(Files::isDirectory)   // is a directory
+                    .filter(p -> p.getFileName().toString().contains(pattern))
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+			e.printStackTrace();
+		}
+        
+        if (result != null)
+        	for (Path path: result) 
+        	{
+        		File dir = path.toFile();
+        		if (!getListofFilesMatchingFileNamePattern("MCexpe", dir))
+        		{
+        			String experimentName = createEmptyExperiment(path);
+        			addNameToListIfNew(experimentName);
+        		}
+        	}
+	}
+	
+	private String createEmptyExperiment(Path path) 
+	{
+		ExperimentDirectories eADF = new ExperimentDirectories();
+		eADF.getDirectoriesFromGrabPath(path.toString());
+		Experiment exp = new Experiment(eADF);
+		return exp.getExperimentDirectory();
+	}
+	
+ 	private void getListofFilesMatchingPattern(String pattern, boolean isFileName) 
  	{
 		File dir = chooseDirectory(getPreferencesPath());
 		if (dir == null) 
 			return;
-		
 		final String lastUsedPathString = dir.getAbsolutePath();
 		setPreferencesPath(lastUsedPathString);
-		Path lastPath = Paths.get(lastUsedPathString);
-		boolean option1 = true;
-		
-		if (option1) 
-		{
-			List<Path> result = null;
-	        try (Stream<Path> walk = Files.walk(lastPath)) {
-	            result = walk
-	                    .filter(Files::isRegularFile)   // is a file
-	                    .filter(p -> p.getFileName().toString().contains(pattern))
-	                    .collect(Collectors.toList());
-	        } catch (IOException e) {
-				e.printStackTrace();
-			}
-	        if (result != null)
-	        	for (Path path: result)
-	        		addNameToListIfNew(path.toString());
-		}
-		else 
-		{
-			final String patternLowerCase = pattern.toLowerCase();
-			try 
-			{
-				if (Files.exists(lastPath)) 
-				{
-					Files.walk(lastPath)
-					.filter(Files::isRegularFile)		
-					.forEach((f)->{
-					    String fileName = f.toString().toLowerCase();
-					    if( fileName.contains(patternLowerCase)) 
-					    	addNameToListIfNew(fileName);
-					});
-				}
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-		}
+
+		if (isFileName)
+			getListofFilesMatchingFileNamePattern(pattern, dir);
+		else
+			getListofFilesMatchingDirectoryNamePattern(pattern, dir);
 	}
 	
 	private void addNameToListIfNew(String fileName) 
