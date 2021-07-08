@@ -43,6 +43,7 @@ public class Create extends JPanel
 	private JButton 	createROIsFromPolygonButton2 = new JButton("Generate capillaries");
 	private JRadioButton selectGroupedby2Button = new JRadioButton("grouped by 2");
 	private JRadioButton selectRegularButton 	= new JRadioButton("evenly spaced");
+	private JComboBox<String> cagesJCombo 		= new JComboBox<String> (new String[] {"10 cages", "4+2 cages", "other" });
 	private JComboBox<String> orientationJCombo = new JComboBox<String> (new String[] {"0°", "90°", "180°", "270°" });
 	private ButtonGroup buttonGroup2 			= new ButtonGroup();
 	private JSpinner 	nbcapillariesJSpinner 	= new JSpinner(new SpinnerNumberModel(20, 0, 500, 1));
@@ -70,6 +71,7 @@ public class Create extends JPanel
 		panel1.add(nbcapillariesJSpinner);
 		panel1.add(selectRegularButton);
 		panel1.add(selectGroupedby2Button);
+		panel1.add(cagesJCombo);
 		add(panel1);
 		
 		JPanel panel2 = new JPanel(flowLayout);
@@ -103,6 +105,16 @@ public class Create extends JPanel
 				if (exp != null) 
 				{
 					SequenceKymosUtils.transferCamDataROIStoKymo(exp);
+					switch(cagesJCombo.getSelectedIndex()) {
+					case 0:
+						exp.capillaries.initCapillariesWith10Cages();
+						break;
+					case 1:
+						exp.capillaries.initCapillariesWith6Cages();
+						break;
+					default:
+						break;		
+					}
 					firePropertyChange("CAPILLARIES_NEW", false, true);
 				}
 			}});
@@ -259,7 +271,6 @@ public class Create extends JPanel
 		}
 	}
 
-	
 	private void addROILine(SequenceCamData seqCamData, String name, Polygon2D roiPolygon, double span0, double span) 
 	{
 		double x0 = roiPolygon.xpoints[0] + (roiPolygon.xpoints[3]-roiPolygon.xpoints[0]) * span0 /span;
