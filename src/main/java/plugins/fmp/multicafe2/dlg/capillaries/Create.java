@@ -47,6 +47,7 @@ public class Create extends JPanel
 	private JComboBox<String> orientationJCombo = new JComboBox<String> (new String[] {"0°", "90°", "180°", "270°" });
 	private ButtonGroup buttonGroup2 			= new ButtonGroup();
 	private JSpinner 	nbcapillariesJSpinner 	= new JSpinner(new SpinnerNumberModel(20, 0, 500, 1));
+	private JSpinner 	nbFliesPerCageJSpinner 	= new JSpinner(new SpinnerNumberModel(1, 0, 500, 1));
 	private JSpinner 	width_between_capillariesJSpinner = new JSpinner(new SpinnerNumberModel(30, 0, 10000, 1));
 	private JSpinner 	width_intervalJSpinner 	= new JSpinner(new SpinnerNumberModel(53, 0, 10000, 1)); 
 	private MultiCAFE2 	parent0 				= null;
@@ -64,14 +65,16 @@ public class Create extends JPanel
 		buttonGroup2.add(selectGroupedby2Button);
 		buttonGroup2.add(selectRegularButton);
 		selectGroupedby2Button.setSelected(true);
+		panel0.add(new JLabel ("N capillaries ", SwingConstants.RIGHT));
+		panel0.add(nbcapillariesJSpinner);
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout);
-		panel1.add(new JLabel ("N capillaries ", SwingConstants.RIGHT));
-		panel1.add(nbcapillariesJSpinner);
 		panel1.add(selectRegularButton);
 		panel1.add(selectGroupedby2Button);
 		panel1.add(cagesJCombo);
+		panel1.add(new JLabel ("flies/cage", SwingConstants.RIGHT));
+		panel1.add(nbFliesPerCageJSpinner);
 		add(panel1);
 		
 		JPanel panel2 = new JPanel(flowLayout);
@@ -105,12 +108,13 @@ public class Create extends JPanel
 				if (exp != null) 
 				{
 					SequenceKymosUtils.transferCamDataROIStoKymo(exp);
+					int nbFliesPerCage = (int) nbFliesPerCageJSpinner.getValue();
 					switch(cagesJCombo.getSelectedIndex()) {
 					case 0:
-						exp.capillaries.initCapillariesWith10Cages();
+						exp.capillaries.initCapillariesWith10Cages(nbFliesPerCage);
 						break;
 					case 1:
-						exp.capillaries.initCapillariesWith6Cages();
+						exp.capillaries.initCapillariesWith6Cages(nbFliesPerCage);
 						break;
 					default:
 						break;		
