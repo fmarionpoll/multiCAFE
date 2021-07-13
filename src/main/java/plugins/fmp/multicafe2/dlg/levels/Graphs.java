@@ -41,6 +41,7 @@ public class Graphs extends JPanel implements SequenceListener
 	private JCheckBox 	derivativeCheckbox 		= new JCheckBox("derivative", false);
 	private JCheckBox 	consumptionCheckbox 	= new JCheckBox("consumption", false);
 	private JCheckBox 	deltaCheckbox 			= new JCheckBox("delta (Vt - Vt-1)", false);
+	private JCheckBox 	correctEvaporationCheckbox 	= new JCheckBox("correct evaporation", false);
 	private JButton 	displayResultsButton 	= new JButton("Display results");
 	
 	
@@ -58,6 +59,10 @@ public class Graphs extends JPanel implements SequenceListener
 		panel.add(consumptionCheckbox);
 		panel.add(deltaCheckbox);
 		add(panel);
+		JPanel panel1 = new JPanel(layout);
+		panel1.add(correctEvaporationCheckbox);
+		add(panel1);
+		
 		add(GuiUtil.besidesPanel(displayResultsButton, new JLabel(" "))); 
 		defineActionListeners();
 	}
