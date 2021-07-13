@@ -25,8 +25,8 @@ public class Levels extends JPanel
 	JCheckBox 	topLevelDeltaCheckBox 	= new JCheckBox("delta top", false);
 	
 	JCheckBox 	bottomLevelCheckBox = new JCheckBox("bottom", false);
-	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R & ratio", true);
-	JCheckBox 	cageCheckBox 		= new JCheckBox("sum per cage", false);
+	JCheckBox 	lrRatioCheckBox 		= new JCheckBox("L+R & ratio", true);
+	JCheckBox 	sumPerCageCheckBox 		= new JCheckBox("sum per cage", false);
 	JCheckBox 	derivativeCheckBox  = new JCheckBox("derivative", false);
 	JCheckBox	t0CheckBox			= new JCheckBox("t-t0", true);
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
@@ -45,8 +45,9 @@ public class Levels extends JPanel
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout0);
-		panel1.add(sumCheckBox);
-		panel1.add(cageCheckBox);panel1.add(t0CheckBox);
+		panel1.add(lrRatioCheckBox);
+		panel1.add(sumPerCageCheckBox);
+		panel1.add(t0CheckBox);
 		panel1.add(onlyaliveCheckBox);
 		panel1.add(subtractEvaporationCheckBox);
 		add(panel1);
@@ -67,6 +68,22 @@ public class Levels extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				firePropertyChange("EXPORT_KYMOSDATA", false, true);
+			}});
+	
+		lrRatioCheckBox.addActionListener (new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				if (lrRatioCheckBox.isSelected())
+					sumPerCageCheckBox.setSelected(false);
+			}});
+		
+		sumPerCageCheckBox.addActionListener (new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				if (sumPerCageCheckBox.isSelected())
+					lrRatioCheckBox.setSelected(false);
 			}});
 	}
 

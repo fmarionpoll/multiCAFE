@@ -127,7 +127,10 @@ public class Experiment
 	
 	public Experiment(ExperimentDirectories eADF) 
 	{
-		strImagesDirectory = Directories.getDirectoryFromName(eADF.cameraImagesList.get(0));
+		String imgDir = null;
+		if (eADF.cameraImagesList.size() > 0)
+			imgDir = eADF.cameraImagesList.get(0);
+		strImagesDirectory = Directories.getDirectoryFromName(imgDir);
 		strExperimentDirectory = eADF.resultsDirectory;
 		String binDirectory = strExperimentDirectory + File.separator + eADF.binSubDirectory;
 		Path binDirectoryPath = Paths.get(binDirectory);

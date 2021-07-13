@@ -106,7 +106,6 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) 
 		{
 			parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(true);
-			firePropertyChange("CAPILLARIES_NEW", false, true);
 			tabsPane.setSelectedIndex(ID_INFOS);
 		}
 

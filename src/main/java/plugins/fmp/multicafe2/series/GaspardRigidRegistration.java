@@ -19,18 +19,6 @@ import icy.type.collection.array.Array1DUtil;
 public class GaspardRigidRegistration 
 {
 
-    
-    /**
-     * @param source
-     *            the source image
-     * @param sourceC
-     *            the channel in the source image
-     * @param target
-     *            the target image
-     * @param targetC
-     *            the channel in the target image
-     * @return the translation vector needed to transform source into target
-     */
     public static Vector2d findTranslation2D(IcyBufferedImage source, int sourceC, IcyBufferedImage target, int targetC)
     {
         if (!source.getBounds().equals(target.getBounds())) 
@@ -95,12 +83,6 @@ public class GaspardRigidRegistration
         return inverseFFT(sourceFFT, fft);
     }
     
-    /**
-     * @param array
-     * @param n
-     *            limits the argMax to the first n elements of the input array
-     * @return
-     */
     private static int argMax(float[] array, int n)
     {
         int argMax = 0;
@@ -117,15 +99,6 @@ public class GaspardRigidRegistration
         return argMax;
     }
  
-    /**
-     * Apply a (forward) FFT on real data.
-     * 
-     * @param data
-     *            the data to transform.
-     * @param fft
-     *            An FFT object to perform the transform
-     * @return the complex, Fourier-transformed data.
-     */
     private static float[] forwardFFT(float[] realData, FloatFFT_2D fft)
     {
         float[] out = new float[realData.length * 2];
@@ -139,15 +112,6 @@ public class GaspardRigidRegistration
         return out;
     }
     
-    /**
-     * Apply an inverse FFT on complex data.
-     * 
-     * @param data
-     *            the complex data to transform.
-     * @param fft
-     *            An FFT object to perform the transform
-     * @return the real, Fourier-inverse data.
-     */
     private static float[] inverseFFT(float[] cplxData, FloatFFT_2D fft)
     {
         float[] out = new float[cplxData.length / 2];
@@ -161,20 +125,6 @@ public class GaspardRigidRegistration
         
         return out;
     }
-    
-    /**
-     * Register a sequence over time using the previous frame as reference
-     * 
-     * @param workImage
-     *            the image to register
-     * @param ref
-     * 			  reference image
-     * @param referenceChannel
-     *            the channel used to calculate the transform (or -1 to calculate an average
-     *            transform using all channels)
-     * @return <code>true</code> if the data has changed, <code>false</code> otherwise (i.e. the
-     *         registration cannot be improved)
-     */
        
     public static boolean correctTranslation2D(IcyBufferedImage img, IcyBufferedImage ref, int referenceChannel)
     {
@@ -198,19 +148,6 @@ public class GaspardRigidRegistration
         }
         return change;
     }
-    
-    /**
-     * Translates the specified sequence
-     * 
-     * @param image
-     *            the image to translate
-     * @param c
-     *            the frame to translate (or -1 for all)
-     * @param vector
-     *            Vector2D
-     * @param preserveImageSize
-     * 			preserve image size
-     */
  
     public static IcyBufferedImage applyTranslation2D (IcyBufferedImage image, int channel, Vector2d vector, boolean preserveImageSize)
     {
@@ -245,19 +182,6 @@ public class GaspardRigidRegistration
         return newImage;
     }
     
-    /**
-     * Register an image versus a reference image
-     * 
-     * @param sequence
-     *            the sequence to register
-     * @param referenceChannel
-     *            the channel used to calculate the transform (or -1 to calculate an average
-     *            transform using all channels)
-     * @return <code>true</code> if the data has changed, <code>false</code> otherwise (i.e. the
-     *         registration cannot be improved)
-     */  
-  
-    
     public static boolean correctRotation2D(IcyBufferedImage img, IcyBufferedImage ref, int referenceChannel)
     {
         boolean change = false;            
@@ -282,35 +206,11 @@ public class GaspardRigidRegistration
         return change;
     }
     
-    /**
-     * @param source
-     *            the source image
-     * @param sourceC
-     *            the channel in the source image
-     * @param target
-     *            the target image
-     * @param targetC
-     *            the channel in the target image
-     * @return the rotation angle around the center (in radians) that transforms source into target
-     */
     public static double findRotation2D(IcyBufferedImage source, int sourceC, IcyBufferedImage target, int targetC)
     {
         return findRotation2D(source, sourceC, target, targetC, null);
     }
     
-    /**
-     * @param source
-     *            the source image
-     * @param sourceC
-     *            the channel in the source image
-     * @param target
-     *            the target image
-     * @param targetC
-     *            the channel in the target image
-     * @param previousTranslation
-     *            the previous translation (if any) necessary to register the source to the target
-     * @return the rotation angle around the center (in radians) that transforms source into target
-     */
     public static double findRotation2D(IcyBufferedImage source, int sourceC, IcyBufferedImage target, int targetC, Vector2d previousTranslation)
     {
         if (!source.getBounds().equals(target.getBounds()))
@@ -356,25 +256,11 @@ public class GaspardRigidRegistration
         return -rotX * 2 * Math.PI / width;
     }
     
-    /**
-     * Creates a Log-Polar view of the input image with default center (= image center) and
-     * precision (360)
-     * 
-     * @return A Log-Polar view of the input image
-     */
     private static IcyBufferedImage toLogPolar(IcyBufferedImage image)
     {
         return toLogPolar(image, image.getWidth() / 2, image.getHeight() / 2, 1080, 360);
     }
     
-    /**
-     * @param image
-     * @param sizeTheta
-     *            number of sectors
-     * @param sizeRho
-     *            number of rings
-     * @return
-     */
     private static IcyBufferedImage toLogPolar(IcyBufferedImage image, int centerX, int centerY, int sizeTheta, int sizeRho)
     {
         int sizeC = image.getSizeC();
@@ -420,17 +306,6 @@ public class GaspardRigidRegistration
         return logPol;
     }
 
-    /**
-     * Calculates the 2D image value at the given real coordinates by bilinear interpolation
-     * 
-     * @param imageFloat
-     *            the image to sample (must be of type {@link DataType#DOUBLE})
-     * @param x
-     *            the X-coordinate of the point
-     * @param y
-     *            the Y-coordinate of the point
-     * @return the interpolated image value at the given coordinates
-     */
     private static float getPixelValue(IcyBufferedImage img, double x, double y, int c)
     {
         int width = img.getWidth();
@@ -466,18 +341,6 @@ public class GaspardRigidRegistration
         return value;
     }
         
-    /**
-     * @param img
-     * 			image loaded
-     * @param channel
-     *            the channel to rotate (or -1 for all)
-     * @param angle
-     * 			angle
-     * @param preserveImageSize
-     * 			boolean
-     * @return
-     * 			rotImg
-     */
     public static IcyBufferedImage applyRotation2D(IcyBufferedImage img, int channel, double angle, boolean preserveImageSize)
     {
         if (angle == 0.0) return img;

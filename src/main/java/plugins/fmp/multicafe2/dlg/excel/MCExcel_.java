@@ -172,8 +172,8 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.bottomLevel 	= tabKymos.bottomLevelCheckBox.isSelected(); 
 		options.derivative 		= tabKymos.derivativeCheckBox.isSelected(); 
 		options.sumGulps 		= false; 
-		options.sum_ratio_LR 	= tabKymos.sumCheckBox.isSelected(); 
-		options.cage 			= tabKymos.cageCheckBox.isSelected();
+		options.sum_ratio_LR 	= tabKymos.lrRatioCheckBox.isSelected(); 
+		options.cage 			= tabKymos.sumPerCageCheckBox.isSelected();
 		options.t0 				= tabKymos.t0CheckBox.isSelected();
 		options.onlyalive 		= tabKymos.onlyaliveCheckBox.isSelected();
 		options.subtractEvaporation = tabKymos.subtractEvaporationCheckBox.isSelected();
