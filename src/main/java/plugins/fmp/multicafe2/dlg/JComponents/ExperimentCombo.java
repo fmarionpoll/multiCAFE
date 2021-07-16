@@ -3,10 +3,14 @@ package plugins.fmp.multicafe2.dlg.JComponents;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.swing.JComboBox;
 
 import icy.gui.frame.progress.ProgressFrame;
+import icy.system.SystemUtil;
+import icy.system.thread.Processor;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
@@ -105,14 +109,29 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		maxSizeOfCapillaryArrays = 0;
 		progress.setLength(nexpts);
 		boolean flag = true;
+		
+	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+	    processor.setThreadName("buildkymo2");
+	    processor.setPriority(Processor.NORM_PRIORITY);
+        ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nexpts);
+		futuresArray.clear();
+		
 		for (int i=0; i< getItemCount(); i++) 
 		{
-			Experiment exp = getItemAt(i);
+			final int it = i;
+			futuresArray.add(processor.submit(new Runnable () 
+			{
+				
+				@Override
+				public void run() 
+				{
+			Experiment exp = getItemAt(it);
 			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
 			exp.setBinSubDirectory(expListBinSubDirectory);
 			if (expListBinSubDirectory == null)
 				exp.checkKymosDirectory(exp.getBinSubDirectory());
-			flag &= exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
+//			flag &= 
+			exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
 			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesArrayList.size())
 			{
 				maxSizeOfCapillaryArrays = exp.capillaries.capillariesArrayList.size();
@@ -120,11 +139,40 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					maxSizeOfCapillaryArrays += 1;
 			}
 			progress.incPosition();
-			index++;
+//			index++;
+				}}));
 		}
+		waitFuturesCompletion(processor, futuresArray, progress);
+		
 		progress.close();
 		return flag;
 	}
+	
+	protected void waitFuturesCompletion(Processor processor, ArrayList<Future<?>> futuresArray,  ProgressFrame progressBar) 
+    {  	
+  		 int frame= 1;
+  		 int nframes = futuresArray.size();
+    	 while (!futuresArray.isEmpty())
+         {
+             final Future<?> f = futuresArray.get(futuresArray.size() - 1);
+             if (progressBar != null)
+   				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
+             try
+             {
+                 f.get();
+             }
+             catch (ExecutionException e)
+             {
+                 System.out.println("series analysis - Warning: " + e);
+             }
+             catch (InterruptedException e)
+             {
+                 // ignore
+             }
+             futuresArray.remove(f);
+             frame ++;
+         }
+   }
 	
 	public void chainExperimentsUsingCamIndexes(boolean collate) 
 	{
