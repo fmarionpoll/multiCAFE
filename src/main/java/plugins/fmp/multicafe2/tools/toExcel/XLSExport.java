@@ -317,7 +317,7 @@ public class XLSExport
 		
 		if (options.cage) 
 		{
-			combineData(exp);
+			combineDataForOneCage(exp);
 			sheet = xlsInitSheet(xlsOption.toString()+"_cage");
 			xlsExportResultsArrayToSheet(sheet, xlsOption, col0, charSeries);
 		}
@@ -667,7 +667,7 @@ public class XLSExport
 		}	
 	}
 	
-	private void combineData(Experiment exp) 
+	private void combineDataForOneCage(Experiment exp) 
 	{
 		for (XLSResults row_master : rowListForOneExp) 
 		{
