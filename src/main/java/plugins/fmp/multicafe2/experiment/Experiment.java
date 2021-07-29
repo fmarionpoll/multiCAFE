@@ -687,6 +687,21 @@ public class Experiment
 		return true;
 	}
 	
+	public boolean cropCapillaryMeasuresDimensions() 
+	{
+		if (seqKymos.imageWidthMax < 1) 
+		{
+			seqKymos.imageWidthMax = seqKymos.seq.getSizeX();
+			if (seqKymos.imageWidthMax < 1)
+				return false;
+		}
+		int imageWidth = seqKymos.imageWidthMax;
+		capillaries.cropToImageWidth(imageWidth);
+		seqKymos.seq.removeAllROI();
+		seqKymos.transferCapillariesMeasuresToKymos(capillaries);
+		return true;
+	}
+	
 	public boolean xmlLoadMCCapillaries() 
 	{
 		String xmlCapillaryFileName = findFile_3Locations(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);

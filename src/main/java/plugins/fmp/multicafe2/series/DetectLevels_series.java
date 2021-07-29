@@ -66,6 +66,7 @@ public class DetectLevels_series extends BuildSeries
 		
 		tImg.setSpanDiff(options.spanDiffTop);
 		tImg.setSequence(seqKymos);
+		final int jitter = 10;
 		
 		for (int indexKymo = firstKymo; indexKymo <= lastKymo; indexKymo++) 
 		{
@@ -75,13 +76,14 @@ public class DetectLevels_series extends BuildSeries
 				return false;
 			if (!options.detectL && cap.getCapillaryName().endsWith("1"))
 				return false;
-			final String name = seqKymos.getFileName(t_index);
+				
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
 				public void run() 
 				{	
 					final Capillary capi = cap;
+					final String name = seqKymos.getFileName(t_index);
 					IcyBufferedImage rawImage = imageIORead(name);
 					IcyBufferedImage sourceImage = tImg.transformImage (rawImage, options.transformForLevels);
 					int c = 0;
@@ -112,7 +114,7 @@ public class DetectLevels_series extends BuildSeries
 					int oldiytop = 0;		// assume that curve goes from left to right with jitter 
 					int oldiybottom = yheight-1;
 					int nColumns = lastColumn - firstColumn +1;
-					final int jitter = 10;
+
 					List<Point2D> limitTop = new ArrayList<Point2D>(nColumns);
 					List<Point2D> limitBottom = new ArrayList<Point2D>(nColumns);
 		
@@ -130,7 +132,8 @@ public class DetectLevels_series extends BuildSeries
 						limitBottom.add(new Point2D.Double(iColumn, ybottom));
 						oldiytop = ytop;
 						oldiybottom = ybottom;
-					}					
+					}	
+					
 					if (options.analyzePartOnly) 
 					{
 						capi.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
@@ -141,7 +144,6 @@ public class DetectLevels_series extends BuildSeries
 						capi.ptsTop    = new CapillaryLimit(capi.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
 						capi.ptsBottom = new CapillaryLimit(capi.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
 					}
-
 					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), capi);
 				}}));
 		}

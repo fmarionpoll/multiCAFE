@@ -141,7 +141,7 @@ public class Edit  extends JPanel
 		SequenceKymos seqKymos = exp.seqKymos;
 		int t = seqKymos.currentFrame;
 		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-		cap.restoreCroppedMeasures();
+		cap.restoreClippedMeasures();
 		
 		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsTop);
 		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsBottom);

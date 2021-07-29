@@ -59,8 +59,8 @@ public class Level2D extends Polyline2D
 	
 	Level2D expandPolylineToNewSize(int imageSize) 
 	{
-		double [] xpoints = new double[imageSize];
-		double [] ypoints = new double [imageSize];
+		double [] nxpoints = new double[imageSize];
+		double [] nypoints = new double [imageSize];
 		for (int j=0; j< npoints; j++) 
 		{
 			int i0 = j * imageSize / npoints;
@@ -71,24 +71,39 @@ public class Level2D extends Polyline2D
 				y1 = ypoints[j+1]; 
 			for (int i = i0; i< i1; i++) 
 			{
-				xpoints[i] = i;
-				ypoints[i] = y0 + (y1-y0) * (i-i0)/(i1-i0);
+				nxpoints[i] = i;
+				nypoints[i] = y0 + (y1-y0) * (i-i0)/(i1-i0);
 			}
 		}
-		return new Level2D (xpoints, ypoints, imageSize);
+		return new Level2D (nxpoints, nypoints, imageSize);
 	}
 	
-	Level2D reducePolylineToNewSize(int imageSize) 
+	Level2D contractPolylineToNewSize(int imageSize) 
 	{
-		double [] xpoints = new double[imageSize];
-		double [] ypoints = new double [imageSize];
+		double [] nxpoints = new double[imageSize];
+		double [] nypoints = new double[imageSize];
 		for (int i=0; i< imageSize; i++) 
 		{
 			int j = i * npoints / imageSize;
-			xpoints[i] = i;
-			ypoints[i] = ypoints[j];
+			nxpoints[i] = i;
+			nypoints[i] = ypoints[j];
 		}
-		return new Level2D (xpoints, ypoints, imageSize);
+		return new Level2D (nxpoints, nypoints, imageSize);
 	}
 
+	Level2D cropPolylineToNewSize(int imageSize) 
+	{
+		double [] nxpoints = new double[imageSize];
+		double [] nypoints = new double[imageSize];
+		for (int i=0; i< imageSize; i++) 
+		{
+			int j = i ;
+			if (j < npoints)
+				nypoints[i] = ypoints[j];
+			else
+				nypoints[i] = ypoints[npoints-1];
+			nxpoints[i] = i;
+		}
+		return new Level2D (nxpoints, nypoints, imageSize);
+	}
 }

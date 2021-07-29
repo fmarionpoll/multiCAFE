@@ -52,6 +52,7 @@ public class BuildKymographs_series extends BuildSeries
 	
 	private void getTimeLimitsOfSequence(Experiment exp)
 	{
+		exp.loadFileIntervalsFromSeqCamData();
 		exp.kymoBinCol_Ms = options.t_binMs;
 		if (options.isFrameFixed) 
 		{
@@ -242,6 +243,7 @@ public class BuildKymographs_series extends BuildSeries
 			numC = 3;
 
 		kymoImageWidth = (int) ((exp.offsetLastCol_Ms - exp.offsetFirstCol_Ms) / exp.kymoBinCol_Ms +1);
+		System.out.println("image width = "+ kymoImageWidth);
 		DataType dataType = seqCamData.seq.getDataType_();
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;

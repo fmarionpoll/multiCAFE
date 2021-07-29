@@ -40,7 +40,7 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 	public 	Filter			tabFilter		= new Filter();
 	public 	Edit			tabEdit			= new Edit();
 	public 	Intervals		tabIntervals	= new Intervals();
-	public 	Analysis			tabAnalyze		= new Analysis();
+	public 	Analysis		tabAnalyze		= new Analysis();
 	public 	LoadSave		panelLoadSave	= new LoadSave();
 	
 	private MultiCAFE2 		parent0 		= null;

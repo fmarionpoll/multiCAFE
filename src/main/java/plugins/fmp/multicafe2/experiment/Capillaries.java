@@ -288,6 +288,17 @@ public class Capillaries
 			cap.gulpsRois = null; // TODO: deal with gulps.. (simply remove?)
 		}
 	}
+	
+	public void cropToImageWidth (int imageWidth) 
+	{
+		for (Capillary cap: capillariesArrayList) 
+		{
+			cap.ptsTop.cropToImageWidth(imageWidth);
+			cap.ptsBottom.cropToImageWidth(imageWidth);
+			cap.ptsDerivative.cropToImageWidth(imageWidth);
+			cap.gulpsRois = null; // TODO: deal with gulps.. (simply remove?)
+		}
+	}
 
 	public void transferDescriptionToCapillaries() 
 	{

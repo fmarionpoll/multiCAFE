@@ -89,8 +89,7 @@ public class LoadSave extends JPanel
 	
 		exp.xmlSaveMCExperiment ();
 		exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
-		boolean flag = exp.xmlSaveMCCapillaries_Only();
-		return flag;
+		return exp.xmlSaveMCCapillaries_Only();
 	}
 
 }

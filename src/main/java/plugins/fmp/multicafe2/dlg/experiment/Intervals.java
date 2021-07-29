@@ -81,10 +81,7 @@ public class Intervals extends JPanel
 			{
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null)
-				{
-					exp.loadFileIntervalsFromSeqCamData();
 					refreshBinSize(exp);
-				}
 			}});
 	}
 	
@@ -105,6 +102,7 @@ public class Intervals extends JPanel
 	
 	private void refreshBinSize(Experiment exp) 
 	{
+		exp.loadFileIntervalsFromSeqCamData();
 		binUnit.setSelectedIndex(1);
 		binSizeJSpinner.setValue(exp.camBinImage_Ms/(double)binUnit.getMsUnitValue());
 	}

@@ -5,7 +5,7 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 
 
 
-public class AdjustMeasuresDimensions_series  extends BuildSeries 
+public class AdjustMeasuresToDimensions_series  extends BuildSeries 
 {
 	void analyzeExperiment(Experiment exp) 
 	{

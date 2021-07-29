@@ -134,6 +134,9 @@ public class Create extends JPanel implements PropertyChangeListener
 	private void startComputation() 
 	{
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		if (exp != null)
+			parent0.paneCapillaries.tabFile.saveCapillaries_file(exp);
 		
 		threadBuildKymo = new BuildKymographs_series();	
 		threadBuildKymo.options = initBuildParameters();

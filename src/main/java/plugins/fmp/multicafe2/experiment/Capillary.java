@@ -281,7 +281,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			ptsDerivative.cropToNPoints(npoints);
 	}
 	
-	public void restoreCroppedMeasures () 
+	public void restoreClippedMeasures () 
 	{
 		if (ptsTop.polylineLimit != null)
 			ptsTop.restoreNPoints();

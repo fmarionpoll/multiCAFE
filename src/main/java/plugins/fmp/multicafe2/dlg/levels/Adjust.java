@@ -18,8 +18,9 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.series.AdjustMeasuresDimensions_series;
-import plugins.fmp.multicafe2.series.CurvesClipSameLengthWithinCage_series;
+import plugins.fmp.multicafe2.series.AdjustMeasuresToDimensions_series;
+import plugins.fmp.multicafe2.series.CropMeasuresToDimensions_series;
+import plugins.fmp.multicafe2.series.ClipMeasuresWithinSameCageToSameLength_series;
 import plugins.fmp.multicafe2.series.CurvesRestoreLength_series;
 import plugins.fmp.multicafe2.series.Options_BuildSeries;
 
@@ -33,18 +34,22 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	private MultiCAFE2 			parent0;
 	private JCheckBox			allSeriesCheckBox = new JCheckBox("ALL series", false);
 	
-	private String				adjustString  	= new String("Adjust dimensions");
-	private String				clipString 		= new String("Clip curves per cage");
+	private String				adjustString  	= new String("Resize levels to Kymographs");
+	private String				cropString  	= new String("Crop levels to Kymograph");
+	
+	private String				clipString 		= new String("Clip curves within cage to the shortest curve");
 	private String				restoreString	= new String("Restore curves");
 	
 	private JButton 			adjustButton 	= new JButton(adjustString);
 	private JButton 			restoreButton 	= new JButton(restoreString);
 	private JButton 			clipButton 		= new JButton(clipString);
+	private JButton				cropButton		= new JButton(cropString);
 	private String				stopString		= new String("STOP ");
 	
-	private AdjustMeasuresDimensions_series threadAdjust = null;
+	private AdjustMeasuresToDimensions_series threadAdjust = null;
 	private CurvesRestoreLength_series threadRestore = null;
-	private CurvesClipSameLengthWithinCage_series threadClip = null;
+	private ClipMeasuresWithinSameCageToSameLength_series threadClip = null;
+	private CropMeasuresToDimensions_series threadCrop = null;
 	
 	
 	
@@ -58,11 +63,12 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 		
 		JPanel panel0 = new JPanel(layout);
 		panel0.add(adjustButton);
+		panel0.add(cropButton);
 		add(panel0);
 
 		JPanel panel1 = new JPanel(layout);
-		panel1.add(restoreButton);
 		panel1.add(clipButton);
+		panel1.add(restoreButton);
 		add(panel1);
 		
 		JPanel panel2 = new JPanel(layout);
@@ -83,6 +89,17 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 				else 
 					series_adjustDimensionsStop();
 			}});
+		
+		cropButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{
+				if (cropButton.getText() .equals(cropString))
+					series_cropDimensionsStart();
+				else 
+					series_cropDimensionsStop();
+			}});
+
 		
 		restoreButton.addActionListener(new ActionListener () 
 		{ 
@@ -118,12 +135,12 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 		}});
 	}
 
-	void restoreCroppedPoints(Experiment exp) 
+	void restoreClippedPoints(Experiment exp) 
 	{
 		SequenceKymos seqKymos = exp.seqKymos;
 		int t = seqKymos.currentFrame;
 		Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-		cap.restoreCroppedMeasures();
+		cap.restoreClippedMeasures();
 		
 		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsTop);
 		seqKymos.updateROIFromCapillaryMeasure(cap, cap.ptsBottom);
@@ -143,6 +160,8 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 				restoreButton.setText(restoreString);
 			else if (clipButton.getText() .contains(stopString))
 				clipButton.setText(clipString);
+			else if (cropButton.getText() .contains(stopString))
+				cropButton.setText(cropString);
 		 }	 
 	}
 	
@@ -150,6 +169,13 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	{	
 		if (threadAdjust != null && !threadAdjust.stopFlag) {
 			threadAdjust.stopFlag = true;
+		}
+	}
+	
+	private void series_cropDimensionsStop() 
+	{	
+		if (threadCrop != null && !threadCrop.stopFlag) {
+			threadCrop.stopFlag = true;
 		}
 	}
 	
@@ -188,19 +214,31 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 		options.t_binMs		= parent0.paneExperiment.tabAnalyze.getBinMs();
 				
 		options.parent0Rect = parent0.mainFrame.getBoundsInternal();
-		options.binSubDirectory 	= parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
+		options.binSubDirectory = parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
 		return true;
 	}
 	
 	private void series_adjustDimensionsStart() 
 	{
-		threadAdjust = new AdjustMeasuresDimensions_series();
+		threadAdjust = new AdjustMeasuresToDimensions_series();
 		Options_BuildSeries options= threadAdjust.options;
 		if (initBuildParameters (options)) 
 		{
 			threadAdjust.addPropertyChangeListener(this);
 			threadAdjust.execute();
 			adjustButton.setText(stopString + adjustString);
+		}
+	}
+	
+	private void series_cropDimensionsStart() 
+	{
+		threadCrop = new CropMeasuresToDimensions_series();
+		Options_BuildSeries options= threadCrop.options;
+		if (initBuildParameters (options)) 
+		{
+			threadCrop.addPropertyChangeListener(this);
+			threadCrop.execute();
+			cropButton.setText(stopString + cropString);
 		}
 	}
 	
@@ -218,7 +256,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	
 	private void series_clipStart() 
 	{
-		threadClip = new CurvesClipSameLengthWithinCage_series();
+		threadClip = new ClipMeasuresWithinSameCageToSameLength_series();
 		Options_BuildSeries options= threadClip.options;
 		if (initBuildParameters (options)) 
 		{

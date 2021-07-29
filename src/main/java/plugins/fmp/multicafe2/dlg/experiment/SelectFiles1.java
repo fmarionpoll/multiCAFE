@@ -44,7 +44,7 @@ public class SelectFiles1 extends JPanel
 	 */
 	private static final long serialVersionUID = 4172927636287523049L;
 	IcyFrame 			dialogFrame 			= null;	
-	private JComboBox<String> filterCombo		= new JComboBox <String>(new String[] { "capillarytrack", "multicafe", "roisline", "grabs", "MCcapillaries", "MCexperiment"} );
+	private JComboBox<String> filterCombo		= new JComboBox <String>(new String[] { "capillarytrack", "multicafe", "roisline", "cam", "grabs", "MCcapillaries", "MCexperiment"} );
 	private JButton 	findButton				= new JButton("Select root directory and search...");
 	private JButton 	clearSelectedButton		= new JButton("Clear selected");
 	private JButton 	clearAllButton			= new JButton("Clear all");
@@ -78,7 +78,7 @@ public class SelectFiles1 extends JPanel
 		topPanel.add(rbFile);
 		topPanel.add(rbDirectory);
 		mainPanel.add(GuiUtil.besidesPanel(topPanel));
-		filterCombo.setSelectedIndex(5);
+		filterCombo.setSelectedIndex(6);
 		
 		dialogFrame = new IcyFrame ("Select files", true, true);
 		dialogFrame.setLayout(new BorderLayout());
@@ -124,7 +124,7 @@ public class SelectFiles1 extends JPanel
     			else if (pattern.contains("MCcapillaries"))
     				pattern = "MCcapi";
     			boolean isFileName = rbFile.isSelected();
-    			if (pattern.contains("grabs")) 
+    			if (pattern.contains("grabs") || pattern.contains("cam")) 
     				isFileName = false;
     			getListofFilesMatchingPattern(pattern, isFileName);
             }});
@@ -218,7 +218,7 @@ public class SelectFiles1 extends JPanel
         return flag;
 	}
 	
-	private void getListofFilesMatchingDirectoryNamePattern(String pattern, File directory) 
+	private boolean getListofFilesMatchingDirectoryNamePattern(String pattern, File directory) 
  	{
 		final String lastUsedPathString = directory.getAbsolutePath();
 		Path lastPath = Paths.get(lastUsedPathString);
@@ -233,22 +233,30 @@ public class SelectFiles1 extends JPanel
 			e.printStackTrace();
 		}
         
-        if (result != null)
+        if (result != null) 
+        {
         	for (Path path: result) 
         	{
         		File dir = path.toFile();
         		if (!getListofFilesMatchingFileNamePattern("MCexpe", dir))
         		{
         			String experimentName = createEmptyExperiment(path);
-        			addNameToListIfNew(experimentName);
+        			if (experimentName != null)
+        				addNameToListIfNew(experimentName);
         		}
         	}
+        }
+        return (result != null);
 	}
 	
 	private String createEmptyExperiment(Path path) 
 	{
 		ExperimentDirectories eADF = new ExperimentDirectories();
 		eADF.getDirectoriesFromGrabPath(path.toString());
+		
+		if (eADF.cameraImagesList.size() == 0)
+			return null;
+		
 		Experiment exp = new Experiment(eADF);
 		return exp.getExperimentDirectory();
 	}
@@ -263,8 +271,11 @@ public class SelectFiles1 extends JPanel
 
 		if (isFileName)
 			getListofFilesMatchingFileNamePattern(pattern, dir);
-		else
-			getListofFilesMatchingDirectoryNamePattern(pattern, dir);
+		else 
+		{
+			if (! getListofFilesMatchingDirectoryNamePattern(pattern, dir) && (pattern == "cam"))
+				getListofFilesMatchingDirectoryNamePattern("grab", dir);
+		}
 	}
 	
 	private void addNameToListIfNew(String fileName) 

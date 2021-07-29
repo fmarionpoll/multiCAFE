@@ -282,10 +282,10 @@ public class CapillaryLimit  implements XMLPersistent
 		{
 			int newSize = imageSize;
 			if (npoints < npoints_old)
-				newSize = imageSize *npoints / npoints_old;
-			polylineLimit = polylineLimit.reducePolylineToNewSize(newSize);
+				newSize = 1 + imageSize *npoints / npoints_old;
+			polylineLimit = polylineLimit.contractPolylineToNewSize(newSize);
 			if (npoints_old != 0)
-				polyline_old = polyline_old.reducePolylineToNewSize(imageSize);
+				polyline_old = polyline_old.contractPolylineToNewSize(imageSize);
 		}
 		// expand polyline npoints to imageSize
 		else 
@@ -299,5 +299,23 @@ public class CapillaryLimit  implements XMLPersistent
 		}
 	}
 
+	public void cropToImageWidth(int imageSize) 
+	{
+		if (polylineLimit == null)
+			return;
+		int npoints = polylineLimit.npoints;
+		if (npoints == imageSize)
+			return;
+		
+		int npoints_old = 0;
+		if (polyline_old != null && polyline_old.npoints > npoints) 
+			npoints_old = polyline_old.npoints;
+		if (npoints == imageSize || npoints_old == imageSize)
+			return;
+		
+		// reduce polyline npoints to imageSize
+		int newSize = imageSize;
+		polylineLimit = polylineLimit.cropPolylineToNewSize(newSize);		
+	}
 	
 }
