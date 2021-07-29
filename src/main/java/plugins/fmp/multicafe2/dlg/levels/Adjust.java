@@ -132,6 +132,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 				adjustButton.setForeground(color);
 				clipButton.setForeground(color);
 				restoreButton.setForeground(color);
+				cropButton.setForeground(color);
 		}});
 	}
 
