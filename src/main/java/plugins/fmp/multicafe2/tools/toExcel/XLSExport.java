@@ -158,28 +158,32 @@ public class XLSExport
 		case TOPLEVELDELTA_LR:
 		case SUMGULPS_LR:
 			if (cap.getCapillarySide().equals("L")) 
-			{
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "L+R");
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
-			} 
 			else 
-			{
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "(L-R)/(L+R)");
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
-			}
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
 			break;
+			
+		case TOPLEVEL_RATIO:
+			if (cap.getCapillarySide().equals("L")) 
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "L+R");
+			else 
+				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "L/R");
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
+			break;
+			
 		case TTOGULP_LR:
 			if (cap.getCapillarySide().equals("L")) 
 			{
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "min_t_to_gulp");
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
 			} 
 			else 
 			{
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "max_t_to_gulp");
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
 			}
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
 			break;
+			
 		default:
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, 	cap.capStimulus);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, 	cap.capConcentration);	
@@ -370,6 +374,7 @@ public class XLSExport
 		case TOPLEVEL_LR:
 		case TOPLEVELDELTA:
 		case TOPLEVELDELTA_LR:
+		case TOPLEVEL_RATIO:
 			measureOption = EnumXLSExportType.TOPLEVEL;
 			break;
 		case SUMGULPS_LR:
@@ -444,6 +449,7 @@ public class XLSExport
 					case TOPLEVEL_LR:
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
+					case TOPLEVEL_RATIO:
 						for (Capillary cap: expi.capillaries.capillariesArrayList) 
 						{
 							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
@@ -558,6 +564,7 @@ public class XLSExport
 					case SUMGULPS_LR:
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
+					case TOPLEVEL_RATIO:
 						if (options.collateSeries && options.padIntervals && expi.chainToPrevious != null) 
 							dvalue = padWithLastPreviousValue(row, to_first_index);
 						break;
@@ -708,7 +715,8 @@ public class XLSExport
 			case TOPLEVEL_LR:
 			case TOPLEVELDELTA_LR:
 			case SUMGULPS_LR:
-				writeExperiment_data_LRRows(sheet, column_dataArea, rowSeries, pt);
+			case TOPLEVEL_RATIO:
+				writeExperiment_data_LRRows(sheet, column_dataArea, rowSeries, pt, option);
 				break;
 			case TTOGULP_LR:
 				writeExperiment_data_TOGulpLR(sheet, column_dataArea, rowSeries, pt);
@@ -744,7 +752,7 @@ public class XLSExport
 		
 	}
 	
-	private void writeExperiment_data_LRRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
+	private void writeExperiment_data_LRRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt, EnumXLSExportType option ) 
 	{
 		for (int irow = 0; irow < rowListForOneExp.size(); irow ++) 
 		{
@@ -756,10 +764,12 @@ public class XLSExport
 				XLSResults sumResults = new XLSResults(rowL.name, rowL.nflies, rowL.exportType, rowL.dimension);
 				sumResults.getSumLR(rowL, rowR);
 				writeRow(sheet, column_dataArea, rowSeries, pt, sumResults);
-				
-				XLSResults ratioResults = new XLSResults(rowR.name, rowL.nflies, rowL.exportType, rowL.dimension);
-				ratioResults.getRatioLR(rowL, rowR);
-				writeRow(sheet, column_dataArea, rowSeries, pt, ratioResults);
+				XLSResults results = new XLSResults(rowR.name, rowL.nflies, rowL.exportType, rowL.dimension);
+				if (option == EnumXLSExportType.TOPLEVEL_LR) 
+					results.getPI_LR(rowL, rowR);
+				else if (option == EnumXLSExportType.TOPLEVEL_RATIO)
+					results.getRatio_LR(rowL, rowR);
+				writeRow(sheet, column_dataArea, rowSeries, pt, results);
 			} 
 			else 
 			{

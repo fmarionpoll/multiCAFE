@@ -29,10 +29,10 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 	 * 
 	 */
 	private static final long serialVersionUID = -4296207607692017074L;
-	public	PopupPanel capPopupPanel	= null;
+	public	PopupPanel 		capPopupPanel	= null;
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
 	public Options			tabOptions		= new Options();
-	private Levels			tabKymos		= new Levels();
+	private Levels			tabLevels		= new Levels();
 	private Gulps			tabGulps		= new Gulps();
 	private Move 			tabMove  		= new Move();
 	private MultiCAFE2 		parent0 = null;
@@ -53,9 +53,9 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		tabsPane.addTab("Common options", null, tabOptions, "Define common options");
 		tabOptions.addPropertyChangeListener(this);
 		
-		tabKymos.init(capLayout);
-		tabsPane.addTab("Capillaries", null, tabKymos, "Export capillary levels to file");
-		tabKymos.addPropertyChangeListener(this);
+		tabLevels.init(capLayout);
+		tabsPane.addTab("Capillaries", null, tabLevels, "Export capillary levels to file");
+		tabLevels.addPropertyChangeListener(this);
 		
 		tabGulps.init(capLayout);
 		tabsPane.addTab("Gulps", null, tabGulps, "Export gulps to file");
@@ -167,16 +167,17 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.sumGulps 		= false; 
 		options.isGulps 		= false;
 		
-		options.topLevel 		= tabKymos.topLevelCheckBox.isSelected(); 
-		options.topLevelDelta   = tabKymos.topLevelDeltaCheckBox.isSelected();
-		options.bottomLevel 	= tabKymos.bottomLevelCheckBox.isSelected(); 
-		options.derivative 		= tabKymos.derivativeCheckBox.isSelected(); 
+		options.topLevel 		= tabLevels.topLevelCheckBox.isSelected(); 
+		options.topLevelDelta   = tabLevels.topLevelDeltaCheckBox.isSelected();
+		options.bottomLevel 	= tabLevels.bottomLevelCheckBox.isSelected(); 
+		options.derivative 		= tabLevels.derivativeCheckBox.isSelected(); 
 		options.sumGulps 		= false; 
-		options.sum_ratio_LR 	= tabKymos.lrRatioCheckBox.isSelected(); 
-		options.cage 			= tabKymos.sumPerCageCheckBox.isSelected();
-		options.t0 				= tabKymos.t0CheckBox.isSelected();
-		options.onlyalive 		= tabKymos.onlyaliveCheckBox.isSelected();
-		options.subtractEvaporation = tabKymos.subtractEvaporationCheckBox.isSelected();
+		options.sum_PI_LR 		= tabLevels.lrPICheckBox.isSelected(); 
+		options.sum_ratio_LR 	= tabLevels.lrRatioCheckBox.isSelected();
+		options.cage 			= tabLevels.sumPerCageCheckBox.isSelected();
+		options.t0 				= tabLevels.t0CheckBox.isSelected();
+		options.onlyalive 		= tabLevels.onlyaliveCheckBox.isSelected();
+		options.subtractEvaporation = tabLevels.subtractEvaporationCheckBox.isSelected();
 		getCommonOptions(options);
 		return options;
 	}
@@ -191,7 +192,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.cage 			= false;
 		options.t0 				= false;
 		options.sumGulps 		= tabGulps.sumGulpsCheckBox.isSelected(); 
-		options.sum_ratio_LR 	= tabGulps.sumCheckBox.isSelected(); 
+		options.sum_PI_LR 		= tabGulps.sumCheckBox.isSelected(); 
 		options.onlyalive 		= tabGulps.onlyaliveCheckBox.isSelected();
 		options.isGulps 		= tabGulps.isGulpsCheckBox.isSelected();
 		options.tToNextGulp		= tabGulps.tToGulpCheckBox.isSelected();

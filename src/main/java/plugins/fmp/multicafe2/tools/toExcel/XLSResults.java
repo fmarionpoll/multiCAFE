@@ -157,11 +157,10 @@ public class XLSResults
 		return data;
 	}
 	
-	void getRatioLR(XLSResults rowL, XLSResults rowR) 
+	void getPI_LR(XLSResults rowL, XLSResults rowR) 
 	{
 		int lenL = rowL.values_out.length;
 		int lenR = rowR.values_out.length;
-//		int len = Math.max(lenL,  lenR);
 		int len = Math.min(lenL,  lenR);
 		for (int index = 0; index < len; index++) 
 		{
@@ -177,6 +176,25 @@ public class XLSResults
 				if (sum != 0 && !Double.isNaN(sum))
 					ratio = (dataL-dataR)/sum;
 			}
+			values_out[index]= ratio;
+		}
+	}
+	
+	void getRatio_LR(XLSResults rowL, XLSResults rowR) 
+	{
+		int lenL = rowL.values_out.length;
+		int lenR = rowR.values_out.length;
+		int len = Math.min(lenL,  lenR);
+		for (int index = 0; index < len; index++) 
+		{
+			double dataL = getData(rowL, index);
+			double dataR = getData(rowR, index);
+			boolean ratioOK = true;
+			if (Double.isNaN(dataR) || Double.isNaN(dataL)) 
+				ratioOK = false;		
+			double ratio = Double.NaN;
+			if (ratioOK && dataR != 0)
+					ratio = (dataL/dataR);
 			values_out[index]= ratio;
 		}
 	}

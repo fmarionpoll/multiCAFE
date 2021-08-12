@@ -17,7 +17,9 @@ public class XLSExportOptions
 	public boolean  topLevelDelta   	= false;
 	public boolean 	bottomLevel 		= false; 
 	public boolean 	derivative 			= false; 
+	public boolean 	sum_PI_LR 			= true;
 	public boolean 	sum_ratio_LR 		= true;
+	
 	public boolean 	cage 				= true;
 	public boolean 	t0					= true;
 	public boolean 	onlyalive			= true;

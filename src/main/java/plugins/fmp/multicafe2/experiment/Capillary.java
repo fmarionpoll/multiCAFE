@@ -176,6 +176,12 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			if (capSide.equals("L"))
 				value = "sum";
 			else
+				value = "PI";
+			break;
+		case TOPLEVEL_RATIO:
+			if (capSide.equals("L"))
+				value = "sum";
+			else
 				value = "ratio";
 			break;
 		case XYIMAGE:

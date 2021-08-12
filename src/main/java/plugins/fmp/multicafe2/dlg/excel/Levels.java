@@ -25,12 +25,13 @@ public class Levels extends JPanel
 	JCheckBox 	topLevelDeltaCheckBox 	= new JCheckBox("delta top", false);
 	
 	JCheckBox 	bottomLevelCheckBox = new JCheckBox("bottom", false);
-	JCheckBox 	lrRatioCheckBox 		= new JCheckBox("L+R & ratio", true);
-	JCheckBox 	sumPerCageCheckBox 		= new JCheckBox("sum per cage", false);
+	JCheckBox 	lrPICheckBox 		= new JCheckBox("L+R & pref index", true);
+	JCheckBox 	lrRatioCheckBox 	= new JCheckBox("L+R & ratio", true);
+	JCheckBox 	sumPerCageCheckBox 	= new JCheckBox("sum per cage", false);
 	JCheckBox 	derivativeCheckBox  = new JCheckBox("derivative", false);
 	JCheckBox	t0CheckBox			= new JCheckBox("t-t0", true);
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
-	JCheckBox	subtractEvaporationCheckBox = new JCheckBox("subtract evaporation", false);
+	JCheckBox	subtractEvaporationCheckBox = new JCheckBox("subtract evaporation", true);
 	
 	void init(GridLayout capLayout) 
 	{	
@@ -42,14 +43,16 @@ public class Levels extends JPanel
 		panel0.add(topLevelCheckBox);
 		panel0.add(topLevelDeltaCheckBox);
 		panel0.add(bottomLevelCheckBox);
+		panel0.add(t0CheckBox);
+		panel0.add(onlyaliveCheckBox);
+		panel0.add(subtractEvaporationCheckBox);
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout0);
+		panel1.add(lrPICheckBox);
 		panel1.add(lrRatioCheckBox);
 		panel1.add(sumPerCageCheckBox);
-		panel1.add(t0CheckBox);
-		panel1.add(onlyaliveCheckBox);
-		panel1.add(subtractEvaporationCheckBox);
+		
 		add(panel1);
 		
 		FlowLayout flowLayout2 = new FlowLayout(FlowLayout.RIGHT);
@@ -70,6 +73,14 @@ public class Levels extends JPanel
 				firePropertyChange("EXPORT_KYMOSDATA", false, true);
 			}});
 	
+		lrPICheckBox.addActionListener (new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				if (lrPICheckBox.isSelected())
+					sumPerCageCheckBox.setSelected(false);
+			}});
+		
 		lrRatioCheckBox.addActionListener (new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
@@ -83,6 +94,7 @@ public class Levels extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				if (sumPerCageCheckBox.isSelected())
+					lrPICheckBox.setSelected(false);
 					lrRatioCheckBox.setSelected(false);
 			}});
 	}
