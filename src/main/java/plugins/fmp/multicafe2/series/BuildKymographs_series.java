@@ -297,8 +297,9 @@ public class BuildKymographs_series extends BuildSeries
 		double radiusSquared = diskRadius * diskRadius;
 		int minX = getValueWithinLimits(pixel[0] - diskRadius, 0, sizex-1);
 		int maxX = getValueWithinLimits(pixel[0] + diskRadius, minX, sizex-1);
-		int minY = getValueWithinLimits(pixel[1] - diskRadius, 0, sizey-1);
-		int maxY = getValueWithinLimits(pixel[1] + diskRadius, minX, sizey-1);
+		int minY = pixel[1]; // getValueWithinLimits(pixel[1] - diskRadius, 0, sizey-1);
+		int maxY = pixel[1]; // getValueWithinLimits(pixel[1] + diskRadius, minY, sizey-1);
+
 		for (int x = minX; x <= maxX; x++)
 		{
 		    for (int y = minY; y <= maxY; y++)
