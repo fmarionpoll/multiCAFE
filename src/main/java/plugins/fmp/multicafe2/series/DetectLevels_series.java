@@ -73,9 +73,9 @@ public class DetectLevels_series extends BuildSeries
 			final int t_index = indexKymo;
 			final Capillary cap = exp.capillaries.capillariesArrayList.get(t_index);
 			if (!options.detectR && cap.getCapillaryName().endsWith("2"))
-				return false;
+				continue;
 			if (!options.detectL && cap.getCapillaryName().endsWith("1"))
-				return false;
+				continue;
 				
 			futures.add(processor.submit(new Runnable () 
 			{
