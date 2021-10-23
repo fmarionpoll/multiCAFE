@@ -51,17 +51,17 @@ public class Create extends JPanel implements PropertyChangeListener
 		setLayout(capLayout);	
 		this.parent0 = parent0;
 		
-		FlowLayout layout1 = new FlowLayout(FlowLayout.LEFT);
-		layout1.setVgap(0);
+		FlowLayout layoutLeft = new FlowLayout(FlowLayout.LEFT);
 		
-		JPanel panel1 = new JPanel(layout1);
-		panel1.add(startComputationButton);
-		panel1.add(allSeriesCheckBox);
-		panel1.add(new JLabel("area around ROIs", SwingConstants.RIGHT));
-		panel1.add(diskRadiusSpinner);  
-		add(panel1);
+		JPanel panel0 = new JPanel(layoutLeft);
+		((FlowLayout)panel0.getLayout()).setVgap(1);
+		panel0.add(startComputationButton);
+		panel0.add(allSeriesCheckBox);
+		panel0.add(new JLabel("area around ROIs", SwingConstants.RIGHT));
+		panel0.add(diskRadiusSpinner);  
+		add(panel0);
 		
-		JPanel panel2 = new JPanel(layout1);
+		JPanel panel2 = new JPanel(layoutLeft);
 		panel2.add(doRegistrationCheckBox);
 		panel2.add(startFrameLabel);
 		panel2.add(startFrameSpinner);

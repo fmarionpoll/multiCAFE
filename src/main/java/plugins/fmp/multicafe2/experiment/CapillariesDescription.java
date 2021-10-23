@@ -158,8 +158,8 @@ public class CapillariesDescription
 			old_experiment 	= XMLUtil.getAttributeValue(xmlVal, ID_EXPT, ID_NOPE);
 			old_comment1 	= XMLUtil.getAttributeValue(xmlVal, ID_COMMENT1, ID_NOPE);
 			old_comment2 	= XMLUtil.getAttributeValue(xmlVal, ID_COMMENT2, ID_NOPE);
-			old_strain 	= XMLUtil.getAttributeValue(xmlVal, ID_STRAIN, ID_NOPE);
-			old_sex 	= XMLUtil.getAttributeValue(xmlVal, ID_SEX, ID_NOPE);
+			old_strain 		= XMLUtil.getAttributeValue(xmlVal, ID_STRAIN, ID_NOPE);
+			old_sex 		= XMLUtil.getAttributeValue(xmlVal, ID_SEX, ID_NOPE);
 		}
 		return true;
 	}

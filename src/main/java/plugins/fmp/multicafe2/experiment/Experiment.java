@@ -872,12 +872,12 @@ public class Experiment
 	
 	private void transferExpDescriptorsToCapillariesDescriptors() 
 	{
-		if (!field_boxID 	.equals("..")) capillaries.desc.old_boxID = field_boxID;
-		if (!field_experiment	.equals("..")) capillaries.desc.old_experiment = field_experiment;
-		if (!field_comment1	.equals("..")) capillaries.desc.old_comment1 = field_comment1;
-		if (!field_comment2	.equals("..")) capillaries.desc.old_comment2 = field_comment2;	
-		if (!field_strain	.equals("..")) capillaries.desc.old_strain = field_strain;
-		if (!field_sex	.equals("..")) capillaries.desc.old_sex = field_sex;
+		capillaries.desc.old_boxID = field_boxID;
+		capillaries.desc.old_experiment = field_experiment;
+		capillaries.desc.old_comment1 = field_comment1;
+		capillaries.desc.old_comment2 = field_comment2;	
+		capillaries.desc.old_strain = field_strain;
+		capillaries.desc.old_sex = field_sex;
 	}
 
 	public boolean loadReferenceImage() 

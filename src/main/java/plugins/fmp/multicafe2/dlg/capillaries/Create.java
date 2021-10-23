@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe2.dlg.capillaries;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
@@ -17,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.SwingConstants;
 
 import icy.gui.frame.progress.AnnounceFrame;
 import icy.roi.ROI2D;
@@ -39,17 +39,19 @@ public class Create extends JPanel
 	 */
 	private static final long serialVersionUID = -5257698990389571518L;
 	
-	private JButton 	addPolygon2DButton 		= new JButton("Draw Polygon2D");
-	private JButton 	createROIsFromPolygonButton2 = new JButton("Generate capillaries");
-	private JRadioButton selectGroupedby2Button = new JRadioButton("grouped by 2");
-	private JRadioButton selectRegularButton 	= new JRadioButton("evenly spaced");
-	private JComboBox<String> cagesJCombo 		= new JComboBox<String> (new String[] {"10 cages", "4+2 cages", "other" });
+	private JButton 	addPolygon2DButton 		= new JButton("Draw frame");
+	private JButton 	createROIsFromPolygonButton2 = new JButton("Generate");
+	private JRadioButton selectGroupedby2Button = new JRadioButton("by 2");
+	private JRadioButton selectRegularButton 	= new JRadioButton("even");
+	private JComboBox<String> cagesJCombo 		= new JComboBox<String> (new String[] {"10 cages", "4+2", "other" });
 	private JComboBox<String> orientationJCombo = new JComboBox<String> (new String[] {"0°", "90°", "180°", "270°" });
 	private ButtonGroup buttonGroup2 			= new ButtonGroup();
 	private JSpinner 	nbcapillariesJSpinner 	= new JSpinner(new SpinnerNumberModel(20, 0, 500, 1));
 	private JSpinner 	nbFliesPerCageJSpinner 	= new JSpinner(new SpinnerNumberModel(1, 0, 500, 1));
 	private JSpinner 	width_between_capillariesJSpinner = new JSpinner(new SpinnerNumberModel(30, 0, 10000, 1));
+	private JLabel		width_between_capillariesLabel = new JLabel("btw. caps ");
 	private JSpinner 	width_intervalJSpinner 	= new JSpinner(new SpinnerNumberModel(53, 0, 10000, 1)); 
+	private JLabel 		width_intervalLabel 	= new JLabel("btw. groups ");
 	private MultiCAFE2 	parent0 				= null;
 	
 	void init(GridLayout capLayout, MultiCAFE2 parent0) 
@@ -62,29 +64,37 @@ public class Create extends JPanel
 
 		panel0.add(addPolygon2DButton);
 		panel0.add(createROIsFromPolygonButton2);
+		panel0.add(nbcapillariesJSpinner);
+		nbcapillariesJSpinner.setPreferredSize(new Dimension (40, 20));
+		panel0.add(new JLabel ("capillaries"));
+		panel0.add(orientationJCombo);
+		orientationJCombo.setPreferredSize(new Dimension (60, 20));
+		add(panel0);
+				
+		JPanel panel1 = new JPanel(flowLayout);
+		panel1.add(new JLabel ("spaced:"));
+		panel1.add(selectRegularButton);
+		panel1.add(selectGroupedby2Button);
+		panel1.add(new JLabel ("with:"));
+		panel1.add(width_between_capillariesJSpinner);
+		width_between_capillariesJSpinner.setPreferredSize(new Dimension (40, 20));
+		panel1.add(width_between_capillariesLabel);
+		panel1.add(width_intervalJSpinner);
+		width_intervalJSpinner.setPreferredSize(new Dimension (40, 20));
+		panel1.add(width_intervalLabel);
+		add(panel1);
+		
+		JPanel panel3 = new JPanel(flowLayout);
+		panel3.add(cagesJCombo);
+		cagesJCombo.setPreferredSize(new Dimension (80, 20));
+		panel3.add(nbFliesPerCageJSpinner);
+		nbFliesPerCageJSpinner.setPreferredSize(new Dimension (40, 20));
+		panel3.add(new JLabel ("fly(es)/cage"));
+		add(panel3);
+		
 		buttonGroup2.add(selectGroupedby2Button);
 		buttonGroup2.add(selectRegularButton);
 		selectGroupedby2Button.setSelected(true);
-		panel0.add(new JLabel ("N capillaries ", SwingConstants.RIGHT));
-		panel0.add(nbcapillariesJSpinner);
-		add(panel0);
-		
-		JPanel panel1 = new JPanel(flowLayout);
-		panel1.add(selectRegularButton);
-		panel1.add(selectGroupedby2Button);
-		panel1.add(cagesJCombo);
-		panel1.add(new JLabel ("flies/cage", SwingConstants.RIGHT));
-		panel1.add(nbFliesPerCageJSpinner);
-		add(panel1);
-		
-		JPanel panel2 = new JPanel(flowLayout);
-		panel2.add(new JLabel("btw. caps ", SwingConstants.RIGHT));
-		panel2.add(width_between_capillariesJSpinner);
-		panel2.add(new JLabel("btw. groups ", SwingConstants.RIGHT));
-		panel2.add(width_intervalJSpinner);
-		panel2.add(new JLabel("orientation: "));
-		panel2.add(orientationJCombo);
-		add(panel2);
 		
 		defineActionListeners();
 		this.parent0 = parent0;
@@ -220,12 +230,11 @@ public class Create extends JPanel
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
-		boolean statusGroup2Mode = false;
-		if (getGroupedBy2()) statusGroup2Mode = true;
-		// read values from text boxes
+		boolean statusGroup2Mode = getGroupedBy2() ? true: false;
+		
 		int nbcapillaries = 20;
-		int width_between_capillaries = 1;	// default value for statusGroup2Mode = false
-		int width_interval = 0;				// default value for statusGroup2Mode = false
+		int width_between_capillaries = 1;	
+		int width_interval = 0;
 
 		try 
 		{ 

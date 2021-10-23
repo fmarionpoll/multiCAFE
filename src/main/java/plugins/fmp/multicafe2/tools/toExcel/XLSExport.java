@@ -411,7 +411,6 @@ public class XLSExport
 							+ " kymoFirstCol_Ms=" + expi.offsetFirstCol_Ms 
 							+ " kymoLastCol_Ms=" + expi.offsetLastCol_Ms;
 					System.out.println(error);
-					continue;
 				}
 			}
 

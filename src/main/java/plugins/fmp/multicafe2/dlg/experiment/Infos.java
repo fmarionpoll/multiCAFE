@@ -32,13 +32,12 @@ public class Infos  extends JPanel
 	private JComboBox<String> 	strainCombo 	= new JComboBox<String>(new SortedComboBoxModel());
 	private JComboBox<String> 	sexCombo 		= new JComboBox<String>(new SortedComboBoxModel());
 	
-	private JLabel			experimentCheck	= new JLabel(EnumXLSColumnHeader.EXPT.toString());
-	private JLabel			boxIDCheck		= new JLabel(EnumXLSColumnHeader.BOXID.toString());
-	private JLabel			comment1Check	= new JLabel(EnumXLSColumnHeader.COMMENT1.toString());
-	private JLabel			comment2Check	= new JLabel(EnumXLSColumnHeader.COMMENT2.toString());
-	private JLabel			strainCheck		= new JLabel(EnumXLSColumnHeader.STRAIN.toString());
-	private JLabel			sexCheck		= new JLabel(EnumXLSColumnHeader.SEX.toString());
-	
+	private JLabel				experimentCheck	= new JLabel(EnumXLSColumnHeader.EXPT.toString());
+	private JLabel				boxIDCheck		= new JLabel(EnumXLSColumnHeader.BOXID.toString());
+	private JLabel				comment1Check	= new JLabel(EnumXLSColumnHeader.COMMENT1.toString());
+	private JLabel				comment2Check	= new JLabel(EnumXLSColumnHeader.COMMENT2.toString());
+	private JLabel				strainCheck		= new JLabel(EnumXLSColumnHeader.STRAIN.toString());
+	private JLabel				sexCheck		= new JLabel(EnumXLSColumnHeader.SEX.toString());
 	
 	private JButton				openButton		= new JButton("Load...");
 	private JButton				saveButton		= new JButton("Save...");
@@ -106,8 +105,7 @@ public class Infos  extends JPanel
 		sexCombo.setEditable(true);
 		
 		defineActionListeners();
-	}
-		
+	}	
 	
 	private void defineActionListeners() 
 	{
@@ -140,12 +138,12 @@ public class Infos  extends JPanel
 	
 	public void setExperimentInfosToDialog(Experiment exp) 
 	{
-		setInfoCombo(exp, boxIDCombo, EnumXLSColumnHeader.BOXID, exp.capillaries.desc.old_boxID); 
-		setInfoCombo(exp, exptCombo, EnumXLSColumnHeader.EXPT, exp.capillaries.desc.old_experiment) ;
-		setInfoCombo(exp, cmt1Combo, EnumXLSColumnHeader.COMMENT1, exp.capillaries.desc.old_comment1) ;
-		setInfoCombo(exp, comt2Combo, EnumXLSColumnHeader.COMMENT2, exp.capillaries.desc.old_comment2) ;
-		setInfoCombo(exp, strainCombo, EnumXLSColumnHeader.STRAIN, exp.capillaries.desc.old_strain) ;
-		setInfoCombo(exp, sexCombo, EnumXLSColumnHeader.SEX, exp.capillaries.desc.old_sex) ;
+		setInfoCombo(exp, boxIDCombo, EnumXLSColumnHeader.BOXID, exp.getField(EnumXLSColumnHeader.BOXID)); 
+		setInfoCombo(exp, exptCombo, EnumXLSColumnHeader.EXPT, exp.getField(EnumXLSColumnHeader.EXPT)) ;
+		setInfoCombo(exp, cmt1Combo, EnumXLSColumnHeader.COMMENT1, exp.getField(EnumXLSColumnHeader.COMMENT1)) ;
+		setInfoCombo(exp, comt2Combo, EnumXLSColumnHeader.COMMENT2, exp.getField(EnumXLSColumnHeader.COMMENT2)) ;
+		setInfoCombo(exp, strainCombo, EnumXLSColumnHeader.STRAIN, exp.getField(EnumXLSColumnHeader.STRAIN)) ;
+		setInfoCombo(exp, sexCombo, EnumXLSColumnHeader.SEX, exp.getField(EnumXLSColumnHeader.SEX)) ;
 	}
 	
 	private void setInfoCombo(Experiment exp, JComboBox<String> combo, EnumXLSColumnHeader field, String altText) 
@@ -198,8 +196,6 @@ public class Infos  extends JPanel
 		strainCombo.removeAllItems();
 		sexCombo.removeAllItems();
 	}
-
-
 
 }
 
