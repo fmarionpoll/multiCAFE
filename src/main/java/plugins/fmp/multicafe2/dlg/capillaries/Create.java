@@ -40,7 +40,7 @@ public class Create extends JPanel
 	private static final long serialVersionUID = -5257698990389571518L;
 	
 	private JButton 	addPolygon2DButton 		= new JButton("Draw frame");
-	private JButton 	createROIsFromPolygonButton2 = new JButton("Generate");
+	private JButton 	createROIsFromPolygonButton2 = new JButton("Generate capillaries");
 	private JRadioButton selectGroupedby2Button = new JRadioButton("by 2");
 	private JRadioButton selectRegularButton 	= new JRadioButton("even");
 	private JComboBox<String> cagesJCombo 		= new JComboBox<String> (new String[] {"10 cages", "4+2", "other" });
@@ -49,7 +49,7 @@ public class Create extends JPanel
 	private JSpinner 	nbcapillariesJSpinner 	= new JSpinner(new SpinnerNumberModel(20, 0, 500, 1));
 	private JSpinner 	nbFliesPerCageJSpinner 	= new JSpinner(new SpinnerNumberModel(1, 0, 500, 1));
 	private JSpinner 	width_between_capillariesJSpinner = new JSpinner(new SpinnerNumberModel(30, 0, 10000, 1));
-	private JLabel		width_between_capillariesLabel = new JLabel("btw. caps ");
+	private JLabel		width_between_capillariesLabel = new JLabel("pixels btw. caps ");
 	private JSpinner 	width_intervalJSpinner 	= new JSpinner(new SpinnerNumberModel(53, 0, 10000, 1)); 
 	private JLabel 		width_intervalLabel 	= new JLabel("btw. groups ");
 	
@@ -68,15 +68,16 @@ public class Create extends JPanel
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout);
+		panel1.add(new JLabel ("Capillaries:"));
 		panel1.add(nbcapillariesJSpinner);
 		nbcapillariesJSpinner.setPreferredSize(new Dimension (40, 20));
-		panel1.add(new JLabel ("capillaries"));
+		panel1.add(new JLabel (" Orientation:"));
 		panel1.add(orientationJCombo);
 		orientationJCombo.setPreferredSize(new Dimension (60, 20));panel1.add(cagesJCombo);
 		cagesJCombo.setPreferredSize(new Dimension (80, 20));
 		panel1.add(nbFliesPerCageJSpinner);
 		nbFliesPerCageJSpinner.setPreferredSize(new Dimension (40, 20));
-		panel1.add(new JLabel ("fly/cage"));
+		panel1.add(new JLabel ("Fly/cage"));
 		
 		add(panel1);
 		
