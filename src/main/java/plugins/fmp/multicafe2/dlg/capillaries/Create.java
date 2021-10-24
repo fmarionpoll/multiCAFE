@@ -52,6 +52,7 @@ public class Create extends JPanel
 	private JLabel		width_between_capillariesLabel = new JLabel("btw. caps ");
 	private JSpinner 	width_intervalJSpinner 	= new JSpinner(new SpinnerNumberModel(53, 0, 10000, 1)); 
 	private JLabel 		width_intervalLabel 	= new JLabel("btw. groups ");
+	
 	private MultiCAFE2 	parent0 				= null;
 	
 	void init(GridLayout capLayout, MultiCAFE2 parent0) 
@@ -61,36 +62,37 @@ public class Create extends JPanel
 		flowLayout.setVgap(0);
 		
 		JPanel panel0 = new JPanel(flowLayout);
-
 		panel0.add(addPolygon2DButton);
 		panel0.add(createROIsFromPolygonButton2);
-		panel0.add(nbcapillariesJSpinner);
-		nbcapillariesJSpinner.setPreferredSize(new Dimension (40, 20));
-		panel0.add(new JLabel ("capillaries"));
-		panel0.add(orientationJCombo);
-		orientationJCombo.setPreferredSize(new Dimension (60, 20));
+
 		add(panel0);
-				
+		
 		JPanel panel1 = new JPanel(flowLayout);
-		panel1.add(new JLabel ("spaced:"));
-		panel1.add(selectRegularButton);
-		panel1.add(selectGroupedby2Button);
-		panel1.add(new JLabel ("with:"));
-		panel1.add(width_between_capillariesJSpinner);
-		width_between_capillariesJSpinner.setPreferredSize(new Dimension (40, 20));
-		panel1.add(width_between_capillariesLabel);
-		panel1.add(width_intervalJSpinner);
-		width_intervalJSpinner.setPreferredSize(new Dimension (40, 20));
-		panel1.add(width_intervalLabel);
+		panel1.add(nbcapillariesJSpinner);
+		nbcapillariesJSpinner.setPreferredSize(new Dimension (40, 20));
+		panel1.add(new JLabel ("capillaries"));
+		panel1.add(orientationJCombo);
+		orientationJCombo.setPreferredSize(new Dimension (60, 20));panel1.add(cagesJCombo);
+		cagesJCombo.setPreferredSize(new Dimension (80, 20));
+		panel1.add(nbFliesPerCageJSpinner);
+		nbFliesPerCageJSpinner.setPreferredSize(new Dimension (40, 20));
+		panel1.add(new JLabel ("fly/cage"));
+		
 		add(panel1);
 		
-		JPanel panel3 = new JPanel(flowLayout);
-		panel3.add(cagesJCombo);
-		cagesJCombo.setPreferredSize(new Dimension (80, 20));
-		panel3.add(nbFliesPerCageJSpinner);
-		nbFliesPerCageJSpinner.setPreferredSize(new Dimension (40, 20));
-		panel3.add(new JLabel ("fly(es)/cage"));
-		add(panel3);
+		JPanel panel2 = new JPanel(flowLayout);
+		panel2.add(new JLabel ("spaced:"));
+		panel2.add(selectRegularButton);
+		panel2.add(selectGroupedby2Button);
+		panel2.add(new JLabel ("with:"));
+		panel2.add(width_between_capillariesJSpinner);
+		width_between_capillariesJSpinner.setPreferredSize(new Dimension (40, 20));
+		panel2.add(width_between_capillariesLabel);
+		panel2.add(width_intervalJSpinner);
+		width_intervalJSpinner.setPreferredSize(new Dimension (40, 20));
+		panel2.add(width_intervalLabel);
+		
+		add(panel2);
 		
 		buttonGroup2.add(selectGroupedby2Button);
 		buttonGroup2.add(selectRegularButton);
@@ -137,10 +139,22 @@ public class Create extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				boolean status = false;
-				width_between_capillariesJSpinner.setEnabled(status);
-				width_intervalJSpinner.setEnabled(status);
+				EnableBinWidthItems(false);
 			}});
+		
+		selectGroupedby2Button.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				EnableBinWidthItems(true);
+			}});
+	}
+	
+	private void EnableBinWidthItems(boolean status) {
+		width_between_capillariesJSpinner.setEnabled(status);
+		width_between_capillariesLabel.setEnabled(status);
+		width_intervalJSpinner.setEnabled(status);
+		width_intervalLabel.setEnabled(status);
 	}
 	
 	// set/ get	

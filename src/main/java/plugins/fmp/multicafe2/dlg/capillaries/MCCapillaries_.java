@@ -30,6 +30,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	public	PopupPanel 	capPopupPanel	= null;
 			JTabbedPane tabsPane 		= new JTabbedPane();
 			Create 		tabCreate 		= new Create();
+			Edit		tabEdit			= new Edit();
 	public 	LoadSave 	tabFile 		= new LoadSave();
 			Adjust 		tabAdjust 		= new Adjust();
 			Infos		tabInfos		= new Infos();
@@ -52,6 +53,11 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		tabCreate.init(capLayout, parent0);
 		tabCreate.addPropertyChangeListener(this);
 		tabsPane.addTab("Create", null, tabCreate, "Create lines defining capillaries");
+		order++;
+		
+		tabEdit.init(capLayout, parent0);
+		tabCreate.addPropertyChangeListener(this);
+		tabsPane.addTab("Edit", null, tabEdit, "Edit capillaries position and size");
 		order++;
 		
 		ID_INFOS=order;
