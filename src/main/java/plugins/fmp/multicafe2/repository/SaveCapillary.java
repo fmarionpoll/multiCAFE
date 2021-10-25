@@ -46,7 +46,7 @@ public class SaveCapillary
 	    		cap.version = ID_VERSIONNUM;
 	    	XMLUtil.setElementValue(nodeMeta, ID_VERSION, cap.version);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, cap.indexImage);
-	        XMLUtil.setElementValue(nodeMeta, ID_NAME, cap.capillaryName);
+	        XMLUtil.setElementValue(nodeMeta, ID_NAME, cap.getKymographName());
 	        if (cap.filenameTIFF != null ) {
 	        	String filename = Paths.get(cap.filenameTIFF).getFileName().toString();
 	        	XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);

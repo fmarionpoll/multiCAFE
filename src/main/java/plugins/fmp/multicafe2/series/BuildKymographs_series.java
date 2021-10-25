@@ -94,7 +94,7 @@ public class BuildKymographs_series extends BuildSeries
 				public void run() 
 				{	
 					Capillary cap = exp.capillaries.capillariesArrayList.get(t_index);
-					String filename = directory + File.separator + cap.getCapillaryName() + ".tiff";
+					String filename = directory + File.separator + cap.getKymographName() + ".tiff";
 					File file = new File (filename);
 					IcyBufferedImage image = exp.seqKymos.getSeqImage(t_index, 0);
 					try 
@@ -281,7 +281,7 @@ public class BuildKymographs_series extends BuildSeries
 		} 
 	}
 	
-	private void getPointsfromROIPolyLineUsingBresenham ( ROI2DShape roi, List<ArrayList<int[]>> masks, double diskRadius, int sizex, int sizey) 
+	private void getPointsfromROIPolyLineUsingBresenham (ROI2DShape roi, List<ArrayList<int[]>> masks, double diskRadius, int sizex, int sizey) 
 	{
 		ArrayList<int[]> pixels = Bresenham.getPixelsAlongLineFromROI2D (roi);
 		int idiskRadius = (int) diskRadius;

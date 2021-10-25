@@ -89,7 +89,7 @@ public class XLSExport
 		for (int t=0; t< capList.size(); t++) 
 		{ 
 			Capillary cap = capList.get(t);
-			String	name = cap.roi.getName();
+			String	name = cap.getRoiName();
 			int col = getRowIndexFromKymoFileName(name);
 			if (col >= 0) 
 				pt.x = colseries + col;
@@ -356,7 +356,7 @@ public class XLSExport
 		for (int i=0; i< ncapillaries; i++) 
 		{
 			Capillary cap 		= expAll.capillaries.capillariesArrayList.get(i);
-			XLSResults row 		= new XLSResults (cap.roi.getName(), cap.capNFlies, xlsOption, nFrames);
+			XLSResults row 		= new XLSResults (cap.getRoiName(), cap.capNFlies, xlsOption, nFrames);
 			row.stimulus 		= cap.capStimulus;
 			row.concentration 	= cap.capConcentration;
 			row.cageID 			= cap.capCageID;
@@ -426,7 +426,7 @@ public class XLSExport
 						for (Capillary cap: expi.capillaries.capillariesArrayList) 
 						{
 							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-							XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
+							XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
 							results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
 							resultsArrayList.add(results);
 						}
@@ -436,7 +436,7 @@ public class XLSExport
 						for (Capillary cap: expi.capillaries.capillariesArrayList) 
 						{
 							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-							XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
+							XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
 							results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
 							if (options.t0) 
 								results.data = exp.seqKymos.subtractT0(results.data);
@@ -452,7 +452,7 @@ public class XLSExport
 						for (Capillary cap: expi.capillaries.capillariesArrayList) 
 						{
 							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-							XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
+							XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
 							results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
 							if (options.t0) 
 								results.data = exp.seqKymos.subtractT0(results.data);
@@ -468,7 +468,7 @@ public class XLSExport
 						for (Capillary cap: expi.capillaries.capillariesArrayList) 
 						{
 							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-							XLSResults results = new XLSResults(cap.roi.getName(), cap.capNFlies, xlsOption, nOutputFrames);
+							XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
 							results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
 							resultsArrayList.add(results);
 						}

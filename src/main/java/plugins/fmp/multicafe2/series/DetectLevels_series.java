@@ -72,9 +72,9 @@ public class DetectLevels_series extends BuildSeries
 		{
 			final int t_index = indexKymo;
 			final Capillary cap = exp.capillaries.capillariesArrayList.get(t_index);
-			if (!options.detectR && cap.getCapillaryName().endsWith("2"))
+			if (!options.detectR && cap.getKymographName().endsWith("2"))
 				continue;
-			if (!options.detectL && cap.getCapillaryName().endsWith("1"))
+			if (!options.detectL && cap.getKymographName().endsWith("1"))
 				continue;
 				
 			futures.add(processor.submit(new Runnable () 

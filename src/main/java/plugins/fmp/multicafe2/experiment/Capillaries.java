@@ -72,7 +72,7 @@ public class Capillaries
 	{
 		if (directory == null || cap.roi == null)
 			return false;
-		String tempname = directory + File.separator + cap.getCapillaryName()+ ".xml";
+		String tempname = directory + File.separator + cap.getKymographName()+ ".xml";
 
 		final Document capdoc = XMLUtil.createDocument(true);
 		cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
@@ -126,7 +126,7 @@ public class Capillaries
 
 		for (int i=0; i< ncapillaries; i++) 
 		{
-			String csFile = directory + File.separator + capillariesArrayList.get(i).getCapillaryName() + ".xml";
+			String csFile = directory + File.separator + capillariesArrayList.get(i).getKymographName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
 			Capillary cap = capillariesArrayList.get(i);
@@ -234,7 +234,7 @@ public class Capillaries
 		String directory = directorypath + File.separator;
 		for (Capillary cap: capillariesArrayList) 
 		{
-			String csFile = directory + cap.getCapillaryName() + ".xml";
+			String csFile = directory + cap.getKymographName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
 			cap.loadFromXML_CapillaryOnly(node);
@@ -260,7 +260,7 @@ public class Capillaries
 		boolean flag = false;
 		for (Capillary cap: capillariesArrayList) 
 		{
-			if (cap.capillaryName.contentEquals(capNew.capillaryName)) 
+			if (cap.getKymographName().contentEquals(capNew.getKymographName())) 
 			{
 				flag = true;
 				break;
@@ -320,7 +320,7 @@ public class Capillaries
 	{
 		if (desc.grouping != 2)
 			return;
-		String	name = cap.roi.getName();
+		String	name = cap.getRoiName();
 		String letter = name.substring(name.length() - 1);
 		cap.capSide = letter;
 		if (letter .equals("R")) 
@@ -342,7 +342,7 @@ public class Capillaries
 		Capillary capFound = null;
 		for (Capillary cap: capillariesArrayList) 
 		{
-			if (cap.roi.getName().equals(name)) 
+			if (cap.getRoiName().equals(name)) 
 			{
 				capFound = cap;
 				break;
@@ -358,7 +358,7 @@ public class Capillaries
 		for (Capillary cap: capillariesArrayList) 
 		{
 			cap.valid = false;
-			String capName = Capillary.replace_LR_with_12(cap.roi.getName());
+			String capName = Capillary.replace_LR_with_12(cap.getRoiName());
 			Iterator <ROI2D> iterator = listROISCap.iterator();
 			while(iterator.hasNext()) 
 			{ 

@@ -157,7 +157,7 @@ public class Display extends JPanel implements ViewerListener
 			for (int i=0; i< ncapillaries; i++)
 			{
 				Capillary cap = exp.capillaries.capillariesArrayList.get(i);
-				kymographsCombo.addItem(cap.roi.getName());
+				kymographsCombo.addItem(cap.getRoiName());
 			}
 		}});	
 	}

@@ -65,9 +65,9 @@ public class DetectLevels_series2 extends BuildSeries
 			int xwidth = sourceImage.getSizeX();
 			int yheight = sourceImage.getSizeY();
 			Capillary cap = exp.capillaries.capillariesArrayList.get(t_from);
-			if (!options.detectR && cap.getCapillaryName().endsWith("2"))
+			if (!options.detectR && cap.getKymographName().endsWith("2"))
 				return;
-			if (!options.detectL && cap.getCapillaryName().endsWith("1"))
+			if (!options.detectL && cap.getKymographName().endsWith("1"))
 				return;
 			cap.ptsDerivative = null;
 			cap.gulpsRois = null;

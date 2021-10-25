@@ -27,7 +27,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 
 	public ROI2DShape 					roi 			= null;	// the capillary (source)
 	public int							indexImage 		= -1;
-	public String						capillaryName 	= null;
+	private String						kymographName 	= null;
 	public String 						version 		= null;
 	public String						filenameTIFF	= null;
 	// TODO: add frame start/end/step?
@@ -76,12 +76,12 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public Capillary(ROI2DShape roi) 
 	{
 		this.roi = roi;
-		this.capillaryName = replace_LR_with_12(roi.getName());
+		this.kymographName = replace_LR_with_12(roi.getName());
 	}
 	
 	Capillary(String name) 
 	{
-		this.capillaryName = replace_LR_with_12(name);
+		this.kymographName = replace_LR_with_12(name);
 	}
 	
 	public Capillary() 
@@ -92,7 +92,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public int compareTo(Capillary o) 
 	{
 		if (o != null)
-			return this.capillaryName.compareTo(o.capillaryName);
+			return this.kymographName.compareTo(o.kymographName);
 		return 1;
 	}
 	
@@ -101,7 +101,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public void copy(Capillary cap) 
 	{
 		indexImage 		= cap.indexImage;
-		capillaryName 	= cap.capillaryName;
+		kymographName 	= cap.kymographName;
 		version 		= cap.version;
 		roi 			= cap.roi;
 		filenameTIFF	= cap.filenameTIFF;
@@ -122,14 +122,23 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		ptsDerivative.copy(cap.ptsDerivative); 
 	}
 	
-	public String getCapillaryName() 
+	public String getKymographName() 
 	{
-		return capillaryName;
+		return kymographName;
 	}
 	
-	public void setCapillaryName(String name) 
+	public void setKymographName(String name) 
 	{
-		this.capillaryName = name;
+		this.kymographName = name;
+	}
+	
+	public void setRoiName(String name) 
+	{
+		roi.setName(name);
+	}
+	
+	public String getRoiName() {
+		return roi.getName();
 	}
 	
 	public String getLast2ofCapillaryName() 
@@ -498,7 +507,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	    {
 	    	version 		= XMLUtil.getElementValue(nodeMeta, ID_VERSION, "0.0.0");
 	    	indexImage 		= XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
-	        capillaryName 	= XMLUtil.getElementValue(nodeMeta, ID_NAME, capillaryName);
+	        kymographName 	= XMLUtil.getElementValue(nodeMeta, ID_NAME, kymographName);
 	        filenameTIFF 	= XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);	        
 	        descriptionOK 	= XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, false);
 	        versionInfos 	= XMLUtil.getElementIntValue(nodeMeta, ID_VERSIONINFOS, 0);
@@ -535,7 +544,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	    		version = ID_VERSIONNUM;
 	    	XMLUtil.setElementValue(nodeMeta, ID_VERSION, version);
 	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
-	        XMLUtil.setElementValue(nodeMeta, ID_NAME, capillaryName);
+	        XMLUtil.setElementValue(nodeMeta, ID_NAME, kymographName);
 	        if (filenameTIFF != null ) {
 	        	String filename = Paths.get(filenameTIFF).getFileName().toString();
 	        	XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);

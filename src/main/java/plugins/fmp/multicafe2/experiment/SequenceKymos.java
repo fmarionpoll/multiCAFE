@@ -204,7 +204,7 @@ public class SequenceKymos extends SequenceCamData
 		for (int i=0; i< ncapillaries; i++) 
 		{
 			ImageFileDescriptor temp = new ImageFileDescriptor();
-			temp.fileName  = directoryFull+ capillaries.capillariesArrayList.get(i).getCapillaryName()+ ".tiff";
+			temp.fileName  = directoryFull+ capillaries.capillariesArrayList.get(i).getKymographName()+ ".tiff";
 			myListOfFiles.add(temp);
 		}
 		return myListOfFiles;

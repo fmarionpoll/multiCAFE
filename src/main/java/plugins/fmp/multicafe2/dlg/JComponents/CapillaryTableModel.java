@@ -79,7 +79,7 @@ public class CapillaryTableModel extends AbstractTableModel
     	{
         	switch (columnIndex) 
         	{
-            case 0: return cap.roi.getName();
+            case 0: return cap.getRoiName();
             case 1: return cap.capCageID;
             case 2: return cap.capNFlies;
             case 3: return cap.capVolume;
@@ -115,7 +115,7 @@ public class CapillaryTableModel extends AbstractTableModel
     	{
         	switch (columnIndex) 
         	{
-            case 0: cap.roi.setName(aValue.toString()); break;
+            case 0: cap.setRoiName(aValue.toString()); break;
             case 1: cap.capCageID = (int) aValue; break;
             case 2: cap.capNFlies = (int) aValue; break;
             case 3: cap.capVolume = (double) aValue; break;

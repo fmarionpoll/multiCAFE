@@ -70,7 +70,7 @@ public class LoadCapillaries {
 
 		for (int i=0; i< ncapillaries; i++) 
 		{
-			String csFile = directory + File.separator + capillariesArrayList.get(i).getCapillaryName() + ".xml";
+			String csFile = directory + File.separator + capillariesArrayList.get(i).getKymographName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
 			Capillary cap = capillariesArrayList.get(i);
@@ -159,7 +159,7 @@ public class LoadCapillaries {
 		String directory = directorypath + File.separator;
 		for (Capillary cap: capillariesArrayList) 
 		{
-			String csFile = directory + cap.getCapillaryName() + ".xml";
+			String csFile = directory + cap.getKymographName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
 			cap.loadFromXML_CapillaryOnly(node);
@@ -171,7 +171,7 @@ public class LoadCapillaries {
 		boolean flag = false;
 		for (Capillary cap: capillariesArrayList) 
 		{
-			if (cap.capillaryName.contentEquals(capNew.capillaryName)) 
+			if (cap.getKymographName().contentEquals(capNew.getKymographName())) 
 			{
 				flag = true;
 				break;

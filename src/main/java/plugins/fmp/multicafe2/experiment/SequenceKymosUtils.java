@@ -31,7 +31,7 @@ public class SequenceKymosUtils
 			boolean found = false;
 			for (Capillary cap: exp.capillaries.capillariesArrayList) 
 			{
-				if (roi.getName().equals(cap.roi.getName())) 
+				if (roi.getName().equals(cap.getRoiName())) 
 				{
 					found = true;
 					break;
@@ -49,7 +49,7 @@ public class SequenceKymosUtils
 			boolean found = false;
 			for (ROI2D roi:listROISCap) 
 			{
-				if (roi.getName().equals(cap.roi.getName())) 
+				if (roi.getName().equals(cap.getRoiName())) 
 				{
 					found = true;
 					break;
@@ -70,7 +70,7 @@ public class SequenceKymosUtils
 		{
 			boolean found = false;
 			for (ROI2D roi:listROISCap) {
-				if (roi.getName().equals(cap.roi.getName())) 
+				if (roi.getName().equals(cap.getRoiName())) 
 				{
 					found = true;
 					break;

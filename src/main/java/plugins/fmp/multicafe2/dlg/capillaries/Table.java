@@ -118,7 +118,7 @@ public class Table  extends JPanel
 						capFrom.valid = false;
 						for (Capillary capTo: exp.capillaries.capillariesArrayList) 
 						{
-							if (!capFrom.roi.getName().equals (capTo.roi.getName()))
+							if (!capFrom.getRoiName().equals (capTo.getRoiName()))
 								continue;
 							capFrom.valid = true;
 							capTo.capCageID = capFrom.capCageID;
@@ -179,7 +179,7 @@ public class Table  extends JPanel
 						
 						for (Capillary cap: exp.capillaries.capillariesArrayList) 
 						{
-							if (cap.getCapillaryName().equals(cap0.getCapillaryName()))
+							if (cap.getKymographName().equals(cap0.getKymographName()))
 								continue;
 							if ((exp.capillaries.desc.grouping == 2) && (!cap.getCapillarySide().equals(side)))
 								continue;
@@ -223,7 +223,7 @@ public class Table  extends JPanel
 					{
 						Capillary cap0 = exp.capillaries.capillariesArrayList.get(rowIndex);	
 						for (Capillary cap: exp.capillaries.capillariesArrayList) {
-							if (cap.getCapillaryName().equals(cap0.getCapillaryName()))
+							if (cap.getKymographName().equals(cap0.getKymographName()))
 								continue;
 							switch (columnIndex) 
 							{

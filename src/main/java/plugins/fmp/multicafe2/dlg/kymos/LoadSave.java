@@ -113,8 +113,8 @@ public class LoadSave extends JPanel
 			for (int t = 0; t < seqKymos.seq.getSizeT(); t++) 
 			{
 				Capillary cap = exp.capillaries.capillariesArrayList.get(t);
-				progress.setMessage( "Save kymograph file : " + cap.getCapillaryName());
-				cap.filenameTIFF = outputpath + File.separator + cap.getCapillaryName() + ".tiff";
+				progress.setMessage( "Save kymograph file : " + cap.getKymographName());
+				cap.filenameTIFF = outputpath + File.separator + cap.getKymographName() + ".tiff";
 				final File file = new File (cap.filenameTIFF);
 				IcyBufferedImage image = seqKymos.getSeqImage(t, 0);
 				ThreadUtil.bgRun( new Runnable() 
@@ -128,7 +128,7 @@ public class LoadSave extends JPanel
 						{
 							e.printStackTrace();
 						}
-						System.out.println("File "+ cap.getCapillaryName() + " saved " );
+						System.out.println("File "+ cap.getKymographName() + " saved " );
 				}});
 			}
 		}

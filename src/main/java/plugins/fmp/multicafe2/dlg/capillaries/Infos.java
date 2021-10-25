@@ -30,7 +30,7 @@ public class Infos extends JPanel
 	private static final long 	serialVersionUID 			= 4950182090521600937L;
 	private JSpinner 			capillaryVolumeTextField	= new JSpinner(new SpinnerNumberModel(5., 0., 100., 1.));
 	private JSpinner 			capillaryPixelsTextField	= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
-	private JButton				getLenButton				= new JButton ("pixels 1rst capillary");
+	private JButton				getCapillaryLengthButton	= new JButton ("pixels 1rst capillary");
 	private JButton				editCapillariesButton		= new JButton("edit capillaries");
 	private MultiCAFE2 			parent0 					= null;
 	private Table dialog 						= null;
@@ -47,7 +47,7 @@ public class Infos extends JPanel
 		panel0.add( capillaryVolumeTextField);
 		panel0.add( new JLabel("length (pixels) ", SwingConstants.RIGHT));
 		panel0.add( capillaryPixelsTextField);
-		panel0.add( getLenButton);
+		panel0.add( getCapillaryLengthButton);
 		add( panel0);
 		
 		JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 1));
@@ -59,7 +59,7 @@ public class Infos extends JPanel
 	
 	private void defineActionListeners() 
 	{
-		getLenButton.addActionListener(new ActionListener () 
+		getCapillaryLengthButton.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 

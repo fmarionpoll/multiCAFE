@@ -48,7 +48,7 @@ public class SaveCapillaries {
 	{
 		if (directory == null || cap.roi == null)
 			return false;
-		String tempname = directory + File.separator + cap.getCapillaryName()+ ".xml";
+		String tempname = directory + File.separator + cap.getKymographName()+ ".xml";
 
 		final Document capdoc = XMLUtil.createDocument(true);
 		cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
