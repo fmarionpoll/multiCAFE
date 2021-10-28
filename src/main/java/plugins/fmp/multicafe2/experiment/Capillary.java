@@ -26,7 +26,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 {
 
 	public ROI2DShape 					roi 			= null;	// the capillary (source)
-	public int							indexImage 		= -1;
+	public int							indexKymograph 	= -1;
 	private String						kymographName 	= null;
 	public String 						version 		= null;
 	public String						filenameTIFF	= null;
@@ -100,7 +100,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	public void copy(Capillary cap) 
 	{
-		indexImage 		= cap.indexImage;
+		indexKymograph 		= cap.indexKymograph;
 		kymographName 	= cap.kymographName;
 		version 		= cap.version;
 		roi 			= cap.roi;
@@ -459,13 +459,13 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	{
 		List<ROI2D> listrois = new ArrayList<ROI2D> ();
 		if (ptsTop != null)
-			ptsTop.addToROIs(listrois, indexImage);
+			ptsTop.addToROIs(listrois, indexKymograph);
 		if (ptsBottom != null)
-			ptsBottom.addToROIs(listrois, indexImage);
+			ptsBottom.addToROIs(listrois, indexKymograph);
 		if (gulpsRois != null)
-			gulpsRois.addToROIs(listrois, indexImage);
+			gulpsRois.addToROIs(listrois, indexKymograph);
 		if (ptsDerivative != null)
-			ptsDerivative.addToROIs(listrois, Color.yellow, 1., indexImage);
+			ptsDerivative.addToROIs(listrois, Color.yellow, 1., indexKymograph);
 		return listrois;
 	}
 	
@@ -506,7 +506,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	    if (flag) 
 	    {
 	    	version 		= XMLUtil.getElementValue(nodeMeta, ID_VERSION, "0.0.0");
-	    	indexImage 		= XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
+	    	indexKymograph 		= XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexKymograph);
 	        kymographName 	= XMLUtil.getElementValue(nodeMeta, ID_NAME, kymographName);
 	        filenameTIFF 	= XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);	        
 	        descriptionOK 	= XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, false);
@@ -543,7 +543,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	    	if (version == null)
 	    		version = ID_VERSIONNUM;
 	    	XMLUtil.setElementValue(nodeMeta, ID_VERSION, version);
-	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexImage);
+	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexKymograph);
 	        XMLUtil.setElementValue(nodeMeta, ID_NAME, kymographName);
 	        if (filenameTIFF != null ) {
 	        	String filename = Paths.get(filenameTIFF).getFileName().toString();

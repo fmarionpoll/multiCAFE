@@ -105,7 +105,7 @@ public class SequenceKymos extends SequenceCamData
 	
 	public void updateROIFromCapillaryMeasure(Capillary cap, CapillaryLimit caplimits) 
 	{
-		int t = cap.indexImage;
+		int t = cap.indexKymograph;
 		List<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) 
 		{
@@ -163,7 +163,7 @@ public class SequenceKymos extends SequenceCamData
 				capillaries.capillariesArrayList.add(new Capillary());
 			Capillary cap = capillaries.capillariesArrayList.get(kymo);
 			cap.filenameTIFF = getFileName(kymo);
-			cap.indexImage = kymo;
+			cap.indexKymograph = kymo;
 			cap.transferROIsToMeasures(roisAtT);	
 		}
 		return true;

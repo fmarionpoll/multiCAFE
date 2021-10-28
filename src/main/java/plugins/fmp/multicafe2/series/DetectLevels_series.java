@@ -90,7 +90,7 @@ public class DetectLevels_series extends BuildSeries
 					Object dataArray = sourceImage.getDataXY(c);
 					int[] sourceValues = Array1DUtil.arrayToIntArray(dataArray, sourceImage.isSignedDataType());
 
-					capi.indexImage= t_index;
+					capi.indexKymograph= t_index;
 					capi.ptsDerivative = null;
 					capi.gulpsRois = null;
 					capi.limitsOptions.copyFrom(options);

@@ -741,7 +741,7 @@ public class Experiment
 		for (int t= 0; t < nimages; t++) 
 		{
 			Capillary cap = capillaries.capillariesArrayList.get(t);
-			cap.indexImage = t;
+			cap.indexKymograph = t;
 			IcyBufferedImage img = seqKymos.getSeqImage(t, zChannelSource);
 			IcyBufferedImage img2 = tImg.transformImage (img, transformop);
 			if (seqKymos.seq.getSizeZ(0) < (zChannelDestination+1)) 

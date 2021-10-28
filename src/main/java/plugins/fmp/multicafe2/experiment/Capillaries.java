@@ -130,7 +130,7 @@ public class Capillaries
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
 			Capillary cap = capillariesArrayList.get(i);
-			cap.indexImage = i;
+			cap.indexKymograph = i;
 			flag |= cap.loadFromXML_MeasuresOnly(node);
 		}
 		return flag;
@@ -175,7 +175,7 @@ public class Capillaries
 		if (!isPresent(cap))
 			capillariesArrayList.add(cap);
 		String csFile = directory + roiCapillary.getName() + ".xml";
-		cap.indexImage = t;
+		cap.indexKymograph = t;
 		final Document dockymo = XMLUtil.loadDocument(csFile);
 		if (dockymo != null) 
 		{

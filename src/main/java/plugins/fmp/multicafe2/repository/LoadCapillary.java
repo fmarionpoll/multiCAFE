@@ -42,7 +42,7 @@ public class LoadCapillary {
 	    if (flag) 
 	    {
 	    	cap.version 		= XMLUtil.getElementValue(nodeMeta, ID_VERSION, "0.0.0");
-	    	cap.indexImage 		= XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, cap.indexImage);
+	    	cap.indexKymograph 		= XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, cap.indexKymograph);
 	    	cap.setKymographName(XMLUtil.getElementValue(nodeMeta, ID_NAME, cap.getKymographName()));
 	    	cap.filenameTIFF 	= XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, cap.filenameTIFF);	        
 	    	cap. descriptionOK 	= XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, false);
