@@ -70,7 +70,7 @@ public class Infos extends JPanel
 					if (exp.capillaries.capillariesArrayList.size() > 0) 
 					{
 						Capillary cap = exp.capillaries.capillariesArrayList.get(0);
-						ArrayList<Point2D> pts = cap.roi.getPoints();
+						ArrayList<Point2D> pts = cap.getRoi().getPoints();
 						Point2D pt1 = pts.get(0);
 						Point2D pt2 = pts.get(pts.size() -1);
 						double npixels = Math.sqrt(

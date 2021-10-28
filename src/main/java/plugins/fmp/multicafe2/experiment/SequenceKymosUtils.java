@@ -77,7 +77,7 @@ public class SequenceKymosUtils
 				}
 			}
 			if (!found)
-				exp.seqCamData.seq.addROI(cap.roi);
+				exp.seqCamData.seq.addROI(cap.getRoi());
 		}
 	}
 	

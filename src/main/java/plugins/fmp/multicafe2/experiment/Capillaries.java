@@ -70,7 +70,7 @@ public class Capillaries
 	
 	public boolean xmlSaveCapillary_Measures(String directory, Capillary cap) 
 	{
-		if (directory == null || cap.roi == null)
+		if (directory == null || cap.getRoi() == null)
 			return false;
 		String tempname = directory + File.separator + cap.getKymographName()+ ".xml";
 
@@ -366,7 +366,7 @@ public class Capillaries
 				String roiName = Capillary.replace_LR_with_12(roi.getName());
 				if (roiName.equals (capName)) 
 				{
-					cap.roi = (ROI2DShape) roi;
+					cap.setRoi((ROI2DShape) roi);
 					cap.valid = true;
 				}
 				if (cap.valid) 
@@ -400,7 +400,7 @@ public class Capillaries
 	{
 		for (Capillary cap: capillariesArrayList) 
 		{
-			seq.addROI(cap.roi);
+			seq.addROI(cap.getRoi());
 		}
 	}
 

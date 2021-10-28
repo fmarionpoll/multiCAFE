@@ -123,9 +123,9 @@ public class BuildROIs extends JPanel
 		int recttop = rect.y + rect.height *2/3; 
 		if (exp.capillaries.capillariesArrayList.size() > 0) 
 		{
-			Rectangle bound0 = exp.capillaries.capillariesArrayList.get(0).roi.getBounds();
+			Rectangle bound0 = exp.capillaries.capillariesArrayList.get(0).getRoi().getBounds();
 			int last = exp.capillaries.capillariesArrayList.size() - 1;
-			Rectangle bound1 = exp.capillaries.capillariesArrayList.get(last).roi.getBounds();
+			Rectangle bound1 = exp.capillaries.capillariesArrayList.get(last).getRoi().getBounds();
 			rectleft = bound0.x;
 			rectright = bound1.x + bound1.width;
 			int diff = (rectright - rectleft)*2/60;

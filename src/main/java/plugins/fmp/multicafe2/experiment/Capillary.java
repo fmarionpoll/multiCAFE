@@ -25,12 +25,14 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 public class Capillary implements XMLPersistent, Comparable <Capillary>  
 {
 
-	public ROI2DShape 					roi 			= null;	// the capillary (source)
+	private ROI2DShape 					roi 			= null;	// the capillary (source)
 	public int							indexKymograph 	= -1;
 	private String						kymographName 	= null;
 	public String 						version 		= null;
 	public String						filenameTIFF	= null;
-	// TODO: add frame start/end/step?
+	
+	public List<CapillaryWithTime>		capillaryWithTime = null;
+	
 	public String 						capStimulus		= new String("..");
 	public String 						capConcentration= new String("..");
 	public String						capSide			= ".";
@@ -130,6 +132,28 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public void setKymographName(String name) 
 	{
 		this.kymographName = name;
+	}
+	
+	public ROI2DShape getRoi() {
+		return roi;
+	}
+	
+	public void setRoi(ROI2DShape roi) {
+		this.roi = roi;
+	}
+	
+	public ROI2DShape getRoiAt(int t) {
+		if (capillaryWithTime == null || capillaryWithTime.size() < 1)
+			return roi;
+		
+		ROI2DShape roiFound = roi;
+		for ( CapillaryWithTime item : capillaryWithTime) {
+			if(t >= item.start && t <= item.end) {
+				roiFound = item.roi;
+				break;
+			}
+		}
+		return roiFound;
 	}
 	
 	public void setRoiName(String name) 
