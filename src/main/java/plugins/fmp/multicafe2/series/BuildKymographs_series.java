@@ -17,6 +17,7 @@ import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import loci.formats.FormatException;
 import plugins.fmp.multicafe2.experiment.Capillary;
+import plugins.fmp.multicafe2.experiment.CapillaryWithTime;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
@@ -27,9 +28,9 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class BuildKymographs_series extends BuildSeries  
 {
-	ArrayList<ArrayList <int []>> 			cap_kymoImageInteger = null;
+	//ArrayList<ArrayList <int []>> 			cap_kymoImageInteger = null;
 	ArrayList<IcyBufferedImage>				cap_bufKymoImage 	 = null;
-	ArrayList<ArrayList<ArrayList<int[]>>>	cap_masksList 		= null;
+	//ArrayList<ArrayList<ArrayList<int[]>>>	cap_masksList 		= null;
 	int 									kymoImageWidth = 0;
 	
 	void analyzeExperiment(Experiment exp) 
@@ -185,19 +186,21 @@ public class BuildKymographs_series extends BuildSeries
 						
 						for (int icap=0; icap < nbcapillaries; icap++) 
 						{
-							ArrayList<int[]> cap_Integer = cap_kymoImageInteger.get(icap);
-							ArrayList<ArrayList<int[]>> masksList =	cap_masksList.get(icap);
-								
-							int [] kymoImageChannel = cap_Integer.get(chan); 
-							int cnt = 0;
-							for (ArrayList<int[]> mask : masksList) 
+							Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
+							
+							for (CapillaryWithTime capT : cap.capillariesWithTime) 
 							{
-								int sum = 0;
-								for (int[] m: mask)
-									sum += sourceImageChannel[m[0] + m[1]*sourceImageWidth];
-								if (mask.size() > 0)
-									kymoImageChannel[cnt*kymoImageWidth + indexTo] = (int) (sum/mask.size()); 
-								cnt ++;
+								int [] kymoImageChannel = capT.cap_Integer.get(chan); 
+								int cnt = 0;
+								for (ArrayList<int[]> mask : capT.masksList) 
+								{
+									int sum = 0;
+									for (int[] m: mask)
+										sum += sourceImageChannel[m[0] + m[1]*sourceImageWidth];
+									if (mask.size() > 0)
+										kymoImageChannel[cnt*kymoImageWidth + indexTo] = (int) (sum/mask.size()); 
+									cnt ++;
+								}
 							}
 						}
 					}
@@ -250,33 +253,36 @@ public class BuildKymographs_series extends BuildSeries
 
 		int nbcapillaries = exp.capillaries.capillariesArrayList.size();
 		int imageHeight = 0;
-		cap_masksList = new ArrayList<ArrayList<ArrayList<int[]>>>(nbcapillaries);
 		for (int i=0; i < nbcapillaries; i++) 
 		{
 			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
-			ArrayList<ArrayList<int[]>> masksList = new ArrayList<ArrayList<int[]>>();
-			getPointsfromROIPolyLineUsingBresenham(cap.roi, masksList, options.diskRadius, sizex, sizey);
-			if (masksList.size() > imageHeight)
-				imageHeight = masksList.size();
-			cap_masksList.add(masksList);
+			cap.CreateCapillariesWithTimeIfNull();
+			for (CapillaryWithTime capT : cap.capillariesWithTime) {
+				capT.masksList = new ArrayList<ArrayList<int[]>>();
+				getPointsfromROIPolyLineUsingBresenham(capT.roi, capT.masksList, options.diskRadius, sizex, sizey);
+				if (capT.masksList.size() > imageHeight)
+					imageHeight = capT.masksList.size();
+			}
 		}
 		
 		int len = kymoImageWidth * imageHeight;
 		cap_bufKymoImage = new ArrayList<IcyBufferedImage>(nbcapillaries);
-		cap_kymoImageInteger = new ArrayList<ArrayList<int[]>>(nbcapillaries);
 		
 		for (int i=0; i < nbcapillaries; i++) 
 		{
 			IcyBufferedImage cap_Image = new IcyBufferedImage(kymoImageWidth, imageHeight, numC, dataType);
 			cap_bufKymoImage.add(cap_Image);
-			ArrayList<int[]> cap_Integer = new ArrayList <int []>(len * numC);
-			cap_kymoImageInteger.add(cap_Integer);
-			for (int chan = 0; chan < numC; chan++) 
-			{
-				Object dataArray = cap_Image.getDataXY(chan);
-				int[] tabValues = new int[len];
-				tabValues = Array1DUtil.arrayToIntArray(dataArray, tabValues, false);
-				cap_Integer.add(tabValues);
+			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
+			
+			for (CapillaryWithTime capT : cap.capillariesWithTime) {
+				capT.cap_Integer = new ArrayList <int []>(len * numC);
+				for (int chan = 0; chan < numC; chan++) 
+				{
+					Object dataArray = cap_Image.getDataXY(chan);
+					int[] tabValues = new int[len];
+					tabValues = Array1DUtil.arrayToIntArray(dataArray, tabValues, false);
+					capT.cap_Integer.add(tabValues);
+				}
 			}
 		} 
 	}

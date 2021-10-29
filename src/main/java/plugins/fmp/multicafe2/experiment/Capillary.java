@@ -31,7 +31,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public String 						version 		= null;
 	public String						filenameTIFF	= null;
 	
-	public List<CapillaryWithTime>		capillaryWithTime = null;
+	public List<CapillaryWithTime>		capillariesWithTime = null;
 	
 	public String 						capStimulus		= new String("..");
 	public String 						capConcentration= new String("..");
@@ -102,7 +102,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	public void copy(Capillary cap) 
 	{
-		indexKymograph 		= cap.indexKymograph;
+		indexKymograph 	= cap.indexKymograph;
 		kymographName 	= cap.kymographName;
 		version 		= cap.version;
 		roi 			= cap.roi;
@@ -142,12 +142,19 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		this.roi = roi;
 	}
 	
+	public void CreateCapillariesWithTimeIfNull() {
+		if (capillariesWithTime != null) return;
+		capillariesWithTime = new ArrayList<CapillaryWithTime>();
+		capillariesWithTime.add(new CapillaryWithTime(roi));
+			
+	}
+	
 	public ROI2DShape getRoiAt(int t) {
-		if (capillaryWithTime == null || capillaryWithTime.size() < 1)
+		if (capillariesWithTime == null || capillariesWithTime.size() < 1)
 			return roi;
 		
 		ROI2DShape roiFound = roi;
-		for ( CapillaryWithTime item : capillaryWithTime) {
+		for ( CapillaryWithTime item : capillariesWithTime) {
 			if(t >= item.start && t <= item.end) {
 				roiFound = item.roi;
 				break;
