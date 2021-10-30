@@ -55,7 +55,7 @@ public class LoadCapillary {
 	    	cap.capConcentration= XMLUtil.getElementValue(nodeMeta, ID_CONCL, ID_CONCL);
 	    	cap.capSide 		= XMLUtil.getElementValue(nodeMeta, ID_SIDE, ".");
 			
-	    	cap.roi = (ROI2DShape) loadFromXML_ROI(nodeMeta);
+	    	cap.setRoi((ROI2DShape) loadFromXML_ROI(nodeMeta));
 	    	cap.limitsOptions.loadFromXML(nodeMeta);
 	    }
 	    return flag;

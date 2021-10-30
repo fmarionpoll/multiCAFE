@@ -190,7 +190,7 @@ public class BuildKymographs_series extends BuildSeries
 							
 							for (CapillaryWithTime capT : cap.capillariesWithTime) 
 							{
-								int [] kymoImageChannel = capT.cap_Integer.get(chan); 
+								int [] kymoImageChannel = cap.cap_Integer.get(chan); 
 								int cnt = 0;
 								for (ArrayList<int[]> mask : capT.masksList) 
 								{
@@ -208,18 +208,19 @@ public class BuildKymographs_series extends BuildSeries
 		}
 		
 		waitFuturesCompletion(processor, futuresArray, progressBar);
-		buildKymographImages(seqKymos.seq, sizeC, nbcapillaries);
+		buildKymographImages(exp, seqKymos.seq, sizeC, nbcapillaries);
         progressBar.close();
         
 		return true;
 	}
 	
-	private void buildKymographImages(Sequence seqKymo, int sizeC, int nbcapillaries)
+	private void buildKymographImages(Experiment exp, Sequence seqKymo, int sizeC, int nbcapillaries)
 	{
 		seqKymo.beginUpdate();
 		for (int icap=0; icap < nbcapillaries; icap++) 
 		{
-			ArrayList<int[]> cap_Integer = cap_kymoImageInteger.get(icap);
+			Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
+			ArrayList<int[]> cap_Integer = cap.cap_Integer;
 			IcyBufferedImage cap_Image = cap_bufKymoImage.get(icap);
 			boolean isSignedDataType = cap_Image.isSignedDataType();
 			for (int chan = 0; chan < sizeC; chan++) 
@@ -273,16 +274,14 @@ public class BuildKymographs_series extends BuildSeries
 			IcyBufferedImage cap_Image = new IcyBufferedImage(kymoImageWidth, imageHeight, numC, dataType);
 			cap_bufKymoImage.add(cap_Image);
 			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
-			
-			for (CapillaryWithTime capT : cap.capillariesWithTime) {
-				capT.cap_Integer = new ArrayList <int []>(len * numC);
-				for (int chan = 0; chan < numC; chan++) 
-				{
-					Object dataArray = cap_Image.getDataXY(chan);
-					int[] tabValues = new int[len];
-					tabValues = Array1DUtil.arrayToIntArray(dataArray, tabValues, false);
-					capT.cap_Integer.add(tabValues);
-				}
+			cap.cap_Integer = new ArrayList <int []>(len * numC);
+
+			for (int chan = 0; chan < numC; chan++) 
+			{
+				Object dataArray = cap_Image.getDataXY(chan);
+				int[] tabValues = new int[len];
+				tabValues = Array1DUtil.arrayToIntArray(dataArray, tabValues, false);
+				cap.cap_Integer.add(tabValues);
 			}
 		} 
 	}

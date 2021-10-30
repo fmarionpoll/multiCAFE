@@ -61,7 +61,7 @@ public class SaveCapillary
 			XMLUtil.setElementValue(nodeMeta, ID_SIDE, cap.capSide);
 			XMLUtil.setElementValue(nodeMeta, ID_CONCL, cap.capConcentration);
 
-	        saveToXML_ROI(nodeMeta, cap.roi); 
+	        saveToXML_ROI(nodeMeta, cap.getRoi()); 
 	    }
 	}
 

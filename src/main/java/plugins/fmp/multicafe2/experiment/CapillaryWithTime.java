@@ -8,7 +8,6 @@ public class CapillaryWithTime {
 	public ROI2DShape 					roi 			= null;	// the capillary (source)
 	public long 						start			= -1;
 	public long							end				= -1;
-	public ArrayList<int[]> 			cap_Integer		= null;
 	public ArrayList<ArrayList<int[]>> 	masksList 		= null;
 	
 	public CapillaryWithTime(ROI2DShape roi) {

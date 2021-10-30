@@ -32,6 +32,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public String						filenameTIFF	= null;
 	
 	public List<CapillaryWithTime>		capillariesWithTime = null;
+	public ArrayList<int[]> 			cap_Integer		= null;
 	
 	public String 						capStimulus		= new String("..");
 	public String 						capConcentration= new String("..");

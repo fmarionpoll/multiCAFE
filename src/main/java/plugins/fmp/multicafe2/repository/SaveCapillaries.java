@@ -46,7 +46,7 @@ public class SaveCapillaries {
 	
 	public boolean xmlSaveCapillary_Measures(String directory, Capillary cap) 
 	{
-		if (directory == null || cap.roi == null)
+		if (directory == null || cap.getRoi() == null)
 			return false;
 		String tempname = directory + File.separator + cap.getKymographName()+ ".xml";
 
