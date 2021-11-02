@@ -750,10 +750,6 @@ public class Experiment
 				seqKymos.seq.setImage(t, zChannelDestination, img2);
 		}
 		
-		if (zChannelDestination == 1)
-			capillaries.limitsOptions.transformForLevels = transformop;
-		else
-			capillaries.limitsOptions.transformForGulps = transformop;
 		seqKymos.seq.dataChanged();
 		seqKymos.seq.endUpdate();
 	}

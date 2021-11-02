@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,9 +22,9 @@ public class Edit extends JPanel
 	
 	private JLabel		toLabel 				= new JLabel(" to ");
 	private JCheckBox	fromCheckBox 			= new JCheckBox (" from frame", false);
-	JSpinner			startSpinner			= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
-	JSpinner			endSpinner				= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
-	
+	private JSpinner	startSpinner			= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
+	private JSpinner	endSpinner				= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
+	private JButton		addButton				= new JButton("Add interval from now to end");
 	private MultiCAFE2 	parent0 				= null;
 	
 	void init(GridLayout capLayout, MultiCAFE2 parent0) 
@@ -49,6 +50,9 @@ public class Edit extends JPanel
 		
 		add(panel0);
 		
+		JPanel panel1 = new JPanel(flowLayout);
+		panel1.add(addButton);
+		add(panel1);
 		
 		defineActionListeners();
 		this.setParent0(parent0);
