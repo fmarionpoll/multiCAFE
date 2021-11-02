@@ -28,10 +28,8 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class BuildKymographs_series extends BuildSeries  
 {
-	//ArrayList<ArrayList <int []>> 			cap_kymoImageInteger = null;
-	ArrayList<IcyBufferedImage>				cap_bufKymoImage 	 = null;
-	//ArrayList<ArrayList<ArrayList<int[]>>>	cap_masksList 		= null;
-	int 									kymoImageWidth = 0;
+	ArrayList<IcyBufferedImage>	cap_bufKymoImage 	= null;
+	int 						kymoImageWidth 		= 0;
 	
 	void analyzeExperiment(Experiment exp) 
 	{
@@ -90,7 +88,6 @@ public class BuildKymographs_series extends BuildSeries
 			final int t_index = t;
 			futuresArray.add(processor.submit(new Runnable () 
 			{
-				
 				@Override
 				public void run() 
 				{	
@@ -132,8 +129,6 @@ public class BuildKymographs_series extends BuildSeries
 		}
 		
 		int startFrame = options.referenceFrame;
-//		String referenceImageName = seqCamData.getFileName(startFrame);			
-//		final IcyBufferedImage referenceImage = imageIORead(referenceImageName);
 		final int sizeC = seqCamData.seq.getSizeC();
 		
 		seqCamData.seq.removeAllROI();
@@ -150,7 +145,8 @@ public class BuildKymographs_series extends BuildSeries
 		stopFlag = false;
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
 		int nframes = (int) ((exp.offsetLastCol_Ms - exp.offsetFirstCol_Ms) / exp.kymoBinCol_Ms +1);
-	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+	    
+		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("buildkymo2");
 	    processor.setPriority(Processor.NORM_PRIORITY);
         ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nframes);
@@ -190,6 +186,8 @@ public class BuildKymographs_series extends BuildSeries
 							
 							for (CapillaryWithTime capT : cap.capillariesWithTime) 
 							{
+								if (!capT.IsIntervalWithinLimits(indexFrom))
+									continue;
 								int [] kymoImageChannel = cap.cap_Integer.get(chan); 
 								int cnt = 0;
 								for (ArrayList<int[]> mask : capT.masksList) 
@@ -254,7 +252,7 @@ public class BuildKymographs_series extends BuildSeries
 
 		int nbcapillaries = exp.capillaries.capillariesArrayList.size();
 		int imageHeight = 0;
-		for (int i=0; i < nbcapillaries; i++) 
+		for (int i = 0; i < nbcapillaries; i++) 
 		{
 			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
 			cap.CreateCapillariesWithTimeIfNull();

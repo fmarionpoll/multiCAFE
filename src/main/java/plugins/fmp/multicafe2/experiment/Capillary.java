@@ -146,8 +146,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public void CreateCapillariesWithTimeIfNull() {
 		if (capillariesWithTime != null) return;
 		capillariesWithTime = new ArrayList<CapillaryWithTime>();
-		capillariesWithTime.add(new CapillaryWithTime(roi));
-			
+		capillariesWithTime.add(new CapillaryWithTime(roi));		
 	}
 	
 	public ROI2DShape getRoiAt(int t) {

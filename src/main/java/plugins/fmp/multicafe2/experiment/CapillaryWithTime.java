@@ -13,5 +13,14 @@ public class CapillaryWithTime {
 	public CapillaryWithTime(ROI2DShape roi) {
 		this.roi = roi;
 	}
+	
+	public boolean IsIntervalWithinLimits(long index) {
+		if (start < 0)
+			return true;
+		if (index > end || index < start)
+			return false;
+		else
+			return true;
+	}
 
 }
