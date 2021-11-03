@@ -15,7 +15,7 @@ public class CurvesRestoreLength_series extends BuildSeries
 			SequenceKymos seqKymos = exp.seqKymos;
 			for (int t= 0; t< seqKymos.nTotalFrames; t++) 
 			{
-				Capillary cap = exp.capillaries.capillariesArrayList.get(t);
+				Capillary cap = exp.capillaries.capillariesList.get(t);
 				cap.restoreClippedMeasures();
 			}
 			exp.capillaries.xmlSaveCapillaries_Measures(exp.getKymosBinFullDirectory());

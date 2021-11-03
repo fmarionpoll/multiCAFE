@@ -170,7 +170,7 @@ public class Graphs extends JPanel implements SequenceListener
 	{
 		boolean flag = false;
 		Capillaries capillaries = exp.capillaries;
-		for (Capillary cap: capillaries.capillariesArrayList) 
+		for (Capillary cap: capillaries.capillariesList) 
 		{
 			flag = cap.isThereAnyMeasuresDone(option);
 			if (flag)

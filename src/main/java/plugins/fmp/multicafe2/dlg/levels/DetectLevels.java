@@ -165,7 +165,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		if (seqKymos == null)
 			return;
 		EnumTransformOp transform = (EnumTransformOp) transformForLevelsComboBox.getSelectedItem();
-		List<Capillary> capList = exp.capillaries.capillariesArrayList;
+		List<Capillary> capList = exp.capillaries.capillariesList;
 		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) 
 			getInfosFromDialog(capList.get(t));		
 		

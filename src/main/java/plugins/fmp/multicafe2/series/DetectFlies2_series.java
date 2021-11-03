@@ -303,7 +303,7 @@ public class DetectFlies2_series extends BuildSeries
 		displayRefViewers(exp);
 		
 		int nFliesToRemove = 0;
-		for (Cage cage: exp.cages.cageList) 
+		for (Cage cage: exp.cages.cagesList) 
 		{
 			cage.initialflyRemoved = false;
 			if (cage.cageNFlies > 0)
@@ -323,7 +323,7 @@ public class DetectFlies2_series extends BuildSeries
 			IcyBufferedImage positiveImage = exp.seqCamData.subtractImagesAsInteger(currentImage, exp.seqCamData.refImage);
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, find_flies.rectangleAllCages));
 			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd); 
-			for (Cage cage: exp.cages.cageList) 
+			for (Cage cage: exp.cages.cagesList) 
 			{
 				if (cage.cageNFlies <1)
 					continue;

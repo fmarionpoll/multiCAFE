@@ -89,7 +89,7 @@ public class Table extends JPanel
 				if (exp != null)
 				{
 					cageArrayCopy.clear();
-					for (Cage cage: exp.cages.cageList ) 
+					for (Cage cage: exp.cages.cagesList ) 
 					{
 						cageArrayCopy.add(cage);
 					}
@@ -107,7 +107,7 @@ public class Table extends JPanel
 					for (Cage cageFrom: cageArrayCopy ) 
 					{
 						cageFrom.valid = false;
-						for (Cage cageTo: exp.cages.cageList) 
+						for (Cage cageTo: exp.cages.cagesList) 
 						{
 							if (!cageFrom.cageRoi.getName().equals (cageTo.cageRoi.getName()))
 								continue;
@@ -134,8 +134,8 @@ public class Table extends JPanel
 					int columnIndex = tableView.getSelectedColumn();
 					if (rowIndex >= 0) 
 					{
-						Cage cage0 = exp.cages.cageList.get(rowIndex);	
-						for (Cage cage: exp.cages.cageList) 
+						Cage cage0 = exp.cages.cagesList.get(rowIndex);	
+						for (Cage cage: exp.cages.cagesList) 
 						{
 							if (cage.cageRoi.getName().equals(cage0.cageRoi.getName()))
 								continue;
@@ -158,7 +158,7 @@ public class Table extends JPanel
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null)
 		{
-			exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
+			exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesList);
 			parent0.paneCapillaries.tabFile.saveCapillaries_file(exp);
 		}
 	}

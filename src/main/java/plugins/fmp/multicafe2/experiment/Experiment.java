@@ -735,12 +735,12 @@ public class Experiment
 		tImg.setSpanDiff(spanDiff);
 		tImg.setSequence(seqKymos);
 		
-		if (capillaries.capillariesArrayList.size() != nimages) 
+		if (capillaries.capillariesList.size() != nimages) 
 			SequenceKymosUtils.transferCamDataROIStoKymo(this);
 		
 		for (int t= 0; t < nimages; t++) 
 		{
-			Capillary cap = capillaries.capillariesArrayList.get(t);
+			Capillary cap = capillaries.capillariesList.get(t);
 			cap.indexKymograph = t;
 			IcyBufferedImage img = seqKymos.getSeqImage(t, zChannelSource);
 			IcyBufferedImage img2 = tImg.transformImage (img, transformop);
@@ -778,7 +778,7 @@ public class Experiment
 			return xmlLoadOldCapillaries();
 		}
 		boolean flag = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
-		if (capillaries.capillariesArrayList.size() < 1)
+		if (capillaries.capillariesList.size() < 1)
 			flag = xmlLoadOldCapillaries();
 		
 		// load mccapillaries description of experiment
@@ -959,7 +959,7 @@ public class Experiment
 	public void saveDetRoisToPositions() 
 	{
 		List<ROI2D> detectedROIsList= seqCamData.seq.getROI2Ds();
-		for (Cage cage : cages.cageList) 
+		for (Cage cage : cages.cagesList) 
 		{
 			cage.transferRoisToPositions(detectedROIsList);
 		}

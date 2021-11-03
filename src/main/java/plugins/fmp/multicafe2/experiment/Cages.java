@@ -23,7 +23,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Cages 
 {	
-	public List<Cage>	cageList			= new ArrayList<Cage>();
+	public List<Cage>	cagesList			= new ArrayList<Cage>();
 
 	// ---------- not saved to xml:
 	public long			detectFirst_Ms		= 0;
@@ -45,7 +45,7 @@ public class Cages
 
 	public void clearAllMeasures(int option_detectCage) 
 	{
-		for (Cage cage: cageList) 
+		for (Cage cage: cagesList) 
 		{
 			int cagenb = cage.getCageNumberInteger();
 			if (option_detectCage < 0 || option_detectCage == cagenb)
@@ -55,22 +55,22 @@ public class Cages
 	
 	public void removeCages() 
 	{
-		cageList.clear();
+		cagesList.clear();
 	}
 	
 	public void mergeLists(Cages cagesm) 
 	{
-		for (Cage cagem : cagesm.cageList ) 
+		for (Cage cagem : cagesm.cagesList ) 
 		{
 			if (!isPresent(cagem))
-				cageList.add(cagem);
+				cagesList.add(cagem);
 		}
 	}
 	
 	boolean isPresent(Cage cagenew) 
 	{
 		boolean flag = false;
-		for (Cage cage: cageList) 
+		for (Cage cage: cagesList) 
 		{
 			if (cage.cageRoi.getName().contentEquals(cagenew.cageRoi.getName())) 
 			{
@@ -108,9 +108,9 @@ public class Cages
 
 		int index = 0;
 		Element xmlVal = XMLUtil.addElement(node, ID_CAGES);
-		int ncages = cageList.size();
+		int ncages = cagesList.size();
 		XMLUtil.setAttributeIntValue(xmlVal, ID_NCAGES, ncages);
-		for (Cage cage: cageList) 
+		for (Cage cage: cagesList) 
 		{
 			cage.xmlSaveCage(xmlVal, index);
 			index++;
@@ -162,7 +162,7 @@ public class Cages
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_DROSOTRACK);
 		if (node == null)
 			return false;
-		cageList.clear();
+		cagesList.clear();
 		Element xmlVal = XMLUtil.getElement(node, ID_CAGES);
 		if (xmlVal != null) 
 		{
@@ -171,7 +171,7 @@ public class Cages
 			{
 				Cage cage = new Cage();
 				cage.xmlLoadCage(xmlVal, index);
-				cageList.add(cage);
+				cagesList.add(cage);
 			}
 		} 
 		else 
@@ -194,18 +194,18 @@ public class Cages
 	public void copy (Cages cag) 
 	{	
 //		detect.copyParameters(cag.detect);	
-		cageList.clear();
-		for (Cage ccag: cag.cageList) 
+		cagesList.clear();
+		for (Cage ccag: cag.cagesList) 
 		{
 			Cage cagi = new Cage();
 			cagi.copy(ccag);
-			cageList.add(cagi);
+			cagesList.add(cagi);
 		}
 	}
 	
 	private void transferDataToCages_v0(List<ROI2D> cageLimitROIList, List<XYTaSeriesArrayList> flyPositionsList) 
 	{
-		cageList.clear();
+		cagesList.clear();
 		Collections.sort(cageLimitROIList, new Comparators.ROI2D_Name_Comparator());
 		int ncages = cageLimitROIList.size();
 		for (int index=0; index< ncages; index++) 
@@ -213,7 +213,7 @@ public class Cages
 			Cage cage = new Cage();
 			cage.cageRoi = cageLimitROIList.get(index);
 			cage.flyPositions = flyPositionsList.get(index);
-			cageList.add(cage);
+			cagesList.add(cage);
 		}
 	}
 
@@ -261,7 +261,7 @@ public class Cages
 	{
 		List <ROI2D> cageLimitROIList = getRoisWithCageName(seqCamData);
 		seqCamData.seq.removeROIs(cageLimitROIList, false);
-		for (Cage cage: cageList) 
+		for (Cage cage: cagesList) 
 			cageLimitROIList.add(cage.cageRoi);
 		seqCamData.seq.addROIs(cageLimitROIList, true);
 	}
@@ -272,12 +272,12 @@ public class Cages
 		Collections.sort(roiList, new Comparators.ROI2D_Name_Comparator());
 		addMissingCages(roiList);
 		removeOrphanCages(roiList);
-		Collections.sort(cageList, new Comparators.Cage_Name_Comparator());
+		Collections.sort(cagesList, new Comparators.Cage_Name_Comparator());
 	}
 	
 	public void setFirstAndLastCageToZeroFly() 
 	{
-		for (Cage cage: cageList) 
+		for (Cage cage: cagesList) 
 		{
 			if (cage.cageRoi.getName().contains("000") || cage.cageRoi.getName().contains("009"))
 				cage.cageNFlies = 0;
@@ -291,7 +291,7 @@ public class Cages
 			boolean found = false;
 			if (roi.getName() == null)
 				break;
-			for (Cage cage: cageList) 
+			for (Cage cage: cagesList) 
 			{
 				if (cage.cageRoi == null)
 					break;
@@ -305,7 +305,7 @@ public class Cages
 			{
 				Cage cage = new Cage();
 				cage.cageRoi = roi;
-				cageList.add(cage);
+				cagesList.add(cage);
 			}
 		}
 	}
@@ -313,7 +313,7 @@ public class Cages
 	private void removeOrphanCages(List<ROI2D> roiList) 
 	{
 		// remove cages with names not in the list
-		Iterator<Cage> iterator = cageList.iterator();
+		Iterator<Cage> iterator = cagesList.iterator();
 		while (iterator.hasNext()) 
 		{
 			Cage cage = iterator.next();
@@ -384,7 +384,7 @@ public class Cages
 	
 	public void transferNFliesFromCapillariesToCages(List<Capillary> capList) 
 	{
-		for (Cage cage: cageList ) 
+		for (Cage cage: cagesList ) 
 		{
 			int cagenb = cage.getCageNumberInteger();
 			for (Capillary cap: capList) 
@@ -398,7 +398,7 @@ public class Cages
 		
 	public void transferNFliesFromCagesToCapillaries(List<Capillary> capList) 
 	{
-		for (Cage cage: cageList ) 
+		for (Cage cage: cagesList ) 
 		{
 			int cagenb = cage.getCageNumberInteger();
 			for (Capillary cap: capList) 
@@ -422,7 +422,7 @@ public class Cages
 	public Cage getCageFromNumber (int number) 
 	{
 		Cage cageFound = null;
-		for (Cage cage: cageList) 
+		for (Cage cage: cagesList) 
 		{
 			if (number == cage.getCageNumberInteger()) 
 			{
@@ -435,8 +435,8 @@ public class Cages
 
 	public List <ROI2DPoint> getPositionsAtT(int t) 
 	{
-		List <ROI2DPoint> roiPointList = new ArrayList<ROI2DPoint> (cageList.size());
-		for (Cage cage: cageList) 
+		List <ROI2DPoint> roiPointList = new ArrayList<ROI2DPoint> (cagesList.size());
+		for (Cage cage: cagesList) 
 		{
 			ROI2DPoint roiPoint = cage.getRoiPointFromPositionAtT(t);
 			if (roiPoint != null)
@@ -447,20 +447,20 @@ public class Cages
 
 	public void orderFlyPositions() 
 	{
-		for (Cage cage: cageList) 
+		for (Cage cage: cagesList) 
 			Collections.sort(cage.flyPositions.xytList, new Comparators.XYTaValue_Tindex_Comparator());
 	}
 	
 	public void computeBooleanMasksForCages() 
 	{
-		for (Cage cage : cageList ) 
+		for (Cage cage : cagesList ) 
 			cage.computeCageBooleanMask2D(); 
 	}
 	
 	public int getLastIntervalFlyAlive(int cagenumber) 
 	{
 		int flypos = -1;
-		for (Cage cage: cageList) 
+		for (Cage cage: cagesList) 
 		{
 			String cagenumberString = cage.cageRoi.getName().substring(4);
 			if (Integer.valueOf(cagenumberString) == cagenumber) 
@@ -475,7 +475,7 @@ public class Cages
 	public boolean isFlyAlive(int cagenumber) 
 	{
 		boolean isalive = false;
-		for (Cage cage: cageList) 
+		for (Cage cage: cagesList) 
 		{
 			String cagenumberString = cage.cageRoi.getName().substring(4);
 			if (Integer.valueOf(cagenumberString) == cagenumber) 
@@ -490,7 +490,7 @@ public class Cages
 	public boolean isDataAvailable(int cagenumber) 
 	{
 		boolean isavailable = false;
-		for (Cage cage: cageList) 
+		for (Cage cage: cagesList) 
 		{
 			String cagenumberString = cage.cageRoi.getName().substring(4);
 			if (Integer.valueOf(cagenumberString) == cagenumber) 

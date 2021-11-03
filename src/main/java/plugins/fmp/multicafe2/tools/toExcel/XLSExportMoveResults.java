@@ -130,11 +130,11 @@ public class XLSExportMoveResults extends XLSExport
 		expAll.camFirstImage_Ms = expAll.firstImage_FileTime.toMillis();
 		expAll.camLastImage_Ms = expAll.lastImage_FileTime.toMillis();
 		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_Ms) / options.buildExcelStepMs +1);
-		int ncages = expAll.cages.cageList.size();
+		int ncages = expAll.cages.cagesList.size();
 		rowsForOneExp = new ArrayList <XYTaSeriesArrayList> (ncages);
 		for (int i=0; i< ncages; i++) 
 		{
-			Cage cage = expAll.cages.cageList.get(i);
+			Cage cage = expAll.cages.cagesList.get(i);
 			XYTaSeriesArrayList row = new XYTaSeriesArrayList (cage.cageRoi.getName(), xlsOption, nFrames, options.buildExcelStepMs);
 			row.nflies = cage.cageNFlies;
 			rowsForOneExp.add(row);
@@ -152,8 +152,8 @@ public class XLSExportMoveResults extends XLSExport
 			int len = (int) ((expi.camLastImage_Ms - expi.camFirstImage_Ms)/ options.buildExcelStepMs +1);
 			if (len == 0)
 				continue;
-			List <XYTaSeriesArrayList> resultsArrayList = new ArrayList <XYTaSeriesArrayList> (expi.cages.cageList.size());
-			for (Cage cage: expi.cages.cageList) 
+			List <XYTaSeriesArrayList> resultsArrayList = new ArrayList <XYTaSeriesArrayList> (expi.cages.cagesList.size());
+			for (Cage cage: expi.cages.cagesList) 
 			{
 				XYTaSeriesArrayList results = new XYTaSeriesArrayList(cage.cageRoi.getName(), xlsOption, len, options.buildExcelStepMs );
 				results.nflies = cage.cageNFlies;
@@ -180,7 +180,7 @@ public class XLSExportMoveResults extends XLSExport
 						default:
 							break;
 					}
-					double pixelsize = 32. / exp.capillaries.capillariesArrayList.get(0).capPixels;
+					double pixelsize = 32. / exp.capillaries.capillariesList.get(0).capPixels;
 					results.changePixelSize(pixelsize);
 					resultsArrayList.add(results);
 				}
@@ -307,7 +307,7 @@ public class XLSExportMoveResults extends XLSExport
 	
 	private void trimDeadsFromRowMoveData(Experiment exp) 
 	{
-		for (Cage cage: exp.cages.cageList) 
+		for (Cage cage: exp.cages.cagesList) 
 		{
 			int cagenumber = Integer.valueOf(cage.cageRoi.getName().substring(4));
 			int ilastalive = 0;

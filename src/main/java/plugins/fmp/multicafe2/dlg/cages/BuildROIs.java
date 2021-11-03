@@ -98,7 +98,7 @@ public class BuildROIs extends JPanel
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null) 
 		{
-			int nrois = exp.cages.cageList.size();	
+			int nrois = exp.cages.cagesList.size();	
 			if (nrois > 0) {
 				nColumnsTextField.setValue(nrois);
 				ncolumns = nrois;
@@ -121,11 +121,11 @@ public class BuildROIs extends JPanel
 		int rectleft = rect.x + rect.width /6;
 		int rectright = rect.x + rect.width*5 /6;
 		int recttop = rect.y + rect.height *2/3; 
-		if (exp.capillaries.capillariesArrayList.size() > 0) 
+		if (exp.capillaries.capillariesList.size() > 0) 
 		{
-			Rectangle bound0 = exp.capillaries.capillariesArrayList.get(0).getRoi().getBounds();
-			int last = exp.capillaries.capillariesArrayList.size() - 1;
-			Rectangle bound1 = exp.capillaries.capillariesArrayList.get(last).getRoi().getBounds();
+			Rectangle bound0 = exp.capillaries.capillariesList.get(0).getRoi().getBounds();
+			int last = exp.capillaries.capillariesList.size() - 1;
+			Rectangle bound1 = exp.capillaries.capillariesList.get(last).getRoi().getBounds();
 			rectleft = bound0.x;
 			rectright = bound1.x + bound1.width;
 			int diff = (rectright - rectleft)*2/60;

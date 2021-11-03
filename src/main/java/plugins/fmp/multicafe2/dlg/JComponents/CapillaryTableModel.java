@@ -61,7 +61,7 @@ public class CapillaryTableModel extends AbstractTableModel
     {
     	if (expList != null && expList.getSelectedIndex() >= 0 ) {
     		Experiment exp = (Experiment) expList.getSelectedItem();
-			return exp.capillaries.capillariesArrayList.size();
+			return exp.capillaries.capillariesList.size();
     	}
         return 0;
     }
@@ -73,7 +73,7 @@ public class CapillaryTableModel extends AbstractTableModel
     	if (expList != null && expList.getSelectedIndex() >=0 ) 
     	{
     		Experiment exp = (Experiment) expList.getSelectedItem();
-    		cap = exp.capillaries.capillariesArrayList.get(rowIndex);
+    		cap = exp.capillaries.capillariesList.get(rowIndex);
     	}
     	if (cap != null) 
     	{
@@ -109,7 +109,7 @@ public class CapillaryTableModel extends AbstractTableModel
     	if (expList != null && expList.getSelectedIndex() >=0 ) 
     	{
     		Experiment exp = (Experiment) expList.getSelectedItem();
-    		cap = exp.capillaries.capillariesArrayList.get(rowIndex);
+    		cap = exp.capillaries.capillariesList.get(rowIndex);
     	}
     	if (cap != null) 
     	{

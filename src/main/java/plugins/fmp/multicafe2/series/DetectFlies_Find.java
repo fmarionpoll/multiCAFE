@@ -98,7 +98,7 @@ public class DetectFlies_Find
 	{
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
- 		for (Cage cage: cages.cageList) 
+ 		for (Cage cage: cages.cagesList) 
  		{		
 			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
 				continue;
@@ -123,10 +123,10 @@ public class DetectFlies_Find
 	public void initTempRectROIs(Experiment exp, Sequence seq, int option_cagenumber) 
 	{
 		cages = exp.cages;
-		int nbcages = cages.cageList.size();
+		int nbcages = cages.cagesList.size();
 		for (int i=0; i < nbcages; i++) 
 		{
-			Cage cage = cages.cageList.get(i);
+			Cage cage = cages.cagesList.get(i);
 			if (options.detectCage != -1 && cage.getCageNumberInteger() != option_cagenumber)
 				continue;
 			if (cage.cageNFlies > 0) 
@@ -147,7 +147,7 @@ public class DetectFlies_Find
 		cages = exp.cages;
 		cages.computeBooleanMasksForCages();
 		rectangleAllCages = null;
-		for (Cage cage: cages.cageList) 
+		for (Cage cage: cages.cagesList) 
 		{
 			if (cage.cageNFlies < 1) 
 				continue;

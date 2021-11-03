@@ -152,11 +152,11 @@ public class Display extends JPanel implements ViewerListener
 		SwingUtilities.invokeLater(new Runnable() { public void run()
 		{	
 			kymographsCombo.removeAllItems();
-			Collections.sort(exp.capillaries.capillariesArrayList); 
-			int ncapillaries = exp.capillaries.capillariesArrayList.size();
+			Collections.sort(exp.capillaries.capillariesList); 
+			int ncapillaries = exp.capillaries.capillariesList.size();
 			for (int i=0; i< ncapillaries; i++)
 			{
-				Capillary cap = exp.capillaries.capillariesArrayList.get(i);
+				Capillary cap = exp.capillaries.capillariesList.get(i);
 				kymographsCombo.addItem(cap.getRoiName());
 			}
 		}});	

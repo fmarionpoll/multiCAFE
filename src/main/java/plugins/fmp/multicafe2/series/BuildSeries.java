@@ -132,7 +132,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 		}
 		exp.cages.detectBin_Ms = options.t_binMs;
 		exp.cages.detect_threshold = options.threshold;
-		if (exp.cages.cageList.size() < 1 ) 
+		if (exp.cages.cagesList.size() < 1 ) 
 		{
 			System.out.println("! skipped experiment with no cage: " + exp.getExperimentDirectory());
 			flag = false;

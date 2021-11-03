@@ -85,7 +85,7 @@ public class XLSExport
 				rowmax = dumb.getValue();		
 		}
 		
-		List<Capillary> capList = exp.capillaries.capillariesArrayList;
+		List<Capillary> capList = exp.capillaries.capillariesList;
 		for (int t=0; t< capList.size(); t++) 
 		{ 
 			Capillary cap = capList.get(t);
@@ -113,9 +113,9 @@ public class XLSExport
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPPIXELS.getValue(), transpose, 	exp.capillaries.desc.pixels);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT2.getValue(), transpose, 	exp.getField(EnumXLSColumnHeader.COMMENT2));
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, 	cap.capNFlies); 
-			if (exp.cages.cageList.size() > cap.capCageID) 
+			if (exp.cages.cagesList.size() > cap.capCageID) 
 			{
-				Cage cage = exp.cages.cageList.get(cap.capCageID);
+				Cage cage = exp.cages.cagesList.get(cap.capCageID);
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, cage.strCageComment + "/"+ cage.strCageStrain + "/" + cage.strCageSex + "/" + cage.cageAge );
 			} 
 			else 
@@ -351,11 +351,11 @@ public class XLSExport
 		}
 
 		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_Ms)/options.buildExcelStepMs  +1) ;
-		int ncapillaries = expAll.capillaries.capillariesArrayList.size();
+		int ncapillaries = expAll.capillaries.capillariesList.size();
 		rowListForOneExp = new ArrayList <XLSResults> (ncapillaries);
 		for (int i=0; i< ncapillaries; i++) 
 		{
-			Capillary cap 		= expAll.capillaries.capillariesArrayList.get(i);
+			Capillary cap 		= expAll.capillaries.capillariesList.get(i);
 			XLSResults row 		= new XLSResults (cap.getRoiName(), cap.capNFlies, xlsOption, nFrames);
 			row.stimulus 		= cap.capStimulus;
 			row.concentration 	= cap.capConcentration;
@@ -416,14 +416,14 @@ public class XLSExport
 
 			if (nOutputFrames > 1)
 			{
-				XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesArrayList.size());
+				XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesList.size());
 				switch (xlsOption) {
 //					case TOPRAW:
 					case BOTTOMLEVEL:
 					case ISGULPS:
 					case TTOGULP:
 					case TTOGULP_LR:
-						for (Capillary cap: expi.capillaries.capillariesArrayList) 
+						for (Capillary cap: expi.capillaries.capillariesList) 
 						{
 							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 							XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
@@ -433,7 +433,7 @@ public class XLSExport
 						break;
 						
 					case TOPRAW:
-						for (Capillary cap: expi.capillaries.capillariesArrayList) 
+						for (Capillary cap: expi.capillaries.capillariesList) 
 						{
 							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 							XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
@@ -449,7 +449,7 @@ public class XLSExport
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
 					case TOPLEVEL_RATIO:
-						for (Capillary cap: expi.capillaries.capillariesArrayList) 
+						for (Capillary cap: expi.capillaries.capillariesList) 
 						{
 							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 							XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
@@ -465,7 +465,7 @@ public class XLSExport
 					case DERIVEDVALUES:
 					case SUMGULPS:
 					case SUMGULPS_LR:
-						for (Capillary cap: expi.capillaries.capillariesArrayList) 
+						for (Capillary cap: expi.capillaries.capillariesList) 
 						{
 							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 							XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
@@ -641,7 +641,7 @@ public class XLSExport
 	
 	private void trimDeadsFromArrayList(Experiment exp) 
 	{
-		for (Cage cage: exp.cages.cageList) 
+		for (Cage cage: exp.cages.cagesList) 
 		{
 			String roiname = cage.cageRoi.getName();
 			if (roiname.length() < 4 || !roiname.substring( 0 , 4 ).contains("cage"))

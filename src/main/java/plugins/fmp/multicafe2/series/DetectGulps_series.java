@@ -77,7 +77,7 @@ public class DetectGulps_series extends BuildSeries
 		
 		for (int indexKymo = firstkymo; indexKymo <= lastkymo; indexKymo++) 
 		{
-			final Capillary capi = exp.capillaries.capillariesArrayList.get(indexKymo);
+			final Capillary capi = exp.capillaries.capillariesList.get(indexKymo);
 			capi.setGulpsOptions(options);
 			
 			final int t_from = indexKymo;;

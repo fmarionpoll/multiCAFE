@@ -165,7 +165,7 @@ public class Cage
 	public Point2D getCenterTipCapillaries(Capillaries capList) 
 	{
 		List<Point2D> listpts = new ArrayList<Point2D>();
-		for (Capillary cap: capList.capillariesArrayList) 
+		for (Capillary cap: capList.capillariesList) 
 		{
 			Point2D pt = cap.getCapillaryTipWithinROI2D(cageRoi);
 			if (pt != null)

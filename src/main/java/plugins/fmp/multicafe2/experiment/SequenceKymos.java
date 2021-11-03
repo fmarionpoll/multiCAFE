@@ -159,9 +159,9 @@ public class SequenceKymos extends SequenceCamData
 				if (roi instanceof ROI2D && ((ROI2D)roi).getT() == kymo)
 					roisAtT.add(roi);
 			}
-			if (capillaries.capillariesArrayList.size() <= kymo) 
-				capillaries.capillariesArrayList.add(new Capillary());
-			Capillary cap = capillaries.capillariesArrayList.get(kymo);
+			if (capillaries.capillariesList.size() <= kymo) 
+				capillaries.capillariesList.add(new Capillary());
+			Capillary cap = capillaries.capillariesList.get(kymo);
 			cap.filenameTIFF = getFileName(kymo);
 			cap.indexKymograph = kymo;
 			cap.transferROIsToMeasures(roisAtT);	
@@ -174,10 +174,10 @@ public class SequenceKymos extends SequenceCamData
 		List<ROI2D> seqRoisList = seq.getROI2Ds(false);
 		ROI2DUtilities.removeROIsMissingChar(seqRoisList, '_');
 		List<ROI2D> newRoisList = new ArrayList<ROI2D>();
-		int ncapillaries = capillaries.capillariesArrayList.size();
+		int ncapillaries = capillaries.capillariesList.size();
 		for (int i=0; i < ncapillaries; i++) 
 		{
-			List<ROI2D> listOfRois = capillaries.capillariesArrayList.get(i).transferMeasuresToROIs();
+			List<ROI2D> listOfRois = capillaries.capillariesList.get(i).transferMeasuresToROIs();
 			newRoisList.addAll(listOfRois);
 		}
 		ROI2DUtilities.mergeROIsListNoDuplicate(seqRoisList, newRoisList, seq);
@@ -199,12 +199,12 @@ public class SequenceKymos extends SequenceCamData
 		renameCapillary_Files(dir) ;
 		
 		String directoryFull = dir +File.separator ;
-		int ncapillaries = capillaries.capillariesArrayList.size();
+		int ncapillaries = capillaries.capillariesList.size();
 		List<ImageFileDescriptor> myListOfFiles = new ArrayList<ImageFileDescriptor>(ncapillaries);
 		for (int i=0; i< ncapillaries; i++) 
 		{
 			ImageFileDescriptor temp = new ImageFileDescriptor();
-			temp.fileName  = directoryFull+ capillaries.capillariesArrayList.get(i).getKymographName()+ ".tiff";
+			temp.fileName  = directoryFull+ capillaries.capillariesList.get(i).getKymographName()+ ".tiff";
 			myListOfFiles.add(temp);
 		}
 		return myListOfFiles;

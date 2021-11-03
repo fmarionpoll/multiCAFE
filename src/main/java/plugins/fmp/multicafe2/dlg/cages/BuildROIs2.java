@@ -191,7 +191,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 		blobs.fillBlanksPixelsWithinBlobs ();
 	
 		List<Integer> blobsfound = new ArrayList<Integer> ();
-		for (Capillary cap : exp.capillaries.capillariesArrayList) 
+		for (Capillary cap : exp.capillaries.capillariesList) 
 		{
 			Point2D pt = cap.getCapillaryLowestPoint();
 			if (pt != null) 

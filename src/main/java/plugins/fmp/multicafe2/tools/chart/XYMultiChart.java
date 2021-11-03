@@ -67,7 +67,7 @@ public class XYMultiChart extends IcyFrame
 		XYSeriesCollection xyDataset = null;
 		for (int t=0; t< nimages; t++) 
 		{
-			Capillary cap = exp.capillaries.capillariesArrayList.get(t);
+			Capillary cap = exp.capillaries.capillariesList.get(t);
 			char test = cap.getKymographName().charAt(cap.getKymographName().length() - 2);
 			if (kmax < 2 || test != collection_char) 
 			{

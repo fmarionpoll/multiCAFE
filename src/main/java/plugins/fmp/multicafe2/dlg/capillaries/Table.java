@@ -100,7 +100,7 @@ public class Table  extends JPanel
 				if (exp != null)
 				{
 					capillariesArrayCopy.clear();
-					for (Capillary cap: exp.capillaries.capillariesArrayList ) 
+					for (Capillary cap: exp.capillaries.capillariesList ) 
 						capillariesArrayCopy.add(cap);
 					pasteButton.setEnabled(true);
 				}
@@ -116,7 +116,7 @@ public class Table  extends JPanel
 					for (Capillary capFrom: capillariesArrayCopy ) 
 					{
 						capFrom.valid = false;
-						for (Capillary capTo: exp.capillaries.capillariesArrayList) 
+						for (Capillary capTo: exp.capillaries.capillariesList) 
 						{
 							if (!capFrom.getRoiName().equals (capTo.getRoiName()))
 								continue;
@@ -139,10 +139,10 @@ public class Table  extends JPanel
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 				{
-					int ncapillaries =  exp.capillaries.capillariesArrayList.size();
+					int ncapillaries =  exp.capillaries.capillariesList.size();
 					for (int i=0; i < ncapillaries; i++) 
 					{
-						Capillary cap = exp.capillaries.capillariesArrayList.get(i);
+						Capillary cap = exp.capillaries.capillariesList.get(i);
 						if (i< 2 || i >= ncapillaries-2) {
 							cap.capNFlies = 0;
 						}
@@ -167,7 +167,7 @@ public class Table  extends JPanel
 					int columnIndex = tableView.getSelectedColumn();
 					if (rowIndex >= 0) 
 					{
-						Capillary cap0 = exp.capillaries.capillariesArrayList.get(rowIndex);	
+						Capillary cap0 = exp.capillaries.capillariesList.get(rowIndex);	
 						String side = cap0.getCapillarySide();
 						int modulo2 = 0;
 						if (side.equals("L"))
@@ -177,7 +177,7 @@ public class Table  extends JPanel
 						else
 							modulo2 = Integer.valueOf(cap0.getCapillarySide()) % 2;
 						
-						for (Capillary cap: exp.capillaries.capillariesArrayList) 
+						for (Capillary cap: exp.capillaries.capillariesList) 
 						{
 							if (cap.getKymographName().equals(cap0.getKymographName()))
 								continue;
@@ -221,8 +221,8 @@ public class Table  extends JPanel
 					int columnIndex = tableView.getSelectedColumn();
 					if (rowIndex >= 0) 
 					{
-						Capillary cap0 = exp.capillaries.capillariesArrayList.get(rowIndex);	
-						for (Capillary cap: exp.capillaries.capillariesArrayList) {
+						Capillary cap0 = exp.capillaries.capillariesList.get(rowIndex);	
+						for (Capillary cap: exp.capillaries.capillariesList) {
 							if (cap.getKymographName().equals(cap0.getKymographName()))
 								continue;
 							switch (columnIndex) 
@@ -243,9 +243,9 @@ public class Table  extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null && exp.cages.cageList.size() > 0) 
+				if (exp != null && exp.cages.cagesList.size() > 0) 
 				{
-					exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesArrayList);
+					exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesList);
 					viewModel.fireTableDataChanged();
 				}
 			}});
@@ -257,7 +257,7 @@ public class Table  extends JPanel
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 				{
-					exp.cages.setCageNbFromName(exp.capillaries.capillariesArrayList);
+					exp.cages.setCageNbFromName(exp.capillaries.capillariesList);
 					viewModel.fireTableDataChanged();
 				}
 			}});

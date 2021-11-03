@@ -49,7 +49,7 @@ public class Display  extends JPanel
 				if (exp != null)
 				{
 					exp.capillaries.transferDescriptionToCapillaries();
-					exp.cages.transferNFliesFromCapillariesToCages(exp.capillaries.capillariesArrayList);
+					exp.cages.transferNFliesFromCapillariesToCages(exp.capillaries.capillariesList);
 					dialog = new Table();
 	            	dialog.initialize(parent0, cagesArrayCopy);
 				}

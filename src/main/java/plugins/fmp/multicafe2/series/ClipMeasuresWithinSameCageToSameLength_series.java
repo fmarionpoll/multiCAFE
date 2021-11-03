@@ -20,7 +20,7 @@ public class ClipMeasuresWithinSameCageToSameLength_series extends BuildSeries
 			ArrayList<Integer> listCageID = new ArrayList<Integer> (seqKymos.nTotalFrames);
 			for (int t= 0; t< seqKymos.nTotalFrames; t++) 
 			{
-				Capillary tcap = exp.capillaries.capillariesArrayList.get(t);
+				Capillary tcap = exp.capillaries.capillariesList.get(t);
 				int tcage = tcap.capCageID;
 				if (findCageID(tcage, listCageID)) 
 					continue;
@@ -28,7 +28,7 @@ public class ClipMeasuresWithinSameCageToSameLength_series extends BuildSeries
 				int minLength = findMinLength(exp, t, tcage);
 				for (int tt = t; tt< seqKymos.nTotalFrames; tt++) 
 				{
-					Capillary ttcap = exp.capillaries.capillariesArrayList.get(tt);
+					Capillary ttcap = exp.capillaries.capillariesList.get(tt);
 					int ttcage = ttcap.capCageID;
 					if (ttcage == tcage && ttcap.ptsTop.polylineLimit.npoints > minLength)
 						ttcap.cropMeasuresToNPoints(minLength);
@@ -56,11 +56,11 @@ public class ClipMeasuresWithinSameCageToSameLength_series extends BuildSeries
 	
 	private int findMinLength (Experiment exp, int t, int tcage ) 
 	{
-		Capillary tcap = exp.capillaries.capillariesArrayList.get(t);
+		Capillary tcap = exp.capillaries.capillariesList.get(t);
 		int minLength = tcap.ptsTop.polylineLimit.npoints;
-		for (int tt = t; tt< exp.capillaries.capillariesArrayList.size(); tt++) 
+		for (int tt = t; tt< exp.capillaries.capillariesList.size(); tt++) 
 		{
-			Capillary ttcap = exp.capillaries.capillariesArrayList.get(tt);
+			Capillary ttcap = exp.capillaries.capillariesList.get(tt);
 			int ttcage = ttcap.capCageID;
 			if (ttcage == tcage) 
 			{

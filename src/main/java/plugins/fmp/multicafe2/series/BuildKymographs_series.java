@@ -91,7 +91,7 @@ public class BuildKymographs_series extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					Capillary cap = exp.capillaries.capillariesArrayList.get(t_index);
+					Capillary cap = exp.capillaries.capillariesList.get(t_index);
 					String filename = directory + File.separator + cap.getKymographName() + ".tiff";
 					File file = new File (filename);
 					IcyBufferedImage image = exp.seqKymos.getSeqImage(t_index, 0);
@@ -122,7 +122,7 @@ public class BuildKymographs_series extends BuildSeries
 			return false;
 	
 		initArraysToBuildKymographImages(exp);
-		if (exp.capillaries.capillariesArrayList.size() < 1) 
+		if (exp.capillaries.capillariesList.size() < 1) 
 		{
 			System.out.println("Abort (1): nbcapillaries = 0");
 			return false;
@@ -134,7 +134,7 @@ public class BuildKymographs_series extends BuildSeries
 		seqCamData.seq.removeAllROI();
 		exp.seqKymos.seq = new Sequence();
 		
-		int nbcapillaries = exp.capillaries.capillariesArrayList.size();
+		int nbcapillaries = exp.capillaries.capillariesList.size();
 		if (nbcapillaries == 0) 
 		{
 			System.out.println("Abort(2): nbcapillaries = 0");
@@ -182,7 +182,7 @@ public class BuildKymographs_series extends BuildSeries
 						
 						for (int icap=0; icap < nbcapillaries; icap++) 
 						{
-							Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
+							Capillary cap = exp.capillaries.capillariesList.get(icap);
 							
 							for (CapillaryWithTime capT : cap.capillariesWithTime) 
 							{
@@ -217,7 +217,7 @@ public class BuildKymographs_series extends BuildSeries
 		seqKymo.beginUpdate();
 		for (int icap=0; icap < nbcapillaries; icap++) 
 		{
-			Capillary cap = exp.capillaries.capillariesArrayList.get(icap);
+			Capillary cap = exp.capillaries.capillariesList.get(icap);
 			ArrayList<int[]> cap_Integer = cap.cap_Integer;
 			IcyBufferedImage cap_Image = cap_bufKymoImage.get(icap);
 			boolean isSignedDataType = cap_Image.isSignedDataType();
@@ -250,11 +250,11 @@ public class BuildKymographs_series extends BuildSeries
 		if (dataType.toString().equals("undefined"))
 			dataType = DataType.UBYTE;
 
-		int nbcapillaries = exp.capillaries.capillariesArrayList.size();
+		int nbcapillaries = exp.capillaries.capillariesList.size();
 		int imageHeight = 0;
 		for (int i = 0; i < nbcapillaries; i++) 
 		{
-			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
+			Capillary cap = exp.capillaries.capillariesList.get(i);
 			cap.CreateCapillariesWithTimeIfNull();
 			for (CapillaryWithTime capT : cap.capillariesWithTime) {
 				capT.masksList = new ArrayList<ArrayList<int[]>>();
@@ -271,7 +271,7 @@ public class BuildKymographs_series extends BuildSeries
 		{
 			IcyBufferedImage cap_Image = new IcyBufferedImage(kymoImageWidth, imageHeight, numC, dataType);
 			cap_bufKymoImage.add(cap_Image);
-			Capillary cap = exp.capillaries.capillariesArrayList.get(i);
+			Capillary cap = exp.capillaries.capillariesList.get(i);
 			cap.cap_Integer = new ArrayList <int []>(len * numC);
 
 			for (int chan = 0; chan < numC; chan++) 

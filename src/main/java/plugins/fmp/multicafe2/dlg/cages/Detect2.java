@@ -250,12 +250,12 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		int nitems = 1;
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null )	
-			nitems =  exp.cages.cageList.size() +1;
+			nitems =  exp.cages.cagesList.size() +1;
 		if (allCagesComboBox.getItemCount() != nitems) 
 		{
 			allCagesComboBox.removeAllItems();
 			allCagesComboBox.addItem("all cages");
-			for (Cage cage: exp.cages.cageList) 
+			for (Cage cage: exp.cages.cagesList) 
 			{
 				allCagesComboBox.addItem(cage.getCageNumber());
 			}

@@ -66,7 +66,7 @@ public class CageTableModel extends AbstractTableModel
     {
     	if (expList != null && expList.getSelectedIndex() >= 0 ) {
     		Experiment exp = (Experiment) expList.getSelectedItem();
-    		return exp.cages.cageList.size();
+    		return exp.cages.cagesList.size();
     	}
         return 0;
     }
@@ -78,7 +78,7 @@ public class CageTableModel extends AbstractTableModel
     	if (expList != null && expList.getSelectedIndex() >=0 ) 
     	{
     		Experiment exp = (Experiment) expList.getSelectedItem();
-    		cage = exp.cages.cageList.get(rowIndex);
+    		cage = exp.cages.cagesList.get(rowIndex);
     	}
     	if (cage != null) 
     	{
@@ -113,7 +113,7 @@ public class CageTableModel extends AbstractTableModel
     	if (expList != null && expList.getSelectedIndex() >=0 ) 
     	{
     		Experiment exp = (Experiment) expList.getSelectedItem();
-    		cage = exp.cages.cageList.get(rowIndex);
+    		cage = exp.cages.cagesList.get(rowIndex);
     	}
     	if (cage != null) 
     	{

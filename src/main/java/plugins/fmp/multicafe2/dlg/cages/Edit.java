@@ -155,7 +155,7 @@ public class Edit extends JPanel
 		foundCage = -1;
 		for (int frame = 0; frame < dataSize; frame++) 
 		{
-			for (Cage cage: exp.cages.cageList) 
+			for (Cage cage: exp.cages.cagesList) 
 			{
 				if (frame >= cage.flyPositions.xytList.size())
 					continue;
@@ -183,7 +183,7 @@ public class Edit extends JPanel
 		int dataSize = exp.seqCamData.nTotalFrames;
 		for (int frame = 0; frame < dataSize; frame++) 
 		{
-			for (Cage cage: exp.cages.cageList) 
+			for (Cage cage: exp.cages.cagesList) 
 			{
 				if (frame >= cage.flyPositions.xytList.size())
 					continue;
