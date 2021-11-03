@@ -16,6 +16,7 @@ import icy.system.thread.Processor;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import loci.formats.FormatException;
+import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.CapillaryWithTime;
 import plugins.fmp.multicafe2.experiment.Experiment;
@@ -159,6 +160,8 @@ public class BuildKymographs_series extends BuildSeries
 			final int indexFrom = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_Ms));
 			if (indexFrom >= seqCamData.nTotalFrames)
 				continue;
+			
+			final List<Capillary> capillaries = exp.capillaries.getCapillariesListAt(indexFrom);
 
 			futuresArray.add(processor.submit(new Runnable () 
 			{
@@ -175,6 +178,7 @@ public class BuildKymographs_series extends BuildSeries
 					}
 
 					int len = sourceImage.getSizeX() *  sourceImage.getSizeY();
+					
 					for (int chan = 0; chan < sizeC; chan++) 
 					{ 
 						int [] sourceImageChannel = new int[len];
@@ -182,26 +186,23 @@ public class BuildKymographs_series extends BuildSeries
 						
 						for (int icap=0; icap < nbcapillaries; icap++) 
 						{
-							Capillary cap = exp.capillaries.capillariesList.get(icap);
+							Capillary cap = capillaries.get(icap);
 							
-							for (CapillaryWithTime capT : cap.capillariesWithTime) 
+							int [] kymoImageChannel = cap.cap_Integer.get(chan); 
+							int cnt = 0;
+							for (ArrayList<int[]> mask : cap.masksList) 
 							{
-								if (!capT.IsIntervalWithinLimits(indexFrom))
-									continue;
-								int [] kymoImageChannel = cap.cap_Integer.get(chan); 
-								int cnt = 0;
-								for (ArrayList<int[]> mask : capT.masksList) 
-								{
-									int sum = 0;
-									for (int[] m: mask)
-										sum += sourceImageChannel[m[0] + m[1]*sourceImageWidth];
-									if (mask.size() > 0)
-										kymoImageChannel[cnt*kymoImageWidth + indexTo] = (int) (sum/mask.size()); 
-									cnt ++;
-								}
+								int sum = 0;
+								for (int[] m: mask)
+									sum += sourceImageChannel[m[0] + m[1]*sourceImageWidth];
+								if (mask.size() > 0)
+									kymoImageChannel[cnt*kymoImageWidth + indexTo] = (int) (sum/mask.size()); 
+								cnt ++;
 							}
+							
 						}
 					}
+					
 				}}));
 		}
 		
