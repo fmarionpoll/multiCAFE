@@ -31,8 +31,29 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public String 						version 		= null;
 	public String						filenameTIFF	= null;
 	
-	public List<CapillaryWithTime>		capillariesWithTime = null;
+//public List<CapillaryWithTime>		capillariesWithTime = null;
+//	public void CreateCapillariesWithTimeIfNull() {
+//		if (capillariesWithTime != null) return;
+//		capillariesWithTime = new ArrayList<CapillaryWithTime>();
+//		capillariesWithTime.add(new CapillaryWithTime(roi));		
+//	}
+//	
+//	public ROI2DShape getRoiAt(int t) {
+//		if (capillariesWithTime == null || capillariesWithTime.size() < 1)
+//			return roi;
+//		
+//		ROI2DShape roiFound = roi;
+//		for ( CapillaryWithTime item : capillariesWithTime) {
+//			if(t >= item.start && t <= item.end) {
+//				roiFound = item.roi;
+//				break;
+//			}
+//		}
+//		return roiFound;
+//	}
+//	
 	public ArrayList<int[]> 			cap_Integer		= null;
+	public ArrayList<ArrayList<int[]>> 	masksList 		= null;
 	
 	public String 						capStimulus		= new String("..");
 	public String 						capConcentration= new String("..");
@@ -141,26 +162,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	public void setRoi(ROI2DShape roi) {
 		this.roi = roi;
-	}
-	
-	public void CreateCapillariesWithTimeIfNull() {
-		if (capillariesWithTime != null) return;
-		capillariesWithTime = new ArrayList<CapillaryWithTime>();
-		capillariesWithTime.add(new CapillaryWithTime(roi));		
-	}
-	
-	public ROI2DShape getRoiAt(int t) {
-		if (capillariesWithTime == null || capillariesWithTime.size() < 1)
-			return roi;
-		
-		ROI2DShape roiFound = roi;
-		for ( CapillaryWithTime item : capillariesWithTime) {
-			if(t >= item.start && t <= item.end) {
-				roiFound = item.roi;
-				break;
-			}
-		}
-		return roiFound;
 	}
 	
 	public void setRoiName(String name) 

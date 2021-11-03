@@ -28,6 +28,28 @@ public class Capillaries
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public List <Capillary> 		capillariesList		= new ArrayList <Capillary>();
 	
+	//
+	public List<CapillariesWithTime> capillariesWithTime = null;
+	public void CreateCapillariesWithTimeIfNull() {
+		if (capillariesWithTime != null) return;
+		capillariesWithTime = new ArrayList<CapillariesWithTime>();
+		capillariesWithTime.add(new CapillariesWithTime(capillariesList));		
+	}
+	public List<Capillary> getCapillariesListAt(int t) {
+		if (capillariesWithTime == null || capillariesWithTime.size() < 1)
+			return capillariesList;
+		
+		List <Capillary> capListFound = capillariesList;
+		for ( CapillariesWithTime item : capillariesWithTime) {
+			if(t >= item.start && t <= item.end) {
+				capListFound = item.capillariesList;
+				break;
+			}
+		}
+		return capListFound;
+	}
+	//
+	
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
 	private final static String ID_NCAPILLARIES 		= "N_capillaries";
 	private final static String ID_LISTOFCAPILLARIES 	= "List_of_capillaries";
