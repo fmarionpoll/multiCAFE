@@ -11,10 +11,12 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -24,24 +26,24 @@ import plugins.fmp.multicafe2.dlg.JComponents.CapillaryTableModel;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 
-public class Table  extends JPanel 
+public class InfosCapillaryTable extends JPanel 
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID 	= -8611587540329642259L;
-	IcyFrame 					dialogFrame 	= null;
-    private JTable 				tableView 		= new JTable();
-	private CapillaryTableModel viewModel 		= null;
-	private JButton				copyButton 		= new JButton("Copy table");
-	private JButton				pasteButton 	= new JButton("Paste");
-	private JButton				duplicateLRButton = new JButton("Duplicate cell to L/R");
-	private JButton				duplicateAllButton = new JButton("Duplicate cell to all");
-	private JButton				getNfliesButton = new JButton("Get n flies from cage");
-	private JButton				getCageNoButton	= new JButton("Set cage n#");
-	private JButton				noFliesButton = new JButton("Cages0/0: no flies");
-	private MultiCAFE2 			parent0 		= null; 
-	private List <Capillary> 	capillariesArrayCopy = null;
+	private static final long serialVersionUID 		= -8611587540329642259L;
+	IcyFrame 					dialogFrame 		= null;
+    private JTable 				tableView 			= new JTable();
+	private CapillaryTableModel capillaryTableModel = null;
+	private JButton				copyButton 			= new JButton("Copy table");
+	private JButton				pasteButton 		= new JButton("Paste");
+	private JButton				duplicateLRButton 	= new JButton("Duplicate cell to L/R");
+	private JButton				duplicateAllButton 	= new JButton("Duplicate cell to all");
+	private JButton				getNfliesButton 	= new JButton("Get n flies from cage");
+	private JButton				getCageNoButton		= new JButton("Set cage n#");
+	private JButton				noFliesButton 		= new JButton("Cages0/0: no flies");
+	private MultiCAFE2 			parent0 			= null; 
+	private List <Capillary> 	capillariesArrayCopy= null;
 	
 	
 	public void initialize (MultiCAFE2 parent0, List <Capillary> capCopy) 
@@ -49,14 +51,20 @@ public class Table  extends JPanel
 		this.parent0 = parent0;
 		capillariesArrayCopy = capCopy;
 		
-		viewModel = new CapillaryTableModel(parent0.expListCombo);
-	    tableView.setModel(viewModel);
+		capillaryTableModel = new CapillaryTableModel(parent0.expListCombo);
+	    tableView.setModel(capillaryTableModel);
 	    tableView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    tableView.setPreferredScrollableViewportSize(new Dimension(500, 400));
 	    tableView.setFillsViewportHeight(true);
 	    TableColumnModel columnModel = tableView.getColumnModel();
-	    for (int i=0; i<3; i++)
-	    	setFixedColumnProperties(columnModel.getColumn(i));
+	    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+	    centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+	    for (int i=0; i<capillaryTableModel.getColumnCount(); i++) {
+	    	TableColumn col = columnModel.getColumn(i);
+	    	if (i < 4)
+	    		setFixedColumnProperties(col);
+	    	col.setCellRenderer( centerRenderer );
+	    	}
         JScrollPane scrollPane = new JScrollPane(tableView);
         
 		JPanel topPanel = new JPanel(new GridLayout(2, 1));
@@ -66,7 +74,7 @@ public class Table  extends JPanel
         panel1.add(pasteButton);
         panel1.add(duplicateLRButton);
         panel1.add(duplicateAllButton);
-       topPanel.add(panel1);
+        topPanel.add(panel1);
         
         JPanel panel2 = new JPanel (flowLayout);
         panel2.add(getCageNoButton);
@@ -129,7 +137,7 @@ public class Table  extends JPanel
 						}
 					}
 				}
-				viewModel.fireTableDataChanged();
+				capillaryTableModel.fireTableDataChanged();
 			}});
 		
 		noFliesButton.addActionListener(new ActionListener () 
@@ -151,7 +159,7 @@ public class Table  extends JPanel
 							cap.capNFlies = 1;
 						}
 					}
-					viewModel.fireTableDataChanged();
+					capillaryTableModel.fireTableDataChanged();
 				}
 			}});
 
@@ -246,7 +254,7 @@ public class Table  extends JPanel
 				if (exp != null && exp.cages.cagesList.size() > 0) 
 				{
 					exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesList);
-					viewModel.fireTableDataChanged();
+					capillaryTableModel.fireTableDataChanged();
 				}
 			}});
 		
@@ -258,7 +266,7 @@ public class Table  extends JPanel
 				if (exp != null)
 				{
 					exp.cages.setCageNbFromName(exp.capillaries.capillariesList);
-					viewModel.fireTableDataChanged();
+					capillaryTableModel.fireTableDataChanged();
 				}
 			}});
 	}

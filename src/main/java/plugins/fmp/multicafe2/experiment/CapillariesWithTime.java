@@ -6,6 +6,7 @@ public class CapillariesWithTime {
 	public List <Capillary>	capillariesList	= null;	// the capillary (source)
 	public long 			start			= -1;
 	public long				end				= -1;
+	public boolean 			selected		= false;
 	
 	public CapillariesWithTime(List <Capillary>	capillariesList) {
 		this.capillariesList = capillariesList;

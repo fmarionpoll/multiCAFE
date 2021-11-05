@@ -1,7 +1,6 @@
 package plugins.fmp.multicafe2.dlg.JComponents;
 
 import javax.swing.table.AbstractTableModel;
-
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 
@@ -47,11 +46,11 @@ public class CapillaryTableModel extends AbstractTableModel
 	{
 		switch (column) {
 		case 0:	return "Name";
-		case 1: return "cage nb";
-		case 2: return "n flies";
-		case 3: return "volume";
-		case 4: return "stimulus";
-		case 5: return "concentration";
+		case 1: return "Cage nb";
+		case 2: return "N flies";
+		case 3: return "Volume";
+		case 4: return "Stimulus";
+		case 5: return "Concentration";
 		}
 		return "";
 	}
@@ -69,12 +68,7 @@ public class CapillaryTableModel extends AbstractTableModel
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) 
     {
-    	Capillary cap = null;
-    	if (expList != null && expList.getSelectedIndex() >=0 ) 
-    	{
-    		Experiment exp = (Experiment) expList.getSelectedItem();
-    		cap = exp.capillaries.capillariesList.get(rowIndex);
-    	}
+    	Capillary cap = getCapillaryAt(rowIndex);
     	if (cap != null) 
     	{
         	switch (columnIndex) 
@@ -105,12 +99,7 @@ public class CapillaryTableModel extends AbstractTableModel
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) 
     {
-    	Capillary cap = null;
-    	if (expList != null && expList.getSelectedIndex() >=0 ) 
-    	{
-    		Experiment exp = (Experiment) expList.getSelectedItem();
-    		cap = exp.capillaries.capillariesList.get(rowIndex);
-    	}
+    	Capillary cap = getCapillaryAt(rowIndex);
     	if (cap != null) 
     	{
         	switch (columnIndex) 
@@ -124,5 +113,15 @@ public class CapillaryTableModel extends AbstractTableModel
         	}
     	}
     }
+    
+    private Capillary getCapillaryAt(int rowIndex) {
+		Capillary cap = null;
+    	if (expList != null && expList.getSelectedIndex() >=0 ) 
+    	{
+    		Experiment exp = (Experiment) expList.getSelectedItem();
+    		cap = exp.capillaries.capillariesList.get(rowIndex);
+    	}
+    	return cap;
+	}
 
 }

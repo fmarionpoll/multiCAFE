@@ -52,11 +52,11 @@ public class CageTableModel extends AbstractTableModel
     	switch (column) 
     	{
     	case 0:	return "Name";
-    	case 1: return "n flies";
-    	case 2: return "strain";
-        case 3:	return "sex";
-        case 4: return "age";
-        case 5: return "comment";
+    	case 1: return "N flies";
+    	case 2: return "Strain";
+        case 3:	return "Sex";
+        case 4: return "Age";
+        case 5: return "Comment";
         }
     	return "";
     }

@@ -28,12 +28,13 @@ public class Infos extends JPanel
 	 * 
 	 */
 	private static final long 	serialVersionUID 			= 4950182090521600937L;
+	
 	private JSpinner 			capillaryVolumeTextField	= new JSpinner(new SpinnerNumberModel(5., 0., 100., 1.));
 	private JSpinner 			capillaryPixelsTextField	= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
 	private JButton				getCapillaryLengthButton	= new JButton ("pixels 1rst capillary");
 	private JButton				editCapillariesButton		= new JButton("edit capillaries");
 	private MultiCAFE2 			parent0 					= null;
-	private Table dialog 						= null;
+	private InfosCapillaryTable infosCapillaryTable 		= null;
 	private List <Capillary> 	capillariesArrayCopy 		= new ArrayList<Capillary>();
 	
 	
@@ -89,8 +90,9 @@ public class Infos extends JPanel
 				if (exp != null)
 				{
 					exp.capillaries.transferDescriptionToCapillaries();
-					dialog = new Table();
-					dialog.initialize(parent0, capillariesArrayCopy);
+					if (infosCapillaryTable == null)
+						infosCapillaryTable = new InfosCapillaryTable();
+					infosCapillaryTable.initialize(parent0, capillariesArrayCopy);
 				}
 			}});
 	}
