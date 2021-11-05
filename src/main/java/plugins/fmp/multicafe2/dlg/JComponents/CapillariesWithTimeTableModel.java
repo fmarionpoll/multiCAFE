@@ -12,7 +12,7 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel  {
 	 */
 	private static final long serialVersionUID = 1L;
 	private ExperimentCombo expList 	= null;
-	String columnNames[] = { "Selected", "First frame", "Last frame" };
+	String columnNames[] = { "Selected", "Start at" };
 	
 	public CapillariesWithTimeTableModel (ExperimentCombo expList) 
 	{
@@ -40,9 +40,10 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel  {
     public Class<?> getColumnClass(int columnIndex) 
     {
     	switch (columnIndex) {
-    	case 0: return Boolean.class;
-    	case 1: return Integer.class;
-    	case 2: return Integer.class;
+    	case 0: 
+    		return Boolean.class;
+    	case 1: 
+    		return Integer.class;
         }
     	return Integer.class;
     }
@@ -72,7 +73,6 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel  {
         	{
         	case 0: return cap.selected;
             case 1: return cap.start;
-            case 2: return cap.end;
         	}
     	}
     	return null;
@@ -94,7 +94,6 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel  {
 	    	{
 	    	case 0: cap.selected = (boolean) aValue; break;
 	        case 1: cap.start = (int) aValue; break; 
-	        case 2: cap.end = (int) aValue; break;
 	        }
 		}
 	}

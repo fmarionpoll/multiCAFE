@@ -4,9 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,6 +23,8 @@ import icy.gui.frame.IcyFrame;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.dlg.JComponents.CapillariesWithTimeTableModel;
 import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
+import plugins.fmp.multicafe2.experiment.Experiment;
+import plugins.fmp.multicafe2.tools.OverlayThreshold;
 
 
 public class EditCapillariesTable extends JPanel {
@@ -33,11 +38,11 @@ public class EditCapillariesTable extends JPanel {
     private JTable 				tableView 			= new JTable();
     private String				explanation 		= "Move to image, edit capillaries position and save";
 
-    private JButton				addItem				= new JButton("Add interval");
-    private JButton				deleteItem			= new JButton("Delete interval");
+    private JButton				addItem				= new JButton("Add");
+    private JButton				deleteItem			= new JButton("Delete");
     private JButton				saveCapillaries   	= new JButton("Save");
-    private JButton				showFrameButton		= new JButton("Show capillaries outer frame");
-    private JButton				fitCapillariesToFrameButton	= new JButton("Fit capillaries to frame");
+    private JCheckBox			showFrameButton		= new JCheckBox("Show frame");
+    private JButton				fitToFrameButton	= new JButton("Fit capillaries to frame");
     
 	private MultiCAFE2 			parent0 			= null; 
 	private CapillariesWithTimeTableModel capillariesWithTimeTablemodel = null;
@@ -70,13 +75,14 @@ public class EditCapillariesTable extends JPanel {
 		topPanel.add(panel0);
 		
 		JPanel panel1 = new JPanel (flowLayout);
+		panel1.add(new JLabel("Last row:"));
 		panel1.add(addItem);
 		panel1.add(deleteItem);
 		topPanel.add(panel1);
         
         JPanel panel2 = new JPanel (flowLayout);
         panel2.add(showFrameButton);
-        panel2.add(fitCapillariesToFrameButton);
+        panel2.add(fitToFrameButton);
         panel2.add(saveCapillaries);
         topPanel.add(panel2);
         
@@ -98,24 +104,33 @@ public class EditCapillariesTable extends JPanel {
 		dialogFrame.setVisible(true);
 		defineActionListeners();
 		
+		fitToFrameButton.setEnabled(false);	
 	}
 	
 	private void defineActionListeners() 
 	{
 		
-//		getNfliesButton.addActionListener(new ActionListener () 
-//		{ 
-//			@Override public void actionPerformed( final ActionEvent e ) 
-//			{ 
+		fitToFrameButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
 //				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 //				if (exp != null && exp.cages.cagesList.size() > 0) 
 //				{
 //					exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesList);
 //					capillariesWithTimeTablemodel.fireTableDataChanged();
 //				}
-//			}});
+			}});
 		
-		
+		showFrameButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				boolean show = showFrameButton.isSelected();
+				fitToFrameButton.setEnabled(show);
+				showFrame(show) ;
+	  			
+			}});
 	}
 	
 	void close() 
@@ -123,7 +138,11 @@ public class EditCapillariesTable extends JPanel {
 		dialogFrame.close();
 	}
 	
-
+	
+	
+	private void showFrame(boolean show) {
+		
+	}
 	
 
 }
