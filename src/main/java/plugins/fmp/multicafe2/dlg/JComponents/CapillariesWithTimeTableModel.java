@@ -5,17 +5,18 @@ import plugins.fmp.multicafe2.experiment.Capillaries;
 import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
 import plugins.fmp.multicafe2.experiment.Experiment;
 
-public class CapillariesWithTimeTableModel extends AbstractTableModel  {
+
+
+public class CapillariesWithTimeTableModel extends AbstractTableModel {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private ExperimentCombo expList 	= null;
-	String columnNames[] = { "Selected", "Start at" };
+	String columnNames[] = { "Selected", "Starts at" };
 	
-	public CapillariesWithTimeTableModel (ExperimentCombo expList) 
-	{
+	public CapillariesWithTimeTableModel (ExperimentCombo expList) {
 		super();
 		this.expList = expList;
 	}
@@ -37,8 +38,7 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel  {
 	}
 
 	@Override
-    public Class<?> getColumnClass(int columnIndex) 
-    {
+    public Class<?> getColumnClass(int columnIndex) {
     	switch (columnIndex) {
     	case 0: 
     		return Boolean.class;
@@ -49,28 +49,15 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel  {
     }
 	
 	@Override
-	public String getColumnName(int column) 
-	{
+	public String getColumnName(int column) {
 		return columnNames[column];
-	}
-
-	private CapillariesWithTime getCapillariesWithTimeAt(int rowIndex) {
-		CapillariesWithTime cap = null;
-    	if (expList != null && expList.getSelectedIndex() >=0 ) 
-    	{
-    		Experiment exp = (Experiment) expList.getSelectedItem();
-    		cap = exp.capillaries.capillariesWithTime.get(rowIndex);
-    	}
-    	return cap;
 	}
 	
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		CapillariesWithTime cap = getCapillariesWithTimeAt(rowIndex);
-    	if (cap != null) 
-    	{
-        	switch (columnIndex) 
-        	{
+    	if (cap != null) {
+        	switch (columnIndex) {
         	case 0: return cap.selected;
             case 1: return cap.start;
         	}
@@ -79,23 +66,28 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel  {
 	}
 	
 	@Override
-	public boolean isCellEditable(int rowIndex, int columnIndex) 
-	{
+	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return true;
 	}
 	
 	@Override
-	public void setValueAt(Object aValue, int rowIndex, int columnIndex) 
-	{
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		CapillariesWithTime cap = getCapillariesWithTimeAt(rowIndex);
-		if (cap != null) 
-		{
-	    	switch (columnIndex) 
-	    	{
+		if (cap != null) {
+	    	switch (columnIndex) {
 	    	case 0: cap.selected = (boolean) aValue; break;
 	        case 1: cap.start = (int) aValue; break; 
 	        }
-		}
+		}	
+	}
+	
+	private CapillariesWithTime getCapillariesWithTimeAt(int rowIndex) {
+		CapillariesWithTime cap = null;
+    	if (expList != null && expList.getSelectedIndex() >=0 ) {
+    		Experiment exp = (Experiment) expList.getSelectedItem();
+    		cap = exp.capillaries.capillariesWithTime.get(rowIndex);
+    	}
+    	return cap;
 	}
 
 }

@@ -12,24 +12,21 @@ public class CapillaryTableModel extends AbstractTableModel
 	 */
 	private static final long serialVersionUID = 6325792669154093747L;
 	private ExperimentCombo expList 	= null;
+	String columnNames[] = { "Name", "Cage", "N flies", "Volume", "Stimulus", "Concentration"};
 	
 	
-	
-	public CapillaryTableModel (ExperimentCombo expList) 
-	{
+	public CapillaryTableModel (ExperimentCombo expList) {
 		super();
 		this.expList = expList;
 	}
 	
 	@Override
-	public int getColumnCount() 
-	{
-		return 6;
+	public int getColumnCount() {
+		return columnNames.length;
 	}
 	
     @Override
-    public Class<?> getColumnClass(int columnIndex) 
-    {
+    public Class<?> getColumnClass(int columnIndex) {
     	switch (columnIndex) {
     	case 0: return String.class;
     	case 1: return Integer.class;
@@ -42,22 +39,12 @@ public class CapillaryTableModel extends AbstractTableModel
     }
     
 	@Override
-	public String getColumnName(int column) 
-	{
-		switch (column) {
-		case 0:	return "Name";
-		case 1: return "Cage nb";
-		case 2: return "N flies";
-		case 3: return "Volume";
-		case 4: return "Stimulus";
-		case 5: return "Concentration";
-		}
-		return "";
+	public String getColumnName(int column) {
+		return columnNames[column];
 	}
 	
     @Override
-    public int getRowCount() 
-    {
+    public int getRowCount() {
     	if (expList != null && expList.getSelectedIndex() >= 0 ) {
     		Experiment exp = (Experiment) expList.getSelectedItem();
 			return exp.capillaries.capillariesList.size();
@@ -66,13 +53,10 @@ public class CapillaryTableModel extends AbstractTableModel
     }
 
     @Override
-    public Object getValueAt(int rowIndex, int columnIndex) 
-    {
+    public Object getValueAt(int rowIndex, int columnIndex) {
     	Capillary cap = getCapillaryAt(rowIndex);
-    	if (cap != null) 
-    	{
-        	switch (columnIndex) 
-        	{
+    	if (cap != null) {
+        	switch (columnIndex) {
             case 0: return cap.getRoiName();
             case 1: return cap.capCageID;
             case 2: return cap.capNFlies;
@@ -85,10 +69,8 @@ public class CapillaryTableModel extends AbstractTableModel
     }
     
     @Override
-    public boolean isCellEditable(int rowIndex, int columnIndex) 
-    {
-    	switch (columnIndex) 
-    	{
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+    	switch (columnIndex) {
         case 0: 
         	return false;
         default:
@@ -97,13 +79,10 @@ public class CapillaryTableModel extends AbstractTableModel
     }
     
     @Override
-    public void setValueAt(Object aValue, int rowIndex, int columnIndex) 
-    {
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
     	Capillary cap = getCapillaryAt(rowIndex);
-    	if (cap != null) 
-    	{
-        	switch (columnIndex) 
-        	{
+    	if (cap != null) {
+        	switch (columnIndex) {
             case 0: cap.setRoiName(aValue.toString()); break;
             case 1: cap.capCageID = (int) aValue; break;
             case 2: cap.capNFlies = (int) aValue; break;
@@ -116,8 +95,7 @@ public class CapillaryTableModel extends AbstractTableModel
     
     private Capillary getCapillaryAt(int rowIndex) {
 		Capillary cap = null;
-    	if (expList != null && expList.getSelectedIndex() >=0 ) 
-    	{
+    	if (expList != null && expList.getSelectedIndex() >=0 ) {
     		Experiment exp = (Experiment) expList.getSelectedItem();
     		cap = exp.capillaries.capillariesList.get(rowIndex);
     	}
