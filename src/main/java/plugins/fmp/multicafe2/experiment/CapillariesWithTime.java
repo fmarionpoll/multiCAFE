@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CapillariesWithTime {
 	public List <Capillary>	capillariesList	= null;	// the capillary (source)
-	public long 			start			= -1;
+	public long 			start			= 0;
 	public long				end				= -1;
 	public boolean 			selected		= false;
 	

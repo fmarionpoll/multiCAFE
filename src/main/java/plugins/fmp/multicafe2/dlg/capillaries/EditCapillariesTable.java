@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Point;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -35,12 +36,11 @@ public class EditCapillariesTable extends JPanel {
 	private static final long serialVersionUID 		= 1L;
 	
 	IcyFrame 					dialogFrame 		= null;
-    private JTable 				tableView 			= new JTable();
-    private String				explanation 		= "Move to image, edit capillaries position and save";
+	private String				explanation 		= "Move to image, edit capillaries position and save";
 
     private JButton				addItem				= new JButton("Add");
     private JButton				deleteItem			= new JButton("Delete");
-    private JButton				saveCapillaries   	= new JButton("Save");
+    private JButton				saveCapillaries   	= new JButton("Save capillaries");
     private JCheckBox			showFrameButton		= new JCheckBox("Show frame");
     private JButton				fitToFrameButton	= new JButton("Fit capillaries to frame");
     
@@ -49,23 +49,18 @@ public class EditCapillariesTable extends JPanel {
 	private List <CapillariesWithTime> 	capillariesArrayCopy = null;
 	
 	
-	public void initialize (MultiCAFE2 parent0, List <CapillariesWithTime> capCopy) 
+	public void initialize (MultiCAFE2 parent0, List <CapillariesWithTime> capCopy, Point pt) 
 	{
 		this.parent0 = parent0;
 		capillariesArrayCopy = capCopy;
 		
 		capillariesWithTimeTablemodel = new CapillariesWithTimeTableModel(parent0.expListCombo);
-	    tableView.setModel(capillariesWithTimeTablemodel);
+		
+		JTable tableView = new JTable();    
+		tableView.setModel(capillariesWithTimeTablemodel);
 	    tableView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	    tableView.setPreferredScrollableViewportSize(new Dimension(300, 200));
 	    tableView.setFillsViewportHeight(true);
-	    TableColumnModel columnModel = tableView.getColumnModel();
-	    DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-	    centerRenderer.setHorizontalAlignment( JLabel.CENTER );
-	    for (int i=0; i<capillariesWithTimeTablemodel.getColumnCount(); i++) {
-	    	TableColumn col = columnModel.getColumn(i);
-	    	col.setCellRenderer( centerRenderer );
-	    }
         JScrollPane scrollPane = new JScrollPane(tableView);
         
 		JPanel topPanel = new JPanel(new GridLayout(4, 1));
@@ -96,11 +91,11 @@ public class EditCapillariesTable extends JPanel {
 		dialogFrame = new IcyFrame ("Edit capillaries position with time", true, true);	
 		dialogFrame.add(topPanel, BorderLayout.NORTH);
 		dialogFrame.add(tablePanel, BorderLayout.CENTER);
+		dialogFrame.setLocation(pt);
 		
 		dialogFrame.pack();
 		dialogFrame.addToDesktopPane();
 		dialogFrame.requestFocus();
-		dialogFrame.center();
 		dialogFrame.setVisible(true);
 		defineActionListeners();
 		

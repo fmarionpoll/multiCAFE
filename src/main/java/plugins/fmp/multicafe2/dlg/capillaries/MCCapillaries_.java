@@ -14,7 +14,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import icy.gui.component.PopupPanel;
-import icy.gui.frame.progress.ProgressFrame;
+import icy.gui.viewer.Viewer;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymosUtils;
@@ -35,7 +35,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			Adjust 		tabAdjust 		= new Adjust();
 			Infos		tabInfos		= new Infos();
 	private int 		ID_INFOS 		= 1;
-	private int 		ID_ADJUST 		= 2;
+	private int 		ID_ADJUST 		= 3;
+	private int			ID_EDIT			= 2;
 	private MultiCAFE2 	parent0 		= null;
 
 	
@@ -61,11 +62,13 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		tabsPane.addTab("Infos", null, tabInfos, "Define pixel conversion unit of images and capillaries content");
 		order++;
 		
+		ID_EDIT = order;
 		tabEdit.init(capLayout, parent0);
-		tabCreate.addPropertyChangeListener(this);
+		tabEdit.addPropertyChangeListener(this);
 		tabsPane.addTab("Edit", null, tabEdit, "Edit capillaries position and size");
 		order++;
 		
+		ID_ADJUST = order;
 		tabAdjust.init(capLayout, parent0);
 		tabAdjust.addPropertyChangeListener(this);
 		tabsPane.addTab("Adjust", null, tabAdjust, "Adjust ROIS position to the capillaries");
@@ -111,7 +114,6 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		}
 		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) 
 		{
-			parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(true);
 			tabsPane.setSelectedIndex(ID_INFOS);
 		}
 
@@ -123,10 +125,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		{ 
 			public void run() 
 			{
-				ProgressFrame progress = new ProgressFrame("Display capillaries information");
 				updateDialogs( exp);
 				parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(true);
-				progress.close();
 			}});
 	}
 	
@@ -154,6 +154,16 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
         int selectedIndex = tabbedPane.getSelectedIndex();
         tabAdjust.roisDisplayrefBar(selectedIndex == ID_ADJUST);
         parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(selectedIndex == ID_INFOS);
+         if (selectedIndex == ID_EDIT) {
+        	 Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+ 			if (exp != null) {
+ 				Viewer v = exp.seqCamData.seq.getFirstViewer(); 			
+	     		if (v != null) {
+	     			v.toFront();
+					v.requestFocus();
+	     		}
+ 			}
+         }
 	}
 
 }

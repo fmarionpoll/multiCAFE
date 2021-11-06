@@ -38,18 +38,14 @@ public class Capillaries
 
 	// ---------------------------------
 		
-	String getXMLNameToAppend() 
-	{
+	String getXMLNameToAppend() {
 		return ID_MCCAPILLARIES_XML;
 	}
 
-	public boolean xmlSaveCapillaries_Descriptors(String csFileName) 
-	{
-		if (csFileName != null) 
-		{
+	public boolean xmlSaveCapillaries_Descriptors(String csFileName) {
+		if (csFileName != null) {
 			final Document doc = XMLUtil.createDocument(true);
-			if (doc != null) 
-			{
+			if (doc != null) {
 				desc.xmlSaveCapillaryDescription (doc);
 				xmlSaveListOfCapillaries(doc);
 				return XMLUtil.saveDocument(doc, csFileName);
@@ -58,8 +54,7 @@ public class Capillaries
 		return false;
 	}
 	
-	public boolean xmlSaveCapillaries_Measures(String directory) 
-	{
+	public boolean xmlSaveCapillaries_Measures(String directory) {
 		if (directory == null)
 			return false;
 		
@@ -69,8 +64,7 @@ public class Capillaries
 		return true;
 	}
 	
-	public boolean xmlSaveCapillary_Measures(String directory, Capillary cap) 
-	{
+	public boolean xmlSaveCapillary_Measures(String directory, Capillary cap) {
 		if (directory == null || cap.getRoi() == null)
 			return false;
 		String tempname = directory + File.separator + cap.getKymographName()+ ".xml";
@@ -82,29 +76,24 @@ public class Capillaries
 		return true;
 	}
 	
-	public boolean xmlLoadCapillaries_Descriptors(String csFileName) 
-	{	
+	public boolean xmlLoadCapillaries_Descriptors(String csFileName) {	
 		if (csFileName == null)
 			return false;
 		final Document doc = XMLUtil.loadDocument(csFileName);
-		if (doc != null) 
-		{
+		if (doc != null) {
 			desc.xmlLoadCapillaryDescription(doc);
 			return xmlLoadCapillaries_Only_v1(doc);		
 		}
 		return false;
 	}
 	
-	public boolean xmlLoadOldCapillaries_Only(String csFileName) 
-	{
+	public boolean xmlLoadOldCapillaries_Only(String csFileName) {
 		if (csFileName == null)
 			return false;			
 		final Document doc = XMLUtil.loadDocument(csFileName);
-		if (doc != null) 
-		{
+		if (doc != null) {
 			desc.xmlLoadCapillaryDescription(doc);
-			switch (desc.version) 
-			{
+			switch (desc.version) {
 			case 1: // old xml storage structure
 				xmlLoadCapillaries_Only_v1(doc);
 				break;
@@ -120,13 +109,11 @@ public class Capillaries
 		return false;
 	}
 	
-	public boolean xmlLoadCapillaries_Measures(String directory) 
-	{
+	public boolean xmlLoadCapillaries_Measures(String directory) {
 		boolean flag = true;
 		int ncapillaries = capillariesList.size();
 
-		for (int i=0; i< ncapillaries; i++) 
-		{
+		for (int i=0; i< ncapillaries; i++) {
 			String csFile = directory + File.separator + capillariesList.get(i).getKymographName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
@@ -137,8 +124,7 @@ public class Capillaries
 		return flag;
 	}
 	
-	private boolean xmlSaveListOfCapillaries(Document doc) 
-	{
+	private boolean xmlSaveListOfCapillaries(Document doc) {
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return false;
@@ -147,8 +133,7 @@ public class Capillaries
 		XMLUtil.setElementIntValue(nodecaps, ID_NCAPILLARIES, capillariesList.size());
 		int i= 0;
 		Collections.sort(capillariesList);
-		for (Capillary cap: capillariesList) 
-		{
+		for (Capillary cap: capillariesList) {
 			Node nodecapillary = XMLUtil.setElement(node, ID_CAPILLARY_+i);
 			cap.saveToXML_CapillaryOnly(nodecapillary);
 			i++;
@@ -156,15 +141,13 @@ public class Capillaries
 		return true;
 	}
 	
-	private void xmlLoadCapillaries_v0(Document doc, String csFileName) 
-	{
+	private void xmlLoadCapillaries_v0(Document doc, String csFileName) {
 		List<ROI> listOfCapillaryROIs = ROI.loadROIsFromXML(XMLUtil.getRootElement(doc));
 		capillariesList.clear();
 		Path directorypath = Paths.get(csFileName).getParent();
 		String directory = directorypath + File.separator;
 		int t = 0;
-		for (ROI roiCapillary: listOfCapillaryROIs) 
-		{
+		for (ROI roiCapillary: listOfCapillaryROIs) {
 			xmlLoadIndividualCapillary_v0((ROI2DShape) roiCapillary, directory, t);
 			t++;
 		}
@@ -178,14 +161,11 @@ public class Capillaries
 		String csFile = directory + roiCapillary.getName() + ".xml";
 		cap.indexKymograph = t;
 		final Document dockymo = XMLUtil.loadDocument(csFile);
-		if (dockymo != null) 
-		{
+		if (dockymo != null) {
 			NodeList nodeROISingle = dockymo.getElementsByTagName("roi");					
-			if (nodeROISingle.getLength() > 0) 
-			{	
+			if (nodeROISingle.getLength() > 0) {	
 				List<ROI> rois = new ArrayList<ROI>();
-                for (int i=0; i< nodeROISingle.getLength(); i++) 
-                {
+                for (int i=0; i< nodeROISingle.getLength(); i++) {
                 	Node element = nodeROISingle.item(i);
                     ROI roi_i = ROI.createFromXML(element);
                     if (roi_i != null)
@@ -196,16 +176,14 @@ public class Capillaries
 		}
 	}
 	
-	private boolean xmlLoadCapillaries_Only_v1(Document doc) 
-	{
+	private boolean xmlLoadCapillaries_Only_v1(Document doc) {
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
 		if (node == null)
 			return false;
 		Node nodecaps = XMLUtil.getElement(node, ID_LISTOFCAPILLARIES);
 		int nitems = XMLUtil.getElementIntValue(nodecaps, ID_NCAPILLARIES, 0);
 		capillariesList = new ArrayList<Capillary> (nitems);
-		for (int i= 0; i< nitems; i++) 
-		{
+		for (int i= 0; i< nitems; i++) {
 			Node nodecapillary = XMLUtil.getElement(node, ID_CAPILLARY_+i);
 			Capillary cap = new Capillary();
 			cap.loadFromXML_CapillaryOnly(nodecapillary);
@@ -225,13 +203,11 @@ public class Capillaries
 		return true;
 	}
 
-	private void xmlLoadCapillaries_Only_v2(Document doc, String csFileName) 
-	{
+	private void xmlLoadCapillaries_Only_v2(Document doc, String csFileName) {
 		xmlLoadCapillaries_Only_v1(doc);
 		Path directorypath = Paths.get(csFileName).getParent();
 		String directory = directorypath + File.separator;
-		for (Capillary cap: capillariesList) 
-		{
+		for (Capillary cap: capillariesList) {
 			String csFile = directory + cap.getKymographName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);
 			Node node = XMLUtil.getRootElement(capdoc, true);
@@ -387,11 +363,9 @@ public class Capillaries
 		}
 	}
 	
-	public void initCapillariesWith6Cages(int nflies)
-	{
+	public void initCapillariesWith6Cages(int nflies) {
 		int capArraySize = capillariesList.size();
-		for (int i=0; i< capArraySize; i++)
-		{
+		for (int i=0; i< capArraySize; i++) {
 			Capillary cap = capillariesList.get(i);
 			cap.capNFlies = 1;
 			if (i <= 1 ) {
@@ -402,15 +376,14 @@ public class Capillaries
 				cap.capNFlies = 0;
 				cap.capCageID = 5;
 			}
-			else
-			{
+			else {
 				cap.capNFlies = nflies;
 				cap.capCageID = 1 + (i-2)/4;
 			}
 		}
 	}
 	
-	public void CreateCapillariesWithTimeIfNull() {
+	public void CreateCapillariesWithTimeIfNull() { 
 		if (capillariesWithTime != null) return;
 		capillariesWithTime = new ArrayList<CapillariesWithTime>();
 		capillariesWithTime.add(new CapillariesWithTime(capillariesList));		

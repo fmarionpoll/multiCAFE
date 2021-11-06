@@ -1,19 +1,23 @@
 package plugins.fmp.multicafe2.dlg.capillaries;
 
-
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import java.awt.Component;
 
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
 import plugins.fmp.multicafe2.experiment.Experiment;
+
+
 
 public class Edit extends JPanel 
 {
@@ -22,7 +26,7 @@ public class Edit extends JPanel
 	 */
 	private static final long serialVersionUID = -7582410775062671523L;
 	
-	private JButton		editCapillariesButton	= new JButton("Change capillaries position with time");
+	private JButton		editCapillariesButton	= new JButton("Edit capillaries position with time");
 	private MultiCAFE2 	parent0 				= null;
 	private EditCapillariesTable 		editCapillariesTable = null;
 	private List <CapillariesWithTime> 	capillariesArrayCopy = new ArrayList<CapillariesWithTime>();
@@ -53,7 +57,7 @@ public class Edit extends JPanel
 					exp.capillaries.transferDescriptionToCapillaries();
 					if (editCapillariesTable == null)
 						editCapillariesTable = new EditCapillariesTable();
-					editCapillariesTable.initialize(parent0, capillariesArrayCopy);
+					editCapillariesTable.initialize(parent0, capillariesArrayCopy, getFramePosition());
 				}
 			}});
 	}
@@ -66,5 +70,17 @@ public class Edit extends JPanel
 		this.parent0 = parent0;
 	}
 	
+	private Point getFramePosition() {
+		Point spot = new Point();
+		Component currComponent = (Component) editCapillariesButton;
+		int index = 0;
+		while ( currComponent != null && index < 12) {
 
+		    Point relativeLocation = currComponent.getLocation();
+		    spot.translate( relativeLocation.x, relativeLocation.y );
+		    currComponent = currComponent.getParent();
+		    index++;
+		}
+		return spot;
+	}
 }
