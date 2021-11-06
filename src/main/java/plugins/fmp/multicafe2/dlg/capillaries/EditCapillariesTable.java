@@ -1,12 +1,16 @@
 package plugins.fmp.multicafe2.dlg.capillaries;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Point2D;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -21,11 +25,14 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import icy.gui.frame.IcyFrame;
+import icy.roi.ROI2D;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.dlg.JComponents.CapillariesWithTimeTableModel;
 import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
 import plugins.fmp.multicafe2.experiment.Experiment;
+import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.OverlayThreshold;
+import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
 public class EditCapillariesTable extends JPanel {
@@ -133,10 +140,37 @@ public class EditCapillariesTable extends JPanel {
 		dialogFrame.close();
 	}
 	
-	
-	
 	private void showFrame(boolean show) {
 		
+	}
+	
+	private void create2DPolygon() 
+	{
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		if (exp == null)
+			return;
+		SequenceCamData seqCamData = exp.seqCamData;
+		final String dummyname = "perimeter_enclosing_capillaries";
+		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
+		List<Point2D> points = new ArrayList<Point2D>();
+		// init 4 points with the coordinates of the first Roi 
+		for (ROI2D roi: listRois) 
+		{
+			if (roi.getName() .equals(dummyname))
+				return;
+		}
+		
+		Rectangle rect = seqCamData.seq.getBounds2D();
+		
+		points.add(new Point2D.Double(rect.x + rect.width /5, rect.y + rect.height /5));
+		points.add(new Point2D.Double(rect.x + rect.width*4 /5, rect.y + rect.height /5));
+		points.add(new Point2D.Double(rect.x + rect.width*4 /5, rect.y + rect.height*2 /3));
+		points.add(new Point2D.Double(rect.x + rect.width /5, rect.y + rect.height *2 /3));
+		ROI2DPolygon roi = new ROI2DPolygon(points);
+		roi.setName(dummyname);
+		roi.setColor(Color.YELLOW);
+		seqCamData.seq.addROI(roi);
+		seqCamData.seq.setSelectedROI(roi);
 	}
 	
 

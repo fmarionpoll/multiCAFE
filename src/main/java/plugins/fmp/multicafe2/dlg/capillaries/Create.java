@@ -105,21 +105,18 @@ public class Create extends JPanel
 	
 	private void defineActionListeners() 
 	{
-		addPolygon2DButton.addActionListener(new ActionListener () 
-		{ 
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
+		addPolygon2DButton.addActionListener(new ActionListener () {
+			
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				create2DPolygon();
 			}});
 		
-		createROIsFromPolygonButton2.addActionListener(new ActionListener () 
-		{ 
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
+		createROIsFromPolygonButton2.addActionListener(new ActionListener () {
+			
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				roisGenerateFromPolygon();
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null) 
-				{
+				if (exp != null) {
 					SequenceKymosUtils.transferCamDataROIStoKymo(exp);
 					int nbFliesPerCage = (int) nbFliesPerCageJSpinner.getValue();
 					switch(cagesJCombo.getSelectedIndex()) {
@@ -138,15 +135,13 @@ public class Create extends JPanel
 		
 		selectRegularButton.addActionListener(new ActionListener () 
 		{ 
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				EnableBinWidthItems(false);
 			}});
 		
 		selectGroupedby2Button.addActionListener(new ActionListener () 
 		{ 
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				EnableBinWidthItems(true);
 			}});
 	}
