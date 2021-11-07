@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,9 +24,7 @@ import javax.swing.ListSelectionModel;
 import icy.gui.frame.IcyFrame;
 import icy.roi.ROI2D;
 import icy.type.geom.Polygon2D;
-import icy.type.geom.Polyline2D;
 
-import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.fmp.multicafe2.MultiCAFE2;
@@ -156,9 +155,26 @@ public class EditCapillariesTable extends JPanel {
 	
 	private void addCapillariesFrame(SequenceCamData seqCamData) {
 		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
-		Polygon2D polygon = getFirstPolygon2DFromROI(
-				(ROI2DShape) listRois.get(0), 
-				(ROI2DShape) listRois.get(listRois.size()-1));
+		ROI2D roi1 = listRois.get(0);
+		ROI2D roi2 = listRois.get(listRois.size()-1);
+		double xmin = roi1.getBounds().getX();
+		double xmax = xmin;
+		for (ROI2D roi : listRois) {
+			if (!roi.getName().contains("line")) 
+				continue;
+			double x = roi.getBounds().getX();
+			if (x < xmin) {
+				xmin = x;
+				roi1 = roi;
+				continue;
+			}
+			if (x > xmax) {
+				xmax = x;
+				roi2 = roi;
+				continue;
+			}
+		}
+		Polygon2D polygon = getPolygon2DFromROIs(roi1, roi2);
 		ROI2DPolygon roi = new ROI2DPolygon(polygon);
 		roi.setName(dummyname);
 		roi.setColor(Color.YELLOW);
@@ -176,26 +192,25 @@ public class EditCapillariesTable extends JPanel {
 		}
 	}
 	
-	private Polygon2D getFirstPolygon2DFromROI(ROI2DShape roi1, ROI2DShape roi2) {
-		List<Point2D> points = new ArrayList<Point2D>();
-		points.add(getFirstPoint(roi1));
-		points.add(getLastPoint(roi1));
-		points.add(getFirstPoint(roi2));
-		points.add(getLastPoint(roi2));
-		Polygon2D polygon = new Polygon2D(points);
+	private Polygon2D getPolygon2DFromROIs(ROI2D roi1, ROI2D roi2) {
+		List<Point2D> listPoints = new ArrayList<Point2D>();
+		listPoints.add(getFirstPoint(roi1));
+		listPoints.add(getLastPoint(roi1));
+		listPoints.add(getFirstPoint(roi2));
+		listPoints.add(getLastPoint(roi2));
+		Polygon2D polygon = new Polygon2D(listPoints);
 		Polygon2D roiPolygon = ROI2DUtilities.orderVerticesofPolygon (polygon.getPolygon());
 		return roiPolygon;
 	}
 	
-	private Point2D getFirstPoint(ROI2DShape roi) {
-		ArrayList<Point2D> line = roi.getPoints();
-		return line.get(0);
+	private Point2D getFirstPoint(ROI2D roi) {
+		Rectangle rect = roi.getBounds();
+		return new Point2D.Double(rect.getX(), rect.getY());
 	}
 	
-	private Point2D getLastPoint(ROI2DShape roi) {
-		ArrayList<Point2D> line = roi.getPoints();
-		int last = line.size() -1;
-		return line.get(last);
+	private Point2D getLastPoint(ROI2D roi) {
+		Rectangle rect = roi.getBounds();
+		return new Point2D.Double(rect.getX() + rect.getWidth(), rect.getY()+rect.getHeight());
 	}
 	
 	
