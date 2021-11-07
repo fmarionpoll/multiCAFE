@@ -23,15 +23,15 @@ import javax.swing.ListSelectionModel;
 
 import icy.gui.frame.IcyFrame;
 import icy.roi.ROI2D;
+import icy.sequence.Sequence;
 import icy.type.geom.Polygon2D;
 
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
-import plugins.kernel.roi.roi2d.ROI2DShape;
+
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.dlg.JComponents.CapillariesWithTimeTableModel;
 import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 
 
@@ -53,16 +53,17 @@ public class EditCapillariesTable extends JPanel {
     private JButton				fitToFrameButton	= new JButton("Fit capillaries to frame");
     
 	private MultiCAFE2 			parent0 			= null; 
+	private final String 		dummyname 			= "perimeter_enclosing_capillaries";
+	private ROI2DPolygon 		envelopeRoi 		= null;
+	private ROI2DPolygon 		envelopeRoi_initial	= null;
 	private CapillariesWithTimeTableModel capillariesWithTimeTablemodel = null;
-	private List <CapillariesWithTime> 	capillariesArrayCopy = null;
-	private final String dummyname = "perimeter_enclosing_capillaries"; 
+	
+	
 	
 	
 	public void initialize (MultiCAFE2 parent0, List <CapillariesWithTime> capCopy, Point pt) 
 	{
 		this.parent0 = parent0;
-		capillariesArrayCopy = capCopy;
-		
 		capillariesWithTimeTablemodel = new CapillariesWithTimeTableModel(parent0.expListCombo);
 		
 		JTable tableView = new JTable();    
@@ -114,20 +115,13 @@ public class EditCapillariesTable extends JPanel {
 	private void defineActionListeners() 
 	{
 		
-		fitToFrameButton.addActionListener(new ActionListener () 
-		{ 
+		fitToFrameButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-//				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-//				if (exp != null && exp.cages.cagesList.size() > 0) 
-//				{
-//					exp.cages.transferNFliesFromCagesToCapillaries(exp.capillaries.capillariesList);
-//					capillariesWithTimeTablemodel.fireTableDataChanged();
-//				}
+				moveAllCapillaries();
 			}});
 		
-		showFrameButton.addActionListener(new ActionListener () 
-		{ 
+		showFrameButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				boolean show = showFrameButton.isSelected();
@@ -137,24 +131,53 @@ public class EditCapillariesTable extends JPanel {
 			}});
 	}
 	
-	void close() 
-	{
+	void close() {
 		dialogFrame.close();
 	}
 	
-	private void showFrame(boolean show) {
-		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-		if (exp == null)
-			return;
-		SequenceCamData seqCamData = exp.seqCamData;
-		if (show)
-			addCapillariesFrame(seqCamData);
-		else
-			removeCapillariesFrame(seqCamData);
+	private void moveAllCapillaries() {
+		if (envelopeRoi == null) return;
+		Point2D pt0 = envelopeRoi_initial.getPosition2D();
+		Point2D pt1 = envelopeRoi.getPosition2D();
+		envelopeRoi_initial = new ROI2DPolygon(envelopeRoi.getPolygon2D());
+		double deltaX = pt1.getX() - pt0.getX();
+		double deltaY = pt1.getY() - pt0.getY();
+		shiftPositionOfCapillaries(deltaX, deltaY);		
 	}
 	
-	private void addCapillariesFrame(SequenceCamData seqCamData) {
-		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
+	private void shiftPositionOfCapillaries(double deltaX, double deltaY) {
+		Sequence seq = getCurrentSequence();
+		if (seq == null)
+			return;
+		ArrayList<ROI2D> listRois = seq.getROI2Ds();
+		for (ROI2D roi : listRois) {
+			if (!roi.getName().contains("line")) 
+				continue;
+			Point2D point2d = roi.getPosition2D();
+			roi.setPosition2D(new Point2D.Double(point2d.getX()+deltaX, point2d.getY()+ deltaY));
+		}
+	}
+	
+	private Sequence getCurrentSequence() {
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		if (exp == null)
+			return null;
+		return exp.seqCamData.seq;
+	}
+	
+	private void showFrame(boolean show) {
+		Sequence seq = getCurrentSequence();
+		if (seq == null)
+			return;
+		
+		if (show)
+			addCapillariesFrame(seq);
+		else 
+			removeCapillariesFrame(seq);
+	}
+	
+	private void addCapillariesFrame(Sequence seq) {
+		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		ROI2D roi1 = listRois.get(0);
 		ROI2D roi2 = listRois.get(listRois.size()-1);
 		double xmin = roi1.getBounds().getX();
@@ -175,21 +198,24 @@ public class EditCapillariesTable extends JPanel {
 			}
 		}
 		Polygon2D polygon = getPolygon2DFromROIs(roi1, roi2);
-		ROI2DPolygon roi = new ROI2DPolygon(polygon);
-		roi.setName(dummyname);
-		roi.setColor(Color.YELLOW);
-		seqCamData.seq.addROI(roi);
-		seqCamData.seq.setSelectedROI(roi);
+		envelopeRoi_initial = new ROI2DPolygon (polygon);
+		envelopeRoi = new ROI2DPolygon(polygon);
+		envelopeRoi.setName(dummyname);
+		envelopeRoi.setColor(Color.YELLOW);
+		
+		seq.addROI(envelopeRoi);
+		seq.setSelectedROI(envelopeRoi);
 	}
 	
-	private void removeCapillariesFrame(SequenceCamData seqCamData) {
-		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
+	private void removeCapillariesFrame(Sequence seq) {
+		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName().equals(dummyname)) {
-				seqCamData.seq.removeROI(roi);
+				seq.removeROI(roi);
 				break;
 			}
 		}
+		envelopeRoi = null;
 	}
 	
 	private Polygon2D getPolygon2DFromROIs(ROI2D roi1, ROI2D roi2) {
