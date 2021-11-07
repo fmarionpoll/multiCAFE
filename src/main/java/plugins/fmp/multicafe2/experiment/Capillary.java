@@ -14,11 +14,14 @@ import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafe2.series.Options_BuildSeries;
-import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
+
 import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DShape;
+
+import plugins.fmp.multicafe2.series.Options_BuildSeries;
+import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
+
 
 
 
@@ -31,27 +34,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public String 						version 		= null;
 	public String						filenameTIFF	= null;
 	
-//public List<CapillaryWithTime>		capillariesWithTime = null;
-//	public void CreateCapillariesWithTimeIfNull() {
-//		if (capillariesWithTime != null) return;
-//		capillariesWithTime = new ArrayList<CapillaryWithTime>();
-//		capillariesWithTime.add(new CapillaryWithTime(roi));		
-//	}
-//	
-//	public ROI2DShape getRoiAt(int t) {
-//		if (capillariesWithTime == null || capillariesWithTime.size() < 1)
-//			return roi;
-//		
-//		ROI2DShape roiFound = roi;
-//		for ( CapillaryWithTime item : capillariesWithTime) {
-//			if(t >= item.start && t <= item.end) {
-//				roiFound = item.roi;
-//				break;
-//			}
-//		}
-//		return roiFound;
-//	}
-//	
 	public ArrayList<int[]> 			cap_Integer		= null;
 	public ArrayList<ArrayList<int[]>> 	masksList 		= null;
 	

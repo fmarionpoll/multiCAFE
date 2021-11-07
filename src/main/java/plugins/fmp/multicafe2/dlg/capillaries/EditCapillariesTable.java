@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,19 +19,22 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 import icy.gui.frame.IcyFrame;
 import icy.roi.ROI2D;
+import icy.type.geom.Polygon2D;
+import icy.type.geom.Polyline2D;
+
+import plugins.kernel.roi.roi2d.ROI2DPolyLine;
+import plugins.kernel.roi.roi2d.ROI2DPolygon;
+import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.dlg.JComponents.CapillariesWithTimeTableModel;
 import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
-import plugins.fmp.multicafe2.tools.OverlayThreshold;
-import plugins.kernel.roi.roi2d.ROI2DPolygon;
+import plugins.fmp.multicafe2.tools.ROI2DUtilities;
+
 
 
 public class EditCapillariesTable extends JPanel {
@@ -54,6 +56,7 @@ public class EditCapillariesTable extends JPanel {
 	private MultiCAFE2 			parent0 			= null; 
 	private CapillariesWithTimeTableModel capillariesWithTimeTablemodel = null;
 	private List <CapillariesWithTime> 	capillariesArrayCopy = null;
+	private final String dummyname = "perimeter_enclosing_capillaries"; 
 	
 	
 	public void initialize (MultiCAFE2 parent0, List <CapillariesWithTime> capCopy, Point pt) 
@@ -141,37 +144,60 @@ public class EditCapillariesTable extends JPanel {
 	}
 	
 	private void showFrame(boolean show) {
-		
-	}
-	
-	private void create2DPolygon() 
-	{
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
-		final String dummyname = "perimeter_enclosing_capillaries";
+		if (show)
+			addCapillariesFrame(seqCamData);
+		else
+			removeCapillariesFrame(seqCamData);
+	}
+	
+	private void addCapillariesFrame(SequenceCamData seqCamData) {
 		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
-		List<Point2D> points = new ArrayList<Point2D>();
-		// init 4 points with the coordinates of the first Roi 
-		for (ROI2D roi: listRois) 
-		{
-			if (roi.getName() .equals(dummyname))
-				return;
-		}
-		
-		Rectangle rect = seqCamData.seq.getBounds2D();
-		
-		points.add(new Point2D.Double(rect.x + rect.width /5, rect.y + rect.height /5));
-		points.add(new Point2D.Double(rect.x + rect.width*4 /5, rect.y + rect.height /5));
-		points.add(new Point2D.Double(rect.x + rect.width*4 /5, rect.y + rect.height*2 /3));
-		points.add(new Point2D.Double(rect.x + rect.width /5, rect.y + rect.height *2 /3));
-		ROI2DPolygon roi = new ROI2DPolygon(points);
+		Polygon2D polygon = getFirstPolygon2DFromROI(
+				(ROI2DShape) listRois.get(0), 
+				(ROI2DShape) listRois.get(listRois.size()-1));
+		ROI2DPolygon roi = new ROI2DPolygon(polygon);
 		roi.setName(dummyname);
 		roi.setColor(Color.YELLOW);
 		seqCamData.seq.addROI(roi);
 		seqCamData.seq.setSelectedROI(roi);
 	}
 	
-
+	private void removeCapillariesFrame(SequenceCamData seqCamData) {
+		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
+		for (ROI2D roi: listRois) {
+			if (roi.getName().equals(dummyname)) {
+				seqCamData.seq.removeROI(roi);
+				break;
+			}
+		}
+	}
+	
+	private Polygon2D getFirstPolygon2DFromROI(ROI2DShape roi1, ROI2DShape roi2) {
+		List<Point2D> points = new ArrayList<Point2D>();
+		points.add(getFirstPoint(roi1));
+		points.add(getLastPoint(roi1));
+		points.add(getFirstPoint(roi2));
+		points.add(getLastPoint(roi2));
+		Polygon2D polygon = new Polygon2D(points);
+		Polygon2D roiPolygon = ROI2DUtilities.orderVerticesofPolygon (polygon.getPolygon());
+		return roiPolygon;
+	}
+	
+	private Point2D getFirstPoint(ROI2DShape roi) {
+		ArrayList<Point2D> line = roi.getPoints();
+		return line.get(0);
+	}
+	
+	private Point2D getLastPoint(ROI2DShape roi) {
+		ArrayList<Point2D> line = roi.getPoints();
+		int last = line.size() -1;
+		return line.get(last);
+	}
+	
+	
+	
 }

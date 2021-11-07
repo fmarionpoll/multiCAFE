@@ -100,7 +100,6 @@ public class SequenceKymos extends SequenceCamData
 			if (roi.getT() == t)
 				seq.removeROI(roi);
 		}
-		//Collections.sort(listRois, new Comparators.ROI2DNameComparator());
 	}
 	
 	public void updateROIFromCapillaryMeasure(Capillary cap, CapillaryLimit caplimits) 
