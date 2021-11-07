@@ -301,4 +301,47 @@ public class ROI2DUtilities
 		}
 	}
 
+	public static Polygon2D getCapillariesFrame(ArrayList<ROI2D> listRois) {
+		ROI2D roi1 = listRois.get(0);
+		ROI2D roi2 = listRois.get(listRois.size()-1);
+		double xmin = roi1.getBounds().getX();
+		double xmax = xmin;
+		for (ROI2D roi : listRois) {
+			if (!roi.getName().contains("line")) 
+				continue;
+			double x = roi.getBounds().getX();
+			if (x < xmin) {
+				xmin = x;
+				roi1 = roi;
+				continue;
+			}
+			if (x > xmax) {
+				xmax = x;
+				roi2 = roi;
+				continue;
+			}
+		}
+		return getPolygon2DFromROIs(roi1, roi2);
+	}
+	
+	private static Polygon2D getPolygon2DFromROIs(ROI2D roi1, ROI2D roi2) {
+		List<Point2D> listPoints = new ArrayList<Point2D>();
+		listPoints.add(getFirstPoint(roi1));
+		listPoints.add(getLastPoint(roi1));
+		listPoints.add(getFirstPoint(roi2));
+		listPoints.add(getLastPoint(roi2));
+		Polygon2D polygon = new Polygon2D(listPoints);
+		Polygon2D roiPolygon = ROI2DUtilities.orderVerticesofPolygon (polygon.getPolygon());
+		return roiPolygon;
+	}
+	
+	private static Point2D getFirstPoint(ROI2D roi) {
+		Rectangle rect = roi.getBounds();
+		return new Point2D.Double(rect.getX(), rect.getY());
+	}
+	
+	private static Point2D getLastPoint(ROI2D roi) {
+		Rectangle rect = roi.getBounds();
+		return new Point2D.Double(rect.getX() + rect.getWidth(), rect.getY()+rect.getHeight());
+	}
 }

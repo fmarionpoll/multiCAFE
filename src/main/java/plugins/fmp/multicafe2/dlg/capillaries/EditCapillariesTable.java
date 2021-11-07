@@ -9,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,8 +57,7 @@ public class EditCapillariesTable extends JPanel {
 	private ROI2DPolygon 		envelopeRoi_initial	= null;
 	private CapillariesWithTimeTableModel capillariesWithTimeTablemodel = null;
 	
-	
-	
+		
 	
 	public void initialize (MultiCAFE2 parent0, List <CapillariesWithTime> capCopy, Point pt) 
 	{
@@ -112,22 +110,23 @@ public class EditCapillariesTable extends JPanel {
 		fitToFrameButton.setEnabled(false);	
 	}
 	
-	private void defineActionListeners() 
-	{
+	private void defineActionListeners() {
 		
 		fitToFrameButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				moveAllCapillaries();
 			}});
 		
 		showFrameButton.addActionListener(new ActionListener () { 
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
+			@Override public void actionPerformed( final ActionEvent e ) { 
 				boolean show = showFrameButton.isSelected();
 				fitToFrameButton.setEnabled(show);
 				showFrame(show) ;
-	  			
+			}});
+		
+		addItem.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				addTableItem();
 			}});
 	}
 	
@@ -146,9 +145,9 @@ public class EditCapillariesTable extends JPanel {
 	}
 	
 	private void shiftPositionOfCapillaries(double deltaX, double deltaY) {
-		Sequence seq = getCurrentSequence();
-		if (seq == null)
-			return;
+		Experiment exp = getCurrentExperiment();
+		if (exp == null) return;
+		Sequence seq = exp.seqCamData.seq;
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi : listRois) {
 			if (!roi.getName().contains("line")) 
@@ -158,46 +157,26 @@ public class EditCapillariesTable extends JPanel {
 		}
 	}
 	
-	private Sequence getCurrentSequence() {
+	private Experiment getCurrentExperiment() {
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return null;
-		return exp.seqCamData.seq;
+		return exp;
 	}
 	
 	private void showFrame(boolean show) {
-		Sequence seq = getCurrentSequence();
-		if (seq == null)
+		Experiment exp = getCurrentExperiment();
+		if (exp == null)
 			return;
 		
 		if (show)
-			addCapillariesFrame(seq);
+			addCapillariesFrame(exp.seqCamData.seq);
 		else 
-			removeCapillariesFrame(seq);
+			removeCapillariesFrame(exp.seqCamData.seq);
 	}
 	
 	private void addCapillariesFrame(Sequence seq) {
-		ArrayList<ROI2D> listRois = seq.getROI2Ds();
-		ROI2D roi1 = listRois.get(0);
-		ROI2D roi2 = listRois.get(listRois.size()-1);
-		double xmin = roi1.getBounds().getX();
-		double xmax = xmin;
-		for (ROI2D roi : listRois) {
-			if (!roi.getName().contains("line")) 
-				continue;
-			double x = roi.getBounds().getX();
-			if (x < xmin) {
-				xmin = x;
-				roi1 = roi;
-				continue;
-			}
-			if (x > xmax) {
-				xmax = x;
-				roi2 = roi;
-				continue;
-			}
-		}
-		Polygon2D polygon = getPolygon2DFromROIs(roi1, roi2);
+		Polygon2D polygon = ROI2DUtilities.getCapillariesFrame(seq.getROI2Ds());
 		envelopeRoi_initial = new ROI2DPolygon (polygon);
 		envelopeRoi = new ROI2DPolygon(polygon);
 		envelopeRoi.setName(dummyname);
@@ -206,7 +185,7 @@ public class EditCapillariesTable extends JPanel {
 		seq.addROI(envelopeRoi);
 		seq.setSelectedROI(envelopeRoi);
 	}
-	
+
 	private void removeCapillariesFrame(Sequence seq) {
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
@@ -218,27 +197,13 @@ public class EditCapillariesTable extends JPanel {
 		envelopeRoi = null;
 	}
 	
-	private Polygon2D getPolygon2DFromROIs(ROI2D roi1, ROI2D roi2) {
-		List<Point2D> listPoints = new ArrayList<Point2D>();
-		listPoints.add(getFirstPoint(roi1));
-		listPoints.add(getLastPoint(roi1));
-		listPoints.add(getFirstPoint(roi2));
-		listPoints.add(getLastPoint(roi2));
-		Polygon2D polygon = new Polygon2D(listPoints);
-		Polygon2D roiPolygon = ROI2DUtilities.orderVerticesofPolygon (polygon.getPolygon());
-		return roiPolygon;
+	private void addTableItem() {
+		Experiment exp = getCurrentExperiment();
+		if (exp == null) return;
+		
+		int nitems = exp.capillaries.capillariesWithTime.size();
+		CapillariesWithTime capillaries = new CapillariesWithTime(exp.capillaries.capillariesWithTime.get(nitems-1).capillariesList);
+		exp.capillaries.capillariesWithTime.add(capillaries);
 	}
-	
-	private Point2D getFirstPoint(ROI2D roi) {
-		Rectangle rect = roi.getBounds();
-		return new Point2D.Double(rect.getX(), rect.getY());
-	}
-	
-	private Point2D getLastPoint(ROI2D roi) {
-		Rectangle rect = roi.getBounds();
-		return new Point2D.Double(rect.getX() + rect.getWidth(), rect.getY()+rect.getHeight());
-	}
-	
-	
 	
 }
