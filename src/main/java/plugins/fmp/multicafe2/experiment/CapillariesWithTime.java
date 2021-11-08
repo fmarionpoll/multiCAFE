@@ -20,5 +20,16 @@ public class CapillariesWithTime {
 			return true;
 	}
 	
+	public Capillary getCapillaryFromName(String name) {
+		Capillary capFound = null;
+		for (Capillary cap: capillariesList) {
+			if (cap.getRoiName().equals(name)) {
+				capFound = cap;
+				break;
+			}
+		}
+		return capFound;
+	}
+	
 	
 }
