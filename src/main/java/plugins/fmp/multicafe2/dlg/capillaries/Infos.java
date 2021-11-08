@@ -71,9 +71,8 @@ public class Infos extends JPanel
 					if (exp.capillaries.capillariesList.size() > 0) 
 					{
 						Capillary cap = exp.capillaries.capillariesList.get(0);
-						ArrayList<Point2D> pts = cap.getRoi().getPoints();
-						Point2D pt1 = pts.get(0);
-						Point2D pt2 = pts.get(pts.size() -1);
+						Point2D pt1 = cap.getCapillaryFirstPoint();
+						Point2D pt2 = cap.getCapillaryLastPoint();
 						double npixels = Math.sqrt(
 								(pt2.getY() - pt1.getY()) * (pt2.getY() - pt1.getY()) 
 								+ (pt2.getX() - pt1.getX()) * (pt2.getX() - pt1.getX()));

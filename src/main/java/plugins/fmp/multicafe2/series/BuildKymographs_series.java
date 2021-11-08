@@ -1,6 +1,7 @@
 package plugins.fmp.multicafe2.series;
 
 
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,13 +17,14 @@ import icy.system.thread.Processor;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import loci.formats.FormatException;
+
 import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.tools.Bresenham;
-import plugins.kernel.roi.roi2d.ROI2DShape;
+
 
 
 
@@ -260,7 +262,7 @@ public class BuildKymographs_series extends BuildSeries
 			{
 				Capillary cap = exp.capillaries.capillariesList.get(i);
 				cap.masksList = new ArrayList<ArrayList<int[]>>();
-				getPointsfromROIPolyLineUsingBresenham(cap.getRoi(), cap.masksList, options.diskRadius, sizex, sizey);
+				getPointsfromROIPolyLineUsingBresenham(cap.getCapillaryPoints(), cap.masksList, options.diskRadius, sizex, sizey);
 				if (cap.masksList.size() > imageHeight)
 					imageHeight = cap.masksList.size();
 			}	
@@ -300,9 +302,9 @@ public class BuildKymographs_series extends BuildSeries
 		}
 	}
 	
-	private void getPointsfromROIPolyLineUsingBresenham (ROI2DShape roi, List<ArrayList<int[]>> masks, double diskRadius, int sizex, int sizey) 
+	private void getPointsfromROIPolyLineUsingBresenham (ArrayList<Point2D> pointsList, List<ArrayList<int[]>> masks, double diskRadius, int sizex, int sizey) 
 	{
-		ArrayList<int[]> pixels = Bresenham.getPixelsAlongLineFromROI2D (roi);
+		ArrayList<int[]> pixels = Bresenham.getPixelsAlongLineFromROI2D (pointsList);
 		int idiskRadius = (int) diskRadius;
 		for (int[] pixel: pixels) 
 			masks.add(getAllPixelsAroundPixel(pixel, idiskRadius, sizex, sizey));

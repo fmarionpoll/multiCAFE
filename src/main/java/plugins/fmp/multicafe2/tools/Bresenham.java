@@ -3,7 +3,6 @@ package plugins.fmp.multicafe2.tools;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
-import plugins.kernel.roi.roi2d.ROI2DShape;
 
 /*
  Bresenham's algorithm
@@ -97,17 +96,16 @@ public class Bresenham
         return line;
     }
     
-    public static ArrayList<int[]> getPixelsAlongLineFromROI2D(ROI2DShape roi) 
+    public static ArrayList<int[]> getPixelsAlongLineFromROI2D(ArrayList<Point2D> pointsList) 
     {
-    	ArrayList<Point2D> pointList = roi.getPoints();
     	ArrayList<int[]> line = new ArrayList<int[]>();
-    	for (int i = 1; i < pointList.size(); i++) 
+    	for (int i = 1; i < pointsList.size(); i++) 
     	{
     		ArrayList<int[]> linei = getPixelsBetween2Points(
-    				(int) pointList.get(i-1).getX(), 
-    				(int) pointList.get(i-1).getY(),
-    				(int) pointList.get(i).getX(), 
-    				(int) pointList.get(i).getY());
+    				(int) pointsList.get(i-1).getX(), 
+    				(int) pointsList.get(i-1).getY(),
+    				(int) pointsList.get(i).getX(), 
+    				(int) pointsList.get(i).getY());
     		line.addAll(linei);
     	}
     	return line;

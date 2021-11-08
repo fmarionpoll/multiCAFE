@@ -29,7 +29,6 @@ import icy.sequence.Sequence;
 import icy.type.geom.Polygon2D;
 
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
-import plugins.kernel.roi.roi2d.ROI2DShape;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.dlg.JComponents.CapillariesWithTimeTableModel;
 import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
@@ -233,15 +232,15 @@ public class EditCapillariesTable extends JPanel {
 		if (exp == null) return;
 		Sequence seq = exp.seqCamData.seq;
 		seq.removeAllROI();
+		
+		CapillariesWithTime capillariesWithTime = exp.capillaries.capillariesWithTime.get(selectedRow);
 		List<ROI2D> listRois = new ArrayList<ROI2D>();
-		for (Capillary cap: exp.capillaries.capillariesWithTime.get(selectedRow).capillariesList) {
-			ROI2D roi = cap.getRoi();
-			listRois.add(roi);
-		}
+		for (Capillary cap: capillariesWithTime.capillariesList)
+			listRois.add(cap.getRoi());
 		seq.addROIs(listRois, false);
-		int t = (int) exp.capillaries.capillariesWithTime.get(selectedRow).start;
+		
 		Viewer v = seq.getFirstViewer();
-		v.setPositionT(t);
+		v.setPositionT((int) capillariesWithTime.start);
 	}
 	
 	private void saveCapillaries(int selectedRow) {
@@ -255,10 +254,11 @@ public class EditCapillariesTable extends JPanel {
 			if (!roi.getName().contains("line")) 
 				continue;
 			Capillary cap = capList.getCapillaryFromName(roi.getName());
-			if (cap != null)
-				cap.setRoi((ROI2DShape) roi);
+			if (cap != null) {
+				ROI2D roilocal = (ROI2D) roi.getCopy();
+				cap.setRoi(roilocal);
+			}
 		}
-		seq.addROIs(listRois, false);
 	}
 
 	

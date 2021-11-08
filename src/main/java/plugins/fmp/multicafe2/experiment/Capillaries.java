@@ -153,9 +153,9 @@ public class Capillaries
 		}
 	}
 	
-	private void xmlLoadIndividualCapillary_v0(ROI2DShape roiCapillary, String directory, int t) 
+	private void xmlLoadIndividualCapillary_v0(ROI2D roiCapillary, String directory, int t) 
 	{
-		Capillary cap = new Capillary((ROI2DShape) roiCapillary);
+		Capillary cap = new Capillary(roiCapillary);
 		if (!isPresent(cap))
 			capillariesList.add(cap);
 		String csFile = directory + roiCapillary.getName() + ".xml";

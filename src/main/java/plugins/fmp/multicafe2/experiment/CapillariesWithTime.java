@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe2.experiment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CapillariesWithTime {
@@ -8,7 +9,12 @@ public class CapillariesWithTime {
 	public long				end				= -1;
 	
 	public CapillariesWithTime(List <Capillary>	capillariesList) {
-		this.capillariesList = capillariesList;
+		this.capillariesList = new ArrayList<Capillary>();
+		for (Capillary cap: capillariesList) {
+			Capillary capNew = new Capillary();
+			capNew = cap;
+			this.capillariesList.add(capNew);
+		}
 	}
 	
 	public boolean IsIntervalWithinLimits(long index) {

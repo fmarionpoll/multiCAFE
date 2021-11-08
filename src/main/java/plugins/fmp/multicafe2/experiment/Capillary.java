@@ -17,7 +17,6 @@ import icy.util.XMLUtil;
 
 import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
-import plugins.kernel.roi.roi2d.ROI2DShape;
 
 import plugins.fmp.multicafe2.series.Options_BuildSeries;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
@@ -28,7 +27,7 @@ import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 public class Capillary implements XMLPersistent, Comparable <Capillary>  
 {
 
-	private ROI2DShape 					roi 			= null;	// the capillary (source)
+	private ROI2D 						roi 			= null;	// the capillary (source)
 	public int							indexKymograph 	= -1;
 	private String						kymographName 	= null;
 	public String 						version 		= null;
@@ -79,10 +78,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	// ----------------------------------------------------
 	
-	public Capillary(ROI2DShape roi) 
+	public Capillary(ROI2D roiCapillary) 
 	{
-		this.roi = roi;
-		this.kymographName = replace_LR_with_12(roi.getName());
+		this.roi = roiCapillary;
+		this.kymographName = replace_LR_with_12(roiCapillary.getName());
 	}
 	
 	Capillary(String name) 
@@ -109,7 +108,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		indexKymograph 	= cap.indexKymograph;
 		kymographName 	= cap.kymographName;
 		version 		= cap.version;
-		roi 			= cap.roi;
+		roi 			= (ROI2D) cap.roi.getCopy();
 		filenameTIFF	= cap.filenameTIFF;
 		
 		capStimulus		= cap.capStimulus;
@@ -138,11 +137,11 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		this.kymographName = name;
 	}
 	
-	public ROI2DShape getRoi() {
+	public ROI2D getRoi() {
 		return roi;
 	}
 	
-	public void setRoi(ROI2DShape roi) {
+	public void setRoi(ROI2D roi) {
 		this.roi = roi;
 	}
 	
@@ -533,7 +532,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			capConcentration= XMLUtil.getElementValue(nodeMeta, ID_CONCL, ID_CONCL);
 			capSide 		= XMLUtil.getElementValue(nodeMeta, ID_SIDE, ".");
 			
-	        roi = (ROI2DShape) loadFromXML_ROI(nodeMeta);
+	        roi = loadFromXML_ROI(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
 	    }
 	    return flag;
@@ -589,7 +588,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			gulpsRois.saveToXML(node);
 	}
 	
-	private void saveToXML_ROI(Node node, ROI roi) 
+	private void saveToXML_ROI(Node node, ROI2D roi) 
 	{
 		final Node nodeROI = XMLUtil.setElement(node, ID_ROI);
         if (!roi.saveToXML(nodeROI)) 
@@ -599,12 +598,12 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
         }
 	}
  
-	private ROI loadFromXML_ROI(Node node) 
+	private ROI2D loadFromXML_ROI(Node node) 
 	{
 		final Node nodeROI = XMLUtil.getElement(node, ID_ROI);
         if (nodeROI != null) 
         {
-			ROI roi = ROI.createFromXML(nodeROI);
+			ROI2D roi = (ROI2D) ROI2D.createFromXML(nodeROI);
 	        return roi;
         }
         return null;
@@ -640,7 +639,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		Point2D pt = null;		
 		if (roi instanceof ROI2DPolyLine) 
 		{
-			Polyline2D line = (( ROI2DPolyLine) roi).getPolyline2D();
+			Polyline2D line = ((ROI2DPolyLine) roi).getPolyline2D();
 			int last = line.npoints - 1;
 			if (line.ypoints[0] > line.ypoints[last])
 				pt = new Point2D.Double(line.xpoints[0],  line.ypoints[0]);
@@ -649,13 +648,68 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		} 
 		else if (roi instanceof ROI2DLine) 
 		{
-			Line2D line = (( ROI2DLine) roi).getLine();
+			Line2D line = ((ROI2DLine) roi).getLine();
 			if (line.getP1().getY() > line.getP2().getY())
 				pt = line.getP1();
 			else
 				pt = line.getP2();
 		}
 		return pt;
+	}
+	
+	public Point2D getCapillaryFirstPoint () 
+	{
+		Point2D pt = null;		
+		if (roi instanceof ROI2DPolyLine) 
+		{
+			Polyline2D line = ((ROI2DPolyLine) roi).getPolyline2D();
+			pt = new Point2D.Double(line.xpoints[0],  line.ypoints[0]);
+		} 
+		else if (roi instanceof ROI2DLine) 
+		{
+			Line2D line = ((ROI2DLine) roi).getLine();
+			pt = line.getP1();
+		}
+		return pt;
+	}
+	
+	public Point2D getCapillaryLastPoint () 
+	{
+		Point2D pt = null;		
+		if (roi instanceof ROI2DPolyLine) 
+		{
+			Polyline2D line = ((ROI2DPolyLine) roi).getPolyline2D();
+			int last = line.npoints - 1;
+			pt = new Point2D.Double(line.xpoints[last],  line.ypoints[last]);
+		} 
+		else if (roi instanceof ROI2DLine) 
+		{
+			Line2D line = ((ROI2DLine) roi).getLine();
+			pt = line.getP2();
+		}
+		return pt;
+	}
+	
+	public ArrayList<Point2D> getCapillaryPoints () 
+	{
+		ArrayList<Point2D> points = new ArrayList<Point2D>();		
+		if (roi instanceof ROI2DPolyLine) 
+		{
+			Polyline2D line = ((ROI2DPolyLine) roi).getPolyline2D();
+			for (int i = 0; i < line.npoints; i++) {
+				Point2D pt = new Point2D.Double(line.xpoints[i],  line.ypoints[i]);
+				points.add(pt);
+			}
+		} 
+		else if (roi instanceof ROI2DLine) 
+		{
+			Line2D line = ((ROI2DLine) roi).getLine();
+			Point2D pt = new Point2D.Double(line.getP1().getX(),  line.getP1().getY());
+			points.add(pt);
+			pt = new Point2D.Double(line.getP2().getX(),  line.getP2().getY());
+			points.add(pt);
+		}
+		return points;
 	}
 
 }
