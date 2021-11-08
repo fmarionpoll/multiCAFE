@@ -6,15 +6,11 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.Component;
 
 import plugins.fmp.multicafe2.MultiCAFE2;
-import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
 import plugins.fmp.multicafe2.experiment.Experiment;
 
 
@@ -28,8 +24,7 @@ public class Edit extends JPanel
 	
 	private JButton		editCapillariesButton	= new JButton("Edit capillaries position with time");
 	private MultiCAFE2 	parent0 				= null;
-	private EditCapillariesTable 		editCapillariesTable = null;
-	private List <CapillariesWithTime> 	capillariesArrayCopy = new ArrayList<CapillariesWithTime>();
+	private EditCapillariesTable editCapillariesTable = null;
 	
 	void init(GridLayout capLayout, MultiCAFE2 parent0) 
 	{
@@ -57,7 +52,7 @@ public class Edit extends JPanel
 					exp.capillaries.transferDescriptionToCapillaries();
 					if (editCapillariesTable == null)
 						editCapillariesTable = new EditCapillariesTable();
-					editCapillariesTable.initialize(parent0, capillariesArrayCopy, getFramePosition());
+					editCapillariesTable.initialize(parent0, getFramePosition());
 				}
 			}});
 	}

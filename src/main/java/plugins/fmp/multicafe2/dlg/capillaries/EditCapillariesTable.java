@@ -63,7 +63,7 @@ public class EditCapillariesTable extends JPanel {
 	
 		
 	
-	public void initialize (MultiCAFE2 parent0, List <CapillariesWithTime> capCopy, Point pt) 
+	public void initialize (MultiCAFE2 parent0, Point pt) 
 	{
 		this.parent0 = parent0;
 		capillariesWithTimeTablemodel = new CapillariesWithTimeTableModel(parent0.expListCombo);
@@ -108,8 +108,8 @@ public class EditCapillariesTable extends JPanel {
 		dialogFrame.addToDesktopPane();
 		dialogFrame.requestFocus();
 		dialogFrame.setVisible(true);
-		defineActionListeners();
 		
+		defineActionListeners();
 		defineSelectionListener();
 		
 		fitToFrameButton.setEnabled(false);	
@@ -144,10 +144,12 @@ public class EditCapillariesTable extends JPanel {
 	private void defineSelectionListener() {
 		tableView.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
-                int selectedRow = tableView.getSelectedRow();
-                changeCapillaries(selectedRow);
-                boolean show = showFrameButton.isSelected();
-				showFrame(show) ;
+            	if(!e.getValueIsAdjusting()) {
+	                int selectedRow = tableView.getSelectedRow();
+	                changeCapillaries(selectedRow);
+	                boolean show = showFrameButton.isSelected();
+					showFrame(show) ;
+            	}
             }});
 	}
 	
@@ -156,7 +158,8 @@ public class EditCapillariesTable extends JPanel {
 	}
 	
 	private void moveAllCapillaries() {
-		if (envelopeRoi == null) return;
+		if (envelopeRoi == null) 
+			return;
 		Point2D pt0 = envelopeRoi_initial.getPosition2D();
 		Point2D pt1 = envelopeRoi.getPosition2D();
 		envelopeRoi_initial = new ROI2DPolygon(envelopeRoi.getPolygon2D());
@@ -166,8 +169,9 @@ public class EditCapillariesTable extends JPanel {
 	}
 	
 	private void shiftPositionOfCapillaries(double deltaX, double deltaY) {
-		Experiment exp = getCurrentExperiment();
-		if (exp == null) return;
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();;
+		if (exp == null) 
+			return;
 		Sequence seq = exp.seqCamData.seq;
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi : listRois) {
@@ -178,15 +182,8 @@ public class EditCapillariesTable extends JPanel {
 		}
 	}
 	
-	private Experiment getCurrentExperiment() {
-		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-		if (exp == null)
-			return null;
-		return exp;
-	}
-	
 	private void showFrame(boolean show) {
-		Experiment exp = getCurrentExperiment();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return;
 		
@@ -219,7 +216,7 @@ public class EditCapillariesTable extends JPanel {
 	}
 	
 	private void addTableItem() {
-		Experiment exp = getCurrentExperiment();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();;
 		if (exp == null) return;
 		
 		int nitems = exp.capillaries.capillariesWithTime.size();
@@ -228,11 +225,14 @@ public class EditCapillariesTable extends JPanel {
 	}
 	
 	private void changeCapillaries(int selectedRow) {
-		Experiment exp = getCurrentExperiment();
-		if (exp == null) return;
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();;
+		if (exp == null) 
+			return;
 		Sequence seq = exp.seqCamData.seq;
-		seq.removeAllROI();
 		
+		System.out.println("changeCapîllaries ("+selectedRow+")");
+		
+		seq.removeAllROI();	
 		CapillariesWithTime capillariesWithTime = exp.capillaries.capillariesWithTime.get(selectedRow);
 		List<ROI2D> listRois = new ArrayList<ROI2D>();
 		for (Capillary cap: capillariesWithTime.capillariesList)
@@ -244,16 +244,19 @@ public class EditCapillariesTable extends JPanel {
 	}
 	
 	private void saveCapillaries(int selectedRow) {
-		Experiment exp = getCurrentExperiment();
-		if (exp == null) return;
+		System.out.println("saveCapîllaries ("+selectedRow+")");
+		
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();;
+		if (exp == null) 
+			return;
 		Sequence seq = exp.seqCamData.seq;
 		
 		List<ROI2D> listRois = seq.getROI2Ds();
-		CapillariesWithTime capList = exp.capillaries.capillariesWithTime.get(selectedRow);
+		CapillariesWithTime capillariesWithTime = exp.capillaries.capillariesWithTime.get(selectedRow);
 		for (ROI2D roi: listRois) {
 			if (!roi.getName().contains("line")) 
 				continue;
-			Capillary cap = capList.getCapillaryFromName(roi.getName());
+			Capillary cap = capillariesWithTime.getCapillaryFromName(roi.getName());
 			if (cap != null) {
 				ROI2D roilocal = (ROI2D) roi.getCopy();
 				cap.setRoi(roilocal);
