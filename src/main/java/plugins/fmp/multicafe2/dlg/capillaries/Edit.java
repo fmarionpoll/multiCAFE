@@ -42,18 +42,9 @@ public class Edit extends JPanel
 	
 	private void defineActionListeners() 
 	{
-		editCapillariesButton.addActionListener(new ActionListener () 
-		{ 
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
-				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null)
-				{
-					exp.capillaries.transferDescriptionToCapillaries();
-					if (editCapillariesTable == null)
-						editCapillariesTable = new EditCapillariesTable();
-					editCapillariesTable.initialize(parent0, getFramePosition());
-				}
+		editCapillariesButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				openDialog();
 			}});
 	}
 
@@ -70,12 +61,26 @@ public class Edit extends JPanel
 		Component currComponent = (Component) editCapillariesButton;
 		int index = 0;
 		while ( currComponent != null && index < 12) {
-
 		    Point relativeLocation = currComponent.getLocation();
 		    spot.translate( relativeLocation.x, relativeLocation.y );
 		    currComponent = currComponent.getParent();
 		    index++;
 		}
 		return spot;
+	}
+
+	public void openDialog() {
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		if (exp != null)
+		{
+			exp.capillaries.transferDescriptionToCapillaries();
+			if (editCapillariesTable == null)
+				editCapillariesTable = new EditCapillariesTable();
+			editCapillariesTable.initialize(parent0, getFramePosition());
+		}
+	}
+	
+	public void closeDialog() {
+		editCapillariesTable.close();
 	}
 }

@@ -37,6 +37,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	private int 		ID_INFOS 		= 1;
 	private int 		ID_ADJUST 		= 3;
 	private int			ID_EDIT			= 2;
+	private boolean		editSelected	= false;
 	private MultiCAFE2 	parent0 		= null;
 
 	
@@ -83,11 +84,9 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		capPanel.add(tabsPane);
 		tabsPane.addChangeListener(this );
 		
-		capPopupPanel.addComponentListener(new ComponentAdapter() 
-		{
+		capPopupPanel.addComponentListener(new ComponentAdapter() {
 			@Override
-			public void componentResized(ComponentEvent e) 
-			{
+			public void componentResized(ComponentEvent e) {
 				parent0.mainFrame.revalidate();
 				parent0.mainFrame.pack();
 				parent0.mainFrame.repaint();
@@ -98,22 +97,18 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	@Override
 	public void propertyChange(PropertyChangeEvent event) 
 	{
-		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) 
-		{
+		if (event.getPropertyName().equals("CAP_ROIS_OPEN")) {
 			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-			if (exp != null)
-			{
+			if (exp != null) {
 				displayCapillariesInformation(exp);
 			  	tabsPane.setSelectedIndex(ID_INFOS);
 			  	parent0.paneExperiment.tabIntervals.displayCamDataIntervals(exp);
 			}
 		}			  
-		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) 
-		{
+		else if (event.getPropertyName().equals("CAP_ROIS_SAVE")) {
 			tabsPane.setSelectedIndex(ID_INFOS);
 		}
-		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) 
-		{
+		else if (event.getPropertyName().equals("CAPILLARIES_NEW")) {
 			tabsPane.setSelectedIndex(ID_INFOS);
 		}
 
@@ -121,10 +116,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	
 	public void displayCapillariesInformation(Experiment exp) 
 	{
-		SwingUtilities.invokeLater(new Runnable() 
-		{ 
-			public void run() 
-			{
+		SwingUtilities.invokeLater(new Runnable() { 
+			public void run() {
 				updateDialogs( exp);
 				parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(true);
 			}});
@@ -132,8 +125,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	
 	public void updateDialogs(Experiment exp) 
 	{
-		if (exp != null) 
-		{
+		if (exp != null) {
 			SequenceKymosUtils.transferCamDataROIStoKymo(exp);
 			exp.capillaries.desc_old.copy(exp.capillaries.desc);
 			tabInfos.setAllDescriptors(exp.capillaries);
@@ -154,8 +146,8 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
         int selectedIndex = tabbedPane.getSelectedIndex();
         tabAdjust.roisDisplayrefBar(selectedIndex == ID_ADJUST);
         parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(selectedIndex == ID_INFOS);
-         if (selectedIndex == ID_EDIT) {
-        	 Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+        if (selectedIndex == ID_EDIT) {
+        	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
  			if (exp != null) {
  				Viewer v = exp.seqCamData.seq.getFirstViewer(); 			
 	     		if (v != null) {
@@ -163,7 +155,14 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 					v.requestFocus();
 	     		}
  			}
-         }
+ 			tabEdit.openDialog();
+ 			editSelected = true;
+        }
+        else if (editSelected) {
+        	tabEdit.closeDialog();
+        	editSelected = false;
+        }
+        
 	}
 
 }

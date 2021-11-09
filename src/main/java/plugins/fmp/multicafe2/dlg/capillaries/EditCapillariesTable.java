@@ -235,8 +235,6 @@ public class EditCapillariesTable extends JPanel {
 			return;
 		Sequence seq = exp.seqCamData.seq;
 		
-		System.out.println("changeCapîllaries ("+selectedRow+")");
-		
 		seq.removeAllROI();	
 		CapillariesWithTime capillariesWithTime = exp.capillaries.capillariesWithTime.get(selectedRow);
 		List<ROI2D> listRois = new ArrayList<ROI2D>();
@@ -249,9 +247,7 @@ public class EditCapillariesTable extends JPanel {
 	}
 	
 	private void saveCapillaries(int selectedRow) {
-		System.out.println("saveCapîllaries ("+selectedRow+")");
-		
-		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();;
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;
 		Sequence seq = exp.seqCamData.seq;
