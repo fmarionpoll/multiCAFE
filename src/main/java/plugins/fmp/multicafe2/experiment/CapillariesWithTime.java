@@ -12,7 +12,7 @@ public class CapillariesWithTime {
 		this.capillariesList = new ArrayList<Capillary>();
 		for (Capillary cap: capillariesList) {
 			Capillary capNew = new Capillary();
-			capNew = cap;
+			capNew.copy(cap);
 			this.capillariesList.add(capNew);
 		}
 	}

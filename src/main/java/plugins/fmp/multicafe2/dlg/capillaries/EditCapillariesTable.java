@@ -146,9 +146,14 @@ public class EditCapillariesTable extends JPanel {
             public void valueChanged(ListSelectionEvent e) {
             	if(!e.getValueIsAdjusting()) {
 	                int selectedRow = tableView.getSelectedRow();
-	                changeCapillaries(selectedRow);
-	                boolean show = showFrameButton.isSelected();
-					showFrame(show) ;
+	                if (selectedRow < 0) {
+	                	tableView.setRowSelectionInterval(0, 0);
+	                }
+	                else {
+		                changeCapillaries(selectedRow);
+		                boolean show = showFrameButton.isSelected();
+						showFrame(show) ;
+	                }
             	}
             }});
 	}
