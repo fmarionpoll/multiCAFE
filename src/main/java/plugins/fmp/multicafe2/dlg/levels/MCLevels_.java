@@ -53,7 +53,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 		
 		tabDetectLevelsK.init(capLayout, parent0);
 		tabDetectLevelsK.addPropertyChangeListener(this);
-		tabsPane.addTab("Levels-K", null, tabDetectLevelsK, "Find limits with KMeans");
+		tabsPane.addTab("Levels-K*", null, tabDetectLevelsK, "Find limits with KMeans");
 		
 		tabDetectGulps.init(capLayout, parent0);	
 		tabsPane.addTab("Gulps", null, tabDetectGulps, "Detect gulps");

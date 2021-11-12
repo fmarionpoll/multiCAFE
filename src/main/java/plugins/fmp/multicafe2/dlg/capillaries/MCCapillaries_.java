@@ -66,7 +66,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		ID_EDIT = order;
 		tabEdit.init(capLayout, parent0);
 		tabEdit.addPropertyChangeListener(this);
-		tabsPane.addTab("Edit", null, tabEdit, "Edit capillaries position and size");
+		tabsPane.addTab("Edit*", null, tabEdit, "Edit capillaries position and size");
 		order++;
 		
 		ID_ADJUST = order;
