@@ -32,6 +32,7 @@ public class Options extends JPanel
 	JCheckBox	cagesCheckBox			= new JCheckBox("cages", true);
 	JCheckBox	measuresCheckBox		= new JCheckBox("measures", true);
 	JCheckBox	graphsCheckBox			= new JCheckBox("graphs", true);
+	public JCheckBox	windowsCheckBox	= new JCheckBox("next to each other", true);
 
 	public 	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries", true);
 	public 	JCheckBox 	viewCagesCheckbox = new JCheckBox("cages", true);
@@ -63,6 +64,11 @@ public class Options extends JPanel
 		panel1.add(viewCagesCheckbox);
 		panel1.add(viewFlyCheckbox);
 		add(panel1);
+		
+		JPanel panel3 = new JPanel (layout);
+		panel3.add(new JLabel("Windows placement : "));
+		panel3.add(windowsCheckBox);
+		add(panel3);
 		
 		defineActionListeners();
 	}

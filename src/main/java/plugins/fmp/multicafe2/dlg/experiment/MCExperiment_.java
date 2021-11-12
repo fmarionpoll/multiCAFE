@@ -124,7 +124,8 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 			}
 			
 			if (v != null) {
-				placeViewerNextToDialogBox(v, parent0.mainFrame);
+				if(parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())
+					placeViewerNextToDialogBox(v, parent0.mainFrame);
 				v.toFront();
 				v.requestFocus();
 				v.addListener( parent );

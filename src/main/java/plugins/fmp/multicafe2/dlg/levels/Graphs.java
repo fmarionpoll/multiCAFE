@@ -88,9 +88,11 @@ public class Graphs extends JPanel implements SequenceListener
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		if (v == null)
 			return;
-		
 		final Rectangle rectv = v.getBounds();
-		Point ptRelative = new Point(0, rectv.height); 
+		Point ptRelative = new Point(0, 0); 
+		if(parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())
+			ptRelative.y = rectv.height;
+		
 		int dx = 5;
 		int dy = 5; 
 		exp.seqKymos.seq.addListener(this);

@@ -209,7 +209,8 @@ public class Display extends JPanel implements ViewerListener
 				Viewer v = new Viewer(seqKymos.seq, true);
 				v.setRepeat(false);
 				v.addListener(this);;
-				placeKymoViewerNextToCamViewer(exp, v);
+				if(parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())
+					placeKymoViewerNextToCamViewer(exp, v);
 			}
 		}
 	}
