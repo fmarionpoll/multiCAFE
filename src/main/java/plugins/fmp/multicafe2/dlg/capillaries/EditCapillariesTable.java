@@ -46,19 +46,20 @@ public class EditCapillariesTable extends JPanel {
 	private static final long serialVersionUID 		= 1L;
 	
 	IcyFrame 					dialogFrame 		= null;
-	private String				explanation 		= "Move to image, edit capillaries position and save";
-
-    private JButton				addItemButton				= new JButton("Add");
+	
+    private JButton				addItemButton		= new JButton("Add");
     private JButton				deleteItem			= new JButton("Delete");
-    private JButton				saveCapillariesButton   	= new JButton("Save capillaries");
+    private JButton				saveCapillariesButton = new JButton("Save capillaries");
     private JCheckBox			showFrameButton		= new JCheckBox("Show frame");
     private JButton				fitToFrameButton	= new JButton("Fit capillaries to frame");
     private JTable 				tableView 			= new JTable();    
     
-	private MultiCAFE2 			parent0 			= null; 
+	private String				explanation 		= "Move to image, edit capillaries position and save";
 	private final String 		dummyname 			= "perimeter_enclosing_capillaries";
 	private ROI2DPolygon 		envelopeRoi 		= null;
 	private ROI2DPolygon 		envelopeRoi_initial	= null;
+	private MultiCAFE2 			parent0 			= null; 
+	
 	private CapillariesWithTimeTableModel capillariesWithTimeTablemodel = null;
 	
 		
@@ -124,9 +125,8 @@ public class EditCapillariesTable extends JPanel {
 		
 		showFrameButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				boolean show = showFrameButton.isSelected();
-				fitToFrameButton.setEnabled(show);
-				showFrame(show) ;
+				fitToFrameButton.setEnabled(showFrameButton.isSelected());
+				showFrame(showFrameButton.isSelected()) ;
 			}});
 		
 		addItemButton.addActionListener(new ActionListener () { 
@@ -151,8 +151,7 @@ public class EditCapillariesTable extends JPanel {
 	                }
 	                else {
 		                changeCapillaries(selectedRow);
-		                boolean show = showFrameButton.isSelected();
-						showFrame(show) ;
+		                showFrame(showFrameButton.isSelected()) ;
 	                }
             	}
             }});
@@ -223,14 +222,22 @@ public class EditCapillariesTable extends JPanel {
 	private void addTableItem() {
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();;
 		if (exp == null) return;
-		
+
 		int nitems = exp.capillaries.capillariesWithTime.size();
+		System.out.println("ncapillariesWithTime= "+nitems);
 		CapillariesWithTime capillaries = new CapillariesWithTime(exp.capillaries.capillariesWithTime.get(nitems-1).capillariesList);
 		exp.capillaries.capillariesWithTime.add(capillaries);
+		
+		Viewer v = exp.seqCamData.seq.getFirstViewer();
+		long intervalT = v.getPositionT();
+		capillaries = exp.capillaries.capillariesWithTime.get(nitems-1);
+		capillaries.end = intervalT-1;
+		capillaries = exp.capillaries.capillariesWithTime.get(nitems);
+		capillaries.start = intervalT;
 	}
 	
 	private void changeCapillaries(int selectedRow) {
-		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();;
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;
 		Sequence seq = exp.seqCamData.seq;

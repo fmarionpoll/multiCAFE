@@ -242,14 +242,10 @@ public class BuildKymographs_series extends BuildSeries
 			seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList(true));
 		int sizex = seqCamData.seq.getSizeX();
 		int sizey = seqCamData.seq.getSizeY();	
-		
 
 		kymoImageWidth = (int) ((exp.offsetLastCol_Ms - exp.offsetFirstCol_Ms) / exp.kymoBinCol_Ms +1);
-		
 		int imageHeight = buildMasks(exp, sizex, sizey);
-		
 		buildCapInteger(exp, imageHeight);
-	
 	}
 	
 	private int buildMasks (Experiment exp, int sizex, int sizey) {
@@ -258,8 +254,7 @@ public class BuildKymographs_series extends BuildSeries
 		
 		for (CapillariesWithTime capillaries : exp.capillaries.capillariesWithTime) {
 			int nbcapillaries = capillaries.capillariesList.size();
-			for (int i = 0; i < nbcapillaries; i++) 
-			{
+			for (int i = 0; i < nbcapillaries; i++) {
 				Capillary cap = exp.capillaries.capillariesList.get(i);
 				cap.masksList = new ArrayList<ArrayList<int[]>>();
 				getPointsfromROIPolyLineUsingBresenham(cap.getCapillaryPoints(), cap.masksList, options.diskRadius, sizex, sizey);

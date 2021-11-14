@@ -384,8 +384,8 @@ public class Capillaries
 	}
 	
 	public void CreateCapillariesWithTimeIfNull() { 
-		if (capillariesWithTime != null) return;
-		capillariesWithTime = new ArrayList<CapillariesWithTime>();
+		if (capillariesWithTime != null && capillariesWithTime.size() <1) return;
+		capillariesWithTime = new ArrayList<CapillariesWithTime>(capillariesList.size());
 		capillariesWithTime.add(new CapillariesWithTime(capillariesList));		
 	}
 	

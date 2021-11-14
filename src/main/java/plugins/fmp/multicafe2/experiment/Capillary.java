@@ -121,7 +121,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		
 		limitsOptions	= cap.limitsOptions;
 		gulpsRois.rois	= new ArrayList <ROI2D> ();
-		gulpsRois.rois.addAll(cap.gulpsRois.rois);
+		if (cap.gulpsRois.rois != null && cap.gulpsRois.rois.size() > 0)
+			gulpsRois.rois.addAll(cap.gulpsRois.rois);
+		
 		ptsTop.copy(cap.ptsTop); 
 		ptsBottom.copy(cap.ptsBottom); 
 		ptsDerivative.copy(cap.ptsDerivative); 

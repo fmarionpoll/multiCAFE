@@ -18,7 +18,7 @@ import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
-public class CapillaryGulps  implements XMLPersistent  
+public class CapillaryGulps implements XMLPersistent  
 {	
 	private final String ID_GULPS = "gulpsMC";
 	public List<ROI2D> rois = null; 
