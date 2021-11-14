@@ -38,7 +38,7 @@ import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 
 
 
-public class EditCapillariesTable extends JPanel {
+public class EditCapillariesTable extends JPanel implements ListSelectionListener {
 
 	/**
 	 * 
@@ -142,19 +142,7 @@ public class EditCapillariesTable extends JPanel {
 	}
 	
 	private void defineSelectionListener() {
-		tableView.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
-            	if(!e.getValueIsAdjusting()) {
-	                int selectedRow = tableView.getSelectedRow();
-	                if (selectedRow < 0) {
-	                	tableView.setRowSelectionInterval(0, 0);
-	                }
-	                else {
-		                changeCapillaries(selectedRow);
-		                showFrame(showFrameButton.isSelected()) ;
-	                }
-            	}
-            }});
+		tableView.getSelectionModel().addListSelectionListener(this);
 	}
 	
 	void close() {
@@ -226,14 +214,14 @@ public class EditCapillariesTable extends JPanel {
 		int nitems = exp.capillaries.capillariesWithTime.size();
 		System.out.println("ncapillariesWithTime= "+nitems);
 		CapillariesWithTime capillaries = new CapillariesWithTime(exp.capillaries.capillariesWithTime.get(nitems-1).capillariesList);
-		exp.capillaries.capillariesWithTime.add(capillaries);
 		
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		long intervalT = v.getPositionT();
-		capillaries = exp.capillaries.capillariesWithTime.get(nitems-1);
-		capillaries.end = intervalT-1;
-		capillaries = exp.capillaries.capillariesWithTime.get(nitems);
 		capillaries.start = intervalT;
+		exp.capillaries.capillariesWithTime.add(capillaries);
+		
+		CapillariesWithTime previousCapillaries = exp.capillaries.capillariesWithTime.get(nitems-1);
+		previousCapillaries.end = intervalT-1;
 	}
 	
 	private void changeCapillaries(int selectedRow) {
@@ -270,6 +258,20 @@ public class EditCapillariesTable extends JPanel {
 				cap.setRoi(roilocal);
 			}
 		}
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		if(!e.getValueIsAdjusting()) {
+            int selectedRow = tableView.getSelectedRow();
+            if (selectedRow < 0) {
+            	tableView.setRowSelectionInterval(0, 0);
+            }
+            else {
+                changeCapillaries(selectedRow);
+                showFrame(showFrameButton.isSelected()) ;
+            }
+    	}
 	}
 
 	

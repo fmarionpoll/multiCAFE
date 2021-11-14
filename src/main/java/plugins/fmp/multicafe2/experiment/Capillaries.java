@@ -295,7 +295,7 @@ public class Capillaries
 		}
 	}
 	
-	private Capillary getCapillaryFromName(String name) {
+	public Capillary getCapillaryFromName(String name) {
 		Capillary capFound = null;
 		for (Capillary cap: capillariesList) {
 			if (cap.getRoiName().equals(name)) {
@@ -384,7 +384,7 @@ public class Capillaries
 	}
 	
 	public void CreateCapillariesWithTimeIfNull() { 
-		if (capillariesWithTime != null && capillariesWithTime.size() <1) return;
+		if (capillariesWithTime != null && capillariesWithTime.size() >0) return;
 		capillariesWithTime = new ArrayList<CapillariesWithTime>(capillariesList.size());
 		capillariesWithTime.add(new CapillariesWithTime(capillariesList));		
 	}
