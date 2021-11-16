@@ -402,4 +402,9 @@ public class Capillaries
 		
 		return ts;
 	}
+	
+	public ROI2DForKymo getROI2DForKymoAt(int icapillary, long frame) {
+		Capillary cap = capillariesList.get(icapillary);
+		return cap.getROI2DKymoAt((int) frame);
+	}
 }

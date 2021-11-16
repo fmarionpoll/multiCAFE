@@ -717,6 +717,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	}
 
 	// --------------------------------------------
+	
 	public List<ROI2DForKymo> getRoisForKymo() {
 		if (roisForKymo.size() < 1) 
 			initROI2DForKymoList();
