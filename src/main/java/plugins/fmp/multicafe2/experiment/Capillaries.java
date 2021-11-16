@@ -5,8 +5,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -27,7 +29,6 @@ public class Capillaries
 	public CapillariesDescription 	desc				= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public List <Capillary> 		capillariesList		= new ArrayList <Capillary>();
-	public List<CapillariesWithTime> capillariesWithTime = null;
 	
 	
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
@@ -383,23 +384,22 @@ public class Capillaries
 		}
 	}
 	
-	public void CreateCapillariesWithTimeIfNull() { 
-		if (capillariesWithTime != null && capillariesWithTime.size() >0) return;
-		capillariesWithTime = new ArrayList<CapillariesWithTime>(capillariesList.size());
-		capillariesWithTime.add(new CapillariesWithTime(capillariesList));		
-	}
-	
-	public List<Capillary> getCapillariesListAt(int t) {
-		if (capillariesWithTime == null || capillariesWithTime.size() < 1)
-			return capillariesList;
-		
-		List <Capillary> capListFound = capillariesList;
-		for ( CapillariesWithTime item : capillariesWithTime) {
-			if(t >= item.start && t <= item.end) {
-				capListFound = item.capillariesList;
-				break;
+	public TreeSet<Long[]> getCapillariesIntervals() {
+		TreeSet<Long[]> ts = new TreeSet<Long[]>(
+			   new Comparator<Long[]>() {
+			      public int compare(Long[] a, Long[] b)
+			      {
+			         return Long.compare(a[0], b[0]);
+			      }
+			   }
+			);
+		for (Capillary cap: capillariesList) {
+			for (ROI2DForKymo roiFK: cap.getRoisForKymo()) {
+				Long[] couple = {roiFK.getStart(), roiFK.getEnd()};
+				ts.add(couple);
 			}
 		}
-		return capListFound;
+		
+		return ts;
 	}
 }

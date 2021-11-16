@@ -183,7 +183,6 @@ public class BuildKymographs_series extends BuildSeries
 						sourceImageChannel = Array1DUtil.arrayToIntArray(
 								sourceImage.getDataXY(chan), 
 								sourceImageChannel, sourceImage.isSignedDataType()); 
-//						System.out.println("sourceImageChannel chan="+chan);
 						
 						for (int icap = 0; icap < nbcapillaries; icap++) {
 							Capillary cap = capillaries.get(icap);

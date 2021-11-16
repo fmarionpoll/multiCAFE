@@ -27,14 +27,16 @@ import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 public class Capillary implements XMLPersistent, Comparable <Capillary>  
 {
 
-	private ROI2D 						roi 			= null;	// the capillary (source)
-	public int							indexKymograph 	= -1;
+	private ROI2D 						roi 		= null;
+	private ArrayList<ROI2DForKymo>		roisForKymo = new ArrayList<ROI2DForKymo>();
+	
 	private String						kymographName 	= null;
+	
+	public int							indexKymograph 	= -1;
 	public String 						version 		= null;
 	public String						filenameTIFF	= null;
 	
 	public ArrayList<int[]> 			cap_Integer		= null;
-	public ArrayList<ArrayList<int[]>> 	masksList 		= null;
 	
 	public String 						capStimulus		= new String("..");
 	public String 						capConcentration= new String("..");
@@ -714,4 +716,28 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return points;
 	}
 
+	// --------------------------------------------
+	public List<ROI2DForKymo> getRoisForKymo() {
+		if (roisForKymo.size() < 1) 
+			initROI2DForKymoList();
+		return roisForKymo;
+	}
+	
+ 	public ROI2DForKymo getROI2DKymoAt(int t) {
+		if (roisForKymo.size() < 1) 
+			initROI2DForKymoList();
+		
+		ROI2DForKymo capRoi = null;
+		for ( ROI2DForKymo item : roisForKymo) {
+			if(t >= item.getStart() && t <= item.getEnd()) {
+				capRoi = item;
+				break;
+			}
+		}
+		return capRoi;
+	}
+	
+	private void initROI2DForKymoList() { 
+		roisForKymo.add(new ROI2DForKymo(0, -1, roi));		
+	}
 }
