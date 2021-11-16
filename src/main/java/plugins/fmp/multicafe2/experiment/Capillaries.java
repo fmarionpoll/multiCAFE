@@ -285,7 +285,7 @@ public class Capillaries
 		cap.capSide = letter;
 		if (letter .equals("R")) {	
 			String nameL = name.substring(0, name.length() - 1) + "L";
-			Capillary cap0 = getCapillaryFromName(nameL);
+			Capillary cap0 = getCapillaryFromName(nameL, capillariesList);
 			if (cap0 != null) {
 				if (cap0.capNFlies <0)
 					System.out.println("nflies = " + cap0.capNFlies);
@@ -295,7 +295,7 @@ public class Capillaries
 		}
 	}
 	
-	public Capillary getCapillaryFromName(String name) {
+	public Capillary getCapillaryFromName(String name, List<Capillary> capillariesList) {
 		Capillary capFound = null;
 		for (Capillary cap: capillariesList) {
 			if (cap.getRoiName().equals(name)) {

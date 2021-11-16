@@ -187,7 +187,7 @@ public class BuildKymographs_series extends BuildSeries
 						
 						for (int icap = 0; icap < nbcapillaries; icap++) {
 							Capillary cap = capillaries.get(icap);
-//							Capillary cap0 = exp.capillaries.getCapillaryFromName(cap.getRoiName());
+//							Capillary cap0 = exp.capillaries.capillariesList.get(icap); //getCapillaryFromName(cap.getRoiName());
 //							System.out.println("icap="+icap);
 							int [] kymoImageChannel = cap.cap_Integer.get(chan); 
 							
@@ -303,7 +303,7 @@ public class BuildKymographs_series extends BuildSeries
 			int nbcapillaries = capillariesWithTime.capillariesList.size();
 			for (int i = 0; i < nbcapillaries; i++) {
 				Capillary cap = capillariesWithTime.capillariesList.get(i);
-				Capillary cap0 = exp.capillaries.getCapillaryFromName(cap.getRoiName());
+				Capillary cap0 = exp.capillaries.getCapillaryFromName(cap.getRoiName(), exp.capillaries.capillariesList);
 				cap.cap_Integer = cap0.cap_Integer;
 			}	
 		}
