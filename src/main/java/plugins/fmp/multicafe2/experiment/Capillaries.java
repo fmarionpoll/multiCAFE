@@ -29,8 +29,6 @@ public class Capillaries
 	public CapillariesDescription 	desc				= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public List <Capillary> 		capillariesList		= new ArrayList <Capillary>();
-	private	TreeSet<Long[]> 		intervalsROI2DForKymoSet = null;
-	
 	
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
 	private final static String ID_NCAPILLARIES 		= "N_capillaries";
@@ -387,17 +385,17 @@ public class Capillaries
 	
 	// -------------------------------------------------
 	
-	public TreeSet<Long[]> getROI2forKymoIntervals() {
+	private	ROI2DForKymoArray intervalsROI2DForKymoSet = null;
+	
+	
+	public ArrayList<Long[]> getROI2forKymoIntervals() {
 		if (intervalsROI2DForKymoSet == null) {
-			intervalsROI2DForKymoSet = new TreeSet<Long[]>(
-				   new Comparator<Long[]>() {
-				      public int compare(Long[] a, Long[] b) {
-				         return Long.compare(a[0], b[0]);
-				      }});
+			intervalsROI2DForKymoSet = new ArrayList<Long[]>();
+			
 			for (Capillary cap: capillariesList) {
 				for (ROI2DForKymo roiFK: cap.getRoisForKymo()) {
 					Long[] interval = {roiFK.getStart(), roiFK.getEnd()};
-					intervalsROI2DForKymoSet.add(interval);
+					intervalsROI2DForKymoSet.addNewItem(interval);
 				}
 			}
 		}
@@ -415,6 +413,15 @@ public class Capillaries
 	
 	public void addROI2DForKymoInterval(long start) {
 		Long[] interval = {start, (long) -1};
+		intervalsROI2DForKymoSet.add(interval);
+		
+		for (Capillary cap: capillariesList) {
+			cap.getRoisForKymo().add(new ROI2DForKymo(start, -1, cap.getRoi()));
+		}
+	}
+	
+	public void setIntervalOfROI2DForKymo(int itemSelected, long start, long end) {
+		Long[] interval = {start, end};
 		intervalsROI2DForKymoSet.add(interval);
 		
 		for (Capillary cap: capillariesList) {

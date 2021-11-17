@@ -31,7 +31,6 @@ import icy.type.geom.Polygon2D;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.dlg.JComponents.CapillariesWithTimeTableModel;
-import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
@@ -212,13 +211,10 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		if (exp == null) return;
 
 		int nitems = exp.capillaries.getROI2DForKymosIntervalSize();
-		System.out.println("ncapillariesWithTime= "+nitems);
-		CapillariesWithTime capillaries = new CapillariesWithTime(exp.capillaries.capillariesWithTime.get(nitems-1).capillariesList);
 		
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		long intervalT = v.getPositionT();
-		capillaries.start = intervalT;
-		exp.capillaries.capillariesWithTime.add(capillaries);
+		exp.capillaries.addROI2DForKymoInterval(intervalT);
 		
 		CapillariesWithTime previousCapillaries = exp.capillaries.capillariesWithTime.get(nitems-1);
 		previousCapillaries.end = intervalT-1;
