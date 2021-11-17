@@ -17,7 +17,7 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel {
 	private static final long 	serialVersionUID 	= 1L;
 	private ExperimentCombo 	expList 			= null;
 	private final String 		columnNames[] 		= { "Starting frame", "End frame" };
-	private TreeSet<Long[]> capillariesIntervals = null;
+	private TreeSet<Long[]> 	capillariesIntervals = null;
 	
 	
 	public CapillariesWithTimeTableModel (ExperimentCombo expList) {
@@ -29,7 +29,7 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel {
 	public int getRowCount() {
 		if (expList != null && expList.getSelectedIndex() >= 0 ) {
     		Capillaries capillaries = getCapillariesOfSelectedExperiment();
-    		capillariesIntervals = capillaries.getCapillariesIntervals();
+    		capillariesIntervals = capillaries.getROI2forKymoIntervals();
 			return capillariesIntervals.size();
     	}
         return 0;

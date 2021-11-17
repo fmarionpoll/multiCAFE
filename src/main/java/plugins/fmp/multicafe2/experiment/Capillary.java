@@ -730,7 +730,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		
 		ROI2DForKymo capRoi = null;
 		for ( ROI2DForKymo item : roisForKymo) {
-			if(t >= item.getStart() && t <= item.getEnd()) {
+			if( item.getEnd() == -1 
+					|| t >= item.getStart() 
+					&& t <= item.getEnd()) {
 				capRoi = item;
 				break;
 			}

@@ -29,6 +29,7 @@ public class Capillaries
 	public CapillariesDescription 	desc				= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public List <Capillary> 		capillariesList		= new ArrayList <Capillary>();
+	private	TreeSet<Long[]> 		intervalsROI2DForKymoSet = null;
 	
 	
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
@@ -384,27 +385,40 @@ public class Capillaries
 		}
 	}
 	
-	public TreeSet<Long[]> getCapillariesIntervals() {
-		TreeSet<Long[]> ts = new TreeSet<Long[]>(
-			   new Comparator<Long[]>() {
-			      public int compare(Long[] a, Long[] b)
-			      {
-			         return Long.compare(a[0], b[0]);
-			      }
-			   }
-			);
-		for (Capillary cap: capillariesList) {
-			for (ROI2DForKymo roiFK: cap.getRoisForKymo()) {
-				Long[] couple = {roiFK.getStart(), roiFK.getEnd()};
-				ts.add(couple);
+	// -------------------------------------------------
+	
+	public TreeSet<Long[]> getROI2forKymoIntervals() {
+		if (intervalsROI2DForKymoSet == null) {
+			intervalsROI2DForKymoSet = new TreeSet<Long[]>(
+				   new Comparator<Long[]>() {
+				      public int compare(Long[] a, Long[] b) {
+				         return Long.compare(a[0], b[0]);
+				      }});
+			for (Capillary cap: capillariesList) {
+				for (ROI2DForKymo roiFK: cap.getRoisForKymo()) {
+					Long[] interval = {roiFK.getStart(), roiFK.getEnd()};
+					intervalsROI2DForKymoSet.add(interval);
+				}
 			}
 		}
-		
-		return ts;
+		return intervalsROI2DForKymoSet;
+	}
+	
+	public int getROI2DForKymosIntervalSize() {
+		return getROI2forKymoIntervals().size();
 	}
 	
 	public ROI2DForKymo getROI2DForKymoAt(int icapillary, long frame) {
 		Capillary cap = capillariesList.get(icapillary);
 		return cap.getROI2DKymoAt((int) frame);
+	}
+	
+	public void addROI2DForKymoInterval(long start) {
+		Long[] interval = {start, (long) -1};
+		intervalsROI2DForKymoSet.add(interval);
+		
+		for (Capillary cap: capillariesList) {
+			cap.getRoisForKymo().add(new ROI2DForKymo(start, -1, cap.getRoi()));
+		}
 	}
 }

@@ -211,7 +211,7 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();;
 		if (exp == null) return;
 
-		int nitems = exp.capillaries.capillariesWithTime.size();
+		int nitems = exp.capillaries.getROI2DForKymosIntervalSize();
 		System.out.println("ncapillariesWithTime= "+nitems);
 		CapillariesWithTime capillaries = new CapillariesWithTime(exp.capillaries.capillariesWithTime.get(nitems-1).capillariesList);
 		
