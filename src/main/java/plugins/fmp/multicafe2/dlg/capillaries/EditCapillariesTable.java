@@ -33,6 +33,7 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.dlg.JComponents.CapillariesWithTimeTableModel;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
+import plugins.fmp.multicafe2.experiment.ROI2DForKymoArray;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 
 
@@ -207,7 +208,7 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 	}
 	
 	private void addTableItem() {
-		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();;
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null) return;
 
 		int nitems = exp.capillaries.getROI2DForKymosIntervalSize();
@@ -216,8 +217,10 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		long intervalT = v.getPositionT();
 		exp.capillaries.addROI2DForKymoInterval(intervalT);
 		
-		CapillariesWithTime previousCapillaries = exp.capillaries.capillariesWithTime.get(nitems-1);
+		ROI2DForKymoArray previousCapillaries = exp.capillaries.capillariesWithTime.get(nitems-1);
 		previousCapillaries.end = intervalT-1;
+		
+		exp.capillaries.addROI2DForKymoInterval(intervalT);
 	}
 	
 	private void changeCapillaries(int selectedRow) {

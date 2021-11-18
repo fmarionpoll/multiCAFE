@@ -5,10 +5,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TreeSet;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -29,7 +27,7 @@ public class Capillaries
 	public CapillariesDescription 	desc				= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public List <Capillary> 		capillariesList		= new ArrayList <Capillary>();
-	
+		
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
 	private final static String ID_NCAPILLARIES 		= "N_capillaries";
 	private final static String ID_LISTOFCAPILLARIES 	= "List_of_capillaries";
@@ -387,15 +385,14 @@ public class Capillaries
 	
 	private	ROI2DForKymoArray intervalsROI2DForKymoSet = null;
 	
-	
-	public ArrayList<Long[]> getROI2forKymoIntervals() {
+	public ROI2DForKymoArray getROI2forKymoIntervals() {
 		if (intervalsROI2DForKymoSet == null) {
-			intervalsROI2DForKymoSet = new ArrayList<Long[]>();
+			intervalsROI2DForKymoSet = new ROI2DForKymoArray();
 			
 			for (Capillary cap: capillariesList) {
 				for (ROI2DForKymo roiFK: cap.getRoisForKymo()) {
 					Long[] interval = {roiFK.getStart(), roiFK.getEnd()};
-					intervalsROI2DForKymoSet.addNewItem(interval);
+					intervalsROI2DForKymoSet.addIfNew(interval);
 				}
 			}
 		}
@@ -413,15 +410,6 @@ public class Capillaries
 	
 	public void addROI2DForKymoInterval(long start) {
 		Long[] interval = {start, (long) -1};
-		intervalsROI2DForKymoSet.add(interval);
-		
-		for (Capillary cap: capillariesList) {
-			cap.getRoisForKymo().add(new ROI2DForKymo(start, -1, cap.getRoi()));
-		}
-	}
-	
-	public void setIntervalOfROI2DForKymo(int itemSelected, long start, long end) {
-		Long[] interval = {start, end};
 		intervalsROI2DForKymoSet.add(interval);
 		
 		for (Capillary cap: capillariesList) {
