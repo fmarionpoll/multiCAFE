@@ -27,6 +27,8 @@ public class Capillaries
 	public CapillariesDescription 	desc				= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public List <Capillary> 		capillariesList		= new ArrayList <Capillary>();
+	
+	private	ROI2DForKymoArray 		arrayROI2DforKymos 		= null;
 		
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
 	private final static String ID_NCAPILLARIES 		= "N_capillaries";
@@ -383,24 +385,22 @@ public class Capillaries
 	
 	// -------------------------------------------------
 	
-	private	ROI2DForKymoArray intervalsROI2DForKymoSet = null;
-	
-	public ROI2DForKymoArray getROI2forKymoIntervals() {
-		if (intervalsROI2DForKymoSet == null) {
-			intervalsROI2DForKymoSet = new ROI2DForKymoArray();
+	public ROI2DForKymoArray getROI2forKymoArray() {
+		if (arrayROI2DforKymos == null) {
+			arrayROI2DforKymos = new ROI2DForKymoArray();
 			
 			for (Capillary cap: capillariesList) {
 				for (ROI2DForKymo roiFK: cap.getRoisForKymo()) {
 					Long[] interval = {roiFK.getStart(), roiFK.getEnd()};
-					intervalsROI2DForKymoSet.addIfNew(interval);
+					arrayROI2DforKymos.addIfNew(interval);
 				}
 			}
 		}
-		return intervalsROI2DForKymoSet;
+		return arrayROI2DforKymos;
 	}
 	
 	public int getROI2DForKymosIntervalSize() {
-		return getROI2forKymoIntervals().size();
+		return getROI2forKymoArray().size();
 	}
 	
 	public ROI2DForKymo getROI2DForKymoAt(int icapillary, long frame) {
@@ -408,12 +408,17 @@ public class Capillaries
 		return cap.getROI2DKymoAt((int) frame);
 	}
 	
-	public void addROI2DForKymoInterval(long start) {
+	public int addROI2DForKymoInterval(long start) {
 		Long[] interval = {start, (long) -1};
-		intervalsROI2DForKymoSet.add(interval);
-		
+		int item = arrayROI2DforKymos.addIfNew(interval);
+		// TODO : this below is wrong - the same interval can be duplicated then many times
 		for (Capillary cap: capillariesList) {
 			cap.getRoisForKymo().add(new ROI2DForKymo(start, -1, cap.getRoi()));
 		}
+		return item;
+	}
+	
+	public void setROI2DForKymosEndIntervalAt(int item, long end) {
+		
 	}
 }

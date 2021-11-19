@@ -216,11 +216,7 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		long intervalT = v.getPositionT();
 		exp.capillaries.addROI2DForKymoInterval(intervalT);
-		
-		ROI2DForKymoArray previousCapillaries = exp.capillaries.capillariesWithTime.get(nitems-1);
-		previousCapillaries.end = intervalT-1;
-		
-		exp.capillaries.addROI2DForKymoInterval(intervalT);
+		exp.capillaries.setROI2DForKymosEndIntervalAt(nitems-1, intervalT-1);	
 	}
 	
 	private void changeCapillaries(int selectedRow) {

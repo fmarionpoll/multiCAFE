@@ -29,7 +29,7 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel {
 	public int getRowCount() {
 		if (expList != null && expList.getSelectedIndex() >= 0 ) {
     		Capillaries capillaries = getCapillariesOfSelectedExperiment();
-    		capillariesIntervals = capillaries.getROI2forKymoIntervals();
+    		capillariesIntervals = capillaries.getROI2forKymoArray();
 			return capillariesIntervals.size();
     	}
         return 0;
