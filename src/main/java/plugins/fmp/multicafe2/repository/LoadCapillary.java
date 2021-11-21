@@ -3,15 +3,14 @@ package plugins.fmp.multicafe2.repository;
 
 import org.w3c.dom.Node;
 
-import icy.roi.ROI;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.experiment.Capillary;
+import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class LoadCapillary {
 	
 	private final String 				ID_META 		= "metaMC";
-	private final String 				ID_ROI 			= "roiMC";
 	private final String				ID_NFLIES		= "nflies";
 	private final String				ID_CAGENB		= "cage_number";
 	private final String 				ID_CAPVOLUME 	= "capillaryVolume";
@@ -55,7 +54,7 @@ public class LoadCapillary {
 	    	cap.capConcentration= XMLUtil.getElementValue(nodeMeta, ID_CONCL, ID_CONCL);
 	    	cap.capSide 		= XMLUtil.getElementValue(nodeMeta, ID_SIDE, ".");
 			
-	    	cap.setRoi((ROI2DShape) loadFromXML_ROI(nodeMeta));
+	    	cap.setRoi((ROI2DShape) ROI2DUtilities.loadFromXML_ROI(nodeMeta));
 	    	cap.limitsOptions.loadFromXML(nodeMeta);
 	    }
 	    return flag;
@@ -71,15 +70,5 @@ public class LoadCapillary {
 		return result;
 	}
  
-	private ROI loadFromXML_ROI(Node node) 
-	{
-		final Node nodeROI = XMLUtil.getElement(node, ID_ROI);
-        if (nodeROI != null) 
-        {
-			ROI roi = ROI.createFromXML(nodeROI);
-	        return roi;
-        }
-        return null;
-	}
 
 }

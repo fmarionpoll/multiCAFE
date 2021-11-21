@@ -19,6 +19,7 @@ import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 import plugins.fmp.multicafe2.series.Options_BuildSeries;
+import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
@@ -61,7 +62,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public boolean						valid			= true;
 
 	private final String 				ID_META 		= "metaMC";
-	private final String 				ID_ROI 			= "roiMC";
 	private final String				ID_NFLIES		= "nflies";
 	private final String				ID_CAGENB		= "cage_number";
 	private final String 				ID_CAPVOLUME 	= "capillaryVolume";
@@ -71,6 +71,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	private final String 				ID_SIDE 		= "side";
 	private final String 				ID_DESCOK 		= "descriptionOK";
 	private final String				ID_VERSIONINFOS	= "versionInfos";
+	
+	private final String 				ID_INTERVALS 	= "INTERVALS";
+	private final String				ID_NINTERVALS	= "nintervals";
+	private final String 				ID_INTERVAL 	= "interval_";
 	
 	private final String 				ID_INDEXIMAGE 	= "indexImageMC";
 	private final String 				ID_NAME 		= "nameMC";
@@ -536,10 +540,30 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			capConcentration= XMLUtil.getElementValue(nodeMeta, ID_CONCL, ID_CONCL);
 			capSide 		= XMLUtil.getElementValue(nodeMeta, ID_SIDE, ".");
 			
-	        roi = loadFromXML_ROI(nodeMeta);
+	        roi = ROI2DUtilities.loadFromXML_ROI(nodeMeta);
 	        limitsOptions.loadFromXML(nodeMeta);
+	        
+	        loadFromXML_intervals(node);
 	    }
 	    return flag;
+	}
+	
+	private boolean loadFromXML_intervals(Node node) 
+	{
+		roisForKymo.clear();
+		final Node nodeMeta2 = XMLUtil.getElement(node, ID_INTERVALS);
+	    if (nodeMeta2 == null)
+	    	return false;
+	    int nitems = XMLUtil.getElementIntValue(nodeMeta2, ID_NINTERVALS, 0);
+		if (nitems > 0) {
+        	for (int i=0; i < nitems; i++) {
+        		Node node_i = XMLUtil.setElement(nodeMeta2, ID_INTERVAL+i);
+        		ROI2DForKymo roiInterval = new ROI2DForKymo();
+        		roiInterval.loadFromXML(node_i);
+        		roisForKymo.add(roiInterval);
+        	}
+        }
+        return true;
 	}
 	
 	public boolean loadFromXML_MeasuresOnly(Node node) 
@@ -552,34 +576,52 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return result;
 	}
 	
-	public void saveToXML_CapillaryOnly(Node node) 
+	public boolean saveToXML_CapillaryOnly(Node node) 
 	{
 	    final Node nodeMeta = XMLUtil.setElement(node, ID_META);
-	    if (nodeMeta != null) 
-	    {
-	    	if (version == null)
-	    		version = ID_VERSIONNUM;
-	    	XMLUtil.setElementValue(nodeMeta, ID_VERSION, version);
-	        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexKymograph);
-	        XMLUtil.setElementValue(nodeMeta, ID_NAME, kymographName);
-	        if (filenameTIFF != null ) {
-	        	String filename = Paths.get(filenameTIFF).getFileName().toString();
-	        	XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);
-	        }
-	        XMLUtil.setElementBooleanValue(nodeMeta, ID_DESCOK, descriptionOK);
-	        XMLUtil.setElementIntValue(nodeMeta, ID_VERSIONINFOS, versionInfos);
-	        XMLUtil.setElementIntValue(nodeMeta, ID_NFLIES, capNFlies);
-	        XMLUtil.setElementIntValue(nodeMeta, ID_CAGENB, capCageID);
-			XMLUtil.setElementDoubleValue(nodeMeta, ID_CAPVOLUME, capVolume);
-			XMLUtil.setElementIntValue(nodeMeta, ID_CAPPIXELS, capPixels);
-			XMLUtil.setElementValue(nodeMeta, ID_STIML, capStimulus);
-			XMLUtil.setElementValue(nodeMeta, ID_SIDE, capSide);
-			XMLUtil.setElementValue(nodeMeta, ID_CONCL, capConcentration);
+	    if (nodeMeta == null)
+	    	return false;
+    	if (version == null)
+    		version = ID_VERSIONNUM;
+    	XMLUtil.setElementValue(nodeMeta, ID_VERSION, version);
+        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexKymograph);
+        XMLUtil.setElementValue(nodeMeta, ID_NAME, kymographName);
+        if (filenameTIFF != null ) {
+        	String filename = Paths.get(filenameTIFF).getFileName().toString();
+        	XMLUtil.setElementValue(nodeMeta, ID_NAMETIFF, filename);
+        }
+        XMLUtil.setElementBooleanValue(nodeMeta, ID_DESCOK, descriptionOK);
+        XMLUtil.setElementIntValue(nodeMeta, ID_VERSIONINFOS, versionInfos);
+        XMLUtil.setElementIntValue(nodeMeta, ID_NFLIES, capNFlies);
+        XMLUtil.setElementIntValue(nodeMeta, ID_CAGENB, capCageID);
+		XMLUtil.setElementDoubleValue(nodeMeta, ID_CAPVOLUME, capVolume);
+		XMLUtil.setElementIntValue(nodeMeta, ID_CAPPIXELS, capPixels);
+		XMLUtil.setElementValue(nodeMeta, ID_STIML, capStimulus);
+		XMLUtil.setElementValue(nodeMeta, ID_SIDE, capSide);
+		XMLUtil.setElementValue(nodeMeta, ID_CONCL, capConcentration);
 
-	        saveToXML_ROI(nodeMeta, roi); 
-	    }
+		ROI2DUtilities.saveToXML_ROI(nodeMeta, roi); 
+		
+		boolean flag = saveToXML_intervals(node);
+	    return flag;
 	}
-
+	
+	private boolean saveToXML_intervals(Node node) 
+	{
+		final Node nodeMeta2 = XMLUtil.setElement(node, ID_INTERVALS);
+	    if (nodeMeta2 == null)
+	    	return false;
+		int nitems = roisForKymo.size();
+		XMLUtil.setElementIntValue(nodeMeta2, ID_NINTERVALS, nitems);
+        if (nitems > 0) {
+        	for (int i=0; i < nitems; i++) {
+        		Node node_i = XMLUtil.setElement(nodeMeta2, ID_INTERVAL+i);
+        		roisForKymo.get(i).saveToXML(node_i);
+        	}
+        }
+        return true;
+	}
+	
 	public void saveToXML_MeasuresOnly(Node node) 
 	{
 		if (ptsTop != null)
@@ -591,28 +633,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		if (gulpsRois != null)
 			gulpsRois.saveToXML(node);
 	}
-	
-	private void saveToXML_ROI(Node node, ROI2D roi) 
-	{
-		final Node nodeROI = XMLUtil.setElement(node, ID_ROI);
-        if (!roi.saveToXML(nodeROI)) 
-        {
-            XMLUtil.removeNode(node, nodeROI);
-            System.err.println("Error: the roi " + roi.getName() + " was not correctly saved to XML !");
-        }
-	}
- 
-	private ROI2D loadFromXML_ROI(Node node) 
-	{
-		final Node nodeROI = XMLUtil.getElement(node, ID_ROI);
-        if (nodeROI != null) 
-        {
-			ROI2D roi = (ROI2D) ROI2D.createFromXML(nodeROI);
-	        return roi;
-        }
-        return null;
-	}
-
+	 
 	// -------------------------------------------
 	
 	public Point2D getCapillaryTipWithinROI2D (ROI2D roi2D) 

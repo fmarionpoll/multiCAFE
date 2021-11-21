@@ -4,15 +4,14 @@ import java.nio.file.Paths;
 
 import org.w3c.dom.Node;
 
-import icy.roi.ROI;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.experiment.Capillary;
+import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 
 
 public class SaveCapillary 
 {
 	private final String 				ID_META 		= "metaMC";
-	private final String 				ID_ROI 			= "roiMC";
 	private final String				ID_NFLIES		= "nflies";
 	private final String				ID_CAGENB		= "cage_number";
 	private final String 				ID_CAPVOLUME 	= "capillaryVolume";
@@ -61,7 +60,7 @@ public class SaveCapillary
 			XMLUtil.setElementValue(nodeMeta, ID_SIDE, cap.capSide);
 			XMLUtil.setElementValue(nodeMeta, ID_CONCL, cap.capConcentration);
 
-	        saveToXML_ROI(nodeMeta, cap.getRoi()); 
+			ROI2DUtilities.saveToXML_ROI(nodeMeta, cap.getRoi()); 
 	    }
 	}
 
@@ -75,16 +74,6 @@ public class SaveCapillary
 			cap.ptsDerivative.saveCapillaryLimit2XML(node, cap.ID_DERIVATIVE);
 		if (cap.gulpsRois != null)
 			cap.gulpsRois.saveToXML(node);
-	}
-	
-	private void saveToXML_ROI(Node node, ROI roi) 
-	{
-		final Node nodeROI = XMLUtil.setElement(node, ID_ROI);
-        if (!roi.saveToXML(nodeROI)) 
-        {
-            XMLUtil.removeNode(node, nodeROI);
-            System.err.println("Error: the roi " + roi.getName() + " was not correctly saved to XML !");
-        }
 	}
  
 }

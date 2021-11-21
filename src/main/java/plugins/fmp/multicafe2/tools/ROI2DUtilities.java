@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 import icy.gui.frame.progress.AnnounceFrame;
 import icy.roi.ROI;
@@ -27,8 +28,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class ROI2DUtilities  
 {
-	public static final String ID_ROI = "roi";
-	public static final String ID_CLASSNAME = "classname";
+	private static final String ID_ROIMC = "roiMC";
     
 	
 	public static void interpolateMissingPointsAlongXAxis (ROI2DPolyLine roiLine, int nintervals) 
@@ -368,4 +368,26 @@ public class ROI2DUtilities
 		}
 		return points;
 	}
+	
+	public static void saveToXML_ROI(Node node, ROI2D roi) 
+	{
+		final Node nodeROI = XMLUtil.setElement(node, ID_ROIMC);
+        if (!roi.saveToXML(nodeROI)) 
+        {
+            XMLUtil.removeNode(node, nodeROI);
+            System.err.println("Error: the roi " + roi.getName() + " was not correctly saved to XML !");
+        }
+	}
+	
+	public static ROI2D loadFromXML_ROI(Node node) 
+	{
+		final Node nodeROI = XMLUtil.getElement(node, ID_ROIMC);
+        if (nodeROI != null) 
+        {
+			ROI2D roi = (ROI2D) ROI2D.createFromXML(nodeROI);
+	        return roi;
+        }
+        return null;
+	}
+ 
 }
