@@ -8,7 +8,7 @@ public class ROI2DForKymo {
 	private ROI2D 	roi 			= null;	
 	private long 	start 			= 0;
 	private long 	end 			= -1;
-	public ArrayList<ArrayList<int[]>> 	masksList = null;
+	private ArrayList<ArrayList<int[]>> masksList = null;
 	
 	
 	public ROI2DForKymo(long start, long end, ROI2D roi) {
@@ -27,6 +27,10 @@ public class ROI2DForKymo {
 		return roi;
 	}
 	
+	public ArrayList<ArrayList<int[]>> getMasksList() {
+		return masksList;
+	}
+	
 	public void setStart(long start) {
 		this.start = start;
 	}
@@ -35,5 +39,9 @@ public class ROI2DForKymo {
 	}
 	public void setRoi(ROI2D roi) {
 		this.roi = (ROI2D) roi.getCopy();
+	}
+	
+	public void setMasksList(ArrayList<ArrayList<int[]>> masksList) {
+		this.masksList = masksList;
 	}
 }

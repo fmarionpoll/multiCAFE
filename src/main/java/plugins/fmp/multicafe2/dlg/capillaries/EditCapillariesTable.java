@@ -33,7 +33,6 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.dlg.JComponents.CapillariesWithTimeTableModel;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.experiment.ROI2DForKymoArray;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 
 
@@ -211,29 +210,32 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null) return;
 
-		int nitems = exp.capillaries.getROI2DForKymosIntervalSize();
-		
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		long intervalT = v.getPositionT();
-		exp.capillaries.addROI2DForKymoInterval(intervalT);
-		exp.capillaries.setROI2DForKymosEndIntervalAt(nitems-1, intervalT-1);	
+		
+		if (exp.capillaries.findROI2DIntervalStart(intervalT) < 0) {
+			exp.capillaries.addROI2DInterval(intervalT);
+			int nitems = exp.capillaries.getIntervalSize();
+			exp.capillaries.setROI2DEndIntervalAt(nitems-1, intervalT-1);
+		}
 	}
 	
-	private void changeCapillaries(int selectedRow) {
+	private void displayCapillariesForSelectedInterval(int selectedRow) {
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;
 		Sequence seq = exp.seqCamData.seq;
 		
+		int intervalT =  (int) exp.capillaries.getROI2DIntervalsStartAt(selectedRow);
 		seq.removeAllROI();	
-		CapillariesWithTime capillariesWithTime = exp.capillaries.capillariesWithTime.get(selectedRow);
 		List<ROI2D> listRois = new ArrayList<ROI2D>();
-		for (Capillary cap: capillariesWithTime.capillariesList)
-			listRois.add(cap.getRoi());
+		for (Capillary cap: exp.capillaries.capillariesList) {
+			listRois.add(cap.getROI2DKymoAtIntervalT((int) intervalT).getRoi());
+		}
 		seq.addROIs(listRois, false);
 		
 		Viewer v = seq.getFirstViewer();
-		v.setPositionT((int) capillariesWithTime.start);
+		v.setPositionT((int)intervalT);
 	}
 	
 	private void saveCapillaries(int selectedRow) {
@@ -242,15 +244,15 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 			return;
 		Sequence seq = exp.seqCamData.seq;
 		
+		int intervalT =  (int) exp.capillaries.getROI2DIntervalsStartAt(selectedRow);
 		List<ROI2D> listRois = seq.getROI2Ds();
-		CapillariesWithTime capillariesWithTime = exp.capillaries.capillariesWithTime.get(selectedRow);
 		for (ROI2D roi: listRois) {
 			if (!roi.getName().contains("line")) 
 				continue;
-			Capillary cap = capillariesWithTime.getCapillaryFromName(roi.getName());
+			Capillary cap = exp.capillaries.getCapillaryFromName(roi.getName());
 			if (cap != null) {
 				ROI2D roilocal = (ROI2D) roi.getCopy();
-				cap.setRoi(roilocal);
+				cap.getROI2DKymoAtIntervalT(intervalT).setRoi(roilocal);
 			}
 		}
 	}
@@ -261,11 +263,11 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
             int selectedRow = tableView.getSelectedRow();
             if (selectedRow < 0) {
             	tableView.setRowSelectionInterval(0, 0);
-            }
-            else {
-                changeCapillaries(selectedRow);
-                showFrame(showFrameButton.isSelected()) ;
-            }
+            	selectedRow = 0;
+            }    
+            displayCapillariesForSelectedInterval(selectedRow);
+            showFrame(showFrameButton.isSelected()) ;
+            
     	}
 	}
 

@@ -1,6 +1,5 @@
 package plugins.fmp.multicafe2.series;
 
-
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
@@ -18,14 +17,13 @@ import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 import loci.formats.FormatException;
 
-import plugins.fmp.multicafe2.experiment.CapillariesWithTime;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
+import plugins.fmp.multicafe2.experiment.ROI2DForKymo;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.tools.Bresenham;
-
-
+import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 
 
 public class BuildKymographs_series extends BuildSeries  
@@ -160,9 +158,7 @@ public class BuildKymographs_series extends BuildSeries
 			final int indexFrom = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_Ms));
 			if (indexFrom >= seqCamData.nTotalFrames)
 				continue;
-			
-			final List<Capillary> capillaries = exp.capillaries.getCapillariesListAt(iframe);
-			
+						
 			futuresArray.add(processor.submit(new Runnable () 
 			{
 				@Override
@@ -184,14 +180,12 @@ public class BuildKymographs_series extends BuildSeries
 								sourceImage.getDataXY(chan), 
 								sourceImageChannel, sourceImage.isSignedDataType()); 
 						
-						for (int icap = 0; icap < nbcapillaries; icap++) {
-							Capillary cap = capillaries.get(icap);
-//							Capillary cap0 = exp.capillaries.capillariesList.get(icap); //getCapillaryFromName(cap.getRoiName());
-//							System.out.println("icap="+icap);
+						for (Capillary cap: exp.capillaries.capillariesList) {
+							ROI2DForKymo capT = cap.getROI2DKymoAtIntervalT(indexTo);
 							int [] kymoImageChannel = cap.cap_Integer.get(chan); 
 							
 							int cnt = 0;
-							for (ArrayList<int[]> mask : cap.masksList) {
+							for (ArrayList<int[]> mask : capT.getMasksList()) {
 								int sum = 0;
 								for (int[] m: mask)
 									sum += sourceImageChannel[m[0] + m[1]*sourceImageWidth];
@@ -240,27 +234,26 @@ public class BuildKymographs_series extends BuildSeries
 
 		kymoImageWidth = (int) ((exp.offsetLastCol_Ms - exp.offsetFirstCol_Ms) / exp.kymoBinCol_Ms +1);
 		
-		int imageHeight = buildMasks(exp, exp.capillaries.capillariesList,sizex, sizey);
-		exp.capillaries.CreateCapillariesWithTimeIfNull();
-		for (CapillariesWithTime capillaries : exp.capillaries.capillariesWithTime) {
-			int imageHeight_i = buildMasks(exp, capillaries.capillariesList, sizex, sizey);
-			if (imageHeight_i > imageHeight) imageHeight = imageHeight_i;
+		int imageHeight = 0;
+		for (Capillary cap: exp.capillaries.capillariesList) {
+			for (ROI2DForKymo capT : cap.getRoisForKymo()) {
+				int imageHeight_i = buildMasks(capT, sizex, sizey);
+				if (imageHeight_i > imageHeight) imageHeight = imageHeight_i;
+			}
 		}
 		buildCapInteger(exp, imageHeight);
-		transferCapIntegerToListsWithTime(exp);
 	}
 	
-	private int buildMasks (Experiment exp, List <Capillary> capillaries, int sizex, int sizey) {
-		int imageHeight = 0;
-		int nbcapillaries = capillaries.size();
-		for (int i = 0; i < nbcapillaries; i++) {
-			Capillary cap = capillaries.get(i);
-			cap.masksList = new ArrayList<ArrayList<int[]>>();
-			getPointsfromROIPolyLineUsingBresenham(cap.getCapillaryPoints(), cap.masksList, options.diskRadius, sizex, sizey);
-			if (cap.masksList.size() > imageHeight)
-				imageHeight = cap.masksList.size();
-		}	
-		return imageHeight;
+	private int buildMasks (ROI2DForKymo capT, int sizex, int sizey) {
+		ArrayList<ArrayList<int[]>> masks = new ArrayList<ArrayList<int[]>>();
+		getPointsfromROIPolyLineUsingBresenham(
+				ROI2DUtilities.getCapillaryPoints(capT.getRoi()), 
+				masks, 
+				options.diskRadius, 
+				sizex, 
+				sizey);
+		capT.setMasksList(masks);	
+		return masks.size();
 	}
 	
 	private void buildCapInteger (Experiment exp, int imageHeight) 
@@ -292,21 +285,6 @@ public class BuildKymographs_series extends BuildSeries
 				cap.cap_Integer.add(tabValues);
 			}
 		}
-	}
-	
-	private int transferCapIntegerToListsWithTime (Experiment exp) 
-	{
-		int imageHeight = 0;
-		
-		for (CapillariesWithTime capillariesWithTime : exp.capillaries.capillariesWithTime) {
-			int nbcapillaries = capillariesWithTime.capillariesList.size();
-			for (int i = 0; i < nbcapillaries; i++) {
-				Capillary cap = capillariesWithTime.capillariesList.get(i);
-				Capillary cap0 = exp.capillaries.getCapillaryFromName(cap.getRoiName(), exp.capillaries.capillariesList);
-				cap.cap_Integer = cap0.cap_Integer;
-			}	
-		}
-		return imageHeight;
 	}
 	
 	private void getPointsfromROIPolyLineUsingBresenham (ArrayList<Point2D> pointsList, List<ArrayList<int[]>> masks, double diskRadius, int sizex, int sizey) 

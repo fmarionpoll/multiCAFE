@@ -2,6 +2,7 @@ package plugins.fmp.multicafe2.tools;
 
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,7 @@ import icy.type.geom.Polygon2D;
 import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
+import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
@@ -343,5 +345,27 @@ public class ROI2DUtilities
 	private static Point2D getLastPoint(ROI2D roi) {
 		Rectangle rect = roi.getBounds();
 		return new Point2D.Double(rect.getX() + rect.getWidth(), rect.getY()+rect.getHeight());
+	}
+
+	public static ArrayList<Point2D> getCapillaryPoints (ROI2D roi) 
+	{
+		ArrayList<Point2D> points = new ArrayList<Point2D>();		
+		if (roi instanceof ROI2DPolyLine) 
+		{
+			Polyline2D line = ((ROI2DPolyLine) roi).getPolyline2D();
+			for (int i = 0; i < line.npoints; i++) {
+				Point2D pt = new Point2D.Double(line.xpoints[i],  line.ypoints[i]);
+				points.add(pt);
+			}
+		} 
+		else if (roi instanceof ROI2DLine) 
+		{
+			Line2D line = ((ROI2DLine) roi).getLine();
+			Point2D pt = new Point2D.Double(line.getP1().getX(),  line.getP1().getY());
+			points.add(pt);
+			pt = new Point2D.Double(line.getP2().getX(),  line.getP2().getY());
+			points.add(pt);
+		}
+		return points;
 	}
 }

@@ -27,8 +27,8 @@ import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 public class Capillary implements XMLPersistent, Comparable <Capillary>  
 {
 
-	private ROI2D 						roi 		= null;
-	private ArrayList<ROI2DForKymo>		roisForKymo = new ArrayList<ROI2DForKymo>();
+	private ROI2D 						roi 			= null;
+	private ArrayList<ROI2DForKymo>		roisForKymo 	= new ArrayList<ROI2DForKymo>();
 	
 	private String						kymographName 	= null;
 	
@@ -694,27 +694,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return pt;
 	}
 	
-	public ArrayList<Point2D> getCapillaryPoints () 
-	{
-		ArrayList<Point2D> points = new ArrayList<Point2D>();		
-		if (roi instanceof ROI2DPolyLine) 
-		{
-			Polyline2D line = ((ROI2DPolyLine) roi).getPolyline2D();
-			for (int i = 0; i < line.npoints; i++) {
-				Point2D pt = new Point2D.Double(line.xpoints[i],  line.ypoints[i]);
-				points.add(pt);
-			}
-		} 
-		else if (roi instanceof ROI2DLine) 
-		{
-			Line2D line = ((ROI2DLine) roi).getLine();
-			Point2D pt = new Point2D.Double(line.getP1().getX(),  line.getP1().getY());
-			points.add(pt);
-			pt = new Point2D.Double(line.getP2().getX(),  line.getP2().getY());
-			points.add(pt);
-		}
-		return points;
-	}
 
 	// --------------------------------------------
 	
@@ -724,7 +703,13 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return roisForKymo;
 	}
 	
- 	public ROI2DForKymo getROI2DKymoAt(int t) {
+ 	public ROI2DForKymo getROI2DKymoAt(int i) {
+		if (roisForKymo.size() < 1) 
+			initROI2DForKymoList();
+		return roisForKymo.get(i);
+	}
+ 	
+ 	public ROI2DForKymo getROI2DKymoAtIntervalT(int t) {
 		if (roisForKymo.size() < 1) 
 			initROI2DForKymoList();
 		

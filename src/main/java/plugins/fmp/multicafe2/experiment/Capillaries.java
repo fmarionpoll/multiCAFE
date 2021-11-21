@@ -27,8 +27,7 @@ public class Capillaries
 	public CapillariesDescription 	desc				= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public List <Capillary> 		capillariesList		= new ArrayList <Capillary>();
-	
-	private	ROI2DForKymoArray 		arrayROI2DforKymos 		= null;
+	private	ROI2DIntervals 			intervals 			= null;
 		
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
 	private final static String ID_NCAPILLARIES 		= "N_capillaries";
@@ -285,7 +284,7 @@ public class Capillaries
 		cap.capSide = letter;
 		if (letter .equals("R")) {	
 			String nameL = name.substring(0, name.length() - 1) + "L";
-			Capillary cap0 = getCapillaryFromName(nameL, capillariesList);
+			Capillary cap0 = getCapillaryFromName(nameL);
 			if (cap0 != null) {
 				if (cap0.capNFlies <0)
 					System.out.println("nflies = " + cap0.capNFlies);
@@ -295,7 +294,7 @@ public class Capillaries
 		}
 	}
 	
-	public Capillary getCapillaryFromName(String name, List<Capillary> capillariesList) {
+	public Capillary getCapillaryFromName(String name) {
 		Capillary capFound = null;
 		for (Capillary cap: capillariesList) {
 			if (cap.getRoiName().equals(name)) {
@@ -385,40 +384,63 @@ public class Capillaries
 	
 	// -------------------------------------------------
 	
-	public ROI2DForKymoArray getROI2forKymoArray() {
-		if (arrayROI2DforKymos == null) {
-			arrayROI2DforKymos = new ROI2DForKymoArray();
+	public ROI2DIntervals getROI2Intervals() {
+		if (intervals == null) 
+			intervals = new ROI2DIntervals();
+		return intervals;
+	}
+	
+	public ROI2DIntervals getROI2IntervalsFromCapillaries() {
+		if (intervals == null) {
+			intervals = new ROI2DIntervals();
 			
 			for (Capillary cap: capillariesList) {
 				for (ROI2DForKymo roiFK: cap.getRoisForKymo()) {
 					Long[] interval = {roiFK.getStart(), roiFK.getEnd()};
-					arrayROI2DforKymos.addIfNew(interval);
+					intervals.addIfNew(interval);
 				}
 			}
 		}
-		return arrayROI2DforKymos;
+		return intervals;
 	}
 	
-	public int getROI2DForKymosIntervalSize() {
-		return getROI2forKymoArray().size();
+	public int getIntervalSize() {
+		return getROI2IntervalsFromCapillaries().size();
 	}
 	
-	public ROI2DForKymo getROI2DForKymoAt(int icapillary, long frame) {
+	public ROI2DForKymo getROI2DForKymoAt(int icapillary, long intervalT) {
 		Capillary cap = capillariesList.get(icapillary);
-		return cap.getROI2DKymoAt((int) frame);
+		return cap.getROI2DKymoAtIntervalT((int) intervalT);
 	}
 	
-	public int addROI2DForKymoInterval(long start) {
+	public int addROI2DInterval(long start) {
 		Long[] interval = {start, (long) -1};
-		int item = arrayROI2DforKymos.addIfNew(interval);
-		// TODO : this below is wrong - the same interval can be duplicated then many times
+		int item = intervals.addIfNew(interval);
+		
+		long end = -1;
+		if (item != intervals.size()-1)
+			end = intervals.get(item+1)[0]-1;
 		for (Capillary cap: capillariesList) {
-			cap.getRoisForKymo().add(new ROI2DForKymo(start, -1, cap.getRoi()));
+			cap.getRoisForKymo().add(item, new ROI2DForKymo(start, end, cap.getRoi()));
 		}
 		return item;
 	}
 	
-	public void setROI2DForKymosEndIntervalAt(int item, long end) {
-		
+	public int findROI2DIntervalStart(long intervalT) {
+		return intervals.findStartItem(intervalT);
+	}
+	
+	public void setROI2DEndIntervalAt(int item, long end) {
+		for (Capillary cap: capillariesList) {
+			cap.getROI2DKymoAt(item).setEnd(end);
+		}
+	}
+	
+	public long getROI2DIntervalsStartAt(int selectedItem) {
+		return intervals.get(selectedItem)[0];
+	}
+	
+	public long getROI2DIntervalsEndAt(int selectedItem) {
+		return intervals.get(selectedItem)[1];
 	}
 }
