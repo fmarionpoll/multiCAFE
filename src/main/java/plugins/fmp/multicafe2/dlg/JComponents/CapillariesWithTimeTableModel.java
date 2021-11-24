@@ -42,15 +42,16 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel {
 
 	@Override
 	public int getColumnCount() {
-		return columnNames.length;
+		return 1;
+//		return columnNames.length;
 	}
 
 	@Override
     public Class<?> getColumnClass(int columnIndex) {
-    	switch (columnIndex) {
-    	case 0: return Integer.class;
-    	case 1: return Integer.class;
-        }
+//    	switch (columnIndex) {
+//    	case 0: return Integer.class;
+//    	case 1: return Integer.class;
+//        }
     	return Integer.class;
     }
 	
@@ -73,12 +74,12 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel {
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		Long[] interval = intervals.get(rowIndex);
-		switch (columnIndex) {
-		case 0:  
-		case 1: 
+//		switch (columnIndex) {
+//		case 0:  
+//		case 1: 
 			interval[columnIndex] = (long) aValue; 
-			break;
-	    }
+//			break;
+//	    }
 	}
 	
 }

@@ -396,7 +396,7 @@ public class Capillaries
 			
 			for (Capillary cap: capillariesList) {
 				for (ROI2DForKymo roiFK: cap.getRoisForKymo()) {
-					Long[] interval = {roiFK.getStart(), roiFK.getEnd()};
+					Long[] interval = {roiFK.getStart(), (long) -1}; //roiFK.getEnd()};
 					intervals.addIfNew(interval);
 				}
 			}
@@ -430,11 +430,11 @@ public class Capillaries
 		return intervals.findStartItem(intervalT);
 	}
 	
-	public void setROI2DEndIntervalAt(int item, long end) {
-		for (Capillary cap: capillariesList) {
-			cap.getROI2DKymoAt(item).setEnd(end);
-		}
-	}
+//	public void setROI2DEndIntervalAt(int item, long end) {
+//		for (Capillary cap: capillariesList) {
+//			cap.getROI2DKymoAt(item).setEnd(end);
+//		}
+//	}
 	
 	public long getROI2DIntervalsStartAt(int selectedItem) {
 		return intervals.get(selectedItem)[0];

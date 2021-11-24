@@ -14,19 +14,19 @@ public class ROI2DForKymo implements XMLPersistent
 	private int		index			= 0;
 	private ROI2D 	roi 			= null;	
 	private long 	start 			= 0;
-	private long 	end 			= -1;
+//	private long 	end 			= -1;
 	private ArrayList<ArrayList<int[]>> masksList = null;
 	
 	private final String 	ID_META 	= "metaT";
 	private final String 	ID_INDEX	= "indexT";
 	private final String 	ID_START 	= "startT";
-	private final String 	ID_END 		= "endT";
+//	private final String 	ID_END 		= "endT";
 	
 	
 	public ROI2DForKymo(long start, long end, ROI2D roi) {
 		setRoi(roi);
 		this.start = start;
-		this.end = end;
+//		this.end = end;
 	}
 	
 	public ROI2DForKymo() {
@@ -35,9 +35,11 @@ public class ROI2DForKymo implements XMLPersistent
 	public long getStart() {
 		return start;
 	}
-	public long getEnd() {
-		return end;
-	}
+	
+//	public long getEnd() {
+//		return end;
+//	}
+	
 	public ROI2D getRoi() {
 		return roi;
 	}
@@ -49,9 +51,11 @@ public class ROI2DForKymo implements XMLPersistent
 	public void setStart(long start) {
 		this.start = start;
 	}
-	public void setEnd(long end) {
-		this.end = end;
-	}
+	
+//	public void setEnd(long end) {
+//		this.end = end;
+//	}
+	
 	public void setRoi(ROI2D roi) {
 		this.roi = (ROI2D) roi.getCopy();
 	}
@@ -68,7 +72,7 @@ public class ROI2DForKymo implements XMLPersistent
 	    
     	index 	= XMLUtil.getElementIntValue(nodeMeta, ID_INDEX, 0);
         start 	= XMLUtil.getElementLongValue(nodeMeta, ID_START, 0);
-        end 	= XMLUtil.getElementLongValue(nodeMeta, ID_END, -1);
+//        end 	= XMLUtil.getElementLongValue(nodeMeta, ID_END, -1);
         roi 	= ROI2DUtilities.loadFromXML_ROI(nodeMeta);
         return true;    
 	}
@@ -80,7 +84,7 @@ public class ROI2DForKymo implements XMLPersistent
 	    	return false;
 	    XMLUtil.setElementIntValue(nodeMeta, ID_INDEX, index);
         XMLUtil.setElementLongValue(nodeMeta, ID_START, start);
-        XMLUtil.setElementLongValue(nodeMeta, ID_END, end);
+//        XMLUtil.setElementLongValue(nodeMeta, ID_END, end);
         ROI2DUtilities.saveToXML_ROI(nodeMeta, roi);
 		return true;
 	}

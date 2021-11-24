@@ -81,7 +81,7 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		topPanel.add(panel0);
 		
 		JPanel panel1 = new JPanel (flowLayout);
-		panel1.add(new JLabel("Last row:"));
+		panel1.add(new JLabel("Row:"));
 		panel1.add(addItemButton);
 		panel1.add(deleteItem);
 		topPanel.add(panel1);
@@ -215,8 +215,8 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		
 		if (exp.capillaries.findROI2DIntervalStart(intervalT) < 0) {
 			exp.capillaries.addROI2DInterval(intervalT);
-			int nitems = exp.capillaries.getIntervalSize();
-			exp.capillaries.setROI2DEndIntervalAt(nitems-1, intervalT-1);
+//			int nitems = exp.capillaries.getIntervalSize();
+//			exp.capillaries.setROI2DEndIntervalAt(nitems-1, intervalT-1);
 		}
 	}
 	
