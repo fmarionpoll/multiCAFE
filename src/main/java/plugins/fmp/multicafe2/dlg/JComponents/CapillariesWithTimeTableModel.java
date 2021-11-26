@@ -16,7 +16,7 @@ public class CapillariesWithTimeTableModel extends AbstractTableModel {
 	 */
 	private static final long 	serialVersionUID 	= 1L;
 	private ExperimentCombo 	expList 			= null;
-	private final String 		columnNames[] 		= { "Starting frame", "End frame" };
+	private final String 		columnNames[] 		= { "Starting at frame", "End frame" };
 	private ArrayList<Long[]> 	intervals 			= null;
 	
 	

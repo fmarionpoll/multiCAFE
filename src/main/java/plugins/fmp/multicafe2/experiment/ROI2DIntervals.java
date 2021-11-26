@@ -8,20 +8,23 @@ public class ROI2DIntervals {
 	public ArrayList<Long[]> intervals = new ArrayList<Long[]>();
 	
 	public int addIfNew(Long[] interval) {		
-		int iprevious = -1;
 		for (int i = 0; i < intervals.size(); i++) {
 			if (interval[0] == intervals.get(i)[0]) 
 				return i;
 			if (interval[0] < intervals.get(i)[0]) {
-				if (iprevious < 0) 
-					iprevious = 0;
-				intervals.add(iprevious, interval);
+				intervals.add(i, interval);
 				return i;
 			}
-			iprevious ++;
 		}
 		intervals.add(interval);
 		return intervals.size()-1;
+	}
+	
+	public boolean deleteIntervalStartingAt(long start) {
+		int index = findStartItem(start);
+		if (index < 0) return false;
+		intervals.remove(index);
+		return true;
 	}
 	
 	public int size() {

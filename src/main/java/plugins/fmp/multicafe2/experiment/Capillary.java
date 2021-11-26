@@ -730,20 +730,31 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return roisForKymo.get(i);
 	}
  	
- 	public ROI2DForKymo getROI2DKymoAtIntervalT(int t) {
+ 	public ROI2DForKymo getROI2DKymoAtIntervalT(long t) {
 		if (roisForKymo.size() < 1) 
 			initROI2DForKymoList();
 		
 		ROI2DForKymo capRoi = null;
-		for ( ROI2DForKymo item : roisForKymo) {
+		for (ROI2DForKymo item : roisForKymo) {
 			if (t < item.getStart())
 				break;
 			capRoi = item;
 		}
 		return capRoi;
 	}
+ 	
+ 	public void removeROI2DIntervalStartingAt(long start) {
+ 		ROI2DForKymo itemFound = null;
+ 		for (ROI2DForKymo item : roisForKymo) {
+			if (start != item.getStart())
+				continue;
+			itemFound = item;
+		}
+ 		if (itemFound != null)
+ 			roisForKymo.remove(itemFound);
+	}
 	
 	private void initROI2DForKymoList() { 
-		roisForKymo.add(new ROI2DForKymo(0, -1, roi));		
+		roisForKymo.add(new ROI2DForKymo(0, roi));		
 	}
 }

@@ -417,13 +417,18 @@ public class Capillaries
 		Long[] interval = {start, (long) -1};
 		int item = intervals.addIfNew(interval);
 		
-		long end = -1;
-		if (item != intervals.size()-1)
-			end = intervals.get(item+1)[0]-1;
 		for (Capillary cap: capillariesList) {
-			cap.getRoisForKymo().add(item, new ROI2DForKymo(start, end, cap.getRoi()));
+			cap.getRoisForKymo().add(item, new ROI2DForKymo(start, cap.getRoi()));
 		}
 		return item;
+	}
+	
+	public void deleteROI2DInterval(long start) {
+		intervals.deleteIntervalStartingAt(start);
+		
+		for (Capillary cap: capillariesList) {
+			cap.removeROI2DIntervalStartingAt(start);
+		}
 	}
 	
 	public int findROI2DIntervalStart(long intervalT) {

@@ -47,13 +47,12 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 	IcyFrame 					dialogFrame 		= null;
 	
     private JButton				addItemButton		= new JButton("Add");
-    private JButton				deleteItem			= new JButton("Delete");
+    private JButton				deleteItemButton			= new JButton("Delete");
     private JButton				saveCapillariesButton = new JButton("Save capillaries");
     private JCheckBox			showFrameButton		= new JCheckBox("Show frame");
     private JButton				fitToFrameButton	= new JButton("Fit capillaries to frame");
     private JTable 				tableView 			= new JTable();    
     
-	private String				explanation 		= "Move to image, edit capillaries position and save";
 	private final String 		dummyname 			= "perimeter_enclosing_capillaries";
 	private ROI2DPolygon 		envelopeRoi 		= null;
 	private ROI2DPolygon 		envelopeRoi_initial	= null;
@@ -76,14 +75,11 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
         
 		JPanel topPanel = new JPanel(new GridLayout(4, 1));
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT); 
-		JPanel panel0 = new JPanel (flowLayout);
-		panel0.add(new JLabel(explanation));
-		topPanel.add(panel0);
 		
 		JPanel panel1 = new JPanel (flowLayout);
 		panel1.add(new JLabel("Row:"));
 		panel1.add(addItemButton);
-		panel1.add(deleteItem);
+		panel1.add(deleteItemButton);
 		topPanel.add(panel1);
         
         JPanel panel2 = new JPanel (flowLayout);
@@ -131,6 +127,11 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		addItemButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				addTableItem();
+			}});
+		
+		deleteItemButton.addActionListener(new ActionListener () { 
+			@Override public void actionPerformed( final ActionEvent e ) { 
+				deleteTableItem();
 			}});
 		
 		saveCapillariesButton.addActionListener(new ActionListener () { 
@@ -215,15 +216,29 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		
 		if (exp.capillaries.findROI2DIntervalStart(intervalT) < 0) {
 			exp.capillaries.addROI2DInterval(intervalT);
-//			int nitems = exp.capillaries.getIntervalSize();
-//			exp.capillaries.setROI2DEndIntervalAt(nitems-1, intervalT-1);
+		}
+	}
+	
+	private void deleteTableItem() {
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		if (exp == null) return;
+
+		int selectedRow = tableView.getSelectedRow();
+        if (selectedRow < 0) {
+        	selectedRow = tableView.getRowCount() -1;
+        	tableView.setRowSelectionInterval(selectedRow, 0);
+        }
+		
+        long intervalT = exp.capillaries.getROI2DIntervalsStartAt(selectedRow);
+        
+		if (exp.capillaries.findROI2DIntervalStart(intervalT) < 0) {
+			exp.capillaries.addROI2DInterval(intervalT);
 		}
 	}
 	
 	private void displayCapillariesForSelectedInterval(int selectedRow) {
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-		if (exp == null) 
-			return;
+		if (exp == null) return;
 		Sequence seq = exp.seqCamData.seq;
 		
 		int intervalT =  (int) exp.capillaries.getROI2DIntervalsStartAt(selectedRow);
