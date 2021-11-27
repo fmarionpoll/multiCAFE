@@ -16,9 +16,9 @@ public class ROI2DForKymo implements XMLPersistent
 	private long 	start 			= 0;
 	private ArrayList<ArrayList<int[]>> masksList = null;
 	
-	private final String 	ID_META 	= "metaT";
-	private final String 	ID_INDEX	= "indexT";
-	private final String 	ID_START 	= "startT";
+	private final String ID_META 	= "metaT";
+	private final String ID_INDEX	= "indexT";
+	private final String ID_START 	= "startT";
 	
 	
 	public ROI2DForKymo(long start, ROI2D roi) {
