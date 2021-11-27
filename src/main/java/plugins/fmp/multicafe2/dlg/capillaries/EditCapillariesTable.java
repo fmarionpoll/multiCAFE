@@ -231,8 +231,8 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		
         long intervalT = exp.capillaries.getROI2DIntervalsStartAt(selectedRow);
         
-		if (exp.capillaries.findROI2DIntervalStart(intervalT) < 0) {
-			exp.capillaries.addROI2DInterval(intervalT);
+		if (exp.capillaries.findROI2DIntervalStart(intervalT) >= 0) {
+			exp.capillaries.deleteROI2DInterval(intervalT);
 		}
 	}
 	
