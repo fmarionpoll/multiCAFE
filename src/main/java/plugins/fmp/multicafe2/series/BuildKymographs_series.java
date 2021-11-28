@@ -153,10 +153,10 @@ public class BuildKymographs_series extends BuildSeries
 		futuresArray.clear();
 		
 		for (int iframe = 0 ; iframe < nframes; iframe++) {
-			final int indexFrame =  iframe;	
+			final int indexToFrame =  iframe;	
 			long iindexms = iframe *  exp.kymoBinCol_Ms + exp.offsetFirstCol_Ms;
-			final int indexFrom = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_Ms));
-			if (indexFrom >= seqCamData.nTotalFrames)
+			final int indexFromFrame = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_Ms));
+			if (indexFromFrame >= seqCamData.nTotalFrames)
 				continue;
 						
 			futuresArray.add(processor.submit(new Runnable () 
@@ -164,7 +164,7 @@ public class BuildKymographs_series extends BuildSeries
 				@Override
 				public void run() 
 				{						
-					IcyBufferedImage sourceImage = imageIORead(seqCamData.getFileName(indexFrom));
+					IcyBufferedImage sourceImage = imageIORead(seqCamData.getFileName(indexFromFrame));
 					int sourceImageWidth = sourceImage.getWidth();				
 					if (options.doRegistration ) {
 						String referenceImageName = seqCamData.getFileName(startFrame);			
@@ -181,7 +181,7 @@ public class BuildKymographs_series extends BuildSeries
 								sourceImageChannel, sourceImage.isSignedDataType()); 
 						
 						for (Capillary cap: exp.capillaries.capillariesList) {
-							ROI2DForKymo capT = cap.getROI2DKymoAtIntervalT(indexFrame);
+							ROI2DForKymo capT = cap.getROI2DKymoAtIntervalT(indexFromFrame);
 							int [] kymoImageChannel = cap.cap_Integer.get(chan); 
 							
 							int cnt = 0;
@@ -190,7 +190,7 @@ public class BuildKymographs_series extends BuildSeries
 								for (int[] m: mask)
 									sum += sourceImageChannel[m[0] + m[1]*sourceImageWidth];
 								if (mask.size() > 0)
-									kymoImageChannel[cnt*kymoImageWidth + indexFrame] = (int) (sum/mask.size()); 
+									kymoImageChannel[cnt*kymoImageWidth + indexToFrame] = (int) (sum/mask.size()); 
 								cnt ++;
 							}
 						}
