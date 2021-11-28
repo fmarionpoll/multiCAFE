@@ -228,6 +228,8 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
         	selectedRow = tableView.getRowCount() -1;
         	tableView.setRowSelectionInterval(selectedRow, 0);
         }
+		if (selectedRow >= exp.capillaries.getIntervalSize())
+			return; 
 		
         long intervalT = exp.capillaries.getROI2DIntervalsStartAt(selectedRow);
         
@@ -274,16 +276,16 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		if(!e.getValueIsAdjusting()) {
-            int selectedRow = tableView.getSelectedRow();
-            if (selectedRow < 0) {
-            	tableView.setRowSelectionInterval(0, 0);
-            	selectedRow = 0;
-            }    
-            displayCapillariesForSelectedInterval(selectedRow);
-            showFrame(showFrameButton.isSelected()) ;
-            
-    	}
+		if(e.getValueIsAdjusting()) 
+			return;
+		
+        int selectedRow = tableView.getSelectedRow();
+        if (selectedRow < 0) {
+        	tableView.setRowSelectionInterval(0, 0);
+        	selectedRow = 0;
+        }    
+        displayCapillariesForSelectedInterval(selectedRow);
+        showFrame(showFrameButton.isSelected()) ;
 	}
 
 	

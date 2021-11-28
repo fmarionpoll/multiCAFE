@@ -418,7 +418,12 @@ public class Capillaries
 		int item = intervals.addIfNew(interval);
 		
 		for (Capillary cap: capillariesList) {
-			cap.getRoisForKymo().add(item, new ROI2DForKymo(start, cap.getRoi()));
+			List<ROI2DForKymo> listROI2DForKymo = cap.getRoisForKymo();
+			ROI2D roi = cap.getRoi();
+			if (item>0 ) {
+				roi = (ROI2D) listROI2DForKymo.get(item-1).getRoi().getCopy();
+			}
+			listROI2DForKymo.add(item, new ROI2DForKymo(start, roi));
 		}
 		return item;
 	}

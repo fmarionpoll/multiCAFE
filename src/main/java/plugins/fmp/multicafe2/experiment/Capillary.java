@@ -561,6 +561,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
         		ROI2DForKymo roiInterval = new ROI2DForKymo();
         		roiInterval.loadFromXML(node_i);
         		roisForKymo.add(roiInterval);
+        		
+        		if (i == 0) {
+        			roi = roisForKymo.get(0).getRoi();
+        		}
         	}
         }
         return true;
