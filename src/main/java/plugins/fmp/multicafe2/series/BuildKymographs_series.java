@@ -53,15 +53,13 @@ public class BuildKymographs_series extends BuildSeries
 	{
 		exp.loadFileIntervalsFromSeqCamData();
 		exp.kymoBinCol_Ms = options.t_binMs;
-		if (options.isFrameFixed) 
-		{
+		if (options.isFrameFixed) {
 			exp.offsetFirstCol_Ms = options.t_firstMs;
 			exp.offsetLastCol_Ms = options.t_lastMs;
 			if (exp.offsetLastCol_Ms + exp.camFirstImage_Ms > exp.camLastImage_Ms)
 				exp.offsetLastCol_Ms = exp.camLastImage_Ms - exp.camFirstImage_Ms;
 		} 
-		else 
-		{
+		else {
 			exp.offsetFirstCol_Ms = 0;
 			exp.offsetLastCol_Ms = exp.camLastImage_Ms - exp.camFirstImage_Ms;
 		}
@@ -83,28 +81,22 @@ public class BuildKymographs_series extends BuildSeries
         ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nframes);
 		futuresArray.clear();
 		
-		for (int t = 0; t < exp.seqKymos.seq.getSizeT(); t++) 
-		{
+		for (int t = 0; t < exp.seqKymos.seq.getSizeT(); t++) {
 			final int t_index = t;
-			futuresArray.add(processor.submit(new Runnable () 
-			{
+			futuresArray.add(processor.submit(new Runnable () {
 				@Override
-				public void run() 
-				{	
+				public void run() {	
 					Capillary cap = exp.capillaries.capillariesList.get(t_index);
 					String filename = directory + File.separator + cap.getKymographName() + ".tiff";
 					File file = new File (filename);
 					IcyBufferedImage image = exp.seqKymos.getSeqImage(t_index, 0);
-					try 
-					{
+					try {
 						Saver.saveImage(image, file, true);
 					} 
-					catch (FormatException e) 
-					{
+					catch (FormatException e) {
 						e.printStackTrace();
 					} 
-					catch (IOException e) 
-					{
+					catch (IOException e) {
 						e.printStackTrace();
 					}
 				}}));
@@ -122,8 +114,7 @@ public class BuildKymographs_series extends BuildSeries
 			return false;
 	
 		initArraysToBuildKymographImages(exp);
-		if (exp.capillaries.capillariesList.size() < 1) 
-		{
+		if (exp.capillaries.capillariesList.size() < 1) {
 			System.out.println("Abort (1): nbcapillaries = 0");
 			return false;
 		}
@@ -135,8 +126,7 @@ public class BuildKymographs_series extends BuildSeries
 		exp.seqKymos.seq = new Sequence();
 		
 		int nbcapillaries = exp.capillaries.capillariesList.size();
-		if (nbcapillaries == 0) 
-		{
+		if (nbcapillaries == 0) {
 			System.out.println("Abort(2): nbcapillaries = 0");
 			return false;
 		}
@@ -159,11 +149,9 @@ public class BuildKymographs_series extends BuildSeries
 			if (indexFromFrame >= seqCamData.nTotalFrames)
 				continue;
 						
-			futuresArray.add(processor.submit(new Runnable () 
-			{
+			futuresArray.add(processor.submit(new Runnable () {
 				@Override
-				public void run() 
-				{						
+				public void run() {						
 					IcyBufferedImage sourceImage = imageIORead(seqCamData.getFileName(indexFromFrame));
 					int sourceImageWidth = sourceImage.getWidth();				
 					if (options.doRegistration ) {
