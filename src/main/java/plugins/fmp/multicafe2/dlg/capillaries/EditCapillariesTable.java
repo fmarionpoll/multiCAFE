@@ -47,7 +47,7 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 	IcyFrame 					dialogFrame 		= null;
 	
     private JButton				addItemButton		= new JButton("Add");
-    private JButton				deleteItemButton			= new JButton("Delete");
+    private JButton				deleteItemButton	= new JButton("Delete");
     private JButton				saveCapillariesButton = new JButton("Save capillaries");
     private JCheckBox			showFrameButton		= new JCheckBox("Show frame");
     private JButton				fitToFrameButton	= new JButton("Fit capillaries to frame");
@@ -67,17 +67,11 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		this.parent0 = parent0;
 		capillariesWithTimeTablemodel = new CapillariesWithTimeTableModel(parent0.expListCombo);
 		
-		tableView.setModel(capillariesWithTimeTablemodel);
-	    tableView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	    tableView.setPreferredScrollableViewportSize(new Dimension(300, 200));
-	    tableView.setFillsViewportHeight(true);
-        JScrollPane scrollPane = new JScrollPane(tableView);
-        
-		JPanel topPanel = new JPanel(new GridLayout(4, 1));
+		JPanel topPanel = new JPanel(new GridLayout(3, 1));
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT); 
 		
 		JPanel panel1 = new JPanel (flowLayout);
-		panel1.add(new JLabel("Row:"));
+		panel1.add(new JLabel("Viewer frame T:"));
 		panel1.add(addItemButton);
 		panel1.add(deleteItemButton);
 		topPanel.add(panel1);
@@ -92,10 +86,16 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
         panel3.add(saveCapillariesButton);
         topPanel.add(panel3);
         
+        
+        tableView.setModel(capillariesWithTimeTablemodel);
+	    tableView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	    tableView.setPreferredScrollableViewportSize(new Dimension(180, 80));
+	    tableView.setFillsViewportHeight(true);
+        JScrollPane scrollPane = new JScrollPane(tableView);
         JPanel tablePanel = new JPanel();
 		tablePanel.add(scrollPane);
         
-		dialogFrame = new IcyFrame ("Edit capillaries position with time", true, true);	
+		dialogFrame = new IcyFrame ("Edit capillaries position", true, true);	
 		dialogFrame.add(topPanel, BorderLayout.NORTH);
 		dialogFrame.add(tablePanel, BorderLayout.CENTER);
 		dialogFrame.setLocation(pt);
@@ -131,7 +131,8 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		
 		deleteItemButton.addActionListener(new ActionListener () { 
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				deleteTableItem();
+				int selectedRow = tableView.getSelectedRow();
+				deleteTableItem(selectedRow);
 			}});
 		
 		saveCapillariesButton.addActionListener(new ActionListener () { 
@@ -219,19 +220,12 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		}
 	}
 	
-	private void deleteTableItem() {
+	private void deleteTableItem(int selectedRow) {
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null) return;
-
-		int selectedRow = tableView.getSelectedRow();
-        if (selectedRow < 0) {
-        	selectedRow = tableView.getRowCount() -1;
-        	tableView.setRowSelectionInterval(selectedRow, 0);
-        }
-		if (selectedRow >= exp.capillaries.getIntervalSize())
-			return; 
 		
-        long intervalT = exp.capillaries.getROI2DIntervalsStartAt(selectedRow);
+		Viewer v = exp.seqCamData.seq.getFirstViewer();
+		long intervalT = v.getPositionT();
         
 		if (exp.capillaries.findROI2DIntervalStart(intervalT) >= 0) {
 			exp.capillaries.deleteROI2DInterval(intervalT);
