@@ -89,7 +89,7 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
         
         tableView.setModel(capillariesWithTimeTablemodel);
 	    tableView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-	    tableView.setPreferredScrollableViewportSize(new Dimension(180, 80));
+	    tableView.setPreferredScrollableViewportSize(new Dimension(180, 120));
 	    tableView.setFillsViewportHeight(true);
         JScrollPane scrollPane = new JScrollPane(tableView);
         JPanel tablePanel = new JPanel();
