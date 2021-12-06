@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.Component;
 
@@ -31,6 +32,10 @@ public class Edit extends JPanel
 		setLayout(capLayout);	
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
 		flowLayout.setVgap(0);
+		
+		JPanel panel0 = new JPanel(flowLayout);
+		panel0.add(new JLabel("* - for experimental"));
+		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout);
 		panel1.add(editCapillariesButton);

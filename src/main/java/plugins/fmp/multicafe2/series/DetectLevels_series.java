@@ -55,8 +55,6 @@ public class DetectLevels_series extends BuildSeries
 			lastKymo = seqKymos.seq.getSizeT() -1;
 		seqKymos.seq.beginUpdate();
 		
-		// create an array of tasks for multi-thread processing
-        // => rationale: one task per kymograph image
 		int nframes = lastKymo - firstKymo +1;
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectlevel");
@@ -68,13 +66,13 @@ public class DetectLevels_series extends BuildSeries
 		tImg.setSequence(seqKymos);
 		final int jitter = 10;
 		
-		for (int indexKymo = firstKymo; indexKymo <= lastKymo; indexKymo++) 
+		for (int index = firstKymo; index <= lastKymo; index++) 
 		{
-			final int t_index = indexKymo;
-			final Capillary cap = exp.capillaries.capillariesList.get(t_index);
-			if (!options.detectR && cap.getKymographName().endsWith("2"))
+			final int t_index = index;
+			final Capillary cap_index = exp.capillaries.capillariesList.get(t_index);
+			if (!options.detectR && cap_index.getKymographName().endsWith("2"))
 				continue;
-			if (!options.detectL && cap.getKymographName().endsWith("1"))
+			if (!options.detectL && cap_index.getKymographName().endsWith("1"))
 				continue;
 				
 			futures.add(processor.submit(new Runnable () 
@@ -82,23 +80,22 @@ public class DetectLevels_series extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					final Capillary capi = cap;
-					final String name = seqKymos.getFileName(t_index);
-					IcyBufferedImage rawImage = imageIORead(name);
-					IcyBufferedImage sourceImage = tImg.transformImage (rawImage, options.transformForLevels);
+					IcyBufferedImage rawImage_index = imageIORead(seqKymos.getFileName(t_index));
+					IcyBufferedImage sourceImage_index = tImg.transformImage (rawImage_index, options.transformForLevels);
+					
 					int c = 0;
-					Object dataArray = sourceImage.getDataXY(c);
-					int[] sourceValues = Array1DUtil.arrayToIntArray(dataArray, sourceImage.isSignedDataType());
+					Object dataArray = sourceImage_index.getDataXY(c);
+					int[] sourceValues_index = Array1DUtil.arrayToIntArray(dataArray, sourceImage_index.isSignedDataType());
 
-					capi.indexKymograph= t_index;
-					capi.ptsDerivative = null;
-					capi.gulpsRois = null;
-					capi.limitsOptions.copyFrom(options);
+					cap_index.indexKymograph = t_index;
+					cap_index.ptsDerivative = null;
+					cap_index.gulpsRois = null;
+					cap_index.limitsOptions.copyFrom(options);
 					
 					int firstColumn = 0;
-					int lastColumn = sourceImage.getSizeX()-1;
-					int xwidth = sourceImage.getSizeX();
-					int yheight = sourceImage.getSizeY();
+					int lastColumn = sourceImage_index.getSizeX()-1;
+					int xwidth = sourceImage_index.getSizeX();
+					int yheight = sourceImage_index.getSizeY();
 					if (options.analyzePartOnly) 
 					{
 						firstColumn = options.startPixel;
@@ -108,8 +105,8 @@ public class DetectLevels_series extends BuildSeries
 					} 
 					else 
 					{
-						capi.ptsTop = null;
-						capi.ptsBottom = null;
+						cap_index.ptsTop = null;
+						cap_index.ptsBottom = null;
 					}
 					int oldiytop = 0;		// assume that curve goes from left to right with jitter 
 					int oldiybottom = yheight-1;
@@ -121,8 +118,8 @@ public class DetectLevels_series extends BuildSeries
 					// scan each image column
 					for (int iColumn = firstColumn; iColumn <= lastColumn; iColumn++) 
 					{
-						int ytop = detectThresholdFromTop(iColumn, oldiytop, jitter, sourceValues, xwidth, yheight, options);
-						int ybottom = detectThresholdFromBottom(iColumn, oldiybottom, jitter, sourceValues, xwidth, yheight, options);
+						int ytop = detectThresholdFromTop(iColumn, oldiytop, jitter, sourceValues_index, xwidth, yheight, options);
+						int ybottom = detectThresholdFromBottom(iColumn, oldiybottom, jitter, sourceValues_index, xwidth, yheight, options);
 						if (ybottom <= ytop) 
 						{
 							ybottom = oldiybottom;
@@ -136,15 +133,15 @@ public class DetectLevels_series extends BuildSeries
 					
 					if (options.analyzePartOnly) 
 					{
-						capi.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
-						capi.ptsBottom.polylineLimit.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
+						cap_index.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
+						cap_index.ptsBottom.polylineLimit.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
 					} 
 					else 
 					{
-						capi.ptsTop    = new CapillaryLimit(capi.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
-						capi.ptsBottom = new CapillaryLimit(capi.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
+						cap_index.ptsTop    = new CapillaryLimit(cap_index.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
+						cap_index.ptsBottom = new CapillaryLimit(cap_index.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
 					}
-					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), capi);
+					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), cap_index);
 				}}));
 		}
 		waitFuturesCompletion(processor, futures, progressBar);
