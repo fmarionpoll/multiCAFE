@@ -725,7 +725,7 @@ public class Experiment
 		return flag;
 	}
 		
-	public void kymosBuildFiltered(int zChannelSource, int zChannelDestination, EnumTransformOp transformop, EnumTransformOp transformop2, int spanDiff) 
+	public void kymosBuildFiltered(int zChannelSource, int zChannelDestination, EnumTransformOp transformop1, EnumTransformOp transformop2, int spanDiff) 
 	{
 		int nimages = seqKymos.seq.getSizeT();
 		seqKymos.seq.beginUpdate();
@@ -743,8 +743,8 @@ public class Experiment
 			Capillary cap = capillaries.capillariesList.get(t);
 			cap.indexKymograph = t;
 			IcyBufferedImage img = seqKymos.getSeqImage(t, zChannelSource);
-			IcyBufferedImage img2 = tImg.transformImage (img, transformop);
-			IcyBufferedImage img3 = tImg.transformImage (img2, transformop);
+			IcyBufferedImage img2 = tImg.transformImage (img, transformop1);
+			IcyBufferedImage img3 = tImg.transformImage (img2, transformop2);
 			if (seqKymos.seq.getSizeZ(0) < (zChannelDestination+1)) 
 				seqKymos.seq.addImage(t, img3);
 			else

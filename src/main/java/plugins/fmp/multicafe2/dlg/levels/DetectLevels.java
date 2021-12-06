@@ -180,7 +180,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
-		EnumTransformOp transform = (EnumTransformOp) transform1ComboBox.getSelectedItem();
+		EnumTransformOp transform1 = (EnumTransformOp) transform1ComboBox.getSelectedItem();
 		EnumTransformOp transform2 = (EnumTransformOp) transform2ComboBox.getSelectedItem();
 		
 		List<Capillary> capList = exp.capillaries.capillariesList;
@@ -188,7 +188,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 			getInfosFromDialog(capList.get(t));		
 		
 		int zChannelDestination = 1;
-		exp.kymosBuildFiltered(0, zChannelDestination, transform, transform2, getSpanDiffTop());
+		exp.kymosBuildFiltered(0, zChannelDestination, transform1, transform2, getSpanDiffTop());
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
