@@ -40,12 +40,7 @@ public class ImageTransformTools
 	{
 		IcyBufferedImage transformedImage = null;
 		switch (transformop) 
-		{
-		case NONE: 
-		case COLORARRAY1: /*System.out.println("transform image - " + transformop);*/
-			transformedImage = inputImage;
-			break;
-		
+		{		
 		case R_RGB: 	
 			transformedImage= functionRGB_keepOneChan(inputImage, 0); 
 			transformImage(transformedImage, EnumTransformOp.RTOGB); 
@@ -125,7 +120,7 @@ public class ImageTransformTools
 			{
 				referenceImage = seqCamData.getSeqImage(t-1, 0); 
 				transformedImage= functionSubtractRef(inputImage);
-				} 
+			} 
 			break;	
 		case XDIFFN: 	
 			transformedImage= computeXDiffn (inputImage); 
@@ -145,6 +140,12 @@ public class ImageTransformTools
 			break;
 		case SUBFIRSTCOL: 
 			transformedImage= functionSubtractCol(inputImage, 0); 
+			break;
+			
+		case NONE: 
+		case COLORARRAY1: /*System.out.println("transform image - " + transformop);*/
+		default:
+			transformedImage = inputImage;
 			break;
 		}	
 		return transformedImage;

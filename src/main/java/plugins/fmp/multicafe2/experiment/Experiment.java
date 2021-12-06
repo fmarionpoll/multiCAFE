@@ -725,7 +725,7 @@ public class Experiment
 		return flag;
 	}
 		
-	public void kymosBuildFiltered(int zChannelSource, int zChannelDestination, EnumTransformOp transformop, int spanDiff) 
+	public void kymosBuildFiltered(int zChannelSource, int zChannelDestination, EnumTransformOp transformop, EnumTransformOp transformop2, int spanDiff) 
 	{
 		int nimages = seqKymos.seq.getSizeT();
 		seqKymos.seq.beginUpdate();
@@ -744,10 +744,11 @@ public class Experiment
 			cap.indexKymograph = t;
 			IcyBufferedImage img = seqKymos.getSeqImage(t, zChannelSource);
 			IcyBufferedImage img2 = tImg.transformImage (img, transformop);
+			IcyBufferedImage img3 = tImg.transformImage (img2, transformop);
 			if (seqKymos.seq.getSizeZ(0) < (zChannelDestination+1)) 
-				seqKymos.seq.addImage(t, img2);
+				seqKymos.seq.addImage(t, img3);
 			else
-				seqKymos.seq.setImage(t, zChannelDestination, img2);
+				seqKymos.seq.setImage(t, zChannelDestination, img3);
 		}
 		
 		seqKymos.seq.dataChanged();

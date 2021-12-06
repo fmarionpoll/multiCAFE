@@ -94,7 +94,7 @@ public class MCSpots_1 extends JPanel
 			return;
 		EnumTransformOp transform = EnumTransformOp.SUBFIRSTCOL;
 		int zChannelDestination = 1;
-		exp.kymosBuildFiltered(0, zChannelDestination, transform, 0);
+		exp.kymosBuildFiltered(0, zChannelDestination, transform, EnumTransformOp.NONE, 0);
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
@@ -202,7 +202,7 @@ public class MCSpots_1 extends JPanel
 		EnumTransformOp transform = EnumTransformOp.REF;
 		int zChannelDestination = 1;
 		exp.setReferenceImageWithConstant(avgColor);
-		exp.kymosBuildFiltered(0, zChannelDestination, transform, 0);
+		exp.kymosBuildFiltered(0, zChannelDestination, transform, EnumTransformOp.NONE, 0);
 		exp.seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	

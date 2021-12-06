@@ -44,7 +44,8 @@ public class Options_BuildSeries implements XMLPersistent
 	public  int			lastKymo				= 0;
 	public 	boolean		directionUp				= true;
 	public 	int			detectLevelThreshold 	= 35;
-	public 	EnumTransformOp	transformForLevels 	= EnumTransformOp.RGB_DIFFS;
+	public 	EnumTransformOp	transform1 			= EnumTransformOp.RGB_DIFFS;
+	public 	EnumTransformOp	transform2 			= EnumTransformOp.NONE;
 	public 	boolean 	analyzePartOnly			= false;
 	public 	int 		startPixel 				= -1;
 	public 	int 		endPixel 				= -1;
@@ -80,7 +81,7 @@ public class Options_BuildSeries implements XMLPersistent
 	{
 		destination.detectTop 				= detectTop; 
 		destination.detectBottom 			= detectBottom; 
-		destination.transformForLevels 		= transformForLevels;
+		destination.transform1 		= transform1;
 		destination.directionUp 			= directionUp;
 		destination.detectLevelThreshold 	= detectLevelThreshold;
 		destination.detectAllKymos 			= detectAllKymos;
@@ -94,7 +95,7 @@ public class Options_BuildSeries implements XMLPersistent
 	{
 		detectTop 				= destination.detectTop; 
 		detectBottom 			= destination.detectBottom; 
-		transformForLevels 		= destination.transformForLevels;
+		transform1 		= destination.transform1;
 		directionUp 			= destination.directionUp;
 		detectLevelThreshold 	= destination.detectLevelThreshold;
 		detectAllKymos 			= destination.detectAllKymos;
@@ -136,7 +137,7 @@ public class Options_BuildSeries implements XMLPersistent
 			directionUp = XMLUtil.getElementBooleanValue(nodeMeta, "directionUp", directionUp);
 			firstKymo = XMLUtil.getElementIntValue(nodeMeta, "firstImage", firstKymo);
 			detectLevelThreshold = XMLUtil.getElementIntValue(nodeMeta, "detectLevelThreshold", detectLevelThreshold);
-			transformForLevels = EnumTransformOp.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transformForLevels.toString()));       
+			transform1 = EnumTransformOp.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transform1.toString()));       
 			
 			detectAllGulps = XMLUtil.getElementBooleanValue(nodeMeta, "detectAllGulps", detectAllGulps);
 	    	buildGulps = XMLUtil.getElementBooleanValue(nodeMeta, "buildGulps", buildGulps);
@@ -173,7 +174,7 @@ public class Options_BuildSeries implements XMLPersistent
 			XMLUtil.setElementBooleanValue(nodeMeta, "directionUp", directionUp);
 			XMLUtil.setElementIntValue(nodeMeta, "firstImage", firstKymo);
 			XMLUtil.setElementIntValue(nodeMeta, "detectLevelThreshold", detectLevelThreshold);
-		    XMLUtil.setElementValue(nodeMeta, "Transform", transformForLevels.toString()); 
+		    XMLUtil.setElementValue(nodeMeta, "Transform", transform1.toString()); 
 		    
 		    XMLUtil.setElementBooleanValue(nodeMeta, "detectAllGulps", detectAllGulps);
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "buildGulps", buildGulps);

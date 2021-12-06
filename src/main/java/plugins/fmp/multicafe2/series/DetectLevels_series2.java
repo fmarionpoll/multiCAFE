@@ -55,7 +55,7 @@ public class DetectLevels_series2 extends BuildSeries
 			seqKymos.removeROIsPolylineAtT(frame);
 			final int t_from = frame;
 			
-			IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.getSeqImage(t_from, 0), options.transformForLevels);
+			IcyBufferedImage sourceImage = tImg.transformImage (seqKymos.getSeqImage(t_from, 0), options.transform1);
 			int c = 0;
 			Object dataArray = sourceImage.getDataXY(c);
 			int[] sourceValues = Array1DUtil.arrayToIntArray(dataArray, sourceImage.isSignedDataType());

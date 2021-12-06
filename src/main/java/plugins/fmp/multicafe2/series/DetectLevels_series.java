@@ -81,7 +81,8 @@ public class DetectLevels_series extends BuildSeries
 				public void run() 
 				{	
 					IcyBufferedImage rawImage_index = imageIORead(seqKymos.getFileName(t_index));
-					IcyBufferedImage sourceImage_index = tImg.transformImage (rawImage_index, options.transformForLevels);
+					IcyBufferedImage sourceImage = tImg.transformImage (rawImage_index, options.transform1);
+					IcyBufferedImage sourceImage_index = tImg.transformImage (sourceImage, options.transform2);
 					
 					int c = 0;
 					Object dataArray = sourceImage_index.getDataXY(c);
