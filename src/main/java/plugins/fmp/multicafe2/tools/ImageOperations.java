@@ -13,8 +13,8 @@ public class ImageOperations
 	private SequenceCamData 		seqCamData 	= null;
 	private ImageOperationsStruct 	opTransf 	= new ImageOperationsStruct();
 	private ImageOperationsStruct 	opThresh 	= new ImageOperationsStruct();
-	private ImageTransformTools 	imgTransf 	= new ImageTransformTools();
-	private ImageThresholdTools 	imgThresh 	= new ImageThresholdTools();
+	private ImageToolsTransform 	imgTransf 	= new ImageToolsTransform();
+	private ImageToolsThreshold 	imgThresh 	= new ImageToolsThreshold();
 	
 	public ImageOperations (SequenceCamData seq) 
 	{

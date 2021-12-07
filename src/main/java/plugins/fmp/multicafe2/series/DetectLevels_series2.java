@@ -11,14 +11,14 @@ import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.CapillaryLimit;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.ImageTransformTools;
+import plugins.fmp.multicafe2.tools.ImageToolsTransform;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
 public class DetectLevels_series2 extends BuildSeries  
 {
-	ImageTransformTools tImg = new ImageTransformTools();	
+	ImageToolsTransform tImg = new ImageToolsTransform();	
 	void analyzeExperiment(Experiment exp) 
 	{
 		exp.xmlLoadMCExperiment();

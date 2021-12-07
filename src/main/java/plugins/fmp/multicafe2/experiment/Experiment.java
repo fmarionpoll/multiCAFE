@@ -21,7 +21,7 @@ import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Directories;
-import plugins.fmp.multicafe2.tools.ImageTransformTools;
+import plugins.fmp.multicafe2.tools.ImageToolsTransform;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
@@ -72,7 +72,7 @@ public class Experiment
 	public long				chainFirstImage_Ms 		= 0;
 	public int				experimentID 			= 0;
 	
-	ImageTransformTools 	tImg 					= null;
+	ImageToolsTransform 	tImg 					= null;
 	
 	private final static String ID_VERSION			= "version"; 
 	private final static String ID_VERSIONNUM		= "1.0.0"; 
@@ -731,7 +731,7 @@ public class Experiment
 		seqKymos.seq.beginUpdate();
 		
 		if (tImg == null) 
-			tImg = new ImageTransformTools();
+			tImg = new ImageToolsTransform();
 		tImg.setSpanDiff(spanDiff);
 		tImg.setSequence(seqKymos);
 		
@@ -758,7 +758,7 @@ public class Experiment
 	public void setReferenceImageWithConstant (double [] pixel) 
 	{
 		if (tImg == null) 
-			tImg = new ImageTransformTools();
+			tImg = new ImageToolsTransform();
 		tImg.setSpanDiff(0);
 		Sequence seq = seqKymos.seq;
 		tImg.referenceImage = new IcyBufferedImage(seq.getSizeX(), seq.getSizeY(), seq.getSizeC(), seq.getDataType_());

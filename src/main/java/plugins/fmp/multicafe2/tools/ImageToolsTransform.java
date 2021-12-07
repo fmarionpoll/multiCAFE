@@ -9,7 +9,7 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 
 
 
-public class ImageTransformTools 
+public class ImageToolsTransform 
 {
 	public 	IcyBufferedImage 	referenceImage 	= null;
 	private int 				spanDiff 		= 5;

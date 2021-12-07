@@ -8,7 +8,7 @@ import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
 
-public class ImageThresholdTools 
+public class ImageToolsThreshold 
 {
 	// parameters passed by caller
 	private int colorthreshold;
@@ -85,11 +85,11 @@ public class ImageThresholdTools
 			return null;
 		}
 		
-		NHColorDistance distance; 
+		NHDistanceColor distance; 
 		if (colordistanceType == 1)
-			distance = new NHL1ColorDistance();
+			distance = new NHDistanceColorL1();
 		else
-			distance = new NHL2ColorDistance();
+			distance = new NHDistanceColorL2();
 			
 		IcyBufferedImage binaryResultBuffer = new IcyBufferedImage(sourceImage.getSizeX(), sourceImage.getSizeY(), 1, DataType.UBYTE);	
 		IcyBufferedImage dummy = sourceImage;

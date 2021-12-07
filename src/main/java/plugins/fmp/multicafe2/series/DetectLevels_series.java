@@ -14,13 +14,13 @@ import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.CapillaryLimit;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.ImageTransformTools;
+import plugins.fmp.multicafe2.tools.ImageToolsTransform;
 
 
 
 public class DetectLevels_series extends BuildSeries  
 {
-	ImageTransformTools tImg = new ImageTransformTools();
+	ImageToolsTransform tImg = new ImageToolsTransform();
 	
 	void analyzeExperiment(Experiment exp) 
 	{

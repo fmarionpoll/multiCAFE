@@ -6,7 +6,7 @@ import java.awt.Color;
  * NHClass ColorDistance.
   * @author Nicolas HERVE
  */
-public abstract class NHColorDistance implements NHDistance<Color> 
+public abstract class NHDistanceColor implements NHDistance<Color> 
 {	
 	/* (non-Javadoc)
 	 * @see plugins.nherve.toolbox.image.feature.Distance#computeDistance(java.lang.Object, java.lang.Object)
