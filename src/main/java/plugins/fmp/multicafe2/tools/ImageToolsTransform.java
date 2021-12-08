@@ -229,17 +229,27 @@ public class ImageToolsTransform
 		{	
 			for (int iy =span; iy < imageSizeY -span; iy++) 
 			{
-				double sum1 = 0;
+				double dr1 = 0;
+				double dg1 = 0;
+				double db1 = 0;
 				for (int iiy = iy-span; iiy < iy; iiy++) {
 					int kx1 = ix + iiy * imageSizeX;
-					int kx2 = kx1 + imageSizeX;
-					double dr = Rn[kx1] - Rn[kx2];
-					double dg = Gn[kx1] - Gn[kx2];
-					double db = Bn[kx1] -Bn[kx2];
-					sum1 +=  Math.sqrt(dr * dr + dg * dg + db * db);		
+					dr1 += Rn[kx1];
+					dg1 += Gn[kx1];
+					db1 += Bn[kx1];			
 				}
 				
-				double sum2 = 0;
+				double dr2 = 0;
+				double dg2 = 0;
+				double db2 = 0;
+				for (int iiy = iy; iiy < iy+span; iiy++) {
+					int kx1 = ix + iiy * imageSizeX;
+					dr2 += Rn[kx1];
+					dg2 += Gn[kx1];
+					db2 += Bn[kx1];			
+				}
+				
+//				double sum2 = 0;
 //				for (int iiy = iy; iiy < iy+span; iiy++) {
 //					int kx1 = ix + iiy * imageSizeX;
 //					int kx2 = kx1 + imageSizeX;
@@ -250,7 +260,11 @@ public class ImageToolsTransform
 //				}
 				
 				int kx = ix +  iy* imageSizeX;
-				outValues [kx] = (int) Math.abs(sum1 - sum2);
+				double dr = (dr1 - dr2)/span;
+				double dg = (dg1 - dg2)/span;
+				double db = (db1 - db2)/span;
+				outValues [kx] = (int) Math.sqrt(dr * dr + dg * dg + db * db);
+//				outValues [kx] = (int) Math.abs((dr1-dr2) + (dg1-dg2) + (db1-db2));
 			}
 		}
 				
