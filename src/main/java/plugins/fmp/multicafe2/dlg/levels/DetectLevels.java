@@ -40,7 +40,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 			EnumTransformOp.R_RGB, EnumTransformOp.G_RGB, EnumTransformOp.B_RGB, 
 			EnumTransformOp.R2MINUS_GB, EnumTransformOp.G2MINUS_RB, EnumTransformOp.B2MINUS_RG, EnumTransformOp.RGB,
 			EnumTransformOp.GBMINUS_2R, EnumTransformOp.RBMINUS_2G, EnumTransformOp.RGMINUS_2B, EnumTransformOp.RGB_DIFFS,
-			EnumTransformOp.H_HSB, EnumTransformOp.S_HSB, EnumTransformOp.B_HSB	});
+			EnumTransformOp.H_HSB, EnumTransformOp.S_HSB, EnumTransformOp.B_HSB,
+			EnumTransformOp.COLORDIFF_L1_Y});
 	
 	JComboBox<EnumTransformOp> transform2ComboBox = new JComboBox<EnumTransformOp> (new EnumTransformOp[] {
 			EnumTransformOp.NONE, EnumTransformOp.YDIFFN });

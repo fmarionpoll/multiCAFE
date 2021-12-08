@@ -142,6 +142,10 @@ public class ImageToolsTransform
 			transformedImage = functionSubtractCol(inputImage, 0); 
 			break;
 			
+		case COLORDIFF_L1_Y:
+			transformedImage = functionColorDiffL1Y(inputImage, 5); 
+			break;
+			
 		case NONE: 
 		case COLORARRAY1: /*System.out.println("transform image - " + transformop);*/
 		default:
@@ -199,6 +203,59 @@ public class ImageToolsTransform
 		}
 		
 		Array1DUtil.doubleArrayToSafeArray(ExG,  img2.getDataXY(0), false); //true);
+		img2.setDataXY(0, img2.getDataXY(0));
+		for (int c= 1; c<3; c++ ) 
+		{
+			img2.copyData(img2, 0, c);
+			img2.setDataXY(c, img2.getDataXY(c));
+		}
+		return img2;
+	}
+	
+	private IcyBufferedImage functionColorDiffL1Y (IcyBufferedImage sourceImage, int span) 
+	{
+		int Rlayer = 0;
+		int Glayer = 1;
+		int Blayer = 2;
+		IcyBufferedImage img2 = new IcyBufferedImage (sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
+		double[] Rn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(Rlayer), sourceImage.isSignedDataType());
+		double[] Gn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(Glayer), sourceImage.isSignedDataType());
+		double[] Bn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(Blayer), sourceImage.isSignedDataType());
+		double[] outValues = (double[]) Array1DUtil.createArray(DataType.DOUBLE, Rn.length);
+		int imageSizeX = sourceImage.getSizeX();
+		int imageSizeY = sourceImage.getSizeY();
+		span=3;
+		for (int ix = 0; ix < imageSizeX ; ix++) 
+		{	
+			for (int iy =span; iy < imageSizeY -span; iy++) 
+			{
+				double sum1 = 0;
+				for (int iiy = iy-span; iiy < iy; iiy++) {
+					int kx1 = ix + iiy * imageSizeX;
+					int kx2 = kx1 + imageSizeX;
+					double dr = Rn[kx1] - Rn[kx2];
+					double dg = Gn[kx1] - Gn[kx2];
+					double db = Bn[kx1] -Bn[kx2];
+					sum1 +=  Math.sqrt(dr * dr + dg * dg + db * db);		
+				}
+				
+				double sum2 = 0;
+//				for (int iiy = iy; iiy < iy+span; iiy++) {
+//					int kx1 = ix + iiy * imageSizeX;
+//					int kx2 = kx1 + imageSizeX;
+//					double dr = Rn[kx1] - Rn[kx2];
+//					double dg = Gn[kx1] - Gn[kx2];
+//					double db = Bn[kx1] -Bn[kx2];
+//					sum2 +=  Math.sqrt(dr * dr + dg * dg + db * db);		
+//				}
+				
+				int kx = ix +  iy* imageSizeX;
+				outValues [kx] = (int) Math.abs(sum1 - sum2);
+			}
+		}
+				
+		//--------------------------
+		Array1DUtil.doubleArrayToSafeArray(outValues,  img2.getDataXY(0), false); //true);
 		img2.setDataXY(0, img2.getDataXY(0));
 		for (int c= 1; c<3; c++ ) 
 		{

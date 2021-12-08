@@ -15,7 +15,8 @@ public enum EnumTransformOp
 	NORM_BRMINUSG("F. Rebaudo"),
 	COLORARRAY1("color array"), RGB_TO_HSV("HSV"), RGB_TO_H1H2H3("H1H2H3"), 
 	RTOGB ("R to G,B"),
-	SUBFIRSTCOL("col-col0");
+	SUBFIRSTCOL("col-col0"),
+	COLORDIFF_L1_Y("color L1diff");
 	
 	private String label;
 	
