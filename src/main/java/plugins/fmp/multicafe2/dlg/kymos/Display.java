@@ -209,7 +209,7 @@ public class Display extends JPanel implements ViewerListener
 				Viewer v = new Viewer(seqKymos.seq, true);
 				v.setRepeat(false);
 				v.addListener(this);;
-				if(parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())
+//				if(parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())
 					placeKymoViewerNextToCamViewer(exp, v);
 			}
 		}
@@ -242,7 +242,7 @@ public class Display extends JPanel implements ViewerListener
 		} 
 		else
 		{
-		rectDataView.translate(
+			rectDataView.translate(
 				rectMaster.x + deltax - rectDataView.x, 
 				rectMaster.y + deltay - rectDataView.y);
 		}

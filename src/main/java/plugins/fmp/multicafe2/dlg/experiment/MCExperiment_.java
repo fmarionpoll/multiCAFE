@@ -17,6 +17,7 @@ import icy.gui.frame.IcyFrame;
 import icy.gui.viewer.Viewer;
 import icy.gui.viewer.ViewerEvent;
 import icy.gui.viewer.ViewerListener;
+import icy.main.Icy;
 import icy.gui.viewer.ViewerEvent.ViewerEventType;
 import icy.sequence.DimensionId;
 import icy.sequence.Sequence;
@@ -124,8 +125,7 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 			}
 			
 			if (v != null) {
-				if(parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())
-					placeViewerNextToDialogBox(v, parent0.mainFrame);
+				placeViewerNextToDialogBox(v, parent0.mainFrame);
 				v.toFront();
 				v.requestFocus();
 				v.addListener( parent );
@@ -138,8 +138,11 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 	{
 		Rectangle rectv = v.getBoundsInternal();
 		Rectangle rect0 = mainFrame.getBoundsInternal();
-		rectv.setLocation(rect0.x+ rect0.width, rect0.y);
-		v.setBounds(rectv);
+		if (rect0.x+ rect0.width < Icy.getMainInterface().getMainFrame().getDesktopWidth()) 
+		{
+			rectv.setLocation(rect0.x+ rect0.width, rect0.y);
+			v.setBounds(rectv);
+		}
 	}
 
 	@Override	

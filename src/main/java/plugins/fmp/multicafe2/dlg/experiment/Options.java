@@ -32,11 +32,10 @@ public class Options extends JPanel
 	JCheckBox	cagesCheckBox			= new JCheckBox("cages", true);
 	JCheckBox	measuresCheckBox		= new JCheckBox("measures", true);
 	JCheckBox	graphsCheckBox			= new JCheckBox("graphs", true);
-	public JCheckBox	windowsCheckBox	= new JCheckBox("next to each other", true);
-
+//	public JCheckBox	windowsCheckBox			= new JCheckBox("next to each other", true);
 	public 	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries", true);
-	public 	JCheckBox 	viewCagesCheckbox = new JCheckBox("cages", true);
-			JCheckBox 	viewFlyCheckbox = new JCheckBox("flies position", false);
+	public 	JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages", true);
+			JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position", false);
 	private MultiCAFE2 	parent0 		= null;
 
 	
@@ -65,10 +64,10 @@ public class Options extends JPanel
 		panel1.add(viewFlyCheckbox);
 		add(panel1);
 		
-		JPanel panel3 = new JPanel (layout);
-		panel3.add(new JLabel("Windows placement : "));
-		panel3.add(windowsCheckBox);
-		add(panel3);
+//		JPanel panel3 = new JPanel (layout);
+//		panel3.add(new JLabel("Windows placement : "));
+//		panel3.add(windowsCheckBox);
+//		add(panel3);
 		
 		defineActionListeners();
 	}
