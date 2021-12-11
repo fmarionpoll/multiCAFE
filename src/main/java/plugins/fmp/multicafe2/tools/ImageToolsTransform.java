@@ -143,7 +143,10 @@ public class ImageToolsTransform
 			break;
 			
 		case COLORDIFF_L1_Y:
-			transformedImage = functionColorDiffL1Y(inputImage, 5, 2); 
+			transformedImage = functionColorDiffLY(inputImage, 5, 2, 3, false); 
+			break;
+		case COLORDIFF_L2_Y:
+			transformedImage = functionColorDiffLY(inputImage, 5, 2, 3, true); 
 			break;
 			
 		case NONE: 
@@ -212,8 +215,12 @@ public class ImageToolsTransform
 		return img2;
 	}
 	
-	private IcyBufferedImage functionColorDiffL1Y (IcyBufferedImage sourceImage, int spany, int spanx) 
+	private IcyBufferedImage functionColorDiffLY (IcyBufferedImage sourceImage, int spany, int spanx, int delta, boolean computeL2) 
 	{
+		spanx = 1;
+		spany = 5;
+		delta = 5;
+		
 		int Rlayer = 0;
 		int Glayer = 1;
 		int Blayer = 2;
@@ -224,8 +231,6 @@ public class ImageToolsTransform
 		double[] outValues = (double[]) Array1DUtil.createArray(DataType.DOUBLE, Rn.length);
 		int imageSizeX = sourceImage.getSizeX();
 		int imageSizeY = sourceImage.getSizeY();
-		spanx = 3;
-		spany = 10;
 		for (int ix = 0; ix < imageSizeX ; ix++) 
 		{	
 			for (int iy = spany; iy < imageSizeY -spany; iy++) 
@@ -234,7 +239,7 @@ public class ImageToolsTransform
 				double dg1 = 0;
 				double db1 = 0;
 				int n1 = 0;
-				for (int iiy = iy-spany; iiy <= iy+spany; iiy++) {
+				for (int iiy = iy - spany - delta; iiy <= iy + spany - delta; iiy++) {
 					if (iiy < 0 || iiy >= imageSizeY)
 						continue;
 					int deltay = iiy * imageSizeX;
@@ -253,7 +258,7 @@ public class ImageToolsTransform
 				double dg2 = 0;
 				double db2 = 0;
 				int n2 = 0;
-				for (int iiy = iy; iiy <= iy+spany; iiy++) {
+				for (int iiy = iy + delta; iiy <= iy + spany + delta; iiy++) {
 					if (iiy < 0 || iiy >= imageSizeY)
 						continue;
 					int deltay = iiy * imageSizeX;
@@ -273,7 +278,10 @@ public class ImageToolsTransform
 				double dr = (dr1/n1 - dr2/n2);
 				double dg = (dg1/n1 - dg2/n2);
 				double db = (db1/n1 - db2/n2);
-				outValues [kx] = (int) Math.sqrt(dr * dr + dg * dg + db * db);
+				if (computeL2)
+					outValues [kx] = (int) Math.sqrt(dr * dr + dg * dg + db * db);
+				else
+					outValues [kx] = (int) Math.abs(dr) + Math.abs(dg) + Math.abs(db);
 			}
 		}
 				

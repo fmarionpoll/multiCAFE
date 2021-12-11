@@ -16,7 +16,8 @@ public enum EnumTransformOp
 	COLORARRAY1("color array"), RGB_TO_HSV("HSV"), RGB_TO_H1H2H3("H1H2H3"), 
 	RTOGB ("R to G,B"),
 	SUBFIRSTCOL("col-col0"),
-	COLORDIFF_L1_Y("color L1diff");
+	COLORDIFF_L1_Y("color L1diff"),
+	COLORDIFF_L2_Y("color L2diff");
 	
 	private String label;
 	

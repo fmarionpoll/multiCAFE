@@ -17,7 +17,6 @@ import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.CapillaryLimit;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
@@ -51,7 +50,7 @@ public class DetectGulps_series extends BuildSeries
 		if (exp.seqKymos == null)
 			return;
 		int zChannelDestination = 2;
-		exp.kymosBuildFiltered(0, zChannelDestination, options.transformForGulps, EnumTransformOp.NONE, options.spanDiff);
+		exp.kymosBuildFiltered(0, zChannelDestination, options.transformForGulps, options.spanDiff);
 	}
 	
 	public void detectGulps(Experiment exp) 
