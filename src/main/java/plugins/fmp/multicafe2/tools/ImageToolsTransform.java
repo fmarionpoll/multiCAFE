@@ -143,7 +143,7 @@ public class ImageToolsTransform
 			break;
 			
 		case COLORDIFF_L1_Y:
-			transformedImage = functionColorDiffL1Y(inputImage, 5); 
+			transformedImage = functionColorDiffL1Y(inputImage, 5, 2); 
 			break;
 			
 		case NONE: 
@@ -212,7 +212,7 @@ public class ImageToolsTransform
 		return img2;
 	}
 	
-	private IcyBufferedImage functionColorDiffL1Y (IcyBufferedImage sourceImage, int span) 
+	private IcyBufferedImage functionColorDiffL1Y (IcyBufferedImage sourceImage, int spany, int spanx) 
 	{
 		int Rlayer = 0;
 		int Glayer = 1;
@@ -224,47 +224,56 @@ public class ImageToolsTransform
 		double[] outValues = (double[]) Array1DUtil.createArray(DataType.DOUBLE, Rn.length);
 		int imageSizeX = sourceImage.getSizeX();
 		int imageSizeY = sourceImage.getSizeY();
-		span=3;
+		spanx = 3;
+		spany = 10;
 		for (int ix = 0; ix < imageSizeX ; ix++) 
 		{	
-			for (int iy =span; iy < imageSizeY -span; iy++) 
+			for (int iy = spany; iy < imageSizeY -spany; iy++) 
 			{
 				double dr1 = 0;
 				double dg1 = 0;
 				double db1 = 0;
-				for (int iiy = iy-span; iiy < iy; iiy++) {
-					int kx1 = ix + iiy * imageSizeX;
-					dr1 += Rn[kx1];
-					dg1 += Gn[kx1];
-					db1 += Bn[kx1];			
+				int n1 = 0;
+				for (int iiy = iy-spany; iiy <= iy+spany; iiy++) {
+					if (iiy < 0 || iiy >= imageSizeY)
+						continue;
+					int deltay = iiy * imageSizeX;
+					for (int iix = ix-spanx; iix <= ix+spanx; iix++) {
+						if (iix < 0 || iix >= imageSizeX) 
+							continue;
+						int kx1 = deltay + iix;
+						dr1 += Rn[kx1];
+						dg1 += Gn[kx1];
+						db1 += Bn[kx1];
+						n1++;
+					}
 				}
 				
 				double dr2 = 0;
 				double dg2 = 0;
 				double db2 = 0;
-				for (int iiy = iy; iiy < iy+span; iiy++) {
-					int kx1 = ix + iiy * imageSizeX;
-					dr2 += Rn[kx1];
-					dg2 += Gn[kx1];
-					db2 += Bn[kx1];			
+				int n2 = 0;
+				for (int iiy = iy; iiy <= iy+spany; iiy++) {
+					if (iiy < 0 || iiy >= imageSizeY)
+						continue;
+					int deltay = iiy * imageSizeX;
+					for (int iix = ix-spanx; iix <= ix+spanx; iix++) {
+						if (iix < 0 || iix >= imageSizeX) 
+							continue;
+						int kx1 = deltay + iix;
+					
+						dr2 += Rn[kx1];
+						dg2 += Gn[kx1];
+						db2 += Bn[kx1];
+						n2++;
+					}
 				}
-				
-//				double sum2 = 0;
-//				for (int iiy = iy; iiy < iy+span; iiy++) {
-//					int kx1 = ix + iiy * imageSizeX;
-//					int kx2 = kx1 + imageSizeX;
-//					double dr = Rn[kx1] - Rn[kx2];
-//					double dg = Gn[kx1] - Gn[kx2];
-//					double db = Bn[kx1] -Bn[kx2];
-//					sum2 +=  Math.sqrt(dr * dr + dg * dg + db * db);		
-//				}
-				
+								
 				int kx = ix +  iy* imageSizeX;
-				double dr = (dr1 - dr2)/span;
-				double dg = (dg1 - dg2)/span;
-				double db = (db1 - db2)/span;
+				double dr = (dr1/n1 - dr2/n2);
+				double dg = (dg1/n1 - dg2/n2);
+				double db = (db1/n1 - db2/n2);
 				outValues [kx] = (int) Math.sqrt(dr * dr + dg * dg + db * db);
-//				outValues [kx] = (int) Math.abs((dr1-dr2) + (dg1-dg2) + (db1-db2));
 			}
 		}
 				
