@@ -19,30 +19,28 @@ import icy.main.Icy;
 import icy.sequence.Sequence;
 import icy.swimmingPool.SwimmingObject;
 
-import plugins.nherve.maskeditor.MaskEditor;
-import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
-import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.mask.MaskException;
-import plugins.nherve.toolbox.image.segmentation.Segmentation;
-import plugins.nherve.toolbox.image.segmentation.SegmentationException;
-import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
+//import plugins.nherve.maskeditor.MaskEditor;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.region.SupportRegionException;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.signature.SignatureException;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.mask.MaskException;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.Segmentation;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.SegmentationException;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 import plugins.fmp.multicafe2.MultiCAFE2;
 
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.ImageKMeans;
 
-public class DetectLevelsK  extends JPanel 
+public class DetectLevelsKMeans  extends JPanel 
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6031521157029550040L;
-	JSpinner			startSpinner			= new JSpinner(new SpinnerNumberModel(0, 0, 1000, 1));
-	JSpinner			endSpinner				= new JSpinner(new SpinnerNumberModel(3, 1, 1000, 1));
+
 	private JCheckBox	allKymosCheckBox 		= new JCheckBox ("all kymographs", true);
-	private String 		detectString 			= "    Detect   ";
+	private String 		detectString 			= "  Detect ";
 	private JButton 	detectButton 			= new JButton(detectString);
-	private JCheckBox	fromCheckBox 			= new JCheckBox ("from (pixel)", false);
 	private JCheckBox 	allSeriesCheckBox 		= new JCheckBox("ALL (current to last)", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
@@ -56,7 +54,7 @@ public class DetectLevelsK  extends JPanel
 	private JSpinner 	tfNbCluster2  = new JSpinner(new SpinnerNumberModel(3, 1, 10, 1));
 	private JSpinner 	tfNbIteration2 = new JSpinner(new SpinnerNumberModel(100, 1, 999, 1));
 	private JSpinner 	tfStabCrit2 = new JSpinner(new SpinnerNumberModel(0.001, 0.001, 100., .1));
-	private JCheckBox 	cbSendMaskDirectly = new JCheckBox("Send to editor");
+	private JCheckBox 	cbSendMaskDirectly = new JCheckBox("To editor");
 	private Thread 		currentlyRunning;
 	
 	private MultiCAFE2 	parent0 	= null;
@@ -77,6 +75,7 @@ public class DetectLevelsK  extends JPanel
 		panel0.add(allKymosCheckBox);
 		panel0.add(leftCheckBox);
 		panel0.add(rightCheckBox);
+		//panel0.add(cbSendMaskDirectly);
 		add(panel0);
 		
 		JPanel panel01 = new JPanel(layoutLeft);
@@ -84,7 +83,7 @@ public class DetectLevelsK  extends JPanel
 		panel01.add (cbColorSpace);
 		panel01.add (new JLabel ("Clusters"));
 		panel01.add (tfNbCluster2);
-		panel01.add (new JLabel ("Max iterations"));
+		panel01.add (new JLabel ("Iterations"));
 		panel01.add (tfNbIteration2);
 		panel01.add(displayButton);
 		
@@ -93,15 +92,17 @@ public class DetectLevelsK  extends JPanel
 		JPanel panel1 = new JPanel(layoutLeft);
 		panel1.add (new JLabel ("Stabilization"));
 		panel1.add( tfStabCrit2);
-		panel1.add(fromCheckBox);
-		panel1.add(startSpinner);
-		panel1.add(new JLabel("to"));
-		panel1.add(endSpinner);
 		add( panel1);
 		
 		defineActionListeners();
 		currentlyRunning = null;
 		cbSendMaskDirectly.setSelected(false);
+		
+		detectButton.setEnabled(false); // no detection yet
+		allSeriesCheckBox.setEnabled(false); // no detection yet
+		allKymosCheckBox.setEnabled(false); // no detection yet
+		leftCheckBox.setEnabled(false); // no detection yet
+		rightCheckBox.setEnabled(false); // no detection yet
 	}
 	
 	private void defineActionListeners() 
@@ -175,23 +176,23 @@ public class DetectLevelsK  extends JPanel
 	
 	void callMaskEditor(Sequence seq, Segmentation segmentation) 
 	{
-		final MaskEditor maskEditorPlugin = MaskEditor.getRunningInstance(true);
-		currentlyRunning = null;
-		Runnable r = new Runnable() 
-		{
-			@Override
-			public void run() 
-			{
-				maskEditorPlugin.setSegmentationForSequence(seq, segmentation);
-				maskEditorPlugin.switchOpacityOn();
-				displayButton.setEnabled(true);
-			}
-		};
-		try {
-			SwingUtilities.invokeAndWait(r);
-		} catch (InvocationTargetException | InterruptedException e) {
-			System.out.println(e.getClass().getName() + " : " + e.getMessage());
-		}
+//		final MaskEditor maskEditorPlugin = MaskEditor.getRunningInstance(true);
+//		currentlyRunning = null;
+//		Runnable r = new Runnable() 
+//		{
+//			@Override
+//			public void run() 
+//			{
+//				maskEditorPlugin.setSegmentationForSequence(seq, segmentation);
+//				maskEditorPlugin.switchOpacityOn();
+//				displayButton.setEnabled(true);
+//			}
+//		};
+//		try {
+//			SwingUtilities.invokeAndWait(r);
+//		} catch (InvocationTargetException | InterruptedException e) {
+//			System.out.println(e.getClass().getName() + " : " + e.getMessage());
+//		}
 	}
 	
 	void callDirect(Segmentation segmentation)

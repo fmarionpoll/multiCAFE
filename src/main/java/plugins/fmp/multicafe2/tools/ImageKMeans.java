@@ -3,40 +3,47 @@ package plugins.fmp.multicafe2.tools;
 import java.util.List;
 
 import icy.sequence.Sequence;
-import plugins.nherve.toolbox.image.feature.DefaultClusteringAlgorithmImpl;
-import plugins.nherve.toolbox.image.feature.IcySupportRegion;
-import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
-import plugins.nherve.toolbox.image.feature.Signature;
-import plugins.nherve.toolbox.image.feature.clustering.KMeans;
-import plugins.nherve.toolbox.image.feature.descriptor.ColorPixel;
-import plugins.nherve.toolbox.image.feature.descriptor.DefaultDescriptorImpl;
-import plugins.nherve.toolbox.image.feature.region.GridFactory;
-import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
-import plugins.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
-import plugins.nherve.toolbox.image.mask.MaskException;
-import plugins.nherve.toolbox.image.segmentation.DefaultSegmentationAlgorithm;
-import plugins.nherve.toolbox.image.segmentation.Segmentation;
-import plugins.nherve.toolbox.image.segmentation.SegmentationException;
+
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.DefaultClusteringAlgorithmImpl;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.IcySupportRegion;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.Signature;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.clustering.KMeans;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.descriptor.ColorPixel;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.descriptor.DefaultDescriptorImpl;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.region.GridFactory;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.region.SupportRegionException;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.signature.SignatureException;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.mask.MaskException;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.DefaultSegmentationAlgorithm;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.Segmentation;
+import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.SegmentationException;
 
 public class ImageKMeans {
 	
-	public static Segmentation doClustering(Sequence currentSequence, int nbc2, int nbi2, double stab2, int cs) 
+	public static Segmentation doClustering(
+			Sequence seq, 
+			int nbc2, 
+			int nbi2, 
+			double stab2, 
+			int cs) 
 			throws SupportRegionException, SegmentationException, MaskException, NumberFormatException, SignatureException 
 	{
-		Segmentation seg = null;
-		seg = doClusteringKM(currentSequence, nbc2, nbi2, stab2, cs);
-		seg.reInitColors(currentSequence.getImage(0, 0));
-		return seg;
+		Segmentation segmentation = null;
+		segmentation = doClusteringKM(seq, nbc2, nbi2, stab2, cs);
+		segmentation.reInitColors(seq.getImage(0, 0));
+		return segmentation;
 	}
 
-	private static Segmentation doClusteringKM(Sequence currentSequence, int nbc2, int nbi2, double stab2, int cs) 
+	private static Segmentation doClusteringKM(
+			Sequence currentSequence, 
+			int nbc2, 
+			int nbi2, 
+			double stab2, 
+			int cs) 
 			throws SupportRegionException, SegmentationException, MaskException, NumberFormatException, SignatureException 
 	{
-		
-
-//			log("Working on " + ColorSpaceTools.COLOR_SPACES[cs]);
-
 		SegmentableIcyBufferedImage img = new SegmentableIcyBufferedImage(currentSequence.getFirstImage());
 
 		KMeans km2 = new KMeans(nbc2, nbi2, stab2);
@@ -66,13 +73,19 @@ public class ImageKMeans {
 		return seg;
 	}
 	
-	private static Segmentation doSingleClustering(SegmentableIcyBufferedImage img, IcySupportRegion[] regions, DefaultDescriptorImpl<SegmentableIcyBufferedImage, ? extends Signature> descriptor, DefaultClusteringAlgorithmImpl<VectorSignature> algo) throws SupportRegionException, SegmentationException 
+	private static Segmentation doSingleClustering(
+			SegmentableIcyBufferedImage img, 
+			IcySupportRegion[] regions, 
+			DefaultDescriptorImpl<SegmentableIcyBufferedImage, 
+			? extends Signature> descriptor, 
+			DefaultClusteringAlgorithmImpl<VectorSignature> algo) 
+			throws SupportRegionException, SegmentationException 
 	{
-		DefaultSegmentationAlgorithm<SegmentableIcyBufferedImage> segAlgo = new DefaultSegmentationAlgorithm<SegmentableIcyBufferedImage>(descriptor, algo);
+		DefaultSegmentationAlgorithm<SegmentableIcyBufferedImage> segAlgo 
+			= new DefaultSegmentationAlgorithm<SegmentableIcyBufferedImage>(descriptor, algo);
 		segAlgo.setLogEnabled(false);
 
 		Segmentation seg = segAlgo.segment(img, regions);
-
 		return seg;
 	}
 	

@@ -219,7 +219,7 @@ public class ImageToolsTransform
 	{
 		spanx = 1;
 		spany = 5;
-		delta = 5;
+		delta = 3;
 		
 		int Rlayer = 0;
 		int Glayer = 1;

@@ -27,7 +27,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 	private JTabbedPane tabsPane 		= new JTabbedPane();
 	public 	LoadSave 	tabFileLevels	= new LoadSave();
 			DetectLevels tabDetectLevels = new DetectLevels();
-			DetectLevelsK tabDetectLevelsK = new DetectLevelsK();
+			DetectLevelsKMeans tabDetectLevelsK = new DetectLevelsKMeans();
 	
 			DetectGulps tabDetectGulps 	= new DetectGulps();
 			Edit		tabEdit			= new Edit();
