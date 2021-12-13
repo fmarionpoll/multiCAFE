@@ -20,6 +20,8 @@ import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.DefaultSeg
 import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.Segmentation;
 import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.SegmentationException;
 
+
+
 public class ImageKMeans {
 	
 	public static Segmentation doClustering(
@@ -51,7 +53,8 @@ public class ImageKMeans {
 
 		Segmentation seg = null;
 
-		DefaultDescriptorImpl<SegmentableIcyBufferedImage, ? extends Signature> col = null;
+		DefaultDescriptorImpl<SegmentableIcyBufferedImage, 
+		? extends Signature> col = null;
 
 		ColorPixel cd = new ColorPixel(false);
 		cd.setColorSpace(cs);
