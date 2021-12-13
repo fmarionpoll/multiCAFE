@@ -286,9 +286,7 @@ public class Capillaries
 			String nameL = name.substring(0, name.length() - 1) + "L";
 			Capillary cap0 = getCapillaryFromName(nameL);
 			if (cap0 != null) {
-				if (cap0.capNFlies <0)
-					System.out.println("nflies = " + cap0.capNFlies);
-				cap.capNFlies = cap0.capNFlies;
+//				cap.capNFlies = cap0.capNFlies;
 				cap.capCageID = cap0.capCageID;
 			}
 		}
