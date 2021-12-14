@@ -1,7 +1,6 @@
 package plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature;
 
 import java.util.List;
-
 import plugins.fmp.multicafe2.tools.nherve.toolbox.AbleToLogMessages;
 import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.region.SupportRegionException;
 
@@ -11,7 +10,7 @@ import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.region.SupportR
  * 
  * @author Nicolas HERVE - nicolas.herve@pasteur.fr
  */
-public interface SupportRegionFactory<T extends SupportRegion> extends AbleToLogMessages {
+public interface SupportRegionFactory<T extends SupportRegion<?>> extends AbleToLogMessages {
 
 	/**
 	 * Extract regions.

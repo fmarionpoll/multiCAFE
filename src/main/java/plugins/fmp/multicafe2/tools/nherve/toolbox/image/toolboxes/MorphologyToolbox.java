@@ -46,8 +46,7 @@ public class MorphologyToolbox {
 	 */
 	public static void dilateInPlace(BinaryIcyBufferedImage in) {
 		Sequence sin = new Sequence(in);
-		MorphOp op = new MorphOp();
-		op.dilateGreyScale(sin, 0, STD_ELEM, STD_ELEM_CX, STD_ELEM_CY);
+		MorphOp.dilateGreyScale(sin, 0, STD_ELEM, STD_ELEM_CX, STD_ELEM_CY);
 	}
 
 	/**
@@ -71,8 +70,7 @@ public class MorphologyToolbox {
 	 */
 	public static void erodeInPlace(BinaryIcyBufferedImage in) {
 		Sequence sin = new Sequence(in);
-		MorphOp op = new MorphOp();
-		op.erodeGreyScale(sin, 0, STD_ELEM, STD_ELEM_CX, STD_ELEM_CY);
+		MorphOp.erodeGreyScale(sin, 0, STD_ELEM, STD_ELEM_CX, STD_ELEM_CY);
 	}
 
 	/**

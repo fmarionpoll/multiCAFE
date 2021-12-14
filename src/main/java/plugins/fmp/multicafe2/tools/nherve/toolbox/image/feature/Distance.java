@@ -1,6 +1,5 @@
 package plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature;
 
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.FeatureException;
 
 /**
  * The Interface Distance.

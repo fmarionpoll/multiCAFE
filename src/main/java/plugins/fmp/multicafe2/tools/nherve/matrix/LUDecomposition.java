@@ -1,6 +1,5 @@
 package plugins.fmp.multicafe2.tools.nherve.matrix;
 
-import plugins.fmp.multicafe2.tools.nherve.matrix.Matrix;
 
 /** LU Decomposition.
 <P>

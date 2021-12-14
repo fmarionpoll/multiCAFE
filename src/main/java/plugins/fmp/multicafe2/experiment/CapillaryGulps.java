@@ -98,7 +98,8 @@ public class CapillaryGulps implements XMLPersistent
 	
 	private ArrayList<Integer> adaptArray(ArrayList<Integer> data_in, long seriesBinMs, long outputBinMs) 
 	{
-		if (data_in == null) return null;
+		if (data_in == null) 
+			return null;
 		
 		long npoints = data_in.size() * seriesBinMs / outputBinMs;
 		ArrayList<Integer> data_out = new ArrayList<Integer>((int)npoints);
