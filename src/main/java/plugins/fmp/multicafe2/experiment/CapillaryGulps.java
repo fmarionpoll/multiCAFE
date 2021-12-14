@@ -80,15 +80,21 @@ public class CapillaryGulps implements XMLPersistent
 		switch (option) 
 		{
 		case SUMGULPS:
-			data_in = getCumSumFromRoisArray(npoints);
+			data_in = getCumSumFromRoisArray(npoints);		
+			if (data_in == null) 
+				return null;
 			break;
 		case ISGULPS:
 			data_in = getIsGulpsFromRoisArray(npoints);
+			if (data_in == null) 
+				return null;
 			break;
 		case TTOGULP:
 		case TTOGULP_LR:
 			List<Integer> datag = getIsGulpsFromRoisArray(npoints);
 			data_in = getTToNextGulp(datag, npoints);
+			if (data_in == null) 
+				return null;
 			break;
 		default:
 			break;
