@@ -76,28 +76,30 @@ public class CapillaryGulps implements XMLPersistent
 	
 	public List<Integer> getMeasures(EnumXLSExportType option, int npoints, long seriesBinMs, long outputBinMs) 
 	{	
-		ArrayList<Integer> datai = null;
+		ArrayList<Integer> data_in = null;
 		switch (option) 
 		{
 		case SUMGULPS:
-			datai = getCumSumFromRoisArray(npoints);
+			data_in = getCumSumFromRoisArray(npoints);
 			break;
 		case ISGULPS:
-			datai = getIsGulpsFromRoisArray(npoints);
+			data_in = getIsGulpsFromRoisArray(npoints);
 			break;
 		case TTOGULP:
 		case TTOGULP_LR:
 			List<Integer> datag = getIsGulpsFromRoisArray(npoints);
-			datai = getTToNextGulp(datag, npoints);
+			data_in = getTToNextGulp(datag, npoints);
 			break;
 		default:
 			break;
 		}
-		return adaptArray(datai, seriesBinMs, outputBinMs);
+		return adaptArray(data_in, seriesBinMs, outputBinMs);
 	}
 	
 	private ArrayList<Integer> adaptArray(ArrayList<Integer> data_in, long seriesBinMs, long outputBinMs) 
 	{
+		if (data_in == null) return null;
+		
 		long npoints = data_in.size() * seriesBinMs / outputBinMs;
 		ArrayList<Integer> data_out = new ArrayList<Integer>((int)npoints);
 		for (double iMs = 0; iMs <= npoints; iMs += outputBinMs) 
