@@ -94,8 +94,12 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				kymosDisplayFiltered2();
-				startComputation(false);
+				Experiment exp = (Experiment)  parent0.expListCombo.getSelectedItem();
+				if (exp != null && exp.seqCamData != null) 
+				{
+					kymosDisplayFiltered2(exp);
+					firePropertyChange("KYMO_DISPLAY_FILTERED2", false, true);
+				}
 			}});
 		
 		detectButton.addActionListener(new ActionListener () 
@@ -112,7 +116,12 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
-				kymosDisplayFiltered2();
+				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				if (exp != null && exp.seqCamData != null) 
+				{
+					kymosDisplayFiltered2(exp);
+					firePropertyChange("KYMO_DISPLAY_FILTERED2", false, true);
+				}
 			}});
 		
 		allCheckBox.addActionListener(new ActionListener () 
@@ -128,19 +137,15 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		
 	}
 		
-	void kymosDisplayFiltered2() 
+	void kymosDisplayFiltered2(Experiment exp) 
 	{
-		Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-		if (exp != null) 
+		SequenceKymos seqKymos = exp.seqKymos;
+		if (seqKymos != null)
 		{
-			SequenceKymos seqKymos = exp.seqKymos;
-			if (seqKymos != null)
-			{
-				EnumTransformOp transform = (EnumTransformOp) transformForGulpsComboBox.getSelectedItem();
-				int zChannelDestination = 2;
-				exp.kymosBuildFiltered(0, zChannelDestination, transform, (int) spanTransf2Spinner.getValue());
-				seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
-			}
+			EnumTransformOp transform = (EnumTransformOp) transformForGulpsComboBox.getSelectedItem();
+			int zChannelDestination = 2;
+			exp.kymosBuildFiltered(0, zChannelDestination, transform, (int) spanTransf2Spinner.getValue());
+			seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 		}
 	}
 	
@@ -182,7 +187,6 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	
 	void startComputation(boolean detectGulps) 
 	{
-		kymosDisplayFiltered2();	
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null)
 		{
