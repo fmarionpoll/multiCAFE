@@ -107,11 +107,13 @@ public class CapillaryGulps implements XMLPersistent
 		if (data_in == null) 
 			return null;
 		
-		long npoints = data_in.size() * seriesBinMs / outputBinMs;
+		long npoints = data_in.size() * seriesBinMs / outputBinMs + 1;
 		ArrayList<Integer> data_out = new ArrayList<Integer>((int)npoints);
-		for (double iMs = 0; iMs <= npoints; iMs += outputBinMs) 
+		for (double i_out = 0; i_out <= npoints; i_out ++) 
 		{
-			int index = (int) ((iMs * outputBinMs) / seriesBinMs);
+			int index = (int) (i_out * outputBinMs / seriesBinMs);
+			if (index >= data_in.size())
+				index = data_in.size() -1;
 			data_out.add( data_in.get(index));
 		}
 		return data_out;
