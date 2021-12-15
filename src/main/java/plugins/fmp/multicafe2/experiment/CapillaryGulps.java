@@ -81,20 +81,14 @@ public class CapillaryGulps implements XMLPersistent
 		{
 		case SUMGULPS:
 			data_in = getCumSumFromRoisArray(npoints);		
-			if (data_in == null) 
-				return null;
 			break;
 		case ISGULPS:
 			data_in = getIsGulpsFromRoisArray(npoints);
-			if (data_in == null) 
-				return null;
 			break;
 		case TTOGULP:
 		case TTOGULP_LR:
 			List<Integer> datag = getIsGulpsFromRoisArray(npoints);
 			data_in = getTToNextGulp(datag, npoints);
-			if (data_in == null) 
-				return null;
 			break;
 		default:
 			break;
@@ -107,14 +101,15 @@ public class CapillaryGulps implements XMLPersistent
 		if (data_in == null) 
 			return null;
 		
-		long npoints = data_in.size() * seriesBinMs / outputBinMs + 1;
-		ArrayList<Integer> data_out = new ArrayList<Integer>((int)npoints);
-		for (double i_out = 0; i_out <= npoints; i_out ++) 
+		long npoints_out = data_in.size() * seriesBinMs / outputBinMs + 1;
+		double time_last = data_in.size() * seriesBinMs;
+		ArrayList<Integer> data_out = new ArrayList<Integer> ((int) npoints_out);
+		for (double time_out = 0; time_out <= time_last; time_out += outputBinMs) 
 		{
-			int index = (int) (i_out * outputBinMs / seriesBinMs);
-			if (index >= data_in.size())
-				index = data_in.size() -1;
-			data_out.add( data_in.get(index));
+			int index_in = (int) (time_out / seriesBinMs);
+			if (index_in >= data_in.size())
+				index_in = data_in.size() -1;
+			data_out.add( data_in.get(index_in));
 		}
 		return data_out;
 	}
