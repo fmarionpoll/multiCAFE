@@ -113,12 +113,12 @@ public class XLSExport
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPPIXELS.getValue(), transpose, 	exp.capillaries.desc.pixels);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.COMMENT2.getValue(), transpose, 	exp.getField(EnumXLSColumnHeader.COMMENT2));
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.NFLIES.getValue(), transpose, 	cap.capNFlies); 
-			if (exp.cages.cagesList.size() > cap.capCageID) 
-			{
-				Cage cage = exp.cages.cagesList.get(cap.capCageID);
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, cage.strCageComment + "/"+ cage.strCageStrain + "/" + cage.strCageSex + "/" + cage.cageAge );
-			} 
-			else 
+//			if (exp.cages.cagesList.size() > cap.capCageID) 
+//			{
+//				Cage cage = exp.cages.cagesList.get(cap.capCageID);
+//				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, cage.strCageComment + "/"+ cage.strCageStrain + "/" + cage.strCageSex + "/" + cage.cageAge );
+//			} 
+//			else 
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, sheetName);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGECOMMENT.getValue(), transpose, desc_getChoiceTestType(capList, t));
 		}
