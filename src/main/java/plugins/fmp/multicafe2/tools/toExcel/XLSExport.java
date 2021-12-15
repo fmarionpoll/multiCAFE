@@ -764,7 +764,7 @@ public class XLSExport
 				sumResults.getSumLR(rowL, rowR);
 				writeRow(sheet, column_dataArea, rowSeries, pt, sumResults);
 				XLSResults results = new XLSResults(rowR.name, rowL.nflies, rowL.exportType, rowL.dimension);
-				if (option == EnumXLSExportType.TOPLEVEL_LR) 
+				if (option == EnumXLSExportType.TOPLEVEL_LR || option == EnumXLSExportType.SUMGULPS_LR) 
 					results.getPI_LR(rowL, rowR);
 				else if (option == EnumXLSExportType.TOPLEVEL_RATIO)
 					results.getRatio_LR(rowL, rowR);
