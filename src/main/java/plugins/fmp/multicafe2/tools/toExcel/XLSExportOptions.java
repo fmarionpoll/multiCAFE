@@ -26,7 +26,7 @@ public class XLSExportOptions
 	public boolean  subtractEvaporation = true;
 	
 	public boolean 	sumGulps 			= false;
-	public boolean  isGulps				= false;
+	public boolean  nbGulps				= false;
 	public boolean	tToNextGulp			= false;
 	public boolean	tToNextGulp_LR		= false;
 

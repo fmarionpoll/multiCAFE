@@ -420,7 +420,7 @@ public class XLSExport
 				switch (xlsOption) {
 //					case TOPRAW:
 					case BOTTOMLEVEL:
-					case ISGULPS:
+					case NBGULPS:
 					case TTOGULP:
 					case TTOGULP_LR:
 						for (Capillary cap: expi.capillaries.capillariesList) 
@@ -518,7 +518,7 @@ public class XLSExport
 		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
 		switch (xlsoption) 
 		{
-			case ISGULPS:
+			case NBGULPS:
 			case TTOGULP:
 			case TTOGULP_LR:
 				scalingFactorToPhysicalUnits = 1.;

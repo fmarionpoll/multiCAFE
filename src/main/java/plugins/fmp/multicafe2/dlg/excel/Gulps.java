@@ -19,7 +19,8 @@ public class Gulps extends JPanel
 	JButton 	exportToXLSButton 	= new JButton("save XLS (v1)");
 	JButton 	exportToXLSButton2 	= new JButton("save XLS");
 	JCheckBox 	sumGulpsCheckBox 	= new JCheckBox("sum gulps", true);
-	JCheckBox 	isGulpsCheckBox 	= new JCheckBox("gulps (0/1)", true);
+	JCheckBox 	nbGulpsCheckBox 	= new JCheckBox("gulps (number/bin)", true);
+	
 	JCheckBox 	tToGulpCheckBox 	= new JCheckBox("t to gulp", true);
 	JCheckBox 	tToGulpLRCheckBox 	= new JCheckBox("t to gulp L/R", true);
 	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R & ratio", true);
@@ -33,7 +34,7 @@ public class Gulps extends JPanel
 		flowLayout0.setVgap(0);
 		JPanel panel0 = new JPanel(flowLayout0);
 		panel0.add(sumGulpsCheckBox);
-		panel0.add(isGulpsCheckBox);
+		panel0.add(nbGulpsCheckBox);
 		panel0.add(tToGulpCheckBox);
 		panel0.add(tToGulpLRCheckBox);
 		add(panel0);

@@ -263,7 +263,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 				datai = ptsDerivative.getMeasures(seriesBinMs, outputBinMs);
 			break;
 		case SUMGULPS:
-		case ISGULPS:
+		case NBGULPS:
 		case TTOGULP:
 		case TTOGULP_LR:
 			if (gulpsRois != null)
@@ -290,7 +290,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 				datai = ptsDerivative.getMeasures();
 			break;
 		case SUMGULPS:
-		case ISGULPS:
+		case NBGULPS:
 		case TTOGULP:
 		case TTOGULP_LR:
 			if (gulpsRois != null)

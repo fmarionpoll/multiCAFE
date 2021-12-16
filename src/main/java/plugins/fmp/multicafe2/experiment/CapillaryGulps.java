@@ -82,7 +82,7 @@ public class CapillaryGulps implements XMLPersistent
 		case SUMGULPS:
 			data_in = getCumSumFromRoisArray(npoints);		
 			break;
-		case ISGULPS:
+		case NBGULPS:
 			data_in = getIsGulpsFromRoisArray(npoints);
 			break;
 		case TTOGULP:
@@ -116,24 +116,24 @@ public class CapillaryGulps implements XMLPersistent
 	
 	public List<Integer> getMeasures(EnumXLSExportType option, int npoints) 
 	{
-		ArrayList<Integer> datai = null;
+		ArrayList<Integer> data_in = null;
 		switch (option) 
 		{
 		case SUMGULPS:
-			datai = getCumSumFromRoisArray(npoints);
+			data_in = getCumSumFromRoisArray(npoints);
 			break;
-		case ISGULPS:
-			datai = getIsGulpsFromRoisArray(npoints);
+		case NBGULPS:
+			data_in = getIsGulpsFromRoisArray(npoints);
 			break;
 		case TTOGULP:
 		case TTOGULP_LR:
 			List<Integer> datag = getIsGulpsFromRoisArray(npoints);
-			datai = getTToNextGulp(datag, npoints);
+			data_in = getTToNextGulp(datag, npoints);
 			break;
 		default:
 			break;
 		}
-		return datai;
+		return data_in;
 	}
 	
 	ArrayList<Integer> getCumSumFromRoisArray(int npoints) 
@@ -155,7 +155,7 @@ public class CapillaryGulps implements XMLPersistent
 			ROI2DUtilities.addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
 		return arrayInt;
 	}
-	
+		
 	ArrayList<Integer> getTToNextGulp(List<Integer> datai, int npoints) 
 	{
 		int nintervals = -1;

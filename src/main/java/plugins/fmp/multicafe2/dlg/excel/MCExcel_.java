@@ -165,7 +165,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 	{
 		XLSExportOptions options = new XLSExportOptions();
 		options.sumGulps 		= false; 
-		options.isGulps 		= false;
+		options.nbGulps 		= false;
 		
 		options.topLevel 		= tabLevels.topLevelCheckBox.isSelected(); 
 		options.topLevelDelta   = tabLevels.topLevelDeltaCheckBox.isSelected();
@@ -194,7 +194,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.sumGulps 		= tabGulps.sumGulpsCheckBox.isSelected(); 
 		options.sum_PI_LR 		= tabGulps.sumCheckBox.isSelected(); 
 		options.onlyalive 		= tabGulps.onlyaliveCheckBox.isSelected();
-		options.isGulps 		= tabGulps.isGulpsCheckBox.isSelected();
+		options.nbGulps 		= tabGulps.nbGulpsCheckBox.isSelected();
 		options.tToNextGulp		= tabGulps.tToGulpCheckBox.isSelected();
 		options.tToNextGulp_LR  = tabGulps.tToGulpLRCheckBox.isSelected();
 		options.subtractEvaporation = false;

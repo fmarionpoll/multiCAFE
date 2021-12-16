@@ -152,6 +152,7 @@ public class ROI2DUtilities
 		int width =(int) roiline.xpoints[roiline.npoints-1] - (int) roiline.xpoints[0] +1; 
 		interpolateMissingPointsAlongXAxis (roi, width);
 		List<Integer> intArray = transferROIYpointsToIntList(roi);
+		
 		int jstart = (int) roiline.xpoints[0];
 		int previousY = intArray.get(0);
 		for (int i=1; i< intArray.size(); i++) {
@@ -168,7 +169,7 @@ public class ROI2DUtilities
 		Polyline2D roiline = roi.getPolyline2D();
 		double yvalue = roiline.ypoints[0];
 		int npoints = roiline.npoints;
-		for (int j =0; j < npoints; j++) 
+		for (int j = 0; j < npoints; j++) 
 		{
 			if (roiline.ypoints[j] != yvalue) 
 			{
