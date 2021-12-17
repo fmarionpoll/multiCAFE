@@ -27,6 +27,7 @@ public class XLSExportOptions
 	
 	public boolean 	sumGulps 			= false;
 	public boolean  nbGulps				= false;
+	public boolean 	amplitudeGulps		= false;
 	public boolean	tToNextGulp			= false;
 	public boolean	tToNextGulp_LR		= false;
 

@@ -15,6 +15,7 @@ public enum EnumXLSExportType
 	SUMGULPS ("sumGulps"), 
 	SUMGULPS_LR ("sumGulps_L+R"), 
 	NBGULPS ("nbGulps"),
+	AMPLITUDEGULPS ("amplitudeGulps"),
 	TTOGULP("tToGulp"),
 	TTOGULP_LR("tToGulp_LR"),
 	

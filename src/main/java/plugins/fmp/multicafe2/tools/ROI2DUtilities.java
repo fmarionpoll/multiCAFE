@@ -135,7 +135,7 @@ public class ROI2DUtilities
 		return null;
 	}
 	
-	public static void addROIsMatchingFilterToCumSumDataArray (Sequence seq, String filter, List<Integer> cumSumArray) 
+	public static void addROIsMatchingFilterToCumSumDataArray (Sequence seq, String filter, ArrayList<Integer> cumSumArray) 
 	{
 		List<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) 
@@ -146,7 +146,7 @@ public class ROI2DUtilities
 		return ;
 	}
 	
-	public static void addROItoCumulatedSumArray(ROI2DPolyLine roi, List<Integer> sumArrayList) 
+	public static void addROItoCumulatedSumArray(ROI2DPolyLine roi, ArrayList<Integer> sumArrayList) 
 	{
 		Polyline2D roiline = roi.getPolyline2D();
 		int width =(int) roiline.xpoints[roiline.npoints-1] - (int) roiline.xpoints[0] +1; 
@@ -164,7 +164,7 @@ public class ROI2DUtilities
 		}
 	}
 	
-	public static void addROItoIsGulpsArray (ROI2DPolyLine roi, List<Integer> isGulpsArrayList) 
+	public static void addROItoIsGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> isGulpsArrayList) 
 	{
 		Polyline2D roiline = roi.getPolyline2D();
 		double yvalue = roiline.ypoints[0];
@@ -177,6 +177,19 @@ public class ROI2DUtilities
 				isGulpsArrayList.set(timeIndex, 1);
 			}
 			yvalue = roiline.ypoints[j];
+		}
+	}
+	
+	public static void addROItoAmplitudeGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> amplitudeGulpsArrayList) 
+	{
+		Polyline2D line2D = roi.getPolyline2D();
+		double yvalue = line2D.ypoints[0];
+		int npoints = line2D.npoints;
+		for (int j = 0; j < npoints; j++) 
+		{
+			int timeIndex =  (int) line2D.xpoints[j];
+			amplitudeGulpsArrayList.set(timeIndex, (int) (line2D.ypoints[j] - yvalue));		
+			yvalue = line2D.ypoints[j];
 		}
 	}
 

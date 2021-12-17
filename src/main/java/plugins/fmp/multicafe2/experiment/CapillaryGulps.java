@@ -76,23 +76,7 @@ public class CapillaryGulps implements XMLPersistent
 	
 	public List<Integer> getMeasures(EnumXLSExportType option, int npoints, long seriesBinMs, long outputBinMs) 
 	{	
-		ArrayList<Integer> data_in = null;
-		switch (option) 
-		{
-		case SUMGULPS:
-			data_in = getCumSumFromRoisArray(npoints);		
-			break;
-		case NBGULPS:
-			data_in = getIsGulpsFromRoisArray(npoints);
-			break;
-		case TTOGULP:
-		case TTOGULP_LR:
-			List<Integer> datag = getIsGulpsFromRoisArray(npoints);
-			data_in = getTToNextGulp(datag, npoints);
-			break;
-		default:
-			break;
-		}
+		ArrayList<Integer> data_in = getMeasures(option, npoints);
 		return adaptArray(data_in, seriesBinMs, outputBinMs);
 	}
 	
@@ -114,7 +98,7 @@ public class CapillaryGulps implements XMLPersistent
 		return data_out;
 	}
 	
-	public List<Integer> getMeasures(EnumXLSExportType option, int npoints) 
+	public ArrayList<Integer> getMeasures(EnumXLSExportType option, int npoints) 
 	{
 		ArrayList<Integer> data_in = null;
 		switch (option) 
@@ -124,6 +108,9 @@ public class CapillaryGulps implements XMLPersistent
 			break;
 		case NBGULPS:
 			data_in = getIsGulpsFromRoisArray(npoints);
+			break;
+		case AMPLITUDEGULPS:
+			data_in = getAmplitudeGulpsFromRoisArray(npoints);
 			break;
 		case TTOGULP:
 		case TTOGULP_LR:
@@ -146,13 +133,23 @@ public class CapillaryGulps implements XMLPersistent
 		return arrayInt;
 	}
 	
-	ArrayList<Integer> getIsGulpsFromRoisArray(int npoints) 
+	private ArrayList<Integer> getIsGulpsFromRoisArray(int npoints) 
 	{
 		if (rois == null)
 			return null;
 		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
 		for (ROI roi: rois) 
 			ROI2DUtilities.addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
+		return arrayInt;
+	}
+	
+	private ArrayList<Integer> getAmplitudeGulpsFromRoisArray(int npoints) 
+	{
+		if (rois == null)
+			return null;
+		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
+		for (ROI roi: rois) 
+			ROI2DUtilities.addROItoAmplitudeGulpsArray((ROI2DPolyLine) roi, arrayInt);
 		return arrayInt;
 	}
 		

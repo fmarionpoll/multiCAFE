@@ -46,6 +46,8 @@ public class XLSExportGulpsResults  extends XLSExport
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS_LR);
 				if (options.nbGulps)
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.NBGULPS);
+				if (options.amplitudeGulps)
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.AMPLITUDEGULPS);
 				if (options.tToNextGulp)
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TTOGULP);
 				if (options.tToNextGulp_LR)
