@@ -178,7 +178,8 @@ public class CapillaryGulps implements XMLPersistent
 		for (int j = 0; j < npoints; j++) 
 		{
 			int timeIndex =  (int) roiLine2D.xpoints[j];
-			amplitudeGulpsArrayList.set(timeIndex, (int) (roiLine2D.ypoints[j] - yvalue));		
+			int delta = (int) (roiLine2D.ypoints[j] - yvalue);
+			amplitudeGulpsArrayList.set(timeIndex, delta);		
 			yvalue = roiLine2D.ypoints[j];
 		}
 	}
