@@ -520,7 +520,6 @@ public class XLSExport
 		switch (xlsoption) 
 		{
 			case NBGULPS:
-			case AMPLITUDEGULPS:
 			case TTOGULP:
 			case TTOGULP_LR:
 				scalingFactorToPhysicalUnits = 1.;

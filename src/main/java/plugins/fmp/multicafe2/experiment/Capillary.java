@@ -264,6 +264,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			break;
 		case SUMGULPS:
 		case NBGULPS:
+		case AMPLITUDEGULPS:
 		case TTOGULP:
 		case TTOGULP_LR:
 			if (gulpsRois != null)
@@ -291,6 +292,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			break;
 		case SUMGULPS:
 		case NBGULPS:
+		case AMPLITUDEGULPS:
 		case TTOGULP:
 		case TTOGULP_LR:
 			if (gulpsRois != null)

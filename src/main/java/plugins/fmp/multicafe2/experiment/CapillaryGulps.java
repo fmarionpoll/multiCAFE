@@ -12,6 +12,7 @@ import org.w3c.dom.Node;
 import icy.file.xml.XMLPersistent;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
+import icy.type.geom.Polyline2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
@@ -139,20 +140,49 @@ public class CapillaryGulps implements XMLPersistent
 			return null;
 		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
 		for (ROI roi: rois) 
-			ROI2DUtilities.addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
+			addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
 		return arrayInt;
+	}
+	
+	private void addROItoIsGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> isGulpsArrayList) 
+	{
+		Polyline2D roiline = roi.getPolyline2D();
+		double yvalue = roiline.ypoints[0];
+		int npoints = roiline.npoints;
+		for (int j = 0; j < npoints; j++) 
+		{
+			if (roiline.ypoints[j] != yvalue) 
+			{
+				int timeIndex =  (int) roiline.xpoints[j];
+				isGulpsArrayList.set(timeIndex, 1);
+			}
+			yvalue = roiline.ypoints[j];
+		}
 	}
 	
 	private ArrayList<Integer> getAmplitudeGulpsFromRoisArray(int npoints) 
 	{
 		if (rois == null)
 			return null;
-		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
+		ArrayList<Integer> amplitudeGulpsArrayList = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
 		for (ROI roi: rois) 
-			ROI2DUtilities.addROItoAmplitudeGulpsArray((ROI2DPolyLine) roi, arrayInt);
-		return arrayInt;
+			addROItoAmplitudeGulpsArray((ROI2DPolyLine) roi, amplitudeGulpsArrayList);
+		return amplitudeGulpsArrayList;
 	}
-		
+	
+	private void addROItoAmplitudeGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> amplitudeGulpsArrayList) 
+	{
+		Polyline2D roiLine2D = roi.getPolyline2D();
+		double yvalue = roiLine2D.ypoints[0];
+		int npoints = roiLine2D.npoints;
+		for (int j = 0; j < npoints; j++) 
+		{
+			int timeIndex =  (int) roiLine2D.xpoints[j];
+			amplitudeGulpsArrayList.set(timeIndex, (int) (roiLine2D.ypoints[j] - yvalue));		
+			yvalue = roiLine2D.ypoints[j];
+		}
+	}
+	
 	ArrayList<Integer> getTToNextGulp(List<Integer> datai, int npoints) 
 	{
 		int nintervals = -1;
