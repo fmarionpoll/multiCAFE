@@ -451,4 +451,8 @@ public class Capillaries
 	public long getROI2DIntervalsEndAt(int selectedItem) {
 		return intervals.get(selectedItem)[1];
 	}
+	
+	public double getScalingFactorToPhysicalUnits( ) {
+		return desc.volume / desc.pixels;
+	}
 }

@@ -31,13 +31,13 @@ public class XYMultiChart extends IcyFrame
 	
 	private Point pt = new Point (0,0);
 	private boolean flagMaxMinSet = false;
-	private int globalYMax = 0;
-	private int globalYMin = 0;
-	private int globalXMax = 0;
+	private double globalYMax = 0;
+	private double globalYMin = 0;
+	private double globalXMax = 0;
 
-	private int ymax = 0;
-	private int ymin = 0;
-	private int xmax = 0;
+	private double ymax = 0;
+	private double ymin = 0;
+	private double xmax = 0;
 	private List<XYSeriesCollection> 	xyDataSetList 	= new ArrayList <XYSeriesCollection>();
 	private List<JFreeChart> 			xyChartList 	= new ArrayList <JFreeChart>();
 	private String title;
@@ -65,7 +65,9 @@ public class XYMultiChart extends IcyFrame
 		int kmax = exp.capillaries.desc.grouping;
 		char collection_char = '-';
 		XYSeriesCollection xyDataset = null;
-		for (int t=0; t< nimages; t++) 
+		double scalingFactor = exp.capillaries.getScalingFactorToPhysicalUnits();
+		
+		for (int t = 0; t < nimages; t++) 
 		{
 			Capillary cap = exp.capillaries.capillariesList.get(t);
 			char test = cap.getKymographName().charAt(cap.getKymographName().length() - 2);
@@ -85,10 +87,10 @@ public class XYMultiChart extends IcyFrame
 			String name = cap.getRoi().getName().substring(4);
 			if (t == 0)	// trick to change the size of the legend so that it takes the same vertical space as others 
 				name = name + "    ";
-			XYSeries seriesXY = getXYSeries(results, name, startFrame);
+			XYSeries seriesXY = getXYSeries(results, name, startFrame, scalingFactor);
 			
 			if (option == EnumXLSExportType.TOPLEVEL) 
-				appendDataToXYSeries(seriesXY, cap.getMeasures(EnumXLSExportType.BOTTOMLEVEL), startFrame );
+				appendDataToXYSeries(seriesXY, cap.getMeasures(EnumXLSExportType.BOTTOMLEVEL), startFrame, scalingFactor );
 			
 			xyDataset.addSeries( seriesXY );
 			getMaxMin();
@@ -165,7 +167,7 @@ public class XYMultiChart extends IcyFrame
 		}
 	}
 
-	private XYSeries getXYSeries(List<Integer> data, String name, int startFrame) 
+	private XYSeries getXYSeries(List<Integer> data, String name, int startFrame, double scalingFactor) 
 	{
 		XYSeries seriesXY = new XYSeries(name, false);
 		if (data != null) 
@@ -175,11 +177,11 @@ public class XYMultiChart extends IcyFrame
 			{
 				xmax = npoints;
 				int x = 0;
-				ymax = data.get(0);
+				ymax = data.get(0) * scalingFactor;
 				ymin = ymax;
 				for (int j=0; j < npoints; j++) 
 				{
-					int y = data.get(j);
+					double y = data.get(j) * scalingFactor;
 					seriesXY.add( x+startFrame , y );
 					if (ymax < y) ymax = y;
 					if (ymin > y) ymin = y;
@@ -190,7 +192,7 @@ public class XYMultiChart extends IcyFrame
 		return seriesXY;
 	}
 
-	private void appendDataToXYSeries(XYSeries seriesXY, List<Integer> data, int startFrame ) 
+	private void appendDataToXYSeries(XYSeries seriesXY, List<Integer> data, int startFrame, double scalingFactor ) 
 	{	
 		if (data == null)
 			return;
@@ -201,7 +203,7 @@ public class XYMultiChart extends IcyFrame
 			int x = 0;
 			for (int j=0; j < npoints; j++) 
 			{
-				int y = data.get(j);
+				double y = data.get(j) * scalingFactor;
 				seriesXY.add( x+startFrame , y );
 				if (ymax < y) ymax = y;
 				if (ymin > y) ymin = y;

@@ -516,7 +516,7 @@ public class XLSExport
 		if (resultsArrayList.resultsArrayList.size() <1)
 			return;
 		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
-		double scalingFactorToPhysicalUnits = expi.capillaries.desc.volume / expi.capillaries.desc.pixels;
+		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits();
 		switch (xlsoption) 
 		{
 			case NBGULPS:
