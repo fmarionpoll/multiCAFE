@@ -3,22 +3,22 @@ package plugins.fmp.multicafe2.tools;
 import java.util.List;
 
 import icy.sequence.Sequence;
+import plugins.nherve.toolbox.image.feature.DefaultClusteringAlgorithmImpl;
+import plugins.nherve.toolbox.image.feature.IcySupportRegion;
+import plugins.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
+import plugins.nherve.toolbox.image.feature.Signature;
+import plugins.nherve.toolbox.image.feature.clustering.KMeans;
+import plugins.nherve.toolbox.image.feature.descriptor.ColorPixel;
+import plugins.nherve.toolbox.image.feature.descriptor.DefaultDescriptorImpl;
+import plugins.nherve.toolbox.image.feature.region.GridFactory;
+import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
+import plugins.nherve.toolbox.image.feature.signature.SignatureException;
+import plugins.nherve.toolbox.image.feature.signature.VectorSignature;
+import plugins.nherve.toolbox.image.mask.MaskException;
+import plugins.nherve.toolbox.image.segmentation.DefaultSegmentationAlgorithm;
+import plugins.nherve.toolbox.image.segmentation.Segmentation;
+import plugins.nherve.toolbox.image.segmentation.SegmentationException;
 
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.DefaultClusteringAlgorithmImpl;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.IcySupportRegion;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.SegmentableIcyBufferedImage;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.Signature;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.clustering.KMeans;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.descriptor.ColorPixel;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.descriptor.DefaultDescriptorImpl;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.region.GridFactory;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.region.SupportRegionException;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.signature.VectorSignature;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.mask.MaskException;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.DefaultSegmentationAlgorithm;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.Segmentation;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.SegmentationException;
 
 
 

@@ -19,13 +19,13 @@ import icy.main.Icy;
 import icy.sequence.Sequence;
 import icy.swimmingPool.SwimmingObject;
 
-//import plugins.nherve.maskeditor.MaskEditor;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.region.SupportRegionException;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.feature.signature.SignatureException;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.mask.MaskException;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.Segmentation;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.segmentation.SegmentationException;
-import plugins.fmp.multicafe2.tools.nherve.toolbox.image.toolboxes.ColorSpaceTools;
+import plugins.nherve.maskeditor.MaskEditor;
+import plugins.nherve.toolbox.image.feature.region.SupportRegionException;
+import plugins.nherve.toolbox.image.feature.signature.SignatureException;
+import plugins.nherve.toolbox.image.mask.MaskException;
+import plugins.nherve.toolbox.image.segmentation.Segmentation;
+import plugins.nherve.toolbox.image.segmentation.SegmentationException;
+import plugins.nherve.toolbox.image.toolboxes.ColorSpaceTools;
 import plugins.fmp.multicafe2.MultiCAFE2;
 
 import plugins.fmp.multicafe2.experiment.Experiment;
@@ -176,23 +176,23 @@ public class DetectLevelsKMeans  extends JPanel
 	
 	void callMaskEditor(Sequence seq, Segmentation segmentation) 
 	{
-//		final MaskEditor maskEditorPlugin = MaskEditor.getRunningInstance(true);
-//		currentlyRunning = null;
-//		Runnable r = new Runnable() 
-//		{
-//			@Override
-//			public void run() 
-//			{
-//				maskEditorPlugin.setSegmentationForSequence(seq, segmentation);
-//				maskEditorPlugin.switchOpacityOn();
-//				displayButton.setEnabled(true);
-//			}
-//		};
-//		try {
-//			SwingUtilities.invokeAndWait(r);
-//		} catch (InvocationTargetException | InterruptedException e) {
-//			System.out.println(e.getClass().getName() + " : " + e.getMessage());
-//		}
+		final MaskEditor maskEditorPlugin = MaskEditor.getRunningInstance(true);
+		currentlyRunning = null;
+		Runnable r = new Runnable() 
+		{
+			@Override
+			public void run() 
+			{
+				maskEditorPlugin.setSegmentationForSequence(seq, segmentation);
+				maskEditorPlugin.switchOpacityOn();
+				displayButton.setEnabled(true);
+			}
+		};
+		try {
+			SwingUtilities.invokeAndWait(r);
+		} catch (InvocationTargetException | InterruptedException e) {
+			System.out.println(e.getClass().getName() + " : " + e.getMessage());
+		}
 	}
 	
 	void callDirect(Segmentation segmentation)
