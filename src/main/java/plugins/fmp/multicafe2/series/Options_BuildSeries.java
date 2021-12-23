@@ -47,8 +47,8 @@ public class Options_BuildSeries implements XMLPersistent
 	public 	EnumTransformOp	transform1 			= EnumTransformOp.RGB_DIFFS;
 	public 	EnumTransformOp	transform2 			= EnumTransformOp.NONE;
 	public 	boolean 	analyzePartOnly			= false;
-	public 	int 		startPixel 				= -1;
-	public 	int 		endPixel 				= -1;
+	public 	int 		firstPixel 				= -1;
+	public 	int 		lastPixel 				= -1;
 	public  int			spanDiffTop				= 3;
 	
 	public double		detectGulpsThresholdUL	= .3;

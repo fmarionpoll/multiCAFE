@@ -99,8 +99,8 @@ public class DetectLevels_series extends BuildSeries
 					int yheight = sourceImage_index.getSizeY();
 					if (options.analyzePartOnly) 
 					{
-						firstColumn = options.startPixel;
-						lastColumn = options.endPixel;
+						firstColumn = options.firstPixel;
+						lastColumn = options.lastPixel;
 						if (lastColumn > xwidth-1)
 							lastColumn = xwidth -1;
 					} 

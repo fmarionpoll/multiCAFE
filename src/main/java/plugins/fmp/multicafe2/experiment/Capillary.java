@@ -344,61 +344,66 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		if (gulpsRois == null) {
 			gulpsRois = new CapillaryGulps();
 			gulpsRois.rois = new ArrayList <> ();
-			return;
 		}
-		if (limitsOptions.analyzePartOnly) 
-			gulpsRois.removeROIsWithinInterval(limitsOptions.startPixel, limitsOptions.endPixel);
-		else 
-			gulpsRois.rois.clear();
+		else {
+			if (limitsOptions.analyzePartOnly) 
+				gulpsRois.removeROIsWithinInterval(limitsOptions.firstPixel, limitsOptions.lastPixel);
+			else 
+				gulpsRois.rois.clear();
+		}
 	}
 	
-	public void getGulps(int indexkymo) 
+	public void detectGulps(int indexkymo) 
 	{
-		int indexpixel = 0;
-		int start = 1;
+		int indexPixel = 0;
+		int firstPixel = 1;
 		if (ptsTop.polylineLimit == null)
 			return;
-		int end = ptsTop.polylineLimit.npoints;
+		int lastPixel = ptsTop.polylineLimit.npoints;
 		if (limitsOptions.analyzePartOnly) 
 		{
-			start = limitsOptions.startPixel;
-			end = limitsOptions.endPixel;
+			firstPixel = limitsOptions.firstPixel;
+			lastPixel = limitsOptions.lastPixel;
 		} 
 		
 		int threshold = (int) ((limitsOptions.detectGulpsThresholdUL / capVolume) * capPixels);
-		System.out.println("threshold ="+ threshold);
-		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
-		List<Point2D> gulpPoints = new ArrayList<>();
-		for (indexpixel = start; indexpixel < end; indexpixel++) 
-		{
-			int derivativevalue = (int) ptsDerivative.polylineLimit.ypoints[indexpixel-1];
-			if (derivativevalue < threshold)
-				continue;
-			
-			if (gulpPoints.size() > 0) 
-			{
-				Point2D prevPt = gulpPoints.get(gulpPoints.size() -1);
-				if ((int) prevPt.getX() <  (indexpixel-1)) 
-				{
-					roiTrack.setPoints(gulpPoints);
-					gulpsRois.addGulp(roiTrack, indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
-					roiTrack = new ROI2DPolyLine ();
-					gulpPoints = new ArrayList<>();
-				}
-			}
-			if (gulpPoints.size() == 0)
-				gulpPoints.add(new Point2D.Double (indexpixel-1, ptsTop.polylineLimit.ypoints[indexpixel-1]));
-			Point2D.Double detectedPoint = new Point2D.Double (indexpixel, ptsTop.polylineLimit.ypoints[indexpixel]);
-			gulpPoints.add(detectedPoint);
-		}
 		
-		if (gulpPoints.size() > 1) 
+		List<Point2D> gulpPoints = new ArrayList<>();
+		
+		for (indexPixel = firstPixel; indexPixel < lastPixel; indexPixel++) 
 		{
-			roiTrack.setPoints(gulpPoints);
-			gulpsRois.addGulp(roiTrack, indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexpixel));
+			int derivativevalue = (int) ptsDerivative.polylineLimit.ypoints[indexPixel-1];
+			if (derivativevalue < threshold) 
+			{
+				gulpPoints.clear();
+				continue;
+			}
+			
+			if (ptsTop.polylineLimit.ypoints[indexPixel-1] == ptsTop.polylineLimit.ypoints[indexPixel]) 
+			{
+				if (gulpPoints.size() > 0)
+					saveGulpPointsToGulpRois(indexPixel-1, gulpPoints, indexkymo);
+				gulpPoints.clear();
+				continue;
+			}
+			
+			addGulpPoint(indexPixel-1, gulpPoints);
+			addGulpPoint(indexPixel, gulpPoints);
+			saveGulpPointsToGulpRois(indexPixel, gulpPoints, indexkymo);
 		}
-		if (gulpPoints.size() == 1)
-			System.out.print("only_1_point_detected");
+	}
+	
+	private void addGulpPoint (int indexPixel, List<Point2D> gulpPoints) 
+	{
+		Point2D.Double detectedPoint = new Point2D.Double (indexPixel, ptsTop.polylineLimit.ypoints[indexPixel]);
+		gulpPoints.add(detectedPoint);
+	}
+	
+	private void saveGulpPointsToGulpRois(int indexPixel, List<Point2D> gulpPoints, int indexkymo ) 
+	{
+		gulpsRois.addGulp(new ROI2DPolyLine (gulpPoints), indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexPixel));
+		gulpPoints.clear();
+//		System.out.println("gulpPoints.size()=" + gulpPoints.size());
 	}
 	
 	public int getLastMeasure(EnumXLSExportType option) 

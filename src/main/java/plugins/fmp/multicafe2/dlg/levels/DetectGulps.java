@@ -178,8 +178,8 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		options.buildGulps		= detectGulpsCheckBox.isSelected();
 		options.buildDerivative	= buildDerivativeCheckBox.isSelected();
 		options.analyzePartOnly	= partCheckBox.isSelected();
-		options.startPixel		= (int) startSpinner.getValue();
-		options.endPixel		= (int) endSpinner.getValue();
+		options.firstPixel		= (int) startSpinner.getValue();
+		options.lastPixel		= (int) endSpinner.getValue();
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubDirectory = (String) parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
 		return options;
@@ -225,8 +225,8 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 			parent0.paneKymos.tabDisplay.selectKymographImage(parent0.paneKymos.tabDisplay.indexImagesCombo);
 			parent0.paneKymos.tabDisplay.indexImagesCombo = -1;
 			
-			startSpinner.setValue(threadDetectGulps.options.startPixel); 
-			endSpinner.setValue(threadDetectGulps.options.endPixel); 
+			startSpinner.setValue(threadDetectGulps.options.firstPixel); 
+			endSpinner.setValue(threadDetectGulps.options.lastPixel); 
 		 }
 	}
 	

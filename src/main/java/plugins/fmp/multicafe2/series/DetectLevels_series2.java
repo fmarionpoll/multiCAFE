@@ -74,8 +74,8 @@ public class DetectLevels_series2 extends BuildSeries
 			options.copyTo(cap.limitsOptions);
 			if (options.analyzePartOnly) 
 			{
-				firstColumn = options.startPixel;
-				lastColumn = options.endPixel;
+				firstColumn = options.firstPixel;
+				lastColumn = options.lastPixel;
 				if (lastColumn > xwidth-1)
 					lastColumn = xwidth -1;
 			} 

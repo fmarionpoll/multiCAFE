@@ -230,8 +230,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();
 		
 		options.analyzePartOnly		= fromCheckBox.isSelected();
-		options.startPixel			= (int) startSpinner.getValue(); 
-		options.endPixel			= (int) endSpinner.getValue(); 
+		options.firstPixel			= (int) startSpinner.getValue(); 
+		options.lastPixel			= (int) endSpinner.getValue(); 
 		options.spanDiffTop			= getSpanDiffTop();
 		options.detectL 			= leftCheckBox.isSelected();
 		options.detectR				= rightCheckBox.isSelected();
@@ -269,8 +269,8 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 			parent0.paneKymos.tabDisplay.selectKymographImage(parent0.paneKymos.tabDisplay.indexImagesCombo);
 			parent0.paneKymos.tabDisplay.indexImagesCombo = -1;
 			
-			startSpinner.setValue(threadDetectLevels.options.startPixel); 
-			endSpinner.setValue(threadDetectLevels.options.endPixel); 
+			startSpinner.setValue(threadDetectLevels.options.firstPixel); 
+			endSpinner.setValue(threadDetectLevels.options.lastPixel); 
 		 }
 	}
 

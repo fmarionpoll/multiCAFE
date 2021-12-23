@@ -55,32 +55,32 @@ public class DetectGulps_series extends BuildSeries
 	
 	public void detectGulps(Experiment exp) 
 	{			
-		SequenceKymos seqKymos = exp.seqKymos;	
+		SequenceKymos seqCapillariesKymographs = exp.seqKymos;	
 		int jitter = 5;
-		int firstkymo = 0;
-		int lastkymo = seqKymos.seq.getSizeT() -1;
+		int firstCapillary = 0;
+		int lastCapillary = seqCapillariesKymographs.seq.getSizeT() -1;
 		if (!options.detectAllGulps) {
-			firstkymo = options.firstKymo;
-			lastkymo = firstkymo;
+			firstCapillary = options.firstKymo;
+			lastCapillary = firstCapillary;
 		}
-		seqKymos.seq.beginUpdate();
+		seqCapillariesKymographs.seq.beginUpdate();
 		threadRunning = true;
 		stopFlag = false;
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
 		
-		int nframes = lastkymo - firstkymo +1;
+		int nframes = lastCapillary - firstCapillary +1;
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detect_levels");
 	    processor.setPriority(Processor.NORM_PRIORITY);
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		futures.clear();
 		
-		for (int indexKymo = firstkymo; indexKymo <= lastkymo; indexKymo++) 
+		for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
 		{
-			final Capillary capi = exp.capillaries.capillariesList.get(indexKymo);
+			final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
 			capi.setGulpsOptions(options);
 			
-			final int t_from = indexKymo;;
+			final int t_from = indexCapillary;
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
@@ -88,16 +88,16 @@ public class DetectGulps_series extends BuildSeries
 				{
 					if (options.buildDerivative) 
 					{
-						ROI2DUtilities.removeRoisContainingString(t_from, "derivative", seqKymos.seq);
-						getDerivativeProfile(seqKymos.seq, t_from, capi, jitter);	
+						ROI2DUtilities.removeRoisContainingString(t_from, "derivative", seqCapillariesKymographs.seq);
+						getDerivativeProfile(seqCapillariesKymographs.seq, t_from, capi, jitter);	
 					}
 					if (options.buildGulps) 
 					{
 						capi.cleanGulps();
-						ROI2DUtilities.removeRoisContainingString(t_from, "gulp", seqKymos.seq);
-						capi.getGulps(t_from);
+						ROI2DUtilities.removeRoisContainingString(t_from, "gulp", seqCapillariesKymographs.seq);
+						capi.detectGulps(t_from);
 						if (capi.gulpsRois.rois.size() > 0)
-							seqKymos.seq.addROIs(capi.gulpsRois.rois, false);
+							seqCapillariesKymographs.seq.addROIs(capi.gulpsRois.rois, false);
 					}
 					
 					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), capi);
@@ -105,7 +105,7 @@ public class DetectGulps_series extends BuildSeries
 		}
 		
 		waitFuturesCompletion(processor, futures, progressBar);
-		seqKymos.seq.endUpdate();
+		seqCapillariesKymographs.seq.endUpdate();
 		progressBar.close();
 		processor.shutdown();
 	}	
