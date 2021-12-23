@@ -51,7 +51,8 @@ public class Options_BuildSeries implements XMLPersistent
 	public 	int 		endPixel 				= -1;
 	public  int			spanDiffTop				= 3;
 	
-	public int 			detectGulpsThreshold	= 90;
+	public double		detectGulpsThresholdUL	= .3;
+	
 	public EnumTransformOp 	transformForGulps 	= EnumTransformOp.XDIFFN;
 	public int			spanDiff				= 3;
 	public boolean 		detectAllGulps 			= true;
@@ -81,12 +82,12 @@ public class Options_BuildSeries implements XMLPersistent
 	{
 		destination.detectTop 				= detectTop; 
 		destination.detectBottom 			= detectBottom; 
-		destination.transform1 		= transform1;
+		destination.transform1 				= transform1;
 		destination.directionUp 			= directionUp;
 		destination.detectLevelThreshold 	= detectLevelThreshold;
 		destination.detectAllKymos 			= detectAllKymos;
 		
-		destination.detectGulpsThreshold 	= detectGulpsThreshold;
+		destination.detectGulpsThresholdUL 	= detectGulpsThresholdUL;
 		destination.transformForGulps 		= transformForGulps;
 		destination.detectAllGulps 			= detectAllGulps;
 	}
@@ -95,12 +96,12 @@ public class Options_BuildSeries implements XMLPersistent
 	{
 		detectTop 				= destination.detectTop; 
 		detectBottom 			= destination.detectBottom; 
-		transform1 		= destination.transform1;
+		transform1 				= destination.transform1;
 		directionUp 			= destination.directionUp;
 		detectLevelThreshold 	= destination.detectLevelThreshold;
 		detectAllKymos 			= destination.detectAllKymos;
 		
-		detectGulpsThreshold 	= destination.detectGulpsThreshold;
+		detectGulpsThresholdUL 	= destination.detectGulpsThresholdUL;
 		transformForGulps 		= destination.transformForGulps;
 		detectAllGulps 			= destination.detectAllGulps;
 	}

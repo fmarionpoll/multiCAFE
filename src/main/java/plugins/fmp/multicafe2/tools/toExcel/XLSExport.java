@@ -490,7 +490,6 @@ public class XLSExport
 			case TOPLEVELDELTA_LR:
 				for (XLSResults row: rowListForOneExp ) 
 					row.subtractDeltaT(1, 1); //options.buildExcelStepMs);
-//					row.subtractDeltaT(expAll.getKymoFrameStep(), options.buildExcelStepMs);
 				break;
 			default:
 				break;

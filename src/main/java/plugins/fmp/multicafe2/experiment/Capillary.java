@@ -365,12 +365,14 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			end = limitsOptions.endPixel;
 		} 
 		
+		int threshold = (int) ((limitsOptions.detectGulpsThresholdUL / capVolume) * capPixels);
+		System.out.println("threshold ="+ threshold);
 		ROI2DPolyLine roiTrack = new ROI2DPolyLine ();
 		List<Point2D> gulpPoints = new ArrayList<>();
 		for (indexpixel = start; indexpixel < end; indexpixel++) 
 		{
 			int derivativevalue = (int) ptsDerivative.polylineLimit.ypoints[indexpixel-1];
-			if (derivativevalue < limitsOptions.detectGulpsThreshold)
+			if (derivativevalue < threshold)
 				continue;
 			
 			if (gulpPoints.size() > 0) 

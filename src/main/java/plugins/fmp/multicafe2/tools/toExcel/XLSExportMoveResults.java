@@ -109,8 +109,6 @@ public class XLSExportMoveResults extends XLSExport
 		expAll.cages.copy(exp.cages);
 		expAll.capillaries.copy(exp.capillaries);
 		expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
-//		if (!options.absoluteTime && options.t0)
-//			expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
 		expAll.lastImage_FileTime 	= exp.lastImage_FileTime;
 		expAll.setExperimentDirectory( exp.getExperimentDirectory());
 		expAll.setField(EnumXLSColumnHeader.BOXID, exp.getField(EnumXLSColumnHeader.BOXID));

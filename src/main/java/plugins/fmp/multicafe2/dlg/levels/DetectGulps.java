@@ -46,7 +46,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	private JCheckBox		partCheckBox 				= new JCheckBox ("from (pixel)", false);
 	private JButton			displayTransform2Button		= new JButton("Display");
 	private JSpinner		spanTransf2Spinner			= new JSpinner(new SpinnerNumberModel(3, 0, 500, 1));
-	private JSpinner 		detectGulpsThresholdSpinner	= new JSpinner(new SpinnerNumberModel(90, 0, 500, 1));
+	private JSpinner 		detectGulpsThresholdSpinner	= new JSpinner(new SpinnerNumberModel(.5, 0., 500., .1));
 	private String 			detectString 				= "        Detect     ";
 	private JButton 		detectButton 				= new JButton(detectString);
 	private JCheckBox 		allCheckBox 				= new JCheckBox("ALL (current to last)", false);
@@ -171,7 +171,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 			options.firstKymo = 0;
 			options.lastKymo = parent0.paneKymos.tabDisplay.kymographsCombo.getItemCount()-1;
 		}
-		options.detectGulpsThreshold = (int) detectGulpsThresholdSpinner.getValue();
+		options.detectGulpsThresholdUL = (double) detectGulpsThresholdSpinner.getValue();
 		options.transformForGulps = (EnumTransformOp) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps 	= allKymosCheckBox.isSelected();
 		options.spanDiff		= (int) spanTransf2Spinner.getValue();
@@ -204,7 +204,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	void setInfos(Capillary cap) 
 	{
 		Options_BuildSeries options = cap.getGulpsOptions();
-		detectGulpsThresholdSpinner.setValue(options.detectGulpsThreshold);
+		detectGulpsThresholdSpinner.setValue(options.detectGulpsThresholdUL);
 		transformForGulpsComboBox.setSelectedItem(options.transformForGulps);
 		allKymosCheckBox.setSelected(options.detectAllGulps);
 	}

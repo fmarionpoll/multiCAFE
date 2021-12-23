@@ -121,25 +121,22 @@ public class ExperimentCombo extends JComboBox<Experiment>
 			final int it = i;
 			futuresArray.add(processor.submit(new Runnable () 
 			{
-				
 				@Override
 				public void run() 
 				{
-			Experiment exp = getItemAt(it);
-			progress.setMessage("Load experiment "+ index +" of "+ nexpts);
-			exp.setBinSubDirectory(expListBinSubDirectory);
-			if (expListBinSubDirectory == null)
-				exp.checkKymosDirectory(exp.getBinSubDirectory());
-//			flag &= 
-			exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
-			if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesList.size())
-			{
-				maxSizeOfCapillaryArrays = exp.capillaries.capillariesList.size();
-				if (maxSizeOfCapillaryArrays % 2 != 0)
-					maxSizeOfCapillaryArrays += 1;
-			}
-			progress.incPosition();
-//			index++;
+					Experiment exp = getItemAt(it);
+					progress.setMessage("Load experiment "+ index +" of "+ nexpts);
+					exp.setBinSubDirectory(expListBinSubDirectory);
+					if (expListBinSubDirectory == null)
+						exp.checkKymosDirectory(exp.getBinSubDirectory());
+					exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
+					if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesList.size())
+					{
+						maxSizeOfCapillaryArrays = exp.capillaries.capillariesList.size();
+						if (maxSizeOfCapillaryArrays % 2 != 0)
+							maxSizeOfCapillaryArrays += 1;
+					}
+					progress.incPosition();
 				}}));
 		}
 		waitFuturesCompletion(processor, futuresArray, progress);
