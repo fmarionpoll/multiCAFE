@@ -127,7 +127,7 @@ public class LevelsXYMultiChart extends IcyFrame
 		int maximumDrawHeight = height;
 		boolean displayLabels = true;
 		
-		String yTitle = "volume (ul)";
+		String yTitle = option.toUnit();
 
 		for (XYSeriesCollection xyDataset : xyDataSetList) 
 		{

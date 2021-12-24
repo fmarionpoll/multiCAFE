@@ -149,7 +149,8 @@ public class LevelsGraphs extends JPanel implements SequenceListener
 			closeChart(chartSumgulps);
 	}
 	
-	private LevelsXYMultiChart plotToChart(Experiment exp, String title, EnumXLSExportType option, LevelsXYMultiChart iChart, Rectangle rectv, Point ptRelative ) 
+	private LevelsXYMultiChart plotToChart(Experiment exp, String title, EnumXLSExportType option, 
+											LevelsXYMultiChart iChart, Rectangle rectv, Point ptRelative ) 
 	{	
 		if (iChart != null) 
 			iChart.mainChartFrame.dispose();
