@@ -18,7 +18,7 @@ public class XLSResults
 	List<Integer > 		data 		= null;
 
 	int[]				valint		= null;
-	double [] 			values_out	= null;
+	public double [] 	values_out	= null;
 	boolean[]			padded_out	= null;
 	
 	public XLSResults (String name, int nflies, EnumXLSExportType exportType) 

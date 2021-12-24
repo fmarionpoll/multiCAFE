@@ -21,21 +21,22 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.XYTaSeriesArrayList;
-import plugins.fmp.multicafe2.tools.chart.YPositionsCharts;
+import plugins.fmp.multicafe2.tools.chart.CageYPositionsCharts;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
-public class Graphs extends JPanel implements SequenceListener
+public class CageGraphs extends JPanel implements SequenceListener
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7079184380174992501L;
-	private YPositionsCharts ypositionsChart= null;
-	private YPositionsCharts distanceChart	= null;
-	private YPositionsCharts aliveChart		= null;
-	private YPositionsCharts sleepChart		= null;
+	private CageYPositionsCharts ypositionsChart= null;
+	private CageYPositionsCharts distanceChart	= null;
+	private CageYPositionsCharts aliveChart		= null;
+	private CageYPositionsCharts sleepChart		= null;
 	private MultiCAFE2 	parent0 			= null;
+	
 	public 	JCheckBox	moveCheckbox		= new JCheckBox("y position", true);	
 	private JCheckBox	distanceCheckbox	= new JCheckBox("distance t/t+1", false);
 			JCheckBox	aliveCheckbox		= new JCheckBox("fly alive", true);
@@ -125,11 +126,11 @@ public class Graphs extends JPanel implements SequenceListener
 		}
 	}
 
-	private void displayYPos(String title, YPositionsCharts iChart, Rectangle rectv, Point ptRelative, Experiment exp, EnumXLSExportType option) 
+	private void displayYPos(String title, CageYPositionsCharts iChart, Rectangle rectv, Point ptRelative, Experiment exp, EnumXLSExportType option) 
 	{
 		if (iChart == null || !iChart.mainChartPanel.isValid()) 
 		{
-			iChart = new YPositionsCharts();
+			iChart = new CageYPositionsCharts();
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		}
@@ -145,7 +146,7 @@ public class Graphs extends JPanel implements SequenceListener
 		close (sleepChart);
 	}
 	
-	private void close (YPositionsCharts chart) 
+	private void close (CageYPositionsCharts chart) 
 	{
 		if (chart != null) 
 		{

@@ -32,7 +32,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 			DetectGulps tabDetectGulps 	= new DetectGulps();
 			Edit		tabEdit			= new Edit();
 			Adjust		tabAdjust		= new Adjust();
-	public 	Graphs 		tabGraphs 		= new Graphs();
+	public 	LevelsGraphs 		tabGraphs 		= new LevelsGraphs();
 			MultiCAFE2	parent0 		= null;
 
 	

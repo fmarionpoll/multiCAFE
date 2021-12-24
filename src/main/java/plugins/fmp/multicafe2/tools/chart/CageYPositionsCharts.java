@@ -26,12 +26,10 @@ import plugins.fmp.multicafe2.tools.MinMaxDouble;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
-public class YPositionsCharts extends IcyFrame 
+public class CageYPositionsCharts extends IcyFrame 
 {
 	public JPanel 	mainChartPanel = null;
 	private ArrayList<ChartPanel> chartsInMainChartPanel = null;
-	List<XYSeriesCollection> xyDataSetList = null;
-	//
 	public IcyFrame mainChartFrame = null;
 	private String 	title;
 	private Point 	pt = new Point (0,0);
@@ -52,15 +50,7 @@ public class YPositionsCharts extends IcyFrame
 	
 	public void displayData(List<Cage> cageList, EnumXLSExportType option) 
 	{
-		if (xyDataSetList == null)
-			displayNewData(cageList, option);
-		else
-			fetchNewData(cageList, option);
-	}
-	
-	private void displayNewData(List<Cage> cageList, EnumXLSExportType option) 
-	{
-		xyDataSetList = new ArrayList <XYSeriesCollection>();
+		List<XYSeriesCollection> xyDataSetList = new ArrayList <XYSeriesCollection>();
 		MinMaxDouble valMinMax = new MinMaxDouble();
 		int count = 0;
 		for (Cage cage: cageList) 
@@ -98,28 +88,6 @@ public class YPositionsCharts extends IcyFrame
 		mainChartFrame.setLocation(pt);
 		mainChartFrame.addToDesktopPane ();
 		mainChartFrame.setVisible(true);
-	}
-	
-	private void fetchNewData (List<Cage> cageList, EnumXLSExportType option) 
-	{
-		for (Cage cage: cageList) 
-		{
-			String name = cage.cageRoi.getName();
-			for (XYSeriesCollection xySeriesList: xyDataSetList) 
-			{
-				int countseries = xySeriesList.getSeriesCount();
-				for (int i = 0; i< countseries; i++) 
-				{
-					XYSeries xySeries = xySeriesList.getSeries(i);
-					if (name .equals(xySeries.getDescription())) 
-					{
-						xySeries.clear();
-						addPointsToXYSeries(cage, option, xySeries);
-						break;
-					}
-				}
-			}
-		}
 	}
 	
 	private MinMaxDouble addPointsToXYSeries(Cage cage, EnumXLSExportType option, XYSeries seriesXY) 

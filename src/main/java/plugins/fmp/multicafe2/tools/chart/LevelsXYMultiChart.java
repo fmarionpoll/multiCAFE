@@ -19,12 +19,14 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
-import plugins.fmp.multicafe2.experiment.Capillary;
-import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
-public class XYMultiChart extends IcyFrame  
+import plugins.fmp.multicafe2.experiment.Experiment;
+import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
+import plugins.fmp.multicafe2.tools.toExcel.XLSExport;
+import plugins.fmp.multicafe2.tools.toExcel.XLSExportOptions;
+import plugins.fmp.multicafe2.tools.toExcel.XLSResults;
+
+public class LevelsXYMultiChart extends IcyFrame  
 {
 	public JPanel 	mainChartPanel = null;
 	public IcyFrame mainChartFrame = null;
@@ -38,8 +40,7 @@ public class XYMultiChart extends IcyFrame
 	private double ymax = 0;
 	private double ymin = 0;
 	private double xmax = 0;
-	private List<XYSeriesCollection> 	xyDataSetList 	= new ArrayList <XYSeriesCollection>();
-	private List<JFreeChart> 			xyChartList 	= new ArrayList <JFreeChart>();
+	private List<JFreeChart> xyChartList  = new ArrayList <JFreeChart>();
 	private String title;
 
 	//----------------------------------------
@@ -57,57 +58,66 @@ public class XYMultiChart extends IcyFrame
 		pt = new Point(rectv.x + deltapt.x, rectv.y + deltapt.y);
 	}
 	
-	private void getDataArrays(Experiment exp, EnumXLSExportType option, List<XYSeriesCollection> xyList) 
+	private void getDataArrays(Experiment exp, EnumXLSExportType option, boolean subtractEvaporation, List<XYSeriesCollection> xyList) 
 	{
-		SequenceKymos kymoseq = exp.seqKymos;
-		int nimages = kymoseq.nTotalFrames; //seq.getSizeT();
-		int startFrame = 0;
-		int kmax = exp.capillaries.desc.grouping;
-		char collection_char = '-';
-		XYSeriesCollection xyDataset = null;
-		double scalingFactor = exp.capillaries.getScalingFactorToPhysicalUnits();
+		XLSExport xlsExport = new XLSExport();
+		XLSExportOptions options = new XLSExportOptions();
+		options.buildExcelStepMs = 60000;
+		options.t0 = true;
+		options.subtractEvaporation = subtractEvaporation;
+		List <XLSResults> resultsList = xlsExport.getCapDataFromOneExperimentSeriesForGraph(exp, option, options);
+		List <XLSResults> resultsList2 = null;
+		if (option == EnumXLSExportType.TOPLEVEL) 
+			resultsList2 = xlsExport.getCapDataFromOneExperimentSeriesForGraph(exp, EnumXLSExportType.BOTTOMLEVEL, options);
 		
-		for (int t = 0; t < nimages; t++) 
+		String previousName = null;
+		XYSeriesCollection xyDataset = null;
+		for (XLSResults results: resultsList) 
 		{
-			Capillary cap = exp.capillaries.capillariesList.get(t);
-			char test = cap.getKymographName().charAt(cap.getKymographName().length() - 2);
-			if (kmax < 2 || test != collection_char) 
+			String currentName = results.name.substring(4, results.name.length()-1);
+			if (xyDataset == null) 
+			{
+				xyDataset = new XYSeriesCollection();
+				previousName = currentName; 
+				//results.name +=  "    ";
+			} 
+			else if (!previousName.equals(currentName)) 
 			{
 				if (xyDataset != null)
 					xyList.add(xyDataset);
+				previousName = currentName;
 				xyDataset = new XYSeriesCollection();
-				collection_char = test;
 			}
-			EnumXLSExportType ooption = option;
-			if (option == EnumXLSExportType.TOPLEVEL)
-				ooption = EnumXLSExportType.TOPLEVEL;
-			List<Integer> results = cap.getMeasures(ooption);
-			if (option == EnumXLSExportType.TOPLEVELDELTA) 
-				results = kymoseq.subtractTi(results);
-			String name = cap.getRoi().getName().substring(4);
-			if (t == 0)	// trick to change the size of the legend so that it takes the same vertical space as others 
-				name = name + "    ";
-			XYSeries seriesXY = getXYSeries(results, name, startFrame, scalingFactor);
 			
-			if (option == EnumXLSExportType.TOPLEVEL) 
-				appendDataToXYSeries(seriesXY, cap.getMeasures(EnumXLSExportType.BOTTOMLEVEL), startFrame, scalingFactor );
-			
-			xyDataset.addSeries( seriesXY );
-			getMaxMin();
+			XYSeries seriesXY = getXYSeries(results, results.name.substring(4));
+			if (resultsList2 != null)
+			{
+				for (XLSResults results2 : resultsList2) 
+				{
+					if (results2.name .equals(results.name)) 
+					{
+						appendDataToXYSeries(seriesXY, results2);
+						break;
+					}
+				}
+			}
+			xyDataset.addSeries(seriesXY );
+			updateGlobalMaxMin();
 		}
+		
 		if (xyDataset != null)
 			xyList.add(xyDataset);
 	}
 	
-	public void displayData(Experiment exp, EnumXLSExportType option) 
+	public void displayData(Experiment exp, EnumXLSExportType option, boolean subtractEvaporation) 
 	{
 		xyChartList.clear();
 
 		ymax = 0;
 		ymin = 0;
-		xyDataSetList.clear();
+		List<XYSeriesCollection> xyDataSetList = new ArrayList <XYSeriesCollection>();
 		flagMaxMinSet = false;
-		getDataArrays(exp, option, xyDataSetList);
+		getDataArrays(exp, option, subtractEvaporation, xyDataSetList);
 		
 		// display charts
 		int width = 130;
@@ -115,11 +125,21 @@ public class XYMultiChart extends IcyFrame
 		int maximumDrawWidth = width;
 		int height = 200;
 		int maximumDrawHeight = height;
-		boolean displayLabels = true; 
+		boolean displayLabels = true;
+		
+		String yTitle = "volume (ul)";
 
 		for (XYSeriesCollection xyDataset : xyDataSetList) 
 		{
-			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, false, false);
+			JFreeChart xyChart = ChartFactory.createXYLineChart(
+					null,				// chartname 
+					null, 				// xDomain
+					yTitle, 			// yDomain
+					xyDataset, 			// collection
+					PlotOrientation.VERTICAL, 
+					true, 				// legend
+					false, 				// tooltips
+					false);				// url
 			xyChart.setAntiAlias( true );
 			xyChart.setTextAntiAlias( true );
 			
@@ -128,6 +148,7 @@ public class XYMultiChart extends IcyFrame
 			yAxis.setTickLabelsVisible(displayLabels);
 			ValueAxis xAxis = xyChart.getXYPlot().getDomainAxis(0);
 			xAxis.setRange(0, globalXMax);
+			yTitle = null;
 
 			if (option == EnumXLSExportType.TOPLEVEL || option == EnumXLSExportType.BOTTOMLEVEL) 
 				xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
@@ -150,7 +171,7 @@ public class XYMultiChart extends IcyFrame
 		mainChartFrame.setVisible(true);
 	}
 
-	private void getMaxMin() 
+	private void updateGlobalMaxMin() 
 	{
 		if (!flagMaxMinSet) 
 		{
@@ -166,50 +187,40 @@ public class XYMultiChart extends IcyFrame
 			if (globalXMax < xmax) globalXMax = xmax;
 		}
 	}
-
-	private XYSeries getXYSeries(List<Integer> data, String name, int startFrame, double scalingFactor) 
+	
+	private XYSeries getXYSeries(XLSResults results, String name) 
 	{
 		XYSeries seriesXY = new XYSeries(name, false);
-		if (data != null) 
+		if (results.values_out != null && results.values_out.length > 0) 
 		{
-			int npoints = data.size();
-			if (npoints != 0) 
-			{
-				xmax = npoints;
-				int x = 0;
-				ymax = data.get(0) * scalingFactor;
-				ymin = ymax;
-				for (int j=0; j < npoints; j++) 
-				{
-					double y = data.get(j) * scalingFactor;
-					seriesXY.add( x+startFrame , y );
-					if (ymax < y) ymax = y;
-					if (ymin > y) ymin = y;
-					x++;
-				}
-			}
+			xmax = results.values_out.length;
+			ymax = results.values_out[0];
+			ymin = ymax;
+			addPointsAndUpdateExtrema(seriesXY, results, 0);	
 		}
 		return seriesXY;
 	}
 
-	private void appendDataToXYSeries(XYSeries seriesXY, List<Integer> data, int startFrame, double scalingFactor ) 
+	private void appendDataToXYSeries(XYSeries seriesXY, XLSResults results ) 
 	{	
-		if (data == null)
-			return;
-		int npoints = data.size();
-		if (npoints != 0) 
+		if (results.values_out != null && results.values_out.length > 0) 
 		{
 			seriesXY.add(Double.NaN, Double.NaN);
-			int x = 0;
-			for (int j=0; j < npoints; j++) 
-			{
-				double y = data.get(j) * scalingFactor;
-				seriesXY.add( x+startFrame , y );
-				if (ymax < y) ymax = y;
-				if (ymin > y) ymin = y;
-				x++;
-			}
+			addPointsAndUpdateExtrema(seriesXY, results, 0);	
 		}
 	}
-		
+	
+	private void addPointsAndUpdateExtrema(XYSeries seriesXY, XLSResults results, int startFrame) 
+	{
+		int x = 0;
+		int npoints = results.values_out.length;
+		for (int j = 0; j < npoints; j++) 
+		{
+			double y = results.values_out[j];
+			seriesXY.add( x+startFrame , y );
+			if (ymax < y) ymax = y;
+			if (ymin > y) ymin = y;
+			x++;
+		}
+	}
 }

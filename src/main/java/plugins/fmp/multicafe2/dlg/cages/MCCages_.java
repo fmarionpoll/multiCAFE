@@ -31,7 +31,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 			Detect2 		tabDetect2 		= new Detect2();
 			Edit			tabEdit			= new Edit();
 	public 	LoadSave 		tabFile 		= new LoadSave();
-	public 	Graphs 			tabGraphics 	= new Graphs();
+	public 	CageGraphs 			tabGraphics 	= new CageGraphs();
 	public	PopupPanel 		capPopupPanel	= null;
 			JTabbedPane 	tabsPane		= new JTabbedPane();
 			int				previouslySelected	= -1;

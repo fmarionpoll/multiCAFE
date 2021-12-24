@@ -331,6 +331,9 @@ public class XLSExport
 		
 	private void getDescriptorsForOneExperiment( Experiment exp, EnumXLSExportType xlsOption) 
 	{
+		if (expAll == null) 
+			return;
+		
 		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.cages.copy(exp.cages);
 		expAll.capillaries.copy(exp.capillaries);
@@ -387,6 +390,17 @@ public class XLSExport
 		return measureOption;
 	}
 	
+	public  List <XLSResults> getCapDataFromOneExperimentSeriesForGraph(Experiment exp, 
+									EnumXLSExportType xlsOption, XLSExportOptions options) 
+	{
+		this.options = options;
+		expAll = new Experiment();
+		expAll.camLastImage_Ms = exp.camLastImage_Ms;
+		expAll.camFirstImage_Ms = exp.camFirstImage_Ms;
+		getCapDataFromOneExperimentSeries(exp, xlsOption);
+		return rowListForOneExp;
+	}
+	
 	private void getCapDataFromOneExperimentSeries(Experiment exp, EnumXLSExportType xlsOption) 
 	{	
 		getDescriptorsForOneExperiment (exp, xlsOption);
@@ -417,8 +431,8 @@ public class XLSExport
 			if (nOutputFrames > 1)
 			{
 				XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesList.size());
-				switch (xlsOption) {
-//					case TOPRAW:
+				switch (xlsOption) 
+				{
 					case BOTTOMLEVEL:
 					case NBGULPS:
 					case AMPLITUDEGULPS:
@@ -514,6 +528,7 @@ public class XLSExport
 	{
 		if (resultsArrayList.resultsArrayList.size() <1)
 			return;
+		
 		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
 		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits();
 		switch (xlsoption) 
@@ -813,7 +828,7 @@ public class XLSExport
 		pt.x = rowSeries + col; 
 		if (row.values_out == null)
 			return;
-		for (long coltime=expAll.camFirstImage_Ms; coltime < expAll.camLastImage_Ms; coltime+=options.buildExcelStepMs, pt.y++) 
+		for (long coltime = expAll.camFirstImage_Ms; coltime < expAll.camLastImage_Ms; coltime+=options.buildExcelStepMs, pt.y++) 
 		{
 			int i_from = (int) ((coltime-expAll.camFirstImage_Ms) / options.buildExcelStepMs);
 			if (i_from >= row.values_out.length) 

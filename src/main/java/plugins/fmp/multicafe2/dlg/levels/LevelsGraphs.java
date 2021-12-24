@@ -21,28 +21,28 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Capillaries;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.chart.XYMultiChart;
+import plugins.fmp.multicafe2.tools.chart.LevelsXYMultiChart;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
-public class Graphs extends JPanel implements SequenceListener
+public class LevelsGraphs extends JPanel implements SequenceListener
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7079184380174992501L;
-	private XYMultiChart chartTopandbottom 		= null;
-	private XYMultiChart chartDelta 			= null;
-	private XYMultiChart chartDerivative 		= null;
-	private XYMultiChart chartSumgulps 			= null;
-	private MultiCAFE2 	parent0 				= null;
+	private LevelsXYMultiChart chartTopandbottom	= null;
+	private LevelsXYMultiChart chartDelta 			= null;
+	private LevelsXYMultiChart chartDerivative 		= null;
+	private LevelsXYMultiChart chartSumgulps 		= null;
+	private MultiCAFE2 	parent0 					= null;
 	
-	private JCheckBox 	limitsCheckbox 			= new JCheckBox("top/bottom", true);
-	private JCheckBox 	derivativeCheckbox 		= new JCheckBox("derivative", false);
-	private JCheckBox 	consumptionCheckbox 	= new JCheckBox("consumption", false);
-	private JCheckBox 	deltaCheckbox 			= new JCheckBox("delta (Vt - Vt-1)", false);
+	private JCheckBox 	limitsCheckbox 				= new JCheckBox("top/bottom", true);
+	private JCheckBox 	derivativeCheckbox 			= new JCheckBox("derivative", false);
+	private JCheckBox 	consumptionCheckbox 		= new JCheckBox("consumption", false);
+	private JCheckBox 	deltaCheckbox 				= new JCheckBox("delta (Vt - Vt-1)", false);
 	private JCheckBox 	correctEvaporationCheckbox 	= new JCheckBox("correct evaporation", false);
-	private JButton 	displayResultsButton 	= new JButton("Display results");
+	private JButton 	displayResultsButton 		= new JButton("Display results");
 	
 	
 	void init(GridLayout capLayout, MultiCAFE2 parent0) 
@@ -81,6 +81,17 @@ public class Graphs extends JPanel implements SequenceListener
 					xyDisplayGraphs(exp);
 				}
 			}});
+		
+		correctEvaporationCheckbox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				Experiment exp = (Experiment)  parent0.expListCombo.getSelectedItem();
+				if (exp != null) 
+				{
+					xyDisplayGraphs(exp);
+				}
+			}});
 	}
 	
 	public void xyDisplayGraphs(Experiment exp) 
@@ -90,21 +101,18 @@ public class Graphs extends JPanel implements SequenceListener
 			return;
 		final Rectangle rectv = v.getBounds();
 		Point ptRelative = new Point(0, 0); 
-//		if (parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())
-		
+//		if (parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())	
 //		if (rect0.x+ rect0.width < Icy.getMainInterface().getMainFrame().getDesktopWidth()) 
-			ptRelative.y = rectv.height;
+		ptRelative.y = rectv.height;
 		
 		int dx = 5;
-		int dy = 5; 
+		int dy = 10; 
 		exp.seqKymos.seq.addListener(this);
 		
 		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVEL)
 				&& isThereAnyDataToDisplay(exp, EnumXLSExportType.BOTTOMLEVEL))  
 		{
-			chartTopandbottom = xyDisplayGraphsItem(exp, "top + bottom levels", 
-					EnumXLSExportType.TOPLEVEL, 
-					chartTopandbottom, rectv, ptRelative);
+			chartTopandbottom = plotToChart(exp, "top + bottom levels", EnumXLSExportType.TOPLEVEL, chartTopandbottom, rectv, ptRelative);
 			ptRelative.translate(dx, dy);
 		}
 		else if (chartTopandbottom != null) 
@@ -112,7 +120,7 @@ public class Graphs extends JPanel implements SequenceListener
 		
 		if (deltaCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVELDELTA))  
 		{
-			chartDelta = xyDisplayGraphsItem(exp, "top delta t -(t-1)", 
+			chartDelta = plotToChart(exp, "top delta t -(t-1)", 
 					EnumXLSExportType.TOPLEVELDELTA, 
 					chartDelta, rectv, ptRelative);
 			ptRelative.translate(dx, dy);
@@ -122,7 +130,7 @@ public class Graphs extends JPanel implements SequenceListener
 		
 		if (derivativeCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumXLSExportType.DERIVEDVALUES))   
 		{
-			chartDerivative = xyDisplayGraphsItem(exp, "Derivative", 
+			chartDerivative = plotToChart(exp, "Derivative", 
 					EnumXLSExportType.DERIVEDVALUES, 
 					chartDerivative, rectv, ptRelative);
 			ptRelative.translate(dx, dy); 
@@ -132,7 +140,7 @@ public class Graphs extends JPanel implements SequenceListener
 		
 		if (consumptionCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumXLSExportType.SUMGULPS))  
 		{
-			chartSumgulps = xyDisplayGraphsItem(exp, "Cumulated gulps", 
+			chartSumgulps = plotToChart(exp, "Cumulated gulps", 
 					EnumXLSExportType.SUMGULPS, 
 					chartSumgulps, rectv, ptRelative);
 			ptRelative.translate(dx, dy); 
@@ -141,15 +149,15 @@ public class Graphs extends JPanel implements SequenceListener
 			closeChart(chartSumgulps);
 	}
 	
-	private XYMultiChart xyDisplayGraphsItem(Experiment exp, String title, EnumXLSExportType option, XYMultiChart iChart, Rectangle rectv, Point ptRelative ) 
+	private LevelsXYMultiChart plotToChart(Experiment exp, String title, EnumXLSExportType option, LevelsXYMultiChart iChart, Rectangle rectv, Point ptRelative ) 
 	{	
 		if (iChart != null) 
 			iChart.mainChartFrame.dispose();
-		iChart = new XYMultiChart();
+		iChart = new LevelsXYMultiChart();
 		iChart.createPanel(title);
 		if (ptRelative != null)
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
-		iChart.displayData(exp, option);
+		iChart.displayData(exp, option, correctEvaporationCheckbox.isSelected());
 		iChart.mainChartFrame.toFront();
 		return iChart;
 	}
@@ -162,7 +170,7 @@ public class Graphs extends JPanel implements SequenceListener
 		chartDelta = closeChart (chartDelta);	
 	}
 	
-	private XYMultiChart closeChart(XYMultiChart chart) 
+	private LevelsXYMultiChart closeChart(LevelsXYMultiChart chart) 
 	{
 		if (chart != null) 
 			chart.mainChartFrame.dispose();
