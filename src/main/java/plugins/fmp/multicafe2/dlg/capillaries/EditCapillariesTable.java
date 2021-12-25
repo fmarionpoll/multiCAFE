@@ -215,8 +215,8 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		long intervalT = v.getPositionT();
 		
-		if (exp.capillaries.findROI2DIntervalStart(intervalT) < 0) {
-			exp.capillaries.addROI2DInterval(intervalT);
+		if (exp.capillaries.findKymoROI2DIntervalStart(intervalT) < 0) {
+			exp.capillaries.addKymoROI2DInterval(intervalT);
 		}
 	}
 	
@@ -227,8 +227,8 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		long intervalT = v.getPositionT();
         
-		if (exp.capillaries.findROI2DIntervalStart(intervalT) >= 0) {
-			exp.capillaries.deleteROI2DInterval(intervalT);
+		if (exp.capillaries.findKymoROI2DIntervalStart(intervalT) >= 0) {
+			exp.capillaries.deleteKymoROI2DInterval(intervalT);
 		}
 	}
 	
@@ -237,7 +237,7 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 		if (exp == null) return;
 		Sequence seq = exp.seqCamData.seq;
 		
-		int intervalT =  (int) exp.capillaries.getROI2DIntervalsStartAt(selectedRow);
+		int intervalT =  (int) exp.capillaries.getKymoROI2DIntervalsStartAt(selectedRow);
 		seq.removeAllROI();	
 		List<ROI2D> listRois = new ArrayList<ROI2D>();
 		for (Capillary cap: exp.capillaries.capillariesList) {
@@ -255,7 +255,7 @@ public class EditCapillariesTable extends JPanel implements ListSelectionListene
 			return;
 		Sequence seq = exp.seqCamData.seq;
 		
-		int intervalT =  (int) exp.capillaries.getROI2DIntervalsStartAt(selectedRow);
+		int intervalT =  (int) exp.capillaries.getKymoROI2DIntervalsStartAt(selectedRow);
 		List<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (!roi.getName().contains("line")) 

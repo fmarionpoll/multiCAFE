@@ -435,7 +435,7 @@ public class XLSExport
 		{
 			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
-			results.data = cap.getMeasures(measureOption, kymoBinCol_Ms, options.buildExcelStepMs);
+			results.data = cap.getCapillaryMeasures(measureOption, kymoBinCol_Ms, options.buildExcelStepMs);
 			resultsArrayList.add(results);
 		}
 	}
@@ -446,7 +446,7 @@ public class XLSExport
 		{
 			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
-			results.data = cap.getMeasures(measureOption, kymoBinCol_Ms, options.buildExcelStepMs);
+			results.data = cap.getCapillaryMeasures(measureOption, kymoBinCol_Ms, options.buildExcelStepMs);
 			if (options.t0) 
 				results.subtractT0();
 			resultsArrayList.add(results);
@@ -500,13 +500,13 @@ public class XLSExport
 					case AUTOCORREL:
 					case CROSSCORREL:
 					case CROSSCORREL_LR:
-						for (Capillary cap: expi.capillaries.capillariesList) 
-						{
-							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-							XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
-							results.data = cap.getMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
-							resultsArrayList.add(results);
-						}
+//						for (Capillary cap: expi.capillaries.capillariesList) 
+//						{
+//							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
+//							XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
+//							results.data = cap.getCapillaryMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
+//							resultsArrayList.add(results);
+//						}
 						break;
 						
 					default:
@@ -549,17 +549,8 @@ public class XLSExport
 			return;
 		
 		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
-		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits();
-		switch (xlsoption) 
-		{
-			case NBGULPS:
-			case TTOGULP:
-			case TTOGULP_LR:
-				scalingFactorToPhysicalUnits = 1.;
-				break;
-			default:
-				break;
-		}
+		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits(xlsoption);
+		
 		
 		long offsetChain = expi.camFirstImage_Ms - expi.chainFirstImage_Ms;
 		long start_Ms = expi.offsetFirstCol_Ms + offsetChain; // TODO check when collate?
@@ -583,7 +574,7 @@ public class XLSExport
 		final int to_first_index = (int) (start_Ms / options.buildExcelStepMs) ;
 		final int to_nvalues = (int) ((end_Ms - start_Ms)/options.buildExcelStepMs)+1;
 		
-		for (XLSResults row: rowListForOneExp ) 
+		for (XLSResults row : rowListForOneExp ) 
 		{
 			XLSResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
 			if (results != null && results.data != null) 
@@ -614,7 +605,7 @@ public class XLSExport
 					if (from_i >= results.data.size())
 						break;
 					// TODO check how this can happen
-					if (from_i< 0)
+					if (from_i < 0)
 						continue;
 					double value = results.data.get(from_i) * scalingFactorToPhysicalUnits + dvalue;
 					if (icolTo >= row.values_out.length)

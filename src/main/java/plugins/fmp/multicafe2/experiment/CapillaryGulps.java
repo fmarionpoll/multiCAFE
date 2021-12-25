@@ -194,15 +194,18 @@ public class CapillaryGulps implements XMLPersistent
 		int nintervals = -1;
 		ArrayList<Integer> data_out = null;
 		for (int index = datai.size()-1; index>= 0; index--) {
-			if (datai.get(index) == 1) {
-				if (nintervals < 0) {
+			if (datai.get(index) == 1) 
+			{
+				if (nintervals < 0) 
+				{
 					int nitems = index+1;
 					data_out = new ArrayList<Integer> (Collections.nCopies(nitems, 0));
 				}
 				nintervals = 0;
 				data_out.set(index, nintervals);
 			}
-			else if (nintervals >= 0) {
+			else if (nintervals >= 0) 
+			{
 				nintervals++;
 				data_out.set(index, nintervals);
 			}
@@ -210,18 +213,21 @@ public class CapillaryGulps implements XMLPersistent
 		return data_out;
 	}
 
-	public void transferROIsToMeasures(List<ROI> listRois) {	
+	public void transferROIsToMeasures(List<ROI> listRois) 
+	{	
 		rois = new ArrayList<ROI2D>();
 		for (ROI roi: listRois) {		
 			String roiname = roi.getName();
-			if (roi instanceof ROI2DPolyLine ) {
+			if (roi instanceof ROI2DPolyLine ) 
+			{
 				if (roiname .contains("gulp"))	
 					rois.add( (ROI2D) roi);
 			}
 		}
 	}
 
-	public void addGulp(ROI2DPolyLine roi, int indexkymo, String name) {
+	public void addGulp(ROI2DPolyLine roi, int indexkymo, String name) 
+	{
 		roi.setColor(Color.red);
 		roi.setStroke(1);
 		roi.setName(name);
@@ -229,21 +235,23 @@ public class CapillaryGulps implements XMLPersistent
 		rois.add(roi);
 	}
 	
-	public List<ROI2D> addToROIs(List<ROI2D> listrois, int indexImage) {
+	public List<ROI2D> addToROIs(List<ROI2D> listrois, int indexImage) 
+	{
 		if (rois != null) 
 			listrois.addAll(rois);
 		return listrois;
 	}
 	
-	public void removeROIsWithinInterval(int startPixel, int endPixel) {
+	public void removeROIsWithinInterval(int startPixel, int endPixel) 
+	{
 		Iterator <ROI2D> iterator = rois.iterator();
-		while (iterator.hasNext()) {
+		while (iterator.hasNext()) 
+		{
 			ROI2D roi = iterator.next();
 			// if roi.first >= startpixel && roi.first <= endpixel	
 			Rectangle rect = ((ROI2D) roi).getBounds();
-			if (rect.x >= startPixel && rect.x <= endPixel) {
+			if (rect.x >= startPixel && rect.x <= endPixel) 
 				iterator.remove();
-			}
 		}
 	}
 	

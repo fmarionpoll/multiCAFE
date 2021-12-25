@@ -9,7 +9,7 @@ import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 
-public class ROI2DForKymo implements XMLPersistent 
+public class KymoROI2D implements XMLPersistent 
 {
 	private int		index			= 0;
 	private ROI2D 	roi 			= null;	
@@ -21,12 +21,12 @@ public class ROI2DForKymo implements XMLPersistent
 	private final String ID_START 	= "startT";
 	
 	
-	public ROI2DForKymo(long start, ROI2D roi) {
+	public KymoROI2D(long start, ROI2D roi) {
 		setRoi(roi);
 		this.start = start;
 	}
 	
-	public ROI2DForKymo() {
+	public KymoROI2D() {
 	}
 
 	public long getStart() {

@@ -3,7 +3,7 @@ package plugins.fmp.multicafe2.experiment;
 import java.util.ArrayList;
 
 
-public class ROI2DIntervals {
+public class KymoIntervals {
 	
 	public ArrayList<Long[]> intervals = new ArrayList<Long[]>();
 	

@@ -29,7 +29,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 {
 
 	private ROI2D 						roi 			= null;
-	private ArrayList<ROI2DForKymo>		roisForKymo 	= new ArrayList<ROI2DForKymo>();
+	private ArrayList<KymoROI2D>		roisForKymo 	= new ArrayList<KymoROI2D>();
 	
 	private String						kymographName 	= null;
 	
@@ -253,7 +253,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return yes;
 	}
 	
-	public List<Integer> getMeasures(EnumXLSExportType option, long seriesBinMs, long outputBinMs) 
+	public List<Integer> getCapillaryMeasures(EnumXLSExportType option, long seriesBinMs, long outputBinMs) 
 	{
 		List<Integer> datai = null;
 		switch (option) 
@@ -406,7 +406,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	{
 		gulpsRois.addGulp(new ROI2DPolyLine (gulpPoints), indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexPixel));
 		gulpPoints.clear();
-//		System.out.println("gulpPoints.size()=" + gulpPoints.size());
 	}
 	
 	public int getLastMeasure(EnumXLSExportType option) 
@@ -570,7 +569,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		if (nitems > 0) {
         	for (int i=0; i < nitems; i++) {
         		Node node_i = XMLUtil.setElement(nodeMeta2, ID_INTERVAL+i);
-        		ROI2DForKymo roiInterval = new ROI2DForKymo();
+        		KymoROI2D roiInterval = new KymoROI2D();
         		roiInterval.loadFromXML(node_i);
         		roisForKymo.add(roiInterval);
         		
@@ -734,24 +733,24 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 
 	// --------------------------------------------
 	
-	public List<ROI2DForKymo> getRoisForKymo() {
+	public List<KymoROI2D> getRoisForKymo() {
 		if (roisForKymo.size() < 1) 
 			initROI2DForKymoList();
 		return roisForKymo;
 	}
 	
- 	public ROI2DForKymo getROI2DKymoAt(int i) {
+ 	public KymoROI2D getROI2DKymoAt(int i) {
 		if (roisForKymo.size() < 1) 
 			initROI2DForKymoList();
 		return roisForKymo.get(i);
 	}
  	
- 	public ROI2DForKymo getROI2DKymoAtIntervalT(long t) {
+ 	public KymoROI2D getROI2DKymoAtIntervalT(long t) {
 		if (roisForKymo.size() < 1) 
 			initROI2DForKymoList();
 		
-		ROI2DForKymo capRoi = null;
-		for (ROI2DForKymo item : roisForKymo) {
+		KymoROI2D capRoi = null;
+		for (KymoROI2D item : roisForKymo) {
 			if (t < item.getStart())
 				break;
 			capRoi = item;
@@ -760,8 +759,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	}
  	
  	public void removeROI2DIntervalStartingAt(long start) {
- 		ROI2DForKymo itemFound = null;
- 		for (ROI2DForKymo item : roisForKymo) {
+ 		KymoROI2D itemFound = null;
+ 		for (KymoROI2D item : roisForKymo) {
 			if (start != item.getStart())
 				continue;
 			itemFound = item;
@@ -771,6 +770,14 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	}
 	
 	private void initROI2DForKymoList() { 
-		roisForKymo.add(new ROI2DForKymo(0, roi));		
+		roisForKymo.add(new KymoROI2D(0, roi));		
 	}
+	
+	public void setVolumeAndPixels(double volume, int pixels) 
+	{
+		capVolume = volume;
+		capPixels = pixels;
+		descriptionOK = true;
+	}
+	
 }
