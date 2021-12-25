@@ -69,6 +69,19 @@ public class XLSResults
 		nflies = 0;
 	}
 	
+	public List<Integer>  subtractT0 () 
+	{
+		if (data == null || data.size() < 1)
+			return null;
+		int item0 = data.get(0);
+		for (int index= 0; index < data.size(); index++) 
+		{
+			int value = data.get(index);
+			data.set(index, value-item0);
+		}
+		return data;
+	}
+	
 	boolean subtractDeltaT(int arrayStep, int binStep) {
 		if (values_out == null || values_out.length < 2)
 			return false;

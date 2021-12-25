@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe2.dlg.excel;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -7,7 +8,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 public class Gulps extends JPanel 
 {
@@ -21,11 +25,16 @@ public class Gulps extends JPanel
 	JCheckBox 	sumGulpsCheckBox 	= new JCheckBox("sum", true);
 	JCheckBox 	nbGulpsCheckBox 	= new JCheckBox("number/bin", true);
 	JCheckBox   amplitudeGulpsCheckBox =new JCheckBox("amplitude/bin", true);
-	
-	JCheckBox 	tToGulpCheckBox 	= new JCheckBox("t to gulp", true);
-	JCheckBox 	tToGulpLRCheckBox 	= new JCheckBox("t to gulp L/R", true);
+//	JCheckBox 	tToGulpCheckBox 	= new JCheckBox("t to gulp", true);
+//	JCheckBox 	tToGulpLRCheckBox 	= new JCheckBox("t to gulp L/R", true);
 	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R & ratio", true);
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
+	
+	JCheckBox   autocorrelationCheckBox = new JCheckBox("autocorrelation", true);
+	JCheckBox   crosscorrelationCheckBox = new JCheckBox("crosscorrelation", true);
+	JLabel		nbinsLabel 			= new JLabel("n bins:");
+	JSpinner 	nbinsJSpinner		= new JSpinner(new SpinnerNumberModel(40, 1, 99999999, 1));
+	
 	
 	void init(GridLayout capLayout) 
 	{	
@@ -37,13 +46,20 @@ public class Gulps extends JPanel
 		panel0.add(sumGulpsCheckBox);
 		panel0.add(nbGulpsCheckBox);
 		panel0.add(amplitudeGulpsCheckBox);
-		panel0.add(tToGulpCheckBox);
-		panel0.add(tToGulpLRCheckBox);
+//		panel0.add(tToGulpCheckBox);
+//		panel0.add(tToGulpLRCheckBox);
+		panel0.add(sumCheckBox);
+		panel0.add(onlyaliveCheckBox);
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout0);
-		panel1.add(sumCheckBox);
-		panel1.add(onlyaliveCheckBox);
+		panel1.add(autocorrelationCheckBox);
+		panel1.add(crosscorrelationCheckBox);
+		panel1.add(nbinsLabel);
+		int bWidth = 50;
+		int bHeight = 21;
+		nbinsJSpinner.setPreferredSize(new Dimension(bWidth, bHeight));
+		panel1.add(nbinsJSpinner);
 		add(panel1);
 		
 		FlowLayout flowLayout2 = new FlowLayout(FlowLayout.RIGHT);

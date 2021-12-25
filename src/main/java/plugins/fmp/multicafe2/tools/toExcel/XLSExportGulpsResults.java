@@ -52,6 +52,10 @@ public class XLSExportGulpsResults  extends XLSExport
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TTOGULP);
 				if (options.tToNextGulp_LR)
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TTOGULP_LR);
+				if (options.autocorrelation)
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.AUTOCORREL);
+				if (options.crosscorrelation)
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.CROSSCORREL);
 				
 				if (!options.collateSeries || exp.chainToPrevious == null)
 					column += expList.maxSizeOfCapillaryArrays +2;

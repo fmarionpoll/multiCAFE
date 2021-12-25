@@ -378,60 +378,6 @@ public class SequenceKymos extends SequenceCamData
 	}
 		
 	// ----------------------------
-
-	public List<Integer> subtractTi(List<Integer > array) 
-	{
-		if (array == null || array.size() < 1)
-			return null;
-		int item0 = array.get(0);
-		for (int index= 0; index < array.size(); index++) 
-		{
-			int value = array.get(index);
-			array.set(index, value-item0);
-			item0 = value;
-		}
-		return array;
-	}
-		
-	public List<Integer> subtractT0 (List<Integer> array) 
-	{
-		if (array == null || array.size() < 1)
-			return null;
-		int item0 = array.get(0);
-		for (int index= 0; index < array.size(); index++) 
-		{
-			int value = array.get(index);
-			array.set(index, value-item0);
-		}
-		return array;
-	}
-	
-	public List<Integer> subtractT0AndAddConstant (List<Integer> array, int constant) 
-	{
-		if (array == null || array.size() < 1)
-			return null;
-		int item0 = array.get(0) - constant;
-		for (int index= 0; index < array.size(); index++) 
-		{
-			int value = array.get(index);
-			array.set(index, value-item0);
-		}
-		return array;
-	}
-	
-	public List<Integer> addConstant (List<Integer> array, int constant) 
-	{
-		if (array == null || array.size() < 1)
-			return null;
-		for (int index= 0; index < array.size(); index++) 
-		{
-			int value = array.get(index);
-			array.set(index, value + constant);
-		}
-		return array;
-	}
-
-	// ----------------------------
 	
 	private List<String> convertLinexLRFileNames(List<String> myListOfFilesNames) 
 	{

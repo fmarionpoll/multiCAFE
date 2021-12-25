@@ -39,7 +39,7 @@ public class LevelsGraphs extends JPanel implements SequenceListener
 	
 	private JCheckBox 	limitsCheckbox 				= new JCheckBox("top/bottom", true);
 	private JCheckBox 	derivativeCheckbox 			= new JCheckBox("derivative", false);
-	private JCheckBox 	consumptionCheckbox 		= new JCheckBox("consumption", false);
+	private JCheckBox 	consumptionCheckbox 		= new JCheckBox("sumGulps", false);
 	private JCheckBox 	deltaCheckbox 				= new JCheckBox("delta (Vt - Vt-1)", false);
 	private JCheckBox 	correctEvaporationCheckbox 	= new JCheckBox("correct evaporation", false);
 	private JButton 	displayResultsButton 		= new JButton("Display results");

@@ -19,6 +19,9 @@ public enum EnumXLSExportType
 	TTOGULP("tToGulp", "minutes"),
 	TTOGULP_LR("tToGulp_LR", "minutes"),
 	
+	AUTOCORREL("autocorrel", "n observ"),
+	CROSSCORREL("crosscorrel", "n observ"),
+	
 	XYIMAGE ("xy-image", "pixels"), 
 	XYTOPCAGE ("xy-topcage", "pixels"), 
 	XYTIPCAPS ("xy-tipcaps", "pixels"), 
