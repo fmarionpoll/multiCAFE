@@ -440,7 +440,7 @@ public class XLSExport
 		}
 	}
 	
-	private void exportResults2(Experiment expi, XLSResultsArray resultsArrayList, EnumXLSExportType measureOption, EnumXLSExportType xlsOption, int nOutputFrames, long kymoBinCol_Ms) 
+	private void exportResults_T0(Experiment expi, XLSResultsArray resultsArrayList, EnumXLSExportType measureOption, EnumXLSExportType xlsOption, int nOutputFrames, long kymoBinCol_Ms) 
 	{
 		for (Capillary cap: expi.capillaries.capillariesList) 
 		{
@@ -452,11 +452,7 @@ public class XLSExport
 			resultsArrayList.add(results);
 		}
 	}
-	
-	private void exportResults3(Experiment expi, XLSResultsArray resultsArrayList, EnumXLSExportType measureOption, EnumXLSExportType xlsOption, int nOutputFrames) 
-	{
-	}
-	
+		
 	private void getCapDataFromOneExperimentSeries(Experiment exp, EnumXLSExportType xlsOption) 
 	{	
 		getDescriptorsForOneExperiment (exp, xlsOption);
@@ -480,7 +476,7 @@ public class XLSExport
 						break;
 						
 					case TOPRAW:
-						exportResults2(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms);
+						exportResults_T0(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms);
 						break;
 						
 					case TOPLEVEL:
@@ -488,7 +484,7 @@ public class XLSExport
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
 					case TOPLEVEL_RATIO:
-						exportResults2(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms);
+						exportResults_T0(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms);
 						if (options.subtractEvaporation)
 							resultsArrayList.subtractEvaporation();
 						break;
@@ -503,6 +499,7 @@ public class XLSExport
 						
 					case AUTOCORREL:
 					case CROSSCORREL:
+					case CROSSCORREL_LR:
 						for (Capillary cap: expi.capillaries.capillariesList) 
 						{
 							resultsArrayList.checkIfSameStimulusAndConcentration(cap);

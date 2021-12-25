@@ -22,6 +22,7 @@ public class XLSExportOptions
 	
 	public boolean  autocorrelation		= false;
 	public boolean	crosscorrelation	= false;
+	public boolean  crosscorrelationLR	= false;
 	public int		nbinscorrelation	= 40;
 	
 	public boolean 	cage 				= true;

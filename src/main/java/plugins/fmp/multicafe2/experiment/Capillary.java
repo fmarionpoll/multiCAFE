@@ -267,6 +267,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		case AMPLITUDEGULPS:
 		case TTOGULP:
 		case TTOGULP_LR:
+		case AUTOCORREL:
+//		case CROSSCORREL:
+//		case CROSSCORREL_LR:
 			if (gulpsRois != null)
 				datai = gulpsRois.getMeasures(option, ptsTop.getNPoints(), seriesBinMs, outputBinMs);
 			break;

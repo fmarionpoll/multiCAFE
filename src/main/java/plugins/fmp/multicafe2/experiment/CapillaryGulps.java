@@ -118,6 +118,11 @@ public class CapillaryGulps implements XMLPersistent
 			List<Integer> datag = getIsGulpsFromRoisArray(npoints);
 			data_in = getTToNextGulp(datag, npoints);
 			break;
+			
+		case AUTOCORREL:
+//		case CROSSCORREL:
+//		case CROSSCORREL_LR:
+			break;
 		default:
 			break;
 		}
@@ -188,7 +193,7 @@ public class CapillaryGulps implements XMLPersistent
 	{
 		int nintervals = -1;
 		ArrayList<Integer> data_out = null;
-		for (int index= datai.size()-1; index>= 0; index--) {
+		for (int index = datai.size()-1; index>= 0; index--) {
 			if (datai.get(index) == 1) {
 				if (nintervals < 0) {
 					int nitems = index+1;
