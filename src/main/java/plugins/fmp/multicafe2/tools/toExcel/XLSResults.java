@@ -14,8 +14,8 @@ public class XLSResults
 	int					nflies		= 1;
 	int 				cageID		= 0;
 	int 				dimension	= 0;
-	EnumXLSExportType 	exportType 	= null;
-	List<Integer > 		data 		= null;
+	EnumXLSExportType 			exportType 	= null;
+	public List<Integer > 		data 		= null;
 
 	int[]				valint		= null;
 	public double [] 	values_out	= null;

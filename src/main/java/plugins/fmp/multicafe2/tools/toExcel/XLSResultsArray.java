@@ -19,12 +19,12 @@ public class XLSResultsArray
 		resultsArrayList = new ArrayList <XLSResults> (size);
 	}
 	
-	void add(XLSResults results) 
+	public void addResults(XLSResults results) 
 	{
 		resultsArrayList.add(results);
 	}
 	
-	void checkIfSameStimulusAndConcentration(Capillary cap) 
+	public void checkIfSameStimulusAndConcentration(Capillary cap) 
 	{
 		if (!sameLR)
 			return;

@@ -22,7 +22,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 public class CapillaryGulps implements XMLPersistent  
 {	
 	private final String ID_GULPS = "gulpsMC";
-	public List<ROI2D> rois = null; 
+	public ArrayList<ROI2D> rois = null; 
 
 	// -------------------------------
 	
@@ -75,13 +75,17 @@ public class CapillaryGulps implements XMLPersistent
 		return (rois != null && rois.size() > 0);
 	}
 	
-	public List<Integer> getMeasures(EnumXLSExportType option, int npoints, long seriesBinMs, long outputBinMs) 
-	{	
-		ArrayList<Integer> data_in = getMeasures(option, npoints);
-		return adaptArray(data_in, seriesBinMs, outputBinMs);
+	private void convertPositiveAmplitudesIntoEvent(ArrayList<Integer> data_in)
+	{
+		if (data_in == null) 
+			return;
+		
+		int npoints = data_in.size();
+		for (int i = 0; i < npoints; i++) 
+			data_in.set(i, data_in.get(i) >= 0? 1: 0);
 	}
 	
-	private ArrayList<Integer> adaptArray(ArrayList<Integer> data_in, long seriesBinMs, long outputBinMs) 
+	private ArrayList<Integer> stretchArrayToOutputBins(ArrayList<Integer> data_in, long seriesBinMs, long outputBinMs) 
 	{
 		if (data_in == null) 
 			return null;
@@ -99,29 +103,36 @@ public class CapillaryGulps implements XMLPersistent
 		return data_out;
 	}
 	
-	public ArrayList<Integer> getMeasures(EnumXLSExportType option, int npoints) 
-	{
+	public List<Integer> getMeasuresFromGulps(EnumXLSExportType option, int npoints, long seriesBinMs, long outputBinMs) 
+	{	
 		ArrayList<Integer> data_in = null;
 		switch (option) 
 		{
 		case SUMGULPS:
 			data_in = getCumSumFromRoisArray(npoints);
+			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
 		case NBGULPS:
 			data_in = getIsGulpsFromRoisArray(npoints);
+			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
 		case AMPLITUDEGULPS:
 			data_in = getAmplitudeGulpsFromRoisArray(npoints);
+			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
 		case TTOGULP:
 		case TTOGULP_LR:
 			List<Integer> datag = getIsGulpsFromRoisArray(npoints);
 			data_in = getTToNextGulp(datag, npoints);
+			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
 			
 		case AUTOCORREL:
-//		case CROSSCORREL:
-//		case CROSSCORREL_LR:
+		case CROSSCORREL:
+		case CROSSCORREL_LR:
+			data_in = getAmplitudeGulpsFromRoisArray(npoints);
+			convertPositiveAmplitudesIntoEvent(data_in);
+			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
 		default:
 			break;
@@ -193,7 +204,8 @@ public class CapillaryGulps implements XMLPersistent
 	{
 		int nintervals = -1;
 		ArrayList<Integer> data_out = null;
-		for (int index = datai.size()-1; index>= 0; index--) {
+		for (int index = datai.size()-1; index >= 0; index--) 
+		{
 			if (datai.get(index) == 1) 
 			{
 				if (nintervals < 0) 
@@ -216,7 +228,8 @@ public class CapillaryGulps implements XMLPersistent
 	public void transferROIsToMeasures(List<ROI> listRois) 
 	{	
 		rois = new ArrayList<ROI2D>();
-		for (ROI roi: listRois) {		
+		for (ROI roi: listRois) 
+		{		
 			String roiname = roi.getName();
 			if (roi instanceof ROI2DPolyLine ) 
 			{

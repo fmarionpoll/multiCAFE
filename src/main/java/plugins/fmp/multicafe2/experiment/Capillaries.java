@@ -20,6 +20,9 @@ import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
+import plugins.fmp.multicafe2.tools.toExcel.XLSExportOptions;
+import plugins.fmp.multicafe2.tools.toExcel.XLSResults;
+import plugins.fmp.multicafe2.tools.toExcel.XLSResultsArray;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
@@ -504,4 +507,56 @@ public class Capillaries
 		return scalingFactorToPhysicalUnits;
 	}
 
+	// ---------------------------------------------------
+	
+	public void exportResults1(Experiment expi, XLSResultsArray resultsArrayList, EnumXLSExportType measureOption, EnumXLSExportType xlsOption, int nOutputFrames, long kymoBinCol_Ms, XLSExportOptions 	options) 
+	{
+		for (Capillary cap: expi.capillaries.capillariesList) 
+		{
+			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
+			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
+			results.data = cap.getCapillaryMeasures(measureOption, kymoBinCol_Ms, options.buildExcelStepMs);
+			resultsArrayList.addResults(results);
+		}
+		
+		switch (measureOption) 
+		{
+		case AUTOCORREL:
+			buildAutocorrel();
+			break;
+		case CROSSCORREL:
+			buildCrosscorrel();
+			break;
+		case CROSSCORREL_LR:
+			buildCrossCorrel_LR()
+			break;
+		
+		case TOPLEVEL_LR:
+		case TOPLEVELDELTA_LR:
+		case SUMGULPS_LR:
+			buildLR();
+			break;
+		
+		case TOPLEVEL_RATIO:
+			buildRatioLR();
+			break;
+			
+		default:
+			break;
+		}
+	}
+	
+	public void exportResults_T0(Experiment expi, XLSResultsArray resultsArrayList, EnumXLSExportType measureOption, EnumXLSExportType xlsOption, int nOutputFrames, long kymoBinCol_Ms, XLSExportOptions 	options) 
+	{
+		for (Capillary cap: expi.capillaries.capillariesList) 
+		{
+			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
+			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
+			results.data = cap.getCapillaryMeasures(measureOption, kymoBinCol_Ms, options.buildExcelStepMs);
+			if (options.t0) 
+				results.subtractT0();
+			resultsArrayList.addResults(results);
+		}
+	}
+	
 }

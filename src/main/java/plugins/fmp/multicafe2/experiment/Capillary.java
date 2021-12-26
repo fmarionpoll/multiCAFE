@@ -268,10 +268,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		case TTOGULP:
 		case TTOGULP_LR:
 		case AUTOCORREL:
-//		case CROSSCORREL:
-//		case CROSSCORREL_LR:
+		case CROSSCORREL:
+		case CROSSCORREL_LR:
 			if (gulpsRois != null)
-				datai = gulpsRois.getMeasures(option, ptsTop.getNPoints(), seriesBinMs, outputBinMs);
+				datai = gulpsRois.getMeasuresFromGulps(option, ptsTop.getNPoints(), seriesBinMs, outputBinMs);
 			break;
 		case BOTTOMLEVEL:
 			datai = ptsBottom.getMeasures(seriesBinMs, outputBinMs);
@@ -283,35 +283,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		}
 		return datai;
 	}
-	
-	public List<Integer> getMeasures(EnumXLSExportType option) 
-	{
-		List<Integer> datai = null;
-		switch (option) 
-		{
-		case DERIVEDVALUES:
-			if (ptsDerivative != null)
-				datai = ptsDerivative.getMeasures();
-			break;
-		case SUMGULPS:
-		case NBGULPS:
-		case AMPLITUDEGULPS:
-		case TTOGULP:
-		case TTOGULP_LR:
-			if (gulpsRois != null)
-				datai = gulpsRois.getMeasures(option, ptsTop.getNPoints());
-			break;
-		case BOTTOMLEVEL:
-			datai = ptsBottom.getMeasures();
-			break;
-		case TOPLEVEL:
-		default:
-			datai = ptsTop.getMeasures();
-			break;
-		}
-		return datai;
-	}
-	
+		
 	public void cropMeasuresToNPoints (int npoints) 
 	{
 		if (ptsTop.polylineLimit != null)

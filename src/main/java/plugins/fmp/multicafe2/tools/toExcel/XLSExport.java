@@ -17,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.experiment.Cage;
+import plugins.fmp.multicafe2.experiment.Capillaries;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.Comparators;
@@ -86,7 +87,7 @@ public class XLSExport
 		}
 		
 		List<Capillary> capList = exp.capillaries.capillariesList;
-		for (int t=0; t< capList.size(); t++) 
+		for (int t = 0; t < capList.size(); t++) 
 		{ 
 			Capillary cap = capList.get(t);
 			String	name = cap.getRoiName();
@@ -429,29 +430,6 @@ public class XLSExport
 		return nOutputFrames;
 	}
 	
-	private void exportResults1(Experiment expi, XLSResultsArray resultsArrayList, EnumXLSExportType measureOption, EnumXLSExportType xlsOption, int nOutputFrames, long kymoBinCol_Ms) 
-	{
-		for (Capillary cap: expi.capillaries.capillariesList) 
-		{
-			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
-			results.data = cap.getCapillaryMeasures(measureOption, kymoBinCol_Ms, options.buildExcelStepMs);
-			resultsArrayList.add(results);
-		}
-	}
-	
-	private void exportResults_T0(Experiment expi, XLSResultsArray resultsArrayList, EnumXLSExportType measureOption, EnumXLSExportType xlsOption, int nOutputFrames, long kymoBinCol_Ms) 
-	{
-		for (Capillary cap: expi.capillaries.capillariesList) 
-		{
-			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
-			results.data = cap.getCapillaryMeasures(measureOption, kymoBinCol_Ms, options.buildExcelStepMs);
-			if (options.t0) 
-				results.subtractT0();
-			resultsArrayList.add(results);
-		}
-	}
 		
 	private void getCapDataFromOneExperimentSeries(Experiment exp, EnumXLSExportType xlsOption) 
 	{	
@@ -465,6 +443,7 @@ public class XLSExport
 			if (nOutputFrames > 1)
 			{
 				XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesList.size());
+				Capillaries caps = expi.capillaries;
 				switch (xlsOption) 
 				{
 					case BOTTOMLEVEL:
@@ -472,11 +451,11 @@ public class XLSExport
 					case AMPLITUDEGULPS:
 					case TTOGULP:
 					case TTOGULP_LR:
-						exportResults1(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms);
+						caps.exportResults1(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms, options);
 						break;
 						
 					case TOPRAW:
-						exportResults_T0(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms);
+						caps.exportResults_T0(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms, options);
 						break;
 						
 					case TOPLEVEL:
@@ -484,7 +463,7 @@ public class XLSExport
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
 					case TOPLEVEL_RATIO:
-						exportResults_T0(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms);
+						caps.exportResults_T0(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms, options);
 						if (options.subtractEvaporation)
 							resultsArrayList.subtractEvaporation();
 						break;
@@ -492,7 +471,7 @@ public class XLSExport
 					case DERIVEDVALUES:
 					case SUMGULPS:
 					case SUMGULPS_LR:
-						exportResults1(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms);
+						caps.exportResults1(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms, options);
 						if (options.subtractEvaporation)
 							resultsArrayList.subtractEvaporation();
 						break;
@@ -500,13 +479,7 @@ public class XLSExport
 					case AUTOCORREL:
 					case CROSSCORREL:
 					case CROSSCORREL_LR:
-//						for (Capillary cap: expi.capillaries.capillariesList) 
-//						{
-//							resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-//							XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
-//							results.data = cap.getCapillaryMeasures(measureOption, exp.kymoBinCol_Ms, options.buildExcelStepMs);
-//							resultsArrayList.add(results);
-//						}
+						caps.exportResults1(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms, options);
 						break;
 						
 					default:
