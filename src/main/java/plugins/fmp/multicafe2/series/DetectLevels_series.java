@@ -11,7 +11,7 @@ import icy.system.SystemUtil;
 import icy.system.thread.Processor;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.experiment.Capillary;
-import plugins.fmp.multicafe2.experiment.CapillaryLimit;
+import plugins.fmp.multicafe2.experiment.CapillaryLevel;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.tools.ImageToolsTransform;
@@ -134,13 +134,13 @@ public class DetectLevels_series extends BuildSeries
 					
 					if (options.analyzePartOnly) 
 					{
-						cap_index.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
-						cap_index.ptsBottom.polylineLimit.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
+						cap_index.ptsTop.polylineLevel.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
+						cap_index.ptsBottom.polylineLevel.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
 					} 
 					else 
 					{
-						cap_index.ptsTop    = new CapillaryLimit(cap_index.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
-						cap_index.ptsBottom = new CapillaryLimit(cap_index.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
+						cap_index.ptsTop    = new CapillaryLevel(cap_index.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
+						cap_index.ptsBottom = new CapillaryLevel(cap_index.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
 					}
 					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), cap_index);
 				}}));

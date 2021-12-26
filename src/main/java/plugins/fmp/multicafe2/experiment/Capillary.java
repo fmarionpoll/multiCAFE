@@ -54,9 +54,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public  final String 				ID_TOPLEVEL 	= "toplevel";	
 	public  final String 				ID_BOTTOMLEVEL 	= "bottomlevel";	
 	public  final String 				ID_DERIVATIVE 	= "derivative";	
-	public CapillaryLimit				ptsTop  		= new CapillaryLimit(ID_TOPLEVEL); 
-	public CapillaryLimit				ptsBottom 		= new CapillaryLimit(ID_BOTTOMLEVEL); 
-	public CapillaryLimit				ptsDerivative 	= new CapillaryLimit(ID_DERIVATIVE); 
+	public CapillaryLevel				ptsTop  		= new CapillaryLevel(ID_TOPLEVEL); 
+	public CapillaryLevel				ptsBottom 		= new CapillaryLevel(ID_BOTTOMLEVEL); 
+	public CapillaryLevel				ptsDerivative 	= new CapillaryLevel(ID_DERIVATIVE); 
 	public CapillaryGulps 				gulpsRois 		= new CapillaryGulps(); 
 	
 	public boolean						valid			= true;
@@ -252,10 +252,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		}
 		return yes;
 	}
-	
-	public List<Integer> getCapillaryMeasures(EnumXLSExportType option, long seriesBinMs, long outputBinMs) 
+		
+	public ArrayList<Integer> getCapillaryMeasuresForPass1(EnumXLSExportType option, long seriesBinMs, long outputBinMs) 
 	{
-		List<Integer> datai = null;
+		ArrayList<Integer> datai = null;
 		switch (option) 
 		{
 		case DERIVEDVALUES:
@@ -263,6 +263,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 				datai = ptsDerivative.getMeasures(seriesBinMs, outputBinMs);
 			break;
 		case SUMGULPS:
+		case SUMGULPS_LR:
 		case NBGULPS:
 		case AMPLITUDEGULPS:
 		case TTOGULP:
@@ -277,7 +278,12 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			datai = ptsBottom.getMeasures(seriesBinMs, outputBinMs);
 			break;
 		case TOPLEVEL:
-		default:
+		case TOPRAW:
+		case TOPLEVEL_LR:
+		case TOPLEVELDELTA:
+		case TOPLEVELDELTA_LR:
+		case TOPLEVEL_RATIO:
+			default:
 			datai = ptsTop.getMeasures(seriesBinMs, outputBinMs);
 			break;
 		}
@@ -286,21 +292,21 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		
 	public void cropMeasuresToNPoints (int npoints) 
 	{
-		if (ptsTop.polylineLimit != null)
+		if (ptsTop.polylineLevel != null)
 			ptsTop.cropToNPoints(npoints);
-		if (ptsBottom.polylineLimit != null)
+		if (ptsBottom.polylineLevel != null)
 			ptsBottom.cropToNPoints(npoints);
-		if (ptsDerivative.polylineLimit != null)
+		if (ptsDerivative.polylineLevel != null)
 			ptsDerivative.cropToNPoints(npoints);
 	}
 	
 	public void restoreClippedMeasures () 
 	{
-		if (ptsTop.polylineLimit != null)
+		if (ptsTop.polylineLevel != null)
 			ptsTop.restoreNPoints();
-		if (ptsBottom.polylineLimit != null)
+		if (ptsBottom.polylineLevel != null)
 			ptsBottom.restoreNPoints();
-		if (ptsDerivative.polylineLimit != null)
+		if (ptsDerivative.polylineLevel != null)
 			ptsDerivative.restoreNPoints();
 	}
 	
@@ -332,9 +338,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	{
 		int indexPixel = 0;
 		int firstPixel = 1;
-		if (ptsTop.polylineLimit == null)
+		if (ptsTop.polylineLevel == null)
 			return;
-		int lastPixel = ptsTop.polylineLimit.npoints;
+		int lastPixel = ptsTop.polylineLevel.npoints;
 		if (limitsOptions.analyzePartOnly) 
 		{
 			firstPixel = limitsOptions.firstPixel;
@@ -347,14 +353,14 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		
 		for (indexPixel = firstPixel; indexPixel < lastPixel; indexPixel++) 
 		{
-			int derivativevalue = (int) ptsDerivative.polylineLimit.ypoints[indexPixel-1];
+			int derivativevalue = (int) ptsDerivative.polylineLevel.ypoints[indexPixel-1];
 			if (derivativevalue < threshold) 
 			{
 				gulpPoints.clear();
 				continue;
 			}
 			
-			if (ptsTop.polylineLimit.ypoints[indexPixel-1] == ptsTop.polylineLimit.ypoints[indexPixel]) 
+			if (ptsTop.polylineLevel.ypoints[indexPixel-1] == ptsTop.polylineLevel.ypoints[indexPixel]) 
 			{
 				if (gulpPoints.size() > 0)
 					saveGulpPointsToGulpRois(indexPixel-1, gulpPoints, indexkymo);
@@ -370,7 +376,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	private void addGulpPoint (int indexPixel, List<Point2D> gulpPoints) 
 	{
-		Point2D.Double detectedPoint = new Point2D.Double (indexPixel, ptsTop.polylineLimit.ypoints[indexPixel]);
+		Point2D.Double detectedPoint = new Point2D.Double (indexPixel, ptsTop.polylineLevel.ypoints[indexPixel]);
 		gulpPoints.add(detectedPoint);
 	}
 	

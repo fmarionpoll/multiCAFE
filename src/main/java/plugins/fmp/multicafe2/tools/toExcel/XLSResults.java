@@ -1,8 +1,11 @@
 package plugins.fmp.multicafe2.tools.toExcel;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import plugins.fmp.multicafe2.experiment.Capillary;
 
 
 public class XLSResults 
@@ -11,15 +14,16 @@ public class XLSResults
 	String 				stimulus	= null;
 	String 				concentration = null;
 	int 				nadded		= 1;
-	int					nflies		= 1;
 	int 				cageID		= 0;
-	int 				dimension	= 0;
-	EnumXLSExportType 			exportType 	= null;
-	public List<Integer > 		data 		= null;
-
-	int[]				valint		= null;
-	public double [] 	values_out	= null;
 	boolean[]			padded_out	= null;
+	
+	public int 					dimension	= 0;
+	public int					nflies		= 1;
+	public EnumXLSExportType 	exportType = null;
+	private ArrayList<Integer > dataInt 	= null;
+	public double []			valuesOut	= null;
+	
+	
 	
 	public XLSResults (String name, int nflies, EnumXLSExportType exportType) 
 	{
@@ -36,76 +40,98 @@ public class XLSResults
 		initValuesArray(nFrames);
 	}
 	
-	void initValIntArray(int dimension, int val) 
+	void initValuesOutArray(int dimension, int val) 
 	{
 		this.dimension = dimension; 
-		valint = new int [dimension];
-		Arrays.fill(valint, 0);
+		valuesOut = new double [dimension];
+		Arrays.fill(valuesOut, Double.NaN);
 	}
 	
 	private void initValuesArray(int dimension) 
 	{
 		this.dimension = dimension; 
-		values_out = new double [dimension];
-		Arrays.fill(values_out, Double.NaN);
+		valuesOut = new double [dimension];
+		Arrays.fill(valuesOut, Double.NaN);
 		padded_out = new boolean [dimension];
 		Arrays.fill(padded_out, false);
 	}
 	
 	void clearValues (int fromindex) 
 	{
-		int toindex = values_out.length;
+		int toindex = valuesOut.length;
 		if (fromindex > 0 && fromindex < toindex) 
 		{
-			Arrays.fill(values_out, fromindex,  toindex, Double.NaN);
+			Arrays.fill(valuesOut, fromindex,  toindex, Double.NaN);
 			Arrays.fill(padded_out, fromindex,  toindex, false);
 		}
 	}
 	
 	void clearAll() 
 	{
-		data = null;
-		values_out = null;
+		dataInt = null;
+		valuesOut = null;
 		nflies = 0;
 	}
 	
-	public List<Integer>  subtractT0 () 
+	public void transferDataIntToValuesOut() 
 	{
-		if (data == null || data.size() < 1)
-			return null;
-		int item0 = data.get(0);
-		for (int index= 0; index < data.size(); index++) 
+		if (dataInt.size() != valuesOut.length)
 		{
-			int value = data.get(index);
-			data.set(index, value-item0);
+			this.dimension = dataInt.size(); 
+			valuesOut = new double [dimension];
 		}
-		return data;
+		for (int i = 0; i < dimension; i++)
+			valuesOut[i] = dataInt.get(i);
+	}
+	
+	public void copyValuesOut(XLSResults row) 
+	{
+		if (row.valuesOut.length != valuesOut.length)
+		{
+			this.dimension = row.dimension; 
+			valuesOut = new double [dimension];
+		}
+		for (int i = 0; i < dimension; i++)
+			valuesOut[i] = row.valuesOut[i];
+	}
+	
+	public List<Integer> subtractT0 () 
+	{
+		if (dataInt == null || dataInt.size() < 1)
+			return null;
+		int item0 = dataInt.get(0);
+		for (int index= 0; index < dataInt.size(); index++) 
+		{
+			int value = dataInt.get(index);
+			dataInt.set(index, value-item0);
+		}
+		return dataInt;
 	}
 	
 	boolean subtractDeltaT(int arrayStep, int binStep) {
-		if (values_out == null || values_out.length < 2)
+		if (valuesOut == null || valuesOut.length < 2)
 			return false;
-		for (int index=0; index < values_out.length; index++) 
+		for (int index=0; index < valuesOut.length; index++) 
 		{
 			int timeIndex = index * arrayStep + binStep;
 			int indexDelta = (int) (timeIndex/arrayStep);
-			if (indexDelta < values_out.length) 
-				values_out[index] = values_out[indexDelta] - values_out[index];
+			if (indexDelta < valuesOut.length) 
+				valuesOut[index] = valuesOut[indexDelta] - valuesOut[index];
 			else
-				values_out[index] = Double.NaN;
+				valuesOut[index] = Double.NaN;
 		}
 		return true;
 	}
 	
-	void addDataToValInt(XLSResults result) 
+	void addDataToValOut(XLSResults result) 
 	{
-		if (result.data.size() > valint.length) 
+		if (result.valuesOut.length > valuesOut.length) 
 		{
-			System.out.println("Error: from len="+result.data.size() + " to len="+ valint.length);
+			System.out.println("Error: from len="+result.valuesOut.length + " to len="+ valuesOut.length);
 			return;
 		}
-		for (int i=0; i < result.data.size(); i++) 
-			valint[i] += result.data.get(i);	
+		for (int i=0; i < result.valuesOut.length; i++) 
+			valuesOut[i] += result.valuesOut[i];	
 		nflies ++;
 	}
 	
@@ -113,138 +139,138 @@ public class XLSResults
 	{
 		if (nflies != 0) 
 		{
-			for (int i=0; i < valint.length; i++) 
-				valint[i] = valint[i] / nflies;			
+			for (int i=0; i < valuesOut.length; i++) 
+				valuesOut[i] = valuesOut[i] / nflies;			
 		}
 		nflies = 1;
 	}
 	
 	void subtractEvap(XLSResults evap) 
 	{
-		if (data == null)
+		if (valuesOut == null)
 			return;
-		for (int i = 0; i < data.size(); i++) 
+		
+		for (int i = 0; i < valuesOut.length; i++) 
 		{
-			if (evap.valint.length > i)
-				data.set(i, data.get(i) - evap.valint[i]);			
+			if (i < evap.valuesOut.length)
+				valuesOut[i] -= evap.valuesOut[i];			
 		}
 		evap.nflies = 1;
 	}
 	
 	void addValues_out (XLSResults addedData) 
 	{
-		for (int i = 0; i < values_out.length; i++) 
+		for (int i = 0; i < valuesOut.length; i++) 
 		{
-			if (addedData.values_out.length > i)
-				values_out[i] += addedData.values_out[i];			
+			if (addedData.valuesOut.length > i)
+				valuesOut[i] += addedData.valuesOut[i];			
 		}
 		nadded += 1;
 	}
 
-	void getSumLR(XLSResults rowL, XLSResults rowR) 
+	public void getCapillaryMeasuresForPass1(Capillary cap, EnumXLSExportType xlsOption, long kymoBinCol_Ms, int outputBinMs)
 	{
-		int lenL = rowL.values_out.length;
-		int lenR = rowR.values_out.length;
-		int len = Math.max(lenL,  lenR);
-		for (int index = 0; index < len; index++) 
-		{
-			double dataL = Double.NaN;
-			double dataR = Double.NaN;
-			double sum = Double.NaN;
-			if (rowL.values_out != null && index < lenL) 
-				dataL = rowL.values_out[index];
-			if (rowR.values_out != null && index < lenR) 
-				dataR = rowR.values_out[index];
-			
-//			sum = Math.abs(dataL)+Math.abs(dataR);
-			sum = dataL + dataR;
-			values_out[index]= sum;
-		}
+		dataInt = cap.getCapillaryMeasuresForPass1(xlsOption, kymoBinCol_Ms, outputBinMs);
 	}
 	
-	double getData(XLSResults row, int index) 
+	double getValueOut(int index) 
 	{
 		double data = Double.NaN;
-		if (row.values_out != null && index < row.values_out.length) 
-			data = row.values_out[index];
+		if (valuesOut != null && index < valuesOut.length) 
+			data = valuesOut[index];
 		return data;
 	}
 	
-	void getPI_LR(XLSResults rowL, XLSResults rowR) 
+	int getDataInt(int index) 
 	{
-		int lenL = rowL.values_out.length;
-		int lenR = rowR.values_out.length;
-		int len = Math.min(lenL,  lenR);
+		int value = 0;
+		if (dataInt != null && index < dataInt.size()) 
+			value = dataInt.get(index);
+		return value;
+	}
+	
+	private int getLen(XLSResults rowL, XLSResults rowR) 
+	{
+		int lenL = rowL.valuesOut.length;
+		int lenR = rowR.valuesOut.length;
+		return Math.min(lenL,  lenR);
+	}
+	
+	public void getSumLR(XLSResults rowL, XLSResults rowR) 
+	{
+		int len = getLen(rowL, rowR);
 		for (int index = 0; index < len; index++) 
 		{
-			double dataL = getData(rowL, index);
-			double dataR = getData(rowR, index);
-			boolean ratioOK = true;
-			if (Double.isNaN(dataR) || Double.isNaN(dataL)) 
-				ratioOK = false;		
-			double ratio = Double.NaN;
-			if (ratioOK) 
-			{
-				double sum = Math.abs(dataL)+Math.abs(dataR);
-				if (sum != 0 && !Double.isNaN(sum))
-					ratio = (dataL-dataR)/sum;
-			}
-			values_out[index]= ratio;
+			double dataL = rowL.getDataInt(index);
+			double dataR = rowR.getDataInt(index);
+			double sum = Double.NaN;
+			if (dataL != 0. && dataR != 0.)
+				sum = dataL + dataR;
+			rowL.valuesOut[index]= sum;
 		}
 	}
 	
-	void getRatio_LR(XLSResults rowL, XLSResults rowR) 
+	public void getPI_LR(XLSResults rowL, XLSResults rowR) 
 	{
-		int lenL = rowL.values_out.length;
-		int lenR = rowR.values_out.length;
-		int len = Math.min(lenL,  lenR);
+		int len = getLen(rowL, rowR);
 		for (int index = 0; index < len; index++) 
 		{
-			double dataL = getData(rowL, index);
-			double dataR = getData(rowR, index);
+			double dataL = rowL.getDataInt(index);
+			double dataR = rowR.getDataInt(index);
+			double sum = rowL.valuesOut[index];
+			double pi = Double.NaN;
+			if (sum != 0. && !Double.isNaN(sum))
+				pi = (dataL-dataR)/sum;
+			rowR.valuesOut[index] = pi;
+		}
+	}
+	
+	public void getRatio_LR(XLSResults rowL, XLSResults rowR) 
+	{
+		int len = getLen(rowL, rowR);
+		for (int index = 0; index < len; index++) 
+		{
+			double dataL = rowL.getDataInt(index);
+			double dataR = rowR.getDataInt(index);
 			boolean ratioOK = true;
 			if (Double.isNaN(dataR) || Double.isNaN(dataL)) 
 				ratioOK = false;		
 			double ratio = Double.NaN;
 			if (ratioOK && dataR != 0)
-					ratio = (dataL/dataR);
-			values_out[index]= ratio;
+				ratio = (dataL/dataR);
+			rowR.valuesOut[index] = ratio;
 		}
 	}
 	
 	void getMinTimeToGulpLR(XLSResults rowL, XLSResults rowR) 
 	{
-		int lenL = rowL.values_out.length;
-		int lenR = rowR.values_out.length;
-		int len = Math.max(lenL,  lenR);
+		int len = getLen(rowL, rowR);
 		for (int index = 0; index < len; index++) 
 		{
 			double dataMax = Double.NaN;
-			double dataL = getData(rowL, index);
-			double dataR = getData(rowR, index);		
+			double dataL = rowL.getValueOut(index);
+			double dataR = rowR.getValueOut(index);
 			if (dataL <= dataR)
 				dataMax = dataL;
 			else if (dataL > dataR)
 				dataMax = dataR;
-			values_out[index]= dataMax;
+			valuesOut[index]= dataMax;
 		}
 	}
 	
 	void getMaxTimeToGulpLR(XLSResults rowL, XLSResults rowR) 
 	{
-		int lenL = rowL.values_out.length;
-		int lenR = rowR.values_out.length;
-		int len = Math.max(lenL,  lenR);
+		int len = getLen(rowL, rowR);
 		for (int index = 0; index < len; index++) 
 		{
 			double dataMin = Double.NaN;
-			double dataL = getData(rowL, index);
-			double dataR = getData(rowR, index);			
+			double dataL = rowL.getValueOut(index);
+			double dataR = rowR.getValueOut(index);
 			if (dataL >= dataR)
 				dataMin = dataL;
 			else if (dataL < dataR)
 				dataMin = dataR;
-			values_out[index]= dataMin;
+			valuesOut[index]= dataMin;
 		}
 	}
 

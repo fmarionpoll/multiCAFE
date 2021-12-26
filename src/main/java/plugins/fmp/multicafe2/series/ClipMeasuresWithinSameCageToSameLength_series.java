@@ -30,7 +30,7 @@ public class ClipMeasuresWithinSameCageToSameLength_series extends BuildSeries
 				{
 					Capillary ttcap = exp.capillaries.capillariesList.get(tt);
 					int ttcage = ttcap.capCageID;
-					if (ttcage == tcage && ttcap.ptsTop.polylineLimit.npoints > minLength)
+					if (ttcage == tcage && ttcap.ptsTop.polylineLevel.npoints > minLength)
 						ttcap.cropMeasuresToNPoints(minLength);
 				}
 			}
@@ -57,14 +57,14 @@ public class ClipMeasuresWithinSameCageToSameLength_series extends BuildSeries
 	private int findMinLength (Experiment exp, int t, int tcage ) 
 	{
 		Capillary tcap = exp.capillaries.capillariesList.get(t);
-		int minLength = tcap.ptsTop.polylineLimit.npoints;
+		int minLength = tcap.ptsTop.polylineLevel.npoints;
 		for (int tt = t; tt< exp.capillaries.capillariesList.size(); tt++) 
 		{
 			Capillary ttcap = exp.capillaries.capillariesList.get(tt);
 			int ttcage = ttcap.capCageID;
 			if (ttcage == tcage) 
 			{
-				int dataLength = ttcap.ptsTop.polylineLimit.npoints;
+				int dataLength = ttcap.ptsTop.polylineLevel.npoints;
 				if (dataLength < minLength)
 					minLength = dataLength;
 			}

@@ -25,6 +25,7 @@ import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 import plugins.fmp.multicafe2.tools.toExcel.XLSExport;
 import plugins.fmp.multicafe2.tools.toExcel.XLSExportOptions;
 import plugins.fmp.multicafe2.tools.toExcel.XLSResults;
+import plugins.fmp.multicafe2.tools.toExcel.XLSResultsArray;
 
 public class LevelsXYMultiChart extends IcyFrame  
 {
@@ -58,23 +59,28 @@ public class LevelsXYMultiChart extends IcyFrame
 		pt = new Point(rectv.x + deltapt.x, rectv.y + deltapt.y);
 	}
 	
-	private void getDataArrays(Experiment exp, EnumXLSExportType option, boolean subtractEvaporation, List<XYSeriesCollection> xyList) 
+	private void getDataArrays(
+			Experiment exp, 
+			EnumXLSExportType exportType, 
+			boolean subtractEvaporation, 
+			List<XYSeriesCollection> xyList) 
 	{
 		XLSExport xlsExport = new XLSExport();
 		XLSExportOptions options = new XLSExportOptions();
 		options.buildExcelStepMs = 60000;
 		options.t0 = true;
 		options.subtractEvaporation = subtractEvaporation;
-		List <XLSResults> resultsList = xlsExport.getCapDataFromOneExperimentSeriesForGraph(exp, option, options);
-		List <XLSResults> resultsList2 = null;
-		if (option == EnumXLSExportType.TOPLEVEL) 
+		XLSResultsArray resultsList = xlsExport.getCapDataFromOneExperimentSeriesForGraph(exp, exportType, options);
+		XLSResultsArray resultsList2 = null;
+		if (exportType == EnumXLSExportType.TOPLEVEL) 
 			resultsList2 = xlsExport.getCapDataFromOneExperimentSeriesForGraph(exp, EnumXLSExportType.BOTTOMLEVEL, options);
 		
 		String previousName = null;
 		XYSeriesCollection xyDataset = null;
-		for (XLSResults results: resultsList) 
+		for (int iRow = 0; iRow < resultsList.size(); iRow++ ) 
 		{
-			String currentName = results.name.substring(4, results.name.length()-1);
+			XLSResults row = resultsList.getRow(iRow);
+			String currentName = row.name.substring(4, row.name.length()-1);
 			if (xyDataset == null) 
 			{
 				xyDataset = new XYSeriesCollection();
@@ -89,14 +95,15 @@ public class LevelsXYMultiChart extends IcyFrame
 				xyDataset = new XYSeriesCollection();
 			}
 			
-			XYSeries seriesXY = getXYSeries(results, results.name.substring(4));
+			XYSeries seriesXY = getXYSeries(row, row.name.substring(4));
 			if (resultsList2 != null)
 			{
-				for (XLSResults results2 : resultsList2) 
+				for (int iRow2 = 0; iRow2 < resultsList2.size(); iRow2++ ) 
 				{
-					if (results2.name .equals(results.name)) 
+					XLSResults row2 = resultsList2.getRow(iRow2);
+					if (row2.name .equals(row.name)) 
 					{
-						appendDataToXYSeries(seriesXY, results2);
+						appendDataToXYSeries(seriesXY, row2);
 						break;
 					}
 				}
@@ -191,10 +198,10 @@ public class LevelsXYMultiChart extends IcyFrame
 	private XYSeries getXYSeries(XLSResults results, String name) 
 	{
 		XYSeries seriesXY = new XYSeries(name, false);
-		if (results.values_out != null && results.values_out.length > 0) 
+		if (results.valuesOut != null && results.valuesOut.length > 0) 
 		{
-			xmax = results.values_out.length;
-			ymax = results.values_out[0];
+			xmax = results.valuesOut.length;
+			ymax = results.valuesOut[0];
 			ymin = ymax;
 			addPointsAndUpdateExtrema(seriesXY, results, 0);	
 		}
@@ -203,7 +210,7 @@ public class LevelsXYMultiChart extends IcyFrame
 
 	private void appendDataToXYSeries(XYSeries seriesXY, XLSResults results ) 
 	{	
-		if (results.values_out != null && results.values_out.length > 0) 
+		if (results.valuesOut != null && results.valuesOut.length > 0) 
 		{
 			seriesXY.add(Double.NaN, Double.NaN);
 			addPointsAndUpdateExtrema(seriesXY, results, 0);	
@@ -213,10 +220,10 @@ public class LevelsXYMultiChart extends IcyFrame
 	private void addPointsAndUpdateExtrema(XYSeries seriesXY, XLSResults results, int startFrame) 
 	{
 		int x = 0;
-		int npoints = results.values_out.length;
+		int npoints = results.valuesOut.length;
 		for (int j = 0; j < npoints; j++) 
 		{
-			double y = results.values_out[j];
+			double y = results.valuesOut[j];
 			seriesXY.add( x+startFrame , y );
 			if (ymax < y) ymax = y;
 			if (ymin > y) ymin = y;

@@ -102,7 +102,7 @@ public class SequenceKymos extends SequenceCamData
 		}
 	}
 	
-	public void updateROIFromCapillaryMeasure(Capillary cap, CapillaryLimit caplimits) 
+	public void updateROIFromCapillaryMeasure(Capillary cap, CapillaryLevel caplimits) 
 	{
 		int t = cap.indexKymograph;
 		List<ROI2D> listRois = seq.getROI2Ds();
@@ -114,7 +114,7 @@ public class SequenceKymos extends SequenceCamData
 				continue;
 			if (!roi.getName().contains(caplimits.typename))
 				continue;
-			((ROI2DPolyLine) roi).setPolyline2D(caplimits.polylineLimit);
+			((ROI2DPolyLine) roi).setPolyline2D(caplimits.polylineLevel);
 			roi.setName(caplimits.name);
 			break;
 		}

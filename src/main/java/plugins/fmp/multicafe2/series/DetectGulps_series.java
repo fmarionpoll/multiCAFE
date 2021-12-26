@@ -14,7 +14,7 @@ import icy.system.thread.Processor;
 import icy.type.collection.array.Array1DUtil;
 import icy.type.geom.Polyline2D;
 import plugins.fmp.multicafe2.experiment.Capillary;
-import plugins.fmp.multicafe2.experiment.CapillaryLimit;
+import plugins.fmp.multicafe2.experiment.CapillaryLevel;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
@@ -120,7 +120,7 @@ public class DetectGulps_series extends BuildSeries
 		int yheight = image.getSizeY();
 		int ix = 0;
 		int iy = 0;
-		Polyline2D 	polyline = cap.ptsTop.polylineLimit;
+		Polyline2D 	polyline = cap.ptsTop.polylineLevel;
 		if (polyline == null)
 			return;
 		for (ix = 1; ix < polyline.npoints; ix++) 
@@ -148,7 +148,7 @@ public class DetectGulps_series extends BuildSeries
 		roiDerivative.setPoints(listOfMaxPoints);
 		roiDerivative.setT(indexkymo);
 		seq.addROI(roiDerivative, false);
-		cap.ptsDerivative = new CapillaryLimit(roiDerivative.getName(), roiDerivative.getPolyline2D());
+		cap.ptsDerivative = new CapillaryLevel(roiDerivative.getName(), roiDerivative.getPolyline2D());
 	}
 	
 }

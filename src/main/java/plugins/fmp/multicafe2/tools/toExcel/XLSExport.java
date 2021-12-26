@@ -4,8 +4,6 @@ import java.awt.Point;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.poi.hssf.util.HSSFColor;
@@ -20,7 +18,6 @@ import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Capillaries;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.Comparators;
 
 
 
@@ -36,7 +33,7 @@ public class XLSExport
     XSSFWorkbook 				workbook			= null;		
     
 	ExperimentCombo 			expList 			= null;
-	List <XLSResults> 			rowListForOneExp 	= new ArrayList <XLSResults> ();
+	XLSResultsArray 			rowListForOneExp 	= new XLSResultsArray ();
 
 
 	// ------------------------------------------------
@@ -356,49 +353,29 @@ public class XLSExport
 
 		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_Ms)/options.buildExcelStepMs  +1) ;
 		int ncapillaries = expAll.capillaries.capillariesList.size();
-		rowListForOneExp = new ArrayList <XLSResults> (ncapillaries);
-		for (int i=0; i< ncapillaries; i++) 
+		rowListForOneExp = new XLSResultsArray(ncapillaries);
+		for (int i = 0; i < ncapillaries; i++) 
 		{
 			Capillary cap 		= expAll.capillaries.capillariesList.get(i);
 			XLSResults row 		= new XLSResults (cap.getRoiName(), cap.capNFlies, xlsOption, nFrames);
 			row.stimulus 		= cap.capStimulus;
 			row.concentration 	= cap.capConcentration;
 			row.cageID 			= cap.capCageID;
-			rowListForOneExp.add(row);
+			rowListForOneExp.addRow(row);
 		}
-		Collections.sort(rowListForOneExp, new Comparators.XLSResults_Name_Comparator());
+		rowListForOneExp.sortRowsByName();
 	}
-	
-	private EnumXLSExportType getMeasureOption (EnumXLSExportType xlsOption) 
-	{
-		EnumXLSExportType measureOption = null;
-		switch (xlsOption) 
-		{
-		case TOPRAW:
-		case TOPLEVEL_LR:
-		case TOPLEVELDELTA:
-		case TOPLEVELDELTA_LR:
-		case TOPLEVEL_RATIO:
-			measureOption = EnumXLSExportType.TOPLEVEL;
-			break;
-		case SUMGULPS_LR:
-			measureOption = EnumXLSExportType.SUMGULPS;
-			break;
-		default:
-			measureOption = xlsOption;
-			break;
-		}
-		return measureOption;
-	}
-	
-	public  List <XLSResults> getCapDataFromOneExperimentSeriesForGraph(Experiment exp, 
-									EnumXLSExportType xlsOption, XLSExportOptions options) 
+		
+	public XLSResultsArray getCapDataFromOneExperimentSeriesForGraph(
+			Experiment exp, 
+			EnumXLSExportType exportType, 
+			XLSExportOptions options) 
 	{
 		this.options = options;
 		expAll = new Experiment();
 		expAll.camLastImage_Ms = exp.camLastImage_Ms;
 		expAll.camFirstImage_Ms = exp.camFirstImage_Ms;
-		getCapDataFromOneExperimentSeries(exp, xlsOption);
+		getCapDataFromOneExperimentSeries(exp, exportType);
 		return rowListForOneExp;
 	}
 	
@@ -430,13 +407,13 @@ public class XLSExport
 		return nOutputFrames;
 	}
 	
-		
-	private void getCapDataFromOneExperimentSeries(Experiment exp, EnumXLSExportType xlsOption) 
+	private void getCapDataFromOneExperimentSeries(
+			Experiment exp, 
+			EnumXLSExportType xlsExportType) 
 	{	
-		getDescriptorsForOneExperiment (exp, xlsOption);
+		getDescriptorsForOneExperiment (exp, xlsExportType);
 		Experiment expi = exp.getFirstChainedExperiment(true); 
 		
-		EnumXLSExportType measureOption = getMeasureOption (xlsOption);
 		while (expi != null) 
 		{
 			int nOutputFrames = getNOutputFrames(expi);
@@ -444,18 +421,20 @@ public class XLSExport
 			{
 				XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesList.size());
 				Capillaries caps = expi.capillaries;
-				switch (xlsOption) 
+				switch (xlsExportType) 
 				{
 					case BOTTOMLEVEL:
 					case NBGULPS:
 					case AMPLITUDEGULPS:
 					case TTOGULP:
 					case TTOGULP_LR:
-						caps.exportResults1(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms, options);
+						caps.getResults1(expi, resultsArrayList, xlsExportType, 
+								nOutputFrames, exp.kymoBinCol_Ms, options);
 						break;
 						
 					case TOPRAW:
-						caps.exportResults_T0(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms, options);
+						caps.getResults_T0(expi, resultsArrayList, xlsExportType, 
+								nOutputFrames, exp.kymoBinCol_Ms, options);
 						break;
 						
 					case TOPLEVEL:
@@ -463,7 +442,8 @@ public class XLSExport
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
 					case TOPLEVEL_RATIO:
-						caps.exportResults_T0(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms, options);
+						caps.getResults_T0(expi, resultsArrayList, xlsExportType, 
+								nOutputFrames, exp.kymoBinCol_Ms, options);
 						if (options.subtractEvaporation)
 							resultsArrayList.subtractEvaporation();
 						break;
@@ -471,7 +451,8 @@ public class XLSExport
 					case DERIVEDVALUES:
 					case SUMGULPS:
 					case SUMGULPS_LR:
-						caps.exportResults1(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms, options);
+						caps.getResults1(expi, resultsArrayList, xlsExportType, 
+								nOutputFrames, exp.kymoBinCol_Ms, options);
 						if (options.subtractEvaporation)
 							resultsArrayList.subtractEvaporation();
 						break;
@@ -479,7 +460,8 @@ public class XLSExport
 					case AUTOCORREL:
 					case CROSSCORREL:
 					case CROSSCORREL_LR:
-						caps.exportResults1(expi, resultsArrayList, measureOption, xlsOption, nOutputFrames, exp.kymoBinCol_Ms, options);
+						caps.getResults1(expi, resultsArrayList, xlsExportType, 
+								nOutputFrames, exp.kymoBinCol_Ms, options);
 						break;
 						
 					default:
@@ -490,22 +472,23 @@ public class XLSExport
 			expi = expi.chainToNext;
 		}
 		
-		switch (xlsOption) 
+		switch (xlsExportType) 
 		{
 			case TOPLEVELDELTA:
 			case TOPLEVELDELTA_LR:
-				for (XLSResults row: rowListForOneExp ) 
-					row.subtractDeltaT(1, 1); //options.buildExcelStepMs);
+				rowListForOneExp.subtractDeltaT(1, 1); //options.buildExcelStepMs);
 				break;
 			default:
 				break;
 		}
 	}
 	
-	private XLSResults getResultsArrayWithThatName(String testname, XLSResultsArray resultsArrayList) 
+	private XLSResults getResultsArrayWithThatName(
+			String testname, 
+			XLSResultsArray resultsArrayList) 
 	{
 		XLSResults resultsFound = null;
-		for (XLSResults results: resultsArrayList.resultsArrayList) 
+		for (XLSResults results: resultsArrayList.resultsList) 
 		{
 			if (results.name.equals(testname)) 
 			{
@@ -518,12 +501,11 @@ public class XLSExport
 	
 	private void addResultsTo_rowsForOneExp(Experiment expi, XLSResultsArray resultsArrayList) 
 	{
-		if (resultsArrayList.resultsArrayList.size() <1)
+		if (resultsArrayList.resultsList.size() <1)
 			return;
 		
-		EnumXLSExportType xlsoption = resultsArrayList.get(0).exportType;
+		EnumXLSExportType xlsoption = resultsArrayList.getRow(0).exportType;
 		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits(xlsoption);
-		
 		
 		long offsetChain = expi.camFirstImage_Ms - expi.chainFirstImage_Ms;
 		long start_Ms = expi.offsetFirstCol_Ms + offsetChain; // TODO check when collate?
@@ -547,10 +529,11 @@ public class XLSExport
 		final int to_first_index = (int) (start_Ms / options.buildExcelStepMs) ;
 		final int to_nvalues = (int) ((end_Ms - start_Ms)/options.buildExcelStepMs)+1;
 		
-		for (XLSResults row : rowListForOneExp ) 
+		for (int iRow = 0; iRow < rowListForOneExp.size(); iRow++ ) 
 		{
-			XLSResults results = getResultsArrayWithThatName(row.name,  resultsArrayList);
-			if (results != null && results.data != null) 
+			XLSResults row = rowListForOneExp.getRow(iRow);
+			XLSResults results = getResultsArrayWithThatName(row.name, resultsArrayList);
+			if (results != null && results.valuesOut != null) 
 			{
 				double dvalue = 0.;
 				switch (xlsoption) 
@@ -575,15 +558,15 @@ public class XLSExport
 				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs, icolTo++) 
 				{
 					int from_i = (int) Math.round(((double)(fromTime - from_first_Ms)) / ((double) options.buildExcelStepMs));
-					if (from_i >= results.data.size())
+					if (from_i >= results.valuesOut.length)
 						break;
 					// TODO check how this can happen
 					if (from_i < 0)
 						continue;
-					double value = results.data.get(from_i) * scalingFactorToPhysicalUnits + dvalue;
-					if (icolTo >= row.values_out.length)
+					double value = results.valuesOut[from_i] * scalingFactorToPhysicalUnits + dvalue;
+					if (icolTo >= row.valuesOut.length)
 						break;
-					row.values_out[icolTo]= value;
+					row.valuesOut[icolTo] = value;
 				}
 
 			} 
@@ -594,10 +577,10 @@ public class XLSExport
 					double dvalue = padWithLastPreviousValue(row, to_first_index);
 					int tofirst = (int) to_first_index;
 					int tolast = (int) (tofirst + to_nvalues);
-					if (tolast > row.values_out.length)
-						tolast = row.values_out.length;
+					if (tolast > row.valuesOut.length)
+						tolast = row.valuesOut.length;
 					for (int toi = tofirst; toi < tolast; toi++) 
-						row.values_out[toi]= dvalue;
+						row.valuesOut[toi] = dvalue;
 				}
 			}
 		}
@@ -606,16 +589,16 @@ public class XLSExport
 	private double padWithLastPreviousValue(XLSResults row, long to_first_index) 
 	{
 		double dvalue = 0;
-		if (to_first_index >= row.values_out.length)
+		if (to_first_index >= row.valuesOut.length)
 			return dvalue;
 		
 		int index = getIndexOfFirstNonEmptyValueBackwards(row, to_first_index);
 		if (index >= 0) 
 		{
-			dvalue = row.values_out[index];
-			for (int i=index+1; i< to_first_index; i++) 
+			dvalue = row.valuesOut[index];
+			for (int i = index+1; i < to_first_index; i++) 
 			{
-				row.values_out[i] = dvalue;
+				row.valuesOut[i] = dvalue;
 				row.padded_out[i] = true;
 			}
 		}
@@ -628,7 +611,7 @@ public class XLSExport
 		int ifrom = (int) fromindex;
 		for (int i= ifrom; i>= 0; i--) 
 		{
-			if (!Double.isNaN(row.values_out[i])) 
+			if (!Double.isNaN(row.valuesOut[i])) 
 			{
 				index = i;
 				break;
@@ -663,8 +646,9 @@ public class XLSExport
 			if (ilastalive > 0)
 				ilastalive += 1;
 			
-			for (XLSResults row : rowListForOneExp) 
+			for (int iRow = 0; iRow < rowListForOneExp.size(); iRow++ ) 
 			{
+				XLSResults row = rowListForOneExp.getRow(iRow);
 				if (desc_getCageFromCapillaryName (row.name) == cagenumber)
 					row.clearValues(ilastalive);
 			}
@@ -673,13 +657,16 @@ public class XLSExport
 	
 	private void combineDataForOneCage(Experiment exp) 
 	{
-		for (XLSResults row_master : rowListForOneExp) 
+		for (int iRow0 = 0; iRow0 < rowListForOneExp.size(); iRow0++ ) 
 		{
-			if (row_master.nflies == 0 || row_master.values_out == null)
+			XLSResults row_master = rowListForOneExp.getRow(iRow0);
+			if (row_master.nflies == 0 || row_master.valuesOut == null)
 				continue;
-			for (XLSResults row : rowListForOneExp) 
+			
+			for (int iRow = 0; iRow < rowListForOneExp.size(); iRow++ ) 
 			{
-				if (row.nflies == 0 || row.values_out == null)
+				XLSResults row = rowListForOneExp.getRow(iRow);
+				if (row.nflies == 0 || row.valuesOut == null)
 					continue;
 				if (row.cageID != row_master.cageID)
 					continue;
@@ -694,7 +681,11 @@ public class XLSExport
 		}
 	}
 	
-	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) 
+	private int xlsExportResultsArrayToSheet(
+			XSSFSheet sheet, 
+			EnumXLSExportType xlsExportOption, 
+			int col0, 
+			String charSeries) 
 	{
 		Point pt = new Point(col0, 0);
 		writeExperiment_descriptors(expAll, charSeries, sheet, pt, xlsExportOption);
@@ -707,101 +698,110 @@ public class XLSExport
 		int rowSeries = pt_main.x +2;
 		int column_dataArea = pt_main.y;
 		Point pt = new Point(pt_main);
-		switch (option) 
-		{
-			case TOPLEVEL_LR:
-			case TOPLEVELDELTA_LR:
-			case SUMGULPS_LR:
-			case TOPLEVEL_RATIO:
-				writeExperiment_data_LRRows(sheet, column_dataArea, rowSeries, pt, option);
-				break;
-			case TTOGULP_LR:
-				writeExperiment_data_TOGulpLR(sheet, column_dataArea, rowSeries, pt);
-				break;
-			default:
+//		switch (option) 
+//		{
+//			case TOPLEVEL_LR:
+//			case TOPLEVELDELTA_LR:
+//			case SUMGULPS_LR:
+//			case TOPLEVEL_RATIO:
+//				writeExperiment_data_LRRows(sheet, column_dataArea, rowSeries, pt, option);
+//				break;
+//			case TTOGULP_LR:
+//				writeExperiment_data_TOGulpLR(sheet, column_dataArea, rowSeries, pt);
+//				break;
+//			default:
 				writeExperiment_data_simpleRows(sheet, column_dataArea, rowSeries, pt);
-				break;
-		}			
+//				break;
+//		}			
 		pt_main.x = pt.x+1;
 		return pt_main;
 	}
 		
-	private XLSResults getNextRow(XLSResults rowL, int irow) 
-	{
-		int cageL = getCageFromKymoFileName(rowL.name);
-		XLSResults rowR = null;
-		if (irow+1 < rowListForOneExp.size()) 
-		{
-			rowR = rowListForOneExp.get(irow+1);
-			int cageR = getCageFromKymoFileName(rowR.name);
-			if (cageR != cageL) 
-				rowR = null;
-		}
-		return rowR;
-	}
+//	private XLSResults getNextRow(XLSResults rowL, int irow) 
+//	{
+//		int cageL = getCageFromKymoFileName(rowL.name);
+//		XLSResults rowR = null;
+//		if (irow+1 < rowListForOneExp.size()) 
+//		{
+//			rowR = rowListForOneExp.getRow(irow+1);
+//			int cageR = getCageFromKymoFileName(rowR.name);
+//			if (cageR != cageL) 
+//				rowR = null;
+//		}
+//		return rowR;
+//	}
 	
-	private void writeExperiment_data_simpleRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
+	private void writeExperiment_data_simpleRows(
+			XSSFSheet sheet, 
+			int column_dataArea, 
+			int rowSeries, 
+			Point pt) 
 	{
-		for (XLSResults row: rowListForOneExp) 
+		for (int iRow = 0; iRow < rowListForOneExp.size(); iRow++ ) 
 		{
+			XLSResults row = rowListForOneExp.getRow(iRow);
 			writeRow(sheet, column_dataArea, rowSeries, pt, row);
 		}
 		
 	}
 	
-	private void writeExperiment_data_LRRows(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt, EnumXLSExportType option ) 
-	{
-		for (int irow = 0; irow < rowListForOneExp.size(); irow ++) 
-		{
-			XLSResults rowL = rowListForOneExp.get(irow); 			
-			XLSResults rowR = getNextRow (rowL, irow);
-			if (rowR != null) 
-			{
-				irow++;
-				XLSResults sumResults = new XLSResults(rowL.name, rowL.nflies, rowL.exportType, rowL.dimension);
-				sumResults.getSumLR(rowL, rowR);
-				writeRow(sheet, column_dataArea, rowSeries, pt, sumResults);
-				XLSResults results = new XLSResults(rowR.name, rowL.nflies, rowL.exportType, rowL.dimension);
-				if (option == EnumXLSExportType.TOPLEVEL_LR || option == EnumXLSExportType.SUMGULPS_LR) 
-					results.getPI_LR(rowL, rowR);
-				else if (option == EnumXLSExportType.TOPLEVEL_RATIO)
-					results.getRatio_LR(rowL, rowR);
-				writeRow(sheet, column_dataArea, rowSeries, pt, results);
-			} 
-			else 
-			{
-				writeRow(sheet, column_dataArea, rowSeries, pt, rowL);
-			}
-		}
-	}
+//	private void writeExperiment_data_LRRows(XSSFSheet sheet, 
+//			int column_dataArea, 
+//			int rowSeries, 
+//			Point pt, 
+//			EnumXLSExportType option) 
+//	{
+//		for (int irow = 0; irow < rowListForOneExp.size(); irow ++) 
+//		{
+//			XLSResults rowL = rowListForOneExp.getRow(irow); 			
+//			XLSResults rowR = getNextRow (rowL, irow);
+//			if (rowR != null) 
+//			{
+//				irow++;
+//				XLSResults sumResults = new XLSResults(rowL.name, rowL.nflies, rowL.exportType, rowL.dimension);
+//				sumResults.getSumLR(rowL, rowR);
+//				writeRow(sheet, column_dataArea, rowSeries, pt, sumResults);
+//				XLSResults results = new XLSResults(rowR.name, rowL.nflies, rowL.exportType, rowL.dimension);
+//				if (option == EnumXLSExportType.TOPLEVEL_LR || option == EnumXLSExportType.SUMGULPS_LR) 
+//					results.getPI_LR(rowL, rowR);
+//				else if (option == EnumXLSExportType.TOPLEVEL_RATIO)
+//					results.getRatio_LR(rowL, rowR);
+//				writeRow(sheet, column_dataArea, rowSeries, pt, results);
+//			} 
+//			else 
+//			{
+//				writeRow(sheet, column_dataArea, rowSeries, pt, rowL);
+//			}
+//		}
+//	}
 	
-	private void writeExperiment_data_TOGulpLR(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
-	{
-		for (int irow = 0; irow < rowListForOneExp.size(); irow ++) 
-		{
-			XLSResults rowL = rowListForOneExp.get(irow);
-			XLSResults rowR = getNextRow (rowL, irow);
-			if (rowR != null) 
-			{
-				irow++;
-				int len = rowL.values_out.length;
-				if (rowR.values_out.length > len)
-					len = rowR.values_out.length;
-			
-				XLSResults maxResults = new XLSResults(rowL.name, rowL.nflies, rowL.exportType, len);	
-				maxResults.getMaxTimeToGulpLR(rowL, rowR);
-				writeRow(sheet, column_dataArea, rowSeries, pt, maxResults);
-				
-				XLSResults minResults = new XLSResults(rowR.name, rowL.nflies, rowL.exportType, len);	
-				minResults.getMinTimeToGulpLR(rowL, rowR);
-				writeRow(sheet, column_dataArea, rowSeries, pt, minResults);
-			} 
-			else 
-			{
-				writeRow(sheet, column_dataArea, rowSeries, pt, rowL);
-			}
-		}
-	}
+//	private void writeExperiment_data_TOGulpLR(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
+//	{
+//		for (int irow = 0; irow < rowListForOneExp.size(); irow ++) 
+//		{
+//			XLSResults rowL = rowListForOneExp.getRow(irow);
+//			XLSResults rowR = getNextRow (rowL, irow);
+//			if (rowR != null) 
+//			{
+//				irow++;
+//				int len = rowL.valuesOut.length;
+//				if (rowR.valuesOut.length > len)
+//					len = rowR.valuesOut.length;
+//			
+//				XLSResults maxResults = new XLSResults(rowL.name, rowL.nflies, rowL.exportType, len);	
+//				maxResults.getMaxTimeToGulpLR(rowL, rowR);
+//				writeRow(sheet, column_dataArea, rowSeries, pt, maxResults);
+//				
+//				XLSResults minResults = new XLSResults(rowR.name, rowL.nflies, rowL.exportType, len);	
+//				minResults.getMinTimeToGulpLR(rowL, rowR);
+//				writeRow(sheet, column_dataArea, rowSeries, pt, minResults);
+//			} 
+//			else 
+//			{
+//				writeRow(sheet, column_dataArea, rowSeries, pt, rowL);
+//			}
+//		}
+//	}
 	
 	private void writeRow(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt, XLSResults row) 
 	{
@@ -809,14 +809,15 @@ public class XLSExport
 		pt.y = column_dataArea;
 		int col = getRowIndexFromKymoFileName(row.name);
 		pt.x = rowSeries + col; 
-		if (row.values_out == null)
+		if (row.valuesOut == null)
 			return;
-		for (long coltime = expAll.camFirstImage_Ms; coltime < expAll.camLastImage_Ms; coltime+=options.buildExcelStepMs, pt.y++) 
+		
+		for (long coltime = expAll.camFirstImage_Ms; coltime < expAll.camLastImage_Ms; coltime += options.buildExcelStepMs, pt.y++) 
 		{
-			int i_from = (int) ((coltime-expAll.camFirstImage_Ms) / options.buildExcelStepMs);
-			if (i_from >= row.values_out.length) 
+			int i_from = (int) ((coltime - expAll.camFirstImage_Ms) / options.buildExcelStepMs);
+			if (i_from >= row.valuesOut.length) 
 				break;
-			double value = row.values_out[i_from];
+			double value = row.valuesOut[i_from];
 			if (!Double.isNaN(value)) 
 			{
 				XLSUtils.setValue(sheet, pt, transpose, value);

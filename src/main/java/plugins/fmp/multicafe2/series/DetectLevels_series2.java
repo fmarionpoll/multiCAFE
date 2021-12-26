@@ -8,7 +8,7 @@ import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.experiment.Capillary;
-import plugins.fmp.multicafe2.experiment.CapillaryLimit;
+import plugins.fmp.multicafe2.experiment.CapillaryLevel;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.tools.ImageToolsTransform;
@@ -109,8 +109,8 @@ public class DetectLevels_series2 extends BuildSeries
 			
 			if (options.analyzePartOnly) 
 			{
-				cap.ptsTop.polylineLimit.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
-				cap.ptsBottom.polylineLimit.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
+				cap.ptsTop.polylineLevel.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
+				cap.ptsBottom.polylineLevel.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
 			} 
 			else 
 			{
@@ -122,14 +122,14 @@ public class DetectLevels_series2 extends BuildSeries
 
 	}
 	
-	private CapillaryLimit getLimits (List<Point2D> limit, String name, int t_from, SequenceKymos seqKymos ) 
+	private CapillaryLevel getLimits (List<Point2D> limit, String name, int t_from, SequenceKymos seqKymos ) 
 	{
 		ROI2DPolyLine roiTrack = new ROI2DPolyLine (limit);
 		roiTrack.setName(name);
 		roiTrack.setStroke(1);
 		roiTrack.setT(t_from);
 		seqKymos.seq.addROI(roiTrack);
-		return new CapillaryLimit(roiTrack.getName(), roiTrack.getPolyline2D());
+		return new CapillaryLevel(roiTrack.getName(), roiTrack.getPolyline2D());
 	}
 
 	private int checkLimits (int rowIndex, int maximumRowIndex) 

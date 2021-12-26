@@ -16,9 +16,9 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
-public class CapillaryLimit  implements XMLPersistent  
+public class CapillaryLevel  implements XMLPersistent  
 {
-	public Level2D 	polylineLimit 	= null;
+	public Level2D 	polylineLevel 	= null;
 	public Level2D 	polyline_old 	= null;
 	
 	public String 	typename 		= "notype";
@@ -33,67 +33,67 @@ public class CapillaryLimit  implements XMLPersistent
 	
 	// -------------------------
 	
-	CapillaryLimit(String typename) 
+	CapillaryLevel(String typename) 
 	{
 		this.typename = typename;
 		name = typename;
 	}
 	
-	public CapillaryLimit(String name, Polyline2D polyline) 
+	public CapillaryLevel(String name, Polyline2D polyline) 
 	{
 		this.name = name;
-		polylineLimit = new Level2D(polyline);
+		polylineLevel = new Level2D(polyline);
 	}
 	
-	public CapillaryLimit(String name, int indexImage, List<Point2D> limit) 
+	public CapillaryLevel(String name, int indexImage, List<Point2D> limit) 
 	{
 		this.name = name;
-		polylineLimit = new Level2D(limit);
+		polylineLevel = new Level2D(limit);
 	}
 	
 	int getNPoints() 
 	{
-		if (polylineLimit == null)
+		if (polylineLevel == null)
 			return 0;
-		return polylineLimit.npoints;
+		return polylineLevel.npoints;
 	}
 
 	int restoreNPoints()  
 	{
 		if (polyline_old != null) 
-			polylineLimit = polyline_old.clone();
-		return polylineLimit.npoints;
+			polylineLevel = polyline_old.clone();
+		return polylineLevel.npoints;
 	}
 	
 	void cropToNPoints(int npoints) 
 	{
 		if (polyline_old == null) 
-			polyline_old = polylineLimit.clone();
-		polylineLimit.npoints = npoints;
+			polyline_old = polylineLevel.clone();
+		polylineLevel.npoints = npoints;
 	}
 	
-	void copy(CapillaryLimit cap) 
+	void copy(CapillaryLevel cap) 
 	{
-		if (cap.polylineLimit != null)
-			polylineLimit = cap.polylineLimit.clone(); 
+		if (cap.polylineLevel != null)
+			polylineLevel = cap.polylineLevel.clone(); 
 	}
 	
 	boolean isThereAnyMeasuresDone() 
 	{
-		return (polylineLimit != null && polylineLimit.npoints > 0);
+		return (polylineLevel != null && polylineLevel.npoints > 0);
 	}
 	
-	List<Integer> getMeasures(long seriesBinMs, long outputBinMs) 
+	ArrayList<Integer> getMeasures(long seriesBinMs, long outputBinMs) 
 	{
-		if (polylineLimit == null)
+		if (polylineLevel == null)
 			return null;
-		long maxMs = (polylineLimit.ypoints.length -1) * seriesBinMs;
+		long maxMs = (polylineLevel.ypoints.length -1) * seriesBinMs;
 		long npoints = (maxMs / outputBinMs)+1;
-		List<Integer> arrayInt = new ArrayList<Integer>((int) npoints);
+		ArrayList<Integer> arrayInt = new ArrayList<Integer>((int) npoints);
 		for (double iMs = 0; iMs <= maxMs; iMs += outputBinMs) 
 		{
 			int index = (int) (iMs  / seriesBinMs);
-			arrayInt.add((int) polylineLimit.ypoints[index]);
+			arrayInt.add((int) polylineLevel.ypoints[index]);
 		}
 		return arrayInt;
 	}
@@ -105,38 +105,38 @@ public class CapillaryLimit  implements XMLPersistent
 	
 	int getLastMeasure() 
 	{	
-		if (polylineLimit == null)
+		if (polylineLevel == null)
 			return 0;
-		int lastitem = polylineLimit.ypoints.length - 1;
-		int ivalue = (int) polylineLimit.ypoints[lastitem];
+		int lastitem = polylineLevel.ypoints.length - 1;
+		int ivalue = (int) polylineLevel.ypoints[lastitem];
 		return ivalue;
 	}
 	
 	int getT0Measure() 
 	{	
-		if (polylineLimit == null)
+		if (polylineLevel == null)
 			return 0;
-		return (int) polylineLimit.ypoints[0];
+		return (int) polylineLevel.ypoints[0];
 	}
 	
 	int getLastDeltaMeasure() 
 	{	
-		if (polylineLimit == null)
+		if (polylineLevel == null)
 			return 0;
-		int lastitem = polylineLimit.ypoints.length - 1;
-		return (int) (polylineLimit.ypoints[lastitem] - polylineLimit.ypoints[lastitem-1]);
+		int lastitem = polylineLevel.ypoints.length - 1;
+		return (int) (polylineLevel.ypoints[lastitem] - polylineLevel.ypoints[lastitem-1]);
 	}
 	
 	List<ROI2D> addToROIs(List<ROI2D> listrois, int indexImage) 
 	{
-		if (polylineLimit != null) 
+		if (polylineLevel != null) 
 			listrois.add(transferPolyline2DToROI(indexImage));
 		return listrois;
 	}
 	
 	List<ROI2D> addToROIs(List<ROI2D> listrois, Color color, double stroke, int indexImage) 
 	{
-		if (polylineLimit != null) 
+		if (polylineLevel != null) 
 		{ 
 			ROI2D roi = transferPolyline2DToROI(indexImage);
 			roi.setColor(color);
@@ -154,7 +154,7 @@ public class CapillaryLimit  implements XMLPersistent
 			String roiname = roi.getName();
 			if (roi instanceof ROI2DPolyLine && roiname .contains (name)) 
 			{
-				polylineLimit = new Level2D(((ROI2DPolyLine)roi).getPolyline2D());
+				polylineLevel = new Level2D(((ROI2DPolyLine)roi).getPolyline2D());
 				name = roiname;	
 			}
 		}
@@ -176,19 +176,19 @@ public class CapillaryLimit  implements XMLPersistent
 	
 	List<Integer> getIntegerArrayFromPolyline2D() 
 	{
-		if (polylineLimit == null)
+		if (polylineLevel == null)
 			return null;
-		List<Integer> arrayInt = new ArrayList<Integer>(polylineLimit.ypoints.length);
-		for (double i: polylineLimit.ypoints)
+		List<Integer> arrayInt = new ArrayList<Integer>(polylineLevel.ypoints.length);
+		for (double i: polylineLevel.ypoints)
 			arrayInt.add((int) i);
 		return arrayInt;
 	}
 	
 	public ROI2D transferPolyline2DToROI(int indexImage) 
 	{
-		if (polylineLimit == null)
+		if (polylineLevel == null)
 			return null;	
-		ROI2D roi = new ROI2DPolyLine(polylineLimit); 
+		ROI2D roi = new ROI2DPolyLine(polylineLevel); 
 		roi.setName(name);
 		roi.setT(indexImage);
 		return roi;
@@ -198,7 +198,7 @@ public class CapillaryLimit  implements XMLPersistent
 	{
 		final Node nodeMeta = XMLUtil.getElement(node, nodename);
 		int npoints = 0;
-		polylineLimit = null;
+		polylineLevel = null;
 	    if (nodeMeta != null)  
 	    {
 	    	name =  XMLUtil.getElementValue(nodeMeta, ID_NAME, nodename);
@@ -207,9 +207,9 @@ public class CapillaryLimit  implements XMLPersistent
 	    		this.header = header;
 	    		name = header + name;
 	    	} 
-	    	polylineLimit = loadPolyline2DFromXML(nodeMeta);
-		    if (polylineLimit != null)
-		    	npoints = polylineLimit.npoints;
+	    	polylineLevel = loadPolyline2DFromXML(nodeMeta);
+		    if (polylineLevel != null)
+		    	npoints = polylineLevel.npoints;
 	    }
 		final Node nodeMeta_old = XMLUtil.getElement(node, nodename+"old");
 		if (nodeMeta_old != null) 
@@ -241,15 +241,15 @@ public class CapillaryLimit  implements XMLPersistent
 	
 	public void saveCapillaryLimit2XML(Node node, String nodename) 
 	{
-		if (polylineLimit == null)
+		if (polylineLevel == null)
 			return;
 		final Node nodeMeta = XMLUtil.setElement(node, nodename);
 	    if (nodeMeta != null) 
 	    {
 	    	XMLUtil.setElementValue(nodeMeta, ID_NAME, name);
-	    	saveLevel2XML(nodeMeta, polylineLimit);
+	    	saveLevel2XML(nodeMeta, polylineLevel);
 	    	final Node nodeMeta_old = XMLUtil.setElement(node, nodename+"old");
-		    if (polyline_old != null && polyline_old.npoints != polylineLimit.npoints) 
+		    if (polyline_old != null && polyline_old.npoints != polylineLevel.npoints) 
 		    	saveLevel2XML(nodeMeta_old,  polyline_old);
 	    }
 	}
@@ -268,9 +268,9 @@ public class CapillaryLimit  implements XMLPersistent
 	
 	public void adjustToImageWidth(int imageSize) 
 	{
-		if (polylineLimit == null)
+		if (polylineLevel == null)
 			return;
-		int npoints = polylineLimit.npoints;
+		int npoints = polylineLevel.npoints;
 		int npoints_old = 0;
 		if (polyline_old != null && polyline_old.npoints > npoints) 
 			npoints_old = polyline_old.npoints;
@@ -283,7 +283,7 @@ public class CapillaryLimit  implements XMLPersistent
 			int newSize = imageSize;
 			if (npoints < npoints_old)
 				newSize = 1 + imageSize *npoints / npoints_old;
-			polylineLimit = polylineLimit.contractPolylineToNewSize(newSize);
+			polylineLevel = polylineLevel.contractPolylineToNewSize(newSize);
 			if (npoints_old != 0)
 				polyline_old = polyline_old.contractPolylineToNewSize(imageSize);
 		}
@@ -293,7 +293,7 @@ public class CapillaryLimit  implements XMLPersistent
 			int newSize = imageSize;
 			if (npoints < npoints_old)
 				newSize = imageSize *npoints / npoints_old;
-			polylineLimit = polylineLimit.expandPolylineToNewSize(newSize);
+			polylineLevel = polylineLevel.expandPolylineToNewSize(newSize);
 			if (npoints_old != 0)
 				polyline_old = polyline_old.expandPolylineToNewSize(imageSize);
 		}
@@ -301,9 +301,9 @@ public class CapillaryLimit  implements XMLPersistent
 
 	public void cropToImageWidth(int imageSize) 
 	{
-		if (polylineLimit == null)
+		if (polylineLevel == null)
 			return;
-		int npoints = polylineLimit.npoints;
+		int npoints = polylineLevel.npoints;
 		if (npoints == imageSize)
 			return;
 		
@@ -315,7 +315,7 @@ public class CapillaryLimit  implements XMLPersistent
 		
 		// reduce polyline npoints to imageSize
 		int newSize = imageSize;
-		polylineLimit = polylineLimit.cropPolylineToNewSize(newSize);		
+		polylineLevel = polylineLevel.cropPolylineToNewSize(newSize);		
 	}
 	
 }

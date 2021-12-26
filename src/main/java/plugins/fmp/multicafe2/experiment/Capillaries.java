@@ -41,7 +41,7 @@ public class Capillaries
 
 	// ---------------------------------
 		
-	String getXMLNameToAppend() 
+	public String getXMLNameToAppend() 
 	{
 		return ID_MCCAPILLARIES_XML;
 	}
@@ -509,54 +509,88 @@ public class Capillaries
 
 	// ---------------------------------------------------
 	
-	public void exportResults1(Experiment expi, XLSResultsArray resultsArrayList, EnumXLSExportType measureOption, EnumXLSExportType xlsOption, int nOutputFrames, long kymoBinCol_Ms, XLSExportOptions 	options) 
+	public void getResults1(Experiment expi, 
+			XLSResultsArray resultsArrayList,  
+			EnumXLSExportType xlsOption, 
+			int nOutputFrames, 
+			long kymoBinCol_Ms, 
+			XLSExportOptions xlsExportOptions) 
 	{
 		for (Capillary cap: expi.capillaries.capillariesList) 
 		{
 			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
-			results.data = cap.getCapillaryMeasures(measureOption, kymoBinCol_Ms, options.buildExcelStepMs);
-			resultsArrayList.addResults(results);
+			results.getCapillaryMeasuresForPass1(cap, xlsOption, kymoBinCol_Ms, xlsExportOptions.buildExcelStepMs);
+			resultsArrayList.addRow(results);
 		}
-		
-		switch (measureOption) 
+		buildDataForPass2(resultsArrayList, xlsOption);
+	}
+	
+	public void getResults_T0(Experiment expi, 
+			XLSResultsArray resultsArrayList, 
+			EnumXLSExportType xlsOption, 
+			int nOutputFrames, 
+			long kymoBinCol_Ms, 
+			XLSExportOptions options) 
+	{
+		for (Capillary cap: expi.capillaries.capillariesList) 
 		{
-		case AUTOCORREL:
-			buildAutocorrel();
-			break;
-		case CROSSCORREL:
-			buildCrosscorrel();
-			break;
-		case CROSSCORREL_LR:
-			buildCrossCorrel_LR()
-			break;
-		
+			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
+			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
+			results.getCapillaryMeasuresForPass1(cap, xlsOption, kymoBinCol_Ms, options.buildExcelStepMs);
+			if (options.t0) 
+				results.subtractT0();
+			resultsArrayList.addRow(results);
+		}
+		buildDataForPass2(resultsArrayList, xlsOption);
+	}
+	
+	private void buildDataForPass2(XLSResultsArray resultsArrayList, EnumXLSExportType xlsOption)
+	{
+		switch (xlsOption) 
+		{
 		case TOPLEVEL_LR:
 		case TOPLEVELDELTA_LR:
 		case SUMGULPS_LR:
-			buildLR();
-			break;
-		
 		case TOPLEVEL_RATIO:
-			buildRatioLR();
+			buildLR (resultsArrayList, xlsOption); 
 			break;
-			
+		case AUTOCORREL:
+//			buildAutocorrel();
+			break;
+		case CROSSCORREL:
+//			buildCrosscorrel();
+			break;
+		case CROSSCORREL_LR:
+//			buildCrossCorrel_LR()
+			break;
+
 		default:
+			resultsArrayList.transferDataIntToValout();
 			break;
 		}
 	}
 	
-	public void exportResults_T0(Experiment expi, XLSResultsArray resultsArrayList, EnumXLSExportType measureOption, EnumXLSExportType xlsOption, int nOutputFrames, long kymoBinCol_Ms, XLSExportOptions 	options) 
+	private void buildLR (XLSResultsArray resultsArrayList, EnumXLSExportType xlsOption) 
 	{
-		for (Capillary cap: expi.capillaries.capillariesList) 
+		for (int irow = 0; irow < resultsArrayList.size(); irow ++) 
 		{
-			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
-			results.data = cap.getCapillaryMeasures(measureOption, kymoBinCol_Ms, options.buildExcelStepMs);
-			if (options.t0) 
-				results.subtractT0();
-			resultsArrayList.addResults(results);
+			XLSResults rowL = resultsArrayList.getRow(irow); 			
+			XLSResults rowR = resultsArrayList.getNextRow(irow);
+			if (rowR != null) 
+			{
+				irow++;
+				rowL.getSumLR(rowL, rowR);
+				
+				if (xlsOption == EnumXLSExportType.TOPLEVEL_LR 
+				|| xlsOption == EnumXLSExportType.SUMGULPS_LR) 
+					rowR.getPI_LR(rowL, rowR);
+				else if (xlsOption == EnumXLSExportType.TOPLEVEL_RATIO)
+					rowR.getRatio_LR(rowL, rowR);
+			} 
 		}
 	}
 	
+
+
 }

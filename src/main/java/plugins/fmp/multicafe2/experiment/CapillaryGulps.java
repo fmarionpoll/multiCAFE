@@ -103,7 +103,7 @@ public class CapillaryGulps implements XMLPersistent
 		return data_out;
 	}
 	
-	public List<Integer> getMeasuresFromGulps(EnumXLSExportType option, int npoints, long seriesBinMs, long outputBinMs) 
+	public ArrayList<Integer> getMeasuresFromGulps(EnumXLSExportType option, int npoints, long seriesBinMs, long outputBinMs) 
 	{	
 		ArrayList<Integer> data_in = null;
 		switch (option) 
