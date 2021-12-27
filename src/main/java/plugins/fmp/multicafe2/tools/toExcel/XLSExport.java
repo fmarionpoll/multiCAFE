@@ -421,6 +421,7 @@ public class XLSExport
 			{
 				XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesList.size());
 				Capillaries caps = expi.capillaries;
+				options.compensateEvaporation = false;
 				switch (xlsExportType) 
 				{
 					case BOTTOMLEVEL:
@@ -442,10 +443,9 @@ public class XLSExport
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
 					case TOPLEVEL_RATIO:
+						options.compensateEvaporation = options.subtractEvaporation;
 						caps.getResults_T0(resultsArrayList, xlsExportType, 
 								nOutputFrames, exp.kymoBinCol_Ms, options);
-						if (options.subtractEvaporation)
-							resultsArrayList.subtractEvaporation();
 						break;
 						
 					case DERIVEDVALUES:
@@ -453,8 +453,6 @@ public class XLSExport
 					case SUMGULPS_LR:
 						caps.getResults1(resultsArrayList, xlsExportType, 
 								nOutputFrames, exp.kymoBinCol_Ms, options);
-						if (options.subtractEvaporation)
-							resultsArrayList.subtractEvaporation();
 						break;
 						
 					case AUTOCORREL:

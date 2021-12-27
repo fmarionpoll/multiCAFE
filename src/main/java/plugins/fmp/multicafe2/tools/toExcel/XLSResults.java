@@ -75,7 +75,8 @@ public class XLSResults
 	
 	public void transferDataIntToValuesOut(double scalingFactorToPhysicalUnits) 
 	{
-		for (int i = 0; i < dimension; i++)
+		int len = Math.min(dimension,  dataInt.size());
+		for (int i = 0; i < len; i++)
 			valuesOut[i] = dataInt.get(i) * scalingFactorToPhysicalUnits;
 	}
 	
@@ -168,21 +169,6 @@ public class XLSResults
 		dataInt = cap.getCapillaryMeasuresForPass1(xlsOption, kymoBinCol_Ms, outputBinMs);
 	}
 	
-	double getValueOut(int index) 
-	{
-		double data = Double.NaN;
-		if (valuesOut != null && index < valuesOut.length) 
-			data = valuesOut[index];
-		return data;
-	}
-	
-	int getDataInt(int index) 
-	{
-		int value = 0;
-		if (dataInt != null && index < dataInt.size()) 
-			value = dataInt.get(index);
-		return value;
-	}
 	
 	
 }

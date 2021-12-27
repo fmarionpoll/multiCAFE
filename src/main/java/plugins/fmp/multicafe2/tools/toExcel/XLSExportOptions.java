@@ -36,7 +36,6 @@ public class XLSExportOptions
 	public boolean	tToNextGulp			= false;
 	public boolean	tToNextGulp_LR		= false;
 
-
 	public boolean 	transpose 			= false;
 	public boolean 	duplicateSeries 	= true;
 	public int		buildExcelStepMs 	= 1;
@@ -53,6 +52,7 @@ public class XLSExportOptions
 	public int 		lastExp 			= -1;
 	public ExperimentCombo expList 		= null;
 
-	// internal parameter
+	// internal parameters
 	public	boolean	trim_alive			= false;
+	public  boolean compensateEvaporation = false;
 }

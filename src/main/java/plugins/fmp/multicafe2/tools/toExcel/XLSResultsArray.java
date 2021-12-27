@@ -15,6 +15,8 @@ public class XLSResultsArray
 	boolean				sameLR			= true;
 	String				stim			= null;
 	String				conc			= null;
+	double 				lowestPiAllowed		= -1.2;
+	double 				highestPiAllowed		= 1.2;
 	
 	public XLSResultsArray (int size) 
 	{
@@ -82,7 +84,7 @@ public class XLSResultsArray
 		sameLR &= conc .equals(cap.capConcentration);
 	}
 	
-	void subtractEvaporation() 
+	public void subtractEvaporation() 
 	{
 		int dimension = 0;
 		for (XLSResults result: resultsList) 
@@ -145,29 +147,22 @@ public class XLSResultsArray
 		return Math.min(lenL,  lenR);
 	}
 	
-	public void getSumLR(XLSResults rowL, XLSResults rowR, XLSResults rowOut) 
+	public void getPI_LR(XLSResults rowL, XLSResults rowR) 
 	{
 		int len = getLen(rowL, rowR);
 		for (int index = 0; index < len; index++) 
 		{
-			double dataL = rowL.getDataInt(index);
-			double dataR = rowR.getDataInt(index);
-			rowOut.valuesOut[index] = addValues(dataL, dataR);
-		}
-	}
-	
-	public void getPI_LR(XLSResults rowL, XLSResults rowR, XLSResults rowOut) 
-	{
-		int len = getLen(rowL, rowR);
-		for (int index = 0; index < len; index++) 
-		{
-			double dataL = rowL.getDataInt(index);
-			double dataR = rowR.getDataInt(index);
+			double dataL = rowL.valuesOut[index];
+			double dataR = rowR.valuesOut[index];
 			double sum = addValues(dataL, dataR);
 			double pi = Double.NaN;
 			if (sum != 0. && !Double.isNaN(sum))
 				pi = (dataL-dataR)/sum;
-			rowOut.valuesOut[index] = pi;
+			if (pi > highestPiAllowed) pi = highestPiAllowed;
+			if (pi < lowestPiAllowed) pi = lowestPiAllowed;
+			
+			rowL.valuesOut[index] = sum;
+			rowR.valuesOut[index] = pi;
 		}
 	}
 	
@@ -179,20 +174,22 @@ public class XLSResultsArray
 		return sum;
 	}
 	
-	public void getRatio_LR(XLSResults rowL, XLSResults rowR, XLSResults rowOut) 
+	public void getRatio_LR(XLSResults rowL, XLSResults rowR) 
 	{
 		int len = getLen(rowL, rowR);
 		for (int index = 0; index < len; index++) 
 		{
-			double dataL = rowL.getDataInt(index);
-			double dataR = rowR.getDataInt(index);
+			double dataL = rowL.valuesOut[index];
+			double dataR = rowR.valuesOut[index];
 			boolean ratioOK = true;
 			if (Double.isNaN(dataR) || Double.isNaN(dataL)) 
 				ratioOK = false;		
 			double ratio = Double.NaN;
 			if (ratioOK && dataR != 0)
 				ratio = (dataL/dataR);
-			rowOut.valuesOut[index] = ratio;
+			
+			rowL.valuesOut[index] = addValues(dataL, dataR);
+			rowR.valuesOut[index] = ratio;
 		}
 	}
 	
@@ -202,13 +199,13 @@ public class XLSResultsArray
 		for (int index = 0; index < len; index++) 
 		{
 			double dataMax = Double.NaN;
-			double dataL = rowL.getValueOut(index);
-			double dataR = rowR.getValueOut(index);
+			double dataL = rowL.valuesOut[index];
+			double dataR = rowR.valuesOut[index];
 			if (dataL <= dataR)
 				dataMax = dataL;
 			else if (dataL > dataR)
 				dataMax = dataR;
-			rowOut.valuesOut[index]= dataMax;
+			rowOut.valuesOut[index] = dataMax;
 		}
 	}
 	
@@ -218,13 +215,13 @@ public class XLSResultsArray
 		for (int index = 0; index < len; index++) 
 		{
 			double dataMin = Double.NaN;
-			double dataL = rowL.getValueOut(index);
-			double dataR = rowR.getValueOut(index);
+			double dataL = rowL.valuesOut[index];
+			double dataR = rowR.valuesOut[index];
 			if (dataL >= dataR)
 				dataMin = dataL;
 			else if (dataL < dataR)
 				dataMin = dataR;
-			rowOut.valuesOut[index]= dataMin;
+			rowOut.valuesOut[index] = dataMin;
 		}
 	}
 }
