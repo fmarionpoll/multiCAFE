@@ -516,6 +516,9 @@ public class Capillaries
 			long kymoBinCol_Ms, 
 			XLSExportOptions xlsExportOptions) 
 	{
+		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits(xlsOption);
+		x// TODO apply scaling at pass 1 
+		
 		for (Capillary cap: expi.capillaries.capillariesList) 
 		{
 			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
@@ -533,6 +536,9 @@ public class Capillaries
 			long kymoBinCol_Ms, 
 			XLSExportOptions options) 
 	{
+		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits(xlsOption);
+		x// TODO apply scaling at pass 1 
+		
 		for (Capillary cap: expi.capillaries.capillariesList) 
 		{
 			resultsArrayList.checkIfSameStimulusAndConcentration(cap);

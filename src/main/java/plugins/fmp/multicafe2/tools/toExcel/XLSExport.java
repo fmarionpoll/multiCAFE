@@ -505,7 +505,6 @@ public class XLSExport
 			return;
 		
 		EnumXLSExportType xlsoption = resultsArrayList.getRow(0).exportType;
-		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits(xlsoption);
 		
 		long offsetChain = expi.camFirstImage_Ms - expi.chainFirstImage_Ms;
 		long start_Ms = expi.offsetFirstCol_Ms + offsetChain; // TODO check when collate?
@@ -563,7 +562,7 @@ public class XLSExport
 					// TODO check how this can happen
 					if (from_i < 0)
 						continue;
-					double value = results.valuesOut[from_i] * scalingFactorToPhysicalUnits + dvalue;
+					double value = results.valuesOut[from_i] + dvalue;
 					if (icolTo >= row.valuesOut.length)
 						break;
 					row.valuesOut[icolTo] = value;
