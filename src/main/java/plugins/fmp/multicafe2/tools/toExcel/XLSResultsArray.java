@@ -156,10 +156,7 @@ public class XLSResultsArray
 		{
 			double dataL = rowL.getDataInt(index);
 			double dataR = rowR.getDataInt(index);
-			double sum = Double.NaN;
-			if (dataL != 0. && dataR != 0.)
-				sum = dataL + dataR;
-			rowOut.valuesOut[index]= sum;
+			rowOut.valuesOut[index] = addValues(dataL, dataR);
 		}
 	}
 	
@@ -170,12 +167,20 @@ public class XLSResultsArray
 		{
 			double dataL = rowL.getDataInt(index);
 			double dataR = rowR.getDataInt(index);
-			double sum = rowL.valuesOut[index];
+			double sum = addValues(dataL, dataR);
 			double pi = Double.NaN;
 			if (sum != 0. && !Double.isNaN(sum))
 				pi = (dataL-dataR)/sum;
 			rowOut.valuesOut[index] = pi;
 		}
+	}
+	
+	private Double addValues(double dataL, double dataR)
+	{
+		double sum = Double.NaN;
+		if (dataL != 0. && dataR != 0.)
+			sum = dataL + dataR;
+		return sum;
 	}
 	
 	public void getRatio_LR(XLSResults rowL, XLSResults rowR, XLSResults rowOut) 

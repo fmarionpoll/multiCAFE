@@ -322,7 +322,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	public void cleanGulps() 
 	{
-		if (gulpsRois == null) {
+		if (gulpsRois == null) 
+		{
 			gulpsRois = new CapillaryGulps();
 			gulpsRois.rois = new ArrayList <> ();
 		}
