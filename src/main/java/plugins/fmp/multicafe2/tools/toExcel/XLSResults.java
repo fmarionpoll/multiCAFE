@@ -73,13 +73,8 @@ public class XLSResults
 		nflies = 0;
 	}
 	
-	public void transferDataIntToValuesOut(EnumXLSExportType xlsOption, double scalingFactorToPhysicalUnits) 
+	public void transferDataIntToValuesOut(double scalingFactorToPhysicalUnits) 
 	{
-		if (dataInt.size() != valuesOut.length)
-		{
-			this.dimension = dataInt.size(); 
-			valuesOut = new double [dimension];
-		}
 		for (int i = 0; i < dimension; i++)
 			valuesOut[i] = dataInt.get(i) * scalingFactorToPhysicalUnits;
 	}
@@ -123,26 +118,27 @@ public class XLSResults
 		return true;
 	}
 	
-	void addDataToValOut(XLSResults result) 
+	void addDataToValOutEvap(XLSResults result) 
 	{
 		if (result.valuesOut.length > valuesOut.length) 
 		{
 			System.out.println("Error: from len="+result.valuesOut.length + " to len="+ valuesOut.length);
 			return;
 		}
-		for (int i = 0; i < result.valuesOut.length; i++) 
-			valuesOut[i] += result.valuesOut[i];
 		
+		for (int i = 0; i < result.valuesOut.length; i++)
+		{
+			valuesOut[i] += result.valuesOut[i];
+		}
 		nflies ++;
 	}
 	
 	void averageEvaporation() 
 	{
-		if (nflies != 0) 
-		{
-			for (int i = 0; i < valuesOut.length; i++) 
-				valuesOut[i] = valuesOut[i] / nflies;			
-		}
+		if (nflies == 0) return;
+		
+		for (int i = 0; i < valuesOut.length; i++) 
+			valuesOut[i] = valuesOut[i] / nflies;
 		nflies = 1;
 	}
 	
@@ -150,21 +146,19 @@ public class XLSResults
 	{
 		if (valuesOut == null)
 			return;
-		
-		for (int i = 0; i < valuesOut.length; i++) 
+		int len = Math.min(valuesOut.length, evap.valuesOut.length);
+		for (int i = 0; i < len; i++) 
 		{
-			if (i < evap.valuesOut.length)
-				valuesOut[i] -= evap.valuesOut[i];			
+			valuesOut[i] -= evap.valuesOut[i];			
 		}
-		evap.nflies = 1;
 	}
 	
 	void addValues_out (XLSResults addedData) 
 	{
-		for (int i = 0; i < valuesOut.length; i++) 
+		int len = Math.min(valuesOut.length, addedData.valuesOut.length);
+		for (int i = 0; i < len; i++)  
 		{
-			if (addedData.valuesOut.length > i)
-				valuesOut[i] += addedData.valuesOut[i];			
+			valuesOut[i] += addedData.valuesOut[i];			
 		}
 		nadded += 1;
 	}

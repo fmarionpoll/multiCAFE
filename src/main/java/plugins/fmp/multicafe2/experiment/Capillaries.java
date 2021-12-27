@@ -498,6 +498,9 @@ public class Capillaries
 			case NBGULPS:
 			case TTOGULP:
 			case TTOGULP_LR:
+			case AUTOCORREL:
+			case CROSSCORREL:
+			case CROSSCORREL_LR:
 				scalingFactorToPhysicalUnits = 1.;
 				break;
 			default:
@@ -509,43 +512,43 @@ public class Capillaries
 
 	// ---------------------------------------------------
 	
-	public void getResults1(Experiment expi, 
+	public void getResults1( 
 			XLSResultsArray resultsArrayList,  
 			EnumXLSExportType xlsOption, 
 			int nOutputFrames, 
 			long kymoBinCol_Ms, 
 			XLSExportOptions xlsExportOptions) 
 	{
-		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits(xlsOption);
+		double scalingFactorToPhysicalUnits = getScalingFactorToPhysicalUnits(xlsOption);
 		
-		for (Capillary cap: expi.capillaries.capillariesList) 
+		for (Capillary cap: capillariesList) 
 		{
 			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
 			results.getCapillaryMeasuresForPass1(cap, xlsOption, kymoBinCol_Ms, xlsExportOptions.buildExcelStepMs);
-			resultsArrayList.transferDataIntToValout(xlsOption, scalingFactorToPhysicalUnits);
+			results.transferDataIntToValuesOut(scalingFactorToPhysicalUnits);
 			resultsArrayList.addRow(results);
 		}
 		buildDataForPass2(resultsArrayList, xlsOption);
 	}
 	
-	public void getResults_T0(Experiment expi, 
+	public void getResults_T0( 
 			XLSResultsArray resultsArrayList, 
 			EnumXLSExportType xlsOption, 
 			int nOutputFrames, 
 			long kymoBinCol_Ms, 
 			XLSExportOptions options) 
 	{
-		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits(xlsOption);
+		double scalingFactorToPhysicalUnits = getScalingFactorToPhysicalUnits(xlsOption);
 		
-		for (Capillary cap: expi.capillaries.capillariesList) 
+		for (Capillary cap: capillariesList) 
 		{
 			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
 			results.getCapillaryMeasuresForPass1(cap, xlsOption, kymoBinCol_Ms, options.buildExcelStepMs);
 			if (options.t0) 
 				results.subtractT0();
-			resultsArrayList.transferDataIntToValout(xlsOption, scalingFactorToPhysicalUnits);
+			results.transferDataIntToValuesOut(scalingFactorToPhysicalUnits);
 			resultsArrayList.addRow(results);
 		}
 		buildDataForPass2(resultsArrayList, xlsOption);

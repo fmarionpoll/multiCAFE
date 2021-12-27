@@ -82,12 +82,6 @@ public class XLSResultsArray
 		sameLR &= conc .equals(cap.capConcentration);
 	}
 	
-	public void transferDataIntToValout(EnumXLSExportType xlsOption, double scalingFactorToPhysicalUnits) 
-	{
-		for (XLSResults result: resultsList) 
-			result.transferDataIntToValuesOut(xlsOption, scalingFactorToPhysicalUnits); 
-	}
-	
 	void subtractEvaporation() 
 	{
 		int dimension = 0;
@@ -100,25 +94,27 @@ public class XLSResultsArray
 		}
 		if (dimension== 0)
 			return;
-		evapL = new XLSResults("L", 0, null);
-		evapL.initValuesOutArray(dimension, 0.);
-		evapR = new XLSResults("R", 0, null);
-		evapR.initValuesOutArray(dimension, 0.);
-		computeEvaporationFromResultsWithZeroFlies();
+		
+		computeEvaporationFromResultsWithZeroFlies(dimension);
 		subtractEvaporationLocal();
 	}
 	
-	private void computeEvaporationFromResultsWithZeroFlies() 
+	private void computeEvaporationFromResultsWithZeroFlies(int dimension) 
 	{
+		evapL = new XLSResults("L", 0, null);
+		evapR = new XLSResults("R", 0, null);
+		evapL.initValuesOutArray(dimension, 0.);
+		evapR.initValuesOutArray(dimension, 0.);
+		
 		for (XLSResults result: resultsList) 
 		{
 			if (result.valuesOut == null || result.nflies > 0)
 				continue;
 			String side = result.name.substring(result.name.length() -1);
-			if (sameLR || side.contains("L"))
-				evapL.addDataToValOut(result);
+			if (sameLR || side.contains("L")) 
+				evapL.addDataToValOutEvap(result);
 			else
-				evapR.addDataToValOut(result);
+				evapR.addDataToValOutEvap(result);
 		}
 		evapL.averageEvaporation();
 		evapR.averageEvaporation();
