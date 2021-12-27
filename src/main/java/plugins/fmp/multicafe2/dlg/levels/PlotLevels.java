@@ -103,7 +103,8 @@ public class PlotLevels extends JPanel implements SequenceListener
 		Point ptRelative = new Point(0, 0); 
 //		if (parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())	
 //		if (rect0.x+ rect0.width < Icy.getMainInterface().getMainFrame().getDesktopWidth()) 
-		ptRelative.y = rectv.height;
+		
+//		ptRelative.y = rectv.height;
 		
 		int dx = 5;
 		int dy = 10; 

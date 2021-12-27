@@ -40,11 +40,11 @@ public class XLSResults
 		initValuesArray(nFrames);
 	}
 	
-	void initValuesOutArray(int dimension, int val) 
+	void initValuesOutArray(int dimension, Double val) 
 	{
 		this.dimension = dimension; 
 		valuesOut = new double [dimension];
-		Arrays.fill(valuesOut, Double.NaN);
+		Arrays.fill(valuesOut, val);
 	}
 	
 	private void initValuesArray(int dimension) 
@@ -130,8 +130,9 @@ public class XLSResults
 			System.out.println("Error: from len="+result.valuesOut.length + " to len="+ valuesOut.length);
 			return;
 		}
-		for (int i=0; i < result.valuesOut.length; i++) 
-			valuesOut[i] += result.valuesOut[i];	
+		for (int i = 0; i < result.valuesOut.length; i++) 
+			valuesOut[i] += result.valuesOut[i];
+		
 		nflies ++;
 	}
 	
@@ -139,7 +140,7 @@ public class XLSResults
 	{
 		if (nflies != 0) 
 		{
-			for (int i=0; i < valuesOut.length; i++) 
+			for (int i = 0; i < valuesOut.length; i++) 
 				valuesOut[i] = valuesOut[i] / nflies;			
 		}
 		nflies = 1;

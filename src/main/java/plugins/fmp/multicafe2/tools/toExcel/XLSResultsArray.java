@@ -101,9 +101,9 @@ public class XLSResultsArray
 		if (dimension== 0)
 			return;
 		evapL = new XLSResults("L", 0, null);
-		evapL.initValuesOutArray(dimension, 0);
+		evapL.initValuesOutArray(dimension, 0.);
 		evapR = new XLSResults("R", 0, null);
-		evapR.initValuesOutArray(dimension, 0);
+		evapR.initValuesOutArray(dimension, 0.);
 		computeEvaporationFromResultsWithZeroFlies();
 		subtractEvaporationLocal();
 	}
