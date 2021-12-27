@@ -21,20 +21,20 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Capillaries;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.chart.LevelsXYMultiChart;
+import plugins.fmp.multicafe2.tools.chart.ChartLevels;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
-public class LevelsGraphs extends JPanel implements SequenceListener
+public class PlotLevels extends JPanel implements SequenceListener
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7079184380174992501L;
-	private LevelsXYMultiChart chartTopandbottom	= null;
-	private LevelsXYMultiChart chartDelta 			= null;
-	private LevelsXYMultiChart chartDerivative 		= null;
-	private LevelsXYMultiChart chartSumgulps 		= null;
+	private ChartLevels plotTopAndBottom	= null;
+	private ChartLevels plotDelta 			= null;
+	private ChartLevels plotDerivative 		= null;
+	private ChartLevels plotSumgulps 		= null;
 	private MultiCAFE2 	parent0 					= null;
 	
 	private JCheckBox 	limitsCheckbox 				= new JCheckBox("top/bottom", true);
@@ -112,49 +112,49 @@ public class LevelsGraphs extends JPanel implements SequenceListener
 		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVEL)
 				&& isThereAnyDataToDisplay(exp, EnumXLSExportType.BOTTOMLEVEL))  
 		{
-			chartTopandbottom = plotToChart(exp, "top + bottom levels", EnumXLSExportType.TOPLEVEL, chartTopandbottom, rectv, ptRelative);
+			plotTopAndBottom = plotToChart(exp, "top + bottom levels", EnumXLSExportType.TOPLEVEL, plotTopAndBottom, rectv, ptRelative);
 			ptRelative.translate(dx, dy);
 		}
-		else if (chartTopandbottom != null) 
-			closeChart(chartTopandbottom);
+		else if (plotTopAndBottom != null) 
+			closeChart(plotTopAndBottom);
 		
 		if (deltaCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVELDELTA))  
 		{
-			chartDelta = plotToChart(exp, "top delta t -(t-1)", 
+			plotDelta = plotToChart(exp, "top delta t -(t-1)", 
 					EnumXLSExportType.TOPLEVELDELTA, 
-					chartDelta, rectv, ptRelative);
+					plotDelta, rectv, ptRelative);
 			ptRelative.translate(dx, dy);
 		}
-		else if (chartDelta != null) 
-			closeChart(chartDelta);
+		else if (plotDelta != null) 
+			closeChart(plotDelta);
 		
 		if (derivativeCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumXLSExportType.DERIVEDVALUES))   
 		{
-			chartDerivative = plotToChart(exp, "Derivative", 
+			plotDerivative = plotToChart(exp, "Derivative", 
 					EnumXLSExportType.DERIVEDVALUES, 
-					chartDerivative, rectv, ptRelative);
+					plotDerivative, rectv, ptRelative);
 			ptRelative.translate(dx, dy); 
 		}
-		else if (chartDerivative != null) 
-			closeChart(chartDerivative);
+		else if (plotDerivative != null) 
+			closeChart(plotDerivative);
 		
 		if (consumptionCheckbox.isSelected()&& isThereAnyDataToDisplay(exp, EnumXLSExportType.SUMGULPS))  
 		{
-			chartSumgulps = plotToChart(exp, "Cumulated gulps", 
+			plotSumgulps = plotToChart(exp, "Cumulated gulps", 
 					EnumXLSExportType.SUMGULPS, 
-					chartSumgulps, rectv, ptRelative);
+					plotSumgulps, rectv, ptRelative);
 			ptRelative.translate(dx, dy); 
 		}
-		else if (chartSumgulps != null) 
-			closeChart(chartSumgulps);
+		else if (plotSumgulps != null) 
+			closeChart(plotSumgulps);
 	}
 	
-	private LevelsXYMultiChart plotToChart(Experiment exp, String title, EnumXLSExportType option, 
-											LevelsXYMultiChart iChart, Rectangle rectv, Point ptRelative ) 
+	private ChartLevels plotToChart(Experiment exp, String title, EnumXLSExportType option, 
+											ChartLevels iChart, Rectangle rectv, Point ptRelative ) 
 	{	
 		if (iChart != null) 
 			iChart.mainChartFrame.dispose();
-		iChart = new LevelsXYMultiChart();
+		iChart = new ChartLevels();
 		iChart.createPanel(title);
 		if (ptRelative != null)
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
@@ -165,13 +165,13 @@ public class LevelsGraphs extends JPanel implements SequenceListener
 	
 	public void closeAllCharts() 
 	{
-		chartTopandbottom = closeChart (chartTopandbottom); 
-		chartDerivative = closeChart (chartDerivative); 
-		chartSumgulps = closeChart (chartSumgulps); 
-		chartDelta = closeChart (chartDelta);	
+		plotTopAndBottom = closeChart (plotTopAndBottom); 
+		plotDerivative = closeChart (plotDerivative); 
+		plotSumgulps = closeChart (plotSumgulps); 
+		plotDelta = closeChart (plotDelta);	
 	}
 	
-	private LevelsXYMultiChart closeChart(LevelsXYMultiChart chart) 
+	private ChartLevels closeChart(ChartLevels chart) 
 	{
 		if (chart != null) 
 			chart.mainChartFrame.dispose();

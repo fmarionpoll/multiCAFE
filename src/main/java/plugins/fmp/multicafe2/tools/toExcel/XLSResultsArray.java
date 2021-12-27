@@ -141,4 +141,89 @@ public class XLSResultsArray
 		for (XLSResults row: resultsList ) 
 			row.subtractDeltaT(1, 1); //options.buildExcelStepMs);
 	}
+	
+	private int getLen(XLSResults rowL, XLSResults rowR) 
+	{
+		int lenL = rowL.valuesOut.length;
+		int lenR = rowR.valuesOut.length;
+		return Math.min(lenL,  lenR);
+	}
+	
+	public void getSumLR(XLSResults rowL, XLSResults rowR, XLSResults rowOut) 
+	{
+		int len = getLen(rowL, rowR);
+		for (int index = 0; index < len; index++) 
+		{
+			double dataL = rowL.getDataInt(index);
+			double dataR = rowR.getDataInt(index);
+			double sum = Double.NaN;
+			if (dataL != 0. && dataR != 0.)
+				sum = dataL + dataR;
+			rowOut.valuesOut[index]= sum;
+		}
+	}
+	
+	public void getPI_LR(XLSResults rowL, XLSResults rowR, XLSResults rowOut) 
+	{
+		int len = getLen(rowL, rowR);
+		for (int index = 0; index < len; index++) 
+		{
+			double dataL = rowL.getDataInt(index);
+			double dataR = rowR.getDataInt(index);
+			double sum = rowL.valuesOut[index];
+			double pi = Double.NaN;
+			if (sum != 0. && !Double.isNaN(sum))
+				pi = (dataL-dataR)/sum;
+			rowOut.valuesOut[index] = pi;
+		}
+	}
+	
+	public void getRatio_LR(XLSResults rowL, XLSResults rowR, XLSResults rowOut) 
+	{
+		int len = getLen(rowL, rowR);
+		for (int index = 0; index < len; index++) 
+		{
+			double dataL = rowL.getDataInt(index);
+			double dataR = rowR.getDataInt(index);
+			boolean ratioOK = true;
+			if (Double.isNaN(dataR) || Double.isNaN(dataL)) 
+				ratioOK = false;		
+			double ratio = Double.NaN;
+			if (ratioOK && dataR != 0)
+				ratio = (dataL/dataR);
+			rowOut.valuesOut[index] = ratio;
+		}
+	}
+	
+	void getMinTimeToGulpLR(XLSResults rowL, XLSResults rowR, XLSResults rowOut) 
+	{
+		int len = getLen(rowL, rowR);
+		for (int index = 0; index < len; index++) 
+		{
+			double dataMax = Double.NaN;
+			double dataL = rowL.getValueOut(index);
+			double dataR = rowR.getValueOut(index);
+			if (dataL <= dataR)
+				dataMax = dataL;
+			else if (dataL > dataR)
+				dataMax = dataR;
+			rowOut.valuesOut[index]= dataMax;
+		}
+	}
+	
+	void getMaxTimeToGulpLR(XLSResults rowL, XLSResults rowR, XLSResults rowOut) 
+	{
+		int len = getLen(rowL, rowR);
+		for (int index = 0; index < len; index++) 
+		{
+			double dataMin = Double.NaN;
+			double dataL = rowL.getValueOut(index);
+			double dataR = rowR.getValueOut(index);
+			if (dataL >= dataR)
+				dataMin = dataL;
+			else if (dataL < dataR)
+				dataMin = dataR;
+			rowOut.valuesOut[index]= dataMin;
+		}
+	}
 }

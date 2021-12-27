@@ -580,13 +580,13 @@ public class Capillaries
 			if (rowR != null) 
 			{
 				irow++;
-				rowL.getSumLR(rowL, rowR);
+				resultsArrayList.getSumLR(rowL, rowR, rowL);
 				
 				if (xlsOption == EnumXLSExportType.TOPLEVEL_LR 
 				|| xlsOption == EnumXLSExportType.SUMGULPS_LR) 
-					rowR.getPI_LR(rowL, rowR);
+					resultsArrayList.getPI_LR(rowL, rowR, rowR);
 				else if (xlsOption == EnumXLSExportType.TOPLEVEL_RATIO)
-					rowR.getRatio_LR(rowL, rowR);
+					resultsArrayList.getRatio_LR(rowL, rowR, rowR);
 			} 
 		}
 	}

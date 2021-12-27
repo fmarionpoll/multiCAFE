@@ -26,7 +26,7 @@ import plugins.fmp.multicafe2.tools.MinMaxDouble;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
-public class CageYPositionsCharts extends IcyFrame 
+public class ChartPositions extends IcyFrame 
 {
 	public JPanel 	mainChartPanel = null;
 	private ArrayList<ChartPanel> chartsInMainChartPanel = null;
@@ -57,7 +57,7 @@ public class CageYPositionsCharts extends IcyFrame
 		{
 			if (cage.flyPositions != null && cage.flyPositions.xytList.size() > 0) 
 			{	
-				YPosMultiChartStructure struct = getDataSet(cage, option);
+				ChartStructure struct = getDataSet(cage, option);
 				XYSeriesCollection xyDataset = struct.xyDataset;
 				valMinMax = struct.minmax;
 				if (count != 0)
@@ -153,7 +153,7 @@ public class CageYPositionsCharts extends IcyFrame
 		return minmax;
 	}
 	
-	private YPosMultiChartStructure getDataSet(Cage cage, EnumXLSExportType option) 
+	private ChartStructure getDataSet(Cage cage, EnumXLSExportType option) 
 	{
 		XYSeriesCollection xyDataset = new XYSeriesCollection();	
 		String name = cage.cageRoi.getName();
@@ -161,7 +161,7 @@ public class CageYPositionsCharts extends IcyFrame
 		seriesXY.setDescription(name);
 		MinMaxDouble minmax = addPointsToXYSeries(cage, option, seriesXY);
 		xyDataset.addSeries(seriesXY);
-		return new YPosMultiChartStructure(minmax, xyDataset);
+		return new ChartStructure(minmax, xyDataset);
 	}
 	
 	private void cleanChartsPanel (ArrayList<ChartPanel> chartsPanel) 

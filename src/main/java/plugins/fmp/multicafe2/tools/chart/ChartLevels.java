@@ -27,7 +27,7 @@ import plugins.fmp.multicafe2.tools.toExcel.XLSExportOptions;
 import plugins.fmp.multicafe2.tools.toExcel.XLSResults;
 import plugins.fmp.multicafe2.tools.toExcel.XLSResultsArray;
 
-public class LevelsXYMultiChart extends IcyFrame  
+public class ChartLevels extends IcyFrame  
 {
 	public JPanel 	mainChartPanel = null;
 	public IcyFrame mainChartFrame = null;

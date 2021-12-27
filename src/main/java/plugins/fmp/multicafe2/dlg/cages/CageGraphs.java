@@ -21,7 +21,7 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.XYTaSeriesArrayList;
-import plugins.fmp.multicafe2.tools.chart.CageYPositionsCharts;
+import plugins.fmp.multicafe2.tools.chart.ChartPositions;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
@@ -31,10 +31,10 @@ public class CageGraphs extends JPanel implements SequenceListener
 	 * 
 	 */
 	private static final long serialVersionUID = -7079184380174992501L;
-	private CageYPositionsCharts ypositionsChart= null;
-	private CageYPositionsCharts distanceChart	= null;
-	private CageYPositionsCharts aliveChart		= null;
-	private CageYPositionsCharts sleepChart		= null;
+	private ChartPositions ypositionsChart= null;
+	private ChartPositions distanceChart	= null;
+	private ChartPositions aliveChart		= null;
+	private ChartPositions sleepChart		= null;
 	private MultiCAFE2 	parent0 			= null;
 	
 	public 	JCheckBox	moveCheckbox		= new JCheckBox("y position", true);	
@@ -126,11 +126,11 @@ public class CageGraphs extends JPanel implements SequenceListener
 		}
 	}
 
-	private void displayYPos(String title, CageYPositionsCharts iChart, Rectangle rectv, Point ptRelative, Experiment exp, EnumXLSExportType option) 
+	private void displayYPos(String title, ChartPositions iChart, Rectangle rectv, Point ptRelative, Experiment exp, EnumXLSExportType option) 
 	{
 		if (iChart == null || !iChart.mainChartPanel.isValid()) 
 		{
-			iChart = new CageYPositionsCharts();
+			iChart = new ChartPositions();
 			iChart.createPanel(title);
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		}
@@ -146,7 +146,7 @@ public class CageGraphs extends JPanel implements SequenceListener
 		close (sleepChart);
 	}
 	
-	private void close (CageYPositionsCharts chart) 
+	private void close (ChartPositions chart) 
 	{
 		if (chart != null) 
 		{

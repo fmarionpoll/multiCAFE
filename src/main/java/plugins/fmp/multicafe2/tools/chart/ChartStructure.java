@@ -4,16 +4,16 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import plugins.fmp.multicafe2.tools.MinMaxDouble;
 
-public class YPosMultiChartStructure 
+public class ChartStructure 
 {
 	public MinMaxDouble minmax = null;
 	public XYSeriesCollection xyDataset = null;
 
-	public YPosMultiChartStructure () 
+	public ChartStructure () 
 	{
 	}
 	
-	public YPosMultiChartStructure (MinMaxDouble minmax, XYSeriesCollection xyDataset) 
+	public ChartStructure (MinMaxDouble minmax, XYSeriesCollection xyDataset) 
 	{
 		this.minmax = minmax;
 		this.xyDataset = xyDataset;
