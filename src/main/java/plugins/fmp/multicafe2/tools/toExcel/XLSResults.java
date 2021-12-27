@@ -73,7 +73,7 @@ public class XLSResults
 		nflies = 0;
 	}
 	
-	public void transferDataIntToValuesOut() 
+	public void transferDataIntToValuesOut(EnumXLSExportType xlsOption, double scalingFactorToPhysicalUnits) 
 	{
 		if (dataInt.size() != valuesOut.length)
 		{
@@ -81,7 +81,7 @@ public class XLSResults
 			valuesOut = new double [dimension];
 		}
 		for (int i = 0; i < dimension; i++)
-			valuesOut[i] = dataInt.get(i);
+			valuesOut[i] = dataInt.get(i) * scalingFactorToPhysicalUnits;
 	}
 	
 	public void copyValuesOut(XLSResults row) 

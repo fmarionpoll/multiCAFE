@@ -82,10 +82,10 @@ public class XLSResultsArray
 		sameLR &= conc .equals(cap.capConcentration);
 	}
 	
-	public void transferDataIntToValout() 
+	public void transferDataIntToValout(EnumXLSExportType xlsOption, double scalingFactorToPhysicalUnits) 
 	{
 		for (XLSResults result: resultsList) 
-			result.transferDataIntToValuesOut(); 
+			result.transferDataIntToValuesOut(xlsOption, scalingFactorToPhysicalUnits); 
 	}
 	
 	void subtractEvaporation() 

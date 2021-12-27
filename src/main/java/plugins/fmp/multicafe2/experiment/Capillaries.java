@@ -517,13 +517,13 @@ public class Capillaries
 			XLSExportOptions xlsExportOptions) 
 	{
 		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits(xlsOption);
-		x// TODO apply scaling at pass 1 
 		
 		for (Capillary cap: expi.capillaries.capillariesList) 
 		{
 			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
 			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
 			results.getCapillaryMeasuresForPass1(cap, xlsOption, kymoBinCol_Ms, xlsExportOptions.buildExcelStepMs);
+			resultsArrayList.transferDataIntToValout(xlsOption, scalingFactorToPhysicalUnits);
 			resultsArrayList.addRow(results);
 		}
 		buildDataForPass2(resultsArrayList, xlsOption);
@@ -537,7 +537,6 @@ public class Capillaries
 			XLSExportOptions options) 
 	{
 		double scalingFactorToPhysicalUnits = expi.capillaries.getScalingFactorToPhysicalUnits(xlsOption);
-		x// TODO apply scaling at pass 1 
 		
 		for (Capillary cap: expi.capillaries.capillariesList) 
 		{
@@ -546,6 +545,7 @@ public class Capillaries
 			results.getCapillaryMeasuresForPass1(cap, xlsOption, kymoBinCol_Ms, options.buildExcelStepMs);
 			if (options.t0) 
 				results.subtractT0();
+			resultsArrayList.transferDataIntToValout(xlsOption, scalingFactorToPhysicalUnits);
 			resultsArrayList.addRow(results);
 		}
 		buildDataForPass2(resultsArrayList, xlsOption);
@@ -572,7 +572,7 @@ public class Capillaries
 			break;
 
 		default:
-			resultsArrayList.transferDataIntToValout();
+			
 			break;
 		}
 	}
