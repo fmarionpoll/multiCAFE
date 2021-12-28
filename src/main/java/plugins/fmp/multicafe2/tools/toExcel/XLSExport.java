@@ -447,6 +447,7 @@ public class XLSExport
 						break;
 						
 					case AUTOCORREL:
+					case AUTOCORREL_LR:
 					case CROSSCORREL:
 					case CROSSCORREL_LR:
 						resultsArrayList.getResults1(caps, xlsExportType, 

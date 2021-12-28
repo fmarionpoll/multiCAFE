@@ -52,8 +52,10 @@ public class XLSExportGulpsResults  extends XLSExport
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TTOGULP);
 				if (options.tToNextGulp_LR)
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TTOGULP_LR);
-				if (options.autocorrelation)
+				if (options.autocorrelation) {
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.AUTOCORREL);
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.AUTOCORREL_LR);
+				}
 				if (options.crosscorrelation) {
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.CROSSCORREL);
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.CROSSCORREL_LR);

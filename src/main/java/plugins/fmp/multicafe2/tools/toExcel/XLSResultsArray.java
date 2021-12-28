@@ -266,6 +266,9 @@ public class XLSResultsArray
 		case AUTOCORREL:
 			buildAutocorrel(xlsExportOptions);
 			break;
+		case AUTOCORREL_LR:
+			buildAutocorrelLR(xlsExportOptions);
+			break;
 		case CROSSCORREL:
 			buildCrosscorrel(xlsExportOptions);
 			break;
@@ -374,6 +377,26 @@ public class XLSResultsArray
 		{
 			if ((row2.valuesOut[i] + row1.valuesOut[i]) > 0.)
 				rowOut.valuesOut[i] = 1.;
+		}
+	}
+	
+	private void buildAutocorrelLR(XLSExportOptions xlsExportOptions) 
+	{
+		for (int irow = 0; irow < resultsList.size(); irow ++) 
+		{
+			XLSResults rowL = getRow(irow); 			
+			XLSResults rowR = getNextRow(irow);
+			if (rowR != null) 
+			{
+				irow++;
+				
+				XLSResults rowLR = new XLSResults("LR", 0, null);
+				rowLR.initValuesOutArray(rowL.dimension, 0.);
+				combineIntervals(rowL, rowR, rowLR);
+				
+				correl(rowLR, rowLR, rowL, xlsExportOptions.nbinscorrelation);
+				correl(rowR, rowLR, rowR, xlsExportOptions.nbinscorrelation);
+			} 
 		}
 	}
 }

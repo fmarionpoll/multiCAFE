@@ -129,6 +129,7 @@ public class CapillaryGulps implements XMLPersistent
 			break;
 			
 		case AUTOCORREL:
+		case AUTOCORREL_LR:
 		case CROSSCORREL:
 		case CROSSCORREL_LR:
 			data_in = getAmplitudeGulpsFromRoisArray(npoints);
