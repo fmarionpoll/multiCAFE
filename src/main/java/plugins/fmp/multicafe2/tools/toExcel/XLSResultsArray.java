@@ -3,6 +3,7 @@ package plugins.fmp.multicafe2.tools.toExcel;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import plugins.fmp.multicafe2.experiment.Capillaries;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.tools.Comparators;
 
@@ -201,5 +202,110 @@ public class XLSResultsArray
 				dataMin = dataR;
 			rowOut.valuesOut[index] = dataMin;
 		}
+	}
+	
+	// ---------------------------------------------------
+	
+
+	
+
+	public void getResults1( 
+			Capillaries caps,  
+			EnumXLSExportType exportType, 
+			int nOutputFrames, 
+			long kymoBinCol_Ms, 
+			XLSExportOptions xlsExportOptions) 
+	{
+		xlsExportOptions.exportType = exportType;
+		buildDataForPass1(caps, nOutputFrames, kymoBinCol_Ms, xlsExportOptions, false);
+		if (xlsExportOptions.compensateEvaporation)
+			subtractEvaporation();
+		buildDataForPass2(xlsExportOptions);
+	}
+	
+	public void getResults_T0( 
+			Capillaries caps, 
+			EnumXLSExportType exportType, 
+			int nOutputFrames, 
+			long kymoBinCol_Ms, 
+			XLSExportOptions xlsExportOptions) 
+	{
+		xlsExportOptions.exportType = exportType;
+		buildDataForPass1(caps, nOutputFrames, kymoBinCol_Ms, xlsExportOptions, xlsExportOptions.t0);
+		if (xlsExportOptions.compensateEvaporation)
+			subtractEvaporation();
+		buildDataForPass2(xlsExportOptions);
+	}
+	
+	private void buildDataForPass1(Capillaries caps,
+			int nOutputFrames, 
+			long kymoBinCol_Ms, 
+			XLSExportOptions xlsExportOptions, 
+			boolean subtractT0)
+	{
+		double scalingFactorToPhysicalUnits = caps.getScalingFactorToPhysicalUnits(xlsExportOptions.exportType);
+		for (Capillary cap: caps.capillariesList) 
+		{
+			checkIfSameStimulusAndConcentration(cap);
+			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsExportOptions.exportType, nOutputFrames);
+			results.getCapillaryMeasuresForPass1(cap, xlsExportOptions.exportType, kymoBinCol_Ms, xlsExportOptions.buildExcelStepMs);
+			if (subtractT0) 
+				results.subtractT0();
+			results.transferDataIntToValuesOut(scalingFactorToPhysicalUnits);
+			addRow(results);
+		}
+	}
+	
+	public void buildDataForPass2(XLSExportOptions xlsExportOptions)
+	{
+		switch (xlsExportOptions.exportType) 
+		{
+		case TOPLEVEL_LR:
+		case TOPLEVELDELTA_LR:
+		case SUMGULPS_LR:
+			buildLR (xlsExportOptions.lrPIThreshold); 
+			break;
+		case AUTOCORREL:
+			buildAutocorrel(xlsExportOptions);
+			break;
+		case CROSSCORREL:
+//			buildCrosscorrel();
+			break;
+		case CROSSCORREL_LR:
+//			buildCrossCorrel_LR()
+			break;
+
+		default:
+			
+			break;
+		}
+	}
+	
+	private void buildLR (double threshold) 
+	{
+		for (int irow = 0; irow < resultsList.size(); irow ++) 
+		{
+			XLSResults rowL = getRow(irow); 			
+			XLSResults rowR = getNextRow(irow);
+			if (rowR != null) 
+			{
+				irow++;
+				getPI_LR(rowL, rowR, threshold);
+			} 
+		}
+	}
+	
+	private void buildAutocorrel(XLSExportOptions xlsExportOptions) 
+	{
+		for (int irow = 0; irow < resultsList.size(); irow ++) 
+		{
+			XLSResults rowL = getRow(irow); 			
+			correl(rowL, rowL, xlsExportOptions); 
+		}
+	}
+	
+	private void correl(XLSResults row1, XLSResults row2, XLSExportOptions xlsExportOptions) 
+	{
+		
 	}
 }

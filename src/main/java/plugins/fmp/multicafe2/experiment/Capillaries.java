@@ -20,9 +20,6 @@ import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
-import plugins.fmp.multicafe2.tools.toExcel.XLSExportOptions;
-import plugins.fmp.multicafe2.tools.toExcel.XLSResults;
-import plugins.fmp.multicafe2.tools.toExcel.XLSResultsArray;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
@@ -488,8 +485,6 @@ public class Capillaries
 		return capillariesListTimeIntervals.get(selectedItem)[0];
 	}
 	
-	// ---------------------------------------------------
-	
 	public double getScalingFactorToPhysicalUnits(EnumXLSExportType xlsoption ) 
 	{
 		double scalingFactorToPhysicalUnits; 
@@ -509,95 +504,16 @@ public class Capillaries
 		}
 		return scalingFactorToPhysicalUnits;
 	}
-
-	// ---------------------------------------------------
 	
-	public void getResults1( 
-			XLSResultsArray resultsArrayList,  
-			EnumXLSExportType exportType, 
-			int nOutputFrames, 
-			long kymoBinCol_Ms, 
-			XLSExportOptions xlsExportOptions) 
-	{
-		xlsExportOptions.exportType = exportType;
-		buildDataForPass1(resultsArrayList, nOutputFrames, kymoBinCol_Ms, xlsExportOptions, false);
-		if (xlsExportOptions.compensateEvaporation)
-			resultsArrayList.subtractEvaporation();
-		buildDataForPass2(resultsArrayList, xlsExportOptions);
-	}
 	
-	public void getResults_T0( 
-			XLSResultsArray resultsArrayList, 
-			EnumXLSExportType exportType, 
-			int nOutputFrames, 
-			long kymoBinCol_Ms, 
-			XLSExportOptions xlsExportOptions) 
-	{
-		xlsExportOptions.exportType = exportType;
-		buildDataForPass1(resultsArrayList, nOutputFrames, kymoBinCol_Ms, xlsExportOptions, xlsExportOptions.t0);
-		if (xlsExportOptions.compensateEvaporation)
-			resultsArrayList.subtractEvaporation();
-		buildDataForPass2(resultsArrayList, xlsExportOptions);
-	}
 	
-	private void buildDataForPass1(
-			XLSResultsArray resultsArrayList,  
-			int nOutputFrames, 
-			long kymoBinCol_Ms, 
-			XLSExportOptions xlsExportOptions, 
-			boolean subtractT0)
-	{
-		double scalingFactorToPhysicalUnits = getScalingFactorToPhysicalUnits(xlsExportOptions.exportType);
-		for (Capillary cap: capillariesList) 
-		{
-			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsExportOptions.exportType, nOutputFrames);
-			results.getCapillaryMeasuresForPass1(cap, xlsExportOptions.exportType, kymoBinCol_Ms, xlsExportOptions.buildExcelStepMs);
-			if (subtractT0) 
-				results.subtractT0();
-			results.transferDataIntToValuesOut(scalingFactorToPhysicalUnits);
-			resultsArrayList.addRow(results);
-		}
-	}
 	
-	private void buildDataForPass2(XLSResultsArray resultsArrayList, XLSExportOptions xlsExportOptions)
-	{
-		switch (xlsExportOptions.exportType) 
-		{
-		case TOPLEVEL_LR:
-		case TOPLEVELDELTA_LR:
-		case SUMGULPS_LR:
-			buildLR (resultsArrayList, xlsExportOptions); 
-			break;
-		case AUTOCORREL:
-//			buildAutocorrel();
-			break;
-		case CROSSCORREL:
-//			buildCrosscorrel();
-			break;
-		case CROSSCORREL_LR:
-//			buildCrossCorrel_LR()
-			break;
-
-		default:
-			
-			break;
-		}
-	}
 	
-	private void buildLR (XLSResultsArray resultsArrayList, XLSExportOptions xlsExportOptions) 
-	{
-		for (int irow = 0; irow < resultsArrayList.size(); irow ++) 
-		{
-			XLSResults rowL = resultsArrayList.getRow(irow); 			
-			XLSResults rowR = resultsArrayList.getNextRow(irow);
-			if (rowR != null) 
-			{
-				irow++;
-				resultsArrayList.getPI_LR(rowL, rowR, xlsExportOptions.lrPIThreshold);
-			} 
-		}
-	}
+	
+	
+	
+	
+	
 	
 
 
