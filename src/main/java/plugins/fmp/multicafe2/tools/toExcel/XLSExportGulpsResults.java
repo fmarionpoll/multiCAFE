@@ -42,7 +42,7 @@ public class XLSExportGulpsResults  extends XLSExport
 				
 				if (options.sumGulps) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS);
-				if (options.sum_PI_LR && options.sumGulps) 	
+				if (options.lrPI && options.sumGulps) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS_LR);
 				if (options.nbGulps)
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.NBGULPS);

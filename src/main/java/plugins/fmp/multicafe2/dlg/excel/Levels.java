@@ -7,7 +7,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 
 
@@ -21,17 +24,20 @@ public class Levels extends JPanel
 
 	JButton 	exportToXLSButton 	= new JButton("save XLS (v1)");
 	JButton 	exportToXLSButton2 	= new JButton("save XLS");
+	
 	JCheckBox 	topLevelCheckBox 	= new JCheckBox("top", true);
 	JCheckBox 	topLevelDeltaCheckBox 	= new JCheckBox("delta top", false);
-	
 	JCheckBox 	bottomLevelCheckBox = new JCheckBox("bottom", false);
-	JCheckBox 	lrPICheckBox 		= new JCheckBox("L+R & pref index", true);
-	JCheckBox 	lrRatioCheckBox 	= new JCheckBox("L+R & ratio", true);
-	JCheckBox 	sumPerCageCheckBox 	= new JCheckBox("sum per cage", false);
-	JCheckBox 	derivativeCheckBox  = new JCheckBox("derivative", false);
 	JCheckBox	t0CheckBox			= new JCheckBox("t-t0", true);
 	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
 	JCheckBox	subtractEvaporationCheckBox = new JCheckBox("subtract evaporation", true);
+	
+	
+	JCheckBox 	lrPICheckBox 		= new JCheckBox("L+R & pref index", true);
+	JLabel		lrPILabel			= new JLabel("valid min (µl):");
+	JCheckBox 	sumPerCageCheckBox 	= new JCheckBox("sum/cage", false);
+	JSpinner 	lrPIThresholdJSpinner = new JSpinner(new SpinnerNumberModel(0.0, 0., 100., 0.01));
+	
 	
 	void init(GridLayout capLayout) 
 	{	
@@ -49,10 +55,10 @@ public class Levels extends JPanel
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout0);
-		panel1.add(lrPICheckBox);
-		panel1.add(lrRatioCheckBox);
 		panel1.add(sumPerCageCheckBox);
-		
+		panel1.add(lrPICheckBox);
+		panel1.add(lrPILabel);
+		panel1.add(lrPIThresholdJSpinner);
 		add(panel1);
 		
 		FlowLayout flowLayout2 = new FlowLayout(FlowLayout.RIGHT);
@@ -77,26 +83,25 @@ public class Levels extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				if (lrPICheckBox.isSelected())
-					sumPerCageCheckBox.setSelected(false);
-			}});
-		
-		lrRatioCheckBox.addActionListener (new ActionListener () 
-		{ 
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
-				if (lrRatioCheckBox.isSelected())
-					sumPerCageCheckBox.setSelected(false);
+				if (lrPICheckBox.isSelected()) 
+					enablePI(true);
 			}});
 		
 		sumPerCageCheckBox.addActionListener (new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				if (sumPerCageCheckBox.isSelected())
-					lrPICheckBox.setSelected(false);
-					lrRatioCheckBox.setSelected(false);
+				if (sumPerCageCheckBox.isSelected()) 
+					enablePI(false);
 			}});
+	}
+	
+	private void enablePI(boolean yes)
+	{
+		sumPerCageCheckBox.setSelected(!yes);
+		lrPICheckBox.setSelected(yes);
+		lrPIThresholdJSpinner.setEnabled(yes);
+		lrPILabel.setEnabled(yes);
 	}
 
 }

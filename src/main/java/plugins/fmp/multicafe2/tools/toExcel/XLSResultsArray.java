@@ -147,49 +147,27 @@ public class XLSResultsArray
 		return Math.min(lenL,  lenR);
 	}
 	
-	public void getPI_LR(XLSResults rowL, XLSResults rowR) 
+	public void getPI_LR(XLSResults rowL, XLSResults rowR, double threshold) 
 	{
 		int len = getLen(rowL, rowR);
 		for (int index = 0; index < len; index++) 
 		{
 			double dataL = rowL.valuesOut[index];
 			double dataR = rowR.valuesOut[index];
-			double sum = addValues(dataL, dataR);
-			double pi = Double.NaN;
-			if (sum != 0. && !Double.isNaN(sum))
-				pi = (dataL-dataR)/sum;
+			double delta = 0.; 
+			if (dataL < 0) delta = dataL;
+			if (dataR < delta) delta = dataR;
+			dataL -= delta;
+			dataR -= delta;
+			double sum = dataL + dataR;
+			double pi = 0.;
+			if (sum != 0. && !Double.isNaN(sum) && sum >= threshold)
+				pi = (dataL-dataR)/sum;				
 			if (pi > highestPiAllowed) pi = highestPiAllowed;
 			if (pi < lowestPiAllowed) pi = lowestPiAllowed;
 			
 			rowL.valuesOut[index] = sum;
 			rowR.valuesOut[index] = pi;
-		}
-	}
-	
-	private Double addValues(double dataL, double dataR)
-	{
-		double sum = Double.NaN;
-		if (dataL != 0. && dataR != 0.)
-			sum = dataL + dataR;
-		return sum;
-	}
-	
-	public void getRatio_LR(XLSResults rowL, XLSResults rowR) 
-	{
-		int len = getLen(rowL, rowR);
-		for (int index = 0; index < len; index++) 
-		{
-			double dataL = rowL.valuesOut[index];
-			double dataR = rowR.valuesOut[index];
-			boolean ratioOK = true;
-			if (Double.isNaN(dataR) || Double.isNaN(dataL)) 
-				ratioOK = false;		
-			double ratio = Double.NaN;
-			if (ratioOK && dataR != 0)
-				ratio = (dataL/dataR);
-			
-			rowL.valuesOut[index] = addValues(dataL, dataR);
-			rowR.valuesOut[index] = ratio;
 		}
 	}
 	

@@ -10,7 +10,6 @@ public enum EnumXLSExportType
 	TOPLEVEL_LR ("toplevel_L+R", "volume (ul)"), 
 	TOPLEVELDELTA ("topdelta", "volume (ul)"),
 	TOPLEVELDELTA_LR ("topdelta_L+R", "volume (ul)"),
-	TOPLEVEL_RATIO ("toplevel_ratio", "volume (ul)"),
 	
 	SUMGULPS ("sumGulps", "volume (ul)"), 
 	SUMGULPS_LR ("sumGulps_L+R", "volume (ul)"), 

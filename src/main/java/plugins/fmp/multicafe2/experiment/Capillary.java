@@ -208,12 +208,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			else
 				value = "PI";
 			break;
-		case TOPLEVEL_RATIO:
-			if (capSide.equals("L"))
-				value = "sum";
-			else
-				value = "ratio";
-			break;
 		case XYIMAGE:
 		case XYTOPCAGE:
 		case XYTIPCAPS:
@@ -282,7 +276,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		case TOPLEVEL_LR:
 		case TOPLEVELDELTA:
 		case TOPLEVELDELTA_LR:
-		case TOPLEVEL_RATIO:
 			default:
 			datai = ptsTop.getMeasures(seriesBinMs, outputBinMs);
 			break;

@@ -162,14 +162,6 @@ public class XLSExport
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
 			break;
 			
-		case TOPLEVEL_RATIO:
-			if (cap.getCapillarySide().equals("L")) 
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "L+R");
-			else 
-				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPSTIM.getValue(), transpose, "L/R");
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCONC.getValue(), transpose, cap.capStimulus + ": "+ cap.capConcentration);
-			break;
-			
 		case TTOGULP_LR:
 			if (cap.getCapillarySide().equals("L")) 
 			{
@@ -317,7 +309,7 @@ public class XLSExport
 			xlsExportResultsArrayToSheet(sheet, xlsOption, col0, charSeries);
 		}
 		
-		if (options.cage) 
+		if (options.sumPerCage) 
 		{
 			combineDataForOneCage(exp);
 			sheet = xlsInitSheet(xlsOption.toString()+"_cage");
@@ -442,7 +434,6 @@ public class XLSExport
 					case TOPLEVEL_LR:
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
-					case TOPLEVEL_RATIO:
 						options.compensateEvaporation = options.subtractEvaporation;
 						caps.getResults_T0(resultsArrayList, xlsExportType, 
 								nOutputFrames, exp.kymoBinCol_Ms, options);
@@ -541,7 +532,6 @@ public class XLSExport
 					case SUMGULPS_LR:
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
-					case TOPLEVEL_RATIO:
 						if (options.collateSeries && options.padIntervals && expi.chainToPrevious != null) 
 							dvalue = padWithLastPreviousValue(row, to_first_index);
 						break;

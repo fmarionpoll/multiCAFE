@@ -17,15 +17,15 @@ public class XLSExportOptions
 	public boolean  topLevelDelta   	= false;
 	public boolean 	bottomLevel 		= false; 
 	public boolean 	derivative 			= false; 
-	public boolean 	sum_PI_LR 			= true;
-	public boolean 	sum_ratio_LR 		= true;
+	public boolean 	lrPI 			= true;
+	public double	lrPIThreshold		= 0.;
 	
 	public boolean  autocorrelation		= false;
 	public boolean	crosscorrelation	= false;
 	public boolean  crosscorrelationLR	= false;
 	public int		nbinscorrelation	= 40;
 	
-	public boolean 	cage 				= true;
+	public boolean 	sumPerCage 				= true;
 	public boolean 	t0					= true;
 	public boolean 	onlyalive			= true;
 	public boolean  subtractEvaporation = true;
@@ -55,4 +55,5 @@ public class XLSExportOptions
 	// internal parameters
 	public	boolean	trim_alive			= false;
 	public  boolean compensateEvaporation = false;
+	public EnumXLSExportType exportType;
 }

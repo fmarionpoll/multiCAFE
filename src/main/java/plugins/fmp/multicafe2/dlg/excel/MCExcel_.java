@@ -169,12 +169,11 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		
 		options.topLevel 		= tabLevels.topLevelCheckBox.isSelected(); 
 		options.topLevelDelta   = tabLevels.topLevelDeltaCheckBox.isSelected();
-		options.bottomLevel 	= tabLevels.bottomLevelCheckBox.isSelected(); 
-		options.derivative 		= tabLevels.derivativeCheckBox.isSelected(); 
+		options.bottomLevel 	= tabLevels.bottomLevelCheckBox.isSelected();  
 		options.sumGulps 		= false; 
-		options.sum_PI_LR 		= tabLevels.lrPICheckBox.isSelected(); 
-		options.sum_ratio_LR 	= tabLevels.lrRatioCheckBox.isSelected();
-		options.cage 			= tabLevels.sumPerCageCheckBox.isSelected();
+		options.lrPI 			= tabLevels.lrPICheckBox.isSelected(); 
+		options.lrPIThreshold 	= (double) tabLevels.lrPIThresholdJSpinner.getValue();
+		options.sumPerCage 		= tabLevels.sumPerCageCheckBox.isSelected();
 		options.t0 				= tabLevels.t0CheckBox.isSelected();
 		options.onlyalive 		= tabLevels.onlyaliveCheckBox.isSelected();
 		options.subtractEvaporation = tabLevels.subtractEvaporationCheckBox.isSelected();
@@ -189,15 +188,14 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.topLevelDelta   = false;
 		options.bottomLevel 	= false; 
 		options.derivative 		= false; 
-		options.cage 			= false;
+		options.sumPerCage 		= false;
 		options.t0 				= false;
 		options.sumGulps 		= tabGulps.sumGulpsCheckBox.isSelected(); 
-		options.sum_PI_LR 		= tabGulps.sumCheckBox.isSelected(); 
+		options.lrPI 			= tabGulps.sumCheckBox.isSelected(); 
 		options.onlyalive 		= tabGulps.onlyaliveCheckBox.isSelected();
 		options.nbGulps 		= tabGulps.nbGulpsCheckBox.isSelected();
 		options.amplitudeGulps 	= tabGulps.amplitudeGulpsCheckBox.isSelected();
-//		options.tToNextGulp		= tabGulps.tToGulpCheckBox.isSelected();
-//		options.tToNextGulp_LR  = tabGulps.tToGulpLRCheckBox.isSelected();
+
 		options.autocorrelation		= tabGulps.autocorrelationCheckBox.isSelected();
 		options.crosscorrelation	= tabGulps.crosscorrelationCheckBox.isSelected();
 		options.nbinscorrelation	= (int) tabGulps.nbinsJSpinner.getValue();

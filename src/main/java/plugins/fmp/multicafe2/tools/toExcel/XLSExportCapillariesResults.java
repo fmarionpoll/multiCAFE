@@ -46,13 +46,11 @@ public class XLSExportCapillariesResults extends XLSExport
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVEL);
 				}
 				
-				if (options.sum_PI_LR && options.topLevel) 		
+				if (options.lrPI && options.topLevel) 		
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVEL_LR);
-				if (options.sum_ratio_LR && options.topLevel) 		
-					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVEL_RATIO);
 				if (options.topLevelDelta) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVELDELTA);
-				if (options.sum_PI_LR && options.topLevelDelta) 	
+				if (options.lrPI && options.topLevelDelta) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.TOPLEVELDELTA_LR);
 				
 

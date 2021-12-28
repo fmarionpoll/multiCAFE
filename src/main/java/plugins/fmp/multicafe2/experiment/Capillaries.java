@@ -514,46 +514,45 @@ public class Capillaries
 	
 	public void getResults1( 
 			XLSResultsArray resultsArrayList,  
-			EnumXLSExportType xlsOption, 
+			EnumXLSExportType exportType, 
 			int nOutputFrames, 
 			long kymoBinCol_Ms, 
 			XLSExportOptions xlsExportOptions) 
 	{
-		buildDataForPass1(resultsArrayList, xlsOption, nOutputFrames, kymoBinCol_Ms, xlsExportOptions, false);
+		xlsExportOptions.exportType = exportType;
+		buildDataForPass1(resultsArrayList, nOutputFrames, kymoBinCol_Ms, xlsExportOptions, false);
 		if (xlsExportOptions.compensateEvaporation)
 			resultsArrayList.subtractEvaporation();
-		buildDataForPass2(resultsArrayList, xlsOption);
+		buildDataForPass2(resultsArrayList, xlsExportOptions);
 	}
 	
 	public void getResults_T0( 
 			XLSResultsArray resultsArrayList, 
-			EnumXLSExportType xlsOption, 
+			EnumXLSExportType exportType, 
 			int nOutputFrames, 
 			long kymoBinCol_Ms, 
 			XLSExportOptions xlsExportOptions) 
 	{
-		
-		buildDataForPass1(resultsArrayList, xlsOption, nOutputFrames, kymoBinCol_Ms, xlsExportOptions, xlsExportOptions.t0);
+		xlsExportOptions.exportType = exportType;
+		buildDataForPass1(resultsArrayList, nOutputFrames, kymoBinCol_Ms, xlsExportOptions, xlsExportOptions.t0);
 		if (xlsExportOptions.compensateEvaporation)
 			resultsArrayList.subtractEvaporation();
-		buildDataForPass2(resultsArrayList, xlsOption);
+		buildDataForPass2(resultsArrayList, xlsExportOptions);
 	}
 	
 	private void buildDataForPass1(
-			XLSResultsArray resultsArrayList, 
-			EnumXLSExportType xlsOption, 
+			XLSResultsArray resultsArrayList,  
 			int nOutputFrames, 
 			long kymoBinCol_Ms, 
 			XLSExportOptions xlsExportOptions, 
 			boolean subtractT0)
 	{
-		double scalingFactorToPhysicalUnits = getScalingFactorToPhysicalUnits(xlsOption);
-		
+		double scalingFactorToPhysicalUnits = getScalingFactorToPhysicalUnits(xlsExportOptions.exportType);
 		for (Capillary cap: capillariesList) 
 		{
 			resultsArrayList.checkIfSameStimulusAndConcentration(cap);
-			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsOption, nOutputFrames);
-			results.getCapillaryMeasuresForPass1(cap, xlsOption, kymoBinCol_Ms, xlsExportOptions.buildExcelStepMs);
+			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsExportOptions.exportType, nOutputFrames);
+			results.getCapillaryMeasuresForPass1(cap, xlsExportOptions.exportType, kymoBinCol_Ms, xlsExportOptions.buildExcelStepMs);
 			if (subtractT0) 
 				results.subtractT0();
 			results.transferDataIntToValuesOut(scalingFactorToPhysicalUnits);
@@ -561,15 +560,14 @@ public class Capillaries
 		}
 	}
 	
-	private void buildDataForPass2(XLSResultsArray resultsArrayList, EnumXLSExportType xlsOption)
+	private void buildDataForPass2(XLSResultsArray resultsArrayList, XLSExportOptions xlsExportOptions)
 	{
-		switch (xlsOption) 
+		switch (xlsExportOptions.exportType) 
 		{
 		case TOPLEVEL_LR:
 		case TOPLEVELDELTA_LR:
 		case SUMGULPS_LR:
-		case TOPLEVEL_RATIO:
-			buildLR (resultsArrayList, xlsOption); 
+			buildLR (resultsArrayList, xlsExportOptions); 
 			break;
 		case AUTOCORREL:
 //			buildAutocorrel();
@@ -587,7 +585,7 @@ public class Capillaries
 		}
 	}
 	
-	private void buildLR (XLSResultsArray resultsArrayList, EnumXLSExportType xlsOption) 
+	private void buildLR (XLSResultsArray resultsArrayList, XLSExportOptions xlsExportOptions) 
 	{
 		for (int irow = 0; irow < resultsArrayList.size(); irow ++) 
 		{
@@ -596,10 +594,7 @@ public class Capillaries
 			if (rowR != null) 
 			{
 				irow++;
-				if (xlsOption == EnumXLSExportType.TOPLEVEL_LR || xlsOption == EnumXLSExportType.SUMGULPS_LR) 
-					resultsArrayList.getPI_LR(rowL, rowR);
-				else if (xlsOption == EnumXLSExportType.TOPLEVEL_RATIO)
-					resultsArrayList.getRatio_LR(rowL, rowR);
+				resultsArrayList.getPI_LR(rowL, rowR, xlsExportOptions.lrPIThreshold);
 			} 
 		}
 	}
