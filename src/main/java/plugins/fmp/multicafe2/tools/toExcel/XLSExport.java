@@ -685,38 +685,10 @@ public class XLSExport
 		int rowSeries = pt_main.x +2;
 		int column_dataArea = pt_main.y;
 		Point pt = new Point(pt_main);
-//		switch (option) 
-//		{
-//			case TOPLEVEL_LR:
-//			case TOPLEVELDELTA_LR:
-//			case SUMGULPS_LR:
-//			case TOPLEVEL_RATIO:
-//				writeExperiment_data_LRRows(sheet, column_dataArea, rowSeries, pt, option);
-//				break;
-//			case TTOGULP_LR:
-//				writeExperiment_data_TOGulpLR(sheet, column_dataArea, rowSeries, pt);
-//				break;
-//			default:
-				writeExperiment_data_simpleRows(sheet, column_dataArea, rowSeries, pt);
-//				break;
-//		}			
+		writeExperiment_data_simpleRows(sheet, column_dataArea, rowSeries, pt);			
 		pt_main.x = pt.x+1;
 		return pt_main;
 	}
-		
-//	private XLSResults getNextRow(XLSResults rowL, int irow) 
-//	{
-//		int cageL = getCageFromKymoFileName(rowL.name);
-//		XLSResults rowR = null;
-//		if (irow+1 < rowListForOneExp.size()) 
-//		{
-//			rowR = rowListForOneExp.getRow(irow+1);
-//			int cageR = getCageFromKymoFileName(rowR.name);
-//			if (cageR != cageL) 
-//				rowR = null;
-//		}
-//		return rowR;
-//	}
 	
 	private void writeExperiment_data_simpleRows(
 			XSSFSheet sheet, 
@@ -731,64 +703,6 @@ public class XLSExport
 		}
 		
 	}
-	
-//	private void writeExperiment_data_LRRows(XSSFSheet sheet, 
-//			int column_dataArea, 
-//			int rowSeries, 
-//			Point pt, 
-//			EnumXLSExportType option) 
-//	{
-//		for (int irow = 0; irow < rowListForOneExp.size(); irow ++) 
-//		{
-//			XLSResults rowL = rowListForOneExp.getRow(irow); 			
-//			XLSResults rowR = getNextRow (rowL, irow);
-//			if (rowR != null) 
-//			{
-//				irow++;
-//				XLSResults sumResults = new XLSResults(rowL.name, rowL.nflies, rowL.exportType, rowL.dimension);
-//				sumResults.getSumLR(rowL, rowR);
-//				writeRow(sheet, column_dataArea, rowSeries, pt, sumResults);
-//				XLSResults results = new XLSResults(rowR.name, rowL.nflies, rowL.exportType, rowL.dimension);
-//				if (option == EnumXLSExportType.TOPLEVEL_LR || option == EnumXLSExportType.SUMGULPS_LR) 
-//					results.getPI_LR(rowL, rowR);
-//				else if (option == EnumXLSExportType.TOPLEVEL_RATIO)
-//					results.getRatio_LR(rowL, rowR);
-//				writeRow(sheet, column_dataArea, rowSeries, pt, results);
-//			} 
-//			else 
-//			{
-//				writeRow(sheet, column_dataArea, rowSeries, pt, rowL);
-//			}
-//		}
-//	}
-	
-//	private void writeExperiment_data_TOGulpLR(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt) 
-//	{
-//		for (int irow = 0; irow < rowListForOneExp.size(); irow ++) 
-//		{
-//			XLSResults rowL = rowListForOneExp.getRow(irow);
-//			XLSResults rowR = getNextRow (rowL, irow);
-//			if (rowR != null) 
-//			{
-//				irow++;
-//				int len = rowL.valuesOut.length;
-//				if (rowR.valuesOut.length > len)
-//					len = rowR.valuesOut.length;
-//			
-//				XLSResults maxResults = new XLSResults(rowL.name, rowL.nflies, rowL.exportType, len);	
-//				maxResults.getMaxTimeToGulpLR(rowL, rowR);
-//				writeRow(sheet, column_dataArea, rowSeries, pt, maxResults);
-//				
-//				XLSResults minResults = new XLSResults(rowR.name, rowL.nflies, rowL.exportType, len);	
-//				minResults.getMinTimeToGulpLR(rowL, rowR);
-//				writeRow(sheet, column_dataArea, rowSeries, pt, minResults);
-//			} 
-//			else 
-//			{
-//				writeRow(sheet, column_dataArea, rowSeries, pt, rowL);
-//			}
-//		}
-//	}
 	
 	private void writeRow(XSSFSheet sheet, int column_dataArea, int rowSeries, Point pt, XLSResults row) 
 	{

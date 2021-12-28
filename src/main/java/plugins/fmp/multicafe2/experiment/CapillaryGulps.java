@@ -109,6 +109,7 @@ public class CapillaryGulps implements XMLPersistent
 		switch (option) 
 		{
 		case SUMGULPS:
+		case SUMGULPS_LR:
 			data_in = getCumSumFromRoisArray(npoints);
 			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
