@@ -1,6 +1,7 @@
 package plugins.fmp.multicafe2.tools.toExcel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import plugins.fmp.multicafe2.experiment.Capillaries;
@@ -206,9 +207,6 @@ public class XLSResultsArray
 	
 	// ---------------------------------------------------
 	
-
-	
-
 	public void getResults1( 
 			Capillaries caps,  
 			EnumXLSExportType exportType, 
@@ -269,14 +267,12 @@ public class XLSResultsArray
 			buildAutocorrel(xlsExportOptions);
 			break;
 		case CROSSCORREL:
-//			buildCrosscorrel();
+			buildCrosscorrel(xlsExportOptions);
 			break;
 		case CROSSCORREL_LR:
-//			buildCrossCorrel_LR()
+			buildCrosscorrelLR(xlsExportOptions);
 			break;
-
 		default:
-			
 			break;
 		}
 	}
@@ -300,12 +296,84 @@ public class XLSResultsArray
 		for (int irow = 0; irow < resultsList.size(); irow ++) 
 		{
 			XLSResults rowL = getRow(irow); 			
-			correl(rowL, rowL, xlsExportOptions); 
+			correl(rowL, rowL, rowL, xlsExportOptions.nbinscorrelation); 
 		}
 	}
 	
-	private void correl(XLSResults row1, XLSResults row2, XLSExportOptions xlsExportOptions) 
+	private void buildCrosscorrel(XLSExportOptions xlsExportOptions) 
 	{
+		for (int irow = 0; irow < resultsList.size(); irow ++) 
+		{
+			XLSResults rowL = getRow(irow); 			
+			XLSResults rowR = getNextRow(irow);
+			if (rowR != null) 
+			{
+				irow++;
+				XLSResults rowLtoR = new XLSResults("LtoR", 0, null);
+				rowLtoR.initValuesOutArray(rowL.dimension, 0.);
+				correl(rowL, rowR, rowLtoR, xlsExportOptions.nbinscorrelation);
+				
+				XLSResults rowRtoL = new XLSResults("RtoL", 0, null);
+				rowRtoL.initValuesOutArray(rowL.dimension, 0.);
+				correl(rowR, rowL, rowRtoL, xlsExportOptions.nbinscorrelation);
+				
+				rowL.copyValuesOut(rowLtoR);
+				rowR.copyValuesOut(rowRtoL);
+			} 
+		}
+	}
+	
+	private void buildCrosscorrelLR(XLSExportOptions xlsExportOptions) 
+	{
+		for (int irow = 0; irow < resultsList.size(); irow ++) 
+		{
+			XLSResults rowL = getRow(irow); 			
+			XLSResults rowR = getNextRow(irow);
+			if (rowR != null) 
+			{
+				irow++;
+				
+				XLSResults rowLR = new XLSResults("LR", 0, null);
+				rowLR.initValuesOutArray(rowL.dimension, 0.);
+				combineIntervals(rowL, rowR, rowLR);
+				
+				correl(rowL, rowLR, rowL, xlsExportOptions.nbinscorrelation);
+				correl(rowR, rowLR, rowR, xlsExportOptions.nbinscorrelation);
+			} 
+		}
+	}
+	
+	private void correl(XLSResults row1, XLSResults row2, XLSResults rowOut, int nbins) 
+	{
+		int [] sumBins = new int [2*nbins +1];
+		Arrays.fill(sumBins, 0);
+		for (int i1 = 0; i1 < row1.valuesOut.length; i1++)
+		{
+			if (row1.valuesOut[i1] == 0.)
+				continue;
+				
+			for (int i2 = 0; i2 < row2.valuesOut.length; i2++)
+			{
+				int ibin = i2-i1;
+				if (ibin < -nbins || ibin > nbins)
+					continue;
+				if (row2.valuesOut[i2] != 0.) {
+					sumBins[ibin + nbins]++;
+				}
+			}
+		}
 		
+		Arrays.fill(rowOut.valuesOut, Double.NaN);
+		for (int i = 0; i< 2*nbins; i++)
+			rowOut.valuesOut[i] = sumBins[i];
+	}
+	
+	private void combineIntervals(XLSResults row1, XLSResults row2, XLSResults rowOut) 
+	{
+		for (int i = 0; i < rowOut.valuesOut.length; i++)
+		{
+			if ((row2.valuesOut[i] + row1.valuesOut[i]) > 0.)
+				rowOut.valuesOut[i] = 1.;
+		}
 	}
 }

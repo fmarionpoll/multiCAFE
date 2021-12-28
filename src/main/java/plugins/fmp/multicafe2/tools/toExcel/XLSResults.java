@@ -75,20 +75,22 @@ public class XLSResults
 	
 	public void transferDataIntToValuesOut(double scalingFactorToPhysicalUnits) 
 	{
+		if (dimension == 0 || dataInt == null || dataInt.size() < 1)
+			return;
 		int len = Math.min(dimension,  dataInt.size());
 		for (int i = 0; i < len; i++)
 			valuesOut[i] = dataInt.get(i) * scalingFactorToPhysicalUnits;
 	}
 	
-	public void copyValuesOut(XLSResults row) 
+	public void copyValuesOut(XLSResults sourceRow) 
 	{
-		if (row.valuesOut.length != valuesOut.length)
+		if (sourceRow.valuesOut.length != valuesOut.length)
 		{
-			this.dimension = row.dimension; 
+			this.dimension = sourceRow.dimension; 
 			valuesOut = new double [dimension];
 		}
 		for (int i = 0; i < dimension; i++)
-			valuesOut[i] = row.valuesOut[i];
+			valuesOut[i] = sourceRow.valuesOut[i];
 	}
 	
 	public List<Integer> subtractT0 () 

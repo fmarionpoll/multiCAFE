@@ -82,7 +82,7 @@ public class CapillaryGulps implements XMLPersistent
 		
 		int npoints = data_in.size();
 		for (int i = 0; i < npoints; i++) 
-			data_in.set(i, data_in.get(i) >= 0? 1: 0);
+			data_in.set(i, data_in.get(i) != 0? 1: 0);
 	}
 	
 	private ArrayList<Integer> stretchArrayToOutputBins(ArrayList<Integer> data_in, long seriesBinMs, long outputBinMs) 
@@ -180,13 +180,13 @@ public class CapillaryGulps implements XMLPersistent
 	{
 		if (rois == null)
 			return null;
-		ArrayList<Integer> amplitudeGulpsArrayList = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
+		ArrayList<Integer> amplitudeGulpsArray = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
 		for (ROI roi: rois) 
-			addROItoAmplitudeGulpsArray((ROI2DPolyLine) roi, amplitudeGulpsArrayList);
-		return amplitudeGulpsArrayList;
+			addROItoAmplitudeGulpsArray((ROI2DPolyLine) roi, amplitudeGulpsArray);
+		return amplitudeGulpsArray;
 	}
 	
-	private void addROItoAmplitudeGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> amplitudeGulpsArrayList) 
+	private void addROItoAmplitudeGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> amplitudeGulpsArray) 
 	{
 		Polyline2D roiLine2D = roi.getPolyline2D();
 		double yvalue = roiLine2D.ypoints[0];
@@ -195,7 +195,7 @@ public class CapillaryGulps implements XMLPersistent
 		{
 			int timeIndex =  (int) roiLine2D.xpoints[j];
 			int delta = (int) (roiLine2D.ypoints[j] - yvalue);
-			amplitudeGulpsArrayList.set(timeIndex, delta);		
+			amplitudeGulpsArray.set(timeIndex, delta);		
 			yvalue = roiLine2D.ypoints[j];
 		}
 	}

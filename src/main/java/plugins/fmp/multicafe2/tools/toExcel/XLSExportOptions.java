@@ -17,7 +17,7 @@ public class XLSExportOptions
 	public boolean  topLevelDelta   	= false;
 	public boolean 	bottomLevel 		= false; 
 	public boolean 	derivative 			= false; 
-	public boolean 	lrPI 			= true;
+	public boolean 	lrPI 				= true;
 	public double	lrPIThreshold		= 0.;
 	
 	public boolean  autocorrelation		= false;
@@ -25,7 +25,7 @@ public class XLSExportOptions
 	public boolean  crosscorrelationLR	= false;
 	public int		nbinscorrelation	= 40;
 	
-	public boolean 	sumPerCage 				= true;
+	public boolean 	sumPerCage 			= true;
 	public boolean 	t0					= true;
 	public boolean 	onlyalive			= true;
 	public boolean  subtractEvaporation = true;

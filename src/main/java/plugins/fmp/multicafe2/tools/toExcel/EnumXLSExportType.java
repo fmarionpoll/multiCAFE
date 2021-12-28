@@ -21,6 +21,7 @@ public enum EnumXLSExportType
 	AUTOCORREL("autocorrel", "n observ"),
 	CROSSCORREL("crosscorrel", "n observ"),
 	CROSSCORREL_LR("crosscorrel_LR", "n observ"),
+	AUTOCORREL_LR("crosscorrel_LR", "n observ"),
 	
 	XYIMAGE ("xy-image", "pixels"), 
 	XYTOPCAGE ("xy-topcage", "pixels"), 
