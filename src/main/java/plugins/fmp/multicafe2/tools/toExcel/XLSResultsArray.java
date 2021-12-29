@@ -112,7 +112,7 @@ public class XLSResultsArray
 		
 		for (XLSResults result: resultsList) 
 		{
-			if (result.valuesOut == null || result.nflies > 0)
+			if (result.valuesOut == null || result.nflies != 0)
 				continue;
 			String side = result.name.substring(result.name.length() -1);
 			if (sameLR || side.contains("L")) 
