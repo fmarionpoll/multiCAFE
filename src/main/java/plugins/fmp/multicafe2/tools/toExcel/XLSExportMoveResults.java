@@ -89,16 +89,16 @@ public class XLSExportMoveResults extends XLSExport
 		System.out.println("XLS output finished");
 	}
 	
-	private int getMoveDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType datatype) 
+	private int getMoveDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType xlsExport) 
 	{	
-		getMoveDataFromOneSeriesOfExperiments(exp, datatype);
-		XSSFSheet sheet = xlsInitSheet(datatype.toString());
-		int colmax = xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);	
+		getMoveDataFromOneSeriesOfExperiments(exp, xlsExport);
+		XSSFSheet sheet = xlsInitSheet(xlsExport.toString(), xlsExport);
+		int colmax = xlsExportResultsArrayToSheet(sheet, xlsExport, col0, charSeries);	
 		if (options.onlyalive) 
 		{
 			trimDeadsFromRowMoveData(exp);
-			sheet = xlsInitSheet(datatype.toString()+"_alive");
-			xlsExportResultsArrayToSheet(sheet, datatype, col0, charSeries);
+			sheet = xlsInitSheet(xlsExport.toString()+"_alive", xlsExport);
+			xlsExportResultsArrayToSheet(sheet, xlsExport, col0, charSeries);
 		}
 		return colmax;
 	}

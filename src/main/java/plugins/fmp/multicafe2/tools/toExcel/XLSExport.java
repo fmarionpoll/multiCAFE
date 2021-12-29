@@ -197,7 +197,38 @@ public class XLSExport
 		return pt.y;
 	}
 	
-	void writeTopRow_timeIntervals(XSSFSheet sheet, int row) 
+	void writeTopRow_timeIntervals(XSSFSheet sheet, int row, EnumXLSExportType xlsExport) 
+	{
+		switch (xlsExport)
+		{
+			case AUTOCORREL:
+			case CROSSCORREL:
+			case AUTOCORREL_LR:
+			case CROSSCORREL_LR:
+				writeTopRow_timeIntervals_Correl(sheet, row);
+				break;
+				
+			default:
+				writeTopRow_timeIntervals_Default(sheet, row);
+				break;
+		}
+	}
+	
+	void writeTopRow_timeIntervals_Default(XSSFSheet sheet, int row)
+	{
+		boolean transpose = options.transpose;
+		Point pt = new Point(0, row);
+		long interval = - options.nbinscorrelation;
+		while (interval < options.nbinscorrelation) 
+		{
+			int i = (int) interval;
+			XLSUtils.setValue(sheet, pt, transpose, "t"+i);
+			pt.y++;
+			interval += 1;
+		}
+	}
+	
+	void writeTopRow_timeIntervals_Correl(XSSFSheet sheet, int row)
 	{
 		boolean transpose = options.transpose;
 		Point pt = new Point(0, row);
@@ -284,36 +315,36 @@ public class XLSExport
 	    return workbook;
 	}
 	
-	XSSFSheet xlsInitSheet(String title) 
+	XSSFSheet xlsInitSheet(String title, EnumXLSExportType xlsExport) 
 	{
 		XSSFSheet sheet = workbook.getSheet(title);
 		if (sheet == null) 
 		{
 			sheet = workbook.createSheet(title);
 			int row = writeTopRow_descriptors(sheet);
-			writeTopRow_timeIntervals(sheet, row);
+			writeTopRow_timeIntervals(sheet, row, xlsExport);
 		}
 		return sheet;
 	}
 	
-	protected int getDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType xlsOption) 
+	protected int getDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType xlsExport) 
 	{	
-		getCapDataFromOneExperimentSeries(exp, xlsOption);
-		XSSFSheet sheet = xlsInitSheet(xlsOption.toString());
-		int colmax = xlsExportResultsArrayToSheet(sheet, xlsOption, col0, charSeries);
+		getCapDataFromOneExperimentSeries(exp, xlsExport);
+		XSSFSheet sheet = xlsInitSheet(xlsExport.toString(), xlsExport);
+		int colmax = xlsExportResultsArrayToSheet(sheet, xlsExport, col0, charSeries);
 		
 		if (options.onlyalive) 
 		{
 			trimDeadsFromArrayList(exp);
-			sheet = xlsInitSheet(xlsOption.toString()+"_alive");
-			xlsExportResultsArrayToSheet(sheet, xlsOption, col0, charSeries);
+			sheet = xlsInitSheet(xlsExport.toString()+"_alive", xlsExport);
+			xlsExportResultsArrayToSheet(sheet, xlsExport, col0, charSeries);
 		}
 		
 		if (options.sumPerCage) 
 		{
 			combineDataForOneCage(exp);
-			sheet = xlsInitSheet(xlsOption.toString()+"_cage");
-			xlsExportResultsArrayToSheet(sheet, xlsOption, col0, charSeries);
+			sheet = xlsInitSheet(xlsExport.toString()+"_cage", xlsExport);
+			xlsExportResultsArrayToSheet(sheet, xlsExport, col0, charSeries);
 		}
 		
 		return colmax;
