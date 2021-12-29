@@ -355,7 +355,7 @@ public class XLSResultsArray
 		{
 			if (row1.valuesOut[i1] == 0.)
 				continue;
-				
+			nitems ++;
 			for (int i2 = 0; i2 < row2.valuesOut.length; i2++)
 			{
 				int ibin = i2-i1;
@@ -364,7 +364,6 @@ public class XLSResultsArray
 				if (row2.valuesOut[i2] != 0.) 
 				{
 					sumBins[ibin + nbins]++;
-					nitems ++;
 				}
 			}
 		}
