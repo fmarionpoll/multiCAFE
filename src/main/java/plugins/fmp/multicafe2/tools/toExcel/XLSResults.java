@@ -73,13 +73,29 @@ public class XLSResults
 		nflies = 0;
 	}
 	
-	public void transferDataIntToValuesOut(double scalingFactorToPhysicalUnits) 
+	public void transferDataIntToValuesOut(double scalingFactorToPhysicalUnits, EnumXLSExportType xlsExport) 
 	{
 		if (dimension == 0 || dataInt == null || dataInt.size() < 1)
 			return;
+		
+		boolean removeZeros = false;
+		if (xlsExport == EnumXLSExportType.AMPLITUDEGULPS)
+			removeZeros = true;
+			
 		int len = Math.min(dimension,  dataInt.size());
-		for (int i = 0; i < len; i++)
-			valuesOut[i] = dataInt.get(i) * scalingFactorToPhysicalUnits;
+		if (removeZeros) 
+		{
+			for (int i = 0; i < len; i++) 
+			{
+				int ivalue = dataInt.get(i);
+				valuesOut[i] = (ivalue == 0? Double.NaN: ivalue) * scalingFactorToPhysicalUnits;
+			}
+		}
+		else
+		{
+			for (int i = 0; i < len; i++)
+				valuesOut[i] = dataInt.get(i) * scalingFactorToPhysicalUnits;
+		}
 	}
 	
 	public void copyValuesOut(XLSResults sourceRow) 
@@ -166,7 +182,7 @@ public class XLSResults
 		nadded += 1;
 	}
 
-	public void getCapillaryMeasuresForPass1(Capillary cap, EnumXLSExportType xlsOption, long kymoBinCol_Ms, int outputBinMs)
+	public void getCapillaryDataForPass1(Capillary cap, EnumXLSExportType xlsOption, long kymoBinCol_Ms, int outputBinMs)
 	{
 		dataInt = cap.getCapillaryMeasuresForPass1(xlsOption, kymoBinCol_Ms, outputBinMs);
 	}

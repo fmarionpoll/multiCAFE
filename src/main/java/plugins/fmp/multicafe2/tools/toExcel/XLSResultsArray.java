@@ -246,10 +246,10 @@ public class XLSResultsArray
 		{
 			checkIfSameStimulusAndConcentration(cap);
 			XLSResults results = new XLSResults(cap.getRoiName(), cap.capNFlies, xlsExportOptions.exportType, nOutputFrames);
-			results.getCapillaryMeasuresForPass1(cap, xlsExportOptions.exportType, kymoBinCol_Ms, xlsExportOptions.buildExcelStepMs);
+			results.getCapillaryDataForPass1(cap, xlsExportOptions.exportType, kymoBinCol_Ms, xlsExportOptions.buildExcelStepMs);
 			if (subtractT0) 
 				results.subtractT0();
-			results.transferDataIntToValuesOut(scalingFactorToPhysicalUnits);
+			results.transferDataIntToValuesOut(scalingFactorToPhysicalUnits, xlsExportOptions.exportType);
 			addRow(results);
 		}
 	}
