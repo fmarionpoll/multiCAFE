@@ -214,7 +214,7 @@ public class XLSExport
 		}
 	}
 	
-	void writeTopRow_timeIntervals_Default(XSSFSheet sheet, int row)
+	void writeTopRow_timeIntervals_Correl(XSSFSheet sheet, int row)
 	{
 		boolean transpose = options.transpose;
 		Point pt = new Point(0, row);
@@ -228,7 +228,7 @@ public class XLSExport
 		}
 	}
 	
-	void writeTopRow_timeIntervals_Correl(XSSFSheet sheet, int row)
+	void writeTopRow_timeIntervals_Default(XSSFSheet sheet, int row)
 	{
 		boolean transpose = options.transpose;
 		Point pt = new Point(0, row);

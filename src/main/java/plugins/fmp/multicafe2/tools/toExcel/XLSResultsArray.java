@@ -348,8 +348,9 @@ public class XLSResultsArray
 	
 	private void correl(XLSResults row1, XLSResults row2, XLSResults rowOut, int nbins) 
 	{
-		int [] sumBins = new int [2*nbins +1];
+		double [] sumBins = new double [2*nbins +1];
 		Arrays.fill(sumBins, 0);
+		double nitems = 0;
 		for (int i1 = 0; i1 < row1.valuesOut.length; i1++)
 		{
 			if (row1.valuesOut[i1] == 0.)
@@ -360,15 +361,17 @@ public class XLSResultsArray
 				int ibin = i2-i1;
 				if (ibin < -nbins || ibin > nbins)
 					continue;
-				if (row2.valuesOut[i2] != 0.) {
+				if (row2.valuesOut[i2] != 0.) 
+				{
 					sumBins[ibin + nbins]++;
+					nitems ++;
 				}
 			}
 		}
 		
 		Arrays.fill(rowOut.valuesOut, Double.NaN);
 		for (int i = 0; i< 2*nbins; i++)
-			rowOut.valuesOut[i] = sumBins[i];
+			rowOut.valuesOut[i] = sumBins[i] / nitems;
 	}
 	
 	private void combineIntervals(XLSResults row1, XLSResults row2, XLSResults rowOut) 
