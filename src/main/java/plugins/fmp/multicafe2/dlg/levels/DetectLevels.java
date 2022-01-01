@@ -192,12 +192,12 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	void getInfosFromDialog(Capillary cap) 
 	{
 		Options_BuildSeries options = cap.limitsOptions;
-		options.transform1 = (EnumTransformOp) transform1ComboBox.getSelectedItem();
-		options.directionUp = (directionComboBox.getSelectedIndex() == 0) ;
-		options.detectLevelThreshold = getDetectLevelThreshold();
-		options.detectAllKymos = allKymosCheckBox.isSelected();
-		options.detectL = leftCheckBox.isSelected();
-		options.detectR = rightCheckBox.isSelected();
+		options.transform1 				= (EnumTransformOp) transform1ComboBox.getSelectedItem();
+		options.directionUp 			= (directionComboBox.getSelectedIndex() == 0) ;
+		options.detectLevelThreshold 	= getDetectLevelThreshold();
+		options.detectAllKymos 			= allKymosCheckBox.isSelected();
+		options.detectL 				= leftCheckBox.isSelected();
+		options.detectR 				= rightCheckBox.isSelected();
 	}
 	
 	private Options_BuildSeries initBuildParameters(Experiment exp) 
@@ -225,6 +225,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		}
 		// other parameters
 		options.transform1 			= (EnumTransformOp) transform1ComboBox.getSelectedItem();
+		options.transform2			= EnumTransformOp.YDIFFN;
 		
 		options.directionUp 		= (directionComboBox.getSelectedIndex() == 0);
 		options.detectLevelThreshold= (int) getDetectLevelThreshold();

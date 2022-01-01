@@ -80,13 +80,13 @@ public class DetectLevels_series extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					IcyBufferedImage rawImage_index = imageIORead(seqKymos.getFileName(t_index));
-					IcyBufferedImage sourceImage = tImg.transformImage (rawImage_index, options.transform1);
-					IcyBufferedImage sourceImage_index = tImg.transformImage (sourceImage, options.transform2);
+					IcyBufferedImage rawImage = imageIORead(seqKymos.getFileName(t_index));
+					IcyBufferedImage transform1Image = tImg.transformImage (rawImage, options.transform1);
+					IcyBufferedImage transform2Image = tImg.transformImage (rawImage, options.transform2);
 					
 					int c = 0;
-					Object dataArray = sourceImage_index.getDataXY(c);
-					int[] sourceValues_index = Array1DUtil.arrayToIntArray(dataArray, sourceImage_index.isSignedDataType());
+					Object transform1Array = transform1Image.getDataXY(c);
+					int[] transform11DArray = Array1DUtil.arrayToIntArray(transform1Array, transform1Image.isSignedDataType());
 
 					cap_index.indexKymograph = t_index;
 					cap_index.ptsDerivative = null;
@@ -94,9 +94,9 @@ public class DetectLevels_series extends BuildSeries
 					cap_index.limitsOptions.copyFrom(options);
 					
 					int firstColumn = 0;
-					int lastColumn = sourceImage_index.getSizeX()-1;
-					int xwidth = sourceImage_index.getSizeX();
-					int yheight = sourceImage_index.getSizeY();
+					int lastColumn = transform1Image.getSizeX()-1;
+					int xwidth = transform1Image.getSizeX();
+					int yheight = transform1Image.getSizeY();
 					if (options.analyzePartOnly) 
 					{
 						firstColumn = options.firstPixel;
@@ -109,6 +109,7 @@ public class DetectLevels_series extends BuildSeries
 						cap_index.ptsTop = null;
 						cap_index.ptsBottom = null;
 					}
+					
 					int oldiytop = 0;		// assume that curve goes from left to right with jitter 
 					int oldiybottom = yheight-1;
 					int nColumns = lastColumn - firstColumn +1;
@@ -119,8 +120,8 @@ public class DetectLevels_series extends BuildSeries
 					// scan each image column
 					for (int iColumn = firstColumn; iColumn <= lastColumn; iColumn++) 
 					{
-						int ytop = detectThresholdFromTop(iColumn, oldiytop, jitter, sourceValues_index, xwidth, yheight, options);
-						int ybottom = detectThresholdFromBottom(iColumn, oldiybottom, jitter, sourceValues_index, xwidth, yheight, options);
+						int ytop = detectThresholdFromTop(iColumn, oldiytop, jitter, transform11DArray, xwidth, yheight, options);
+						int ybottom = detectThresholdFromBottom(iColumn, oldiybottom, jitter, transform11DArray, xwidth, yheight, options);
 						if (ybottom <= ytop) 
 						{
 							ybottom = oldiybottom;

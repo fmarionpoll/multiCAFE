@@ -280,7 +280,7 @@ public class XLSResultsArray
 		}
 	}
 	
-	private void buildLR (double threshold) 
+	private void buildLR(double threshold) 
 	{
 		for (int irow = 0; irow < resultsList.size(); irow ++) 
 		{
@@ -397,7 +397,7 @@ public class XLSResultsArray
 				combineIntervals(rowL, rowR, rowLR);
 				
 				correl(rowLR, rowLR, rowL, xlsExportOptions.nbinscorrelation);
-				correl(rowR, rowLR, rowR, xlsExportOptions.nbinscorrelation);
+				correl(rowLR, rowLR, rowR, xlsExportOptions.nbinscorrelation);
 			} 
 		}
 	}
