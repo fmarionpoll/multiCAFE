@@ -98,11 +98,12 @@ public class DetectLevelsKMeans  extends JPanel
 		currentlyRunning = null;
 		cbSendMaskDirectly.setSelected(false);
 		
-		detectButton.setEnabled(false); // no detection yet
-		allSeriesCheckBox.setEnabled(false); // no detection yet
-		allKymosCheckBox.setEnabled(false); // no detection yet
-		leftCheckBox.setEnabled(false); // no detection yet
-		rightCheckBox.setEnabled(false); // no detection yet
+		// no detection yet
+		detectButton.setEnabled(false); 
+		allSeriesCheckBox.setEnabled(false); 
+		allKymosCheckBox.setEnabled(false); 
+		leftCheckBox.setEnabled(false); 
+		rightCheckBox.setEnabled(false);
 	}
 	
 	private void defineActionListeners() 

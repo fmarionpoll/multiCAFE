@@ -81,12 +81,11 @@ public class DetectLevels_series extends BuildSeries
 				public void run() 
 				{	
 					IcyBufferedImage rawImage = imageIORead(seqKymos.getFileName(t_index));
-					IcyBufferedImage transform1Image = tImg.transformImage (rawImage, options.transform1);
-					IcyBufferedImage transform2Image = tImg.transformImage (rawImage, options.transform2);
-					
+					IcyBufferedImage transformedImage1 = tImg.transformImage (rawImage, options.transform1);
+//					IcyBufferedImage transformedImage2 = tImg.transformImage (rawImage, options.transform2);		
 					int c = 0;
-					Object transform1Array = transform1Image.getDataXY(c);
-					int[] transform11DArray = Array1DUtil.arrayToIntArray(transform1Array, transform1Image.isSignedDataType());
+					Object transformedArray1 = transformedImage1.getDataXY(c);
+					int[] transformed1DArray1 = Array1DUtil.arrayToIntArray(transformedArray1, transformedImage1.isSignedDataType());
 
 					cap_index.indexKymograph = t_index;
 					cap_index.ptsDerivative = null;
@@ -94,15 +93,15 @@ public class DetectLevels_series extends BuildSeries
 					cap_index.limitsOptions.copyFrom(options);
 					
 					int firstColumn = 0;
-					int lastColumn = transform1Image.getSizeX()-1;
-					int xwidth = transform1Image.getSizeX();
-					int yheight = transform1Image.getSizeY();
+					int lastColumn = transformedImage1.getSizeX()-1;
+					int imageWidth = transformedImage1.getSizeX();
+					int imageHeight = transformedImage1.getSizeY();
 					if (options.analyzePartOnly) 
 					{
 						firstColumn = options.firstPixel;
 						lastColumn = options.lastPixel;
-						if (lastColumn > xwidth-1)
-							lastColumn = xwidth -1;
+						if (lastColumn > imageWidth-1)
+							lastColumn = imageWidth -1;
 					} 
 					else 
 					{
@@ -110,8 +109,7 @@ public class DetectLevels_series extends BuildSeries
 						cap_index.ptsBottom = null;
 					}
 					
-					int oldiytop = 0;		// assume that curve goes from left to right with jitter 
-					int oldiybottom = yheight-1;
+					int topSearchFrom = 0;
 					int nColumns = lastColumn - firstColumn +1;
 
 					List<Point2D> limitTop = new ArrayList<Point2D>(nColumns);
@@ -120,17 +118,16 @@ public class DetectLevels_series extends BuildSeries
 					// scan each image column
 					for (int iColumn = firstColumn; iColumn <= lastColumn; iColumn++) 
 					{
-						int ytop = detectThresholdFromTop(iColumn, oldiytop, jitter, transform11DArray, xwidth, yheight, options);
-						int ybottom = detectThresholdFromBottom(iColumn, oldiybottom, jitter, transform11DArray, xwidth, yheight, options);
+						int ytop = detectThresholdFromTop(iColumn, topSearchFrom, jitter, transformed1DArray1, imageWidth, imageHeight, options);
+						int ybottom = detectThresholdFromBottom(iColumn, jitter, transformed1DArray1, imageWidth, imageHeight, options);
 						if (ybottom <= ytop) 
 						{
-							ybottom = oldiybottom;
-							ytop = oldiytop;
+							ytop = topSearchFrom;
 						}
+						
 						limitTop.add(new Point2D.Double(iColumn, ytop));
 						limitBottom.add(new Point2D.Double(iColumn, ybottom));
-						oldiytop = ytop;
-						oldiybottom = ybottom;
+						topSearchFrom = ytop;
 					}	
 					
 					if (options.analyzePartOnly) 
@@ -154,7 +151,7 @@ public class DetectLevels_series extends BuildSeries
 		return true;
 	}
 
-	private int checkLimits (int rowIndex, int maximumRowIndex) 
+	private int checkIndexLimits (int rowIndex, int maximumRowIndex) 
 	{
 		if (rowIndex < 0)
 			rowIndex = 0;
@@ -163,18 +160,19 @@ public class DetectLevels_series extends BuildSeries
 		return rowIndex;
 	}
 
-	private int detectThresholdFromTop(int ix, int oldiytop, int jitter, int [] tabValues, int xwidth, int yheight, Options_BuildSeries options) 
+	private int detectThresholdFromTop(int ix, int searchFrom, int jitter, int [] tabValues, int imageWidth, int imageHeight, Options_BuildSeries options) 
 	{
-		int y = yheight-1;
-		oldiytop = checkLimits(oldiytop - jitter, yheight-1);
-		for (int iy = oldiytop; iy < yheight; iy++) 
+		int y = imageHeight-1;
+		searchFrom = checkIndexLimits(searchFrom - jitter, imageHeight-1);
+		for (int iy = searchFrom; iy < imageHeight; iy++) 
 		{
 			boolean flag = false;
 			if (options.directionUp)
-				flag = tabValues [ix + iy* xwidth] > options.detectLevelThreshold;
+				flag = tabValues [ix + iy* imageWidth] > options.detectLevelThreshold;
 			else 
-				flag = tabValues [ix + iy* xwidth] < options.detectLevelThreshold;
-			if (flag) {
+				flag = tabValues [ix + iy* imageWidth] < options.detectLevelThreshold;
+			if (flag) 
+			{
 				y = iy;
 				break;
 			}
@@ -182,18 +180,18 @@ public class DetectLevels_series extends BuildSeries
 		return y;
 	}
 	
-	private int detectThresholdFromBottom(int ix, int oldiybottom, int jitter, int[] tabValues, int xwidth, int yheight, Options_BuildSeries options) 
+	private int detectThresholdFromBottom(int ix, int jitter, int[] tabValues, int imageWidth, int imageHeight, Options_BuildSeries options) 
 	{
 		int y = 0;
-		oldiybottom = yheight - 1; // no memory needed  - the bottom is quite stable
-		for (int iy = oldiybottom; iy >= 0 ; iy--) 
+		for (int iy = imageHeight - 1; iy >= 0 ; iy--) 
 		{
 			boolean flag = false;
 			if (options.directionUp)
-				flag = tabValues [ix + iy* xwidth] > options.detectLevelThreshold;
+				flag = tabValues [ix + iy* imageWidth] > options.detectLevelThreshold;
 			else 
-				flag = tabValues [ix + iy* xwidth] < options.detectLevelThreshold;
-			if (flag) {
+				flag = tabValues [ix + iy* imageWidth] < options.detectLevelThreshold;
+			if (flag) 
+			{
 				y = iy;
 				break;
 			}
