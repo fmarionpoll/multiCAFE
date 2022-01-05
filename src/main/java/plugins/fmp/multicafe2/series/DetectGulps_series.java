@@ -30,7 +30,7 @@ public class DetectGulps_series extends BuildSeries
 		if (loadExperimentDataToDetectGulps(exp)) 
 		{
 			buildFilteredImage(exp);
-			detectGulps(exp);
+			detectGulpsFromExperiment(exp);
 		}
 		exp.seqKymos.closeSequence();
 	}
@@ -53,7 +53,7 @@ public class DetectGulps_series extends BuildSeries
 		exp.kymosBuildFiltered(0, zChannelDestination, options.transformForGulps, options.spanDiff);
 	}
 	
-	public void detectGulps(Experiment exp) 
+	public void detectGulpsFromExperiment(Experiment exp) 
 	{			
 		SequenceKymos seqCapillariesKymographs = exp.seqKymos;	
 		int jitter = 5;
@@ -80,7 +80,7 @@ public class DetectGulps_series extends BuildSeries
 			final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
 			capi.setGulpsOptions(options);
 			
-			final int t_from = indexCapillary;
+			final int icap = indexCapillary;
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
@@ -88,18 +88,20 @@ public class DetectGulps_series extends BuildSeries
 				{
 					if (options.buildDerivative) 
 					{
-						ROI2DUtilities.removeRoisContainingString(t_from, "derivative", seqCapillariesKymographs.seq);
-						getDerivativeProfile(seqCapillariesKymographs.seq, t_from, capi, jitter);	
+						ROI2DUtilities.removeRoisContainingString(icap, "derivative", seqCapillariesKymographs.seq);
+						getDerivativeProfile(seqCapillariesKymographs.seq, icap, capi, jitter);	
 					}
 					if (options.buildGulps) 
 					{
 						capi.cleanGulps();
-						ROI2DUtilities.removeRoisContainingString(t_from, "gulp", seqCapillariesKymographs.seq);
-						capi.detectGulps(t_from);
-						if (capi.gulpsRois.rois.size() > 0)
+						ROI2DUtilities.removeRoisContainingString(icap, "gulp", seqCapillariesKymographs.seq);
+						capi.detectGulps(icap);
+						if (capi.gulpsRois.rois.size() > 0) 
+						{
 							seqCapillariesKymographs.seq.addROIs(capi.gulpsRois.rois, false);
+							System.out.println(capi.getRoiName() + "- save n rois:" + capi.gulpsRois.rois.size());
+						}
 					}
-					
 					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), capi);
 				}}));
 		}

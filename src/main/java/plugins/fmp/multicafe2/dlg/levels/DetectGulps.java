@@ -189,7 +189,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		return options;
 	}
 	
-	void startComputation(boolean detectGulps) 
+	void startComputation(boolean bDetectGulps) 
 	{
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null)
@@ -197,7 +197,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 			exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
 			threadDetectGulps = new DetectGulps_series();
 			threadDetectGulps.options = initBuildParameters(exp);
-			if (!detectGulps)
+			if (!bDetectGulps)
 				threadDetectGulps.options.buildGulps 	= false;
 			threadDetectGulps.addPropertyChangeListener(this);
 			threadDetectGulps.execute();

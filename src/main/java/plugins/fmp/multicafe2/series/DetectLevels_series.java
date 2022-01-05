@@ -1,8 +1,6 @@
 package plugins.fmp.multicafe2.series;
 
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Future;
 
 import icy.gui.frame.progress.ProgressFrame;
@@ -14,6 +12,7 @@ import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.CapillaryLevel;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
+import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.fmp.multicafe2.tools.ImageToolsTransform;
 
 
@@ -65,6 +64,7 @@ public class DetectLevels_series extends BuildSeries
 		tImg.setSpanDiff(options.spanDiffTop);
 		tImg.setSequence(seqKymos);
 		final int jitter = 10;
+		options.transform2 = EnumTransformOp.COLORDIFF_L1_Y;
 		
 		for (int index = firstKymo; index <= lastKymo; index++) 
 		{
@@ -82,10 +82,13 @@ public class DetectLevels_series extends BuildSeries
 				{	
 					IcyBufferedImage rawImage = imageIORead(seqKymos.getFileName(t_index));
 					IcyBufferedImage transformedImage1 = tImg.transformImage (rawImage, options.transform1);
-//					IcyBufferedImage transformedImage2 = tImg.transformImage (rawImage, options.transform2);		
 					int c = 0;
 					Object transformedArray1 = transformedImage1.getDataXY(c);
 					int[] transformed1DArray1 = Array1DUtil.arrayToIntArray(transformedArray1, transformedImage1.isSignedDataType());
+
+//					IcyBufferedImage transformedImage2 = tImg.transformImage (rawImage, options.transform2);		
+//					Object transformedArray2 = transformedImage2.getDataXY(c);
+//					int[] transformed1DArray2 = Array1DUtil.arrayToIntArray(transformedArray2, transformedImage2.isSignedDataType());
 
 					cap_index.indexKymograph = t_index;
 					cap_index.ptsDerivative = null;
@@ -110,35 +113,33 @@ public class DetectLevels_series extends BuildSeries
 					}
 					
 					int topSearchFrom = 0;
-					int nColumns = lastColumn - firstColumn +1;
-
-					List<Point2D> limitTop = new ArrayList<Point2D>(nColumns);
-					List<Point2D> limitBottom = new ArrayList<Point2D>(nColumns);
+					int [] limitTop = new int [lastColumn - firstColumn +1];
+					int [] limitBottom = new int [lastColumn - firstColumn +1];
 		
-					// scan each image column
-					for (int iColumn = firstColumn; iColumn <= lastColumn; iColumn++) 
+					for (int ix = firstColumn; ix <= lastColumn; ix++) 
 					{
-						int ytop = detectThresholdFromTop(iColumn, topSearchFrom, jitter, transformed1DArray1, imageWidth, imageHeight, options);
-						int ybottom = detectThresholdFromBottom(iColumn, jitter, transformed1DArray1, imageWidth, imageHeight, options);
-						if (ybottom <= ytop) 
-						{
-							ytop = topSearchFrom;
-						}
+						int iyTop = detectThresholdFromTop(ix, topSearchFrom, jitter, transformed1DArray1, imageWidth, imageHeight, options);
+//						iyTop = findBestPosition(ix, iyTop, transformed1DArray2, imageWidth, imageHeight);
 						
-						limitTop.add(new Point2D.Double(iColumn, ytop));
-						limitBottom.add(new Point2D.Double(iColumn, ybottom));
-						topSearchFrom = ytop;
+						int iyBottom = detectThresholdFromBottom(ix, jitter, transformed1DArray1, imageWidth, imageHeight, options);
+						if (iyBottom <= iyTop) 
+							iyTop = topSearchFrom;
+						limitTop[ix] = iyTop;
+						limitBottom[ix] = iyBottom;
+						topSearchFrom = iyTop;
 					}	
+					
+//					filterZigZags(limitTop, firstColumn, lastColumn);
 					
 					if (options.analyzePartOnly) 
 					{
-						cap_index.ptsTop.polylineLevel.insertSeriesofYPoints(limitTop, firstColumn, lastColumn);
-						cap_index.ptsBottom.polylineLevel.insertSeriesofYPoints(limitBottom, firstColumn, lastColumn);
+						cap_index.ptsTop.polylineLevel.insertYPoints(limitTop, firstColumn, lastColumn);
+						cap_index.ptsBottom.polylineLevel.insertYPoints(limitBottom, firstColumn, lastColumn);
 					} 
 					else 
 					{
-						cap_index.ptsTop    = new CapillaryLevel(cap_index.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop);
-						cap_index.ptsBottom = new CapillaryLevel(cap_index.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom);
+						cap_index.ptsTop    = new CapillaryLevel(cap_index.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop, firstColumn, lastColumn);
+						cap_index.ptsBottom = new CapillaryLevel(cap_index.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom, firstColumn, lastColumn);
 					}
 					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), cap_index);
 				}}));
@@ -150,7 +151,36 @@ public class DetectLevels_series extends BuildSeries
 		
 		return true;
 	}
+	
+//	private int findBestPosition(int ix, int iy, int[] transformed1DArray2, int imageWidth, int imageHeight) 
+//	{
+//		int maxVal = transformed1DArray2[ix + iy * imageWidth];
+//		
+//		int delta = 5;
+//		for (int irow = iy - delta; irow < iy + delta; irow++) 
+//		{
+//			if (irow < 0 || irow >= imageHeight)
+//				continue;
+//			
+//			int val = transformed1DArray2[ix + irow * imageWidth];
+//			if (val > maxVal) 
+//			{
+//				maxVal = val;
+//				iy = irow;
+//			}
+//		}
+//		return iy;
+//	}
 
+//	private void filterZigZags (int [] limits, int first, int last) 
+//	{
+//		for (int i = first+1; i < last; i++) 
+//		{
+//			if (limits[i+1] > limits[i])
+//				limits[i] = (limits[i-1] + limits[i+1])/2 ;
+//		}	
+//	}
+	
 	private int checkIndexLimits (int rowIndex, int maximumRowIndex) 
 	{
 		if (rowIndex < 0)

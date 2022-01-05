@@ -48,6 +48,16 @@ public class Level2D extends Polyline2D
 		return true;
 	}
 	
+	public boolean insertYPoints(int [] ypoints, int start, int end) 
+	{
+		if (start < 0 || end > (this.npoints -1))
+			return false;
+		int i_list = 0;
+		for (int i_array= start; i_array < end; i_array++, i_list++) 
+			ypoints[i_array] = ypoints[i_list]; 
+		return true;
+	}
+	
 	@Override
 	public Level2D clone()
 	{

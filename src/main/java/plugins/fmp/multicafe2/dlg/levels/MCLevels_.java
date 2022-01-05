@@ -63,11 +63,10 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 		tabEdit.addPropertyChangeListener(this);
 		tabsPane.addTab("Edit", null, tabEdit, "Edit Rois / measures");
 
-		tabAdjust.init(capLayout, parent0);
-		tabAdjust.addPropertyChangeListener(this);
-		tabsPane.addTab("Adjust", null, tabAdjust, "Adjust measures on series and across series");
+//		tabAdjust.init(capLayout, parent0);
+//		tabAdjust.addPropertyChangeListener(this);
+//		tabsPane.addTab("Adjust", null, tabAdjust, "Adjust measures on series and across series");
 
-		
 		tabGraphs.init(capLayout, parent0);
 		tabGraphs.addPropertyChangeListener(this);
 		tabsPane.addTab("Graphs", null, tabGraphs, "Display results as a graph");

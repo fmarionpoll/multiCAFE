@@ -151,6 +151,8 @@ public class ChartLevels extends IcyFrame
 			xyChart.setTextAntiAlias( true );
 			
 			ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
+			if (globalYMin == globalYMax)
+				globalYMax = globalYMin +1;
 			yAxis.setRange(globalYMin, globalYMax);
 			yAxis.setTickLabelsVisible(displayLabels);
 			ValueAxis xAxis = xyChart.getXYPlot().getDomainAxis(0);

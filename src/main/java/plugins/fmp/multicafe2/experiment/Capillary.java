@@ -344,41 +344,26 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		
 		int threshold = (int) ((limitsOptions.detectGulpsThresholdUL / capVolume) * capPixels);
 		
-		List<Point2D> gulpPoints = new ArrayList<>();
-		
 		for (indexPixel = firstPixel; indexPixel < lastPixel; indexPixel++) 
 		{
 			int derivativevalue = (int) ptsDerivative.polylineLevel.ypoints[indexPixel-1];
 			if (derivativevalue < threshold) 
-			{
-				gulpPoints.clear();
-				continue;
-			}
-			
-			if (ptsTop.polylineLevel.ypoints[indexPixel-1] == ptsTop.polylineLevel.ypoints[indexPixel]) 
-			{
-				if (gulpPoints.size() > 0)
-					saveGulpPointsToGulpRois(indexPixel-1, gulpPoints, indexkymo);
-				gulpPoints.clear();
-				continue;
-			}
-			
-			addGulpPoint(indexPixel-1, gulpPoints);
-			addGulpPoint(indexPixel, gulpPoints);
-			saveGulpPointsToGulpRois(indexPixel, gulpPoints, indexkymo);
+				continue;		
+			saveGulpPointsToGulpRois(indexPixel, indexkymo);
 		}
 	}
 	
-	private void addGulpPoint (int indexPixel, List<Point2D> gulpPoints) 
+	private void saveGulpPointsToGulpRois(int indexPixel, int indexkymo ) 
 	{
-		Point2D.Double detectedPoint = new Point2D.Double (indexPixel, ptsTop.polylineLevel.ypoints[indexPixel]);
+		int delta = (int) Math.abs(ptsTop.polylineLevel.ypoints[indexPixel]-ptsTop.polylineLevel.ypoints[indexPixel-1]);
+		if (delta <= 1)
+			return;
+		List<Point2D> gulpPoints = new ArrayList<>();
+		Point2D.Double detectedPoint = new Point2D.Double (indexPixel, ptsTop.polylineLevel.ypoints[indexPixel-1]);
 		gulpPoints.add(detectedPoint);
-	}
-	
-	private void saveGulpPointsToGulpRois(int indexPixel, List<Point2D> gulpPoints, int indexkymo ) 
-	{
+		Point2D.Double detectedPoint2 = new Point2D.Double (indexPixel, ptsTop.polylineLevel.ypoints[indexPixel]);
+		gulpPoints.add(detectedPoint2);
 		gulpsRois.addGulp(new ROI2DPolyLine (gulpPoints), indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexPixel));
-		gulpPoints.clear();
 	}
 	
 	public int getLastMeasure(EnumXLSExportType option) 

@@ -51,6 +51,21 @@ public class CapillaryLevel  implements XMLPersistent
 		polylineLevel = new Level2D(limit);
 	}
 	
+	public CapillaryLevel(String name, int indexImage, int [] limit, int start, int end) 
+	{
+		this.name = name;
+		int npoints = end-start+1;
+		double [] xpoints = new double [npoints];
+		double [] ypoints = new double [npoints];
+		int j= 0;
+		for (int i = start; i <= end; i++, j++) 
+		{
+			xpoints[j] = i;
+			ypoints[j] = limit[j];
+		}
+		polylineLevel = new Level2D(xpoints, ypoints, npoints);
+	}
+	
 	int getNPoints() 
 	{
 		if (polylineLevel == null)

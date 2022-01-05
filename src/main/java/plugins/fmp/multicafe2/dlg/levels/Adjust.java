@@ -37,8 +37,8 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	private String				adjustString  	= new String("Resize levels to Kymographs");
 	private String				cropString  	= new String("Crop levels to Kymograph");
 	
-	private String				clipString 		= new String("Clip curves within cage to the shortest curve");
-	private String				restoreString	= new String("Restore curves");
+	private String				clipString 		= new String("Clip levels npts to the shortest curve");
+	private String				restoreString	= new String("Restore levels");
 	
 	private JButton 			adjustButton 	= new JButton(adjustString);
 	private JButton 			restoreButton 	= new JButton(restoreString);
