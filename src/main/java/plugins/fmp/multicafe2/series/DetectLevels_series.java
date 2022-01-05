@@ -65,14 +65,15 @@ public class DetectLevels_series extends BuildSeries
 		tImg.setSequence(seqKymos);
 		final int jitter = 10;
 		options.transform2 = EnumTransformOp.COLORDIFF_L1_Y;
+		final String directory = exp.getKymosBinFullDirectory();
 		
 		for (int index = firstKymo; index <= lastKymo; index++) 
 		{
 			final int t_index = index;
-			final Capillary cap_index = exp.capillaries.capillariesList.get(t_index);
-			if (!options.detectR && cap_index.getKymographName().endsWith("2"))
+			final Capillary capi = exp.capillaries.capillariesList.get(t_index);
+			if (!options.detectR && capi.getKymographName().endsWith("2"))
 				continue;
-			if (!options.detectL && cap_index.getKymographName().endsWith("1"))
+			if (!options.detectL && capi.getKymographName().endsWith("1"))
 				continue;
 				
 			futures.add(processor.submit(new Runnable () 
@@ -90,10 +91,10 @@ public class DetectLevels_series extends BuildSeries
 //					Object transformedArray2 = transformedImage2.getDataXY(c);
 //					int[] transformed1DArray2 = Array1DUtil.arrayToIntArray(transformedArray2, transformedImage2.isSignedDataType());
 
-					cap_index.indexKymograph = t_index;
-					cap_index.ptsDerivative = null;
-					cap_index.gulpsRois = null;
-					cap_index.limitsOptions.copyFrom(options);
+					capi.indexKymograph = t_index;
+					capi.ptsDerivative = null;
+					capi.gulpsRois = null;
+					capi.limitsOptions.copyFrom(options);
 					
 					int firstColumn = 0;
 					int lastColumn = transformedImage1.getSizeX()-1;
@@ -108,8 +109,8 @@ public class DetectLevels_series extends BuildSeries
 					} 
 					else 
 					{
-						cap_index.ptsTop = null;
-						cap_index.ptsBottom = null;
+						capi.ptsTop = null;
+						capi.ptsBottom = null;
 					}
 					
 					int topSearchFrom = 0;
@@ -133,15 +134,15 @@ public class DetectLevels_series extends BuildSeries
 					
 					if (options.analyzePartOnly) 
 					{
-						cap_index.ptsTop.polylineLevel.insertYPoints(limitTop, firstColumn, lastColumn);
-						cap_index.ptsBottom.polylineLevel.insertYPoints(limitBottom, firstColumn, lastColumn);
+						capi.ptsTop.polylineLevel.insertYPoints(limitTop, firstColumn, lastColumn);
+						capi.ptsBottom.polylineLevel.insertYPoints(limitBottom, firstColumn, lastColumn);
 					} 
 					else 
 					{
-						cap_index.ptsTop    = new CapillaryLevel(cap_index.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop, firstColumn, lastColumn);
-						cap_index.ptsBottom = new CapillaryLevel(cap_index.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom, firstColumn, lastColumn);
+						capi.ptsTop    = new CapillaryLevel(capi.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop, firstColumn, lastColumn);
+						capi.ptsBottom = new CapillaryLevel(capi.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom, firstColumn, lastColumn);
 					}
-					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), cap_index);
+					capi.xmlSaveCapillary_Measures(directory);
 				}}));
 		}
 		waitFuturesCompletion(processor, futures, progressBar);

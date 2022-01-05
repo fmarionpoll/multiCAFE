@@ -63,21 +63,8 @@ public class Capillaries
 			return false;
 		
 		for (Capillary cap: capillariesList) 
-			xmlSaveCapillary_Measures(directory, cap);
+			cap.xmlSaveCapillary_Measures(directory);
 
-		return true;
-	}
-	
-	public boolean xmlSaveCapillary_Measures(String directory, Capillary cap) 
-	{
-		if (directory == null || cap.getRoi() == null)
-			return false;
-		String tempname = directory + File.separator + cap.getKymographName()+ ".xml";
-
-		final Document capdoc = XMLUtil.createDocument(true);
-		cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
-		XMLUtil.saveDocument(capdoc, tempname);
-		
 		return true;
 	}
 	

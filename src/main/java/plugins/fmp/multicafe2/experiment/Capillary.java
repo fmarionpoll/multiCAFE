@@ -3,10 +3,12 @@ package plugins.fmp.multicafe2.experiment;
 import java.awt.Color;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
@@ -343,27 +345,31 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		} 
 		
 		int threshold = (int) ((limitsOptions.detectGulpsThresholdUL / capVolume) * capPixels);
-		
+		double lastPoint = ptsTop.polylineLevel.ypoints[0];
 		for (indexPixel = firstPixel; indexPixel < lastPixel; indexPixel++) 
 		{
 			int derivativevalue = (int) ptsDerivative.polylineLevel.ypoints[indexPixel-1];
 			if (derivativevalue < threshold) 
 				continue;		
-			saveGulpPointsToGulpRois(indexPixel, indexkymo);
+			lastPoint = saveGulpPointsToGulpRois(indexPixel, indexkymo, lastPoint);
 		}
 	}
 	
-	private void saveGulpPointsToGulpRois(int indexPixel, int indexkymo ) 
+	private double saveGulpPointsToGulpRois(int indexPixel, int indexkymo, double lastPoint ) 
 	{
-		int delta = (int) Math.abs(ptsTop.polylineLevel.ypoints[indexPixel]-ptsTop.polylineLevel.ypoints[indexPixel-1]);
-		if (delta <= 1)
-			return;
+		double delta = ptsTop.polylineLevel.ypoints[indexPixel]-ptsTop.polylineLevel.ypoints[indexPixel-1];
+		if (delta < 1. || lastPoint >= ptsTop.polylineLevel.ypoints[indexPixel])
+			return lastPoint;
+		lastPoint = ptsTop.polylineLevel.ypoints[indexPixel];
+		
 		List<Point2D> gulpPoints = new ArrayList<>();
-		Point2D.Double detectedPoint = new Point2D.Double (indexPixel, ptsTop.polylineLevel.ypoints[indexPixel-1]);
+		Point2D.Double detectedPoint = new Point2D.Double (indexPixel-1, ptsTop.polylineLevel.ypoints[indexPixel-1]);
 		gulpPoints.add(detectedPoint);
 		Point2D.Double detectedPoint2 = new Point2D.Double (indexPixel, ptsTop.polylineLevel.ypoints[indexPixel]);
 		gulpPoints.add(detectedPoint2);
 		gulpsRois.addGulp(new ROI2DPolyLine (gulpPoints), indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexPixel));
+		
+		return lastPoint;
 	}
 	
 	public int getLastMeasure(EnumXLSExportType option) 
@@ -607,6 +613,19 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			gulpsRois.saveToXML(node);
 	}
 	 
+	public boolean xmlSaveCapillary_Measures(String directory) 
+	{
+		if (directory == null || getRoi() == null)
+			return false;
+		String tempname = directory + File.separator + getKymographName()+ ".xml";
+
+		final Document capdoc = XMLUtil.createDocument(true);
+		saveToXML(XMLUtil.getRootElement(capdoc, true));
+		XMLUtil.saveDocument(capdoc, tempname);
+		
+		return true;
+	}
+	
 	// -------------------------------------------
 	
 	public Point2D getCapillaryTipWithinROI2D (ROI2D roi2D) 

@@ -75,6 +75,8 @@ public class DetectGulps_series extends BuildSeries
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		futures.clear();
 		
+		final String directory = exp.getKymosBinFullDirectory();
+		
 		for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
 		{
 			final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
@@ -99,10 +101,10 @@ public class DetectGulps_series extends BuildSeries
 						if (capi.gulpsRois.rois.size() > 0) 
 						{
 							seqCapillariesKymographs.seq.addROIs(capi.gulpsRois.rois, false);
-							System.out.println(capi.getRoiName() + "- save n rois:" + capi.gulpsRois.rois.size());
+//							System.out.println(capi.getRoiName() + "- save n rois:" + capi.gulpsRois.rois.size());
 						}
 					}
-					exp.capillaries.xmlSaveCapillary_Measures(exp.getKymosBinFullDirectory(), capi);
+					capi.xmlSaveCapillary_Measures(directory);
 				}}));
 		}
 		
