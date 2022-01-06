@@ -27,8 +27,8 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 	private JTabbedPane tabsPane 		= new JTabbedPane();
 	public 	LoadSave 	tabFileLevels	= new LoadSave();
 			DetectLevels tabDetectLevels = new DetectLevels();
-			DetectLevelsKMeans tabDetectLevelsK = new DetectLevelsKMeans();
-	
+			//DetectLevelsKMeans tabDetectLevelsK = new DetectLevelsKMeans();
+			DetectLevels2 tabDetectLevels2 = new DetectLevels2();
 			DetectGulps tabDetectGulps 	= new DetectGulps();
 			Edit		tabEdit			= new Edit();
 			Adjust		tabAdjust		= new Adjust();
@@ -51,9 +51,9 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 		tabDetectLevels.addPropertyChangeListener(this);
 		tabsPane.addTab("Levels", null, tabDetectLevels, "Find limits of the columns of liquid");
 		
-		tabDetectLevelsK.init(capLayout, parent0);
-		tabDetectLevelsK.addPropertyChangeListener(this);
-		tabsPane.addTab("Levels-K*", null, tabDetectLevelsK, "Find limits with KMeans");
+		tabDetectLevels2.init(capLayout, parent0);
+		tabDetectLevels2.addPropertyChangeListener(this);
+		tabsPane.addTab("Levels-pass2", null, tabDetectLevels2, "Refine position of detected levels");
 		
 		tabDetectGulps.init(capLayout, parent0);	
 		tabsPane.addTab("Gulps", null, tabDetectGulps, "Detect gulps");
@@ -62,10 +62,6 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 		tabEdit.init(capLayout, parent0);
 		tabEdit.addPropertyChangeListener(this);
 		tabsPane.addTab("Edit", null, tabEdit, "Edit Rois / measures");
-
-//		tabAdjust.init(capLayout, parent0);
-//		tabAdjust.addPropertyChangeListener(this);
-//		tabsPane.addTab("Adjust", null, tabAdjust, "Adjust measures on series and across series");
 
 		tabGraphs.init(capLayout, parent0);
 		tabGraphs.addPropertyChangeListener(this);

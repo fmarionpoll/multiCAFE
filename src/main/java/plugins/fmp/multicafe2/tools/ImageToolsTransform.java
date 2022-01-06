@@ -141,18 +141,22 @@ public class ImageToolsTransform
 		case RGB_TO_H1H2H3: 
 			transformedImage = functionRGBtoH1H2H3(inputImage); 
 			break;
-		case SUBFIRSTCOL: 
+		case SUBTRACT_1RSTCOL: 
 			transformedImage = functionSubtractCol(inputImage, 0); 
 			break;
 			
-		case COLORDIFF_L1_Y:
+		case SUBTRACTRGB_1RSTCOL:
+			transformedImage = functionSubtractColRGB(inputImage, 0); 
+			break;
+			
+		case COLORDISTANCE_L1_Y:
 			int spanx = 0;
 			int deltax = 0;
 			int spany = 4;
 			int deltay = 0;
 			transformedImage = functionColorDiffLY(inputImage, spanx, deltax, spany, deltay, false); 
 			break;
-		case COLORDIFF_L2_Y:
+		case COLORDIISTANCE_L2_Y:
 			transformedImage = functionColorDiffLY(inputImage, 0, 0, 5, 0, true); 
 			break;
 			
@@ -172,11 +176,11 @@ public class ImageToolsTransform
 	private IcyBufferedImage functionSubtractCol(IcyBufferedImage sourceImage, int column) 
 	{
 		int chan0 = 0;
-		int chan1 =  sourceImage.getSizeC();
+		int nchannels =  sourceImage.getSizeC();
 		int imageSizeX = sourceImage.getSizeX();
 		int imageSizeY = sourceImage.getSizeY();
-		IcyBufferedImage img2 = new IcyBufferedImage(imageSizeX, imageSizeY, chan1, sourceImage.getDataType_());
-		for (int c=chan0; c < chan1; c++) 
+		IcyBufferedImage img2 = new IcyBufferedImage(imageSizeX, imageSizeY, nchannels, sourceImage.getDataType_());
+		for (int c = chan0; c < nchannels; c++) 
 		{
 			int[] tabValues = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
 			int[] outValues = Array1DUtil.arrayToIntArray(img2.getDataXY(c), img2.isSignedDataType());			
@@ -185,7 +189,7 @@ public class ImageToolsTransform
 				int deltay = iy* imageSizeX;
 				int kx = column + deltay;
 				int refVal = tabValues [kx];
-				for (int ix =spanDiff; ix < imageSizeX -spanDiff; ix++) 
+				for (int ix = 0; ix < imageSizeX; ix++) 
 				{
 					kx = ix + deltay;
 					int outVal = tabValues [kx] - refVal;
@@ -198,6 +202,33 @@ public class ImageToolsTransform
 		return img2;
 	}
 	
+	private IcyBufferedImage functionSubtractColRGB(IcyBufferedImage sourceImage, int column) 
+	{
+		int imageSizeX = sourceImage.getSizeX();
+		int imageSizeY = sourceImage.getSizeY();
+		
+		IcyBufferedImage img2 = new IcyBufferedImage (sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
+		int[] R = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(0), sourceImage.isSignedDataType());
+		int[] G = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(1), sourceImage.isSignedDataType());
+		int[] B = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(2), sourceImage.isSignedDataType());
+		int[] ExG = (int[]) Array1DUtil.createArray(DataType.INT, R.length);
+					
+		for (int iy = 0; iy < imageSizeY; iy++) 
+		{	
+			int deltay = iy* imageSizeX;
+			int kx0 = column + deltay;
+			
+			for (int ix = 0; ix < imageSizeX; ix++) 
+			{
+				int kx = ix + deltay;
+				ExG [kx]  = Math.abs(R[kx] - R[kx0])  + Math.abs(G[kx] - G[kx0]) + Math.abs(B[kx] - B[kx0]);
+			}
+		}
+		
+		copyExGIntToIcyBufferedImage(ExG, img2);
+		return img2;
+	}
+	
 	// function proposed by Francois Rebaudo
 	private IcyBufferedImage functionNormRGB_sumC1C2Minus2C3 (IcyBufferedImage sourceImage, int Rlayer, int Glayer, int Blayer) 
 	{
@@ -206,20 +237,36 @@ public class ImageToolsTransform
 		double[] Gn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(Glayer), sourceImage.isSignedDataType());
 		double[] Bn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(Blayer), sourceImage.isSignedDataType());
 		double[] ExG = (double[]) Array1DUtil.createArray(DataType.DOUBLE, Rn.length);
-		for (int i=0; i< Rn.length; i++) 
+		for (int i = 0; i < Rn.length; i++) 
 		{
 			double sum = (Rn[i] / 255) + (Gn[i] / 255) + (Bn [i] / 255);
 			ExG[i] = ((Gn[i] *2 / 255 / sum) - (Rn[i] / 255/sum) - (Bn [i] / 255/sum)) * 255;
 		}
 		
-		Array1DUtil.doubleArrayToSafeArray(ExG,  img2.getDataXY(0), false); //true);
+		copyExGDoubleToIcyBufferedImage(ExG, img2);
+		return img2;
+	}
+	
+	private void copyExGDoubleToIcyBufferedImage(double[] ExG, IcyBufferedImage img2 )
+	{
+		Array1DUtil.doubleArrayToSafeArray(ExG, img2.getDataXY(0), false); 
 		img2.setDataXY(0, img2.getDataXY(0));
-		for (int c= 1; c<3; c++ ) 
+		for (int c = 1; c < 3; c++ ) 
 		{
 			img2.copyData(img2, 0, c);
 			img2.setDataXY(c, img2.getDataXY(c));
 		}
-		return img2;
+	}
+	
+	private void copyExGIntToIcyBufferedImage(int[] ExG, IcyBufferedImage img2 )
+	{
+		Array1DUtil.intArrayToSafeArray(ExG,  img2.getDataXY(0), false, false); //true);
+		img2.setDataXY(0, img2.getDataXY(0));
+		for (int c = 1; c < 3; c++ ) 
+		{
+			img2.copyData(img2, 0, c);
+			img2.setDataXY(c, img2.getDataXY(c));
+		}
 	}
 	
 	private IcyBufferedImage functionColorDiffLY (IcyBufferedImage sourceImage, int spanx, int deltax, int spany,  int deltay, boolean computeL2) 
@@ -250,14 +297,7 @@ public class ImageToolsTransform
 			}
 		}
 				
-		//--------------------------
-		Array1DUtil.doubleArrayToSafeArray(outValues,  img2.getDataXY(0), false); //true);
-		img2.setDataXY(0, img2.getDataXY(0));
-		for (int c= 1; c<3; c++ ) 
-		{
-			img2.copyData(img2, 0, c);
-			img2.setDataXY(c, img2.getDataXY(c));
-		}
+		copyExGDoubleToIcyBufferedImage(outValues, img2);
 		return img2;
 	}
 	
@@ -329,13 +369,7 @@ public class ImageToolsTransform
 			double val = tabSubtract[i]* 2 - tabAdd1[i] - tabAdd2[i] ;
 			tabResult [i] = val;
 		}
-		Array1DUtil.doubleArrayToSafeArray(tabResult, img2.getDataXY(0), false); //  true);
-		img2.setDataXY(0, img2.getDataXY(0));
-		for (int c= 1; c<3; c++ ) 
-		{
-			img2.copyData(img2, 0, c);
-			img2.setDataXY(c, img2.getDataXY(c));
-		}
+		copyExGDoubleToIcyBufferedImage(tabResult, img2);
 		return img2; 
 	}
 	
@@ -352,18 +386,12 @@ public class ImageToolsTransform
 		for (int i = 0; i < tabResult.length; i++) 
 			tabResult [i] =  tabAdd1[i] + tabAdd2[i] - tabSubtract[i]* 2;
 		
-		Array1DUtil.doubleArrayToSafeArray(tabResult, img2.getDataXY(0), false); //  true);
-		img2.setDataXY(0, img2.getDataXY(0));
-		for (int c= 1; c<3; c++ ) 
-		{
-			img2.copyData(img2, 0, c);
-			img2.setDataXY(c, img2.getDataXY(c));
-		}
+		copyExGDoubleToIcyBufferedImage(tabResult, img2);
 		return img2;
 	}
 	
 	private IcyBufferedImage functionRGB_sumDiff (IcyBufferedImage sourceImage) 
-{
+	{
 		if (sourceImage.getSizeC() < 3)
 			return null;
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
@@ -384,13 +412,7 @@ public class ImageToolsTransform
 			ExG[i] = diff1+diff2+diff3; //Math.max(diff3, Math.max(diff1,  diff2));
 		}
 		
-		Array1DUtil.intArrayToSafeArray(ExG,  img2.getDataXY(0), false, false); //true);
-		img2.setDataXY(0, img2.getDataXY(0));
-		for (c= 1; c<3; c++ ) 
-		{
-			img2.copyData(img2, 0, c);
-			img2.setDataXY(c, img2.getDataXY(c));
-		}
+		copyExGIntToIcyBufferedImage(ExG, img2);
 		return img2;
 	}
 	
@@ -498,10 +520,7 @@ public class ImageToolsTransform
 					outValues [kx] = (int) Math.abs(outVal);
 			}
 		}
-		Array1DUtil.doubleArrayToSafeArray(outValues, img2.getDataXY(0), true); //, img2.isSignedDataType());
-		img2.setDataXY(0, img2.getDataXY(0));
-		img2.setDataXY(1, img2.getDataXY(0));
-		img2.setDataXY(2, img2.getDataXY(0));
+		copyExGDoubleToIcyBufferedImage(outValues, img2);
 		return img2;
 	}
 
@@ -513,7 +532,7 @@ public class ImageToolsTransform
 		int imageSizeY = sourceImage.getSizeY();
 		IcyBufferedImage img2 = new IcyBufferedImage(imageSizeX, imageSizeY, 1, sourceImage.getDataType_());
 		
-		for (int c=chan0; c < chan1; c++) 
+		for (int c = chan0; c < chan1; c++) 
 		{
 			int[] tabValues = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(c), sourceImage.isSignedDataType());
 			int[] outValues = Array1DUtil.arrayToIntArray(img2.getDataXY(c), img2.isSignedDataType());				
@@ -582,15 +601,7 @@ public class ImageToolsTransform
 		for (int ky =0; ky < outValues0.length; ky++) 
 			outValues0 [ky] = (tabValuesR[ky]+tabValuesG[ky]+tabValuesB[ky])/3;
 		
-		int c= 0;
-		Object dataArray = img2.getDataXY(c);
-		Array1DUtil.intArrayToSafeArray(outValues0, dataArray, sourceImage.isSignedDataType(), img2.isSignedDataType());
-		img2.setDataXY(c, img2.getDataXY(c));
-		for (c= 1; c<3; c++ ) 
-		{
-			img2.copyData(img2, 0, c);
-			img2.setDataXY(c, img2.getDataXY(c));
-		}
+		copyExGIntToIcyBufferedImage(outValues0, img2);
 		return img2;
 	}
 	
@@ -635,7 +646,7 @@ public class ImageToolsTransform
 		if (referenceImage == null)
 			referenceImage = seqCamData.getSeqImage(0, 0);
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getSizeX(), sourceImage.getSizeY(),sourceImage.getSizeC(), sourceImage.getDataType_());
-		for (int c=0; c<sourceImage.getSizeC(); c++) 
+		for (int c = 0; c < sourceImage.getSizeC(); c++) 
 		{
 			int [] imgSourceInt = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(0), sourceImage.isSignedDataType());
 			int [] img2Int = Array1DUtil.arrayToIntArray(img2.getDataXY(0), img2.isSignedDataType());

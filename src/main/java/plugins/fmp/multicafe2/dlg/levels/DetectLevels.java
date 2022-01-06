@@ -40,8 +40,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 			EnumTransformOp.R_RGB, EnumTransformOp.G_RGB, EnumTransformOp.B_RGB, 
 			EnumTransformOp.R2MINUS_GB, EnumTransformOp.G2MINUS_RB, EnumTransformOp.B2MINUS_RG, EnumTransformOp.RGB,
 			EnumTransformOp.GBMINUS_2R, EnumTransformOp.RBMINUS_2G, EnumTransformOp.RGMINUS_2B, EnumTransformOp.RGB_DIFFS,
-			EnumTransformOp.H_HSB, EnumTransformOp.S_HSB, EnumTransformOp.B_HSB,
-			EnumTransformOp.COLORDIFF_L1_Y, EnumTransformOp.COLORDIFF_L2_Y});
+			EnumTransformOp.H_HSB, EnumTransformOp.S_HSB, EnumTransformOp.B_HSB});
 	
 	private JComboBox<String> directionComboBox	= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JCheckBox	allKymosCheckBox 		= new JCheckBox ("all kymographs", true);
@@ -91,7 +90,6 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		panel1.add(endSpinner);
 		add( panel1);
 		
-
 		defineActionListeners();
 	}
 	

@@ -92,7 +92,7 @@ public class MCSpots_1 extends JPanel
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
-		EnumTransformOp transform = EnumTransformOp.SUBFIRSTCOL;
+		EnumTransformOp transform = EnumTransformOp.SUBTRACT_1RSTCOL;
 		int zChannelDestination = 1;
 		exp.kymosBuildFiltered(0, zChannelDestination, transform, 0);
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);

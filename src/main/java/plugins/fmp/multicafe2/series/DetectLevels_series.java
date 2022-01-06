@@ -64,7 +64,7 @@ public class DetectLevels_series extends BuildSeries
 		tImg.setSpanDiff(options.spanDiffTop);
 		tImg.setSequence(seqKymos);
 		final int jitter = 10;
-		options.transform2 = EnumTransformOp.COLORDIFF_L1_Y;
+		options.transform2 = EnumTransformOp.COLORDISTANCE_L1_Y;
 		final String directory = exp.getKymosBinFullDirectory();
 		
 		for (int index = firstKymo; index <= lastKymo; index++) 
