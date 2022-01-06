@@ -22,17 +22,13 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 
 public class Options extends JPanel
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6565346204580890307L;
 
 	JCheckBox	kymographsCheckBox		= new JCheckBox("kymos", true);
-	JCheckBox	capillariesCheckBox		= new JCheckBox("capillaries", true);
 	JCheckBox	cagesCheckBox			= new JCheckBox("cages", true);
 	JCheckBox	measuresCheckBox		= new JCheckBox("measures", true);
 	JCheckBox	graphsCheckBox			= new JCheckBox("graphs", true);
-//	public JCheckBox	windowsCheckBox			= new JCheckBox("next to each other", true);
+
 	public 	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries", true);
 	public 	JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages", true);
 			JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position", false);
@@ -49,7 +45,6 @@ public class Options extends JPanel
 		
 		JPanel panel2 = new JPanel(layout);
 		panel2.add(new JLabel("Load: "));
-		panel2.add(capillariesCheckBox);
 		panel2.add(kymographsCheckBox);
 		panel2.add(cagesCheckBox);
 		panel2.add(measuresCheckBox);
@@ -63,11 +58,6 @@ public class Options extends JPanel
 		panel1.add(viewCagesCheckbox);
 		panel1.add(viewFlyCheckbox);
 		add(panel1);
-		
-//		JPanel panel3 = new JPanel (layout);
-//		panel3.add(new JLabel("Windows placement : "));
-//		panel3.add(windowsCheckBox);
-//		add(panel3);
 		
 		defineActionListeners();
 	}

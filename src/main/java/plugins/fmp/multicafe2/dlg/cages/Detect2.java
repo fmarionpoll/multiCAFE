@@ -197,16 +197,17 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.limitRatio		= (int) limitRatioSpinner.getValue();
 		options.jitter 			= (int) jitterTextField.getValue();
 		options.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
-		options.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();
+		options.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();		
+		options.forceBuildBackground = backgroundCheckBox.isSelected();
+		options.detectFlies		= detectCheckBox.isSelected();
+		
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubDirectory = parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
 		
-		options.forceBuildBackground = backgroundCheckBox.isSelected();
-		options.detectFlies		= detectCheckBox.isSelected();
-		options.isFrameFixed 	= parent0.paneExperiment.tabAnalyze.getIsFixedFrame();
-		options.t_firstMs 		= parent0.paneExperiment.tabAnalyze.getStartMs();
-		options.t_lastMs 		= parent0.paneExperiment.tabAnalyze.getEndMs();
-		options.t_binMs			= parent0.paneExperiment.tabAnalyze.getBinMs();
+		options.isFrameFixed 	= parent0.paneExcel.tabOptions.getIsFixedFrame();
+		options.t_firstMs 		= parent0.paneExcel.tabOptions.getStartMs();
+		options.t_lastMs 		= parent0.paneExcel.tabOptions.getEndMs();
+		options.t_binMs			= parent0.paneExcel.tabOptions.getBinMs();
 
 		return options;
 	}

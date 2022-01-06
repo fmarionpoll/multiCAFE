@@ -41,7 +41,6 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 	public 	Filter			tabFilter		= new Filter();
 	public 	Edit			tabEdit			= new Edit();
 	public 	Intervals		tabIntervals	= new Intervals();
-	public 	Analysis		tabAnalyze		= new Analysis();
 	public 	LoadSave		panelLoadSave	= new LoadSave();
 	
 	private MultiCAFE2 		parent0 		= null;
@@ -70,9 +69,6 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 
 		tabIntervals.init(tabsLayout, parent0);
 		tabsPane.addTab("Intervals", null, tabIntervals, "View/edit time-lapse intervals");
-		
-		tabAnalyze.init(tabsLayout);
-		tabsPane.addTab("Analysis", null, tabAnalyze, "Define analysis intervals");
 
 		tabOptions.init(tabsLayout, parent0);
 		tabsPane.addTab("Options", null, tabOptions, "Options to display data");

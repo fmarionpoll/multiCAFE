@@ -130,4 +130,23 @@ public class Options extends JPanel
 		return endAll;
 	}
 
+	public boolean getIsFixedFrame() 
+	{
+		return isFixedFrameButton.isSelected();
+	}
+	
+	public long	getStartMs() 
+	{
+		return (long) ((double)startJSpinner.getValue() * binUnit.getMsUnitValue());
+	}
+	
+	public long	getEndMs() 
+	{
+		return (long) ((double)endJSpinner.getValue() * binUnit.getMsUnitValue());
+	}
+	
+	public long getBinMs() 
+	{
+		return (long)((double) binSize.getValue() * binUnit.getMsUnitValue());
+	}
 }
