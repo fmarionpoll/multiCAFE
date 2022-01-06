@@ -75,7 +75,7 @@ public class DetectLevelsKMeans  extends JPanel
 		panel0.add(allKymosCheckBox);
 		panel0.add(leftCheckBox);
 		panel0.add(rightCheckBox);
-		//panel0.add(cbSendMaskDirectly);
+		panel0.add(cbSendMaskDirectly);
 		add(panel0);
 		
 		JPanel panel01 = new JPanel(layoutLeft);
@@ -86,7 +86,6 @@ public class DetectLevelsKMeans  extends JPanel
 		panel01.add (new JLabel ("Iterations"));
 		panel01.add (tfNbIteration2);
 		panel01.add(displayButton);
-		
 		add (panel01);
 		
 		JPanel panel1 = new JPanel(layoutLeft);
