@@ -198,10 +198,10 @@ public class DetectLevels_series extends BuildSeries
 		for (int iy = searchFrom; iy < imageHeight; iy++) 
 		{
 			boolean flag = false;
-			if (options.directionUp)
-				flag = tabValues [ix + iy* imageWidth] > options.detectLevelThreshold;
+			if (options.directionUp1)
+				flag = tabValues [ix + iy* imageWidth] > options.detectLevel1Threshold;
 			else 
-				flag = tabValues [ix + iy* imageWidth] < options.detectLevelThreshold;
+				flag = tabValues [ix + iy* imageWidth] < options.detectLevel1Threshold;
 			if (flag) 
 			{
 				y = iy;
@@ -217,10 +217,10 @@ public class DetectLevels_series extends BuildSeries
 		for (int iy = imageHeight - 1; iy >= 0 ; iy--) 
 		{
 			boolean flag = false;
-			if (options.directionUp)
-				flag = tabValues [ix + iy* imageWidth] > options.detectLevelThreshold;
+			if (options.directionUp1)
+				flag = tabValues [ix + iy* imageWidth] > options.detectLevel1Threshold;
 			else 
-				flag = tabValues [ix + iy* imageWidth] < options.detectLevelThreshold;
+				flag = tabValues [ix + iy* imageWidth] < options.detectLevel1Threshold;
 			if (flag) 
 			{
 				y = iy;

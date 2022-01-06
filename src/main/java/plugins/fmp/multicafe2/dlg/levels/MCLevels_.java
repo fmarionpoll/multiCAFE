@@ -28,11 +28,10 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 	public 	LoadSave 	tabFileLevels	= new LoadSave();
 			DetectLevels tabDetectLevels = new DetectLevels();
 			//DetectLevelsKMeans tabDetectLevelsK = new DetectLevelsKMeans();
-			DetectLevels2 tabDetectLevels2 = new DetectLevels2();
 			DetectGulps tabDetectGulps 	= new DetectGulps();
 			Edit		tabEdit			= new Edit();
 			Adjust		tabAdjust		= new Adjust();
-	public 	PlotLevels 		tabGraphs 		= new PlotLevels();
+	public 	PlotLevels 	tabGraphs 		= new PlotLevels();
 			MultiCAFE2	parent0 		= null;
 
 	
@@ -45,15 +44,11 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 		capPopupPanel.collapse();
 		mainPanel.add(capPopupPanel);
 
-		GridLayout capLayout = new GridLayout(3, 1);
+		GridLayout capLayout = new GridLayout(4, 1);
 		
 		tabDetectLevels.init(capLayout, parent0);
 		tabDetectLevels.addPropertyChangeListener(this);
 		tabsPane.addTab("Levels", null, tabDetectLevels, "Find limits of the columns of liquid");
-		
-		tabDetectLevels2.init(capLayout, parent0);
-		tabDetectLevels2.addPropertyChangeListener(this);
-		tabsPane.addTab("Levels-pass2", null, tabDetectLevels2, "Refine position of detected levels");
 		
 		tabDetectGulps.init(capLayout, parent0);	
 		tabsPane.addTab("Gulps", null, tabDetectGulps, "Detect gulps");
