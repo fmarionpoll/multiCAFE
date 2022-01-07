@@ -145,7 +145,7 @@ public class ImageToolsTransform
 			transformedImage = functionSubtractCol(inputImage, 0); 
 			break;
 			
-		case SUBTRACTRGB_1RSTCOL:
+		case L1DIST_TO_1RSTCOL:
 			transformedImage = functionSubtractColRGB(inputImage, 0); 
 			break;
 			

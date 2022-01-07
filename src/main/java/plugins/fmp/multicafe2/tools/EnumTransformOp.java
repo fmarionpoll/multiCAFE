@@ -15,9 +15,9 @@ public enum EnumTransformOp
 	NORM_BRMINUSG("F. Rebaudo"),
 	COLORARRAY1("color array"), RGB_TO_HSV("HSV"), RGB_TO_H1H2H3("H1H2H3"), 
 	RTOGB ("R to G,B"),
-	SUBTRACT_1RSTCOL("[t-t0]"), SUBTRACTRGB_1RSTCOL("L1[t-t0]"),
-	COLORDISTANCE_L1_Y("color dist L1"),
-	COLORDISTANCE_L2_Y("color dist L2");
+	SUBTRACT_1RSTCOL("[t-t0]"), L1DIST_TO_1RSTCOL("L1[t-t0]"),
+	COLORDISTANCE_L1_Y("color dist L1"), COLORDISTANCE_L2_Y("color dist L2"),
+	ZIGZAG("remove spikes");
 	
 	private String label;
 	

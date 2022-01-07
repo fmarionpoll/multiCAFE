@@ -9,10 +9,8 @@ import icy.system.SystemUtil;
 import icy.system.thread.Processor;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.experiment.Capillary;
-import plugins.fmp.multicafe2.experiment.CapillaryLevel;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.fmp.multicafe2.tools.ImageToolsTransform;
 
 
@@ -64,7 +62,6 @@ public class DetectLevels extends BuildSeries
 		tImg.setSpanDiff(options.spanDiffTop);
 		tImg.setSequence(seqKymos);
 		final int jitter = 10;
-		options.transform2 = EnumTransformOp.COLORDISTANCE_L1_Y;
 		final String directory = exp.getKymosBinFullDirectory();
 		
 		for (int index = firstKymo; index <= lastKymo; index++) 
@@ -81,22 +78,17 @@ public class DetectLevels extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					IcyBufferedImage rawImage = imageIORead(seqKymos.getFileName(indexCapillary));
-					IcyBufferedImage transformedImage1 = tImg.transformImage (rawImage, options.transform1);
+					final IcyBufferedImage rawImage = imageIORead(seqKymos.getFileName(indexCapillary));
 					
-					int c = 0;
-					Object transformedArray1 = transformedImage1.getDataXY(c);
-					int[] transformed1DArray1 = Array1DUtil.arrayToIntArray(transformedArray1, transformedImage1.isSignedDataType());
-
 					capi.indexKymograph = indexCapillary;
 					capi.ptsDerivative = null;
 					capi.gulpsRois = null;
 					capi.limitsOptions.copyFrom(options);
 					
 					int firstColumn = 0;
-					int lastColumn = transformedImage1.getSizeX()-1;
-					int imageWidth = transformedImage1.getSizeX();
-					int imageHeight = transformedImage1.getSizeY();
+					int lastColumn = rawImage.getSizeX()-1;
+					int imageWidth = rawImage.getSizeX();
+					int imageHeight = rawImage.getSizeY();
 					if (options.analyzePartOnly) 
 					{
 						firstColumn = options.firstPixel;
@@ -107,10 +99,15 @@ public class DetectLevels extends BuildSeries
 					
 					if (options.pass1) 
 					{		
+						int c = 0;
+						IcyBufferedImage transformedImage1 = tImg.transformImage (rawImage, options.transform1);
+						Object transformedArray1 = transformedImage1.getDataXY(c);
+						int[] transformed1DArray1 = Array1DUtil.arrayToIntArray(transformedArray1, transformedImage1.isSignedDataType());
+						
 						int topSearchFrom = 0;
 						capi.ptsTop.limit = new int [lastColumn - firstColumn +1];
 						capi.ptsBottom.limit = new int [lastColumn - firstColumn +1];
-			
+						
 						for (int ix = firstColumn; ix <= lastColumn; ix++) 
 						{
 							int iyTop = detectThresholdFromTop(ix, topSearchFrom, jitter, transformed1DArray1, imageWidth, imageHeight, options);
@@ -125,15 +122,26 @@ public class DetectLevels extends BuildSeries
 					
 					if (options.pass2) 
 					{
+						if (capi.ptsTop.limit == null)
+							capi.ptsTop.setTempDataFromPolylineLevel();
+
+						int c = 0;
 						IcyBufferedImage transformedImage2 = tImg.transformImage (rawImage, options.transform2);		
 						Object transformedArray2 = transformedImage2.getDataXY(c);
 						int[] transformed1DArray2 = Array1DUtil.arrayToIntArray(transformedArray2, transformedImage2.isSignedDataType());
 						switch (options.transform2)
 						{
-						case NONE:
+						case ZIGZAG:
 							filterZigZags(capi.ptsTop.limit, firstColumn, lastColumn);
+							break; 
+							
 						case COLORDISTANCE_L1_Y:
 						case COLORDISTANCE_L2_Y:
+							findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight);
+							break;
+							
+						case SUBTRACT_1RSTCOL:
+						case L1DIST_TO_1RSTCOL:
 							findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight);
 							break;
 						default:
@@ -144,11 +152,16 @@ public class DetectLevels extends BuildSeries
 					if (options.analyzePartOnly) 
 					{
 						capi.ptsTop.polylineLevel.insertYPoints(capi.ptsTop.limit, firstColumn, lastColumn);
-						capi.ptsBottom.polylineLevel.insertYPoints(capi.ptsBottom.limit, firstColumn, lastColumn);
+						if (capi.ptsBottom.limit != null)
+							capi.ptsBottom.polylineLevel.insertYPoints(capi.ptsBottom.limit, firstColumn, lastColumn);
 					} else {
-						capi.ptsTop.setData(capi.getLast2ofCapillaryName()+"_toplevel", firstColumn, lastColumn);
-						capi.ptsBottom.setData(capi.getLast2ofCapillaryName()+"_bottomlevel", firstColumn, lastColumn);
+						capi.ptsTop.setPolylineLevelFromTempData(capi.getLast2ofCapillaryName()+"_toplevel", firstColumn, lastColumn);
+						if (capi.ptsBottom.limit != null)
+							capi.ptsBottom.setPolylineLevelFromTempData(capi.getLast2ofCapillaryName()+"_bottomlevel", firstColumn, lastColumn);
 					}
+					capi.ptsTop.limit = null;
+					capi.ptsBottom.limit = null;
+					
 					capi.xmlSaveCapillary_Measures(directory);
 				}}));
 		}

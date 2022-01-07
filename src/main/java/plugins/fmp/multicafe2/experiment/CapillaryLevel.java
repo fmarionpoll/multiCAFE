@@ -20,7 +20,7 @@ public class CapillaryLevel  implements XMLPersistent
 {
 	public Level2D 	polylineLevel 	= null;
 	public Level2D 	polyline_old 	= null;
-	public int [] limit				= null;
+	public int [] 	limit			= null;
 	
 	public String 	typename 		= "notype";
 	public String	name 			= "noname";
@@ -52,7 +52,7 @@ public class CapillaryLevel  implements XMLPersistent
 		polylineLevel = new Level2D(limit);
 	}
 	
-	public void setData(String name, int start, int end) 
+	public void setPolylineLevelFromTempData(String name, int start, int end) 
 	{
 		this.name = name;
 		int npoints = end-start+1;
@@ -65,6 +65,16 @@ public class CapillaryLevel  implements XMLPersistent
 			ypoints[j] = limit[j];
 		}
 		polylineLevel = new Level2D(xpoints, ypoints, npoints);
+	}
+	
+	public void setTempDataFromPolylineLevel() 
+	{
+		int npoints = polylineLevel.npoints;
+		limit = new int [npoints];
+		for (int j = 0; j < npoints; j++) 
+		{
+			limit[j] = (int) polylineLevel.ypoints[j];
+		}
 	}
 	
 	int getNPoints() 
