@@ -156,7 +156,7 @@ public class ImageToolsTransform
 			int deltay = 0;
 			transformedImage = functionColorDiffLY(inputImage, spanx, deltax, spany, deltay, false); 
 			break;
-		case COLORDIISTANCE_L2_Y:
+		case COLORDISTANCE_L2_Y:
 			transformedImage = functionColorDiffLY(inputImage, 0, 0, 5, 0, true); 
 			break;
 			

@@ -69,8 +69,8 @@ public class DetectLevels extends BuildSeries
 		
 		for (int index = firstKymo; index <= lastKymo; index++) 
 		{
-			final int t_index = index;
-			final Capillary capi = exp.capillaries.capillariesList.get(t_index);
+			final int indexCapillary = index;
+			final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
 			if (!options.detectR && capi.getKymographName().endsWith("2"))
 				continue;
 			if (!options.detectL && capi.getKymographName().endsWith("1"))
@@ -81,17 +81,14 @@ public class DetectLevels extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					IcyBufferedImage rawImage = imageIORead(seqKymos.getFileName(t_index));
+					IcyBufferedImage rawImage = imageIORead(seqKymos.getFileName(indexCapillary));
 					IcyBufferedImage transformedImage1 = tImg.transformImage (rawImage, options.transform1);
+					
 					int c = 0;
 					Object transformedArray1 = transformedImage1.getDataXY(c);
 					int[] transformed1DArray1 = Array1DUtil.arrayToIntArray(transformedArray1, transformedImage1.isSignedDataType());
 
-//					IcyBufferedImage transformedImage2 = tImg.transformImage (rawImage, options.transform2);		
-//					Object transformedArray2 = transformedImage2.getDataXY(c);
-//					int[] transformed1DArray2 = Array1DUtil.arrayToIntArray(transformedArray2, transformedImage2.isSignedDataType());
-
-					capi.indexKymograph = t_index;
+					capi.indexKymograph = indexCapillary;
 					capi.ptsDerivative = null;
 					capi.gulpsRois = null;
 					capi.limitsOptions.copyFrom(options);
@@ -107,40 +104,50 @@ public class DetectLevels extends BuildSeries
 						if (lastColumn > imageWidth-1)
 							lastColumn = imageWidth -1;
 					} 
-					else 
-					{
-						capi.ptsTop = null;
-						capi.ptsBottom = null;
+					
+					if (options.pass1) 
+					{		
+						int topSearchFrom = 0;
+						capi.ptsTop.limit = new int [lastColumn - firstColumn +1];
+						capi.ptsBottom.limit = new int [lastColumn - firstColumn +1];
+			
+						for (int ix = firstColumn; ix <= lastColumn; ix++) 
+						{
+							int iyTop = detectThresholdFromTop(ix, topSearchFrom, jitter, transformed1DArray1, imageWidth, imageHeight, options);
+							int iyBottom = detectThresholdFromBottom(ix, jitter, transformed1DArray1, imageWidth, imageHeight, options);
+							if (iyBottom <= iyTop) 
+								iyTop = topSearchFrom;
+							capi.ptsTop.limit[ix] = iyTop;
+							capi.ptsBottom.limit[ix] = iyBottom;
+							topSearchFrom = iyTop;
+						}
 					}
 					
-					int topSearchFrom = 0;
-					int [] limitTop = new int [lastColumn - firstColumn +1];
-					int [] limitBottom = new int [lastColumn - firstColumn +1];
-		
-					for (int ix = firstColumn; ix <= lastColumn; ix++) 
+					if (options.pass2) 
 					{
-						int iyTop = detectThresholdFromTop(ix, topSearchFrom, jitter, transformed1DArray1, imageWidth, imageHeight, options);
-//						iyTop = findBestPosition(ix, iyTop, transformed1DArray2, imageWidth, imageHeight);
-						
-						int iyBottom = detectThresholdFromBottom(ix, jitter, transformed1DArray1, imageWidth, imageHeight, options);
-						if (iyBottom <= iyTop) 
-							iyTop = topSearchFrom;
-						limitTop[ix] = iyTop;
-						limitBottom[ix] = iyBottom;
-						topSearchFrom = iyTop;
-					}	
-					
-//					filterZigZags(limitTop, firstColumn, lastColumn);
-					
+						IcyBufferedImage transformedImage2 = tImg.transformImage (rawImage, options.transform2);		
+						Object transformedArray2 = transformedImage2.getDataXY(c);
+						int[] transformed1DArray2 = Array1DUtil.arrayToIntArray(transformedArray2, transformedImage2.isSignedDataType());
+						switch (options.transform2)
+						{
+						case NONE:
+							filterZigZags(capi.ptsTop.limit, firstColumn, lastColumn);
+						case COLORDISTANCE_L1_Y:
+						case COLORDISTANCE_L2_Y:
+							findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight);
+							break;
+						default:
+							break;
+						}
+					}
+
 					if (options.analyzePartOnly) 
 					{
-						capi.ptsTop.polylineLevel.insertYPoints(limitTop, firstColumn, lastColumn);
-						capi.ptsBottom.polylineLevel.insertYPoints(limitBottom, firstColumn, lastColumn);
-					} 
-					else 
-					{
-						capi.ptsTop    = new CapillaryLevel(capi.getLast2ofCapillaryName()+"_toplevel", t_index, limitTop, firstColumn, lastColumn);
-						capi.ptsBottom = new CapillaryLevel(capi.getLast2ofCapillaryName()+"_bottomlevel", t_index, limitBottom, firstColumn, lastColumn);
+						capi.ptsTop.polylineLevel.insertYPoints(capi.ptsTop.limit, firstColumn, lastColumn);
+						capi.ptsBottom.polylineLevel.insertYPoints(capi.ptsBottom.limit, firstColumn, lastColumn);
+					} else {
+						capi.ptsTop.setData(capi.getLast2ofCapillaryName()+"_toplevel", firstColumn, lastColumn);
+						capi.ptsBottom.setData(capi.getLast2ofCapillaryName()+"_bottomlevel", firstColumn, lastColumn);
 					}
 					capi.xmlSaveCapillary_Measures(directory);
 				}}));
@@ -153,34 +160,37 @@ public class DetectLevels extends BuildSeries
 		return true;
 	}
 	
-//	private int findBestPosition(int ix, int iy, int[] transformed1DArray2, int imageWidth, int imageHeight) 
-//	{
-//		int maxVal = transformed1DArray2[ix + iy * imageWidth];
-//		
-//		int delta = 5;
-//		for (int irow = iy - delta; irow < iy + delta; irow++) 
-//		{
-//			if (irow < 0 || irow >= imageHeight)
-//				continue;
-//			
-//			int val = transformed1DArray2[ix + irow * imageWidth];
-//			if (val > maxVal) 
-//			{
-//				maxVal = val;
-//				iy = irow;
-//			}
-//		}
-//		return iy;
-//	}
+	private void findBestPosition(int [] limits, int firstColumn, int lastColumn, int[] transformed1DArray2, int imageWidth, int imageHeight) 
+	{
+		final int delta = 5;
+		for (int ix = firstColumn; ix <= lastColumn; ix++) 
+		{
+			int iy = limits[ix];
+			int maxVal = transformed1DArray2[ix + iy * imageWidth];
+			for (int irow = iy - delta; irow < iy + delta; irow++) 
+			{
+				if (irow < 0 || irow >= imageHeight)
+					continue;
+				
+				int val = transformed1DArray2[ix + irow * imageWidth];
+				if (val > maxVal) 
+				{
+					maxVal = val;
+					iy = irow;
+				}
+			}
+			limits[ix] = iy;
+		}
+	}
 
-//	private void filterZigZags (int [] limits, int first, int last) 
-//	{
-//		for (int i = first+1; i < last; i++) 
-//		{
-//			if (limits[i+1] > limits[i])
-//				limits[i] = (limits[i-1] + limits[i+1])/2 ;
-//		}	
-//	}
+	private void filterZigZags (int [] limits, int first, int last) 
+	{
+		for (int i = first+1; i < last; i++) 
+		{
+			if (limits[i+1] > limits[i])
+				limits[i] = (limits[i-1] + limits[i+1])/2 ;
+		}	
+	}
 	
 	private int checkIndexLimits (int rowIndex, int maximumRowIndex) 
 	{

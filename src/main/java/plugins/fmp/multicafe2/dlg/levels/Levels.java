@@ -35,7 +35,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 	JSpinner			endSpinner				= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	
 	private JCheckBox	pass1CheckBox 			= new JCheckBox ("pass1", true);
-	private JComboBox<String> direction1ComboBox	= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
+	private JComboBox<String> direction1ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JSpinner 	threshold1Spinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
 	JComboBox<EnumTransformOp> transform1ComboBox = new JComboBox<EnumTransformOp> (new EnumTransformOp[] {
 			EnumTransformOp.R_RGB, EnumTransformOp.G_RGB, EnumTransformOp.B_RGB, 
@@ -44,11 +44,11 @@ public class Levels extends JPanel implements PropertyChangeListener
 			EnumTransformOp.H_HSB, EnumTransformOp.S_HSB, EnumTransformOp.B_HSB});
 	private JButton		displayTransform1Button	= new JButton("Display");
 	
-	private JCheckBox	pass2CheckBox 			= new JCheckBox ("pass2", true);
-	private JComboBox<String> direction2ComboBox	= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
-	private JSpinner 	threshold2Spinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
+	private JCheckBox	pass2CheckBox 			= new JCheckBox ("pass2", false);
+	//private JComboBox<String> direction2ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
+	private JSpinner 	threshold2Spinner 		= new JSpinner(new SpinnerNumberModel(5, 1, 255, 1));
 	JComboBox<EnumTransformOp> transform2ComboBox = new JComboBox<EnumTransformOp> (new EnumTransformOp[] {
-			EnumTransformOp.COLORDISTANCE_L1_Y, EnumTransformOp.COLORDIISTANCE_L2_Y,
+			EnumTransformOp.COLORDISTANCE_L1_Y, EnumTransformOp.COLORDISTANCE_L2_Y,
 			EnumTransformOp.SUBTRACT_1RSTCOL, EnumTransformOp.SUBTRACTRGB_1RSTCOL});
 	private JButton		displayTransform2Button	= new JButton("Display");
 	
@@ -93,8 +93,8 @@ public class Levels extends JPanel implements PropertyChangeListener
 		
 		JPanel panel02 = new JPanel(layoutLeft);
 		panel02.add(pass2CheckBox);
-		panel02.add(direction2ComboBox);
-		((JLabel) direction2ComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
+//		panel02.add(direction2ComboBox);
+//		((JLabel) direction2ComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
 		panel02.add(threshold2Spinner);
 		panel02.add(transform2ComboBox);
 		panel02.add(displayTransform2Button);
@@ -235,7 +235,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		
 		transform2ComboBox.setSelectedItem(options.transform2);
 		index = options.directionUp2 ? 0:1;
-		direction2ComboBox.setSelectedIndex(index);
+//		direction2ComboBox.setSelectedIndex(index);
 		threshold2Spinner.setValue(options.detectLevel2Threshold);
 		
 		allKymosCheckBox.setSelected(options.detectAllKymos);
@@ -252,7 +252,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		capOptions.transform2 				= (EnumTransformOp) transform2ComboBox.getSelectedItem();
 		capOptions.directionUp1 			= (direction1ComboBox.getSelectedIndex() == 0) ;
 		capOptions.detectLevel1Threshold 	= (int) threshold1Spinner.getValue();
-		capOptions.directionUp2 			= (direction2ComboBox.getSelectedIndex() == 0) ;
+//		capOptions.directionUp2 			= (direction2ComboBox.getSelectedIndex() == 0) ;
 		capOptions.detectLevel2Threshold 	= (int) threshold2Spinner.getValue();
 		capOptions.detectAllKymos 			= allKymosCheckBox.isSelected();
 		capOptions.detectL 					= leftCheckBox.isSelected();
@@ -290,7 +290,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		
 		options.pass2 = pass2CheckBox.isSelected();
 		options.transform2			= (EnumTransformOp) transform2ComboBox.getSelectedItem();
-		options.directionUp2 		= (direction2ComboBox.getSelectedIndex() == 0);
+//		options.directionUp2 		= (direction2ComboBox.getSelectedIndex() == 0);
 		options.detectLevel2Threshold= (int) threshold2Spinner.getValue();
 		
 		options.analyzePartOnly		= fromCheckBox.isSelected();

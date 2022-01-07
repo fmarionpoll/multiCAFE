@@ -17,7 +17,7 @@ public enum EnumTransformOp
 	RTOGB ("R to G,B"),
 	SUBTRACT_1RSTCOL("[t-t0]"), SUBTRACTRGB_1RSTCOL("L1[t-t0]"),
 	COLORDISTANCE_L1_Y("color dist L1"),
-	COLORDIISTANCE_L2_Y("color dist L2");
+	COLORDISTANCE_L2_Y("color dist L2");
 	
 	private String label;
 	
