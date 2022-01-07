@@ -31,7 +31,7 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.ImageKMeans;
 
-public class DetectLevelsKMeans  extends JPanel 
+public class LevelsKMeans  extends JPanel 
 {
 	/**
 	 * 

@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe2.series;
+package plugins.fmp.multicafe2.tools;
 
 import java.awt.Point;
 import java.awt.Rectangle;

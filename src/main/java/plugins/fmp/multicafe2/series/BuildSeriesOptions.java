@@ -15,7 +15,7 @@ import plugins.fmp.multicafe2.tools.EnumTransformOp;
 
 
 
-public class Options_BuildSeries implements XMLPersistent 
+public class BuildSeriesOptions implements XMLPersistent 
 {
 	public boolean			isFrameFixed		= false;
 	public long				t_firstMs			= 0;
@@ -84,7 +84,7 @@ public class Options_BuildSeries implements XMLPersistent
 
 	// -----------------------
 	
-	void copyTo(Options_BuildSeries destination) 
+	void copyTo(BuildSeriesOptions destination) 
 	{
 		destination.detectTop 				= detectTop; 
 		destination.detectBottom 			= detectBottom; 
@@ -98,7 +98,7 @@ public class Options_BuildSeries implements XMLPersistent
 		destination.detectAllGulps 			= detectAllGulps;
 	}
 	
-	void copyFrom(Options_BuildSeries destination) 
+	void copyFrom(BuildSeriesOptions destination) 
 	{
 		detectTop 				= destination.detectTop; 
 		detectBottom 			= destination.detectBottom; 
@@ -112,7 +112,7 @@ public class Options_BuildSeries implements XMLPersistent
 		detectAllGulps 			= destination.detectAllGulps;
 	}
 	
-	public void copyParameters (Options_BuildSeries det) 
+	public void copyParameters (BuildSeriesOptions det) 
 	{
 		threshold = det.threshold;
 		thresholdBckgnd			= det.thresholdBckgnd;

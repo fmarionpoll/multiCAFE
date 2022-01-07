@@ -22,14 +22,14 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.series.DetectGulps_series;
-import plugins.fmp.multicafe2.series.Options_BuildSeries;
+import plugins.fmp.multicafe2.series.DetectGulps;
+import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.tools.EnumTransformOp;
 
 
 
 
-public class DetectGulps extends JPanel  implements PropertyChangeListener 
+public class LevelsToGulps extends JPanel  implements PropertyChangeListener 
 {
 	/**
 	 * 
@@ -54,7 +54,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 	private String 			detectString 				= "        Detect     ";
 	private JButton 		detectButton 				= new JButton(detectString);
 	private JCheckBox 		allCheckBox 				= new JCheckBox("ALL (current to last)", false);
-	private DetectGulps_series 	threadDetectGulps 		= null;
+	private DetectGulps 	threadDetectGulps 			= null;
 	private MultiCAFE2 		parent0						= null;
 	
 	
@@ -153,9 +153,9 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		}
 	}
 	
-	private Options_BuildSeries initBuildParameters(Experiment exp ) 
+	private BuildSeriesOptions initBuildParameters(Experiment exp ) 
 	{	
-		Options_BuildSeries options = threadDetectGulps.options;
+		BuildSeriesOptions options = threadDetectGulps.options;
 		options.expList = parent0.expListCombo; 
 		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
 		
@@ -195,7 +195,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 		if (exp != null)
 		{
 			exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
-			threadDetectGulps = new DetectGulps_series();
+			threadDetectGulps = new DetectGulps();
 			threadDetectGulps.options = initBuildParameters(exp);
 			if (!bDetectGulps)
 				threadDetectGulps.options.buildGulps 	= false;
@@ -207,7 +207,7 @@ public class DetectGulps extends JPanel  implements PropertyChangeListener
 
 	void setInfos(Capillary cap) 
 	{
-		Options_BuildSeries options = cap.getGulpsOptions();
+		BuildSeriesOptions options = cap.getGulpsOptions();
 		detectGulpsThresholdSpinner.setValue(options.detectGulpsThresholdUL);
 		transformForGulpsComboBox.setSelectedItem(options.transformForGulps);
 		allKymosCheckBox.setSelected(options.detectAllGulps);

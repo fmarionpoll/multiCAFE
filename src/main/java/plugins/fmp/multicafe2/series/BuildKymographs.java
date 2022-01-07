@@ -23,10 +23,11 @@ import plugins.fmp.multicafe2.experiment.KymoROI2D;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.tools.Bresenham;
+import plugins.fmp.multicafe2.tools.GaspardRigidRegistration;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 
 
-public class BuildKymographs_series extends BuildSeries  
+public class BuildKymographs extends BuildSeries  
 {
 	ArrayList<IcyBufferedImage>	cap_bufKymoImage 	= null;
 	int 						kymoImageWidth 		= 0;

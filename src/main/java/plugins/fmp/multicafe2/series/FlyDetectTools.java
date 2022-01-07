@@ -20,11 +20,11 @@ import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
 
-public class DetectFlies_Find 
+public class FlyDetectTools 
 {	
 	public List<BooleanMask2D> 	cageMaskList 		= new ArrayList<BooleanMask2D>();
 	public Rectangle 			rectangleAllCages 	= null;
-	public Options_BuildSeries	options				= null;
+	public BuildSeriesOptions	options				= null;
 	private Cages 				cages 				= null;
 	
 	// -----------------------------------------------------
@@ -139,7 +139,7 @@ public class DetectFlies_Find
 
 	}
 	
-	public void initParametersForDetection(Experiment exp, Options_BuildSeries	options) 
+	public void initParametersForDetection(Experiment exp, BuildSeriesOptions	options) 
 	{
 		this.options = options;
 		exp.cages.detect_nframes = (int) (((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms) +1);

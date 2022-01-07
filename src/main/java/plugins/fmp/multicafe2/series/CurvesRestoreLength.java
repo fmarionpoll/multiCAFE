@@ -4,7 +4,7 @@ import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 
-public class CurvesRestoreLength_series extends BuildSeries 
+public class CurvesRestoreLength extends BuildSeries 
 {
 	void analyzeExperiment(Experiment exp) 
 	{

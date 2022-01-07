@@ -22,13 +22,13 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.series.DetectLevels_series;
-import plugins.fmp.multicafe2.series.Options_BuildSeries;
+import plugins.fmp.multicafe2.series.DetectLevels;
+import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.tools.EnumTransformOp;
 
 
 
-public class DetectLevels extends JPanel implements PropertyChangeListener 
+public class Levels extends JPanel implements PropertyChangeListener 
 {
 	private static final long serialVersionUID 	= -6329863521455897561L;
 	JSpinner			startSpinner			= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
@@ -62,7 +62,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
 	
 	private MultiCAFE2 	parent0 				= null;
-	private DetectLevels_series threadDetectLevels = null;
+	private DetectLevels threadDetectLevels = null;
 	
 	// -----------------------------------------------------
 		
@@ -223,7 +223,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	
 	void setInfosToDialog(Capillary cap) 
 	{
-		Options_BuildSeries options = cap.limitsOptions;
+		BuildSeriesOptions options = cap.limitsOptions;
 		
 		pass1CheckBox.setSelected(options.pass1);
 		pass2CheckBox.setSelected(options.pass2);
@@ -245,7 +245,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 	
 	void getInfosFromDialog(Capillary cap) 
 	{
-		Options_BuildSeries capOptions 		= cap.limitsOptions;
+		BuildSeriesOptions capOptions 		= cap.limitsOptions;
 		capOptions.pass1 = pass1CheckBox.isSelected();
 		capOptions.pass2 = pass2CheckBox.isSelected();
 		capOptions.transform1 				= (EnumTransformOp) transform1ComboBox.getSelectedItem();
@@ -259,9 +259,9 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		capOptions.detectR 					= rightCheckBox.isSelected();
 	}
 	
-	private Options_BuildSeries initBuildParameters(Experiment exp) 
+	private BuildSeriesOptions initBuildParameters(Experiment exp) 
 	{	
-		Options_BuildSeries options = new Options_BuildSeries();
+		BuildSeriesOptions options = new BuildSeriesOptions();
 		// list of stack experiments
 		options.expList = parent0.expListCombo; 
 		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
@@ -309,7 +309,7 @@ public class DetectLevels extends JPanel implements PropertyChangeListener
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();	
 		if (exp != null)
 		{
-			threadDetectLevels = new DetectLevels_series();
+			threadDetectLevels = new DetectLevels();
 			threadDetectLevels.options = initBuildParameters(exp);
 			
 			threadDetectLevels.addPropertyChangeListener(this);

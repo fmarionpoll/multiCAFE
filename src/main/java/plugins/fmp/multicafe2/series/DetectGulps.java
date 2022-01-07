@@ -22,7 +22,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
-public class DetectGulps_series extends BuildSeries  
+public class DetectGulps extends BuildSeries  
 {
 	
 	void analyzeExperiment(Experiment exp) 

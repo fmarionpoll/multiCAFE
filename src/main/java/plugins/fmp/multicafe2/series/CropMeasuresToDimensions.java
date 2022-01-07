@@ -2,7 +2,7 @@ package plugins.fmp.multicafe2.series;
 
 import plugins.fmp.multicafe2.experiment.Experiment;
 
-public class CropMeasuresToDimensions_series  extends BuildSeries  {
+public class CropMeasuresToDimensions  extends BuildSeries  {
 	void analyzeExperiment(Experiment exp) 
 	{
 		exp.xmlLoadMCExperiment();

@@ -8,7 +8,7 @@ import plugins.fmp.multicafe2.experiment.SequenceKymos;
 
 
 
-public class ClipMeasuresWithinSameCageToSameLength_series extends BuildSeries 
+public class ClipCagesMeasuresToSmallest extends BuildSeries 
 {
 	void analyzeExperiment(Experiment exp) 
 	{

@@ -18,14 +18,14 @@ import plugins.fmp.multicafe2.tools.OverlayThreshold;
 
 
 
-public class DetectFlies1_series extends BuildSeries 
+public class FlyDetect1 extends BuildSeries 
 {
 	private Viewer 				viewerCamData 	= null;
 	private OverlayThreshold 	ov 				= null;
 	
 	public boolean				buildBackground	= true;
 	public boolean				detectFlies		= true;
-	public DetectFlies_Find 	find_flies 		= new DetectFlies_Find();
+	public FlyDetectTools 	find_flies 		= new FlyDetectTools();
 	
 	// -----------------------------------------------------
 	

@@ -23,12 +23,12 @@ import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
 
-public class DetectFlies2_series extends BuildSeries 
+public class FlyDetect2 extends BuildSeries 
 {
 	private Viewer viewerCamData;
 	private Viewer vPositive = null;
 	private Viewer vBackgroundImage = null;;
-	private DetectFlies_Find find_flies = new DetectFlies_Find();	
+	private FlyDetectTools find_flies = new FlyDetectTools();	
 	public Sequence seqNegative = new Sequence();
 	public Sequence seqPositive = new Sequence();
 	public boolean viewInternalImages = false;

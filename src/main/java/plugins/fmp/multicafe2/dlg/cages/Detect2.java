@@ -28,8 +28,8 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.series.DetectFlies2_series;
-import plugins.fmp.multicafe2.series.Options_BuildSeries;
+import plugins.fmp.multicafe2.series.FlyDetect2;
+import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 
 
 
@@ -59,7 +59,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	
-	private DetectFlies2_series detectFlies2Thread 	= null;
+	private FlyDetect2 detectFlies2Thread 	= null;
 	
 	// ----------------------------------------------------
 	
@@ -178,9 +178,9 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		}
 	}
 	
-	private Options_BuildSeries initTrackParameters() 
+	private BuildSeriesOptions initTrackParameters() 
 	{
-		Options_BuildSeries options = detectFlies2Thread.options;
+		BuildSeriesOptions options = detectFlies2Thread.options;
 		options.expList 		= parent0.expListCombo;	
 		options.expList.index0 	= parent0.expListCombo.getSelectedIndex();
 		if (allCheckBox.isSelected())
@@ -219,7 +219,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 			return;
 		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		
-		detectFlies2Thread = new DetectFlies2_series();		
+		detectFlies2Thread = new FlyDetect2();		
 		detectFlies2Thread.options = initTrackParameters();
 		detectFlies2Thread.stopFlag = false;
 		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();

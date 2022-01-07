@@ -20,7 +20,7 @@ import icy.util.XMLUtil;
 import plugins.kernel.roi.roi2d.ROI2DLine;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
-import plugins.fmp.multicafe2.series.Options_BuildSeries;
+import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
@@ -51,7 +51,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public boolean						descriptionOK	= false;
 	public int							versionInfos	= 0;
 	
-	public Options_BuildSeries 			limitsOptions	= new Options_BuildSeries();
+	public BuildSeriesOptions 			limitsOptions	= new BuildSeriesOptions();
 	
 	public  final String 				ID_TOPLEVEL 	= "toplevel";	
 	public  final String 				ID_BOTTOMLEVEL 	= "bottomlevel";	
@@ -306,12 +306,12 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			ptsDerivative.restoreNPoints();
 	}
 	
-	public void setGulpsOptions (Options_BuildSeries options) 
+	public void setGulpsOptions (BuildSeriesOptions options) 
 	{
 		limitsOptions = options;
 	}
 	
-	public Options_BuildSeries getGulpsOptions () 
+	public BuildSeriesOptions getGulpsOptions () 
 	{
 		return limitsOptions;
 	}

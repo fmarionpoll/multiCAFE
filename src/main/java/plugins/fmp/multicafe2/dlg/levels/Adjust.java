@@ -18,11 +18,11 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.series.AdjustMeasuresToDimensions_series;
-import plugins.fmp.multicafe2.series.CropMeasuresToDimensions_series;
-import plugins.fmp.multicafe2.series.ClipMeasuresWithinSameCageToSameLength_series;
-import plugins.fmp.multicafe2.series.CurvesRestoreLength_series;
-import plugins.fmp.multicafe2.series.Options_BuildSeries;
+import plugins.fmp.multicafe2.series.AdjustMeasuresToDimensions;
+import plugins.fmp.multicafe2.series.CropMeasuresToDimensions;
+import plugins.fmp.multicafe2.series.ClipCagesMeasuresToSmallest;
+import plugins.fmp.multicafe2.series.CurvesRestoreLength;
+import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 
 
 public class Adjust extends JPanel  implements PropertyChangeListener 
@@ -46,10 +46,10 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	private JButton				cropButton		= new JButton(cropString);
 	private String				stopString		= new String("STOP ");
 	
-	private AdjustMeasuresToDimensions_series threadAdjust = null;
-	private CurvesRestoreLength_series threadRestore = null;
-	private ClipMeasuresWithinSameCageToSameLength_series threadClip = null;
-	private CropMeasuresToDimensions_series threadCrop = null;
+	private AdjustMeasuresToDimensions threadAdjust = null;
+	private CurvesRestoreLength threadRestore = null;
+	private ClipCagesMeasuresToSmallest threadClip = null;
+	private CropMeasuresToDimensions threadCrop = null;
 	
 	
 	
@@ -194,7 +194,7 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 		}
 	}
 	
-	private boolean initBuildParameters(Options_BuildSeries options) 
+	private boolean initBuildParameters(BuildSeriesOptions options) 
 	{
 		int index  = parent0.expListCombo.getSelectedIndex();
 		Experiment exp = parent0.expListCombo.getItemAt(index);
@@ -221,8 +221,8 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	
 	private void series_adjustDimensionsStart() 
 	{
-		threadAdjust = new AdjustMeasuresToDimensions_series();
-		Options_BuildSeries options= threadAdjust.options;
+		threadAdjust = new AdjustMeasuresToDimensions();
+		BuildSeriesOptions options= threadAdjust.options;
 		if (initBuildParameters (options)) 
 		{
 			threadAdjust.addPropertyChangeListener(this);
@@ -233,8 +233,8 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	
 	private void series_cropDimensionsStart() 
 	{
-		threadCrop = new CropMeasuresToDimensions_series();
-		Options_BuildSeries options= threadCrop.options;
+		threadCrop = new CropMeasuresToDimensions();
+		BuildSeriesOptions options= threadCrop.options;
 		if (initBuildParameters (options)) 
 		{
 			threadCrop.addPropertyChangeListener(this);
@@ -245,8 +245,8 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	
 	private void series_restoreStart() 
 	{
-		threadRestore = new CurvesRestoreLength_series();
-		Options_BuildSeries options= threadRestore.options;
+		threadRestore = new CurvesRestoreLength();
+		BuildSeriesOptions options= threadRestore.options;
 		if (initBuildParameters (options)) 
 		{
 			threadRestore.addPropertyChangeListener(this);
@@ -257,8 +257,8 @@ public class Adjust extends JPanel  implements PropertyChangeListener
 	
 	private void series_clipStart() 
 	{
-		threadClip = new ClipMeasuresWithinSameCageToSameLength_series();
-		Options_BuildSeries options= threadClip.options;
+		threadClip = new ClipCagesMeasuresToSmallest();
+		BuildSeriesOptions options= threadClip.options;
 		if (initBuildParameters (options)) 
 		{
 			threadClip.addPropertyChangeListener(this);

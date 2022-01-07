@@ -17,7 +17,7 @@ import plugins.fmp.multicafe2.tools.ImageToolsTransform;
 
 
 
-public class DetectLevels_series extends BuildSeries  
+public class DetectLevels extends BuildSeries  
 {
 	ImageToolsTransform tImg = new ImageToolsTransform();
 	
@@ -191,7 +191,7 @@ public class DetectLevels_series extends BuildSeries
 		return rowIndex;
 	}
 
-	private int detectThresholdFromTop(int ix, int searchFrom, int jitter, int [] tabValues, int imageWidth, int imageHeight, Options_BuildSeries options) 
+	private int detectThresholdFromTop(int ix, int searchFrom, int jitter, int [] tabValues, int imageWidth, int imageHeight, BuildSeriesOptions options) 
 	{
 		int y = imageHeight-1;
 		searchFrom = checkIndexLimits(searchFrom - jitter, imageHeight-1);
@@ -211,7 +211,7 @@ public class DetectLevels_series extends BuildSeries
 		return y;
 	}
 	
-	private int detectThresholdFromBottom(int ix, int jitter, int[] tabValues, int imageWidth, int imageHeight, Options_BuildSeries options) 
+	private int detectThresholdFromBottom(int ix, int jitter, int[] tabValues, int imageWidth, int imageHeight, BuildSeriesOptions options) 
 	{
 		int y = 0;
 		for (int iy = imageHeight - 1; iy >= 0 ; iy--) 

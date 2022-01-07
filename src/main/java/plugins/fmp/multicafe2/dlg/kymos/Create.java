@@ -20,8 +20,8 @@ import javax.swing.SwingConstants;
 import icy.util.StringUtil;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.series.BuildKymographs_series;
-import plugins.fmp.multicafe2.series.Options_BuildSeries;
+import plugins.fmp.multicafe2.series.BuildKymographs;
+import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.tools.EnumStatusComputation;
 
 
@@ -42,7 +42,7 @@ public class Create extends JPanel implements PropertyChangeListener
 			
 	EnumStatusComputation 	sComputation 			= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE2 		parent0					= null;
-	private BuildKymographs_series threadBuildKymo 	= null;
+	private BuildKymographs threadBuildKymo 	= null;
 
 	// -----------------------------------------------------
 	
@@ -108,9 +108,9 @@ public class Create extends JPanel implements PropertyChangeListener
 		}});
 	}
 		
-	private Options_BuildSeries initBuildParameters() 
+	private BuildSeriesOptions initBuildParameters() 
 	{
-		Options_BuildSeries options  = new Options_BuildSeries();
+		BuildSeriesOptions options  = new BuildSeriesOptions();
 		options.expList = parent0.expListCombo; 
 		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
 		if (allSeriesCheckBox.isSelected())
@@ -139,7 +139,7 @@ public class Create extends JPanel implements PropertyChangeListener
 		if (exp != null)
 			parent0.paneCapillaries.tabFile.saveCapillaries_file(exp);
 		
-		threadBuildKymo = new BuildKymographs_series();	
+		threadBuildKymo = new BuildKymographs();	
 		threadBuildKymo.options = initBuildParameters();
 		
 		threadBuildKymo.addPropertyChangeListener(this);

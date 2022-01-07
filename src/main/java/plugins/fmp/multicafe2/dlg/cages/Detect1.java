@@ -28,8 +28,8 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
-import plugins.fmp.multicafe2.series.DetectFlies1_series;
-import plugins.fmp.multicafe2.series.Options_BuildSeries;
+import plugins.fmp.multicafe2.series.FlyDetect1;
+import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.tools.OverlayThreshold;
 import plugins.fmp.multicafe2.tools.EnumTransformOp;
 
@@ -63,7 +63,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	
 	private OverlayThreshold 	ov 				= null;
-	private DetectFlies1_series detectFlies1Thread 			= null;
+	private FlyDetect1 detectFlies1Thread 			= null;
 	//private int 				currentExp 		= -1;
 
 	// -----------------------------------------------------
@@ -196,9 +196,9 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		}
 	}
 	
-	private Options_BuildSeries initTrackParameters() 
+	private BuildSeriesOptions initTrackParameters() 
 	{
-		Options_BuildSeries options = new Options_BuildSeries();
+		BuildSeriesOptions options = new BuildSeriesOptions();
 		options.expList 		= parent0.expListCombo;	
 		options.expList.index0 	= parent0.expListCombo.getSelectedIndex();
 		if (allCheckBox.isSelected())
@@ -238,7 +238,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 			return;
 		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		
-		detectFlies1Thread = new DetectFlies1_series();			
+		detectFlies1Thread = new FlyDetect1();			
 		detectFlies1Thread.options 			= initTrackParameters();
 		detectFlies1Thread.stopFlag 		= false;
 		detectFlies1Thread.buildBackground	= false;
