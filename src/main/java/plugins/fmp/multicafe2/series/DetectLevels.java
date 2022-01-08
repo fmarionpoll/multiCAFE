@@ -179,7 +179,7 @@ public class DetectLevels extends BuildSeries
 		{
 			int iy = limits[ix];
 			int maxVal = transformed1DArray2[ix + iy * imageWidth];
-			for (int irow = iy - delta; irow < iy + delta; irow++) 
+			for (int irow = iy + delta; irow > iy - delta; irow--) 
 			{
 				if (irow < 0 || irow >= imageHeight)
 					continue;
