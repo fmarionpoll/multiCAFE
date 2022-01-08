@@ -45,8 +45,8 @@ public class Levels extends JPanel implements PropertyChangeListener
 	private JButton		displayTransform1Button	= new JButton("Display");
 	
 	private JCheckBox	pass2CheckBox 			= new JCheckBox ("pass2", false);
-	//private JComboBox<String> direction2ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
-	//private JSpinner 	threshold2Spinner 		= new JSpinner(new SpinnerNumberModel(5, 1, 255, 1));
+	private JComboBox<String> direction2ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
+	private JSpinner 	threshold2Spinner 		= new JSpinner(new SpinnerNumberModel(40, 1, 255, 1));
 	JComboBox<EnumTransformOp> transform2ComboBox = new JComboBox<EnumTransformOp> (new EnumTransformOp[] {
 			EnumTransformOp.COLORDISTANCE_L1_Y, EnumTransformOp.COLORDISTANCE_L2_Y,
 			EnumTransformOp.SUBTRACT_1RSTCOL, EnumTransformOp.L1DIST_TO_1RSTCOL,
@@ -94,9 +94,9 @@ public class Levels extends JPanel implements PropertyChangeListener
 		
 		JPanel panel02 = new JPanel(layoutLeft);
 		panel02.add(pass2CheckBox);
-//		panel02.add(direction2ComboBox);
-//		((JLabel) direction2ComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
-//		panel02.add(threshold2Spinner);
+		panel02.add(direction2ComboBox);
+		((JLabel) direction2ComboBox.getRenderer()).setHorizontalAlignment(JLabel.RIGHT);
+		panel02.add(threshold2Spinner);
 		panel02.add(transform2ComboBox);
 		panel02.add(displayTransform2Button);
 		add (panel02);
@@ -109,6 +109,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		add( panel03);
 		
 		defineActionListeners();
+		allowItemsAccordingToSelection();
 	}
 	
 	private void defineActionListeners() 
@@ -129,6 +130,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
+				allowItemsAccordingToSelection();
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null && exp.seqCamData != null) 
 				{
@@ -141,7 +143,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				if (detectButton.getText() .equals(detectString))
+				if (detectButton.getText().equals(detectString))
 					startComputation();
 				else 
 					stopComputation();
@@ -151,7 +153,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{ 
 					kymosDisplayFiltered1(exp);
@@ -163,7 +165,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{ 
 					kymosDisplayFiltered2(exp);
@@ -222,6 +224,28 @@ public class Levels extends JPanel implements PropertyChangeListener
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
+	void allowItemsAccordingToSelection() 
+	{
+		boolean flag = false;
+		switch ((EnumTransformOp) transform2ComboBox.getSelectedItem())
+		{
+		case SUBTRACT_1RSTCOL:
+		case L1DIST_TO_1RSTCOL:
+			flag = true;
+			break;
+
+		default:
+			break;
+		}
+		transform2EnableInputs(flag);
+	}
+	
+	void transform2EnableInputs(boolean enable) 
+	{
+//		direction2ComboBox.setEnabled(enable);
+		threshold2Spinner.setEnabled(enable);
+	}
+	
 	void setInfosToDialog(Capillary cap) 
 	{
 		BuildSeriesOptions options = cap.limitsOptions;
@@ -236,8 +260,8 @@ public class Levels extends JPanel implements PropertyChangeListener
 		
 		transform2ComboBox.setSelectedItem(options.transform2);
 		index = options.directionUp2 ? 0:1;
-//		direction2ComboBox.setSelectedIndex(index);
-//		threshold2Spinner.setValue(options.detectLevel2Threshold);
+		direction2ComboBox.setSelectedIndex(index);
+		threshold2Spinner.setValue(options.detectLevel2Threshold);
 		
 		allKymosCheckBox.setSelected(options.detectAllKymos);
 		leftCheckBox.setSelected(options.detectL);
@@ -253,8 +277,8 @@ public class Levels extends JPanel implements PropertyChangeListener
 		capOptions.transform2 				= (EnumTransformOp) transform2ComboBox.getSelectedItem();
 		capOptions.directionUp1 			= (direction1ComboBox.getSelectedIndex() == 0) ;
 		capOptions.detectLevel1Threshold 	= (int) threshold1Spinner.getValue();
-//		capOptions.directionUp2 			= (direction2ComboBox.getSelectedIndex() == 0) ;
-//		capOptions.detectLevel2Threshold 	= (int) threshold2Spinner.getValue();
+		capOptions.directionUp2 			= (direction2ComboBox.getSelectedIndex() == 0) ;
+		capOptions.detectLevel2Threshold 	= (int) threshold2Spinner.getValue();
 		capOptions.detectAllKymos 			= allKymosCheckBox.isSelected();
 		capOptions.detectL 					= leftCheckBox.isSelected();
 		capOptions.detectR 					= rightCheckBox.isSelected();
@@ -291,8 +315,8 @@ public class Levels extends JPanel implements PropertyChangeListener
 		
 		options.pass2 = pass2CheckBox.isSelected();
 		options.transform2			= (EnumTransformOp) transform2ComboBox.getSelectedItem();
-//		options.directionUp2 		= (direction2ComboBox.getSelectedIndex() == 0);
-//		options.detectLevel2Threshold= (int) threshold2Spinner.getValue();
+		options.directionUp2 		= (direction2ComboBox.getSelectedIndex() == 0);
+		options.detectLevel2Threshold= (int) threshold2Spinner.getValue();
 		
 		options.analyzePartOnly		= fromCheckBox.isSelected();
 		options.firstPixel			= (int) startSpinner.getValue(); 

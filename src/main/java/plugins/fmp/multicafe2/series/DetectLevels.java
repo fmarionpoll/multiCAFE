@@ -137,12 +137,12 @@ public class DetectLevels extends BuildSeries
 							
 						case COLORDISTANCE_L1_Y:
 						case COLORDISTANCE_L2_Y:
-							findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight);
+							findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 5);
 							break;
 							
 						case SUBTRACT_1RSTCOL:
 						case L1DIST_TO_1RSTCOL:
-							findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight);
+							detectThresholdUp(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 20, options.detectLevel2Threshold);
 							break;
 						default:
 							break;
@@ -173,9 +173,8 @@ public class DetectLevels extends BuildSeries
 		return true;
 	}
 	
-	private void findBestPosition(int [] limits, int firstColumn, int lastColumn, int[] transformed1DArray2, int imageWidth, int imageHeight) 
+	private void findBestPosition(int [] limits, int firstColumn, int lastColumn, int[] transformed1DArray2, int imageWidth, int imageHeight, int delta) 
 	{
-		final int delta = 5;
 		for (int ix = firstColumn; ix <= lastColumn; ix++) 
 		{
 			int iy = limits[ix];
@@ -190,6 +189,27 @@ public class DetectLevels extends BuildSeries
 				{
 					maxVal = val;
 					iy = irow;
+				}
+			}
+			limits[ix] = iy;
+		}
+	}
+	
+	private void detectThresholdUp(int [] limits, int firstColumn, int lastColumn, int[] transformed1DArray2, int imageWidth, int imageHeight, int delta, int threshold) 
+	{
+		for (int ix = firstColumn; ix <= lastColumn; ix++) 
+		{
+			int iy = limits[ix];
+			for (int irow = iy + delta; irow > iy - delta; irow--) 
+			{
+				if (irow < 0 || irow >= imageHeight)
+					continue;
+				
+				int val = transformed1DArray2[ix + irow * imageWidth];
+				if (val > threshold) 
+				{
+					iy = irow;
+					break;
 				}
 			}
 			limits[ix] = iy;
