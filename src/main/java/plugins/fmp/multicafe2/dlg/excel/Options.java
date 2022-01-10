@@ -29,7 +29,7 @@ public class Options extends JPanel
 			JCheckBox   padIntervalsCheckBox	= new JCheckBox("pad intervals", false);
 			JCheckBox	absoluteTimeCheckBox 	= new JCheckBox("absolute time", false);
 			JCheckBox	transposeCheckBox 		= new JCheckBox("transpose", true);
-			JSpinner 	binSize					= new JSpinner(new SpinnerNumberModel(1, 1, 1000, 1));
+			JSpinner 	binSize					= new JSpinner(new SpinnerNumberModel(1., 1., 1000., 1.));
 			JComboMs 	binUnit 				= new JComboMs();
 			JComboMs 	intervalsUnit 			= new JComboMs();
 			JSpinner 	startJSpinner			= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
@@ -147,6 +147,6 @@ public class Options extends JPanel
 	
 	public long getBinMs() 
 	{
-		return (long)((double) binSize.getValue() * binUnit.getMsUnitValue());
+		return (long)((double) binSize.getValue() * (double) binUnit.getMsUnitValue());
 	}
 }
