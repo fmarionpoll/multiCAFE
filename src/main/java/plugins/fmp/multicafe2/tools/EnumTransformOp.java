@@ -18,7 +18,8 @@ public enum EnumTransformOp
 	SUBTRACT_1RSTCOL("[t-t0]"), L1DIST_TO_1RSTCOL("L1[t-t0]"),
 	COLORDISTANCE_L1_Y("color dist L1"), COLORDISTANCE_L2_Y("color dist L2"),
 	ZIGZAG("remove spikes"),
-	DERICHE("edge detection")
+	DERICHE("edge detection"),
+	MINUSHORIZAVG("remove Hz traces")
 	;
 	
 	private String label;
