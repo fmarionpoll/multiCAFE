@@ -38,7 +38,6 @@ public class Options extends JPanel
 			JRadioButton isFloatingFrameButton	= new JRadioButton("all", true);
 	
 	
-	
 	void init(GridLayout capLayout) 
 	{	
 		setLayout(capLayout);

@@ -17,7 +17,9 @@ public enum EnumTransformOp
 	RTOGB ("R to G,B"),
 	SUBTRACT_1RSTCOL("[t-t0]"), L1DIST_TO_1RSTCOL("L1[t-t0]"),
 	COLORDISTANCE_L1_Y("color dist L1"), COLORDISTANCE_L2_Y("color dist L2"),
-	ZIGZAG("remove spikes");
+	ZIGZAG("remove spikes"),
+	DERICHE("edge detection")
+	;
 	
 	private String label;
 	

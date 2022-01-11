@@ -159,6 +159,11 @@ public class ImageToolsTransform
 		case COLORDISTANCE_L2_Y:
 			transformedImage = functionColorDiffLY(inputImage, 0, 0, 5, 0, true); 
 			break;
+		
+		case DERICHE:
+			double alpha = 1.;
+			transformedImage = doDeriche(inputImage, alpha);
+			break;
 			
 		case NONE: 
 		case COLORARRAY1: /*System.out.println("transform image - " + transformop);*/
@@ -582,7 +587,7 @@ public class ImageToolsTransform
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		img2.copyData(sourceImage, keepChan, 0);
 		img2.setDataXY(0, img2.getDataXY(0));
-		for (int c= 1; c<3; c++ ) 
+		for (int c = 1; c < 3; c++ ) 
 		{
 			img2.copyData(img2, 0, c);
 			img2.setDataXY(c, img2.getDataXY(c));
@@ -737,6 +742,350 @@ public class ImageToolsTransform
 		Array1DUtil.doubleArrayToSafeArray(outValues2,  img2.getDataXY(c), false); //  img2.isSignedDataType());
 		img2.setDataXY(c, img2.getDataXY(c));
 		return img2;
+	}
+	
+	// algorithm from Vannary / Icy
+	private IcyBufferedImage doDeriche (IcyBufferedImage img, double alpha)
+	{
+		IcyBufferedImage img2 = new IcyBufferedImage(img.getWidth(), img.getHeight(), 3, img.getDataType_());
+		int nmem;
+		float [] nf_grx=null; 
+		float [] nf_gry=null;
+		short []a1;
+		int icolonnes,icoll;
+		int  lignes, colonnes;
+		int  lig_1,lig_2,lig_3,col_1,col_2,col_3,jp1,jm1,im1,ip1;
+		int i,j;
+		float ad1,ad2,wd,gzr,gun;
+		float an1 ,an2 ,an3, an4, an11;
+		float a2[],a3[],a4[];
+		int icol_1,icol_2;
+
+		lignes = img.getHeight();
+		colonnes =  img.getWidth();
+		nmem = lignes * colonnes;
+
+		lig_1 = lignes -1;
+		lig_2 = lignes -2;
+		lig_3 = lignes -3;
+		col_1 = colonnes -1 ;
+		col_2 = colonnes -2 ;
+		col_3 = colonnes -3 ;
+
+		/* alloc temporary buffers */
+		nf_grx = new float[nmem];
+		nf_gry = new float[nmem];
+
+		a2 = new float[nmem];
+		a3 = new float[nmem];
+		a4 = new float[nmem];
+
+		ad1  = (float) -Math.exp(-alpha);
+		ad2  = 0;
+		an1  = 1;
+		an2  = 0;
+		an3  = (float) Math.exp(-alpha);
+		an4  = 0;
+		an11 = 1;
+		
+		for (int ch = 0; ch<img.getSizeC(); ch++)
+		{
+			double[] tabInDouble = Array1DUtil.arrayToDoubleArray(img.getDataXY(ch), img.isSignedDataType());
+			a1 = new short[nmem];
+			
+			// Copy mina1 to a1 
+			for (int y = 0; y < lignes; ++y)
+				for (int x = 0; x < colonnes; ++x)
+					a1[y*colonnes+x] = (short) tabInDouble[y*colonnes+x];	
+
+
+
+			for (i = 0; i < lignes; ++i)
+			{       
+				icolonnes=i*colonnes;
+				icol_1=icolonnes-1;
+				icol_2=icolonnes-2;
+				a2[icolonnes] = an1 * a1[icolonnes];
+				a2[icolonnes+1] = an1 * a1[icolonnes+1] + an2 * a1[icolonnes] - ad1 * a2[icolonnes];
+				for (j = 2; j < colonnes; ++j)
+					a2[icolonnes+j] = an1 * a1[icolonnes+j] + an2 * a1[icol_1+j] - ad1 * a2[icol_1+j] - ad2 * a2[icol_2+j];
+			}
+
+			for (i = 0; i < lignes; ++i)
+			{       
+				icolonnes=i*colonnes;
+				icol_1=icolonnes+1;
+				icol_2=icolonnes+2;
+				a3[icolonnes+col_1] = 0;
+				a3[icolonnes+col_2] = an3 * a1[icolonnes+col_1];
+				for (j = col_3; j >= 0; --j)
+					a3[icolonnes+j] = an3 * a1[icol_1+j] + an4 * a1[icol_2+j] - ad1 * a3[icol_1+j] - ad2 * a3[icol_2+j];
+			}
+
+			icol_1=lignes*colonnes;
+
+			for (i = 0; i < icol_1; ++i)
+				a2[i] += a3[i]; 
+
+			/* FIRST STEP Y-GRADIENT : y-derivative  */
+			/* columns top - downn */
+			for (j = 0; j < colonnes; ++j)
+			{
+				a3[j] = 0;
+				a3[colonnes+j] = an11 * a2[j]-ad1*a3[j];
+				for (i = 2; i < lignes; ++i)
+					a3[i*colonnes+j] = an11 * a2[(i-1)*colonnes+j] -  ad1 * a3[(i-1)*colonnes+j] - ad2 * a3[(i-2)*colonnes+j];
+			}
+
+			/* columns down top */
+			for (j = 0; j < colonnes; ++j)
+			{
+				a4[lig_1*colonnes+j] = 0;
+				a4[(lig_2*colonnes)+j] = -an11 * a2[lig_1*colonnes+j]- ad1*a4[lig_1*colonnes+j];
+				for (i = lig_3; i >= 0; --i)
+					a4[i*colonnes+j] = -an11 * a2[(i+1)*colonnes+j] - ad1 * a4[(i+1)*colonnes+j] -ad2 * a4[(i+2)*colonnes+j];
+			}
+
+			icol_1=colonnes*lignes;
+			for(i=0; i < icol_1; ++i)
+				a3[i]+=a4[i]; /**** a2 ??? *****/
+
+			for (i=0; i<lignes; i++)
+				for (j=0; j<colonnes; j++)
+					nf_gry[i*colonnes+j] = a3[i*colonnes+j];
+
+			/* SECOND STEP X-GRADIENT  */
+
+			for (i = 0; i < lignes; ++i)
+			{       
+				icolonnes=i*colonnes;
+				icol_1=icolonnes-1;
+				icol_2=icolonnes-2;
+				a2[icolonnes] = 0;
+				a2[icolonnes+1] = an11 * a1[icolonnes];
+				for (j = 2; j < colonnes; ++j)
+					a2[icolonnes+j] = an11 * a1[icol_1+j] - ad1 * a2[icol_1+j] - ad2 * a2[icol_2+j];
+			}
+
+			for (i = 0; i < lignes; ++i)
+			{       
+				icolonnes=i*colonnes;
+				icol_1=icolonnes+1;
+				icol_2=icolonnes+2;
+				a3[icolonnes+col_1] = 0;
+				a3[icolonnes+col_2] = -an11 * a1[icolonnes+col_1];
+				for (j = col_3; j >= 0; --j)
+					a3[icolonnes+j] = -an11 * a1[icol_1+j] - ad1 * a3[icol_1+j] - ad2 * a3[icol_2+j];
+			}
+			icol_1=lignes*colonnes;
+			for (i = 0; i < icol_1; ++i)
+				a2[i] += a3[i]; 
+
+			/*on the columns */
+			/* columns top down */
+			for (j = 0; j < colonnes; ++j)
+			{
+				a3[j] = an1 * a2[j];
+				a3[colonnes+j] = an1 * a2[colonnes+j] + an2 * a2[j] 
+						- ad1 * a3[j];
+				for (i = 2; i < lignes; ++i)
+					a3[i*colonnes+j] = an1 * a2[i*colonnes+j] + an2 * a2[(i-1)*colonnes+j] - ad1 * a3[(i-1)*colonnes+j] - ad2 * a3[(i-2)*colonnes+j];
+			}
+
+			/* columns down top */
+			for (j = 0; j < colonnes; ++j)
+			{
+				a4[lig_1*colonnes+j] = 0;
+				a4[lig_2*colonnes+j] = an3 * a2[lig_1*colonnes+j]-ad1*a4[lig_1*colonnes+j];
+				for (i = lig_3; i >= 0; --i)
+					a4[i*colonnes+j] = an3 * a2[(i+1)*colonnes+j] + an4 * a2[(i+2)*colonnes+j] - ad1 * a4[(i+1)*colonnes+j] - ad2 * a4[(i+2)*colonnes+j];
+			}
+
+			icol_1=colonnes*lignes;
+			for(i=0;i<icol_1;++i)
+				a3[i]+=a4[i]; 
+
+
+			for (i=0; i < lignes; i++)
+				for (j=0; j < colonnes; j++)
+					nf_grx[i*colonnes+j] = a3[i*colonnes+j];
+
+			/* SECOND STEP X-GRADIENT : the x-gradient is  done */
+
+			/* THIRD STEP : NORM */
+			/* the magnitude computation*/
+
+			for (i=0; i<lignes; i++)
+				for (j=0; j<colonnes; j++)
+					a2[i*colonnes+j] = nf_gry[i*colonnes+j];
+			icol_1=colonnes*lignes;
+			for(i=0;i<icol_1;++i) 
+				a2[i] =  Modul(a2[i],a3[i]);
+
+			/* THIRD STEP : the norm is done */
+
+
+			/* FOURTH STEP : NON MAXIMA SUPPRESSION */
+			for (i=0; i<lignes; i++)
+				for (j=0; j<colonnes; j++)
+					a4[i*colonnes+j] = nf_grx[i*colonnes+j];
+
+			for (i=0; i<lignes; i++)
+				for (j=0; j<colonnes; j++)
+					a3[i*colonnes+j] = nf_gry[i*colonnes+j];
+
+			/* Nom maxima suppression with linear interpolation */
+			for (i = 1; i <= lig_2; ++i)
+			{ 
+				icoll=i*colonnes;
+				for (j = 1; j <= col_2; ++j)
+				{
+					jp1=j+1;
+					jm1=j-1;
+					ip1=i+1;
+					im1=i-1;
+					if ( a3[icoll+j] > 0. )
+					{       
+						wd = a4[icoll+j] / a3[icoll+j];
+						a3[icoll+j]=0;
+						if ( wd >= 1 ){
+							gun = a2[icoll+jp1] +
+									(a2[ip1*colonnes+jp1] - a2[icoll+jp1]) / wd;
+							if ( a2[icoll+j] <= gun ) 
+								continue;
+							gzr = a2[icoll+jm1] + 
+									(a2[im1*colonnes+jm1] - a2[icoll+jm1]) / wd;
+							if ( a2[icoll+j] < gzr ) 
+								continue;
+							a3[icoll+j] = a2[icoll+j];
+							continue; 
+						}
+						if ( wd >= 0 )
+						{
+							gun = a2[ip1*colonnes+j] +
+									(a2[ip1*colonnes+jp1] - a2[ip1*colonnes+j]) * wd;
+							if ( a2[icoll+j] <= gun ) continue;
+							gzr = a2[im1*colonnes+j] + 
+									(a2[im1*colonnes+jm1] - a2[im1*colonnes+j]) * wd;
+							if ( a2[icoll+j] < gzr ) continue;
+							a3[icoll+j] = a2[icoll+j];
+							continue; 
+						}
+						if ( wd >= -1)
+						{
+							icolonnes=ip1*colonnes;
+							gun = a2[icolonnes+j] - 
+									(a2[icolonnes+jm1] - a2[icolonnes+j]) * wd;
+							if ( a2[icoll+j] <= gun ) 
+								continue;
+							icolonnes=im1*colonnes;
+							gzr = a2[icolonnes+j] - 
+									(a2[icolonnes+jp1] - a2[icolonnes+j]) * wd;
+							if ( a2[icoll+j] < gzr ) continue;
+							a3[icoll+j] = a2[icoll+j];
+							continue; 
+						}
+						gun = a2[icoll+jm1] - (a2[ip1*colonnes+
+						                          jm1] - a2[icoll+jm1]) / wd; 
+						if ( a2[icoll+j] <= gun ) continue;
+						gzr = a2[icoll+jp1] - (a2[im1*colonnes+
+						                          jp1] - a2[icoll+jp1]) / wd;
+						if ( a2[icoll+j] < gzr ) continue;
+						a3[icoll+j] = a2[icoll+j];
+						continue;
+					}
+					if (  (a3[icoll+j]) == 0.)
+					{       
+						if ( a4[icoll+j] == 0 ) 
+							continue;
+						if ( a4[icoll+j] < 0  ){
+							gzr = a2[icoll+jp1];
+							if ( a2[icoll+j] < gzr ) 
+								continue;
+							gun = a2[icoll+jm1];
+							if ( a2[icoll+j] <= gun ) 
+								continue;
+							a3[icoll+j] = a2[icoll+j];
+							continue;
+						}
+						gzr = a2[icoll+jm1];
+						if ( a2[icoll+j] < gzr ) continue;
+						gun = a2[icoll+jp1];
+						if ( a2[icoll+j] <= gun ) continue;
+						a3[icoll+j] = a2[icoll+j];
+						continue;
+					}
+					wd = a4[icoll+j] / a3[icoll+j];
+					a3[icoll+j]=0;
+					if ( wd >= 1 )
+					{
+						gzr = a2[icoll+jp1] + (a2[ip1*colonnes+
+						                          jp1] - a2[icoll+jp1]) / wd;
+						if ( a2[icoll+j] < gzr ) 
+							continue;
+						gun = a2[icoll+jm1] + (a2[im1*colonnes+
+						                          jm1] - a2[icoll+jm1]) / wd;
+						if ( a2[icoll+j] <= gun ) 
+							continue;
+						a3[icoll+j] = a2[icoll+j];
+						continue;
+					}
+					if ( wd >= 0 )
+					{
+						gzr = a2[ip1*colonnes+j] + (a2[ip1*
+						                               colonnes+jp1] - a2[ip1*colonnes+j]) * wd;
+						if ( a2[icoll+j] < gzr ) 
+							continue;
+						gun = a2[im1*colonnes+j] + (a2[im1*
+						                               colonnes+jm1] - a2[im1*colonnes+j]) * wd;
+						if ( a2[icoll+j] <= gun ) 
+							continue;
+						a3[icoll+j] = a2[icoll+j];
+						continue;
+					}
+					if ( wd >= -1)
+					{
+						icolonnes=ip1*colonnes;
+						gzr = a2[icolonnes+j] - (a2[icolonnes+
+						                            jm1] - a2[icolonnes+j]) * wd;
+						if ( a2[icoll+j] < gzr ) continue;
+						icolonnes=im1*colonnes;
+						gun = a2[icolonnes+j] - (a2[icolonnes+
+						                            jp1] - a2[icolonnes+j]) * wd;
+						if ( a2[icoll+j] <= gun ) continue;
+						a3[icoll+j] = a2[icoll+j];
+						continue;
+					}
+					gzr = a2[icoll+jm1] - (a2[ip1*colonnes+jm1] - 
+							a2[icoll+jm1]) / wd; 
+					if ( a2[icoll+j] < gzr )    
+						continue;
+					gun = a2[icoll+jp1] - (a2[im1*colonnes+jp1] - 
+							a2[icoll+jp1]) / wd;
+					if ( a2[icoll+j] <= gun )   
+						continue;
+					a3[icoll+j] = a2[icoll+j];
+				}
+			}
+
+			for(i=0; i< lignes; ++i)
+				a3[i*colonnes]= 0;
+			for(i=0; i< lignes; ++i)
+				a3[i*colonnes+colonnes-1]= 0; 
+			for(i=0; i< colonnes;++i)
+				a3[i] = 0;
+			for(i=0; i< colonnes; ++i)
+				a3[colonnes*lig_1+i] = 0 ;
+
+			/* TODO ? transfert au format int */
+
+			img2.setDataXY(ch, Array1DUtil.floatArrayToArray(a3, img2.getDataXY(ch)));
+		}
+		return img2;
+	}
+	
+	float Modul (float a , float b){
+		return ((float) Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)));
 	}
 	
 }
