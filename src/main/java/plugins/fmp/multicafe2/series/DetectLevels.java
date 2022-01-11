@@ -144,6 +144,11 @@ public class DetectLevels extends BuildSeries
 						case L1DIST_TO_1RSTCOL:
 							detectThresholdUp(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 20, options.detectLevel2Threshold);
 							break;
+							
+						case DERICHE:
+							findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 5);
+							break;
+							
 						default:
 							break;
 						}
