@@ -206,6 +206,7 @@ public class DetectLevels extends BuildSeries
 		for (int ix = firstColumn; ix <= lastColumn; ix++) 
 		{
 			int iy = limits[ix];
+			int iyVal = iy;
 			for (int irow = iy + delta; irow > iy - delta; irow--) 
 			{
 				if (irow < 0 || irow >= imageHeight)
@@ -214,11 +215,11 @@ public class DetectLevels extends BuildSeries
 				int val = transformed1DArray2[ix + irow * imageWidth];
 				if (val > threshold) 
 				{
-					iy = irow;
+					iyVal = irow;
 					break;
 				}
 			}
-			limits[ix] = iy;
+			limits[ix] = iyVal;
 		}
 	}
 
