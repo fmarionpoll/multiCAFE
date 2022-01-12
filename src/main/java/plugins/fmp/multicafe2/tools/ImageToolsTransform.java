@@ -783,50 +783,30 @@ public class ImageToolsTransform
 	private IcyBufferedImage doDeriche (IcyBufferedImage img, double alpha)
 	{
 		IcyBufferedImage img2 = new IcyBufferedImage(img.getWidth(), img.getHeight(), 3, img.getDataType_());
-		float [] nf_grx=null; 
-		float [] nf_gry=null;
-		short []a1;
-//		int icolonnes;
-//		int icoll;
-		final int  lignes  = img.getHeight();
+		final int lignes  = img.getHeight();
 		final int colonnes =  img.getWidth();
-		
-//		int  lig_1,lig_2,lig_3,col_1,col_2,col_3,jp1,jm1,im1,ip1;
-//		int i,j;
-		float ad1,ad2,wd,gzr,gun;
-		float an1 ,an2 ,an3, an4, an11;
-		float a2[],a3[],a4[];
-//		int icol_1,icol_2;
-
-//		lig_1 = lignes -1;
-//		lig_2 = lignes -2;
-//		lig_3 = lignes -3;
-//		col_1 = colonnes -1 ;
-//		col_2 = colonnes -2 ;
-//		col_3 = colonnes -3 ;
-
+	
 		/* alloc temporary buffers */
 		final int nmem = lignes * colonnes;
-		nf_grx = new float[nmem];
-		nf_gry = new float[nmem];
+		float [] nf_grx = new float[nmem];
+		float [] nf_gry = new float[nmem];
 
-		a2 = new float[nmem];
-		a3 = new float[nmem];
-		a4 = new float[nmem];
+		short []a1 = new short[nmem];
+		float[] a2 = new float[nmem];
+		float[] a3 = new float[nmem];
+		float[] a4 = new float[nmem];
 
-		ad1  = (float) -Math.exp(-alpha);
-		ad2  = 0;
-		an1  = 1;
-		an2  = 0;
-		an3  = (float) Math.exp(-alpha);
-		an4  = 0;
-		an11 = 1;
+		final float ad1  = (float) -Math.exp(-alpha);
+		final float ad2  = 0;
+		final float an1  = 1;
+		final float an2  = 0;
+		final float an3  = (float) Math.exp(-alpha);
+		final float an4  = 0;
+		final float an11 = 1;
 		
 		for (int ch = 0; ch<img.getSizeC(); ch++)
 		{
 			double[] tabInDouble = Array1DUtil.arrayToDoubleArray(img.getDataXY(ch), img.isSignedDataType());
-			a1 = new short[nmem];
-			
 			doDeriche_step0(lignes, colonnes, ad1, ad2, an1, an2, an3, an4, an11, a1, a2, a3, tabInDouble);
 
 			/* FIRST STEP Y-GRADIENT : y-derivative  */
@@ -861,13 +841,13 @@ public class ImageToolsTransform
 					int im1=i-1;
 					if ( a3[icoll+j] > 0. )
 					{       
-						wd = a4[icoll+j] / a3[icoll+j];
+						float wd = a4[icoll+j] / a3[icoll+j];
 						a3[icoll+j]=0;
 						if ( wd >= 1 ){
-							gun = a2[icoll+jp1] + (a2[ip1*colonnes+jp1] - a2[icoll+jp1]) / wd;
+							float gun = a2[icoll+jp1] + (a2[ip1*colonnes+jp1] - a2[icoll+jp1]) / wd;
 							if ( a2[icoll+j] <= gun ) 
 								continue;
-							gzr = a2[icoll+jm1] + (a2[im1*colonnes+jm1] - a2[icoll+jm1]) / wd;
+							float gzr = a2[icoll+jm1] + (a2[im1*colonnes+jm1] - a2[icoll+jm1]) / wd;
 							if ( a2[icoll+j] < gzr ) 
 								continue;
 							a3[icoll+j] = a2[icoll+j];
@@ -875,10 +855,10 @@ public class ImageToolsTransform
 						}
 						if ( wd >= 0 )
 						{
-							gun = a2[ip1*colonnes+j] + (a2[ip1*colonnes+jp1] - a2[ip1*colonnes+j]) * wd;
+							float gun = a2[ip1*colonnes+j] + (a2[ip1*colonnes+jp1] - a2[ip1*colonnes+j]) * wd;
 							if ( a2[icoll+j] <= gun ) 
 								continue;
-							gzr = a2[im1*colonnes+j] + (a2[im1*colonnes+jm1] - a2[im1*colonnes+j]) * wd;
+							float gzr = a2[im1*colonnes+j] + (a2[im1*colonnes+jm1] - a2[im1*colonnes+j]) * wd;
 							if ( a2[icoll+j] < gzr ) 
 								continue;
 							a3[icoll+j] = a2[icoll+j];
@@ -887,21 +867,22 @@ public class ImageToolsTransform
 						if ( wd >= -1)
 						{
 							int icolonnes = ip1*colonnes;
-							gun = a2[icolonnes+j] -  (a2[icolonnes+jm1] - a2[icolonnes+j]) * wd;
+							float gun = a2[icolonnes+j] -  (a2[icolonnes+jm1] - a2[icolonnes+j]) * wd;
 							if ( a2[icoll+j] <= gun ) 
 								continue;
 							icolonnes = im1*colonnes;
-							gzr = a2[icolonnes+j] - 
+							float gzr = a2[icolonnes+j] - 
 									(a2[icolonnes+jp1] - a2[icolonnes+j]) * wd;
 							if ( a2[icoll+j] < gzr ) 
 								continue;
 							a3[icoll+j] = a2[icoll+j];
 							continue; 
 						}
-						gun = a2[icoll+jm1] - (a2[ip1*colonnes+ jm1] - a2[icoll+jm1]) / wd; 
+						
+						float gun = a2[icoll+jm1] - (a2[ip1*colonnes+ jm1] - a2[icoll+jm1]) / wd; 
 						if ( a2[icoll+j] <= gun ) 
 							continue;
-						gzr = a2[icoll+jp1] - (a2[im1*colonnes+  jp1] - a2[icoll+jp1]) / wd;
+						float gzr = a2[icoll+jp1] - (a2[im1*colonnes+  jp1] - a2[icoll+jp1]) / wd;
 						if ( a2[icoll+j] < gzr ) 
 							continue;
 						a3[icoll+j] = a2[icoll+j];
@@ -913,32 +894,33 @@ public class ImageToolsTransform
 							continue;
 						if ( a4[icoll+j] < 0  )
 						{
-							gzr = a2[icoll+jp1];
+							float gzr = a2[icoll+jp1];
 							if ( a2[icoll+j] < gzr ) 
 								continue;
-							gun = a2[icoll+jm1];
+							float gun = a2[icoll+jm1];
 							if ( a2[icoll+j] <= gun ) 
 								continue;
 							a3[icoll+j] = a2[icoll+j];
 							continue;
 						}
-						gzr = a2[icoll+jm1];
+						float gzr = a2[icoll+jm1];
 						if ( a2[icoll+j] < gzr ) 
 							continue;
-						gun = a2[icoll+jp1];
+						float gun = a2[icoll+jp1];
 						if ( a2[icoll+j] <= gun ) 
 							continue;
 						a3[icoll+j] = a2[icoll+j];
 						continue;
 					}
-					wd = a4[icoll+j] / a3[icoll+j];
+					
+					float wd = a4[icoll+j] / a3[icoll+j];
 					a3[icoll+j]=0;
 					if ( wd >= 1 )
 					{
-						gzr = a2[icoll+jp1] + (a2[ip1*colonnes+ jp1] - a2[icoll+jp1]) / wd;
+						float gzr = a2[icoll+jp1] + (a2[ip1*colonnes+ jp1] - a2[icoll+jp1]) / wd;
 						if ( a2[icoll+j] < gzr ) 
 							continue;
-						gun = a2[icoll+jm1] + (a2[im1*colonnes+ jm1] - a2[icoll+jm1]) / wd;
+						float gun = a2[icoll+jm1] + (a2[im1*colonnes+ jm1] - a2[icoll+jm1]) / wd;
 						if ( a2[icoll+j] <= gun ) 
 							continue;
 						a3[icoll+j] = a2[icoll+j];
@@ -946,10 +928,10 @@ public class ImageToolsTransform
 					}
 					if ( wd >= 0 )
 					{
-						gzr = a2[ip1*colonnes+j] + (a2[ip1* colonnes+jp1] - a2[ip1*colonnes+j]) * wd;
+						float gzr = a2[ip1*colonnes+j] + (a2[ip1* colonnes+jp1] - a2[ip1*colonnes+j]) * wd;
 						if ( a2[icoll+j] < gzr ) 
 							continue;
-						gun = a2[im1*colonnes+j] + (a2[im1* colonnes+jm1] - a2[im1*colonnes+j]) * wd;
+						float gun = a2[im1*colonnes+j] + (a2[im1* colonnes+jm1] - a2[im1*colonnes+j]) * wd;
 						if ( a2[icoll+j] <= gun ) 
 							continue;
 						a3[icoll+j] = a2[icoll+j];
@@ -958,19 +940,19 @@ public class ImageToolsTransform
 					if ( wd >= -1)
 					{
 						int icolonnes=ip1*colonnes;
-						gzr = a2[icolonnes+j] - (a2[icolonnes+ jm1] - a2[icolonnes+j]) * wd;
+						float gzr = a2[icolonnes+j] - (a2[icolonnes+ jm1] - a2[icolonnes+j]) * wd;
 						if ( a2[icoll+j] < gzr ) continue;
 						icolonnes=im1*colonnes;
-						gun = a2[icolonnes+j] - (a2[icolonnes+ jp1] - a2[icolonnes+j]) * wd;
+						float gun = a2[icolonnes+j] - (a2[icolonnes+ jp1] - a2[icolonnes+j]) * wd;
 						if ( a2[icoll+j] <= gun ) continue;
 						a3[icoll+j] = a2[icoll+j];
 						continue;
 					}
-					gzr = a2[icoll+jm1] - (a2[ip1*colonnes+jm1] - 
+					float gzr = a2[icoll+jm1] - (a2[ip1*colonnes+jm1] - 
 							a2[icoll+jm1]) / wd; 
 					if ( a2[icoll+j] < gzr )    
 						continue;
-					gun = a2[icoll+jp1] - (a2[im1*colonnes+jp1] -  a2[icoll+jp1]) / wd;
+					float gun = a2[icoll+jp1] - (a2[im1*colonnes+jp1] -  a2[icoll+jp1]) / wd;
 					if ( a2[icoll+j] <= gun )   
 						continue;
 					a3[icoll+j] = a2[icoll+j];
