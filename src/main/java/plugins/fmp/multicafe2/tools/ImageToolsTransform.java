@@ -819,12 +819,12 @@ public class ImageToolsTransform
 			doDeriche_step3 (lignes, colonnes, a2, a3, nf_gry) ;
 	
 			/* FOURTH STEP : NON MAXIMA SUPPRESSION */
-			for (int i=0; i<lignes; i++)
-				for (int j=0; j<colonnes; j++)
+			for (int i = 0; i < lignes; i++)
+				for (int j = 0; j < colonnes; j++)
 					a4[i*colonnes+j] = nf_grx[i*colonnes+j];
 
-			for (int i=0; i<lignes; i++)
-				for (int j=0; j<colonnes; j++)
+			for (int i = 0; i < lignes; i++)
+				for (int j = 0; j < colonnes; j++)
 					a3[i*colonnes+j] = nf_gry[i*colonnes+j];
 
 			/* Nom maxima suppression with linear interpolation */
@@ -941,15 +941,16 @@ public class ImageToolsTransform
 					{
 						int icolonnes=ip1*colonnes;
 						float gzr = a2[icolonnes+j] - (a2[icolonnes+ jm1] - a2[icolonnes+j]) * wd;
-						if ( a2[icoll+j] < gzr ) continue;
+						if ( a2[icoll+j] < gzr ) 
+							continue;
 						icolonnes=im1*colonnes;
 						float gun = a2[icolonnes+j] - (a2[icolonnes+ jp1] - a2[icolonnes+j]) * wd;
-						if ( a2[icoll+j] <= gun ) continue;
+						if ( a2[icoll+j] <= gun ) 
+							continue;
 						a3[icoll+j] = a2[icoll+j];
 						continue;
 					}
-					float gzr = a2[icoll+jm1] - (a2[ip1*colonnes+jm1] - 
-							a2[icoll+jm1]) / wd; 
+					float gzr = a2[icoll+jm1] - (a2[ip1*colonnes+jm1] - a2[icoll+jm1]) / wd; 
 					if ( a2[icoll+j] < gzr )    
 						continue;
 					float gun = a2[icoll+jp1] - (a2[im1*colonnes+jp1] -  a2[icoll+jp1]) / wd;
@@ -961,13 +962,12 @@ public class ImageToolsTransform
 
 			for(int i=0; i < lignes; ++i)
 				a3[i*colonnes]= 0;
-			for(int i=0; i< lignes; ++i)
+			for(int i=0; i < lignes; ++i)
 				a3[i*colonnes+colonnes-1]= 0; 
-			for(int i=0; i< colonnes;++i)
+			for(int i=0; i < colonnes;++i)
 				a3[i] = 0;
-			
 			int lig_1 = lignes-1;
-			for(int i=0; i< colonnes; ++i)
+			for(int i=0; i < colonnes; ++i)
 				a3[colonnes*lig_1+i] = 0 ;
 
 			/* TODO ? transfert au format int */
@@ -977,7 +977,8 @@ public class ImageToolsTransform
 		return img2;
 	}
 	
-	private float Modul (float a , float b){
+	private float Modul (float a , float b)
+	{
 		return ((float) Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2)));
 	}
 	
@@ -1120,8 +1121,7 @@ public class ImageToolsTransform
 			for (int j=0; j < colonnes; j++)
 				nf_grx[i*colonnes+j] = a3[i*colonnes+j];	
 	}
-	
-	
+
 	private void doDeriche_step3 (int lignes, int colonnes, float [] a2, float [] a3, float [] nf_gry) 
 	{
 		/* the magnitude computation*/
@@ -1132,4 +1132,5 @@ public class ImageToolsTransform
 		for(int i = 0; i < icol_1;++i) 
 			a2[i] =  Modul(a2[i],a3[i]);
 	}
+
 }
