@@ -11,13 +11,13 @@ import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.ImageToolsTransform;
+import plugins.fmp.multicafe2.tools.ImageTransform;
 
 
 
 public class DetectLevels extends BuildSeries  
 {
-	ImageToolsTransform tImg = new ImageToolsTransform();
+	ImageTransform tImg = new ImageTransform();
 	
 	void analyzeExperiment(Experiment exp) 
 	{

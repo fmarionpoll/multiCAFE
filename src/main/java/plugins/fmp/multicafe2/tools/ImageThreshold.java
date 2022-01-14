@@ -8,7 +8,7 @@ import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
 
-public class ImageToolsThreshold 
+public class ImageThreshold 
 {
 	// parameters passed by caller
 	private int colorthreshold;

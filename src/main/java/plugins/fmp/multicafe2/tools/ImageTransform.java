@@ -9,7 +9,7 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 
 
 
-public class ImageToolsTransform 
+public class ImageTransform 
 {
 	public 	IcyBufferedImage 	referenceImage 	= null;
 	private int 				spanDiff 		= 5;
@@ -835,11 +835,11 @@ public class ImageToolsTransform
 				int col_2 = colonnes -2;
 				for (int j = 1; j <= col_2; ++j)
 				{
-					int jp1=j+1;
-					int jm1=j-1;
-					int ip1=i+1;
-					int im1=i-1;
-					if ( a3[icoll+j] > 0. )
+					int jp1 = j+1;
+					int jm1 = j-1;
+					int ip1 = i+1;
+					int im1 = i-1;
+					if ( a3[icoll+j] > 0.)
 					{       
 						float wd = a4[icoll+j] / a3[icoll+j];
 						a3[icoll+j]=0;
@@ -960,14 +960,14 @@ public class ImageToolsTransform
 				}
 			}
 
-			for(int i=0; i < lignes; ++i)
+			for(int i = 0; i < lignes; ++i)
 				a3[i*colonnes]= 0;
-			for(int i=0; i < lignes; ++i)
+			for(int i = 0; i < lignes; ++i)
 				a3[i*colonnes+colonnes-1]= 0; 
-			for(int i=0; i < colonnes;++i)
+			for(int i = 0; i < colonnes;++i)
 				a3[i] = 0;
 			int lig_1 = lignes-1;
-			for(int i=0; i < colonnes; ++i)
+			for(int i = 0; i < colonnes; ++i)
 				a3[colonnes*lig_1+i] = 0 ;
 
 			/* TODO ? transfert au format int */
