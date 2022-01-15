@@ -166,6 +166,10 @@ public class ImageTransform
 			transformedImage = functionRGB_grey (transformedImage);
 			break;
 			
+		case DERICHE_COLOR:
+			transformedImage = doDeriche(inputImage, 1.);
+			break;
+			
 		case MINUSHORIZAVG:
 			transformedImage = functionSubtractHorizAvg(inputImage);
 			break;

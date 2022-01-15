@@ -48,7 +48,8 @@ public class Levels extends JPanel implements PropertyChangeListener
 	private JComboBox<String> direction2ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JSpinner 	threshold2Spinner 		= new JSpinner(new SpinnerNumberModel(40, 1, 255, 1));
 	JComboBox<EnumTransformOp> transform2ComboBox = new JComboBox<EnumTransformOp> (new EnumTransformOp[] {
-			EnumTransformOp.DERICHE, EnumTransformOp.MINUSHORIZAVG,
+			EnumTransformOp.DERICHE, EnumTransformOp.DERICHE_COLOR,
+			EnumTransformOp.MINUSHORIZAVG,
 			EnumTransformOp.COLORDISTANCE_L1_Y, EnumTransformOp.COLORDISTANCE_L2_Y,
 			EnumTransformOp.SUBTRACT_1RSTCOL, EnumTransformOp.L1DIST_TO_1RSTCOL,
 			EnumTransformOp.ZIGZAG});
@@ -64,7 +65,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
 	
 	private MultiCAFE2 	parent0 				= null;
-	private DetectLevels threadDetectLevels = null;
+	private DetectLevels threadDetectLevels 	= null;
 	
 	// -----------------------------------------------------
 		
