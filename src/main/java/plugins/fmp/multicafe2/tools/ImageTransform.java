@@ -55,7 +55,7 @@ public class ImageTransform
 			break;
 		case RGB: 		
 			transformedImage = functionRGB_grey (inputImage); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+//			transformImage(transformedImage, EnumTransformOp.RTOGB); 
 			break;
 		
 		case H_HSB: 	

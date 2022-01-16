@@ -106,13 +106,12 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			if (eDAF0.getDirectoriesFromExptPath(parent0.expListCombo, selectedNames.get(0), null))
 			{
 				final int item = addExperimentFrom3NamesAnd2Lists(eDAF0);
-	        	//parent0.expListCombo.setSelectedIndex(item);
 	        	final String binSubDirectory = parent0.expListCombo.expListBinSubDirectory;
 	        	
 	        	SwingUtilities.invokeLater(new Runnable() { public void run() 
 				{	
 		        	parent1.tabInfos.disableChangeFile = false;
-		        	for (int i=1; i < selectedNames.size(); i++) 
+		        	for (int i = 1; i < selectedNames.size(); i++) 
 					{
 						ExperimentDirectories eDAF = new ExperimentDirectories(); 
 						if (eDAF.getDirectoriesFromExptPath(parent0.expListCombo, selectedNames.get(i), binSubDirectory))
