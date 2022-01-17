@@ -6,10 +6,10 @@ import icy.type.collection.array.Array1DUtil;
 
 public class FromRGBtoLinearCombination extends ImageTransformFunction implements TransformImage
 {
-	int w0 = 1;
-	int w1 = 1;
-	int w2 = 1;
-	FromRGBtoLinearCombination (int w0, int w1, int w2)
+	double w0 = 1;
+	double w1 = 1;
+	double w2 = 1;
+	FromRGBtoLinearCombination (double w0, double w1, double w2)
 	{
 		this.w0 = w0;
 		this.w1 = w1;
