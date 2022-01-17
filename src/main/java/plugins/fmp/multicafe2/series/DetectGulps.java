@@ -50,7 +50,7 @@ public class DetectGulps extends BuildSeries
 		if (exp.seqKymos == null)
 			return;
 		int zChannelDestination = 2;
-		exp.kymosBuildFiltered(0, zChannelDestination, options.transformForGulps, options.spanDiff);
+		exp.kymosBuildFiltered1(0, zChannelDestination, options.transformForGulps, options.spanDiff);
 	}
 	
 	public void detectGulpsFromExperiment(Experiment exp) 

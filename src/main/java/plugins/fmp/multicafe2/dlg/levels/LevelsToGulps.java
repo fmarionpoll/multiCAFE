@@ -148,7 +148,7 @@ public class LevelsToGulps extends JPanel  implements PropertyChangeListener
 		{
 			EnumTransformOp transform = (EnumTransformOp) transformForGulpsComboBox.getSelectedItem();
 			int zChannelDestination = 2;
-			exp.kymosBuildFiltered(0, zChannelDestination, transform, (int) spanTransf2Spinner.getValue());
+			exp.kymosBuildFiltered1(0, zChannelDestination, transform, (int) spanTransf2Spinner.getValue());
 			seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 		}
 	}

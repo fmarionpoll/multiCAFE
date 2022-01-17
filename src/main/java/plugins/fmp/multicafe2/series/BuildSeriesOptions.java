@@ -11,6 +11,7 @@ import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.tools.EnumTransformOp;
+import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 
 
 
@@ -47,6 +48,7 @@ public class BuildSeriesOptions implements XMLPersistent
 	public 	boolean		directionUp1			= true;
 	public 	int			detectLevel1Threshold 	= 35;
 	public 	EnumTransformOp	transform1 			= EnumTransformOp.RGB_DIFFS;
+	public 	EnumImageTransformations transform01 = EnumImageTransformations.R_RGB;
 	
 	public boolean 		pass2 = false;
 	public 	boolean		directionUp2			= true;

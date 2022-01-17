@@ -4,7 +4,7 @@ import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
 
-abstract class ImageTransformFunction 
+public abstract class ImageTransformFunction 
 {
 	String label = null;
 	public String getName() 

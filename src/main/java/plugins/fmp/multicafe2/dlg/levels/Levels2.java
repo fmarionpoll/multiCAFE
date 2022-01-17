@@ -25,6 +25,7 @@ import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.series.DetectLevels;
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.tools.EnumTransformOp;
+import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 
 
 
@@ -37,8 +38,10 @@ public class Levels2 extends JPanel implements PropertyChangeListener
 	private JCheckBox	pass1CheckBox 			= new JCheckBox ("pass1", true);
 	private JComboBox<String> direction1ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JSpinner 	threshold1Spinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
-	JComboBox<?> transform1ComboBox = new JComboBox<?> (new ImageTransformFunction[] {
-			FromRtoRGB});
+	JComboBox<EnumImageTransformations> transform1ComboBox = new JComboBox<EnumImageTransformations> (
+			new EnumImageTransformations[] {
+			EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB
+			});
 	private JButton		displayTransform1Button	= new JButton("Display");
 	
 	private JCheckBox	pass2CheckBox 			= new JCheckBox ("pass2", false);
@@ -196,14 +199,14 @@ public class Levels2 extends JPanel implements PropertyChangeListener
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
-		EnumTransformOp transform1 = (EnumTransformOp) transform1ComboBox.getSelectedItem();
+		EnumImageTransformations transform1 = (EnumImageTransformations) transform1ComboBox.getSelectedItem();
 		
 		List<Capillary> capList = exp.capillaries.capillariesList;
 		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) 
 			getInfosFromDialog(capList.get(t));		
 		
 		int zChannelDestination = 1;
-		exp.kymosBuildFiltered(0, zChannelDestination, transform1, getSpanDiffTop());
+		exp.kymosBuildFiltered01(0, zChannelDestination, transform1, getSpanDiffTop());
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
@@ -219,7 +222,7 @@ public class Levels2 extends JPanel implements PropertyChangeListener
 			getInfosFromDialog(capList.get(t));		
 		
 		int zChannelDestination = 1;
-		exp.kymosBuildFiltered(0, zChannelDestination, transform2, getSpanDiffTop());
+		exp.kymosBuildFiltered1(0, zChannelDestination, transform2, getSpanDiffTop());
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
@@ -272,7 +275,7 @@ public class Levels2 extends JPanel implements PropertyChangeListener
 		BuildSeriesOptions capOptions 		= cap.limitsOptions;
 		capOptions.pass1 = pass1CheckBox.isSelected();
 		capOptions.pass2 = pass2CheckBox.isSelected();
-		capOptions.transform1 				= (EnumTransformOp) transform1ComboBox.getSelectedItem();
+		capOptions.transform01 				= (EnumImageTransformations) transform1ComboBox.getSelectedItem();
 		capOptions.transform2 				= (EnumTransformOp) transform2ComboBox.getSelectedItem();
 		capOptions.directionUp1 			= (direction1ComboBox.getSelectedIndex() == 0) ;
 		capOptions.detectLevel1Threshold 	= (int) threshold1Spinner.getValue();
@@ -308,7 +311,7 @@ public class Levels2 extends JPanel implements PropertyChangeListener
 		}
 		// other parameters
 		options.pass1 = pass1CheckBox.isSelected();
-		options.transform1 			= (EnumTransformOp) transform1ComboBox.getSelectedItem();
+		options.transform01 			= (EnumImageTransformations) transform1ComboBox.getSelectedItem();
 		options.directionUp1 		= (direction1ComboBox.getSelectedIndex() == 0);
 		options.detectLevel1Threshold= (int) threshold1Spinner.getValue();
 		

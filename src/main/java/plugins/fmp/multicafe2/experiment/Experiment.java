@@ -23,6 +23,8 @@ import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Directories;
 import plugins.fmp.multicafe2.tools.ImageTransform;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
+import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformFunction;
 import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 
@@ -724,8 +726,38 @@ public class Experiment
 		}
 		return flag;
 	}
+	
+	public void kymosBuildFiltered01(int zChannelSource, int zChannelDestination, EnumImageTransformations transformop1, int spanDiff) 
+	{
+		int nimages = seqKymos.seq.getSizeT();
+		seqKymos.seq.beginUpdate();
 		
-	public void kymosBuildFiltered(int zChannelSource, int zChannelDestination, EnumTransformOp transformop1, int spanDiff) 
+//		if (tImg == null) 
+//			tImg = new ImageTransform();
+//		tImg.setSpanDiff(spanDiff);
+//		tImg.setSequence(seqKymos);
+		ImageTransformFunction<transformop1> transform = new transformop1.toClass();
+		
+		if (capillaries.capillariesList.size() != nimages) 
+			SequenceKymosUtils.transferCamDataROIStoKymo(this);
+		
+		for (int t= 0; t < nimages; t++) 
+		{
+			Capillary cap = capillaries.capillariesList.get(t);
+			cap.indexKymograph = t;
+			IcyBufferedImage img = seqKymos.getSeqImage(t, zChannelSource);
+			IcyBufferedImage img2 = transform.transformImage (img, null);
+			if (seqKymos.seq.getSizeZ(0) < (zChannelDestination+1)) 
+				seqKymos.seq.addImage(t, img2);
+			else
+				seqKymos.seq.setImage(t, zChannelDestination, img2);
+		}
+		
+		seqKymos.seq.dataChanged();
+		seqKymos.seq.endUpdate();
+	}
+		
+	public void kymosBuildFiltered1(int zChannelSource, int zChannelDestination, EnumTransformOp transformop1, int spanDiff) 
 	{
 		int nimages = seqKymos.seq.getSizeT();
 		seqKymos.seq.beginUpdate();

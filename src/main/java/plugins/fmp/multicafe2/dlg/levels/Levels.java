@@ -35,9 +35,11 @@ public class Levels extends JPanel implements PropertyChangeListener
 	JSpinner			endSpinner				= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	
 	private JCheckBox	pass1CheckBox 			= new JCheckBox ("pass1", true);
-	private JComboBox<String> direction1ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
+	private JComboBox<String> direction1ComboBox= new JComboBox<String> (
+			new String[] {" threshold >", " threshold <" });
 	private JSpinner 	threshold1Spinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
-	JComboBox<EnumTransformOp> transform1ComboBox = new JComboBox<EnumTransformOp> (new EnumTransformOp[] {
+	JComboBox<EnumTransformOp> transform1ComboBox = new JComboBox<EnumTransformOp> (
+			new EnumTransformOp[] {
 			EnumTransformOp.R_RGB, EnumTransformOp.G_RGB, EnumTransformOp.B_RGB, 
 			EnumTransformOp.R2MINUS_GB, EnumTransformOp.G2MINUS_RB, EnumTransformOp.B2MINUS_RG, EnumTransformOp.RGB,
 			EnumTransformOp.GBMINUS_2R, EnumTransformOp.RBMINUS_2G, EnumTransformOp.RGMINUS_2B, EnumTransformOp.RGB_DIFFS,
@@ -47,7 +49,8 @@ public class Levels extends JPanel implements PropertyChangeListener
 	private JCheckBox	pass2CheckBox 			= new JCheckBox ("pass2", false);
 	private JComboBox<String> direction2ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JSpinner 	threshold2Spinner 		= new JSpinner(new SpinnerNumberModel(40, 1, 255, 1));
-	JComboBox<EnumTransformOp> transform2ComboBox = new JComboBox<EnumTransformOp> (new EnumTransformOp[] {
+	JComboBox<EnumTransformOp> transform2ComboBox = new JComboBox<EnumTransformOp> (
+			new EnumTransformOp[] {
 			EnumTransformOp.DERICHE, EnumTransformOp.DERICHE_COLOR,
 			EnumTransformOp.MINUSHORIZAVG,
 			EnumTransformOp.COLORDISTANCE_L1_Y, EnumTransformOp.COLORDISTANCE_L2_Y,
@@ -206,7 +209,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 			getInfosFromDialog(capList.get(t));		
 		
 		int zChannelDestination = 1;
-		exp.kymosBuildFiltered(0, zChannelDestination, transform1, getSpanDiffTop());
+		exp.kymosBuildFiltered1(0, zChannelDestination, transform1, getSpanDiffTop());
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
@@ -222,7 +225,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 			getInfosFromDialog(capList.get(t));		
 		
 		int zChannelDestination = 1;
-		exp.kymosBuildFiltered(0, zChannelDestination, transform2, getSpanDiffTop());
+		exp.kymosBuildFiltered1(0, zChannelDestination, transform2, getSpanDiffTop());
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	
