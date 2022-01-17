@@ -10,6 +10,9 @@ public class ImageTransformOptions {
 	public int channel0;
 	public int channel1;
 	public int channel2;
+	public int w0 = 1;
+	public int w1 = 1;
+	public int w2 = 1;
 	public int spanDiff = 3;
 	public IcyBufferedImage referenceImage = null;
 }

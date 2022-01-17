@@ -5,8 +5,6 @@ import icy.type.collection.array.Array1DUtil;
 
 public class FromRGBtoGrey extends ImageTransformFunction implements TransformImage 
 {
-	String label = "(R+G+B)/3";	
-	
 	@Override
 	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{

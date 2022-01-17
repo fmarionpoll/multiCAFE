@@ -24,7 +24,6 @@ import plugins.fmp.multicafe2.tools.Directories;
 import plugins.fmp.multicafe2.tools.ImageTransform;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
-import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformFunction;
 import plugins.fmp.multicafe2.tools.ImageTransformations.TransformImage;
 import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
