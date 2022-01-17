@@ -30,6 +30,7 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.tools.EnumTransformOp;
+import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 
 
 public class MCSpots_1 extends JPanel 
@@ -92,9 +93,9 @@ public class MCSpots_1 extends JPanel
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
-		EnumTransformOp transform = EnumTransformOp.SUBTRACT_1RSTCOL;
+		EnumImageTransformations transform = EnumImageTransformations.SUBTRACT_1RSTCOL;
 		int zChannelDestination = 1;
-		exp.kymosBuildFiltered1(0, zChannelDestination, transform, 0);
+		exp.kymosBuildFiltered01(0, zChannelDestination, transform, 0);
 		seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
 	}
 	

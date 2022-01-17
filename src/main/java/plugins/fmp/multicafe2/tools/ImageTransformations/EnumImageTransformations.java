@@ -31,7 +31,9 @@ public enum EnumImageTransformations {
 	COLORDISTANCE_L2_Y("color dist L2", 		new YDifferenceL(0, 0, 5, 0, true)),
 	DERICHE			("edge detection", 			new Deriche(1., true)), 
 	DERICHE_COLOR	("Deriche's edges", 		new Deriche(1., false)),
-	MINUSHORIZAVG	("remove Hz traces", 		new RemoveHorizontalAverage()); 
+	MINUSHORIZAVG	("remove Hz traces", 		new RemoveHorizontalAverage()),
+	ZIGZAG			("remove spikes",			null),
+	NONE			("none",					null);
 
 	private TransformImage klass;
     private String label;
@@ -50,6 +52,16 @@ public enum EnumImageTransformations {
 	public TransformImage getFunction() 
 	{ 
 		return klass; 
+	}
+	
+	public static EnumImageTransformations findByText(String abbr)
+	{
+	    for(EnumImageTransformations v : values())
+	    { 
+	    	if ( v.toString().equals(abbr)) 
+	    		return v;  
+	    }
+	    return null;
 	}
 
 }

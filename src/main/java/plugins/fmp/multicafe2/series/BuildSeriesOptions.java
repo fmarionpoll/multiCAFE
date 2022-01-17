@@ -10,7 +10,6 @@ import icy.file.xml.XMLPersistent;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
-import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 
 
@@ -47,13 +46,11 @@ public class BuildSeriesOptions implements XMLPersistent
 	public	boolean		pass1 = true;
 	public 	boolean		directionUp1			= true;
 	public 	int			detectLevel1Threshold 	= 35;
-	public 	EnumTransformOp	transform1 			= EnumTransformOp.RGB_DIFFS;
 	public 	EnumImageTransformations transform01 = EnumImageTransformations.R_RGB;
 	
 	public boolean 		pass2 = false;
 	public 	boolean		directionUp2			= true;
 	public 	int			detectLevel2Threshold 	= 35;
-	public 	EnumTransformOp	transform2 			= EnumTransformOp.L1DIST_TO_1RSTCOL;
 	public EnumImageTransformations transform02 = EnumImageTransformations.L1DIST_TO_1RSTCOL;
 	public 	boolean 	analyzePartOnly			= false;
 	public 	int 		firstPixel 				= -1;
@@ -61,8 +58,7 @@ public class BuildSeriesOptions implements XMLPersistent
 	public  int			spanDiffTop				= 3;
 	
 	public double		detectGulpsThresholdUL	= .3;
-	
-	public EnumTransformOp 	transformForGulps 	= EnumTransformOp.XDIFFN;
+	public EnumImageTransformations transformForGulps = EnumImageTransformations.XDIFFN;
 	public int			spanDiff				= 3;
 	public boolean 		detectAllGulps 			= true;
 	public boolean		buildGulps				= true;
@@ -81,7 +77,7 @@ public class BuildSeriesOptions implements XMLPersistent
 	public boolean		forceBuildBackground	= false;
 	public boolean		detectFlies				= true;
 	
-	public EnumTransformOp 	transformop; 
+	public EnumImageTransformations transformop; 
 	public int			videoChannel 			= 0;
 	public boolean 		backgroundSubstraction 	= false;
 
@@ -91,7 +87,7 @@ public class BuildSeriesOptions implements XMLPersistent
 	{
 		destination.detectTop 				= detectTop; 
 		destination.detectBottom 			= detectBottom; 
-		destination.transform1 				= transform1;
+		destination.transform01 			= transform01;
 		destination.directionUp1 			= directionUp1;
 		destination.detectLevel1Threshold 	= detectLevel1Threshold;
 		destination.detectAllKymos 			= detectAllKymos;
@@ -105,7 +101,7 @@ public class BuildSeriesOptions implements XMLPersistent
 	{
 		detectTop 				= destination.detectTop; 
 		detectBottom 			= destination.detectBottom; 
-		transform1 				= destination.transform1;
+		transform01 			= destination.transform01;
 		directionUp1 			= destination.directionUp1;
 		detectLevel1Threshold 	= destination.detectLevel1Threshold;
 		detectAllKymos 			= destination.detectAllKymos;
@@ -147,12 +143,12 @@ public class BuildSeriesOptions implements XMLPersistent
 			directionUp1 = XMLUtil.getElementBooleanValue(nodeMeta, "directionUp", directionUp1);
 			firstKymo = XMLUtil.getElementIntValue(nodeMeta, "firstImage", firstKymo);
 			detectLevel1Threshold = XMLUtil.getElementIntValue(nodeMeta, "detectLevelThreshold", detectLevel1Threshold);
-			transform1 = EnumTransformOp.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transform1.toString()));       
+			transform01 = EnumImageTransformations.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transform01.toString()));       
 			
 			detectAllGulps = XMLUtil.getElementBooleanValue(nodeMeta, "detectAllGulps", detectAllGulps);
 	    	buildGulps = XMLUtil.getElementBooleanValue(nodeMeta, "buildGulps", buildGulps);
 	    	buildDerivative = XMLUtil.getElementBooleanValue(nodeMeta, "buildDerivative", buildDerivative);
-	    	transformForGulps = EnumTransformOp.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transformForGulps.toString()));       
+	    	transformForGulps = EnumImageTransformations.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transformForGulps.toString()));       
 	    }
 		
 		Element xmlVal = XMLUtil.getElement(node, "DetectFliesParameters");
@@ -166,7 +162,7 @@ public class BuildSeriesOptions implements XMLPersistent
 			limitUp =  XMLUtil.getElementIntValue(xmlVal, "limitUp", -1);
 			jitter =  XMLUtil.getElementIntValue(xmlVal, "jitter", 10); 
 			String op1 = XMLUtil.getElementValue(xmlVal, "transformOp", null);
-			transformop = EnumTransformOp.findByText(op1);
+			transformop = EnumImageTransformations.findByText(op1);
 			videoChannel = XMLUtil.getAttributeIntValue(xmlVal, "videoChannel", 0);
 		}
 		return true;
@@ -184,7 +180,7 @@ public class BuildSeriesOptions implements XMLPersistent
 			XMLUtil.setElementBooleanValue(nodeMeta, "directionUp", directionUp1);
 			XMLUtil.setElementIntValue(nodeMeta, "firstImage", firstKymo);
 			XMLUtil.setElementIntValue(nodeMeta, "detectLevelThreshold", detectLevel1Threshold);
-		    XMLUtil.setElementValue(nodeMeta, "Transform", transform1.toString()); 
+		    XMLUtil.setElementValue(nodeMeta, "Transform", transform01.toString()); 
 		    
 		    XMLUtil.setElementBooleanValue(nodeMeta, "detectAllGulps", detectAllGulps);
 	    	XMLUtil.setElementBooleanValue(nodeMeta, "buildGulps", buildGulps);

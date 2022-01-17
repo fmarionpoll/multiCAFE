@@ -3,6 +3,8 @@ package plugins.fmp.multicafe2.tools;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
+
 
 
 public class ImageOperationsStruct 
@@ -12,7 +14,7 @@ public class ImageOperationsStruct
 	int					simplethreshold = 255;
 	int 				colorthreshold	= 0;
 	ArrayList <Color> 	colorarray 		= null;
-	EnumTransformOp 		transformop		= EnumTransformOp.NONE;
+	EnumImageTransformations transformop = EnumImageTransformations.NONE;
 	EnumThresholdType 	thresholdtype 	= EnumThresholdType.NONE;
 		
 	// -----------------------------------
@@ -20,12 +22,12 @@ public class ImageOperationsStruct
 	public ImageOperationsStruct () 
 	{
 		this.fromFrame = -1;
-		this.transformop = EnumTransformOp.NONE;
+		this.transformop = EnumImageTransformations.NONE;
 		this.thresholdtype = EnumThresholdType.NONE;
 		this.colorthreshold = 0;
 	}
 	
-	public ImageOperationsStruct (int framenumber, EnumTransformOp transformop, EnumThresholdType thresholdtype, int thresholdvalue) 
+	public ImageOperationsStruct (int framenumber, EnumImageTransformations transformop, EnumThresholdType thresholdtype, int thresholdvalue) 
 	{
 		this.fromFrame = framenumber;
 		this.transformop = transformop;
@@ -33,7 +35,7 @@ public class ImageOperationsStruct
 		this.colorthreshold = thresholdvalue;
 	}
 	
-	public ImageOperationsStruct (int framenumber, EnumTransformOp transformop) 
+	public ImageOperationsStruct (int framenumber, EnumImageTransformations transformop) 
 	{
 		this.fromFrame = framenumber;
 		this.transformop = transformop;

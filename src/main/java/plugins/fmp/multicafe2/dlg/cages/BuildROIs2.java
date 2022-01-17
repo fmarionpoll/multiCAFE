@@ -33,7 +33,7 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.Blobs;
 import plugins.fmp.multicafe2.tools.OverlayThreshold;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
-import plugins.fmp.multicafe2.tools.EnumTransformOp;
+import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
@@ -48,11 +48,12 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(60, 0, 10000, 1));
 	public 	JCheckBox 	overlayCheckBox			= new JCheckBox("Overlay ", false);
 	private JButton 	deleteButton 			= new JButton("Cut points within selected polygon");
-	JComboBox<EnumTransformOp> transformForLevelsComboBox = new JComboBox<EnumTransformOp> (new EnumTransformOp[] {
-			EnumTransformOp.R_RGB, EnumTransformOp.G_RGB, EnumTransformOp.B_RGB, 
-			EnumTransformOp.R2MINUS_GB, EnumTransformOp.G2MINUS_RB, EnumTransformOp.B2MINUS_RG, EnumTransformOp.RGB,
-			EnumTransformOp.GBMINUS_2R, EnumTransformOp.RBMINUS_2G, EnumTransformOp.RGMINUS_2B, 
-			EnumTransformOp.H_HSB, EnumTransformOp.S_HSB, EnumTransformOp.B_HSB	});
+	JComboBox<EnumImageTransformations> transformForLevelsComboBox = new JComboBox<EnumImageTransformations> (
+		new EnumImageTransformations[] {
+				EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB, 
+				EnumImageTransformations.R2MINUS_GB, EnumImageTransformations.G2MINUS_RB, EnumImageTransformations.B2MINUS_RG, EnumImageTransformations.RGB,
+				EnumImageTransformations.GBMINUS_2R, EnumImageTransformations.RBMINUS_2G, EnumImageTransformations.RGMINUS_2B, 
+				EnumImageTransformations.H_HSB, EnumImageTransformations.S_HSB, EnumImageTransformations.B_HSB	});
 	private OverlayThreshold 	ov 				= null;
 	private MultiCAFE2 			parent0			= null;
 	
@@ -137,7 +138,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 		exp.cages.detect_threshold = (int) thresholdSpinner.getValue();
 		ov.setThresholdTransform(
 				exp.cages.detect_threshold,  
-				(EnumTransformOp) transformForLevelsComboBox.getSelectedItem(),
+				(EnumImageTransformations) transformForLevelsComboBox.getSelectedItem(),
 				false);
 		seqCamData.seq.overlayChanged(ov);
 		seqCamData.seq.dataChanged();		
