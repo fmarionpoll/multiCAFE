@@ -12,11 +12,6 @@ public abstract class ImageTransformFunction
 		return label;
 	}
 	
-	public IcyBufferedImage transformImage (IcyBufferedImage sourceImage, ImageTransformOptions options)
-	{
-		return null;
-	}
-	
 	protected void copyExGIntToIcyBufferedImage(int[] ExG, IcyBufferedImage img2 )
 	{
 		Array1DUtil.intArrayToSafeArray(ExG,  img2.getDataXY(0), false, false); //true);
@@ -27,4 +22,16 @@ public abstract class ImageTransformFunction
 			img2.setDataXY(c, img2.getDataXY(c));
 		}
 	}
+	
+	protected void copyExGDoubleToIcyBufferedImage(double[] ExG, IcyBufferedImage img2 )
+	{
+		Array1DUtil.doubleArrayToSafeArray(ExG, img2.getDataXY(0), false); 
+		img2.setDataXY(0, img2.getDataXY(0));
+		for (int c = 1; c < 3; c++ ) 
+		{
+			img2.copyData(img2, 0, c);
+			img2.setDataXY(c, img2.getDataXY(c));
+		}
+	}
+	
 }

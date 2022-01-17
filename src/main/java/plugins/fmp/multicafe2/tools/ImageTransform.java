@@ -183,7 +183,8 @@ public class ImageTransform
 		return transformedImage;
 	}
 	
-	public IcyBufferedImage transformImageFromVirtualSequence (int t, EnumTransformOp transformop) {
+	public IcyBufferedImage transformImageFromVirtualSequence (int t, EnumTransformOp transformop) 
+	{
 		return transformImage(seqCamData.getSeqImage(t, 0), transformop);
 	}
 	
@@ -327,8 +328,8 @@ public class ImageTransform
 		{		
 			for (int iy = spany; iy < imageSizeY -spany; iy++) 
 			{
-				Composite d1 = getSpanSumRGB(Rn, Gn, Bn, ix, iy, spanx, 0, -spany, -deltay, imageSizeX, imageSizeY) ;
-				Composite d2 = getSpanSumRGB(Rn, Gn, Bn, ix, iy, spanx, 0, spany, deltay, imageSizeX, imageSizeY) ;
+				RGBasDouble d1 = getSpanSumRGB(Rn, Gn, Bn, ix, iy, spanx, 0, -spany, -deltay, imageSizeX, imageSizeY) ;
+				RGBasDouble d2 = getSpanSumRGB(Rn, Gn, Bn, ix, iy, spanx, 0, spany, deltay, imageSizeX, imageSizeY) ;
 				
 				int kx = ix +  iy* imageSizeX;
 				double dr = (d1.R/d1.n - d2.R/d2.n);
@@ -345,7 +346,7 @@ public class ImageTransform
 		return img2;
 	}
 	
-	private class Composite 
+	private class RGBasDouble 
 	{
 		public double R = 0.;
 		public double G = 0.;
@@ -363,9 +364,9 @@ public class ImageTransform
 		return a <= b? a : b;
 	}
 	
-	private Composite getSpanSumRGB(double[] Rn, double[] Gn, double[] Bn, int ix, int iy, int spanx, int deltax, int spany, int deltay, int imageSizeX, int imageSizeY) 
+	private RGBasDouble getSpanSumRGB(double[] Rn, double[] Gn, double[] Bn, int ix, int iy, int spanx, int deltax, int spany, int deltay, int imageSizeX, int imageSizeY) 
 	{
-		Composite d = new Composite();
+		RGBasDouble d = new RGBasDouble();
 		int iymax = Max(iy + deltay, iy + spany + deltay);
 		int iymin = Min(iy + deltay, iy + spany + deltay);
 		

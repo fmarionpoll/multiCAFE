@@ -3,12 +3,12 @@ package plugins.fmp.multicafe2.tools.ImageTransformations;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
-public class FromRGBtoGrey extends ImageTransformFunction 
+public class FromRGBtoGrey extends ImageTransformFunction implements TransformImage 
 {
 	String label = "(R+G+B)/3";	
 	
 	@Override
-	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		return functionRGB_grey(sourceImage); 
 	}

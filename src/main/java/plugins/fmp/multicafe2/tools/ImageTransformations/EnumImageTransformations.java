@@ -2,14 +2,14 @@ package plugins.fmp.multicafe2.tools.ImageTransformations;
 
 
 public enum EnumImageTransformations {
-	R_RGB("R(RGB)", FromRtoRGB.class),
-    G_RGB("G(RGB)", FromGtoRGB.class),
-    B_RGB("B(RGB)", FromBtoRGB.class); 
+	R_RGB("R(RGB)", new FromRtoRGB()),
+    G_RGB("G(RGB)", new FromGtoRGB()),
+    B_RGB("B(RGB)", new FromBtoRGB()); 
 
-	private Class<?> klass;
+	private TransformImage klass;
     private String label;
 	
-    EnumImageTransformations(String label, Class<?> klass ) 
+    EnumImageTransformations(String label, TransformImage klass ) 
 	{ 
 		this.label = label; 
 		this.klass = klass;
@@ -20,7 +20,7 @@ public enum EnumImageTransformations {
 		return label; 
 	}
 	
-	public Class<?> toClass() 
+	public TransformImage getFunction() 
 	{ 
 		return klass; 
 	}

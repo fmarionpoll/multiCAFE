@@ -2,12 +2,12 @@ package plugins.fmp.multicafe2.tools.ImageTransformations;
 
 import icy.image.IcyBufferedImage;
 
-public class CopyRtoGB extends ImageTransformFunction 
+public class CopyRtoGB extends ImageTransformFunction implements TransformImage
 {
 	String label = "R to G,B";	
 	
 	@Override
-	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) {
+	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) {
 		return functionTransferRedToGreenAndBlue(sourceImage);
 	}
 
