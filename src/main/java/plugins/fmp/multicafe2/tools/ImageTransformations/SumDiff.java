@@ -4,7 +4,7 @@ import icy.image.IcyBufferedImage;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
-public class FromRGBtoSumDiff extends ImageTransformFunction implements TransformImage
+public class SumDiff extends ImageTransformFunction implements TransformImage
 {
 
 	@Override

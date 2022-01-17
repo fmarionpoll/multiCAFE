@@ -39,9 +39,12 @@ public class Levels2 extends JPanel implements PropertyChangeListener
 	private JComboBox<String> direction1ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JSpinner 	threshold1Spinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
 	JComboBox<EnumImageTransformations> transform1ComboBox = new JComboBox<EnumImageTransformations> (
-			new EnumImageTransformations[] {
-			EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB
-			});
+		new EnumImageTransformations[] {
+			EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB, 
+			EnumImageTransformations.R2MINUS_GB, EnumImageTransformations.G2MINUS_RB, EnumImageTransformations.B2MINUS_RG, EnumImageTransformations.RGB,
+			EnumImageTransformations.GBMINUS_2R, EnumImageTransformations.RBMINUS_2G, EnumImageTransformations.RGMINUS_2B, EnumImageTransformations.RGB_DIFFS,
+			EnumImageTransformations.H_HSB, EnumImageTransformations.S_HSB, EnumImageTransformations.B_HSB
+		});
 	private JButton		displayTransform1Button	= new JButton("Display");
 	
 	private JCheckBox	pass2CheckBox 			= new JCheckBox ("pass2", false);
@@ -273,8 +276,8 @@ public class Levels2 extends JPanel implements PropertyChangeListener
 	void getInfosFromDialog(Capillary cap) 
 	{
 		BuildSeriesOptions capOptions 		= cap.limitsOptions;
-		capOptions.pass1 = pass1CheckBox.isSelected();
-		capOptions.pass2 = pass2CheckBox.isSelected();
+		capOptions.pass1 					= pass1CheckBox.isSelected();
+		capOptions.pass2 					= pass2CheckBox.isSelected();
 		capOptions.transform01 				= (EnumImageTransformations) transform1ComboBox.getSelectedItem();
 		capOptions.transform2 				= (EnumTransformOp) transform2ComboBox.getSelectedItem();
 		capOptions.directionUp1 			= (direction1ComboBox.getSelectedIndex() == 0) ;
@@ -310,8 +313,8 @@ public class Levels2 extends JPanel implements PropertyChangeListener
 			options.lastKymo = parent0.paneKymos.tabDisplay.kymographsCombo.getItemCount()-1;
 		}
 		// other parameters
-		options.pass1 = pass1CheckBox.isSelected();
-		options.transform01 			= (EnumImageTransformations) transform1ComboBox.getSelectedItem();
+		options.pass1 				= pass1CheckBox.isSelected();
+		options.transform01 		= (EnumImageTransformations) transform1ComboBox.getSelectedItem();
 		options.directionUp1 		= (direction1ComboBox.getSelectedIndex() == 0);
 		options.detectLevel1Threshold= (int) threshold1Spinner.getValue();
 		

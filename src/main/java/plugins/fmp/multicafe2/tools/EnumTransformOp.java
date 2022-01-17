@@ -29,7 +29,6 @@ public enum EnumTransformOp
 	COLORARRAY1("color array"), 
 	RGB_TO_HSV("HSV"), 
 	RGB_TO_H1H2H3("H1H2H3"), 
-	RTOGB ("R to G,B"),
 	SUBTRACT_1RSTCOL("[t-t0]"), 
 	L1DIST_TO_1RSTCOL("L1[t-t0]"),
 	COLORDISTANCE_L1_Y("color dist L1"), 

@@ -43,15 +43,15 @@ public class ImageTransform
 		{		
 		case R_RGB: 	
 			transformedImage = functionRGB_keepOneChan(inputImage, 0); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 		case G_RGB: 	
 			transformedImage = functionRGB_keepOneChan(inputImage, 1); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 		case B_RGB: 	
 			transformedImage = functionRGB_keepOneChan(inputImage, 2); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 		case RGB: 		
 			transformedImage = functionRGB_grey (inputImage); 
@@ -60,40 +60,40 @@ public class ImageTransform
 		
 		case H_HSB: 	
 			transformedImage = functionRGBtoHSB(inputImage, 0); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB);
+			transformImage(transformedImage, EnumTransformOp.R_RGB);
 			break;
 		case S_HSB: 	
 			transformedImage = functionRGBtoHSB(inputImage, 1); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 		case B_HSB: 	
 			transformedImage = functionRGBtoHSB(inputImage, 2); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 
 		case R2MINUS_GB: 
 			transformedImage = functionRGB_2C3MinusC1C2 (inputImage, 1, 2, 0); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 		case G2MINUS_RB: 
 			transformedImage = functionRGB_2C3MinusC1C2 (inputImage, 0, 2, 1); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 		case B2MINUS_RG: 
 			transformedImage = functionRGB_2C3MinusC1C2 (inputImage, 0, 1, 2); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 		case GBMINUS_2R: 
 			transformedImage = functionRGB_C1C2minus2C3 (inputImage, 1, 2, 0); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 		case RBMINUS_2G: 
 			transformedImage = functionRGB_C1C2minus2C3 (inputImage, 0, 2, 1); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 		case RGMINUS_2B: 
 			transformedImage = functionRGB_C1C2minus2C3 (inputImage, 0, 1, 2); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 			
 		case RGB_DIFFS:
@@ -102,10 +102,7 @@ public class ImageTransform
 
 		case NORM_BRMINUSG: 
 			transformedImage = functionNormRGB_sumC1C2Minus2C3(inputImage, 1, 2, 0); 
-			transformImage(transformedImage, EnumTransformOp.RTOGB); 
-			break;
-		case RTOGB: 	
-			transformedImage = functionTransferRedToGreenAndBlue(inputImage); 
+			transformImage(transformedImage, EnumTransformOp.R_RGB); 
 			break;
 			
 		case REF_T0: 	
@@ -389,17 +386,6 @@ public class ImageTransform
 			}
 		}
 		return d;
-	}
-	
-	private IcyBufferedImage functionTransferRedToGreenAndBlue(IcyBufferedImage sourceImage) 
-	{
-		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
-		for (int c= 0; c<3; c++ ) 
-		{
-			img2.copyData(sourceImage, 0, c);
-			img2.setDataXY(c, img2.getDataXY(c));
-		}
-		return img2;
 	}
 	
 	private IcyBufferedImage functionRGB_2C3MinusC1C2 (IcyBufferedImage sourceImage, int addchan1, int addchan2, int subtractchan3) 

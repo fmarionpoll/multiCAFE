@@ -42,4 +42,19 @@ public abstract class ImageTransformFunction
 		return resultImage;
 	}
 	
+	protected IcyBufferedImage transformToGrey(IcyBufferedImage sourceImage)
+	{
+		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
+		int[] tabValuesR = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(0), sourceImage.isSignedDataType());
+		int[] tabValuesG = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(1), sourceImage.isSignedDataType());
+		int[] tabValuesB = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(2), sourceImage.isSignedDataType());
+		int[] outValues0 = Array1DUtil.arrayToIntArray(img2.getDataXY(0), sourceImage.isSignedDataType());
+		
+		for (int ky =0; ky < outValues0.length; ky++) 
+			outValues0 [ky] = (tabValuesR[ky]+tabValuesG[ky]+tabValuesB[ky])/3;
+		
+		copyExGIntToIcyBufferedImage(outValues0, img2);
+		return img2;
+	}
+	
 }

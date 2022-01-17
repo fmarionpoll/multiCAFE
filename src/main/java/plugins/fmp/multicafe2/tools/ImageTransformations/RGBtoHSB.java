@@ -5,10 +5,10 @@ import java.awt.Color;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
-public class FromRGBtoHSB extends ImageTransformFunction implements TransformImage
+public class RGBtoHSB extends ImageTransformFunction implements TransformImage
 {
 	int channelOut = 0;
-	FromRGBtoHSB(int channelOut)
+	RGBtoHSB(int channelOut)
 	{
 		this.channelOut = channelOut;
 	}

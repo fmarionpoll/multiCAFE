@@ -4,12 +4,12 @@ import icy.image.IcyBufferedImage;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
-public class FromRGBtoLinearCombination extends ImageTransformFunction implements TransformImage
+public class LinearCombination extends ImageTransformFunction implements TransformImage
 {
 	double w0 = 1;
 	double w1 = 1;
 	double w2 = 1;
-	FromRGBtoLinearCombination (double w0, double w1, double w2)
+	LinearCombination (double w0, double w1, double w2)
 	{
 		this.w0 = w0;
 		this.w1 = w1;

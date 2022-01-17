@@ -733,6 +733,8 @@ public class Experiment
 		seqKymos.seq.beginUpdate();
 
 		TransformImage transform = transformop1.getFunction();
+		if (transform == null)
+			return;
 		
 		if (capillaries.capillariesList.size() != nimages) 
 			SequenceKymosUtils.transferCamDataROIStoKymo(this);
