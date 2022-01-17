@@ -25,17 +25,14 @@ public enum EnumTransformOp
 	REF_T0("subtract t[start]"), 
 	REF_PREVIOUS("subtract t[i-step]"), 
 	REF("subtract ref"),
-	NORM_BRMINUSG("F. Rebaudo"),
+
 	COLORARRAY1("color array"), 
 	RGB_TO_HSV("HSV"), 
 	RGB_TO_H1H2H3("H1H2H3"), 
 	SUBTRACT_1RSTCOL("[t-t0]"), 
-	L1DIST_TO_1RSTCOL("L1[t-t0]"),
-	COLORDISTANCE_L1_Y("color dist L1"), 
-	COLORDISTANCE_L2_Y("color dist L2"),
+
 	ZIGZAG("remove spikes"),
-	DERICHE("edge detection"), 
-	DERICHE_COLOR("Deriche's edges"),
+
 	MINUSHORIZAVG("remove Hz traces")
 	;
 	

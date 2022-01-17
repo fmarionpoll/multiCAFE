@@ -26,8 +26,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 	public	PopupPanel 	capPopupPanel	= null;
 	private JTabbedPane tabsPane 		= new JTabbedPane();
 	public 	LoadSave 	tabFileLevels	= new LoadSave();
-			Levels tabDetectLevels = new Levels();
-			Levels2 tabDetectLevels2 = new Levels2();
+			Levels 	tabDetectLevels2 = new Levels();
 			
 			//DetectLevelsKMeans tabDetectLevelsK = new DetectLevelsKMeans();
 			LevelsToGulps tabDetectGulps 	= new LevelsToGulps();
@@ -47,14 +46,10 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 		mainPanel.add(capPopupPanel);
 
 		GridLayout capLayout = new GridLayout(4, 1);
-		
-		tabDetectLevels.init(capLayout, parent0);
-		tabDetectLevels.addPropertyChangeListener(this);
-		tabsPane.addTab("Levels", null, tabDetectLevels, "Find limits of the columns of liquid");
-		
+				
 		tabDetectLevels2.init(capLayout, parent0);
 		tabDetectLevels2.addPropertyChangeListener(this);
-		tabsPane.addTab("Levels2", null, tabDetectLevels2, "Find limits of the columns of liquid");
+		tabsPane.addTab("Levels", null, tabDetectLevels2, "Find limits of the columns of liquid");
 		
 		tabDetectGulps.init(capLayout, parent0);	
 		tabsPane.addTab("Gulps", null, tabDetectGulps, "Detect gulps");
@@ -73,7 +68,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 		tabsPane.addTab("Load/Save", null, tabFileLevels, "Load/Save kymographs");
 						
 		capPanel.add(tabsPane);
-		tabDetectLevels.transform1ComboBox.setSelectedItem(EnumTransformOp.RGB_DIFFS);
+		tabDetectLevels2.transform01ComboBox.setSelectedItem(EnumTransformOp.RGB_DIFFS);
 		tabsPane.setSelectedIndex(0);
 		
 		capPopupPanel.addComponentListener(new ComponentAdapter() 
@@ -104,8 +99,8 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 	public void updateDialogs(Experiment exp) 
 	{
 		int lastpixel = exp.seqKymos.imageWidthMax - 1;
-		tabDetectLevels.startSpinner.setValue(0);
-		tabDetectLevels.endSpinner.setValue(lastpixel);
+		tabDetectLevels2.startSpinner.setValue(0);
+		tabDetectLevels2.endSpinner.setValue(lastpixel);
 		tabDetectGulps.startSpinner.setValue(0);
 		tabDetectGulps.endSpinner.setValue(lastpixel);
 	}

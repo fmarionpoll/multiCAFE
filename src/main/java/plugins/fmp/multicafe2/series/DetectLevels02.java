@@ -132,7 +132,7 @@ public class DetectLevels02  extends BuildSeries
 						IcyBufferedImage transformedImage2 = transformPass2.run (rawImage, null);		
 						Object transformedArray2 = transformedImage2.getDataXY(c);
 						int[] transformed1DArray2 = Array1DUtil.arrayToIntArray(transformedArray2, transformedImage2.isSignedDataType());
-						switch (options.transform2)
+						switch (options.transform02)
 						{
 						case COLORDISTANCE_L1_Y:
 						case COLORDISTANCE_L2_Y:
@@ -220,15 +220,6 @@ public class DetectLevels02  extends BuildSeries
 			}
 			limits[ix] = iyVal;
 		}
-	}
-
-	private void filterZigZags (int [] limits, int first, int last) 
-	{
-		for (int i = first+1; i < last; i++) 
-		{
-			if (limits[i+1] > limits[i])
-				limits[i] = (limits[i-1] + limits[i+1])/2 ;
-		}	
 	}
 	
 	private int checkIndexLimits (int rowIndex, int maximumRowIndex) 
