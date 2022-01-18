@@ -18,14 +18,11 @@ import icy.image.IcyBufferedImage;
 import icy.image.ImageUtil;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
-import icy.type.collection.array.Array1DUtil;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Directories;
-import plugins.fmp.multicafe2.tools.ImageTransform;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
-import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 
 
