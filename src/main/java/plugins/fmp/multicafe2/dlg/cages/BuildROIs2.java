@@ -180,8 +180,6 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 
 	private void createROIsFromSelectedPolygon(Experiment exp) 
 	{
-		if (ov.imgOp.cacheThresholdedImage == null)
-			return;
 		exp.cages.removeAllRoiCagesFromSequence(exp.seqCamData);
 
 		IcyBufferedImage img0 = IcyBufferedImageUtil.convertToType(ov.imgOp.cacheThresholdedImage, DataType.INT, false);

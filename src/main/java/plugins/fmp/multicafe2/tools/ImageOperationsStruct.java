@@ -15,10 +15,10 @@ public class ImageOperationsStruct
 	int 				colorthreshold		= 0;
 	ArrayList <Color> 	colorarray 			= null;
 	EnumImageTransformations transformop 	= EnumImageTransformations.NONE;
-	EnumThresholdType 	thresholdtype 		= EnumThresholdType.NONE;
+//	EnumThresholdType 	thresholdtype 		= EnumThresholdType.NONE;
 		
 	// -----------------------------------
-	
+	/*
 	public ImageOperationsStruct () 
 	{
 		this.fromFrame = -1;
@@ -42,7 +42,7 @@ public class ImageOperationsStruct
 		this.thresholdtype = EnumThresholdType.NONE;
 		this.colorthreshold = 0;
 	}
-	
+	*/
 	public boolean isValidTransformCache(ImageOperationsStruct op) 
 	{
 		if (op.fromFrame != this.fromFrame)
@@ -57,7 +57,7 @@ public class ImageOperationsStruct
 		op.transformop = transformop;
 		op.fromFrame = fromFrame;
 	}
-	
+	/*
 	public void copyThresholdOpTo (ImageOperationsStruct op) 
 	{
 		op.thresholdtype = thresholdtype;
@@ -78,7 +78,8 @@ public class ImageOperationsStruct
 		}
 		op.fromFrame = fromFrame;
 	}
-	
+	*/
+	/*
 	public boolean isValidThresholdCache(ImageOperationsStruct op) 
 	{
 		if (op.fromFrame != this.fromFrame)
@@ -102,4 +103,5 @@ public class ImageOperationsStruct
 		}
 		return true;
 	}
+	*/
 }

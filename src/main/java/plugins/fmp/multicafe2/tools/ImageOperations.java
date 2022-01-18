@@ -17,52 +17,18 @@ public class ImageOperations
 	private SequenceCamData 		seqCamData 	= null;
 	private ImageTransformInterface	opTransf 	= null;
 	private ImageTransformInterface opThresh 	= null;
-	private ImageTransform 			imgTransf 	= new ImageTransform();
-	private ImageThreshold 			imgThresh 	= new ImageThreshold();
+
 	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
 	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
 	public IcyBufferedImage 		cacheTransformedImage 	= null;
 	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	
-	public ImageOperations (SequenceCamData seq) 
-	{
-		setSequence(seq);
-	}
+
 	
-	public void setSequence(SequenceCamData seq) 
-	{
-		this.seqCamData = seq;
-		imgTransf.setSequence(seq);
-	}
-	
-	public void setTransform (EnumImageTransformations transformop) 
-	{
-		opTransf = transformop.getFunction();
-	}
-	
-	public void setThresholdSingle( int threshold, boolean ifGreater) 
-	{
-		opThresh.thresholdtype = EnumThresholdType.SINGLE;
-		opThresh.simplethreshold = threshold;
-		imgThresh.setSingleThreshold(threshold, ifGreater);
-	}
-	
-	public void setColorArrayThreshold (ArrayList <Color> colorarray, int distanceType, int colorthreshold) 
-	{
-		opThresh.thresholdtype = EnumThresholdType.COLORARRAY;
-		opThresh.colorarray = colorarray;
-		opThresh.colordistanceType = distanceType;
-		opThresh.colorthreshold = colorthreshold;
-		imgThresh.setColorArrayThreshold(distanceType, colorthreshold, colorarray);
-	}
-	
+	/*
 	public IcyBufferedImage runImageOperation() 
 	{
-		return runImageOperationFrame (seqCamData.currentFrame);
-	}
-	
-	private IcyBufferedImage runImageOperationFrame (int frame) 
-	{	
+		int frame = seqCamData.currentFrame;	
 		if (frame < 0)
 			frame = 0;
 		// step 1
@@ -88,32 +54,10 @@ public class ImageOperations
 		}
 		return cacheThresholdedImage;
 	}
-	
-	public IcyBufferedImage run_nocache() 
-	{
-		// step 1
-		int frame = seqCamData.currentFrame;
-		IcyBufferedImage transformedImage = imgTransf.transformImageFromVirtualSequence(frame, opTransf.transformop);
-		if (transformedImage == null)
-			return null;
-		
-		// step 2
-		IcyBufferedImage thresholdedImage;
-		if (opThresh.thresholdtype == EnumThresholdType.COLORARRAY)
-			thresholdedImage = imgThresh.getBinaryInt_FromColorsThreshold(transformedImage); 
-		else 
-			thresholdedImage = imgThresh.getBinaryInt_FromThreshold(transformedImage);
-		return thresholdedImage;
-	}
-
-	public boolean[] convertToBoolean(IcyBufferedImage binaryMap) 
-	{
-		return imgThresh.getBoolMap_FromBinaryInt(binaryMap);
-	}
-	
+	*/
 	protected final byte byteFALSE = 0;
 	
-	public boolean[] getBoolMap_FromBinaryInt(IcyBufferedImage img) 
+	public boolean[] convertToBoolean(IcyBufferedImage img) 
 	{
 		boolean[]	boolMap = new boolean[ img.getSizeX() * img.getSizeY() ];
 		byte [] imageSourceDataBuffer = null;

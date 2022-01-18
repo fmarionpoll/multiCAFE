@@ -19,7 +19,10 @@ public class ThresholdSingleValue extends ImageTransformFunction implements Imag
 			imageSourceDataBuffer = Array1DUtil.arrayToIntArray(sourceArray, sourceImage.isSignedDataType());
 		}
 		else
+		{
 			imageSourceDataBuffer = sourceImage.getDataXYAsInt(0);
+		}
+		
 		if (options.ifGreater) 
 		{
 			for (int x = 0; x < binaryMapDataBuffer.length; x++)  
@@ -42,7 +45,6 @@ public class ThresholdSingleValue extends ImageTransformFunction implements Imag
 					binaryMapDataBuffer[x] = options.byteTRUE;
 			}
 		}
-		
 		return binaryMap;
 	}
 

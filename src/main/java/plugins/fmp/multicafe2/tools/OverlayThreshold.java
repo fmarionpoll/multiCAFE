@@ -18,13 +18,17 @@ import icy.sequence.SequenceEvent.SequenceEventSourceType;
 import icy.sequence.SequenceEvent.SequenceEventType;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
+import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
 import icy.sequence.SequenceListener;
+
 
 public class OverlayThreshold extends Overlay implements SequenceListener 
 {
-	public ImageOperations 		imgOp 	= null;
-	private float 				opacity = 0.3f;
-	private OverlayColorMask	map 	= new OverlayColorMask ("", new Color(0x00FF0000, true));
+	private float 					opacity 				= 0.3f;
+	private OverlayColorMask		map 					= new OverlayColorMask ("", new Color(0x00FF0000, true));
+	private ImageTransformOptions 	imageTransformOptions 	= new ImageTransformOptions();
+	private ImageTransformInterface imageTransformFunction 	= null;
 	
 	// ---------------------------------------------
 	
@@ -33,40 +37,39 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 		super("ThresholdOverlay");	
 	}
 	
-	public OverlayThreshold(SequenceCamData seq) 
+	public OverlayThreshold(SequenceCamData seqCamData) 
 	{
 		super("ThresholdOverlay");
-		setSequence(seq);
+		setSequence(seqCamData);
 	}
 	
-	public void setSequence (SequenceCamData seq) 
+	public void setSequence (SequenceCamData seqCamData) 
 	{
-		if (seq == null)
-			return;
-		if (imgOp == null)
-			imgOp = new ImageOperations (seq);
-		imgOp.setSequence(seq);
+		seqCamData.seq.addListener(this);
+		imageTransformOptions.seqCamData = seqCamData;
 	}
 	
 	public void setTransform (EnumImageTransformations transf) 
 	{
-		imgOp.setTransform( transf);
+		imageTransformOptions.transformOption = transf;
 	}
 	
 	public void setThresholdSingle (int threshold, boolean ifGreater) 
 	{
-		imgOp.setThresholdSingle(threshold, ifGreater);
+		setThresholdTransform (threshold, EnumImageTransformations.THRESHOLD_SINGLE, ifGreater);
 	}
 	
 	public void setThresholdTransform (int threshold, EnumImageTransformations transformop, boolean ifGreater) 
 	{
-		imgOp.setThresholdSingle(threshold, ifGreater);
-		imgOp.setTransform(transformop);
+		imageTransformOptions.setSingleThreshold(threshold, ifGreater);
+		imageTransformOptions.transformOption = transformop;
+		imageTransformFunction = transformop.getFunction();
 	}
 	
 	public void setThresholdColor (ArrayList <Color> colorarray, int distancetype, int threshold) 
 	{
-		imgOp.setColorArrayThreshold(colorarray, distancetype, threshold);
+		imageTransformOptions.setColorArrayThreshold(distancetype, threshold, colorarray);
+		imageTransformFunction = EnumImageTransformations.THRESHOLD_COLORS.getFunction();
 	}
 	
 	@Override
@@ -74,7 +77,9 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 	{
 		if ((canvas instanceof IcyCanvas2D) && g != null) 
 		{
-			IcyBufferedImage thresholdedImage = imgOp.runImageOperation();
+			int posT = canvas.getPositionT();
+			IcyBufferedImage img = sequence.getImage(posT, 0);
+			IcyBufferedImage thresholdedImage = imageTransformFunction.run(img, imageTransformOptions);
 			if (thresholdedImage != null) 
 			{
 				thresholdedImage.setColorMap(0, map);
