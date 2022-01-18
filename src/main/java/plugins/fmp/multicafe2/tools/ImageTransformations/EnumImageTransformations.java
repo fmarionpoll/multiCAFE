@@ -20,9 +20,9 @@ public enum EnumImageTransformations {
 	YDIFFN			("YDiffn", 					new YDiffn(5)), 
 	YDIFFN2			("YDiffn_1D", 				new YDiffn1D(4)), 
 	XYDIFFN			( "XYDiffn", 				new XYDiffn(5)), 
-	REF_T0			("subtract t[start]", 		new SubtractReferenceImage()), 
-	REF_PREVIOUS	("subtract t[i-step]", 		new SubtractReferenceImage()), 
-	REF				("subtract ref", 			new SubtractReferenceImage()),
+	SUBTRACT_T0		("subtract t[start]", 		new SubtractReferenceImage()), 
+	SUBTRACT_TM1	("subtract t[i-step]", 		new SubtractReferenceImage()), 
+	SUBTRACT_REF	("subtract ref", 			new SubtractReferenceImage()),
 	NORM_BRMINUSG	("F. Rebaudo", 				new LinearCombinationNormed(-1, 2, -1)),
 	RGB_TO_H1H2H3	("H1H2H3", 					new H1H2H3()), 
 	SUBTRACT_1RSTCOL("[t-t0]", 					new SubtractColumn(0)), 
@@ -35,10 +35,10 @@ public enum EnumImageTransformations {
 	ZIGZAG			("remove spikes",			null),
 	NONE			("none",					null);
 
-	private TransformImage klass;
+	private ImageTransformInterface klass;
     private String label;
 	
-    EnumImageTransformations(String label, TransformImage klass ) 
+    EnumImageTransformations(String label, ImageTransformInterface klass ) 
 	{ 
 		this.label = label; 
 		this.klass = klass;
@@ -49,7 +49,7 @@ public enum EnumImageTransformations {
 		return label; 
 	}
 	
-	public TransformImage getFunction() 
+	public ImageTransformInterface getFunction() 
 	{ 
 		return klass; 
 	}

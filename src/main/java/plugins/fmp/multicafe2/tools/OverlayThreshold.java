@@ -48,7 +48,7 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 		imgOp.setSequence(seq);
 	}
 	
-	public void setTransform (EnumTransformOp transf) 
+	public void setTransform (EnumImageTransformations transf) 
 	{
 		imgOp.setTransform( transf);
 	}

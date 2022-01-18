@@ -50,8 +50,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JComboBox<EnumImageTransformations> backgroundComboBox = new JComboBox<> (
 			new EnumImageTransformations[]  {
 					EnumImageTransformations.NONE, 
-					EnumImageTransformations.REF_PREVIOUS, 
-					EnumImageTransformations.REF_T0});
+					EnumImageTransformations.SUBTRACT_TM1, 
+					EnumImageTransformations.SUBTRACT_T0});
 	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 10));
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));

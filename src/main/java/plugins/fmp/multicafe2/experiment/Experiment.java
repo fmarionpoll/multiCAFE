@@ -24,7 +24,7 @@ import plugins.fmp.multicafe2.tools.Directories;
 import plugins.fmp.multicafe2.tools.ImageTransform;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
-import plugins.fmp.multicafe2.tools.ImageTransformations.TransformImage;
+import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 
@@ -73,8 +73,6 @@ public class Experiment
 	public Experiment 		chainToNext 			= null;		// pointer to chain this experiment to another one after
 	public long				chainFirstImage_Ms 		= 0;
 	public int				experimentID 			= 0;
-	
-	ImageTransform 	tImg 					= null;
 	
 	private final static String ID_VERSION			= "version"; 
 	private final static String ID_VERSIONNUM		= "1.0.0"; 
@@ -732,7 +730,7 @@ public class Experiment
 		int nimages = seqKymos.seq.getSizeT();
 		seqKymos.seq.beginUpdate();
 
-		TransformImage transform = transformop1.getFunction();
+		ImageTransformInterface transform = transformop1.getFunction();
 		if (transform == null)
 			return;
 		
@@ -753,52 +751,6 @@ public class Experiment
 		
 		seqKymos.seq.dataChanged();
 		seqKymos.seq.endUpdate();
-	}
-		
-	public void kymosBuildFiltered1(int zChannelSource, int zChannelDestination, EnumTransformOp transformop1, int spanDiff) 
-	{
-		int nimages = seqKymos.seq.getSizeT();
-		seqKymos.seq.beginUpdate();
-		
-		if (tImg == null) 
-			tImg = new ImageTransform();
-		tImg.setSpanDiff(spanDiff);
-		tImg.setSequence(seqKymos);
-		
-		if (capillaries.capillariesList.size() != nimages) 
-			SequenceKymosUtils.transferCamDataROIStoKymo(this);
-		
-		for (int t= 0; t < nimages; t++) 
-		{
-			Capillary cap = capillaries.capillariesList.get(t);
-			cap.indexKymograph = t;
-			IcyBufferedImage img = seqKymos.getSeqImage(t, zChannelSource);
-			IcyBufferedImage img2 = tImg.transformImage (img, transformop1);
-			if (seqKymos.seq.getSizeZ(0) < (zChannelDestination+1)) 
-				seqKymos.seq.addImage(t, img2);
-			else
-				seqKymos.seq.setImage(t, zChannelDestination, img2);
-		}
-		
-		seqKymos.seq.dataChanged();
-		seqKymos.seq.endUpdate();
-	}
-	
-	public void setReferenceImageWithConstant (double [] pixel) 
-	{
-		if (tImg == null) 
-			tImg = new ImageTransform();
-		tImg.setSpanDiff(0);
-		Sequence seq = seqKymos.seq;
-		tImg.referenceImage = new IcyBufferedImage(seq.getSizeX(), seq.getSizeY(), seq.getSizeC(), seq.getDataType_());
-		IcyBufferedImage result = tImg.referenceImage;
-		for (int c=0; c < seq.getSizeC(); c++) 
-		{
-			double [] doubleArray = Array1DUtil.arrayToDoubleArray(result.getDataXY(c), result.isSignedDataType());
-			Array1DUtil.fill(doubleArray, 0, doubleArray.length, pixel[c]);
-			Array1DUtil.doubleArrayToArray(doubleArray, result.getDataXY(c));
-		}
-		result.dataChanged();
 	}
 	
 	public boolean xmlLoadMCCapillaries_Only() {

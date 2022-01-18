@@ -4,7 +4,7 @@ import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
 
-public class RemoveHorizontalAverage extends ImageTransformFunction implements TransformImage
+public class RemoveHorizontalAverage extends ImageTransformFunction implements ImageTransformInterface
 {
 	@Override
 	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) 

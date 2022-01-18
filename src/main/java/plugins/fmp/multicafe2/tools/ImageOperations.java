@@ -6,13 +6,14 @@ import java.util.ArrayList;
 import icy.image.IcyBufferedImage;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 
 
 
 public class ImageOperations 
 {
 	private SequenceCamData 		seqCamData 	= null;
-	private ImageOperationsStruct 	opTransf 	= new ImageOperationsStruct();
+	private ImageTransformInterface	opTransf 	= null;
 	private ImageOperationsStruct 	opThresh 	= new ImageOperationsStruct();
 	private ImageTransform 			imgTransf 	= new ImageTransform();
 	private ImageThreshold 			imgThresh 	= new ImageThreshold();
@@ -30,7 +31,7 @@ public class ImageOperations
 	
 	public void setTransform (EnumImageTransformations transformop) 
 	{
-		opTransf.transformop = transformop;
+		opTransf = transformop.getFunction();
 	}
 	
 	public void setThresholdSingle( int threshold, boolean ifGreater) 

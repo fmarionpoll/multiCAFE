@@ -3,7 +3,7 @@ package plugins.fmp.multicafe2.tools.ImageTransformations;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
-public class SubtractColumn extends ImageTransformFunction implements TransformImage
+public class SubtractColumn extends ImageTransformFunction implements ImageTransformInterface
 {
 	int column = 0;
 	

@@ -9,13 +9,13 @@ import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformation
 
 public class ImageOperationsStruct 
 {
-	int 				fromFrame		= -1;
+	int 				fromFrame			= -1;
 	int 				colordistanceType 	= 0;
-	int					simplethreshold = 255;
-	int 				colorthreshold	= 0;
-	ArrayList <Color> 	colorarray 		= null;
-	EnumImageTransformations transformop = EnumImageTransformations.NONE;
-	EnumThresholdType 	thresholdtype 	= EnumThresholdType.NONE;
+	int					simplethreshold 	= 255;
+	int 				colorthreshold		= 0;
+	ArrayList <Color> 	colorarray 			= null;
+	EnumImageTransformations transformop 	= EnumImageTransformations.NONE;
+	EnumThresholdType 	thresholdtype 		= EnumThresholdType.NONE;
 		
 	// -----------------------------------
 	

@@ -4,7 +4,7 @@ import icy.image.IcyBufferedImage;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
-public class YDiffn1D extends ImageTransformFunction implements TransformImage
+public class YDiffn1D extends ImageTransformFunction implements ImageTransformInterface
 {
 	int spanDiff = 5;
 	YDiffn1D(int spanDiff)

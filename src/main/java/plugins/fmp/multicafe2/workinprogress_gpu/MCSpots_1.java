@@ -29,7 +29,6 @@ import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 
 
@@ -81,8 +80,8 @@ public class MCSpots_1 extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-				if (exp != null)
-					removeBackGround(exp);
+//				if (exp != null)
+//					removeBackGround(exp);
 			}});
 	}
 	
@@ -188,24 +187,41 @@ public class MCSpots_1 extends JPanel
 		}
 	}
 	
-	private void removeBackGround(Experiment exp) 
-	{
-		double [] avgColor = new double [3];
-		int width = exp.seqKymos.seq.getSizeX();
-		for (int chan = 0; chan <3; chan++) 
-		{
-			double sum = 0;
-			for (int ix = 0; ix < width; ix++) 
-				sum += avgX[ix][chan]; 
-			avgColor[chan] = sum/width;
-		}
-		// now either create a reference image with this color or write a new transform
-		EnumTransformOp transform = EnumTransformOp.REF;
-		int zChannelDestination = 1;
-		exp.setReferenceImageWithConstant(avgColor);
-		exp.kymosBuildFiltered1(0, zChannelDestination, transform, 0);
-		exp.seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
-	}
+//	private void removeBackGround(Experiment exp) 
+//	{
+//		double [] avgColor = new double [3];
+//		int width = exp.seqKymos.seq.getSizeX();
+//		for (int chan = 0; chan <3; chan++) 
+//		{
+//			double sum = 0;
+//			for (int ix = 0; ix < width; ix++) 
+//				sum += avgX[ix][chan]; 
+//			avgColor[chan] = sum/width;
+//		}
+//		// now either create a reference image with this color or write a new transform
+//		EnumImageTransformations transform = EnumImageTransformations.SUBTRACT_REF;
+//		int zChannelDestination = 1;
+//		exp.setReferenceImageWithConstant(avgColor);
+//		exp.kymosBuildFiltered01(0, zChannelDestination, transform, 0);
+//		exp.seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
+//	}
+//	
+//	public void setReferenceImageWithConstant (double [] pixel) 
+//	{
+//		if (tImg == null) 
+//			tImg = new ImageTransform();
+//		tImg.setSpanDiff(0);
+//		Sequence seq = seqKymos.seq;
+//		tImg.referenceImage = new IcyBufferedImage(seq.getSizeX(), seq.getSizeY(), seq.getSizeC(), seq.getDataType_());
+//		IcyBufferedImage result = tImg.referenceImage;
+//		for (int c=0; c < seq.getSizeC(); c++) 
+//		{
+//			double [] doubleArray = Array1DUtil.arrayToDoubleArray(result.getDataXY(c), result.isSignedDataType());
+//			Array1DUtil.fill(doubleArray, 0, doubleArray.length, pixel[c]);
+//			Array1DUtil.doubleArrayToArray(doubleArray, result.getDataXY(c));
+//		}
+//		result.dataChanged();
+//	}
 	
 		
 	private void graphDisplay2Panels (Experiment exp, double [][] arrayX, double [][] arrayY) 

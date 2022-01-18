@@ -3,7 +3,7 @@ package plugins.fmp.multicafe2.tools.ImageTransformations;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
-public class Deriche extends ImageTransformFunction implements TransformImage
+public class Deriche extends ImageTransformFunction implements ImageTransformInterface
 {
 	double alpha = 0;
 	boolean transformToGrey = false;

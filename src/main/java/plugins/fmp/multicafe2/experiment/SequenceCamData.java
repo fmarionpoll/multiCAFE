@@ -35,7 +35,6 @@ import icy.sequence.Sequence;
 import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.fmp.multicafe2.tools.ImageOperationsStruct;
-import plugins.fmp.multicafe2.tools.EnumTransformOp;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
@@ -150,33 +149,6 @@ public class SequenceCamData
 	public IcyBufferedImage getImageCopy(int t) 
 	{	
 		return IcyBufferedImageUtil.getCopy(getSeqImage(t, 0));
-	}
-
-	// TODO: use GPU
-	public IcyBufferedImage subtractReference(IcyBufferedImage image, int t, EnumTransformOp transformop) 
-	{
-		switch (transformop) 
-		{
-			case REF_PREVIOUS: 
-				{
-				int t0 = t-seqAnalysisStep;
-				if (t0 <0)
-					t0 = 0;
-				IcyBufferedImage ibufImage0 = getSeqImage(t0, 0);
-				image = subtractImagesAsInteger (image, ibufImage0);
-				}	
-				break;
-			case REF_T0:
-			case REF:
-				if (refImage == null)
-					refImage = getSeqImage((int) seqAnalysisStart, 0);
-				image = subtractImagesAsInteger (image, refImage);
-				break;
-			case NONE:
-			default:
-				break;
-		}
-		return image;
 	}
 		
 	public IcyBufferedImage subtractImagesAsDouble (IcyBufferedImage image1, IcyBufferedImage image2) 

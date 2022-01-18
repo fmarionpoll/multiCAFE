@@ -4,7 +4,7 @@ import icy.image.IcyBufferedImage;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
-public class L1DistanceToColumn extends ImageTransformFunction implements TransformImage
+public class L1DistanceToColumn extends ImageTransformFunction implements ImageTransformInterface
 {
 	int column = 0;
 	

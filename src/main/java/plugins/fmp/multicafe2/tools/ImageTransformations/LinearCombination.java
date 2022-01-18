@@ -4,7 +4,7 @@ import icy.image.IcyBufferedImage;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
-public class LinearCombination extends ImageTransformFunction implements TransformImage
+public class LinearCombination extends ImageTransformFunction implements ImageTransformInterface
 {
 	double w0 = 1;
 	double w1 = 1;
