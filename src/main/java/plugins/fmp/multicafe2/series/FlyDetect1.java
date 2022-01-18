@@ -14,6 +14,8 @@ import icy.system.SystemUtil;
 import icy.system.thread.Processor;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.OverlayThreshold;
+import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
+import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
 
 
 
@@ -83,6 +85,11 @@ public class FlyDetect1 extends BuildSeries
 		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
 		openViewer(exp);
 		
+		ImageTransformOptions transformOptions = new ImageTransformOptions();
+		transformOptions.transformOption = options.transformop;
+		getReferenceImage (exp, 0, transformOptions);
+		ImageTransformInterface transformFunction = options.transformop.getFunction();
+		
 		int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectFlies1");
@@ -91,17 +98,22 @@ public class FlyDetect1 extends BuildSeries
 		futures.clear();
 		
 		exp.seqCamData.seq.beginUpdate();
+		int t_current = 0;
 	
-		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms ) 
+		for (long indexms = exp.cages.detectFirst_Ms; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms ) 
 		{
+			final int t_previous = t_current;
 			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
+			t_current = t_from;
+			
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
 				public void run() 
 				{	
 					IcyBufferedImage sourceImage = imageIORead(exp.seqCamData.getFileName(t_from));
-					IcyBufferedImage workImage = exp.seqCamData.subtractReference(sourceImage, t_from, options.transformop); 
+					getReferenceImage (exp, t_previous, transformOptions);
+					IcyBufferedImage workImage = transformFunction.run(sourceImage, transformOptions); 
 					if (workImage == null)
 						return;
 
@@ -117,6 +129,25 @@ public class FlyDetect1 extends BuildSeries
 
 		progressBar.close();
 		processor.shutdown();
+	}
+	
+	private void getReferenceImage (Experiment exp, int t, ImageTransformOptions options) 
+	{
+		switch (options.transformOption) 
+		{
+			case SUBTRACT_TM1: 
+				options.referenceImage = imageIORead(exp.seqCamData.getFileName(t));
+				break;
+				
+			case SUBTRACT_T0:
+			case SUBTRACT_REF:
+				if (options.referenceImage == null)
+					options.referenceImage = imageIORead(exp.seqCamData.getFileName(0));
+				break;
+			case NONE:
+			default:
+				break;
+		}
 	}
 	
 	

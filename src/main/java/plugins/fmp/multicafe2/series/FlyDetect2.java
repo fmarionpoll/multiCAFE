@@ -19,6 +19,9 @@ import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
+import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
+import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
@@ -163,6 +166,11 @@ public class FlyDetect2 extends BuildSeries
 		if (viewInternalImages)
 			displayDetectViewer(exp);
 		
+		ImageTransformOptions transformOptions = new ImageTransformOptions();
+		transformOptions.transformOption = EnumImageTransformations.SUBTRACT_REF;
+		transformOptions.referenceImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.refImage);
+		ImageTransformInterface transformFunction = transformOptions.transformOption.getFunction();
+		
 		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms ) 
 		{
 			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
@@ -176,7 +184,7 @@ public class FlyDetect2 extends BuildSeries
 						return;
 					
 					IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(workImage);				
-					IcyBufferedImage negativeImage = exp.seqCamData.subtractImagesAsInteger(exp.seqCamData.refImage, currentImage);
+					IcyBufferedImage negativeImage = transformFunction.run(currentImage, transformOptions);
 					find_flies.findFlies(negativeImage, t_from);
 					
 				}}));
@@ -300,6 +308,11 @@ public class FlyDetect2 extends BuildSeries
 		limit = limit * exp.cages.detectBin_Ms +exp.cages.detectFirst_Ms ;
 		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getSeqImage(t_from, 0));
 		viewerCamData = exp.seqCamData.seq.getFirstViewer();
+		ImageTransformOptions transformOptions = new ImageTransformOptions();
+		transformOptions.transformOption = EnumImageTransformations.SUBTRACT_REF;
+		transformOptions.referenceImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.refImage);
+		ImageTransformInterface transformFunction = transformOptions.transformOption.getFunction();
+		
 		displayRefViewers(exp);
 		
 		int nFliesToRemove = 0;
@@ -320,7 +333,8 @@ public class FlyDetect2 extends BuildSeries
 			
 //			final IcyBufferedImage  currentImage = exp.seqCamData.getSeqImage(t, 0);
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
-			IcyBufferedImage positiveImage = exp.seqCamData.subtractImagesAsInteger(currentImage, exp.seqCamData.refImage);
+			IcyBufferedImage positiveImage = transformFunction.run(currentImage, transformOptions);
+			
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, find_flies.rectangleAllCages));
 			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd); 
 			for (Cage cage: exp.cages.cagesList) 

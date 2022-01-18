@@ -29,12 +29,9 @@ import icy.file.SequenceFileImporter;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
-import icy.math.ArrayMath;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
-import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.tools.Comparators;
-import plugins.fmp.multicafe2.tools.ImageOperationsStruct;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
@@ -51,16 +48,8 @@ public class SequenceCamData
 	public int						nTotalFrames 			= 0;
 
 	public EnumStatus 				status					= EnumStatus.REGULAR;		
-	
-	public IcyBufferedImage 		cacheTransformedImage 	= null;
-	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
-	public IcyBufferedImage 		cacheThresholdedImage 	= null;
-	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
 	protected String 				csCamFileName 			= null;
-	
 	volatile public List <String>	imagesList 				= new ArrayList<String>();
-	volatile public boolean 		stopFlag 				= false;
-	volatile public boolean 		threadRunning 			= false;
 	
 	// ----------------------------------------
 	
@@ -150,54 +139,7 @@ public class SequenceCamData
 	{	
 		return IcyBufferedImageUtil.getCopy(getSeqImage(t, 0));
 	}
-		
-	public IcyBufferedImage subtractImagesAsDouble (IcyBufferedImage image1, IcyBufferedImage image2) 
-	{	
-		IcyBufferedImage result = new IcyBufferedImage(image1.getSizeX(), image1.getSizeY(), image1.getSizeC(), image1.getDataType_());
-		for (int c = 0; c < image1.getSizeC(); c++) 
-		{
-			double[] img1DoubleArray = Array1DUtil.arrayToDoubleArray(image1.getDataXY(c), image1.isSignedDataType());
-			double[] img2DoubleArray = Array1DUtil.arrayToDoubleArray(image2.getDataXY(c), image2.isSignedDataType());
-			ArrayMath.subtract(img1DoubleArray, img2DoubleArray, img1DoubleArray);
-
-			double[] dummyzerosArray = Array1DUtil.arrayToDoubleArray(result.getDataXY(c), result.isSignedDataType());
-			ArrayMath.max(img1DoubleArray, dummyzerosArray, img1DoubleArray);
-			Object destArray = result.getDataXY(c);
-			Array1DUtil.doubleArrayToSafeArray(img1DoubleArray, destArray, result.isSignedDataType());
-			result.setDataXY(c, destArray);
-		}
-		result.dataChanged();
-		return result;
-	}
 	
-	public IcyBufferedImage subtractImagesAsInteger (IcyBufferedImage image1, IcyBufferedImage image2) 
-	{	
-		IcyBufferedImage result = new IcyBufferedImage(image1.getSizeX(), image1.getSizeY(), image1.getSizeC(), image1.getDataType_());
-		for (int c = 0; c < image1.getSizeC(); c++) 
-		{
-			int[] img1Array = Array1DUtil.arrayToIntArray(image1.getDataXY(c), image1.isSignedDataType());
-			int[] img2Array = Array1DUtil.arrayToIntArray(image2.getDataXY(c), image2.isSignedDataType());
-			ArrayMath.subtract(img1Array, img2Array, img1Array);
-
-			int[] dummyzerosArray = Array1DUtil.arrayToIntArray(result.getDataXY(c), result.isSignedDataType());
-			max(img1Array, dummyzerosArray, img1Array);
-			Object destArray = result.getDataXY(c);
-			Array1DUtil.intArrayToSafeArray(img1Array, destArray, true, result.isSignedDataType());
-			result.setDataXY(c, destArray);
-		}
-		result.dataChanged();
-		return result;
-	}
-	
-	private void max(int[] a1, int[] a2, int[] output) 
-	{
-		for (int i = 0; i < a1.length; i++)
-			if (a1[i] >= a2[i])
-				output[i] = a1[i];
-			else
-				output[i] = a2[i];
-	}
-			
 	// --------------------------
 	
 	public FileTime getFileTimeFromStructuredName(int t) 
@@ -346,8 +288,7 @@ public class SequenceCamData
 	{
 		if (seq == null)
 			return;
-		if (threadRunning)
-			stopFlag = true;
+
 		seq.removeAllROI();
 		seq.close();
 	}

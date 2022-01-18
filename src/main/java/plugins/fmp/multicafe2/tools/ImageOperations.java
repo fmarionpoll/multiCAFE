@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 import icy.image.IcyBufferedImage;
+import icy.type.DataType;
+import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
@@ -14,9 +16,13 @@ public class ImageOperations
 {
 	private SequenceCamData 		seqCamData 	= null;
 	private ImageTransformInterface	opTransf 	= null;
-	private ImageOperationsStruct 	opThresh 	= new ImageOperationsStruct();
+	private ImageTransformInterface opThresh 	= null;
 	private ImageTransform 			imgTransf 	= new ImageTransform();
 	private ImageThreshold 			imgThresh 	= new ImageThreshold();
+	public ImageOperationsStruct 	cacheThresholdOp 		= new ImageOperationsStruct();
+	public ImageOperationsStruct 	cacheTransformOp 		= new ImageOperationsStruct();
+	public IcyBufferedImage 		cacheTransformedImage 	= null;
+	public IcyBufferedImage 		cacheThresholdedImage 	= null;
 	
 	public ImageOperations (SequenceCamData seq) 
 	{
@@ -50,37 +56,37 @@ public class ImageOperations
 		imgThresh.setColorArrayThreshold(distanceType, colorthreshold, colorarray);
 	}
 	
-	public IcyBufferedImage run() 
+	public IcyBufferedImage runImageOperation() 
 	{
-		return run (seqCamData.currentFrame);
+		return runImageOperationFrame (seqCamData.currentFrame);
 	}
 	
-	public IcyBufferedImage run (int frame) 
+	private IcyBufferedImage runImageOperationFrame (int frame) 
 	{	
 		if (frame < 0)
 			frame = 0;
 		// step 1
 		opTransf.fromFrame = frame;
-		if (!opTransf.isValidTransformCache(seqCamData.cacheTransformOp)) 
+		if (!opTransf.isValidTransformCache(cacheTransformOp)) 
 		{
-			seqCamData.cacheTransformedImage = imgTransf.transformImageFromVirtualSequence(frame, opTransf.transformop);
-			if (seqCamData.cacheTransformedImage == null) 
+			cacheTransformedImage = imgTransf.transformImageFromVirtualSequence(frame, opTransf.transformop);
+			if (cacheTransformedImage == null) 
 				return null;
-			opTransf.copyTransformOpTo(seqCamData.cacheTransformOp);
-			seqCamData.cacheThresholdOp.fromFrame = -1;
+			opTransf.copyTransformOpTo(cacheTransformOp);
+			cacheThresholdOp.fromFrame = -1;
 		}
 		
 		// step 2
 		opThresh.fromFrame = frame;
-		if (!opThresh.isValidThresholdCache(seqCamData.cacheThresholdOp)) 
+		if (!opThresh.isValidThresholdCache(cacheThresholdOp)) 
 		{
 			if (opThresh.thresholdtype == EnumThresholdType.COLORARRAY) 
-				seqCamData.cacheThresholdedImage = imgThresh.getBinaryInt_FromColorsThreshold(seqCamData.cacheTransformedImage); 
+				cacheThresholdedImage = imgThresh.getBinaryInt_FromColorsThreshold(cacheTransformedImage); 
 			else 
-				seqCamData.cacheThresholdedImage = imgThresh.getBinaryInt_FromThreshold(seqCamData.cacheTransformedImage);
-			opThresh.copyThresholdOpTo(seqCamData.cacheThresholdOp) ;
+				cacheThresholdedImage = imgThresh.getBinaryInt_FromThreshold(cacheTransformedImage);
+			opThresh.copyThresholdOpTo(cacheThresholdOp) ;
 		}
-		return seqCamData.cacheThresholdedImage;
+		return cacheThresholdedImage;
 	}
 	
 	public IcyBufferedImage run_nocache() 
@@ -103,5 +109,32 @@ public class ImageOperations
 	public boolean[] convertToBoolean(IcyBufferedImage binaryMap) 
 	{
 		return imgThresh.getBoolMap_FromBinaryInt(binaryMap);
+	}
+	
+	protected final byte byteFALSE = 0;
+	
+	public boolean[] getBoolMap_FromBinaryInt(IcyBufferedImage img) 
+	{
+		boolean[]	boolMap = new boolean[ img.getSizeX() * img.getSizeY() ];
+		byte [] imageSourceDataBuffer = null;
+		DataType datatype = img.getDataType_();
+		if (datatype != DataType.BYTE && datatype != DataType.UBYTE) 
+		{
+			Object sourceArray = img.getDataXY(0);
+			imageSourceDataBuffer = Array1DUtil.arrayToByteArray(sourceArray);
+		}
+		else 
+		{
+			imageSourceDataBuffer = img.getDataXYAsByte(0);
+		}
+		
+		for (int x = 0; x < boolMap.length; x++)  
+		{
+			if (imageSourceDataBuffer[x] == byteFALSE)
+				boolMap[x] =  false;
+			else
+				boolMap[x] =  true;
+		}
+		return boolMap;
 	}
 }

@@ -32,6 +32,8 @@ public enum EnumImageTransformations {
 	DERICHE			("edge detection", 			new Deriche(1., true)), 
 	DERICHE_COLOR	("Deriche's edges", 		new Deriche(1., false)),
 	MINUSHORIZAVG	("remove Hz traces", 		new RemoveHorizontalAverage()),
+	THRESHOLD_SINGLE("threshold 1 value",		new ThresholdSingleValue()),
+	THRESHOLD_COLORS("threshold colors array",	new ThresholdColors()),
 	ZIGZAG			("remove spikes",			null),
 	NONE			("none",					null);
 

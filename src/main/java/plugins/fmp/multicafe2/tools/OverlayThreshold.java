@@ -22,7 +22,7 @@ import icy.sequence.SequenceListener;
 
 public class OverlayThreshold extends Overlay implements SequenceListener 
 {
-	private ImageOperations 	imgOp 	= null;
+	public ImageOperations 		imgOp 	= null;
 	private float 				opacity = 0.3f;
 	private OverlayColorMask	map 	= new OverlayColorMask ("", new Color(0x00FF0000, true));
 	
@@ -74,7 +74,7 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 	{
 		if ((canvas instanceof IcyCanvas2D) && g != null) 
 		{
-			IcyBufferedImage thresholdedImage = imgOp.run();
+			IcyBufferedImage thresholdedImage = imgOp.runImageOperation();
 			if (thresholdedImage != null) 
 			{
 				thresholdedImage.setColorMap(0, map);

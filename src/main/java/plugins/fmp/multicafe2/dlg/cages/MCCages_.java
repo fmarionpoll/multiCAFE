@@ -65,7 +65,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 		iTAB_CAGE2	= iTab;
 		tabBuildROIs2.init(capLayout, parent0);
 		tabBuildROIs2.addPropertyChangeListener(this);
-		tabsPane.addTab("Cages (bis)", null, tabBuildROIs2, "Define cages using a ROI polygons and limits detection");
+		tabsPane.addTab("Cages (bis)", null, tabBuildROIs2, "Define cages using limits detection within a user drawn ROI polygon");
 
 		iTab++;
 		iTAB_INFOS = iTab;
