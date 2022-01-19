@@ -1,11 +1,11 @@
-package plugins.fmp.multicafe2.tools;
+package plugins.fmp.multicafe2.tools.NHDistance;
 
 import java.awt.Color;
 
 /**
- * Class NH L1ColorDistance.
+ * NHClass L2ColorDistance.
  */
-public class NHDistanceColorL1 extends NHDistanceColor 
+public class NHDistanceColorL2 extends NHDistanceColor 
 {
 	/* (non-Javadoc)
 	 * @see plugins.nherve.toolbox.image.feature.ColorDistance#computeDistance(double[], double[])
@@ -16,7 +16,7 @@ public class NHDistanceColorL1 extends NHDistanceColor
 		double dr = c1.getRed() - c2.getRed();
 		double dg = c1.getGreen() - c2.getGreen();
 		double db = c1.getBlue() - c2.getBlue();
-		return Math.abs(dr) + Math.abs(dg) + Math.abs(db);
+		return Math.sqrt(dr * dr + dg * dg + db * db);
 	}
 
 }

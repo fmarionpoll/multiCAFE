@@ -129,22 +129,22 @@ public class DetectLevels02  extends BuildSeries
 						int[] transformed1DArray2 = Array1DUtil.arrayToIntArray(transformedArray2, transformedImage2.isSignedDataType());
 						switch (options.transform02)
 						{
-						case COLORDISTANCE_L1_Y:
-						case COLORDISTANCE_L2_Y:
-							findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 5);
-							break;
-							
-						case SUBTRACT_1RSTCOL:
-						case L1DIST_TO_1RSTCOL:
-							detectThresholdUp(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 20, options.detectLevel2Threshold);
-							break;
-							
-						case DERICHE:
-							findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 5);
-							break;
-							
-						default:
-							break;
+							case COLORDISTANCE_L1_Y:
+							case COLORDISTANCE_L2_Y:
+								findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 5);
+								break;
+								
+							case SUBTRACT_1RSTCOL:
+							case L1DIST_TO_1RSTCOL:
+								detectThresholdUp(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 20, options.detectLevel2Threshold);
+								break;
+								
+							case DERICHE:
+								findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 5);
+								break;
+								
+							default:
+								break;
 						}
 					}
 

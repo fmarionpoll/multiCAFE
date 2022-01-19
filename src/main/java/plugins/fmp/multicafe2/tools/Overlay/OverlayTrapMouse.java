@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe2.tools;
+package plugins.fmp.multicafe2.tools.Overlay;
 
 import icy.canvas.IcyCanvas;
 import icy.canvas.IcyCanvas2D;
@@ -16,13 +16,13 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 
 
-//our painter extends AbstractPainter as it provides painter facilities
+
 public class OverlayTrapMouse extends Overlay 
 {
-    private Point5D.Double Pt;
-	private JButton		pickColorButton		= null;
-	private JComboBox<Color> colorPickCombo = null;
-	private String textPickAPixel = null;
+    private Point5D.Double 		Pt;
+	private JButton				pickColorButton	= null;
+	private JComboBox<Color> 	colorPickCombo 	= null;
+	private String 				textPickAPixel 	= null;
 
     public OverlayTrapMouse() 
     {
@@ -94,7 +94,6 @@ public class OverlayTrapMouse extends Overlay
         }     
     }
 
-
     private void onMouseMoved(Sequence seq, int posT, Point5D.Double imagePoint) 
     {
         Color c = getRGB(seq, posT, imagePoint);
@@ -124,17 +123,11 @@ public class OverlayTrapMouse extends Overlay
         return null;
     }
 
-	/**
-	 * @return the pt
-	 */
 	public Point5D.Double getPt() 
 	{
 		return Pt;
 	}
 
-	/**
-	 * @param pt the pt to set
-	 */
 	public void setPt(Point5D.Double pt) 
 	{
 		Pt = pt;

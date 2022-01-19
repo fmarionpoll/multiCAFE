@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe2.tools;
+package plugins.fmp.multicafe2.tools.Overlay;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -86,7 +86,6 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 		if ((canvas instanceof IcyCanvas2D) && g != null) 
 		{
 			int posT = canvas.getPositionT();
-			IcyBufferedImage img = sequence.getImage(posT, 0);
 			IcyBufferedImage thresholdedImage = getTransformedImage(posT);
 			if (thresholdedImage != null) 
 			{

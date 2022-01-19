@@ -13,9 +13,9 @@ import icy.image.IcyBufferedImage;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.OverlayThreshold;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
+import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
 
 
 

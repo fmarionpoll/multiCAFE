@@ -5,10 +5,9 @@ import java.awt.Color;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.type.DataType;
-
-import plugins.fmp.multicafe2.tools.NHDistanceColor;
-import plugins.fmp.multicafe2.tools.NHDistanceColorL1;
-import plugins.fmp.multicafe2.tools.NHDistanceColorL2;
+import plugins.fmp.multicafe2.tools.NHDistance.NHDistanceColor;
+import plugins.fmp.multicafe2.tools.NHDistance.NHDistanceColorL1;
+import plugins.fmp.multicafe2.tools.NHDistance.NHDistanceColorL2;
 
 public class ThresholdColors extends ImageTransformFunction implements ImageTransformInterface
 {

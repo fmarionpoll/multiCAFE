@@ -80,7 +80,8 @@ public class MCSpots_1 extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
-//				if (exp != null)
+				if (exp != null)
+					System.out.println("should call removeBackGround()");
 //					removeBackGround(exp);
 			}});
 	}
