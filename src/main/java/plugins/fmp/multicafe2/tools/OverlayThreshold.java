@@ -28,7 +28,9 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 	private float 					opacity 				= 0.3f;
 	private OverlayColorMask		map 					= new OverlayColorMask ("", new Color(0x00FF0000, true));
 	private ImageTransformOptions 	imageTransformOptions 	= new ImageTransformOptions();
-	private ImageTransformInterface imageTransformFunction 	= null;
+	private ImageTransformInterface imageTransformFunction 	= EnumImageTransformations.NONE.getFunction();
+	private ImageTransformInterface imageThresholdFunction 	= EnumImageTransformations.NONE.getFunction();
+	private Sequence localSeq = null;
 	
 	// ---------------------------------------------
 	
@@ -45,13 +47,9 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 	
 	public void setSequence (SequenceCamData seqCamData) 
 	{
-		seqCamData.seq.addListener(this);
+		localSeq = seqCamData.seq;
+		localSeq.addListener(this);
 		imageTransformOptions.seqCamData = seqCamData;
-	}
-	
-	public void setTransform (EnumImageTransformations transf) 
-	{
-		imageTransformOptions.transformOption = transf;
 	}
 	
 	public void setThresholdSingle (int threshold, boolean ifGreater) 
@@ -64,12 +62,22 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 		imageTransformOptions.setSingleThreshold(threshold, ifGreater);
 		imageTransformOptions.transformOption = transformop;
 		imageTransformFunction = transformop.getFunction();
+		imageThresholdFunction = EnumImageTransformations.THRESHOLD_SINGLE.getFunction();
 	}
 	
 	public void setThresholdColor (ArrayList <Color> colorarray, int distancetype, int threshold) 
 	{
 		imageTransformOptions.setColorArrayThreshold(distancetype, threshold, colorarray);
-		imageTransformFunction = EnumImageTransformations.THRESHOLD_COLORS.getFunction();
+		imageTransformFunction = EnumImageTransformations.NONE.getFunction();
+		imageThresholdFunction = EnumImageTransformations.THRESHOLD_COLORS.getFunction();
+	}
+	
+	public IcyBufferedImage getTransformedImage(int t) 
+	{
+		IcyBufferedImage img = localSeq.getImage(t, 0);
+		return imageThresholdFunction.run(
+						imageTransformFunction.run(img, imageTransformOptions),
+						imageTransformOptions);
 	}
 	
 	@Override
@@ -79,7 +87,7 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 		{
 			int posT = canvas.getPositionT();
 			IcyBufferedImage img = sequence.getImage(posT, 0);
-			IcyBufferedImage thresholdedImage = imageTransformFunction.run(img, imageTransformOptions);
+			IcyBufferedImage thresholdedImage = getTransformedImage(posT);
 			if (thresholdedImage != null) 
 			{
 				thresholdedImage.setColorMap(0, map);

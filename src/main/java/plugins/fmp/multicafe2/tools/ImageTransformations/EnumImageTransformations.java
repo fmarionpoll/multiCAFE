@@ -34,8 +34,8 @@ public enum EnumImageTransformations {
 	MINUSHORIZAVG	("remove Hz traces", 		new RemoveHorizontalAverage()),
 	THRESHOLD_SINGLE("threshold 1 value",		new ThresholdSingleValue()),
 	THRESHOLD_COLORS("threshold colors array",	new ThresholdColors()),
-	ZIGZAG			("remove spikes",			null),
-	NONE			("none",					null);
+	ZIGZAG			("remove spikes",			new None()),
+	NONE			("none",					new None());
 
 	private ImageTransformInterface klass;
     private String label;

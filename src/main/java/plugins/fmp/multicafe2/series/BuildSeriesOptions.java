@@ -77,7 +77,7 @@ public class BuildSeriesOptions implements XMLPersistent
 	public boolean		forceBuildBackground	= false;
 	public boolean		detectFlies				= true;
 	
-	public EnumImageTransformations transformop; 
+	public EnumImageTransformations transformop = EnumImageTransformations.NONE; 
 	public int			videoChannel 			= 0;
 	public boolean 		backgroundSubstraction 	= false;
 
