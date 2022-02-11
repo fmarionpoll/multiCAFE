@@ -215,12 +215,6 @@ public class Cage
 				continue;
 			Point2D point = ((ROI2DPoint) roi).getPoint();
 			int t = roi.getT();	
-//			for (XYTaValue aValue: flyPositions.xytList) {
-//				if (aValue.indexT == t) {
-//					aValue.xyPoint = point;
-//					break;
-//				}
-//			}
 			flyPositions.xytList.get(t).xyPoint = point;
 		}
 	}
