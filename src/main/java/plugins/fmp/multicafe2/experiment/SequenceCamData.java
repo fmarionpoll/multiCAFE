@@ -28,7 +28,6 @@ import icy.file.Loader;
 import icy.file.SequenceFileImporter;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
-import icy.image.IcyBufferedImageUtil;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.tools.Comparators;
@@ -133,11 +132,6 @@ public class SequenceCamData
 	{
 		currentFrame = t;
 		return seq.getImage(t, z);
-	}
-	
-	public IcyBufferedImage getImageCopy(int t) 
-	{	
-		return IcyBufferedImageUtil.getCopy(getSeqImage(t, 0));
 	}
 	
 	// --------------------------
