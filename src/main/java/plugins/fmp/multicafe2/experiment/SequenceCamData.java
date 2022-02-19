@@ -50,7 +50,7 @@ public class SequenceCamData
 	protected String 				csCamFileName 			= null;
 	volatile public List <String>	imagesList 				= new ArrayList<String>();
 	
-	// ----------------------------------------
+	// -------------------------
 	
 	public SequenceCamData () 
 	{
@@ -126,7 +126,7 @@ public class SequenceCamData
 		return csName;
 	}
 	
-	// ------------------------------------------------------
+	// --------------------------
 	
 	public IcyBufferedImage getSeqImage(int t, int z) 
 	{
