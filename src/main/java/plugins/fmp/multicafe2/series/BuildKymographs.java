@@ -46,7 +46,7 @@ public class BuildKymographs extends BuildSeries
 	private boolean loadExperimentDataToBuildKymos(Experiment exp) 
 	{
 		boolean flag = exp.xmlLoadMCCapillaries_Only();
-		exp.seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList(true));
+		exp.seqCamData.seq = exp.seqCamData.initSequenceFromFirstImage_V2(exp.seqCamData.getImagesList(true));
 		return flag;
 	}
 	
@@ -217,7 +217,7 @@ public class BuildKymographs extends BuildSeries
 	{
 		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData.seq == null) 
-			seqCamData.seq = exp.seqCamData.initV2SequenceFromFirstImage(exp.seqCamData.getImagesList(true));
+			seqCamData.seq = exp.seqCamData.initSequenceFromFirstImage_V2(exp.seqCamData.getImagesList(true));
 		int sizex = seqCamData.seq.getSizeX();
 		int sizey = seqCamData.seq.getSizeY();	
 

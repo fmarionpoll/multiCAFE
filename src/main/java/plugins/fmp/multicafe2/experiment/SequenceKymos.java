@@ -248,7 +248,7 @@ public class SequenceKymos extends SequenceCamData
 			myList = ExperimentDirectories.keepOnlyAcceptedNames_List(myList, "tiff");
 			setV2ImagesList(convertLinexLRFileNames(myList));
 			// threaded by default here
-			seq = loadV2SequenceFromImagesList(imagesList);
+			seq = loadSequenceFromImagesList_V2(imagesList);
 			setParentDirectoryAsCSCamFileName(imagesList.get(0));
 			status = EnumStatus.KYMOGRAPH;
 		}

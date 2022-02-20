@@ -1,6 +1,7 @@
  package plugins.fmp.multicafe2.experiment;
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -26,10 +27,13 @@ import com.drew.metadata.exif.ExifSubIFDDirectory;
 
 import icy.file.Loader;
 import icy.file.SequenceFileImporter;
+import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
+import icy.image.ImageUtil;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
+import icy.system.thread.ThreadUtil;
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
@@ -307,18 +311,56 @@ public class SequenceCamData
 	{
 		if (imagesList.size() == 0)
 			return false;
-		attachV2Sequence(loadV2SequenceFromImagesList(imagesList));
+		attachV2Sequence(loadSequenceFromImagesList_V2(imagesList));
 		return (seq != null);
 	}
 	
-	public Sequence loadV2SequenceFromImagesList(List <String> imagesList) 
+	public Sequence loadSequenceFromImagesList(List <String> imagesList) 
 	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
 		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList, false);
 		return seq;
 	}
+	
+	public Sequence loadSequenceFromImagesList_V2(List <String> imagesList) 
+	{
+		  SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
+		  Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
+		  ThreadUtil.bgRun( new Runnable() { 
+			@Override public void run() 
+			{
+				ProgressFrame progress = new ProgressFrame("Loading images...");
+				seq.setVolatile(true);
+				seq.beginUpdate();
+				try
+				{
+					final int nbframes = imagesList.size();
+					for (int t = 1; t < nbframes; t++)
+					{
+						int pos = (int)(100d * (double)t / (double) nbframes);
+						progress.setPosition( pos );
+						
+						BufferedImage img = ImageUtil.load(imagesList.get(t));
+						progress.setMessage( "Processing image: " + pos + "/" + nbframes);
+							
+						if (img != null)
+						{
+							IcyBufferedImage icyImg = IcyBufferedImage.createFrom(img);
+							icyImg.setVolatile(true);
+							seq.setImage(t, 0, icyImg);
+						}
+					}
+				}
+				finally
+				{
+					seq.endUpdate();
+					progress.close();
+				}
+			}});	
+		return seq;
+	 }
 		
-	public Sequence initV2SequenceFromFirstImage(List <String> imagesList) 
+	public Sequence initSequenceFromFirstImage_V2(List <String> imagesList) 
 	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
 		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
