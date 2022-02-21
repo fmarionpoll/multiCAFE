@@ -341,7 +341,7 @@ public class SequenceCamData
 						progress.setPosition( pos );
 						
 						BufferedImage img = ImageUtil.load(imagesList.get(t));
-						progress.setMessage( "Processing image: " + pos + "/" + nbframes);
+						progress.setMessage( "Loading image: " + pos + "/" + nbframes);
 							
 						if (img != null)
 						{
