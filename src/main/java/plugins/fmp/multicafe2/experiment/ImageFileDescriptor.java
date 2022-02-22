@@ -7,7 +7,6 @@ import java.util.List;
 public class ImageFileDescriptor 
 {
 	public String	fileName 	= null;
-	//public File		file		= null;
 	public boolean	exists		= false;
 	public int		imageHeight	= 0;
 	public int 		imageWidth	= 0;
