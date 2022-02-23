@@ -42,7 +42,7 @@ public class Create extends JPanel implements PropertyChangeListener
 			
 	EnumStatusComputation 	sComputation 			= EnumStatusComputation.START_COMPUTATION; 
 	private MultiCAFE2 		parent0					= null;
-	private BuildKymographs threadBuildKymo 	= null;
+	private BuildKymographs threadBuildKymo 		= null;
 
 	// -----------------------------------------------------
 	
