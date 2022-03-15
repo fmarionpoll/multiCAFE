@@ -60,12 +60,14 @@ public class SelectFiles1 extends JPanel
 	
 	public void initialize (MultiCAFE2 parent0) 
 	{
-		filterCombo.setEditable(true);
 		this.parent0 = parent0;
 		this.parent1 = parent0.paneExperiment.panelLoadSave;
 		addPropertyChangeListener(parent1);
 		
 		JPanel mainPanel = GuiUtil.generatePanelWithoutBorder();
+		dialogFrame = new IcyFrame ("Select files", true, true);
+		dialogFrame.setLayout(new BorderLayout());
+		dialogFrame.add(mainPanel, BorderLayout.CENTER);
 		
 		FlowLayout layout1 = new FlowLayout(FlowLayout.LEFT);
 		layout1.setVgap(1);
@@ -78,11 +80,6 @@ public class SelectFiles1 extends JPanel
 		topPanel.add(rbFile);
 		topPanel.add(rbDirectory);
 		mainPanel.add(GuiUtil.besidesPanel(topPanel));
-		filterCombo.setSelectedIndex(6);
-		
-		dialogFrame = new IcyFrame ("Select files", true, true);
-		dialogFrame.setLayout(new BorderLayout());
-		dialogFrame.add(mainPanel, BorderLayout.CENTER);
 		
 		directoriesJList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		directoriesJList.setLayoutOrientation(JList.VERTICAL);
@@ -94,6 +91,9 @@ public class SelectFiles1 extends JPanel
 	
 		mainPanel.add(GuiUtil.besidesPanel(clearSelectedButton, clearAllButton));
 		mainPanel.add(GuiUtil.besidesPanel(addSelectedButton, addAllButton));
+		
+		filterCombo.setEditable(true);
+		filterCombo.setSelectedIndex(6);
 		
 		addActionListeners();
 		
