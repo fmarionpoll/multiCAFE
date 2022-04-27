@@ -113,8 +113,9 @@ public class Options extends JPanel
 	
 	int getExcelBuildStep() 
 	{
-		int buildStep = ((int) binSize.getValue()) * binUnit.getMsUnitValue();
-		return buildStep;
+		double binValue = (double) binSize.getValue();
+		double buildStep =   binValue * binUnit.getMsUnitValue();
+		return (int) buildStep;
 	}
 	
 	long getStartAllMs() 
