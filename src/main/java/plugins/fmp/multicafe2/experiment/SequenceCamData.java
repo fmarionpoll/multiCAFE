@@ -316,7 +316,7 @@ public class SequenceCamData
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
 		Sequence seq = Loader.loadSequences(seqFileImporter, imagesList, 
 				0, 		// series index to load
-				true,	// fore volatile 
+				true,	// force volatile 
 				false,	// separate  	
 				false, 	// auto-order
 				false, 	// directory
