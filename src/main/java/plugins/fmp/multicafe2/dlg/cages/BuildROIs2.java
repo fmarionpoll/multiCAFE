@@ -115,7 +115,12 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 			{ 
 				Experiment exp =  (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
-					deletePointsIncluded(exp);
+					try {
+						deletePointsIncluded(exp);
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 			}});
 	}
 
@@ -224,7 +229,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 		}
 	}
 		
-	void deletePointsIncluded(Experiment exp) 
+	void deletePointsIncluded(Experiment exp) throws InterruptedException 
 	{
 		SequenceCamData seqCamData = exp.seqCamData;
 		ROI2D roiSnip = seqCamData.seq.getSelectedROI2D();

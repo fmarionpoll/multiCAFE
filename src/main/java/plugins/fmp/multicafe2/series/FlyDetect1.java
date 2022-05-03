@@ -120,7 +120,12 @@ public class FlyDetect1 extends BuildSeries
 					exp.seqCamData.currentFrame = t_from;
 					viewerCamData.setPositionT(t_from);
 					viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t_from));
-					find_flies.findFlies (workImage, t_from);					
+					try {
+						find_flies.findFlies (workImage, t_from);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}					
 				}}));
 		}
 		

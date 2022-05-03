@@ -219,7 +219,7 @@ public class Cage
 		}
 	}
 	
-	public void computeCageBooleanMask2D() 
+	public void computeCageBooleanMask2D() throws InterruptedException 
 	{
 		cageMask = cageRoi.getBooleanMask2D( 0 , 0, 1, true );
 	}

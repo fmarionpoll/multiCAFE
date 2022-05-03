@@ -98,8 +98,13 @@ public class FlyDetect2 extends BuildSeries
 		flag |= (exp.seqCamData.refImage == null);
 		if (flag) 
 		{
-			buildBackgroundImage(exp);
-			exp.saveReferenceImage();
+			try {
+				buildBackgroundImage(exp);
+				exp.saveReferenceImage();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		if (options.detectFlies) 
@@ -185,7 +190,12 @@ public class FlyDetect2 extends BuildSeries
 					
 					IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(workImage);				
 					IcyBufferedImage negativeImage = transformFunction.run(currentImage, transformOptions);
-					find_flies.findFlies(negativeImage, t_from);
+					try {
+						find_flies.findFlies(negativeImage, t_from);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
 				}}));
 		}
@@ -296,7 +306,7 @@ public class FlyDetect2 extends BuildSeries
 		}
 	}
 
-	private void buildBackgroundImage(Experiment exp) 
+	private void buildBackgroundImage(Experiment exp) throws InterruptedException 
 	{
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		find_flies.initParametersForDetection(exp, options);

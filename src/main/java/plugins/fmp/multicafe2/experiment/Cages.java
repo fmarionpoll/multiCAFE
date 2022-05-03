@@ -453,8 +453,14 @@ public class Cages
 	
 	public void computeBooleanMasksForCages() 
 	{
-		for (Cage cage : cagesList ) 
-			cage.computeCageBooleanMask2D(); 
+		for (Cage cage : cagesList ) {
+			try {
+				cage.computeCageBooleanMask2D();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
 	}
 	
 	public int getLastIntervalFlyAlive(int cagenumber) 

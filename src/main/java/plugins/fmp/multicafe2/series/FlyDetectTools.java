@@ -29,7 +29,7 @@ public class FlyDetectTools
 	
 	// -----------------------------------------------------
 	
-	public BooleanMask2D findLargestBlob(ROI2DArea roiAll, Cage cage) 
+	public BooleanMask2D findLargestBlob(ROI2DArea roiAll, Cage cage) throws InterruptedException 
 	{
 		ROI cageLimitROI = cage.cageRoi;
 		if ( cageLimitROI == null )
@@ -98,7 +98,7 @@ public class FlyDetectTools
 		return new ROI2DArea( bmask );
 	}
 	
-	public void findFlies (IcyBufferedImage workimage, int t) 
+	public void findFlies (IcyBufferedImage workimage, int t) throws InterruptedException 
 	{
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);

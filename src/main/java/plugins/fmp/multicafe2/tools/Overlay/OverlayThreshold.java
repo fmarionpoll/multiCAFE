@@ -90,11 +90,17 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 			if (thresholdedImage != null) 
 			{
 				thresholdedImage.setColorMap(0, map);
-				BufferedImage bufferedImage = IcyBufferedImageUtil.getARGBImage(thresholdedImage);
-				Composite bck = g.getComposite();
-				g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
-				g.drawImage(bufferedImage, 0, 0, null);
-				g.setComposite(bck);			
+				try {
+					BufferedImage bufferedImage = IcyBufferedImageUtil.getARGBImage(thresholdedImage);
+					Composite bck = g.getComposite();
+					g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+					g.drawImage(bufferedImage, 0, 0, null);
+					g.setComposite(bck);	
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+						
 			}
 		}
 	}
