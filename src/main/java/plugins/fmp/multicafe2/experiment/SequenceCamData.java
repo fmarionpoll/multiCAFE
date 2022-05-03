@@ -314,7 +314,15 @@ public class SequenceCamData
 	public Sequence loadSequenceFromImagesList_V2(List <String> imagesList) 
 	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
-		Sequence seq = Loader.loadSequences(seqFileImporter, imagesList, 0, true, false, false, false, false, false).get(0);
+		Sequence seq = Loader.loadSequences(seqFileImporter, imagesList, 
+				0, 		// series index to load
+				true,	// fore volatile 
+				false,	// separate  	
+				false, 	// auto-order
+				false, 	// directory
+				false, 	// add to recent
+				false	// show progress
+				).get(0);
         return seq;
 	}
 		

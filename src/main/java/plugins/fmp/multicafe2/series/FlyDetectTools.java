@@ -38,10 +38,12 @@ public class FlyDetectTools
 		if (cageMask == null)
 			return null;
 		ROI2DArea roi = new ROI2DArea(roiAll.getBooleanMask( true ).getIntersection( cageMask ) );
+
 		// find largest component in the threshold
 		int max = 0;
 		BooleanMask2D bestMask = null;
-		for ( BooleanMask2D mask : roi.getBooleanMask( true ).getComponents() ) 
+		BooleanMask2D roiBooleanMask = roi.getBooleanMask( true );
+		for ( BooleanMask2D mask : roiBooleanMask.getComponents() ) 
 		{
 			int len = mask.getPoints().length;
 			if (options.blimitLow && len < options.limitLow)
@@ -62,6 +64,8 @@ public class FlyDetectTools
 				max = len;
 			}
 		}
+
+		
 		return bestMask;
 	}
 	

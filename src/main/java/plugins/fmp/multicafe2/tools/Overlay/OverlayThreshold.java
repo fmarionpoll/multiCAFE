@@ -94,7 +94,7 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 				Composite bck = g.getComposite();
 				g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
 				g.drawImage(bufferedImage, 0, 0, null);
-				g.setComposite(bck);
+				g.setComposite(bck);			
 			}
 		}
 	}

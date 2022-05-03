@@ -13,7 +13,7 @@
 
     <!-- Project Information -->
     <artifactId>multiCAFE2</artifactId>
-    <version>2.0.31</version>
+    <version>2.0.32</version>
     
     <packaging>jar</packaging>
 
@@ -66,11 +66,10 @@
     <!-- List of project's dependencies -->
     <dependencies>
         <!-- The core of Icy -->
-        <dependency>
-            <groupId>org.bioimageanalysis.icy</groupId>
-            <artifactId>icy-kernel</artifactId>
+		<dependency>
+        	<groupId>org.bioimageanalysis.icy</groupId>
+        	<artifactId>icy-kernel</artifactId>
         </dependency>
-
         <!-- The EzPlug library, simplifies writing UI for Icy plugins. -->
         <dependency>
             <groupId>org.bioimageanalysis.icy</groupId>
@@ -169,11 +168,6 @@
     			<groupId>org.bioimageanalysis.icy</groupId>
     			<artifactId>jfree-common</artifactId>
     			<version>1.0.24</version>
-    		</dependency>
-    		<dependency>
-    			<groupId>org.bioimageanalysis.icy</groupId>
-    			<artifactId>jfreechart</artifactId>
-    			<version>1.5.3</version>
     		</dependency>
     		<dependency>
     			<groupId>org.bioimageanalysis.icy</groupId>
