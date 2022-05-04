@@ -313,25 +313,25 @@ public class SequenceCamData
 	}
 	
 	public Sequence loadSequenceFromImagesList_V2(List <String> imagesList) 
-    {
-          SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
-          Chronometer chrono = new Chronometer("Tracking loading time" );
-          int nbSeconds_t0 =  (int) (chrono.getNanos() / 1000000000f);
-          
-          Sequence seq = Loader.loadSequences(seqFileImporter, imagesList, 
-                      0,          // series index to load
-                      true, // force volatile 
-                      false,      // separate       
-                      false,      // auto-order
-                      false,      // directory
-                      false,      // add to recent
-                      false // show progress
-                      ).get(0);
-          
-          int nbSeconds_t1 =  (int) (chrono.getNanos() / 1000000000f);
-          System.out.println("Elapsed time (s):" + (nbSeconds_t1- nbSeconds_t0));
-      return seq;
-    }
+	{
+		  SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
+		  Chronometer chrono = new Chronometer("Tracking loading time" );
+		  int nbSeconds_t0 =  (int) (chrono.getNanos() / 1000000000f);
+		  
+		  Sequence seq = Loader.loadSequences(seqFileImporter, imagesList, 
+		              0,          // series index to load
+		          true, // force volatile 
+		          false,      // separate       
+		          false,      // auto-order
+		          false,      // directory
+		          false,      // add to recent
+		          false // show progress
+		              ).get(0);
+		  
+		  int nbSeconds_t1 =  (int) (chrono.getNanos() / 1000000000f);
+		  System.out.println("Elapsed time (s):" + (nbSeconds_t1- nbSeconds_t0));
+		  return seq;
+	}
 
 		
 	public Sequence initSequenceFromFirstImage_V2(List <String> imagesList) 
