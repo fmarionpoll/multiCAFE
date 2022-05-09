@@ -286,17 +286,15 @@ public class SequenceKymos extends SequenceCamData
 	
 	boolean getImageDim(final ImageFileDescriptor fileProp) 
 	{
-		boolean flag = true;
+		boolean flag = false;
 		OMEXMLMetadata metaData = null;
-		try 
-		{
+		try {
 			metaData = Loader.getOMEXMLMetaData(fileProp.fileName);
 			fileProp.imageWidth = MetaDataUtil.getSizeX(metaData, 0);
 			fileProp.imageHeight= MetaDataUtil.getSizeY(metaData, 0);
-		} 
-		catch (UnsupportedFormatException | IOException e) 
-		{
-			flag = false;
+			flag = true;
+		} catch (UnsupportedFormatException | IOException | InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return flag;
@@ -315,30 +313,22 @@ public class SequenceKymos extends SequenceCamData
 				continue;
 			
 			progress.setMessage("adjust image "+fileProp.fileName);
-//			System.out.print("adjust image "+fileProp.fileName);
 			IcyBufferedImage ibufImage1 = null;
-			try 
-			{
+			try {
 				ibufImage1 = Loader.loadImage(fileProp.fileName);
-			} 
-			catch (UnsupportedFormatException | IOException e) 
-			{
-				e.printStackTrace();
+			} catch (UnsupportedFormatException | IOException | InterruptedException e1) {
+				e1.printStackTrace();
 			}
 			
 			IcyBufferedImage ibufImage2 = new IcyBufferedImage(imageWidthMax, imageHeightMax, ibufImage1.getSizeC(), ibufImage1.getDataType_());
 			transferImage1To2(ibufImage1, ibufImage2);
-			try 
-			{
+			
+			try {
 				Saver.saveImage(ibufImage2, new File(fileProp.fileName), true);
-			} catch (FormatException e) 
-			{
-				e.printStackTrace();
-			} 
-			catch (IOException e) 
-			{
+			} catch (FormatException | IOException e) {
 				e.printStackTrace();
 			}
+			
 			progress.incPosition();
 		}
 		progress.close();

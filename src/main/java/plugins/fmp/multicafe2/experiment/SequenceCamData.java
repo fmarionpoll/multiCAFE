@@ -30,7 +30,6 @@ import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
-import icy.system.profile.Chronometer;
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
@@ -315,9 +314,6 @@ public class SequenceCamData
 	public Sequence loadSequenceFromImagesList_V2(List <String> imagesList) 
 	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
-		Chronometer chrono = new Chronometer("Tracking loading time" );
-		int nbSeconds_t0 =  (int) (chrono.getNanos() / 1000000000f);
-			  
 		Sequence seq = Loader.loadSequences(seqFileImporter, imagesList, 
 				0,          // series index to load
 			    true, 		// force volatile 
@@ -327,10 +323,6 @@ public class SequenceCamData
 			    false,      // add to recent
 			    false // show progress
 			).get(0);
-			  
-		int nbSeconds_t1 =  (int) (chrono.getNanos() / 1000000000f);
-		System.out.println("Elapsed time (s):" + (nbSeconds_t1- nbSeconds_t0));
-			  
 		return seq;
 	}
 

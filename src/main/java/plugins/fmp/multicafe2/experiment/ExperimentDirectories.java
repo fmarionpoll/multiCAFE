@@ -13,6 +13,7 @@ import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 
+import icy.file.FileUtil;
 import icy.gui.dialog.LoaderDialog;
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.tools.Directories;
@@ -37,8 +38,9 @@ public class ExperimentDirectories
 		String ext = strExtension.toLowerCase();
 		for (String name: namesList) 
 		{
-			if (name.toLowerCase().endsWith(ext))
-				outList.add(name);
+			String nameGeneric = FileUtil.getGenericPath(name);
+			if (nameGeneric.toLowerCase().endsWith(ext))
+				outList.add(nameGeneric);
 		}
 		return outList;
 	}
@@ -53,7 +55,8 @@ public class ExperimentDirectories
 			{
 				for (Path entry: stream) 
 				{
-					list.add(entry.toString());
+					String toAdd = FileUtil.getGenericPath(entry.toString());
+					list.add(toAdd);
 				}
 			} 
 			catch (IOException e) 
