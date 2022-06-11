@@ -761,7 +761,12 @@ public class Experiment
 			flag = xmlLoadOldCapillaries();
 		
 		// load mccapillaries description of experiment
-		if (field_boxID .contentEquals("..")) 
+		if (field_boxID .contentEquals("..")
+				&& field_experiment.contentEquals("..") 
+				&& field_comment1.contentEquals("..")
+				&& field_comment2.contentEquals("..")
+				&& field_sex.contentEquals("..")
+				&& field_strain.contentEquals("..")) 
 		{
 			field_boxID = capillaries.desc.old_boxID;
 			field_experiment = capillaries.desc.old_experiment;
