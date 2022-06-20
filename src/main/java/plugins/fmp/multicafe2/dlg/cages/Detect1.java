@@ -62,7 +62,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	
 	private JCheckBox 	whiteObjectCheckBox 	= new JCheckBox("white object");
-	JCheckBox 			overlayCheckBox 		= new JCheckBox("overlay");
+			JCheckBox 	overlayCheckBox 		= new JCheckBox("overlay");
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	
 	private OverlayThreshold 	ov 				= null;
