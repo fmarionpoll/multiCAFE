@@ -26,29 +26,55 @@ public class ThresholdSingleValue extends ImageTransformFunction implements Imag
 //		System.out.println("threshold= "+ options.simplethreshold+ "  ifGreater=" + options.ifGreater);
 //		System.out.println("true= "+ options.byteFALSE+ "  false=" + options.byteTRUE);
 		
-		if (options.ifGreater) 
+		byte on = options.byteTRUE;
+		byte off = options.byteFALSE;
+		if (!options.ifGreater) 
 		{
-			for (int x = 0; x < binaryMapDataBuffer.length; x++)  
-			{
-				int val = imageSourceDataBuffer[x] & 0xFF;
-				if (val > options.simplethreshold)
-					binaryMapDataBuffer[x] = options.byteFALSE;
-				else
-					binaryMapDataBuffer[x] = options.byteTRUE;
-			}
-		} 
-		else 
-		{
-			for (int x = 0; x < binaryMapDataBuffer.length; x++)  
-			{
-				int val = imageSourceDataBuffer[x] & 0xFF;
-				if (val < options.simplethreshold)
-					binaryMapDataBuffer[x] = options.byteFALSE;
-				else
-					binaryMapDataBuffer[x] = options.byteTRUE;
-			}
+			off = options.byteTRUE;
+			on = options.byteFALSE;
 		}
+		
+		for (int x = 0; x < binaryMapDataBuffer.length; x++)  
+		{
+			int val = imageSourceDataBuffer[x] & 0xFF;
+			if (val > options.simplethreshold)
+				binaryMapDataBuffer[x] = off;
+			else
+				binaryMapDataBuffer[x] = on;
+		}
+		
 		return binaryMap;
 	}
 
 }
+
+/*
+ 
+ public IcyBufferedImage getBinaryInt_FromThreshold(IcyBufferedImage sourceImage) 
+	{	
+		if (sourceImage == null)
+			return null;
+		IcyBufferedImage binaryMap = new IcyBufferedImage(sourceImage.getSizeX(), sourceImage.getSizeY(), 1, DataType.UBYTE);
+		byte[] binaryMapDataBuffer = binaryMap.getDataXYAsByte(0);
+
+		int [] imageSourceDataBuffer = null;
+		DataType datatype = sourceImage.getDataType_();
+		if (datatype != DataType.INT) {
+			Object sourceArray = sourceImage.getDataXY(0);
+			imageSourceDataBuffer = Array1DUtil.arrayToIntArray(sourceArray, sourceImage.isSignedDataType());
+		}
+		else
+			imageSourceDataBuffer = sourceImage.getDataXYAsInt(0);
+		
+		for (int x = 0; x < binaryMapDataBuffer.length; x++)  {
+			int val = imageSourceDataBuffer[x] & 0xFF;
+			if (val > simplethreshold)
+				binaryMapDataBuffer[x] = byteFALSE;
+			else
+				binaryMapDataBuffer[x] = byteTRUE;
+		}
+		return binaryMap;
+	}
+ 
+ 
+ */
