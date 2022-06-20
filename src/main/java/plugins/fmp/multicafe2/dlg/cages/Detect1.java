@@ -175,7 +175,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 			ov.setSequence(seqCamData);
 		}
 		seqCamData.seq.addOverlay(ov);	
-		ov.setThresholdSingle(exp.cages.detect_threshold, false); //true);
+		ov.setThresholdSingle(exp.cages.detect_threshold, true);
 		ov.painterChanged();	
 	}
 	
