@@ -26,7 +26,7 @@ import icy.sequence.SequenceListener;
 public class OverlayThreshold extends Overlay implements SequenceListener 
 {
 	private float 					opacity 				= 0.3f;
-	private OverlayColorMask		map 					= new OverlayColorMask ("", new Color(0x00FF0000, true));
+	private OverlayColorMask		map 					= new OverlayColorMask ("overlaymask", new Color(0x00FF0000, true));
 	private ImageTransformOptions 	imageTransformOptions 	= new ImageTransformOptions();
 	private ImageTransformInterface imageTransformFunction 	= EnumImageTransformations.NONE.getFunction();
 	private ImageTransformInterface imageThresholdFunction 	= EnumImageTransformations.NONE.getFunction();

@@ -23,9 +23,6 @@ public class ThresholdSingleValue extends ImageTransformFunction implements Imag
 			imageSourceDataBuffer = sourceImage.getDataXYAsInt(0);
 		}
 		
-//		System.out.println("threshold= "+ options.simplethreshold+ "  ifGreater=" + options.ifGreater);
-//		System.out.println("true= "+ options.byteFALSE+ "  false=" + options.byteTRUE);
-		
 		byte on = options.byteTRUE;
 		byte off = options.byteFALSE;
 		if (!options.ifGreater) 
@@ -33,7 +30,7 @@ public class ThresholdSingleValue extends ImageTransformFunction implements Imag
 			off = options.byteTRUE;
 			on = options.byteFALSE;
 		}
-		
+
 		for (int x = 0; x < binaryMapDataBuffer.length; x++)  
 		{
 			int val = imageSourceDataBuffer[x] & 0xFF;
