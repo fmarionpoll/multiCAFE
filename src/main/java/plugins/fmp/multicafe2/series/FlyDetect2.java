@@ -189,7 +189,7 @@ public class FlyDetect2 extends BuildSeries
 						return;
 					
 					IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(workImage);				
-					IcyBufferedImage negativeImage = transformFunction.run(currentImage, transformOptions);
+					IcyBufferedImage negativeImage = transformFunction.transformImage(currentImage, transformOptions);
 					try {
 						find_flies.findFlies(negativeImage, t_from);
 					} catch (InterruptedException e) {
@@ -343,7 +343,7 @@ public class FlyDetect2 extends BuildSeries
 			
 //			final IcyBufferedImage  currentImage = exp.seqCamData.getSeqImage(t, 0);
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
-			IcyBufferedImage positiveImage = transformFunction.run(currentImage, transformOptions);
+			IcyBufferedImage positiveImage = transformFunction.transformImage(currentImage, transformOptions);
 			
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, find_flies.rectangleAllCages));
 			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd); 

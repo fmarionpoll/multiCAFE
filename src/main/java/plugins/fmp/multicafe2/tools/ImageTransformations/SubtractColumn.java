@@ -13,7 +13,7 @@ public class SubtractColumn extends ImageTransformFunction implements ImageTrans
 	}
 	
 	@Override
-	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		int nchannels =  sourceImage.getSizeC();
 		int imageSizeX = sourceImage.getSizeX();

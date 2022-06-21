@@ -13,7 +13,7 @@ public class YDiffn1D extends ImageTransformFunction implements ImageTransformIn
 	}
 	
 	@Override
-	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		int imageSizeX = sourceImage.getSizeX();
 		int imageSizeY = sourceImage.getSizeY();

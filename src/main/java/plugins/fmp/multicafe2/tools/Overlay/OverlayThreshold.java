@@ -75,9 +75,8 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 	public IcyBufferedImage getTransformedImage(int t) 
 	{
 		IcyBufferedImage img = localSeq.getImage(t, 0);
-		return imageThresholdFunction.run(
-						imageTransformFunction.run(img, imageTransformOptions),
-						imageTransformOptions);
+		IcyBufferedImage img2 = imageTransformFunction.transformImage(img, imageTransformOptions);
+		return imageThresholdFunction.transformImage(img2, imageTransformOptions);
 	}
 	
 	@Override

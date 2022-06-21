@@ -113,7 +113,7 @@ public class FlyDetect1 extends BuildSeries
 				{	
 					IcyBufferedImage sourceImage = imageIORead(exp.seqCamData.getFileName(t_from));
 					getReferenceImage (exp, t_previous, transformOptions);
-					IcyBufferedImage workImage = transformFunction.run(sourceImage, transformOptions); 
+					IcyBufferedImage workImage = transformFunction.transformImage(sourceImage, transformOptions); 
 					if (workImage == null)
 						return;
 

@@ -8,7 +8,7 @@ public class SumDiff extends ImageTransformFunction implements ImageTransformInt
 {
 
 	@Override
-	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) {
+	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) {
 		if (sourceImage.getSizeC() < 3)
 			return null;
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());

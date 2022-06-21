@@ -4,5 +4,5 @@ import icy.image.IcyBufferedImage;
 
 public interface ImageTransformInterface 
 {
-	public IcyBufferedImage run (IcyBufferedImage sourceImage, ImageTransformOptions options);
+	public IcyBufferedImage transformImage (IcyBufferedImage sourceImage, ImageTransformOptions options);
 }

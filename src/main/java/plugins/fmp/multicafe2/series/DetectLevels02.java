@@ -98,7 +98,7 @@ public class DetectLevels02  extends BuildSeries
 					if (options.pass1) 
 					{		
 						int c = 0;
-						IcyBufferedImage transformedImage1 = transformPass1.run (rawImage, null);
+						IcyBufferedImage transformedImage1 = transformPass1.transformImage (rawImage, null);
 						Object transformedArray1 = transformedImage1.getDataXY(c);
 						int[] transformed1DArray1 = Array1DUtil.arrayToIntArray(transformedArray1, transformedImage1.isSignedDataType());
 						
@@ -124,7 +124,7 @@ public class DetectLevels02  extends BuildSeries
 							capi.ptsTop.setTempDataFromPolylineLevel();
 
 						int c = 0;
-						IcyBufferedImage transformedImage2 = transformPass2.run (rawImage, null);		
+						IcyBufferedImage transformedImage2 = transformPass2.transformImage (rawImage, null);		
 						Object transformedArray2 = transformedImage2.getDataXY(c);
 						int[] transformed1DArray2 = Array1DUtil.arrayToIntArray(transformedArray2, transformedImage2.isSignedDataType());
 						switch (options.transform02)

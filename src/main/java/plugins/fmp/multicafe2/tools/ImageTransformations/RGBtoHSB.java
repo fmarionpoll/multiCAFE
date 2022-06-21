@@ -14,7 +14,7 @@ public class RGBtoHSB extends ImageTransformFunction implements ImageTransformIn
 	}
 	
 	@Override
-	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		IcyBufferedImage img = functionRGBtoHSB(sourceImage);
 		if (channelOut >= 0)

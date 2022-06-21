@@ -17,7 +17,7 @@ public class LinearCombination extends ImageTransformFunction implements ImageTr
 	}
 	
 	@Override
-	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		return functionRGBtoLinearCombination(sourceImage);
 	}

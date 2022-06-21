@@ -7,7 +7,7 @@ import icy.type.collection.array.Array1DUtil;
 public class RemoveHorizontalAverage extends ImageTransformFunction implements ImageTransformInterface
 {
 	@Override
-	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		IcyBufferedImage img2 = new IcyBufferedImage (sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		int imgSizeX = sourceImage.getSizeX();

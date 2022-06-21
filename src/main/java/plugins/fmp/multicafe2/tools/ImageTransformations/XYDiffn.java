@@ -12,7 +12,7 @@ public class XYDiffn extends ImageTransformFunction implements ImageTransformInt
 	}
 	
 	@Override
-	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		int chan0 = 0;
 		int chan1 =  sourceImage.getSizeC();

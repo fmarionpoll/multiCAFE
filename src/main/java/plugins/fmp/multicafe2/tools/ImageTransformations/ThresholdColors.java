@@ -12,7 +12,7 @@ import plugins.fmp.multicafe2.tools.NHDistance.NHDistanceColorL2;
 public class ThresholdColors extends ImageTransformFunction implements ImageTransformInterface
 {
 	@Override
-	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		if (options.colorarray.size() == 0)
 			return null;

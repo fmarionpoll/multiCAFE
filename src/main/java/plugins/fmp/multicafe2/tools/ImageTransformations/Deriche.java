@@ -15,7 +15,7 @@ public class Deriche extends ImageTransformFunction implements ImageTransformInt
 	}
 	
 	@Override
-	public IcyBufferedImage run(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		IcyBufferedImage img2 = doDeriche (sourceImage, this.alpha);
 		if (transformToGrey)
