@@ -106,21 +106,21 @@ public class FlyDetectTools
  		{		
 			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
 				continue;
-			if (cage.cageNFlies > 0) 
+			if (cage.cageNFlies <1)
+				continue;
+			
+			BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, cage);
+			if ( bestMask != null ) 
 			{
-				BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, cage);
-				if ( bestMask != null ) 
-				{
-					ROI2DArea flyROI = new ROI2DArea( bestMask ); 
-					Rectangle2D rect = flyROI.getBounds2D();
-					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-					cage.flyPositions.addPoint(t, flyPosition);
-				}
-				else 
-				{
-					cage.flyPositions.addPoint(t, flyPositionMissed);
-				}
+				ROI2DArea flyROI = new ROI2DArea( bestMask ); 
+				Rectangle2D rect = flyROI.getBounds2D();
+				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
+				cage.flyPositions.addPoint(t, flyPosition);
 			}
+			else 
+			{
+				cage.flyPositions.addPoint(t, flyPositionMissed);
+			}	
 		}
 	}
 	

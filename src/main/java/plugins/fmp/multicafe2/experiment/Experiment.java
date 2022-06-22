@@ -48,9 +48,9 @@ public class Experiment
 	
 	// __________________________________________________
 	
-	public 	long			camFirstImage_Ms		= -1;
+	public 	long			camFirstImage_ms		= -1;
 	public 	long			camLastImage_Ms			= -1;
-	public 	long			camBinImage_Ms			= -1;
+	public 	long			camBinImage_ms			= -1;
 	
 	public 	long			offsetFirstCol_Ms		= 0;
 	public 	long			offsetLastCol_Ms		= 0;
@@ -347,10 +347,10 @@ public class Experiment
 			lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.nTotalFrames-1);
 			if (firstImage_FileTime != null && lastImage_FileTime != null)
 			{
-				camFirstImage_Ms = firstImage_FileTime.toMillis();
+				camFirstImage_ms = firstImage_FileTime.toMillis();
 				camLastImage_Ms = lastImage_FileTime.toMillis();
-				camBinImage_Ms = (camLastImage_Ms - camFirstImage_Ms)/(seqCamData.nTotalFrames-1);
-				if (camBinImage_Ms == 0)
+				camBinImage_ms = (camLastImage_Ms - camFirstImage_ms)/(seqCamData.nTotalFrames-1);
+				if (camBinImage_ms == 0)
 					System.out.println("error / file interval size");
 			}
 			else
@@ -492,10 +492,10 @@ public class Experiment
 		String version = XMLUtil.getElementValue(node, ID_VERSION, ID_VERSIONNUM);
 		if (!version .equals(ID_VERSIONNUM))
 			return false;
-		camFirstImage_Ms= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, -1);
+		camFirstImage_ms= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, -1);
 		camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, -1);
-		if (camFirstImage_Ms < 0) 
-			camFirstImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, -1)*60000;
+		if (camFirstImage_ms < 0) 
+			camFirstImage_ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, -1)*60000;
 		if (camLastImage_Ms < 0)
 			camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1)*60000;
 
@@ -519,10 +519,10 @@ public class Experiment
 	
 	private void ugly_checkOffsetValues()
 	{
-		if (offsetLastCol_Ms + camFirstImage_Ms > camLastImage_Ms)
+		if (offsetLastCol_Ms + camFirstImage_ms > camLastImage_Ms)
 		{
-			offsetLastCol_Ms -= camFirstImage_Ms;
-			offsetFirstCol_Ms -= camFirstImage_Ms;
+			offsetLastCol_Ms -= camFirstImage_ms;
+			offsetFirstCol_Ms -= camFirstImage_ms;
 		}
 	}
 	
@@ -537,7 +537,7 @@ public class Experiment
 				return false;
 			
 			XMLUtil.setElementValue(node, ID_VERSION, ID_VERSIONNUM);
-			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGEMS, camFirstImage_Ms);
+			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGEMS, camFirstImage_ms);
 			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGEMS, camLastImage_Ms);
 			
 			XMLUtil.setElementLongValue(node, ID_FIRSTKYMOCOLMS, offsetFirstCol_Ms); 

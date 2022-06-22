@@ -57,12 +57,12 @@ public class BuildKymographs extends BuildSeries
 		if (options.isFrameFixed) {
 			exp.offsetFirstCol_Ms = options.t_firstMs;
 			exp.offsetLastCol_Ms = options.t_lastMs;
-			if (exp.offsetLastCol_Ms + exp.camFirstImage_Ms > exp.camLastImage_Ms)
-				exp.offsetLastCol_Ms = exp.camLastImage_Ms - exp.camFirstImage_Ms;
+			if (exp.offsetLastCol_Ms + exp.camFirstImage_ms > exp.camLastImage_Ms)
+				exp.offsetLastCol_Ms = exp.camLastImage_Ms - exp.camFirstImage_ms;
 		} 
 		else {
 			exp.offsetFirstCol_Ms = 0;
-			exp.offsetLastCol_Ms = exp.camLastImage_Ms - exp.camFirstImage_Ms;
+			exp.offsetLastCol_Ms = exp.camLastImage_Ms - exp.camFirstImage_ms;
 		}
 	}
 			
@@ -146,7 +146,7 @@ public class BuildKymographs extends BuildSeries
 		for (int iframe = 0 ; iframe < nframes; iframe++) {
 			final int indexToFrame =  iframe;	
 			long iindexms = iframe *  exp.kymoBinCol_Ms + exp.offsetFirstCol_Ms;
-			final int indexFromFrame = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_Ms));
+			final int indexFromFrame = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_ms));
 			if (indexFromFrame >= seqCamData.nTotalFrames)
 				continue;
 						

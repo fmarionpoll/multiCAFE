@@ -35,7 +35,7 @@ import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
 
 
 
-public class Detect1 extends JPanel implements ChangeListener, PropertyChangeListener, PopupMenuListener 
+public class Detect1 extends JPanel implements ChangeListener, ItemListener, PropertyChangeListener, PopupMenuListener 
 {
 	/**
 	 * 
@@ -46,17 +46,26 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private String 		detectString 			= "Detect...";
 	private JButton 	startComputationButton 	= new JButton(detectString);
 
-	JComboBox<EnumImageTransformations> colorChannelComboBox = new JComboBox<EnumImageTransformations> (new EnumImageTransformations[] {
-			EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB, 
-			EnumImageTransformations.R2MINUS_GB, EnumImageTransformations.G2MINUS_RB, EnumImageTransformations.B2MINUS_RG, 
-			EnumImageTransformations.NORM_BRMINUSG, EnumImageTransformations.RGB,
-			EnumImageTransformations.H_HSB, EnumImageTransformations.S_HSB, EnumImageTransformations.B_HSB	});
+	JComboBox<EnumImageTransformations> transformComboBox = new JComboBox<> (
+		new EnumImageTransformations[] {
+			EnumImageTransformations.R_RGB, 
+			EnumImageTransformations.G_RGB, 
+			EnumImageTransformations.B_RGB, 
+			EnumImageTransformations.R2MINUS_GB, 
+			EnumImageTransformations.G2MINUS_RB, 
+			EnumImageTransformations.B2MINUS_RG, 
+			EnumImageTransformations.NORM_BRMINUSG, 
+			EnumImageTransformations.RGB,
+			EnumImageTransformations.H_HSB, 
+			EnumImageTransformations.S_HSB, 
+			EnumImageTransformations.B_HSB	});
 	
 	private JComboBox<EnumImageTransformations> backgroundComboBox = new JComboBox<> (
-			new EnumImageTransformations[]  {
-					EnumImageTransformations.NONE, 
-					EnumImageTransformations.SUBTRACT_TM1, 
-					EnumImageTransformations.SUBTRACT_T0});
+		new EnumImageTransformations[]  {
+			EnumImageTransformations.NONE, 
+			EnumImageTransformations.SUBTRACT_TM1, 
+			EnumImageTransformations.SUBTRACT_T0});
+	
 	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 1));
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
@@ -70,9 +79,9 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 			JCheckBox 	overlayCheckBox 		= new JCheckBox("overlay");
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	
-	private OverlayThreshold 	ov 				= null;
-	private FlyDetect1 detectFlies1Thread 			= null;
-	//private int 				currentExp 		= -1;
+	private OverlayThreshold ov 				= null;
+	private FlyDetect1 detectFlies1Thread 		= null;
+
 
 	// -----------------------------------------------------
 	
@@ -93,9 +102,9 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		allCagesComboBox.addPopupMenuListener(this);
 		
 		JPanel panel2 = new JPanel(flowLayout);
-		colorChannelComboBox.setSelectedIndex(1);
+		transformComboBox.setSelectedIndex(1);
 		panel2.add(new JLabel("video channel ", SwingConstants.RIGHT));
-		panel2.add(colorChannelComboBox);
+		panel2.add(transformComboBox);
 		panel2.add(new JLabel("bkgnd subtraction ", SwingConstants.RIGHT));
 		panel2.add(backgroundComboBox);
 		panel2.add(new JLabel("threshold ", SwingConstants.RIGHT));
@@ -122,6 +131,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		
 		defineActionListeners();
 		thresholdSpinner.addChangeListener(this);
+		transformComboBox.addItemListener(this);
 	}
 	
 	private void defineActionListeners()
@@ -180,8 +190,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 			ov.setSequence(seqCamData);
 		}
 		seqCamData.seq.addOverlay(ov);	
-		boolean ifGreater = true; // false; 
-		EnumImageTransformations transformOp = (EnumImageTransformations) colorChannelComboBox.getSelectedItem();
+		boolean ifGreater = true; 
+		EnumImageTransformations transformOp = (EnumImageTransformations) transformComboBox.getSelectedItem();
 		ov.setThresholdSingle(exp.cages.detect_threshold, transformOp, ifGreater);
 		ov.painterChanged();	
 	}
@@ -225,7 +235,7 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.limitRatio		= (int) limitRatioSpinner.getValue();
 		options.jitter 			= (int) jitterTextField.getValue();
 		options.videoChannel 	= 0; //colorChannelComboBox.getSelectedIndex();
-		options.transformop = (EnumImageTransformations) colorChannelComboBox.getSelectedItem();
+		options.transformop 	= (EnumImageTransformations) transformComboBox.getSelectedItem();
 		
 		options.transformop		= (EnumImageTransformations) backgroundComboBox.getSelectedItem();
 		options.threshold		= (int) thresholdSpinner.getValue();
@@ -304,6 +314,17 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	public void popupMenuCanceled(PopupMenuEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		if(e.getStateChange() == ItemEvent.SELECTED) {
+            Object source = e.getSource();
+            if (source instanceof JComboBox) {
+            	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+                updateOverlay(exp);
+            }
+        }   
 	}
 
 }

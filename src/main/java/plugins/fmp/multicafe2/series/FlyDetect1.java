@@ -100,10 +100,10 @@ public class FlyDetect1 extends BuildSeries
 		exp.seqCamData.seq.beginUpdate();
 		int t_current = 0;
 	
-		for (long indexms = exp.cages.detectFirst_Ms; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms ) 
+		for (long index_ms = exp.cages.detectFirst_Ms; index_ms <= exp.cages.detectLast_Ms; index_ms += exp.cages.detectBin_Ms ) 
 		{
 			final int t_previous = t_current;
-			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
+			final int t_from = (int) ((index_ms - exp.camFirstImage_ms)/exp.camBinImage_ms);
 			t_current = t_from;
 			
 			futures.add(processor.submit(new Runnable () 

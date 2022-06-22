@@ -178,7 +178,7 @@ public class FlyDetect2 extends BuildSeries
 		
 		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms ) 
 		{
-			final int t_from = (int) ((indexms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
+			final int t_from = (int) ((indexms - exp.camFirstImage_ms)/exp.camBinImage_ms);
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
@@ -311,7 +311,7 @@ public class FlyDetect2 extends BuildSeries
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		find_flies.initParametersForDetection(exp, options);
 		
-		int t_from = (int) ((exp.cages.detectFirst_Ms - exp.camFirstImage_Ms)/exp.camBinImage_Ms);
+		int t_from = (int) ((exp.cages.detectFirst_Ms - exp.camFirstImage_ms)/exp.camBinImage_ms);
 		long limit = 50 ;
 		if (limit > exp.seqCamData.nTotalFrames)
 			limit = exp.seqCamData.nTotalFrames;
@@ -336,7 +336,7 @@ public class FlyDetect2 extends BuildSeries
 		int t_previous = -1;
 		for (long indexms = exp.cages.detectFirst_Ms ; indexms<= limit && !stopFlag; indexms += exp.cages.detectBin_Ms) 
 		{
-			int t = (int) ((indexms - exp.cages.detectFirst_Ms)/exp.camBinImage_Ms);
+			int t = (int) ((indexms - exp.cages.detectFirst_Ms)/exp.camBinImage_ms);
 			if (t == t_previous)
 				continue;
 			t_previous = t;
