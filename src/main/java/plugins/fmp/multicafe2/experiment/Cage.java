@@ -20,7 +20,7 @@ public class Cage
 	public ROI2D 		cageRoi					= null;
 	public BooleanMask2D cageMask				= null;
 	public XYTaSeriesArrayList 	flyPositions 	= new XYTaSeriesArrayList();
-	public int 			cageNFlies  			= 1;
+	public int 			cageNFlies  			= 0;
 	public int 			cageAge 				= 5;
 	public String 		strCageComment 			= "..";
 	public String 		strCageSex 				= "..";

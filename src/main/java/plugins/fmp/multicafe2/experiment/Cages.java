@@ -158,7 +158,8 @@ public class Cages
 		return true;
 	}
 	
-	private boolean xmlLoadCages (Document doc) {
+	private boolean xmlLoadCages (Document doc) 
+	{
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_DROSOTRACK);
 		if (node == null)
 			return false;
