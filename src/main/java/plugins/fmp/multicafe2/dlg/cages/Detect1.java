@@ -24,7 +24,6 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 import icy.util.StringUtil;
-import plugins.fmp.fmpTools.EnumImageOp;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
@@ -182,7 +181,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		}
 		seqCamData.seq.addOverlay(ov);	
 		boolean ifGreater = true; // false; 
-		ov.setThresholdSingle(exp.cages.detect_threshold, ifGreater);
+		EnumImageTransformations transformOp = (EnumImageTransformations) colorChannelComboBox.getSelectedItem();
+		ov.setThresholdSingle(exp.cages.detect_threshold, transformOp, ifGreater);
 		ov.painterChanged();	
 	}
 	
@@ -224,8 +224,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.limitUp 		= (int) objectUpsizeSpinner.getValue();
 		options.limitRatio		= (int) limitRatioSpinner.getValue();
 		options.jitter 			= (int) jitterTextField.getValue();
-		options.videoChannel 	= colorChannelComboBox.getSelectedIndex();
-		options.simpletransformop = (EnumImageOp) transformsComboBox.getSelectedItem();
+		options.videoChannel 	= 0; //colorChannelComboBox.getSelectedIndex();
+		options.transformop = (EnumImageTransformations) colorChannelComboBox.getSelectedItem();
 		
 		options.transformop		= (EnumImageTransformations) backgroundComboBox.getSelectedItem();
 		options.threshold		= (int) thresholdSpinner.getValue();

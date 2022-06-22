@@ -27,7 +27,7 @@ public class FlyDetect1 extends BuildSeries
 	
 	public boolean				buildBackground	= true;
 	public boolean				detectFlies		= true;
-	public FlyDetectTools 	find_flies 		= new FlyDetectTools();
+	public FlyDetectTools 		find_flies 		= new FlyDetectTools();
 	
 	// -----------------------------------------------------
 	
@@ -66,7 +66,7 @@ public class FlyDetect1 extends BuildSeries
 					viewerCamData.setBounds(rectv);
 					ov = new OverlayThreshold(exp.seqCamData);
 					exp.seqCamData.seq.addOverlay(ov);	
-					ov.setThresholdSingle(exp.cages.detect_threshold, true);
+					ov.setThresholdSingle(exp.cages.detect_threshold, options.transformop, true);
 					ov.painterChanged();
 				}});
 		} 

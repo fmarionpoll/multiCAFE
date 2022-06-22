@@ -52,9 +52,9 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 		imageTransformOptions.seqCamData = seqCamData;
 	}
 	
-	public void setThresholdSingle (int threshold, boolean ifGreater) 
+	public void setThresholdSingle (int threshold, EnumImageTransformations transformop, boolean ifGreater) 
 	{
-		setThresholdTransform (threshold, EnumImageTransformations.THRESHOLD_SINGLE, ifGreater);
+		setThresholdTransform (threshold, transformop, ifGreater);
 	}
 	
 	public void setThresholdTransform (int threshold, EnumImageTransformations transformop, boolean ifGreater) 
