@@ -24,6 +24,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 import icy.util.StringUtil;
+import plugins.fmp.fmpTools.EnumImageOp;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
@@ -46,7 +47,12 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 	private String 		detectString 			= "Detect...";
 	private JButton 	startComputationButton 	= new JButton(detectString);
 
-	private JComboBox<String> colorChannelComboBox = new JComboBox<String> (new String[] {"Red", "Green", "Blue"});
+	JComboBox<EnumImageTransformations> colorChannelComboBox = new JComboBox<EnumImageTransformations> (new EnumImageTransformations[] {
+			EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB, 
+			EnumImageTransformations.R2MINUS_GB, EnumImageTransformations.G2MINUS_RB, EnumImageTransformations.B2MINUS_RG, 
+			EnumImageTransformations.NORM_BRMINUSG, EnumImageTransformations.RGB,
+			EnumImageTransformations.H_HSB, EnumImageTransformations.S_HSB, EnumImageTransformations.B_HSB	});
+	
 	private JComboBox<EnumImageTransformations> backgroundComboBox = new JComboBox<> (
 			new EnumImageTransformations[]  {
 					EnumImageTransformations.NONE, 
@@ -219,6 +225,8 @@ public class Detect1 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.limitRatio		= (int) limitRatioSpinner.getValue();
 		options.jitter 			= (int) jitterTextField.getValue();
 		options.videoChannel 	= colorChannelComboBox.getSelectedIndex();
+		options.simpletransformop = (EnumImageOp) transformsComboBox.getSelectedItem();
+		
 		options.transformop		= (EnumImageTransformations) backgroundComboBox.getSelectedItem();
 		options.threshold		= (int) thresholdSpinner.getValue();
 		
