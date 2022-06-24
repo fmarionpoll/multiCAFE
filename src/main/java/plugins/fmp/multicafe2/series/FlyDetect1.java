@@ -47,7 +47,7 @@ public class FlyDetect1 extends BuildSeries
 	
 	private boolean loadExperimentData(Experiment exp) 
 	{
-		exp.seqCamData.seq = exp.seqCamData.initSequenceFromFirstImage_V2(exp.seqCamData.getImagesList(true));
+		exp.seqCamData.seq = exp.seqCamData.initSequenceFromFirstImage(exp.seqCamData.getImagesList(true));
 		boolean flag = exp.xmlReadDrosoTrack(null);
 		return flag;
 	}

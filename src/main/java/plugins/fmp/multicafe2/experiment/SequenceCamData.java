@@ -66,7 +66,7 @@ public class SequenceCamData
 
 	public SequenceCamData (List<String> listNames) 
 	{
-		setV2ImagesList(listNames);
+		setImagesList(listNames);
 		status = EnumStatus.FILESTACK;
 	}
 	
@@ -287,7 +287,7 @@ public class SequenceCamData
 		seq.close();
 	}
 
-	public void setV2ImagesList(List <String> extImagesList) 
+	public void setImagesList(List <String> extImagesList) 
 	{
 		imagesList.clear();
 		imagesList.addAll(extImagesList);
@@ -295,7 +295,7 @@ public class SequenceCamData
 		status = EnumStatus.FILESTACK;
 	}
 	
-	public void attachV2Sequence(Sequence seq)
+	public void attachSequence(Sequence seq)
 	{
 		this.seq = seq;
 		
@@ -307,11 +307,11 @@ public class SequenceCamData
 	{
 		if (imagesList.size() == 0)
 			return false;
-		attachV2Sequence(loadSequenceFromImagesList_V2(imagesList));
+		attachSequence(loadSequenceFromImagesList(imagesList));
 		return (seq != null);
 	}
 	
-	public Sequence loadSequenceFromImagesList_V2(List <String> imagesList) 
+	public Sequence loadSequenceFromImagesList(List <String> imagesList) 
 	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
 		Sequence seq = Loader.loadSequences(seqFileImporter, imagesList, 
@@ -327,7 +327,7 @@ public class SequenceCamData
 	}
 
 		
-	public Sequence initSequenceFromFirstImage_V2(List <String> imagesList) 
+	public Sequence initSequenceFromFirstImage(List <String> imagesList) 
 	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
 		Sequence seq = Loader.loadSequence(seqFileImporter, imagesList.get(0), 0, false);
