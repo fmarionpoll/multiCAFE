@@ -96,7 +96,7 @@ public class LoadSave extends JPanel
 	{
 		if (exp != null) 
 		{
-			exp.cages.getCagesFromROIs(exp.seqCamData);
+			exp.cages.cagesFromROIs(exp.seqCamData);
 			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
 		}
 	}

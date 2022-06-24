@@ -31,7 +31,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 			Detect2 		tabDetect2 		= new Detect2();
 			Edit			tabEdit			= new Edit();
 	public 	LoadSave 		tabFile 		= new LoadSave();
-	public 	CageGraphs 			tabGraphics 	= new CageGraphs();
+	public 	CageGraphs 		tabGraphics 	= new CageGraphs();
 	public	PopupPanel 		capPopupPanel	= null;
 			JTabbedPane 	tabsPane		= new JTabbedPane();
 			int				previouslySelected	= -1;
@@ -114,7 +114,6 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 	            if (selectedIndex == iTAB_DETECT1 || selectedIndex == iTAB_DETECT2) 
 	            {
 	            	parent0.paneExperiment.capPopupPanel.expand();
-//	    			parent0.paneCapillaries.capPopupPanel.collapse();
 	    			parent0.paneExperiment.tabsPane.setSelectedIndex(0);
 	            }
 	            
@@ -133,9 +132,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 	            	}
 	            	bTrapROIsEdit = false;
 	            }
-//	            if (selectedIndex == iTAB_INFOS && tabInfos.tableView.getRowCount() > 0) {
-//	            	tabInfos.tableView.changeSelection(0, 1, false, false);
-//	            }
+
 	            boolean activateOverlay = false;
 	            if (selectedIndex == iTAB_CAGE2) 
 	            	activateOverlay = true;

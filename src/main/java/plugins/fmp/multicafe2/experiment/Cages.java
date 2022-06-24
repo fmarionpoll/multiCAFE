@@ -148,7 +148,7 @@ public class Cages
 		boolean flag = xmlLoadCages(doc); 
 		if (flag) 
 		{
-			fromCagesToROIs(exp.seqCamData);
+			cagesToROIs(exp.seqCamData);
 		}
 		else 
 		{
@@ -258,7 +258,7 @@ public class Cages
 		return true;
 	}
 	
-	public void fromCagesToROIs(SequenceCamData seqCamData) 
+	public void cagesToROIs(SequenceCamData seqCamData) 
 	{
 		List <ROI2D> cageLimitROIList = getRoisWithCageName(seqCamData);
 		seqCamData.seq.removeROIs(cageLimitROIList, false);
@@ -267,7 +267,7 @@ public class Cages
 		seqCamData.seq.addROIs(cageLimitROIList, true);
 	}
 	
-	public void getCagesFromROIs(SequenceCamData seqCamData) 
+	public void cagesFromROIs(SequenceCamData seqCamData) 
 	{
 		List <ROI2D> roiList = getRoisWithCageName(seqCamData);
 		Collections.sort(roiList, new Comparators.ROI2D_Name_Comparator());

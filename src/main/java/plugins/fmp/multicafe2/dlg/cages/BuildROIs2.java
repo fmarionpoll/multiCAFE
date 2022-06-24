@@ -95,7 +95,7 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 					ROI2DUtilities.removeRoisContainingString(-1, "cage", exp.seqCamData.seq);
 					exp.cages.removeCages();
 					createROIsFromSelectedPolygon(exp);
-					exp.cages.getCagesFromROIs(exp.seqCamData);
+					exp.cages.cagesFromROIs(exp.seqCamData);
 					exp.cages.setFirstAndLastCageToZeroFly();
 				}
 			}});
