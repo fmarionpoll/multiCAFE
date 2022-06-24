@@ -297,9 +297,7 @@ public class Experiment
 	
 	private SequenceCamData loadImagesForSequenceCamData(String filename) 
 	{
-		strImagesDirectory = ExperimentDirectories.getImagesDirectoryAsParentFromFileName(filename);
-		if (seqCamData == null)
-			seqCamData = new SequenceCamData();
+		strImagesDirectory = ExperimentDirectories.getImagesDirectoryAsParentFromFileName(filename);			
 		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(strImagesDirectory);
 		imagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(imagesList, "jpg");
 		if (imagesList.size() < 1) 
@@ -308,6 +306,7 @@ public class Experiment
 		} 
 		else 
 		{
+			seqCamData = new SequenceCamData();
 			seqCamData.setImagesList(imagesList);
 			seqCamData.attachSequence(seqCamData.loadSequenceFromImagesList(imagesList));
 		}

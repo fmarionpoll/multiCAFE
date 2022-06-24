@@ -326,7 +326,6 @@ public class SequenceCamData
 		return seq;
 	}
 
-		
 	public Sequence initSequenceFromFirstImage(List <String> imagesList) 
 	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);
