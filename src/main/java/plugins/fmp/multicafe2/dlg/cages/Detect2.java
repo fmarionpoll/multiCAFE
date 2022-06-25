@@ -28,7 +28,10 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
+import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.series.FlyDetect2;
+import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 
 
@@ -59,7 +62,8 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	
-	private FlyDetect2 detectFlies2Thread 	= null;
+	private FlyDetect2 detectFlies2Thread 		= null;
+	private OverlayThreshold ov 				= null;
 	
 	// ----------------------------------------------------
 	
@@ -110,6 +114,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		
 		defineActionListeners();
 		thresholdDiffSpinner.addChangeListener(this);
+		thresholdBckgSpinner.addChangeListener(this);
 	}
 	
 	private void defineActionListeners() 
@@ -176,6 +181,35 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 			if (exp != null)
 				exp.cages.detect_threshold = (int) thresholdDiffSpinner.getValue();
 		}
+		
+		if (e.getSource() == thresholdBckgSpinner) 
+		{
+			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+			if (exp != null) 
+			{
+				int threshold = (int) thresholdBckgSpinner.getValue();
+				updateOverlay(exp, threshold);
+			}
+		}
+	}
+	
+	public void updateOverlay (Experiment exp, int threshold) 
+	{
+		SequenceCamData seqCamData = exp.seqCamData;
+		if (seqCamData == null)
+			return;
+		if (ov == null) 
+			ov = new OverlayThreshold(seqCamData);
+		else 
+		{
+			seqCamData.seq.removeOverlay(ov);
+			ov.setSequence(seqCamData);
+		}
+		seqCamData.seq.addOverlay(ov);	
+		boolean ifGreater = true; 
+		EnumImageTransformations transformOp = EnumImageTransformations.NONE;
+		ov.setThresholdSingle(threshold, transformOp, ifGreater);
+		ov.painterChanged();	
 	}
 	
 	private BuildSeriesOptions initTrackParameters() 
