@@ -31,7 +31,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 	private static final long serialVersionUID = -4296207607692017074L;
 	public	PopupPanel 		capPopupPanel	= null;
 	private JTabbedPane 	tabsPane 		= new JTabbedPane();
-	public Options			tabOptions		= new Options();
+	public Options			tabCommonOptions= new Options();
 	private Levels			tabLevels		= new Levels();
 	private Gulps			tabGulps		= new Gulps();
 	private Move 			tabMove  		= new Move();
@@ -49,9 +49,9 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		mainPanel.add(capPopupPanel);
 		GridLayout capLayout = new GridLayout(3, 2);
 		
-		tabOptions.init(capLayout);
-		tabsPane.addTab("Common options", null, tabOptions, "Define common options");
-		tabOptions.addPropertyChangeListener(this);
+		tabCommonOptions.init(capLayout);
+		tabsPane.addTab("Common options", null, tabCommonOptions, "Define common options");
+		tabCommonOptions.addPropertyChangeListener(this);
 		
 		tabLevels.init(capLayout);
 		tabsPane.addTab("Capillaries", null, tabLevels, "Export capillary levels to file");
@@ -207,21 +207,21 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 	
 	private void getCommonOptions(XLSExportOptions options) 
 	{
-		options.transpose 		= tabOptions.transposeCheckBox.isSelected();
-		options.buildExcelStepMs= tabOptions.getExcelBuildStep() ;
-		options.buildExcelUnitMs= tabOptions.binUnit.getMsUnitValue();
-		options.fixedIntervals 	= tabOptions.isFixedFrameButton.isSelected();
-		options.startAll_Ms 	= tabOptions.getStartAllMs();
-		options.endAll_Ms 		= tabOptions.getEndAllMs();
+		options.transpose 		= tabCommonOptions.transposeCheckBox.isSelected();
+		options.buildExcelStepMs= tabCommonOptions.getExcelBuildStep() ;
+		options.buildExcelUnitMs= tabCommonOptions.binUnit.getMsUnitValue();
+		options.fixedIntervals 	= tabCommonOptions.isFixedFrameButton.isSelected();
+		options.startAll_Ms 	= tabCommonOptions.getStartAllMs();
+		options.endAll_Ms 		= tabCommonOptions.getEndAllMs();
 		
-		options.collateSeries 	= tabOptions.collateSeriesCheckBox.isSelected();
-		options.padIntervals 	= tabOptions.padIntervalsCheckBox.isSelected();
-		options.absoluteTime	= tabOptions.absoluteTimeCheckBox.isSelected();
-		options.exportAllFiles 	= tabOptions.exportAllFilesCheckBox.isSelected();
+		options.collateSeries 	= tabCommonOptions.collateSeriesCheckBox.isSelected();
+		options.padIntervals 	= tabCommonOptions.padIntervalsCheckBox.isSelected();
+		options.absoluteTime	= tabCommonOptions.absoluteTimeCheckBox.isSelected();
+		options.exportAllFiles 	= tabCommonOptions.exportAllFilesCheckBox.isSelected();
 		
 		options.expList = parent0.expListCombo; 
 		options.expList.expListBinSubDirectory = parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
-		if (tabOptions.exportAllFilesCheckBox.isSelected()) {
+		if (tabCommonOptions.exportAllFilesCheckBox.isSelected()) {
 			options.firstExp 	= 0;
 			options.lastExp 	= options.expList.getItemCount() - 1;
 		} else {

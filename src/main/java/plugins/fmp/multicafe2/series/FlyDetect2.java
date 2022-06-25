@@ -266,39 +266,39 @@ public class FlyDetect2 extends BuildSeries
 	{
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() 
-			{
-				public void run() 
 				{
-					if (exp.seqBackgroundImage == null)
-						exp.seqBackgroundImage = new Sequence();
-					if (vBackgroundImage == null)
-						vBackgroundImage = new Viewer(exp.seqBackgroundImage, false);
-					exp.seqBackgroundImage.setName("referenceImage");
-					exp.seqBackgroundImage.setImage(0, 0,IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, find_flies.rectangleAllCages));
-					
-					if (seqPositive == null)
-						seqPositive = new Sequence();
-					if (vPositive == null)
-						vPositive = new Viewer(seqPositive, false);
-					seqPositive.setName("positiveImage");
-					seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, find_flies.rectangleAllCages));
-			
-					viewerCamData = exp.seqCamData.seq.getFirstViewer();
-					Point pt = viewerCamData.getLocation();
-					int height = viewerCamData.getHeight();
-					pt.y += height;
-			
-					if (vPositive != null) 
+					public void run() 
 					{
-						vPositive.setVisible(true);
-						vPositive.setLocation(pt);
-					}
-					if (vBackgroundImage != null) 
-					{
-						vBackgroundImage.setVisible(true);
-						vBackgroundImage.setLocation(pt);
-					}
-				}});
+						if (exp.seqBackgroundImage == null)
+							exp.seqBackgroundImage = new Sequence();
+						if (vBackgroundImage == null)
+							vBackgroundImage = new Viewer(exp.seqBackgroundImage, false);
+						exp.seqBackgroundImage.setName("referenceImage");
+						exp.seqBackgroundImage.setImage(0, 0,IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, find_flies.rectangleAllCages));
+						
+						if (seqPositive == null)
+							seqPositive = new Sequence();
+						if (vPositive == null)
+							vPositive = new Viewer(seqPositive, false);
+						seqPositive.setName("positiveImage");
+						seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, find_flies.rectangleAllCages));
+				
+						viewerCamData = exp.seqCamData.seq.getFirstViewer();
+						Point pt = viewerCamData.getLocation();
+						int height = viewerCamData.getHeight();
+						pt.y += height;
+				
+						if (vPositive != null) 
+						{
+							vPositive.setVisible(true);
+							vPositive.setLocation(pt);
+						}
+						if (vBackgroundImage != null) 
+						{
+							vBackgroundImage.setVisible(true);
+							vBackgroundImage.setLocation(pt);
+						}
+					}});
 		} 
 		catch (InvocationTargetException | InterruptedException e) 
 		{
@@ -341,7 +341,6 @@ public class FlyDetect2 extends BuildSeries
 				continue;
 			t_previous = t;
 			
-//			final IcyBufferedImage  currentImage = exp.seqCamData.getSeqImage(t, 0);
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
 			IcyBufferedImage positiveImage = transformFunction.transformImage(currentImage, transformOptions);
 			

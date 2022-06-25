@@ -104,6 +104,7 @@ public class FlyDetect1 extends BuildSeries
 		{
 			final int t_previous = t_current;
 			final int t_from = (int) ((index_ms - exp.camFirstImage_ms)/exp.camBinImage_ms);
+			System.out.println("t_from= "+ t_from);
 			t_current = t_from;
 			
 			futures.add(processor.submit(new Runnable () 
@@ -120,10 +121,10 @@ public class FlyDetect1 extends BuildSeries
 					exp.seqCamData.currentFrame = t_from;
 					viewerCamData.setPositionT(t_from);
 					viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t_from));
-					try {
+					try 
+					{
 						find_flies.findFlies (workImage, t_from);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}					
 				}}));
@@ -149,6 +150,7 @@ public class FlyDetect1 extends BuildSeries
 				if (options.referenceImage == null)
 					options.referenceImage = imageIORead(exp.seqCamData.getFileName(0));
 				break;
+				
 			case NONE:
 			default:
 				break;

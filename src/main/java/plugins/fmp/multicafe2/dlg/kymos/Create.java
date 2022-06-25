@@ -118,10 +118,10 @@ public class Create extends JPanel implements PropertyChangeListener
 		else
 			options.expList.index1 = options.expList.index0; 
 		
-		options.isFrameFixed 	= parent0.paneExcel.tabOptions.getIsFixedFrame();
-		options.t_firstMs 		= parent0.paneExcel.tabOptions.getStartMs();
-		options.t_lastMs 		= parent0.paneExcel.tabOptions.getEndMs();
-		options.t_binMs			= parent0.paneExcel.tabOptions.getBinMs();
+		options.isFrameFixed 	= parent0.paneExcel.tabCommonOptions.getIsFixedFrame();
+		options.t_firstMs 		= parent0.paneExcel.tabCommonOptions.getStartMs();
+		options.t_lastMs 		= parent0.paneExcel.tabCommonOptions.getEndMs();
+		options.t_binMs			= parent0.paneExcel.tabCommonOptions.getBinMs();
 				
 		options.diskRadius 		= (int) diskRadiusSpinner.getValue();
 		options.doRegistration 	= doRegistrationCheckBox.isSelected();
