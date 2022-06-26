@@ -80,7 +80,7 @@ public class Detect1 extends JPanel implements ChangeListener, ItemListener, Pro
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	
 	private OverlayThreshold ov 				= null;
-	private FlyDetect1 detectFlies1Thread 		= null;
+	private FlyDetect1 flyDetect1 				= null;
 
 
 	// -----------------------------------------------------
@@ -260,19 +260,19 @@ public class Detect1 extends JPanel implements ChangeListener, ItemListener, Pro
 			return;
 		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		
-		detectFlies1Thread = new FlyDetect1();			
-		detectFlies1Thread.options 			= initTrackParameters();
-		detectFlies1Thread.stopFlag 		= false;
-		detectFlies1Thread.buildBackground	= false;
-		detectFlies1Thread.detectFlies		= true;
-		detectFlies1Thread.addPropertyChangeListener(this);
-		detectFlies1Thread.execute();
+		flyDetect1 = new FlyDetect1();			
+		flyDetect1.options 			= initTrackParameters();
+		flyDetect1.stopFlag 		= false;
+		flyDetect1.buildBackground	= false;
+		flyDetect1.detectFlies		= true;
+		flyDetect1.addPropertyChangeListener(this);
+		flyDetect1.execute();
 		startComputationButton.setText("STOP");
 	}
 	
 	private void stopComputation() {	
-		if (detectFlies1Thread != null && !detectFlies1Thread.stopFlag) {
-			detectFlies1Thread.stopFlag = true;
+		if (flyDetect1 != null && !flyDetect1.stopFlag) {
+			flyDetect1.stopFlag = true;
 		}
 	}
 

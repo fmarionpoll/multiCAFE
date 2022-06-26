@@ -156,4 +156,11 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 		return IcyBufferedImage.createFrom(image);
 	}
     
+	protected boolean loadDrosoTrack(Experiment exp) 
+	{
+		exp.seqCamData.seq = exp.seqCamData.initSequenceFromFirstImage(exp.seqCamData.getImagesList(true));
+		boolean flag = exp.xmlReadDrosoTrack(null);
+		return flag;
+	}
+    
 }

@@ -92,7 +92,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 		iTAB_DETECT3 = iTab;
 		tabDetect3.init(capLayout, parent0);
 		tabDetect3.addPropertyChangeListener(this);
-		tabsPane.addTab("Detect3", null, tabDetect3, "Detect flies position using background subtraction");
+		tabsPane.addTab("Detect3", null, tabDetect3, "Build background without flies");
 		
 		iTab++;
 		iTAB_EDIT	= iTab;

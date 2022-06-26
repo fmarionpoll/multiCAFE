@@ -31,18 +31,19 @@ import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
-import plugins.fmp.multicafe2.series.FlyDetect2;
+import plugins.fmp.multicafe2.series.FlyDetect3;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
 
 public class Detect3 extends JPanel implements ChangeListener, PropertyChangeListener, PopupMenuListener 
 {
-	private static final long serialVersionUID = -5257698990389571518L;
-	private MultiCAFE2 	parent0					=null;
+	private static final long serialVersionUID = 1L;
+
+	private MultiCAFE2 	parent0					= null;
 	
-	private String 		detectString 			= "Detect..";
+	private String 		detectString 			= "Build background...";
 	private JButton 	startComputationButton 	= new JButton(detectString);
-	private JSpinner 	thresholdDiffSpinner	= new JSpinner(new SpinnerNumberModel(100, 0, 255, 1));
+
 	private JSpinner 	thresholdBckgSpinner	= new JSpinner(new SpinnerNumberModel(40, 0, 255, 1));
 	
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
@@ -54,12 +55,11 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JButton 	loadButton 				= new JButton("Load...");
 	private JButton 	saveButton 				= new JButton("Save...");
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
-	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("background", false);
-	private JCheckBox 	detectCheckBox 			= new JCheckBox("flies", true);
+
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	
-	private FlyDetect2 detectFlies2Thread 		= null;
+	private FlyDetect3 flyDetect3 		= null;
 	private OverlayThreshold ov 				= null;
 	
 	// ----------------------------------------------------
@@ -76,8 +76,6 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 		panel1.add(startComputationButton);
 		panel1.add(allCagesComboBox);
 		panel1.add(allCheckBox);
-		panel1.add(backgroundCheckBox);
-		panel1.add(detectCheckBox);
 		add(panel1);
 		
 		allCagesComboBox.addPopupMenuListener(this);
@@ -98,8 +96,7 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 		panel3.add(objectLowsizeSpinner);
 		panel3.add(objectUpsizeCheckBox);
 		panel3.add(objectUpsizeSpinner);
-		panel3.add(new JLabel("threshold ", SwingConstants.RIGHT));
-		panel3.add(thresholdDiffSpinner);
+
 		add( panel3);
 		
 		JPanel panel4 = new JPanel(flowLayout);
@@ -110,7 +107,7 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 		add(panel4);
 		
 		defineActionListeners();
-		thresholdDiffSpinner.addChangeListener(this);
+
 		thresholdBckgSpinner.addChangeListener(this);
 	}
 	
@@ -172,13 +169,6 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 	@Override
 	public void stateChanged(ChangeEvent e) 
 	{
-		if (e.getSource() == thresholdDiffSpinner) 
-		{
-			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-			if (exp != null)
-				exp.cages.detect_threshold = (int) thresholdDiffSpinner.getValue();
-		}
-		
 		if (e.getSource() == thresholdBckgSpinner) 
 		{
 			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
@@ -213,7 +203,7 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 	
 	private BuildSeriesOptions initTrackParameters() 
 	{
-		BuildSeriesOptions options = detectFlies2Thread.options;
+		BuildSeriesOptions options = flyDetect3.options;
 		options.expList 		= parent0.expListCombo;	
 		options.expList.index0 	= parent0.expListCombo.getSelectedIndex();
 		if (allCheckBox.isSelected())
@@ -229,10 +219,10 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.limitUp 		= (int) objectUpsizeSpinner.getValue();
 		options.limitRatio		= (int) limitRatioSpinner.getValue();
 		options.jitter 			= (int) jitterTextField.getValue();
-		options.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
+
 		options.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();		
-		options.forceBuildBackground = backgroundCheckBox.isSelected();
-		options.detectFlies		= detectCheckBox.isSelected();
+		options.forceBuildBackground = true;
+		options.detectFlies		= false;
 		
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubDirectory = parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
@@ -252,19 +242,19 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 			return;
 		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		
-		detectFlies2Thread = new FlyDetect2();		
-		detectFlies2Thread.options = initTrackParameters();
-		detectFlies2Thread.stopFlag = false;
-		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();
-		detectFlies2Thread.addPropertyChangeListener(this);
-		detectFlies2Thread.execute();
+		flyDetect3 = new FlyDetect3();		
+		flyDetect3.options = initTrackParameters();
+		flyDetect3.stopFlag = false;
+
+		flyDetect3.addPropertyChangeListener(this);
+		flyDetect3.execute();
 		startComputationButton.setText("STOP");
 	}
 	
 	private void stopComputation() 
 	{	
-		if (detectFlies2Thread != null && !detectFlies2Thread.stopFlag) 
-			detectFlies2Thread.stopFlag = true;
+		if (flyDetect3 != null && !flyDetect3.stopFlag) 
+			flyDetect3.stopFlag = true;
 	}
 
 	@Override

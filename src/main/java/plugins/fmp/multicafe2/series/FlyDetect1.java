@@ -33,24 +33,17 @@ public class FlyDetect1 extends BuildSeries
 	
 	void analyzeExperiment(Experiment exp) 
 	{
-		if (!loadExperimentData(exp))
+		if (!loadDrosoTrack(exp))
 			return;
 		if (!checkBoundsForCages(exp))
 			return;
 		
-		runDetectFlies1(exp);
+		runFlyDetect1(exp);
 		exp.cages.orderFlyPositions();
 		if (!stopFlag)
 			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
 		exp.seqCamData.closeSequence();
     }
-	
-	private boolean loadExperimentData(Experiment exp) 
-	{
-		exp.seqCamData.seq = exp.seqCamData.initSequenceFromFirstImage(exp.seqCamData.getImagesList(true));
-		boolean flag = exp.xmlReadDrosoTrack(null);
-		return flag;
-	}
 	
 	private void openViewer(Experiment exp) 
 	{
@@ -77,7 +70,7 @@ public class FlyDetect1 extends BuildSeries
 		
 	}
 	
-	private void runDetectFlies1(Experiment exp) 
+	private void runFlyDetect1(Experiment exp) 
 	{
 		exp.cleanPreviousDetectedFliesROIs();
 		find_flies.initParametersForDetection(exp, options);

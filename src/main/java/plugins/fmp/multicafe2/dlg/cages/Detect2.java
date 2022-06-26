@@ -41,8 +41,8 @@ import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 
 public class Detect2 extends JPanel implements ChangeListener, PropertyChangeListener, PopupMenuListener 
 {
-	private static final long serialVersionUID = -5257698990389571518L;
-	private MultiCAFE2 	parent0					=null;
+	private static final long serialVersionUID 	= -5257698990389571518L;
+	private MultiCAFE2 	parent0					= null;
 	
 	private String 		detectString 			= "Detect..";
 	private JButton 	startComputationButton 	= new JButton(detectString);
@@ -63,7 +63,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	
-	private FlyDetect2 detectFlies2Thread 		= null;
+	private FlyDetect2 flyDetect2 		= null;
 	private OverlayThreshold ov 				= null;
 	
 	// ----------------------------------------------------
@@ -217,7 +217,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	
 	private BuildSeriesOptions initTrackParameters() 
 	{
-		BuildSeriesOptions options = detectFlies2Thread.options;
+		BuildSeriesOptions options = flyDetect2.options;
 		options.expList 		= parent0.expListCombo;	
 		options.expList.index0 	= parent0.expListCombo.getSelectedIndex();
 		if (allCheckBox.isSelected())
@@ -256,19 +256,19 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 			return;
 		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		
-		detectFlies2Thread = new FlyDetect2();		
-		detectFlies2Thread.options = initTrackParameters();
-		detectFlies2Thread.stopFlag = false;
-		detectFlies2Thread.viewInternalImages = viewsCheckBox.isSelected();
-		detectFlies2Thread.addPropertyChangeListener(this);
-		detectFlies2Thread.execute();
+		flyDetect2 = new FlyDetect2();		
+		flyDetect2.options = initTrackParameters();
+		flyDetect2.stopFlag = false;
+		flyDetect2.viewInternalImages = viewsCheckBox.isSelected();
+		flyDetect2.addPropertyChangeListener(this);
+		flyDetect2.execute();
 		startComputationButton.setText("STOP");
 	}
 	
 	private void stopComputation() 
 	{	
-		if (detectFlies2Thread != null && !detectFlies2Thread.stopFlag) 
-			detectFlies2Thread.stopFlag = true;
+		if (flyDetect2 != null && !flyDetect2.stopFlag) 
+			flyDetect2.stopFlag = true;
 	}
 
 	@Override
