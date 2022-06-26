@@ -208,34 +208,6 @@ public class FlyDetect2 extends BuildSeries
 		processor.shutdown();
 	}
 
-	private void patchRectToReferenceImage(SequenceCamData seqCamData, IcyBufferedImage currentImage, Rectangle rect) 
-	{
-		int cmax = currentImage.getSizeC();
-		for (int c = 0; c < cmax; c++) 
-		{
-			int[] intCurrentImage = Array1DUtil.arrayToIntArray(currentImage.getDataXY(c),
-					currentImage.isSignedDataType());
-			int[] intRefImage = Array1DUtil.arrayToIntArray(seqCamData.refImage.getDataXY(c),
-					seqCamData.refImage.isSignedDataType());
-			int xwidth = currentImage.getSizeX();
-			for (int x = 0; x < rect.width; x++) 
-			{
-				for (int y = 0; y < rect.height; y++) 
-				{
-					int xi = rect.x + x;
-					int yi = rect.y + y;
-					int coord = xi + yi * xwidth;
-					intRefImage[coord] = intCurrentImage[coord];
-				}
-			}
-			Object destArray = seqCamData.refImage.getDataXY(c);
-			Array1DUtil.intArrayToSafeArray(intRefImage, destArray, seqCamData.refImage.isSignedDataType(),
-					seqCamData.refImage.isSignedDataType());
-			seqCamData.refImage.setDataXY(c, destArray);
-		}
-		seqCamData.refImage.dataChanged();
-	}
-
 	private void displayDetectViewer(Experiment exp) 
 	{
 		try 
@@ -293,6 +265,7 @@ public class FlyDetect2 extends BuildSeries
 							vPositive.setVisible(true);
 							vPositive.setLocation(pt);
 						}
+						
 						if (vBackgroundImage != null) 
 						{
 							vBackgroundImage.setVisible(true);
@@ -318,6 +291,7 @@ public class FlyDetect2 extends BuildSeries
 		limit = limit * exp.cages.detectBin_Ms +exp.cages.detectFirst_Ms ;
 		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getSeqImage(t_from, 0));
 		viewerCamData = exp.seqCamData.seq.getFirstViewer();
+		
 		ImageTransformOptions transformOptions = new ImageTransformOptions();
 		transformOptions.transformOption = EnumImageTransformations.SUBTRACT_REF;
 		transformOptions.referenceImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.refImage);
@@ -342,11 +316,14 @@ public class FlyDetect2 extends BuildSeries
 			t_previous = t;
 			
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
-			IcyBufferedImage positiveImage = transformFunction.transformImage(currentImage, transformOptions);
+//			exp.seqBackgroundImage.fireModelImageChangedEvent();
 			
+			IcyBufferedImage positiveImage = transformFunction.transformImage(currentImage, transformOptions);
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, find_flies.rectangleAllCages));
+//			seqPositive.fireModelImageChangedEvent();
+			
 			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd); 
-			for (Cage cage: exp.cages.cagesList) 
+			for (Cage cage: exp.cages.cagesList) 			
 			{
 				if (cage.cageNFlies <1)
 					continue;
@@ -354,6 +331,7 @@ public class FlyDetect2 extends BuildSeries
 				if (bestMask != null) 
 				{
 					ROI2DArea flyROI = new ROI2DArea(bestMask);
+					exp.seqBackgroundImage.addROI(flyROI);
 					if (!cage.initialflyRemoved) 
 					{
 						Rectangle rect = flyROI.getBounds();
@@ -370,8 +348,36 @@ public class FlyDetect2 extends BuildSeries
 			if (nFliesToRemove < 1)
 				break;
 		}
+		exp.seqBackgroundImage.removeAllROI();
 		progress.close();
 	}
 
+	private void patchRectToReferenceImage(SequenceCamData seqCamData, IcyBufferedImage currentImage, Rectangle rect) 
+	{
+		int cmax = currentImage.getSizeC();
+		for (int c = 0; c < cmax; c++) 
+		{
+			int[] intCurrentImage = Array1DUtil.arrayToIntArray(currentImage.getDataXY(c),
+					currentImage.isSignedDataType());
+			int[] intRefImage = Array1DUtil.arrayToIntArray(seqCamData.refImage.getDataXY(c),
+					seqCamData.refImage.isSignedDataType());
+			int xwidth = currentImage.getSizeX();
+			for (int x = 0; x < rect.width; x++) 
+			{
+				for (int y = 0; y < rect.height; y++) 
+				{
+					int xi = rect.x + x;
+					int yi = rect.y + y;
+					int coord = xi + yi * xwidth;
+					intRefImage[coord] = intCurrentImage[coord];
+				}
+			}
+			Object destArray = seqCamData.refImage.getDataXY(c);
+			Array1DUtil.intArrayToSafeArray(intRefImage, destArray, seqCamData.refImage.isSignedDataType(),
+					seqCamData.refImage.isSignedDataType());
+			seqCamData.refImage.setDataXY(c, destArray);
+		}
+		seqCamData.refImage.dataChanged();
+	}
 
 }

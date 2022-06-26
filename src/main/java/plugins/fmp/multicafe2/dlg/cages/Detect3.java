@@ -30,16 +30,12 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
+import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.series.FlyDetect2;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
-import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 
-
-
-
-
-public class Detect2 extends JPanel implements ChangeListener, PropertyChangeListener, PopupMenuListener 
+public class Detect3 extends JPanel implements ChangeListener, PropertyChangeListener, PopupMenuListener 
 {
 	private static final long serialVersionUID = -5257698990389571518L;
 	private MultiCAFE2 	parent0					=null;

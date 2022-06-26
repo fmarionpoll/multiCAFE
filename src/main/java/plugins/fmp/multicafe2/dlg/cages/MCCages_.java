@@ -29,6 +29,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 			Display			tabInfos		= new Display();
 			Detect1 		tabDetect1 		= new Detect1();
 			Detect2 		tabDetect2 		= new Detect2();
+			Detect3 		tabDetect3 		= new Detect3();
 			Edit			tabEdit			= new Edit();
 	public 	LoadSave 		tabFile 		= new LoadSave();
 	public 	CageGraphs 		tabGraphics 	= new CageGraphs();
@@ -37,10 +38,12 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 			int				previouslySelected	= -1;
 	public 	boolean			bTrapROIsEdit	= false;
 			int 			iTAB_CAGE2		= 1;
-			int 			iTAB_INFOS 		= 2;
-			int 			iTAB_DETECT1	= 3;
-			int 			iTAB_DETECT2	= 4;
-			int				iTAB_EDIT		= 5;
+			int 			iTAB_INFOS 		= iTAB_CAGE2+1;
+			int 			iTAB_DETECT1	= iTAB_INFOS+1;
+			int 			iTAB_DETECT2	= iTAB_DETECT1+1;
+			int				iTAB_DETECT3	= iTAB_DETECT2+1;
+			int				iTAB_EDIT		= iTAB_DETECT3+1;
+			
 			MultiCAFE2 		parent0			= null;
 
 	
@@ -84,6 +87,12 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 		tabDetect2.init(capLayout, parent0);
 		tabDetect2.addPropertyChangeListener(this);
 		tabsPane.addTab("Detect2", null, tabDetect2, "Detect flies position using background subtraction");
+		
+		iTab++;
+		iTAB_DETECT3 = iTab;
+		tabDetect3.init(capLayout, parent0);
+		tabDetect3.addPropertyChangeListener(this);
+		tabsPane.addTab("Detect3", null, tabDetect3, "Detect flies position using background subtraction");
 		
 		iTab++;
 		iTAB_EDIT	= iTab;
