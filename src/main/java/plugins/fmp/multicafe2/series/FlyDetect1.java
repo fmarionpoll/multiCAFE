@@ -45,7 +45,7 @@ public class FlyDetect1 extends BuildSeries
 		exp.seqCamData.closeSequence();
     }
 	
-	private void openViewer(Experiment exp) 
+	private void openViewerWithOverlay(Experiment exp) 
 	{
 		try 
 		{
@@ -76,7 +76,7 @@ public class FlyDetect1 extends BuildSeries
 		find_flies.initParametersForDetection(exp, options);
 		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
 		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
-		openViewer(exp);
+		openViewerWithOverlay(exp);
 		
 		ImageTransformOptions transformOptions = new ImageTransformOptions();
 		transformOptions.transformOption = options.transformop;
