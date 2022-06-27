@@ -65,6 +65,11 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 		imageThresholdFunction = EnumImageTransformations.THRESHOLD_SINGLE.getFunction();
 	}
 	
+	public void setReferenceImage(IcyBufferedImage referenceImage)
+	{
+		imageTransformOptions.referenceImage = referenceImage;
+	}
+	
 	public void setThresholdColor (ArrayList <Color> colorarray, int distancetype, int threshold) 
 	{
 		imageTransformOptions.setColorArrayThreshold(distancetype, threshold, colorarray);
