@@ -164,6 +164,4 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 		return flag;
 	}
 	
-	
-    
 }

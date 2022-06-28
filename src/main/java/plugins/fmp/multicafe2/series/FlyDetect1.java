@@ -57,6 +57,7 @@ public class FlyDetect1 extends BuildSeries
 					Rectangle rectv = viewerCamData.getBoundsInternal();
 					rectv.setLocation(options.parent0Rect.x+ options.parent0Rect.width, options.parent0Rect.y);
 					viewerCamData.setBounds(rectv);
+					
 					ov = new OverlayThreshold(exp.seqCamData);
 					exp.seqCamData.seq.addOverlay(ov);	
 					ov.setThresholdSingle(exp.cages.detect_threshold, options.transformop, true);

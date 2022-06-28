@@ -9,6 +9,7 @@ public class LinearCombinationNormed extends ImageTransformFunction implements I
 	double w0 = 1;
 	double w1 = 1;
 	double w2 = 1;
+	
 	LinearCombinationNormed (double w0, double w1, double w2)
 	{
 		this.w0 = w0;

@@ -197,7 +197,7 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 		ov.setReferenceImage(exp.seqCamData.refImage);
 		seqCamData.seq.addOverlay(ov);	
 		boolean ifGreater = true; 
-		EnumImageTransformations transformOp = EnumImageTransformations.SUBTRACT_REF;
+		EnumImageTransformations transformOp = EnumImageTransformations.SUBTRACT; //SUBTRACT_REF;
 		ov.setThresholdSingle(threshold, transformOp, ifGreater);
 		ov.painterChanged();	
 	}

@@ -27,11 +27,9 @@ public class FlyDetect3 extends BuildSeries
 	
 	public Sequence seqPositive = new Sequence();
 	private Viewer vPositive = null;
-	
-	public Sequence seqNegative = new Sequence();
 	private Viewer vBackgroundImage = null;
 	
-	private FlyDetectTools find_flies = new FlyDetectTools();	
+	private FlyDetectTools flyDetectTools = new FlyDetectTools();	
 
 	// -----------------------------------------
 
@@ -71,14 +69,12 @@ public class FlyDetect3 extends BuildSeries
 	
 	private void runFlyDetect3(Experiment exp) 
 	{
-		if (seqNegative == null)
-			seqNegative = new Sequence();
 		if (seqPositive == null)
 			seqPositive = new Sequence();
 		
 		exp.cleanPreviousDetectedFliesROIs();
-		find_flies.initParametersForDetection(exp, options);
-		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
+		flyDetectTools.initParametersForDetection(exp, options);
+		flyDetectTools.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
 		options.threshold = options.thresholdDiff;
 		openViewer(exp);
 		
@@ -101,39 +97,34 @@ public class FlyDetect3 extends BuildSeries
 	
 	private void closeSequences (Experiment exp) 
 	{
-		if (seqNegative != null) 
-		{
-			seqNegative.close();
-			seqNegative = null;
-		}
 		
-		if (seqPositive != null) 
+		closeSequence (seqPositive); 
+		closeSequence(exp.seqBackgroundImage); 
+	}
+	
+	private void closeSequence(Sequence seq) 
+	{
+		if (seq != null) 
 		{
-			seqPositive.close();
-			seqPositive = null;
-		}
-		
-		if (exp.seqBackgroundImage != null) 
-		{
-			exp.seqBackgroundImage.close();
-			exp.seqBackgroundImage = null;
+			seq.close();
+			seq = null;
 		}
 	}
 
 	private void closeViewers() 
 	{
-		if (vPositive != null) 
+		closeViewer (vPositive); 
+		closeViewer (vBackgroundImage); 
+	}
+	
+	private void closeViewer (Viewer v)
+	{
+		if (v != null) 
 		{
-			vPositive.close();
-			vPositive = null;
-		}
-		if (vBackgroundImage != null) 
-		{
-			vBackgroundImage.close();
-			vBackgroundImage = null;
+			v.close();
+			v = null;
 		}
 	}
-
 
 	public void displayRefViewers(Experiment exp) 
 	{
@@ -146,14 +137,14 @@ public class FlyDetect3 extends BuildSeries
 					if (vBackgroundImage == null)
 						vBackgroundImage = new Viewer(exp.seqBackgroundImage, false);
 					exp.seqBackgroundImage.setName("referenceImage");
-					exp.seqBackgroundImage.setImage(0, 0,IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, find_flies.rectangleAllCages));
+					exp.seqBackgroundImage.setImage(0, 0,IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, flyDetectTools.rectangleAllCages));
 					
 					if (seqPositive == null)
 						seqPositive = new Sequence();
 					if (vPositive == null)
 						vPositive = new Viewer(seqPositive, false);
 					seqPositive.setName("positiveImage");
-					seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, find_flies.rectangleAllCages));
+					seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, flyDetectTools.rectangleAllCages));
 			
 					viewerCamData = exp.seqCamData.seq.getFirstViewer();
 					Point pt = viewerCamData.getLocation();
@@ -182,7 +173,7 @@ public class FlyDetect3 extends BuildSeries
 	private void buildBackgroundImage(Experiment exp) throws InterruptedException 
 	{
 		ProgressFrame progress = new ProgressFrame("Build background image...");
-		find_flies.initParametersForDetection(exp, options);
+		flyDetectTools.initParametersForDetection(exp, options);
 		
 		int t_from = (int) ((exp.cages.detectFirst_Ms - exp.camFirstImage_ms)/exp.camBinImage_ms);
 		long limit = 50 ;
@@ -193,19 +184,20 @@ public class FlyDetect3 extends BuildSeries
 		viewerCamData = exp.seqCamData.seq.getFirstViewer();
 		
 		ImageTransformOptions transformOptions = new ImageTransformOptions();
-		transformOptions.transformOption = EnumImageTransformations.SUBTRACT_REF;
-		transformOptions.referenceImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.refImage);
+		transformOptions.transformOption = EnumImageTransformations.SUBTRACT; //SUBTRACT_REF;
+		//transformOptions.referenceImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.refImage);
+		transformOptions.referenceImage = exp.seqCamData.refImage;
 		ImageTransformInterface transformFunction = transformOptions.transformOption.getFunction();
 		
 		displayRefViewers(exp);
 		
-		int nFliesToRemove = 0;
-		for (Cage cage: exp.cages.cagesList) 
-		{
-			cage.initialflyRemoved = false;
-			if (cage.cageNFlies > 0)
-				nFliesToRemove += cage.cageNFlies;
-		}
+//		int nFliesToRemove = 0;
+//		for (Cage cage: exp.cages.cagesList) 
+//		{
+//			cage.initialflyRemoved = false;
+//			if (cage.cageNFlies > 0)
+//				nFliesToRemove += cage.cageNFlies;
+//		}
 		
 		int t_previous = -1;
 		for (long indexms = exp.cages.detectFirst_Ms ; indexms<= limit && !stopFlag; indexms += exp.cages.detectBin_Ms) 
@@ -216,68 +208,67 @@ public class FlyDetect3 extends BuildSeries
 			t_previous = t;
 			
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
-//			exp.seqBackgroundImage.fireModelImageChangedEvent();
 			
 			IcyBufferedImage positiveImage = transformFunction.transformImage(currentImage, transformOptions);
-			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, find_flies.rectangleAllCages));
+			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(positiveImage, flyDetectTools.rectangleAllCages));
 //			seqPositive.fireModelImageChangedEvent();
 			
-			ROI2DArea roiAll = find_flies.binarizeImage(positiveImage, options.thresholdBckgnd); 
-			for (Cage cage: exp.cages.cagesList) 			
-			{
-				if (cage.cageNFlies <1)
-					continue;
-				BooleanMask2D bestMask = find_flies.findLargestBlob(roiAll, cage);
-				if (bestMask != null) 
-				{
-					ROI2DArea flyROI = new ROI2DArea(bestMask);
-					exp.seqBackgroundImage.addROI(flyROI);
-					if (!cage.initialflyRemoved) 
-					{
-						Rectangle rect = flyROI.getBounds();
-						patchRectToReferenceImage(exp.seqCamData, currentImage, rect);
-
-						cage.initialflyRemoved = true;
-						nFliesToRemove--;
-						if (exp.seqBackgroundImage != null)
-							exp.seqBackgroundImage.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage,
-									find_flies.rectangleAllCages));
-					}
-				}
-			}
-			if (nFliesToRemove < 1)
-				break;
+//			ROI2DArea roiAll = flyDetectTools.binarizeImage(positiveImage, options.thresholdBckgnd); 
+//			for (Cage cage: exp.cages.cagesList) 			
+//			{
+//				if (cage.cageNFlies <1)
+//					continue;
+//				BooleanMask2D bestMask = flyDetectTools.findLargestBlob(roiAll, cage);
+//				if (bestMask != null) 
+//				{
+//					ROI2DArea flyROI = new ROI2DArea(bestMask);
+//					exp.seqBackgroundImage.addROI(flyROI);
+//					if (!cage.initialflyRemoved) 
+//					{
+//						Rectangle rect = flyROI.getBounds();
+//						patchRectToReferenceImage(exp.seqCamData, currentImage, rect);
+//
+//						cage.initialflyRemoved = true;
+//						nFliesToRemove--;
+//						if (exp.seqBackgroundImage != null)
+//							exp.seqBackgroundImage.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage,
+//									flyDetectTools.rectangleAllCages));
+//					}
+//				}
+//			}
+//			if (nFliesToRemove < 1)
+//				break;
 		}
-		exp.seqBackgroundImage.removeAllROI();
+//		exp.seqBackgroundImage.removeAllROI();
 		progress.close();
 	}
-
-	private void patchRectToReferenceImage(SequenceCamData seqCamData, IcyBufferedImage currentImage, Rectangle rect) 
-	{
-		int cmax = currentImage.getSizeC();
-		for (int c = 0; c < cmax; c++) 
-		{
-			int[] intCurrentImage = Array1DUtil.arrayToIntArray(currentImage.getDataXY(c),
-					currentImage.isSignedDataType());
-			int[] intRefImage = Array1DUtil.arrayToIntArray(seqCamData.refImage.getDataXY(c),
-					seqCamData.refImage.isSignedDataType());
-			int xwidth = currentImage.getSizeX();
-			for (int x = 0; x < rect.width; x++) 
-			{
-				for (int y = 0; y < rect.height; y++) 
-				{
-					int xi = rect.x + x;
-					int yi = rect.y + y;
-					int coord = xi + yi * xwidth;
-					intRefImage[coord] = intCurrentImage[coord];
-				}
-			}
-			Object destArray = seqCamData.refImage.getDataXY(c);
-			Array1DUtil.intArrayToSafeArray(intRefImage, destArray, seqCamData.refImage.isSignedDataType(),
-					seqCamData.refImage.isSignedDataType());
-			seqCamData.refImage.setDataXY(c, destArray);
-		}
-		seqCamData.refImage.dataChanged();
-	}
+//
+//	private void patchRectToReferenceImage(SequenceCamData seqCamData, IcyBufferedImage currentImage, Rectangle rect) 
+//	{
+//		int cmax = currentImage.getSizeC();
+//		for (int c = 0; c < cmax; c++) 
+//		{
+//			int[] intCurrentImage = Array1DUtil.arrayToIntArray(currentImage.getDataXY(c),
+//					currentImage.isSignedDataType());
+//			int[] intRefImage = Array1DUtil.arrayToIntArray(seqCamData.refImage.getDataXY(c),
+//					seqCamData.refImage.isSignedDataType());
+//			int xwidth = currentImage.getSizeX();
+//			for (int x = 0; x < rect.width; x++) 
+//			{
+//				for (int y = 0; y < rect.height; y++) 
+//				{
+//					int xi = rect.x + x;
+//					int yi = rect.y + y;
+//					int coord = xi + yi * xwidth;
+//					intRefImage[coord] = intCurrentImage[coord];
+//				}
+//			}
+//			Object destArray = seqCamData.refImage.getDataXY(c);
+//			Array1DUtil.intArrayToSafeArray(intRefImage, destArray, seqCamData.refImage.isSignedDataType(),
+//					seqCamData.refImage.isSignedDataType());
+//			seqCamData.refImage.setDataXY(c, destArray);
+//		}
+//		seqCamData.refImage.dataChanged();
+//	}
 
 }
