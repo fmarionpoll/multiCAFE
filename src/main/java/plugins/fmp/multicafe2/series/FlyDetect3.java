@@ -112,32 +112,34 @@ public class FlyDetect3 extends BuildSeries
 					int height = viewerCamData.getHeight();
 					pt.y += height;
 					
-					if (exp.seqBackground == null)
-						exp.seqBackground = new Sequence();
-					exp.seqBackground.setName("referenceImage");
-					exp.seqBackground.setImage(0, 0,IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, flyDetectTools.rectangleAllCages));
-					if (vBackgroundImage == null)
-						vBackgroundImage = new Viewer(exp.seqBackground, false);
-					if (vBackgroundImage != null) 
-					{
-						vBackgroundImage.setVisible(true);
-						vBackgroundImage.setLocation(pt);
-					}
-					seqBackground = exp.seqBackground;
+//					if (exp.seqBackground == null)
+//						exp.seqBackground = new Sequence();
+//					exp.seqBackground.setName("referenceImage");
+//					exp.seqBackground.setImage(0, 0,IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, flyDetectTools.rectangleAllCages));
+					seqBackground = newSequence("referenceImage", exp.seqCamData.refImage);
+					exp.seqBackground = seqBackground;
 					
-					if (seqPositive == null)
-						seqPositive = new Sequence();
-					seqPositive.setName("positiveImage");
-					seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, flyDetectTools.rectangleAllCages));
-					if (vPositive == null)
-						vPositive = new Viewer(seqPositive, false);
-					if (vPositive != null) 
-					{
-						vPositive.setVisible(true);
-						vPositive.setLocation(pt);
-					}
+					vBackgroundImage = new Viewer(exp.seqBackground, false);
+					vBackgroundImage.setVisible(true);
+//					if (vBackgroundImage != null) 
+//					{
+//						vBackgroundImage.setVisible(true);
+//						vBackgroundImage.setLocation(pt);
+//					}
 					
 					
+//					if (seqPositive == null)
+//						seqPositive = new Sequence();
+//					seqPositive.setName("positiveImage");
+//					seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, flyDetectTools.rectangleAllCages));
+					seqPositive = newSequence("positiveImage", exp.seqCamData.refImage);
+					vPositive = new Viewer(seqPositive, false);
+					vPositive.setVisible(true);
+//					if (vPositive != null) 
+//					{
+//						vPositive.setVisible(true);
+//						vPositive.setLocation(pt);
+//					}					
 				}});
 		} 
 		catch (InvocationTargetException | InterruptedException e) 
@@ -146,13 +148,14 @@ public class FlyDetect3 extends BuildSeries
 		}
 	}
 	
-	private Viewer newSequence() {
-		
+	private Sequence newSequence(String title, IcyBufferedImage image) 
+	{
+		Sequence seq = new Sequence();
+		seq.setName("positiveImage");
+		seq.setImage(0, 0, image);
+		return seq;
 	}
 	
-	private Sequence newSequence() {
-		
-	}
 
 	private void runFlyDetect3(Experiment exp) 
 	{
@@ -215,10 +218,9 @@ public class FlyDetect3 extends BuildSeries
 			seqPositive.fireModelImageChangedEvent();
 			seqBackground.fireModelImageChangedEvent();
 			
-			System.out.println("t= "+t+ " n pixels changed=" + transformOptions.npixels_changed);
+//			System.out.println("t= "+t+ " n pixels changed=" + transformOptions.npixels_changed);
 			if (transformOptions.npixels_changed < 10 && t > 0 ) 
 				break;
-
 		}
 		progress.close();
 	}
