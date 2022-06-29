@@ -66,8 +66,8 @@ public class Experiment
 	private String			field_sex				= new String("..");
 	
 	public int				col						= -1;
-	public Experiment 		chainToPrevious			= null;		// pointer to chain this experiment to another one before
-	public Experiment 		chainToNext 			= null;		// pointer to chain this experiment to another one after
+	public Experiment 		chainToPreviousExperiment = null;	
+	public Experiment 		chainToNextExperiment	= null;	
 	public long				chainFirstImage_Ms 		= 0;
 	public int				experimentID 			= 0;
 	
@@ -579,16 +579,16 @@ public class Experiment
 	public Experiment getFirstChainedExperiment(boolean globalValue) 
 	{
 		Experiment exp = this;
-		if (globalValue && chainToPrevious != null)
-			exp = chainToPrevious.getFirstChainedExperiment(globalValue);
+		if (globalValue && chainToPreviousExperiment != null)
+			exp = chainToPreviousExperiment.getFirstChainedExperiment(globalValue);
 		return exp;
 	}
 		
 	public Experiment getLastChainedExperiment(boolean globalValue) 
 	{
 		Experiment exp = this;
-		if (globalValue && chainToNext != null)
-			exp = chainToNext.getLastChainedExperiment(globalValue);
+		if (globalValue && chainToNextExperiment != null)
+			exp = chainToNextExperiment.getLastChainedExperiment(globalValue);
 		return exp;
 	}
 	

@@ -178,8 +178,8 @@ public class ExperimentCombo extends JComboBox<Experiment>
 			Experiment expi = getItemAt(i);
 			if (!collate) 
 			{
-				expi.chainToPrevious = null;
-				expi.chainToNext = null;
+				expi.chainToPreviousExperiment = null;
+				expi.chainToNextExperiment = null;
 				continue;
 			}
 			
@@ -194,28 +194,28 @@ public class ExperimentCombo extends JComboBox<Experiment>
 				// same exp series: if before, insert eventually
 				if (expj.camLastImage_Ms < expi.camFirstImage_ms) 
 				{
-					if (expi.chainToPrevious == null)
-						expi.chainToPrevious = expj;
-					else if (expj.camLastImage_Ms > expi.chainToPrevious.camLastImage_Ms ) 
+					if (expi.chainToPreviousExperiment == null)
+						expi.chainToPreviousExperiment = expj;
+					else if (expj.camLastImage_Ms > expi.chainToPreviousExperiment.camLastImage_Ms ) 
 					{
-						(expi.chainToPrevious).chainToNext = expj;
-						expj.chainToPrevious = expi.chainToPrevious;
-						expj.chainToNext = expi;
-						expi.chainToPrevious = expj;
+						(expi.chainToPreviousExperiment).chainToNextExperiment = expj;
+						expj.chainToPreviousExperiment = expi.chainToPreviousExperiment;
+						expj.chainToNextExperiment = expi;
+						expi.chainToPreviousExperiment = expj;
 					}
 					continue;
 				}
 				// same exp series: if after, insert eventually
 				if (expj.camFirstImage_ms >= expi.camLastImage_Ms) 
 				{
-					if (expi.chainToNext == null)
-						expi.chainToNext = expj;
-					else if (expj.camFirstImage_ms < expi.chainToNext.camFirstImage_ms ) 
+					if (expi.chainToNextExperiment == null)
+						expi.chainToNextExperiment = expj;
+					else if (expj.camFirstImage_ms < expi.chainToNextExperiment.camFirstImage_ms ) 
 					{
-						(expi.chainToNext).chainToPrevious = expj;
-						expj.chainToNext = (expi.chainToNext);
-						expj.chainToPrevious = expi;
-						expi.chainToNext = expj;
+						(expi.chainToNextExperiment).chainToPreviousExperiment = expj;
+						expj.chainToNextExperiment = (expi.chainToNextExperiment);
+						expj.chainToPreviousExperiment = expi;
+						expi.chainToNextExperiment = expj;
 					}
 					continue;
 				}
@@ -240,8 +240,8 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		for (int i=0; i< getItemCount(); i++)
 		{
 			Experiment expi = getItemAt(i);
-			expi.chainToPrevious = null;
-			expi.chainToNext = null;
+			expi.chainToPreviousExperiment = null;
+			expi.chainToNextExperiment = null;
 		}
 		if (!collate) 
 			return;
@@ -249,7 +249,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		for (int i=0; i< getItemCount(); i++) 
 		{
 			Experiment expi = getItemAt(i);
-			if (expi.chainToNext != null || expi.chainToPrevious != null)
+			if (expi.chainToNextExperiment != null || expi.chainToPreviousExperiment != null)
 				continue;
 			List <Experiment> list = new ArrayList<Experiment> ();
 			list.add(expi);
@@ -261,7 +261,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 				Experiment expj = getItemAt(j);
 				if (!isSameDescriptors(expi, expj))
 					continue;
-				if (expj.chainToNext != null || expj.chainToPrevious != null)
+				if (expj.chainToNextExperiment != null || expj.chainToPreviousExperiment != null)
 					continue;
 				list.add(expj);
 			}
@@ -274,9 +274,9 @@ public class ExperimentCombo extends JComboBox<Experiment>
 			{
 				Experiment expk = list.get(k);
 				if (k > 0)
-					expk.chainToPrevious = list.get(k-1);
+					expk.chainToPreviousExperiment = list.get(k-1);
 				if (k < (list.size() -1))	 
-					expk.chainToNext = list.get(k+1);
+					expk.chainToNextExperiment = list.get(k+1);
 			}
 		}
 	}

@@ -12,7 +12,7 @@ import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.experiment.SequenceCamData;
+
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
@@ -28,10 +28,8 @@ public class FlyDetect3 extends BuildSeries
 	public Sequence seqPositive = new Sequence();
 	public Sequence seqBackground = null;
 	private Viewer vPositive = null;
-	
 	private Viewer vBackgroundImage = null;
-	private OverlayThreshold ov = null;
-	
+
 	private FlyDetectTools flyDetectTools = new FlyDetectTools();	
 
 	// -----------------------------------------
@@ -112,34 +110,16 @@ public class FlyDetect3 extends BuildSeries
 					int height = viewerCamData.getHeight();
 					pt.y += height;
 					
-//					if (exp.seqBackground == null)
-//						exp.seqBackground = new Sequence();
-//					exp.seqBackground.setName("referenceImage");
-//					exp.seqBackground.setImage(0, 0,IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, flyDetectTools.rectangleAllCages));
 					seqBackground = newSequence("referenceImage", exp.seqCamData.refImage);
 					exp.seqBackground = seqBackground;
 					
 					vBackgroundImage = new Viewer(exp.seqBackground, false);
 					vBackgroundImage.setVisible(true);
-//					if (vBackgroundImage != null) 
-//					{
-//						vBackgroundImage.setVisible(true);
-//						vBackgroundImage.setLocation(pt);
-//					}
-					
-					
-//					if (seqPositive == null)
-//						seqPositive = new Sequence();
-//					seqPositive.setName("positiveImage");
-//					seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, flyDetectTools.rectangleAllCages));
+
 					seqPositive = newSequence("positiveImage", exp.seqCamData.refImage);
 					vPositive = new Viewer(seqPositive, false);
 					vPositive.setVisible(true);
-//					if (vPositive != null) 
-//					{
-//						vPositive.setVisible(true);
-//						vPositive.setLocation(pt);
-//					}					
+				
 				}});
 		} 
 		catch (InvocationTargetException | InterruptedException e) 
@@ -175,11 +155,11 @@ public class FlyDetect3 extends BuildSeries
 		{
 			try {
 				ImageTransformOptions transformOptions = new ImageTransformOptions();
-				transformOptions.transformOption = EnumImageTransformations.SUBTRACT; //SUBTRACT_REF;
-				//transformOptions.referenceImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.refImage);
+				transformOptions.transformOption = EnumImageTransformations.SUBTRACT; 
 				transformOptions.referenceImage = exp.seqCamData.refImage;
 				transformOptions.setSingleThreshold(options.threshold, stopFlag);
 				buildBackgroundImage(exp, transformOptions);
+				
 				exp.saveReferenceImage();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block

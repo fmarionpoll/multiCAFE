@@ -367,11 +367,11 @@ public class XLSExport
 		expAll.setField(EnumXLSColumnHeader.SEX, exp.getField(EnumXLSColumnHeader.SEX));
 		expAll.setExperimentDirectory(exp.getExperimentDirectory());
 		
-		Experiment expi = exp.chainToNext;
+		Experiment expi = exp.chainToNextExperiment;
 		while (expi != null ) 
 		{
 			expAll.capillaries.mergeLists(expi.capillaries);
-			expi = expi.chainToNext;
+			expi = expi.chainToNextExperiment;
 		}
 
 		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_ms)/options.buildExcelStepMs  +1) ;
@@ -490,7 +490,7 @@ public class XLSExport
 				}
 				addResultsTo_rowsForOneExp(expi, resultsArrayList);
 			}
-			expi = expi.chainToNext;
+			expi = expi.chainToNextExperiment;
 		}
 		
 		switch (xlsExportType) 
@@ -564,7 +564,7 @@ public class XLSExport
 					case SUMGULPS_LR:
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
-						if (options.collateSeries && options.padIntervals && expi.chainToPrevious != null) 
+						if (options.collateSeries && options.padIntervals && expi.chainToPreviousExperiment != null) 
 							dvalue = padWithLastPreviousValue(row, to_first_index);
 						break;
 					default:
@@ -591,7 +591,7 @@ public class XLSExport
 			} 
 			else 
 			{
-				if (options.collateSeries && options.padIntervals && expi.chainToPrevious != null) 
+				if (options.collateSeries && options.padIntervals && expi.chainToPreviousExperiment != null) 
 				{
 					double dvalue = padWithLastPreviousValue(row, to_first_index);
 					int tofirst = (int) to_first_index;
@@ -653,9 +653,9 @@ public class XLSExport
 			if (cage.cageNFlies > 0) 
 			{
 				Experiment expi = exp;
-				while (expi.chainToNext != null && expi.chainToNext.cages.isFlyAlive(cagenumber)) 
+				while (expi.chainToNextExperiment != null && expi.chainToNextExperiment.cages.isFlyAlive(cagenumber)) 
 				{
-					expi = expi.chainToNext;
+					expi = expi.chainToNextExperiment;
 				}
 				int lastIntervalFlyAlive = expi.cages.getLastIntervalFlyAlive(cagenumber);
 				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.camBinImage_ms 

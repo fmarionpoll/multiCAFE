@@ -35,7 +35,7 @@ public class XLSExportGulpsResults  extends XLSExport
 			for (int index = options.firstExp; index <= options.lastExp; index++) 
 			{
 				Experiment exp = expList.getItemAt(index);
-				if (exp.chainToPrevious != null)
+				if (exp.chainToPreviousExperiment != null)
 					continue;
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
@@ -61,7 +61,7 @@ public class XLSExportGulpsResults  extends XLSExport
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.CROSSCORREL_LR);
 				}
 				
-				if (!options.collateSeries || exp.chainToPrevious == null)
+				if (!options.collateSeries || exp.chainToPreviousExperiment == null)
 					column += expList.maxSizeOfCapillaryArrays +2;
 				iSeries++;
 				progress.incPosition();
