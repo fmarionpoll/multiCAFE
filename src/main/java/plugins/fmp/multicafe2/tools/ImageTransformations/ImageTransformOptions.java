@@ -11,6 +11,8 @@ public class ImageTransformOptions
 {
 	public EnumImageTransformations transformOption; 
 	public IcyBufferedImage referenceImage = null;
+	public IcyBufferedImage secondImage = null;
+	public int npixels_changed = 0;
 	
 	public int xfirst;
 	public int xlast;

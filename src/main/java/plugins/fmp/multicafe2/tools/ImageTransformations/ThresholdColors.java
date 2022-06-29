@@ -34,10 +34,10 @@ public class ThresholdColors extends ImageTransformFunction implements ImageTran
 		{
 			dummy = IcyBufferedImageUtil.convertToType(sourceImage, DataType.BYTE, false);
 		}
-		byte [][] sourceBuffer = dummy.getDataXYCAsByte(); // [C][XY]
+		byte [][] sourceBuffer = dummy.getDataXYCAsByte(); 
 		byte [] binaryResultArray = binaryResultBuffer.getDataXYAsByte(0);
 		int npixels = binaryResultArray.length;
-		Color pixel = new Color(0,0,0);
+		Color pixel = new Color(0, 0, 0);
 		for (int ipixel = 0; ipixel < npixels; ipixel++) 
 		{
 			byte val = options.byteFALSE; 

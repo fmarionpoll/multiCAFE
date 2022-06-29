@@ -125,10 +125,10 @@ public class FlyDetect2 extends BuildSeries
 			seqPositive = null;
 		}
 		
-		if (exp.seqBackgroundImage != null) 
+		if (exp.seqBackground != null) 
 		{
-			exp.seqBackgroundImage.close();
-			exp.seqBackgroundImage = null;
+			exp.seqBackground.close();
+			exp.seqBackground = null;
 		}
 	}
 
@@ -234,12 +234,12 @@ public class FlyDetect2 extends BuildSeries
 				{
 					public void run() 
 					{
-						if (exp.seqBackgroundImage == null)
-							exp.seqBackgroundImage = new Sequence();
+						if (exp.seqBackground == null)
+							exp.seqBackground = new Sequence();
 						if (vBackgroundImage == null)
-							vBackgroundImage = new Viewer(exp.seqBackgroundImage, false);
-						exp.seqBackgroundImage.setName("referenceImage");
-						exp.seqBackgroundImage.setImage(0, 0,IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, find_flies.rectangleAllCages));
+							vBackgroundImage = new Viewer(exp.seqBackground, false);
+						exp.seqBackground.setName("referenceImage");
+						exp.seqBackground.setImage(0, 0,IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage, find_flies.rectangleAllCages));
 						
 						if (seqPositive == null)
 							seqPositive = new Sequence();
@@ -324,7 +324,7 @@ public class FlyDetect2 extends BuildSeries
 				if (bestMask != null) 
 				{
 					ROI2DArea flyROI = new ROI2DArea(bestMask);
-					exp.seqBackgroundImage.addROI(flyROI);
+					exp.seqBackground.addROI(flyROI);
 					if (!cage.initialflyRemoved) 
 					{
 						Rectangle rect = flyROI.getBounds();
@@ -332,8 +332,8 @@ public class FlyDetect2 extends BuildSeries
 
 						cage.initialflyRemoved = true;
 						nFliesToRemove--;
-						if (exp.seqBackgroundImage != null)
-							exp.seqBackgroundImage.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage,
+						if (exp.seqBackground != null)
+							exp.seqBackground.setImage(0, 0, IcyBufferedImageUtil.getSubImage(exp.seqCamData.refImage,
 									find_flies.rectangleAllCages));
 					}
 				}
@@ -341,7 +341,7 @@ public class FlyDetect2 extends BuildSeries
 			if (nFliesToRemove < 1)
 				break;
 		}
-		exp.seqBackgroundImage.removeAllROI();
+		exp.seqBackground.removeAllROI();
 		progress.close();
 	}
 

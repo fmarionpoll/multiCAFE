@@ -149,7 +149,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 					boolean flag = exp.loadReferenceImage(); 
 					if (flag) 
 					{
-						Viewer v = new Viewer(exp.seqBackgroundImage, true);
+						Viewer v = new Viewer(exp.seqBackground, true);
 						Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBoundsInternal();
 						v.setBounds(rectv);
 					} 

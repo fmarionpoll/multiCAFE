@@ -57,9 +57,9 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
-	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
+	private JComboBox<String> allCagesComboBox 	= new JComboBox<String> (new String[] {"all cages"});
 	
-	private FlyDetect3 flyDetect3 		= null;
+	private FlyDetect3 flyDetect3 				= null;
 	private OverlayThreshold ov 				= null;
 	
 	// ----------------------------------------------------
@@ -142,7 +142,7 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 					boolean flag = exp.loadReferenceImage(); 
 					if (flag) 
 					{
-						Viewer v = new Viewer(exp.seqBackgroundImage, true);
+						Viewer v = new Viewer(exp.seqBackground, true);
 						Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBoundsInternal();
 						v.setBounds(rectv);
 					} 
