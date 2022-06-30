@@ -45,32 +45,12 @@ public class FlyDetect3 extends BuildSeries
 			return;
 
 		runFlyDetect3(exp);
-		exp.cages.orderFlyPositions();
+//		exp.cages.orderFlyPositions();
 		if (!stopFlag)
 			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
-		exp.seqCamData.closeSequence();
+//		exp.seqCamData.closeSequence();
     }
-	
-	private void openViewer(Experiment exp) 
-	{
-		try 
-		{
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() 
-				{
-					viewerCamData = new Viewer(exp.seqCamData.seq, true);
-					Rectangle rectv = viewerCamData.getBoundsInternal();
-					rectv.setLocation(options.parent0Rect.x+ options.parent0Rect.width, options.parent0Rect.y);
-					viewerCamData.setBounds(rectv);
-				}});
-		} 
-		catch (InvocationTargetException | InterruptedException e) 
-		{
-			e.printStackTrace();
-		}
-		
-	}
-	
+
 	private void closeSequences () 
 	{
 		closeSequence(seqPositive); 
@@ -92,6 +72,7 @@ public class FlyDetect3 extends BuildSeries
 		closeViewer (vPositive); 
 		closeViewer (vBackgroundImage);
 		closeViewer(vDataRecorded);
+		closeSequences();
 	}
 	
 	private void closeViewer (Viewer v)
@@ -103,22 +84,15 @@ public class FlyDetect3 extends BuildSeries
 		}
 	}
 
-	public void displayViewers(Experiment exp) 
+	public void openViewers(Experiment exp) 
 	{
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() 
-				{
-					viewerCamData = exp.seqCamData.seq.getFirstViewer();
-					Point pt = viewerCamData.getLocation();
-					int height = viewerCamData.getHeight();
-					
+				{			
 					seqDataRecorded = newSequence("data recorded", exp.seqCamData.getSeqImage(0, 0));
 					vDataRecorded = new Viewer(seqDataRecorded, false);
 					vDataRecorded.setVisible(true);
-					vDataRecorded.setLocation(pt);
-					
-					pt.y += height;
 					
 					seqBackground = newSequence("referenceImage", exp.seqCamData.refImage);
 					exp.seqBackground = seqBackground;
@@ -129,7 +103,6 @@ public class FlyDetect3 extends BuildSeries
 					seqPositive = newSequence("positiveImage", exp.seqCamData.refImage);
 					vPositive = new Viewer(seqPositive, false);
 					vPositive.setVisible(true);
-				
 				}});
 		} 
 		catch (InvocationTargetException | InterruptedException e) 
@@ -149,18 +122,16 @@ public class FlyDetect3 extends BuildSeries
 
 	private void runFlyDetect3(Experiment exp) 
 	{
-		if (seqPositive == null)
-			seqPositive = new Sequence();
-		
 		exp.cleanPreviousDetectedFliesROIs();
 		flyDetectTools.initParametersForDetection(exp, options);
 		flyDetectTools.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
 		options.threshold = options.thresholdDiff;
-		openViewer(exp);
 		
 		boolean flag = options.forceBuildBackground;
 		flag |= (!exp.loadReferenceImage());
 		flag |= (exp.seqCamData.refImage == null);
+		openViewers(exp);
+		
 		if (flag) 
 		{
 			try {
@@ -169,24 +140,21 @@ public class FlyDetect3 extends BuildSeries
 				transformOptions.referenceImage = exp.seqCamData.refImage;
 				transformOptions.setSingleThreshold(options.threshold, stopFlag);
 				buildBackgroundImage(exp, transformOptions);
-				
 				exp.saveReferenceImage();
+				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		closeViewers();
-		closeSequences();
 	}
 	
 	private void buildBackgroundImage(Experiment exp, ImageTransformOptions transformOptions) throws InterruptedException 
 	{
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		flyDetectTools.initParametersForDetection(exp, options);
-		displayViewers(exp);
-		
-		
+
 		int t_from = (int) ((exp.cages.detectFirst_Ms - exp.camFirstImage_ms)/exp.camBinImage_ms);
 		long limit = 50 ;
 		if (limit > exp.seqCamData.nTotalFrames)
