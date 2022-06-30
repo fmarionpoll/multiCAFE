@@ -16,7 +16,7 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
-import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
+
 
 
 
@@ -25,8 +25,11 @@ public class FlyDetect3 extends BuildSeries
 {
 	private Viewer viewerCamData;
 	
+	public Sequence seqDataRecorded = new Sequence();
 	public Sequence seqPositive = new Sequence();
 	public Sequence seqBackground = null;
+	
+	private Viewer vDataRecorded = null;
 	private Viewer vPositive = null;
 	private Viewer vBackgroundImage = null;
 
@@ -70,9 +73,9 @@ public class FlyDetect3 extends BuildSeries
 	
 	private void closeSequences () 
 	{
-		
 		closeSequence(seqPositive); 
 		closeSequence(seqBackground); 
+		closeSequence(seqDataRecorded);
 	}
 	
 	private void closeSequence(Sequence seq) 
@@ -87,7 +90,8 @@ public class FlyDetect3 extends BuildSeries
 	private void closeViewers() 
 	{
 		closeViewer (vPositive); 
-		closeViewer (vBackgroundImage); 
+		closeViewer (vBackgroundImage);
+		closeViewer(vDataRecorded);
 	}
 	
 	private void closeViewer (Viewer v)
@@ -108,6 +112,12 @@ public class FlyDetect3 extends BuildSeries
 					viewerCamData = exp.seqCamData.seq.getFirstViewer();
 					Point pt = viewerCamData.getLocation();
 					int height = viewerCamData.getHeight();
+					
+					seqDataRecorded = newSequence("data recorded", exp.seqCamData.getSeqImage(0, 0));
+					vDataRecorded = new Viewer(seqDataRecorded, false);
+					vDataRecorded.setVisible(true);
+					vDataRecorded.setLocation(pt);
+					
 					pt.y += height;
 					
 					seqBackground = newSequence("referenceImage", exp.seqCamData.refImage);
@@ -192,9 +202,12 @@ public class FlyDetect3 extends BuildSeries
 			int t = (int) ((indexms - exp.cages.detectFirst_Ms)/exp.camBinImage_ms);
 			
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
+			seqDataRecorded.setImage(0, 0, currentImage);
+			
 			IcyBufferedImage thresholdImage = thresholdDifferenceWithRef.transformImage(currentImage, transformOptions);
 			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(thresholdImage, flyDetectTools.rectangleAllCages));
 			
+			seqDataRecorded.fireModelImageChangedEvent();
 			seqPositive.fireModelImageChangedEvent();
 			seqBackground.fireModelImageChangedEvent();
 			
