@@ -129,7 +129,7 @@ public class Detect3 extends JPanel implements ChangeListener, PropertyChangeLis
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
-					exp.saveReferenceImage();
+					exp.saveReferenceImage(exp.seqCamData.refImage);
 			}});
 		
 		loadButton.addActionListener(new ActionListener () 

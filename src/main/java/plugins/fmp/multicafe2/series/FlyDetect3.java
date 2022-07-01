@@ -1,7 +1,6 @@
 package plugins.fmp.multicafe2.series;
 
-import java.awt.Point;
-import java.awt.Rectangle;
+
 import java.lang.reflect.InvocationTargetException;
 
 import javax.swing.SwingUtilities;
@@ -23,8 +22,6 @@ import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
 
 public class FlyDetect3 extends BuildSeries 
 {
-	private Viewer viewerCamData;
-	
 	public Sequence seqDataRecorded = new Sequence();
 	public Sequence seqPositive = new Sequence();
 	public Sequence seqBackground = null;
@@ -45,9 +42,10 @@ public class FlyDetect3 extends BuildSeries
 			return;
 
 		runFlyDetect3(exp);
+		
 //		exp.cages.orderFlyPositions();
-		if (!stopFlag)
-			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
+//		if (!stopFlag)
+//			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
 //		exp.seqCamData.closeSequence();
     }
 
@@ -130,8 +128,8 @@ public class FlyDetect3 extends BuildSeries
 		boolean flag = options.forceBuildBackground;
 		flag |= (!exp.loadReferenceImage());
 		flag |= (exp.seqCamData.refImage == null);
-		openViewers(exp);
 		
+		openViewers(exp);
 		if (flag) 
 		{
 			try {
@@ -140,10 +138,9 @@ public class FlyDetect3 extends BuildSeries
 				transformOptions.referenceImage = exp.seqCamData.refImage;
 				transformOptions.setSingleThreshold(options.threshold, stopFlag);
 				buildBackgroundImage(exp, transformOptions);
-				exp.saveReferenceImage();
+				exp.saveReferenceImage(seqBackground.getFirstImage());
 				
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -183,6 +180,7 @@ public class FlyDetect3 extends BuildSeries
 			if (transformOptions.npixels_changed < 10 && t > 0 ) 
 				break;
 		}
+		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(seqBackground.getFirstImage());
 		progress.close();
 	}
 

@@ -93,9 +93,8 @@ public class FlyDetect2 extends BuildSeries
 		{
 			try {
 				buildBackgroundImage(exp);
-				exp.saveReferenceImage();
+				exp.saveReferenceImage(exp.seqCamData.refImage);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

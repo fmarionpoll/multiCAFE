@@ -877,10 +877,10 @@ public class Experiment
 		return true;
 	}
 	
-	public boolean saveReferenceImage() 
+	public boolean saveReferenceImage(IcyBufferedImage referenceImage) 
 	{
 		File outputfile = new File(getReferenceImageFullName());
-		RenderedImage image = ImageUtil.toRGBImage(seqCamData.refImage);
+		RenderedImage image = ImageUtil.toRGBImage(referenceImage);
 		return ImageUtil.save(image, "jpg", outputfile);
 	}
 	
