@@ -117,7 +117,6 @@ public class FlyDetect3 extends BuildSeries
 		return seq;
 	}
 	
-
 	private void runFlyDetect3(Experiment exp) 
 	{
 		exp.cleanPreviousDetectedFliesROIs();
