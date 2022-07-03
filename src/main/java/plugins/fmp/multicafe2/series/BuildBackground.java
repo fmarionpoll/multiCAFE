@@ -54,9 +54,9 @@ public class BuildBackground extends BuildSeries
 	
 	private void closeViewers() 
 	{
+		closeViewer(vDataRecorded);
 		closeViewer (vPositive); 
 		closeViewer (vBackgroundImage);
-		closeViewer(vDataRecorded);
 		closeSequences();
 	}
 	
@@ -67,17 +67,14 @@ public class BuildBackground extends BuildSeries
 				public void run() 
 				{			
 					seqDataRecorded = newSequence("data recorded", exp.seqCamData.getSeqImage(0, 0));
-					vDataRecorded = new Viewer(seqDataRecorded, false);
-					vDataRecorded.setVisible(true);
+					vDataRecorded = new Viewer(seqDataRecorded, true);
 					
 					seqBackground = newSequence("referenceImage", exp.seqCamData.refImage);
 					exp.seqBackground = seqBackground;
-					vBackgroundImage = new Viewer(exp.seqBackground, false);
-					vBackgroundImage.setVisible(true);
+					vBackgroundImage = new Viewer(exp.seqBackground, true);
 
 					seqPositive = newSequence("positiveImage", exp.seqCamData.refImage);
-					vPositive = new Viewer(seqPositive, false);
-					vPositive.setVisible(true);
+					vPositive = new Viewer(seqPositive, true);
 				}});
 		} 
 		catch (InvocationTargetException | InterruptedException e) 
@@ -127,22 +124,23 @@ public class BuildBackground extends BuildSeries
 		limit = limit * exp.cages.detectBin_Ms +exp.cages.detectFirst_Ms ;
 		
 		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getSeqImage(t_from, 0));
+		transformOptions.referenceImage = exp.seqCamData.refImage;
 		ImageTransformInterface thresholdDifferenceWithRef = EnumImageTransformations.THRESHOLD_DIFF.getFunction();
 		long first_ms = exp.cages.detectFirst_Ms + exp.cages.detectBin_Ms;
+		int t0 = (int) ((first_ms - exp.cages.detectFirst_Ms)/exp.camBinImage_ms);
 
-		for (long indexms = first_ms ; indexms<= limit && !stopFlag; indexms += exp.cages.detectBin_Ms) 
+		for (long indexms = first_ms ; indexms <= limit && !stopFlag; indexms += exp.cages.detectBin_Ms) 
 		{
 			int t = (int) ((indexms - exp.cages.detectFirst_Ms)/exp.camBinImage_ms);
+			if (t == t0)
+				continue;
 			
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
 			seqDataRecorded.setImage(0, 0, currentImage);
 			
 			IcyBufferedImage thresholdImage = thresholdDifferenceWithRef.transformImage(currentImage, transformOptions);
-			seqPositive.setImage(0, 0, IcyBufferedImageUtil.getSubImage(thresholdImage, flyDetectTools.rectangleAllCages));
-			
-			seqDataRecorded.fireModelImageChangedEvent();
-			seqPositive.fireModelImageChangedEvent();
-			seqBackground.fireModelImageChangedEvent();
+			seqPositive.setImage(0, 0, thresholdImage);
+			seqBackground.setImage(0, 0, transformOptions.referenceImage);
 			
 //			System.out.println("t= "+t+ " n pixels changed=" + transformOptions.npixels_changed);
 			if (transformOptions.npixels_changed < 10 && t > 0 ) 

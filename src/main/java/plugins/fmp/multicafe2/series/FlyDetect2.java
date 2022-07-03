@@ -1,8 +1,6 @@
 package plugins.fmp.multicafe2.series;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.concurrent.Future;
 import javax.swing.SwingUtilities;
 
 import icy.gui.frame.progress.ProgressFrame;
@@ -10,8 +8,6 @@ import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.sequence.Sequence;
-import icy.system.SystemUtil;
-import icy.system.thread.Processor;
 
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
@@ -24,15 +20,15 @@ import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
 public class FlyDetect2 extends BuildSeries 
 {
 	private Viewer vDataRecorded = null;
-	private Viewer vPositive = null;
-	private Viewer vBackgroundImage = null;
+//	private Viewer vPositive = null;
+//	private Viewer vBackgroundImage = null;
 	private Viewer vNegative = null;
 	private FlyDetectTools find_flies = new FlyDetectTools();	
 	
-	public Sequence seqDataRecorded = new Sequence();
-	public Sequence seqNegative = new Sequence();
-	public Sequence seqPositive = new Sequence();
-	public Sequence seqBackground = null;
+	public Sequence seqDataRecorded = null;
+	public Sequence seqNegative = null;
+//	public Sequence seqPositive = new Sequence();
+//	public Sequence seqBackground = null;
 	
 	public boolean viewInternalImages = true;
 
@@ -64,14 +60,14 @@ public class FlyDetect2 extends BuildSeries
 					vDataRecorded = new Viewer(seqDataRecorded, false);
 					vDataRecorded.setVisible(true);
 					
-					seqBackground = newSequence("referenceImage", exp.seqCamData.refImage);
-					exp.seqBackground = seqBackground;
-					vBackgroundImage = new Viewer(exp.seqBackground, false);
-					vBackgroundImage.setVisible(true);
+//					seqBackground = newSequence("referenceImage", exp.seqCamData.refImage);
+//					exp.seqBackground = seqBackground;
+//					vBackgroundImage = new Viewer(exp.seqBackground, false);
+//					vBackgroundImage.setVisible(true);
 					
-					seqPositive = newSequence("positiveImage", exp.seqCamData.refImage);
-					vPositive = new Viewer(seqPositive, false);
-					vPositive.setVisible(true);
+//					seqPositive = newSequence("positiveImage", exp.seqCamData.refImage);
+//					vPositive = new Viewer(seqPositive, false);
+//					vPositive.setVisible(true);
 					
 					seqNegative = newSequence("detectionImage", exp.seqCamData.refImage);
 					vNegative = new Viewer (seqNegative, false);
@@ -87,58 +83,51 @@ public class FlyDetect2 extends BuildSeries
 	
 	private void runFlyDetect2(Experiment exp) 
 	{
-		if (seqNegative == null)
-			seqNegative = new Sequence();
-		if (seqPositive == null)
-			seqPositive = new Sequence();
-		
 		exp.cleanPreviousDetectedFliesROIs();
 		find_flies.initParametersForDetection(exp, options);
 		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
 		options.threshold = options.thresholdDiff;
-		openViewers(exp);
+
 		
-		boolean flag = options.forceBuildBackground;
-		flag |= (!exp.loadReferenceImage());
-		flag |= (exp.seqCamData.refImage == null);
-		if (!flag) 
+		if (exp.loadReferenceImage()) 
 		{
-			closeViewers();
+			openViewers(exp);
 			findFliesInAllFrame(exp);
 			exp.cages.orderFlyPositions();
 			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
+			closeViewers();
 		}
+		
 		closeSequences (exp);
 	}
 	
 	private void closeSequences (Experiment exp) 
 	{
+		closeSequence(seqDataRecorded); 
+//		closeSequence(seqPositive); 
 		closeSequence(seqNegative); 
-		closeSequence(seqPositive); 
-		closeSequence(seqNegative);
-		closeSequence(exp.seqBackground); 
+//		closeSequence(seqBackground);
 	}
 
 	private void closeViewers() 
 	{
 		closeViewer(vDataRecorded);
-		closeViewer(vPositive); 
+//		closeViewer(vPositive); 
 		closeViewer(vNegative);
-		closeViewer(vBackgroundImage); 
+//		closeViewer(vBackgroundImage); 
 	}
-
 
 	private void findFliesInAllFrame(Experiment exp) 
 	{
 		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
 		find_flies.initTempRectROIs(exp, seqNegative, options.detectCage);
 
-		int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);
-		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
-	    processor.setThreadName("detectFlies1");
-	    processor.setPriority(Processor.NORM_PRIORITY);
-	    ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
-		futures.clear();
+//		int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);
+//		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+//	    processor.setThreadName("detectFlies1");
+//	    processor.setPriority(Processor.NORM_PRIORITY);
+//	    ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
+//		futures.clear();
 		
 		ImageTransformOptions transformOptions = new ImageTransformOptions();
 		transformOptions.transformOption = EnumImageTransformations.SUBTRACT_REF;
@@ -148,33 +137,27 @@ public class FlyDetect2 extends BuildSeries
 		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= exp.cages.detectLast_Ms; indexms += exp.cages.detectBin_Ms ) 
 		{
 			final int t_from = (int) ((indexms - exp.camFirstImage_ms)/exp.camBinImage_ms);
-			futures.add(processor.submit(new Runnable () 
-			{
-				@Override
-				public void run() 
-				{	
+//			futures.add(processor.submit(new Runnable () 
+//			{
+//				@Override
+//				public void run() 
+//				{	
 					IcyBufferedImage workImage = imageIORead(exp.seqCamData.getFileName(t_from));
-					if (workImage == null)
-						return;
+					seqDataRecorded.setImage(0, 0, workImage);
 					
-					IcyBufferedImage currentImage = IcyBufferedImageUtil.getCopy(workImage);				
-					IcyBufferedImage negativeImage = transformFunction.transformImage(currentImage, transformOptions);
+					IcyBufferedImage negativeImage = transformFunction.transformImage(workImage, transformOptions);
+					seqNegative.setImage(0,  0, negativeImage);
 					try {
 						find_flies.findFlies(negativeImage, t_from);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
-				}}));
+//				}}));
 		}
-		waitFuturesCompletion(processor, futures, progressBar);
-		
-		exp.seqCamData.seq.endUpdate();
-		seqNegative.close();
+//		waitFuturesCompletion(processor, futures, progressBar);
 		
 		progressBar.close();
-		processor.shutdown();
+//		processor.shutdown();
 	}
 
 }

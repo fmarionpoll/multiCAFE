@@ -187,7 +187,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 	Sequence newSequence(String title, IcyBufferedImage image) 
 	{
 		Sequence seq = new Sequence();
-		seq.setName("positiveImage");
+		seq.setName(title);
 		seq.setImage(0, 0, image);
 		return seq;
 	}
