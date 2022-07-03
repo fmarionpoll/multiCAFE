@@ -61,7 +61,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	
 	private FlyDetect2 flyDetect2 		= null;
-	private OverlayThreshold ov 				= null;
+	private OverlayThreshold ov 		= null;
 	
 	// ----------------------------------------------------
 	
