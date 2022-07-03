@@ -29,7 +29,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 			Display			tabInfos		= new Display();
 			Detect1 		tabDetect1 		= new Detect1();
 			Detect2 		tabDetect2 		= new Detect2();
-			Detect3 		tabDetect3 		= new Detect3();
+			Background 		tabBackground 	= new Background();
 			Edit			tabEdit			= new Edit();
 	public 	LoadSave 		tabFile 		= new LoadSave();
 	public 	CageGraphs 		tabGraphics 	= new CageGraphs();
@@ -83,16 +83,17 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 		tabsPane.addTab("Detect1", null, tabDetect1, "Detect flies position using thresholding on image overlay");
 		
 		iTab++;
+		iTAB_DETECT3 = iTab;
+		tabBackground.init(capLayout, parent0);
+		tabBackground.addPropertyChangeListener(this);
+		tabsPane.addTab("Background"
+				+ "", null, tabBackground, "Build background without flies");
+		
+		iTab++;
 		iTAB_DETECT2 = iTab;
 		tabDetect2.init(capLayout, parent0);
 		tabDetect2.addPropertyChangeListener(this);
 		tabsPane.addTab("Detect2", null, tabDetect2, "Detect flies position using background subtraction");
-		
-		iTab++;
-		iTAB_DETECT3 = iTab;
-		tabDetect3.init(capLayout, parent0);
-		tabDetect3.addPropertyChangeListener(this);
-		tabsPane.addTab("Detect3", null, tabDetect3, "Build background without flies");
 		
 		iTab++;
 		iTAB_EDIT	= iTab;

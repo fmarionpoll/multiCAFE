@@ -20,7 +20,7 @@ import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
 
 
 
-public class FlyDetect3 extends BuildSeries 
+public class BuildBackground extends BuildSeries 
 {
 	public Sequence seqDataRecorded = new Sequence();
 	public Sequence seqPositive = new Sequence();

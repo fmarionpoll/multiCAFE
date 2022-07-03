@@ -46,19 +46,17 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	
 	private String 		detectString 			= "Detect..";
 	private JButton 	startComputationButton 	= new JButton(detectString);
-	private JSpinner 	thresholdDiffSpinner	= new JSpinner(new SpinnerNumberModel(100, 0, 255, 1));
-	private JSpinner 	thresholdBckgSpinner	= new JSpinner(new SpinnerNumberModel(40, 0, 255, 1));
+	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 	
+	private JButton 	loadButton 				= new JButton("Display background...");
+	
+	private JSpinner 	thresholdDiffSpinner	= new JSpinner(new SpinnerNumberModel(100, 0, 255, 1));
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 9999, 1));
 	private JSpinner 	objectUpsizeSpinner		= new JSpinner(new SpinnerNumberModel(500, 0, 9999, 1));
 	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object > ");
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object < ");
-	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
-	private JButton 	loadButton 				= new JButton("Load...");
-	private JButton 	saveButton 				= new JButton("Save...");
-	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
-	private JCheckBox 	backgroundCheckBox 		= new JCheckBox("background", false);
+
 	private JCheckBox 	detectCheckBox 			= new JCheckBox("flies", true);
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
@@ -80,7 +78,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		panel1.add(startComputationButton);
 		panel1.add(allCagesComboBox);
 		panel1.add(allCheckBox);
-		panel1.add(backgroundCheckBox);
+
 		panel1.add(detectCheckBox);
 		add(panel1);
 		
@@ -88,10 +86,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		
 		JPanel panel2 = new JPanel(flowLayout);
 		panel2.add(loadButton);
-		panel2.add(saveButton);
-		panel2.add(new JLabel("threshold for background "));
-		panel2.add(thresholdBckgSpinner);
-		panel2.add(viewsCheckBox);
 		panel2.validate();
 		add(panel2);
 		
@@ -115,7 +109,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		
 		defineActionListeners();
 		thresholdDiffSpinner.addChangeListener(this);
-		thresholdBckgSpinner.addChangeListener(this);
 	}
 	
 	private void defineActionListeners() 
@@ -128,15 +121,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 					startComputation();
 				else
 					stopComputation();
-			}});
-		
-		saveButton.addActionListener(new ActionListener () 
-		{
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
-				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null)
-					exp.saveReferenceImage(exp.seqCamData.refImage);
 			}});
 		
 		loadButton.addActionListener(new ActionListener () 
@@ -182,16 +166,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 			if (exp != null)
 				exp.cages.detect_threshold = (int) thresholdDiffSpinner.getValue();
 		}
-		
-		if (e.getSource() == thresholdBckgSpinner) 
-		{
-			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-			if (exp != null) 
-			{
-				int threshold = (int) thresholdBckgSpinner.getValue();
-				updateOverlay(exp, threshold);
-			}
-		}
 	}
 	
 	public void updateOverlay (Experiment exp, int threshold) 
@@ -234,8 +208,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.limitRatio		= (int) limitRatioSpinner.getValue();
 		options.jitter 			= (int) jitterTextField.getValue();
 		options.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
-		options.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();		
-		options.forceBuildBackground = backgroundCheckBox.isSelected();
 		options.detectFlies		= detectCheckBox.isSelected();
 		
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
@@ -259,7 +231,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		flyDetect2 = new FlyDetect2();		
 		flyDetect2.options = initTrackParameters();
 		flyDetect2.stopFlag = false;
-		flyDetect2.viewInternalImages = viewsCheckBox.isSelected();
 		flyDetect2.addPropertyChangeListener(this);
 		flyDetect2.execute();
 		startComputationButton.setText("STOP");

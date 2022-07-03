@@ -103,9 +103,9 @@ public class Detect1 extends JPanel implements ChangeListener, ItemListener, Pro
 		
 		JPanel panel2 = new JPanel(flowLayout);
 		transformComboBox.setSelectedIndex(1);
-		panel2.add(new JLabel("video channel ", SwingConstants.RIGHT));
+		panel2.add(new JLabel("source ", SwingConstants.RIGHT));
 		panel2.add(transformComboBox);
-		panel2.add(new JLabel("bkgnd subtraction ", SwingConstants.RIGHT));
+		panel2.add(new JLabel("bkgnd ", SwingConstants.RIGHT));
 		panel2.add(backgroundComboBox);
 		panel2.add(new JLabel("threshold ", SwingConstants.RIGHT));
 		panel2.add(thresholdSpinner);
