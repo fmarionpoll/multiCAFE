@@ -10,7 +10,9 @@ import java.util.concurrent.Future;
 import javax.imageio.ImageIO;
 import javax.swing.SwingWorker;
 import icy.gui.frame.progress.ProgressFrame;
+import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
+import icy.sequence.Sequence;
 import icy.system.thread.Processor;
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.experiment.Experiment;
@@ -163,5 +165,32 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 		boolean flag = exp.xmlReadDrosoTrack(null);
 		return flag;
 	}
+	
+	void closeSequence(Sequence seq) 
+	{
+		if (seq != null) 
+		{
+			seq.close();
+			seq = null;
+		}
+	}
+	
+	void closeViewer (Viewer v)
+	{
+		if (v != null) 
+		{
+			v.close();
+			v = null;
+		}
+	}
+
+	Sequence newSequence(String title, IcyBufferedImage image) 
+	{
+		Sequence seq = new Sequence();
+		seq.setName("positiveImage");
+		seq.setImage(0, 0, image);
+		return seq;
+	}
+
 	
 }

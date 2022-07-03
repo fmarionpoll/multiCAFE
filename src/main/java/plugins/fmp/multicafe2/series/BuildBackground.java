@@ -41,12 +41,8 @@ public class BuildBackground extends BuildSeries
 		if (!checkBoundsForCages(exp))
 			return;
 
-		runFlyDetect3(exp);
+		runBuildBackground(exp);
 		
-//		exp.cages.orderFlyPositions();
-//		if (!stopFlag)
-//			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
-//		exp.seqCamData.closeSequence();
     }
 
 	private void closeSequences () 
@@ -56,15 +52,6 @@ public class BuildBackground extends BuildSeries
 		closeSequence(seqDataRecorded);
 	}
 	
-	private void closeSequence(Sequence seq) 
-	{
-		if (seq != null) 
-		{
-			seq.close();
-			seq = null;
-		}
-	}
-
 	private void closeViewers() 
 	{
 		closeViewer (vPositive); 
@@ -73,15 +60,6 @@ public class BuildBackground extends BuildSeries
 		closeSequences();
 	}
 	
-	private void closeViewer (Viewer v)
-	{
-		if (v != null) 
-		{
-			v.close();
-			v = null;
-		}
-	}
-
 	public void openViewers(Experiment exp) 
 	{
 		try {
@@ -94,7 +72,6 @@ public class BuildBackground extends BuildSeries
 					
 					seqBackground = newSequence("referenceImage", exp.seqCamData.refImage);
 					exp.seqBackground = seqBackground;
-					
 					vBackgroundImage = new Viewer(exp.seqBackground, false);
 					vBackgroundImage.setVisible(true);
 
@@ -109,16 +86,7 @@ public class BuildBackground extends BuildSeries
 		}
 	}
 	
-	private Sequence newSequence(String title, IcyBufferedImage image) 
-	{
-		Sequence seq = new Sequence();
-		seq.setName("positiveImage");
-		seq.setImage(0, 0, image);
-		return seq;
-	}
-	
-
-	private void runFlyDetect3(Experiment exp) 
+	private void runBuildBackground(Experiment exp) 
 	{
 		exp.cleanPreviousDetectedFliesROIs();
 		flyDetectTools.initParametersForDetection(exp, options);

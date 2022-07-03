@@ -57,7 +57,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	private JCheckBox 	objectLowsizeCheckBox 	= new JCheckBox("object > ");
 	private JCheckBox 	objectUpsizeCheckBox 	= new JCheckBox("object < ");
 
-	private JCheckBox 	detectCheckBox 			= new JCheckBox("flies", true);
 	private JSpinner 	limitRatioSpinner		= new JSpinner(new SpinnerNumberModel(4, 0, 1000, 1));
 	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	
@@ -78,8 +77,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		panel1.add(startComputationButton);
 		panel1.add(allCagesComboBox);
 		panel1.add(allCheckBox);
-
-		panel1.add(detectCheckBox);
 		add(panel1);
 		
 		allCagesComboBox.addPopupMenuListener(this);
@@ -208,7 +205,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		options.limitRatio		= (int) limitRatioSpinner.getValue();
 		options.jitter 			= (int) jitterTextField.getValue();
 		options.thresholdDiff	= (int) thresholdDiffSpinner.getValue();
-		options.detectFlies		= detectCheckBox.isSelected();
+		options.detectFlies		= true;
 		
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubDirectory = parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
