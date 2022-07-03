@@ -9,13 +9,15 @@ import java.util.List;
 import icy.image.IcyBufferedImage;
 import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
-
+import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Cages;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.XYTaSeriesArrayList;
 import plugins.kernel.roi.roi2d.ROI2DArea;
+import plugins.kernel.roi.roi2d.ROI2DPoint;
+
 
 
 
@@ -98,7 +100,7 @@ public class FlyDetectTools
 		return new ROI2DArea( bmask );
 	}
 	
-	public void findFlies (IcyBufferedImage workimage, int t) throws InterruptedException 
+	public void findFlies(IcyBufferedImage workimage, int t) throws InterruptedException 
 	{
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
@@ -112,7 +114,7 @@ public class FlyDetectTools
 			BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, cage);
 			if ( bestMask != null ) 
 			{
-				ROI2DArea flyROI = new ROI2DArea( bestMask ); 
+				ROI2DArea flyROI = new ROI2DArea(bestMask); 
 				Rectangle2D rect = flyROI.getBounds2D();
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 				cage.flyPositions.addPoint(t, flyPosition);
@@ -122,6 +124,67 @@ public class FlyDetectTools
 				cage.flyPositions.addPoint(t, flyPositionMissed);
 			}	
 		}
+	}
+	
+	public List<ROI2D> findFlies2(Sequence seq, IcyBufferedImage workimage, int t) throws InterruptedException 
+	{
+		ROI2DArea binarizedImageRoi = binarizeInvertedImage (workimage, options.threshold);
+		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
+		List<ROI2D> listRois = new ArrayList<ROI2D>(cages.cagesList.size());
+ 		for (Cage cage: cages.cagesList) 
+ 		{		
+			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
+				continue;
+			if (cage.cageNFlies <1)
+				continue;
+			
+			BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, cage);
+			if ( bestMask != null ) 
+			{
+				ROI2DArea flyROI = new ROI2DArea(bestMask); 
+				Rectangle2D rect = flyROI.getBounds2D();
+				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
+				cage.flyPositions.addPoint(t, flyPosition);
+				
+				ROI2DPoint flyRect = new ROI2DPoint(flyPosition);
+				seq.addROI(flyRect);
+				listRois.add(flyRect);
+			}
+			else 
+			{
+				cage.flyPositions.addPoint(t, flyPositionMissed);
+			}	
+		}
+ 		return listRois;
+	}
+	
+	public ROI2DArea binarizeInvertedImage(IcyBufferedImage img, int threshold) 
+	{
+		if (img == null)
+			return null;
+		boolean[] mask = new boolean[ img.getSizeX() * img.getSizeY() ];
+		if (options.btrackWhite) 
+		{
+			byte[] arrayRed 	= img.getDataXYAsByte( 0);
+			byte[] arrayGreen 	= img.getDataXYAsByte( 1);
+			byte[] arrayBlue 	= img.getDataXYAsByte( 2);
+			for ( int i = 0 ; i < arrayRed.length ; i++ ) 
+			{
+				float r = ( arrayRed[i] 	& 0xFF );
+				float g = ( arrayGreen[i] 	& 0xFF );
+				float b = ( arrayBlue[i] 	& 0xFF );
+				float intensity = (r+g+b)/3f;
+				mask[i] = ( intensity ) < threshold ;
+			}
+		}
+		else 
+		{
+			byte[] arrayChan = img.getDataXYAsByte( options.videoChannel);
+			for ( int i = 0 ; i < arrayChan.length ; i++ ) 
+				mask[i] = ( ((int) arrayChan[i] ) & 0xFF ) > threshold ;
+		}
+		BooleanMask2D bmask = new BooleanMask2D( img.getBounds(), mask); 
+		return new ROI2DArea( bmask );
 	}
 	
 	public void initTempRectROIs(Experiment exp, Sequence seq, int option_cagenumber) 
