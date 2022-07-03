@@ -2,7 +2,6 @@ package plugins.fmp.multicafe2.series;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Future;
 
 import javax.swing.SwingUtilities;
@@ -11,7 +10,6 @@ import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
-import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
@@ -137,9 +135,7 @@ public class FlyDetect2 extends BuildSeries
 					IcyBufferedImage negativeImage = transformFunction.transformImage(workImage, transformOptions);
 					try {
 						seqNegative.setImage(0, 0, negativeImage);
-						List<ROI2D> listRois = find_flies.findFlies2(seqNegative, negativeImage, t_from);
-						for (ROI2D roi: listRois)
-							seqNegative.removeROI(roi);
+						find_flies.findFlies2(seqNegative, negativeImage, t_from);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

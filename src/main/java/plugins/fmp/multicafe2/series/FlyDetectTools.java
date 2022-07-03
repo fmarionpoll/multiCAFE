@@ -9,7 +9,6 @@ import java.util.List;
 import icy.image.IcyBufferedImage;
 import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
-import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Cages;
@@ -126,11 +125,11 @@ public class FlyDetectTools
 		}
 	}
 	
-	public List<ROI2D> findFlies2(Sequence seq, IcyBufferedImage workimage, int t) throws InterruptedException 
+	public void findFlies2(Sequence seq, IcyBufferedImage workimage, int t) throws InterruptedException 
 	{
 		ROI2DArea binarizedImageRoi = binarizeInvertedImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
-		List<ROI2D> listRois = new ArrayList<ROI2D>(cages.cagesList.size());
+
  		for (Cage cage: cages.cagesList) 
  		{		
 			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
@@ -148,14 +147,12 @@ public class FlyDetectTools
 				
 				ROI2DPoint flyRect = new ROI2DPoint(flyPosition);
 				seq.addROI(flyRect);
-				listRois.add(flyRect);
 			}
 			else 
 			{
 				cage.flyPositions.addPoint(t, flyPositionMissed);
 			}	
 		}
- 		return listRois;
 	}
 	
 	public ROI2DArea binarizeInvertedImage(IcyBufferedImage img, int threshold) 
