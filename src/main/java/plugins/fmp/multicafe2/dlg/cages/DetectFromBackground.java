@@ -51,8 +51,8 @@ public class DetectFromBackground extends JPanel implements PropertyChangeListen
 	void createTabs() 
 	{
 		GridLayout capLayout = new GridLayout(4, 1);
-		tabsPane.setTabPlacement(JTabbedPane.LEFT);
-		//tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+//		tabsPane.setTabPlacement(JTabbedPane.LEFT);
+		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
 		int iTab = 0;
 		iTAB_BACKGND = iTab;

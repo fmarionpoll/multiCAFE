@@ -90,17 +90,17 @@ public class BuildBackground extends BuildSeries
 		flyDetectTools.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
 		options.threshold = options.thresholdDiff;
 		
-		boolean flag = options.forceBuildBackground;
-		flag |= (!exp.loadReferenceImage());
-		flag |= (exp.seqCamData.refImage == null);
+//		boolean flag = options.forceBuildBackground;
+//		flag |= (!exp.loadReferenceImage());
+//		flag |= (exp.seqCamData.refImage == null);
 		
 		openViewers(exp);
-		if (flag) 
-		{
+//		if (flag) 
+//		{
 			try {
 				ImageTransformOptions transformOptions = new ImageTransformOptions();
 				transformOptions.transformOption = EnumImageTransformations.SUBTRACT; 
-				transformOptions.referenceImage = exp.seqCamData.refImage;
+//				transformOptions.referenceImage = exp.seqCamData.refImage;
 				transformOptions.setSingleThreshold(options.threshold, stopFlag);
 				buildBackgroundImage(exp, transformOptions);
 				exp.saveReferenceImage(seqBackground.getFirstImage());
@@ -108,7 +108,7 @@ public class BuildBackground extends BuildSeries
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-		}
+//		}
 		closeViewers();
 	}
 	
