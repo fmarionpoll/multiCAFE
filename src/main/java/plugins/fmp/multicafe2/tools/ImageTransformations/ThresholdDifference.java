@@ -1,12 +1,59 @@
 package plugins.fmp.multicafe2.tools.ImageTransformations;
 
 import icy.image.IcyBufferedImage;
+import icy.image.IcyBufferedImageCursor;
 import icy.type.collection.array.Array1DUtil;
+
+// this routine is used to build a reference image with "invariant" pixels
+// create a binary result image for pixels which value is lower than a threshold
+// if the value is lower, transfer these pixels to a reference image
 
 public class ThresholdDifference extends ImageTransformFunction implements ImageTransformInterface
 {
 	@Override
 	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	{
+		if (options.referenceImage == null)
+			return null;
+		
+		int width = sourceImage.getSizeX();
+		int height = sourceImage.getSizeY();
+		int planes = sourceImage.getSizeC();
+		IcyBufferedImage resultImage = new IcyBufferedImage(width, height, planes, sourceImage.getDataType_());
+		options.npixels_changed = 0;
+		
+		IcyBufferedImageCursor sourceCursor = new IcyBufferedImageCursor(sourceImage);
+		IcyBufferedImageCursor resultCursor = new IcyBufferedImageCursor(resultImage);
+		IcyBufferedImageCursor referenceCursor = new IcyBufferedImageCursor(options.referenceImage);
+		
+		try {
+			for (int y = 0; y < height; y++ ) {
+				for (int x = 0; x < width; x++) {
+					for (int c = 0; c < planes; c++) {
+						double val = sourceCursor.get(x, y, c) - referenceCursor.get(x, y, c);
+						if (val < options.simplethreshold) 
+						{
+							resultCursor.set(x, y, c, 0xff);
+						}
+						else 
+						{
+							resultCursor.set(x, y, c, 0);
+							for (int cc = 0; cc < planes; cc++)
+								referenceCursor.set(x, y, c, sourceCursor.get(x, y, cc));
+						}
+					}
+				}
+			}
+		}
+		finally {
+			resultCursor.commitChanges();
+			referenceCursor.commitChanges();
+		}
+
+		return resultImage;
+	}
+	
+	public IcyBufferedImage transformImage_old(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		if (options.referenceImage == null)
 			return null;

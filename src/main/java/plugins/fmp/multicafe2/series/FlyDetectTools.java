@@ -99,7 +99,7 @@ public class FlyDetectTools
 		return new ROI2DArea( bmask );
 	}
 	
-	public void findFlies(IcyBufferedImage workimage, int t) throws InterruptedException 
+	public void findFlies(Sequence seq, IcyBufferedImage workimage, int t) throws InterruptedException 
 	{
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
@@ -117,6 +117,9 @@ public class FlyDetectTools
 				Rectangle2D rect = flyROI.getBounds2D();
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 				cage.flyPositions.addPoint(t, flyPosition);
+
+				ROI2DPoint flyPoint = new ROI2DPoint(flyPosition);
+				seq.addROI(flyPoint);
 			}
 			else 
 			{
@@ -145,8 +148,8 @@ public class FlyDetectTools
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 				cage.flyPositions.addPoint(t, flyPosition);
 				
-				ROI2DPoint flyRect = new ROI2DPoint(flyPosition);
-				seq.addROI(flyRect);
+				ROI2DPoint flyPoint = new ROI2DPoint(flyPosition);
+				seq.addROI(flyPoint);
 			}
 			else 
 			{

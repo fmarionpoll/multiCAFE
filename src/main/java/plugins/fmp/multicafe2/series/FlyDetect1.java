@@ -1,6 +1,6 @@
 package plugins.fmp.multicafe2.series;
 
-import java.awt.Rectangle;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.concurrent.Future;
@@ -10,23 +10,23 @@ import javax.swing.SwingUtilities;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
+import icy.sequence.Sequence;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
-import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
+
 
 
 
 
 public class FlyDetect1 extends BuildSeries 
 {
-	private Viewer 				viewerCamData 	= null;
-	private OverlayThreshold 	ov 				= null;
-	
-	public boolean				buildBackground	= true;
-	public boolean				detectFlies		= true;
+	public boolean buildBackground	= true;
+	public boolean	detectFlies = true;
+	private Viewer vNegative = null;
+	private Sequence seqNegative = null;
 	public FlyDetectTools 		find_flies 		= new FlyDetectTools();
 	
 	// -----------------------------------------------------
@@ -53,22 +53,15 @@ public class FlyDetect1 extends BuildSeries
 			{ 
 				public void run() 
 				{
-					viewerCamData = new Viewer(exp.seqCamData.seq, true);
-					Rectangle rectv = viewerCamData.getBoundsInternal();
-					rectv.setLocation(options.parent0Rect.x+ options.parent0Rect.width, options.parent0Rect.y);
-					viewerCamData.setBounds(rectv);
-					
-					ov = new OverlayThreshold(exp.seqCamData);
-					exp.seqCamData.seq.addOverlay(ov);	
-					ov.setThresholdSingle(exp.cages.detect_threshold, options.transformop, true);
-					ov.painterChanged();
+					seqNegative = newSequence("detectionImage", exp.seqCamData.refImage);
+					vNegative = new Viewer (seqNegative, false);
+					vNegative.setVisible(true);
 				}});
 		} 
 		catch (InvocationTargetException | InterruptedException e) 
 		{
 			e.printStackTrace();
 		} 
-		
 	}
 	
 	private void runFlyDetect1(Experiment exp) 
@@ -112,12 +105,10 @@ public class FlyDetect1 extends BuildSeries
 					if (workImage == null)
 						return;
 
-					exp.seqCamData.currentFrame = t_from;
-					viewerCamData.setPositionT(t_from);
-					viewerCamData.setTitle(exp.seqCamData.getDecoratedImageName(t_from));
 					try 
 					{
-						find_flies.findFlies (workImage, t_from);
+						seqNegative.setImage(0, 0, workImage);
+						find_flies.findFlies (seqNegative, workImage, t_from);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}					

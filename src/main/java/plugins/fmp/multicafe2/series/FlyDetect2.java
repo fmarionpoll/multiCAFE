@@ -23,17 +23,9 @@ import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
 
 public class FlyDetect2 extends BuildSeries 
 {
-//	private Viewer vDataRecorded = null;
-//	private Viewer vPositive = null;
-//	private Viewer vBackgroundImage = null;
 	private Viewer vNegative = null;
 	private FlyDetectTools find_flies = new FlyDetectTools();	
-	
-//	public Sequence seqDataRecorded = null;
-	public Sequence seqNegative = null;
-//	public Sequence seqPositive = new Sequence();
-//	public Sequence seqBackground = null;
-	
+	private Sequence seqNegative = null;
 	public boolean viewInternalImages = true;
 
 	// -----------------------------------------
@@ -60,8 +52,6 @@ public class FlyDetect2 extends BuildSeries
 			{
 				public void run() 
 				{
-//					seqDataRecorded = newSequence("data recorded", exp.seqCamData.getSeqImage(0, 0));
-
 					seqNegative = newSequence("detectionImage", exp.seqCamData.refImage);
 					vNegative = new Viewer (seqNegative, false);
 					vNegative.setVisible(true);
