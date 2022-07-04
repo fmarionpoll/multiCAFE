@@ -115,7 +115,7 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 					boolean flag = exp.loadReferenceImage(); 
 					if (flag) 
 					{
-						Viewer v = new Viewer(exp.seqBackground, true);
+						Viewer v = new Viewer(exp.seqReference, true);
 						Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBoundsInternal();
 						v.setBounds(rectv);
 					} 

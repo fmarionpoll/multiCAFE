@@ -22,13 +22,13 @@ import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
 
 public class BuildBackground extends BuildSeries 
 {
-	public Sequence seqDataRecorded = new Sequence();
-	public Sequence seqPositive = new Sequence();
-	public Sequence seqBackground = null;
+	public Sequence seqData = new Sequence();
+	public Sequence seqThreshold = new Sequence();
+	public Sequence seqReference = null;
 	
-	private Viewer vDataRecorded = null;
-	private Viewer vPositive = null;
-	private Viewer vBackgroundImage = null;
+	private Viewer vData = null;
+	private Viewer vThreshold = null;
+	private Viewer vReference = null;
 
 	private FlyDetectTools flyDetectTools = new FlyDetectTools();	
 
@@ -47,16 +47,16 @@ public class BuildBackground extends BuildSeries
 
 	private void closeSequences () 
 	{
-		closeSequence(seqPositive); 
-		closeSequence(seqBackground); 
-		closeSequence(seqDataRecorded);
+		closeSequence(seqThreshold); 
+		closeSequence(seqReference); 
+		closeSequence(seqData);
 	}
 	
 	private void closeViewers() 
 	{
-		closeViewer(vDataRecorded);
-		closeViewer (vPositive); 
-		closeViewer (vBackgroundImage);
+		closeViewer(vData);
+		closeViewer(vThreshold); 
+		closeViewer(vReference);
 		closeSequences();
 	}
 	
@@ -66,15 +66,15 @@ public class BuildBackground extends BuildSeries
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() 
 				{			
-					seqDataRecorded = newSequence("data recorded", exp.seqCamData.getSeqImage(0, 0));
-					vDataRecorded = new Viewer(seqDataRecorded, true);
+					seqData = newSequence("data recorded", exp.seqCamData.getSeqImage(0, 0));
+					vData = new Viewer(seqData, true);
 					
-					seqBackground = newSequence("referenceImage", exp.seqCamData.refImage);
-					exp.seqBackground = seqBackground;
-					vBackgroundImage = new Viewer(exp.seqBackground, true);
+					seqReference = newSequence("referenceImage", exp.seqCamData.refImage);
+					exp.seqReference = seqReference;
+					vReference = new Viewer(seqReference, true);
 
-					seqPositive = newSequence("positiveImage", exp.seqCamData.refImage);
-					vPositive = new Viewer(seqPositive, true);
+					seqThreshold = newSequence("positiveImage", exp.seqCamData.refImage);
+					vThreshold = new Viewer(seqThreshold, true);
 				}});
 		} 
 		catch (InvocationTargetException | InterruptedException e) 
@@ -90,10 +90,6 @@ public class BuildBackground extends BuildSeries
 		flyDetectTools.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
 		options.threshold = options.thresholdDiff;
 		
-//		boolean flag = options.forceBuildBackground;
-//		flag |= (!exp.loadReferenceImage());
-//		flag |= (exp.seqCamData.refImage == null);
-		
 		openViewers(exp);
 //		if (flag) 
 //		{
@@ -103,7 +99,7 @@ public class BuildBackground extends BuildSeries
 //				transformOptions.referenceImage = exp.seqCamData.refImage;
 				transformOptions.setSingleThreshold(options.threshold, stopFlag);
 				buildBackgroundImage(exp, transformOptions);
-				exp.saveReferenceImage(seqBackground.getFirstImage());
+				exp.saveReferenceImage(seqReference.getFirstImage());
 				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -136,17 +132,17 @@ public class BuildBackground extends BuildSeries
 				continue;
 			
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
-			seqDataRecorded.setImage(0, 0, currentImage);
+			seqData.setImage(0, 0, currentImage);
 			
 			IcyBufferedImage thresholdImage = thresholdDifferenceWithRef.transformImage(currentImage, transformOptions);
-			seqPositive.setImage(0, 0, thresholdImage);
-			seqBackground.setImage(0, 0, transformOptions.referenceImage);
+			seqThreshold.setImage(0, 0, thresholdImage);
+			seqReference.setImage(0, 0, transformOptions.referenceImage);
 			
 //			System.out.println("t= "+t+ " n pixels changed=" + transformOptions.npixels_changed);
 			if (transformOptions.npixels_changed < 10 && t > 0 ) 
 				break;
 		}
-		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(seqBackground.getFirstImage());
+		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(seqReference.getFirstImage());
 		progress.close();
 	}
 

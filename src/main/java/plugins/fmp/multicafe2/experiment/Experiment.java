@@ -39,7 +39,7 @@ public class Experiment
 		
 	public SequenceCamData 	seqCamData 				= null;
 	public SequenceKymos 	seqKymos				= null;
-	public Sequence 		seqBackground			= null;
+	public Sequence 		seqReference			= null;
 	public Capillaries 		capillaries 			= new Capillaries();
 	public Cages			cages 					= new Cages();
 	
@@ -251,8 +251,8 @@ public class Experiment
 			seqKymos.closeSequence();
 		if (seqCamData != null) 
 			seqCamData.closeSequence();
-		if (seqBackground != null) 
-			seqBackground.close();
+		if (seqReference != null) 
+			seqReference.close();
 	}
 	
 	public boolean openSequenceAndMeasures(boolean loadCapillaries, boolean loadDrosoPositions) 
@@ -872,8 +872,8 @@ public class Experiment
 			return false;
 		}			
 		seqCamData.refImage =  IcyBufferedImage.createFrom(image);
-		seqBackground = new Sequence(seqCamData.refImage);
-		seqBackground.setName("referenceImage");
+		seqReference = new Sequence(seqCamData.refImage);
+		seqReference.setName("referenceImage");
 		return true;
 	}
 	
