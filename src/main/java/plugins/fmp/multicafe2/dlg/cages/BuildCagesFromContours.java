@@ -20,7 +20,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import icy.gui.util.GuiUtil;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.roi.ROI2D;
@@ -38,7 +37,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
 
-public class BuildROIs2  extends JPanel implements ChangeListener 
+public class BuildCagesFromContours  extends JPanel implements ChangeListener 
 {
 	/**
 	 * 
@@ -64,18 +63,25 @@ public class BuildROIs2  extends JPanel implements ChangeListener
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
-		add( GuiUtil.besidesPanel(createCagesButton, new JLabel(" ")));
-		JLabel videochannel = new JLabel("filter operation ");
-		videochannel.setHorizontalAlignment(SwingConstants.RIGHT);
-		transformForLevelsComboBox.setSelectedIndex(2);
-		add( GuiUtil.besidesPanel( videochannel, transformForLevelsComboBox,new JLabel(" "), new JLabel(" ")));
-		add( GuiUtil.besidesPanel( overlayCheckBox,  thresholdSpinner, new JLabel(" "), new JLabel(" ")));
-		
 		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
 		flowLayout.setVgap(0);
-		JPanel panel = new JPanel(flowLayout);
-		panel.add(deleteButton);
-		add(panel);
+		
+		JPanel panel1 = new JPanel(flowLayout);
+		panel1.add(createCagesButton);
+		add(panel1);
+		
+		JLabel videochannel = new JLabel("detect from ");
+		videochannel.setHorizontalAlignment(SwingConstants.RIGHT);
+		transformForLevelsComboBox.setSelectedIndex(2);
+		JPanel panel2 = new JPanel(flowLayout);
+		panel2.add( videochannel);
+		panel2.add(transformForLevelsComboBox);
+		add(panel2);
+		
+		JPanel panel3 = new JPanel(flowLayout);
+		panel3.add(overlayCheckBox);
+		panel3.add(thresholdSpinner);
+		add(panel3);
 		
 		defineActionListeners();
 		thresholdSpinner.addChangeListener(this);

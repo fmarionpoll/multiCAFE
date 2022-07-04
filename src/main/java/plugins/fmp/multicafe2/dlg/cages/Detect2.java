@@ -3,7 +3,6 @@ package plugins.fmp.multicafe2.dlg.cages;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -22,8 +21,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import icy.gui.dialog.MessageDialog;
-import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImageUtil;
 import icy.util.StringUtil;
 import plugins.fmp.multicafe2.MultiCAFE2;
@@ -47,8 +44,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 	private String 		detectString 			= "Detect..";
 	private JButton 	startComputationButton 	= new JButton(detectString);
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
-	
-	private JButton 	loadButton 				= new JButton("Display background...");
 	
 	private JSpinner 	thresholdDiffSpinner	= new JSpinner(new SpinnerNumberModel(100, 0, 255, 1));
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
@@ -80,11 +75,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		add(panel1);
 		
 		allCagesComboBox.addPopupMenuListener(this);
-		
-		JPanel panel2 = new JPanel(flowLayout);
-		panel2.add(loadButton);
-		panel2.validate();
-		add(panel2);
 		
 		objectLowsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
 		objectUpsizeCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -118,28 +108,6 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 					startComputation();
 				else
 					stopComputation();
-			}});
-		
-		loadButton.addActionListener(new ActionListener () 
-		{
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
-				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null) 
-				{ 
-					boolean flag = exp.loadReferenceImage(); 
-					if (flag) 
-					{
-						Viewer v = new Viewer(exp.seqBackground, true);
-						Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBoundsInternal();
-						v.setBounds(rectv);
-					} 
-					else 
-					{
-						 MessageDialog.showDialog("Reference file not found on disk",
-	                                MessageDialog.ERROR_MESSAGE);
-					}
-				}
 			}});
 		
 		allCheckBox.addActionListener(new ActionListener () 

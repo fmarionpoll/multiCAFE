@@ -79,9 +79,6 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 		panel3.add(saveButton);
 		add( panel3);
 		
-		JPanel panel4 = new JPanel(flowLayout);
-		add(panel4);
-		
 		defineActionListeners();
 
 		thresholdBckgSpinner.addChangeListener(this);

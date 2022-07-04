@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe2.dlg.cages;
 
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
@@ -16,7 +17,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 
 import icy.gui.frame.progress.AnnounceFrame;
-import icy.gui.util.GuiUtil;
 import icy.roi.ROI2D;
 import icy.type.geom.Polygon2D;
 import plugins.fmp.multicafe2.MultiCAFE2;
@@ -25,7 +25,10 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
-public class BuildROIs extends JPanel 
+
+
+
+public class BuildCagesAsArray extends JPanel 
 {
 	/**
 	 * 
@@ -50,7 +53,14 @@ public class BuildROIs extends JPanel
 		setLayout(capLayout);
 		this.parent0 = parent0;
 		
-		add( GuiUtil.besidesPanel(addPolygon2DButton, createROIsFromPolygonButton));
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
+		flowLayout.setVgap(0);
+		
+		JPanel panel1 = new JPanel(flowLayout);
+		panel1.add(addPolygon2DButton);
+		panel1.add(createROIsFromPolygonButton);
+		add(panel1);
+		
 		JLabel nColumnsLabel = new JLabel("N columns ");
 		JLabel nRowsLabel = new JLabel("N rows ");
 		JLabel cagewidthLabel = new JLabel("cage width ");
@@ -59,8 +69,20 @@ public class BuildROIs extends JPanel
 		cagewidthLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		btwcagesLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		nRowsLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		add( GuiUtil.besidesPanel( cagewidthLabel,  width_cageTextField, nColumnsLabel, nColumnsTextField));
-		add( GuiUtil.besidesPanel( btwcagesLabel, width_intervalTextField, nRowsLabel, nRowsTextField));
+		
+		JPanel panel2 = new JPanel(flowLayout);
+		panel2.add(cagewidthLabel);
+		panel2.add(width_cageTextField);
+		panel2.add(nColumnsLabel);
+		panel2.add(nColumnsTextField);
+		add(panel2);
+		
+		JPanel panel3 = new JPanel(flowLayout);
+		panel3.add(btwcagesLabel);
+		panel3.add(width_intervalTextField);
+		panel3.add(nRowsLabel);
+		panel3.add(nRowsTextField);
+		add(panel3);
 		
 		defineActionListeners();
 	}
