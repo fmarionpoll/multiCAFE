@@ -70,7 +70,7 @@
         	<groupId>org.bioimageanalysis.icy</groupId>
         	<artifactId>icy-kernel</artifactId>
         	<version>2.4.2</version>
-        </dependency>
+		</dependency>
         <!-- The EzPlug library, simplifies writing UI for Icy plugins. -->
         <dependency>
             <groupId>org.bioimageanalysis.icy</groupId>
@@ -145,11 +145,6 @@
     </distributionManagement>
     <dependencyManagement>
     	<dependencies>
-    		<dependency>
-    			<groupId>org.bioimageanalysis.icy</groupId>
-    			<artifactId>icy-kernel</artifactId>
-    			<version>2.1.4</version>
-    		</dependency>
     		<dependency>
     			<groupId>org.apache.poi</groupId>
     			<artifactId>poi</artifactId>
