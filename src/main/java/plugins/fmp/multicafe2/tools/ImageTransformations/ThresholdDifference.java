@@ -11,21 +11,21 @@ import icy.type.collection.array.Array1DUtil;
 public class ThresholdDifference extends ImageTransformFunction implements ImageTransformInterface
 {
 	@Override
-	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions transformOptions) 
 	{
-		if (options.referenceImage == null)
+		if (transformOptions.referenceImage == null)
 			return null;
 		
 		int width = sourceImage.getSizeX();
 		int height = sourceImage.getSizeY();
 		int planes = sourceImage.getSizeC();
 		IcyBufferedImage resultImage = new IcyBufferedImage(width, height, planes, sourceImage.getDataType_());
-		options.npixels_changed = 0;
+		transformOptions.npixels_changed = 0;
 		int changed = 0;
 		
 		IcyBufferedImageCursor sourceCursor = new IcyBufferedImageCursor(sourceImage);
 		IcyBufferedImageCursor resultCursor = new IcyBufferedImageCursor(resultImage);
-		IcyBufferedImageCursor referenceCursor = new IcyBufferedImageCursor(options.referenceImage);
+		IcyBufferedImageCursor referenceCursor = new IcyBufferedImageCursor(transformOptions.referenceImage);
 		
 		try 
 		{
@@ -36,9 +36,9 @@ public class ThresholdDifference extends ImageTransformFunction implements Image
 					for (int c = 0; c < planes; c++) 
 					{
 						double val = sourceCursor.get(x, y, c) - referenceCursor.get(x, y, c);
-						if (val < options.simplethreshold) 
+						if (val < transformOptions.simplethreshold) 
 						{
-							resultCursor.set(x, y, c, 0xFFFF);
+							resultCursor.set(x, y, c, -1);
 						}
 						else 
 						{
@@ -55,10 +55,11 @@ public class ThresholdDifference extends ImageTransformFunction implements Image
 										continue;
 									for (int cc = 0; cc < planes; cc++) 
 									{
-										referenceCursor.set(xx, yy, c, sourceCursor.get(xx, yy, cc));
+										referenceCursor.set(xx, yy, cc, sourceCursor.get(xx, yy, cc));
 									}
 								}
 							}
+
 						}
 					}
 				}
@@ -68,7 +69,7 @@ public class ThresholdDifference extends ImageTransformFunction implements Image
 		{
 			resultCursor.commitChanges();
 			referenceCursor.commitChanges();
-			options.npixels_changed = changed;
+			transformOptions.npixels_changed = changed;
 
 		}
 
