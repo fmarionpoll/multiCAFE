@@ -12,6 +12,7 @@ public class ImageTransformOptions
 	public EnumImageTransformations transformOption; 
 	public IcyBufferedImage referenceImage = null;
 	public IcyBufferedImage secondImage = null;
+	public SequenceCamData seqCamData = null;
 	public int npixels_changed = 0;
 	
 	public int xfirst;
@@ -25,16 +26,16 @@ public class ImageTransformOptions
 	public int w1 = 1;
 	public int w2 = 1;
 	public int spanDiff = 3;
-	
+	public int simplethreshold = 255;
+		
 	protected int colorthreshold = 0;
 	protected int colordistanceType = 0;
-	protected int simplethreshold = 255;
 	protected boolean ifGreater = true;
 	
 	protected final byte byteFALSE = 0;
 	protected final byte byteTRUE = (byte) 0xFF;
 	protected ArrayList<Color> colorarray = null;
-	public SequenceCamData seqCamData = null;
+	
 	
 	public void setSingleThreshold (int simplethreshold, boolean ifGreater) 
 	{

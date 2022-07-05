@@ -20,14 +20,11 @@ public class BuildCages extends JPanel implements PropertyChangeListener
 	
 	BuildCagesAsArray 		tabBuildCages1	= new BuildCagesAsArray();
 	BuildCagesFromContours 	tabBuildCages2	= new BuildCagesFromContours();
-			
-	JTabbedPane 	tabsPane		= new JTabbedPane();
-	int				previouslySelected	= -1;
-
-	int				iTAB_CAGES1	= 0;
-	int 			iTAB_CAGES2	= 1;
-	
-	MultiCAFE2 		parent0			= null;
+	JTabbedPane 	tabsPane				= new JTabbedPane();
+	int				previouslySelected		= -1;
+	int				iTAB_CAGES1				= 0;
+	int 			iTAB_CAGES2				= 1;
+	MultiCAFE2 		parent0					= null;
 
 	
 	public void init (GridLayout capLayout, MultiCAFE2 parent0) 
@@ -54,7 +51,6 @@ public class BuildCages extends JPanel implements PropertyChangeListener
 	void createTabs() 
 	{
 		GridLayout capLayout = new GridLayout(4, 1);
-//		tabsPane.setTabPlacement(JTabbedPane.LEFT);
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		int iTab = 0;

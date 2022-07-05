@@ -8,12 +8,12 @@ import javax.swing.SwingUtilities;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
+import icy.image.IcyBufferedImageCursor;
 import icy.image.IcyBufferedImageUtil;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.experiment.Experiment;
 
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
-import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
 
 
@@ -23,11 +23,9 @@ import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
 public class BuildBackground extends BuildSeries 
 {
 	public Sequence seqData = new Sequence();
-	public Sequence seqThreshold = new Sequence();
 	public Sequence seqReference = null;
 	
 	private Viewer vData = null;
-	private Viewer vThreshold = null;
 	private Viewer vReference = null;
 
 	private FlyDetectTools flyDetectTools = new FlyDetectTools();	
@@ -47,7 +45,6 @@ public class BuildBackground extends BuildSeries
 
 	private void closeSequences () 
 	{
-		closeSequence(seqThreshold); 
 		closeSequence(seqReference); 
 		closeSequence(seqData);
 	}
@@ -55,7 +52,6 @@ public class BuildBackground extends BuildSeries
 	private void closeViewers() 
 	{
 		closeViewer(vData);
-		closeViewer(vThreshold); 
 		closeViewer(vReference);
 		closeSequences();
 	}
@@ -72,9 +68,6 @@ public class BuildBackground extends BuildSeries
 					seqReference = newSequence("referenceImage", exp.seqCamData.refImage);
 					exp.seqReference = seqReference;
 					vReference = new Viewer(seqReference, true);
-
-					seqThreshold = newSequence("positiveImage", exp.seqCamData.refImage);
-					vThreshold = new Viewer(seqThreshold, true);
 				}});
 		} 
 		catch (InvocationTargetException | InterruptedException e) 
@@ -91,20 +84,16 @@ public class BuildBackground extends BuildSeries
 		options.threshold = options.thresholdDiff;
 		
 		openViewers(exp);
-//		if (flag) 
-//		{
-			try {
-				ImageTransformOptions transformOptions = new ImageTransformOptions();
-				transformOptions.transformOption = EnumImageTransformations.SUBTRACT; 
-//				transformOptions.referenceImage = exp.seqCamData.refImage;
-				transformOptions.setSingleThreshold(options.threshold, stopFlag);
-				buildBackgroundImage(exp, transformOptions);
-				exp.saveReferenceImage(seqReference.getFirstImage());
-				
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-//		}
+		try {
+			ImageTransformOptions transformOptions = new ImageTransformOptions();
+			transformOptions.transformOption = EnumImageTransformations.SUBTRACT; 
+			transformOptions.setSingleThreshold(options.threshold, stopFlag);
+			buildBackgroundImage(exp, transformOptions);
+			exp.saveReferenceImage(seqReference.getFirstImage());
+			
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		closeViewers();
 	}
 	
@@ -121,7 +110,7 @@ public class BuildBackground extends BuildSeries
 		
 		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getSeqImage(t_from, 0));
 		transformOptions.referenceImage = exp.seqCamData.refImage;
-		ImageTransformInterface thresholdDifferenceWithRef = EnumImageTransformations.THRESHOLD_DIFF.getFunction();
+
 		long first_ms = exp.cages.detectFirst_Ms + exp.cages.detectBin_Ms;
 		int t0 = (int) ((first_ms - exp.cages.detectFirst_Ms)/exp.camBinImage_ms);
 
@@ -134,8 +123,7 @@ public class BuildBackground extends BuildSeries
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
 			seqData.setImage(0, 0, currentImage);
 			
-			IcyBufferedImage thresholdImage = thresholdDifferenceWithRef.transformImage(currentImage, transformOptions);
-			seqThreshold.setImage(0, 0, thresholdImage);
+			transformBackground(currentImage, transformOptions);
 			seqReference.setImage(0, 0, transformOptions.referenceImage);
 			
 //			System.out.println("t= "+t+ " n pixels changed=" + transformOptions.npixels_changed);
@@ -144,6 +132,60 @@ public class BuildBackground extends BuildSeries
 		}
 		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(seqReference.getFirstImage());
 		progress.close();
+	}
+	
+	void transformBackground(IcyBufferedImage sourceImage, ImageTransformOptions transformOptions) 
+	{
+		if (transformOptions.referenceImage == null)
+			return;
+		
+		int width = sourceImage.getSizeX();
+		int height = sourceImage.getSizeY();
+		int planes = sourceImage.getSizeC();
+		transformOptions.npixels_changed = 0;
+		int changed = 0;
+		
+		IcyBufferedImageCursor sourceCursor = new IcyBufferedImageCursor(sourceImage);
+		IcyBufferedImageCursor referenceCursor = new IcyBufferedImageCursor(transformOptions.referenceImage);
+		
+		try 
+		{
+			for (int y = 0; y < height; y++ ) 
+			{
+				for (int x = 0; x < width; x++) 
+				{
+					for (int c = 0; c < planes; c++) 
+					{
+						double val = sourceCursor.get(x, y, c) - referenceCursor.get(x, y, c);
+						if (val >= transformOptions.simplethreshold) 
+						{
+							changed ++;
+							int delta = 10;
+							for (int yy = y-delta; yy < y+delta; yy++ ) 
+							{
+								if (yy < 0 || yy >= height)
+									continue;
+								for (int xx = x-delta; xx < x+delta; xx++) 
+								{
+									if (xx < 0 || xx >= width)
+										continue;
+									for (int cc = 0; cc < planes; cc++) 
+									{
+										referenceCursor.set(xx, yy, cc, sourceCursor.get(xx, yy, cc));
+									}
+								}
+							}
+
+						}
+					}
+				}
+			}
+		} 
+		finally 
+		{
+			referenceCursor.commitChanges();
+			transformOptions.npixels_changed = changed;
+		}
 	}
 
 
