@@ -3,12 +3,16 @@ package plugins.fmp.multicafe2.series;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import javax.swing.SwingUtilities;
+
 import icy.file.Saver;
 import icy.gui.frame.progress.ProgressFrame;
+import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.sequence.Sequence;
 import icy.system.SystemUtil;
@@ -29,17 +33,22 @@ import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 
 public class BuildKymographs extends BuildSeries  
 {
+	public Sequence seqData = new Sequence();
+	private Viewer vData = null;
 	ArrayList<IcyBufferedImage>	cap_bufKymoImage 	= null;
 	int 						kymoImageWidth 		= 0;
+	
 	
 	void analyzeExperiment(Experiment exp) 
 	{
 		loadExperimentDataToBuildKymos(exp);
-		exp.seqCamData.displayViewerAtRectangle(options.parent0Rect);
+		
+		openViewers(exp);
 		getTimeLimitsOfSequence(exp);
 		if (buildKymo(exp)) 
 			saveComputation(exp);
-		exp.seqCamData.closeSequence();
+		
+		closeViewers();
 		exp.seqKymos.closeSequence();
 	}
 	
@@ -109,10 +118,8 @@ public class BuildKymographs extends BuildSeries
 	
 	private boolean buildKymo (Experiment exp) 
 	{
-		SequenceCamData seqCamData = exp.seqCamData;
 		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqCamData == null || seqKymos == null)
-			return false;
+		seqKymos.seq = new Sequence();
 	
 		initArraysToBuildKymographImages(exp);
 		if (exp.capillaries.capillariesList.size() < 1) {
@@ -120,11 +127,7 @@ public class BuildKymographs extends BuildSeries
 			return false;
 		}
 		
-		int startFrame = options.referenceFrame;
-		final int sizeC = seqCamData.seq.getSizeC();
-		
-		seqCamData.seq.removeAllROI();
-		exp.seqKymos.seq = new Sequence();
+		final int sizeC = seqData.getSizeC();
 		
 		int nbcapillaries = exp.capillaries.capillariesList.size();
 		if (nbcapillaries == 0) {
@@ -147,34 +150,32 @@ public class BuildKymographs extends BuildSeries
 			final int indexToFrame =  iframe;	
 			long iindexms = iframe *  exp.kymoBinCol_Ms + exp.offsetFirstCol_Ms;
 			final int indexFromFrame = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_ms));
-			if (indexFromFrame >= seqCamData.nTotalFrames)
+			if (indexFromFrame >= exp.seqCamData.nTotalFrames)
 				continue;
 						
 			futuresArray.add(processor.submit(new Runnable () {
 				@Override
-				public void run() {						
-					IcyBufferedImage sourceImage = imageIORead(seqCamData.getFileName(indexFromFrame));
-					int sourceImageWidth = sourceImage.getWidth();				
-					if (options.doRegistration ) {
-						String referenceImageName = seqCamData.getFileName(startFrame);			
-						IcyBufferedImage referenceImage = imageIORead(referenceImageName);
-						adjustImage(sourceImage, referenceImage);
-					}
-
-					int len = sourceImage.getSizeX() *  sourceImage.getSizeY();
+				public void run() 
+				{						
+					IcyBufferedImage sourceImage = loadImageFromIndex(exp, indexFromFrame);
+					int sourceImageWidth = sourceImage.getWidth();
+					int lengthImage = sourceImage.getSizeX() *  sourceImage.getSizeY();
 					
 					for (int chan = 0; chan < sizeC; chan++) { 
-						int [] sourceImageChannel = new int[len];
+						int [] sourceImageChannel = new int[lengthImage];
 						sourceImageChannel = Array1DUtil.arrayToIntArray(
-								sourceImage.getDataXY(chan), 
-								sourceImageChannel, sourceImage.isSignedDataType()); 
+												sourceImage.getDataXY(chan), 
+												sourceImageChannel, 
+												sourceImage.isSignedDataType()); 
 						
-						for (Capillary cap: exp.capillaries.capillariesList) {
+						for (Capillary cap: exp.capillaries.capillariesList) 
+						{
 							KymoROI2D capT = cap.getROI2DKymoAtIntervalT(indexFromFrame);
 							int [] kymoImageChannel = cap.cap_Integer.get(chan); 
 							
 							int cnt = 0;
-							for (ArrayList<int[]> mask : capT.getMasksList()) {
+							for (ArrayList<int[]> mask : capT.getMasksList()) 
+							{
 								int sum = 0;
 								for (int[] m: mask)
 									sum += sourceImageChannel[m[0] + m[1]*sourceImageWidth];
@@ -186,12 +187,24 @@ public class BuildKymographs extends BuildSeries
 					}
 				}}));
 		}
-		
 		waitFuturesCompletion(processor, futuresArray, progressBar);
 		buildKymographImages(exp, seqKymos.seq, sizeC, nbcapillaries);
         progressBar.close();
         
 		return true;
+	}
+	
+	private IcyBufferedImage loadImageFromIndex(Experiment exp, int indexFromFrame) 
+	{
+		IcyBufferedImage sourceImage = imageIORead(exp.seqCamData.getFileName(indexFromFrame));				
+		if (options.doRegistration ) 
+		{
+			String referenceImageName = exp.seqCamData.getFileName(options.referenceFrame);			
+			IcyBufferedImage referenceImage = imageIORead(referenceImageName);
+			adjustImage(sourceImage, referenceImage);
+		}
+		seqData.setImage(0, 0, sourceImage);
+		return sourceImage;
 	}
 	
 	private void buildKymographImages(Experiment exp, Sequence seqKymo, int sizeC, int nbcapillaries)
@@ -268,9 +281,7 @@ public class BuildKymographs extends BuildSeries
 			cap.cap_Integer = new ArrayList <int []>(numC);
 
 			for (int chan = 0; chan < numC; chan++) {
-				//Object dataArray = cap_Image.getDataXY(chan);
 				int[] tabValues = new int[len];
-				//tabValues = Array1DUtil.arrayToIntArray(dataArray, tabValues, false);
 				cap.cap_Integer.add(tabValues);
 			}
 		}
@@ -290,8 +301,8 @@ public class BuildKymographs extends BuildSeries
 		double m1 = pixel[0];
 		double m2 = pixel[1];
 		double radiusSquared = diskRadius * diskRadius;
-		int minX = getValueWithinLimits(pixel[0] - diskRadius, 0, sizex-1);
-		int maxX = getValueWithinLimits(pixel[0] + diskRadius, minX, sizex-1);
+		int minX = clipValueToLimits(pixel[0] - diskRadius, 0, sizex-1);
+		int maxX = clipValueToLimits(pixel[0] + diskRadius, minX, sizex-1);
 		int minY = pixel[1]; // getValueWithinLimits(pixel[1] - diskRadius, 0, sizey-1);
 		int maxY = pixel[1]; // getValueWithinLimits(pixel[1] + diskRadius, minY, sizey-1);
 
@@ -309,7 +320,7 @@ public class BuildKymographs extends BuildSeries
 		return maskAroundPixel;
 	}
 	
-	private int getValueWithinLimits(int x, int min, int max)
+	private int clipValueToLimits(int x, int min, int max)
 	{
 		if (x < min)
 			x = min;
@@ -325,6 +336,33 @@ public class BuildKymographs extends BuildSeries
         boolean rotate = GaspardRigidRegistration.correctRotation2D(workImage, referenceImage, referenceChannel);
         if (rotate) 
         	GaspardRigidRegistration.correctTranslation2D(workImage, referenceImage, referenceChannel);
+	}
+	
+	private void closeSequences () 
+	{
+		closeSequence(seqData);
+	}
+	
+	private void closeViewers() 
+	{
+		closeViewer(vData);
+		closeSequences();
+	}
+	
+	private void openViewers(Experiment exp) 
+	{
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() 
+				{			
+					seqData = newSequence("data recorded", exp.seqCamData.getSeqImage(0, 0));
+					vData = new Viewer(seqData, true);
+				}});
+		} 
+		catch (InvocationTargetException | InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 
 }

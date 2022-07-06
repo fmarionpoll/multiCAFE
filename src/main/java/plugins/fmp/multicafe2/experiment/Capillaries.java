@@ -189,7 +189,7 @@ public class Capillaries
 		Node nodecaps = XMLUtil.getElement(node, ID_LISTOFCAPILLARIES);
 		int nitems = XMLUtil.getElementIntValue(nodecaps, ID_NCAPILLARIES, 0);
 		capillariesList = new ArrayList<Capillary> (nitems);
-		for (int i= 0; i< nitems; i++) 
+		for (int i = 0; i < nitems; i++) 
 		{
 			Node nodecapillary = XMLUtil.getElement(node, ID_CAPILLARY_+i);
 			Capillary cap = new Capillary();

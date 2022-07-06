@@ -56,7 +56,7 @@ public class BuildBackground extends BuildSeries
 		closeSequences();
 	}
 	
-	public void openViewers(Experiment exp) 
+	private void openViewers(Experiment exp) 
 	{
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {

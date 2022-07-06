@@ -9,13 +9,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.SwingUtilities;
 
@@ -49,6 +54,7 @@ public class SequenceCamData
 	public EnumStatus 				status					= EnumStatus.REGULAR;		
 	protected String 				csCamFileName 			= null;
 	volatile public List <String>	imagesList 				= new ArrayList<String>();
+	long 							timeFirstImageInMs		= 0;
 	
 	// -------------------------
 	
@@ -144,46 +150,33 @@ public class SequenceCamData
 		File f = new File(fileName0);
 		String fileName = f.getName();
 		
-		int len = fileName.length();
-		if (len < 16)
-			return null;
-		int index0 = fileName.indexOf("-")+1;
-		int index1 = fileName.indexOf("_")+1;
-		int index = 0;
-		if (index0 > 0)
-			index = index0;
-		if (index1 > 0 && index1 < index0)
-			index = index1;
-	
-		String yearPattern = "yy";
-		String text = fileName.substring(index, len-4);
-		
-		if (Character.isDigit(text.charAt(2))) 
-			yearPattern = "yyyy";
-		String dateFormat = null;
-		if (text.length() <= (14))
-			dateFormat = yearPattern+"MMddHHmmss";
-		else 
-		{
-			int offset = yearPattern.length();
-			dateFormat = yearPattern+text.charAt(offset)+"MM"
-							+text.charAt(offset+3)+"dd"
-							+text.charAt(offset+6)+"HH"
-							+text.charAt(offset+9)+"mm"
-							+text.charAt(offset+12)+"ss";
-		}
-		Date date = null;
-		try 
-		{
-			date = new SimpleDateFormat(dateFormat).parse(text);
-		} 
-		catch (ParseException e) 
-		{
-			e.printStackTrace();
-			return null;
-		}
-		FileTime fileTime = FileTime.fromMillis(date.getTime());		
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.ENGLISH);
+	    String pattern = "\\d{4}-\\d{2}-\\d{2}_\\d{2}\\-\\d{2}\\-\\d{2}";
+	    Pattern r = Pattern.compile(pattern);
+	    Matcher m = r.matcher(fileName);
+	    long timeInMs = 0;
+	    if (m.find()) {   
+			try {
+				Date date = df.parse(m.group(0));
+				timeInMs = date.getTime();
+			} catch (ParseException e) {
+				e.printStackTrace();
+				timeInMs = getDummyTime(t);
+			}
+	    } else {
+	        System.out.println("NO MATCH");
+	        timeInMs = getDummyTime(t);
+	    }   
+
+		FileTime fileTime = FileTime.fromMillis(timeInMs);		
 		return fileTime;
+	}
+	
+	private long getDummyTime(int t) {
+		if (timeFirstImageInMs == 0) {
+			timeFirstImageInMs = System.currentTimeMillis() - t*60*1000; 
+		}
+		return timeFirstImageInMs + t*60*1000;
 	}
 	
 	public FileTime getFileTimeFromFileAttributes(int t) 
