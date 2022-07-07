@@ -9,18 +9,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.SwingUtilities;
 
@@ -54,7 +48,15 @@ public class SequenceCamData
 	public EnumStatus 				status					= EnumStatus.REGULAR;		
 	protected String 				csCamFileName 			= null;
 	volatile public List <String>	imagesList 				= new ArrayList<String>();
+	
 	long 							timeFirstImageInMs		= 0;
+	int								indexTimePattern 		= -1;
+    TimePattern[] timePatternArray = new TimePattern[] {
+    		new TimePattern(),
+    		new TimePattern("yyyy-MM-dd_HH-mm-ss", "\\d{4}-\\d{2}-\\d{2}_\\d{2}\\-\\d{2}\\-\\d{2}"),
+    		new TimePattern("yy-MM-dd_HH-mm-ss", "\\d{2}-\\d{2}-\\d{2}_\\d{2}\\-\\d{2}\\-\\d{2}")
+		};
+    
 	
 	// -------------------------
 	
@@ -144,39 +146,32 @@ public class SequenceCamData
 	
 	public FileTime getFileTimeFromStructuredName(int t) 
 	{
-		String fileName0 = getFileName(t);
-		if (fileName0 == null)
-			return null;
-		File f = new File(fileName0);
-		String fileName = f.getName();
-		
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.ENGLISH);
-	    String pattern = "\\d{4}-\\d{2}-\\d{2}_\\d{2}\\-\\d{2}\\-\\d{2}";
-	    Pattern r = Pattern.compile(pattern);
-	    Matcher m = r.matcher(fileName);
-	    long timeInMs = 0;
-	    if (m.find()) {   
-			try {
-				Date date = df.parse(m.group(0));
-				timeInMs = date.getTime();
-			} catch (ParseException e) {
-				e.printStackTrace();
-				timeInMs = getDummyTime(t);
+		long timeInMs = 0;
+		String fileName = getFileName(t);
+		if (fileName == null) 
+		{
+			timeInMs = timePatternArray[0].getDummyTime(t);
+		} 
+		else 
+		{
+			if (indexTimePattern < 0) {
+				indexTimePattern = findProperFilterIfAny(fileName);
 			}
-	    } else {
-	        System.out.println("NO MATCH");
-	        timeInMs = getDummyTime(t);
-	    }   
+			TimePattern tp = timePatternArray[indexTimePattern];
+			timeInMs = tp.getTimeFromString(fileName, t);   
+		}
 
 		FileTime fileTime = FileTime.fromMillis(timeInMs);		
 		return fileTime;
 	}
 	
-	private long getDummyTime(int t) {
-		if (timeFirstImageInMs == 0) {
-			timeFirstImageInMs = System.currentTimeMillis() - t*60*1000; 
+	int findProperFilterIfAny(String fileName) {
+		int index = 0;
+		for (int i = 1; i < timePatternArray.length; i++) {
+			if (timePatternArray[i].findMatch(fileName)) 
+				return i;
 		}
-		return timeFirstImageInMs + t*60*1000;
+		return index;
 	}
 	
 	public FileTime getFileTimeFromFileAttributes(int t) 
@@ -314,7 +309,7 @@ public class SequenceCamData
 			    false,      // auto-order
 			    false,      // directory
 			    false,      // add to recent
-			    false // show progress
+			    false 		// show progress
 			).get(0);
 		return seq;
 	}
