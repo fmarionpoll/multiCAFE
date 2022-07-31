@@ -141,11 +141,11 @@ public class BuildKymographs extends BuildSeries
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
 		int nframes = (int) ((exp.offsetLastCol_Ms - exp.offsetFirstCol_Ms) / exp.kymoBinCol_Ms +1);
 	    
-		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
-	    processor.setThreadName("buildkymo2");
-	    processor.setPriority(Processor.NORM_PRIORITY);
-        ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nframes);
-		futuresArray.clear();
+//		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+//	    processor.setThreadName("buildkymo2");
+//	    processor.setPriority(Processor.NORM_PRIORITY);
+//        ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nframes);
+//		futuresArray.clear();
 		
 		for (int iframe = 0 ; iframe < nframes; iframe++) {
 			final int indexToFrame =  iframe;	
@@ -153,12 +153,14 @@ public class BuildKymographs extends BuildSeries
 			final int indexFromFrame = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_ms));
 			if (indexFromFrame >= exp.seqCamData.nTotalFrames)
 				continue;
-						
-			futuresArray.add(processor.submit(new Runnable () {
-				@Override
-				public void run() 
-				{						
+			
+			progressBar.setMessage("Processing image: " + (iframe +1));
+//			futuresArray.add(processor.submit(new Runnable () {
+//				@Override
+//				public void run() 
+//				{						
 					IcyBufferedImage sourceImage = loadImageFromIndex(exp, indexFromFrame);
+					seqData.setImage(0, 0, sourceImage);
 					int sourceImageWidth = sourceImage.getWidth();
 					int lengthImage = sourceImage.getSizeX() *  sourceImage.getSizeY();
 					
@@ -186,9 +188,9 @@ public class BuildKymographs extends BuildSeries
 							}
 						}
 					}
-				}}));
+//				}}));
 		}
-		waitFuturesCompletion(processor, futuresArray, progressBar);
+//		waitFuturesCompletion(processor, futuresArray, progressBar);
 		buildKymographImages(exp, seqKymos.seq, sizeC, nbcapillaries);
         progressBar.close();
         
@@ -204,7 +206,6 @@ public class BuildKymographs extends BuildSeries
 			IcyBufferedImage referenceImage = imageIORead(referenceImageName);
 			adjustImage(sourceImage, referenceImage);
 		}
-		seqData.setImage(0, 0, sourceImage);
 		return sourceImage;
 	}
 	

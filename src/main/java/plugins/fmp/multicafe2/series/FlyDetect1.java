@@ -77,14 +77,16 @@ public class FlyDetect1 extends BuildSeries
 		getReferenceImage (exp, 0, transformOptions);
 		ImageTransformInterface transformFunction = options.transformop.getFunction();
 		
-		int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);
-	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
-	    processor.setThreadName("detectFlies1");
-	    processor.setPriority(Processor.NORM_PRIORITY);
-        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
-		futures.clear();
+//		int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);
+//	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+//	    processor.setThreadName("detectFlies1");
+//	    processor.setPriority(Processor.NORM_PRIORITY);
+//        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
+//		futures.clear();
 		
 		exp.seqCamData.seq.beginUpdate();
+//		seqNegative.beginUpdate();
+		
 		int t_current = 0;
 	
 		long last_ms = exp.cages.detectLast_Ms + exp.cages.detectBin_Ms ;
@@ -96,12 +98,13 @@ public class FlyDetect1 extends BuildSeries
 				continue;
 			
 			t_current = t_from;
+			progressBar.setMessage("Processing image: " + (t_from +1));
 			
-			futures.add(processor.submit(new Runnable () 
-			{
-				@Override
-				public void run() 
-				{	
+//			futures.add(processor.submit(new Runnable () 
+//			{
+//				@Override
+//				public void run() 
+//				{	
 					IcyBufferedImage sourceImage = imageIORead(exp.seqCamData.getFileName(t_from));
 					getReferenceImage (exp, t_previous, transformOptions);
 					IcyBufferedImage workImage = transformFunction.transformImage(sourceImage, transformOptions); 
@@ -111,18 +114,20 @@ public class FlyDetect1 extends BuildSeries
 					try 
 					{
 						seqNegative.setImage(0, 0, workImage);
-						find_flies.findFlies (seqNegative, workImage, t_from);
+						find_flies.findFlies1 (workImage, t_from);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}					
-				}}));
+//				}}));
 		}
 		
-		waitFuturesCompletion(processor, futures, progressBar);
+//		waitFuturesCompletion(processor, futures, progressBar);
+		
 		exp.seqCamData.seq.endUpdate();
+//		seqNegative.endUpdate();
 
 		progressBar.close();
-		processor.shutdown();
+//		processor.shutdown();
 	}
 	
 	private void getReferenceImage (Experiment exp, int t, ImageTransformOptions options) 

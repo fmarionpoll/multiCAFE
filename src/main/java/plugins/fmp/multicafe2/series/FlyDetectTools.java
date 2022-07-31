@@ -15,7 +15,7 @@ import plugins.fmp.multicafe2.experiment.Cages;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.XYTaSeriesArrayList;
 import plugins.kernel.roi.roi2d.ROI2DArea;
-import plugins.kernel.roi.roi2d.ROI2DPoint;
+
 
 
 
@@ -118,8 +118,34 @@ public class FlyDetectTools
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 				cage.flyPositions.addPoint(t, flyPosition);
 
-				ROI2DPoint flyPoint = new ROI2DPoint(flyPosition);
-				seq.addROI(flyPoint);
+//				ROI2DPoint flyPoint = new ROI2DPoint(flyPosition);
+//				seq.addROI(flyPoint);
+			}
+			else 
+			{
+				cage.flyPositions.addPoint(t, flyPositionMissed);
+			}	
+		}
+	}
+	
+	public void findFlies1(IcyBufferedImage workimage, int t) throws InterruptedException 
+	{
+		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
+		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
+ 		for (Cage cage : cages.cagesList) 
+ 		{		
+			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
+				continue;
+			if (cage.cageNFlies < 1)
+				continue;
+			
+			BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, cage);
+			if ( bestMask != null ) 
+			{
+				ROI2DArea flyROI = new ROI2DArea(bestMask); 
+				Rectangle2D rect = flyROI.getBounds2D();
+				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
+				cage.flyPositions.addPoint(t, flyPosition);
 			}
 			else 
 			{
@@ -148,8 +174,8 @@ public class FlyDetectTools
 				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 				cage.flyPositions.addPoint(t, flyPosition);
 				
-				ROI2DPoint flyPoint = new ROI2DPoint(flyPosition);
-				seq.addROI(flyPoint);
+//				ROI2DPoint flyPoint = new ROI2DPoint(flyPosition);
+//				seq.addROI(flyPoint);
 			}
 			else 
 			{
@@ -165,16 +191,16 @@ public class FlyDetectTools
 		boolean[] mask = new boolean[ img.getSizeX() * img.getSizeY() ];
 		if (options.btrackWhite) 
 		{
-			byte[] arrayRed 	= img.getDataXYAsByte( 0);
-			byte[] arrayGreen 	= img.getDataXYAsByte( 1);
-			byte[] arrayBlue 	= img.getDataXYAsByte( 2);
+			byte[] arrayRed 	= img.getDataXYAsByte(0);
+			byte[] arrayGreen 	= img.getDataXYAsByte(1);
+			byte[] arrayBlue 	= img.getDataXYAsByte(2);
 			for ( int i = 0 ; i < arrayRed.length ; i++ ) 
 			{
 				float r = ( arrayRed[i] 	& 0xFF );
 				float g = ( arrayGreen[i] 	& 0xFF );
 				float b = ( arrayBlue[i] 	& 0xFF );
-				float intensity = (r+g+b)/3f;
-				mask[i] = ( intensity ) < threshold ;
+				float intensity = (r + g + b) / 3f;
+				mask[i] =  (intensity < threshold) ;
 			}
 		}
 		else 
@@ -191,7 +217,7 @@ public class FlyDetectTools
 	{
 		cages = exp.cages;
 		int nbcages = cages.cagesList.size();
-		for (int i=0; i < nbcages; i++) 
+		for (int i = 0; i < nbcages; i++) 
 		{
 			Cage cage = cages.cagesList.get(i);
 			if (options.detectCage != -1 && cage.getCageNumberInteger() != option_cagenumber)

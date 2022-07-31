@@ -99,12 +99,12 @@ public class FlyDetect2 extends BuildSeries
 		find_flies.initTempRectROIs(exp, seqNegative, options.detectCage);
 		seqNegative.removeAllROI();
 
-		int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);
-		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
-	    processor.setThreadName("detectFlies1");
-	    processor.setPriority(Processor.NORM_PRIORITY);
-	    ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
-		futures.clear();
+//		int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);
+//		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+//	    processor.setThreadName("detectFlies1");
+//	    processor.setPriority(Processor.NORM_PRIORITY);
+//	    ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
+//		futures.clear();
 		
 		ImageTransformOptions transformOptions = new ImageTransformOptions();
 		transformOptions.transformOption = EnumImageTransformations.SUBTRACT_REF;
@@ -117,12 +117,13 @@ public class FlyDetect2 extends BuildSeries
 			final int t_from = (int) ((indexms - exp.camFirstImage_ms)/exp.camBinImage_ms);
 			if (t_from >= exp.seqCamData.nTotalFrames)
 				continue;
+			progressBar.setMessage("Processing image: " + (t_from +1));
 			
-			futures.add(processor.submit(new Runnable () 
-			{
-				@Override
-				public void run() 
-				{	
+//			futures.add(processor.submit(new Runnable () 
+//			{
+//				@Override
+//				public void run() 
+//				{	
 					IcyBufferedImage workImage = imageIORead(exp.seqCamData.getFileName(t_from));
 					IcyBufferedImage negativeImage = transformFunction.transformImage(workImage, transformOptions);
 					try {
@@ -131,12 +132,12 @@ public class FlyDetect2 extends BuildSeries
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-				}}));
+//				}}));
 		}
-		waitFuturesCompletion(processor, futures, progressBar);
+//		waitFuturesCompletion(processor, futures, progressBar);
 		
 		progressBar.close();
-		processor.shutdown();
+//		processor.shutdown();
 	}
 
 }
