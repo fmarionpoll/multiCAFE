@@ -90,7 +90,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					long diff = lastOffset_Ms - firstOffset_Ms;
 					if (diff < 1) 
 					{
-						System.out.println("Expt i=" + i + "  FileTime difference between last and first image < 1; set dt between images = 1 ms");
+						System.out.println("Expt # " + i + ": FileTime difference between last and first image < 1; set dt between images = 1 ms");
 						diff = exp.seqCamData.seq.getSizeT();
 					}
 					if (expAll.camLastImage_Ms < diff) 
@@ -160,7 +160,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
              }
              catch (ExecutionException e)
              {
-                 System.out.println("dlg experimentCombo.jaa - Warning: " + e);
+                 System.out.println("dlg experimentCombo.java - Warning: " + e);
              }
              catch (InterruptedException e)
              {

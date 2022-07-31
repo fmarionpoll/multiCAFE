@@ -85,7 +85,6 @@ public class FlyDetect2 extends BuildSeries
 	
 	private void closeSequences (Experiment exp) 
 	{
-//		closeSequence(seqDataRecorded); 
 		closeSequence(seqNegative); 
 	}
 
@@ -116,6 +115,9 @@ public class FlyDetect2 extends BuildSeries
 		for (long indexms = exp.cages.detectFirst_Ms ; indexms <= last_ms; indexms += exp.cages.detectBin_Ms ) 
 		{
 			final int t_from = (int) ((indexms - exp.camFirstImage_ms)/exp.camBinImage_ms);
+			if (t_from >= exp.seqCamData.nTotalFrames)
+				continue;
+			
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override

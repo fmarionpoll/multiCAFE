@@ -92,6 +92,9 @@ public class FlyDetect1 extends BuildSeries
 		{
 			final int t_previous = t_current;
 			final int t_from = (int) ((index_ms - exp.camFirstImage_ms)/exp.camBinImage_ms);
+			if (t_from >= exp.seqCamData.nTotalFrames)
+				continue;
+			
 			t_current = t_from;
 			
 			futures.add(processor.submit(new Runnable () 
