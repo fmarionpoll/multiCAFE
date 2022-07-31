@@ -75,7 +75,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 		int statusMsg = 0;
 		try 
 		{
-			statusMsg = get();
+			statusMsg = super.get();
 		} 
 		catch (InterruptedException | ExecutionException e) 
 		{

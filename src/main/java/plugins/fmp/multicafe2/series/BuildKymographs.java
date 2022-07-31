@@ -204,13 +204,14 @@ public class BuildKymographs extends BuildSeries
 			IcyBufferedImage referenceImage = imageIORead(referenceImageName);
 			adjustImage(sourceImage, referenceImage);
 		}
+		seqData.setImage(0, 0, sourceImage);
 		return sourceImage;
 	}
 	
 	private void buildKymographImages(Experiment exp, Sequence seqKymo, int sizeC, int nbcapillaries)
 	{
 		seqKymo.beginUpdate();
-		for (int icap=0; icap < nbcapillaries; icap++) {
+		for (int icap = 0; icap < nbcapillaries; icap++) {
 			Capillary cap = exp.capillaries.capillariesList.get(icap);
 			ArrayList<int[]> cap_Integer = cap.cap_Integer;
 			IcyBufferedImage cap_Image = cap_bufKymoImage.get(icap);
