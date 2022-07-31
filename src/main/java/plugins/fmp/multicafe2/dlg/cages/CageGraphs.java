@@ -98,11 +98,13 @@ public class CageGraphs extends JPanel implements SequenceListener
 			displayYPos("flies Y positions", ypositionsChart, rectv, ptRelative, exp, EnumXLSExportType.XYTOPCAGE);
 			ptRelative.y += deltay;
 		}
+		
 		if (distanceCheckbox.isSelected()) 
 		{
 			displayYPos("distance between positions at t+1 and t", distanceChart, rectv, ptRelative, exp, EnumXLSExportType.DISTANCE);
 			ptRelative.y += deltay;
 		}
+		
 		if (aliveCheckbox.isSelected()) 
 		{
 			double threshold = (double) aliveThresholdSpinner.getValue();		
@@ -114,6 +116,7 @@ public class CageGraphs extends JPanel implements SequenceListener
 			displayYPos("flies alive", aliveChart, rectv, ptRelative, exp, EnumXLSExportType.ISALIVE);	
 			ptRelative.y += deltay;
 		}
+		
 		if (sleepCheckbox.isSelected()) 
 		{	
 			for (Cage cage: exp.cages.cagesList) 

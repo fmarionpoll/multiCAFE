@@ -76,11 +76,12 @@ public class BuildCagesFromContours  extends JPanel implements ChangeListener
 		JPanel panel2 = new JPanel(flowLayout);
 		panel2.add( videochannel);
 		panel2.add(transformForLevelsComboBox);
+		panel2.add(overlayCheckBox);
+		panel2.add(thresholdSpinner);
 		add(panel2);
 		
 		JPanel panel3 = new JPanel(flowLayout);
-		panel3.add(overlayCheckBox);
-		panel3.add(thresholdSpinner);
+		panel3.add(deleteButton);
 		add(panel3);
 		
 		defineActionListeners();

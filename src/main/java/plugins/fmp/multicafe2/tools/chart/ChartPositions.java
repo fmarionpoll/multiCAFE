@@ -75,9 +75,11 @@ public class ChartPositions extends IcyFrame
 			JFreeChart xyChart = ChartFactory.createXYLineChart(null, null, null, xyDataset, PlotOrientation.VERTICAL, true, true, true);
 			xyChart.setAntiAlias( true );
 			xyChart.setTextAntiAlias( true );
+			
 			ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
 			yAxis.setRange(valMinMax.min, valMinMax.max);
 			yAxis.setTickLabelsVisible(displayLabels);
+			
 			ChartPanel xyChartPanel = new ChartPanel(xyChart, width, 200, 50, 100, 100, 200, false, false, true, true, true, true);
 			mainChartPanel.add(xyChartPanel);
 			width = 100;

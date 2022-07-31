@@ -160,7 +160,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
              }
              catch (ExecutionException e)
              {
-                 System.out.println("series analysis - Warning: " + e);
+                 System.out.println("dlg experimentCombo.jaa - Warning: " + e);
              }
              catch (InterruptedException e)
              {

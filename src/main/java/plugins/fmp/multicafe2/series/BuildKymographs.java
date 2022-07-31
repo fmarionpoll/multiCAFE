@@ -85,7 +85,8 @@ public class BuildKymographs extends BuildSeries
 		
 		ProgressFrame progressBar = new ProgressFrame("Save kymographs");
 		int nframes = exp.seqKymos.seq.getSizeT();
-	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+		int nCPUs = SystemUtil.getNumberOfCPUs();
+	    final Processor processor = new Processor(nCPUs);
 	    processor.setThreadName("buildkymo2");
 	    processor.setPriority(Processor.NORM_PRIORITY);
         ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nframes);
@@ -203,7 +204,6 @@ public class BuildKymographs extends BuildSeries
 			IcyBufferedImage referenceImage = imageIORead(referenceImageName);
 			adjustImage(sourceImage, referenceImage);
 		}
-		seqData.setImage(0, 0, sourceImage);
 		return sourceImage;
 	}
 	

@@ -108,11 +108,11 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
              }
              catch (ExecutionException e)
              {
-                 System.out.println("series analysis - Warning: " + e);
+                 System.out.println("BuildSeries.java - frame:" + frame +" Execution exception: " + e);
              }
              catch (InterruptedException e)
              {
-                 // ignore
+            	 System.out.println("BuildSeries.java - Interrupted exception: " + e);
              }
              futuresArray.remove(f);
              frame ++;
