@@ -1,9 +1,6 @@
 package plugins.fmp.multicafe2.series;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.concurrent.Future;
-
 import javax.swing.SwingUtilities;
 
 import icy.gui.frame.progress.ProgressFrame;
@@ -11,8 +8,7 @@ import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 import icy.sequence.Sequence;
-import icy.system.SystemUtil;
-import icy.system.thread.Processor;
+
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;

@@ -1,9 +1,8 @@
 package plugins.fmp.multicafe2.series;
 
 
+import java.awt.geom.Point2D;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.concurrent.Future;
 
 import javax.swing.SwingUtilities;
 
@@ -11,11 +10,12 @@ import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.sequence.Sequence;
-import icy.system.SystemUtil;
-import icy.system.thread.Processor;
+import plugins.fmp.multicafe2.experiment.Cage;
+import plugins.fmp.multicafe2.experiment.Cages;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
+import plugins.kernel.roi.roi2d.ROI2DPoint;
 
 
 
@@ -27,7 +27,7 @@ public class FlyDetect1 extends BuildSeries
 	public boolean	detectFlies = true;
 	private Viewer vNegative = null;
 	private Sequence seqNegative = null;
-	public FlyDetectTools 		find_flies 		= new FlyDetectTools();
+	public FlyDetectTools find_flies = new FlyDetectTools();
 	
 	// -----------------------------------------------------
 	
@@ -45,7 +45,7 @@ public class FlyDetect1 extends BuildSeries
 		exp.seqCamData.closeSequence();
     }
 	
-	private void openViewerWithOverlay(Experiment exp) 
+	private void openViewer(Experiment exp) 
 	{
 		try 
 		{
@@ -70,22 +70,13 @@ public class FlyDetect1 extends BuildSeries
 		find_flies.initParametersForDetection(exp, options);
 		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
 		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
-		openViewerWithOverlay(exp);
+		openViewer(exp);
 		
 		ImageTransformOptions transformOptions = new ImageTransformOptions();
 		transformOptions.transformOption = options.transformop;
 		getReferenceImage (exp, 0, transformOptions);
 		ImageTransformInterface transformFunction = options.transformop.getFunction();
-		
-//		int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);
-//	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
-//	    processor.setThreadName("detectFlies1");
-//	    processor.setPriority(Processor.NORM_PRIORITY);
-//        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
-//		futures.clear();
-		
 		exp.seqCamData.seq.beginUpdate();
-//		seqNegative.beginUpdate();
 		
 		int t_current = 0;
 	
@@ -99,35 +90,35 @@ public class FlyDetect1 extends BuildSeries
 			
 			t_current = t_from;
 			progressBar.setMessage("Processing image: " + (t_from +1));
-			
-//			futures.add(processor.submit(new Runnable () 
-//			{
-//				@Override
-//				public void run() 
-//				{	
-					IcyBufferedImage sourceImage = imageIORead(exp.seqCamData.getFileName(t_from));
-					getReferenceImage (exp, t_previous, transformOptions);
-					IcyBufferedImage workImage = transformFunction.transformImage(sourceImage, transformOptions); 
-					if (workImage == null)
-						return;
+	
+			IcyBufferedImage sourceImage = imageIORead(exp.seqCamData.getFileName(t_from));
+			getReferenceImage (exp, t_previous, transformOptions);
+			IcyBufferedImage workImage = transformFunction.transformImage(sourceImage, transformOptions); 
+			if (workImage == null)
+				return;
 
-					try 
-					{
-						seqNegative.setImage(0, 0, workImage);
-						find_flies.findFlies1 (workImage, t_from);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}					
-//				}}));
+			try 
+			{
+				seqNegative.setImage(0, 0, workImage);
+				vNegative.setTitle("Frame #"+ t_from + "/" + exp.seqCamData.nTotalFrames);
+				find_flies.findFlies1 (workImage, t_from);
+//				displayDetectedFlies(seqNegative, find_flies.cages, t_from);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}					
 		}
-		
-//		waitFuturesCompletion(processor, futures, progressBar);
-		
-		exp.seqCamData.seq.endUpdate();
-//		seqNegative.endUpdate();
 
+		exp.seqCamData.seq.endUpdate();
 		progressBar.close();
-//		processor.shutdown();
+	}
+	
+	private void displayDetectedFlies(Sequence seq, Cages cages, int t) {
+		seq.removeAllROI();
+		for (Cage cage : cages.cagesList) 
+ 		{
+			ROI2DPoint flyPoint = new ROI2DPoint(cage.flyPositions.xytList.get(t).xyPoint);
+			seq.addROI(flyPoint);
+ 		}
 	}
 	
 	private void getReferenceImage (Experiment exp, int t, ImageTransformOptions options) 

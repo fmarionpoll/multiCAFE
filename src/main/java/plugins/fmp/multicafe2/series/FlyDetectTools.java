@@ -5,11 +5,16 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
+import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
 import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
 import icy.sequence.Sequence;
+import icy.system.SystemUtil;
+import icy.system.thread.Processor;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Cages;
 import plugins.fmp.multicafe2.experiment.Experiment;
@@ -26,7 +31,7 @@ public class FlyDetectTools
 	public List<BooleanMask2D> 	cageMaskList 		= new ArrayList<BooleanMask2D>();
 	public Rectangle 			rectangleAllCages 	= null;
 	public BuildSeriesOptions	options				= null;
-	private Cages 				cages 				= null;
+	public Cages 				cages 				= null;
 	
 	// -----------------------------------------------------
 	
@@ -130,6 +135,12 @@ public class FlyDetectTools
 	
 	public void findFlies1(IcyBufferedImage workimage, int t) throws InterruptedException 
 	{
+		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+	    processor.setThreadName("detectFlies1");
+	    processor.setPriority(Processor.NORM_PRIORITY);
+        ArrayList<Future<?>> futures = new ArrayList<Future<?>>(cages.cagesList.size());
+		futures.clear();
+		
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
  		for (Cage cage : cages.cagesList) 
@@ -138,20 +149,34 @@ public class FlyDetectTools
 				continue;
 			if (cage.cageNFlies < 1)
 				continue;
-			
-			BooleanMask2D bestMask = findLargestBlob(binarizedImageRoi, cage);
-			if ( bestMask != null ) 
+			futures.add(processor.submit(new Runnable () 
 			{
-				ROI2DArea flyROI = new ROI2DArea(bestMask); 
-				Rectangle2D rect = flyROI.getBounds2D();
-				Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-				cage.flyPositions.addPoint(t, flyPosition);
-			}
-			else 
-			{
-				cage.flyPositions.addPoint(t, flyPositionMissed);
-			}	
+				@Override
+				public void run() 
+				{
+				BooleanMask2D bestMask = null;
+				try {
+					bestMask = findLargestBlob(binarizedImageRoi, cage);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if ( bestMask != null ) 
+				{
+					ROI2DArea flyROI = new ROI2DArea(bestMask); 
+					Rectangle2D rect = flyROI.getBounds2D();
+					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
+					cage.flyPositions.addPoint(t, flyPosition);
+				}
+				else 
+				{
+					cage.flyPositions.addPoint(t, flyPositionMissed);
+				}
+			}}));
 		}
+ 		
+		waitDetectCompletion(processor, futures, null);
+		processor.shutdown();
 	}
 	
 	public void findFlies2(Sequence seq, IcyBufferedImage workimage, int t) throws InterruptedException 
@@ -252,5 +277,30 @@ public class FlyDetectTools
 		}
 	}
 	
-	
+	protected void waitDetectCompletion(Processor processor, ArrayList<Future<?>> futuresArray,  ProgressFrame progressBar) 
+    {  	
+  		 int frame= 1;
+  		 int nframes = futuresArray.size();
+
+    	 while (!futuresArray.isEmpty())
+         {
+             final Future<?> f = futuresArray.get(futuresArray.size() - 1);
+             if (progressBar != null)
+   				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
+             try
+             {
+                 f.get();
+             }
+             catch (ExecutionException e)
+             {
+                 System.out.println("FlyDetectTools.java - frame:" + frame +" Execution exception: " + e);
+             }
+             catch (InterruptedException e)
+             {
+            	 System.out.println("FlyDetectTools.java - Interrupted exception: " + e);
+             }
+             futuresArray.remove(f);
+             frame ++;
+         }
+   }
 }
