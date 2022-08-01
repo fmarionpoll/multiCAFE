@@ -15,7 +15,6 @@ import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
-import plugins.kernel.roi.roi2d.ROI2DPoint;
 
 
 
@@ -76,7 +75,6 @@ public class FlyDetect1 extends BuildSeries
 		transformOptions.transformOption = options.transformop;
 		getReferenceImage (exp, 0, transformOptions);
 		ImageTransformInterface transformFunction = options.transformop.getFunction();
-		exp.seqCamData.seq.beginUpdate();
 		
 		int t_current = 0;
 	
@@ -103,25 +101,15 @@ public class FlyDetect1 extends BuildSeries
 				seqNegative.setImage(0, 0, workImage);
 				vNegative.setTitle("Frame #"+ t_from + "/" + exp.seqCamData.nTotalFrames);
 				List<Point2D> listPoints = find_flies.findFlies1 (workImage, t_from);
-				displayDetectedFlies(seqNegative, listPoints);
+				addGreenROI2DPoints(seqNegative, listPoints, true);
 				seqNegative.endUpdate();
-			} catch (InterruptedException e) {
+			} 
+			catch (InterruptedException e) {
 				e.printStackTrace();
 			}					
 		}
 
-		exp.seqCamData.seq.endUpdate();
 		progressBar.close();
-	}
-	
-	private void displayDetectedFlies(Sequence seq, List<Point2D> listPoints) 
-	{
-		seq.removeAllROI();
-		for (Point2D point: listPoints) 
- 		{
-			ROI2DPoint flyPoint = new ROI2DPoint(point);
-			seq.addROI(flyPoint);
- 		}
 	}
 	
 	private void getReferenceImage (Experiment exp, int t, ImageTransformOptions options) 
