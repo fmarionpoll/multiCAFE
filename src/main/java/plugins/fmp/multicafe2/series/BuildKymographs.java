@@ -43,12 +43,12 @@ public class BuildKymographs extends BuildSeries
 	{
 		loadExperimentDataToBuildKymos(exp);
 		
-		openViewers(exp);
+		openKymoViewers(exp);
 		getTimeLimitsOfSequence(exp);
 		if (buildKymo(exp)) 
 			saveComputation(exp);
 		
-		closeViewers();
+		closeKymoViewers();
 		exp.seqKymos.closeSequence();
 	}
 	
@@ -339,18 +339,13 @@ public class BuildKymographs extends BuildSeries
         	GaspardRigidRegistration.correctTranslation2D(workImage, referenceImage, referenceChannel);
 	}
 	
-	private void closeSequences () 
+	private void closeKymoViewers() 
 	{
+		closeViewer(vData);
 		closeSequence(seqData);
 	}
 	
-	private void closeViewers() 
-	{
-		closeViewer(vData);
-		closeSequences();
-	}
-	
-	private void openViewers(Experiment exp) 
+	private void openKymoViewers(Experiment exp) 
 	{
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {

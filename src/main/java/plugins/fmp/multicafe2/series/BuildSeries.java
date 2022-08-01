@@ -4,12 +4,14 @@ import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import javax.imageio.ImageIO;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
@@ -30,6 +32,9 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 	public	boolean 			stopFlag 		= false;
 	public 	boolean 			threadRunning 	= false;
 			int 				selectedExperimentIndex = -1;
+			Sequence seqNegative = null;
+			Viewer vNegative = null;
+			
 		
 	
 	@Override
@@ -207,4 +212,24 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 			seq.addROI(flyPoint);
  		}
 	}
+	
+	void openFlyDetectViewers(Experiment exp) 
+	{
+		try 
+		{
+			SwingUtilities.invokeAndWait(new Runnable() 
+			{
+				public void run() 
+				{
+					seqNegative = newSequence("detectionImage", exp.seqCamData.refImage);
+					vNegative = new Viewer (seqNegative, false);
+					vNegative.setVisible(true);
+				}});
+		} 
+		catch (InvocationTargetException | InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+	
 }

@@ -56,7 +56,7 @@ public class BuildBackground extends BuildSeries
 		closeSequences();
 	}
 	
-	private void openViewers(Experiment exp) 
+	private void openBackgroundViewers(Experiment exp) 
 	{
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
@@ -83,7 +83,7 @@ public class BuildBackground extends BuildSeries
 		flyDetectTools.initCagesPositions(exp, options.detectCage);
 		options.threshold = options.thresholdDiff;
 		
-		openViewers(exp);
+		openBackgroundViewers(exp);
 		try {
 			ImageTransformOptions transformOptions = new ImageTransformOptions();
 			transformOptions.transformOption = EnumImageTransformations.SUBTRACT; 
