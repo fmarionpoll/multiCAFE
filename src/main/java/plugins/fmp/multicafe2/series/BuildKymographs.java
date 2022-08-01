@@ -140,57 +140,56 @@ public class BuildKymographs extends BuildSeries
 		stopFlag = false;
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
 		int nframes = (int) ((exp.offsetLastCol_Ms - exp.offsetFirstCol_Ms) / exp.kymoBinCol_Ms +1);
-	    
-//		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
-//	    processor.setThreadName("buildkymo2");
-//	    processor.setPriority(Processor.NORM_PRIORITY);
-//        ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nframes);
-//		futuresArray.clear();
-		
+	    	
 		for (int iframe = 0 ; iframe < nframes; iframe++) {
+			
 			final int indexToFrame =  iframe;	
 			long iindexms = iframe *  exp.kymoBinCol_Ms + exp.offsetFirstCol_Ms;
 			final int indexFromFrame = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_ms));
 			if (indexFromFrame >= exp.seqCamData.nTotalFrames)
 				continue;
 			
-			progressBar.setMessage("Processing image: " + (iframe +1));
-//			futuresArray.add(processor.submit(new Runnable () {
-//				@Override
-//				public void run() 
-//				{						
-					IcyBufferedImage sourceImage = loadImageFromIndex(exp, indexFromFrame);
-					seqData.setImage(0, 0, sourceImage);
-					int sourceImageWidth = sourceImage.getWidth();
-					int lengthImage = sourceImage.getSizeX() *  sourceImage.getSizeY();
+			vData.setTitle("Frame: " + (iframe +1)+ " / " + nframes);
+			
+			IcyBufferedImage sourceImage = loadImageFromIndex(exp, indexFromFrame);
+			seqData.setImage(0, 0, sourceImage);
+			int sourceImageWidth = sourceImage.getWidth();
+			final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
+		    processor.setThreadName("buildkymo2");
+		    processor.setPriority(Processor.NORM_PRIORITY);
+		    int nFutures = exp.capillaries.capillariesList.size() * sizeC;
+	        ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nFutures );
+			futuresArray.clear();
+			
+			for (int chan = 0; chan < sizeC; chan++) { 
+				final int [] sourceImageChannel =  Array1DUtil.arrayToIntArray(
+										sourceImage.getDataXY(chan), 
+										sourceImage.isSignedDataType()); 
+				
+				for (Capillary cap: exp.capillaries.capillariesList) 
+				{
+					KymoROI2D capT = cap.getROI2DKymoAtIntervalT(indexFromFrame);
+					int [] kymoImageChannel = cap.cap_Integer.get(chan); 
 					
-					for (int chan = 0; chan < sizeC; chan++) { 
-						int [] sourceImageChannel = new int[lengthImage];
-						sourceImageChannel = Array1DUtil.arrayToIntArray(
-												sourceImage.getDataXY(chan), 
-												sourceImageChannel, 
-												sourceImage.isSignedDataType()); 
-						
-						for (Capillary cap: exp.capillaries.capillariesList) 
+					futuresArray.add(processor.submit(new Runnable () {
+					@Override
+					public void run() 
+					{	
+						int cnt = 0;
+						for (ArrayList<int[]> mask : capT.getMasksList()) 
 						{
-							KymoROI2D capT = cap.getROI2DKymoAtIntervalT(indexFromFrame);
-							int [] kymoImageChannel = cap.cap_Integer.get(chan); 
-							
-							int cnt = 0;
-							for (ArrayList<int[]> mask : capT.getMasksList()) 
-							{
-								int sum = 0;
-								for (int[] m: mask)
-									sum += sourceImageChannel[m[0] + m[1]*sourceImageWidth];
-								if (mask.size() > 0)
-									kymoImageChannel[cnt*kymoImageWidth + indexToFrame] = (int) (sum/mask.size()); 
-								cnt ++;
-							}
+							int sum = 0;
+							for (int[] m: mask)
+								sum += sourceImageChannel[m[0] + m[1]*sourceImageWidth];
+							if (mask.size() > 0)
+								kymoImageChannel[cnt*kymoImageWidth + indexToFrame] = (int) (sum/mask.size()); 
+							cnt ++;
 						}
-					}
-//				}}));
+					}}));
+				}
+			}
+			waitFuturesCompletion(processor, futuresArray, null); //progressBar);
 		}
-//		waitFuturesCompletion(processor, futuresArray, progressBar);
 		buildKymographImages(exp, seqKymos.seq, sizeC, nbcapillaries);
         progressBar.close();
         
@@ -357,7 +356,7 @@ public class BuildKymographs extends BuildSeries
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() 
 				{			
-					seqData = newSequence("data recorded", exp.seqCamData.getSeqImage(0, 0));
+					seqData = newSequence("data frame", exp.seqCamData.getSeqImage(0, 0));
 					vData = new Viewer(seqData, true);
 				}});
 		} 

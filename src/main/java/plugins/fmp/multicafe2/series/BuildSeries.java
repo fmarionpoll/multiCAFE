@@ -97,7 +97,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
     {  	
   		 int frame= 1;
   		 int nframes = futuresArray.size();
-  		 System.out.println("futures array contains "+ nframes + " frames");
+
     	 while (!futuresArray.isEmpty())
          {
              final Future<?> f = futuresArray.get(futuresArray.size() - 1);
