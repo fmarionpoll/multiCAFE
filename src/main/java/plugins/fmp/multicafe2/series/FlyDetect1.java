@@ -3,6 +3,7 @@ package plugins.fmp.multicafe2.series;
 
 import java.awt.geom.Point2D;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import javax.swing.SwingUtilities;
 
@@ -10,8 +11,7 @@ import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
 import icy.sequence.Sequence;
-import plugins.fmp.multicafe2.experiment.Cage;
-import plugins.fmp.multicafe2.experiment.Cages;
+
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
@@ -45,7 +45,7 @@ public class FlyDetect1 extends BuildSeries
 		exp.seqCamData.closeSequence();
     }
 	
-	private void openViewer(Experiment exp) 
+	private void openDetectionViewer(Experiment exp) 
 	{
 		try 
 		{
@@ -68,9 +68,9 @@ public class FlyDetect1 extends BuildSeries
 	{
 		exp.cleanPreviousDetectedFliesROIs();
 		find_flies.initParametersForDetection(exp, options);
-		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
+		find_flies.initCagesPositions(exp, options.detectCage);
 		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
-		openViewer(exp);
+		openDetectionViewer(exp);
 		
 		ImageTransformOptions transformOptions = new ImageTransformOptions();
 		transformOptions.transformOption = options.transformop;
@@ -99,10 +99,12 @@ public class FlyDetect1 extends BuildSeries
 
 			try 
 			{
+				seqNegative.beginUpdate();
 				seqNegative.setImage(0, 0, workImage);
 				vNegative.setTitle("Frame #"+ t_from + "/" + exp.seqCamData.nTotalFrames);
-				find_flies.findFlies1 (workImage, t_from);
-//				displayDetectedFlies(seqNegative, find_flies.cages, t_from);
+				List<Point2D> listPoints = find_flies.findFlies1 (workImage, t_from);
+				displayDetectedFlies(seqNegative, listPoints);
+				seqNegative.endUpdate();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}					
@@ -112,11 +114,12 @@ public class FlyDetect1 extends BuildSeries
 		progressBar.close();
 	}
 	
-	private void displayDetectedFlies(Sequence seq, Cages cages, int t) {
+	private void displayDetectedFlies(Sequence seq, List<Point2D> listPoints) 
+	{
 		seq.removeAllROI();
-		for (Cage cage : cages.cagesList) 
+		for (Point2D point: listPoints) 
  		{
-			ROI2DPoint flyPoint = new ROI2DPoint(cage.flyPositions.xytList.get(t).xyPoint);
+			ROI2DPoint flyPoint = new ROI2DPoint(point);
 			seq.addROI(flyPoint);
  		}
 	}

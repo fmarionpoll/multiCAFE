@@ -64,7 +64,7 @@ public class FlyDetect2 extends BuildSeries
 	{
 		exp.cleanPreviousDetectedFliesROIs();
 		find_flies.initParametersForDetection(exp, options);
-		find_flies.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
+		find_flies.initCagesPositions(exp, options.detectCage);
 		options.threshold = options.thresholdDiff;
 
 		if (exp.loadReferenceImage()) 
@@ -92,7 +92,7 @@ public class FlyDetect2 extends BuildSeries
 	private void findFliesInAllFrame(Experiment exp) 
 	{
 		ProgressFrame progressBar = new ProgressFrame("Detecting flies...");
-		find_flies.initTempRectROIs(exp, seqNegative, options.detectCage);
+		find_flies.initCagesPositions(exp, options.detectCage);
 		seqNegative.removeAllROI();
 
 //		int nframes = (int) ((exp.cages.detectLast_Ms - exp.cages.detectFirst_Ms) / exp.cages.detectBin_Ms +1);

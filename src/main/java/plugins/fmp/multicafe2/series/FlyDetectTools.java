@@ -104,9 +104,10 @@ public class FlyDetectTools
 		return new ROI2DArea( bmask );
 	}
 	
-	public void findFlies(Sequence seq, IcyBufferedImage workimage, int t) throws InterruptedException 
+	public List<Point2D>  findFlies(Sequence seq, IcyBufferedImage workimage, int t) throws InterruptedException 
 	{
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
+		List<Point2D> listPoints = new ArrayList<Point2D> (cages.cagesList.size());
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
  		for (Cage cage: cages.cagesList) 
  		{		
@@ -125,15 +126,17 @@ public class FlyDetectTools
 
 //				ROI2DPoint flyPoint = new ROI2DPoint(flyPosition);
 //				seq.addROI(flyPoint);
+				listPoints.add(flyPosition);
 			}
 			else 
 			{
 				cage.flyPositions.addPoint(t, flyPositionMissed);
 			}	
 		}
+ 		return listPoints;
 	}
 	
-	public void findFlies1(IcyBufferedImage workimage, int t) throws InterruptedException 
+	public List<Point2D>  findFlies1(IcyBufferedImage workimage, int t) throws InterruptedException 
 	{
 		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectFlies1");
@@ -143,12 +146,14 @@ public class FlyDetectTools
 		
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
- 		for (Cage cage : cages.cagesList) 
+		List<Point2D> listPoints = new ArrayList<Point2D> (cages.cagesList.size());
+		for (Cage cage : cages.cagesList) 
  		{		
 			if (options.detectCage != -1 && cage.getCageNumberInteger() != options.detectCage)
 				continue;
 			if (cage.cageNFlies < 1)
 				continue;
+			
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
@@ -161,12 +166,13 @@ public class FlyDetectTools
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				if ( bestMask != null ) 
+				if (bestMask != null) 
 				{
 					ROI2DArea flyROI = new ROI2DArea(bestMask); 
 					Rectangle2D rect = flyROI.getBounds2D();
 					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 					cage.flyPositions.addPoint(t, flyPosition);
+					listPoints.add(flyPosition);
 				}
 				else 
 				{
@@ -177,6 +183,7 @@ public class FlyDetectTools
  		
 		waitDetectCompletion(processor, futures, null);
 		processor.shutdown();
+		return listPoints;
 	}
 	
 	public void findFlies2(Sequence seq, IcyBufferedImage workimage, int t) throws InterruptedException 
@@ -238,7 +245,7 @@ public class FlyDetectTools
 		return new ROI2DArea( bmask );
 	}
 	
-	public void initTempRectROIs(Experiment exp, Sequence seq, int option_cagenumber) 
+	public void initCagesPositions(Experiment exp, int option_cagenumber) 
 	{
 		cages = exp.cages;
 		int nbcages = cages.cagesList.size();
@@ -254,7 +261,6 @@ public class FlyDetectTools
 				cage.flyPositions = positions;
 			}
 		}
-
 	}
 	
 	public void initParametersForDetection(Experiment exp, BuildSeriesOptions	options) 

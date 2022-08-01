@@ -80,7 +80,7 @@ public class BuildBackground extends BuildSeries
 	{
 		exp.cleanPreviousDetectedFliesROIs();
 		flyDetectTools.initParametersForDetection(exp, options);
-		flyDetectTools.initTempRectROIs(exp, exp.seqCamData.seq, options.detectCage);
+		flyDetectTools.initCagesPositions(exp, options.detectCage);
 		options.threshold = options.thresholdDiff;
 		
 		openViewers(exp);
