@@ -194,9 +194,6 @@ public class FlyDetectTools
 						Rectangle2D rect = flyROI.getBounds2D();
 						Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
 						cage.flyPositions.addPoint(t, flyPosition);
-						
-		//				ROI2DPoint flyPoint = new ROI2DPoint(flyPosition);
-		//				seq.addROI(flyPoint);
 						listPoints.add(flyPosition);
 					}
 					else 

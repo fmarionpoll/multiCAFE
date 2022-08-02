@@ -61,16 +61,8 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	public void ensureCapacity(int nFrames) 
 	{
 		xytArrayList.ensureCapacity(nFrames);
-//		initArray(nFrames);
 	}
 	
-	void initArray(int nFrames) 
-	{
-		for (int i = 0; i < nFrames; i++) {
-			XYTaValue value = new XYTaValue(i);
-			xytArrayList.add(value);
-		}
-	}
 	
 	public Point2D getPoint(int i) 
 	{
@@ -102,13 +94,13 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		xytArrayList.add(pos);
 	}
 	
-	public void copy (XYTaSeriesArrayList xySer) 
+	public void copyXYTaSeries (XYTaSeriesArrayList xySer) 
 	{
 		moveThreshold = xySer.moveThreshold;
 		sleepThreshold = xySer.sleepThreshold;
 		lastTimeAlive = xySer.lastIntervalAlive;
 		xytArrayList = new ArrayList<XYTaValue>(xySer.xytArrayList.size());
-		xytArrayList.addAll(xytArrayList);
+		// TODO check xytArrayList.addAll(xytArrayList);
 		name = xySer.name;
 		exportType = xySer.exportType;
 		binsize = xySer.binsize;
@@ -131,27 +123,18 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		xytArrayList.clear();
 		int nb_items =  XMLUtil.getAttributeIntValue(node_position_list, ID_NBITEMS, 0);
 		xytArrayList.ensureCapacity(nb_items);
-		for (int i = 0; i< nb_items; i++) 
-			xytArrayList.add(new XYTaValue(i));
-		boolean bAdded = false;
-		
-		for (int i=0; i< nb_items; i++) 
+
+		for (int i = 0; i < nb_items; i++) 
 		{
 			String elementi = "i"+i;
 			Element node_position_i = XMLUtil.getElement(node_position_list, elementi);
 			XYTaValue pos = new XYTaValue();
 			pos.loadFromXML(node_position_i);
-			if (pos.indexT < nb_items) 
-				xytArrayList.set(pos.indexT, pos);
-			else 
-			{
+			if (!Double.isNaN(pos.xyPoint.getX()) && !Double.isNaN(pos.xyPoint.getY()))
 				xytArrayList.add(pos);
-				bAdded = true;
-			}
 		}
-		
-		if (bAdded)
-			Collections.sort(xytArrayList, new Comparators.XYTaValue_Tindex_Comparator());
+
+		Collections.sort(xytArrayList, new Comparators.XYTaValue_Tindex_Comparator());
 		return true;
 	}
 
@@ -172,9 +155,12 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		int i = 0;
 		for (XYTaValue pos: xytArrayList) 
 		{
-			String elementi = "i"+i;
-			Element node_position_i = XMLUtil.addElement(node_position_list, elementi);
-			pos.saveToXML(node_position_i);
+			if (pos.xyPoint.getX() != Double.NaN && pos.xyPoint.getY() != Double.NaN) 
+			{
+				String elementi = "i"+i;
+				Element node_position_i = XMLUtil.addElement(node_position_list, elementi);
+				pos.saveToXML(node_position_i);
+			}
 			i++;
 		}
 		return true;

@@ -50,19 +50,12 @@ public class XYTaSeriesHashMap implements XMLPersistent
 		this.exportType = exportType;
 		this.binsize = binsize;
 		xytList = new HashMap<Integer, XYTaValue>(nFrames);
-//		for (int i = 0; i< nFrames; i++) {
-//			xytList.put(i, new XYTaValue(i));
-//		}
 	}
 	
 	public void clear() 
 	{
 		xytList.clear();
 	}
-	
-//	public void ensureCapacity(int nFrames) {
-//		xytList.ensureCapacity(nFrames);
-//	}
 	
 	public Point2D getPoint(int i) 
 	{

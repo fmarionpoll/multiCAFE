@@ -199,7 +199,7 @@ public class Cages
 		for (Cage ccag: cag.cagesList) 
 		{
 			Cage cagi = new Cage();
-			cagi.copy(ccag);
+			cagi.copyCage(ccag);
 			cagesList.add(cagi);
 		}
 	}

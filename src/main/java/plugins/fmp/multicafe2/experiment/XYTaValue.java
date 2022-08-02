@@ -57,8 +57,8 @@ public class XYTaValue implements XMLPersistent
 		if (node == null)
 			return false;	
 		Element node_XYTa = XMLUtil.getElement(node, "XYTa");	
-		double x =  XMLUtil.getAttributeDoubleValue( node_XYTa, "x", 0);
-		double y =  XMLUtil.getAttributeDoubleValue( node_XYTa, "y", 0);
+		double x =  XMLUtil.getAttributeDoubleValue( node_XYTa, "x", Double.NaN);
+		double y =  XMLUtil.getAttributeDoubleValue( node_XYTa, "y", Double.NaN);
 		xyPoint.setLocation(x, y);
 		indexT =  XMLUtil.getAttributeIntValue(node_XYTa, "t", 0);
 		bAlive = XMLUtil.getAttributeBooleanValue(node_XYTa, "a", false);

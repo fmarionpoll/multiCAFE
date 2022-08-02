@@ -183,14 +183,14 @@ public class Cage
 		return pt;
 	}
 	
-	public void copy (Cage cage) 
+	public void copyCage (Cage cage) 
 	{
 		cageRoi			= cage.cageRoi;
 		cageNFlies  	= cage.cageNFlies;
 		strCageComment 	= cage.strCageComment;
 		strCageNumber 	= cage.strCageNumber;
 		valid 			= false; 
-		flyPositions.copy(cage.flyPositions);
+		flyPositions.copyXYTaSeries(cage.flyPositions);
 	}
 	
 	public ROI2DPoint getRoiPointFromPositionAtT(int t) 
