@@ -78,7 +78,7 @@ public class PlotLevels extends JPanel implements SequenceListener
 				{
 					exp.seqKymos.validateRois();
 					exp.seqKymos.transferKymosRoisToCapillaries_Measures(exp.capillaries);
-					xyDisplayGraphs(exp);
+					displayGraphsPanels(exp);
 				}
 			}});
 		
@@ -89,12 +89,12 @@ public class PlotLevels extends JPanel implements SequenceListener
 				Experiment exp = (Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{
-					xyDisplayGraphs(exp);
+					displayGraphsPanels(exp);
 				}
 			}});
 	}
 	
-	public void xyDisplayGraphs(Experiment exp) 
+	public void displayGraphsPanels(Experiment exp) 
 	{
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
 		if (v == null)

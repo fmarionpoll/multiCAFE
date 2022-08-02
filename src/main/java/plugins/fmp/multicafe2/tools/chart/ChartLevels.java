@@ -155,10 +155,11 @@ public class ChartLevels extends IcyFrame
 				globalYMax = globalYMin +1;
 			yAxis.setRange(globalYMin, globalYMax);
 			yAxis.setTickLabelsVisible(displayLabels);
+			yTitle = null;
+			
 			ValueAxis xAxis = xyChart.getXYPlot().getDomainAxis(0);
 			xAxis.setRange(0, globalXMax);
-			yTitle = null;
-
+			
 			if (option == EnumXLSExportType.TOPLEVEL || option == EnumXLSExportType.BOTTOMLEVEL) 
 				xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
 			

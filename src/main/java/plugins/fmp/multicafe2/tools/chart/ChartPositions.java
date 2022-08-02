@@ -22,7 +22,7 @@ import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.XYTaSeriesArrayList;
-import plugins.fmp.multicafe2.tools.MinMaxDouble;
+import plugins.fmp.multicafe2.tools.MaxMinDouble;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
@@ -33,6 +33,7 @@ public class ChartPositions extends IcyFrame
 	public IcyFrame mainChartFrame = null;
 	private String 	title;
 	private Point 	pt = new Point (0,0);
+	private double globalXMax = 0;
 	
 	public void createPanel(String cstitle) 
 	{
@@ -51,21 +52,22 @@ public class ChartPositions extends IcyFrame
 	public void displayData(List<Cage> cageList, EnumXLSExportType option) 
 	{
 		List<XYSeriesCollection> xyDataSetList = new ArrayList <XYSeriesCollection>();
-		MinMaxDouble valMinMax = new MinMaxDouble();
+		MaxMinDouble yMaxMin = new MaxMinDouble();
 		int count = 0;
 		for (Cage cage: cageList) 
 		{
 			if (cage.flyPositions != null && cage.flyPositions.xytList.size() > 0) 
 			{	
-				ChartStructure struct = getDataSet(cage, option);
-				XYSeriesCollection xyDataset = struct.xyDataset;
-				valMinMax = struct.minmax;
+				ChartData chartData = getDataSet(cage, option);
+				XYSeriesCollection xyDataset = chartData.xyDataset;
+				yMaxMin = chartData.yMaxMin;
 				if (count != 0)
-					valMinMax.getMaxMin(struct.minmax);
+					yMaxMin.getMaxMin(chartData.yMaxMin);
 				xyDataSetList.add(xyDataset);
 				count++;
 			}
 		}
+		
 		cleanChartsPanel(chartsInMainChartPanel);
 		int width = 100;
 		boolean displayLabels = false; 
@@ -77,8 +79,11 @@ public class ChartPositions extends IcyFrame
 			xyChart.setTextAntiAlias( true );
 			
 			ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
-			yAxis.setRange(valMinMax.min, valMinMax.max);
+			yAxis.setRange(yMaxMin.min, yMaxMin.max);
 			yAxis.setTickLabelsVisible(displayLabels);
+			
+			ValueAxis xAxis = xyChart.getXYPlot().getDomainAxis(0);
+			xAxis.setRange(0, globalXMax);
 			
 			ChartPanel xyChartPanel = new ChartPanel(xyChart, width, 200, 50, 100, 100, 200, false, false, true, true, true, true);
 			mainChartPanel.add(xyChartPanel);
@@ -92,11 +97,11 @@ public class ChartPositions extends IcyFrame
 		mainChartFrame.setVisible(true);
 	}
 	
-	private MinMaxDouble addPointsToXYSeries(Cage cage, EnumXLSExportType option, XYSeries seriesXY) 
+	private MaxMinDouble addPointsToXYSeries(Cage cage, EnumXLSExportType option, XYSeries seriesXY) 
 	{
 		XYTaSeriesArrayList positionxyt = cage.flyPositions;
 		int itmax = positionxyt.xytList.size();
-		MinMaxDouble minmax =null;
+		MaxMinDouble yMaxMin = null;
 		if (itmax > 0) 
 		{
 			switch (option) 
@@ -107,13 +112,12 @@ public class ChartPositions extends IcyFrame
 				{
 					double currentY = positionxyt.xytList.get(it).xyPoint.getY();
 					double ypos = currentY - previousY;
-					double t = positionxyt.xytList.get(it).indexT;
-					seriesXY.add( t, ypos );
+					addxyPos(seriesXY, positionxyt, it, ypos);
 					previousY = currentY;
 				}
 				Rectangle rect = cage.cageRoi.getBounds();
 				double length_diagonal = Math.sqrt((rect.height*rect.height) + (rect.width*rect.width));
-				minmax = new MinMaxDouble(0.0, length_diagonal);
+				yMaxMin = new MaxMinDouble(0.0, length_diagonal);
 				break;
 				
 			case ISALIVE:
@@ -121,10 +125,9 @@ public class ChartPositions extends IcyFrame
 				{
 					boolean alive = positionxyt.xytList.get(it).bAlive;
 					double ypos = alive? 1.0: 0.0;
-					double t = positionxyt.xytList.get(it).indexT;
-					seriesXY.add( t, ypos );
+					addxyPos(seriesXY, positionxyt, it, ypos);
 				}
-				minmax = new MinMaxDouble(0., 1.2);
+				yMaxMin = new MaxMinDouble(0., 1.2);
 				break;
 				
 			case SLEEP:
@@ -132,10 +135,9 @@ public class ChartPositions extends IcyFrame
 				{
 					boolean sleep = positionxyt.xytList.get(it).bSleep;
 					double ypos = sleep ? 1.0: 0.0;
-					double t = positionxyt.xytList.get(it).indexT;
-					seriesXY.add( t, ypos );
+					addxyPos(seriesXY, positionxyt, it, ypos);
 				}
-				minmax = new MinMaxDouble(0., 1.2);
+				yMaxMin = new MaxMinDouble(0., 1.2);
 				break;
 				
 			default:
@@ -145,25 +147,32 @@ public class ChartPositions extends IcyFrame
 				{
 					Point2D point = positionxyt.xytList.get(it).xyPoint;
 					double ypos = yOrigin - point.getY();
-					double t = positionxyt.xytList.get(it).indexT;
-					seriesXY.add( t, ypos );
+					addxyPos(seriesXY, positionxyt, it, ypos);
 				}
-				minmax = new MinMaxDouble(0., rect1.height * 1.2);
+				yMaxMin = new MaxMinDouble(0., rect1.height * 1.2);
 				break;
 			}
 		}
-		return minmax;
+		return yMaxMin;
 	}
 	
-	private ChartStructure getDataSet(Cage cage, EnumXLSExportType option) 
+	private void addxyPos(XYSeries seriesXY, XYTaSeriesArrayList positionxyt, int it, Double ypos)
+	{
+		double t = positionxyt.xytList.get(it).indexT;
+		seriesXY.add( t, ypos );
+		if (globalXMax < t)
+			globalXMax = t;
+	}
+	
+	private ChartData getDataSet(Cage cage, EnumXLSExportType option) 
 	{
 		XYSeriesCollection xyDataset = new XYSeriesCollection();	
 		String name = cage.cageRoi.getName();
 		XYSeries seriesXY = new XYSeries(name);
 		seriesXY.setDescription(name);
-		MinMaxDouble minmax = addPointsToXYSeries(cage, option, seriesXY);
+		MaxMinDouble yMaxMin = addPointsToXYSeries(cage, option, seriesXY);
 		xyDataset.addSeries(seriesXY);
-		return new ChartStructure(minmax, xyDataset);
+		return new ChartData(new MaxMinDouble(globalXMax, 0), yMaxMin, xyDataset);
 	}
 	
 	private void cleanChartsPanel (ArrayList<ChartPanel> chartsPanel) 

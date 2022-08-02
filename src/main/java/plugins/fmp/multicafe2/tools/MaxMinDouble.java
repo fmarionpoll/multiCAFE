@@ -1,15 +1,15 @@
 package plugins.fmp.multicafe2.tools;
 
-public class MinMaxDouble 
+public class MaxMinDouble 
 {
-	public double max=0;
-	public double min=0;
+	public double max = 0;
+	public double min = 0;
 	
-	public MinMaxDouble() 
+	public MaxMinDouble() 
 	{
 	}
 	
-	public MinMaxDouble(double val1, double val2 ) 
+	public MaxMinDouble(double val1, double val2 ) 
 	{
 		if (val1 >= val2) 
 		{
@@ -23,21 +23,21 @@ public class MinMaxDouble
 		}
 	}
 	
-	public MinMaxDouble getMaxMin(double value1, double value2) 
+	public MaxMinDouble getMaxMin(double value1, double value2) 
 	{
 		getMaxMin(value1);
 		getMaxMin(value2);
 		return this;
 	}
 	
-	public MinMaxDouble getMaxMin(MinMaxDouble val) 
+	public MaxMinDouble getMaxMin(MaxMinDouble val) 
 	{
 		getMaxMin(val.min);
 		getMaxMin(val.max);
 		return this;
 	}
 	
-	public MinMaxDouble getMaxMin(double value) 
+	public MaxMinDouble getMaxMin(double value) 
 	{
 		if (value > max)
 			max = value;

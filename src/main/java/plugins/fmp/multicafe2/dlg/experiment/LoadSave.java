@@ -241,7 +241,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	{
 		SwingUtilities.invokeLater(new Runnable() { public void run() 
 		{
-			parent0.paneLevels.tabGraphs.xyDisplayGraphs(exp);
+			parent0.paneLevels.tabGraphs.displayGraphsPanels(exp);
 		}});	
 	}
 	

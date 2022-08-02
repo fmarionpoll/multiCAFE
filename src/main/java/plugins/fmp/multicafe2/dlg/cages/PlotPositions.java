@@ -31,7 +31,8 @@ public class PlotPositions extends JPanel implements SequenceListener
 	 * 
 	 */
 	private static final long serialVersionUID = -7079184380174992501L;
-	private ChartPositions ypositionsChart= null;
+	
+	private ChartPositions ypositionsChart	= null;
 	private ChartPositions distanceChart	= null;
 	private ChartPositions aliveChart		= null;
 	private ChartPositions sleepChart		= null;
@@ -40,9 +41,9 @@ public class PlotPositions extends JPanel implements SequenceListener
 	public 	JCheckBox	moveCheckbox		= new JCheckBox("y position", true);	
 	private JCheckBox	distanceCheckbox	= new JCheckBox("distance t/t+1", false);
 			JCheckBox	aliveCheckbox		= new JCheckBox("fly alive", true);
-			JCheckBox	sleepCheckbox		= new JCheckBox("sleep", true);
+			JCheckBox	sleepCheckbox		= new JCheckBox("sleep", false);
 			JSpinner 	aliveThresholdSpinner = new JSpinner(new SpinnerNumberModel(50.0, 0., 100000., .1));
-	public 	JButton 	displayResultsButton= new JButton("Display results");
+	public 	JButton 	displayResultsButton = new JButton("Display results");
 
 
 	
@@ -78,12 +79,12 @@ public class PlotPositions extends JPanel implements SequenceListener
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				xyDisplayGraphs();
+				displayGraphsPanels();
 				firePropertyChange("DISPLAY_RESULTS", false, true);
 			}});
 	}
 
-	private void xyDisplayGraphs() 
+	private void displayGraphsPanels() 
 	{
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null)
