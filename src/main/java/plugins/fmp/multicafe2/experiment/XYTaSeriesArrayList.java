@@ -61,12 +61,12 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	public void ensureCapacity(int nFrames) 
 	{
 		xytArrayList.ensureCapacity(nFrames);
-		initArray(nFrames);
+//		initArray(nFrames);
 	}
 	
 	void initArray(int nFrames) 
 	{
-		for (int i=0; i< nFrames; i++) {
+		for (int i = 0; i < nFrames; i++) {
 			XYTaValue value = new XYTaValue(i);
 			xytArrayList.add(value);
 		}
