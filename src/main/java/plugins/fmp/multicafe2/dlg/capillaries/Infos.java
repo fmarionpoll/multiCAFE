@@ -32,7 +32,7 @@ public class Infos extends JPanel
 	private JSpinner 			capillaryVolumeTextField	= new JSpinner(new SpinnerNumberModel(5., 0., 100., 1.));
 	private JSpinner 			capillaryPixelsTextField	= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
 	private JButton				getCapillaryLengthButton	= new JButton ("pixels 1rst capillary");
-	private JButton				editCapillariesButton		= new JButton("edit capillaries");
+	private JButton				editCapillariesButton		= new JButton("Edit capillaries infos...");
 	private MultiCAFE2 			parent0 					= null;
 	private InfosCapillaryTable infosCapillaryTable 		= null;
 	private List <Capillary> 	capillariesArrayCopy 		= new ArrayList<Capillary>();

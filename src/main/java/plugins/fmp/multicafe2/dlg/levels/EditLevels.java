@@ -31,7 +31,7 @@ import plugins.fmp.multicafe2.experiment.SequenceKymos;
 
 
 
-public class Edit  extends JPanel 
+public class EditLevels  extends JPanel 
 {
 	/**
 	 * 

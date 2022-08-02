@@ -25,13 +25,13 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 	private static final long serialVersionUID = 3457738144388946607L;
 	
 			BuildCages 		tabBuildCages	= new BuildCages();
-			Display			tabInfos		= new Display();
+			EditInfos			tabInfos		= new EditInfos();
 			Detect1 		tabDetect1 		= new Detect1();
 
 			DetectFromBackground tabDetect2 = new DetectFromBackground();
 			Edit			tabEdit			= new Edit();
 	public 	LoadSave 		tabFile 		= new LoadSave();
-	public 	CageGraphs 		tabGraphics 	= new CageGraphs();
+	public 	PlotPositions 		tabGraphics 	= new PlotPositions();
 	public	PopupPanel 		capPopupPanel	= null;
 			JTabbedPane 	tabsPane		= new JTabbedPane();
 			int				previouslySelected	= -1;

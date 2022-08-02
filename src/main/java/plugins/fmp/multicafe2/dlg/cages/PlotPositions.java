@@ -25,7 +25,7 @@ import plugins.fmp.multicafe2.tools.chart.ChartPositions;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
-public class CageGraphs extends JPanel implements SequenceListener
+public class PlotPositions extends JPanel implements SequenceListener
 {
 	/**
 	 * 

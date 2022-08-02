@@ -17,13 +17,13 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 
 
 
-public class Display  extends JPanel 
+public class EditInfos extends JPanel 
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3325915033686366985L;
-	private JButton				editCagesButton		= new JButton("edit cages infos");
+	private JButton				editCagesButton		= new JButton("Edit cages infos...");
 	private MultiCAFE2 			parent0 			= null;
 	private Table 				dialog 				= null;
 	private List <Cage> 		cagesArrayCopy 		= new ArrayList<Cage>();

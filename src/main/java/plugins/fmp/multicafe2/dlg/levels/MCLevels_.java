@@ -30,7 +30,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 			
 			//DetectLevelsKMeans tabDetectLevelsK = new DetectLevelsKMeans();
 			LevelsToGulps tabDetectGulps 	= new LevelsToGulps();
-			Edit		tabEdit			= new Edit();
+			EditLevels		tabEdit			= new EditLevels();
 			Adjust		tabAdjust		= new Adjust();
 	public 	PlotLevels 	tabGraphs 		= new PlotLevels();
 			MultiCAFE2	parent0 		= null;
