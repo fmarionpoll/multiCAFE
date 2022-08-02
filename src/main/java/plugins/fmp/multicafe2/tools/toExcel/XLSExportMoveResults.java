@@ -237,15 +237,15 @@ public class XLSExportMoveResults extends XLSExport
 				for (long fromTime = from_first_Ms; fromTime <= from_lastMs; fromTime += options.buildExcelStepMs) 
 				{					
 					int from_i = (int) ((fromTime - from_first_Ms) / options.buildExcelStepMs);
-					if (from_i >= results.xytList.size())
+					if (from_i >= results.xytArrayList.size())
 						break;
-					XYTaValue aVal = results.xytList.get(from_i);
+					XYTaValue aVal = results.xytArrayList.get(from_i);
 					int to_i = (int) ((fromTime - expAll.camFirstImage_ms) / options.buildExcelStepMs) ;
-					if (to_i >= row.xytList.size())
+					if (to_i >= row.xytArrayList.size())
 						break;
 					if (to_i < 0)
 						continue;
-					row.xytList.get(to_i).copy(aVal);
+					row.xytArrayList.get(to_i).copy(aVal);
 				}
 				
 			} 
@@ -257,14 +257,14 @@ public class XLSExportMoveResults extends XLSExport
 					int nvalues = to_nvalues;
 					if (posok != null) 
 					{
-						if (nvalues > row.xytList.size())
-							nvalues = row.xytList.size();
+						if (nvalues > row.xytArrayList.size())
+							nvalues = row.xytArrayList.size();
 						int tofirst = to_first_index;
 						int tolast = tofirst + nvalues;
-						if (tolast > row.xytList.size())
-							tolast = row.xytList.size();
+						if (tolast > row.xytArrayList.size())
+							tolast = row.xytArrayList.size();
 						for (int toi = tofirst; toi < tolast; toi++) 
-							row.xytList.get(toi).copy(posok);
+							row.xytArrayList.get(toi).copy(posok);
 					}
 				}
 			}
@@ -277,10 +277,10 @@ public class XLSExportMoveResults extends XLSExport
 		int index = getIndexOfFirstNonEmptyValueBackwards(row, transfer_first_index);
 		if (index >= 0) 
 		{
-			posok = row.xytList.get(index);
+			posok = row.xytArrayList.get(index);
 			for (int i=index+1; i< transfer_first_index; i++) 
 			{
-				XYTaValue pos = row.xytList.get(i);
+				XYTaValue pos = row.xytArrayList.get(i);
 				pos.copy(posok);
 				pos.bPadded = true;
 			}
@@ -293,7 +293,7 @@ public class XLSExportMoveResults extends XLSExport
 		int index = -1;
 		for (int i= fromindex; i>= 0; i--) 
 		{
-			XYTaValue pos = row.xytList.get(i);
+			XYTaValue pos = row.xytArrayList.get(i);
 			if (!Double.isNaN(pos.xyPoint.getX())) 
 			{
 				index = i;
@@ -366,12 +366,12 @@ public class XLSExportMoveResults extends XLSExport
 			for (long coltime= 0; coltime <= last; coltime+=options.buildExcelStepMs, pt.y++) 
 			{
 				int i_from = (int) (coltime  / options.buildExcelStepMs);
-				if (i_from >= row.xytList.size())
+				if (i_from >= row.xytArrayList.size())
 					break;
 				
 				double valueL = Double.NaN;
 				double valueR = Double.NaN;
-				XYTaValue pos = row.xytList.get(i_from);
+				XYTaValue pos = row.xytArrayList.get(i_from);
 				switch (row.exportType) 
 				{
 					case DISTANCE:

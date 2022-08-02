@@ -449,7 +449,7 @@ public class Cages
 	public void orderFlyPositions() 
 	{
 		for (Cage cage: cagesList) 
-			Collections.sort(cage.flyPositions.xytList, new Comparators.XYTaValue_Tindex_Comparator());
+			Collections.sort(cage.flyPositions.xytArrayList, new Comparators.XYTaValue_Tindex_Comparator());
 	}
 	
 	public void computeBooleanMasksForCages() 

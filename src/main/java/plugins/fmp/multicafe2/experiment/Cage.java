@@ -195,10 +195,10 @@ public class Cage
 	
 	public ROI2DPoint getRoiPointFromPositionAtT(int t) 
 	{
-		int nitems = flyPositions.xytList.size();
+		int nitems = flyPositions.xytArrayList.size();
 		if (nitems == 0 || t >= nitems)
 			return null;
-		XYTaValue aValue = flyPositions.xytList.get(t);
+		XYTaValue aValue = flyPositions.xytArrayList.get(t);
 		ROI2DPoint flyRoi = new ROI2DPoint(aValue.xyPoint.getX(), aValue.xyPoint.getY());
 		flyRoi.setName("det"+getCageNumber() +"_" + t );
 		flyRoi.setT( t );
@@ -215,7 +215,7 @@ public class Cage
 				continue;
 			Point2D point = ((ROI2DPoint) roi).getPoint();
 			int t = roi.getT();	
-			flyPositions.xytList.get(t).xyPoint = point;
+			flyPositions.xytArrayList.get(t).xyPoint = point;
 		}
 	}
 	

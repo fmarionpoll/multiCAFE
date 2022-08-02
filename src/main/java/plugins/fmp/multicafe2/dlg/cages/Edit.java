@@ -157,12 +157,12 @@ public class Edit extends JPanel
 		{
 			for (Cage cage: exp.cages.cagesList) 
 			{
-				if (frame >= cage.flyPositions.xytList.size())
+				if (frame >= cage.flyPositions.xytArrayList.size())
 					continue;
-				Point2D point = cage.flyPositions.xytList.get(frame).xyPoint;
+				Point2D point = cage.flyPositions.xytArrayList.get(frame).xyPoint;
 				if (point.getX() == -1 && point.getY() == -1 ) 
 				{
-					foundT = cage.flyPositions.xytList.get(frame).indexT;
+					foundT = cage.flyPositions.xytArrayList.get(frame).indexT;
 					foundCage = cage.getCageNumberInteger();
 					return true;
 				}
@@ -185,12 +185,12 @@ public class Edit extends JPanel
 		{
 			for (Cage cage: exp.cages.cagesList) 
 			{
-				if (frame >= cage.flyPositions.xytList.size())
+				if (frame >= cage.flyPositions.xytArrayList.size())
 					continue;
-				Point2D point = cage.flyPositions.xytList.get(frame).xyPoint;
+				Point2D point = cage.flyPositions.xytArrayList.get(frame).xyPoint;
 				if (point.getX() == -1 && point.getY() == -1 ) 
 				{
-					String name = "det"+cage.getCageNumber()+"_"+ cage.flyPositions.xytList.get(frame).indexT;
+					String name = "det"+cage.getCageNumber()+"_"+ cage.flyPositions.xytArrayList.get(frame).indexT;
 					foundCombo.addItem(name);
 				}
 			}
@@ -222,7 +222,7 @@ public class Edit extends JPanel
 		if (cageNumber >= 0) 
 		{
 			Cage cage = exp.cages.getCageFromNumber(cageNumber);
-			Point2D point = cage.flyPositions.xytList.get(frame).xyPoint;
+			Point2D point = cage.flyPositions.xytArrayList.get(frame).xyPoint;
 			if (point.getX() == -1 && point.getY() == -1 ) 
 			{
 				Rectangle rect = cage.cageRoi.getBounds();
