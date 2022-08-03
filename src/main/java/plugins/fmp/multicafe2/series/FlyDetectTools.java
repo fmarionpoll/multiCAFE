@@ -141,12 +141,12 @@ public class FlyDetectTools
 					ROI2DArea flyROI = new ROI2DArea(bestMask); 
 					Rectangle2D rect = flyROI.getBounds2D();
 					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-					cage.flyPositions.addPoint(t, flyPosition);
+					cage.flyPositions.addPoint(t, flyPosition, null);
 					listPoints.add(flyPosition);
 				}
 				else 
 				{
-					cage.flyPositions.addPoint(t, flyPositionMissed);
+					cage.flyPositions.addPoint(t, flyPositionMissed, null);
 				}
 			}}));
 		}
@@ -193,12 +193,12 @@ public class FlyDetectTools
 						ROI2DArea flyROI = new ROI2DArea(bestMask); 
 						Rectangle2D rect = flyROI.getBounds2D();
 						Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-						cage.flyPositions.addPoint(t, flyPosition);
+						cage.flyPositions.addPoint(t, flyPosition, null);
 						listPoints.add(flyPosition);
 					}
 					else 
 					{
-						cage.flyPositions.addPoint(t, flyPositionMissed);
+						cage.flyPositions.addPoint(t, flyPositionMissed, null);
 					}
 			}}));
 		}

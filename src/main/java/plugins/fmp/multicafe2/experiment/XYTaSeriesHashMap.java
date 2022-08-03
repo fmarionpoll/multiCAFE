@@ -1,6 +1,7 @@
 package plugins.fmp.multicafe2.experiment;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,12 +51,19 @@ public class XYTaSeriesHashMap implements XMLPersistent
 		this.exportType = exportType;
 		this.binsize = binsize;
 		xytList = new HashMap<Integer, XYTaValue>(nFrames);
+//		for (int i = 0; i< nFrames; i++) {
+//			xytList.put(i, new XYTaValue(i));
+//		}
 	}
 	
 	public void clear() 
 	{
 		xytList.clear();
 	}
+	
+//	public void ensureCapacity(int nFrames) {
+//		xytList.ensureCapacity(nFrames);
+//	}
 	
 	public Point2D getPoint(int i) 
 	{
@@ -82,9 +90,9 @@ public class XYTaSeriesHashMap implements XMLPersistent
 		return xytList.get(i).indexT;
 	}
 
-	public void add(int indexT, Point2D point) 
+	public void add(int indexT, Point2D point, Rectangle2D rectangle) 
 	{
-		XYTaValue pos = new XYTaValue(indexT, point);
+		XYTaValue pos = new XYTaValue(indexT, point, rectangle);
 		// TODO: test if put or replace?
 		xytList.put(indexT, pos);
 	}
