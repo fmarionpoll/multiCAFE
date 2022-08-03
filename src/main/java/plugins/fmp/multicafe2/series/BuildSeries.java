@@ -1,6 +1,6 @@
 package plugins.fmp.multicafe2.series;
 
-import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +20,7 @@ import icy.sequence.Sequence;
 import icy.system.thread.Processor;
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.kernel.roi.roi2d.ROI2DPoint;
+import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
 
 
@@ -201,14 +201,14 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 		return seq;
 	}
 
-	void addGreenROI2DPoints(Sequence seq, List<Point2D> listPoints, boolean eraseOldPoints) 
+	void addGreenROI2DPoints(Sequence seq, List<Rectangle2D> listRectangles, boolean eraseOldPoints) 
 	{
 		if (eraseOldPoints)
 				seq.removeAllROI();
 		
-		for (Point2D point: listPoints) 
+		for (Rectangle2D rectangle: listRectangles) 
  		{
-			ROI2DPoint flyPoint = new ROI2DPoint(point);
+			ROI2DRectangle flyPoint = new ROI2DRectangle(rectangle);
 			seq.addROI(flyPoint);
  		}
 	}

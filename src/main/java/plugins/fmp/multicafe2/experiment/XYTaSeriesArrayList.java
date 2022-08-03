@@ -97,7 +97,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		return xytArrayList.get(i).indexT;
 	}
 
-	public void addPoint (int frame, Point2D point, Rectangle2D rectangle) 
+	public void addPosition (int frame, Point2D point, Rectangle2D rectangle) 
 	{
 		XYTaValue pos = new XYTaValue(frame, point, rectangle);
 		xytArrayList.add(pos);

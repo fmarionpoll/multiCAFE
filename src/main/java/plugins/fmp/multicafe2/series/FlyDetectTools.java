@@ -105,7 +105,7 @@ public class FlyDetectTools
 		return new ROI2DArea( bmask );
 	}
 		
-	public List<Point2D> findFlies1(IcyBufferedImage workimage, int t) throws InterruptedException 
+	public List<Rectangle2D> findFlies1(IcyBufferedImage workimage, int t) throws InterruptedException 
 	{
 		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectFlies1");
@@ -115,7 +115,7 @@ public class FlyDetectTools
 		
 		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
-		List<Point2D> listPoints = new ArrayList<Point2D> (cages.cagesList.size());
+		List<Rectangle2D> listRectangles = new ArrayList<Rectangle2D> (cages.cagesList.size());
 		
 		for (Cage cage : cages.cagesList) 
  		{		
@@ -141,22 +141,22 @@ public class FlyDetectTools
 					ROI2DArea flyROI = new ROI2DArea(bestMask); 
 					Rectangle2D rect = flyROI.getBounds2D();
 					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-					cage.flyPositions.addPoint(t, flyPosition, null);
-					listPoints.add(flyPosition);
+					cage.flyPositions.addPosition(t, flyPosition, rect);
+					listRectangles.add(rect);
 				}
 				else 
 				{
-					cage.flyPositions.addPoint(t, flyPositionMissed, null);
+					cage.flyPositions.addPosition(t, flyPositionMissed, null);
 				}
 			}}));
 		}
  		
 		waitDetectCompletion(processor, futures, null);
 		processor.shutdown();
-		return listPoints;
+		return listRectangles;
 	}
 	
-	public List<Point2D> findFlies2(Sequence seq, IcyBufferedImage workimage, int t) throws InterruptedException 
+	public List<Rectangle2D> findFlies2(Sequence seq, IcyBufferedImage workimage, int t) throws InterruptedException 
 	{
 		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectFlies1");
@@ -166,7 +166,7 @@ public class FlyDetectTools
 		
 		ROI2DArea binarizedImageRoi = binarizeInvertedImage (workimage, options.threshold);
 		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
-		List<Point2D> listPoints = new ArrayList<Point2D> (cages.cagesList.size());
+		List<Rectangle2D> listRectangles = new ArrayList<Rectangle2D> (cages.cagesList.size());
 		
  		for (Cage cage: cages.cagesList) 
  		{		
@@ -193,18 +193,18 @@ public class FlyDetectTools
 						ROI2DArea flyROI = new ROI2DArea(bestMask); 
 						Rectangle2D rect = flyROI.getBounds2D();
 						Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-						cage.flyPositions.addPoint(t, flyPosition, null);
-						listPoints.add(flyPosition);
+						cage.flyPositions.addPosition(t, flyPosition, rect);
+						listRectangles.add(rect);
 					}
 					else 
 					{
-						cage.flyPositions.addPoint(t, flyPositionMissed, null);
+						cage.flyPositions.addPosition(t, flyPositionMissed, null);
 					}
 			}}));
 		}
  		waitDetectCompletion(processor, futures, null);
 		processor.shutdown();
-		return listPoints;
+		return listRectangles;
 	}
 	
 	public ROI2DArea binarizeInvertedImage(IcyBufferedImage img, int threshold) 

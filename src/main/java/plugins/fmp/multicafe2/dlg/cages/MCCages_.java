@@ -17,7 +17,7 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 
 
 
-public class MCCages_ extends JPanel implements PropertyChangeListener 
+public class MCCages_ extends JPanel implements PropertyChangeListener
 {
 	/**
 	 * 
@@ -25,13 +25,13 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 	private static final long serialVersionUID = 3457738144388946607L;
 	
 			BuildCages 		tabBuildCages	= new BuildCages();
-			EditInfos			tabInfos		= new EditInfos();
+			EditInfos		tabInfos		= new EditInfos();
 			Detect1 		tabDetect1 		= new Detect1();
 
 			DetectFromBackground tabDetect2 = new DetectFromBackground();
 			Edit			tabEdit			= new Edit();
 	public 	LoadSave 		tabFile 		= new LoadSave();
-	public 	PlotPositions 		tabGraphics 	= new PlotPositions();
+	public 	PlotPositions 	tabGraphics 	= new PlotPositions();
 	public	PopupPanel 		capPopupPanel	= null;
 			JTabbedPane 	tabsPane		= new JTabbedPane();
 			int				previouslySelected	= -1;
@@ -70,6 +70,8 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 	        public void stateChanged(ChangeEvent e) 
 			{
 	            int selectedIndex = tabsPane.getSelectedIndex();
+	            tabBuildCages.tabBuildCages2.overlayCheckBox.setSelected(selectedIndex == 0);
+	            	
 	            tabDetect1.overlayCheckBox.setSelected(selectedIndex == iTAB_DETECT1);
 	            if (selectedIndex == iTAB_DETECT1 || selectedIndex == iTAB_DETECT2) 
 	            {
@@ -147,7 +149,6 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 		tabFile.init(capLayout, parent0);
 		tabFile.addPropertyChangeListener(this);
 		tabsPane.addTab("Load/Save", null, tabFile, "Load/save cages and flies position");
-
 	}
 
 	@Override
@@ -158,7 +159,6 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 			tabBuildCages.tabBuildCages1.updateNColumnsFieldFromSequence();
 		}
 	}
-
 	
 	
 }

@@ -1,6 +1,6 @@
 package plugins.fmp.multicafe2.series;
 
-import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import icy.gui.frame.progress.ProgressFrame;
@@ -98,8 +98,8 @@ public class FlyDetect1 extends BuildSeries
 				seqNegative.beginUpdate();
 				seqNegative.setImage(0, 0, workImage);
 				vNegative.setTitle(title);
-				List<Point2D> listPoints = find_flies.findFlies1 (workImage, t_from);
-				addGreenROI2DPoints(seqNegative, listPoints, true);
+				List<Rectangle2D> listRectangles = find_flies.findFlies1 (workImage, t_from);
+				addGreenROI2DPoints(seqNegative, listRectangles, true);
 				seqNegative.endUpdate();
 			} 
 			catch (InterruptedException e) {
