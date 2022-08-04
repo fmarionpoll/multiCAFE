@@ -151,12 +151,13 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 	{
 		XLSExportOptions options = new XLSExportOptions();
 		options.xyImage 		= tabMove.xyCenterCheckBox.isSelected(); 
-		options.xyTopCage		= tabMove.xyCageCheckBox.isSelected();
-		options.xyTipCapillaries= tabMove.xyTipCapsCheckBox.isSelected();
+		options.xyCage			= tabMove.xyCageCheckBox.isSelected();
+		options.xyCapillaries	= tabMove.xyTipCapsCheckBox.isSelected();
 		options.distance 		= tabMove.distanceCheckBox.isSelected();
 		options.alive 			= tabMove.aliveCheckBox.isSelected(); 
 		options.onlyalive 		= tabMove.deadEmptyCheckBox.isSelected();
 		options.sleep			= tabMove.sleepCheckBox.isSelected();
+		options.rectSize		= tabMove.rectSizeCheckBox.isSelected();
 		getCommonOptions(options);
 		return options;
 	}

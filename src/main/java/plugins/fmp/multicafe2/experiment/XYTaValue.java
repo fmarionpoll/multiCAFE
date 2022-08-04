@@ -13,7 +13,7 @@ import icy.util.XMLUtil;
 public class XYTaValue implements XMLPersistent 
 {
 	public Point2D 	xyPoint 	= new Point2D.Double(Double.NaN, Double.NaN);
-	public Rectangle2D xyRectangle = new Rectangle2D.Double(Double.NaN,Double.NaN,Double.NaN,Double.NaN);
+	public Rectangle2D outerRectangle = new Rectangle2D.Double(Double.NaN,Double.NaN,Double.NaN,Double.NaN);
 	public int 		indexT 		= 0;
 	public boolean 	bAlive 		= false;
 	public boolean 	bSleep 		= false;
@@ -35,7 +35,7 @@ public class XYTaValue implements XMLPersistent
 		if (point != null)
 			this.xyPoint = point;
 		if (rectangle != null)
-			this.xyRectangle = rectangle;
+			this.outerRectangle = rectangle;
 		this.indexT = indexT;
 	}
 	
@@ -44,7 +44,7 @@ public class XYTaValue implements XMLPersistent
 		if (point != null)
 			this.xyPoint = point;
 		if (rectangle != null)
-			this.xyRectangle = rectangle;
+			this.outerRectangle = rectangle;
 		this.indexT = indexT;
 		this.bAlive = alive;
 	}
@@ -57,7 +57,7 @@ public class XYTaValue implements XMLPersistent
 		bSleep = aVal.bSleep;
 		bPadded = aVal.bPadded;
 		distance = aVal.distance;
-		xyRectangle = (Rectangle2D) aVal.xyRectangle.clone();
+		outerRectangle = (Rectangle2D) aVal.outerRectangle.clone();
 	}
 	
 	@Override
@@ -75,7 +75,7 @@ public class XYTaValue implements XMLPersistent
 		double yR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "yR", Double.NaN);
 		double wR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "wR", Double.NaN);
 		double hR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "hR", Double.NaN);
-		xyRectangle.setRect(xR, yR, wR, hR);
+		outerRectangle.setRect(xR, yR, wR, hR);
 		
 		indexT =  XMLUtil.getAttributeIntValue(node_XYTa, "t", 0);
 		bAlive = XMLUtil.getAttributeBooleanValue(node_XYTa, "a", false);
@@ -95,11 +95,11 @@ public class XYTaValue implements XMLPersistent
 			XMLUtil.setAttributeDoubleValue(node_XYTa, "y", xyPoint.getY());
 		}
 		
-		if (!Double.isNaN(xyRectangle.getX())) {
-			XMLUtil.setAttributeDoubleValue(node_XYTa, "xR", xyRectangle.getX());
-			XMLUtil.setAttributeDoubleValue(node_XYTa, "yR", xyRectangle.getY());
-			XMLUtil.setAttributeDoubleValue(node_XYTa, "wR", xyRectangle.getWidth());
-			XMLUtil.setAttributeDoubleValue(node_XYTa, "hR", xyRectangle.getHeight());
+		if (!Double.isNaN(outerRectangle.getX())) {
+			XMLUtil.setAttributeDoubleValue(node_XYTa, "xR", outerRectangle.getX());
+			XMLUtil.setAttributeDoubleValue(node_XYTa, "yR", outerRectangle.getY());
+			XMLUtil.setAttributeDoubleValue(node_XYTa, "wR", outerRectangle.getWidth());
+			XMLUtil.setAttributeDoubleValue(node_XYTa, "hR", outerRectangle.getHeight());
 		}
 		
 		XMLUtil.setAttributeIntValue(node_XYTa, "t", indexT);

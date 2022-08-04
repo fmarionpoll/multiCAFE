@@ -59,10 +59,12 @@ public class XLSExportMoveResults extends XLSExport
 				
 				if (options.xyImage)		
 					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.XYIMAGE);
-				if (options.xyTopCage) 		
+				if (options.xyCage) 		
 					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTOPCAGE);
-				if (options.xyTipCapillaries)  	
+				if (options.xyCapillaries)  	
 					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTIPCAPS);
+				if (options.rectSize)
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.RECTSIZE);
 				if (options.distance)  	
 					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.DISTANCE);
 				if (options.alive)	
@@ -169,6 +171,7 @@ public class XLSExportMoveResults extends XLSExport
 							results.computeSleep(cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
 							break;
 						case XYTOPCAGE:
+						case RECTSIZE:
 							results.computeNewPointsOrigin(cage.getCenterTopCage(), cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
 							break;
 						case XYTIPCAPS:
@@ -363,7 +366,7 @@ public class XLSExportMoveResults extends XLSExport
 			long last = expAll.camLastImage_Ms - expAll.camFirstImage_ms;
 			if (options.fixedIntervals)
 				last = options.endAll_Ms-options.startAll_Ms;
-			for (long coltime= 0; coltime <= last; coltime+=options.buildExcelStepMs, pt.y++) 
+			for (long coltime = 0; coltime <= last; coltime+=options.buildExcelStepMs, pt.y++) 
 			{
 				int i_from = (int) (coltime  / options.buildExcelStepMs);
 				if (i_from >= row.xytArrayList.size())
@@ -391,6 +394,15 @@ public class XLSExportMoveResults extends XLSExport
 					case XYIMAGE:
 						valueL = pos.xyPoint.getX();
 						valueR = pos.xyPoint.getY();
+						break;
+					case RECTSIZE:
+						valueL = pos.outerRectangle.getWidth();
+						valueR = pos.outerRectangle.getHeight();
+						if (valueL < valueR) {
+							valueL = valueR;
+							valueR = pos.outerRectangle.getWidth();
+						}
+						break;
 					default:
 						break;
 				}
@@ -410,7 +422,7 @@ public class XLSExportMoveResults extends XLSExport
 					pt.x--;
 				}
 			}
-			pt.x+=2;
+			pt.x += 2;
 		}
 	}
 	

@@ -26,6 +26,7 @@ public enum EnumXLSExportType
 	XYIMAGE ("xy-image", "pixels"), 
 	XYTOPCAGE ("xy-topcage", "pixels"), 
 	XYTIPCAPS ("xy-tipcaps", "pixels"), 
+	RECTSIZE ("rect-size", "pixels"),
 	DISTANCE ("distance", "pixels"), 
 	ISALIVE ("_alive", "yes/no"), 
 	SLEEP ("sleep", "yes, no");

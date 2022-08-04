@@ -448,8 +448,14 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		if (newpixelSize == pixelsize)
 			return;
 		double ratio = 1/pixelsize*newpixelSize;
-		for (XYTaValue pos : xytArrayList) 
+		for (XYTaValue pos : xytArrayList) {
 			pos.xyPoint.setLocation(pos.xyPoint.getX()*ratio, pos.xyPoint.getY()*ratio);
+			pos.outerRectangle.setRect(
+					pos.outerRectangle.getX()*ratio, 
+					pos.outerRectangle.getY()*ratio, 
+					pos.outerRectangle.getWidth()*ratio, 
+					pos.outerRectangle.getHeight()*ratio);
+		}
 		pixelsize = newpixelSize;
 		origin.setLocation(origin.getX()*ratio, origin.getY()*ratio);
 	}

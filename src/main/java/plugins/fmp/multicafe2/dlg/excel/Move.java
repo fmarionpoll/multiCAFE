@@ -20,11 +20,12 @@ public class Move  extends JPanel
 	private static final long serialVersionUID = 1290058998782225526L;
 
 	JCheckBox 	xyCenterCheckBox 	= new JCheckBox("XY vs image", false);
-	JCheckBox 	xyCageCheckBox 		= new JCheckBox("XY vs top cage", true);
-	JCheckBox 	xyTipCapsCheckBox 	= new JCheckBox("XY vs tip capillaries", false);
+	JCheckBox 	xyCageCheckBox 		= new JCheckBox("XY vs cage", true);
+	JCheckBox 	xyTipCapsCheckBox 	= new JCheckBox("XY vs capillary", false);
 	JCheckBox 	distanceCheckBox 	= new JCheckBox("distance", true);
 	JCheckBox 	aliveCheckBox 		= new JCheckBox("alive", true);
 	JCheckBox 	sleepCheckBox 		= new JCheckBox("sleep", true);
+	JCheckBox 	rectSizeCheckBox 	= new JCheckBox("rect size", false);
 	
 	JButton 	exportToXLSButton 	= new JButton("save XLS");
 	JCheckBox	deadEmptyCheckBox   = new JCheckBox("dead=empty");	
@@ -39,12 +40,12 @@ public class Move  extends JPanel
 		panel0.add(xyCenterCheckBox);
 		panel0.add(xyCageCheckBox);
 		panel0.add(xyTipCapsCheckBox);
-		panel0.add(distanceCheckBox);
-		panel0.add(sleepCheckBox);
+		panel0.add(rectSizeCheckBox);
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout1);
-		panel1.add(aliveCheckBox);
+		panel1.add(distanceCheckBox);
+		panel1.add(sleepCheckBox);panel1.add(aliveCheckBox);
 		panel1.add(deadEmptyCheckBox);
 		add(panel1);
 		
