@@ -12,7 +12,6 @@ import icy.util.XMLUtil;
 
 public class XYTaValue implements XMLPersistent 
 {
-//	public Point2D 	xyPoint 	= new Point2D.Double(Double.NaN, Double.NaN);
 	public Rectangle2D rectBounds = new Rectangle2D.Double(Double.NaN,Double.NaN,Double.NaN,Double.NaN);
 	public int 		indexT 		= 0;
 	public boolean 	bAlive 		= false;
@@ -32,8 +31,6 @@ public class XYTaValue implements XMLPersistent
 	
 	public XYTaValue(int indexT, Point2D point, Rectangle2D rectangle) 
 	{
-//		if (point != null)
-//			this.xyPoint = point;
 		if (rectangle != null)
 			this.rectBounds = rectangle;
 		this.indexT = indexT;
@@ -41,8 +38,6 @@ public class XYTaValue implements XMLPersistent
 	
 	public XYTaValue(int indexT, Point2D point, Rectangle2D rectangle, boolean alive) 
 	{
-//		if (point != null)
-//			this.xyPoint = point;
 		if (rectangle != null)
 			this.rectBounds = rectangle;
 		this.indexT = indexT;
@@ -51,7 +46,6 @@ public class XYTaValue implements XMLPersistent
 	
 	public void copy (XYTaValue aVal) 
 	{
-//		xyPoint = (Point2D) aVal.xyPoint.clone();
 		indexT = aVal.indexT;
 		bAlive = aVal.bAlive;
 		bSleep = aVal.bSleep;
@@ -98,11 +92,6 @@ public class XYTaValue implements XMLPersistent
 		if (node == null)
 			return false;		
 		Element node_XYTa = XMLUtil.addElement(node, "XYTa");
-		
-//		if (!Double.isNaN(xyPoint.getX())) {
-//			XMLUtil.setAttributeDoubleValue(node_XYTa, "x", xyPoint.getX());
-//			XMLUtil.setAttributeDoubleValue(node_XYTa, "y", xyPoint.getY());
-//		}
 		
 		if (!Double.isNaN(rectBounds.getX())) {
 			XMLUtil.setAttributeDoubleValue(node_XYTa, "xR", rectBounds.getX());

@@ -102,7 +102,7 @@ public class BuildBackground extends BuildSeries
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		flyDetectTools.initParametersForDetection(exp, options);
 
-		transformOptions.referenceImage  = IcyBufferedImageUtil.getCopy(exp.seqCamData.getSeqImage(options.backgroundFirst, 0));
+		transformOptions.referenceImage  = imageIORead(exp.seqCamData.getFileName(options.backgroundFirst));
 
 		long first_ms = exp.cages.detectFirst_Ms + (options.backgroundFirst * exp.camBinImage_ms);
 		final int t_first = (int) ((first_ms - exp.cages.detectFirst_Ms)/exp.camBinImage_ms);
@@ -111,7 +111,7 @@ public class BuildBackground extends BuildSeries
 		if (t_last > exp.seqCamData.nTotalFrames)
 			t_last = exp.seqCamData.nTotalFrames;
 
-		for (int t = t_first ; t <= t_last && !stopFlag; t ++) 
+		for (int t = t_first + 1; t <= t_last && !stopFlag; t ++) 
 		{
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
 			seqData.setImage(0, 0, currentImage);

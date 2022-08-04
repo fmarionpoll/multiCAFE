@@ -167,7 +167,8 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 			return;
 		if (ov == null) {
 			ov = new OverlayThreshold(seqCamData);
-			exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getSeqImage(0, 0));
+			int t = exp.seqCamData.currentFrame;
+			exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getSeqImage(t, 0));
 		}
 		else 
 		{
@@ -176,6 +177,7 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 		}
 		ov.setReferenceImage(exp.seqCamData.refImage);
 		seqCamData.seq.addOverlay(ov);	
+		
 		boolean ifGreater = true; 
 		EnumImageTransformations transformOp = EnumImageTransformations.SUBTRACT; //SUBTRACT_REF;
 		ov.setThresholdSingle(threshold, transformOp, ifGreater);
