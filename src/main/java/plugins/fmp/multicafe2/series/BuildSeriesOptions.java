@@ -65,7 +65,10 @@ public class BuildSeriesOptions implements XMLPersistent
 	public boolean		buildDerivative			= true;
 
 	public int 			threshold 				= -1;
-	public int			thresholdBckgnd			= 40;
+	public int			backgroundThreshold		= 40;
+	public int			backgroundNFrames		= 60;
+	public int			backgroundFirst			= 0;
+	
 	public int			thresholdDiff			= 100;
 	public boolean 		btrackWhite 			= false;
 	public boolean  	blimitLow 				= false;
@@ -114,7 +117,7 @@ public class BuildSeriesOptions implements XMLPersistent
 	public void copyParameters (BuildSeriesOptions det) 
 	{
 		threshold = det.threshold;
-		thresholdBckgnd			= det.thresholdBckgnd;
+		backgroundThreshold			= det.backgroundThreshold;
 		thresholdDiff			= det.thresholdDiff;
 		btrackWhite 			= det.btrackWhite;
 		blimitLow 				= det.blimitLow;

@@ -87,7 +87,7 @@ public class BuildBackground extends BuildSeries
 		try {
 			ImageTransformOptions transformOptions = new ImageTransformOptions();
 			transformOptions.transformOption = EnumImageTransformations.SUBTRACT; 
-			transformOptions.setSingleThreshold(options.threshold, stopFlag);
+			transformOptions.setSingleThreshold(options.backgroundThreshold, stopFlag);
 			buildBackgroundImage(exp, transformOptions);
 			exp.saveReferenceImage(seqReference.getFirstImage());
 			
@@ -102,24 +102,17 @@ public class BuildBackground extends BuildSeries
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		flyDetectTools.initParametersForDetection(exp, options);
 
-		int t_from = (int) ((exp.cages.detectFirst_Ms - exp.camFirstImage_ms)/exp.camBinImage_ms);
-		long limit = 50 ;
-		if (limit > exp.seqCamData.nTotalFrames)
-			limit = exp.seqCamData.nTotalFrames;
-		limit = limit * exp.cages.detectBin_Ms +exp.cages.detectFirst_Ms ;
+		transformOptions.referenceImage  = IcyBufferedImageUtil.getCopy(exp.seqCamData.getSeqImage(options.backgroundFirst, 0));
+
+		long first_ms = exp.cages.detectFirst_Ms + (options.backgroundFirst * exp.camBinImage_ms);
+		final int t_first = (int) ((first_ms - exp.cages.detectFirst_Ms)/exp.camBinImage_ms);
 		
-		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.getSeqImage(t_from, 0));
-		transformOptions.referenceImage = exp.seqCamData.refImage;
+		int t_last = options.backgroundFirst + options.backgroundNFrames;
+		if (t_last > exp.seqCamData.nTotalFrames)
+			t_last = exp.seqCamData.nTotalFrames;
 
-		long first_ms = exp.cages.detectFirst_Ms + exp.cages.detectBin_Ms;
-		int t0 = (int) ((first_ms - exp.cages.detectFirst_Ms)/exp.camBinImage_ms);
-
-		for (long indexms = first_ms ; indexms <= limit && !stopFlag; indexms += exp.cages.detectBin_Ms) 
+		for (int t = t_first ; t <= t_last && !stopFlag; t ++) 
 		{
-			int t = (int) ((indexms - exp.cages.detectFirst_Ms)/exp.camBinImage_ms);
-			if (t == t0)
-				continue;
-			
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
 			seqData.setImage(0, 0, currentImage);
 			
@@ -127,7 +120,7 @@ public class BuildBackground extends BuildSeries
 			seqReference.setImage(0, 0, transformOptions.referenceImage);
 			
 //			System.out.println("t= "+t+ " n pixels changed=" + transformOptions.npixels_changed);
-			if (transformOptions.npixels_changed < 10 && t > 0 ) 
+			if (transformOptions.npixels_changed < 10 ) 
 				break;
 		}
 		exp.seqCamData.refImage = IcyBufferedImageUtil.getCopy(seqReference.getFirstImage());

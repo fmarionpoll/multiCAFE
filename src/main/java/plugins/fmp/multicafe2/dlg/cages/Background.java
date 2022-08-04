@@ -40,8 +40,8 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 	private String 		detectString 			= "Build background...";
 	private JButton 	startComputationButton 	= new JButton(detectString);
 
-	private JSpinner 	thresholdBckgSpinner	= new JSpinner(new SpinnerNumberModel(40, 0, 255, 1));
-
+	private JSpinner 	backgroundThresholdSpinner	= new JSpinner(new SpinnerNumberModel(40, 0, 255, 1));
+	private JSpinner 	backgroundNFramesSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 1));
 
 	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
 	private JButton 	loadButton 				= new JButton("Load...");
@@ -49,7 +49,7 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
 
 
-	private BuildBackground flyDetect3 				= null;
+	private BuildBackground buildBackground 	= null;
 	private OverlayThreshold ov 				= null;
 	
 	// ----------------------------------------------------
@@ -68,8 +68,11 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 		add(panel1);
 		
 		JPanel panel2 = new JPanel(flowLayout);
-		panel2.add(new JLabel("threshold for background "));
-		panel2.add(thresholdBckgSpinner);
+		panel2.add(new JLabel("threshold "));
+		panel2.add(backgroundThresholdSpinner);
+		panel2.add(new JLabel("over n frames "));
+		panel2.add(backgroundNFramesSpinner);
+		
 		panel2.add(viewsCheckBox);
 		panel2.validate();
 		add(panel2);
@@ -81,7 +84,7 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 		
 		defineActionListeners();
 
-		thresholdBckgSpinner.addChangeListener(this);
+		backgroundThresholdSpinner.addChangeListener(this);
 	}
 	
 	private void defineActionListeners() 
@@ -109,22 +112,7 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 		{
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null) 
-				{ 
-					boolean flag = exp.loadReferenceImage(); 
-					if (flag) 
-					{
-						Viewer v = new Viewer(exp.seqReference, true);
-						Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBoundsInternal();
-						v.setBounds(rectv);
-					} 
-					else 
-					{
-						 MessageDialog.showDialog("Reference file not found on disk",
-	                                MessageDialog.ERROR_MESSAGE);
-					}
-				}
+				loadBackground();
 			}});
 		
 		allCheckBox.addActionListener(new ActionListener () 
@@ -142,13 +130,32 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 	@Override
 	public void stateChanged(ChangeEvent e) 
 	{
-		if (e.getSource() == thresholdBckgSpinner) 
+		if (e.getSource() == backgroundThresholdSpinner) 
 		{
 			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 			if (exp != null) 
 			{
-				int threshold = (int) thresholdBckgSpinner.getValue();
+				int threshold = (int) backgroundThresholdSpinner.getValue();
 				updateOverlay(exp, threshold);
+			}
+		}
+	}
+	
+	void loadBackground() {
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		if (exp != null) 
+		{ 
+			boolean flag = exp.loadReferenceImage(); 
+			if (flag) 
+			{
+				Viewer v = new Viewer(exp.seqReference, true);
+				Rectangle rectv = exp.seqCamData.seq.getFirstViewer().getBoundsInternal();
+				v.setBounds(rectv);
+			} 
+			else 
+			{
+				 MessageDialog.showDialog("Reference file not found on disk",
+                            MessageDialog.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -177,7 +184,7 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 	
 	private BuildSeriesOptions initTrackParameters() 
 	{
-		BuildSeriesOptions options = flyDetect3.options;
+		BuildSeriesOptions options = buildBackground.options;
 		options.expList 		= parent0.expListCombo;	
 		options.expList.index0 	= parent0.expListCombo.getSelectedIndex();
 		if (allCheckBox.isSelected())
@@ -187,7 +194,11 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 		parent0.paneKymos.tabDisplay.indexImagesCombo = parent0.paneKymos.tabDisplay.kymographsCombo.getSelectedIndex();
 		
 		options.btrackWhite 	= true;
-		options.thresholdBckgnd	= (int) thresholdBckgSpinner.getValue();		
+		options.backgroundThreshold	= (int) backgroundThresholdSpinner.getValue();		
+		options.backgroundNFrames = (int) backgroundNFramesSpinner.getValue();	
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		options.backgroundFirst = (int) exp.seqCamData.currentFrame;
+		
 		options.forceBuildBackground = true;
 		options.detectFlies		= false;
 		
@@ -209,19 +220,19 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 			return;
 		parent0.paneExperiment.panelLoadSave.closeViewsForCurrentExperiment(exp);
 		
-		flyDetect3 = new BuildBackground();		
-		flyDetect3.options = initTrackParameters();
-		flyDetect3.stopFlag = false;
+		buildBackground = new BuildBackground();		
+		buildBackground.options = initTrackParameters();
+		buildBackground.stopFlag = false;
 
-		flyDetect3.addPropertyChangeListener(this);
-		flyDetect3.execute();
+		buildBackground.addPropertyChangeListener(this);
+		buildBackground.execute();
 		startComputationButton.setText("STOP");
 	}
 	
 	private void stopComputation() 
 	{	
-		if (flyDetect3 != null && !flyDetect3.stopFlag) 
-			flyDetect3.stopFlag = true;
+		if (buildBackground != null && !buildBackground.stopFlag) 
+			buildBackground.stopFlag = true;
 	}
 
 	@Override
@@ -232,6 +243,7 @@ public class Background extends JPanel implements ChangeListener, PropertyChange
 			startComputationButton.setText(detectString);
 			parent0.paneKymos.tabDisplay.selectKymographImage(parent0.paneKymos.tabDisplay.indexImagesCombo);
 			parent0.paneKymos.tabDisplay.indexImagesCombo = -1;
+			loadBackground();
 		 }
 	}
 
