@@ -297,7 +297,7 @@ public class XLSExportMoveResults extends XLSExport
 		for (int i= fromindex; i>= 0; i--) 
 		{
 			XYTaValue pos = row.xytArrayList.get(i);
-			if (!Double.isNaN(pos.xyPoint.getX())) 
+			if (!Double.isNaN(pos.rectBounds.getX())) 
 			{
 				index = i;
 				break;
@@ -392,15 +392,15 @@ public class XLSExportMoveResults extends XLSExport
 					case XYTOPCAGE:
 					case XYTIPCAPS:
 					case XYIMAGE:
-						valueL = pos.xyPoint.getX();
-						valueR = pos.xyPoint.getY();
+						valueL = pos.rectBounds.getX() + pos.rectBounds.getWidth()/2.;
+						valueR = pos.rectBounds.getY() + pos.rectBounds.getHeight()/2.;
 						break;
 					case RECTSIZE:
-						valueL = pos.outerRectangle.getWidth();
-						valueR = pos.outerRectangle.getHeight();
+						valueL = pos.rectBounds.getWidth();
+						valueR = pos.rectBounds.getHeight();
 						if (valueL < valueR) {
 							valueL = valueR;
-							valueR = pos.outerRectangle.getWidth();
+							valueR = pos.rectBounds.getWidth();
 						}
 						break;
 					default:

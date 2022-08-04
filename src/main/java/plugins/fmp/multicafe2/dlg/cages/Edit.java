@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -159,8 +160,8 @@ public class Edit extends JPanel
 			{
 				if (frame >= cage.flyPositions.xytArrayList.size())
 					continue;
-				Point2D point = cage.flyPositions.xytArrayList.get(frame).xyPoint;
-				if (point.getX() == -1 && point.getY() == -1 ) 
+				Rectangle2D rect = cage.flyPositions.xytArrayList.get(frame).rectBounds;
+				if (rect.getX() == -1 && rect.getY() == -1 ) 
 				{
 					foundT = cage.flyPositions.xytArrayList.get(frame).indexT;
 					foundCage = cage.getCageNumberInteger();
@@ -187,8 +188,8 @@ public class Edit extends JPanel
 			{
 				if (frame >= cage.flyPositions.xytArrayList.size())
 					continue;
-				Point2D point = cage.flyPositions.xytArrayList.get(frame).xyPoint;
-				if (point.getX() == -1 && point.getY() == -1 ) 
+				Rectangle2D rect = cage.flyPositions.xytArrayList.get(frame).rectBounds;
+				if (rect.getX() == -1 && rect.getY() == -1 ) 
 				{
 					String name = "det"+cage.getCageNumber()+"_"+ cage.flyPositions.xytArrayList.get(frame).indexT;
 					foundCombo.addItem(name);
@@ -222,8 +223,8 @@ public class Edit extends JPanel
 		if (cageNumber >= 0) 
 		{
 			Cage cage = exp.cages.getCageFromNumber(cageNumber);
-			Point2D point = cage.flyPositions.xytArrayList.get(frame).xyPoint;
-			if (point.getX() == -1 && point.getY() == -1 ) 
+			Rectangle2D rect0 = cage.flyPositions.xytArrayList.get(frame).rectBounds;
+			if (rect0.getX() == -1 && rect0.getY() == -1 ) 
 			{
 				Rectangle rect = cage.cageRoi.getBounds();
 				Point2D point2 = new Point2D.Double(rect.x+rect.width/2, rect.y+rect.height/2);

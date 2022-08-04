@@ -3,7 +3,7 @@ package plugins.fmp.multicafe2.tools.chart;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,10 +107,11 @@ public class ChartPositions extends IcyFrame
 			switch (option) 
 			{
 			case DISTANCE:
-				double previousY = positionxyt.xytArrayList.get(0).xyPoint.getY();
+				double previousY = positionxyt.xytArrayList.get(0).rectBounds.getY() + positionxyt.xytArrayList.get(0).rectBounds.getHeight()/2;
+				
 				for ( int it = 0; it < itmax;  it++) 
 				{
-					double currentY = positionxyt.xytArrayList.get(it).xyPoint.getY();
+					double currentY = positionxyt.xytArrayList.get(it).rectBounds.getY() + positionxyt.xytArrayList.get(it).rectBounds.getHeight()/2;
 					double ypos = currentY - previousY;
 					addxyPos(seriesXY, positionxyt, it, ypos);
 					previousY = currentY;
@@ -145,8 +146,8 @@ public class ChartPositions extends IcyFrame
 				double yOrigin = rect1.getY()+rect1.getHeight();	
 				for ( int it = 0; it < itmax;  it++) 
 				{
-					Point2D point = positionxyt.xytArrayList.get(it).xyPoint;
-					double ypos = yOrigin - point.getY();
+					Rectangle2D itRect = positionxyt.xytArrayList.get(it).rectBounds;
+					double ypos = yOrigin - itRect.getY();
 					addxyPos(seriesXY, positionxyt, it, ypos);
 				}
 				yMaxMin = new MaxMinDouble(0., rect1.height * 1.2);

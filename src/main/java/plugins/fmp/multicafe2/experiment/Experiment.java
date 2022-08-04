@@ -935,7 +935,8 @@ public class Experiment
 		    if (roi.getName().contains("det") ) 
 		    	seqCamData.seq.removeROI(roi);
 		}
-		seqCamData.seq.addROIs(cages.getPositionsAtT(t), false);
+		seqCamData.seq.addROIs(cages.getPositionsAsListOfROI2DPointsAtT(t), false);
+		seqCamData.seq.addROIs(cages.getPositionsAsListOfROI2DRectanglesAtT(t), false);
 		seqCamData.seq.endUpdate();
 	}
 		

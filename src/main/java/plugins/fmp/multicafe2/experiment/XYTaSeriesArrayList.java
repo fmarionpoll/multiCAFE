@@ -73,23 +73,23 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		}
 	}
 	
-	public Point2D getPoint(int i) 
+	public Rectangle2D getRectangle(int i) 
 	{
-		return xytArrayList.get(i).xyPoint;
+		return xytArrayList.get(i).rectBounds;
 	}
 	
-	public Point2D getValidPointAtOrBefore(int index) 
+	public Rectangle2D getValidPointAtOrBefore(int index) 
 	{
-		Point2D point = new Point2D.Double(-1, -1);
+		Rectangle2D rect = new Rectangle2D.Double(-1, -1, Double.NaN, Double.NaN);
 		for (int i = index; i>= 0; i--) 
 		{
 			XYTaValue xyVal = xytArrayList.get(i);
-			if (xyVal.xyPoint.getX() >= 0 && xyVal.xyPoint.getY() >= 0) {
-				point = xyVal.xyPoint;
+			if (xyVal.rectBounds.getX() >= 0 && xyVal.rectBounds.getY() >= 0) {
+				rect = xyVal.rectBounds;
 				break;
 			}	
 		}
-		return point;
+		return rect;
 	}
 	
 	public int getTime(int i) 
@@ -226,14 +226,14 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	{
 		if (xytArrayList.size() > 0) 
 		{
-			Point2D previous = new Point2D.Double();
-			previous = xytArrayList.get(0).xyPoint;
+			Point2D previousPoint = getCenterRectangle(xytArrayList.get(0));
 			for (XYTaValue pos: xytArrayList) 
 			{
-				pos.distance = pos.xyPoint.distance(previous);
-				if (previous.getX() < 0 || pos.xyPoint.getX() < 0)
+				Point2D currentPoint = getCenterRectangle(pos);
+				pos.distance = currentPoint.distance(previousPoint);
+				if (previousPoint.getX() < 0 || currentPoint.getX() < 0)
 					pos.distance = Double.NaN;
-				previous = pos.xyPoint;
+				previousPoint = currentPoint;
 			}
 		}
 	}
@@ -246,18 +246,19 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		{
 			int it_start = 0;
 			int it_end = flyPositions.xytArrayList.size() * stepMs;
-			Point2D previous = new Point2D.Double();
-			previous = xytArrayList.get(it_start).xyPoint;
+			Point2D previousPoint = getCenterRectangle(xytArrayList.get(it_start));
+			
 			int it_out = 0;
 			for (int it = it_start; it < it_end && it_out < xytArrayList.size(); it += buildExcelStepMs, it_out++) 
 			{
 				XYTaValue pos = xytArrayList.get(it_out);
+				Point2D currentPoint = getCenterRectangle(pos);
 				int index = it/stepMs;
 				pos.copy(flyPositions.xytArrayList.get(index));
-				pos.distance = pos.xyPoint.distance(previous);
-				if (previous.getX() < 0 || pos.xyPoint.getX() < 0)
+				pos.distance = currentPoint.distance(previousPoint);
+				if (previousPoint.getX() < 0 || currentPoint.getX() < 0)
 					pos.distance = Double.NaN;
-				previous = pos.xyPoint;
+				previousPoint = currentPoint;
 			}
 		}
 	}
@@ -306,7 +307,8 @@ public class XYTaSeriesArrayList implements XMLPersistent
 			XYTaValue pos_from = flyPositions.xytArrayList.get(index);
 			XYTaValue pos_to = xytArrayList.get(it_out);
 			pos_to.copy(pos_from);
-			pos_to.xyPoint.setLocation( pos_to.xyPoint.getX()-deltaX, pos_to.xyPoint.getY()-deltaY);
+			pos_to.rectBounds.setRect( pos_to.rectBounds.getX()-deltaX, pos_to.rectBounds.getY()-deltaY,
+					pos_to.rectBounds.getWidth(), pos_to.rectBounds.getHeight());
 		}
 	}
 	
@@ -344,14 +346,12 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		return xytArrayList.get(1).indexT - xytArrayList.get(0).indexT;
 	}
 	
-	public Point2D getPointAt (int timeIndex) 
-	{
-		if (xytArrayList.size() < 1)
-			return null;	
-		int index = timeIndex / getTimeBinSize();
-		return xytArrayList.get(index).xyPoint;
+	Point2D getCenterRectangle(XYTaValue value) {
+		return new Point2D.Double (
+				value.rectBounds.getX() + value.rectBounds.getWidth()/2,
+				value.rectBounds.getY() + value.rectBounds.getHeight()/2);
 	}
-		
+	
 	public Double getDistanceBetween2Points(int firstTimeIndex, int secondTimeIndex) 
 	{
 		if (xytArrayList.size() < 2)
@@ -362,9 +362,11 @@ public class XYTaSeriesArrayList implements XMLPersistent
 			return Double.NaN;
 		XYTaValue pos1 = xytArrayList.get(firstIndex);
 		XYTaValue pos2 = xytArrayList.get(secondIndex);
-		if (pos1.xyPoint.getX() < 0 || pos2.xyPoint.getX()  < 0)
+		if (pos1.rectBounds.getX() < 0 || pos2.rectBounds.getX()  < 0)
 			return Double.NaN;
-		Double distance = pos2.xyPoint.distance(pos1.xyPoint); 
+		Point2D point1 = getCenterRectangle(pos1);
+		Point2D point2 = getCenterRectangle(pos2);
+		Double distance = point2.distance(point1); 
 		return distance;
 	}
 	
@@ -439,8 +441,13 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		double deltaY = newOrigin.getY() - origin.getY();
 		if (deltaX == 0 && deltaY == 0)
 			return;
-		for (XYTaValue pos : xytArrayList) 
-			pos.xyPoint.setLocation(pos.xyPoint.getX()-deltaX, pos.xyPoint.getY()-deltaY);
+		for (XYTaValue pos : xytArrayList) {
+			pos.rectBounds.setRect(
+					pos.rectBounds.getX()-deltaX, 
+					pos.rectBounds.getY()-deltaY, 
+					pos.rectBounds.getWidth(), 
+					pos.rectBounds.getHeight());
+		}
 	}
 	
 	public void changePixelSize(double newpixelSize) 
@@ -449,12 +456,11 @@ public class XYTaSeriesArrayList implements XMLPersistent
 			return;
 		double ratio = 1/pixelsize*newpixelSize;
 		for (XYTaValue pos : xytArrayList) {
-			pos.xyPoint.setLocation(pos.xyPoint.getX()*ratio, pos.xyPoint.getY()*ratio);
-			pos.outerRectangle.setRect(
-					pos.outerRectangle.getX()*ratio, 
-					pos.outerRectangle.getY()*ratio, 
-					pos.outerRectangle.getWidth()*ratio, 
-					pos.outerRectangle.getHeight()*ratio);
+			pos.rectBounds.setRect(
+					pos.rectBounds.getX()*ratio, 
+					pos.rectBounds.getY()*ratio, 
+					pos.rectBounds.getWidth()*ratio, 
+					pos.rectBounds.getHeight()*ratio);
 		}
 		pixelsize = newpixelSize;
 		origin.setLocation(origin.getX()*ratio, origin.getY()*ratio);

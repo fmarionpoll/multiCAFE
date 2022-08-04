@@ -30,8 +30,9 @@ public class Options extends JPanel
 	JCheckBox	graphsCheckBox			= new JCheckBox("graphs", true);
 
 	public 	JCheckBox 	viewCapillariesCheckBox = new JCheckBox("capillaries", true);
-	public 	JCheckBox 	viewCagesCheckbox 		= new JCheckBox("cages", true);
-			JCheckBox 	viewFlyCheckbox 		= new JCheckBox("flies position", false);
+	public 	JCheckBox 	viewCagesCheckbox = new JCheckBox("cages", true);
+			JCheckBox 	viewFlyCheckbox = new JCheckBox("flies center", false);
+			JCheckBox 	viewFlyRectCheckbox = new JCheckBox("flies rect", false);
 	private MultiCAFE2 	parent0 		= null;
 
 	
@@ -57,6 +58,7 @@ public class Options extends JPanel
 		panel1.add(viewCapillariesCheckBox);
 		panel1.add(viewCagesCheckbox);
 		panel1.add(viewFlyCheckbox);
+		panel1.add(viewFlyRectCheckbox);
 		add(panel1);
 		
 		defineActionListeners();
@@ -83,6 +85,13 @@ public class Options extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				displayROIsCategory(viewFlyCheckbox.isSelected(), "det");
+			}});
+		
+		viewFlyRectCheckbox.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				displayROIsCategory(viewFlyRectCheckbox.isSelected(), "det");
 			}});
 	}
 	

@@ -11,7 +11,7 @@ import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
-import plugins.kernel.roi.roi2d.ROI2DPoint;
+import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
 
 
@@ -193,29 +193,30 @@ public class Cage
 		flyPositions.copyXYTaSeries(cage.flyPositions);
 	}
 	
-	public ROI2DPoint getRoiPointFromPositionAtT(int t) 
+	public ROI2DRectangle getRoiRectangleFromPositionAtT(int t) 
 	{
 		int nitems = flyPositions.xytArrayList.size();
 		if (nitems == 0 || t >= nitems)
 			return null;
 		XYTaValue aValue = flyPositions.xytArrayList.get(t);
-		ROI2DPoint flyRoi = new ROI2DPoint(aValue.xyPoint.getX(), aValue.xyPoint.getY());
-		flyRoi.setName("det"+getCageNumber() +"_" + t );
-		flyRoi.setT( t );
-		return flyRoi;
+		
+		ROI2DRectangle flyRoiR = new ROI2DRectangle(aValue.rectBounds);
+		flyRoiR.setName("detR"+getCageNumber() +"_" + t );
+		flyRoiR.setT( t );
+		return flyRoiR;
 	}
 	
 	public void transferRoisToPositions(List<ROI2D> detectedROIsList) 
 	{
-		String filter = "det"+getCageNumber();
+		String filter = "detR"+getCageNumber();
 		for (ROI2D roi: detectedROIsList) 
 		{
 			String name = roi.getName();
 			if (!name .contains(filter))
 				continue;
-			Point2D point = ((ROI2DPoint) roi).getPoint();
+			Rectangle2D rect = ((ROI2DRectangle) roi).getRectangle();
 			int t = roi.getT();	
-			flyPositions.xytArrayList.get(t).xyPoint = point;
+			flyPositions.xytArrayList.get(t).rectBounds = rect;
 		}
 	}
 	
