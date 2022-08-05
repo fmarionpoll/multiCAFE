@@ -23,7 +23,7 @@ import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
-import plugins.fmp.multicafe2.series.DetectLevels02;
+import plugins.fmp.multicafe2.series.DetectLevels;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 
 
@@ -67,7 +67,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
 	
 	private MultiCAFE2 	parent0 				= null;
-	private DetectLevels02 threadDetectLevels 	= null;
+	private DetectLevels threadDetectLevels 	= null;
 	
 	// -----------------------------------------------------
 		
@@ -338,7 +338,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();	
 		if (exp != null)
 		{
-			threadDetectLevels = new DetectLevels02();
+			threadDetectLevels = new DetectLevels();
 			threadDetectLevels.options = initBuildParameters(exp);
 			
 			threadDetectLevels.addPropertyChangeListener(this);
