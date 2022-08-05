@@ -651,7 +651,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return pt;
 	}
 	
-	public Point2D getCapillaryLowestPoint () 
+	public Point2D getCapillaryROILowestPoint () 
 	{
 		Point2D pt = null;		
 		if (roi instanceof ROI2DPolyLine) 
@@ -674,7 +674,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return pt;
 	}
 	
-	public Point2D getCapillaryFirstPoint () 
+	public Point2D getCapillaryROIFirstPoint () 
 	{
 		Point2D pt = null;		
 		if (roi instanceof ROI2DPolyLine) 
@@ -690,7 +690,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return pt;
 	}
 	
-	public Point2D getCapillaryLastPoint () 
+	public Point2D getCapillaryROILastPoint () 
 	{
 		Point2D pt = null;		
 		if (roi instanceof ROI2DPolyLine) 
@@ -707,7 +707,16 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return pt;
 	}
 	
-
+	public int getCapillaryROILength () 
+	{
+		Point2D pt1 = getCapillaryROIFirstPoint();
+		Point2D pt2 = getCapillaryROILastPoint();
+		double npixels = Math.sqrt(
+				(pt2.getY() - pt1.getY()) * (pt2.getY() - pt1.getY()) 
+				+ (pt2.getX() - pt1.getX()) * (pt2.getX() - pt1.getX()));
+		return (int) npixels;
+	}
+	
 	// --------------------------------------------
 	
 	public List<KymoROI2D> getRoisForKymo() {

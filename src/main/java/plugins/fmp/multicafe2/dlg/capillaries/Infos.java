@@ -4,7 +4,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,21 +63,8 @@ public class Infos extends JPanel
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null)
-				{
-					exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
-					if (exp.capillaries.capillariesList.size() > 0) 
-					{
-						Capillary cap = exp.capillaries.capillariesList.get(0);
-						Point2D pt1 = cap.getCapillaryFirstPoint();
-						Point2D pt2 = cap.getCapillaryLastPoint();
-						double npixels = Math.sqrt(
-								(pt2.getY() - pt1.getY()) * (pt2.getY() - pt1.getY()) 
-								+ (pt2.getX() - pt1.getX()) * (pt2.getX() - pt1.getX()));
-						capillaryPixelsSpinner.setValue((int) npixels);
-					}
-				}
+				double npixels = getLengthFirstCapillaryROI();
+				capillaryPixelsSpinner.setValue((int) npixels);
 			}});
 		
 		editCapillariesButton.addActionListener(new ActionListener () 
@@ -103,20 +89,25 @@ public class Infos extends JPanel
 		capillaryVolumeSpinner.setValue( cap.desc.volume);
 		capillaryPixelsSpinner.setValue( cap.desc.pixels);
 	}
-
-	private double getCapillaryVolume() 
-	{
-		return (double) capillaryVolumeSpinner.getValue();
-	}
-	
-	private int getCapillaryPixelLength() 
-	{
-		return (int) capillaryPixelsSpinner.getValue(); 
-	}
-	
+		
 	void getDescriptors(Capillaries capList) {
-		capList.desc.volume = getCapillaryVolume();
-		capList.desc.pixels = getCapillaryPixelLength();
+		capList.desc.volume = (double) capillaryVolumeSpinner.getValue();
+		capList.desc.pixels = (int) capillaryPixelsSpinner.getValue();
+	}
+	
+	public int getLengthFirstCapillaryROI() {
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		int npixels = 0;
+		if (exp != null)
+		{
+			exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
+			if (exp.capillaries.capillariesList.size() > 0) 
+			{
+				Capillary cap = exp.capillaries.capillariesList.get(0);
+				npixels = cap.getCapillaryROILength();
+			}
+		}
+		return npixels;
 	}
 						
 }

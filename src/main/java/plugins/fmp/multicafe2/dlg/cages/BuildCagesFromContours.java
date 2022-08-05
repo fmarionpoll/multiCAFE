@@ -209,7 +209,7 @@ public class BuildCagesFromContours  extends JPanel implements ChangeListener
 		List<Integer> blobsfound = new ArrayList<Integer> ();
 		for (Capillary cap : exp.capillaries.capillariesList) 
 		{
-			Point2D pt = cap.getCapillaryLowestPoint();
+			Point2D pt = cap.getCapillaryROILowestPoint();
 			if (pt != null) 
 			{
 				int ix = (int) (pt.getX() - rectGrid.x);

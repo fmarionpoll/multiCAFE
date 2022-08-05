@@ -123,6 +123,37 @@ public class Infos extends JPanel
 				measureButton.setVisible(false);
 			}});
 		
+		measureButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				if (useCapillaries.isSelected()) {
+					measureFirstCapillary();
+				}
+				else if (useCages.isSelected()) {
+					measureCagesSpan();
+				}
+			}});
+	}
+	
+	void measureFirstCapillary() {
+		int npixels = parent0.paneCapillaries.tabInfos.getLengthFirstCapillaryROI();
+		if (npixels > 0) 
+			pixelsSpinner.setValue(npixels);
+	}
+	
+	void measureCagesSpan() {
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		if (exp != null)
+		{
+			exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
+			if (exp.capillaries.capillariesList.size() > 0) 
+			{
+				int npixels = exp.cages.getHorizontalSpanOfCages();
+				if (npixels > 0) 
+					pixelsSpinner.setValue(npixels);
+			}
+		}
 	}
 	
 

@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe2.experiment;
 
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -521,4 +522,20 @@ public class Cages
 		return isavailable;
 	}
 
+	public int getHorizontalSpanOfCages() 
+	{
+		int leftPixel = -1;
+		int rightPixel = -1;
+		
+		for (Cage cage: cagesList) {
+			ROI2D roiCage = cage.cageRoi;
+			Rectangle2D rect = roiCage.getBounds2D();
+			int left = (int) rect.getX();
+			int right = left + (int) rect.getWidth();
+			if (leftPixel < 0 || left < leftPixel) leftPixel = left;
+			if (right > rightPixel) rightPixel = right;
+		}
+		
+		return rightPixel - leftPixel;
+	}
 }

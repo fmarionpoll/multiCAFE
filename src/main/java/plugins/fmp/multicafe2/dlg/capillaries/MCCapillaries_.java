@@ -33,7 +33,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			Edit		tabEdit			= new Edit();
 	public 	LoadSave 	tabFile 		= new LoadSave();
 			Adjust 		tabAdjust 		= new Adjust();
-			Infos		tabInfos		= new Infos();
+	public Infos		tabInfos		= new Infos();
 	private int 		ID_INFOS 		= 1;
 	private int 		ID_ADJUST 		= 3;
 	private int			ID_EDIT			= 2;
