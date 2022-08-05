@@ -11,6 +11,8 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import icy.gui.frame.progress.ProgressFrame;
+import plugins.adufour.roi.ROIEllipsoidFittingDescriptor;
+
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.experiment.Cage;
 import plugins.fmp.multicafe2.experiment.Experiment;
@@ -396,12 +398,22 @@ public class XLSExportMoveResults extends XLSExport
 						valueR = pos.rectBounds.getY() + pos.rectBounds.getHeight()/2.;
 						break;
 					case RECTSIZE:
-						valueL = pos.rectBounds.getWidth();
-						valueR = pos.rectBounds.getHeight();
-						if (valueL < valueR) {
-							valueL = valueR;
-							valueR = pos.rectBounds.getWidth();
+//						valueL = pos.rectBounds.getWidth();
+//						valueR = pos.rectBounds.getHeight();
+//						if (valueL < valueR) {
+//							valueL = valueR;
+//							valueR = pos.rectBounds.getWidth();
+//						}
+						
+						double[] ellipsoidValues = null;
+						try {
+							ellipsoidValues = ROIEllipsoidFittingDescriptor.computeOrientation(pos.flyRoi, null);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
+						valueL = ellipsoidValues[0];
+						valueR = ellipsoidValues[1];
 						break;
 					default:
 						break;
@@ -427,4 +439,5 @@ public class XLSExportMoveResults extends XLSExport
 	}
 	
 
+	
 }
