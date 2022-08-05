@@ -54,6 +54,7 @@ public class XYTaValue implements XMLPersistent
 		bPadded = aVal.bPadded;
 		distance = aVal.distance;
 		rectBounds = (Rectangle2D) aVal.rectBounds.clone();
+		flyRoi = aVal.flyRoi;
 	}
 	
 	@Override

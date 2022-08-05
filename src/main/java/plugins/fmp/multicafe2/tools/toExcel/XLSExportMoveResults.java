@@ -11,7 +11,6 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import icy.gui.frame.progress.ProgressFrame;
-import plugins.adufour.roi.ROIEllipsoidFittingDescriptor;
 
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.experiment.Cage;
@@ -19,6 +18,7 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.XYTaSeriesArrayList;
 import plugins.fmp.multicafe2.experiment.XYTaValue;
 import plugins.fmp.multicafe2.tools.Comparators;
+import plugins.fmp.multicafe2.tools.ROI2DMeasures;
 
 
 public class XLSExportMoveResults extends XLSExport 
@@ -404,16 +404,18 @@ public class XLSExportMoveResults extends XLSExport
 //							valueL = valueR;
 //							valueR = pos.rectBounds.getWidth();
 //						}
-						
-						double[] ellipsoidValues = null;
-						try {
-							ellipsoidValues = ROIEllipsoidFittingDescriptor.computeOrientation(pos.flyRoi, null);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+// TODO : restore
+						if (pos.flyRoi != null) {
+							double[] ellipsoidValues = null;
+							try {
+								ellipsoidValues = ROI2DMeasures.computeOrientation(pos.flyRoi, null);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							valueL = ellipsoidValues[0];
+							valueR = ellipsoidValues[1];
 						}
-						valueL = ellipsoidValues[0];
-						valueR = ellipsoidValues[1];
 						break;
 					default:
 						break;
