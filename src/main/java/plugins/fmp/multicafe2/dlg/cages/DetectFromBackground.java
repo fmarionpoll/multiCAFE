@@ -34,8 +34,7 @@ public class DetectFromBackground extends JPanel implements PropertyChangeListen
 	{
 		this.parent0 = parent0;
 		
-		createTabs();
-				
+		createTabs();		
 		tabsPane.setSelectedIndex(0);
 		add(tabsPane);
 		

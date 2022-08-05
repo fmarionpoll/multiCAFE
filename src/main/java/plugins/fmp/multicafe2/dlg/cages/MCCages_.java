@@ -25,7 +25,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 	private static final long serialVersionUID = 3457738144388946607L;
 	
 			BuildCages 		tabBuildCages	= new BuildCages();
-			EditInfos		tabInfos		= new EditInfos();
+			Infos		tabInfos		= new Infos();
 			Detect1 		tabDetect1 		= new Detect1();
 
 			DetectFromBackground tabDetect2 = new DetectFromBackground();
@@ -58,7 +58,6 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 		
 		mainPanel.add(capPopupPanel);
 		GridLayout capLayout = new GridLayout(4, 1);
-		
 		createTabs(capLayout);
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -118,7 +117,7 @@ public class MCCages_ extends JPanel implements PropertyChangeListener
 
 		iTab++;
 		iTAB_INFOS = iTab;
-		tabInfos.init(parent0);
+		tabInfos.init(capLayout,parent0);
 		tabInfos.addPropertyChangeListener(this);
 		tabsPane.addTab("Infos", null, tabInfos, "Display infos about cages and flies positions");
 		

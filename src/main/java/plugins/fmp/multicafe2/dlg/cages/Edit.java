@@ -47,7 +47,7 @@ public class Edit extends JPanel
 	{
 		setLayout(capLayout);
 		this.parent0 = parent0;
-		FlowLayout flowLayout = new FlowLayout(FlowLayout.RIGHT);
+		FlowLayout flowLayout = new FlowLayout(FlowLayout.LEFT);
 		flowLayout.setVgap(0);
 		
 		JPanel panel1 = new JPanel(flowLayout);

@@ -29,8 +29,8 @@ public class Infos extends JPanel
 	 */
 	private static final long 	serialVersionUID 			= 4950182090521600937L;
 	
-	private JSpinner 			capillaryVolumeTextField	= new JSpinner(new SpinnerNumberModel(5., 0., 100., 1.));
-	private JSpinner 			capillaryPixelsTextField	= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
+	private JSpinner 			capillaryVolumeSpinner	= new JSpinner(new SpinnerNumberModel(5., 0., 100., 1.));
+	private JSpinner 			capillaryPixelsSpinner	= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
 	private JButton				getCapillaryLengthButton	= new JButton ("pixels 1rst capillary");
 	private JButton				editCapillariesButton		= new JButton("Edit capillaries infos...");
 	private MultiCAFE2 			parent0 					= null;
@@ -45,9 +45,9 @@ public class Infos extends JPanel
 		
 		JPanel panel0 = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 1));
 		panel0.add( new JLabel("volume (µl) ", SwingConstants.RIGHT));
-		panel0.add( capillaryVolumeTextField);
+		panel0.add( capillaryVolumeSpinner);
 		panel0.add( new JLabel("length (pixels) ", SwingConstants.RIGHT));
-		panel0.add( capillaryPixelsTextField);
+		panel0.add( capillaryPixelsSpinner);
 		panel0.add( getCapillaryLengthButton);
 		add( panel0);
 		
@@ -76,7 +76,7 @@ public class Infos extends JPanel
 						double npixels = Math.sqrt(
 								(pt2.getY() - pt1.getY()) * (pt2.getY() - pt1.getY()) 
 								+ (pt2.getX() - pt1.getX()) * (pt2.getX() - pt1.getX()));
-						capillaryPixelsTextField.setValue((int) npixels);
+						capillaryPixelsSpinner.setValue((int) npixels);
 					}
 				}
 			}});
@@ -100,18 +100,18 @@ public class Infos extends JPanel
 	
 	void setAllDescriptors(Capillaries cap) 
 	{
-		capillaryVolumeTextField.setValue( cap.desc.volume);
-		capillaryPixelsTextField.setValue( cap.desc.pixels);
+		capillaryVolumeSpinner.setValue( cap.desc.volume);
+		capillaryPixelsSpinner.setValue( cap.desc.pixels);
 	}
 
 	private double getCapillaryVolume() 
 	{
-		return (double) capillaryVolumeTextField.getValue();
+		return (double) capillaryVolumeSpinner.getValue();
 	}
 	
 	private int getCapillaryPixelLength() 
 	{
-		return (int) capillaryPixelsTextField.getValue(); 
+		return (int) capillaryPixelsSpinner.getValue(); 
 	}
 	
 	void getDescriptors(Capillaries capList) {

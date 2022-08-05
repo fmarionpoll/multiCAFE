@@ -31,7 +31,7 @@ public class BuildCages extends JPanel implements PropertyChangeListener
 	{
 		this.parent0 = parent0;
 		
-		createTabs();
+		createTabs(capLayout);
 		tabsPane.setSelectedIndex(0);
 		add(tabsPane);
 		
@@ -48,9 +48,8 @@ public class BuildCages extends JPanel implements PropertyChangeListener
 	        }});
 	}
 	
-	void createTabs() 
+	void createTabs(GridLayout capLayout) 
 	{
-		GridLayout capLayout = new GridLayout(4, 1);
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		
 		int iTab = 0;
