@@ -109,7 +109,7 @@ public class Table extends JPanel
 						cageFrom.valid = false;
 						for (Cage cageTo: exp.cages.cagesList) 
 						{
-							if (!cageFrom.cageRoi.getName().equals (cageTo.cageRoi.getName()))
+							if (!cageFrom.cageRoi2D.getName().equals (cageTo.cageRoi2D.getName()))
 								continue;
 							cageFrom.valid 			= true;
 							cageTo.cageNFlies 		= cageFrom.cageNFlies;
@@ -137,7 +137,7 @@ public class Table extends JPanel
 						Cage cage0 = exp.cages.cagesList.get(rowIndex);	
 						for (Cage cage: exp.cages.cagesList) 
 						{
-							if (cage.cageRoi.getName().equals(cage0.cageRoi.getName()))
+							if (cage.cageRoi2D.getName().equals(cage0.cageRoi2D.getName()))
 								continue;
 							switch (columnIndex) {
 				            case 1: cage.cageNFlies 	= cage0.cageNFlies; break;

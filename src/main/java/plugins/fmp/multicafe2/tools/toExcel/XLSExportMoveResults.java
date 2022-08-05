@@ -135,7 +135,7 @@ public class XLSExportMoveResults extends XLSExport
 		for (int i=0; i< ncages; i++) 
 		{
 			Cage cage = expAll.cages.cagesList.get(i);
-			XYTaSeriesArrayList row = new XYTaSeriesArrayList (cage.cageRoi.getName(), xlsOption, nFrames, options.buildExcelStepMs);
+			XYTaSeriesArrayList row = new XYTaSeriesArrayList (cage.cageRoi2D.getName(), xlsOption, nFrames, options.buildExcelStepMs);
 			row.nflies = cage.cageNFlies;
 			rowsForOneExp.add(row);
 		}
@@ -155,7 +155,7 @@ public class XLSExportMoveResults extends XLSExport
 			List <XYTaSeriesArrayList> resultsArrayList = new ArrayList <XYTaSeriesArrayList> (expi.cages.cagesList.size());
 			for (Cage cage: expi.cages.cagesList) 
 			{
-				XYTaSeriesArrayList results = new XYTaSeriesArrayList(cage.cageRoi.getName(), xlsOption, len, options.buildExcelStepMs );
+				XYTaSeriesArrayList results = new XYTaSeriesArrayList(cage.cageRoi2D.getName(), xlsOption, len, options.buildExcelStepMs );
 				results.nflies = cage.cageNFlies;
 				if (results.nflies > 0) 
 				{				
@@ -310,7 +310,7 @@ public class XLSExportMoveResults extends XLSExport
 	{
 		for (Cage cage: exp.cages.cagesList) 
 		{
-			int cagenumber = Integer.valueOf(cage.cageRoi.getName().substring(4));
+			int cagenumber = Integer.valueOf(cage.cageRoi2D.getName().substring(4));
 			int ilastalive = 0;
 			if (cage.cageNFlies > 0) 
 			{

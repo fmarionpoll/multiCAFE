@@ -73,7 +73,7 @@ public class Cages
 		boolean flag = false;
 		for (Cage cage: cagesList) 
 		{
-			if (cage.cageRoi.getName().contentEquals(cagenew.cageRoi.getName())) 
+			if (cage.cageRoi2D.getName().contentEquals(cagenew.cageRoi2D.getName())) 
 			{
 				flag = true;
 				break;
@@ -213,7 +213,7 @@ public class Cages
 		for (int index=0; index< ncages; index++) 
 		{
 			Cage cage = new Cage();
-			cage.cageRoi = cageLimitROIList.get(index);
+			cage.cageRoi2D = cageLimitROIList.get(index);
 			cage.flyPositions = flyPositionsList.get(index);
 			cagesList.add(cage);
 		}
@@ -264,7 +264,7 @@ public class Cages
 		List <ROI2D> cageLimitROIList = getRoisWithCageName(seqCamData);
 		seqCamData.seq.removeROIs(cageLimitROIList, false);
 		for (Cage cage: cagesList) 
-			cageLimitROIList.add(cage.cageRoi);
+			cageLimitROIList.add(cage.cageRoi2D);
 		seqCamData.seq.addROIs(cageLimitROIList, true);
 	}
 	
@@ -281,7 +281,7 @@ public class Cages
 	{
 		for (Cage cage: cagesList) 
 		{
-			if (cage.cageRoi.getName().contains("000") || cage.cageRoi.getName().contains("009"))
+			if (cage.cageRoi2D.getName().contains("000") || cage.cageRoi2D.getName().contains("009"))
 				cage.cageNFlies = 0;
 		}
 	}
@@ -295,9 +295,9 @@ public class Cages
 				break;
 			for (Cage cage: cagesList) 
 			{
-				if (cage.cageRoi == null)
+				if (cage.cageRoi2D == null)
 					break;
-				if (roi.getName().equals(cage.cageRoi.getName())) 
+				if (roi.getName().equals(cage.cageRoi2D.getName())) 
 				{
 					found = true;
 					break;
@@ -306,7 +306,7 @@ public class Cages
 			if (!found) 
 			{
 				Cage cage = new Cage();
-				cage.cageRoi = roi;
+				cage.cageRoi2D = roi;
 				cagesList.add(cage);
 			}
 		}
@@ -320,9 +320,9 @@ public class Cages
 		{
 			Cage cage = iterator.next();
 			boolean found = false;
-			if (cage.cageRoi != null) 
+			if (cage.cageRoi2D != null) 
 			{
-				String cageRoiName = cage.cageRoi.getName();
+				String cageRoiName = cage.cageRoi2D.getName();
 				for (ROI2D roi: roiList) 
 				{
 					if (roi.getName().equals(cageRoiName)) 
@@ -482,7 +482,7 @@ public class Cages
 		int flypos = -1;
 		for (Cage cage: cagesList) 
 		{
-			String cagenumberString = cage.cageRoi.getName().substring(4);
+			String cagenumberString = cage.cageRoi2D.getName().substring(4);
 			if (Integer.valueOf(cagenumberString) == cagenumber) 
 			{
 				flypos = cage.flyPositions.getLastIntervalAlive();
@@ -497,7 +497,7 @@ public class Cages
 		boolean isalive = false;
 		for (Cage cage: cagesList) 
 		{
-			String cagenumberString = cage.cageRoi.getName().substring(4);
+			String cagenumberString = cage.cageRoi2D.getName().substring(4);
 			if (Integer.valueOf(cagenumberString) == cagenumber) 
 			{
 				isalive = (cage.flyPositions.getLastIntervalAlive() > 0);
@@ -512,7 +512,7 @@ public class Cages
 		boolean isavailable = false;
 		for (Cage cage: cagesList) 
 		{
-			String cagenumberString = cage.cageRoi.getName().substring(4);
+			String cagenumberString = cage.cageRoi2D.getName().substring(4);
 			if (Integer.valueOf(cagenumberString) == cagenumber) 
 			{
 				isavailable = true;
@@ -528,7 +528,7 @@ public class Cages
 		int rightPixel = -1;
 		
 		for (Cage cage: cagesList) {
-			ROI2D roiCage = cage.cageRoi;
+			ROI2D roiCage = cage.cageRoi2D;
 			Rectangle2D rect = roiCage.getBounds2D();
 			int left = (int) rect.getX();
 			int right = left + (int) rect.getWidth();

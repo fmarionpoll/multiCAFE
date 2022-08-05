@@ -2,7 +2,6 @@ package plugins.fmp.multicafe2.series;
 
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -11,7 +10,6 @@ import java.util.concurrent.Future;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
 import icy.roi.BooleanMask2D;
-import icy.roi.ROI;
 import icy.sequence.Sequence;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
@@ -20,9 +18,6 @@ import plugins.fmp.multicafe2.experiment.Cages;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.XYTaSeriesArrayList;
 import plugins.kernel.roi.roi2d.ROI2DArea;
-
-
-
 
 
 
@@ -36,14 +31,11 @@ public class FlyDetectTools
 	
 	// -----------------------------------------------------
 	
-	public BooleanMask2D findLargestBlob(ROI2DArea roiAll, Cage cage) throws InterruptedException 
+	BooleanMask2D findLargestBlob(ROI2DArea roiAll, BooleanMask2D cageMask) throws InterruptedException 
 	{
-		ROI cageLimitROI = cage.cageRoi;
-		if ( cageLimitROI == null )
-			return null;
-		BooleanMask2D cageMask = cage.cageMask;
 		if (cageMask == null)
 			return null;
+		
 		ROI2DArea roi = new ROI2DArea(roiAll.getBooleanMask( true ).getIntersection( cageMask ) );
 
 		// find largest component in the threshold
@@ -57,6 +49,7 @@ public class FlyDetectTools
 				len = 0;
 			if (options.blimitUp && len > options.limitUp)
 				len = 0;
+			
 			// trap condition where a line is found
 			int width = mask.bounds.width;
 			int height = mask.bounds.height;
@@ -65,14 +58,14 @@ public class FlyDetectTools
 				ratio = height/width;
 			if (ratio > 4)
 				len = 0;	
+			
+			// get largest blob
 			if ( len > max ) 
 			{
 				bestMask = mask;
 				max = len;
 			}
-		}
-
-		
+		}		
 		return bestMask;
 	}
 	
@@ -113,8 +106,7 @@ public class FlyDetectTools
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(cages.cagesList.size());
 		futures.clear();
 		
-		ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
-		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
+		final ROI2DArea binarizedImageRoi = binarizeImage (workimage, options.threshold);
 		List<Rectangle2D> listRectangles = new ArrayList<Rectangle2D> (cages.cagesList.size());
 		
 		for (Cage cage : cages.cagesList) 
@@ -129,25 +121,10 @@ public class FlyDetectTools
 				@Override
 				public void run() 
 				{
-				BooleanMask2D bestMask = null;
-				try {
-					bestMask = findLargestBlob(binarizedImageRoi, cage);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (bestMask != null) 
-				{
-					ROI2DArea flyROI = new ROI2DArea(bestMask); 
-					Rectangle2D rect = flyROI.getBounds2D();
-					Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-					cage.flyPositions.addPosition(t, flyPosition, rect);
-					listRectangles.add(rect);
-				}
-				else 
-				{
-					cage.flyPositions.addPosition(t, flyPositionMissed, null);
-				}
+					BooleanMask2D bestMask = getBestMask(binarizedImageRoi, cage.cageMask2D);
+					Rectangle2D rect = saveMask(bestMask, cage, t);
+					if (rect != null) 
+						listRectangles.add(rect);
 			}}));
 		}
  		
@@ -164,8 +141,7 @@ public class FlyDetectTools
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(cages.cagesList.size());
 		futures.clear();
 		
-		ROI2DArea binarizedImageRoi = binarizeInvertedImage (workimage, options.threshold);
-		Point2D flyPositionMissed = new Point2D.Double(-1, -1);
+		final ROI2DArea binarizedImageRoi = binarizeInvertedImage (workimage, options.threshold);
 		List<Rectangle2D> listRectangles = new ArrayList<Rectangle2D> (cages.cagesList.size());
 		
  		for (Cage cage: cages.cagesList) 
@@ -179,32 +155,40 @@ public class FlyDetectTools
 			{
 				@Override
 				public void run() 
-				{
-					BooleanMask2D bestMask = null;
-					try {
-						bestMask = findLargestBlob(binarizedImageRoi, cage);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				
-					if ( bestMask != null ) 
-					{
-						ROI2DArea flyROI = new ROI2DArea(bestMask); 
-						Rectangle2D rect = flyROI.getBounds2D();
-						Point2D flyPosition = new Point2D.Double(rect.getCenterX(), rect.getCenterY());
-						cage.flyPositions.addPosition(t, flyPosition, rect);
+				{	
+					BooleanMask2D bestMask = getBestMask(binarizedImageRoi, cage.cageMask2D);
+					Rectangle2D rect = saveMask(bestMask, cage, t);
+					if (rect != null) 
 						listRectangles.add(rect);
-					}
-					else 
-					{
-						cage.flyPositions.addPosition(t, flyPositionMissed, null);
-					}
 			}}));
 		}
  		waitDetectCompletion(processor, futures, null);
 		processor.shutdown();
 		return listRectangles;
+	}
+	
+	BooleanMask2D getBestMask(ROI2DArea binarizedImageRoi, BooleanMask2D cageMask) 
+	{
+		BooleanMask2D bestMask = null;
+		try {
+			bestMask = findLargestBlob(binarizedImageRoi, cageMask);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return bestMask;
+	}
+	
+	Rectangle2D saveMask(BooleanMask2D bestMask, Cage cage, int t) 
+	{	
+		Rectangle2D rect = null;
+		ROI2DArea flyROI = null;
+		if (bestMask != null) 
+		{
+			flyROI = new ROI2DArea(bestMask);
+			rect = flyROI.getBounds2D();
+		}
+		cage.flyPositions.addPosition(t, rect, flyROI);
+		return rect;
 	}
 	
 	public ROI2DArea binarizeInvertedImage(IcyBufferedImage img, int threshold) 
@@ -266,7 +250,7 @@ public class FlyDetectTools
 		{
 			if (cage.cageNFlies < 1) 
 				continue;
-			Rectangle rect = cage.cageRoi.getBounds();
+			Rectangle rect = cage.cageRoi2D.getBounds();
 			if (rectangleAllCages == null)
 				rectangleAllCages = new Rectangle(rect);
 			else

@@ -1,6 +1,5 @@
 package plugins.fmp.multicafe2.experiment;
 
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.w3c.dom.Element;
@@ -8,11 +7,13 @@ import org.w3c.dom.Node;
 
 import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
+import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
 public class XYTaValue implements XMLPersistent 
 {
 	public Rectangle2D rectBounds = new Rectangle2D.Double(Double.NaN,Double.NaN,Double.NaN,Double.NaN);
+	public ROI2DArea flyRoi 	= null;
 	public int 		indexT 		= 0;
 	public boolean 	bAlive 		= false;
 	public boolean 	bSleep 		= false;
@@ -29,14 +30,15 @@ public class XYTaValue implements XMLPersistent
 		this.indexT = indexT;
 	}
 	
-	public XYTaValue(int indexT, Point2D point, Rectangle2D rectangle) 
+	public XYTaValue(int indexT, Rectangle2D rectangle, ROI2DArea roiArea) 
 	{
 		if (rectangle != null)
 			this.rectBounds = rectangle;
+		flyRoi = roiArea;
 		this.indexT = indexT;
 	}
 	
-	public XYTaValue(int indexT, Point2D point, Rectangle2D rectangle, boolean alive) 
+	public XYTaValue(int indexT, Rectangle2D rectangle, boolean alive) 
 	{
 		if (rectangle != null)
 			this.rectBounds = rectangle;
@@ -61,28 +63,37 @@ public class XYTaValue implements XMLPersistent
 			return false;	
 		
 		Element node_XYTa = XMLUtil.getElement(node, "XYTa");	
-		
-		double xR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "xR", Double.NaN);	
-		double yR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "yR", Double.NaN);
-		double wR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "wR", Double.NaN);
-		double hR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "hR", Double.NaN);
-		if (!Double.isNaN(xR) && !Double.isNaN(yR)) {
-			rectBounds.setRect(xR, yR, wR, hR);
-		} else {
-			xR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "x", Double.NaN);
-			yR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "y", Double.NaN);
+		if (node_XYTa != null) {
+			double xR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "xR", Double.NaN);	
+			double yR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "yR", Double.NaN);
+			double wR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "wR", Double.NaN);
+			double hR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "hR", Double.NaN);
 			if (!Double.isNaN(xR) && !Double.isNaN(yR)) {
-				xR -= 2.;
-				yR -= 2.;
-				wR = 4.;
-				hR = 4.;
 				rectBounds.setRect(xR, yR, wR, hR);
+			} else {
+				xR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "x", Double.NaN);
+				yR =  XMLUtil.getAttributeDoubleValue( node_XYTa, "y", Double.NaN);
+				if (!Double.isNaN(xR) && !Double.isNaN(yR)) {
+					xR -= 2.;
+					yR -= 2.;
+					wR = 4.;
+					hR = 4.;
+					rectBounds.setRect(xR, yR, wR, hR);
+				}
 			}
+			
+			indexT =  XMLUtil.getAttributeIntValue(node_XYTa, "t", 0);
+			bAlive = XMLUtil.getAttributeBooleanValue(node_XYTa, "a", false);
+			bSleep = XMLUtil.getAttributeBooleanValue(node_XYTa, "s", false);
 		}
 		
-		indexT =  XMLUtil.getAttributeIntValue(node_XYTa, "t", 0);
-		bAlive = XMLUtil.getAttributeBooleanValue(node_XYTa, "a", false);
-		bSleep = XMLUtil.getAttributeBooleanValue(node_XYTa, "s", false);
+		Element node_roi = XMLUtil.getElement(node, "roi");
+		if (node_roi != null) {
+			if (flyRoi == null)
+				flyRoi = new ROI2DArea();
+			flyRoi.loadFromXML(node_roi);
+		}
+		
 		return false;
 	}
 
@@ -90,7 +101,8 @@ public class XYTaValue implements XMLPersistent
 	public boolean saveToXML(Node node) 
 	{
 		if (node == null)
-			return false;		
+			return false;
+		
 		Element node_XYTa = XMLUtil.addElement(node, "XYTa");
 		
 		if (!Double.isNaN(rectBounds.getX())) {
@@ -103,6 +115,10 @@ public class XYTaValue implements XMLPersistent
 		XMLUtil.setAttributeIntValue(node_XYTa, "t", indexT);
 		XMLUtil.setAttributeBooleanValue(node_XYTa, "a", bAlive);
 		XMLUtil.setAttributeBooleanValue(node_XYTa, "s", bSleep);
+		
+		Element node_roi = XMLUtil.addElement(node, "roi");
+		if (flyRoi != null)
+			flyRoi.saveToXML(node_roi);
 		return false;
 	}
 }

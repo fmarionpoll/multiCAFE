@@ -226,7 +226,7 @@ public class Edit extends JPanel
 			Rectangle2D rect0 = cage.flyPositions.xytArrayList.get(frame).rectBounds;
 			if (rect0.getX() == -1 && rect0.getY() == -1 ) 
 			{
-				Rectangle rect = cage.cageRoi.getBounds();
+				Rectangle rect = cage.cageRoi2D.getBounds();
 				Point2D point2 = new Point2D.Double(rect.x+rect.width/2, rect.y+rect.height/2);
 				roi.setPosition2D(point2);
 			}

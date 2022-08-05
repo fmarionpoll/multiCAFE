@@ -17,8 +17,8 @@ import plugins.kernel.roi.roi2d.ROI2DRectangle;
 
 public class Cage 
 {
-	public ROI2D 		cageRoi					= null;
-	public BooleanMask2D cageMask				= null;
+	public ROI2D 		cageRoi2D				= null;
+	public BooleanMask2D cageMask2D				= null;
 	public XYTaSeriesArrayList 	flyPositions 	= new XYTaSeriesArrayList();
 	public int 			cageNFlies  			= 0;
 	public int 			cageAge 				= 5;
@@ -65,10 +65,10 @@ public class Cage
 	public boolean xmlSaveCageLimits(Element xmlVal) 
 	{
 		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_CAGELIMITS);
-		if (cageRoi != null) 
+		if (cageRoi2D != null) 
 		{
-			cageRoi.setSelected(false);
-			cageRoi.saveToXML(xmlVal2);
+			cageRoi2D.setSelected(false);
+			cageRoi2D.saveToXML(xmlVal2);
 		}
 		return true;
 	}
@@ -98,8 +98,8 @@ public class Cage
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_CAGELIMITS);
 		if (xmlVal2 != null) 
 		{
-			cageRoi = (ROI2D) ROI.createFromXML(xmlVal2 );
-	        cageRoi.setSelected(false);
+			cageRoi2D = (ROI2D) ROI.createFromXML(xmlVal2 );
+	        cageRoi2D.setSelected(false);
 		}
 		return true;
 	}
@@ -125,10 +125,12 @@ public class Cage
 		return false;
 	}
 
+	// ------------------------------------
+	
 	public String getCageNumber() 
 	{
 		if (strCageNumber == null) 
-			strCageNumber = cageRoi.getName().substring(cageRoi.getName().length() - 3);
+			strCageNumber = cageRoi2D.getName().substring(cageRoi2D.getName().length() - 3);
 		return strCageNumber;
 	}
 	
@@ -157,7 +159,7 @@ public class Cage
 	
 	public Point2D getCenterTopCage() 
 	{
-		Rectangle2D rect = cageRoi.getBounds2D();
+		Rectangle2D rect = cageRoi2D.getBounds2D();
 		Point2D pt = new Point2D.Double(rect.getX() + rect.getWidth()/2, rect.getY());
 		return pt;
 	}
@@ -167,7 +169,7 @@ public class Cage
 		List<Point2D> listpts = new ArrayList<Point2D>();
 		for (Capillary cap: capList.capillariesList) 
 		{
-			Point2D pt = cap.getCapillaryTipWithinROI2D(cageRoi);
+			Point2D pt = cap.getCapillaryTipWithinROI2D(cageRoi2D);
 			if (pt != null)
 				listpts.add(pt);
 		}
@@ -185,7 +187,7 @@ public class Cage
 	
 	public void copyCage (Cage cage) 
 	{
-		cageRoi			= cage.cageRoi;
+		cageRoi2D			= cage.cageRoi2D;
 		cageNFlies  	= cage.cageNFlies;
 		strCageComment 	= cage.strCageComment;
 		strCageNumber 	= cage.strCageNumber;
@@ -222,7 +224,7 @@ public class Cage
 	
 	public void computeCageBooleanMask2D() throws InterruptedException 
 	{
-		cageMask = cageRoi.getBooleanMask2D( 0 , 0, 1, true );
+		cageMask2D = cageRoi2D.getBooleanMask2D( 0 , 0, 1, true );
 	}
 	
 	

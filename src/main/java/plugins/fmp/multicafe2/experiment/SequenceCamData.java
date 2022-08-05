@@ -235,7 +235,7 @@ public class SequenceCamData
 				|| csName.contains("Polygon2D")) ) 
 			{
 				Cage cage = new Cage();
-				cage.cageRoi = roi;
+				cage.cageRoi2D = roi;
 				cageList.add(cage);
 			}
 		}

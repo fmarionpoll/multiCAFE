@@ -643,7 +643,7 @@ public class XLSExport
 	{
 		for (Cage cage: exp.cages.cagesList) 
 		{
-			String roiname = cage.cageRoi.getName();
+			String roiname = cage.cageRoi2D.getName();
 			if (roiname.length() < 4 || !roiname.substring( 0 , 4 ).contains("cage"))
 				continue;
 			

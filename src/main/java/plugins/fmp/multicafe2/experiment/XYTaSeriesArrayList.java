@@ -14,6 +14,7 @@ import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
+import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
 
@@ -97,9 +98,9 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		return xytArrayList.get(i).indexT;
 	}
 
-	public void addPosition (int frame, Point2D point, Rectangle2D rectangle) 
+	public void addPosition (int frame, Rectangle2D rectangle, ROI2DArea roiArea) 
 	{
-		XYTaValue pos = new XYTaValue(frame, point, rectangle);
+		XYTaValue pos = new XYTaValue(frame, rectangle, roiArea);
 		xytArrayList.add(pos);
 	}
 	

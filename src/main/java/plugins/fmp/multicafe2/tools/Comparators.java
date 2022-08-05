@@ -72,7 +72,7 @@ public class Comparators
 		@Override
 		public int compare (Cage o1, Cage o2) 
 		{
-			return o1.cageRoi.getName().compareTo(o2.cageRoi.getName());
+			return o1.cageRoi2D.getName().compareTo(o2.cageRoi2D.getName());
 		}
 	}
 	
