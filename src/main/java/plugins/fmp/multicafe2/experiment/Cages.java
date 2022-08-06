@@ -18,7 +18,6 @@ import plugins.fmp.multicafe2.dlg.JComponents.Dialog;
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
-import plugins.kernel.roi.roi2d.ROI2DRectangle;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
@@ -435,24 +434,12 @@ public class Cages
 		return cageFound;
 	}
 
-	public List <ROI2DRectangle> getPositionsAsListOfROI2DPointsAtT(int t) 
+	public List <ROI2D> getPositionsAsListOfROI2DRectanglesAtT(int t) 
 	{
-		List <ROI2DRectangle> roiList = new ArrayList<ROI2DRectangle> (cagesList.size());
+		List <ROI2D> roiRectangleList = new ArrayList<ROI2D> (cagesList.size());
 		for (Cage cage: cagesList) 
 		{
-			ROI2DRectangle roiPoint = cage.getRoiRectangleFromPositionAtT(t);
-			if (roiPoint != null)
-				roiList.add(roiPoint);
-		}
-		return roiList;
-	}
-	
-	public List <ROI2DRectangle> getPositionsAsListOfROI2DRectanglesAtT(int t) 
-	{
-		List <ROI2DRectangle> roiRectangleList = new ArrayList<ROI2DRectangle> (cagesList.size());
-		for (Cage cage: cagesList) 
-		{
-			ROI2DRectangle roiRectangle = cage.getRoiRectangleFromPositionAtT(t);
+			ROI2D roiRectangle = cage.getRoiRectangleFromPositionAtT(t);
 			if (roiRectangle != null)
 				roiRectangleList.add(roiRectangle);
 		}
