@@ -18,7 +18,7 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.XYTaSeriesArrayList;
 import plugins.fmp.multicafe2.experiment.XYTaValue;
 import plugins.fmp.multicafe2.tools.Comparators;
-import plugins.fmp.multicafe2.tools.ROI2DMeasures;
+
 
 
 public class XLSExportMoveResults extends XLSExport 
@@ -154,13 +154,15 @@ public class XLSExportMoveResults extends XLSExport
 			int len = (int) ((expi.camLastImage_Ms - expi.camFirstImage_ms)/ options.buildExcelStepMs +1);
 			if (len == 0)
 				continue;
+			double pixelsize = 32. / exp.capillaries.capillariesList.get(0).capPixels;
+			
 			List <XYTaSeriesArrayList> resultsArrayList = new ArrayList <XYTaSeriesArrayList> (expi.cages.cagesList.size());
 			for (Cage cage: expi.cages.cagesList) 
 			{
 				XYTaSeriesArrayList results = new XYTaSeriesArrayList(cage.cageRoi2D.getName(), xlsOption, len, options.buildExcelStepMs );
 				results.nflies = cage.cageNFlies;
 				if (results.nflies > 0) 
-				{				
+				{
 					switch (xlsOption) 
 					{
 						case DISTANCE:
@@ -173,18 +175,22 @@ public class XLSExportMoveResults extends XLSExport
 							results.computeSleep(cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
 							break;
 						case XYTOPCAGE:
-						case RECTSIZE:
 							results.computeNewPointsOrigin(cage.getCenterTopCage(), cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
 							break;
 						case XYTIPCAPS:
 							results.computeNewPointsOrigin(cage.getCenterTipCapillaries(exp.capillaries), cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
 							break;
 						case XYIMAGE:
+							results.computeEllipse(cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
+							break;
+						case RECTSIZE:
+							break;
 						default:
 							break;
 					}
-					double pixelsize = 32. / exp.capillaries.capillariesList.get(0).capPixels;
-					results.changePixelSize(pixelsize);
+					
+					results.setPixelSize(pixelsize);
+					results.convertPixelsToPhysicalValues();
 					resultsArrayList.add(results);
 				}
 				// here add resultsArrayList to expAll
@@ -368,7 +374,8 @@ public class XLSExportMoveResults extends XLSExport
 			long last = expAll.camLastImage_Ms - expAll.camFirstImage_ms;
 			if (options.fixedIntervals)
 				last = options.endAll_Ms-options.startAll_Ms;
-			for (long coltime = 0; coltime <= last; coltime+=options.buildExcelStepMs, pt.y++) 
+			
+			for (long coltime = 0; coltime <= last; coltime += options.buildExcelStepMs, pt.y++) 
 			{
 				int i_from = (int) (coltime  / options.buildExcelStepMs);
 				if (i_from >= row.xytArrayList.size())
@@ -377,6 +384,7 @@ public class XLSExportMoveResults extends XLSExport
 				double valueL = Double.NaN;
 				double valueR = Double.NaN;
 				XYTaValue pos = row.xytArrayList.get(i_from);
+				
 				switch (row.exportType) 
 				{
 					case DISTANCE:
@@ -397,25 +405,10 @@ public class XLSExportMoveResults extends XLSExport
 						valueL = pos.rectBounds.getX() + pos.rectBounds.getWidth()/2.;
 						valueR = pos.rectBounds.getY() + pos.rectBounds.getHeight()/2.;
 						break;
+						
 					case RECTSIZE:
-//						valueL = pos.rectBounds.getWidth();
-//						valueR = pos.rectBounds.getHeight();
-//						if (valueL < valueR) {
-//							valueL = valueR;
-//							valueR = pos.rectBounds.getWidth();
-//						}
-// TODO : restore
-						if (pos.flyRoi != null) {
-							double[] ellipsoidValues = null;
-							try {
-								ellipsoidValues = ROI2DMeasures.computeOrientation(pos.flyRoi, null);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							valueL = ellipsoidValues[0];
-							valueR = ellipsoidValues[1];
-						}
+						valueL = pos.axis1;
+						valueR = pos.axis2;
 						break;
 					default:
 						break;

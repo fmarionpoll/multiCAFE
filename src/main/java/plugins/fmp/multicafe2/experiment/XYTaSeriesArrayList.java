@@ -13,6 +13,7 @@ import org.w3c.dom.Node;
 import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Comparators;
+import plugins.fmp.multicafe2.tools.ROI2DMeasures;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 
@@ -313,6 +314,20 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		}
 	}
 	
+	public void computeEllipse(XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
+	{
+		flyPositions.computeEllipseAxes();
+		int it_start = 0;
+		int it_end = flyPositions.xytArrayList.size() * stepMs;
+		int it_out = 0;
+		for (int it = it_start; it < it_end && it_out < xytArrayList.size(); it += buildExcelStepMs, it_out++) 
+		{
+			int index = it/stepMs;
+			XYTaValue pos = xytArrayList.get(it_out);
+			pos.bSleep = flyPositions.xytArrayList.get(index).bSleep;
+		}
+	}
+	
 	// ------------------------------------------------------------
 	
 	public List<Double> getIsAliveAsDoubleArray() 
@@ -451,20 +466,56 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		}
 	}
 	
-	public void changePixelSize(double newpixelSize) 
+	public void computeEllipseAxes() 
 	{
-		if (newpixelSize == pixelsize)
+		if (xytArrayList.size() < 1)
 			return;
-		double ratio = 1/pixelsize*newpixelSize;
+
+		for (XYTaValue pos: xytArrayList) 
+		{
+			if (pos.flyRoi != null) 
+			{
+				double[] ellipsoidValues = null;
+				try {
+					ellipsoidValues = ROI2DMeasures.computeOrientation(pos.flyRoi, null);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				pos.axis1 = ellipsoidValues[0];
+				pos.axis2 = ellipsoidValues[1];
+			}
+			else if (pos.rectBounds != null) {
+				pos.axis1 = pos.rectBounds.getHeight();
+				pos.axis2 = pos.rectBounds.getWidth();
+				if (pos.axis2 > pos.axis1) {
+					double x = pos.axis1;
+					pos.axis1 = pos.axis2;
+					pos.axis2 = x;
+				}
+			}
+		}
+	}
+	
+	public void setPixelSize(double newpixelSize) 
+	{
+		pixelsize = newpixelSize;
+	}
+	
+	public void convertPixelsToPhysicalValues() 
+	{
 		for (XYTaValue pos : xytArrayList) {
 			pos.rectBounds.setRect(
-					pos.rectBounds.getX()*ratio, 
-					pos.rectBounds.getY()*ratio, 
-					pos.rectBounds.getWidth()*ratio, 
-					pos.rectBounds.getHeight()*ratio);
+					pos.rectBounds.getX()*pixelsize, 
+					pos.rectBounds.getY()*pixelsize, 
+					pos.rectBounds.getWidth()*pixelsize, 
+					pos.rectBounds.getHeight()*pixelsize);
+			
+			pos.axis1 = pos.axis1 * pixelsize;
+			pos.axis2 = pos.axis2 * pixelsize;
 		}
-		pixelsize = newpixelSize;
-		origin.setLocation(origin.getX()*ratio, origin.getY()*ratio);
+		
+		origin.setLocation(origin.getX()*pixelsize, origin.getY()*pixelsize);
 	}
 
 	

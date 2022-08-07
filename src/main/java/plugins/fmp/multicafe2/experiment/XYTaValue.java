@@ -19,6 +19,8 @@ public class XYTaValue implements XMLPersistent
 	public boolean 	bSleep 		= false;
 	public boolean  bPadded		= false;
 	public double	distance 	= 0.;
+	public double   axis1	    = 0.;
+	public double   axis2	   	= 0.;
 	
 	
 	public XYTaValue() 
