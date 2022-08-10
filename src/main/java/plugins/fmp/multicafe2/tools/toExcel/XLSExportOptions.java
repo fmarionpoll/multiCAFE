@@ -7,7 +7,7 @@ public class XLSExportOptions
 	public boolean 	xyImage 			= true;
 	public boolean 	xyCage 				= true;
 	public boolean 	xyCapillaries		= true;
-	public boolean	rectSize			= false;
+	public boolean	ellipseAxes			= false;
 	
 	public boolean 	distance 			= false;
 	public boolean 	alive 				= true;

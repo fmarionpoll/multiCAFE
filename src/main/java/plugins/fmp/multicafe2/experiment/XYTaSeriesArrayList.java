@@ -257,7 +257,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	
 	// -----------------------------------------------------------
 	
-	public void computeDistanceBetweenPoints(XYTaSeriesArrayList flyPositions, int dataStepMs, int excelStepMs) 
+	public void excelComputeDistanceBetweenPoints(XYTaSeriesArrayList flyPositions, int dataStepMs, int excelStepMs) 
 	{
 		if (flyPositions.xytArrayList.size() <= 0)
 			return;
@@ -267,9 +267,10 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		
 		int excel_startMs = 0;
 		int n_excel_intervals = xytArrayList.size();
-		int excel_endMs = (n_excel_intervals - 1) * excelStepMs;
+		int excel_endMs = n_excel_intervals * excelStepMs;
+		int n_data_intervals = flyPositions.xytArrayList.size();
 		
-		double sumDistance_previous = 0;
+		double sumDistance_previous = 0.;
 		
 		for (int excel_Ms = excel_startMs; excel_Ms < excel_endMs; excel_Ms += excelStepMs) 
 		{
@@ -278,19 +279,19 @@ public class XYTaSeriesArrayList implements XMLPersistent
 			
 			int data_bin = excel_Ms / dataStepMs;
 			int data_bin_remainder = excel_Ms % dataStepMs;
-			XYTaValue data_pos = xytArrayList.get(data_bin);
+			XYTaValue data_pos = flyPositions.xytArrayList.get(data_bin);
 			
-			double delta = 0;
-			if (data_bin_remainder != 0 && (data_bin + 1 < flyPositions.xytArrayList.size())) 
+			double delta = 0.;
+			if (data_bin_remainder != 0 && (data_bin + 1 < n_data_intervals)) 
 			{
-				delta = xytArrayList.get(data_bin+1).distance * data_bin_remainder / dataStepMs;
+				delta = flyPositions.xytArrayList.get(data_bin+1).distance * data_bin_remainder / dataStepMs;
 			}
 			excel_pos.distance = data_pos.sumDistance - sumDistance_previous + delta;
 			sumDistance_previous = data_pos.sumDistance;
 		}
 	}
 	
-	public void computeIsAlive(XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
+	public void excelComputeIsAlive(XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
 	{
 		flyPositions.computeIsAlive();
 		int it_start = 0;
@@ -304,7 +305,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		}
 	}
 	
-	public void computeSleep(XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
+	public void excelComputeSleep(XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
 	{
 		flyPositions.computeSleep();
 		int it_start = 0;
@@ -318,7 +319,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		}
 	}
 	
-	public void computeNewPointsOrigin(Point2D newOrigin, XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
+	public void excelComputeNewPointsOrigin(Point2D newOrigin, XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
 	{
 		newOrigin.setLocation(newOrigin.getX()*pixelsize, newOrigin.getY()*pixelsize);
 		double deltaX = newOrigin.getX() - origin.getX();
@@ -339,7 +340,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		}
 	}
 	
-	public void computeEllipse(XYTaSeriesArrayList flyPositions, int dataStepMs, int excelStepMs) 
+	public void excelComputeEllipse(XYTaSeriesArrayList flyPositions, int dataStepMs, int excelStepMs) 
 	{
 		if (flyPositions.xytArrayList.size() <= 0)
 			return;
@@ -355,7 +356,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 			XYTaValue excel_pos = xytArrayList.get(excel_bin);
 			
 			int data_bin = excel_Ms / dataStepMs;
-			XYTaValue data_pos = xytArrayList.get(data_bin);
+			XYTaValue data_pos = flyPositions.xytArrayList.get(data_bin);
 			
 			excel_pos.axis1 = data_pos.axis1;
 			excel_pos.axis2 = data_pos.axis2;
@@ -512,7 +513,8 @@ public class XYTaSeriesArrayList implements XMLPersistent
 				pos.axis1 = ellipsoidValues[0];
 				pos.axis2 = ellipsoidValues[1];
 			}
-			else if (pos.rectBounds != null) {
+			else if (pos.rectBounds != null) 
+			{
 				pos.axis1 = pos.rectBounds.getHeight();
 				pos.axis2 = pos.rectBounds.getWidth();
 				if (pos.axis2 > pos.axis1) {

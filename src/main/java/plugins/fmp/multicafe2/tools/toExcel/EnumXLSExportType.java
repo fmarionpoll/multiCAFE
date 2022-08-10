@@ -23,11 +23,11 @@ public enum EnumXLSExportType
 	CROSSCORREL("crosscorrel", "n observ"),
 	CROSSCORREL_LR("crosscorrel_LR", "n observ"),
 	
-	XYIMAGE ("xy-image", "pixels"), 
-	XYTOPCAGE ("xy-topcage", "pixels"), 
-	XYTIPCAPS ("xy-tipcaps", "pixels"), 
-	RECTSIZE ("rect-size", "pixels"),
-	DISTANCE ("distance", "pixels"), 
+	XYIMAGE ("xy-image", "mm"), 
+	XYTOPCAGE ("xy-topcage", "mm"), 
+	XYTIPCAPS ("xy-tipcaps", "mm"), 
+	ELLIPSEAXES ("ellipse-axes", "mm"),
+	DISTANCE ("distance", "mm"), 
 	ISALIVE ("_alive", "yes/no"), 
 	SLEEP ("sleep", "yes, no");
 	

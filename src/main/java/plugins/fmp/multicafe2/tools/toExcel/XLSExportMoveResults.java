@@ -65,8 +65,8 @@ public class XLSExportMoveResults extends XLSExport
 					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTOPCAGE);
 				if (options.xyCapillaries)  	
 					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTIPCAPS);
-				if (options.rectSize)
-					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.RECTSIZE);
+				if (options.ellipseAxes)
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.ELLIPSEAXES);
 				if (options.distance)  	
 					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.DISTANCE);
 				if (options.alive)	
@@ -168,25 +168,24 @@ public class XLSExportMoveResults extends XLSExport
 					switch (xlsOption) 
 					{
 						case DISTANCE:
-							results.computeDistanceBetweenPoints(cage.flyPositions, (int) expi.camBinImage_ms,  options.buildExcelStepMs);
+							results.excelComputeDistanceBetweenPoints(cage.flyPositions, (int) expi.camBinImage_ms,  options.buildExcelStepMs);
 							break;
 						case ISALIVE:
-							results.computeIsAlive(cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
+							results.excelComputeIsAlive(cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
 							break;
 						case SLEEP:
-							results.computeSleep(cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
+							results.excelComputeSleep(cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
 							break;
 						case XYTOPCAGE:
-							results.computeNewPointsOrigin(cage.getCenterTopCage(), cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
+							results.excelComputeNewPointsOrigin(cage.getCenterTopCage(), cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
 							break;
 						case XYTIPCAPS:
-							results.computeNewPointsOrigin(cage.getCenterTipCapillaries(exp.capillaries), cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
+							results.excelComputeNewPointsOrigin(cage.getCenterTipCapillaries(exp.capillaries), cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
+							break;
+						case ELLIPSEAXES:
+							results.excelComputeEllipse(cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
 							break;
 						case XYIMAGE:
-							results.computeEllipse(cage.flyPositions, (int) expi.camBinImage_ms, options.buildExcelStepMs);
-							break;
-						case RECTSIZE:
-							break;
 						default:
 							break;
 					}
@@ -406,7 +405,7 @@ public class XLSExportMoveResults extends XLSExport
 						valueL = pos.rectBounds.getX() + pos.rectBounds.getWidth()/2.;
 						valueR = pos.rectBounds.getY() + pos.rectBounds.getHeight()/2.;
 						break;
-					case RECTSIZE:
+					case ELLIPSEAXES:
 						valueL = pos.axis1;
 						valueR = pos.axis2;
 						break;
