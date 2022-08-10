@@ -217,7 +217,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		
 		options.collateSeries 	= tabCommonOptions.collateSeriesCheckBox.isSelected();
 		options.padIntervals 	= tabCommonOptions.padIntervalsCheckBox.isSelected();
-		options.absoluteTime	= tabCommonOptions.absoluteTimeCheckBox.isSelected();
+		options.absoluteTime	= false; //tabCommonOptions.absoluteTimeCheckBox.isSelected();
 		options.exportAllFiles 	= tabCommonOptions.exportAllFilesCheckBox.isSelected();
 		
 		options.expList = parent0.expListCombo; 

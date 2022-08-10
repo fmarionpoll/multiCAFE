@@ -63,6 +63,8 @@ public class XYTaValue implements XMLPersistent
 				&& aVal.flyRoi.getBounds().width > 0
 			) 
 			flyRoi = new ROI2DArea(aVal.flyRoi);
+		axis1 = aVal.axis1;
+		axis2 = aVal.axis2;
 	}
 	
 	Point2D getCenterRectangle() {

@@ -25,7 +25,7 @@ public class Move  extends JPanel
 	JCheckBox 	distanceCheckBox 	= new JCheckBox("distance", true);
 	JCheckBox 	aliveCheckBox 		= new JCheckBox("alive", true);
 	JCheckBox 	sleepCheckBox 		= new JCheckBox("sleep", true);
-	JCheckBox 	rectSizeCheckBox 	= new JCheckBox("rect size", false);
+	JCheckBox 	rectSizeCheckBox 	= new JCheckBox("ellipse axes", false);
 	
 	JButton 	exportToXLSButton 	= new JButton("save XLS");
 	JCheckBox	deadEmptyCheckBox   = new JCheckBox("dead=empty");	
