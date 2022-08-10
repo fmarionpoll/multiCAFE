@@ -151,7 +151,7 @@ public class XLSExportMoveResults extends XLSExport
 				
 		while (expi != null) 
 		{
-			int len = (int) ((expi.camLastImage_Ms - expi.camFirstImage_ms)/ options.buildExcelStepMs +1);
+			int len =  1 + (int) (expi.camLastImage_Ms - expi.camFirstImage_ms) / options.buildExcelStepMs;
 			if (len == 0)
 				continue;
 			double pixelsize = 32. / exp.capillaries.capillariesList.get(0).capPixels;
@@ -163,6 +163,8 @@ public class XLSExportMoveResults extends XLSExport
 				results.nflies = cage.cageNFlies;
 				if (results.nflies > 0) 
 				{
+					results.setPixelSize(pixelsize);
+					
 					switch (xlsOption) 
 					{
 						case DISTANCE:
@@ -189,7 +191,6 @@ public class XLSExportMoveResults extends XLSExport
 							break;
 					}
 					
-					results.setPixelSize(pixelsize);
 					results.convertPixelsToPhysicalValues();
 					resultsArrayList.add(results);
 				}
@@ -405,7 +406,6 @@ public class XLSExportMoveResults extends XLSExport
 						valueL = pos.rectBounds.getX() + pos.rectBounds.getWidth()/2.;
 						valueR = pos.rectBounds.getY() + pos.rectBounds.getHeight()/2.;
 						break;
-						
 					case RECTSIZE:
 						valueL = pos.axis1;
 						valueR = pos.axis2;

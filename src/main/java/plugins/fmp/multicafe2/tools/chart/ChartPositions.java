@@ -99,21 +99,23 @@ public class ChartPositions extends IcyFrame
 	
 	private MaxMinDouble addPointsToXYSeries(Cage cage, EnumXLSExportType option, XYSeries seriesXY) 
 	{
-		XYTaSeriesArrayList positionxyt = cage.flyPositions;
-		int itmax = positionxyt.xytArrayList.size();
+		XYTaSeriesArrayList results = cage.flyPositions;
+		int itmax = results.xytArrayList.size();
 		MaxMinDouble yMaxMin = null;
 		if (itmax > 0) 
 		{
 			switch (option) 
 			{
 			case DISTANCE:
-				double previousY = positionxyt.xytArrayList.get(0).rectBounds.getY() + positionxyt.xytArrayList.get(0).rectBounds.getHeight()/2;
+				double previousY = results.xytArrayList.get(0).rectBounds.getY() 
+									+ results.xytArrayList.get(0).rectBounds.getHeight()/2;
 				
 				for ( int it = 0; it < itmax;  it++) 
 				{
-					double currentY = positionxyt.xytArrayList.get(it).rectBounds.getY() + positionxyt.xytArrayList.get(it).rectBounds.getHeight()/2;
+					double currentY = results.xytArrayList.get(it).rectBounds.getY() 
+							+ results.xytArrayList.get(it).rectBounds.getHeight()/2;
 					double ypos = currentY - previousY;
-					addxyPos(seriesXY, positionxyt, it, ypos);
+					addxyPos(seriesXY, results, it, ypos);
 					previousY = currentY;
 				}
 				Rectangle rect = cage.cageRoi2D.getBounds();
@@ -124,9 +126,9 @@ public class ChartPositions extends IcyFrame
 			case ISALIVE:
 				for ( int it = 0; it < itmax;  it++) 
 				{
-					boolean alive = positionxyt.xytArrayList.get(it).bAlive;
+					boolean alive = results.xytArrayList.get(it).bAlive;
 					double ypos = alive? 1.0: 0.0;
-					addxyPos(seriesXY, positionxyt, it, ypos);
+					addxyPos(seriesXY, results, it, ypos);
 				}
 				yMaxMin = new MaxMinDouble(0., 1.2);
 				break;
@@ -134,21 +136,21 @@ public class ChartPositions extends IcyFrame
 			case SLEEP:
 				for ( int it = 0; it < itmax;  it++) 
 				{
-					boolean sleep = positionxyt.xytArrayList.get(it).bSleep;
+					boolean sleep = results.xytArrayList.get(it).bSleep;
 					double ypos = sleep ? 1.0: 0.0;
-					addxyPos(seriesXY, positionxyt, it, ypos);
+					addxyPos(seriesXY, results, it, ypos);
 				}
 				yMaxMin = new MaxMinDouble(0., 1.2);
 				break;
 				
 			default:
 				Rectangle rect1 = cage.cageRoi2D.getBounds();
-				double yOrigin = rect1.getY()+rect1.getHeight();	
+				double yOrigin = rect1.getY() + rect1.getHeight();	
 				for ( int it = 0; it < itmax;  it++) 
 				{
-					Rectangle2D itRect = positionxyt.xytArrayList.get(it).rectBounds;
+					Rectangle2D itRect = results.xytArrayList.get(it).rectBounds;
 					double ypos = yOrigin - itRect.getY();
-					addxyPos(seriesXY, positionxyt, it, ypos);
+					addxyPos(seriesXY, results, it, ypos);
 				}
 				yMaxMin = new MaxMinDouble(0., rect1.height * 1.2);
 				break;

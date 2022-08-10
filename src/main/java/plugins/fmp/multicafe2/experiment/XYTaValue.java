@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe2.experiment;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import org.w3c.dom.Element;
@@ -19,6 +20,7 @@ public class XYTaValue implements XMLPersistent
 	public boolean 	bSleep 		= false;
 	public boolean  bPadded		= false;
 	public double	distance 	= 0.;
+	public double  	sumDistance = 0;
 	public double   axis1	    = 0.;
 	public double   axis2	   	= 0.;
 	
@@ -35,15 +37,15 @@ public class XYTaValue implements XMLPersistent
 	public XYTaValue(int indexT, Rectangle2D rectangle, ROI2DArea roiArea) 
 	{
 		if (rectangle != null)
-			this.rectBounds = rectangle;
-		flyRoi = roiArea;
+			this.rectBounds.setRect(rectangle);
+		this.flyRoi = new ROI2DArea(roiArea);
 		this.indexT = indexT;
 	}
 	
 	public XYTaValue(int indexT, Rectangle2D rectangle, boolean alive) 
 	{
 		if (rectangle != null)
-			this.rectBounds = rectangle;
+			this.rectBounds.setRect(rectangle);
 		this.indexT = indexT;
 		this.bAlive = alive;
 	}
@@ -55,8 +57,18 @@ public class XYTaValue implements XMLPersistent
 		bSleep = aVal.bSleep;
 		bPadded = aVal.bPadded;
 		distance = aVal.distance;
-		rectBounds = (Rectangle2D) aVal.rectBounds.clone();
-		flyRoi = aVal.flyRoi;
+		rectBounds.setRect(aVal.rectBounds); 
+		if (		aVal.flyRoi != null 
+				&& aVal.flyRoi.getBounds().height > 0 
+				&& aVal.flyRoi.getBounds().width > 0
+			) 
+			flyRoi = new ROI2DArea(aVal.flyRoi);
+	}
+	
+	Point2D getCenterRectangle() {
+		return new Point2D.Double (
+				rectBounds.getX() + rectBounds.getWidth()/2,
+				rectBounds.getY() + rectBounds.getHeight()/2);
 	}
 	
 	@Override

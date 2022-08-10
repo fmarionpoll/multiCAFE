@@ -35,11 +35,11 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	public double			pixelsize			= 1.;
 	public int				nflies				= 1;
 	
-	private String ID_NBITEMS 			= "nb_items";
-	private String ID_POSITIONSLIST 	= "PositionsList";
-	private String ID_LASTIMEITMOVED 	= "lastTimeItMoved";
-	private String ID_TLAST				= "tlast";
-	private String ID_ILAST				= "ilast";
+	private String ID_NBITEMS 		= "nb_items";
+	private String ID_POSITIONSLIST	= "PositionsList";
+	private String ID_LASTIMEITMOVED= "lastTimeItMoved";
+	private String ID_TLAST			= "tlast";
+	private String ID_ILAST			= "ilast";
 
 	
 	public XYTaSeriesArrayList() 
@@ -52,7 +52,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		this.exportType = exportType;
 		this.binsize = binsize;
 		xytArrayList = new ArrayList<XYTaValue>(nFrames);
-		for (int i = 0; i< nFrames; i++) 
+		for (int i = 0; i < nFrames; i++) 
 			xytArrayList.add(new XYTaValue(i));
 	}
 	
@@ -191,7 +191,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	
 	public void computeIsAlive() 
 	{
-		computeDistanceBetweenPoints();
+		computeDistanceBetweenConsecutivePoints();
 		lastIntervalAlive = 0;
 		boolean isalive = false;
 		for (int i= xytArrayList.size() - 1; i >= 0; i--) 
@@ -224,19 +224,34 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		}
 	}
 
-	public void computeDistanceBetweenPoints() 
+	public void computeDistanceBetweenConsecutivePoints() 
 	{
-		if (xytArrayList.size() > 0) 
+		if (xytArrayList.size() <= 0)
+			return;
+		
+		// assume ordered points
+		Point2D previousPoint = xytArrayList.get(0).getCenterRectangle();
+		for (XYTaValue pos: xytArrayList) 
 		{
-			Point2D previousPoint = getCenterRectangle(xytArrayList.get(0));
-			for (XYTaValue pos: xytArrayList) 
-			{
-				Point2D currentPoint = getCenterRectangle(pos);
-				pos.distance = currentPoint.distance(previousPoint);
-				if (previousPoint.getX() < 0 || currentPoint.getX() < 0)
-					pos.distance = Double.NaN;
-				previousPoint = currentPoint;
-			}
+			Point2D currentPoint = pos.getCenterRectangle();
+			pos.distance = currentPoint.distance(previousPoint);
+			if (previousPoint.getX() < 0 || currentPoint.getX() < 0)
+				pos.distance = Double.NaN;
+			previousPoint = currentPoint;
+		}
+	}
+	
+	public void computeCumulatedDistance() 
+	{
+		if (xytArrayList.size() <= 0)
+			return;
+		
+		// assume ordered points
+		double sum = 0.;
+		for (XYTaValue pos: xytArrayList) 
+		{
+			sum += pos.distance;
+			pos.sumDistance = sum;
 		}
 	}
 	
@@ -244,24 +259,34 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	
 	public void computeDistanceBetweenPoints(XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
 	{
-		if (flyPositions.xytArrayList.size() > 0) 
+		if (flyPositions.xytArrayList.size() <= 0)
+			return;
+		
+		flyPositions.computeDistanceBetweenConsecutivePoints();
+		flyPositions.computeCumulatedDistance();
+		
+		int it_start = 0;
+		int nintervals = xytArrayList.size();
+		int it_end = (nintervals - 1) * buildExcelStepMs;
+		
+		double sumDistance_previous = 0;
+		
+		for (int it_ms = it_start; it_ms < it_end; it_ms += buildExcelStepMs) 
 		{
-			int it_start = 0;
-			int it_end = flyPositions.xytArrayList.size() * stepMs;
-			Point2D previousPoint = getCenterRectangle(xytArrayList.get(it_start));
+			int index_out = it_ms / buildExcelStepMs;
+			XYTaValue pos_out = xytArrayList.get(index_out);
 			
-			int it_out = 0;
-			for (int it = it_start; it < it_end && it_out < xytArrayList.size(); it += buildExcelStepMs, it_out++) 
+			int index_from = it_ms / stepMs;
+			int index_from_remainder = it_ms % stepMs;
+			XYTaValue pos_from = xytArrayList.get(index_from);
+			
+			double delta = 0;
+			if (index_from_remainder != 0 && (index_from + 1 < flyPositions.xytArrayList.size())) 
 			{
-				XYTaValue pos = xytArrayList.get(it_out);
-				Point2D currentPoint = getCenterRectangle(pos);
-				int index = it/stepMs;
-				pos.copy(flyPositions.xytArrayList.get(index));
-				pos.distance = currentPoint.distance(previousPoint);
-				if (previousPoint.getX() < 0 || currentPoint.getX() < 0)
-					pos.distance = Double.NaN;
-				previousPoint = currentPoint;
+				delta = xytArrayList.get(index_from+1).distance * index_from_remainder / stepMs;
 			}
+			pos_out.distance = pos_from.sumDistance - sumDistance_previous + delta;
+			sumDistance_previous = pos_from.sumDistance;
 		}
 	}
 	
@@ -362,12 +387,6 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		return xytArrayList.get(1).indexT - xytArrayList.get(0).indexT;
 	}
 	
-	Point2D getCenterRectangle(XYTaValue value) {
-		return new Point2D.Double (
-				value.rectBounds.getX() + value.rectBounds.getWidth()/2,
-				value.rectBounds.getY() + value.rectBounds.getHeight()/2);
-	}
-	
 	public Double getDistanceBetween2Points(int firstTimeIndex, int secondTimeIndex) 
 	{
 		if (xytArrayList.size() < 2)
@@ -380,9 +399,9 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		XYTaValue pos2 = xytArrayList.get(secondIndex);
 		if (pos1.rectBounds.getX() < 0 || pos2.rectBounds.getX()  < 0)
 			return Double.NaN;
-		Point2D point1 = getCenterRectangle(pos1);
-		Point2D point2 = getCenterRectangle(pos2);
-		Double distance = point2.distance(point1); 
+
+		Point2D point2 = pos2.getCenterRectangle();
+		Double distance = point2.distance(pos1.getCenterRectangle()); 
 		return distance;
 	}
 	
@@ -398,7 +417,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 
 	private List<Integer> getDistanceAsMoveOrNot() 
 	{
-		computeDistanceBetweenPoints();
+		computeDistanceBetweenConsecutivePoints();
 		ArrayList<Integer> dataArray = new ArrayList<Integer>();
 		dataArray.ensureCapacity(xytArrayList.size());
 		for (int i= 0; i< xytArrayList.size(); i++) 
@@ -479,7 +498,6 @@ public class XYTaSeriesArrayList implements XMLPersistent
 				try {
 					ellipsoidValues = ROI2DMeasures.computeOrientation(pos.flyRoi, null);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				pos.axis1 = ellipsoidValues[0];
