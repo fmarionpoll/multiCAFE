@@ -257,7 +257,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 	
 	// -----------------------------------------------------------
 	
-	public void computeDistanceBetweenPoints(XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
+	public void computeDistanceBetweenPoints(XYTaSeriesArrayList flyPositions, int dataStepMs, int excelStepMs) 
 	{
 		if (flyPositions.xytArrayList.size() <= 0)
 			return;
@@ -265,28 +265,28 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		flyPositions.computeDistanceBetweenConsecutivePoints();
 		flyPositions.computeCumulatedDistance();
 		
-		int it_start = 0;
-		int nintervals = xytArrayList.size();
-		int it_end = (nintervals - 1) * buildExcelStepMs;
+		int excel_startMs = 0;
+		int n_excel_intervals = xytArrayList.size();
+		int excel_endMs = (n_excel_intervals - 1) * excelStepMs;
 		
 		double sumDistance_previous = 0;
 		
-		for (int it_ms = it_start; it_ms < it_end; it_ms += buildExcelStepMs) 
+		for (int excel_Ms = excel_startMs; excel_Ms < excel_endMs; excel_Ms += excelStepMs) 
 		{
-			int index_out = it_ms / buildExcelStepMs;
-			XYTaValue pos_out = xytArrayList.get(index_out);
+			int excel_bin = excel_Ms / excelStepMs;
+			XYTaValue excel_pos = xytArrayList.get(excel_bin);
 			
-			int index_from = it_ms / stepMs;
-			int index_from_remainder = it_ms % stepMs;
-			XYTaValue pos_from = xytArrayList.get(index_from);
+			int data_bin = excel_Ms / dataStepMs;
+			int data_bin_remainder = excel_Ms % dataStepMs;
+			XYTaValue data_pos = xytArrayList.get(data_bin);
 			
 			double delta = 0;
-			if (index_from_remainder != 0 && (index_from + 1 < flyPositions.xytArrayList.size())) 
+			if (data_bin_remainder != 0 && (data_bin + 1 < flyPositions.xytArrayList.size())) 
 			{
-				delta = xytArrayList.get(index_from+1).distance * index_from_remainder / stepMs;
+				delta = xytArrayList.get(data_bin+1).distance * data_bin_remainder / dataStepMs;
 			}
-			pos_out.distance = pos_from.sumDistance - sumDistance_previous + delta;
-			sumDistance_previous = pos_from.sumDistance;
+			excel_pos.distance = data_pos.sumDistance - sumDistance_previous + delta;
+			sumDistance_previous = data_pos.sumDistance;
 		}
 	}
 	
@@ -339,17 +339,26 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		}
 	}
 	
-	public void computeEllipse(XYTaSeriesArrayList flyPositions, int stepMs, int buildExcelStepMs) 
+	public void computeEllipse(XYTaSeriesArrayList flyPositions, int dataStepMs, int excelStepMs) 
 	{
+		if (flyPositions.xytArrayList.size() <= 0)
+			return;
+		
 		flyPositions.computeEllipseAxes();
-		int it_start = 0;
-		int it_end = flyPositions.xytArrayList.size() * stepMs;
-		int it_out = 0;
-		for (int it = it_start; it < it_end && it_out < xytArrayList.size(); it += buildExcelStepMs, it_out++) 
+		int excel_startMs = 0;
+		int n_excel_intervals = xytArrayList.size();
+		int excel_endMs = (n_excel_intervals - 1) * excelStepMs;
+		
+		for (int excel_Ms = excel_startMs; excel_Ms < excel_endMs; excel_Ms += excelStepMs) 
 		{
-			int index = it/stepMs;
-			XYTaValue pos = xytArrayList.get(it_out);
-			pos.bSleep = flyPositions.xytArrayList.get(index).bSleep;
+			int excel_bin = excel_Ms / excelStepMs;
+			XYTaValue excel_pos = xytArrayList.get(excel_bin);
+			
+			int data_bin = excel_Ms / dataStepMs;
+			XYTaValue data_pos = xytArrayList.get(data_bin);
+			
+			excel_pos.axis1 = data_pos.axis1;
+			excel_pos.axis2 = data_pos.axis2;
 		}
 	}
 	
