@@ -21,7 +21,6 @@ public class BuildCages extends JPanel implements PropertyChangeListener
 	BuildCagesAsArray 		tabBuildCages1	= new BuildCagesAsArray();
 	BuildCagesFromContours 	tabBuildCages2	= new BuildCagesFromContours();
 	JTabbedPane 	tabsPane				= new JTabbedPane();
-	int				previouslySelected		= -1;
 	int				iTAB_CAGES1				= 0;
 	int 			iTAB_CAGES2				= 1;
 	MultiCAFE2 		parent0					= null;
@@ -32,7 +31,6 @@ public class BuildCages extends JPanel implements PropertyChangeListener
 		this.parent0 = parent0;
 		
 		createTabs(capLayout);
-		tabsPane.setSelectedIndex(0);
 		add(tabsPane);
 		
 		tabsPane.addChangeListener(new ChangeListener() {
@@ -40,12 +38,10 @@ public class BuildCages extends JPanel implements PropertyChangeListener
 	        public void stateChanged(ChangeEvent e) 
 			{
 	            int selectedIndex = tabsPane.getSelectedIndex();
-	            previouslySelected = selectedIndex;
-	    		boolean activateOverlay = false;
-	            if (selectedIndex == iTAB_CAGES1) 
-	            	activateOverlay = true;
-	            tabBuildCages2.overlayCheckBox.setSelected(activateOverlay);
+	            displayOverlay (selectedIndex == iTAB_CAGES2); 
 	        }});
+		
+		tabsPane.setSelectedIndex(0);
 	}
 	
 	void createTabs(GridLayout capLayout) 
@@ -68,7 +64,13 @@ public class BuildCages extends JPanel implements PropertyChangeListener
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
-		
+//		JTabbedPane sourceTabbedPane = (JTabbedPane) evt.getSource();
+		int index = tabsPane.getSelectedIndex();
+		displayOverlay (index == 1);
+	}
+	
+	private void displayOverlay (boolean activateOverlay) 
+	{
+        tabBuildCages2.overlayCheckBox.setSelected(activateOverlay);
 	}
 }
