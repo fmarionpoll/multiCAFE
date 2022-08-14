@@ -33,6 +33,7 @@ public class FlyDetect1 extends BuildSeries
 		if (!stopFlag)
 			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
 		exp.seqCamData.closeSequence();
+		closeSequence(seqNegative);
     }
 	
 	private void runFlyDetect1(Experiment exp) 
