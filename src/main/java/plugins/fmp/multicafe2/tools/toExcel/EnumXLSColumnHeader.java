@@ -21,7 +21,7 @@ public enum EnumXLSColumnHeader
 	CAP 		("Cap", 		10),
 	CAPVOLUME	("Cap_ul", 		11), 
 	CAPPIXELS 	("Cap_npixels", 12), 
-	CAGECOMMENT	("Choice",		13),  
+	CAPCHOICE	("Cap_choice",	13),  
 	CAPSTIM		("Cap_stim", 	14), 
 	CAPCONC		("Cap_conc", 	15),
 	NFLIES		("Nflies", 		16), 

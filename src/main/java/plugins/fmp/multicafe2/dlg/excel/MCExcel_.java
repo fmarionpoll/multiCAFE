@@ -19,7 +19,7 @@ import plugins.fmp.multicafe2.dlg.JComponents.Dialog;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.toExcel.XLSExportCapillariesResults;
 import plugins.fmp.multicafe2.tools.toExcel.XLSExportGulpsResults;
-import plugins.fmp.multicafe2.tools.toExcel.XLSExportMoveResults;
+import plugins.fmp.multicafe2.tools.toExcel.XLSExportCageResults;
 import plugins.fmp.multicafe2.tools.toExcel.XLSExportOptions;
 
 
@@ -98,7 +98,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 			{ 
 				@Override public void run() 
 				{
-					XLSExportMoveResults xlsExport = new XLSExportMoveResults();
+					XLSExportCageResults xlsExport = new XLSExportCageResults();
 					xlsExport.exportToFile(file, getMoveOptions());
 				}});
 		} 
