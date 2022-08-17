@@ -615,22 +615,22 @@ public class Experiment
 		String strField = null;
 		switch (field)
 		{
-		case COMMENT1:
+		case EXP_STIM:
 			strField = field_comment1;
 			break;
-		case COMMENT2:
+		case EXP_CONC:
 			strField = field_comment2;
 			break;
-		case EXPT:
+		case EXP_EXPT:
 			strField = field_experiment;
 			break;
-		case BOXID:
+		case EXP_BOXID:
 			strField = field_boxID;
 			break;
-		case STRAIN:
+		case EXP_STRAIN:
 			strField = field_strain;
 			break;
-		case SEX:
+		case EXP_SEX:
 			strField = field_sex;
 			break;
 		default:
@@ -643,22 +643,22 @@ public class Experiment
 	{
 		switch (field)
 		{
-		case COMMENT1:
+		case EXP_STIM:
 			field_comment1 = strField;
 			break;
-		case COMMENT2:
+		case EXP_CONC:
 			field_comment2  = strField;
 			break;
-		case EXPT:
+		case EXP_EXPT:
 			field_experiment = strField;
 			break;
-		case BOXID:
+		case EXP_BOXID:
 			field_boxID  = strField; 
 			break;
-		case STRAIN:
+		case EXP_STRAIN:
 			field_strain  = strField; 
 			break;
-		case SEX:
+		case EXP_SEX:
 			field_sex  = strField; 
 			break;
 		default:

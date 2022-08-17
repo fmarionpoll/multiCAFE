@@ -27,12 +27,12 @@ public class Edit   extends JPanel
 
 	private JComboBox<EnumXLSColumnHeader>	headersCombo = new JComboBox<EnumXLSColumnHeader>
 			(new EnumXLSColumnHeader[] {
-					EnumXLSColumnHeader.EXPT
-					, EnumXLSColumnHeader.BOXID
-					, EnumXLSColumnHeader.COMMENT1
-					, EnumXLSColumnHeader.COMMENT2
-					, EnumXLSColumnHeader.STRAIN
-					, EnumXLSColumnHeader.SEX
+					EnumXLSColumnHeader.EXP_EXPT
+					, EnumXLSColumnHeader.EXP_BOXID
+					, EnumXLSColumnHeader.EXP_STIM
+					, EnumXLSColumnHeader.EXP_CONC
+					, EnumXLSColumnHeader.EXP_STRAIN
+					, EnumXLSColumnHeader.EXP_SEX
 //					, EnumXLSColumnHeader.CAPSTIM
 //					, EnumXLSColumnHeader.CAPCONC
 					});

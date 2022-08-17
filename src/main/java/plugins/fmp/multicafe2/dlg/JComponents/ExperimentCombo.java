@@ -284,12 +284,12 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	private boolean isSameDescriptors(Experiment exp, Experiment expi) 
 	{
 		boolean flag = true;
-		flag &= expi.getField(EnumXLSColumnHeader.EXPT) .equals(exp.getField(EnumXLSColumnHeader.EXPT)) ; 
-		flag &= expi.getField(EnumXLSColumnHeader.BOXID) .equals(exp.getField(EnumXLSColumnHeader.BOXID)) ;
-		flag &= expi.getField(EnumXLSColumnHeader.COMMENT1) .equals(exp.getField(EnumXLSColumnHeader.COMMENT1));
-		flag &= expi.getField(EnumXLSColumnHeader.COMMENT2) .equals(exp.getField(EnumXLSColumnHeader.COMMENT2));
-		flag &= expi.getField(EnumXLSColumnHeader.STRAIN) .equals(exp.getField(EnumXLSColumnHeader.STRAIN));
-		flag &= expi.getField(EnumXLSColumnHeader.SEX) .equals(exp.getField(EnumXLSColumnHeader.SEX));
+		flag &= expi.getField(EnumXLSColumnHeader.EXP_EXPT) .equals(exp.getField(EnumXLSColumnHeader.EXP_EXPT)) ; 
+		flag &= expi.getField(EnumXLSColumnHeader.EXP_BOXID) .equals(exp.getField(EnumXLSColumnHeader.EXP_BOXID)) ;
+		flag &= expi.getField(EnumXLSColumnHeader.EXP_STIM) .equals(exp.getField(EnumXLSColumnHeader.EXP_STIM));
+		flag &= expi.getField(EnumXLSColumnHeader.EXP_CONC) .equals(exp.getField(EnumXLSColumnHeader.EXP_CONC));
+		flag &= expi.getField(EnumXLSColumnHeader.EXP_STRAIN) .equals(exp.getField(EnumXLSColumnHeader.EXP_STRAIN));
+		flag &= expi.getField(EnumXLSColumnHeader.EXP_SEX) .equals(exp.getField(EnumXLSColumnHeader.EXP_SEX));
 		return flag;
 	}
 

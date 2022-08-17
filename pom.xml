@@ -13,7 +13,7 @@
 
     <!-- Project Information -->
     <artifactId>multiCAFE2</artifactId>
-    <version>2.0.41</version>
+    <version>2.0.42</version>
     
     <packaging>jar</packaging>
 
@@ -82,10 +82,6 @@
         	<artifactId>xuggler</artifactId>
         </dependency>
         <dependency>
-        	<groupId>org.apache.poi</groupId>
-        	<artifactId>poi</artifactId>
-        </dependency>
-        <dependency>
         	<groupId>org.bioimageanalysis.icy</groupId>
         	<artifactId>flanagan</artifactId>
         </dependency>
@@ -113,6 +109,7 @@
         <dependency>
         	<groupId>org.apache.poi</groupId>
         	<artifactId>poi-ooxml</artifactId>
+        	<version>4.1.1</version>
         </dependency>
         <dependency>
         	<groupId>org.bioimageanalysis.icy</groupId>
@@ -150,11 +147,6 @@
     </distributionManagement>
     <dependencyManagement>
     	<dependencies>
-    		<dependency>
-    			<groupId>org.apache.poi</groupId>
-    			<artifactId>poi</artifactId>
-    			<version>3.17</version>
-    		</dependency>
     		<dependency>
     			<groupId>org.bioimageanalysis.icy</groupId>
     			<artifactId>flanagan</artifactId>
@@ -194,11 +186,6 @@
     			<groupId>org.bioimageanalysis.icy</groupId>
     			<artifactId>xuggler</artifactId>
     			<version>5.5.2</version>
-    		</dependency>
-    		<dependency>
-    			<groupId>org.apache.poi</groupId>
-    			<artifactId>poi-ooxml</artifactId>
-    			<version>3.17</version>
     		</dependency>
     	</dependencies>
     </dependencyManagement>

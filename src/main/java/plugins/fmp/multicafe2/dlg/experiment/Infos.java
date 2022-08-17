@@ -32,12 +32,12 @@ public class Infos  extends JPanel
 	private JComboBox<String> 	strainCombo 	= new JComboBox<String>(new SortedComboBoxModel());
 	private JComboBox<String> 	sexCombo 		= new JComboBox<String>(new SortedComboBoxModel());
 	
-	private JLabel				experimentCheck	= new JLabel(EnumXLSColumnHeader.EXPT.toString());
-	private JLabel				boxIDCheck		= new JLabel(EnumXLSColumnHeader.BOXID.toString());
-	private JLabel				comment1Check	= new JLabel(EnumXLSColumnHeader.COMMENT1.toString());
-	private JLabel				comment2Check	= new JLabel(EnumXLSColumnHeader.COMMENT2.toString());
-	private JLabel				strainCheck		= new JLabel(EnumXLSColumnHeader.STRAIN.toString());
-	private JLabel				sexCheck		= new JLabel(EnumXLSColumnHeader.SEX.toString());
+	private JLabel				experimentCheck	= new JLabel(EnumXLSColumnHeader.EXP_EXPT.toString());
+	private JLabel				boxIDCheck		= new JLabel(EnumXLSColumnHeader.EXP_BOXID.toString());
+	private JLabel				comment1Check	= new JLabel(EnumXLSColumnHeader.EXP_STIM.toString());
+	private JLabel				comment2Check	= new JLabel(EnumXLSColumnHeader.EXP_CONC.toString());
+	private JLabel				strainCheck		= new JLabel(EnumXLSColumnHeader.EXP_STRAIN.toString());
+	private JLabel				sexCheck		= new JLabel(EnumXLSColumnHeader.EXP_SEX.toString());
 	
 	private JButton				openButton		= new JButton("Load...");
 	private JButton				saveButton		= new JButton("Save...");
@@ -138,12 +138,12 @@ public class Infos  extends JPanel
 	
 	public void setExperimentInfosToDialog(Experiment exp) 
 	{
-		setInfoCombo(exp, boxIDCombo, EnumXLSColumnHeader.BOXID, exp.getField(EnumXLSColumnHeader.BOXID)); 
-		setInfoCombo(exp, exptCombo, EnumXLSColumnHeader.EXPT, exp.getField(EnumXLSColumnHeader.EXPT)) ;
-		setInfoCombo(exp, cmt1Combo, EnumXLSColumnHeader.COMMENT1, exp.getField(EnumXLSColumnHeader.COMMENT1)) ;
-		setInfoCombo(exp, comt2Combo, EnumXLSColumnHeader.COMMENT2, exp.getField(EnumXLSColumnHeader.COMMENT2)) ;
-		setInfoCombo(exp, strainCombo, EnumXLSColumnHeader.STRAIN, exp.getField(EnumXLSColumnHeader.STRAIN)) ;
-		setInfoCombo(exp, sexCombo, EnumXLSColumnHeader.SEX, exp.getField(EnumXLSColumnHeader.SEX)) ;
+		setInfoCombo(exp, boxIDCombo, EnumXLSColumnHeader.EXP_BOXID, exp.getField(EnumXLSColumnHeader.EXP_BOXID)); 
+		setInfoCombo(exp, exptCombo, EnumXLSColumnHeader.EXP_EXPT, exp.getField(EnumXLSColumnHeader.EXP_EXPT)) ;
+		setInfoCombo(exp, cmt1Combo, EnumXLSColumnHeader.EXP_STIM, exp.getField(EnumXLSColumnHeader.EXP_STIM)) ;
+		setInfoCombo(exp, comt2Combo, EnumXLSColumnHeader.EXP_CONC, exp.getField(EnumXLSColumnHeader.EXP_CONC)) ;
+		setInfoCombo(exp, strainCombo, EnumXLSColumnHeader.EXP_STRAIN, exp.getField(EnumXLSColumnHeader.EXP_STRAIN)) ;
+		setInfoCombo(exp, sexCombo, EnumXLSColumnHeader.EXP_SEX, exp.getField(EnumXLSColumnHeader.EXP_SEX)) ;
 	}
 	
 	private void setInfoCombo(Experiment exp, JComboBox<String> combo, EnumXLSColumnHeader field, String altText) 
@@ -157,12 +157,12 @@ public class Infos  extends JPanel
 
 	public void getExperimentInfosFromDialog(Experiment exp) 
 	{
-		exp.setField(EnumXLSColumnHeader.BOXID, (String) boxIDCombo.getSelectedItem());
-		exp.setField(EnumXLSColumnHeader.EXPT, (String) exptCombo.getSelectedItem());
-		exp.setField(EnumXLSColumnHeader.COMMENT1, (String) cmt1Combo.getSelectedItem());
-		exp.setField(EnumXLSColumnHeader.COMMENT2, (String) comt2Combo.getSelectedItem());
-		exp.setField(EnumXLSColumnHeader.STRAIN, (String) strainCombo.getSelectedItem());
-		exp.setField(EnumXLSColumnHeader.SEX, (String) sexCombo.getSelectedItem());
+		exp.setField(EnumXLSColumnHeader.EXP_BOXID, (String) boxIDCombo.getSelectedItem());
+		exp.setField(EnumXLSColumnHeader.EXP_EXPT, (String) exptCombo.getSelectedItem());
+		exp.setField(EnumXLSColumnHeader.EXP_STIM, (String) cmt1Combo.getSelectedItem());
+		exp.setField(EnumXLSColumnHeader.EXP_CONC, (String) comt2Combo.getSelectedItem());
+		exp.setField(EnumXLSColumnHeader.EXP_STRAIN, (String) strainCombo.getSelectedItem());
+		exp.setField(EnumXLSColumnHeader.EXP_SEX, (String) sexCombo.getSelectedItem());
 	}
 	
 	private void addItemToComboIfNew(String toAdd, JComboBox<String> combo) 
@@ -176,12 +176,12 @@ public class Infos  extends JPanel
 		
 	void initInfosCombos()
 	{
-		parent0.expListCombo.getFieldValuesToCombo(exptCombo, EnumXLSColumnHeader.EXPT); 
-		parent0.expListCombo.getFieldValuesToCombo(cmt1Combo, EnumXLSColumnHeader.COMMENT1);
-		parent0.expListCombo.getFieldValuesToCombo(comt2Combo, EnumXLSColumnHeader.COMMENT2);
-		parent0.expListCombo.getFieldValuesToCombo(boxIDCombo, EnumXLSColumnHeader.BOXID);
-		parent0.expListCombo.getFieldValuesToCombo(strainCombo, EnumXLSColumnHeader.STRAIN);
-		parent0.expListCombo.getFieldValuesToCombo(sexCombo, EnumXLSColumnHeader.SEX);
+		parent0.expListCombo.getFieldValuesToCombo(exptCombo, EnumXLSColumnHeader.EXP_EXPT); 
+		parent0.expListCombo.getFieldValuesToCombo(cmt1Combo, EnumXLSColumnHeader.EXP_STIM);
+		parent0.expListCombo.getFieldValuesToCombo(comt2Combo, EnumXLSColumnHeader.EXP_CONC);
+		parent0.expListCombo.getFieldValuesToCombo(boxIDCombo, EnumXLSColumnHeader.EXP_BOXID);
+		parent0.expListCombo.getFieldValuesToCombo(strainCombo, EnumXLSColumnHeader.EXP_STRAIN);
+		parent0.expListCombo.getFieldValuesToCombo(sexCombo, EnumXLSColumnHeader.EXP_SEX);
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null)
 			setExperimentInfosToDialog(exp);
