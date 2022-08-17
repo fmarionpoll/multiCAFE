@@ -21,7 +21,7 @@ import plugins.fmp.multicafe2.tools.Comparators;
 
 
 
-public class XLSExportCageResults extends XLSExport 
+public class XLSExportMoveResults extends XLSExport 
 {
 	ExperimentCombo expList = null;
 	List <XYTaSeriesArrayList> rowsForOneExp = new ArrayList <XYTaSeriesArrayList> ();
@@ -60,19 +60,19 @@ public class XLSExportCageResults extends XLSExport
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				
 				if (options.xyImage)		
-					getCageDataAndExport(exp, column, charSeries, EnumXLSExportType.XYIMAGE);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.XYIMAGE);
 				if (options.xyCage) 		
-					getCageDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTOPCAGE);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTOPCAGE);
 				if (options.xyCapillaries)  	
-					getCageDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTIPCAPS);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.XYTIPCAPS);
 				if (options.ellipseAxes)
-					getCageDataAndExport(exp, column, charSeries, EnumXLSExportType.ELLIPSEAXES);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.ELLIPSEAXES);
 				if (options.distance)  	
-					getCageDataAndExport(exp, column, charSeries, EnumXLSExportType.DISTANCE);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.DISTANCE);
 				if (options.alive)	
-					getCageDataAndExport(exp, column, charSeries, EnumXLSExportType.ISALIVE);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.ISALIVE);
 				if (options.sleep) 	
-					getCageDataAndExport(exp, column, charSeries, EnumXLSExportType.SLEEP);
+					getMoveDataAndExport(exp, column, charSeries, EnumXLSExportType.SLEEP);
 				
 				if (!options.collateSeries || exp.chainToPreviousExperiment == null)
 					column += expList.maxSizeOfCapillaryArrays +2;
@@ -93,26 +93,35 @@ public class XLSExportCageResults extends XLSExport
 		System.out.println("XLS output finished");
 	}
 	
-	private int getCageDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType xlsExport) 
+	private int getMoveDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType xlsExport) 
 	{	
 		getMoveDataFromOneSeriesOfExperiments(exp, xlsExport);
 		XSSFSheet sheet = xlsInitSheet(xlsExport.toString(), xlsExport);
-		int colmax = xlsExportCageResultsArrayToSheet(sheet, xlsExport, col0, charSeries);	
+		int colmax = xlsExportResultsArrayToSheet(sheet, xlsExport, col0, charSeries);	
 		if (options.onlyalive) 
 		{
 			trimDeadsFromRowMoveData(exp);
 			sheet = xlsInitSheet(xlsExport.toString()+"_alive", xlsExport);
-			xlsExportCageResultsArrayToSheet(sheet, xlsExport, col0, charSeries);
+			xlsExportResultsArrayToSheet(sheet, xlsExport, col0, charSeries);
 		}
 		return colmax;
 	}
 	
-	private void getCageDescriptorsForOneExperiment( Experiment exp, EnumXLSExportType xlsOption) 
+	private void getMoveDescriptorsForOneExperiment( Experiment exp, EnumXLSExportType xlsOption) 
 	{
-		getExperimentDescriptors(exp, xlsOption);
-		
+		// loop to get all capillaries into expAll and init rows for this experiment
+		expAll.cages.copy(exp.cages);
+		expAll.capillaries.copy(exp.capillaries);
 		expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
 		expAll.lastImage_FileTime 	= exp.lastImage_FileTime;
+		expAll.setExperimentDirectory( exp.getExperimentDirectory());
+		expAll.setField(EnumXLSColumnHeader.BOXID, exp.getField(EnumXLSColumnHeader.BOXID));
+		expAll.setField(EnumXLSColumnHeader.EXPT, exp.getField(EnumXLSColumnHeader.EXPT));
+		expAll.setField(EnumXLSColumnHeader.COMMENT1, exp.getField(EnumXLSColumnHeader.COMMENT1));
+		expAll.setField(EnumXLSColumnHeader.COMMENT2, exp.getField(EnumXLSColumnHeader.COMMENT2));
+		expAll.setField(EnumXLSColumnHeader.SEX, exp.getField(EnumXLSColumnHeader.SEX));
+		expAll.setField(EnumXLSColumnHeader.STRAIN, exp.getField(EnumXLSColumnHeader.STRAIN));
+	
 		Experiment expi = exp.chainToNextExperiment;
 		while (expi != null ) 
 		{
@@ -122,7 +131,6 @@ public class XLSExportCageResults extends XLSExport
 		}
 		expAll.camFirstImage_ms = expAll.firstImage_FileTime.toMillis();
 		expAll.camLastImage_Ms = expAll.lastImage_FileTime.toMillis();
-		
 		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_ms) / options.buildExcelStepMs +1);
 		int ncages = expAll.cages.cagesList.size();
 		rowsForOneExp = new ArrayList <XYTaSeriesArrayList> (ncages);
@@ -138,7 +146,7 @@ public class XLSExportCageResults extends XLSExport
 	
 	private void getMoveDataFromOneSeriesOfExperiments(Experiment exp, EnumXLSExportType xlsOption) 
 	{	
-		getCageDescriptorsForOneExperiment (exp, xlsOption);
+		getMoveDescriptorsForOneExperiment (exp, xlsOption);
 		Experiment expi = exp.getFirstChainedExperiment(true);  
 				
 		while (expi != null) 
@@ -334,10 +342,10 @@ public class XLSExportCageResults extends XLSExport
 		}	
 	}
 	
-	private int xlsExportCageResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) 
+	private int xlsExportResultsArrayToSheet(XSSFSheet sheet, EnumXLSExportType xlsExportOption, int col0, String charSeries) 
 	{
 		Point pt = new Point(col0, 0);
-		writeExperiment_descriptors(expAll, false, charSeries, sheet, pt, xlsExportOption);
+		writeExperiment_descriptors(expAll, charSeries, sheet, pt, xlsExportOption);
 		pt = writeData2(sheet, xlsExportOption, pt);
 		return pt.x;
 	}

@@ -22,7 +22,7 @@ import icy.gui.util.GuiUtil;
 
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
-import plugins.fmp.multicafe2.tools.toExcel.XLSExportCapillariesResults;
+import plugins.fmp.multicafe2.tools.toExcel.XLSExport;
 import plugins.fmp.multicafe2.tools.toExcel.XLSExportOptions;
 import plugins.fmp.multicafe2.tools.toExcel.XLSResults;
 import plugins.fmp.multicafe2.tools.toExcel.XLSResultsArray;
@@ -65,17 +65,15 @@ public class ChartLevels extends IcyFrame
 			boolean subtractEvaporation, 
 			List<XYSeriesCollection> xyList) 
 	{
-		XLSExportCapillariesResults xlsExport = new XLSExportCapillariesResults();
+		XLSExport xlsExport = new XLSExport();
 		XLSExportOptions options = new XLSExportOptions();
 		options.buildExcelStepMs = 60000;
 		options.t0 = true;
 		options.subtractEvaporation = subtractEvaporation;
-//		XLSResultsArray resultsList = getCapillaryDataFromOneExperimentSeriesForGraph(exp, exportType, options);
-		XLSResultsArray resultsList = xlsExport.getCapillaryDataFromOneExperimentSeries(exp, exportType);
+		XLSResultsArray resultsList = xlsExport.getCapDataFromOneExperimentSeriesForGraph(exp, exportType, options);
 		XLSResultsArray resultsList2 = null;
 		if (exportType == EnumXLSExportType.TOPLEVEL) 
-//			resultsList2 = getCapillaryDataFromOneExperimentSeriesForGraph(exp, EnumXLSExportType.BOTTOMLEVEL, options);
-			resultsList = xlsExport.getCapillaryDataFromOneExperimentSeries(exp, EnumXLSExportType.BOTTOMLEVEL);
+			resultsList2 = xlsExport.getCapDataFromOneExperimentSeriesForGraph(exp, EnumXLSExportType.BOTTOMLEVEL, options);
 		
 		String previousName = null;
 		XYSeriesCollection xyDataset = null;
@@ -118,15 +116,6 @@ public class ChartLevels extends IcyFrame
 			xyList.add(xyDataset);
 	}
 	
-//	public XLSResultsArray getCapillaryDataFromOneExperimentSeriesForGraph(
-//			Experiment exp, 
-//			EnumXLSExportType exportType, 
-//			XLSExportOptions options) 
-//	{
-//		XLSExport xlsExport = new XLSExport();
-//		return xlsExport.getCapillaryDataFromOneExperimentSeries(exp, exportType);
-//	}
-//	
 	public void displayData(Experiment exp, EnumXLSExportType option, boolean subtractEvaporation) 
 	{
 		xyChartList.clear();

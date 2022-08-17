@@ -15,6 +15,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.experiment.Cage;
+import plugins.fmp.multicafe2.experiment.Capillaries;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 
@@ -37,7 +38,7 @@ public class XLSExport
 
 	// ------------------------------------------------
     	
-	protected Point writeExperiment_descriptors(Experiment exp, boolean cap_descriptors, String charSeries, XSSFSheet sheet, Point pt, EnumXLSExportType xlsExportOption) 
+	protected Point writeExperiment_descriptors(Experiment exp, String charSeries, XSSFSheet sheet, Point pt, EnumXLSExportType xlsExportOption) 
 	{
 		boolean transpose = options.transpose;
 		int row = pt.y;
@@ -117,7 +118,7 @@ public class XLSExport
 //			} 
 //			else 
 				XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, sheetName);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAPCHOICE.getValue(), transpose, desc_getChoiceTestType(capList, t));
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGECOMMENT.getValue(), transpose, desc_getChoiceTestType(capList, t));
 		}
 		pt.x = col0;
 		pt.y = rowmax +1;
@@ -192,7 +193,7 @@ public class XLSExport
 			if (nextcol < dumb.getValue())
 				nextcol = dumb.getValue();
 		}
-		pt.y = nextcol + 1;
+		pt.y = nextcol+1;
 		return pt.y;
 	}
 	
@@ -326,11 +327,38 @@ public class XLSExport
 		return sheet;
 	}
 	
-	public void getExperimentDescriptors( Experiment exp, EnumXLSExportType xlsOption) 
-	{		
+	protected int getDataAndExport(Experiment exp, int col0, String charSeries, EnumXLSExportType xlsExport) 
+	{	
+		getCapDataFromOneExperimentSeries(exp, xlsExport);
+		XSSFSheet sheet = xlsInitSheet(xlsExport.toString(), xlsExport);
+		int colmax = xlsExportResultsArrayToSheet(sheet, xlsExport, col0, charSeries);
+		
+		if (options.onlyalive) 
+		{
+			trimDeadsFromArrayList(exp);
+			sheet = xlsInitSheet(xlsExport.toString()+"_alive", xlsExport);
+			xlsExportResultsArrayToSheet(sheet, xlsExport, col0, charSeries);
+		}
+		
+		if (options.sumPerCage) 
+		{
+			combineDataForOneCage(exp);
+			sheet = xlsInitSheet(xlsExport.toString()+"_cage", xlsExport);
+			xlsExportResultsArrayToSheet(sheet, xlsExport, col0, charSeries);
+		}
+		
+		return colmax;
+	}
+		
+	private void getDescriptorsForOneExperiment( Experiment exp, EnumXLSExportType xlsOption) 
+	{
+		if (expAll == null) 
+			return;
+		
+		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.cages.copy(exp.cages);
 		expAll.capillaries.copy(exp.capillaries);
-		
+		expAll.chainFirstImage_Ms = exp.chainFirstImage_Ms;
 		expAll.setField(EnumXLSColumnHeader.BOXID, exp.getField(EnumXLSColumnHeader.BOXID));
 		expAll.setField(EnumXLSColumnHeader.EXPT, exp.getField(EnumXLSColumnHeader.EXPT));
 		expAll.setField(EnumXLSColumnHeader.COMMENT1, exp.getField(EnumXLSColumnHeader.COMMENT1));
@@ -338,6 +366,40 @@ public class XLSExport
 		expAll.setField(EnumXLSColumnHeader.STRAIN, exp.getField(EnumXLSColumnHeader.STRAIN));
 		expAll.setField(EnumXLSColumnHeader.SEX, exp.getField(EnumXLSColumnHeader.SEX));
 		expAll.setExperimentDirectory(exp.getExperimentDirectory());
+		
+		Experiment expi = exp.chainToNextExperiment;
+		while (expi != null ) 
+		{
+			expAll.capillaries.mergeLists(expi.capillaries);
+			expi = expi.chainToNextExperiment;
+		}
+
+		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_ms)/options.buildExcelStepMs  +1) ;
+		int ncapillaries = expAll.capillaries.capillariesList.size();
+		rowListForOneExp = new XLSResultsArray(ncapillaries);
+		for (int i = 0; i < ncapillaries; i++) 
+		{
+			Capillary cap 		= expAll.capillaries.capillariesList.get(i);
+			XLSResults row 		= new XLSResults (cap.getRoiName(), cap.capNFlies, xlsOption, nFrames);
+			row.stimulus 		= cap.capStimulus;
+			row.concentration 	= cap.capConcentration;
+			row.cageID 			= cap.capCageID;
+			rowListForOneExp.addRow(row);
+		}
+		rowListForOneExp.sortRowsByName();
+	}
+		
+	public XLSResultsArray getCapDataFromOneExperimentSeriesForGraph(
+			Experiment exp, 
+			EnumXLSExportType exportType, 
+			XLSExportOptions options) 
+	{
+		this.options = options;
+		expAll = new Experiment();
+		expAll.camLastImage_Ms = exp.camLastImage_Ms;
+		expAll.camFirstImage_ms = exp.camFirstImage_ms;
+		getCapDataFromOneExperimentSeries(exp, exportType);
+		return rowListForOneExp;
 	}
 	
 	private void exportError (Experiment expi, int nOutputFrames) 
@@ -349,7 +411,7 @@ public class XLSExport
 		System.out.println(error);
 	}
 	
-	public int getNOutputFrames (Experiment expi)
+	private int getNOutputFrames (Experiment expi)
 	{
 		int nOutputFrames = (int) ((expi.offsetLastCol_Ms - expi.offsetFirstCol_Ms) / options.buildExcelStepMs +1);
 		if (nOutputFrames <= 1) 
@@ -368,6 +430,80 @@ public class XLSExport
 		return nOutputFrames;
 	}
 	
+	private void getCapDataFromOneExperimentSeries(
+			Experiment exp, 
+			EnumXLSExportType xlsExportType) 
+	{	
+		getDescriptorsForOneExperiment (exp, xlsExportType);
+		Experiment expi = exp.getFirstChainedExperiment(true); 
+		
+		while (expi != null) 
+		{
+			int nOutputFrames = getNOutputFrames(expi);
+			if (nOutputFrames > 1)
+			{
+				XLSResultsArray resultsArrayList = new XLSResultsArray (expi.capillaries.capillariesList.size());
+				Capillaries caps = expi.capillaries;
+				options.compensateEvaporation = false;
+				switch (xlsExportType) 
+				{
+					case BOTTOMLEVEL:
+					case NBGULPS:
+					case AMPLITUDEGULPS:
+					case TTOGULP:
+					case TTOGULP_LR:
+						resultsArrayList.getResults1(caps, xlsExportType, 
+								nOutputFrames, exp.kymoBinCol_Ms, options);
+						break;
+						
+					case TOPRAW:
+						resultsArrayList.getResults_T0(caps, xlsExportType, 
+								nOutputFrames, exp.kymoBinCol_Ms, options);
+						break;
+						
+					case TOPLEVEL:
+					case TOPLEVEL_LR:
+					case TOPLEVELDELTA:
+					case TOPLEVELDELTA_LR:
+						options.compensateEvaporation = options.subtractEvaporation;
+						resultsArrayList.getResults_T0(caps, xlsExportType, 
+								nOutputFrames, exp.kymoBinCol_Ms, options);
+						break;
+						
+					case DERIVEDVALUES:
+					case SUMGULPS:
+					case SUMGULPS_LR:
+						resultsArrayList.getResults1(caps, xlsExportType, 
+								nOutputFrames, exp.kymoBinCol_Ms, options);
+						break;
+						
+					case AUTOCORREL:
+					case AUTOCORREL_LR:
+					case CROSSCORREL:
+					case CROSSCORREL_LR:
+						resultsArrayList.getResults1(caps, xlsExportType, 
+								nOutputFrames, exp.kymoBinCol_Ms, options);
+						break;
+						
+					default:
+						break;
+				}
+				addResultsTo_rowsForOneExp(expi, resultsArrayList);
+			}
+			expi = expi.chainToNextExperiment;
+		}
+		
+		switch (xlsExportType) 
+		{
+			case TOPLEVELDELTA:
+			case TOPLEVELDELTA_LR:
+				rowListForOneExp.subtractDeltaT(1, 1); //options.buildExcelStepMs);
+				break;
+			default:
+				break;
+		}
+	}
+	
 	private XLSResults getResultsArrayWithThatName(
 			String testname, 
 			XLSResultsArray resultsArrayList) 
@@ -384,7 +520,7 @@ public class XLSExport
 		return resultsFound;
 	}
 	
-	public void addResultsTo_rowsForOneExp(Experiment expi, XLSResultsArray resultsArrayList) 
+	private void addResultsTo_rowsForOneExp(Experiment expi, XLSResultsArray resultsArrayList) 
 	{
 		if (resultsArrayList.resultsList.size() <1)
 			return;
@@ -503,7 +639,7 @@ public class XLSExport
 		return index;
 	}
 	
-	public void trimDeadsFromArrayList(Experiment exp) 
+	private void trimDeadsFromArrayList(Experiment exp) 
 	{
 		for (Cage cage: exp.cages.cagesList) 
 		{
@@ -538,7 +674,7 @@ public class XLSExport
 		}	
 	}
 	
-	public void combineDataForOneCage(Experiment exp) 
+	private void combineDataForOneCage(Experiment exp) 
 	{
 		for (int iRow0 = 0; iRow0 < rowListForOneExp.size(); iRow0++ ) 
 		{
@@ -563,8 +699,20 @@ public class XLSExport
 			}
 		}
 	}
-		
-	public Point writeExperiment_data (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) 
+	
+	private int xlsExportResultsArrayToSheet(
+			XSSFSheet sheet, 
+			EnumXLSExportType xlsExportOption, 
+			int col0, 
+			String charSeries) 
+	{
+		Point pt = new Point(col0, 0);
+		writeExperiment_descriptors(expAll, charSeries, sheet, pt, xlsExportOption);
+		pt = writeExperiment_data(sheet, xlsExportOption, pt);
+		return pt.x;
+	}
+			
+	private Point writeExperiment_data (XSSFSheet sheet, EnumXLSExportType option, Point pt_main) 
 	{
 		int rowSeries = pt_main.x +2;
 		int column_dataArea = pt_main.y;
