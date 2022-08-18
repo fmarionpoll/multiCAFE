@@ -96,21 +96,24 @@ public class XLSExport
 			int y = row;
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.PATH.getValue(), transpose, name0);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DATE.getValue(), transpose, date);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAM.getValue(), transpose, cam);
+			
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXP_BOXID.getValue(), transpose, exp.getField(EnumXLSColumnHeader.EXP_BOXID));
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXP_EXPT.getValue(), transpose, exp.getField(EnumXLSColumnHeader.EXP_EXPT));
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXP_STIM.getValue(), transpose, exp.getField(EnumXLSColumnHeader.EXP_STIM));
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXP_CONC.getValue(), transpose, exp.getField(EnumXLSColumnHeader.EXP_CONC));
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXP_STRAIN.getValue(), transpose, exp.getField(EnumXLSColumnHeader.EXP_STRAIN));
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXP_SEX.getValue(), transpose, exp.getField(EnumXLSColumnHeader.EXP_SEX));			
 
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, cap.getSideDescriptor(xlsExportOption));
-			desc_setValueDataOption(sheet, xlsExportOption, cap, transpose, x, y);
-
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAM.getValue(), transpose, cam);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP_CAGEINDEX.getValue(), transpose, cap.capCageID);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEID.getValue(), transpose, charSeries+cap.capCageID);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP_VOLUME.getValue(), transpose, exp.capillaries.desc.volume);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP_PIXELS.getValue(), transpose, exp.capillaries.desc.pixels);
-			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.EXP_CONC.getValue(), transpose, exp.getField(EnumXLSColumnHeader.EXP_CONC));
+			
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP.getValue(), transpose, cap.getSideDescriptor(xlsExportOption));
+			outputStimAndConc_according_to_DataOption(sheet, xlsExportOption, cap, transpose, x, y);
+
+			
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP_CAGEINDEX.getValue(), transpose, cap.capCageID);
+			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGEID.getValue(), transpose, charSeries+cap.capCageID);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAP_NFLIES.getValue(), transpose, cap.capNFlies); 
 
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, sheetName);
@@ -123,7 +126,6 @@ public class XLSExport
 					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGE_AGE.getValue(), transpose, cage.cageAge);
 					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGE_COMMENT.getValue(), transpose, cage.strCageComment);
 			} 
-
 		}
 		pt.x = col0;
 		pt.y = rowmax +1;
@@ -154,7 +156,7 @@ public class XLSExport
 		return choiceText;
 	}
 	
-	private void desc_setValueDataOption(XSSFSheet sheet, EnumXLSExportType xlsExportOption, Capillary cap, boolean transpose, int x, int y)
+	private void outputStimAndConc_according_to_DataOption(XSSFSheet sheet, EnumXLSExportType xlsExportOption, Capillary cap, boolean transpose, int x, int y)
 	{
 		switch (xlsExportOption) {
 		case TOPLEVEL_LR:
