@@ -115,9 +115,9 @@ public class XLSExport
 
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.DUM4.getValue(), transpose, sheetName);
 			XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CHOICE_NOCHOICE.getValue(), transpose, desc_getChoiceTestType(capList, t));
-			if (exp.cages.cagesList.size() > cap.capCageID) 
+			if (exp.cages.cagesList.size() > 0) 
 			{
-					Cage cage = exp.cages.cagesList.get(cap.capCageID);
+					Cage cage = exp.cages.cagesList.get(t/2); //cap.capCageID);
 					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGE_STRAIN.getValue(), transpose, cage.strCageStrain );
 					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGE_SEX.getValue(), transpose, cage.strCageSex  );
 					XLSUtils.setValue(sheet, x, y+EnumXLSColumnHeader.CAGE_AGE.getValue(), transpose, cage.cageAge);

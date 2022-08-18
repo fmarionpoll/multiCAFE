@@ -105,27 +105,28 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	{
 		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
 		int nexpts = getItemCount();
-		int index = 1;
+
 		maxSizeOfCapillaryArrays = 0;
 		progress.setLength(nexpts);
 		boolean flag = true;
 		
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
-	    processor.setThreadName("buildkymo2");
+	    processor.setThreadName("loadAllExperiments");
 	    processor.setPriority(Processor.NORM_PRIORITY);
         ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nexpts);
 		futuresArray.clear();
 		
-		for (int i=0; i< getItemCount(); i++) 
+		for (int i = 0; i < getItemCount(); i++) 
 		{
 			final int it = i;
+			final Experiment exp = getItemAt(it);
+			
 			futuresArray.add(processor.submit(new Runnable () 
 			{
 				@Override
 				public void run() 
 				{
-					Experiment exp = getItemAt(it);
-					progress.setMessage("Load experiment "+ index +" of "+ nexpts);
+					progress.setMessage("Load experiment "+ it +" of "+ nexpts);
 					exp.setBinSubDirectory(expListBinSubDirectory);
 					if (expListBinSubDirectory == null)
 						exp.checkKymosDirectory(exp.getBinSubDirectory());
@@ -227,7 +228,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	
 	public void setFirstImageForAllExperiments(boolean collate)
 	{
-		for (int i=0; i< getItemCount(); i++) 
+		for (int i = 0; i < getItemCount(); i++) 
 		{
 			Experiment expi = getItemAt(i);
 			Experiment expFirst = expi.getFirstChainedExperiment(collate);
@@ -237,7 +238,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	
 	public void chainExperimentsUsingKymoIndexes(boolean collate) 
 	{
-		for (int i=0; i< getItemCount(); i++)
+		for (int i = 0; i < getItemCount(); i++)
 		{
 			Experiment expi = getItemAt(i);
 			expi.chainToPreviousExperiment = null;
@@ -246,7 +247,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		if (!collate) 
 			return;
 		
-		for (int i=0; i< getItemCount(); i++) 
+		for (int i = 0; i < getItemCount(); i++) 
 		{
 			Experiment expi = getItemAt(i);
 			if (expi.chainToNextExperiment != null || expi.chainToPreviousExperiment != null)
@@ -254,7 +255,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 			List <Experiment> list = new ArrayList<Experiment> ();
 			list.add(expi);
 			
-			for (int j=0; j< getItemCount(); j++) 
+			for (int j = 0; j < getItemCount(); j++) 
 			{
 				if (i == j)
 					continue;
