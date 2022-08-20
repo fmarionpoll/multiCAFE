@@ -149,7 +149,7 @@ public class BuildBackground extends BuildSeries
 				{
 					for (int c = 0; c < planes; c++) 
 					{
-						double val = sourceCursor.get(x, y, c) - referenceCursor.get(x, y, c);
+						double val = referenceCursor.get(x, y, c);
 						if (val >= transformOptions.simplethreshold) 
 						{
 							changed ++;
@@ -168,7 +168,6 @@ public class BuildBackground extends BuildSeries
 									}
 								}
 							}
-
 						}
 					}
 				}

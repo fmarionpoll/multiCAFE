@@ -12,7 +12,7 @@ import javax.swing.event.ChangeListener;
 
 import plugins.fmp.multicafe2.MultiCAFE2;
 
-public class DetectFromBackground extends JPanel implements PropertyChangeListener 
+public class Detect2DetectFlies extends JPanel implements PropertyChangeListener 
 {
 	/**
 	 * 
@@ -20,7 +20,7 @@ public class DetectFromBackground extends JPanel implements PropertyChangeListen
 	private static final long serialVersionUID = 1L;
 	
 			Detect2 		tabDetect2 		= new Detect2();
-			Background 		tabBackground 	= new Background();
+			Detect2BuildBackground 		tabBackground 	= new Detect2BuildBackground();
 			JTabbedPane 	tabsPane		= new JTabbedPane();
 			int				previouslySelected	= -1;
 	

@@ -31,7 +31,7 @@ import plugins.fmp.multicafe2.series.BuildBackground;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
 
-public class Background extends JPanel implements ChangeListener, PropertyChangeListener
+public class Detect2BuildBackground extends JPanel implements ChangeListener, PropertyChangeListener
 {
 	private static final long serialVersionUID = 1L;
 

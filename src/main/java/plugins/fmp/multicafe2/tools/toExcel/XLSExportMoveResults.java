@@ -25,17 +25,6 @@ public class XLSExportMoveResults extends XLSExport
 {
 	ExperimentCombo expList = null;
 	List <XYTaSeriesArrayList> rowsForOneExp = new ArrayList <XYTaSeriesArrayList> ();
-
-	// -----------------------
-//	void loadData(Experiment exp) {
-//		String 	expListBinSubDirectory = null;
-//		boolean loadCapillaries = true;
-//		boolean loadDrosoTrack = true;
-//		exp.setBinSubDirectory(expListBinSubDirectory);
-//		if (expListBinSubDirectory == null)
-//			exp.checkKymosDirectory(exp.getBinSubDirectory());
-//		exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
-//	}
 	
 	public void exportToFile(String filename, XLSExportOptions opt) 
 	{	
@@ -66,7 +55,6 @@ public class XLSExportMoveResults extends XLSExport
 					continue;
 				
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
-//				loadData(exp);
 				
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				

@@ -50,7 +50,7 @@ public class FlyDetectTools
 			if (options.blimitUp && len > options.limitUp)
 				len = 0;
 			
-			// trap condition where a line is found
+			// trap condition where only a line is found
 			int width = mask.bounds.width;
 			int height = mask.bounds.height;
 			int ratio = width / height;
@@ -260,7 +260,7 @@ public class FlyDetectTools
 	
 	protected void waitDetectCompletion(Processor processor, ArrayList<Future<?>> futuresArray,  ProgressFrame progressBar) 
     {  	
-  		 int frame= 1;
+  		 int frame = 1;
   		 int nframes = futuresArray.size();
 
     	 while (!futuresArray.isEmpty())
