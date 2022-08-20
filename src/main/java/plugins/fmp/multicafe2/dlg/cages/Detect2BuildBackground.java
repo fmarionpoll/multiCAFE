@@ -41,13 +41,12 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 	private JButton 	startComputationButton 	= new JButton(detectString);
 
 	private JSpinner 	backgroundThresholdSpinner	= new JSpinner(new SpinnerNumberModel(40, 0, 255, 1));
-	private JSpinner 	backgroundNFramesSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 1));
+	private JSpinner 	backgroundNFramesSpinner 	= new JSpinner(new SpinnerNumberModel(60, 0, 255, 1));
 
 	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
 	private JButton 	loadButton 				= new JButton("Load...");
 	private JButton 	saveButton 				= new JButton("Save...");
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
-
 
 	private BuildBackground buildBackground 	= null;
 	private OverlayThreshold ov 				= null;
