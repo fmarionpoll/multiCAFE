@@ -447,8 +447,15 @@ public class Experiment
 		}
 		
 		// current directory
-		if(xmlFullFileName != null && fileExists (xmlFullFileName))
+		if(xmlFullFileName != null && fileExists (xmlFullFileName)) 
+		{
+			if (item == IMG_DIRECTORY) {
+				strImagesDirectory = getRootWithNoResultNorBinString(strExperimentDirectory);
+				ExperimentDirectories.moveAndRename(xmlFileName, strImagesDirectory, xmlFileName,strExperimentDirectory);
+				xmlFullFileName = strExperimentDirectory + xmlFullFileName;
+			}
 			return xmlFullFileName;
+		}
 		return null;
 	}
 	
@@ -759,7 +766,7 @@ public class Experiment
 		if (capillaries.capillariesList.size() < 1)
 			flag = xmlLoadOldCapillaries();
 		
-		// load mccapillaries description of experiment
+		// load MCcapillaries description of experiment
 		if (field_boxID .contentEquals("..")
 				&& field_experiment.contentEquals("..") 
 				&& field_comment1.contentEquals("..")

@@ -171,33 +171,33 @@ public class ExperimentDirectories
 		return true;
 	}
 
-	private String getV2BinSubDirectory(String expListBinSubDirectory, String parentDirectory, String binSubDirectory) 
+	private String getV2BinSubDirectory(String expListBinSubDirectory, String resultsDirectory, String binSubDirectory) 
 	{
-		List<String> expList = Directories.getSortedListOfSubDirectoriesWithTIFF(parentDirectory);
-		move_TIFFandLINEfiles_From_Results_to_BinDirectory(parentDirectory, expList);
-		String subDirectory = binSubDirectory;
-	    if (subDirectory == null) 
+		List<String> expList = Directories.getSortedListOfSubDirectoriesWithTIFF(resultsDirectory);
+		move_TIFFandLINEfiles_From_Results_to_BinDirectory(resultsDirectory, expList);
+		String binDirectory = binSubDirectory;
+	    if (binDirectory == null) 
 	    {
 		    if (expList.size() > 1) 
 		    {
 		    	if (expListBinSubDirectory == null)
-		    		subDirectory = selectSubDirDialog(expList, "Select item", Experiment.BIN, false);
+		    		binDirectory = selectSubDirDialog(expList, "Select item", Experiment.BIN, false);
 		    }
 		    else if (expList.size() == 1 ) 
 		    {
-		    	subDirectory = expList.get(0).toLowerCase(); 
-			    if (!subDirectory.contains(Experiment.BIN)) 
-			    	subDirectory = Experiment.BIN + "60";
+		    	binDirectory = expList.get(0).toLowerCase(); 
+			    if (!binDirectory.contains(Experiment.BIN)) 
+			    	binDirectory = Experiment.BIN + "60";
 		    }
 		    else 
-		    	subDirectory = Experiment.BIN + "60";
+		    	binDirectory = Experiment.BIN + "60";
 	    }
 	    if (expListBinSubDirectory != null) 
-	    	subDirectory = expListBinSubDirectory;
+	    	binDirectory = expListBinSubDirectory;
 	    
-	    move_XML_From_Bin_to_Results(parentDirectory, subDirectory);
+	    move_XML_From_Bin_to_Results(binDirectory, resultsDirectory);
 	    
-	    return subDirectory;
+	    return binDirectory;
 	}
 	
 	static public String getParentIf(String filename, String filter) 
@@ -254,7 +254,7 @@ public class ExperimentDirectories
 		}
 	}
 	
-	private void move_XML_From_Bin_to_Results(String resultsDirectory, String binSubDirectory)
+	private void move_XML_From_Bin_to_Results(String binSubDirectory, String resultsDirectory)
 	{
 		String binDirectory = resultsDirectory + File.separator + binSubDirectory;
 		moveAndRename("MCcapi.xml", binDirectory, "MCcapillaries.xml", resultsDirectory);
@@ -262,7 +262,7 @@ public class ExperimentDirectories
 		moveAndRename("MCdros.xml", binDirectory, "MCdrosotrack.xml", resultsDirectory);
 	}
 	
-	private void moveAndRename(String oldFileName, String oldDirectory, String newFileName, String newDirectory)
+	static void moveAndRename(String oldFileName, String oldDirectory, String newFileName, String newDirectory)
 	{
 		String oldFilePathString = oldDirectory + File.separator + oldFileName;
 		File oldFile = new File(oldFilePathString);
