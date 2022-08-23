@@ -149,8 +149,8 @@ public class BuildBackground extends BuildSeries
 				{
 					for (int c = 0; c < planes; c++) 
 					{
-						double val = referenceCursor.get(x, y, c);
-						if (val >= transformOptions.simplethreshold) 
+						double valDiff = referenceCursor.get(x, y, c) - sourceCursor.get(x, y, c);
+						if (valDiff >= transformOptions.simplethreshold) 
 						{
 							changed ++;
 							int delta = 10;
