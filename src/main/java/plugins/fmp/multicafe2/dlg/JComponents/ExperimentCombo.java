@@ -46,8 +46,8 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		Experiment exp0 = getItemAt(0);
 		if (options.fixedIntervals) 
 		{
-			expAll.camFirstImage_ms = options.startAll_Ms;
-			expAll.camLastImage_Ms = options.endAll_Ms;
+			expAll.camImageFirst_ms = options.startAll_Ms;
+			expAll.camImageLast_ms = options.endAll_Ms;
 		}
 		else 
 		{
@@ -67,13 +67,13 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					if (expAll.lastImage_FileTime .compareTo(expLast.lastImage_FileTime) <0)
 						expAll.setFileTimeImageLast(expLast.lastImage_FileTime);
 				}
-				expAll.camFirstImage_ms = expAll.firstImage_FileTime.toMillis();
-				expAll.camLastImage_Ms = expAll.lastImage_FileTime.toMillis();	
+				expAll.camImageFirst_ms = expAll.firstImage_FileTime.toMillis();
+				expAll.camImageLast_ms = expAll.lastImage_FileTime.toMillis();	
 			} 
 			else 
 			{
-				expAll.camFirstImage_ms = 0;
-				expAll.camLastImage_Ms = exp0.offsetLastCol_Ms- exp0.offsetFirstCol_Ms;
+				expAll.camImageFirst_ms = 0;
+				expAll.camImageLast_ms = exp0.kymoLast_ms- exp0.kymoFirst_ms;
 				long firstOffset_Ms = 0;
 				long lastOffset_Ms = 0;
 				
@@ -81,11 +81,11 @@ public class ExperimentCombo extends JComboBox<Experiment>
 				{
 					Experiment exp = getItemAt(i);
 					Experiment expFirst =  exp.getFirstChainedExperiment(options.collateSeries);
-					firstOffset_Ms = expFirst.offsetFirstCol_Ms + expFirst.camFirstImage_ms;
-					exp.chainFirstImage_Ms = expFirst.camFirstImage_ms + expFirst.offsetFirstCol_Ms;
+					firstOffset_Ms = expFirst.kymoFirst_ms + expFirst.camImageFirst_ms;
+					exp.chainImageFirst_ms = expFirst.camImageFirst_ms + expFirst.kymoFirst_ms;
 					
 					Experiment expLast =  exp.getLastChainedExperiment (options.collateSeries); 
-					lastOffset_Ms = expLast.offsetLastCol_Ms + expLast.camFirstImage_ms;
+					lastOffset_Ms = expLast.kymoLast_ms + expLast.camImageFirst_ms;
 					
 					long diff = lastOffset_Ms - firstOffset_Ms;
 					if (diff < 1) 
@@ -93,8 +93,8 @@ public class ExperimentCombo extends JComboBox<Experiment>
 						System.out.println("Expt # " + i + ": FileTime difference between last and first image < 1; set dt between images = 1 ms");
 						diff = exp.seqCamData.seq.getSizeT();
 					}
-					if (expAll.camLastImage_Ms < diff) 
-						expAll.camLastImage_Ms = diff;
+					if (expAll.camImageLast_ms < diff) 
+						expAll.camImageLast_ms = diff;
 				}
 			}
 		}
@@ -193,11 +193,11 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					continue;
 				
 				// same exp series: if before, insert eventually
-				if (expj.camLastImage_Ms < expi.camFirstImage_ms) 
+				if (expj.camImageLast_ms < expi.camImageFirst_ms) 
 				{
 					if (expi.chainToPreviousExperiment == null)
 						expi.chainToPreviousExperiment = expj;
-					else if (expj.camLastImage_Ms > expi.chainToPreviousExperiment.camLastImage_Ms ) 
+					else if (expj.camImageLast_ms > expi.chainToPreviousExperiment.camImageLast_ms ) 
 					{
 						(expi.chainToPreviousExperiment).chainToNextExperiment = expj;
 						expj.chainToPreviousExperiment = expi.chainToPreviousExperiment;
@@ -207,11 +207,11 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					continue;
 				}
 				// same exp series: if after, insert eventually
-				if (expj.camFirstImage_ms >= expi.camLastImage_Ms) 
+				if (expj.camImageFirst_ms >= expi.camImageLast_ms) 
 				{
 					if (expi.chainToNextExperiment == null)
 						expi.chainToNextExperiment = expj;
-					else if (expj.camFirstImage_ms < expi.chainToNextExperiment.camFirstImage_ms ) 
+					else if (expj.camImageFirst_ms < expi.chainToNextExperiment.camImageFirst_ms ) 
 					{
 						(expi.chainToNextExperiment).chainToPreviousExperiment = expj;
 						expj.chainToNextExperiment = (expi.chainToNextExperiment);
@@ -232,7 +232,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		{
 			Experiment expi = getItemAt(i);
 			Experiment expFirst = expi.getFirstChainedExperiment(collate);
-			expi.chainFirstImage_Ms = expFirst.camFirstImage_ms + expFirst.offsetFirstCol_Ms;
+			expi.chainImageFirst_ms = expFirst.camImageFirst_ms + expFirst.kymoFirst_ms;
 		}
 	}
 	

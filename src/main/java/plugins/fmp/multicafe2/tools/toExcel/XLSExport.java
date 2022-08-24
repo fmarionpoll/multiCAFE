@@ -62,7 +62,7 @@ public class XLSExport
 		Path path = Paths.get(filename);
 
 		SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		String date = df.format(exp.chainFirstImage_Ms);
+		String date = df.format(exp.chainImageFirst_ms);
 
 		String name0 = path.toString();
 		int pos = name0.indexOf("cam");
@@ -239,7 +239,7 @@ public class XLSExport
 	{
 		boolean transpose = options.transpose;
 		Point pt = new Point(0, row);
-		long duration = expAll.camLastImage_Ms - expAll.camFirstImage_ms;
+		long duration = expAll.camImageLast_ms - expAll.camImageFirst_ms;
 		long interval = 0;
 		while (interval < duration) 
 		{
@@ -365,7 +365,7 @@ public class XLSExport
 		// loop to get all capillaries into expAll and init rows for this experiment
 		expAll.cages.copy(exp.cages);
 		expAll.capillaries.copy(exp.capillaries);
-		expAll.chainFirstImage_Ms = exp.chainFirstImage_Ms;
+		expAll.chainImageFirst_ms = exp.chainImageFirst_ms;
 		expAll.setField(EnumXLSColumnHeader.EXP_BOXID, exp.getField(EnumXLSColumnHeader.EXP_BOXID));
 		expAll.setField(EnumXLSColumnHeader.EXP_EXPT, exp.getField(EnumXLSColumnHeader.EXP_EXPT));
 		expAll.setField(EnumXLSColumnHeader.EXP_STIM, exp.getField(EnumXLSColumnHeader.EXP_STIM));
@@ -381,7 +381,7 @@ public class XLSExport
 			expi = expi.chainToNextExperiment;
 		}
 
-		int nFrames = (int) ((expAll.camLastImage_Ms - expAll.camFirstImage_ms)/options.buildExcelStepMs  +1) ;
+		int nFrames = (int) ((expAll.camImageLast_ms - expAll.camImageFirst_ms)/options.buildExcelStepMs  +1) ;
 		int ncapillaries = expAll.capillaries.capillariesList.size();
 		rowListForOneExp = new XLSResultsArray(ncapillaries);
 		for (int i = 0; i < ncapillaries; i++) 
@@ -403,8 +403,8 @@ public class XLSExport
 	{
 		this.options = options;
 		expAll = new Experiment();
-		expAll.camLastImage_Ms = exp.camLastImage_Ms;
-		expAll.camFirstImage_ms = exp.camFirstImage_ms;
+		expAll.camImageLast_ms = exp.camImageLast_ms;
+		expAll.camImageFirst_ms = exp.camImageFirst_ms;
 		getCapDataFromOneExperimentSeries(exp, exportType);
 		return rowListForOneExp;
 	}
@@ -413,20 +413,20 @@ public class XLSExport
 	{
 		String error = "ERROR in "+ expi.getExperimentDirectory() 
 		+ "\n nOutputFrames="+ nOutputFrames 
-		+ " kymoFirstCol_Ms=" + expi.offsetFirstCol_Ms 
-		+ " kymoLastCol_Ms=" + expi.offsetLastCol_Ms;
+		+ " kymoFirstCol_Ms=" + expi.kymoFirst_ms 
+		+ " kymoLastCol_Ms=" + expi.kymoLast_ms;
 		System.out.println(error);
 	}
 	
 	private int getNOutputFrames (Experiment expi)
 	{
-		int nOutputFrames = (int) ((expi.offsetLastCol_Ms - expi.offsetFirstCol_Ms) / options.buildExcelStepMs +1);
+		int nOutputFrames = (int) ((expi.kymoLast_ms - expi.kymoFirst_ms) / options.buildExcelStepMs +1);
 		if (nOutputFrames <= 1) 
 		{
 			if (expi.seqKymos.imageWidthMax == 0)
 				expi.loadKymographs();
-			expi.offsetLastCol_Ms = expi.offsetFirstCol_Ms + expi.seqKymos.imageWidthMax * expi.kymoBinCol_Ms;
-			nOutputFrames = (int) ((expi.offsetLastCol_Ms - expi.offsetFirstCol_Ms) / options.buildExcelStepMs +1);
+			expi.kymoLast_ms = expi.kymoFirst_ms + expi.seqKymos.imageWidthMax * expi.kymoBin_ms;
+			nOutputFrames = (int) ((expi.kymoLast_ms - expi.kymoFirst_ms) / options.buildExcelStepMs +1);
 			
 			if (nOutputFrames <= 1) 
 			{
@@ -460,12 +460,12 @@ public class XLSExport
 					case TTOGULP:
 					case TTOGULP_LR:
 						resultsArrayList.getResults1(caps, xlsExportType, 
-								nOutputFrames, exp.kymoBinCol_Ms, options);
+								nOutputFrames, exp.kymoBin_ms, options);
 						break;
 						
 					case TOPRAW:
 						resultsArrayList.getResults_T0(caps, xlsExportType, 
-								nOutputFrames, exp.kymoBinCol_Ms, options);
+								nOutputFrames, exp.kymoBin_ms, options);
 						break;
 						
 					case TOPLEVEL:
@@ -474,14 +474,14 @@ public class XLSExport
 					case TOPLEVELDELTA_LR:
 						options.compensateEvaporation = options.subtractEvaporation;
 						resultsArrayList.getResults_T0(caps, xlsExportType, 
-								nOutputFrames, exp.kymoBinCol_Ms, options);
+								nOutputFrames, exp.kymoBin_ms, options);
 						break;
 						
 					case DERIVEDVALUES:
 					case SUMGULPS:
 					case SUMGULPS_LR:
 						resultsArrayList.getResults1(caps, xlsExportType, 
-								nOutputFrames, exp.kymoBinCol_Ms, options);
+								nOutputFrames, exp.kymoBin_ms, options);
 						break;
 						
 					case AUTOCORREL:
@@ -489,7 +489,7 @@ public class XLSExport
 					case CROSSCORREL:
 					case CROSSCORREL_LR:
 						resultsArrayList.getResults1(caps, xlsExportType, 
-								nOutputFrames, exp.kymoBinCol_Ms, options);
+								nOutputFrames, exp.kymoBin_ms, options);
 						break;
 						
 					default:
@@ -534,19 +534,19 @@ public class XLSExport
 		
 		EnumXLSExportType xlsoption = resultsArrayList.getRow(0).exportType;
 		
-		long offsetChain = expi.camFirstImage_ms - expi.chainFirstImage_Ms;
-		long start_Ms = expi.offsetFirstCol_Ms + offsetChain; // TODO check when collate?
-		long end_Ms = expi.offsetLastCol_Ms + offsetChain;
+		long offsetChain = expi.camImageFirst_ms - expi.chainImageFirst_ms;
+		long start_Ms = expi.kymoFirst_ms + offsetChain; // TODO check when collate?
+		long end_Ms = expi.kymoLast_ms + offsetChain;
 		if (options.fixedIntervals) 
 		{
 			if (start_Ms < options.startAll_Ms)
 				start_Ms = options.startAll_Ms;
-			if (start_Ms > expi.camLastImage_Ms)
+			if (start_Ms > expi.camImageLast_ms)
 				return;
 			
 			if (end_Ms > options.endAll_Ms)
 				end_Ms = options.endAll_Ms;
-			if (end_Ms > expi.camFirstImage_ms)
+			if (end_Ms > expi.camImageFirst_ms)
 				return;
 		}
 		
@@ -665,9 +665,9 @@ public class XLSExport
 					expi = expi.chainToNextExperiment;
 				}
 				int lastIntervalFlyAlive = expi.cages.getLastIntervalFlyAlive(cagenumber);
-				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.camBinImage_ms 
-						+ (expi.camFirstImage_ms - expAll.camFirstImage_ms));		
-				ilastalive = (int) (lastMinuteAlive / expAll.kymoBinCol_Ms);
+				int lastMinuteAlive = (int) (lastIntervalFlyAlive * expi.camImageBin_ms 
+						+ (expi.camImageFirst_ms - expAll.camImageFirst_ms));		
+				ilastalive = (int) (lastMinuteAlive / expAll.kymoBin_ms);
 			}
 			if (ilastalive > 0)
 				ilastalive += 1;
@@ -752,9 +752,9 @@ public class XLSExport
 		if (row.valuesOut == null)
 			return;
 		
-		for (long coltime = expAll.camFirstImage_ms; coltime < expAll.camLastImage_Ms; coltime += options.buildExcelStepMs, pt.y++) 
+		for (long coltime = expAll.camImageFirst_ms; coltime < expAll.camImageLast_ms; coltime += options.buildExcelStepMs, pt.y++) 
 		{
-			int i_from = (int) ((coltime - expAll.camFirstImage_ms) / options.buildExcelStepMs);
+			int i_from = (int) ((coltime - expAll.camImageFirst_ms) / options.buildExcelStepMs);
 			if (i_from >= row.valuesOut.length) 
 				break;
 			double value = row.valuesOut[i_from];

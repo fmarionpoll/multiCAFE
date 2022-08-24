@@ -62,16 +62,16 @@ public class BuildKymographs extends BuildSeries
 	private void getTimeLimitsOfSequence(Experiment exp)
 	{
 		exp.loadFileIntervalsFromSeqCamData();
-		exp.kymoBinCol_Ms = options.t_binMs;
+		exp.kymoBin_ms = options.t_binMs;
 		if (options.isFrameFixed) {
-			exp.offsetFirstCol_Ms = options.t_firstMs;
-			exp.offsetLastCol_Ms = options.t_lastMs;
-			if (exp.offsetLastCol_Ms + exp.camFirstImage_ms > exp.camLastImage_Ms)
-				exp.offsetLastCol_Ms = exp.camLastImage_Ms - exp.camFirstImage_ms;
+			exp.kymoFirst_ms = options.t_firstMs;
+			exp.kymoLast_ms = options.t_lastMs;
+			if (exp.kymoLast_ms + exp.camImageFirst_ms > exp.camImageLast_ms)
+				exp.kymoLast_ms = exp.camImageLast_ms - exp.camImageFirst_ms;
 		} 
 		else {
-			exp.offsetFirstCol_Ms = 0;
-			exp.offsetLastCol_Ms = exp.camLastImage_Ms - exp.camFirstImage_ms;
+			exp.kymoFirst_ms = 0;
+			exp.kymoLast_ms = exp.camImageLast_ms - exp.camImageFirst_ms;
 		}
 	}
 			
@@ -139,13 +139,13 @@ public class BuildKymographs extends BuildSeries
 		threadRunning = true;
 		stopFlag = false;
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
-		int nframes = (int) ((exp.offsetLastCol_Ms - exp.offsetFirstCol_Ms) / exp.kymoBinCol_Ms +1);
+		int nframes = (int) ((exp.kymoLast_ms - exp.kymoFirst_ms) / exp.kymoBin_ms +1);
 	    	
 		for (int iframe = 0 ; iframe < nframes; iframe++) {
 			
 			final int indexToFrame =  iframe;	
-			long iindexms = iframe *  exp.kymoBinCol_Ms + exp.offsetFirstCol_Ms;
-			final int indexFromFrame = (int) Math.round(((double)iindexms) / ((double) exp.camBinImage_ms));
+			long iindexms = iframe *  exp.kymoBin_ms + exp.kymoFirst_ms;
+			final int indexFromFrame = (int) Math.round(((double)iindexms) / ((double) exp.camImageBin_ms));
 			if (indexFromFrame >= exp.seqCamData.nTotalFrames)
 				continue;
 			
@@ -235,7 +235,7 @@ public class BuildKymographs extends BuildSeries
 		int sizex = seqCamData.seq.getSizeX();
 		int sizey = seqCamData.seq.getSizeY();	
 
-		kymoImageWidth = (int) ((exp.offsetLastCol_Ms - exp.offsetFirstCol_Ms) / exp.kymoBinCol_Ms +1);
+		kymoImageWidth = (int) ((exp.kymoLast_ms - exp.kymoFirst_ms) / exp.kymoBin_ms +1);
 		
 		int imageHeight = 0;
 		for (Capillary cap: exp.capillaries.capillariesList) {

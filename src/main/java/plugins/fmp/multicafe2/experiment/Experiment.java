@@ -48,13 +48,13 @@ public class Experiment
 	
 	// __________________________________________________
 	
-	public 	long			camFirstImage_ms		= -1;
-	public 	long			camLastImage_Ms			= -1;
-	public 	long			camBinImage_ms			= -1;
+	public 	long			camImageFirst_ms		= -1;
+	public 	long			camImageLast_ms			= -1;
+	public 	long			camImageBin_ms			= -1;
 	
-	public 	long			offsetFirstCol_Ms		= 0;
-	public 	long			offsetLastCol_Ms		= 0;
-	public 	long			kymoBinCol_Ms			= 60000;
+	public 	long			kymoFirst_ms			= 0;
+	public 	long			kymoLast_ms				= 0;
+	public 	long			kymoBin_ms				= 60000;
 	
 	// _________________________________________________
 	
@@ -68,7 +68,7 @@ public class Experiment
 	public int				col						= -1;
 	public Experiment 		chainToPreviousExperiment = null;	
 	public Experiment 		chainToNextExperiment	= null;	
-	public long				chainFirstImage_Ms 		= 0;
+	public long				chainImageFirst_ms 		= 0;
 	public int				experimentID 			= 0;
 	
 	private final static String ID_VERSION			= "version"; 
@@ -346,10 +346,10 @@ public class Experiment
 			lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.nTotalFrames-1);
 			if (firstImage_FileTime != null && lastImage_FileTime != null)
 			{
-				camFirstImage_ms = firstImage_FileTime.toMillis();
-				camLastImage_Ms = lastImage_FileTime.toMillis();
-				camBinImage_ms = (camLastImage_Ms - camFirstImage_ms)/(seqCamData.nTotalFrames-1);
-				if (camBinImage_ms == 0)
+				camImageFirst_ms = firstImage_FileTime.toMillis();
+				camImageLast_ms = lastImage_FileTime.toMillis();
+				camImageBin_ms = (camImageLast_ms - camImageFirst_ms)/(seqCamData.nTotalFrames-1);
+				if (camImageBin_ms == 0)
 					System.out.println("error / file interval size");
 			}
 			else
@@ -361,7 +361,7 @@ public class Experiment
 
 	public String getBinNameFromKymoFrameStep() 
 	{
-		return BIN + kymoBinCol_Ms/1000;
+		return BIN + kymoBin_ms/1000;
 	}
 	
 	public String getDirectoryToSaveResults() 
@@ -382,7 +382,7 @@ public class Experiment
 		{
 			if (resultsPath.length() < (BIN.length() +1)) 
 			{
-				step = (int) kymoBinCol_Ms;
+				step = (int) kymoBin_ms;
 			} 
 			else 
 			{
@@ -498,18 +498,19 @@ public class Experiment
 		String version = XMLUtil.getElementValue(node, ID_VERSION, ID_VERSIONNUM);
 		if (!version .equals(ID_VERSIONNUM))
 			return false;
-		camFirstImage_ms= XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, -1);
-		camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, -1);
-		if (camFirstImage_ms < 0) 
-			camFirstImage_ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, -1)*60000;
-		if (camLastImage_Ms < 0)
-			camLastImage_Ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, -1)*60000;
+		camImageFirst_ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, 0);
+		camImageLast_ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, 0);
+		if (camImageLast_ms <= 0) 
+		{
+			camImageFirst_ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, 0)*60000;
+			camImageLast_ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, 0)*60000;
+		}
 
-		offsetFirstCol_Ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, 0); 
-		offsetLastCol_Ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, 0);
-		kymoBinCol_Ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
+		kymoFirst_ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, 0); 
+		kymoLast_ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, 0);
+		kymoBin_ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, 60000); 	
 		
-		ugly_checkOffsetValues();
+//		ugly_checkOffsetValues();
 		
 		if (field_boxID != null && field_boxID .contentEquals("..")) 
 		{
@@ -523,14 +524,14 @@ public class Experiment
 		return true;
 	}
 	
-	private void ugly_checkOffsetValues()
-	{
-		if (offsetLastCol_Ms + camFirstImage_ms > camLastImage_Ms)
-		{
-			offsetLastCol_Ms -= camFirstImage_ms;
-			offsetFirstCol_Ms -= camFirstImage_ms;
-		}
-	}
+//	private void ugly_checkOffsetValues()
+//	{
+//		if (kymoLast_ms + camImageFirst_ms > camImageLast_ms)
+//		{
+//			kymoLast_ms -= camImageFirst_ms;
+//			kymoFirst_ms -= camImageFirst_ms;
+//		}
+//	}
 	
 	public boolean xmlSaveMCExperiment () 
 	{
@@ -543,12 +544,12 @@ public class Experiment
 				return false;
 			
 			XMLUtil.setElementValue(node, ID_VERSION, ID_VERSIONNUM);
-			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGEMS, camFirstImage_ms);
-			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGEMS, camLastImage_Ms);
+			XMLUtil.setElementLongValue(node, ID_TIMEFIRSTIMAGEMS, camImageFirst_ms);
+			XMLUtil.setElementLongValue(node, ID_TIMELASTIMAGEMS, camImageLast_ms);
 			
-			XMLUtil.setElementLongValue(node, ID_FIRSTKYMOCOLMS, offsetFirstCol_Ms); 
-			XMLUtil.setElementLongValue(node, ID_LASTKYMOCOLMS, offsetLastCol_Ms);
-			XMLUtil.setElementLongValue(node, ID_BINKYMOCOLMS, kymoBinCol_Ms); 	
+			XMLUtil.setElementLongValue(node, ID_FIRSTKYMOCOLMS, kymoFirst_ms); 
+			XMLUtil.setElementLongValue(node, ID_LASTKYMOCOLMS, kymoLast_ms);
+			XMLUtil.setElementLongValue(node, ID_BINKYMOCOLMS, kymoBin_ms); 	
 			
 			XMLUtil.setElementValue(node, ID_BOXID, field_boxID);
 	        XMLUtil.setElementValue(node, ID_EXPERIMENT, field_experiment);
@@ -612,8 +613,8 @@ public class Experiment
 	public int getSeqCamSizeT() 
 	{
 		int lastFrame = 0;
-		if (seqCamData != null && seqCamData.seq != null)
-			lastFrame = seqCamData.seq.getSizeT() -1;
+		if (seqCamData != null )
+			lastFrame = seqCamData.nTotalFrames -1;
 		return lastFrame;
 	}
 	

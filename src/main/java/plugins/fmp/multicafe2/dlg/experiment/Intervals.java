@@ -72,7 +72,7 @@ public class Intervals extends JPanel
 			{
 				Experiment exp =(Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
-					exp.camBinImage_ms = (long) (((double) binSizeJSpinner.getValue())* binUnit.getMsUnitValue());
+					exp.camImageBin_ms = (long) (((double) binSizeJSpinner.getValue())* binUnit.getMsUnitValue());
 			}});
 			
 		refreshButton.addActionListener(new ActionListener () 
@@ -89,14 +89,14 @@ public class Intervals extends JPanel
 	{
 		refreshBinSize(exp);
 		
-		double divisor = exp.camBinImage_ms;
-		double dFirst = exp.offsetFirstCol_Ms/divisor;
+		double divisor = exp.camImageBin_ms;
+		double dFirst = exp.kymoFirst_ms/divisor;
 		startFrameJSpinner.setValue(dFirst);
-		if(exp.offsetLastCol_Ms == 0)
-			exp.offsetLastCol_Ms = (long) (exp.getSeqCamSizeT() * divisor);
-		double dLast = exp.offsetLastCol_Ms/divisor;
+		if(exp.kymoLast_ms == 0)
+			exp.kymoLast_ms = (long) (exp.getSeqCamSizeT() * divisor);
+		double dLast = exp.kymoLast_ms/divisor;
 		endFrameJSpinner.setValue(dLast);
-		if (exp.camBinImage_ms == 0)
+		if (exp.camImageBin_ms == 0)
 			exp.loadFileIntervalsFromSeqCamData();
 	}
 	
@@ -104,6 +104,6 @@ public class Intervals extends JPanel
 	{
 		exp.loadFileIntervalsFromSeqCamData();
 		binUnit.setSelectedIndex(1);
-		binSizeJSpinner.setValue(exp.camBinImage_ms/(double)binUnit.getMsUnitValue());
+		binSizeJSpinner.setValue(exp.camImageBin_ms/(double)binUnit.getMsUnitValue());
 	}
 }

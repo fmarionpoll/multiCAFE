@@ -65,7 +65,7 @@ public class FlyDetect2 extends BuildSeries
 		long last_ms = exp.cages.detectLast_Ms + exp.cages.detectBin_Ms ;
 		for (long index_ms = exp.cages.detectFirst_Ms ; index_ms <= last_ms; index_ms += exp.cages.detectBin_Ms ) 
 		{
-			final int t_from = (int) ((index_ms - exp.camFirstImage_ms)/exp.camBinImage_ms);
+			final int t_from = (int) ((index_ms - exp.camImageFirst_ms)/exp.camImageBin_ms);
 			if (t_from >= exp.seqCamData.nTotalFrames)
 				continue;
 			String title = "Frame #"+ t_from + "/" + exp.seqCamData.nTotalFrames;
