@@ -426,6 +426,8 @@ public class XLSExport
 			if (expi.seqKymos.imageWidthMax == 0)
 				expi.loadKymographs();
 			expi.kymoLast_ms = expi.kymoFirst_ms + expi.seqKymos.imageWidthMax * expi.kymoBin_ms;
+			if (expi.kymoLast_ms <= 0)
+				exportError(expi, -1);
 			nOutputFrames = (int) ((expi.kymoLast_ms - expi.kymoFirst_ms) / options.buildExcelStepMs +1);
 			
 			if (nOutputFrames <= 1) 

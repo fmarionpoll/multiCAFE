@@ -92,7 +92,7 @@ public class Intervals extends JPanel
 		double divisor = exp.camImageBin_ms;
 		double dFirst = exp.kymoFirst_ms/divisor;
 		startFrameJSpinner.setValue(dFirst);
-		if(exp.kymoLast_ms == 0)
+		if(exp.kymoLast_ms <= 0)
 			exp.kymoLast_ms = (long) (exp.getSeqCamSizeT() * divisor);
 		double dLast = exp.kymoLast_ms/divisor;
 		endFrameJSpinner.setValue(dLast);

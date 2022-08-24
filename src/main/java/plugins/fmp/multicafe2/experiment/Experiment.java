@@ -50,7 +50,7 @@ public class Experiment
 	
 	public 	long			camImageFirst_ms		= -1;
 	public 	long			camImageLast_ms			= -1;
-	public 	long			camImageBin_ms			= -1;
+	public 	long			camImageBin_ms			= 60000;
 	
 	public 	long			kymoFirst_ms			= 0;
 	public 	long			kymoLast_ms				= 0;
@@ -510,11 +510,11 @@ public class Experiment
 		kymoLast_ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, 0);
 		kymoBin_ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, 60000); 	
 		
-//		ugly_checkOffsetValues();
+		ugly_checkOffsetValues();
 		
 		if (field_boxID != null && field_boxID .contentEquals("..")) 
 		{
-			field_boxID	= XMLUtil.getElementValue(node, ID_BOXID, "..");
+			field_boxID		= XMLUtil.getElementValue(node, ID_BOXID, "..");
 	        field_experiment= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
 	        field_comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
 	        field_comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
@@ -524,14 +524,20 @@ public class Experiment
 		return true;
 	}
 	
-//	private void ugly_checkOffsetValues()
-//	{
-//		if (kymoLast_ms + camImageFirst_ms > camImageLast_ms)
-//		{
-//			kymoLast_ms -= camImageFirst_ms;
-//			kymoFirst_ms -= camImageFirst_ms;
-//		}
-//	}
+	private void ugly_checkOffsetValues()
+	{
+		if (camImageFirst_ms < 0)
+			camImageFirst_ms = 0;
+		if (camImageLast_ms < 0)
+			camImageLast_ms = 0;
+		if (kymoFirst_ms < 0)
+			kymoFirst_ms = 0; 
+		if (kymoLast_ms < 0)
+			kymoLast_ms = 0;
+		
+		if (kymoBin_ms < 0)
+			kymoBin_ms = 60000;
+	}
 	
 	public boolean xmlSaveMCExperiment () 
 	{

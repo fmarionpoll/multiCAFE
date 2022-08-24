@@ -85,6 +85,10 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					exp.chainImageFirst_ms = expFirst.camImageFirst_ms + expFirst.kymoFirst_ms;
 					
 					Experiment expLast =  exp.getLastChainedExperiment (options.collateSeries); 
+					if (expLast.kymoLast_ms <= 0) 
+					{
+						expLast.kymoLast_ms = expLast.camImageLast_ms - expLast.camImageFirst_ms;
+					}
 					lastOffset_Ms = expLast.kymoLast_ms + expLast.camImageFirst_ms;
 					
 					long diff = lastOffset_Ms - firstOffset_Ms;
