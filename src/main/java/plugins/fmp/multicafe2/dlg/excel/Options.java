@@ -28,6 +28,7 @@ public class Options extends JPanel
 			JCheckBox 	exportAllFilesCheckBox 	= new JCheckBox("all experiments", true);
 			JCheckBox   padIntervalsCheckBox	= new JCheckBox("pad intervals", false);
 			//JCheckBox	absoluteTimeCheckBox 	= new JCheckBox("absolute time", false);
+			JCheckBox	onlyAliveCheckBox   	= new JCheckBox("dead=empty", false);
 			JCheckBox	transposeCheckBox 		= new JCheckBox("transpose", true);
 			JSpinner 	binSize					= new JSpinner(new SpinnerNumberModel(1., 1., 1000., 1.));
 			JComboMs 	binUnit 				= new JComboMs();
@@ -51,6 +52,7 @@ public class Options extends JPanel
 		panel0.add(collateSeriesCheckBox);
 		panel0.add(padIntervalsCheckBox);
 //		panel0.add(absoluteTimeCheckBox);
+		panel0.add(onlyAliveCheckBox);
 		add(panel0);
 		padIntervalsCheckBox.setEnabled(false);
 

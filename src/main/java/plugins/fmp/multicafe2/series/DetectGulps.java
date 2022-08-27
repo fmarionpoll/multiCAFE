@@ -91,7 +91,7 @@ public class DetectGulps extends BuildSeries
 					if (options.buildDerivative) 
 					{
 						ROI2DUtilities.removeRoisContainingString(icap, "derivative", seqCapillariesKymographs.seq);
-						getDerivativeProfile(seqCapillariesKymographs.seq, icap, capi, jitter);	
+						transformPointsIntoProfile( getDerivativeProfile(seqCapillariesKymographs.seq, icap, capi, jitter), icap, capi);	
 					}
 					if (options.buildGulps) 
 					{
@@ -114,20 +114,21 @@ public class DetectGulps extends BuildSeries
 		processor.shutdown();
 	}	
 
-	private void getDerivativeProfile(Sequence seq, int indexkymo, Capillary cap, int jitter) 
+	private List<Point2D> getDerivativeProfile(Sequence seq, int indexkymo, Capillary cap, int jitter) 
 	{	
-		int z = seq.getSizeZ() -1;
-		IcyBufferedImage image = seq.getImage(indexkymo, z, 0);
-		List<Point2D> listOfMaxPoints = new ArrayList<>();
-		int[] kymoImageValues = Array1DUtil.arrayToIntArray(image.getDataXY(0), image.isSignedDataType());	// channel 0 - RED
-		int xwidth = image.getSizeX();
-		int yheight = image.getSizeY();
-		int ix = 0;
-		int iy = 0;
 		Polyline2D 	polyline = cap.ptsTop.polylineLevel;
 		if (polyline == null)
-			return;
-		for (ix = 1; ix < polyline.npoints; ix++) 
+			return null;
+		
+		int z = seq.getSizeZ() -1;
+		int c = 0;
+		IcyBufferedImage image = seq.getImage(indexkymo, z, c);
+		List<Point2D> listOfMaxPoints = new ArrayList<>();
+		int[] kymoImageValues = Array1DUtil.arrayToIntArray(image.getDataXY(c), image.isSignedDataType());	
+		int xwidth = image.getSizeX();
+		int yheight = image.getSizeY();
+
+		for (int ix = 1; ix < polyline.npoints; ix++) 
 		{
 			// for each point of topLevelArray, define a bracket of rows to look at ("jitter" = 10)
 			int low = (int) polyline.ypoints[ix]- jitter;
@@ -137,7 +138,7 @@ public class DetectGulps extends BuildSeries
 			if (high >= yheight) 
 				high = yheight-1;
 			int max = kymoImageValues [ix + low*xwidth];
-			for (iy = low+1; iy < high; iy++) 
+			for (int iy = low + 1; iy < high; iy++) 
 			{
 				int val = kymoImageValues [ix  + iy*xwidth];
 				if (max < val) 
@@ -145,13 +146,18 @@ public class DetectGulps extends BuildSeries
 			}
 			listOfMaxPoints.add(new Point2D.Double((double) ix, (double) max));
 		}
+		return listOfMaxPoints;
+	}
+	
+	private void transformPointsIntoProfile(List<Point2D> listOfMaxPoints, int indexkymo, Capillary cap) 
+	{
 		ROI2DPolyLine roiDerivative = new ROI2DPolyLine ();
 		roiDerivative.setName(cap.getLast2ofCapillaryName()+"_derivative");
 		roiDerivative.setColor(Color.yellow);
 		roiDerivative.setStroke(1);
 		roiDerivative.setPoints(listOfMaxPoints);
 		roiDerivative.setT(indexkymo);
-		seq.addROI(roiDerivative, false);
+//		seq.addROI(roiDerivative, false);
 		cap.ptsDerivative = new CapillaryLevel(roiDerivative.getName(), roiDerivative.getPolyline2D());
 	}
 	

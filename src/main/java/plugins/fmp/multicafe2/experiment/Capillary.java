@@ -56,6 +56,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public  final String 				ID_TOPLEVEL 	= "toplevel";	
 	public  final String 				ID_BOTTOMLEVEL 	= "bottomlevel";	
 	public  final String 				ID_DERIVATIVE 	= "derivative";	
+	
 	public CapillaryLevel				ptsTop  		= new CapillaryLevel(ID_TOPLEVEL); 
 	public CapillaryLevel				ptsBottom 		= new CapillaryLevel(ID_BOTTOMLEVEL); 
 	public CapillaryLevel				ptsDerivative 	= new CapillaryLevel(ID_DERIVATIVE); 

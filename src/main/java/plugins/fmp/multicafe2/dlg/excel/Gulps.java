@@ -28,7 +28,7 @@ public class Gulps extends JPanel
 //	JCheckBox 	tToGulpCheckBox 	= new JCheckBox("t to gulp", true);
 //	JCheckBox 	tToGulpLRCheckBox 	= new JCheckBox("t to gulp L/R", true);
 	JCheckBox 	sumCheckBox 		= new JCheckBox("L+R & ratio", true);
-	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
+	JCheckBox 	derivativeCheckBox  = new JCheckBox("derivative", true);
 	
 	JCheckBox   autocorrelationCheckBox = new JCheckBox("autocorrelation", true);
 	JCheckBox   crosscorrelationCheckBox = new JCheckBox("crosscorrelation", true);
@@ -43,13 +43,13 @@ public class Gulps extends JPanel
 		FlowLayout flowLayout0 = new FlowLayout(FlowLayout.LEFT);
 		flowLayout0.setVgap(0);
 		JPanel panel0 = new JPanel(flowLayout0);
+		panel0.add(derivativeCheckBox);
 		panel0.add(sumGulpsCheckBox);
 		panel0.add(nbGulpsCheckBox);
 		panel0.add(amplitudeGulpsCheckBox);
 //		panel0.add(tToGulpCheckBox);
 //		panel0.add(tToGulpLRCheckBox);
 		panel0.add(sumCheckBox);
-		panel0.add(onlyaliveCheckBox);
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout0);

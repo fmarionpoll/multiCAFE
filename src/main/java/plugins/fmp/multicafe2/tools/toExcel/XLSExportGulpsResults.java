@@ -39,6 +39,9 @@ public class XLSExportGulpsResults  extends XLSExport
 					continue;
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
 				String charSeries = CellReference.convertNumToColString(iSeries);
+
+				if (options.derivative) 	
+					getDataAndExport(exp, column, charSeries, EnumXLSExportType.DERIVEDVALUES);
 				
 				if (options.sumGulps) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS);

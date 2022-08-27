@@ -29,7 +29,7 @@ public class Levels extends JPanel
 	JCheckBox 	topLevelDeltaCheckBox 	= new JCheckBox("delta top", false);
 	JCheckBox 	bottomLevelCheckBox = new JCheckBox("bottom", false);
 	JCheckBox	t0CheckBox			= new JCheckBox("t-t0", true);
-	JCheckBox	onlyaliveCheckBox   = new JCheckBox("dead=empty", false);	
+
 	JCheckBox	subtractEvaporationCheckBox = new JCheckBox("subtract evaporation", true);
 	
 	
@@ -50,7 +50,6 @@ public class Levels extends JPanel
 		panel0.add(topLevelDeltaCheckBox);
 		panel0.add(bottomLevelCheckBox);
 		panel0.add(t0CheckBox);
-		panel0.add(onlyaliveCheckBox);
 		panel0.add(subtractEvaporationCheckBox);
 		add(panel0);
 		

@@ -461,13 +461,16 @@ public class XLSExport
 					case AMPLITUDEGULPS:
 					case TTOGULP:
 					case TTOGULP_LR:
-						resultsArrayList.getResults1(caps, xlsExportType, 
-								nOutputFrames, exp.kymoBin_ms, options);
-						break;
 						
-					case TOPRAW:
-						resultsArrayList.getResults_T0(caps, xlsExportType, 
-								nOutputFrames, exp.kymoBin_ms, options);
+					case DERIVEDVALUES:
+					case SUMGULPS:
+					case SUMGULPS_LR:
+						
+					case AUTOCORREL:
+					case AUTOCORREL_LR:
+					case CROSSCORREL:
+					case CROSSCORREL_LR:
+						resultsArrayList.getResults1(caps, xlsExportType, nOutputFrames, exp.kymoBin_ms, options);
 						break;
 						
 					case TOPLEVEL:
@@ -475,25 +478,11 @@ public class XLSExport
 					case TOPLEVELDELTA:
 					case TOPLEVELDELTA_LR:
 						options.compensateEvaporation = options.subtractEvaporation;
-						resultsArrayList.getResults_T0(caps, xlsExportType, 
-								nOutputFrames, exp.kymoBin_ms, options);
-						break;
 						
-					case DERIVEDVALUES:
-					case SUMGULPS:
-					case SUMGULPS_LR:
-						resultsArrayList.getResults1(caps, xlsExportType, 
-								nOutputFrames, exp.kymoBin_ms, options);
+					case TOPRAW:
+						resultsArrayList.getResults_T0(caps, xlsExportType, nOutputFrames, exp.kymoBin_ms, options);
 						break;
-						
-					case AUTOCORREL:
-					case AUTOCORREL_LR:
-					case CROSSCORREL:
-					case CROSSCORREL_LR:
-						resultsArrayList.getResults1(caps, xlsExportType, 
-								nOutputFrames, exp.kymoBin_ms, options);
-						break;
-						
+	
 					default:
 						break;
 				}

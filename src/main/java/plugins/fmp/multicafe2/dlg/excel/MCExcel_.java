@@ -176,7 +176,6 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.lrPIThreshold 	= (double) tabLevels.lrPIThresholdJSpinner.getValue();
 		options.sumPerCage 		= tabLevels.sumPerCageCheckBox.isSelected();
 		options.t0 				= tabLevels.t0CheckBox.isSelected();
-		options.onlyalive 		= tabLevels.onlyaliveCheckBox.isSelected();
 		options.subtractEvaporation = tabLevels.subtractEvaporationCheckBox.isSelected();
 		getCommonOptions(options);
 		return options;
@@ -188,12 +187,11 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.topLevel 		= false; 
 		options.topLevelDelta   = false;
 		options.bottomLevel 	= false; 
-		options.derivative 		= false; 
+		options.derivative 		= tabGulps.derivativeCheckBox.isSelected(); 
 		options.sumPerCage 		= false;
 		options.t0 				= false;
 		options.sumGulps 		= tabGulps.sumGulpsCheckBox.isSelected(); 
 		options.lrPI 			= tabGulps.sumCheckBox.isSelected(); 
-		options.onlyalive 		= tabGulps.onlyaliveCheckBox.isSelected();
 		options.nbGulps 		= tabGulps.nbGulpsCheckBox.isSelected();
 		options.amplitudeGulps 	= tabGulps.amplitudeGulpsCheckBox.isSelected();
 
@@ -218,6 +216,7 @@ public class MCExcel_  extends JPanel implements PropertyChangeListener
 		options.collateSeries 	= tabCommonOptions.collateSeriesCheckBox.isSelected();
 		options.padIntervals 	= tabCommonOptions.padIntervalsCheckBox.isSelected();
 		options.absoluteTime	= false; //tabCommonOptions.absoluteTimeCheckBox.isSelected();
+		options.onlyalive 		= tabCommonOptions.onlyAliveCheckBox.isSelected();
 		options.exportAllFiles 	= tabCommonOptions.exportAllFilesCheckBox.isSelected();
 		
 		options.expList = parent0.expListCombo; 

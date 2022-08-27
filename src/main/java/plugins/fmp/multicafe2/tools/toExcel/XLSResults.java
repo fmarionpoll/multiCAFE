@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import plugins.fmp.multicafe2.experiment.Capillary;
 
 
 public class XLSResults 
@@ -20,7 +19,7 @@ public class XLSResults
 	public int 					dimension	= 0;
 	public int					nflies		= 1;
 	public EnumXLSExportType 	exportType 	= null;
-	private ArrayList<Integer > dataInt 	= null;
+	public ArrayList<Integer > dataInt 	= null;
 	public double []			valuesOut	= null;
 	
 	
@@ -181,12 +180,6 @@ public class XLSResults
 		}
 		nadded += 1;
 	}
-
-	public void getCapillaryDataForPass1(Capillary cap, EnumXLSExportType xlsOption, long kymoBinCol_Ms, int outputBinMs)
-	{
-		dataInt = cap.getCapillaryMeasuresForPass1(xlsOption, kymoBinCol_Ms, outputBinMs);
-	}
-	
 	
 	
 }
