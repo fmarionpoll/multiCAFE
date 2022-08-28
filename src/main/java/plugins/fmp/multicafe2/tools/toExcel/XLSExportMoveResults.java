@@ -35,7 +35,8 @@ public class XLSExportMoveResults extends XLSExport
 		boolean loadCapillaries = true;
 		boolean loadDrosoTrack = true; 
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
-		expList.chainExperimentsUsingCamIndexes(options.collateSeries);
+//		expList.chainExperimentsUsingCamIndexes(options.collateSeries);
+		expList.chainExperimentsUsingKymoIndexes(options.collateSeries);
 		expList.setFirstImageForAllExperiments(options.collateSeries);
 		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
 	
@@ -53,9 +54,7 @@ public class XLSExportMoveResults extends XLSExport
 				Experiment exp = expList.getItemAt(index);
 				if (exp.chainToPreviousExperiment != null)
 					continue;
-				
 				progress.setMessage("Export experiment "+ (index+1) +" of "+ nbexpts);
-				
 				String charSeries = CellReference.convertNumToColString(iSeries);
 				
 				if (options.xyImage)		

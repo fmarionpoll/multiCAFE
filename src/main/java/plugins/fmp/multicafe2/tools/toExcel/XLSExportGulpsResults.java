@@ -20,7 +20,10 @@ public class XLSExportGulpsResults  extends XLSExport
 		boolean loadCapillaries = true;
 		boolean loadDrosoTrack = options.onlyalive;
 		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
-		expList.chainExperimentsUsingCamIndexes(options.collateSeries);
+//		expList.chainExperimentsUsingCamIndexes(options.collateSeries);
+		expList.chainExperimentsUsingKymoIndexes(options.collateSeries);
+		expList.setFirstImageForAllExperiments(options.collateSeries);
+		
 		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
@@ -42,7 +45,6 @@ public class XLSExportGulpsResults  extends XLSExport
 
 				if (options.derivative) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.DERIVEDVALUES);
-				
 				if (options.sumGulps) 	
 					getDataAndExport(exp, column, charSeries, EnumXLSExportType.SUMGULPS);
 				if (options.lrPI && options.sumGulps) 	

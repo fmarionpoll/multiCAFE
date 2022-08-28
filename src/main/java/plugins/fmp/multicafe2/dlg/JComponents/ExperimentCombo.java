@@ -176,19 +176,34 @@ public class ExperimentCombo extends JComboBox<Experiment>
          }
    }
 	
+	public void setFirstImageForAllExperiments(boolean collate)
+	{
+		for (int i = 0; i < getItemCount(); i++) 
+		{
+			Experiment expi = getItemAt(i);
+			Experiment expFirst = expi.getFirstChainedExperiment(collate);
+			expi.chainImageFirst_ms = expFirst.camImageFirst_ms + expFirst.kymoFirst_ms;
+		}
+	}
+	
+	private void resetChaining(Experiment expi) 
+	{
+			expi.chainToPreviousExperiment = null;
+			expi.chainToNextExperiment = null; 
+	}
+	
 	public void chainExperimentsUsingCamIndexes(boolean collate) 
 	{
-		for (int i=0; i< getItemCount(); i++) 
+		for (int i = 0; i < getItemCount(); i++) 
 		{
 			Experiment expi = getItemAt(i);
 			if (!collate) 
 			{
-				expi.chainToPreviousExperiment = null;
-				expi.chainToNextExperiment = null;
+				resetChaining(expi);
 				continue;
 			}
 			
-			for (int j=0; j< getItemCount(); j++) 
+			for (int j = 0; j< getItemCount(); j++) 
 			{
 				if (i == j)
 					continue;
@@ -230,32 +245,27 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		}
 	}
 	
-	public void setFirstImageForAllExperiments(boolean collate)
-	{
-		for (int i = 0; i < getItemCount(); i++) 
-		{
-			Experiment expi = getItemAt(i);
-			Experiment expFirst = expi.getFirstChainedExperiment(collate);
-			expi.chainImageFirst_ms = expFirst.camImageFirst_ms + expFirst.kymoFirst_ms;
-		}
-	}
-	
 	public void chainExperimentsUsingKymoIndexes(boolean collate) 
 	{
-		for (int i = 0; i < getItemCount(); i++)
-		{
-			Experiment expi = getItemAt(i);
-			expi.chainToPreviousExperiment = null;
-			expi.chainToNextExperiment = null;
-		}
-		if (!collate) 
-			return;
+//		for (int i = 0; i < getItemCount(); i++)
+//		{
+//			Experiment expi = getItemAt(i);
+//			resetChaining(expi);
+//		} 		
+//		if (!collate) 
+//			return;
 		
 		for (int i = 0; i < getItemCount(); i++) 
 		{
 			Experiment expi = getItemAt(i);
+			if (!collate) 
+			{
+				resetChaining(expi);
+				continue;
+			}
 			if (expi.chainToNextExperiment != null || expi.chainToPreviousExperiment != null)
 				continue;
+			
 			List <Experiment> list = new ArrayList<Experiment> ();
 			list.add(expi);
 			
