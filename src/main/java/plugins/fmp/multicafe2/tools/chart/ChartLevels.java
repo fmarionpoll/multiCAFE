@@ -127,7 +127,7 @@ public class ChartLevels extends IcyFrame
 		getDataArrays(exp, option, subtractEvaporation, xyDataSetList);
 		
 		// display charts
-		int width = 130;
+		int width = 140; // 130; 
 		int minimumDrawWidth = 100;
 		int maximumDrawWidth = width;
 		int height = 200;
@@ -173,7 +173,7 @@ public class ChartLevels extends IcyFrame
 			minimumDrawWidth = 50;
 			maximumDrawWidth = width;
 			maximumDrawHeight = 200;
-			displayLabels = false; 
+			displayLabels = false;
 		}
 		mainChartFrame.pack();
 		mainChartFrame.setLocation(pt);

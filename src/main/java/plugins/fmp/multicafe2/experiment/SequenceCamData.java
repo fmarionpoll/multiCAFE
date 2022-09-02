@@ -51,6 +51,7 @@ public class SequenceCamData
 	
 	long 							timeFirstImageInMs		= 0;
 	int								indexTimePattern 		= -1;
+	
     TimePattern[] timePatternArray = new TimePattern[] {
     		new TimePattern(),
     		new TimePattern("yyyy-MM-dd_HH-mm-ss", 	"\\d{4}-\\d{2}-\\d{2}_\\d{2}\\-\\d{2}\\-\\d{2}"),
