@@ -6,6 +6,8 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -40,13 +42,16 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 	private String 		detectString 			= "Build background...";
 	private JButton 	startComputationButton 	= new JButton(detectString);
 
-	private JSpinner 	backgroundThresholdSpinner	= new JSpinner(new SpinnerNumberModel(40, 0, 255, 1));
-	private JSpinner 	backgroundNFramesSpinner 	= new JSpinner(new SpinnerNumberModel(60, 0, 255, 1));
+	private JSpinner 	backgroundThresholdSpinner	= new JSpinner(new SpinnerNumberModel(60, 0, 255, 1));
+	private JSpinner 	backgroundNFramesSpinner 	= new JSpinner(new SpinnerNumberModel(20, 0, 255, 1));
+	private JSpinner 	backgroundJitterSpinner 	= new JSpinner(new SpinnerNumberModel(1, 0, 255, 1));
+	private JSpinner 	backgroundDeltaSpinner 	= new JSpinner(new SpinnerNumberModel(20, 0, 255, 1));
 
-	private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
+	//private JCheckBox 	viewsCheckBox 			= new JCheckBox("view ref img", true);
 	private JButton 	loadButton 				= new JButton("Load...");
 	private JButton 	saveButton 				= new JButton("Save...");
 	private JCheckBox 	allCheckBox 			= new JCheckBox("ALL (current to last)", false);
+	private	JCheckBox 	overlayCheckBox 		= new JCheckBox("overlay");
 
 	private BuildBackground buildBackground 	= null;
 	private OverlayThreshold ov 				= null;
@@ -67,19 +72,26 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 		add(panel1);
 		
 		JPanel panel2 = new JPanel(flowLayout);
-		panel2.add(new JLabel("threshold "));
+		panel2.add(new JLabel("threshold/fly "));
 		panel2.add(backgroundThresholdSpinner);
 		panel2.add(new JLabel("over n frames "));
 		panel2.add(backgroundNFramesSpinner);
-		
-		panel2.add(viewsCheckBox);
+		panel2.add(overlayCheckBox);
+//		panel2.add(viewsCheckBox);
 		panel2.validate();
 		add(panel2);
 		
 		JPanel panel3 = new JPanel(flowLayout);
-		panel3.add(loadButton);
-		panel3.add(saveButton);
-		add( panel3);
+		panel3.add(new JLabel ("min delta fly/background "));
+		panel3.add(backgroundDeltaSpinner);
+		panel3.add(new JLabel ("jitter around fly "));
+		panel3.add(backgroundJitterSpinner);
+		add(panel3);
+		
+		JPanel panel4 = new JPanel(flowLayout);
+		panel4.add(loadButton);
+		panel4.add(saveButton);
+		add( panel4);
 		
 		defineActionListeners();
 
@@ -124,6 +136,25 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 				allCheckBox.setForeground(color);
 				startComputationButton.setForeground(color);
 		}});
+		
+		overlayCheckBox.addItemListener(new ItemListener() 
+		{
+		      public void itemStateChanged(ItemEvent e) 
+		      {
+		    	  Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		    	  if (exp != null) 
+		    	  {
+		    		  if (overlayCheckBox.isSelected()) 
+		    		  {
+		    			  if (ov == null)
+		    				  ov = new OverlayThreshold(exp.seqCamData);
+		    			  exp.seqCamData.seq.addOverlay(ov);
+		    			  updateOverlay(exp);
+		    		  }
+		    		  else
+		    			  removeOverlay(exp);
+		    	  }
+		      }});
 	}
 
 	@Override
@@ -133,10 +164,7 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 		{
 			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 			if (exp != null) 
-			{
-				int threshold = (int) backgroundThresholdSpinner.getValue();
-				updateOverlay(exp, threshold);
-			}
+				updateOverlay(exp);
 		}
 	}
 	
@@ -159,7 +187,7 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 		}
 	}
 	
-	public void updateOverlay (Experiment exp, int threshold) 
+	private void updateOverlay (Experiment exp) 
 	{
 		SequenceCamData seqCamData = exp.seqCamData;
 		if (seqCamData == null)
@@ -178,9 +206,16 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 		seqCamData.seq.addOverlay(ov);	
 		
 		boolean ifGreater = true; 
-		EnumImageTransformations transformOp = EnumImageTransformations.SUBTRACT; //SUBTRACT_REF;
+		EnumImageTransformations transformOp = EnumImageTransformations.NONE; //SUBTRACT; //SUBTRACT_REF;
+		int threshold = (int) backgroundThresholdSpinner.getValue();
 		ov.setThresholdSingle(threshold, transformOp, ifGreater);
 		ov.painterChanged();	
+	}
+	
+	private void removeOverlay(Experiment exp) 
+	{
+		if (exp.seqCamData != null && exp.seqCamData.seq != null)
+			exp.seqCamData.seq.removeOverlay(ov);
 	}
 	
 	private BuildSeriesOptions initTrackParameters() 
@@ -210,6 +245,9 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 		options.t_firstMs 		= parent0.paneExcel.tabCommonOptions.getStartMs();
 		options.t_lastMs 		= parent0.paneExcel.tabCommonOptions.getEndMs();
 		options.t_binMs			= parent0.paneExcel.tabCommonOptions.getBinMs();
+		
+		options.background_jitter = (int) backgroundJitterSpinner.getValue();
+		options.background_delta = 	(int) backgroundDeltaSpinner.getValue();
 
 		return options;
 	}

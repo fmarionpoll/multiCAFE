@@ -88,6 +88,8 @@ public class BuildBackground extends BuildSeries
 			ImageTransformOptions transformOptions = new ImageTransformOptions();
 			transformOptions.transformOption = EnumImageTransformations.SUBTRACT; 
 			transformOptions.setSingleThreshold(options.backgroundThreshold, stopFlag);
+			transformOptions.background_delta = options.background_delta;
+			transformOptions.background_jitter = options.background_jitter;
 			buildBackgroundImage(exp, transformOptions);
 			exp.saveReferenceImage(seqReference.getFirstImage());
 			
@@ -142,7 +144,7 @@ public class BuildBackground extends BuildSeries
 		IcyBufferedImageCursor sourceCursor = new IcyBufferedImageCursor(sourceImage);
 		IcyBufferedImageCursor backgroundCursor = new IcyBufferedImageCursor(transformOptions.backgroundImage);
 		
-		double smallThreshold = transformOptions.background_difference_threshold;
+		double smallThreshold = transformOptions.background_delta;
 		;
 		try 
 		{

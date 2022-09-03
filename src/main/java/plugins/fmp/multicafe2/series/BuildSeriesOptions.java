@@ -83,6 +83,8 @@ public class BuildSeriesOptions implements XMLPersistent
 	public EnumImageTransformations transformop = EnumImageTransformations.NONE; 
 	public int			videoChannel 			= 0;
 	public boolean 		backgroundSubstraction 	= false;
+	public int 			background_delta = 50;
+	public int 			background_jitter = 1;
 
 	// -----------------------
 	
