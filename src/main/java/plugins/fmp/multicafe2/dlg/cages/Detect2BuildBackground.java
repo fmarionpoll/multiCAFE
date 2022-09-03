@@ -77,7 +77,6 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 		panel2.add(new JLabel("over n frames "));
 		panel2.add(backgroundNFramesSpinner);
 		panel2.add(overlayCheckBox);
-//		panel2.add(viewsCheckBox);
 		panel2.validate();
 		add(panel2);
 		
@@ -163,6 +162,8 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 		if (e.getSource() == backgroundThresholdSpinner) 
 		{
 			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+			if (!overlayCheckBox.isSelected())
+				overlayCheckBox.setSelected(true);
 			if (exp != null) 
 				updateOverlay(exp);
 		}
