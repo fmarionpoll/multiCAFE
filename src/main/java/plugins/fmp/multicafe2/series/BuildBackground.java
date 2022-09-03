@@ -141,7 +141,7 @@ public class BuildBackground extends BuildSeries
 		IcyBufferedImageCursor sourceCursor = new IcyBufferedImageCursor(sourceImage);
 		IcyBufferedImageCursor referenceCursor = new IcyBufferedImageCursor(transformOptions.referenceImage);
 		
-		double smallThreshold = transformOptions.simplethreshold / 10;
+		double smallThreshold = transformOptions.simplethreshold / 2;
 		try 
 		{
 			for (int y = 0; y < height; y++ ) 
@@ -150,9 +150,9 @@ public class BuildBackground extends BuildSeries
 				{
 					for (int c = 0; c < planes; c++) 
 					{
-						double valRef = referenceCursor.get(x, y, c);
-						double valDiff = valRef - sourceCursor.get(x, y, c);
-						if (valRef >= transformOptions.simplethreshold && valDiff >= smallThreshold) 
+						double referenceValue = referenceCursor.get(x, y, c);
+						double differenceValue = sourceCursor.get(x, y, c) - referenceValue;
+						if (referenceValue >= transformOptions.simplethreshold && differenceValue >= smallThreshold) 
 						{
 							changed ++;
 							int delta = 10;
