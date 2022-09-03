@@ -27,6 +27,8 @@ public class ImageTransformOptions
 	public int w2 = 1;
 	public int spanDiff = 3;
 	public int simplethreshold = 255;
+	public int background_difference_threshold = 50;
+	public int background_jitter = 1;
 		
 	protected int colorthreshold = 0;
 	protected int colordistanceType = 0;
