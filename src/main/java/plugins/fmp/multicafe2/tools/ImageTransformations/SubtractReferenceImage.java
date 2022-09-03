@@ -8,7 +8,7 @@ public class SubtractReferenceImage extends ImageTransformFunction implements Im
 	@Override
 	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
-		if (options.referenceImage == null)
+		if (options.backgroundImage == null)
 			return null;
 		
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getSizeX(), sourceImage.getSizeY(),sourceImage.getSizeC(), sourceImage.getDataType_());
@@ -16,7 +16,7 @@ public class SubtractReferenceImage extends ImageTransformFunction implements Im
 		{
 			int [] imgSourceInt = Array1DUtil.arrayToIntArray(sourceImage.getDataXY(0), sourceImage.isSignedDataType());
 			int [] img2Int = Array1DUtil.arrayToIntArray(img2.getDataXY(0), img2.isSignedDataType());
-			int [] imgReferenceInt = Array1DUtil.arrayToIntArray(options.referenceImage.getDataXY(0), options.referenceImage.isSignedDataType());	
+			int [] imgReferenceInt = Array1DUtil.arrayToIntArray(options.backgroundImage.getDataXY(0), options.backgroundImage.isSignedDataType());	
 			for (int i=0; i< imgSourceInt.length; i++) 
 			{
 				int val = imgSourceInt[i] - imgReferenceInt[i];

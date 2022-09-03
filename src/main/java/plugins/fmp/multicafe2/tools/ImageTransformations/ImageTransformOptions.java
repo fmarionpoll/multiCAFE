@@ -10,7 +10,7 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 public class ImageTransformOptions 
 {
 	public EnumImageTransformations transformOption; 
-	public IcyBufferedImage referenceImage = null;
+	public IcyBufferedImage backgroundImage = null;
 	public IcyBufferedImage secondImage = null;
 	public SequenceCamData seqCamData = null;
 	public int npixels_changed = 0;

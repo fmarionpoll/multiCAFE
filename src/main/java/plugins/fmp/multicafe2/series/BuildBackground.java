@@ -102,7 +102,7 @@ public class BuildBackground extends BuildSeries
 		ProgressFrame progress = new ProgressFrame("Build background image...");
 		flyDetectTools.initParametersForDetection(exp, options);
 
-		transformOptions.referenceImage  = imageIORead(exp.seqCamData.getFileName(options.backgroundFirst));
+		transformOptions.backgroundImage  = imageIORead(exp.seqCamData.getFileName(options.backgroundFirst));
 
 		long first_ms = exp.cages.detectFirst_Ms + (options.backgroundFirst * exp.camImageBin_ms);
 		final int t_first = (int) ((first_ms - exp.cages.detectFirst_Ms)/exp.camImageBin_ms);
@@ -115,9 +115,10 @@ public class BuildBackground extends BuildSeries
 		{
 			IcyBufferedImage currentImage = imageIORead(exp.seqCamData.getFileName(t));
 			seqData.setImage(0, 0, currentImage);
+			progress.setMessage("Frame #"+ t + "/"+t_last);
 			
 			transformBackground(currentImage, transformOptions);
-			seqReference.setImage(0, 0, transformOptions.referenceImage);
+			seqReference.setImage(0, 0, transformOptions.backgroundImage);
 			
 //			System.out.println("t= "+t+ " n pixels changed=" + transformOptions.npixels_changed);
 			if (transformOptions.npixels_changed < 10 ) 
@@ -129,7 +130,7 @@ public class BuildBackground extends BuildSeries
 	
 	void transformBackground(IcyBufferedImage sourceImage, ImageTransformOptions transformOptions) 
 	{
-		if (transformOptions.referenceImage == null)
+		if (transformOptions.backgroundImage == null)
 			return;
 		
 		int width = sourceImage.getSizeX();
@@ -139,7 +140,7 @@ public class BuildBackground extends BuildSeries
 		int changed = 0;
 		
 		IcyBufferedImageCursor sourceCursor = new IcyBufferedImageCursor(sourceImage);
-		IcyBufferedImageCursor referenceCursor = new IcyBufferedImageCursor(transformOptions.referenceImage);
+		IcyBufferedImageCursor backgroundCursor = new IcyBufferedImageCursor(transformOptions.backgroundImage);
 		
 		double smallThreshold = transformOptions.simplethreshold / 2;
 		try 
@@ -150,12 +151,16 @@ public class BuildBackground extends BuildSeries
 				{
 					for (int c = 0; c < planes; c++) 
 					{
-						double referenceValue = referenceCursor.get(x, y, c);
-						double differenceValue = sourceCursor.get(x, y, c) - referenceValue;
-						if (referenceValue >= transformOptions.simplethreshold && differenceValue >= smallThreshold) 
+						double backgroundValue = backgroundCursor.get(x, y, c);
+						double sourceValue = sourceCursor.get(x, y, c);
+						if (sourceValue < transformOptions.simplethreshold)
+							continue;
+						
+						double differenceValue =  sourceValue - backgroundValue ;
+						if (backgroundValue < transformOptions.simplethreshold && differenceValue > smallThreshold) 
 						{
 							changed ++;
-							int delta = 10;
+							int delta = 1; //10;
 							for (int yy = y-delta; yy < y+delta; yy++ ) 
 							{
 								if (yy < 0 || yy >= height)
@@ -166,7 +171,7 @@ public class BuildBackground extends BuildSeries
 										continue;
 									for (int cc = 0; cc < planes; cc++) 
 									{
-										referenceCursor.set(xx, yy, cc, sourceCursor.get(xx, yy, cc));
+										backgroundCursor.set(xx, yy, cc, sourceCursor.get(xx, yy, cc));
 									}
 								}
 							}
@@ -177,7 +182,7 @@ public class BuildBackground extends BuildSeries
 		} 
 		finally 
 		{
-			referenceCursor.commitChanges();
+			backgroundCursor.commitChanges();
 			transformOptions.npixels_changed = changed;
 		}
 	}

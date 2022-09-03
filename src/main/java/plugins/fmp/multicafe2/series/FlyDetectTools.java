@@ -10,7 +10,7 @@ import java.util.concurrent.Future;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
 import icy.roi.BooleanMask2D;
-import icy.sequence.Sequence;
+
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
 import plugins.fmp.multicafe2.experiment.Cage;
@@ -133,7 +133,7 @@ public class FlyDetectTools
 		return listRectangles;
 	}
 	
-	public List<Rectangle2D> findFlies2(Sequence seq, IcyBufferedImage workimage, int t) throws InterruptedException 
+	public List<Rectangle2D> findFlies2( final IcyBufferedImage workimage, final int t) throws InterruptedException 
 	{
 		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detectFlies1");

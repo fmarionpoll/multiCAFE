@@ -51,13 +51,13 @@ public class FlyDetect1 extends BuildSeries
 		switch (options.transformOption) 
 		{
 			case SUBTRACT_TM1: 
-				options.referenceImage = imageIORead(exp.seqCamData.getFileName(t));
+				options.backgroundImage = imageIORead(exp.seqCamData.getFileName(t));
 				break;
 				
 			case SUBTRACT_T0:
 			case SUBTRACT_REF:
-				if (options.referenceImage == null)
-					options.referenceImage = imageIORead(exp.seqCamData.getFileName(0));
+				if (options.backgroundImage == null)
+					options.backgroundImage = imageIORead(exp.seqCamData.getFileName(0));
 				break;
 				
 			case NONE:

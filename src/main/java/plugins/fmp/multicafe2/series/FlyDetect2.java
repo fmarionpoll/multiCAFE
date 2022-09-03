@@ -34,7 +34,7 @@ public class FlyDetect2 extends BuildSeries
 		if (!stopFlag)
 			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
 		exp.seqCamData.closeSequence();
-		closeSequence(seqNegative);
+//		closeSequence(seqNegative);
     }
 	
 	private void runFlyDetect2(Experiment exp) 
@@ -59,7 +59,7 @@ public class FlyDetect2 extends BuildSeries
 		
 		ImageTransformOptions transformOptions = new ImageTransformOptions();
 		transformOptions.transformOption = EnumImageTransformations.SUBTRACT_REF;
-		transformOptions.referenceImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.refImage);
+		transformOptions.backgroundImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.refImage);
 		ImageTransformInterface transformFunction = transformOptions.transformOption.getFunction();
 		
 		long last_ms = exp.cages.detectLast_Ms + exp.cages.detectBin_Ms ;
@@ -77,7 +77,7 @@ public class FlyDetect2 extends BuildSeries
 				seqNegative.beginUpdate();
 				seqNegative.setImage(0, 0, negativeImage);
 				vNegative.setTitle(title);
-				List<Rectangle2D> listRectangles = find_flies.findFlies2(seqNegative, negativeImage, t_from);
+				List<Rectangle2D> listRectangles = find_flies.findFlies2( negativeImage, t_from);
 				addGreenROI2DPoints(seqNegative, listRectangles, true);
 				seqNegative.endUpdate();
 			} 

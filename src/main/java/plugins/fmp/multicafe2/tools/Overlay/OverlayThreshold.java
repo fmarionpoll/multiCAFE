@@ -67,7 +67,7 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 	
 	public void setReferenceImage(IcyBufferedImage referenceImage)
 	{
-		imageTransformOptions.referenceImage = referenceImage;
+		imageTransformOptions.backgroundImage = referenceImage;
 	}
 	
 	public void setThresholdColor (ArrayList <Color> colorarray, int distancetype, int threshold) 
