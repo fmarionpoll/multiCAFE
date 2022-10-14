@@ -65,6 +65,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 	private JCheckBox 	allSeriesCheckBox 		= new JCheckBox("ALL (current to last)", false);
 	private JCheckBox	leftCheckBox 			= new JCheckBox ("L", true);
 	private JCheckBox	rightCheckBox 			= new JCheckBox ("R", true);
+	private JCheckBox	runBackwardsCheckBox 	= new JCheckBox ("run backwards", false);
 	
 	private MultiCAFE2 	parent0 				= null;
 	private DetectLevels threadDetectLevels 	= null;
@@ -110,6 +111,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		panel03.add(startSpinner);
 		panel03.add(new JLabel("to"));
 		panel03.add(endSpinner);
+		panel03.add(runBackwardsCheckBox);
 		add( panel03);
 		
 		defineActionListeners();
@@ -330,6 +332,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		options.detectR				= rightCheckBox.isSelected();
 		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
 		options.binSubDirectory 	= parent0.expListCombo.expListBinSubDirectory ;
+		options.runBackwards		= runBackwardsCheckBox.isSelected();
 		return options;
 	}
 	

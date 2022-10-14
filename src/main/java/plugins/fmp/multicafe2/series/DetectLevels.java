@@ -95,6 +95,8 @@ public class DetectLevels  extends BuildSeries
 							lastColumn = imageWidth -1;
 					} 
 					
+					int n_measures = lastColumn - firstColumn +1;
+					
 					if (options.pass1) 
 					{		
 						int c = 0;
@@ -103,19 +105,16 @@ public class DetectLevels  extends BuildSeries
 						int[] transformed1DArray1 = Array1DUtil.arrayToIntArray(transformedArray1, transformedImage1.isSignedDataType());
 						
 						int topSearchFrom = 0;
-						capi.ptsTop.limit = new int [lastColumn - firstColumn +1];
-						capi.ptsBottom.limit = new int [lastColumn - firstColumn +1];
+						capi.ptsTop.limit = new int [n_measures];
+						capi.ptsBottom.limit = new int [n_measures];
 						
-						for (int ix = firstColumn; ix <= lastColumn; ix++) 
-						{
-							int iyTop = detectThresholdFromTop(ix, topSearchFrom, jitter, transformed1DArray1, imageWidth, imageHeight, options);
-							int iyBottom = detectThresholdFromBottom(ix, jitter, transformed1DArray1, imageWidth, imageHeight, options);
-							if (iyBottom <= iyTop) 
-								iyTop = topSearchFrom;
-							capi.ptsTop.limit[ix] = iyTop;
-							capi.ptsBottom.limit[ix] = iyBottom;
-							topSearchFrom = iyTop;
-						}
+						if (options.runBackwards) 
+							for (int ix = lastColumn; ix >= firstColumn; ix--) 
+								topSearchFrom = detectLimitOnOneColumn(ix, topSearchFrom, jitter, imageWidth, imageHeight, capi, transformed1DArray1);
+						else
+							for (int ix = firstColumn; ix <= lastColumn; ix++) 
+								topSearchFrom = detectLimitOnOneColumn(ix, topSearchFrom, jitter, imageWidth, imageHeight, capi, transformed1DArray1);
+						
 					}
 					
 					if (options.pass2) 
@@ -170,6 +169,17 @@ public class DetectLevels  extends BuildSeries
 		progressBar.close();
 		
 		return true;
+	}
+	
+	private int detectLimitOnOneColumn(int ix, int topSearchFrom, int jitter, int imageWidth, int imageHeight, Capillary capi, int[] transformed1DArray1)
+	{
+		int iyTop = detectThresholdFromTop(ix, topSearchFrom, jitter, transformed1DArray1, imageWidth, imageHeight, options);
+		int iyBottom = detectThresholdFromBottom(ix, jitter, transformed1DArray1, imageWidth, imageHeight, options);
+		if (iyBottom <= iyTop) 
+			iyTop = topSearchFrom;
+		capi.ptsTop.limit[ix] = iyTop;
+		capi.ptsBottom.limit[ix] = iyBottom;
+		return iyTop;
 	}
 	
 	private void findBestPosition(int [] limits, int firstColumn, int lastColumn, int[] transformed1DArray2, int imageWidth, int imageHeight, int delta) 

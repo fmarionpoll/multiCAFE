@@ -42,6 +42,7 @@ public class BuildSeriesOptions implements XMLPersistent
 	public 	boolean 	detectAllKymos 			= true;
 	public 	int			firstKymo				= 0;
 	public  int			lastKymo				= 0;
+	public  boolean 	runBackwards 			= false;
 	
 	public	boolean		pass1 = true;
 	public 	boolean		directionUp1			= true;
