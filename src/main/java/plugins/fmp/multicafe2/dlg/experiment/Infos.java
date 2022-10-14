@@ -161,6 +161,7 @@ public class Infos  extends JPanel
 		String text = exp.getField(field);
 		if (text .equals(".."))
 			exp.setField(field, altText);
+		text = exp.getField(field);
 		addItemToComboIfNew(text, combo);
 		combo.setSelectedItem(text);
 	}
