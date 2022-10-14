@@ -356,7 +356,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	public List<String> getFieldValuesFromAllExperiments(EnumXLSColumnHeader field) 
 	{
 		List<String> textList = new ArrayList<>();
-		for (int i=0; i< getItemCount(); i++) 
+		for (int i=0; i < getItemCount(); i++) 
 		{
 			Experiment exp = getItemAt(i);
 			String text = exp.getField(field);

@@ -41,6 +41,7 @@ public class Infos  extends JPanel
 	
 	private JButton				openButton		= new JButton("Load...");
 	private JButton				saveButton		= new JButton("Save...");
+	private JButton				duplicateButton = new JButton("Get previous");
 	
 	private MultiCAFE2 			parent0 		= null;
 	boolean 					disableChangeFile = false;
@@ -96,6 +97,8 @@ public class Infos  extends JPanel
 		add(sexCheck, c);
 		c.gridx += delta1;
 		add(sexCombo, c);
+		c.gridx += delta2;
+		add(duplicateButton, c);
 
 		boxIDCombo.setEditable(true);
 		exptCombo.setEditable(true);	
@@ -117,7 +120,7 @@ public class Infos  extends JPanel
 				if (exp != null) 
 				{
 					exp.xmlLoadMCExperiment ();
-					setExperimentInfosToDialog(exp);
+					setExperimentInfosToDialog(exp, exp);
 				}
 			}});
 		
@@ -132,18 +135,25 @@ public class Infos  extends JPanel
 					exp.xmlSaveMCExperiment();
 				}
 			}});
+		
+		duplicateButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				duplicatePreviousDescriptors();
+			}});
 	}
 		
 	// set/ get
 	
-	public void setExperimentInfosToDialog(Experiment exp) 
+	public void setExperimentInfosToDialog(Experiment exp_source, Experiment exp_destination) 
 	{
-		setInfoCombo(exp, boxIDCombo, EnumXLSColumnHeader.EXP_BOXID, exp.getField(EnumXLSColumnHeader.EXP_BOXID)); 
-		setInfoCombo(exp, exptCombo, EnumXLSColumnHeader.EXP_EXPT, exp.getField(EnumXLSColumnHeader.EXP_EXPT)) ;
-		setInfoCombo(exp, cmt1Combo, EnumXLSColumnHeader.EXP_STIM, exp.getField(EnumXLSColumnHeader.EXP_STIM)) ;
-		setInfoCombo(exp, comt2Combo, EnumXLSColumnHeader.EXP_CONC, exp.getField(EnumXLSColumnHeader.EXP_CONC)) ;
-		setInfoCombo(exp, strainCombo, EnumXLSColumnHeader.EXP_STRAIN, exp.getField(EnumXLSColumnHeader.EXP_STRAIN)) ;
-		setInfoCombo(exp, sexCombo, EnumXLSColumnHeader.EXP_SEX, exp.getField(EnumXLSColumnHeader.EXP_SEX)) ;
+		setInfoCombo(exp_destination, boxIDCombo, EnumXLSColumnHeader.EXP_BOXID, exp_source.getField(EnumXLSColumnHeader.EXP_BOXID)); 
+		setInfoCombo(exp_destination, exptCombo, EnumXLSColumnHeader.EXP_EXPT, exp_source.getField(EnumXLSColumnHeader.EXP_EXPT)) ;
+		setInfoCombo(exp_destination, cmt1Combo, EnumXLSColumnHeader.EXP_STIM, exp_source.getField(EnumXLSColumnHeader.EXP_STIM)) ;
+		setInfoCombo(exp_destination, comt2Combo, EnumXLSColumnHeader.EXP_CONC, exp_source.getField(EnumXLSColumnHeader.EXP_CONC)) ;
+		setInfoCombo(exp_destination, strainCombo, EnumXLSColumnHeader.EXP_STRAIN, exp_source.getField(EnumXLSColumnHeader.EXP_STRAIN)) ;
+		setInfoCombo(exp_destination, sexCombo, EnumXLSColumnHeader.EXP_SEX, exp_source.getField(EnumXLSColumnHeader.EXP_SEX)) ;
 	}
 	
 	private void setInfoCombo(Experiment exp, JComboBox<String> combo, EnumXLSColumnHeader field, String altText) 
@@ -184,7 +194,7 @@ public class Infos  extends JPanel
 		parent0.expListCombo.getFieldValuesToCombo(sexCombo, EnumXLSColumnHeader.EXP_SEX);
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null)
-			setExperimentInfosToDialog(exp);
+			setExperimentInfosToDialog(exp, exp);
 	}
 	
 	void clearCombos()
@@ -197,5 +207,15 @@ public class Infos  extends JPanel
 		sexCombo.removeAllItems();
 	}
 
+	void duplicatePreviousDescriptors()
+	{
+		int iprevious = parent0.expListCombo.getSelectedIndex()-1;
+		if (iprevious < 0)
+			return;
+		
+		Experiment exp0 = (Experiment) parent0.expListCombo.getItemAt(iprevious);
+		Experiment exp = (Experiment) parent0.expListCombo.getItemAt(iprevious+1);
+		setExperimentInfosToDialog(exp0, exp);
+	}
 }
 

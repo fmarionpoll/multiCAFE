@@ -124,7 +124,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			     	parent0.expListCombo.setSelectedIndex(item);
 			     	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 					if (exp != null)
-						parent1.tabInfos.setExperimentInfosToDialog(exp);
+						parent1.tabInfos.setExperimentInfosToDialog(exp, exp);
 				}});
 			}
 		}
@@ -219,7 +219,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			flag = false;
 			System.out.println("Error: no jpg files found for this experiment\n");
 		}
-		parent1.tabInfos.setExperimentInfosToDialog(exp);
+		parent1.tabInfos.setExperimentInfosToDialog(exp, exp);
 		return flag;
 	}
 	
