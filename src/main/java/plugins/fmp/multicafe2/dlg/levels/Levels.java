@@ -42,7 +42,9 @@ public class Levels extends JPanel implements PropertyChangeListener
 			EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB, 
 			EnumImageTransformations.R2MINUS_GB, EnumImageTransformations.G2MINUS_RB, EnumImageTransformations.B2MINUS_RG, EnumImageTransformations.RGB,
 			EnumImageTransformations.GBMINUS_2R, EnumImageTransformations.RBMINUS_2G, EnumImageTransformations.RGMINUS_2B, EnumImageTransformations.RGB_DIFFS,
+			EnumImageTransformations.YDIFFN, EnumImageTransformations.YDIFFN2,
 			EnumImageTransformations.H_HSB, EnumImageTransformations.S_HSB, EnumImageTransformations.B_HSB
+			
 		});
 	private JButton		displayTransform1Button	= new JButton("Display");
 	
