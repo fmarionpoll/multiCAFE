@@ -19,7 +19,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import icy.gui.frame.IcyFrame;
 import icy.gui.util.GuiUtil;
-
+import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 import plugins.fmp.multicafe2.tools.toExcel.XLSExport;
@@ -29,13 +29,15 @@ import plugins.fmp.multicafe2.tools.toExcel.XLSResultsArray;
 
 public class ChartLevels extends IcyFrame  
 {
-	public JPanel 	mainChartPanel = null;
-	public IcyFrame mainChartFrame = null;
+	public JPanel 	mainChartPanel 	= null;
+	public IcyFrame mainChartFrame 	= null;
+	private MultiCAFE2 	parent0 	= null;
 	
 	private Point pt = new Point (0,0);
 	private boolean flagMaxMinSet = false;
 	private double globalYMax = 0;
 	private double globalYMin = 0;
+	private double globalXMin = 0;
 	private double globalXMax = 0;
 
 	private double ymax = 0;
@@ -45,9 +47,10 @@ public class ChartLevels extends IcyFrame
 	private String title;
 
 	//----------------------------------------
-	public void createPanel(String cstitle) 
+	public void createChartPanel(MultiCAFE2 parent, String cstitle) 
 	{
 		title = cstitle;
+		parent0 = parent;
 		mainChartFrame = GuiUtil.generateTitleFrame(title, new JPanel(), new Dimension(300, 70), true, true, true, true);	    
 		mainChartPanel = new JPanel(); 
 		mainChartPanel.setLayout( new BoxLayout( mainChartPanel, BoxLayout.LINE_AXIS ) );
@@ -127,7 +130,7 @@ public class ChartLevels extends IcyFrame
 		getDataArrays(exp, option, subtractEvaporation, xyDataSetList);
 		
 		// display charts
-		int width = 140; // 130; 
+		int width = 140; 
 		int minimumDrawWidth = 100;
 		int maximumDrawWidth = width;
 		int height = 200;
@@ -150,15 +153,10 @@ public class ChartLevels extends IcyFrame
 			xyChart.setAntiAlias( true );
 			xyChart.setTextAntiAlias( true );
 			
-			ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
-			if (globalYMin == globalYMax)
-				globalYMax = globalYMin +1;
-			yAxis.setRange(globalYMin, globalYMax);
-			yAxis.setTickLabelsVisible(displayLabels);
+			setYAxis(xyChart, displayLabels);
 			yTitle = null;
 			
-			ValueAxis xAxis = xyChart.getXYPlot().getDomainAxis(0);
-			xAxis.setRange(0, globalXMax);
+			setXAxis(xyChart);
 			
 			if (option == EnumXLSExportType.TOPLEVEL || option == EnumXLSExportType.BOTTOMLEVEL) 
 				xyChart.getXYPlot().getRangeAxis(0).setInverted(true);
@@ -179,6 +177,25 @@ public class ChartLevels extends IcyFrame
 		mainChartFrame.setLocation(pt);
 		mainChartFrame.addToDesktopPane ();
 		mainChartFrame.setVisible(true);
+	}
+	
+	private void setXAxis(JFreeChart xyChart) {
+		if( parent0.paneExcel.tabCommonOptions.getIsFixedFrame())
+		{
+			double binMs	= parent0.paneExcel.tabCommonOptions.getBinMs();
+			globalXMin 		= parent0.paneExcel.tabCommonOptions.getStartMs()/binMs;
+			globalXMax 		= parent0.paneExcel.tabCommonOptions.getEndMs()/binMs;
+		}
+		ValueAxis xAxis = xyChart.getXYPlot().getDomainAxis(0);
+		xAxis.setRange(globalXMin, globalXMax);
+	}
+	
+	private void setYAxis(JFreeChart xyChart, boolean displayLabels) {
+		ValueAxis yAxis = xyChart.getXYPlot().getRangeAxis(0);
+		if (globalYMin == globalYMax)
+			globalYMax = globalYMin +1;
+		yAxis.setRange(globalYMin, globalYMax);
+		yAxis.setTickLabelsVisible(displayLabels);
 	}
 
 	private void updateGlobalMaxMin() 

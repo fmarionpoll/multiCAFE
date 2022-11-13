@@ -35,7 +35,7 @@ public class PlotLevels extends JPanel implements SequenceListener
 	private ChartLevels plotDelta 			= null;
 	private ChartLevels plotDerivative 		= null;
 	private ChartLevels plotSumgulps 		= null;
-	private MultiCAFE2 	parent0 					= null;
+	private MultiCAFE2 	parent0 			= null;
 	
 	private JCheckBox 	limitsCheckbox 				= new JCheckBox("top/bottom", true);
 	private JCheckBox 	derivativeCheckbox 			= new JCheckBox("derivative", false);
@@ -113,7 +113,9 @@ public class PlotLevels extends JPanel implements SequenceListener
 		if (limitsCheckbox.isSelected() && isThereAnyDataToDisplay(exp, EnumXLSExportType.TOPLEVEL)
 				&& isThereAnyDataToDisplay(exp, EnumXLSExportType.BOTTOMLEVEL))  
 		{
-			plotTopAndBottom = plotToChart(exp, "top + bottom levels", EnumXLSExportType.TOPLEVEL, plotTopAndBottom, rectv, ptRelative);
+			plotTopAndBottom = plotToChart(exp, "top + bottom levels", 
+					EnumXLSExportType.TOPLEVEL, 
+					plotTopAndBottom, rectv, ptRelative);
 			ptRelative.translate(dx, dy);
 		}
 		else if (plotTopAndBottom != null) 
@@ -156,7 +158,7 @@ public class PlotLevels extends JPanel implements SequenceListener
 		if (iChart != null) 
 			iChart.mainChartFrame.dispose();
 		iChart = new ChartLevels();
-		iChart.createPanel(title);
+		iChart.createChartPanel(parent0, title);
 		if (ptRelative != null)
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		iChart.displayData(exp, option, correctEvaporationCheckbox.isSelected());

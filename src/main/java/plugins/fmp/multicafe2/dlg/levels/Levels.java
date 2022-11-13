@@ -42,7 +42,6 @@ public class Levels extends JPanel implements PropertyChangeListener
 			EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB, 
 			EnumImageTransformations.R2MINUS_GB, EnumImageTransformations.G2MINUS_RB, EnumImageTransformations.B2MINUS_RG, EnumImageTransformations.RGB,
 			EnumImageTransformations.GBMINUS_2R, EnumImageTransformations.RBMINUS_2G, EnumImageTransformations.RGMINUS_2B, EnumImageTransformations.RGB_DIFFS,
-			EnumImageTransformations.YDIFFN, EnumImageTransformations.YDIFFN2,
 			EnumImageTransformations.H_HSB, EnumImageTransformations.S_HSB, EnumImageTransformations.B_HSB
 			
 		});
@@ -52,6 +51,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 	private JComboBox<String> direction2ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JSpinner 	threshold2Spinner 		= new JSpinner(new SpinnerNumberModel(40, 1, 255, 1));
 	JComboBox<EnumImageTransformations> transform02ComboBox = new JComboBox<EnumImageTransformations> (new EnumImageTransformations[] {
+			EnumImageTransformations.YDIFFN, EnumImageTransformations.YDIFFN2,
 			EnumImageTransformations.DERICHE, EnumImageTransformations.DERICHE_COLOR,
 			EnumImageTransformations.MINUSHORIZAVG,
 			EnumImageTransformations.COLORDISTANCE_L1_Y, EnumImageTransformations.COLORDISTANCE_L2_Y,
