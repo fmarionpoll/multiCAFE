@@ -111,7 +111,7 @@ public class Capillaries
 		boolean flag = true;
 		int ncapillaries = capillariesList.size();
 
-		for (int i=0; i< ncapillaries; i++) 
+		for (int i = 0; i < ncapillaries; i++) 
 		{
 			String csFile = directory + File.separator + capillariesList.get(i).getKymographName() + ".xml";
 			final Document capdoc = XMLUtil.loadDocument(csFile);
