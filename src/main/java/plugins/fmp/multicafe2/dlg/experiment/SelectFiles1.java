@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -164,8 +165,7 @@ public class SelectFiles1 extends JPanel
             public void actionPerformed(ActionEvent arg0) 
             {
     			List<String> allItems = new ArrayList <String> (directoriesJList.getModel().getSize());
-    			for(int i = 0; i< directoriesJList.getModel().getSize();i++) 
-    			{
+    			for(int i = 0; i< directoriesJList.getModel().getSize();i++)  {
     			    String name = directoriesJList.getModel().getElementAt(i);
     				allItems.add(name);
     				}
@@ -321,8 +321,9 @@ public class SelectFiles1 extends JPanel
 		{
 			String directoryName = Paths.get(name).getParent().toString();
 			if (isDirectoryWithJpg(directoryName))
-					parent1.selectedNames.add(directoryName);
+				parent1.selectedNames.add(directoryName);
 		}
+		Collections.sort(parent1.selectedNames);
 	}
 
 	private boolean isDirectoryWithJpg(String directoryName) {
