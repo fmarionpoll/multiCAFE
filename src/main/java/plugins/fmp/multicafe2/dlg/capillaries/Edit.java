@@ -34,7 +34,7 @@ public class Edit extends JPanel
 		flowLayout.setVgap(0);
 		
 		JPanel panel0 = new JPanel(flowLayout);
-		panel0.add(new JLabel("* - for experimental"));
+		panel0.add(new JLabel("* this dialog is experimental"));
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(flowLayout);

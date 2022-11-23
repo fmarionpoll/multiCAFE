@@ -277,38 +277,65 @@ public class ROI2DUtilities
 		}
 	}
 
-	public static Polygon2D getCapillariesFrame(ArrayList<ROI2D> listRois) {
+	public static Polygon2D getPolygonEnclosingCapillaries(ArrayList<ROI2D> listRois) {
 		ROI2D roi1 = listRois.get(0);
-		ROI2D roi2 = listRois.get(listRois.size()-1);
-		double xmin = roi1.getBounds().getX();
-		double xmax = xmin;
+		Point2D pt1 = getFirstPoint(roi1);
+		Point2D pt2 = getLastPoint(roi1);
+		double [] xpoints = {pt1.getX(), pt1.getX(), pt2.getX(), pt2.getX()};
+		double [] ypoints = {pt1.getY(), pt1.getY(), pt2.getY(), pt2.getY()};
+		
 		for (ROI2D roi : listRois) {
 			if (!roi.getName().contains("line")) 
 				continue;
-			double x = roi.getBounds().getX();
-			if (x < xmin) {
-				xmin = x;
-				roi1 = roi;
-				continue;
-			}
-			if (x > xmax) {
-				xmax = x;
-				roi2 = roi;
-				continue;
-			}
+			
+			pt1 = getFirstPoint(roi);
+			updateUpperLeftCorner(pt1, xpoints, ypoints);
+			updateUpperRightCorner(pt1, xpoints, ypoints);
+			
+			pt2 = getLastPoint(roi);
+			updateLowerLeftCorner(pt2, xpoints, ypoints);
+			updateLowerRightCorner(pt2, xpoints, ypoints);
 		}
-		return getPolygon2DFromROIs(roi1, roi2);
+		return new Polygon2D(xpoints, ypoints, 4); 
 	}
 	
-	private static Polygon2D getPolygon2DFromROIs(ROI2D roi1, ROI2D roi2) {
-		List<Point2D> listPoints = new ArrayList<Point2D>();
-		listPoints.add(getFirstPoint(roi1));
-		listPoints.add(getLastPoint(roi1));
-		listPoints.add(getFirstPoint(roi2));
-		listPoints.add(getLastPoint(roi2));
-		Polygon2D polygon = new Polygon2D(listPoints);
-		Polygon2D roiPolygon = ROI2DUtilities.orderVerticesofPolygon (polygon.getPolygon());
-		return roiPolygon;
+	private static void updateUpperLeftCorner(Point2D pt, double [] xpoints, double [] ypoints)
+	{
+		final int i = 0;
+		if (pt.getX() < xpoints[i]) { 
+			xpoints[i] = pt.getX();
+			if (pt.getY() < ypoints[i]) 
+				ypoints[i] = pt.getY();
+		}
+	}
+	
+	private static void updateUpperRightCorner(Point2D pt, double [] xpoints, double [] ypoints)
+	{
+		final int i = 1;
+		if (pt.getX() > xpoints[i]) { 
+			xpoints[i] = pt.getX();
+			if (pt.getY() < ypoints[i]) 
+				ypoints[i] = pt.getY();
+		}
+	}
+	
+	private static void updateLowerLeftCorner(Point2D pt, double [] xpoints, double [] ypoints)
+	{
+		final int i = 3;
+		if (pt.getX() < xpoints[i]) {
+			xpoints[i] = pt.getX();
+			if (pt.getY() > ypoints[i]) ypoints[i] = pt.getY();
+		}
+	}
+	
+	private static void updateLowerRightCorner(Point2D pt, double [] xpoints, double [] ypoints)
+	{
+		final int i = 2;
+		if (pt.getX() > xpoints[i]) {
+			xpoints[i] = pt.getX();
+			if (pt.getY() > ypoints[i]) ypoints[i] = pt.getY();
+		}
+		
 	}
 	
 	private static Point2D getFirstPoint(ROI2D roi) {

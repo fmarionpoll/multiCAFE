@@ -181,13 +181,13 @@ public class EditCapillariesPositionWithTime extends JPanel implements ListSelec
 			return;
 		
 		if (show)
-			addCapillariesFrame(exp.seqCamData.seq);
+			addFrameAroundCapillaries(exp.seqCamData.seq);
 		else 
-			removeCapillariesFrame(exp.seqCamData.seq);
+			removeFrameAroundCapillaries(exp.seqCamData.seq);
 	}
 	
-	private void addCapillariesFrame(Sequence seq) {
-		Polygon2D polygon = ROI2DUtilities.getCapillariesFrame(seq.getROI2Ds());
+	private void addFrameAroundCapillaries(Sequence seq) {
+		Polygon2D polygon = ROI2DUtilities.getPolygonEnclosingCapillaries(seq.getROI2Ds());
 		envelopeRoi_initial = new ROI2DPolygon (polygon);
 		envelopeRoi = new ROI2DPolygon(polygon);
 		envelopeRoi.setName(dummyname);
@@ -197,7 +197,7 @@ public class EditCapillariesPositionWithTime extends JPanel implements ListSelec
 		seq.setSelectedROI(envelopeRoi);
 	}
 
-	private void removeCapillariesFrame(Sequence seq) {
+	private void removeFrameAroundCapillaries(Sequence seq) {
 		ArrayList<ROI2D> listRois = seq.getROI2Ds();
 		for (ROI2D roi: listRois) {
 			if (roi.getName().equals(dummyname)) {
