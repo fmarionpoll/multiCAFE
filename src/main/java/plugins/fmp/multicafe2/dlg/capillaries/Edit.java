@@ -25,7 +25,7 @@ public class Edit extends JPanel
 	
 	private JButton		editCapillariesButton	= new JButton("Edit capillaries position with time");
 	private MultiCAFE2 	parent0 				= null;
-	private EditCapillariesTable editCapillariesTable = null;
+	private EditCapillariesPositionWithTime editCapillariesTable = null;
 	
 	void init(GridLayout capLayout, MultiCAFE2 parent0) 
 	{
@@ -80,7 +80,7 @@ public class Edit extends JPanel
 		{
 			exp.capillaries.transferDescriptionToCapillaries();
 			if (editCapillariesTable == null)
-				editCapillariesTable = new EditCapillariesTable();
+				editCapillariesTable = new EditCapillariesPositionWithTime();
 			editCapillariesTable.initialize(parent0, getFramePosition());
 		}
 	}
