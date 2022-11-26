@@ -47,7 +47,7 @@ public class SequenceCamData
 
 	public EnumStatus 				status					= EnumStatus.REGULAR;		
 	protected String 				csCamFileName 			= null;
-	volatile public List <String>	imagesList 				= new ArrayList<String>();
+	public List <String>	imagesList 				= new ArrayList<String>();
 	
 	long 							timeFirstImageInMs		= 0;
 	int								indexTimePattern 		= -1;
@@ -146,17 +146,27 @@ public class SequenceCamData
 	
 	// --------------------------
 	
+	String fileComponent(String fname) {
+	      int pos = fname.lastIndexOf("/");
+	      if(pos > -1)
+	         return fname.substring(pos + 1);
+	      else
+	         return fname;
+	   }
+	
 	public FileTime getFileTimeFromStructuredName(int t) 
 	{
 		long timeInMs = 0;
-		String fileName = getFileName(t);
+		String fileName = fileComponent(getFileName(t));
+		
 		if (fileName == null) 
 		{
 			timeInMs = timePatternArray[0].getDummyTime(t);
 		} 
 		else 
 		{
-			if (indexTimePattern < 0) {
+			if (indexTimePattern < 0) 
+			{
 				indexTimePattern = findProperFilterIfAny(fileName);
 			}
 			TimePattern tp = timePatternArray[indexTimePattern];
@@ -167,9 +177,11 @@ public class SequenceCamData
 		return fileTime;
 	}
 	
-	int findProperFilterIfAny(String fileName) {
+	int findProperFilterIfAny(String fileName) 
+	{
 		int index = 0;
-		for (int i = 1; i < timePatternArray.length; i++) {
+		for (int i = 1; i < timePatternArray.length; i++) 
+		{
 			if (timePatternArray[i].findMatch(fileName)) 
 				return i;
 		}

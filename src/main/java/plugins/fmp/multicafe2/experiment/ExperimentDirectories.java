@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -42,6 +43,7 @@ public class ExperimentDirectories
 			if (nameGeneric.toLowerCase().endsWith(ext))
 				outList.add(nameGeneric);
 		}
+		Collections.sort(outList);
 		return outList;
 	}
 	
