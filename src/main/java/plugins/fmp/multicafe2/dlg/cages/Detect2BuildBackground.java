@@ -243,9 +243,9 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 		options.binSubDirectory = parent0.paneKymos.tabDisplay.getBinSubdirectory() ;
 		
 		options.isFrameFixed 	= parent0.paneExcel.tabCommonOptions.getIsFixedFrame();
-		options.t_firstMs 		= parent0.paneExcel.tabCommonOptions.getStartMs();
-		options.t_lastMs 		= parent0.paneExcel.tabCommonOptions.getEndMs();
-		options.t_binMs			= parent0.paneExcel.tabCommonOptions.getBinMs();
+		options.t_Ms_First 		= parent0.paneExcel.tabCommonOptions.getStartMs();
+		options.t_Ms_Last 		= parent0.paneExcel.tabCommonOptions.getEndMs();
+		options.t_Ms_BinDuration			= parent0.paneExcel.tabCommonOptions.getBinMs();
 		
 		options.background_jitter = (int) backgroundJitterSpinner.getValue();
 		options.background_delta = 	(int) backgroundDeltaSpinner.getValue();

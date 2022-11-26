@@ -241,9 +241,9 @@ public class Detect1 extends JPanel implements ChangeListener, ItemListener, Pro
 		options.threshold		= (int) thresholdSpinner.getValue();
 		
 		options.isFrameFixed 	= parent0.paneExcel.tabCommonOptions.getIsFixedFrame();
-		options.t_firstMs 		= parent0.paneExcel.tabCommonOptions.getStartMs();
-		options.t_lastMs 		= parent0.paneExcel.tabCommonOptions.getEndMs();
-		options.t_binMs			= parent0.paneExcel.tabCommonOptions.getBinMs();
+		options.t_Ms_First 		= parent0.paneExcel.tabCommonOptions.getStartMs();
+		options.t_Ms_Last 		= parent0.paneExcel.tabCommonOptions.getEndMs();
+		options.t_Ms_BinDuration			= parent0.paneExcel.tabCommonOptions.getBinMs();
 
 		options.parent0Rect 	= parent0.mainFrame.getBoundsInternal();
 		options.binSubDirectory	= parent0.paneKymos.tabDisplay.getBinSubdirectory() ;

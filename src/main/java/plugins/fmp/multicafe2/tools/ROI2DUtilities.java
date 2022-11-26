@@ -335,7 +335,6 @@ public class ROI2DUtilities
 			xpoints[i] = pt.getX();
 			if (pt.getY() > ypoints[i]) ypoints[i] = pt.getY();
 		}
-		
 	}
 	
 	private static Point2D getFirstPoint(ROI2D roi) {

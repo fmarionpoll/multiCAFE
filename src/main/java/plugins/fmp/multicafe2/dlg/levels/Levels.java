@@ -307,13 +307,13 @@ public class Levels extends JPanel implements PropertyChangeListener
 		parent0.paneKymos.tabDisplay.indexImagesCombo = parent0.paneKymos.tabDisplay.kymographsCombo.getSelectedIndex();
 		if (!allKymosCheckBox.isSelected()) 
 		{
-			options.firstKymo = parent0.paneKymos.tabDisplay.indexImagesCombo;
-			options.lastKymo = options.firstKymo;
+			options.kymoFirst = parent0.paneKymos.tabDisplay.indexImagesCombo;
+			options.kymoLast = options.kymoFirst;
 		}
 		else
 		{
-			options.firstKymo = 0;
-			options.lastKymo = parent0.paneKymos.tabDisplay.kymographsCombo.getItemCount()-1;
+			options.kymoFirst = 0;
+			options.kymoLast = parent0.paneKymos.tabDisplay.kymographsCombo.getItemCount()-1;
 		}
 		// other parameters
 		options.pass1 				= pass1CheckBox.isSelected();
@@ -327,8 +327,8 @@ public class Levels extends JPanel implements PropertyChangeListener
 		options.detectLevel2Threshold= (int) threshold2Spinner.getValue();
 		
 		options.analyzePartOnly		= fromCheckBox.isSelected();
-		options.firstPixel			= (int) startSpinner.getValue(); 
-		options.lastPixel			= (int) endSpinner.getValue(); 
+		options.columnFirst			= (int) startSpinner.getValue(); 
+		options.columnLast			= (int) endSpinner.getValue(); 
 		options.spanDiffTop			= getSpanDiffTop();
 		options.detectL 			= leftCheckBox.isSelected();
 		options.detectR				= rightCheckBox.isSelected();
@@ -367,8 +367,8 @@ public class Levels extends JPanel implements PropertyChangeListener
 			parent0.paneKymos.tabDisplay.selectKymographImage(parent0.paneKymos.tabDisplay.indexImagesCombo);
 			parent0.paneKymos.tabDisplay.indexImagesCombo = -1;
 			
-			startSpinner.setValue(threadDetectLevels.options.firstPixel); 
-			endSpinner.setValue(threadDetectLevels.options.lastPixel); 
+			startSpinner.setValue(threadDetectLevels.options.columnFirst); 
+			endSpinner.setValue(threadDetectLevels.options.columnLast); 
 		 }
 	}
 

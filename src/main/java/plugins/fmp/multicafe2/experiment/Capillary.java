@@ -326,7 +326,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		}
 		else {
 			if (limitsOptions.analyzePartOnly) 
-				gulpsRois.removeROIsWithinInterval(limitsOptions.firstPixel, limitsOptions.lastPixel);
+				gulpsRois.removeROIsWithinInterval(limitsOptions.columnFirst, limitsOptions.columnLast);
 			else 
 				gulpsRois.rois.clear();
 		}
@@ -341,8 +341,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		int lastPixel = ptsTop.polylineLevel.npoints;
 		if (limitsOptions.analyzePartOnly) 
 		{
-			firstPixel = limitsOptions.firstPixel;
-			lastPixel = limitsOptions.lastPixel;
+			firstPixel = limitsOptions.columnFirst;
+			lastPixel = limitsOptions.columnLast;
 		} 
 		
 		int threshold = (int) ((limitsOptions.detectGulpsThresholdUL / capVolume) * capPixels);

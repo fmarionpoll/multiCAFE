@@ -62,10 +62,10 @@ public class BuildKymographs extends BuildSeries
 	private void getTimeLimitsOfSequence(Experiment exp)
 	{
 		exp.loadFileIntervalsFromSeqCamData();
-		exp.kymoBin_ms = options.t_binMs;
+		exp.kymoBin_ms = options.t_Ms_BinDuration;
 		if (options.isFrameFixed) {
-			exp.kymoFirst_ms = options.t_firstMs;
-			exp.kymoLast_ms = options.t_lastMs;
+			exp.kymoFirst_ms = options.t_Ms_First;
+			exp.kymoLast_ms = options.t_Ms_Last;
 			if (exp.kymoLast_ms + exp.camImageFirst_ms > exp.camImageLast_ms)
 				exp.kymoLast_ms = exp.camImageLast_ms - exp.camImageFirst_ms;
 		} 

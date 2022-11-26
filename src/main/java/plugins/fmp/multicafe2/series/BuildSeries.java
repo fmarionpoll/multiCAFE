@@ -130,11 +130,11 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 
     protected boolean checkBoundsForCages(Experiment exp) 
 	{
-		exp.cages.detectBin_Ms = options.t_binMs;
+		exp.cages.detectBin_Ms = options.t_Ms_BinDuration;
 		if (options.isFrameFixed) 
 		{
-			exp.cages.detectFirst_Ms = options.t_firstMs;
-			exp.cages.detectLast_Ms = options.t_lastMs;
+			exp.cages.detectFirst_Ms = options.t_Ms_First;
+			exp.cages.detectLast_Ms = options.t_Ms_Last;
 			if (exp.cages.detectLast_Ms > exp.camImageLast_ms)
 				exp.cages.detectLast_Ms = exp.camImageLast_ms ;
 		} 

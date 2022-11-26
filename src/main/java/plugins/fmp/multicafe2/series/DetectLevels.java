@@ -42,10 +42,10 @@ public class DetectLevels  extends BuildSeries
 		threadRunning = true;
 		stopFlag = false;
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
-		int firstKymo = options.firstKymo;
+		int firstKymo = options.kymoFirst;
 		if (firstKymo > seqKymos.seq.getSizeT() || firstKymo < 0)
 			firstKymo = 0;
-		int lastKymo = options.lastKymo;
+		int lastKymo = options.kymoLast;
 		if (lastKymo >= seqKymos.seq.getSizeT())
 			lastKymo = seqKymos.seq.getSizeT() -1;
 		seqKymos.seq.beginUpdate();
@@ -83,19 +83,20 @@ public class DetectLevels  extends BuildSeries
 					capi.gulpsRois = null;
 					capi.limitsOptions.copyFrom(options);
 					
-					int firstColumn = 0;
-					int lastColumn = rawImage.getSizeX()-1;
+					int columnFirst = 0;
+					int columnLast = rawImage.getSizeX()-1;
 					int imageWidth = rawImage.getSizeX();
 					int imageHeight = rawImage.getSizeY();
+					
 					if (options.analyzePartOnly) 
 					{
-						firstColumn = options.firstPixel;
-						lastColumn = options.lastPixel;
-						if (lastColumn > imageWidth-1)
-							lastColumn = imageWidth -1;
+						columnFirst = options.columnFirst;
+						columnLast = options.columnLast;
+						if (columnLast > imageWidth-1)
+							columnLast = imageWidth -1;
 					} 
+					int n_measures = columnLast - columnFirst +1;
 					
-					int n_measures = lastColumn - firstColumn +1;
 					
 					if (options.pass1) 
 					{		
@@ -109,11 +110,11 @@ public class DetectLevels  extends BuildSeries
 						capi.ptsBottom.limit = new int [n_measures];
 						
 						if (options.runBackwards) 
-							for (int ix = lastColumn; ix >= firstColumn; ix--) 
-								topSearchFrom = detectLimitOnOneColumn(ix, topSearchFrom, jitter, imageWidth, imageHeight, capi, transformed1DArray1);
+							for (int ix = columnLast; ix >= columnFirst; ix--) 
+								topSearchFrom = detectLimitOnOneColumn(ix, columnFirst, topSearchFrom, jitter, imageWidth, imageHeight, capi, transformed1DArray1);
 						else
-							for (int ix = firstColumn; ix <= lastColumn; ix++) 
-								topSearchFrom = detectLimitOnOneColumn(ix, topSearchFrom, jitter, imageWidth, imageHeight, capi, transformed1DArray1);
+							for (int ix = columnFirst; ix <= columnLast; ix++) 
+								topSearchFrom = detectLimitOnOneColumn(ix, columnFirst, topSearchFrom, jitter, imageWidth, imageHeight, capi, transformed1DArray1);
 						
 					}
 					
@@ -130,16 +131,16 @@ public class DetectLevels  extends BuildSeries
 						{
 							case COLORDISTANCE_L1_Y:
 							case COLORDISTANCE_L2_Y:
-								findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 5);
+								findBestPosition(capi.ptsTop.limit, columnFirst, columnLast, transformed1DArray2, imageWidth, imageHeight, 5);
 								break;
 								
 							case SUBTRACT_1RSTCOL:
 							case L1DIST_TO_1RSTCOL:
-								detectThresholdUp(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 20, options.detectLevel2Threshold);
+								detectThresholdUp(capi.ptsTop.limit, columnFirst, columnLast, transformed1DArray2, imageWidth, imageHeight, 20, options.detectLevel2Threshold);
 								break;
 								
 							case DERICHE:
-								findBestPosition(capi.ptsTop.limit, firstColumn, lastColumn, transformed1DArray2, imageWidth, imageHeight, 5);
+								findBestPosition(capi.ptsTop.limit, columnFirst, columnLast, transformed1DArray2, imageWidth, imageHeight, 5);
 								break;
 								
 							default:
@@ -149,13 +150,13 @@ public class DetectLevels  extends BuildSeries
 
 					if (options.analyzePartOnly) 
 					{
-						capi.ptsTop.polylineLevel.insertYPoints(capi.ptsTop.limit, firstColumn, lastColumn);
+						capi.ptsTop.polylineLevel.insertYPoints(capi.ptsTop.limit, columnFirst, columnLast);
 						if (capi.ptsBottom.limit != null)
-							capi.ptsBottom.polylineLevel.insertYPoints(capi.ptsBottom.limit, firstColumn, lastColumn);
+							capi.ptsBottom.polylineLevel.insertYPoints(capi.ptsBottom.limit, columnFirst, columnLast);
 					} else {
-						capi.ptsTop.setPolylineLevelFromTempData(capi.getLast2ofCapillaryName()+"_toplevel", firstColumn, lastColumn);
+						capi.ptsTop.setPolylineLevelFromTempData(capi.getLast2ofCapillaryName()+"_toplevel", columnFirst, columnLast);
 						if (capi.ptsBottom.limit != null)
-							capi.ptsBottom.setPolylineLevelFromTempData(capi.getLast2ofCapillaryName()+"_bottomlevel", firstColumn, lastColumn);
+							capi.ptsBottom.setPolylineLevelFromTempData(capi.getLast2ofCapillaryName()+"_bottomlevel", columnFirst, columnLast);
 					}
 					capi.ptsTop.limit = null;
 					capi.ptsBottom.limit = null;
@@ -171,14 +172,14 @@ public class DetectLevels  extends BuildSeries
 		return true;
 	}
 	
-	private int detectLimitOnOneColumn(int ix, int topSearchFrom, int jitter, int imageWidth, int imageHeight, Capillary capi, int[] transformed1DArray1)
+	private int detectLimitOnOneColumn(int ix, int istart, int topSearchFrom, int jitter, int imageWidth, int imageHeight, Capillary capi, int[] transformed1DArray1)
 	{
 		int iyTop = detectThresholdFromTop(ix, topSearchFrom, jitter, transformed1DArray1, imageWidth, imageHeight, options);
 		int iyBottom = detectThresholdFromBottom(ix, jitter, transformed1DArray1, imageWidth, imageHeight, options);
 		if (iyBottom <= iyTop) 
 			iyTop = topSearchFrom;
-		capi.ptsTop.limit[ix] = iyTop;
-		capi.ptsBottom.limit[ix] = iyBottom;
+		capi.ptsTop.limit[ix-istart] = iyTop;
+		capi.ptsBottom.limit[ix-istart] = iyBottom;
 		return iyTop;
 	}
 	

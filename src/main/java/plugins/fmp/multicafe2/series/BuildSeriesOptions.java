@@ -18,9 +18,9 @@ import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformation
 public class BuildSeriesOptions implements XMLPersistent 
 {
 	public boolean			isFrameFixed		= false;
-	public long				t_firstMs			= 0;
-	public long				t_lastMs			= 0;
-	public long				t_binMs				= 1;
+	public long				t_Ms_First			= 0;
+	public long				t_Ms_Last			= 0;
+	public long				t_Ms_BinDuration	= 1;
 	
 	public int 				diskRadius 			= 5;
 	public boolean 			doRegistration 		= false;
@@ -40,8 +40,8 @@ public class BuildSeriesOptions implements XMLPersistent
 	public	boolean		detectL					= true;
 	public	boolean		detectR					= true;
 	public 	boolean 	detectAllKymos 			= true;
-	public 	int			firstKymo				= 0;
-	public  int			lastKymo				= 0;
+	public 	int			kymoFirst				= 0;
+	public  int			kymoLast				= 0;
 	public  boolean 	runBackwards 			= false;
 	
 	public	boolean		pass1 = true;
@@ -54,8 +54,8 @@ public class BuildSeriesOptions implements XMLPersistent
 	public 	int			detectLevel2Threshold 	= 35;
 	public EnumImageTransformations transform02 = EnumImageTransformations.L1DIST_TO_1RSTCOL;
 	public 	boolean 	analyzePartOnly			= false;
-	public 	int 		firstPixel 				= -1;
-	public 	int 		lastPixel 				= -1;
+	public 	int 		columnFirst 				= -1;
+	public 	int 		columnLast 				= -1;
 	public  int			spanDiffTop				= 3;
 	
 	public double		detectGulpsThresholdUL	= .3;
@@ -147,7 +147,7 @@ public class BuildSeriesOptions implements XMLPersistent
 			detectBottom = XMLUtil.getElementBooleanValue(nodeMeta, "detectBottom", detectBottom);
 			detectAllKymos = XMLUtil.getElementBooleanValue(nodeMeta, "detectAllImages", detectAllKymos);
 			directionUp1 = XMLUtil.getElementBooleanValue(nodeMeta, "directionUp", directionUp1);
-			firstKymo = XMLUtil.getElementIntValue(nodeMeta, "firstImage", firstKymo);
+			kymoFirst = XMLUtil.getElementIntValue(nodeMeta, "firstImage", kymoFirst);
 			detectLevel1Threshold = XMLUtil.getElementIntValue(nodeMeta, "detectLevelThreshold", detectLevel1Threshold);
 			transform01 = EnumImageTransformations.findByText(XMLUtil.getElementValue(nodeMeta, "Transform", transform01.toString()));       
 			
@@ -184,7 +184,7 @@ public class BuildSeriesOptions implements XMLPersistent
 			XMLUtil.setElementBooleanValue(nodeMeta, "detectBottom", detectBottom);
 			XMLUtil.setElementBooleanValue(nodeMeta, "detectAllImages", detectAllKymos);
 			XMLUtil.setElementBooleanValue(nodeMeta, "directionUp", directionUp1);
-			XMLUtil.setElementIntValue(nodeMeta, "firstImage", firstKymo);
+			XMLUtil.setElementIntValue(nodeMeta, "firstImage", kymoFirst);
 			XMLUtil.setElementIntValue(nodeMeta, "detectLevelThreshold", detectLevel1Threshold);
 		    XMLUtil.setElementValue(nodeMeta, "Transform", transform01.toString()); 
 		    
