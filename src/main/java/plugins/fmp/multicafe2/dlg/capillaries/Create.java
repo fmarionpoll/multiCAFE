@@ -52,6 +52,8 @@ public class Create extends JPanel
 	private JLabel		width_between_capillariesLabel = new JLabel("pixels btw. caps ");
 	private JSpinner 	width_intervalJSpinner 	= new JSpinner(new SpinnerNumberModel(53, 0, 10000, 1)); 
 	private JLabel 		width_intervalLabel 	= new JLabel("btw. groups ");
+	private Polygon2D capillariesPolygon = null;
+	
 	
 	private MultiCAFE2 	parent0 				= null;
 	
@@ -73,7 +75,8 @@ public class Create extends JPanel
 		nbcapillariesJSpinner.setPreferredSize(new Dimension (40, 20));
 		panel1.add(new JLabel (" Orientation:"));
 		panel1.add(orientationJCombo);
-		orientationJCombo.setPreferredSize(new Dimension (60, 20));panel1.add(cagesJCombo);
+		orientationJCombo.setPreferredSize(new Dimension (60, 20));
+		panel1.add(cagesJCombo);
 		cagesJCombo.setPreferredSize(new Dimension (80, 20));
 		panel1.add(nbFliesPerCageJSpinner);
 		nbFliesPerCageJSpinner.setPreferredSize(new Dimension (40, 20));
@@ -106,13 +109,11 @@ public class Create extends JPanel
 	private void defineActionListeners() 
 	{
 		addPolygon2DButton.addActionListener(new ActionListener () {
-			
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				create2DPolygon();
 			}});
 		
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () {
-			
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				roisGenerateFromPolygon();
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
@@ -200,23 +201,39 @@ public class Create extends JPanel
 			return;
 		SequenceCamData seqCamData = exp.seqCamData;
 		final String dummyname = "perimeter_enclosing_capillaries";
+		if (isRoiPresent(seqCamData, dummyname))
+			return;
+		
+		ROI2DPolygon roi = new ROI2DPolygon(getCapillariesPolygon(seqCamData));
+		roi.setName(dummyname);
+		seqCamData.seq.addROI(roi);
+		seqCamData.seq.setSelectedROI(roi);
+	}
+	
+	private boolean isRoiPresent(SequenceCamData seqCamData, String dummyname) 
+	{
 		ArrayList<ROI2D> listRois = seqCamData.seq.getROI2Ds();
 		for (ROI2D roi: listRois) 
 		{
 			if (roi.getName() .equals(dummyname))
-				return;
+				return true;
 		}
-		
-		Rectangle rect = seqCamData.seq.getBounds2D();
-		List<Point2D> points = new ArrayList<Point2D>();
-		points.add(new Point2D.Double(rect.x + rect.width /5, rect.y + rect.height /5));
-		points.add(new Point2D.Double(rect.x + rect.width*4 /5, rect.y + rect.height /5));
-		points.add(new Point2D.Double(rect.x + rect.width*4 /5, rect.y + rect.height*2 /3));
-		points.add(new Point2D.Double(rect.x + rect.width /5, rect.y + rect.height *2 /3));
-		ROI2DPolygon roi = new ROI2DPolygon(points);
-		roi.setName(dummyname);
-		seqCamData.seq.addROI(roi);
-		seqCamData.seq.setSelectedROI(roi);
+		return false;
+	}
+	
+	private Polygon2D getCapillariesPolygon(SequenceCamData seqCamData)
+	{
+		if (capillariesPolygon == null)
+		{		
+			Rectangle rect = seqCamData.seq.getBounds2D();
+			List<Point2D> points = new ArrayList<Point2D>();
+			points.add(new Point2D.Double(rect.x + rect.width /5, rect.y + rect.height /5));
+			points.add(new Point2D.Double(rect.x + rect.width*4 /5, rect.y + rect.height /5));
+			points.add(new Point2D.Double(rect.x + rect.width*4 /5, rect.y + rect.height*2 /3));
+			points.add(new Point2D.Double(rect.x + rect.width /5, rect.y + rect.height *2 /3));
+			capillariesPolygon = new Polygon2D(points);
+		}
+		return capillariesPolygon;
 	}
 	
 	private void rotate (Polygon2D roiPolygon) 
@@ -267,8 +284,9 @@ public class Create extends JPanel
 			return;
 		}
 		
-		Polygon2D roiPolygon = ROI2DUtilities.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
-		rotate(roiPolygon);
+		capillariesPolygon = ROI2DUtilities.orderVerticesofPolygon (((ROI2DPolygon) roi).getPolygon());
+	
+		rotate(capillariesPolygon);
 		
 		seqCamData.seq.removeROI(roi);
 
@@ -278,9 +296,9 @@ public class Create extends JPanel
 			for (int i=0; i< nbcapillaries; i+= 2) 
 			{
 				double span0 = (width_between_capillaries + width_interval)*i/2;
-				addROILine(seqCamData, "line"+i/2+"L", roiPolygon, span0, span);
+				addROILine(seqCamData, "line"+i/2+"L", capillariesPolygon, span0, span);
 				span0 += width_between_capillaries ;
-				addROILine(seqCamData, "line"+i/2+"R", roiPolygon, span0, span);
+				addROILine(seqCamData, "line"+i/2+"R", capillariesPolygon, span0, span);
 			}
 		}
 		else 
@@ -289,7 +307,7 @@ public class Create extends JPanel
 			for (int i=0; i< nbcapillaries; i++) 
 			{
 				double span0 = width_between_capillaries*i;
-				addROILine(seqCamData, "line"+i, roiPolygon, span0, span);
+				addROILine(seqCamData, "line"+i, capillariesPolygon, span0, span);
 			}
 		}
 	}
