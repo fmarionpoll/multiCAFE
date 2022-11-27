@@ -25,8 +25,8 @@ public class Intervals extends JPanel
 	 * 
 	 */
 	private static final long serialVersionUID = -5739112045358747277L;
-	JSpinner 	startFrameJSpinner	= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
-	JSpinner 	endFrameJSpinner	= new JSpinner(new SpinnerNumberModel(99999999., 1., 99999999., 1.));
+	JSpinner 	frameFirstJSpinner	= new JSpinner(new SpinnerNumberModel(0., 0., 10000., 1.)); 
+	JSpinner 	frameLastJSpinner	= new JSpinner(new SpinnerNumberModel(99999999., 1., 99999999., 1.));
 	JSpinner 	binSizeJSpinner		= new JSpinner(new SpinnerNumberModel(1., 0., 1000., 1.));
 	JComboMs 	binUnit 			= new JComboMs();
 	JButton		applyButton 		= new JButton("Apply changes");
@@ -47,9 +47,9 @@ public class Intervals extends JPanel
 		
 		JPanel panel0 = new JPanel(layout1);
 		panel0.add(new JLabel("Frame ", SwingConstants.RIGHT));
-		panel0.add(startFrameJSpinner);
+		panel0.add(frameFirstJSpinner);
 		panel0.add(new JLabel(" to "));
-		panel0.add(endFrameJSpinner);
+		panel0.add(frameLastJSpinner);
 		add(panel0);
 		
 		JPanel panel1 = new JPanel(layout1);
@@ -71,8 +71,8 @@ public class Intervals extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{
 				Experiment exp =(Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null)
-					exp.camImageBin_ms = (long) (((double) binSizeJSpinner.getValue())* binUnit.getMsUnitValue());
+				if (exp != null) 
+					setExptParmsFromDialog(exp);
 			}});
 			
 		refreshButton.addActionListener(new ActionListener () 
@@ -85,19 +85,25 @@ public class Intervals extends JPanel
 			}});
 	}
 	
+	private void setExptParmsFromDialog(Experiment exp) {
+		exp.camImageBin_ms = (long) (((double) binSizeJSpinner.getValue())* binUnit.getMsUnitValue());
+		double bin_ms = exp.camImageBin_ms;
+		exp.kymoFirst_ms = (long) ((double) frameFirstJSpinner.getValue() * bin_ms);
+		exp.kymoLast_ms = (long) ((double) frameLastJSpinner.getValue() * bin_ms);
+	}
+	
 	public void displayCamDataIntervals (Experiment exp) 
 	{
 		refreshBinSize(exp);
 		
-		double divisor = exp.camImageBin_ms;
-		double dFirst = exp.kymoFirst_ms/divisor;
-		startFrameJSpinner.setValue(dFirst);
+		double bin_ms = exp.camImageBin_ms;
+		double dFirst = exp.kymoFirst_ms/bin_ms;
+		frameFirstJSpinner.setValue(dFirst);
 		if(exp.kymoLast_ms <= 0)
-			exp.kymoLast_ms = (long) (exp.getSeqCamSizeT() * divisor);
-		double dLast = exp.kymoLast_ms/divisor;
-		endFrameJSpinner.setValue(dLast);
-		if (exp.camImageBin_ms == 0)
-			exp.loadFileIntervalsFromSeqCamData();
+			exp.kymoLast_ms = (long) (exp.getSeqCamSizeT() * bin_ms);
+		double dLast = exp.kymoLast_ms/bin_ms;
+		frameLastJSpinner.setValue(dLast);
+		exp.getFileIntervalsFromSeqCamData();
 	}
 	
 	private void refreshBinSize(Experiment exp) 

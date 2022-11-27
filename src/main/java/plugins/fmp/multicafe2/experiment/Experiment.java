@@ -50,7 +50,7 @@ public class Experiment
 	
 	public 	long			camImageFirst_ms		= -1;
 	public 	long			camImageLast_ms			= -1;
-	public 	long			camImageBin_ms			= 60000;
+	public 	long			camImageBin_ms			= -1;
 	
 	public 	long			kymoFirst_ms			= 0;
 	public 	long			kymoLast_ms				= 0;
@@ -117,7 +117,7 @@ public class Experiment
 		this.seqCamData = seqCamData;
 		this.seqKymos   = new SequenceKymos();
 		strExperimentDirectory = this.seqCamData.getImagesDirectory() + File.separator + RESULTS;
-		loadFileIntervalsFromSeqCamData();
+		getFileIntervalsFromSeqCamData();
 		
 		xmlLoadExperiment(concatenateExptDirectoryWithSubpathAndName(null, ID_MCEXPERIMENT_XML));
 	}
@@ -135,7 +135,7 @@ public class Experiment
 		strBinSubDirectory = lastSubPath.toString();
 		
 		seqCamData = new SequenceCamData(eADF.cameraImagesList);
-		loadFileIntervalsFromSeqCamData();
+		getFileIntervalsFromSeqCamData();
 		seqKymos = new SequenceKymos(eADF.kymosImagesList);
 		
 		xmlLoadExperiment(concatenateExptDirectoryWithSubpathAndName(null, ID_MCEXPERIMENT_XML));
@@ -271,7 +271,7 @@ public class Experiment
 		
 		seqCamData.setImagesList(imagesList);
 		seqCamData.attachSequence(seqCamData.loadSequenceFromImagesList(imagesList));
-		loadFileIntervalsFromSeqCamData();
+		getFileIntervalsFromSeqCamData();
 		
 		if (seqKymos == null)
 			seqKymos = new SequenceKymos();
@@ -333,15 +333,23 @@ public class Experiment
 		if (seqCamData != null) 
 		{
 			xmlLoadMCExperiment();
-			loadFileIntervalsFromSeqCamData();
+			getFileIntervalsFromSeqCamData();
 		}
 		return seqCamData;
 	}
 	
+	public void getFileIntervalsFromSeqCamData() 
+	{
+		if (seqCamData != null && (camImageFirst_ms < 0 || camImageLast_ms < 0 || camImageBin_ms < 0))
+		{
+			loadFileIntervalsFromSeqCamData();
+		}
+	}
+	
 	public void loadFileIntervalsFromSeqCamData() 
 	{
-		if (seqCamData != null) 
-		{
+		if (seqCamData != null)
+		{	
 			firstImage_FileTime = seqCamData.getFileTimeFromStructuredName(0);
 			lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.nTotalFrames-1);
 			if (firstImage_FileTime != null && lastImage_FileTime != null)
@@ -506,9 +514,9 @@ public class Experiment
 			camImageLast_ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, 0)*60000;
 		}
 
-		kymoFirst_ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, 0); 
-		kymoLast_ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, 0);
-		kymoBin_ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, 60000); 	
+		kymoFirst_ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, -1); 
+		kymoLast_ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
+		kymoBin_ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
 		
 		ugly_checkOffsetValues();
 		
