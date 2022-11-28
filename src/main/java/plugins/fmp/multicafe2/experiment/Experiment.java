@@ -255,22 +255,22 @@ public class Experiment
 			seqReference.close();
 	}
 	
-	public boolean openSequenceAndMeasures(boolean loadCapillaries, boolean loadDrosoPositions) 
+	public boolean openMeasures(boolean loadCapillaries, boolean loadDrosoPositions) 
 	{
 		if (seqCamData == null) 
 			seqCamData = new SequenceCamData();
 		xmlLoadMCExperiment ();
 		
-		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(strImagesDirectory);
-		imagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(imagesList, "jpg");
-		if (imagesList.size() < 1) 
-		{
-			seqCamData = null;
-			return false;
-		}
-		
-		seqCamData.setImagesList(imagesList);
-		seqCamData.attachSequence(seqCamData.loadSequenceFromImagesList(imagesList));
+//		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(strImagesDirectory);
+//		imagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(imagesList, "jpg");
+//		if (imagesList.size() < 1) 
+//		{
+//			seqCamData = null;
+//			return false;
+//		}
+//		
+//		seqCamData.setImagesList(imagesList);
+//		seqCamData.attachSequence(seqCamData.loadSequenceFromImagesList(imagesList));
 		getFileIntervalsFromSeqCamData();
 		
 		if (seqKymos == null)
@@ -350,6 +350,7 @@ public class Experiment
 	{
 		if (seqCamData != null)
 		{	
+			seqCamData.setImagesDirectory(strImagesDirectory);
 			firstImage_FileTime = seqCamData.getFileTimeFromStructuredName(0);
 			lastImage_FileTime = seqCamData.getFileTimeFromStructuredName(seqCamData.nTotalFrames-1);
 			if (firstImage_FileTime != null && lastImage_FileTime != null)
