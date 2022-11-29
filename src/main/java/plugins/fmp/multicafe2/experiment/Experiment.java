@@ -740,6 +740,33 @@ public class Experiment
 		return flag;
 	}
 	
+	public void setExperimentFieldNoTest (EnumXLSColumnHeader fieldEnumCode, String strField)
+	{
+		switch (fieldEnumCode)
+		{
+		case EXP_STIM:
+			field_comment1 = strField;
+			break;
+		case EXP_CONC:
+			field_comment2  = strField;
+			break;
+		case EXP_EXPT:
+			field_experiment = strField;
+			break;
+		case EXP_BOXID:
+			field_boxID  = strField; 
+			break;
+		case EXP_STRAIN:
+			field_strain  = strField; 
+			break;
+		case EXP_SEX:
+			field_sex  = strField; 
+			break;
+		default:
+			break;
+		}
+	}
+	
 	public void replaceFieldValue(EnumXLSColumnHeader fieldEnumCode, String oldValue, String newValue) 
 	{
 		switch (fieldEnumCode)

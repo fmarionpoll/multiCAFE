@@ -366,12 +366,12 @@ public class XLSExport
 		expAll.cages.copy(exp.cages);
 		expAll.capillaries.copy(exp.capillaries);
 		expAll.chainImageFirst_ms = exp.chainImageFirst_ms;
-		expAll.setExperimentField(EnumXLSColumnHeader.EXP_BOXID, exp.getExperimentField(EnumXLSColumnHeader.EXP_BOXID));
-		expAll.setExperimentField(EnumXLSColumnHeader.EXP_EXPT, exp.getExperimentField(EnumXLSColumnHeader.EXP_EXPT));
-		expAll.setExperimentField(EnumXLSColumnHeader.EXP_STIM, exp.getExperimentField(EnumXLSColumnHeader.EXP_STIM));
-		expAll.setExperimentField(EnumXLSColumnHeader.EXP_CONC, exp.getExperimentField(EnumXLSColumnHeader.EXP_CONC));	
-		expAll.setExperimentField(EnumXLSColumnHeader.EXP_STRAIN, exp.getExperimentField(EnumXLSColumnHeader.EXP_STRAIN));
-		expAll.setExperimentField(EnumXLSColumnHeader.EXP_SEX, exp.getExperimentField(EnumXLSColumnHeader.EXP_SEX));
+		expAll.setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_BOXID, exp.getExperimentField(EnumXLSColumnHeader.EXP_BOXID));
+		expAll.setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_EXPT, exp.getExperimentField(EnumXLSColumnHeader.EXP_EXPT));
+		expAll.setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_STIM, exp.getExperimentField(EnumXLSColumnHeader.EXP_STIM));
+		expAll.setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_CONC, exp.getExperimentField(EnumXLSColumnHeader.EXP_CONC));	
+		expAll.setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_STRAIN, exp.getExperimentField(EnumXLSColumnHeader.EXP_STRAIN));
+		expAll.setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_SEX, exp.getExperimentField(EnumXLSColumnHeader.EXP_SEX));
 		expAll.setExperimentDirectory(exp.getExperimentDirectory());
 		
 		Experiment expi = exp.chainToNextExperiment;
