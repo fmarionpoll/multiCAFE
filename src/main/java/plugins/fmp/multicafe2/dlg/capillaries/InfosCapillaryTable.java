@@ -38,6 +38,7 @@ public class InfosCapillaryTable extends JPanel
 	private JButton				copyButton 			= new JButton("Copy table");
 	private JButton				pasteButton 		= new JButton("Paste");
 	private JButton				duplicateLRButton 	= new JButton("Duplicate cell to L/R");
+	private JButton				exchangeLRButton 	= new JButton("Exchg L/R");
 	private JButton				duplicateAllButton 	= new JButton("Duplicate cell to all");
 	private JButton				getNfliesButton 	= new JButton("Get n flies from cage");
 	private JButton				getCageNoButton		= new JButton("Set cage n#");
@@ -74,6 +75,7 @@ public class InfosCapillaryTable extends JPanel
         panel1.add(pasteButton);
         panel1.add(duplicateLRButton);
         panel1.add(duplicateAllButton);
+        panel1.add(exchangeLRButton);
         topPanel.add(panel1);
         
         JPanel panel2 = new JPanel (flowLayout);
@@ -218,6 +220,13 @@ public class InfosCapillaryTable extends JPanel
 				}
 			}});
 		
+		exchangeLRButton.addActionListener(new ActionListener () 
+		{ 
+			@Override public void actionPerformed( final ActionEvent e ) 
+			{ 
+				exchangeLR();
+			}});
+		
 		duplicateAllButton.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
@@ -282,5 +291,50 @@ public class InfosCapillaryTable extends JPanel
         column.setPreferredWidth(50);
         column.setMaxWidth(50);
         column.setMinWidth(30);
+	}
+	
+	private void exchangeLR() {
+		Experiment exp = (Experiment)parent0.expListCombo.getSelectedItem();
+		if (exp == null || exp.capillaries.desc.grouping != 2)
+			return;
+		
+		int columnIndex = tableView.getSelectedColumn();
+		if (columnIndex < 0) 
+			columnIndex = 5;
+		String side0 =  exp.capillaries.capillariesList.get(0).getCapillarySide();
+		Capillary cap0 = new Capillary(); 
+		storeCapillaryValues(exp.capillaries.capillariesList.get(0), cap0);
+		Capillary cap1 = new Capillary();
+		storeCapillaryValues(exp.capillaries.capillariesList.get(1), cap1);
+	
+		for (Capillary cap: exp.capillaries.capillariesList) 
+		{
+			if ((cap.getCapillarySide().equals(side0)))
+				switchCapillaryValue(cap1, cap, columnIndex);
+			else 
+				switchCapillaryValue(cap0, cap, columnIndex);
+		}
+	}
+	
+	void storeCapillaryValues(Capillary sourceCapillary, Capillary destinationCapillary) 
+	{
+		destinationCapillary.capNFlies = sourceCapillary.capNFlies; 
+		destinationCapillary.capVolume = sourceCapillary.capVolume;
+		destinationCapillary.capStimulus = sourceCapillary.capStimulus;
+		destinationCapillary.capConcentration = sourceCapillary.capConcentration;
+		destinationCapillary.capSide = sourceCapillary.capSide;
+	}
+	
+	void switchCapillaryValue(Capillary sourceCapillary, Capillary destinationCapillary, int columnIndex) 
+	{
+		switch (columnIndex) 
+    	{
+        case 2: destinationCapillary.capNFlies = sourceCapillary.capNFlies; break;
+        case 3: destinationCapillary.capVolume = sourceCapillary.capVolume; break;
+        case 4: destinationCapillary.capStimulus = sourceCapillary.capStimulus; break;
+        case 5: destinationCapillary.capConcentration = sourceCapillary.capConcentration; break;
+        default: break;
+    	}
+		
 	}
 }
