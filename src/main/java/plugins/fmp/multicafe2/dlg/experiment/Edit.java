@@ -33,8 +33,8 @@ public class Edit   extends JPanel
 					, EnumXLSColumnHeader.EXP_CONC
 					, EnumXLSColumnHeader.EXP_STRAIN
 					, EnumXLSColumnHeader.EXP_SEX
-//					, EnumXLSColumnHeader.CAPSTIM
-//					, EnumXLSColumnHeader.CAPCONC
+					, EnumXLSColumnHeader.CAP_STIM
+					, EnumXLSColumnHeader.CAP_CONC
 					});
 	
 	private JComboBox<String>	descriptorsCombo	= new JComboBox<String>();
@@ -80,7 +80,6 @@ public class Edit   extends JPanel
 		editExpList.getFieldValuesToCombo(descriptorsCombo, (EnumXLSColumnHeader) headersCombo.getSelectedItem());
 	}
 	
-	
 	private void defineActionListeners() 
 	{
 		applyButton.addActionListener(new ActionListener () 
@@ -116,7 +115,6 @@ public class Edit   extends JPanel
 				 exp.xmlSaveMCExperiment();
 			}
 		}
-		
 	}
 	
 
