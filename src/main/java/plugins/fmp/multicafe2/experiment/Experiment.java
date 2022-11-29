@@ -633,10 +633,10 @@ public class Experiment
 		return lastFrame;
 	}
 	
-	public String getField(EnumXLSColumnHeader field)
+	public String getExperimentField(EnumXLSColumnHeader fieldEnumCode)
 	{
 		String strField = null;
-		switch (field)
+		switch (fieldEnumCode)
 		{
 		case EXP_STIM:
 			strField = field_comment1;
@@ -662,9 +662,58 @@ public class Experiment
 		return strField;
 	}
 	
-	public void setField (EnumXLSColumnHeader field, String strField)
+	public void getFieldValues(EnumXLSColumnHeader fieldEnumCode, List<String> textList)
 	{
-		switch (field)
+		switch (fieldEnumCode)
+		{
+		case EXP_STIM:
+		case EXP_CONC:
+		case EXP_EXPT:
+		case EXP_BOXID:
+		case EXP_STRAIN:
+		case EXP_SEX:
+			addValue(getExperimentField(fieldEnumCode), textList);
+			break;
+		case CAP_STIM:
+		case CAP_CONC:
+			addCapillariesValues(fieldEnumCode, textList);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void addCapillariesValues(EnumXLSColumnHeader fieldEnumCode, List<String> textList)
+	{
+		if (capillaries.capillariesList.size() == 0)
+			xmlLoadMCCapillaries_Only();
+		for (Capillary cap:  capillaries.capillariesList) 
+			addValue(cap.getCapillaryField(fieldEnumCode), textList);
+	}
+	
+	private void addValue(String text, List<String> textList) {
+		if (!isFound(text, textList))
+			textList.add(text);
+	}
+	
+	private boolean isFound (String pattern, List<String> names) 
+	{
+		boolean found = false;
+		if (names.size() > 0) 
+		{
+			for (String name: names) 
+			{
+				found = name.equals(pattern);
+				if (found)
+					break;
+			}
+		}
+		return found;
+	}
+	
+	public void setExperimentField (EnumXLSColumnHeader fieldEnumCode, String strField)
+	{
+		switch (fieldEnumCode)
 		{
 		case EXP_STIM:
 			field_comment1 = strField;
@@ -687,6 +736,39 @@ public class Experiment
 		default:
 			break;
 		}
+	}
+	
+	public void replaceFieldValue(EnumXLSColumnHeader fieldEnumCode, String oldValue, String newValue) 
+	{
+		switch (fieldEnumCode)
+		{
+		case EXP_STIM:
+		case EXP_CONC:
+		case EXP_EXPT:
+		case EXP_BOXID:
+		case EXP_STRAIN:
+		case EXP_SEX:
+			setExperimentField(fieldEnumCode, newValue);
+			break;
+		case CAP_STIM:
+		case CAP_CONC:
+			replaceCapillariesValues(fieldEnumCode, oldValue, newValue);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void replaceCapillariesValues(EnumXLSColumnHeader fieldEnumCode, String oldValue, String newValue)
+	{
+		if (capillaries.capillariesList.size() == 0)
+			xmlLoadMCCapillaries_Only();
+		for (Capillary cap:  capillaries.capillariesList) 
+		{
+			if (cap.getCapillaryField(fieldEnumCode) .equals(oldValue))
+				cap.setCapillaryField(fieldEnumCode, newValue);
+		}
+		xmlSaveMCCapillaries_Only();
 	}
 	
 	// --------------------------------------------

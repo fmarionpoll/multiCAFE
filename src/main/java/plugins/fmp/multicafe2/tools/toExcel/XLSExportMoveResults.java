@@ -113,12 +113,12 @@ public class XLSExportMoveResults extends XLSExport
 		expAll.firstImage_FileTime 	= exp.firstImage_FileTime;
 		expAll.lastImage_FileTime 	= exp.lastImage_FileTime;
 		expAll.setExperimentDirectory( exp.getExperimentDirectory());
-		expAll.setField(EnumXLSColumnHeader.EXP_BOXID, exp.getField(EnumXLSColumnHeader.EXP_BOXID));
-		expAll.setField(EnumXLSColumnHeader.EXP_EXPT, exp.getField(EnumXLSColumnHeader.EXP_EXPT));
-		expAll.setField(EnumXLSColumnHeader.EXP_STIM, exp.getField(EnumXLSColumnHeader.EXP_STIM));
-		expAll.setField(EnumXLSColumnHeader.EXP_CONC, exp.getField(EnumXLSColumnHeader.EXP_CONC));
-		expAll.setField(EnumXLSColumnHeader.EXP_SEX, exp.getField(EnumXLSColumnHeader.EXP_SEX));
-		expAll.setField(EnumXLSColumnHeader.EXP_STRAIN, exp.getField(EnumXLSColumnHeader.EXP_STRAIN));
+		expAll.setExperimentField(EnumXLSColumnHeader.EXP_BOXID, exp.getExperimentField(EnumXLSColumnHeader.EXP_BOXID));
+		expAll.setExperimentField(EnumXLSColumnHeader.EXP_EXPT, exp.getExperimentField(EnumXLSColumnHeader.EXP_EXPT));
+		expAll.setExperimentField(EnumXLSColumnHeader.EXP_STIM, exp.getExperimentField(EnumXLSColumnHeader.EXP_STIM));
+		expAll.setExperimentField(EnumXLSColumnHeader.EXP_CONC, exp.getExperimentField(EnumXLSColumnHeader.EXP_CONC));
+		expAll.setExperimentField(EnumXLSColumnHeader.EXP_SEX, exp.getExperimentField(EnumXLSColumnHeader.EXP_SEX));
+		expAll.setExperimentField(EnumXLSColumnHeader.EXP_STRAIN, exp.getExperimentField(EnumXLSColumnHeader.EXP_STRAIN));
 	
 		Experiment expi = exp.chainToNextExperiment;
 		while (expi != null ) 

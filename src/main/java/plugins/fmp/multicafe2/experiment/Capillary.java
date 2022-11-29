@@ -22,6 +22,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
+import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
@@ -224,6 +225,38 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			break;
 		}
 		return value;
+	}
+	
+	public String getCapillaryField(EnumXLSColumnHeader fieldEnumCode)
+	{
+		String stringValue = null;
+		switch(fieldEnumCode) 
+		{
+		case CAP_STIM:
+			stringValue = capStimulus;
+			break;
+		case CAP_CONC:
+			stringValue = capConcentration;
+			break;
+		default:
+			break;
+		}
+		return stringValue;
+	}
+	
+	public void setCapillaryField(EnumXLSColumnHeader fieldEnumCode, String stringValue)
+	{
+		switch(fieldEnumCode) 
+		{
+		case CAP_STIM:
+			capStimulus = stringValue;
+			break;
+		case CAP_CONC:
+			capConcentration = stringValue;
+			break;
+		default:
+			break;
+		}
 	}
 	
 	// -----------------------------------------

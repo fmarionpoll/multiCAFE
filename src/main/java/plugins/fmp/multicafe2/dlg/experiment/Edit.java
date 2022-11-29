@@ -25,7 +25,7 @@ public class Edit   extends JPanel
 	 */
 	private static final long serialVersionUID = 2190848825783418962L;
 
-	private JComboBox<EnumXLSColumnHeader>	headersCombo = new JComboBox<EnumXLSColumnHeader>
+	private JComboBox<EnumXLSColumnHeader>	fieldNamesCombo = new JComboBox<EnumXLSColumnHeader>
 			(new EnumXLSColumnHeader[] {
 					EnumXLSColumnHeader.EXP_EXPT
 					, EnumXLSColumnHeader.EXP_BOXID
@@ -37,8 +37,8 @@ public class Edit   extends JPanel
 					, EnumXLSColumnHeader.CAP_CONC
 					});
 	
-	private JComboBox<String>	descriptorsCombo	= new JComboBox<String>();
-	private JTextField			newValue 			= new JTextField (10);
+	private JComboBox<String>	fieldOldValuesCombo	= new JComboBox<String>();
+	private JTextField			newValueTextField 	= new JTextField (10);
 	private JButton				applyButton 		= new JButton("Apply");
 	private MultiCAFE2 			parent0 			= null;
 			boolean 			disableChangeFile 	= false;
@@ -57,17 +57,17 @@ public class Edit   extends JPanel
 		int bHeight = 21;
 		
 		JPanel panel0 = new JPanel (flowlayout);
-		panel0.add(new JLabel("Infos field "));
-		panel0.add(headersCombo);
-		headersCombo.setPreferredSize(new Dimension(bWidth, bHeight));
+		panel0.add(new JLabel("Field name "));
+		panel0.add(fieldNamesCombo);
+		fieldNamesCombo.setPreferredSize(new Dimension(bWidth, bHeight));
 		add(panel0);
 				
 		JPanel panel1 = new JPanel(flowlayout);
 		panel1.add(new JLabel("Field value "));
-		panel1.add(descriptorsCombo);
-		descriptorsCombo.setPreferredSize(new Dimension(bWidth, bHeight));
+		panel1.add(fieldOldValuesCombo);
+		fieldOldValuesCombo.setPreferredSize(new Dimension(bWidth, bHeight));
 		panel1.add(new JLabel(" replace with "));
-		panel1.add(newValue);
+		panel1.add(newValueTextField);
 		panel1.add(applyButton);
 		add (panel1);
 	
@@ -77,7 +77,7 @@ public class Edit   extends JPanel
 	public void initEditCombos() 
 	{
 		editExpList.setExperimentsFromList(parent0.expListCombo.getExperimentsAsList()); 
-		editExpList.getFieldValuesToCombo(descriptorsCombo, (EnumXLSColumnHeader) headersCombo.getSelectedItem());
+		editExpList.getFieldValuesToCombo(fieldOldValuesCombo, (EnumXLSColumnHeader) fieldNamesCombo.getSelectedItem());
 	}
 	
 	private void defineActionListeners() 
@@ -87,31 +87,35 @@ public class Edit   extends JPanel
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				applyChange();
-				newValue.setText("");
+				newValueTextField.setText("");
 				initEditCombos();
 			}});
 		
-		headersCombo.addActionListener(new ActionListener () 
+		fieldNamesCombo.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-				editExpList.getFieldValuesToCombo(descriptorsCombo, (EnumXLSColumnHeader) headersCombo.getSelectedItem());
+				editExpList.getFieldValuesToCombo(fieldOldValuesCombo, (EnumXLSColumnHeader) fieldNamesCombo.getSelectedItem());
 			}});
 	}
 	
 	void applyChange() 
 	{
-		int nitems = editExpList.getItemCount();
-		EnumXLSColumnHeader headerItem = (EnumXLSColumnHeader) headersCombo.getSelectedItem();
-		String filter = (String) descriptorsCombo.getSelectedItem();
+		int nExperiments = editExpList.getItemCount();
+		EnumXLSColumnHeader fieldEnumCode = (EnumXLSColumnHeader) fieldNamesCombo.getSelectedItem();
+		String oldValue = (String) fieldOldValuesCombo.getSelectedItem();
+		String newValue = newValueTextField.getText();
 		
-		for (int i = 0; i < nitems; i++)
+		for (int i = 0; i < nExperiments; i++)
 		{
 			Experiment exp = editExpList.getItemAt(i);
-			String pattern = exp.getField(headerItem);
-			if (pattern .equals(filter)) 
+			exp.replaceFieldValue(fieldEnumCode, oldValue, newValue);
+			
+			String pattern = exp.getExperimentField(fieldEnumCode);
+ 
+			if (pattern .equals(oldValue)) 
 			{
-				 exp.setField(headerItem, newValue.getText());
+				 exp.setExperimentField(fieldEnumCode, newValueTextField.getText());
 				 exp.xmlSaveMCExperiment();
 			}
 		}
