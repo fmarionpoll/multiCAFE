@@ -110,18 +110,9 @@ public class Edit   extends JPanel
 		{
 			Experiment exp = editExpList.getItemAt(i);
 			exp.replaceFieldValue(fieldEnumCode, oldValue, newValue);
-			
-			String pattern = exp.getExperimentField(fieldEnumCode);
- 
-			if (pattern .equals(oldValue)) 
-			{
-				 exp.setExperimentField(fieldEnumCode, newValueTextField.getText());
-				 exp.xmlSaveMCExperiment();
-			}
 		}
 	}
 	
-
 
 }
 
