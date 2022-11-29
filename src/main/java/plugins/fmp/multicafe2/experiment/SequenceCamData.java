@@ -47,7 +47,8 @@ public class SequenceCamData
 
 	public EnumStatus 				status					= EnumStatus.REGULAR;		
 	protected String 				csCamFileName 			= null;
-	public List <String>	imagesList 				= new ArrayList<String>();
+	public String					imagesDirectory			= null;
+	public List <String>			imagesList 				= new ArrayList<String>();
 	
 	long 							timeFirstImageInMs		= 0;
 	int								indexTimePattern 		= -1;
@@ -85,7 +86,13 @@ public class SequenceCamData
 	public String getImagesDirectory () 
 	{
 		Path strPath = Paths.get(imagesList.get(0));
-		return strPath.getParent().toString();
+		imagesDirectory = strPath.getParent().toString();
+		return imagesDirectory;
+	}
+
+	public void setImagesDirectory (String directoryString)
+	{	
+		imagesDirectory = directoryString;
 	}
 	
 	public List <String> getImagesList(boolean bsort) 
@@ -117,11 +124,26 @@ public class SequenceCamData
 	public String getFileName(int t) 
 	{
 		String csName = null;
-		if (status == EnumStatus.FILESTACK || status == EnumStatus.KYMOGRAPH) 
+		if (status == EnumStatus.FILESTACK || status == EnumStatus.KYMOGRAPH)  
+		{
+			if (imagesList.size() < 1)
+				loadImageList();
 			csName = imagesList.get(t);
+		}
 //		else if (status == EnumStatus.AVIFILE)
 //			csName = csFileName;
 		return csName;
+	}
+	
+	private void loadImageList()
+	{
+		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(imagesDirectory);
+		imagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(imagesList, "jpg");
+		if (imagesList.size() >0) 
+		{
+			setImagesList(imagesList);
+			attachSequence(loadSequenceFromImagesList(imagesList));
+		}
 	}
 	
 	public String getFileNameNoPath(int t) 

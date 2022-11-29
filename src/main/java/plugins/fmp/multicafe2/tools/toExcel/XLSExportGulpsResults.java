@@ -19,7 +19,7 @@ public class XLSExportGulpsResults  extends XLSExport
 
 		boolean loadCapillaries = true;
 		boolean loadDrosoTrack = options.onlyalive;
-		expList.loadAllExperiments(loadCapillaries, loadDrosoTrack);
+		expList.loadListOfMeasuresFromAllExperiments(loadCapillaries, loadDrosoTrack);
 //		expList.chainExperimentsUsingCamIndexes(options.collateSeries);
 		expList.chainExperimentsUsingKymoIndexes(options.collateSeries);
 		expList.setFirstImageForAllExperiments(options.collateSeries);

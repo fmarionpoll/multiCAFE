@@ -105,7 +105,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		return expAll;
 	}
 		
-	public boolean loadAllExperiments(boolean loadCapillaries, boolean loadDrosoTrack) 
+	public boolean loadListOfMeasuresFromAllExperiments(boolean loadCapillaries, boolean loadDrosoTrack) 
 	{
 		ProgressFrame progress = new ProgressFrame("Load experiment(s) parameters");
 		int nexpts = getItemCount();
@@ -134,7 +134,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 					exp.setBinSubDirectory(expListBinSubDirectory);
 					if (expListBinSubDirectory == null)
 						exp.checkKymosDirectory(exp.getBinSubDirectory());
-					exp.openSequenceAndMeasures(loadCapillaries, loadDrosoTrack);
+					exp.openMeasures(loadCapillaries, loadDrosoTrack);
 					if (maxSizeOfCapillaryArrays < exp.capillaries.capillariesList.size())
 					{
 						maxSizeOfCapillaryArrays = exp.capillaries.capillariesList.size();
@@ -299,12 +299,12 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	private boolean isSameDescriptors(Experiment exp, Experiment expi) 
 	{
 		boolean flag = true;
-		flag &= expi.getField(EnumXLSColumnHeader.EXP_EXPT) .equals(exp.getField(EnumXLSColumnHeader.EXP_EXPT)) ; 
-		flag &= expi.getField(EnumXLSColumnHeader.EXP_BOXID) .equals(exp.getField(EnumXLSColumnHeader.EXP_BOXID)) ;
-		flag &= expi.getField(EnumXLSColumnHeader.EXP_STIM) .equals(exp.getField(EnumXLSColumnHeader.EXP_STIM));
-		flag &= expi.getField(EnumXLSColumnHeader.EXP_CONC) .equals(exp.getField(EnumXLSColumnHeader.EXP_CONC));
-		flag &= expi.getField(EnumXLSColumnHeader.EXP_STRAIN) .equals(exp.getField(EnumXLSColumnHeader.EXP_STRAIN));
-		flag &= expi.getField(EnumXLSColumnHeader.EXP_SEX) .equals(exp.getField(EnumXLSColumnHeader.EXP_SEX));
+		flag &= expi.getExperimentField(EnumXLSColumnHeader.EXP_EXPT) .equals(exp.getExperimentField(EnumXLSColumnHeader.EXP_EXPT)) ; 
+		flag &= expi.getExperimentField(EnumXLSColumnHeader.EXP_BOXID) .equals(exp.getExperimentField(EnumXLSColumnHeader.EXP_BOXID)) ;
+		flag &= expi.getExperimentField(EnumXLSColumnHeader.EXP_STIM) .equals(exp.getExperimentField(EnumXLSColumnHeader.EXP_STIM));
+		flag &= expi.getExperimentField(EnumXLSColumnHeader.EXP_CONC) .equals(exp.getExperimentField(EnumXLSColumnHeader.EXP_CONC));
+		flag &= expi.getExperimentField(EnumXLSColumnHeader.EXP_STRAIN) .equals(exp.getExperimentField(EnumXLSColumnHeader.EXP_STRAIN));
+		flag &= expi.getExperimentField(EnumXLSColumnHeader.EXP_SEX) .equals(exp.getExperimentField(EnumXLSColumnHeader.EXP_SEX));
 		return flag;
 	}
 
@@ -356,12 +356,10 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	public List<String> getFieldValuesFromAllExperiments(EnumXLSColumnHeader field) 
 	{
 		List<String> textList = new ArrayList<>();
-		for (int i=0; i < getItemCount(); i++) 
+		for (int i = 0; i < getItemCount(); i++) 
 		{
 			Experiment exp = getItemAt(i);
-			String text = exp.getField(field);
-			if (!isFound (text, textList))
-				textList.add(text);
+			exp.getFieldValues(field, textList);
 		}
 		return textList;
 	}
@@ -375,21 +373,6 @@ public class ExperimentCombo extends JComboBox<Experiment>
 			combo.addItem(text);
 	}
 
-	private boolean isFound (String pattern, List<String> names) 
-	{
-		boolean found = false;
-		if (names.size() > 0) 
-		{
-			for (String name: names) 
-			{
-				found = name.equals(pattern);
-				if (found)
-					break;
-			}
-		}
-		return found;
-	}
-	
 	public List<Experiment> getExperimentsAsList()
 	{
 		int nitems = getItemCount();
