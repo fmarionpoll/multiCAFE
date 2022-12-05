@@ -126,6 +126,7 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 				v.requestFocus();
 				v.addListener( parent );
 				v.setTitle(exp.seqCamData.getDecoratedImageName(0));
+				v.setRepeat(false);
 			}
 		}});
 	}
