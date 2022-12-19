@@ -105,7 +105,7 @@ public class SequenceCamData
 	public String getDecoratedImageName(int t) 
 	{
 		currentFrame = t; 
-		if (seq!= null)
+		if (seq != null)
 			return getCSCamFileName() + " ["+(t)+ "/" + (seq.getSizeT()-1) + "]";
 		else
 			return getCSCamFileName() + "[]";
@@ -116,7 +116,10 @@ public class SequenceCamData
 		if (csCamFileName == null) 
 		{
 			Path path = Paths.get(imagesList.get(0));
-			csCamFileName = path.subpath(path.getNameCount()-4, path.getNameCount()-1).toString();
+			int rootlevel = path.getNameCount()-4;
+			if (rootlevel < 0) 
+				rootlevel = 0;
+			csCamFileName = path.subpath(rootlevel, path.getNameCount()-1).toString();
 		}
 		return csCamFileName;		
 	}
