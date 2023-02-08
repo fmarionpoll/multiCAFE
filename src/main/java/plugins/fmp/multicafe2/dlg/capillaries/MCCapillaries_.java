@@ -29,11 +29,11 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	private static final long serialVersionUID = 853047648249832145L;
 	public	PopupPanel 	capPopupPanel	= null;
 			JTabbedPane tabsPane 		= new JTabbedPane();
-			Create 		tabCreate 		= new Create();
+	public 	Create 		tabCreate 		= new Create();
 			Edit		tabEdit			= new Edit();
 	public 	LoadSave 	tabFile 		= new LoadSave();
 			Adjust 		tabAdjust 		= new Adjust();
-	public Infos		tabInfos		= new Infos();
+	public 	Infos		tabInfos		= new Infos();
 	private int 		ID_INFOS 		= 1;
 	private int 		ID_ADJUST 		= 3;
 	private int			ID_EDIT			= 2;
@@ -163,6 +163,14 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
         	editSelected = false;
         }
         
+	}
+	
+	public void transferPreviousExperimentCapillariesInfos(Experiment exp0, Experiment exp)
+	{
+		exp.capillaries.desc.grouping = exp0.capillaries.desc.grouping;
+		tabCreate.setGroupedBy2(exp0.capillaries.desc.grouping == 2);
+		exp.capillaries.desc.volume = exp0.capillaries.desc.volume;
+		tabInfos.setAllDescriptors(exp0.capillaries) ;
 	}
 
 }

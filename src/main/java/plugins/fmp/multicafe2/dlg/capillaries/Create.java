@@ -42,7 +42,7 @@ public class Create extends JPanel
 	private JButton 	addPolygon2DButton 		= new JButton("Draw frame");
 	private JButton 	createROIsFromPolygonButton2 = new JButton("Generate capillaries");
 	private JRadioButton selectGroupedby2Button = new JRadioButton("by 2");
-	private JRadioButton selectRegularButton 	= new JRadioButton("even");
+	private JRadioButton selectEvenlySpacedButton 	= new JRadioButton("even");
 	private JComboBox<String> cagesJCombo 		= new JComboBox<String> (new String[] {"10 cages", "4+2", "other" });
 	private JComboBox<String> orientationJCombo = new JComboBox<String> (new String[] {"0°", "90°", "180°", "270°" });
 	private ButtonGroup buttonGroup2 			= new ButtonGroup();
@@ -52,7 +52,7 @@ public class Create extends JPanel
 	private JLabel		width_between_capillariesLabel = new JLabel("pixels btw. caps ");
 	private JSpinner 	width_intervalJSpinner 	= new JSpinner(new SpinnerNumberModel(53, 0, 10000, 1)); 
 	private JLabel 		width_intervalLabel 	= new JLabel("btw. groups ");
-	private Polygon2D capillariesPolygon = null;
+	private Polygon2D 	capillariesPolygon 		= null;
 	
 	
 	private MultiCAFE2 	parent0 				= null;
@@ -86,7 +86,7 @@ public class Create extends JPanel
 		
 		JPanel panel2 = new JPanel(flowLayout);
 		panel2.add(new JLabel ("spaced:"));
-		panel2.add(selectRegularButton);
+		panel2.add(selectEvenlySpacedButton);
 		panel2.add(selectGroupedby2Button);
 		panel2.add(new JLabel ("with:"));
 		panel2.add(width_between_capillariesJSpinner);
@@ -99,7 +99,7 @@ public class Create extends JPanel
 		add(panel2);
 		
 		buttonGroup2.add(selectGroupedby2Button);
-		buttonGroup2.add(selectRegularButton);
+		buttonGroup2.add(selectEvenlySpacedButton);
 		selectGroupedby2Button.setSelected(true);
 		
 		defineActionListeners();
@@ -134,7 +134,7 @@ public class Create extends JPanel
 				}
 			}});
 		
-		selectRegularButton.addActionListener(new ActionListener () 
+		selectEvenlySpacedButton.addActionListener(new ActionListener () 
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) { 
 				EnableBinWidthItems(false);
@@ -176,10 +176,11 @@ public class Create extends JPanel
 		return selectGroupedby2Button.isSelected();
 	}
 	
-	private void setGroupedBy2(boolean flag) 
+	void setGroupedBy2(boolean flag) 
 	{
+		buttonGroup2.clearSelection();
 		selectGroupedby2Button.setSelected(flag);
-		selectRegularButton.setSelected(!flag);
+		selectEvenlySpacedButton.setSelected(!flag);
 	}
 	
 	void setGroupingAndNumber(Capillaries cap) 
@@ -328,4 +329,5 @@ public class Create extends JPanel
 		roiL1.setReadOnly(false);
 		seqCamData.seq.addROI(roiL1, true);
 	}
+
 }

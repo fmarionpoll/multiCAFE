@@ -120,7 +120,7 @@ public class Infos  extends JPanel
 				if (exp != null) 
 				{
 					exp.xmlLoadMCExperiment ();
-					setExperimentInfosToDialog(exp, exp);
+					transferPreviousExperimentInfosToDialog(exp, exp);
 				}
 			}});
 		
@@ -146,7 +146,7 @@ public class Infos  extends JPanel
 		
 	// set/ get
 	
-	public void setExperimentInfosToDialog(Experiment exp_source, Experiment exp_destination) 
+	public void transferPreviousExperimentInfosToDialog(Experiment exp_source, Experiment exp_destination) 
 	{
 		setInfoCombo(exp_destination, boxIDCombo, EnumXLSColumnHeader.EXP_BOXID, exp_source.getExperimentField(EnumXLSColumnHeader.EXP_BOXID)); 
 		setInfoCombo(exp_destination, exptCombo, EnumXLSColumnHeader.EXP_EXPT, exp_source.getExperimentField(EnumXLSColumnHeader.EXP_EXPT)) ;
@@ -195,7 +195,7 @@ public class Infos  extends JPanel
 		parent0.expListCombo.getFieldValuesToCombo(sexCombo, EnumXLSColumnHeader.EXP_SEX);
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null)
-			setExperimentInfosToDialog(exp, exp);
+			transferPreviousExperimentInfosToDialog(exp, exp);
 	}
 	
 	void clearCombos()
@@ -216,7 +216,10 @@ public class Infos  extends JPanel
 		
 		Experiment exp0 = (Experiment) parent0.expListCombo.getItemAt(iprevious);
 		Experiment exp = (Experiment) parent0.expListCombo.getItemAt(iprevious+1);
-		setExperimentInfosToDialog(exp0, exp);
+		transferPreviousExperimentInfosToDialog(exp0, exp);
+		parent0.paneCapillaries.transferPreviousExperimentCapillariesInfos(exp0, exp);
 	}
+	
+
 }
 

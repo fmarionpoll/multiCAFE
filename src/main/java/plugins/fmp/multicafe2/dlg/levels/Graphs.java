@@ -25,7 +25,7 @@ import plugins.fmp.multicafe2.tools.chart.ChartLevels;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
-public class PlotLevels extends JPanel implements SequenceListener
+public class Graphs extends JPanel implements SequenceListener
 {
 	/**
 	 * 

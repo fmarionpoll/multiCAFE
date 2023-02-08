@@ -8,7 +8,7 @@ import icy.util.XMLUtil;
 
 public class CapillariesDescription 
 {
-	public int version = 1;
+	public int 		version 		= 1;
 	public double 	volume 			= 5.;
 	public int 		pixels 			= 5;
 	public String 	sourceName 		= null;
