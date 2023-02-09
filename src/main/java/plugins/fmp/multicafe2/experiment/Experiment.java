@@ -720,6 +720,15 @@ public class Experiment
 		return flag;
 	}
 	
+	public void copyExperimentFields(Experiment expSource) {
+		setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_BOXID, expSource.getExperimentField(EnumXLSColumnHeader.EXP_BOXID));
+		setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_EXPT, expSource.getExperimentField(EnumXLSColumnHeader.EXP_EXPT));
+		setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_STIM, expSource.getExperimentField(EnumXLSColumnHeader.EXP_STIM));
+		setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_CONC, expSource.getExperimentField(EnumXLSColumnHeader.EXP_CONC));	
+		setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_STRAIN, expSource.getExperimentField(EnumXLSColumnHeader.EXP_STRAIN));
+		setExperimentFieldNoTest(EnumXLSColumnHeader.EXP_SEX, expSource.getExperimentField(EnumXLSColumnHeader.EXP_SEX));
+	}
+	
 	public void setExperimentFieldNoTest (EnumXLSColumnHeader fieldEnumCode, String newValue)
 	{
 		switch (fieldEnumCode)

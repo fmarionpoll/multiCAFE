@@ -73,10 +73,11 @@ public class ChartLevels extends IcyFrame
 		options.buildExcelStepMs = 60000;
 		options.t0 = true;
 		options.subtractEvaporation = subtractEvaporation;
-		XLSResultsArray resultsList = xlsExport.getCapDataFromOneExperimentSeriesForGraph(exp, exportType, options);
+		XLSResultsArray resultsList = xlsExport.getCapDataFromOneExperiment(exp, exportType, options);
+		
 		XLSResultsArray resultsList2 = null;
 		if (exportType == EnumXLSExportType.TOPLEVEL) 
-			resultsList2 = xlsExport.getCapDataFromOneExperimentSeriesForGraph(exp, EnumXLSExportType.BOTTOMLEVEL, options);
+			resultsList2 = xlsExport.getCapDataFromOneExperiment(exp, EnumXLSExportType.BOTTOMLEVEL, options);
 		
 		String previousName = null;
 		XYSeriesCollection xyDataset = null;
@@ -84,13 +85,13 @@ public class ChartLevels extends IcyFrame
 		{
 			XLSResults row = resultsList.getRow(iRow);
 			String currentName = row.name.substring(4, row.name.length()-1);
+			// this string can be empty (with names such as line0, line1)
 			if (xyDataset == null) 
 			{
 				xyDataset = new XYSeriesCollection();
 				previousName = currentName; 
-				//results.name +=  "    ";
 			} 
-			else if (!previousName.equals(currentName)) 
+			else if (!previousName.equals(currentName) || currentName.isEmpty()) 
 			{
 				if (xyDataset != null)
 					xyList.add(xyDataset);
