@@ -33,6 +33,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			Edit		tabEdit			= new Edit();
 	public 	LoadSave 	tabFile 		= new LoadSave();
 			Adjust 		tabAdjust 		= new Adjust();
+			Experimental tabExperimental = new Experimental();
 	public 	Infos		tabInfos		= new Infos();
 	private int 		ID_INFOS 		= 1;
 	private int 		ID_ADJUST 		= 3;
@@ -78,6 +79,11 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		tabFile.init(capLayout, parent0);
 		tabFile.addPropertyChangeListener(this);
 		tabsPane.addTab("Load/Save", null, tabFile, "Load/Save xml file with capillaries descriptors");
+		order++;
+		
+		tabExperimental.init(capLayout, parent0);
+		tabExperimental.addPropertyChangeListener(this);
+		tabsPane.addTab("Experimental", null, tabExperimental, "Try different filters");
 		order++;
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
