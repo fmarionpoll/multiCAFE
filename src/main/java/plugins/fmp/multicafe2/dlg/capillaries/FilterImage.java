@@ -15,7 +15,6 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import icy.canvas.IcyCanvas;
 import icy.gui.viewer.Viewer;
 import icy.util.StringUtil;
 import plugins.fmp.multicafe2.MultiCAFE2;
@@ -162,10 +161,10 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 		 {
 			stopComputation();
 			displayTransformButton.setText(calculateString);
-			int zChannelDestination = 0;
+			int zChannelDestination = 1;
 			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 			Viewer viewer = exp.seqCamData.seq.getFirstViewer();
-			viewer.setPositionZ(zChannelDestination);
+			viewer.getCanvas().setPositionZ(zChannelDestination);
 		 }
 	}
 

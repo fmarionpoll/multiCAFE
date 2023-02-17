@@ -1,13 +1,18 @@
 package plugins.fmp.multicafe2.series;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
+import icy.canvas.Layer;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.gui.viewer.Viewer;
+import icy.roi.ROI;
 import icy.sequence.Sequence;
 import icy.system.thread.Processor;
 
@@ -15,12 +20,11 @@ import icy.system.thread.Processor;
 public abstract class BuildSequence  extends SwingWorker<Integer, Integer> 
 {
 
-	public 	BuildSequenceOptions	options 	= new BuildSequenceOptions();
-	public	boolean 			stopFlag 		= false;
-	public 	boolean 			threadRunning 	= false;
-			int 				selectedExperimentIndex = -1;
-			Sequence seqNegative = null;
-			Viewer vNegative = null;
+	public 	BuildSequenceOptions options 	= new BuildSequenceOptions();
+	public	boolean stopFlag 		= false;
+	public 	boolean  threadRunning 	= false;
+			int selectedExperimentIndex = -1;
+			Viewer vSeq = null;
 			
 	@Override
 	protected Integer doInBackground() throws Exception 
@@ -90,6 +94,42 @@ public abstract class BuildSequence  extends SwingWorker<Integer, Integer>
              futuresArray.remove(f);
              frame ++;
          }
+    	 closeSequenceViewer();
    }
+    
+	void closeSequenceViewer ()
+	{
+		if (vSeq != null) 
+		{
+			vSeq.close();
+			vSeq = null;
+		}
+	}
+	
+	void openSequenceViewer(Sequence seq) 
+	{
+		closeSequenceViewer();
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				public void run() 
+				{			
+					vSeq = new Viewer(seq, true);
+					List<Layer> layers = vSeq.getCanvas().getLayers(false);
+					if (layers != null) {
+						for (Layer layer: layers) 
+						{
+							ROI roi = layer.getAttachedROI();
+							if (roi == null)
+								continue;
+							layer.setVisible(false);
+						}
+					}
+				}});
+		} 
+		catch (InvocationTargetException | InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
+	}
 
 }

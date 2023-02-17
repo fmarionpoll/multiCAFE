@@ -8,6 +8,7 @@ import icy.image.IcyBufferedImage;
 import icy.sequence.Sequence;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
+
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 
@@ -34,7 +35,7 @@ public class BuildFilteredImages extends BuildSequence {
 		if (transform == null)
 			return;
 		
-		ProgressFrame progressBar = new ProgressFrame("Save kymographs");
+		ProgressFrame progressBar = new ProgressFrame("Build filtered images");
 		int nframes = seq.getSizeT();
 		int nCPUs = SystemUtil.getNumberOfCPUs();
 	    final Processor processor = new Processor(nCPUs);
@@ -43,7 +44,9 @@ public class BuildFilteredImages extends BuildSequence {
         ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nframes);
 		futuresArray.clear();
 		
-		for (int t= 0; t < nimages; t++) 
+		openSequenceViewer(seq);
+		
+		for (int t = 0; t < nimages; t++) 
 		{
 			final int t_index = t;
 			futuresArray.add(processor.submit(new Runnable () {
@@ -52,6 +55,8 @@ public class BuildFilteredImages extends BuildSequence {
 					IcyBufferedImage img = seq.getImage(t_index, zChannelSource);
 					IcyBufferedImage img2 = transform.transformImage (img, null);
 					seq.setImage(t_index, zChannelDestination, img2);
+					vSeq.setPositionZ(zChannelDestination);
+					vSeq.setPositionT(t_index);
 				}}));
 		}
 		
@@ -60,6 +65,8 @@ public class BuildFilteredImages extends BuildSequence {
 		seq.dataChanged();
 		seq.endUpdate();
 	}
+	
+	
 
 
 }
