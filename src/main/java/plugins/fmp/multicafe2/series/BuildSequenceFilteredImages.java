@@ -6,13 +6,14 @@ import java.util.concurrent.Future;
 import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
 import icy.sequence.Sequence;
+import icy.sequence.SequenceUtil;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
 
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
 
-public class BuildFilteredImages extends BuildSequence {
+public class BuildSequenceFilteredImages extends BuildSequence {
 
 	@Override
 	void runFilter(Sequence seq) {
@@ -28,9 +29,14 @@ public class BuildFilteredImages extends BuildSequence {
 			EnumImageTransformations transformop1, 
 			int spanDiff) 
 	{
-		int nimages = seq.getSizeT();
 		seq.beginUpdate();
-
+		int nimages = seq.getSizeT();
+		int zDimensions = seq.getSizeZ();
+		if (zDimensions <= 1) 
+			SequenceUtil.addZ(seq, 1);
+		openSequenceViewer(seq);
+		vSeq.setPositionZ(zChannelDestination);
+		
 		ImageTransformInterface transform = transformop1.getFunction();
 		if (transform == null)
 			return;
@@ -44,8 +50,6 @@ public class BuildFilteredImages extends BuildSequence {
         ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nframes);
 		futuresArray.clear();
 		
-		openSequenceViewer(seq);
-		
 		for (int t = 0; t < nimages; t++) 
 		{
 			final int t_index = t;
@@ -55,18 +59,17 @@ public class BuildFilteredImages extends BuildSequence {
 					IcyBufferedImage img = seq.getImage(t_index, zChannelSource);
 					IcyBufferedImage img2 = transform.transformImage (img, null);
 					seq.setImage(t_index, zChannelDestination, img2);
-					vSeq.setPositionZ(zChannelDestination);
 					vSeq.setPositionT(t_index);
 				}}));
 		}
 		
 		waitFuturesCompletion(processor, futuresArray, progressBar);
+		closeSequenceViewer();
 		progressBar.close();
+		
 		seq.dataChanged();
 		seq.endUpdate();
 	}
 	
-	
-
 
 }

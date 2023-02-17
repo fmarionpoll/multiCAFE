@@ -71,30 +71,31 @@ public abstract class BuildSequence  extends SwingWorker<Integer, Integer>
 	
     protected void waitFuturesCompletion(Processor processor, ArrayList<Future<?>> futuresArray,  ProgressFrame progressBar) 
     {  	
-  		 int frame= 1;
+  		 int frame = 0;
   		 int nframes = futuresArray.size();
+//  		 System.out.print("nframes="+ futuresArray.size() +"\n");
 
-    	 while (!futuresArray.isEmpty())
-         {
-             final Future<?> f = futuresArray.get(futuresArray.size() - 1);
-             if (progressBar != null)
-   				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
-             try
-             {
-                 f.get();
-             }
-             catch (ExecutionException e)
-             {
-                 System.out.println("BuildSeries.java - frame:" + frame +" Execution exception: " + e);
-             }
-             catch (InterruptedException e)
-             {
-            	 System.out.println("BuildSeries.java - Interrupted exception: " + e);
-             }
-             futuresArray.remove(f);
-             frame ++;
-         }
-    	 closeSequenceViewer();
+  		while (!futuresArray.isEmpty())
+        {
+            final Future<?> f = futuresArray.get(futuresArray.size() - 1);
+            if (progressBar != null)
+  				 progressBar.setMessage("Frame: " + (frame) + "//" + nframes);
+            try
+            {
+                f.get();
+//                System.out.println("frame: " + frame);
+            }
+            catch (ExecutionException e)
+            {
+                System.out.println("BuildSeries.java - frame:" + frame +" Execution exception: " + e);
+            }
+            catch (InterruptedException e)
+            {
+           	 	System.out.println("BuildSeries.java - Interrupted exception: " + e);
+            }
+            futuresArray.remove(f);
+            frame ++;
+        }
    }
     
 	void closeSequenceViewer ()

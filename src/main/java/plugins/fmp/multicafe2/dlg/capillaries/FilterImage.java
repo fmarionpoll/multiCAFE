@@ -20,7 +20,7 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
-import plugins.fmp.multicafe2.series.BuildFilteredImages;
+import plugins.fmp.multicafe2.series.BuildSequenceFilteredImages;
 import plugins.fmp.multicafe2.series.BuildSequenceOptions;
 import plugins.fmp.multicafe2.tools.EnumStatusComputation;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
@@ -47,7 +47,7 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 	
 	private MultiCAFE2 	parent0 				= null;
 	EnumStatusComputation sComputation 			= EnumStatusComputation.START_COMPUTATION; 
-	private BuildFilteredImages threadBuildFiltered = null;
+	private BuildSequenceFilteredImages threadBuildFiltered = null;
 	
 	// -----------------------------------------------------
 		
@@ -140,7 +140,7 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 	{
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
-		threadBuildFiltered = new BuildFilteredImages();	
+		threadBuildFiltered = new BuildSequenceFilteredImages();	
 		threadBuildFiltered.options = initBuildParameters();
 		
 		threadBuildFiltered.addPropertyChangeListener(this);
