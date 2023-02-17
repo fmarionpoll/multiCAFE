@@ -166,8 +166,6 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 			Viewer viewer = exp.seqCamData.seq.getFirstViewer();
 			viewer.setPositionZ(zChannelDestination);
-//			IcyCanvas canvas = viewer.getCanvas();
-//			canvas.setPositionZ(zChannelDestination);
 		 }
 	}
 
