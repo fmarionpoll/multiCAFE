@@ -20,13 +20,13 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.series.BuildFilteredImages;
-import plugins.fmp.multicafe2.series.BuildSeriesOptions;
+import plugins.fmp.multicafe2.series.BuildSequenceOptions;
 import plugins.fmp.multicafe2.tools.EnumStatusComputation;
 import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
 
 
 
-public class Experimental extends JPanel implements PropertyChangeListener 
+public class FilterImage extends JPanel implements PropertyChangeListener 
 {
 	private static final long serialVersionUID = 1L;
 
@@ -77,6 +77,7 @@ public class Experimental extends JPanel implements PropertyChangeListener
 		detectButton.setEnabled(false);
 		directionComboBox.setEnabled(false);
 		thresholdSpinner.setEnabled(false);
+		transformComboBox.setSelectedIndex(4);
 		
 		defineActionListeners();
 	}
@@ -96,7 +97,6 @@ public class Experimental extends JPanel implements PropertyChangeListener
 			{ 
 				displayFilteredImage();
 			}});
-		
 	}
 	
 	// -------------------------------------------------
@@ -125,29 +125,19 @@ public class Experimental extends JPanel implements PropertyChangeListener
 		}
 	}
 	
-	private BuildSeriesOptions initBuildParameters() 
+	private BuildSequenceOptions initBuildParameters() 
 	{	
-		BuildSeriesOptions options = new BuildSeriesOptions();
-		// list of stack experiments
-		options.expList = parent0.expListCombo; 
-		options.expList.index0 = parent0.expListCombo.getSelectedIndex();
-		options.expList.index1 = parent0.expListCombo.getSelectedIndex();
-
+		BuildSequenceOptions options = new BuildSequenceOptions();
 		// other parameters
 		options.transform01 		= (EnumImageTransformations) transformComboBox.getSelectedItem();
-		
-		options.spanDiffTop			= 0;
-		options.parent0Rect 		= parent0.mainFrame.getBoundsInternal();
-		options.binSubDirectory 	= parent0.expListCombo.expListBinSubDirectory ;
+		options.exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		options.seq = options.exp.seqCamData.seq;
 		return options;
 	}
 	
 	void startComputation() 
 	{
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
-		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-		if (exp != null)
-			parent0.paneCapillaries.tabFile.saveCapillaries_file(exp);
 		
 		threadBuildFiltered = new BuildFilteredImages();	
 		threadBuildFiltered.options = initBuildParameters();

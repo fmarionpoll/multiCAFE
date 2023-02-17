@@ -33,11 +33,12 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			Edit		tabEdit			= new Edit();
 	public 	LoadSave 	tabFile 		= new LoadSave();
 			Adjust 		tabAdjust 		= new Adjust();
-			Experimental tabExperimental = new Experimental();
+			FilterImage tabFilterImage  = new FilterImage();
 	public 	Infos		tabInfos		= new Infos();
 	private int 		ID_INFOS 		= 1;
 	private int 		ID_ADJUST 		= 3;
 	private int			ID_EDIT			= 2;
+	private int			ID_FILTER 		= 4;
 	private boolean		editSelected	= false;
 	private MultiCAFE2 	parent0 		= null;
 
@@ -81,9 +82,10 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		tabsPane.addTab("Load/Save", null, tabFile, "Load/Save xml file with capillaries descriptors");
 		order++;
 		
-		tabExperimental.init(capLayout, parent0);
-		tabExperimental.addPropertyChangeListener(this);
-		tabsPane.addTab("Experimental", null, tabExperimental, "Try different filters");
+		ID_FILTER = order;
+		tabFilterImage.init(capLayout, parent0);
+		tabFilterImage.addPropertyChangeListener(this);
+		tabsPane.addTab("Experimental", null, tabFilterImage, "Try different filters");
 		order++;
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -151,6 +153,9 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
         int selectedIndex = tabbedPane.getSelectedIndex();
         tabAdjust.roisDisplayrefBar(selectedIndex == ID_ADJUST);
+        boolean disableCapillaries = (selectedIndex != ID_FILTER);
+        parent0.paneExperiment.tabOptions.displayROIsCategory(disableCapillaries, "line");
+        
         parent0.paneExperiment.tabOptions.viewCapillariesCheckBox.setSelected(selectedIndex == ID_INFOS);
         if (selectedIndex == ID_EDIT) {
         	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
