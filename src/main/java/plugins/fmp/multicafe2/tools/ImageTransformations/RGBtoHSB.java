@@ -26,13 +26,13 @@ public class RGBtoHSB extends ImageTransformFunction implements ImageTransformIn
 	{
 		IcyBufferedImage img2 = new IcyBufferedImage(sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		
-		double[] tabValuesR = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(0), sourceImage.isSignedDataType());
-		double[] tabValuesG = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(1), sourceImage.isSignedDataType());
-		double[] tabValuesB = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(2), sourceImage.isSignedDataType());
+		float[] tabValuesR = Array1DUtil.arrayToFloatArray(sourceImage.getDataXY(0), sourceImage.isSignedDataType());
+		float[] tabValuesG = Array1DUtil.arrayToFloatArray(sourceImage.getDataXY(1), sourceImage.isSignedDataType());
+		float[] tabValuesB = Array1DUtil.arrayToFloatArray(sourceImage.getDataXY(2), sourceImage.isSignedDataType());
 
-		double[] outValues0 = Array1DUtil.arrayToDoubleArray(img2.getDataXY(0), img2.isSignedDataType());
-		double[] outValues1 = Array1DUtil.arrayToDoubleArray(img2.getDataXY(1), img2.isSignedDataType());
-		double[] outValues2 = Array1DUtil.arrayToDoubleArray(img2.getDataXY(2), img2.isSignedDataType());
+		float[] outValues0 = Array1DUtil.arrayToFloatArray(img2.getDataXY(0), img2.isSignedDataType());
+		float[] outValues1 = Array1DUtil.arrayToFloatArray(img2.getDataXY(1), img2.isSignedDataType());
+		float[] outValues2 = Array1DUtil.arrayToFloatArray(img2.getDataXY(2), img2.isSignedDataType());
 		
 		// compute values
 		for (int ky = 0; ky < tabValuesR.length; ky++) 
@@ -42,18 +42,18 @@ public class RGBtoHSB extends ImageTransformFunction implements ImageTransformIn
 			int B = (int) tabValuesB[ky];
 		
 			float[] hsb = Color.RGBtoHSB(R, G, B, null) ;
-			outValues0 [ky] = (double) hsb[0] * 100;;
-			outValues1 [ky] = (double) hsb[1] * 100;;
-			outValues2 [ky] = (double) hsb[2] * 100;;
+			outValues0 [ky] = hsb[0] * 100;
+			outValues1 [ky] = hsb[1] * 100;
+			outValues2 [ky] = hsb[2] * 100;
 		}
 		int c= 0;
-		Array1DUtil.doubleArrayToSafeArray(outValues0,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		Array1DUtil.floatArrayToSafeArray(outValues0,  img2.getDataXY(c), false); //  img2.isSignedDataType());
 		img2.setDataXY(c, img2.getDataXY(c));
 		c++;
-		Array1DUtil.doubleArrayToSafeArray(outValues1,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		Array1DUtil.floatArrayToSafeArray(outValues1,  img2.getDataXY(c), false); //  img2.isSignedDataType());
 		img2.setDataXY(c, img2.getDataXY(c));
 		c++;
-		Array1DUtil.doubleArrayToSafeArray(outValues2,  img2.getDataXY(c), false); //  img2.isSignedDataType());
+		Array1DUtil.floatArrayToSafeArray(outValues2,  img2.getDataXY(c), false); //  img2.isSignedDataType());
 		img2.setDataXY(c, img2.getDataXY(c));
 		return img2;
 	}

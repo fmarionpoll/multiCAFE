@@ -36,7 +36,8 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 	JComboBox<EnumImageTransformations> transformComboBox = new JComboBox<EnumImageTransformations> (
 		new EnumImageTransformations[] {
 			EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB, 
-			EnumImageTransformations.H_HSB, EnumImageTransformations.S_HSB, EnumImageTransformations.B_HSB
+			EnumImageTransformations.H_HSB, EnumImageTransformations.S_HSB, EnumImageTransformations.B_HSB,
+			EnumImageTransformations.H_HSV, EnumImageTransformations.S_HSV, EnumImageTransformations.V_HSV
 		});
 	
 	private String 		calculateString 			= "Calculate";

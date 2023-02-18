@@ -106,7 +106,7 @@ public abstract class BuildSequence  extends SwingWorker<Integer, Integer>
 			vSeq = null;
 		}
 	}
-	
+
 	void openSequenceViewer(Sequence seq) 
 	{
 		closeSequenceViewer();
