@@ -8,7 +8,8 @@ import icy.sequence.Sequence;
 
 public class SequenceTransformOptions 
 {
-	public SequenceTransformEnums transformOption; 
+	public SequenceTransformEnums transform01; 
+	
 	public IcyBufferedImage backgroundImage = null;
 	public IcyBufferedImage secondImage = null;
 	public Sequence seq = null;

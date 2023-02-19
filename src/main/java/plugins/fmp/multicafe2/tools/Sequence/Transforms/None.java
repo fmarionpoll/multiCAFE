@@ -10,7 +10,7 @@ import plugins.fmp.multicafe2.tools.Sequence.SequenceTransformOptions;
 public class None extends SequenceTransformFunction implements SequenceTransformInterface
 {
 	@Override
-	public void getTransformedSequence(Sequence seq, SequenceTransformOptions options) 
+	public void getTransformedSequence(Sequence seq, int t, SequenceTransformOptions options) 
 	{
 	}
 

@@ -1,10 +1,10 @@
 package plugins.fmp.multicafe2.tools.Sequence.Transforms;
 
-import icy.image.IcyBufferedImage;
+import java.awt.Color;
+
 import icy.sequence.Sequence;
-import icy.sequence.SequenceCursor;
 import icy.sequence.VolumetricImage;
-import icy.util.OMEUtil;
+import icy.sequence.VolumetricImageCursor;
 import plugins.fmp.multicafe2.tools.Sequence.SequenceTransformFunction;
 import plugins.fmp.multicafe2.tools.Sequence.SequenceTransformInterface;
 import plugins.fmp.multicafe2.tools.Sequence.SequenceTransformOptions;
@@ -21,54 +21,34 @@ public class RGB_to_HSB extends SequenceTransformFunction implements SequenceTra
 	}
 	
 	@Override
-	public void getTransformedSequence(Sequence colorSeq, SequenceTransformOptions options) 
-	{
-		Sequence graySeq = new Sequence(OMEUtil.createOMEXMLMetadata(colorSeq.getOMEXMLMetadata()));
-        for (int t = 0; t < colorSeq.getSizeT(); t++) // T
-        {
-        	graySeq.addImage(t, new IcyBufferedImage(colorSeq.getSizeX(), colorSeq.getSizeY(), 1, colorSeq.getDataType_()));
-        }
-        
-		SequenceCursor colorSeqCursor = new SequenceCursor(colorSeq);
-	    SequenceCursor graySeqCursor = new SequenceCursor(graySeq);
-		
-	    for (int t = 0; t < colorSeq.getSizeT(); t++) // T
-        {	
-	    	VolumetricImage colorVol = colorSeq.getVolumetricImage(t);
-	    	VolumetricImage grayVol = getTransformedImage (colorVol, options);
-	    	colorSeq.addVolumetricImage(t, grayVol);
-        }
+	public void getTransformedSequence(Sequence colorSeq, int t, SequenceTransformOptions options) 
+	{ 	        
+		VolumetricImage colorVol = colorSeq.getVolumetricImage(t);
+		VolumetricImageCursor colorVolCursor = new VolumetricImageCursor(colorVol);
+	    	    
+	    for (int iy = 0; iy < colorSeq.getSizeY(); iy++) // Y
+		{
+		    for (int ix = 0; ix < colorSeq.getSizeX(); ix++) // X
+		    {
+		    	int R = (int) colorVolCursor.get(ix, iy, zIn, 0);
+				int G = (int) colorVolCursor.get(ix, iy, zIn, 1);
+				int B = (int) colorVolCursor.get(ix, iy, zIn, 2);
+				float[] hsb = Color.RGBtoHSB(R, G, B, null) ;
+				
+		        setPixelOut(colorVolCursor, ix, iy, hsb);
+		    }
+		}
+	    colorVolCursor.commitChanges();
 	}
 	
-	VolumetricImage getTransformedImage(VolumetricImage colorVol, SequenceTransformOptions options) 
+	void setPixelOut(VolumetricImageCursor colorVolCursor, int ix, int iy, float[] hsb) 
 	{
-		Sequence graySeq = new Sequence(OMEUtil.createOMEXMLMetadata(colorSeq.getOMEXMLMetadata()));
-        for (int t = 0; t < colorSeq.getSizeT(); t++) // T
-        {
-        	graySeq.addImage(t, new IcyBufferedImage(colorSeq.getSizeX(), colorSeq.getSizeY(), 1, colorSeq.getDataType_()));
-        }
-        
-		SequenceCursor colorSeqCursor = new SequenceCursor(colorSeq);
-	    SequenceCursor graySeqCursor = new SequenceCursor(graySeq);
-		
-	    int k = zIn;
-	    for (int t = 0; t < colorSeq.getSizeT(); t++) // T
-        {	
-            for (int iy = 0; iy < colorSeq.getSizeY(); iy++) // Y
-            {
-                for (int ix = 0; ix < colorSeq.getSizeX(); ix++) // X
-                {
-                    double valueSum = 0d;
-                    for (int c = 0; c < colorSeq.getSizeC(); c++) // C
-                    {
-                        // 5. get pixel value at channel c using cursor
-                        valueSum += colorSeqCursor.get(ix, iy, k, t, c);
-                    }
-                    // 6. Set pixel value to average of channels
-                    graySeqCursor.setSafe(ix, iy, k, t, 0, valueSum / colorSeq.getSizeC());
-                }
-            }
-        }
+		if (channelOut < 0)
+			for (int c = 0; c < 3; c++)
+				colorVolCursor.setSafe(ix, iy, zOut, c, hsb[c]);
+		else 
+			for (int c = 0; c < 3; c++)
+				colorVolCursor.setSafe(ix, iy, zOut, c, hsb[channelOut]);
 	}
 
 

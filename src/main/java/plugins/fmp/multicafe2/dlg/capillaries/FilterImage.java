@@ -21,9 +21,10 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.EnumStatusComputation;
-import plugins.fmp.multicafe2.tools.Image.BuildSequenceFromTransformedImages;
-import plugins.fmp.multicafe2.tools.Image.BuildSequenceFromTransformedImagesOptions;
-import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.Sequence.BuildSequenceFromTransformedImages;
+import plugins.fmp.multicafe2.tools.Sequence.SequenceTransformEnums;
+import plugins.fmp.multicafe2.tools.Sequence.SequenceTransformOptions;
+
 
 
 
@@ -33,11 +34,12 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 
 	private JComboBox<String> directionComboBox = new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JSpinner thresholdSpinner = new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
-	JComboBox<ImageTransformEnums> transformComboBox = new JComboBox<ImageTransformEnums> (
-		new ImageTransformEnums[] {
-			ImageTransformEnums.R_RGB, ImageTransformEnums.G_RGB, ImageTransformEnums.B_RGB, 
-			ImageTransformEnums.H_HSB, ImageTransformEnums.S_HSB, ImageTransformEnums.B_HSB,
-			ImageTransformEnums.H_HSV, ImageTransformEnums.S_HSV, ImageTransformEnums.V_HSV
+	JComboBox<SequenceTransformEnums> transformComboBox = new JComboBox<SequenceTransformEnums> (
+		new SequenceTransformEnums[] {
+			SequenceTransformEnums.HSB,  
+			SequenceTransformEnums.H_HSB, 
+			SequenceTransformEnums.S_HSB, 
+			SequenceTransformEnums.B_HSB
 		});
 	
 	private String 		calculateString 			= "Calculate";
@@ -127,13 +129,13 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 		}
 	}
 	
-	private BuildSequenceFromTransformedImagesOptions initBuildParameters() 
+	private SequenceTransformOptions initBuildParameters() 
 	{	
-		BuildSequenceFromTransformedImagesOptions options = new BuildSequenceFromTransformedImagesOptions();
+		SequenceTransformOptions options = new SequenceTransformOptions();
 		// other parameters
-		options.transform01 		= (ImageTransformEnums) transformComboBox.getSelectedItem();
-		options.exp = (Experiment) parent0.expListCombo.getSelectedItem();
-		options.seq = options.exp.seqCamData.seq;
+		options.transform01 = (SequenceTransformEnums) transformComboBox.getSelectedItem();
+		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+		options.seq = exp.seqCamData.seq;
 		return options;
 	}
 	

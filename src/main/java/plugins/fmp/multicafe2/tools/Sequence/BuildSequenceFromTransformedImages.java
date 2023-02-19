@@ -1,10 +1,9 @@
-package plugins.fmp.multicafe2.tools.Image;
+package plugins.fmp.multicafe2.tools.Sequence;
 
 import java.util.ArrayList;
 import java.util.concurrent.Future;
 
 import icy.gui.frame.progress.ProgressFrame;
-import icy.image.IcyBufferedImage;
 import icy.sequence.Sequence;
 import icy.sequence.SequenceUtil;
 import icy.system.SystemUtil;
@@ -16,25 +15,25 @@ public class BuildSequenceFromTransformedImages extends BuildSequenceFromTransfo
 	void runFilter(Sequence seq) {
 
 		int zChannelDestination = 1;
-		buildFiltered(seq, 0, zChannelDestination, options.transform01, options.spanDiff);
+		buildFilteredSequence(seq, 0, zChannelDestination, options.transform01);
 		
 	}
 	
-	void buildFiltered(Sequence seq, 
+	void buildFilteredSequence(Sequence seq, 
 			int zChannelSource, 
 			int zChannelDestination, 
-			ImageTransformEnums transformop1, 
-			int spanDiff) 
+			SequenceTransformEnums transformop1) 
 	{
-		seq.beginUpdate();
+
 		int nimages = seq.getSizeT();
 		int zDimensions = seq.getSizeZ();
 		if (zDimensions <= 1) 
-			SequenceUtil.addZ(seq, 1);
+			SequenceUtil.addZ(seq, 1, false);
 		openSequenceViewer(seq);
 		temporaryViewer.setPositionZ(zChannelDestination);
+		seq.beginUpdate();
 		
-		ImageTransformInterface transform = transformop1.getFunction();
+		SequenceTransformInterface transform = transformop1.getFunction();
 		if (transform == null)
 			return;
 		
@@ -53,19 +52,17 @@ public class BuildSequenceFromTransformedImages extends BuildSequenceFromTransfo
 			futuresArray.add(processor.submit(new Runnable () {
 				@Override
 				public void run() {	
-					IcyBufferedImage img = seq.getImage(t_index, zChannelSource);
-					IcyBufferedImage img2 = transform.getTransformedImage (img, null);
-					seq.setImage(t_index, zChannelDestination, img2);
+					transform.getTransformedSequence (seq, t_index, options);
 					temporaryViewer.setPositionT(t_index);
 				}}));
 		}
 		
 		waitFuturesCompletion(processor, futuresArray, progressBar);
 		closeSequenceViewer();
+		seq.endUpdate();
+		
 		progressBar.close();
 		
-		seq.dataChanged();
-		seq.endUpdate();
 	}
 	
 
