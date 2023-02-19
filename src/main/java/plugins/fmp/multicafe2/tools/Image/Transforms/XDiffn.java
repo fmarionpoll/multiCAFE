@@ -2,11 +2,11 @@ package plugins.fmp.multicafe2.tools.Image.Transforms;
 
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
-import plugins.fmp.multicafe2.tools.Image.ImageTransformFunction;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformFunctionAbstract;
 import plugins.fmp.multicafe2.tools.Image.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.Image.ImageTransformOptions;
 
-public class XDiffn extends ImageTransformFunction implements ImageTransformInterface
+public class XDiffn extends ImageTransformFunctionAbstract implements ImageTransformInterface
 {
 	int spanDiff = 5;
 	public XDiffn(int spanDiff)

@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe2.tools.Sequence;
+package plugins.fmp.multicafe2.tools.Image;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -17,10 +17,10 @@ import icy.sequence.Sequence;
 import icy.system.thread.Processor;
 
 
-public abstract class BuildSequence  extends SwingWorker<Integer, Integer> 
+public abstract class BuildSequenceFromTransformedImagesAbstract  extends SwingWorker<Integer, Integer> 
 {
 
-	public 	BuildSequenceOptions options = new BuildSequenceOptions();
+	public 	BuildSequenceFromTransformedImagesOptions options = new BuildSequenceFromTransformedImagesOptions();
 	public	boolean stopFlag 		= false;
 	public 	boolean  threadRunning 	= false;
 			int selectedExperimentIndex = -1;

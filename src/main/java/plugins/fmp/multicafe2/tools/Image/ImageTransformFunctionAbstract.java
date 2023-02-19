@@ -5,7 +5,7 @@ import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
 
-public abstract class ImageTransformFunction 
+public abstract class ImageTransformFunctionAbstract 
 {
 	protected void copyExGIntToIcyBufferedImage(int[] ExG, IcyBufferedImage img2 )
 	{

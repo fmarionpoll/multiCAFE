@@ -1,10 +1,9 @@
-package plugins.fmp.multicafe2.tools.Sequence;
+package plugins.fmp.multicafe2.tools.Image;
 
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
 
-public class BuildSequenceOptions {
+public class BuildSequenceFromTransformedImagesOptions {
 
 	public  Experiment exp;
 	public Sequence seq;

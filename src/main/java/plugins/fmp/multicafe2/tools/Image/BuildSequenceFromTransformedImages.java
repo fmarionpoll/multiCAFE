@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe2.tools.Sequence;
+package plugins.fmp.multicafe2.tools.Image;
 
 import java.util.ArrayList;
 import java.util.concurrent.Future;
@@ -9,10 +9,8 @@ import icy.sequence.Sequence;
 import icy.sequence.SequenceUtil;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
-import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
-import plugins.fmp.multicafe2.tools.Image.ImageTransformInterface;
 
-public class BuildSequenceFilteredImages extends BuildSequence {
+public class BuildSequenceFromTransformedImages extends BuildSequenceFromTransformedImagesAbstract {
 
 	@Override
 	void runFilter(Sequence seq) {

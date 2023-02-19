@@ -3,11 +3,11 @@ package plugins.fmp.multicafe2.tools.Image.Transforms;
 import icy.image.IcyBufferedImage;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
-import plugins.fmp.multicafe2.tools.Image.ImageTransformFunction;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformFunctionAbstract;
 import plugins.fmp.multicafe2.tools.Image.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.Image.ImageTransformOptions;
 
-public class LinearCombination extends ImageTransformFunction implements ImageTransformInterface
+public class LinearCombination extends ImageTransformFunctionAbstract implements ImageTransformInterface
 {
 	double w0 = 1;
 	double w1 = 1;

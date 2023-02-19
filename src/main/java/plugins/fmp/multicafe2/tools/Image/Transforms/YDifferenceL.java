@@ -3,13 +3,13 @@ package plugins.fmp.multicafe2.tools.Image.Transforms;
 import icy.image.IcyBufferedImage;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
-import plugins.fmp.multicafe2.tools.Image.ImageTransformFunction;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformFunctionAbstract;
 import plugins.fmp.multicafe2.tools.Image.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.Image.ImageTransformOptions;
 
 
 
-public class YDifferenceL extends ImageTransformFunction implements ImageTransformInterface
+public class YDifferenceL extends ImageTransformFunctionAbstract implements ImageTransformInterface
 {
 	int spanx = 0;
 	int deltax = 0;

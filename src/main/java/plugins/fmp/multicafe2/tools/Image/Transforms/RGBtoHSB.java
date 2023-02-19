@@ -4,11 +4,11 @@ import java.awt.Color;
 
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
-import plugins.fmp.multicafe2.tools.Image.ImageTransformFunction;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformFunctionAbstract;
 import plugins.fmp.multicafe2.tools.Image.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.Image.ImageTransformOptions;
 
-public class RGBtoHSB extends ImageTransformFunction implements ImageTransformInterface
+public class RGBtoHSB extends ImageTransformFunctionAbstract implements ImageTransformInterface
 {
 	int channelOut = 0;
 	
