@@ -8,9 +8,9 @@ import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformInterface;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformOptions;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformInterface;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformOptions;
 
 
 

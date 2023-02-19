@@ -30,8 +30,8 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.series.BuildBackground;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
 import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
 
 public class Detect2BuildBackground extends JPanel implements ChangeListener, PropertyChangeListener
 {

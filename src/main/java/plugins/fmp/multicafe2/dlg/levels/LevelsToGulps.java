@@ -23,7 +23,7 @@ import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.series.DetectGulps;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 
 

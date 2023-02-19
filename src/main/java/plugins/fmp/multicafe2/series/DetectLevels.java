@@ -11,7 +11,7 @@ import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformInterface;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformInterface;
 
 
 

@@ -17,9 +17,9 @@ import icy.sequence.SequenceEvent;
 import icy.sequence.SequenceEvent.SequenceEventSourceType;
 import icy.sequence.SequenceEvent.SequenceEventType;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformInterface;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformOptions;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformInterface;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformOptions;
 import icy.sequence.SequenceListener;
 
 

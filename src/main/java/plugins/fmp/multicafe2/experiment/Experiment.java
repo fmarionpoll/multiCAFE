@@ -21,8 +21,8 @@ import icy.sequence.Sequence;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Directories;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformInterface;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 
 

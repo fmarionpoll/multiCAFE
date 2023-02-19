@@ -29,7 +29,7 @@ import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
 
 
 public class MCSpots_1 extends JPanel 

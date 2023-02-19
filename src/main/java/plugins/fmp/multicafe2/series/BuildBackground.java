@@ -12,8 +12,8 @@ import icy.image.IcyBufferedImageCursor;
 import icy.image.IcyBufferedImageUtil;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformOptions;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformOptions;
 
 
 

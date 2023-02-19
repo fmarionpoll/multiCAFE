@@ -20,10 +20,10 @@ import icy.util.StringUtil;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
-import plugins.fmp.multicafe2.series.BuildSequenceFilteredImages;
-import plugins.fmp.multicafe2.series.BuildSequenceOptions;
 import plugins.fmp.multicafe2.tools.EnumStatusComputation;
-import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.Sequence.BuildSequenceFilteredImages;
+import plugins.fmp.multicafe2.tools.Sequence.BuildSequenceOptions;
 
 
 
