@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe2.tools.ImageTransformations;
+package plugins.fmp.multicafe2.tools.TransformImage;
 
 import icy.image.IcyBufferedImage;
 import icy.type.DataType;
@@ -6,7 +6,7 @@ import icy.type.collection.array.Array1DUtil;
 
 
 
-public class YDifferenceL extends ImageTransformFunction implements ImageTransformInterface
+public class YDifferenceL extends ImageTransformFunction implements TransformImageInterface
 {
 	int spanx = 0;
 	int deltax = 0;
@@ -24,7 +24,7 @@ public class YDifferenceL extends ImageTransformFunction implements ImageTransfo
 	}
 	
 	@Override
-	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage getTransformedImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		IcyBufferedImage img2 = new IcyBufferedImage (sourceImage.getWidth(), sourceImage.getHeight(), 3, sourceImage.getDataType_());
 		double[] Rn = Array1DUtil.arrayToDoubleArray(sourceImage.getDataXY(0), sourceImage.isSignedDataType());

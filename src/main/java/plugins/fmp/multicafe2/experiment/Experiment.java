@@ -21,8 +21,8 @@ import icy.sequence.Sequence;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Directories;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
-import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
-import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
+import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.TransformImageInterface;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 
 
@@ -855,7 +855,7 @@ public class Experiment
 		int nimages = seqKymos.seq.getSizeT();
 		seqKymos.seq.beginUpdate();
 
-		ImageTransformInterface transform = transformop1.getFunction();
+		TransformImageInterface transform = transformop1.getFunction();
 		if (transform == null)
 			return;
 		
@@ -867,7 +867,7 @@ public class Experiment
 			Capillary cap = capillaries.capillariesList.get(t);
 			cap.indexKymograph = t;
 			IcyBufferedImage img = seqKymos.getSeqImage(t, zChannelSource);
-			IcyBufferedImage img2 = transform.transformImage (img, null);
+			IcyBufferedImage img2 = transform.getTransformedImage (img, null);
 			if (seqKymos.seq.getSizeZ(0) < (zChannelDestination+1)) 
 				seqKymos.seq.addImage(t, img2);
 			else

@@ -1,10 +1,10 @@
-package plugins.fmp.multicafe2.tools.ImageTransformations;
+package plugins.fmp.multicafe2.tools.TransformImage;
 
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
 
-public class RGBtoHSV extends ImageTransformFunction implements ImageTransformInterface
+public class RGBtoHSV extends ImageTransformFunction implements TransformImageInterface
 {
 	int channelOut = 0;
 	double h, s, v;
@@ -15,7 +15,7 @@ public class RGBtoHSV extends ImageTransformFunction implements ImageTransformIn
 	}
 	
 	@Override
-	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage getTransformedImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		IcyBufferedImage img = functionRGBtoHSB(sourceImage);
 		if (channelOut >= 0)

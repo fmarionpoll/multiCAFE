@@ -1,9 +1,9 @@
-package plugins.fmp.multicafe2.tools.ImageTransformations;
+package plugins.fmp.multicafe2.tools.TransformImage;
 
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
-public class XDiffn extends ImageTransformFunction implements ImageTransformInterface
+public class XDiffn extends ImageTransformFunction implements TransformImageInterface
 {
 	int spanDiff = 5;
 	XDiffn(int spanDiff)
@@ -12,7 +12,7 @@ public class XDiffn extends ImageTransformFunction implements ImageTransformInte
 	}
 	
 	@Override
-	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage getTransformedImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		int chan0 = 0;
 		int chan1 =  sourceImage.getSizeC();

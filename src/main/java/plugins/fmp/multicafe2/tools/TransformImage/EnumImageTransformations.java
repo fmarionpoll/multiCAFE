@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe2.tools.ImageTransformations;
+package plugins.fmp.multicafe2.tools.TransformImage;
 
 
 public enum EnumImageTransformations {
@@ -41,10 +41,10 @@ public enum EnumImageTransformations {
 	ZIGZAG			("remove spikes",			new None()),
 	NONE			("none",					new None());
 
-	private ImageTransformInterface klass;
+	private TransformImageInterface klass;
     private String label;
 	
-    EnumImageTransformations(String label, ImageTransformInterface klass ) 
+    EnumImageTransformations(String label, TransformImageInterface klass ) 
 	{ 
 		this.label = label; 
 		this.klass = klass;
@@ -55,7 +55,7 @@ public enum EnumImageTransformations {
 		return label; 
 	}
 	
-	public ImageTransformInterface getFunction() 
+	public TransformImageInterface getFunction() 
 	{ 
 		return klass; 
 	}

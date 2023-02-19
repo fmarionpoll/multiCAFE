@@ -9,9 +9,8 @@ import icy.sequence.Sequence;
 import icy.sequence.SequenceUtil;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
-
-import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
-import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
+import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.TransformImageInterface;
 
 public class BuildSequenceFilteredImages extends BuildSequence {
 
@@ -35,9 +34,9 @@ public class BuildSequenceFilteredImages extends BuildSequence {
 		if (zDimensions <= 1) 
 			SequenceUtil.addZ(seq, 1);
 		openSequenceViewer(seq);
-		vSeq.setPositionZ(zChannelDestination);
+		temporaryViewer.setPositionZ(zChannelDestination);
 		
-		ImageTransformInterface transform = transformop1.getFunction();
+		TransformImageInterface transform = transformop1.getFunction();
 		if (transform == null)
 			return;
 		
@@ -57,9 +56,9 @@ public class BuildSequenceFilteredImages extends BuildSequence {
 				@Override
 				public void run() {	
 					IcyBufferedImage img = seq.getImage(t_index, zChannelSource);
-					IcyBufferedImage img2 = transform.transformImage (img, null);
+					IcyBufferedImage img2 = transform.getTransformedImage (img, null);
 					seq.setImage(t_index, zChannelDestination, img2);
-					vSeq.setPositionT(t_index);
+					temporaryViewer.setPositionT(t_index);
 				}}));
 		}
 		

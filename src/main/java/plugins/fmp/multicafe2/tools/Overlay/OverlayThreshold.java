@@ -17,9 +17,9 @@ import icy.sequence.SequenceEvent;
 import icy.sequence.SequenceEvent.SequenceEventSourceType;
 import icy.sequence.SequenceEvent.SequenceEventType;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
-import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
-import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
-import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
+import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.TransformImageInterface;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformOptions;
 import icy.sequence.SequenceListener;
 
 
@@ -28,8 +28,8 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 	private float 					opacity 				= 0.3f;
 	private OverlayColorMask		map 					= new OverlayColorMask ("overlaymask", new Color(0x00FF0000, true));
 	private ImageTransformOptions 	imageTransformOptions 	= new ImageTransformOptions();
-	private ImageTransformInterface imageTransformFunction 	= EnumImageTransformations.NONE.getFunction();
-	private ImageTransformInterface imageThresholdFunction 	= EnumImageTransformations.NONE.getFunction();
+	private TransformImageInterface imageTransformFunction 	= EnumImageTransformations.NONE.getFunction();
+	private TransformImageInterface imageThresholdFunction 	= EnumImageTransformations.NONE.getFunction();
 	private Sequence localSeq = null;
 	
 	// ---------------------------------------------
@@ -80,8 +80,8 @@ public class OverlayThreshold extends Overlay implements SequenceListener
 	public IcyBufferedImage getTransformedImage(int t) 
 	{
 		IcyBufferedImage img = localSeq.getImage(t, 0);
-		IcyBufferedImage img2 = imageTransformFunction.transformImage(img, imageTransformOptions);
-		return imageThresholdFunction.transformImage(img2, imageTransformOptions);
+		IcyBufferedImage img2 = imageTransformFunction.getTransformedImage(img, imageTransformOptions);
+		return imageThresholdFunction.getTransformedImage(img2, imageTransformOptions);
 	}
 	
 	@Override

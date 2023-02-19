@@ -1,9 +1,9 @@
-package plugins.fmp.multicafe2.tools.ImageTransformations;
+package plugins.fmp.multicafe2.tools.TransformImage;
 
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
-public class Deriche extends ImageTransformFunction implements ImageTransformInterface
+public class Deriche extends ImageTransformFunction implements TransformImageInterface
 {
 	double alpha = 0;
 	boolean transformToGrey = false;
@@ -15,14 +15,14 @@ public class Deriche extends ImageTransformFunction implements ImageTransformInt
 	}
 	
 	@Override
-	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage getTransformedImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		IcyBufferedImage img2 = doDeriche (sourceImage, this.alpha);
 		if (transformToGrey)
 			img2 = transformToGrey(img2);
 		return img2;
 	}
-	
+		
 	private IcyBufferedImage doDeriche (IcyBufferedImage img, double alpha)
 	{
 		IcyBufferedImage img2 = new IcyBufferedImage(img.getWidth(), img.getHeight(), 3, img.getDataType_());
@@ -375,4 +375,5 @@ public class Deriche extends ImageTransformFunction implements ImageTransformInt
 		for(int i = 0; i < icol_1;++i) 
 			a2[i] =  Modul(a2[i],a3[i]);
 	}
+
 }

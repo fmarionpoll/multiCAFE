@@ -23,7 +23,7 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.series.BuildSequenceFilteredImages;
 import plugins.fmp.multicafe2.series.BuildSequenceOptions;
 import plugins.fmp.multicafe2.tools.EnumStatusComputation;
-import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
 
 
 

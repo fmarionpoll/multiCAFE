@@ -20,11 +20,11 @@ import icy.system.thread.Processor;
 public abstract class BuildSequence  extends SwingWorker<Integer, Integer> 
 {
 
-	public 	BuildSequenceOptions options 	= new BuildSequenceOptions();
+	public 	BuildSequenceOptions options = new BuildSequenceOptions();
 	public	boolean stopFlag 		= false;
 	public 	boolean  threadRunning 	= false;
 			int selectedExperimentIndex = -1;
-			Viewer vSeq = null;
+			Viewer temporaryViewer = null;
 			
 	@Override
 	protected Integer doInBackground() throws Exception 
@@ -100,10 +100,10 @@ public abstract class BuildSequence  extends SwingWorker<Integer, Integer>
     
 	void closeSequenceViewer ()
 	{
-		if (vSeq != null) 
+		if (temporaryViewer != null) 
 		{
-			vSeq.close();
-			vSeq = null;
+			temporaryViewer.close();
+			temporaryViewer = null;
 		}
 	}
 
@@ -114,8 +114,8 @@ public abstract class BuildSequence  extends SwingWorker<Integer, Integer>
 			SwingUtilities.invokeAndWait(new Runnable() {
 				public void run() 
 				{			
-					vSeq = new Viewer(seq, true);
-					List<Layer> layers = vSeq.getCanvas().getLayers(false);
+					temporaryViewer = new Viewer(seq, true);
+					List<Layer> layers = temporaryViewer.getCanvas().getLayers(false);
 					if (layers != null) {
 						for (Layer layer: layers) 
 						{

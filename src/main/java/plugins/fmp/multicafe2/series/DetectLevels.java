@@ -11,7 +11,7 @@ import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
+import plugins.fmp.multicafe2.tools.TransformImage.TransformImageInterface;
 
 
 
@@ -59,8 +59,8 @@ public class DetectLevels  extends BuildSeries
 
 		final int jitter = 10;
 		final String directory = exp.getKymosBinFullDirectory();
-		final ImageTransformInterface transformPass1 = options.transform01.getFunction();
-		final ImageTransformInterface transformPass2 = options.transform02.getFunction();
+		final TransformImageInterface transformPass1 = options.transform01.getFunction();
+		final TransformImageInterface transformPass2 = options.transform02.getFunction();
 		
 		for (int index = firstKymo; index <= lastKymo; index++) 
 		{
@@ -101,7 +101,7 @@ public class DetectLevels  extends BuildSeries
 					if (options.pass1) 
 					{		
 						int c = 0;
-						IcyBufferedImage transformedImage1 = transformPass1.transformImage (rawImage, null);
+						IcyBufferedImage transformedImage1 = transformPass1.getTransformedImage (rawImage, null);
 						Object transformedArray1 = transformedImage1.getDataXY(c);
 						int[] transformed1DArray1 = Array1DUtil.arrayToIntArray(transformedArray1, transformedImage1.isSignedDataType());
 						
@@ -124,7 +124,7 @@ public class DetectLevels  extends BuildSeries
 							capi.ptsTop.setTempDataFromPolylineLevel();
 
 						int c = 0;
-						IcyBufferedImage transformedImage2 = transformPass2.transformImage (rawImage, null);		
+						IcyBufferedImage transformedImage2 = transformPass2.getTransformedImage (rawImage, null);		
 						Object transformedArray2 = transformedImage2.getDataXY(c);
 						int[] transformed1DArray2 = Array1DUtil.arrayToIntArray(transformedArray2, transformedImage2.isSignedDataType());
 						switch (options.transform02)

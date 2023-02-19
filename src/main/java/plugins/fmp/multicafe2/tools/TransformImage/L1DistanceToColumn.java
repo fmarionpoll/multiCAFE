@@ -1,10 +1,10 @@
-package plugins.fmp.multicafe2.tools.ImageTransformations;
+package plugins.fmp.multicafe2.tools.TransformImage;
 
 import icy.image.IcyBufferedImage;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
-public class L1DistanceToColumn extends ImageTransformFunction implements ImageTransformInterface
+public class L1DistanceToColumn extends ImageTransformFunction implements TransformImageInterface
 {
 	int column = 0;
 	
@@ -14,7 +14,7 @@ public class L1DistanceToColumn extends ImageTransformFunction implements ImageT
 	}
 	
 	@Override
-	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage getTransformedImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		int imageSizeX = sourceImage.getSizeX();
 		int imageSizeY = sourceImage.getSizeY();

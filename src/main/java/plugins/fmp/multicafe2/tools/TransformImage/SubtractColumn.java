@@ -1,9 +1,9 @@
-package plugins.fmp.multicafe2.tools.ImageTransformations;
+package plugins.fmp.multicafe2.tools.TransformImage;
 
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
-public class SubtractColumn extends ImageTransformFunction implements ImageTransformInterface
+public class SubtractColumn extends ImageTransformFunction implements TransformImageInterface
 {
 	int column = 0;
 	
@@ -13,7 +13,7 @@ public class SubtractColumn extends ImageTransformFunction implements ImageTrans
 	}
 	
 	@Override
-	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage getTransformedImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		int nchannels =  sourceImage.getSizeC();
 		int imageSizeX = sourceImage.getSizeX();

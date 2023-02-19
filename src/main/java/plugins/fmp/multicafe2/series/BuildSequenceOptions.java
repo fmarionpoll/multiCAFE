@@ -2,7 +2,7 @@ package plugins.fmp.multicafe2.series;
 
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
 
 public class BuildSequenceOptions {
 

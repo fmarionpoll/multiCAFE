@@ -10,7 +10,7 @@ import icy.file.xml.XMLPersistent;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
-import plugins.fmp.multicafe2.tools.ImageTransformations.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
 
 
 

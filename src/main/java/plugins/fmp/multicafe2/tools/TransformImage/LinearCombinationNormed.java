@@ -1,10 +1,10 @@
-package plugins.fmp.multicafe2.tools.ImageTransformations;
+package plugins.fmp.multicafe2.tools.TransformImage;
 
 import icy.image.IcyBufferedImage;
 import icy.type.DataType;
 import icy.type.collection.array.Array1DUtil;
 
-public class LinearCombinationNormed extends ImageTransformFunction implements ImageTransformInterface
+public class LinearCombinationNormed extends ImageTransformFunction implements TransformImageInterface
 {
 	double w0 = 1;
 	double w1 = 1;
@@ -18,7 +18,7 @@ public class LinearCombinationNormed extends ImageTransformFunction implements I
 	}
 	
 	@Override
-	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage getTransformedImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		return functionRGBtoLinearCombination(sourceImage);
 	}

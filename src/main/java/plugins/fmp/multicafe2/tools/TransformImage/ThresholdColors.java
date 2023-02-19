@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe2.tools.ImageTransformations;
+package plugins.fmp.multicafe2.tools.TransformImage;
 
 import java.awt.Color;
 
@@ -9,10 +9,10 @@ import plugins.fmp.multicafe2.tools.NHDistance.NHDistanceColor;
 import plugins.fmp.multicafe2.tools.NHDistance.NHDistanceColorL1;
 import plugins.fmp.multicafe2.tools.NHDistance.NHDistanceColorL2;
 
-public class ThresholdColors extends ImageTransformFunction implements ImageTransformInterface
+public class ThresholdColors extends ImageTransformFunction implements TransformImageInterface
 {
 	@Override
-	public IcyBufferedImage transformImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
+	public IcyBufferedImage getTransformedImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 
 	{
 		if (options.colorarray.size() == 0)
 			return null;

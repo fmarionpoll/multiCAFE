@@ -7,8 +7,8 @@ import icy.gui.frame.progress.ProgressFrame;
 import icy.image.IcyBufferedImage;
 
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformInterface;
-import plugins.fmp.multicafe2.tools.ImageTransformations.ImageTransformOptions;
+import plugins.fmp.multicafe2.tools.TransformImage.TransformImageInterface;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformOptions;
 
 
 
@@ -72,7 +72,7 @@ public class FlyDetect1 extends BuildSeries
 		ImageTransformOptions transformOptions = new ImageTransformOptions();
 		transformOptions.transformOption = options.transformop;
 		getReferenceImage (exp, 0, transformOptions);
-		ImageTransformInterface transformFunction = options.transformop.getFunction();
+		TransformImageInterface transformFunction = options.transformop.getFunction();
 		
 		int t_current = 0;
 	
@@ -90,7 +90,7 @@ public class FlyDetect1 extends BuildSeries
 	
 			IcyBufferedImage sourceImage = imageIORead(exp.seqCamData.getFileName(t_from));
 			getReferenceImage (exp, t_previous, transformOptions);
-			IcyBufferedImage workImage = transformFunction.transformImage(sourceImage, transformOptions); 
+			IcyBufferedImage workImage = transformFunction.getTransformedImage(sourceImage, transformOptions); 
 			if (workImage == null)
 				return;
 
