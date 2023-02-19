@@ -5,6 +5,8 @@ import icy.type.collection.array.Array1DUtil;
 
 public abstract class SequenceTransformFunction 
 {
+	
+	
 	protected void copyExGIntToIcyBufferedImage(int[] ExG, IcyBufferedImage img2 )
 	{
 		Array1DUtil.intArrayToSafeArray(ExG,  img2.getDataXY(0), false, false); //true);
