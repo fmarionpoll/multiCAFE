@@ -81,7 +81,7 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 		detectButton.setEnabled(false);
 		directionComboBox.setEnabled(false);
 		thresholdSpinner.setEnabled(false);
-		transformComboBox.setSelectedIndex(4);
+		transformComboBox.setSelectedIndex(2);
 		
 		defineActionListeners();
 	}

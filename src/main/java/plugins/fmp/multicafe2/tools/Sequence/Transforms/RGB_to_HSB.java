@@ -45,10 +45,10 @@ public class RGB_to_HSB extends SequenceTransformFunction implements SequenceTra
 	{
 		if (channelOut < 0)
 			for (int c = 0; c < 3; c++)
-				colorVolCursor.setSafe(ix, iy, zOut, c, hsb[c]);
+				colorVolCursor.setSafe(ix, iy, zOut, c, hsb[c]*100);
 		else 
 			for (int c = 0; c < 3; c++)
-				colorVolCursor.setSafe(ix, iy, zOut, c, hsb[channelOut]);
+				colorVolCursor.setSafe(ix, iy, zOut, c, hsb[channelOut]*100);
 	}
 
 
