@@ -6,7 +6,7 @@ import icy.type.collection.array.Array1DUtil;
 
 
 
-public class YDifferenceL extends ImageTransformFunction implements TransformImageInterface
+public class YDifferenceL extends ImageTransformFunction implements ImageTransformInterface
 {
 	int spanx = 0;
 	int deltax = 0;

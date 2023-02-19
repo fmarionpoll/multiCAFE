@@ -11,7 +11,7 @@ import icy.type.collection.array.Array1DUtil;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.TransformImage.TransformImageInterface;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformInterface;
 
 
 
@@ -59,8 +59,8 @@ public class DetectLevels  extends BuildSeries
 
 		final int jitter = 10;
 		final String directory = exp.getKymosBinFullDirectory();
-		final TransformImageInterface transformPass1 = options.transform01.getFunction();
-		final TransformImageInterface transformPass2 = options.transform02.getFunction();
+		final ImageTransformInterface transformPass1 = options.transform01.getFunction();
+		final ImageTransformInterface transformPass2 = options.transform02.getFunction();
 		
 		for (int index = firstKymo; index <= lastKymo; index++) 
 		{

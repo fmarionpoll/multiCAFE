@@ -2,7 +2,7 @@ package plugins.fmp.multicafe2.series;
 
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
 
 public class BuildSequenceOptions {
 
@@ -11,12 +11,12 @@ public class BuildSequenceOptions {
 	public	boolean		pass1 = true;
 	public 	boolean		directionUp1			= true;
 	public 	int			detectLevel1Threshold 	= 35;
-	public 	EnumImageTransformations transform01 = EnumImageTransformations.R_RGB;
+	public 	ImageTransformEnums transform01 = ImageTransformEnums.R_RGB;
 	
 	public boolean 		pass2 = false;
 	public 	boolean		directionUp2			= true;
 	public 	int			detectLevel2Threshold 	= 35;
-	public EnumImageTransformations transform02 = EnumImageTransformations.L1DIST_TO_1RSTCOL;
+	public ImageTransformEnums transform02 = ImageTransformEnums.L1DIST_TO_1RSTCOL;
 	
 	public int			spanDiff				= 0;
 	

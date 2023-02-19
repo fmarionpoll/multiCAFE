@@ -31,7 +31,7 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.series.FlyDetect1;
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
 
 
 
@@ -46,25 +46,25 @@ public class Detect1 extends JPanel implements ChangeListener, ItemListener, Pro
 	private String 		detectString 			= "Detect...";
 	private JButton 	startComputationButton 	= new JButton(detectString);
 
-	JComboBox<EnumImageTransformations> transformComboBox = new JComboBox<> (
-		new EnumImageTransformations[] {
-			EnumImageTransformations.R_RGB, 
-			EnumImageTransformations.G_RGB, 
-			EnumImageTransformations.B_RGB, 
-			EnumImageTransformations.R2MINUS_GB, 
-			EnumImageTransformations.G2MINUS_RB, 
-			EnumImageTransformations.B2MINUS_RG, 
-			EnumImageTransformations.NORM_BRMINUSG, 
-			EnumImageTransformations.RGB,
-			EnumImageTransformations.H_HSB, 
-			EnumImageTransformations.S_HSB, 
-			EnumImageTransformations.B_HSB	});
+	JComboBox<ImageTransformEnums> transformComboBox = new JComboBox<> (
+		new ImageTransformEnums[] {
+			ImageTransformEnums.R_RGB, 
+			ImageTransformEnums.G_RGB, 
+			ImageTransformEnums.B_RGB, 
+			ImageTransformEnums.R2MINUS_GB, 
+			ImageTransformEnums.G2MINUS_RB, 
+			ImageTransformEnums.B2MINUS_RG, 
+			ImageTransformEnums.NORM_BRMINUSG, 
+			ImageTransformEnums.RGB,
+			ImageTransformEnums.H_HSB, 
+			ImageTransformEnums.S_HSB, 
+			ImageTransformEnums.B_HSB	});
 	
-	private JComboBox<EnumImageTransformations> backgroundComboBox = new JComboBox<> (
-		new EnumImageTransformations[]  {
-			EnumImageTransformations.NONE, 
-			EnumImageTransformations.SUBTRACT_TM1, 
-			EnumImageTransformations.SUBTRACT_T0});
+	private JComboBox<ImageTransformEnums> backgroundComboBox = new JComboBox<> (
+		new ImageTransformEnums[]  {
+			ImageTransformEnums.NONE, 
+			ImageTransformEnums.SUBTRACT_TM1, 
+			ImageTransformEnums.SUBTRACT_T0});
 	
 	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 1));
@@ -191,7 +191,7 @@ public class Detect1 extends JPanel implements ChangeListener, ItemListener, Pro
 		}
 		seqCamData.seq.addOverlay(ov);	
 		boolean ifGreater = true; 
-		EnumImageTransformations transformOp = (EnumImageTransformations) transformComboBox.getSelectedItem();
+		ImageTransformEnums transformOp = (ImageTransformEnums) transformComboBox.getSelectedItem();
 		ov.setThresholdSingle(exp.cages.detect_threshold, transformOp, ifGreater);
 		ov.painterChanged();	
 	}
@@ -235,9 +235,9 @@ public class Detect1 extends JPanel implements ChangeListener, ItemListener, Pro
 		options.limitRatio		= (int) limitRatioSpinner.getValue();
 		options.jitter 			= (int) jitterTextField.getValue();
 		options.videoChannel 	= 0; //colorChannelComboBox.getSelectedIndex();
-		options.transformop 	= (EnumImageTransformations) transformComboBox.getSelectedItem();
+		options.transformop 	= (ImageTransformEnums) transformComboBox.getSelectedItem();
 		
-		options.transformop		= (EnumImageTransformations) backgroundComboBox.getSelectedItem();
+		options.transformop		= (ImageTransformEnums) backgroundComboBox.getSelectedItem();
 		options.threshold		= (int) thresholdSpinner.getValue();
 		
 		options.isFrameFixed 	= parent0.paneExcel.tabCommonOptions.getIsFixedFrame();

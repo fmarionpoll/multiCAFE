@@ -29,7 +29,7 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.series.FlyDetect2;
 import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 
 
@@ -149,7 +149,7 @@ public class Detect2 extends JPanel implements ChangeListener, PropertyChangeLis
 		}
 		seqCamData.seq.addOverlay(ov);	
 		boolean ifGreater = true; 
-		EnumImageTransformations transformOp = EnumImageTransformations.SUBTRACT_REF;
+		ImageTransformEnums transformOp = ImageTransformEnums.SUBTRACT_REF;
 		ov.setThresholdSingle(threshold, transformOp, ifGreater);
 		ov.painterChanged();	
 	}

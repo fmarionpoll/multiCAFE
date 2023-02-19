@@ -21,8 +21,8 @@ import icy.sequence.Sequence;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Directories;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
-import plugins.fmp.multicafe2.tools.TransformImage.TransformImageInterface;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSColumnHeader;
 
 
@@ -850,12 +850,12 @@ public class Experiment
 		return flag;
 	}
 	
-	public void kymosBuildFiltered01(int zChannelSource, int zChannelDestination, EnumImageTransformations transformop1, int spanDiff) 
+	public void kymosBuildFiltered01(int zChannelSource, int zChannelDestination, ImageTransformEnums transformop1, int spanDiff) 
 	{
 		int nimages = seqKymos.seq.getSizeT();
 		seqKymos.seq.beginUpdate();
 
-		TransformImageInterface transform = transformop1.getFunction();
+		ImageTransformInterface transform = transformop1.getFunction();
 		if (transform == null)
 			return;
 		

@@ -9,7 +9,7 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 
 public class ImageTransformOptions 
 {
-	public EnumImageTransformations transformOption; 
+	public ImageTransformEnums transformOption; 
 	public IcyBufferedImage backgroundImage = null;
 	public IcyBufferedImage secondImage = null;
 	public SequenceCamData seqCamData = null;
@@ -47,7 +47,7 @@ public class ImageTransformOptions
 	
 	public void setColorArrayThreshold (int colordistanceType, int colorthreshold, ArrayList<Color> colorarray) 
 	{
-		transformOption = EnumImageTransformations.THRESHOLD_COLORS;
+		transformOption = ImageTransformEnums.THRESHOLD_COLORS;
 		this.colordistanceType = colordistanceType;
 		this.colorthreshold = colorthreshold;
 		this.colorarray = colorarray;

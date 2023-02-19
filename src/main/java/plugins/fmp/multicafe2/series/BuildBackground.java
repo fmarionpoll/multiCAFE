@@ -12,7 +12,7 @@ import icy.image.IcyBufferedImageCursor;
 import icy.image.IcyBufferedImageUtil;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
 import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformOptions;
 
 
@@ -85,7 +85,7 @@ public class BuildBackground extends BuildSeries
 		openBackgroundViewers(exp);
 		try {
 			ImageTransformOptions transformOptions = new ImageTransformOptions();
-			transformOptions.transformOption = EnumImageTransformations.SUBTRACT; 
+			transformOptions.transformOption = ImageTransformEnums.SUBTRACT; 
 			transformOptions.setSingleThreshold(options.backgroundThreshold, stopFlag);
 			transformOptions.background_delta = options.background_delta;
 			transformOptions.background_jitter = options.background_jitter;

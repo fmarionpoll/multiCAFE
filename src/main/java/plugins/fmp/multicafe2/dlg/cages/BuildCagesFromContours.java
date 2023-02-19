@@ -32,7 +32,7 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.Blobs;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
 
@@ -47,12 +47,12 @@ public class BuildCagesFromContours  extends JPanel implements ChangeListener
 	private JSpinner 	thresholdSpinner 		= new JSpinner(new SpinnerNumberModel(60, 0, 10000, 1));
 	public 	JCheckBox 	overlayCheckBox			= new JCheckBox("Overlay ", false);
 	private JButton 	deleteButton 			= new JButton("Cut points within selected polygon");
-	JComboBox<EnumImageTransformations> transformForLevelsComboBox = new JComboBox<EnumImageTransformations> (
-		new EnumImageTransformations[] {
-				EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB, 
-				EnumImageTransformations.R2MINUS_GB, EnumImageTransformations.G2MINUS_RB, EnumImageTransformations.B2MINUS_RG, EnumImageTransformations.RGB,
-				EnumImageTransformations.GBMINUS_2R, EnumImageTransformations.RBMINUS_2G, EnumImageTransformations.RGMINUS_2B, 
-				EnumImageTransformations.H_HSB, EnumImageTransformations.S_HSB, EnumImageTransformations.B_HSB	});
+	JComboBox<ImageTransformEnums> transformForLevelsComboBox = new JComboBox<ImageTransformEnums> (
+		new ImageTransformEnums[] {
+				ImageTransformEnums.R_RGB, ImageTransformEnums.G_RGB, ImageTransformEnums.B_RGB, 
+				ImageTransformEnums.R2MINUS_GB, ImageTransformEnums.G2MINUS_RB, ImageTransformEnums.B2MINUS_RG, ImageTransformEnums.RGB,
+				ImageTransformEnums.GBMINUS_2R, ImageTransformEnums.RBMINUS_2G, ImageTransformEnums.RGMINUS_2B, 
+				ImageTransformEnums.H_HSB, ImageTransformEnums.S_HSB, ImageTransformEnums.B_HSB	});
 	private OverlayThreshold 	ov 				= null;
 	private MultiCAFE2 			parent0			= null;
 	
@@ -152,7 +152,7 @@ public class BuildCagesFromContours  extends JPanel implements ChangeListener
 		exp.cages.detect_threshold = (int) thresholdSpinner.getValue();
 		ov.setThresholdTransform(
 				exp.cages.detect_threshold,  
-				(EnumImageTransformations) transformForLevelsComboBox.getSelectedItem(),
+				(ImageTransformEnums) transformForLevelsComboBox.getSelectedItem(),
 				false);
 		seqCamData.seq.overlayChanged(ov);
 		seqCamData.seq.dataChanged();		

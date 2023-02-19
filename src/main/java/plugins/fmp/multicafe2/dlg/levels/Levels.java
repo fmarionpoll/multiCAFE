@@ -24,7 +24,7 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.series.DetectLevels;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
 
 
 
@@ -37,12 +37,12 @@ public class Levels extends JPanel implements PropertyChangeListener
 	private JCheckBox	pass1CheckBox 			= new JCheckBox ("pass1", true);
 	private JComboBox<String> direction1ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JSpinner 	threshold1Spinner 		= new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
-	JComboBox<EnumImageTransformations> transform01ComboBox = new JComboBox<EnumImageTransformations> (
-		new EnumImageTransformations[] {
-			EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB, 
-			EnumImageTransformations.R2MINUS_GB, EnumImageTransformations.G2MINUS_RB, EnumImageTransformations.B2MINUS_RG, EnumImageTransformations.RGB,
-			EnumImageTransformations.GBMINUS_2R, EnumImageTransformations.RBMINUS_2G, EnumImageTransformations.RGMINUS_2B, EnumImageTransformations.RGB_DIFFS,
-			EnumImageTransformations.H_HSB, EnumImageTransformations.S_HSB, EnumImageTransformations.B_HSB
+	JComboBox<ImageTransformEnums> transform01ComboBox = new JComboBox<ImageTransformEnums> (
+		new ImageTransformEnums[] {
+			ImageTransformEnums.R_RGB, ImageTransformEnums.G_RGB, ImageTransformEnums.B_RGB, 
+			ImageTransformEnums.R2MINUS_GB, ImageTransformEnums.G2MINUS_RB, ImageTransformEnums.B2MINUS_RG, ImageTransformEnums.RGB,
+			ImageTransformEnums.GBMINUS_2R, ImageTransformEnums.RBMINUS_2G, ImageTransformEnums.RGMINUS_2B, ImageTransformEnums.RGB_DIFFS,
+			ImageTransformEnums.H_HSB, ImageTransformEnums.S_HSB, ImageTransformEnums.B_HSB
 			
 		});
 	private JButton		displayTransform1Button	= new JButton("Display");
@@ -50,12 +50,12 @@ public class Levels extends JPanel implements PropertyChangeListener
 	private JCheckBox	pass2CheckBox 			= new JCheckBox ("pass2", false);
 	private JComboBox<String> direction2ComboBox= new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JSpinner 	threshold2Spinner 		= new JSpinner(new SpinnerNumberModel(40, 1, 255, 1));
-	JComboBox<EnumImageTransformations> transform02ComboBox = new JComboBox<EnumImageTransformations> (new EnumImageTransformations[] {
-			EnumImageTransformations.YDIFFN, EnumImageTransformations.YDIFFN2,
-			EnumImageTransformations.DERICHE, EnumImageTransformations.DERICHE_COLOR,
-			EnumImageTransformations.MINUSHORIZAVG,
-			EnumImageTransformations.COLORDISTANCE_L1_Y, EnumImageTransformations.COLORDISTANCE_L2_Y,
-			EnumImageTransformations.SUBTRACT_1RSTCOL, EnumImageTransformations.L1DIST_TO_1RSTCOL,
+	JComboBox<ImageTransformEnums> transform02ComboBox = new JComboBox<ImageTransformEnums> (new ImageTransformEnums[] {
+			ImageTransformEnums.YDIFFN, ImageTransformEnums.YDIFFN2,
+			ImageTransformEnums.DERICHE, ImageTransformEnums.DERICHE_COLOR,
+			ImageTransformEnums.MINUSHORIZAVG,
+			ImageTransformEnums.COLORDISTANCE_L1_Y, ImageTransformEnums.COLORDISTANCE_L2_Y,
+			ImageTransformEnums.SUBTRACT_1RSTCOL, ImageTransformEnums.L1DIST_TO_1RSTCOL,
 			});
 	private JButton		displayTransform2Button	= new JButton("Display");
 	
@@ -205,7 +205,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
-		EnumImageTransformations transform01 = (EnumImageTransformations) transform01ComboBox.getSelectedItem();
+		ImageTransformEnums transform01 = (ImageTransformEnums) transform01ComboBox.getSelectedItem();
 		
 		List<Capillary> capList = exp.capillaries.capillariesList;
 		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) 
@@ -221,7 +221,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null)
 			return;
-		EnumImageTransformations transform02 = (EnumImageTransformations) transform02ComboBox.getSelectedItem();
+		ImageTransformEnums transform02 = (ImageTransformEnums) transform02ComboBox.getSelectedItem();
 		
 		List<Capillary> capList = exp.capillaries.capillariesList;
 		for (int t=0; t < exp.seqKymos.seq.getSizeT(); t++) 
@@ -235,7 +235,7 @@ public class Levels extends JPanel implements PropertyChangeListener
 	void allowItemsAccordingToSelection() 
 	{
 		boolean flag = false;
-		switch ((EnumImageTransformations) transform02ComboBox.getSelectedItem())
+		switch ((ImageTransformEnums) transform02ComboBox.getSelectedItem())
 		{
 		case SUBTRACT_1RSTCOL:
 		case L1DIST_TO_1RSTCOL:
@@ -281,8 +281,8 @@ public class Levels extends JPanel implements PropertyChangeListener
 		BuildSeriesOptions capOptions 		= cap.limitsOptions;
 		capOptions.pass1 					= pass1CheckBox.isSelected();
 		capOptions.pass2 					= pass2CheckBox.isSelected();
-		capOptions.transform01 				= (EnumImageTransformations) transform01ComboBox.getSelectedItem();
-		capOptions.transform02 				= (EnumImageTransformations) transform02ComboBox.getSelectedItem();
+		capOptions.transform01 				= (ImageTransformEnums) transform01ComboBox.getSelectedItem();
+		capOptions.transform02 				= (ImageTransformEnums) transform02ComboBox.getSelectedItem();
 		capOptions.directionUp1 			= (direction1ComboBox.getSelectedIndex() == 0) ;
 		capOptions.detectLevel1Threshold 	= (int) threshold1Spinner.getValue();
 		capOptions.directionUp2 			= (direction2ComboBox.getSelectedIndex() == 0) ;
@@ -317,12 +317,12 @@ public class Levels extends JPanel implements PropertyChangeListener
 		}
 		// other parameters
 		options.pass1 				= pass1CheckBox.isSelected();
-		options.transform01 		= (EnumImageTransformations) transform01ComboBox.getSelectedItem();
+		options.transform01 		= (ImageTransformEnums) transform01ComboBox.getSelectedItem();
 		options.directionUp1 		= (direction1ComboBox.getSelectedIndex() == 0);
 		options.detectLevel1Threshold= (int) threshold1Spinner.getValue();
 		
 		options.pass2 = pass2CheckBox.isSelected();
-		options.transform02			= (EnumImageTransformations) transform02ComboBox.getSelectedItem();
+		options.transform02			= (ImageTransformEnums) transform02ComboBox.getSelectedItem();
 		options.directionUp2 		= (direction2ComboBox.getSelectedIndex() == 0);
 		options.detectLevel2Threshold= (int) threshold2Spinner.getValue();
 		

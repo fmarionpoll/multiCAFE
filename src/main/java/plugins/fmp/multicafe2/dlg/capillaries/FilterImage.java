@@ -23,7 +23,7 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.series.BuildSequenceFilteredImages;
 import plugins.fmp.multicafe2.series.BuildSequenceOptions;
 import plugins.fmp.multicafe2.tools.EnumStatusComputation;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
 
 
 
@@ -33,11 +33,11 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 
 	private JComboBox<String> directionComboBox = new JComboBox<String> (new String[] {" threshold >", " threshold <" });
 	private JSpinner thresholdSpinner = new JSpinner(new SpinnerNumberModel(35, 1, 255, 1));
-	JComboBox<EnumImageTransformations> transformComboBox = new JComboBox<EnumImageTransformations> (
-		new EnumImageTransformations[] {
-			EnumImageTransformations.R_RGB, EnumImageTransformations.G_RGB, EnumImageTransformations.B_RGB, 
-			EnumImageTransformations.H_HSB, EnumImageTransformations.S_HSB, EnumImageTransformations.B_HSB,
-			EnumImageTransformations.H_HSV, EnumImageTransformations.S_HSV, EnumImageTransformations.V_HSV
+	JComboBox<ImageTransformEnums> transformComboBox = new JComboBox<ImageTransformEnums> (
+		new ImageTransformEnums[] {
+			ImageTransformEnums.R_RGB, ImageTransformEnums.G_RGB, ImageTransformEnums.B_RGB, 
+			ImageTransformEnums.H_HSB, ImageTransformEnums.S_HSB, ImageTransformEnums.B_HSB,
+			ImageTransformEnums.H_HSV, ImageTransformEnums.S_HSV, ImageTransformEnums.V_HSV
 		});
 	
 	private String 		calculateString 			= "Calculate";
@@ -131,7 +131,7 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 	{	
 		BuildSequenceOptions options = new BuildSequenceOptions();
 		// other parameters
-		options.transform01 		= (EnumImageTransformations) transformComboBox.getSelectedItem();
+		options.transform01 		= (ImageTransformEnums) transformComboBox.getSelectedItem();
 		options.exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		options.seq = options.exp.seqCamData.seq;
 		return options;

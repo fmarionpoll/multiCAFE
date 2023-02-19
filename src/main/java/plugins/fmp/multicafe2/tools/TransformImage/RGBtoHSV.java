@@ -4,7 +4,7 @@ import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
 
-public class RGBtoHSV extends ImageTransformFunction implements TransformImageInterface
+public class RGBtoHSV extends ImageTransformFunction implements ImageTransformInterface
 {
 	int channelOut = 0;
 	double h, s, v;

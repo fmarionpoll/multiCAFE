@@ -9,8 +9,8 @@ import icy.sequence.Sequence;
 import icy.sequence.SequenceUtil;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
-import plugins.fmp.multicafe2.tools.TransformImage.TransformImageInterface;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformInterface;
 
 public class BuildSequenceFilteredImages extends BuildSequence {
 
@@ -25,7 +25,7 @@ public class BuildSequenceFilteredImages extends BuildSequence {
 	void buildFiltered(Sequence seq, 
 			int zChannelSource, 
 			int zChannelDestination, 
-			EnumImageTransformations transformop1, 
+			ImageTransformEnums transformop1, 
 			int spanDiff) 
 	{
 		seq.beginUpdate();
@@ -36,7 +36,7 @@ public class BuildSequenceFilteredImages extends BuildSequence {
 		openSequenceViewer(seq);
 		temporaryViewer.setPositionZ(zChannelDestination);
 		
-		TransformImageInterface transform = transformop1.getFunction();
+		ImageTransformInterface transform = transformop1.getFunction();
 		if (transform == null)
 			return;
 		

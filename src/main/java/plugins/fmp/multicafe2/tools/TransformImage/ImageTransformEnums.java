@@ -1,7 +1,8 @@
 package plugins.fmp.multicafe2.tools.TransformImage;
 
 
-public enum EnumImageTransformations {
+public enum ImageTransformEnums 
+{
 	R_RGB			("R(RGB)", 					new LinearCombination(1, 0, 0)),
     G_RGB			("G(RGB)", 					new LinearCombination(0, 1, 0)),
     B_RGB			("B(RGB)", 					new LinearCombination(0, 0, 1)),
@@ -41,10 +42,10 @@ public enum EnumImageTransformations {
 	ZIGZAG			("remove spikes",			new None()),
 	NONE			("none",					new None());
 
-	private TransformImageInterface klass;
+	private ImageTransformInterface klass;
     private String label;
 	
-    EnumImageTransformations(String label, TransformImageInterface klass ) 
+    ImageTransformEnums(String label, ImageTransformInterface klass ) 
 	{ 
 		this.label = label; 
 		this.klass = klass;
@@ -55,14 +56,14 @@ public enum EnumImageTransformations {
 		return label; 
 	}
 	
-	public TransformImageInterface getFunction() 
+	public ImageTransformInterface getFunction() 
 	{ 
 		return klass; 
 	}
 	
-	public static EnumImageTransformations findByText(String abbr)
+	public static ImageTransformEnums findByText(String abbr)
 	{
-	    for(EnumImageTransformations v : values())
+	    for(ImageTransformEnums v : values())
 	    { 
 	    	if ( v.toString().equals(abbr)) 
 	    		return v;  

@@ -3,7 +3,7 @@ package plugins.fmp.multicafe2.tools.TransformImage;
 import icy.image.IcyBufferedImage;
 import icy.type.collection.array.Array1DUtil;
 
-public class SubtractReferenceImage extends ImageTransformFunction implements TransformImageInterface
+public class SubtractReferenceImage extends ImageTransformFunction implements ImageTransformInterface
 {
 	@Override
 	public IcyBufferedImage getTransformedImage(IcyBufferedImage sourceImage, ImageTransformOptions options) 

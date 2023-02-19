@@ -31,7 +31,7 @@ import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 import plugins.fmp.multicafe2.series.BuildBackground;
 import plugins.fmp.multicafe2.tools.Overlay.OverlayThreshold;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
 
 public class Detect2BuildBackground extends JPanel implements ChangeListener, PropertyChangeListener
 {
@@ -207,7 +207,7 @@ public class Detect2BuildBackground extends JPanel implements ChangeListener, Pr
 		seqCamData.seq.addOverlay(ov);	
 		
 		boolean ifGreater = true; 
-		EnumImageTransformations transformOp = EnumImageTransformations.NONE; //SUBTRACT; //SUBTRACT_REF;
+		ImageTransformEnums transformOp = ImageTransformEnums.NONE; //SUBTRACT; //SUBTRACT_REF;
 		int threshold = (int) backgroundThresholdSpinner.getValue();
 		ov.setThresholdSingle(threshold, transformOp, ifGreater);
 		ov.painterChanged();	

@@ -23,7 +23,7 @@ import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.series.DetectGulps;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
 import plugins.fmp.multicafe2.series.BuildSeriesOptions;
 
 
@@ -37,12 +37,12 @@ public class LevelsToGulps extends JPanel  implements PropertyChangeListener
 	private static final long 	serialVersionUID 		= -5590697762090397890L;
 	
 	JCheckBox				allKymosCheckBox 			= new JCheckBox ("all kymographs", true);
-	JComboBox<EnumImageTransformations> transformForGulpsComboBox = new JComboBox<EnumImageTransformations> (
-			new EnumImageTransformations[] {   
-					EnumImageTransformations.XDIFFN , 
-					EnumImageTransformations.YDIFFN, 
-					EnumImageTransformations.YDIFFN2, 
-					EnumImageTransformations.XYDIFFN	});
+	JComboBox<ImageTransformEnums> transformForGulpsComboBox = new JComboBox<ImageTransformEnums> (
+			new ImageTransformEnums[] {   
+					ImageTransformEnums.XDIFFN , 
+					ImageTransformEnums.YDIFFN, 
+					ImageTransformEnums.YDIFFN2, 
+					ImageTransformEnums.XYDIFFN	});
 	JSpinner				startSpinner				= new JSpinner(new SpinnerNumberModel(0, 0, 100000, 1));
 	JSpinner				endSpinner					= new JSpinner(new SpinnerNumberModel(3, 1, 100000, 1));
 	JCheckBox				buildDerivativeCheckBox 	= new JCheckBox ("derivative", true);
@@ -89,7 +89,7 @@ public class LevelsToGulps extends JPanel  implements PropertyChangeListener
 		panel1.add(endSpinner);
 		add( panel1);
 
-		transformForGulpsComboBox.setSelectedItem(EnumImageTransformations.XDIFFN);
+		transformForGulpsComboBox.setSelectedItem(ImageTransformEnums.XDIFFN);
 		defineActionListeners();
 	}
 	
@@ -147,7 +147,7 @@ public class LevelsToGulps extends JPanel  implements PropertyChangeListener
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos != null)
 		{
-			EnumImageTransformations transform = (EnumImageTransformations) transformForGulpsComboBox.getSelectedItem();
+			ImageTransformEnums transform = (ImageTransformEnums) transformForGulpsComboBox.getSelectedItem();
 			int zChannelDestination = 2;
 			exp.kymosBuildFiltered01(0, zChannelDestination, transform, (int) spanTransf2Spinner.getValue());
 			seqKymos.seq.getFirstViewer().getCanvas().setPositionZ(zChannelDestination);
@@ -177,7 +177,7 @@ public class LevelsToGulps extends JPanel  implements PropertyChangeListener
 			options.kymoLast = parent0.paneKymos.tabDisplay.kymographsCombo.getItemCount()-1;
 		}
 		options.detectGulpsThresholdUL = (double) detectGulpsThresholdSpinner.getValue();
-		options.transformForGulps = (EnumImageTransformations) transformForGulpsComboBox.getSelectedItem();
+		options.transformForGulps = (ImageTransformEnums) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps 	= allKymosCheckBox.isSelected();
 		options.spanDiff		= (int) spanTransf2Spinner.getValue();
 		options.buildGulps		= detectGulpsCheckBox.isSelected();

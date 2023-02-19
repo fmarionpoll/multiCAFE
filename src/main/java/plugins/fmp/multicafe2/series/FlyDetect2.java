@@ -8,8 +8,8 @@ import icy.image.IcyBufferedImage;
 import icy.image.IcyBufferedImageUtil;
 
 import plugins.fmp.multicafe2.experiment.Experiment;
-import plugins.fmp.multicafe2.tools.TransformImage.EnumImageTransformations;
-import plugins.fmp.multicafe2.tools.TransformImage.TransformImageInterface;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformEnums;
+import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformInterface;
 import plugins.fmp.multicafe2.tools.TransformImage.ImageTransformOptions;
 
 
@@ -58,9 +58,9 @@ public class FlyDetect2 extends BuildSeries
 		seqNegative.removeAllROI();
 		
 		ImageTransformOptions transformOptions = new ImageTransformOptions();
-		transformOptions.transformOption = EnumImageTransformations.SUBTRACT_REF;
+		transformOptions.transformOption = ImageTransformEnums.SUBTRACT_REF;
 		transformOptions.backgroundImage = IcyBufferedImageUtil.getCopy(exp.seqCamData.refImage);
-		TransformImageInterface transformFunction = transformOptions.transformOption.getFunction();
+		ImageTransformInterface transformFunction = transformOptions.transformOption.getFunction();
 		
 		long last_ms = exp.cages.detectLast_Ms + exp.cages.detectBin_Ms ;
 		for (long index_ms = exp.cages.detectFirst_Ms ; index_ms <= last_ms; index_ms += exp.cages.detectBin_Ms ) 
