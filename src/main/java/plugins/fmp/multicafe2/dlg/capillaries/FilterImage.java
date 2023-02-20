@@ -21,7 +21,7 @@ import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceCamData;
 import plugins.fmp.multicafe2.tools.EnumStatusComputation;
-import plugins.fmp.multicafe2.tools.Sequence.BuildSequenceFromTransformedImages;
+import plugins.fmp.multicafe2.tools.Sequence.SequenceTransform;
 import plugins.fmp.multicafe2.tools.Sequence.SequenceTransformEnums;
 import plugins.fmp.multicafe2.tools.Sequence.SequenceTransformOptions;
 
@@ -50,7 +50,7 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 	
 	private MultiCAFE2 	parent0 				= null;
 	EnumStatusComputation sComputation 			= EnumStatusComputation.START_COMPUTATION; 
-	private BuildSequenceFromTransformedImages threadBuildFiltered = null;
+	private SequenceTransform threadBuildFiltered = null;
 	
 	// -----------------------------------------------------
 		
@@ -143,7 +143,7 @@ public class FilterImage extends JPanel implements PropertyChangeListener
 	{
 		sComputation = EnumStatusComputation.STOP_COMPUTATION;
 		
-		threadBuildFiltered = new BuildSequenceFromTransformedImages();	
+		threadBuildFiltered = new SequenceTransform();	
 		threadBuildFiltered.options = initBuildParameters();
 		
 		threadBuildFiltered.addPropertyChangeListener(this);

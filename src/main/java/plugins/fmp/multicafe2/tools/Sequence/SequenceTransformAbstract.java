@@ -17,7 +17,7 @@ import icy.sequence.Sequence;
 import icy.system.thread.Processor;
 
 
-public abstract class BuildSequenceFromTransformedImagesAbstract  extends SwingWorker<Integer, Integer> 
+public abstract class SequenceTransformAbstract  extends SwingWorker<Integer, Integer> 
 {
 
 	public 	SequenceTransformOptions options = new SequenceTransformOptions();

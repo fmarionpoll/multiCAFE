@@ -9,7 +9,7 @@ import icy.sequence.SequenceUtil;
 import icy.system.SystemUtil;
 import icy.system.thread.Processor;
 
-public class BuildSequenceFromTransformedImages extends BuildSequenceFromTransformedImagesAbstract {
+public class SequenceTransform extends SequenceTransformAbstract {
 
 	@Override
 	void runFilter(Sequence seq) {
@@ -38,6 +38,7 @@ public class BuildSequenceFromTransformedImages extends BuildSequenceFromTransfo
 			return;
 		
 		ProgressFrame progressBar = new ProgressFrame("Build filtered images");
+		
 		int nframes = seq.getSizeT();
 		int nCPUs = SystemUtil.getNumberOfCPUs();
 	    final Processor processor = new Processor(nCPUs);
@@ -62,7 +63,6 @@ public class BuildSequenceFromTransformedImages extends BuildSequenceFromTransfo
 		seq.endUpdate();
 		
 		progressBar.close();
-		
 	}
 	
 
