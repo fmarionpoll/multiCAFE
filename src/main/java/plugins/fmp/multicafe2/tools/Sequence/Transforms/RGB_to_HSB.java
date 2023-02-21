@@ -7,7 +7,6 @@ import icy.sequence.Sequence;
 import icy.sequence.VolumetricImage;
 //import icy.sequence.VolumetricImageCursor;
 import icy.type.collection.array.Array1DUtil;
-import icy.type.collection.array.Array2DUtil;
 import plugins.fmp.multicafe2.tools.Sequence.SequenceTransformFunction;
 import plugins.fmp.multicafe2.tools.Sequence.SequenceTransformInterface;
 import plugins.fmp.multicafe2.tools.Sequence.SequenceTransformOptions;
@@ -30,10 +29,13 @@ public class RGB_to_HSB extends SequenceTransformFunction implements SequenceTra
 		IcyBufferedImage img0 = colorVol.getImage(0);
 		IcyBufferedImage img1 = colorVol.getImage(1);
 		
-//		int[][] tabValues = Array2DUtil.arrayToIntArray(img0.getDataXYCAsInt(), img0.isSignedDataType());
-		float[][] tabValues = Array2DUtil.arrayToFloatArray(img0.getDataXYCAsFloat(), img0.isSignedDataType());
-		float[][] outValues = Array2DUtil.arrayToFloatArray(img1.getDataXYCAsFloat(), img1.isSignedDataType());
-		
+		float[][] tabValues = {	Array1DUtil.arrayToFloatArray(img0.getDataXY(0), img0.isSignedDataType()),
+								Array1DUtil.arrayToFloatArray(img0.getDataXY(1), img0.isSignedDataType()),
+								Array1DUtil.arrayToFloatArray(img0.getDataXY(2), img0.isSignedDataType())};
+
+		float[][] outValues = {	Array1DUtil.arrayToFloatArray(img1.getDataXY(0), img1.isSignedDataType()),
+								Array1DUtil.arrayToFloatArray(img1.getDataXY(1), img1.isSignedDataType()),
+								Array1DUtil.arrayToFloatArray(img1.getDataXY(2), img1.isSignedDataType())};
 		// compute values
 		for (int ky = 0; ky < tabValues[0].length; ky++) 
 		{
