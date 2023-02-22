@@ -37,12 +37,13 @@ public class RGB_to_HSB extends SequenceTransformFunction implements SequenceTra
 								Array1DUtil.arrayToFloatArray(img1.getDataXY(1), img1.isSignedDataType()),
 								Array1DUtil.arrayToFloatArray(img1.getDataXY(2), img1.isSignedDataType())};
 		// compute values
+		float[] hsbVals = new float[3];
 		for (int ky = 0; ky < tabValues[0].length; ky++) 
 		{
-			float[] hsb = Color.RGBtoHSB((int)tabValues[0][ky], (int)tabValues[1][ky], (int)tabValues[2][ky], null) ;
-			outValues[0] [ky] = hsb[0] * 100;
-			outValues[1] [ky] = hsb[1] * 100;
-			outValues[2] [ky] = hsb[2] * 100;
+			Color.RGBtoHSB((int)tabValues[0][ky], (int)tabValues[1][ky], (int)tabValues[2][ky], hsbVals) ;
+			outValues[0] [ky] = hsbVals[0] * 100;
+			outValues[1] [ky] = hsbVals[1] * 100;
+			outValues[2] [ky] = hsbVals[2] * 100;
 		}
 		setPixelsOut(img1, outValues);
 	}
@@ -66,30 +67,5 @@ public class RGB_to_HSB extends SequenceTransformFunction implements SequenceTra
 		bufferedImage.setDataXY(c, bufferedImage.getDataXY(c));
 	}
 
-//	VolumetricImageCursor colorVolCursor = new VolumetricImageCursor(colorVol);
-//    
-//for (int iy = 0; iy < colorSeq.getSizeY(); iy++) // Y
-//{
-//for (int ix = 0; ix < colorSeq.getSizeX(); ix++) // X
-//{
-//	int R = (int) colorVolCursor.get(ix, iy, zIn, 0);
-//	int G = (int) colorVolCursor.get(ix, iy, zIn, 1);
-//	int B = (int) colorVolCursor.get(ix, iy, zIn, 2);
-//	float[] hsb = Color.RGBtoHSB(R, G, B, null) ;
-//	
-//    setPixelOut(colorVolCursor, ix, iy, hsb);
-//}
-//}
-//colorVolCursor.commitChanges();
-
-//void setPixelOut(VolumetricImageCursor colorVolCursor, int ix, int iy, float[] hsb) 
-//{
-//if (channelOut < 0)
-//for (int c = 0; c < 3; c++)
-//	colorVolCursor.setSafe(ix, iy, zOut, c, hsb[c]*100);
-//else 
-//for (int c = 0; c < 3; c++)
-//	colorVolCursor.setSafe(ix, iy, zOut, c, hsb[channelOut]*100);
-//}
 
 }
