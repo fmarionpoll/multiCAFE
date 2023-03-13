@@ -77,15 +77,15 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 		tabsPane.addTab("Adjust", null, tabAdjust, "Adjust ROIS position to the capillaries");
 		order++;
 		
-		tabFile.init(capLayout, parent0);
-		tabFile.addPropertyChangeListener(this);
-		tabsPane.addTab("Load/Save", null, tabFile, "Load/Save xml file with capillaries descriptors");
-		order++;
-		
 		ID_FILTER = order;
 		tabFilterImage.init(capLayout, parent0);
 		tabFilterImage.addPropertyChangeListener(this);
 		tabsPane.addTab("Experimental", null, tabFilterImage, "Try different filters");
+		order++;
+		
+		tabFile.init(capLayout, parent0);
+		tabFile.addPropertyChangeListener(this);
+		tabsPane.addTab("Load/Save", null, tabFile, "Load/Save xml file with capillaries descriptors");
 		order++;
 		
 		tabsPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
