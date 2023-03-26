@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,9 +17,13 @@ import org.w3c.dom.Node;
 
 import icy.image.IcyBufferedImage;
 import icy.image.ImageUtil;
+
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
+
+import icy.system.thread.ThreadUtil;
 import icy.util.XMLUtil;
+
 import plugins.fmp.multicafe2.tools.Directories;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
@@ -261,16 +266,6 @@ public class Experiment
 			seqCamData = new SequenceCamData();
 		xmlLoadMCExperiment ();
 		
-//		List<String> imagesList = ExperimentDirectories.getV2ImagesListFromPath(strImagesDirectory);
-//		imagesList = ExperimentDirectories.keepOnlyAcceptedNames_List(imagesList, "jpg");
-//		if (imagesList.size() < 1) 
-//		{
-//			seqCamData = null;
-//			return false;
-//		}
-//		
-//		seqCamData.setImagesList(imagesList);
-//		seqCamData.attachSequence(seqCamData.loadSequenceFromImagesList(imagesList));
 		getFileIntervalsFromSeqCamData();
 		
 		if (seqKymos == null)
@@ -313,10 +308,31 @@ public class Experiment
 		return seqCamData;
 	}
 	
-	public boolean loadCamDataImages() 
+	public boolean loadCamDataImages(boolean load_all_at_once)
 	{
-		if (seqCamData != null)
-			seqCamData.loadImages();
+		if (seqCamData != null) {
+			if (load_all_at_once )
+				seqCamData.loadImages();
+			else 
+			{
+				seqCamData.loadFirstImage();
+				// TODO load first image and then return after having launched background task 
+				ThreadUtil.invokeLater(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+//                    	System.out.println("start loading");
+                    	seqCamData.loadImages();
+//                    	System.out.println("end loading");
+//						xmlLoadMCCapillaries_Only();
+//						capillaries.transferCapillaryRoiToSequence(seqCamData.seq);
+                    }
+                });
+			}
+		}
+		xmlLoadMCCapillaries_Only();
+		capillaries.transferCapillaryRoiToSequence(seqCamData.seq);
 		return (seqCamData != null && seqCamData.seq != null);
 	}
 	

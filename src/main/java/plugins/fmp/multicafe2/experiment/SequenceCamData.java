@@ -338,6 +338,16 @@ public class SequenceCamData
 		return (seq != null);
 	}
 	
+	public boolean loadFirstImage() 
+	{
+		if (imagesList.size() == 0)
+			return false;
+		List <String> dummyList =new ArrayList<String>();
+		dummyList.add(imagesList.get(0));
+		attachSequence(loadSequenceFromImagesList(dummyList));
+		return (seq != null);
+	}
+	
 	public Sequence loadSequenceFromImagesList(List <String> imagesList) 
 	{
 		SequenceFileImporter seqFileImporter = Loader.getSequenceFileImporter(imagesList.get(0), true);

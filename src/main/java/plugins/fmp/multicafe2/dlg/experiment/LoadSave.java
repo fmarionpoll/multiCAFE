@@ -193,9 +193,9 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		boolean flag = true;
 		if (exp.seqCamData != null) 
 		{
-			exp.loadCamDataImages();
-			exp.xmlLoadMCCapillaries_Only();
-			exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
+			exp.loadCamDataImages(false);
+//			exp.xmlLoadMCCapillaries_Only();
+//			exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
 			exp.seqCamData.seq.addListener(this);
 			
 			parent1.updateViewerForSequenceCam(exp);
