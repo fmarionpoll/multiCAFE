@@ -185,15 +185,38 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 	boolean openExperimentFromCombo() 
 	{
+        // ----------------------- TODO
+		long start, end;
+		System.out.println("---------------------------openExperimentFromCombo():" );
+        start = System.nanoTime();
+        // -----------------------
+        
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return false;
+		// ----------------------- TODO
+		end = System.nanoTime();
+		System.out.println("openExperimentFromCombo(): getselecteditem: " + (end - start) / 1000000 + " milliseconds");
+		start = end;
+        // -----------------------
 		
 		exp.xmlLoadMCExperiment();
+		// ----------------------- TODO
+		end = System.nanoTime();
+		System.out.println("openExperimentFromCombo(): xmloadMCExperiment: " + (end - start) / 1000000 + " milliseconds");
+		start = end;
+		// -----------------------
 		boolean flag = true;
 		if (exp.seqCamData != null) 
 		{
 			exp.loadCamDataImages(false);
+			// ----------------------- TODO
+			end = System.nanoTime();
+			System.out.println("openExperimentFromCombo(): loadCamDataImages: " + (end - start) / 1000000 + " milliseconds");
+			start = end;
+	        // -----------------------
+			
+			
 //			exp.xmlLoadMCCapillaries_Only();
 //			exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
 			exp.seqCamData.seq.addListener(this);
@@ -201,16 +224,45 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			parent1.updateViewerForSequenceCam(exp);
 			parent1.updateExpDialogs(exp);
 			parent0.paneCapillaries.updateDialogs(exp);
+			// ----------------------- TODO
+			end = System.nanoTime();
+			System.out.println("openExperimentFromCombo(): updateviewer: " + (end - start) / 1000000 + " milliseconds");
+			start = end;
+	        // -----------------------
+			
 			
 			if (parent1.tabOptions.kymographsCheckBox.isSelected() && flag) 
 				flag &= loadKymos(exp);
+			// ----------------------- TODO
+			end = System.nanoTime();
+			System.out.println("openExperimentFromCombo(): loadKymos: " + (end - start) / 1000000 + " milliseconds");
+			start = end;
+	        // ----------------------- TODO
+			
 			if (parent1.tabOptions.measuresCheckBox.isSelected() && flag) 
 				flag &= loadMeasures(exp);
+			// ----------------------- TODO
+			end = System.nanoTime();
+			System.out.println("openExperimentFromCombo(): loadmeasures: " + (end - start) / 1000000 + " milliseconds");
+			start = end;
+	        // -----------------------
+			
 			if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected() && flag)
 				displayGraphs(exp);
-				
+			// ----------------------- TODO
+			end = System.nanoTime();
+			System.out.println("openExperimentFromCombo(): displayGraphs: " + (end - start) / 1000000 + " milliseconds");
+			start = end;
+	        // ----------------------- TODO
+			
 			if (parent1.tabOptions.cagesCheckBox.isSelected()) 
 				parent0.paneCages.tabFile.loadCages(exp);
+			
+			// ----------------------- TODO
+			end = System.nanoTime();
+			System.out.println("openExperimentFromCombo(): loadCages: " + (end - start) / 1000000 + " milliseconds");
+			start = end;
+	        // -----------------------
 			
 			parent0.paneLevels.updateDialogs(exp);
 		}
@@ -260,10 +312,25 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		{ 
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
-			if (parent0.expListCombo.getSelectedIndex() < (parent0.expListCombo.getItemCount()-1)) 
+			// -----------------------
+			long start, end;
+			System.out.println("---------------------------next:" );
+			start = System.nanoTime();
+	        // -----------------------    
+			if (parent0.expListCombo.getSelectedIndex() < (parent0.expListCombo.getItemCount()-1)) {
+				System.out.println("ExpmtDlg: LoadSave");
 				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()+1);
-			else 
+			}
+			else {
+				System.out.println("ExpmtDlg: updateBrowseInterface ");
 				updateBrowseInterface();
+			}
+			
+			// -----------------------
+			end = System.nanoTime();
+			System.out.println("next end: " + (end - start) / 1000000 + " milliseconds");
+			start = end;
+	       // -----------------------
 			}});
 		
 		previousButton.addActionListener(new ActionListener () 

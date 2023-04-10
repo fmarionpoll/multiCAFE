@@ -23,7 +23,7 @@ import plugins.fmp.multicafe2.workinprogress_gpu.MCSpots_;
 
 public class MultiCAFE2 extends PluginActionable  
 {
-	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE2 March 26, 2023", true, true, true, true);
+	public IcyFrame 		mainFrame 		= new IcyFrame("MultiCAFE2 April 8, 2023", true, true, true, true);
 	public ExperimentCombo 	expListCombo 	= new ExperimentCombo();
 	
 	public MCExperiment_ 	paneExperiment 	= new MCExperiment_();
@@ -62,9 +62,7 @@ public class MultiCAFE2 extends PluginActionable
 	
 	public static void main (String[] args)
 	{
-		// start Icy
 		Icy.main(args);
-		// then start plugin
 		PluginLauncher.start(PluginLoader.getPlugin(MultiCAFE2.class.getName()));
 	}
 

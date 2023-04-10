@@ -124,7 +124,8 @@ public class LoadSave extends JPanel
 						try 
 						{
 							Saver.saveImage(image, file, true);
-						} catch (FormatException | IOException e) 
+						} 
+						catch (FormatException | IOException e) 
 						{
 							e.printStackTrace();
 						}
@@ -137,6 +138,10 @@ public class LoadSave extends JPanel
 	
 	public boolean loadDefaultKymos(Experiment exp) 
 	{		
+//        // -----------------------
+//		long start, end;
+//        start = System.nanoTime();
+//        // -----------------------
 		boolean flag = false;
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null || exp.capillaries == null) 
@@ -152,13 +157,27 @@ public class LoadSave extends JPanel
 		}
 		else
 			exp.setBinSubDirectory(localString);
-		
+//        // -----------------------
+//		end = System.nanoTime();
+//		System.out.println("kymos get/set bindirectoy: " + (end - start) / 1000000 + " milliseconds");
+//		start = end;
+//        // -----------------------
 		List<ImageFileDescriptor> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosBinFullDirectory(), exp.capillaries);
 		int nItems = ImageFileDescriptor.getFilesAndTestExist(myList);
 		if (nItems > 0) 
 		{
 			flag = seqKymos.loadImagesFromList(myList, true);
+//	        // -----------------------
+//			end = System.nanoTime();
+//			System.out.println("kymos load imagesFromList: " + (end - start) / 1000000 + " milliseconds");
+//			start = end;
+//	        // -----------------------
 			parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp);
+//	        // -----------------------
+//			end = System.nanoTime();
+//			System.out.println("kymos transferCapillaryNamesToComboBox: " + (end - start) / 1000000 + " milliseconds");
+//			start = end;
+//	        // -----------------------
 		} 
 		else 
 			seqKymos.closeSequence();
