@@ -305,62 +305,14 @@ public class Experiment
 		return seqCamData;
 	}
 	
-	public boolean loadCamDataImages(boolean load_all_at_once)
-	{
-		// ----------------------- TODO
-		long start, end;
-		System.out.println("---------------------------*loadCamDataImages():" );
-		start = System.nanoTime();
-		// -----------------------
-		if (seqCamData != null) {
-			if (load_all_at_once ) {
-				seqCamData.loadImages();
-				// ----------------------- TODO
-				end = System.nanoTime();
-				System.out.println("*loadCamDataImages(): seqCamData.loadImages(): " + (end - start) / 1000000 + " milliseconds");
-				start = end;
-		        // -----------------------
-			}
-			else 
-			{
-				seqCamData.loadFirstImage();
-				// ----------------------- TODO
-				end = System.nanoTime();
-				System.out.println("*loadCamDataImages(): seqCamData.loadFirstImage(): " + (end - start) / 1000000 + " milliseconds");
-				start = end;
-		        // -----------------------
-				
-				// TODO load first image and then return after having launched background task 
-				java.awt.EventQueue.invokeLater(new Runnable() {
-				    public void run() {
-				    	// ----------------------- TODO
-                		long start, end;
-                		System.out.println("---------------------------invokelater():" );
-                		start = System.nanoTime();
-                		// -----------------------
+	public boolean loadCamDataImagesAndCapillaries()
+	{	
+		if (seqCamData != null) 
+			seqCamData.loadImagesOnAThread ();
 
-                    	seqCamData.loadImages();
-                    	// ----------------------- TODO
-        				end = System.nanoTime();
-        				System.out.println("---------------------------invokelater() end: " + (end - start) / 1000000 + " milliseconds");
-        				start = end;
-        		        // -----------------------
-				    } } );
-
-			}
-		}
 		xmlLoadMCCapillaries_Only();
-		// ----------------------- TODO
-		end = System.nanoTime();
-		System.out.println("*loadCamDataImages(): xmlLoadMCCapillaries_Only(): " + (end - start) / 1000000 + " milliseconds");
-		start = end;
-        // -----------------------
 		capillaries.transferCapillaryRoiToSequence(seqCamData.seq);
-		// ----------------------- TODO
-		end = System.nanoTime();
-		System.out.println("*loadCamDataImages(): capillaries.transferCapillaryRoiToSequence(): " + (end - start) / 1000000 + " milliseconds");
-		start = end;
-        // -----------------------
+		
 		return (seqCamData != null && seqCamData.seq != null);
 	}
 	
@@ -632,7 +584,7 @@ public class Experiment
 		if (seqKymos == null) 
 			seqKymos = new SequenceKymos();
 		List<ImageFileDescriptor> myList = seqKymos.loadListOfPotentialKymographsFromCapillaries(getKymosBinFullDirectory(), capillaries);
-		ImageFileDescriptor.getFilesAndTestExist(myList);
+		ImageFileDescriptor.getExistingFileNames(myList);
 		return seqKymos.loadImagesFromList(myList, true);
 	}
 		

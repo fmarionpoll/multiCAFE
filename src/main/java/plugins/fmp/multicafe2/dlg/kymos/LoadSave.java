@@ -138,15 +138,16 @@ public class LoadSave extends JPanel
 	
 	public boolean loadDefaultKymos(Experiment exp) 
 	{		
-//        // -----------------------
-//		long start, end;
-//        start = System.nanoTime();
-//        // -----------------------
+        // ----------------------- TODO
+		long start, end;
+		start = System.nanoTime();
+        // -----------------------
+		
 		boolean flag = false;
 		SequenceKymos seqKymos = exp.seqKymos;
 		if (seqKymos == null || exp.capillaries == null) 
 		{
-			System.out.println("loadDefaultKymos: no parent sequence or no capillaries found");
+			System.out.println("kymos loadDefaultKymos: no parent sequence or no capillaries found");
 			return flag;
 		}
 		
@@ -157,13 +158,20 @@ public class LoadSave extends JPanel
 		}
 		else
 			exp.setBinSubDirectory(localString);
-//        // -----------------------
-//		end = System.nanoTime();
-//		System.out.println("kymos get/set bindirectoy: " + (end - start) / 1000000 + " milliseconds");
-//		start = end;
-//        // -----------------------
+        // ----------------------- TODO
+		end = System.nanoTime();
+		System.out.println("kymos get/set bindirectoy: " + (end - start) / 1000000 + " milliseconds");
+		start = end;
+        // -----------------------
+		
 		List<ImageFileDescriptor> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosBinFullDirectory(), exp.capillaries);
-		int nItems = ImageFileDescriptor.getFilesAndTestExist(myList);
+		int nItems = ImageFileDescriptor.getExistingFileNames(myList);
+		// ----------------------- TODO
+		end = System.nanoTime();
+		System.out.println("kymos ImageFileDescriptor.getExistingFileNames: " + (end - start) / 1000000 + " milliseconds");
+		start = end;
+        // -----------------------
+		
 		if (nItems > 0) 
 		{
 			flag = seqKymos.loadImagesFromList(myList, true);

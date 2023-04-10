@@ -11,7 +11,7 @@ public class ImageFileDescriptor
 	public int		imageHeight	= 0;
 	public int 		imageWidth	= 0;
 
-	public static int getFilesAndTestExist(List<ImageFileDescriptor> fileNameList) 
+	public static int getExistingFileNames(List<ImageFileDescriptor> fileNameList) 
 	{
 		Iterator<ImageFileDescriptor> it = fileNameList.iterator();
 		int ntotal = 0;

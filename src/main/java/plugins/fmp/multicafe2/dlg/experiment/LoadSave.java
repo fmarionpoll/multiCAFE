@@ -209,7 +209,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		boolean flag = true;
 		if (exp.seqCamData != null) 
 		{
-			exp.loadCamDataImages(false);
+			exp.loadCamDataImagesAndCapillaries();
 			// ----------------------- TODO
 			end = System.nanoTime();
 			System.out.println("openExperimentFromCombo(): loadCamDataImages: " + (end - start) / 1000000 + " milliseconds");

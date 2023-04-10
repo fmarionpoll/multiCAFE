@@ -235,20 +235,25 @@ public class SequenceKymos extends SequenceCamData
 		boolean flag = (kymoImagesDesc.size() > 0);
 		if (!flag)
 			return flag;
+		
 		if (adjustImagesSize) 
 			adjustImagesToMaxSize(kymoImagesDesc, getMaxSizeofTiffFiles(kymoImagesDesc));
+		
 		List <String> myList = new ArrayList <String> ();
 		for (ImageFileDescriptor prop: kymoImagesDesc) 
 		{
 			if (prop.exists)
 				myList.add(prop.fileName);
 		}
+		
 		if (myList.size() > 0) 
 		{		
 			myList = ExperimentDirectories.keepOnlyAcceptedNames_List(myList, "tiff");
 			setImagesList(convertLinexLRFileNames(myList));
+			
 			// threaded by default here
-			seq = loadSequenceFromImagesList(imagesList);
+			//seq = loadSequenceFromImagesList(imagesList);
+			loadImagesOnAThread();
 			setParentDirectoryAsCSCamFileName(imagesList.get(0));
 			status = EnumStatus.KYMOGRAPH;
 		}

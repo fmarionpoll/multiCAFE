@@ -27,6 +27,7 @@ import icy.file.Loader;
 import icy.file.SequenceFileImporter;
 import icy.gui.viewer.Viewer;
 import icy.image.IcyBufferedImage;
+import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.tools.Comparators;
@@ -325,9 +326,38 @@ public class SequenceCamData
 	public void attachSequence(Sequence seq)
 	{
 		this.seq = seq;
-		
 		status = EnumStatus.FILESTACK;	
 		seqAnalysisStart = 0;
+	}
+	
+	public void completeSequence(Sequence seq2)
+	{
+		if (seq != null) {
+			ArrayList<ROI> listROIS = seq.getROIs();
+			seq2.addROIs(listROIS, false);
+		}
+		seq = seq2;
+		status = EnumStatus.FILESTACK;	
+		seqAnalysisStart = 0;
+	}
+	
+	public boolean loadImagesOnAThread()
+	{			
+		loadFirstImage();
+		java.awt.EventQueue.invokeLater(new Runnable() {
+		    public void run() {
+            	loadImages2();
+		    }});
+		
+		return true;
+	}
+	
+	public boolean loadImages2() 
+	{
+		if (imagesList.size() == 0)
+			return false;
+		completeSequence(loadSequenceFromImagesList(imagesList));
+		return (seq != null);
 	}
 	
 	public boolean loadImages() 
