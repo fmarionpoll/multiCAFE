@@ -226,26 +226,32 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			parent0.paneCapillaries.updateDialogs(exp);
 			// ----------------------- TODO
 			end = System.nanoTime();
-			System.out.println("openExperimentFromCombo(): updateviewer: " + (end - start) / 1000000 + " milliseconds");
+			System.out.println("openExperimentFromCombo(): updateviewer " + (end - start) / 1000000 + " milliseconds");
 			start = end;
 	        // -----------------------
 			
-			
-			if (parent1.tabOptions.kymographsCheckBox.isSelected() && flag) 
-				flag &= loadKymos(exp);
+			loadKymosAndMeasuresThreaded(exp, parent1.tabOptions.kymographsCheckBox.isSelected(), parent1.tabOptions.measuresCheckBox.isSelected());
 			// ----------------------- TODO
 			end = System.nanoTime();
-			System.out.println("openExperimentFromCombo(): loadKymos: " + (end - start) / 1000000 + " milliseconds");
+			System.out.println("openExperimentFromCombo(): loadKymosAndMeasuresThreaded " + (end - start) / 1000000 + " milliseconds");
 			start = end;
 	        // ----------------------- TODO
 			
-			if (parent1.tabOptions.measuresCheckBox.isSelected() && flag) 
-				flag &= loadMeasures(exp);
-			// ----------------------- TODO
-			end = System.nanoTime();
-			System.out.println("openExperimentFromCombo(): loadmeasures: " + (end - start) / 1000000 + " milliseconds");
-			start = end;
-	        // -----------------------
+//			if (parent1.tabOptions.kymographsCheckBox.isSelected() && flag) 
+//				flag &= loadKymos(exp);
+//			// ----------------------- TODO
+//			end = System.nanoTime();
+//			System.out.println("openExperimentFromCombo(): loadKymos: " + (end - start) / 1000000 + " milliseconds");
+//			start = end;
+//	        // ----------------------- TODO
+//			
+//			if (parent1.tabOptions.measuresCheckBox.isSelected() && flag) 
+//				flag &= loadMeasures(exp);
+//			// ----------------------- TODO
+//			end = System.nanoTime();
+//			System.out.println("openExperimentFromCombo(): loadmeasures: " + (end - start) / 1000000 + " milliseconds");
+//			start = end;
+//	        // -----------------------
 			
 			if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected() && flag)
 				displayGraphs(exp);
@@ -275,17 +281,22 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		return flag;
 	}
 	
-	private boolean loadKymos(Experiment exp) 
-	{
-		boolean flag = parent0.paneKymos.tabFile.loadDefaultKymos(exp);
-		parent0.paneKymos.updateDialogs(exp);
-		return flag;
-	}
+//	private boolean loadKymos(Experiment exp) 
+//	{
+//		boolean flag = parent0.paneKymos.tabFile.loadDefaultKymos(exp);
+//		parent0.paneKymos.updateDialogs(exp);
+//		return flag;
+//	}
+//	
+//	private boolean loadMeasures(Experiment exp) 
+//	{
+//		boolean flag = parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
+//		parent0.paneLevels.updateDialogs(exp);
+//		return flag;
+//	}
 	
-	private boolean loadMeasures(Experiment exp) 
-	{
-		boolean flag = parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
-		parent0.paneLevels.updateDialogs(exp);
+	private boolean loadKymosAndMeasuresThreaded(Experiment exp, boolean loadKymos, boolean loadMeasures) {
+		boolean flag = false;
 		return flag;
 	}
 	

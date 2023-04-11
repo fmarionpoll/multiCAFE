@@ -123,6 +123,26 @@ public class Capillaries
 		return flag;
 	}
 	
+	public boolean xmlLoadCapillaries_Measures_Threaded(String directory) 
+	{
+		int ncapillaries = capillariesList.size();
+
+		for (int i = 0; i < ncapillaries; i++) 
+		{
+			final int item = i;
+			java.awt.EventQueue.invokeLater(new Runnable() {
+			    public void run() {
+			    	String csFile = directory + File.separator + capillariesList.get(item).getKymographName() + ".xml";
+					final Document capdoc = XMLUtil.loadDocument(csFile);
+					Node node = XMLUtil.getRootElement(capdoc, true);
+					Capillary cap = capillariesList.get(item);
+					cap.indexKymograph = item;
+					cap.loadFromXML_MeasuresOnly(node);
+			    }});
+		}
+		return true;
+	}
+	
 	private boolean xmlSaveListOfCapillaries(Document doc) 
 	{
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
