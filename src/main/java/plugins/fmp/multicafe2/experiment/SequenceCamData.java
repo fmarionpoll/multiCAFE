@@ -1,6 +1,7 @@
  package plugins.fmp.multicafe2.experiment;
 
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -16,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -30,6 +32,7 @@ import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
+
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 
@@ -342,6 +345,41 @@ public class SequenceCamData
 	}
 	
 	public boolean loadImagesOnAThread()
+	{			
+		loadFirstImage();
+		final Sequence thisseq = this.seq;
+		java.awt.EventQueue.invokeLater(new Runnable() {
+		    public void run() {
+			thisseq.beginUpdate();
+			for (int i = 1; i < imagesList.size(); i++) {
+				final int item = i;
+				final String filename = imagesList.get(i);
+				java.awt.EventQueue.invokeLater(new Runnable() {
+				    public void run() {
+				    	IcyBufferedImage sourceImage = imageIORead(filename);
+				    	thisseq.addImage(item, sourceImage);
+				    }});
+			}
+			thisseq.endUpdate();
+		    }});
+		return true;
+	}
+	
+	public IcyBufferedImage imageIORead(String name) 
+	{
+    	BufferedImage image = null;
+		try 
+		{
+	    	image = ImageIO.read(new File(name));
+		} 
+		catch (IOException e) 
+		{
+			 e.printStackTrace();
+		}
+		return IcyBufferedImage.createFrom(image);
+	}
+	
+	public boolean loadImagesOnAThread0()
 	{			
 		loadFirstImage();
 		java.awt.EventQueue.invokeLater(new Runnable() {
