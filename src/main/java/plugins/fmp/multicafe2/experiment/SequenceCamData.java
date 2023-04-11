@@ -344,27 +344,6 @@ public class SequenceCamData
 		seqAnalysisStart = 0;
 	}
 	
-	public boolean loadImagesOnAThread()
-	{			
-		loadFirstImage();
-		final Sequence thisseq = this.seq;
-		java.awt.EventQueue.invokeLater(new Runnable() {
-		    public void run() {
-			thisseq.beginUpdate();
-			for (int i = 1; i < imagesList.size(); i++) {
-				final int item = i;
-				final String filename = imagesList.get(i);
-				java.awt.EventQueue.invokeLater(new Runnable() {
-				    public void run() {
-				    	IcyBufferedImage sourceImage = imageIORead(filename);
-				    	thisseq.addImage(item, sourceImage);
-				    }});
-			}
-			thisseq.endUpdate();
-		    }});
-		return true;
-	}
-	
 	public IcyBufferedImage imageIORead(String name) 
 	{
     	BufferedImage image = null;
@@ -379,25 +358,6 @@ public class SequenceCamData
 		return IcyBufferedImage.createFrom(image);
 	}
 	
-	public boolean loadImagesOnAThread0()
-	{			
-		loadFirstImage();
-		java.awt.EventQueue.invokeLater(new Runnable() {
-		    public void run() {
-            	loadImages2();
-		    }});
-		
-		return true;
-	}
-	
-	public boolean loadImages2() 
-	{
-		if (imagesList.size() == 0)
-			return false;
-		completeSequence(loadSequenceFromImagesList(imagesList));
-		return (seq != null);
-	}
-	
 	public boolean loadImages() 
 	{
 		if (imagesList.size() == 0)
@@ -410,7 +370,7 @@ public class SequenceCamData
 	{
 		if (imagesList.size() == 0)
 			return false;
-		List <String> dummyList =new ArrayList<String>();
+		List <String> dummyList = new ArrayList<String>();
 		dummyList.add(imagesList.get(0));
 		attachSequence(loadSequenceFromImagesList(dummyList));
 		return (seq != null);

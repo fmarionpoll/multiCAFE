@@ -308,7 +308,7 @@ public class Experiment
 	public boolean loadCamDataImagesAndCapillaries()
 	{	
 		if (seqCamData != null) 
-			seqCamData.loadImagesOnAThread ();
+			seqCamData.loadImages();
 
 		xmlLoadMCCapillaries_Only();
 		capillaries.transferCapillaryRoiToSequence(seqCamData.seq);

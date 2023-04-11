@@ -253,7 +253,7 @@ public class SequenceKymos extends SequenceCamData
 			
 			// threaded by default here
 			//seq = loadSequenceFromImagesList(imagesList);
-			loadImagesOnAThread();
+			loadImages();
 			setParentDirectoryAsCSCamFileName(imagesList.get(0));
 			status = EnumStatus.KYMOGRAPH;
 		}
