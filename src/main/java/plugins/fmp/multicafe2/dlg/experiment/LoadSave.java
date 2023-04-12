@@ -207,36 +207,24 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		System.out.println("openExperimentFromCombo(): xmloadMCExperiment: " + (end - start) / 1000000 + " milliseconds");
 		start = end;
 		// -----------------------
+		
 		boolean flag = true;
 		if (exp.seqCamData != null) 
 		{
-			exp.loadCamDataImagesAndCapillaries();
+			exp.loadCamDataImages();
 			// ----------------------- TODO
 			end = System.nanoTime();
 			System.out.println("openExperimentFromCombo(): loadCamDataImages: " + (end - start) / 1000000 + " milliseconds");
 			start = end;
 	        // -----------------------
-			
-			
-//			exp.xmlLoadMCCapillaries_Only();
-//			exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
-			exp.seqCamData.seq.addListener(this);
-			
-			parent1.updateViewerForSequenceCam(exp);
-			parent1.updateExpDialogs(exp);
-			parent0.paneCapillaries.updateDialogs(exp);
+
+			exp.loadCamDataCapillaries();
 			// ----------------------- TODO
 			end = System.nanoTime();
-			System.out.println("openExperimentFromCombo(): updateviewer " + (end - start) / 1000000 + " milliseconds");
+			System.out.println("openExperimentFromCombo(): loadCamDatacapillaries: " + (end - start) / 1000000 + " milliseconds");
 			start = end;
 	        // -----------------------
-			
-//			loadKymosAndMeasuresThreaded(exp, parent1.tabOptions.kymographsCheckBox.isSelected(), parent1.tabOptions.measuresCheckBox.isSelected());
-//			// ----------------------- TODO
-//			end = System.nanoTime();
-//			System.out.println("openExperimentFromCombo(): loadKymosAndMeasuresThreaded " + (end - start) / 1000000 + " milliseconds");
-//			start = end;
-//	        // ----------------------- TODO
+			exp.seqCamData.seq.addListener(this);
 			
 			if (parent1.tabOptions.kymographsCheckBox.isSelected() && flag) 
 				flag &= loadKymos(exp);
@@ -264,10 +252,18 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			
 			if (parent1.tabOptions.cagesCheckBox.isSelected()) 
 				parent0.paneCages.tabFile.loadCages(exp);
-			
 			// ----------------------- TODO
 			end = System.nanoTime();
 			System.out.println("openExperimentFromCombo(): loadCages: " + (end - start) / 1000000 + " milliseconds");
+			start = end;
+	        // -----------------------
+			
+			parent1.updateViewerForSequenceCam(exp);
+			parent1.updateExpDialogs(exp);
+			parent0.paneCapillaries.updateDialogs(exp);
+			// ----------------------- TODO
+			end = System.nanoTime();
+			System.out.println("openExperimentFromCombo(): updateviewer " + (end - start) / 1000000 + " milliseconds");
 			start = end;
 	        // -----------------------
 			
@@ -305,63 +301,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		parent0.paneLevels.updateDialogs(exp);
 		return flag;
 	}
-	
-//	private boolean loadKymosAndMeasuresThreaded(Experiment exp, boolean loadKymos, boolean loadMeasures) {
-//		boolean flag = false;
-//		
-//		parent0.paneKymos.updateDialogs(exp);
-//		parent0.paneLevels.updateDialogs(exp);
-//		return flag;
-//	}
-	
-	/*
-	 public boolean loadDefaultKymos(Experiment exp) 
-	{		
-		boolean flag = false;
-		SequenceKymos seqKymos = exp.seqKymos;
-		if (seqKymos == null || exp.capillaries == null) 
-		{
-			System.out.println("kymos loadDefaultKymos: no parent sequence or no capillaries found");
-			return flag;
-		}
 		
-		String localString = parent0.expListCombo.expListBinSubDirectory;
-		if (localString == null) {
-			exp.checkKymosDirectory(exp.getBinSubDirectory());
-			parent0.expListCombo.expListBinSubDirectory = exp.getBinSubDirectory();
-		}
-		else
-			exp.setBinSubDirectory(localString);
-		
-		List<ImageFileDescriptor> myList = exp.seqKymos.loadListOfPotentialKymographsFromCapillaries(exp.getKymosBinFullDirectory(), exp.capillaries);
-		int nItems = ImageFileDescriptor.getExistingFileNames(myList);
-
-		
-		if (nItems > 0) 
-		{
-			flag = seqKymos.loadImagesFromList(myList, true);
-			parent0.paneKymos.tabDisplay.transferCapillaryNamesToComboBox(exp);
-		} 
-		else 
-			seqKymos.closeSequence();
-		return flag;
-	}
-	
-	public boolean loadCapillaries_Measures(Experiment exp) 
-	{
-		boolean flag = false;
-		if (exp.seqKymos != null ) 
-		{
-			ProgressFrame progress = new ProgressFrame("load capillary measures");
-			flag = exp.capillaries.xmlLoadCapillaries_Measures_Threaded(exp.getKymosBinFullDirectory());
-			if (flag) 
-				exp.seqKymos.transferCapillariesMeasuresToKymos(exp.capillaries);
-			progress.close();
-		}
-		return flag;
-	}
-	 */
-	
 	private void displayGraphs(Experiment exp) 
 	{
 		SwingUtilities.invokeLater(new Runnable() { public void run() 

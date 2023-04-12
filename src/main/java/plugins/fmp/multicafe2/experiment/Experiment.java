@@ -305,13 +305,19 @@ public class Experiment
 		return seqCamData;
 	}
 	
-	public boolean loadCamDataImagesAndCapillaries()
+	public boolean loadCamDataImages()
 	{	
 		if (seqCamData != null) 
 			seqCamData.loadImages();
-
+		
+		return (seqCamData != null && seqCamData.seq != null);
+	}
+	
+	public boolean loadCamDataCapillaries()
+	{	
 		xmlLoadMCCapillaries_Only();
-		capillaries.transferCapillaryRoiToSequence(seqCamData.seq);
+		if (seqCamData != null && seqCamData.seq != null) 
+			capillaries.transferCapillaryRoiToSequence(seqCamData.seq);
 		
 		return (seqCamData != null && seqCamData.seq != null);
 	}
