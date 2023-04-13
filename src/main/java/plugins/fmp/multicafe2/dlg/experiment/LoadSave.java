@@ -24,6 +24,7 @@ import icy.sequence.Sequence;
 import icy.sequence.SequenceEvent;
 import icy.sequence.SequenceListener;
 import icy.sequence.SequenceEvent.SequenceEventSourceType;
+import icy.gui.frame.progress.ProgressFrame;
 
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.dlg.JComponents.SequenceNameListRenderer;
@@ -187,6 +188,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 	boolean openExperimentFromCombo() 
 	{
+		ProgressFrame progressBar = new ProgressFrame("Load data");
         // ----------------------- TODO
 		long start, end;
 		System.out.println("---------------------------openExperimentFromCombo():" );
@@ -196,11 +198,6 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		final Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp == null)
 			return false;
-		// ----------------------- TODO
-		end = System.nanoTime();
-		System.out.println("openExperimentFromCombo(): getselecteditem: " + (end - start) / 1000000 + " milliseconds");
-		start = end;
-        // -----------------------
 		
 		exp.xmlLoadMCExperiment();
 		// ----------------------- TODO
@@ -211,12 +208,15 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		
 		boolean flag = true;
 		exp.seqCamData.loadFirstImage();
+		exp.seqCamData.seq.addListener(this);
 		if (exp.seqCamData != null) 
 		{
+			progressBar.setMessage("Load data: get capillaries");
 			loadCamCapillariesThread(exp);
-			if (parent1.tabOptions.cagesCheckBox.isSelected())
-				loadCamCagesThread(exp);
+			loadCamCagesThread(exp);
+			progressBar.setMessage("Load data: get images");
 			loadCamImagesThread(exp);
+			progressBar.setMessage("Load data: get kymographs");
 			loadKymoImagesThread(exp);		
 			
 			exp.seqKymos.loadFirstImage();
@@ -224,7 +224,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				loadKymoMeasuresThread(exp);
 				loadKymoImagesThread(exp);
 			}
-						
+			progressBar.setMessage("Load data: update dialogs");
 			parent1.updateViewerForSequenceCam(exp);
 			parent1.updateExpDialogs(exp);
 			parent0.paneCapillaries.updateDialogs(exp);
@@ -242,13 +242,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			System.out.println("Error: no jpg files found for this experiment\n");
 		}
 		parent1.tabInfos.transferPreviousExperimentInfosToDialog(exp, exp);
-		// ----------------------- TODO
-		end = System.nanoTime();
-		System.out.println("openExperimentFromCombo(): transferPreviousExptToDialog: " + (end - start) / 1000000 + " milliseconds");
-		start = end;
-        // -----------------------
-		
-		exp.seqCamData.seq.addListener(this);
+		progressBar.close();
 		return flag;
 	}
 	
