@@ -16,6 +16,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
 import icy.gui.viewer.Viewer;
@@ -188,7 +189,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 	boolean openExperimentFromCombo() 
 	{
-		ProgressFrame progressBar = new ProgressFrame("Load data");
+		JProgressBar progressBar = new JProgressBar();
+		progressBar.setString("Load Data");
         // ----------------------- TODO
 		long start, end;
 		System.out.println("---------------------------openExperimentFromCombo():" );
@@ -211,12 +213,12 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		exp.seqCamData.seq.addListener(this);
 		if (exp.seqCamData != null) 
 		{
-			progressBar.setMessage("Load data: get capillaries");
+			progressBar.setString("Load data: get capillaries");
 			loadCamCapillariesThread(exp);
 			loadCamCagesThread(exp);
-			progressBar.setMessage("Load data: get images");
+			progressBar.setString("Load data: get images");
 			loadCamImagesThread(exp);
-			progressBar.setMessage("Load data: get kymographs");
+			progressBar.setString("Load data: get kymographs");
 			loadKymoImagesThread(exp);		
 			
 			exp.seqKymos.loadFirstImage();
@@ -224,7 +226,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 				loadKymoMeasuresThread(exp);
 				loadKymoImagesThread(exp);
 			}
-			progressBar.setMessage("Load data: update dialogs");
+			progressBar.setString("Load data: update dialogs");
 			parent1.updateViewerForSequenceCam(exp);
 			parent1.updateExpDialogs(exp);
 			parent0.paneCapillaries.updateDialogs(exp);
@@ -242,7 +244,7 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			System.out.println("Error: no jpg files found for this experiment\n");
 		}
 		parent1.tabInfos.transferPreviousExperimentInfosToDialog(exp, exp);
-		progressBar.close();
+
 		return flag;
 	}
 	
