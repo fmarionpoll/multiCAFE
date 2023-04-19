@@ -16,7 +16,6 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
 import icy.gui.viewer.Viewer;
@@ -189,8 +188,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	
 	boolean openExperimentFromCombo() 
 	{
-		JProgressBar progressBar = new JProgressBar();
-		progressBar.setString("Load Data");
+		ProgressFrame progressFrame = new ProgressFrame("Load Data");
+
         // ----------------------- TODO
 		long start, end;
 		System.out.println("---------------------------openExperimentFromCombo():" );
@@ -209,24 +208,23 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		// -----------------------
 		
 		boolean flag = true;
+		progressFrame.setMessage("Load image");
 		exp.seqCamData.loadFirstImage();
 		exp.seqCamData.seq.addListener(this);
 		if (exp.seqCamData != null) 
 		{
-			progressBar.setString("Load data: get capillaries");
 			loadCamCapillariesThread(exp);
 			loadCamCagesThread(exp);
-			progressBar.setString("Load data: get images");
+			progressFrame.setMessage("Load data: get images");
 			loadCamImagesThread(exp);
-			progressBar.setString("Load data: get kymographs");
-			loadKymoImagesThread(exp);		
 			
+			progressFrame.setMessage("Load data: get kymographs");	
 			exp.seqKymos.loadFirstImage();
 			if (exp.seqKymos != null) {	
-				loadKymoMeasuresThread(exp);
 				loadKymoImagesThread(exp);
+				loadKymoMeasuresThread(exp);
 			}
-			progressBar.setString("Load data: update dialogs");
+			progressFrame.setMessage("Load data: update dialogs");
 			parent1.updateViewerForSequenceCam(exp);
 			parent1.updateExpDialogs(exp);
 			parent0.paneCapillaries.updateDialogs(exp);
@@ -244,95 +242,96 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 			System.out.println("Error: no jpg files found for this experiment\n");
 		}
 		parent1.tabInfos.transferPreviousExperimentInfosToDialog(exp, exp);
-
+		progressFrame.close();
 		return flag;
 	}
 	
 	private void loadCamImagesThread(Experiment exp) {
-		SwingUtilities.invokeLater(new Runnable() { 
-		    public void run() {
-		    	long start, end;
-				start = System.nanoTime();
-		        // -----------------------
+//		SwingUtilities.invokeLater(new Runnable() { 
+//		    public void run() {
+//		    	long start, end;
+//				start = System.nanoTime();
+//		        // -----------------------
 				ArrayList<ROI> listROIs = exp.seqCamData.seq.getROIs();
 				exp.loadCamDataImages();
-				// ----------------------- TODO
-				end = System.nanoTime();
-				System.out.println("->loadCamImages: " + (end - start) / 1000000 + " milliseconds");
-		        // -----------------------
+//				// ----------------------- TODO
+//				end = System.nanoTime();
+//				System.out.println("->loadCamImages: " + (end - start) / 1000000 + " milliseconds");
+//		        // -----------------------
 				if (listROIs.size() > 0)
 					exp.seqCamData.seq.addROIs(listROIs, false);
-		    }});
+//		    }});
 	}
 	
-	private void loadCamCapillariesThread(Experiment exp) {
-		java.awt.EventQueue.invokeLater(new Runnable() {
-		    public void run() {
-		    	long start, end;
-				start = System.nanoTime();
-		        // -----------------------
+	private void loadCamCapillariesThread(Experiment exp) 
+	{
+//		java.awt.EventQueue.invokeLater(new Runnable() {
+//		    public void run() {
+//		    	long start, end;
+//				start = System.nanoTime();
+//		        // -----------------------
 				exp.loadCamDataCapillaries();
-				// ----------------------- TODO
-				end = System.nanoTime();
-				System.out.println("->loadCamCapillaries: " + (end - start) / 1000000 + " milliseconds");
-				start = end;
-		        // -----------------------
-		    }});
+//				// ----------------------- TODO
+//				end = System.nanoTime();
+//				System.out.println("->loadCamCapillaries: " + (end - start) / 1000000 + " milliseconds");
+//				start = end;
+////		        // -----------------------
+//		    }});
 	}
 	
 	private void loadCamCagesThread(Experiment exp)
 	{
-		java.awt.EventQueue.invokeLater(new Runnable() {
-		    public void run() {
-		    	long start, end;
-				start = System.nanoTime();
-		        // -----------------------
+//		java.awt.EventQueue.invokeLater(new Runnable() {
+//		    public void run() {
+//		    	long start, end;
+//				start = System.nanoTime();
+//		        // -----------------------
 				exp.xmlReadDrosoTrack(null);
-				// ----------------------- TODO
-				end = System.nanoTime();
-				System.out.println("->loadCamCages: " + (end - start) / 1000000 + " milliseconds");
-				start = end;
-		        // -----------------------
-		    }});
+//				// ----------------------- TODO
+//				end = System.nanoTime();
+//				System.out.println("->loadCamCages: " + (end - start) / 1000000 + " milliseconds");
+//				start = end;
+//		        // -----------------------
+//		    }});
 	}
 	
 	private void loadKymoImagesThread(Experiment exp)
 	{
-		java.awt.EventQueue.invokeLater(new Runnable() {
-		    public void run() {
-		    	long start, end;
-				start = System.nanoTime();
-		        // -----------------------
+//		java.awt.EventQueue.invokeLater(new Runnable() {
+//		    public void run() {
+//		    	long start, end;
+//				start = System.nanoTime();
+//		        // -----------------------
 				ArrayList<ROI> listROIs = exp.seqKymos.seq.getROIs();
 				loadKymos(exp);
 				if (listROIs.size() > 0)
 					exp.seqKymos.seq.addROIs(listROIs, false);
-				// ----------------------- TODO
-				end = System.nanoTime();
-				System.out.println("->loadCamCages: " + (end - start) / 1000000 + " milliseconds");
-				start = end;
-		        // -----------------------
-		    }});
+//				// ----------------------- TODO
+//				end = System.nanoTime();
+//				System.out.println("->loadCamCages: " + (end - start) / 1000000 + " milliseconds");
+//				start = end;
+//		        // -----------------------
+//		    }});
 	}
 	
 	private void loadKymoMeasuresThread(Experiment exp) {
 		if (parent1.tabOptions.measuresCheckBox.isSelected() )
 		{
-			SwingUtilities.invokeLater(new Runnable() { 
-			    public void run() {
-			    	// ----------------------- TODO
-			    	long start, end;
-					start = System.nanoTime();
-			        // -----------------------
+//			SwingUtilities.invokeLater(new Runnable() { 
+//			    public void run() {
+//			    	// ----------------------- TODO
+//			    	long start, end;
+//					start = System.nanoTime();
+//			        // -----------------------
 			        loadMeasures(exp);
-			        // ----------------------- TODO
-					end = System.nanoTime();
-					System.out.println("->loadKymoImages: " + (end - start) / 1000000 + " milliseconds");
-					start = end;
-					// ----------------------- TODO
+//			        // ----------------------- TODO
+//					end = System.nanoTime();
+//					System.out.println("->loadKymoImages: " + (end - start) / 1000000 + " milliseconds");
+//					start = end;
+//					// ----------------------- TODO
 					if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected())
 						displayGraphs(exp);
-			    }});
+//			    }});
 		}
 	}
 	
