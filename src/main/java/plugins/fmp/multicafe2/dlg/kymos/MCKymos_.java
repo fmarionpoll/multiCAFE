@@ -29,7 +29,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 	public Create 		tabCreate 		= new Create();
 	public Display		tabDisplay 		= new Display();
 	public Intervals	tabIntervals = new Intervals();
-	public LoadSave 	tabFile 		= new LoadSave();
+	public LoadSaveKymos 	tabFile 		= new LoadSaveKymos();
 	private MultiCAFE2 parent0 = null;
 
 	public void init (JPanel mainPanel, String string, MultiCAFE2 parent0) 

@@ -55,7 +55,7 @@ public class SelectFiles1 extends JPanel
 	private JRadioButton rbDirectory			= new JRadioButton("directory");
 	private JList<String> directoriesJList		= new JList<String>(new DefaultListModel<String>());
 	private MultiCAFE2 	parent0 				= null;
-	private LoadSave 	parent1 				= null;
+	private LoadSaveExperiment 	parent1 				= null;
 
 	
 	

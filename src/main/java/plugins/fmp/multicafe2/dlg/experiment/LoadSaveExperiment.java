@@ -33,7 +33,7 @@ import plugins.fmp.multicafe2.experiment.ExperimentDirectories;
 
 
 
-public class LoadSave extends JPanel implements PropertyChangeListener, ItemListener, SequenceListener 
+public class LoadSaveExperiment extends JPanel implements PropertyChangeListener, ItemListener, SequenceListener 
 {
 	/**
 	 * 
@@ -181,8 +181,8 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	void updateBrowseInterface() 
 	{
 		int isel = parent0.expListCombo.getSelectedIndex();		
-	    boolean flag1 = (isel == 0? false: true);
-		boolean flag2 = (isel == (parent0.expListCombo.getItemCount() -1)? false: true);
+	    boolean flag1 = (isel == 0 ? false : true);
+		boolean flag2 = (isel == (parent0.expListCombo.getItemCount() -1) ? false : true);
 		previousButton.setEnabled(flag1);
 		nextButton.setEnabled(flag2);
 	}
@@ -191,11 +191,11 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	{
 		ProgressFrame progressFrame = new ProgressFrame("Load Data");
 
-        // ----------------------- TODO
-		long start, end;
-		System.out.println("---------------------------openExperimentFromCombo():" );
-        start = System.nanoTime();
-        // -----------------------
+//        // ----------------------- TODO
+//		long start, end;
+//		System.out.println("---------------------------openSelecteExperiment():" );
+//        start = System.nanoTime();
+//        // -----------------------
 		
 		exp.xmlLoadMCExperiment();
 
@@ -207,15 +207,15 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		if (exp.seqCamData != null) 
 		{
 			exp.loadCamDataCapillaries();
-			exp.xmlReadDrosoTrack(null);
-			
-			exp.seqKymos.loadFirstImage();
+
+			loadKymosImagesThread(exp);
 			if (exp.seqKymos != null) {	
-				loadKymosImagesThread(exp);
 				loadKymosMeasuresThread(exp);
 				if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected())
 					parent0.paneLevels.tabGraphs.displayGraphsPanels(exp);
 			}
+			
+			exp.xmlReadDrosoTrack(null);
 			progressFrame.setMessage("Load data: update dialogs");
 			
 			parent1.updateViewerForSequenceCam(exp);
@@ -232,11 +232,11 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 		parent1.tabInfos.transferPreviousExperimentInfosToDialog(exp, exp);
 		progressFrame.close();
 		
-		// ----------------------- TODO
-		end = System.nanoTime();
-		System.out.println("openExperimentFromCombo(): duration=" + (end - start) / 1000000 + " milliseconds");
-		start = end;
-        // -----------------------
+//		// ----------------------- TODO
+//		end = System.nanoTime();
+//		System.out.println("openSelecteExperiment(): duration=" + (end - start) / 1000000000 + " seconds");
+//		start = end;
+//        // -----------------------
 		return flag;
 	}
 	
@@ -260,43 +260,27 @@ public class LoadSave extends JPanel implements PropertyChangeListener, ItemList
 	{
 		parent0.expListCombo.addActionListener(new ActionListener () 
 		{ 
-			@Override public void actionPerformed( final ActionEvent e ) 
+			@Override 
+			public void actionPerformed( final ActionEvent e ) 
 			{ 
 				updateBrowseInterface();
 			}});
 		
 		nextButton.addActionListener(new ActionListener () 
 		{ 
-			@Override public void actionPerformed( final ActionEvent e ) 
-			{ 
-			// -----------------------
-			long start, end;
-			System.out.println("---------------------------next:" );
-			start = System.nanoTime();
-	        // -----------------------    
-			if (parent0.expListCombo.getSelectedIndex() < (parent0.expListCombo.getItemCount()-1)) {
-				System.out.println("ExpmtDlg: LoadSave");
+			@Override 
+			public void actionPerformed( final ActionEvent e ) 
+			{    				
 				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()+1);
-			}
-			else {
-				System.out.println("ExpmtDlg: updateBrowseInterface ");
 				updateBrowseInterface();
-			}
-			
-			// -----------------------
-			end = System.nanoTime();
-			System.out.println("next end: " + (end - start) / 1000000 + " milliseconds");
-			start = end;
-	       // -----------------------
 			}});
 		
 		previousButton.addActionListener(new ActionListener () 
 		{ 
-			@Override public void actionPerformed( final ActionEvent e ) 
+			@Override 
+			public void actionPerformed( final ActionEvent e ) 
 			{ 
-			if (parent0.expListCombo.getSelectedIndex() > 0) 
 				parent0.expListCombo.setSelectedIndex(parent0.expListCombo.getSelectedIndex()-1);
-			else 
 				updateBrowseInterface();
 			}});
 		

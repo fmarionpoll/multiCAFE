@@ -40,7 +40,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 		expListBinSubDirectory = null;
 	}
 	
-	public Experiment getMsColStartAndEndFromAllExperiments(XLSExportOptions options) 
+	public Experiment get_MsTime_of_StartAndEnd_AllExperiments(XLSExportOptions options) 
 	{
 		Experiment expAll = new Experiment();
 		Experiment exp0 = getItemAt(0);

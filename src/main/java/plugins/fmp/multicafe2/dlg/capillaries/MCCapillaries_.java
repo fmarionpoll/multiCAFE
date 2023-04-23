@@ -31,7 +31,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 			JTabbedPane tabsPane 		= new JTabbedPane();
 	public 	Create 		tabCreate 		= new Create();
 			Edit		tabEdit			= new Edit();
-	public 	LoadSave 	tabFile 		= new LoadSave();
+	public 	LoadSaveCapillaries 	tabFile 		= new LoadSaveCapillaries();
 			Adjust 		tabAdjust 		= new Adjust();
 			FilterImage tabFilterImage  = new FilterImage();
 	public 	Infos		tabInfos		= new Infos();

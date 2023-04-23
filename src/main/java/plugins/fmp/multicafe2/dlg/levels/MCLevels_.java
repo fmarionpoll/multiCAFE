@@ -25,7 +25,7 @@ public class MCLevels_ extends JPanel implements PropertyChangeListener
 	private static final long serialVersionUID = -7339633966002954720L;
 	public	PopupPanel capPopupPanel	= null;
 	private JTabbedPane tabsPane 		= new JTabbedPane();
-	public 	LoadSave tabFileLevels		= new LoadSave();
+	public 	LoadSaveLevels tabFileLevels		= new LoadSaveLevels();
 			Levels 	tabDetectLevels2 	= new Levels();
 			
 			//DetectLevelsKMeans tabDetectLevelsK = new DetectLevelsKMeans();

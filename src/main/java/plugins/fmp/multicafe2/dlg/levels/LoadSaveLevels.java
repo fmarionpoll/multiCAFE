@@ -19,7 +19,7 @@ import plugins.fmp.multicafe2.experiment.Experiment;
 
 
 
-public class LoadSave  extends JPanel 
+public class LoadSaveLevels  extends JPanel 
 {
 	/**
 	 * 

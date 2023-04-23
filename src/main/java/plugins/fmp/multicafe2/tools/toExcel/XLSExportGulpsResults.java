@@ -24,7 +24,7 @@ public class XLSExportGulpsResults  extends XLSExport
 		expList.chainExperimentsUsingKymoIndexes(options.collateSeries);
 		expList.setFirstImageForAllExperiments(options.collateSeries);
 		
-		expAll = expList.getMsColStartAndEndFromAllExperiments(options);
+		expAll = expList.get_MsTime_of_StartAndEnd_AllExperiments(options);
 	
 		ProgressFrame progress = new ProgressFrame("Export data to Excel");
 		int nbexpts = expList.getItemCount();
