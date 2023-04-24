@@ -53,14 +53,12 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 	private JButton			nextButton		= new JButton(">");
 
 	private MultiCAFE2 		parent0 		= null;
-	private MCExperiment_ 	parent1 		= null;
 	
 	
 
-	public JPanel initPanel( MultiCAFE2 parent0, MCExperiment_ parent1) 
+	public JPanel initPanel( MultiCAFE2 parent0) 
 	{
 		this.parent0 = parent0;
-		this.parent1 = parent1;
 
 		SequenceNameListRenderer renderer = new SequenceNameListRenderer();
 		parent0.expListCombo.setRenderer(renderer);
@@ -100,7 +98,7 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 	{
 		if (evt.getPropertyName().equals("SELECT1_CLOSED")) 
 		{
-			parent1.tabInfos.disableChangeFile = true;
+			parent0.paneExperiment.tabInfos.disableChangeFile = true;
 			if (selectedNames.size() < 1)
 				return;
 			
@@ -112,7 +110,7 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 	        	
 	        	SwingUtilities.invokeLater(new Runnable() { public void run() 
 				{	
-		        	parent1.tabInfos.disableChangeFile = false;
+	        		parent0.paneExperiment.tabInfos.disableChangeFile = false;
 		        	for (int i = 1; i < selectedNames.size(); i++) 
 					{
 						ExperimentDirectories eDAF = new ExperimentDirectories(); 
@@ -121,12 +119,12 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 					}
 					selectedNames.clear();
 					updateBrowseInterface();
-			     	parent1.tabInfos.disableChangeFile = true;
-			     	parent1.tabInfos.initInfosCombos(); 
+					parent0.paneExperiment.tabInfos.disableChangeFile = true;
+					parent0.paneExperiment.tabInfos.initInfosCombos(); 
 			     	parent0.expListCombo.setSelectedIndex(item);
 			     	Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 					if (exp != null)
-						parent1.tabInfos.transferPreviousExperimentInfosToDialog(exp, exp);
+						parent0.paneExperiment.tabInfos.transferPreviousExperimentInfosToDialog(exp, exp);
 				}});
 			}
 		}
@@ -152,9 +150,9 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 	{
 		closeCurrentExperiment();
 		parent0.expListCombo.removeAllItems();
-		parent1.tabFilter.clearAllCheckBoxes ();
-		parent1.tabFilter.filterExpList.removeAllItems();
-		parent1.tabInfos.clearCombos();
+		parent0.paneExperiment.tabFilter.clearAllCheckBoxes ();
+		parent0.paneExperiment.tabFilter.filterExpList.removeAllItems();
+		parent0.paneExperiment.tabInfos.clearCombos();
 		filteredCheck.setSelected(false);
 	}
 	
@@ -203,6 +201,8 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 		progressFrame.setMessage("Load image");
 		
 		exp.loadCamDataImages();
+		parent0.paneExperiment.updateViewerForSequenceCam(exp);
+		
 		exp.seqCamData.seq.addListener(this);
 		if (exp.seqCamData != null) 
 		{
@@ -218,18 +218,16 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 			exp.xmlReadDrosoTrack(null);
 			progressFrame.setMessage("Load data: update dialogs");
 			
-			parent1.updateViewerForSequenceCam(exp);
-			parent1.updateExpDialogs(exp);
+			parent0.paneExperiment.updateExpDialogs(exp);
 			parent0.paneCapillaries.updateDialogs(exp);
 			parent0.paneLevels.updateDialogs(exp);
-
 		}
 		else 
 		{
 			flag = false;
 			System.out.println("Error: no jpg files found for this experiment\n");
 		}
-		parent1.tabInfos.transferPreviousExperimentInfosToDialog(exp, exp);
+		parent0.paneExperiment.tabInfos.transferPreviousExperimentInfosToDialog(exp, exp);
 		progressFrame.close();
 		
 //		// ----------------------- TODO
@@ -303,7 +301,7 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
             	if (eDAF.getDirectoriesFromDialog(parent0.expListCombo, null, true)) 
             	{
 	            	int item = addExperimentFrom3NamesAnd2Lists(eDAF);
-	            	parent1.tabInfos.initInfosCombos();
+	            	parent0.paneExperiment.tabInfos.initInfosCombos();
 	            	parent0.expListCombo.setSelectedIndex(item);
             	}
             }});
@@ -317,7 +315,7 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
             	if (eDAF.getDirectoriesFromDialog(parent0.expListCombo, null, false)) 
             	{
             		int item = addExperimentFrom3NamesAnd2Lists(eDAF);
-            		parent1.tabInfos.initInfosCombos();
+            		parent0.paneExperiment.tabInfos.initInfosCombos();
             		parent0.expListCombo.setSelectedIndex(item);
             	}
             }});
@@ -327,7 +325,7 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 			@Override public void actionPerformed( final ActionEvent e ) 
 			{ 
 				closeAllExperiments();
-				parent1.tabsPane.setSelectedIndex(0);
+				parent0.paneExperiment.tabsPane.setSelectedIndex(0);
 				parent0.expListCombo.removeAllItems();
 				parent0.expListCombo.updateUI();
 			}});
@@ -337,7 +335,7 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
             @Override
             public void actionPerformed(ActionEvent arg0) 
             {
-            	parent1.tabFilter.filterExperimentList(filteredCheck.isSelected());
+            	parent0.paneExperiment.tabFilter.filterExperimentList(filteredCheck.isSelected());
             }});
 	}
 	

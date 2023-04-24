@@ -56,7 +56,7 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 		mainPanel.add(capPopupPanel);
 		GridLayout tabsLayout = new GridLayout(3, 1);
 		
-		JPanel filesPanel = panelLoadSave.initPanel(parent0, this);
+		JPanel filesPanel = panelLoadSave.initPanel(parent0);
 		
 		tabInfos.init(tabsLayout, parent0);
 		tabsPane.addTab("Infos", null, tabInfos, "Define infos for this experiment/box");
@@ -116,9 +116,7 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 		{	
 			Viewer v = seq.getFirstViewer();
 			if (v == null) 
-			{
 				v = new Viewer(exp.seqCamData.seq, true);
-			}
 			
 			if (v != null) {
 				placeViewerNextToDialogBox(v, parent0.mainFrame);

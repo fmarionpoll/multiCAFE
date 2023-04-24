@@ -96,16 +96,19 @@ public class Graphs extends JPanel implements SequenceListener
 	
 	public void displayGraphsPanels(Experiment exp) 
 	{
+		Point ptRelative = new Point(0, 0);
+		Rectangle rectv = new Rectangle(50, 500, 10, 10);
 		Viewer v = exp.seqCamData.seq.getFirstViewer();
-		if (v == null)
-			return;
-		final Rectangle rectv = v.getBounds();
-		Point ptRelative = new Point(0, 0); 
-//		if (parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())	
-//		if (rect0.x+ rect0.width < Icy.getMainInterface().getMainFrame().getDesktopWidth()) 
-		
-		ptRelative.y = rectv.height;
-		
+		if (v != null) {
+			rectv = v.getBounds();
+			ptRelative.y = rectv.height;
+		}
+		else
+		{
+			Rectangle rect0 = parent0.mainFrame.getBoundsInternal();
+			rectv.setLocation(rect0.x /*+ rect0.width*/, rect0.y + 300); // rect0.height);
+		}
+			
 		int dx = 5;
 		int dy = 10; 
 		exp.seqKymos.seq.addListener(this);
@@ -163,6 +166,7 @@ public class Graphs extends JPanel implements SequenceListener
 			iChart.setLocationRelativeToRectangle(rectv, ptRelative);
 		iChart.displayData(exp, option, correctEvaporationCheckbox.isSelected());
 		iChart.mainChartFrame.toFront();
+		iChart.mainChartFrame.requestFocus();
 		return iChart;
 	}
 	
