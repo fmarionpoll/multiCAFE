@@ -93,7 +93,7 @@ public class MCExperiment_ extends JPanel implements ViewerListener, ChangeListe
 		});		
 	}
 		
-	public void updateExpDialogs(Experiment exp) 
+	public void updateDialogs(Experiment exp) 
 	{
 		tabIntervals.displayCamDataIntervals(exp);
 		tabInfos.transferPreviousExperimentInfosToDialog(exp, exp);

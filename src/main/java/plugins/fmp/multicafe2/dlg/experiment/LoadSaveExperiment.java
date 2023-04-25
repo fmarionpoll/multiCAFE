@@ -208,9 +208,10 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 		{
 			exp.loadCamDataCapillaries();
 
-			loadKymosImagesThread(exp);
+			parent0.paneKymos.tabFile.loadDefaultKymos(exp);
+			
 			if (exp.seqKymos != null) {	
-				loadKymosMeasuresThread(exp);
+				parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
 				if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected())
 					parent0.paneLevels.tabGraphs.displayGraphsPanels(exp);
 			}
@@ -218,7 +219,9 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 			exp.xmlReadDrosoTrack(null);
 			progressFrame.setMessage("Load data: update dialogs");
 			
-			parent0.paneExperiment.updateExpDialogs(exp);
+			parent0.paneExperiment.updateDialogs(exp);
+			parent0.paneLevels.updateDialogs(exp);
+			parent0.paneKymos.updateDialogs(exp);
 			parent0.paneCapillaries.updateDialogs(exp);
 			parent0.paneLevels.updateDialogs(exp);
 		}
@@ -238,19 +241,6 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 		return flag;
 	}
 	
-	private boolean loadKymosImagesThread(Experiment exp) 
-	{
-		boolean flag = parent0.paneKymos.tabFile.loadDefaultKymos(exp);
-		parent0.paneKymos.updateDialogs(exp);
-		return flag;
-	}
-	
-	private boolean loadKymosMeasuresThread(Experiment exp) 
-	{
-		boolean flag = parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
-		parent0.paneLevels.updateDialogs(exp);
-		return flag;
-	}
 
 	// ------------------------
 	
