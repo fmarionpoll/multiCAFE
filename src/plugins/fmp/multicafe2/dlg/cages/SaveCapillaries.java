@@ -1,4 +1,4 @@
-package plugins.fmp.multicafe2.repository;
+package plugins.fmp.multicafe2.dlg.cages;
 
 import java.io.File;
 import java.util.Collections;

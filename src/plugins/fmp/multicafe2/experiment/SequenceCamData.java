@@ -32,7 +32,6 @@ import icy.image.IcyBufferedImage;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
-
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.kernel.roi.roi2d.ROI2DPolygon;
 

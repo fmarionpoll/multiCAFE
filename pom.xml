@@ -65,6 +65,12 @@
 
     <!-- List of project's dependencies -->
     <dependencies>
+		<dependency>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.5.1-2</version>
+        </dependency>
+
         <!-- The core of Icy -->
 		<dependency>
         	<groupId>org.bioimageanalysis.icy</groupId>
@@ -106,6 +112,7 @@
         	<groupId>org.bioimageanalysis.icy</groupId>
         	<artifactId>javacl</artifactId>
         </dependency>
+        
         <dependency>
         	<groupId>org.apache.poi</groupId>
         	<artifactId>poi-ooxml</artifactId>

@@ -20,7 +20,6 @@ import icy.image.ImageUtil;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
 import icy.util.XMLUtil;
-
 import plugins.fmp.multicafe2.tools.Directories;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.Image.ImageTransformEnums;
