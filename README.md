@@ -1,7 +1,9 @@
 # multiCAFE
 Icy plugin to analyze multiCAFE observations (multiple CApillary FEeding)
 
-This plugin is meant to allow users to analyze stack of frames collected during multiCAFE experiments. multiCAFE is an acronym for (multiple) CApillary Feeding Experiments where we measure how much flies (drosophila for example) feed from capillary tubes containing a liquid (generally sweet water added with a blue dye and another substance to test). This has a number of scientific uses, e.g. to study feeding in flies and to find molecules with prevent or stimulate feeding, or to understand the impact of diseases or other factors on feeding. In our current design, one webcam is monitoring 10 "cages", each containing 1 fly. Each cage can be equipped with 2 capillaries. We want to follow throughout time how flies are feeding - generally by snapping 1980x1080 jpg image every minute over interval of times ranging from 1 h to several days, eventually renewing the capillaries when they are empty.
+This plugin is meant to allow users to analyze stack of frames collected during multiCAFE experiments. multiCAFE is an acronym for (multiple) CApillary Feeding Experiments where we measure how much flies (drosophila for example) feed from capillary tubes containing a liquid (generally sweet water added with a blue dye and another substance to test). 
+
+In our current design, one webcam is monitoring 10 "cages", each containing 1 fly. Each cage can be equipped with 2 capillaries. We want to follow how flies are feeding. To do so, we usually do time-lapse observations, with one 1980x1080 jpg image every minute over 1 h to several days, eventually renewing the capillaries when they are empty.
 
 At the basic level, multiCAFE is meant to read and analyze 1 pile of images (= 1 experiment). The user defines the position of capillaries using linear ROIs (typically 20 capillaries for 10 cages). The program then create an array of kymographs to follow the evolution of the pixels described by the ROIs, ie to follow the consumption in each capillary. The top and bottom level of each capillary can be detected and the measures saved and exported to Excel.
 
