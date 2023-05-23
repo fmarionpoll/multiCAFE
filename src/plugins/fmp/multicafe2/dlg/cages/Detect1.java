@@ -45,6 +45,7 @@ public class Detect1 extends JPanel implements ChangeListener, ItemListener, Pro
 	private MultiCAFE2 	parent0					= null;
 	private String 		detectString 			= "Detect...";
 	private JButton 	startComputationButton 	= new JButton(detectString);
+	private JSpinner 	nFliesPresentSpinner	= new JSpinner(new SpinnerNumberModel(1, 1, 255, 1));
 
 	JComboBox<ImageTransformEnums> transformComboBox = new JComboBox<> (
 		new ImageTransformEnums[] {
@@ -66,7 +67,7 @@ public class Detect1 extends JPanel implements ChangeListener, ItemListener, Pro
 			ImageTransformEnums.SUBTRACT_TM1, 
 			ImageTransformEnums.SUBTRACT_T0});
 	
-	private JComboBox<String> allCagesComboBox = new JComboBox<String> (new String[] {"all cages"});
+	private JComboBox<String> allCagesComboBox  = new JComboBox<String> (new String[] {"all cages"});
 	private JSpinner 	thresholdSpinner		= new JSpinner(new SpinnerNumberModel(60, 0, 255, 1));
 	private JSpinner 	jitterTextField 		= new JSpinner(new SpinnerNumberModel(5, 0, 1000, 1));
 	private JSpinner 	objectLowsizeSpinner	= new JSpinner(new SpinnerNumberModel(50, 0, 9999, 1));
@@ -97,6 +98,8 @@ public class Detect1 extends JPanel implements ChangeListener, ItemListener, Pro
 		panel1.add(startComputationButton);
 		panel1.add(allCagesComboBox);
 		panel1.add(allCheckBox);
+		panel1.add(new JLabel("n flies "));
+		panel1.add(nFliesPresentSpinner);
 		add(panel1);
 		
 		allCagesComboBox.addPopupMenuListener(this);
@@ -236,6 +239,7 @@ public class Detect1 extends JPanel implements ChangeListener, ItemListener, Pro
 		options.jitter 			= (int) jitterTextField.getValue();
 		options.videoChannel 	= 0; //colorChannelComboBox.getSelectedIndex();
 		options.transformop 	= (ImageTransformEnums) transformComboBox.getSelectedItem();
+		options.nFliesPresent   = (int) nFliesPresentSpinner.getValue();
 		
 		options.transformop		= (ImageTransformEnums) backgroundComboBox.getSelectedItem();
 		options.threshold		= (int) thresholdSpinner.getValue();

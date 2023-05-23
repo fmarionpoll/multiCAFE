@@ -80,6 +80,7 @@ public class BuildSeriesOptions implements XMLPersistent
 	public int 			jitter 					= 10;
 	public boolean		forceBuildBackground	= false;
 	public boolean		detectFlies				= true;
+	public int			nFliesPresent			= 1;
 	
 	public ImageTransformEnums transformop = ImageTransformEnums.NONE; 
 	public int			videoChannel 			= 0;
