@@ -1,5 +1,6 @@
 package plugins.fmp.multicafe2.experiment;
 
+import java.awt.Rectangle;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,11 +16,13 @@ import org.w3c.dom.NodeList;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.sequence.Sequence;
+import icy.type.geom.Polygon2D;
 import icy.util.XMLUtil;
 
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
+import plugins.kernel.roi.roi2d.ROI2DPolygon;
 import plugins.kernel.roi.roi2d.ROI2DShape;
 
 
@@ -512,7 +515,25 @@ public class Capillaries
 		return scalingFactorToPhysicalUnits;
 	}
 	
+	public ROI2DPolygon get2DPolygonEnclosingCapillaries() {
+		Rectangle  outerRectangle = null;
+		for (Capillary cap : capillariesList) {
+			Rectangle rect = cap.getRoi().getBounds();
+			if (outerRectangle == null) {
+				outerRectangle = rect;
+			}
+			else
+				outerRectangle.add(rect);
+			}
+		Polygon2D polygon = new Polygon2D(outerRectangle);
+		return new ROI2DPolygon(polygon);
+	}
 	
+	public void deleteCapillariesROI() {
+		for (Capillary cap : capillariesList) {
+			cap.setRoi(null);
+			}
+	}
 	
 	
 	

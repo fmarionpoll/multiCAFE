@@ -34,7 +34,7 @@ public class Levels extends JPanel
 	
 	
 	JCheckBox 	lrPICheckBox 		= new JCheckBox("L+R & pref index", true);
-	JLabel		lrPILabel			= new JLabel("valid min (µl):");
+	JLabel		lrPILabel			= new JLabel("compute PI only if L+R > ");
 	JCheckBox 	sumPerCageCheckBox 	= new JCheckBox("sum/cage", false);
 	JSpinner 	lrPIThresholdJSpinner = new JSpinner(new SpinnerNumberModel(0.0, 0., 100., 0.01));
 	

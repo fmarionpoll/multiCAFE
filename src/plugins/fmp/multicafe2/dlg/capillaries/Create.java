@@ -110,7 +110,17 @@ public class Create extends JPanel
 	{
 		addPolygon2DButton.addActionListener(new ActionListener () {
 			@Override public void actionPerformed( final ActionEvent e ) { 
-				create2DPolygon();
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+				if ((exp != null) && (exp.capillaries != null)) {
+					ROI2DPolygon extRect = exp.capillaries.get2DPolygonEnclosingCapillaries();
+					exp.capillaries.deleteCapillariesROI();
+					final String dummyname = "perimeter_enclosing_capillaries";
+					extRect.setName(dummyname);
+					exp.seqCamData.seq.addROI(extRect);
+					exp.seqCamData.seq.setSelectedROI(extRect);
+				}
+				else
+					create2DPolygon();
 			}});
 		
 		createROIsFromPolygonButton2.addActionListener(new ActionListener () {
@@ -210,6 +220,7 @@ public class Create extends JPanel
 		seqCamData.seq.addROI(roi);
 		seqCamData.seq.setSelectedROI(roi);
 	}
+	
 	
 	private boolean isRoiPresent(SequenceCamData seqCamData, String dummyname) 
 	{
