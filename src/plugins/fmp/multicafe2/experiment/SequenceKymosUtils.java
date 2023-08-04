@@ -31,7 +31,7 @@ public class SequenceKymosUtils
 			boolean found = false;
 			for (Capillary cap: exp.capillaries.capillariesList) 
 			{
-				if (roi.getName().equals(cap.getRoiName())) 
+				if (cap.getRoi()!= null && roi.getName().equals(cap.getRoiName())) 
 				{
 					found = true;
 					break;

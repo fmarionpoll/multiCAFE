@@ -529,10 +529,8 @@ public class Capillaries
 		return new ROI2DPolygon(polygon);
 	}
 	
-	public void deleteCapillariesROI() {
-		for (Capillary cap : capillariesList) {
-			cap.setRoi(null);
-			}
+	public void deleteAllCapillaries() {
+		capillariesList.clear();
 	}
 	
 	

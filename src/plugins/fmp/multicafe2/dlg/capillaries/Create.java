@@ -113,11 +113,14 @@ public class Create extends JPanel
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if ((exp != null) && (exp.capillaries != null)) {
 					ROI2DPolygon extRect = exp.capillaries.get2DPolygonEnclosingCapillaries();
-					exp.capillaries.deleteCapillariesROI();
+					exp.capillaries.deleteAllCapillaries();
+					exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
+					exp.seqCamData.seq.removeAllROI();
 					final String dummyname = "perimeter_enclosing_capillaries";
 					extRect.setName(dummyname);
 					exp.seqCamData.seq.addROI(extRect);
 					exp.seqCamData.seq.setSelectedROI(extRect);
+					// TODO delete kymos
 				}
 				else
 					create2DPolygon();
