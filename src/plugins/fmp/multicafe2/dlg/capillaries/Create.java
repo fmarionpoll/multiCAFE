@@ -198,12 +198,12 @@ public class Create extends JPanel
 	
 	void setGroupingAndNumber(Capillaries cap) 
 	{
-		setGroupedBy2(cap.desc.grouping == 2);
+		setGroupedBy2(cap.capillariesDescription.grouping == 2);
 	}
 	
 	Capillaries getGrouping(Capillaries cap) 
 	{
-		cap.desc.grouping = getGroupedBy2() ? 2: 1;
+		cap.capillariesDescription.grouping = getGroupedBy2() ? 2: 1;
 		return cap;
 	}
 

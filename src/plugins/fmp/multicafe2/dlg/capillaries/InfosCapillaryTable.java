@@ -193,7 +193,7 @@ public class InfosCapillaryTable extends JPanel
 						{
 							if (cap.getKymographName().equals(cap0.getKymographName()))
 								continue;
-							if ((exp.capillaries.desc.grouping == 2) && (!cap.getCapillarySide().equals(side)))
+							if ((exp.capillaries.capillariesDescription.grouping == 2) && (!cap.getCapillarySide().equals(side)))
 								continue;
 							else 
 							{
@@ -297,7 +297,7 @@ public class InfosCapillaryTable extends JPanel
 	
 	private void exchangeLR() {
 		Experiment exp = (Experiment)parent0.expListCombo.getSelectedItem();
-		if (exp == null || exp.capillaries.desc.grouping != 2)
+		if (exp == null || exp.capillaries.capillariesDescription.grouping != 2)
 			return;
 		
 		int columnIndex = tableView.getSelectedColumn();

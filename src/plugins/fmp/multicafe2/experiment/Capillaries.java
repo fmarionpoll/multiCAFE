@@ -2,6 +2,8 @@ package plugins.fmp.multicafe2.experiment;
 
 import java.awt.Rectangle;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ import plugins.kernel.roi.roi2d.ROI2DShape;
 
 public class Capillaries 
 {	
-	public CapillariesDescription 	desc				= new CapillariesDescription();
+	public CapillariesDescription 	capillariesDescription	= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public List <Capillary> 		capillariesList		= new ArrayList <Capillary>();
 	private	KymoIntervals 			capillariesListTimeIntervals = null;
@@ -52,7 +54,7 @@ public class Capillaries
 			final Document doc = XMLUtil.createDocument(true);
 			if (doc != null) 
 			{
-				desc.xmlSaveCapillaryDescription (doc);
+				capillariesDescription.xmlSaveCapillaryDescription (doc);
 				xmlSaveListOfCapillaries(doc);
 				return XMLUtil.saveDocument(doc, csFileName);
 			}
@@ -67,7 +69,8 @@ public class Capillaries
 		
 		for (Capillary cap: capillariesList) 
 			cap.xmlSaveCapillary_Measures(directory);
-
+		
+		csvSaveCapillaryMeasures(directory);
 		return true;
 	}
 	
@@ -78,7 +81,7 @@ public class Capillaries
 		final Document doc = XMLUtil.loadDocument(csFileName);
 		if (doc != null) 
 		{
-			desc.xmlLoadCapillaryDescription(doc);
+			capillariesDescription.xmlLoadCapillaryDescription(doc);
 			return xmlLoadCapillaries_Only_v1(doc);		
 		}
 		return false;
@@ -91,8 +94,8 @@ public class Capillaries
 		final Document doc = XMLUtil.loadDocument(csFileName);
 		if (doc != null) 
 		{
-			desc.xmlLoadCapillaryDescription(doc);
-			switch (desc.version) 
+			capillariesDescription.xmlLoadCapillaryDescription(doc);
+			switch (capillariesDescription.version) 
 			{
 			case 1: // old xml storage structure
 				xmlLoadCapillaries_Only_v1(doc);
@@ -217,17 +220,17 @@ public class Capillaries
 			Node nodecapillary = XMLUtil.getElement(node, ID_CAPILLARY_+i);
 			Capillary cap = new Capillary();
 			cap.loadFromXML_CapillaryOnly(nodecapillary);
-			if (desc.grouping == 2 && (cap.capStimulus != null && cap.capStimulus.equals(".."))) 
+			if (capillariesDescription.grouping == 2 && (cap.capStimulus != null && cap.capStimulus.equals(".."))) 
 			{
 				if (cap.getCapillarySide().equals("R")) 
 				{
-					cap.capStimulus = desc.stimulusR;
-					cap.capConcentration = desc.concentrationR;
+					cap.capStimulus = capillariesDescription.stimulusR;
+					cap.capConcentration = capillariesDescription.concentrationR;
 				} 
 				else 
 				{
-					cap.capStimulus = desc.stimulusL;
-					cap.capConcentration = desc.concentrationL;
+					cap.capStimulus = capillariesDescription.stimulusL;
+					cap.capConcentration = capillariesDescription.concentrationL;
 				}
 			}
 			if (!isPresent(cap))
@@ -254,7 +257,7 @@ public class Capillaries
 	
 	public void copy (Capillaries cap) 
 	{
-		desc.copy(cap.desc);
+		capillariesDescription.copy(cap.capillariesDescription);
 		capillariesList.clear();
 		for (Capillary ccap: cap.capillariesList) 
 		{
@@ -314,13 +317,13 @@ public class Capillaries
 		for (Capillary cap: capillariesList) 
 		{
 			transferCapGroupCageIDToCapillary(cap);
-			cap.setVolumeAndPixels (desc.volume, desc.pixels);
+			cap.setVolumeAndPixels (capillariesDescription.volume, capillariesDescription.pixels);
 		}
 	}
 	
 	private void transferCapGroupCageIDToCapillary (Capillary cap) 
 	{
-		if (desc.grouping != 2)
+		if (capillariesDescription.grouping != 2)
 			return;
 		String	name = cap.getRoiName();
 		String letter = name.substring(name.length() - 1);
@@ -509,7 +512,7 @@ public class Capillaries
 				scalingFactorToPhysicalUnits = 1.;
 				break;
 			default:
-				scalingFactorToPhysicalUnits = desc.volume / desc.pixels;
+				scalingFactorToPhysicalUnits = capillariesDescription.volume / capillariesDescription.pixels;
 				break;
 		}
 		return scalingFactorToPhysicalUnits;
@@ -534,7 +537,32 @@ public class Capillaries
 	}
 	
 	
-	
+	boolean csvSaveCapillaryMeasures(String directory) {
+		try {
+			FileWriter csvWriter = new FileWriter(directory + File.separator +"CapillariesMeasures.csv");
+			
+			csvWriter.append(capillariesDescription.getCSVDescriptorHeader());
+			csvWriter.append("\n");
+			csvWriter.append(capillariesDescription.getCSVDescriptorData());
+			csvWriter.append("\n");
+			if (capillariesList.size() > 0)
+				csvWriter.append(capillariesList.get(0).getCSVDescriptorHeader());
+			csvWriter.append("\n");
+			for (Capillary cap:capillariesList) {
+				csvWriter.append(cap.getCSVDescriptorData());
+				csvWriter.append("\n");
+			}
+
+			csvWriter.flush();
+			csvWriter.close();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return true;
+	}
 	
 	
 	

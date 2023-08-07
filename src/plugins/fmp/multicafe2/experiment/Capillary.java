@@ -6,6 +6,7 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -555,6 +556,48 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	        loadFromXML_intervals(node);
 	    }
 	    return flag;
+	}
+	
+	public String getCSVDescriptorHeader() {
+		StringBuffer sbf = new StringBuffer();
+		
+		sbf.append("#\tCAPILLARIES\tdescribe each capillary\n");
+		List<String> row2 = Arrays.asList(
+				ID_VERSION,
+				ID_INDEXIMAGE, 
+				ID_NAME, 
+				ID_NAMETIFF, 
+				ID_DESCOK,
+				ID_VERSIONINFOS,
+				ID_NFLIES,
+				ID_CAGENB,
+				ID_CAPVOLUME, 
+				ID_CAPPIXELS, 
+				ID_STIML, 
+				ID_CONCL, 
+				ID_SIDE);
+		sbf.append(String.join("\t", row2));
+		return sbf.toString();
+	}
+	
+	public String getCSVDescriptorData() {	
+		StringBuffer sbf = new StringBuffer();
+		List<String> row3 = Arrays.asList(
+				version,
+				Integer.toString(indexKymograph), 
+				kymographName, 
+				filenameTIFF, 
+				"FALSE",
+				Integer.toString(versionInfos),
+				Integer.toString(capNFlies),
+				Integer.toString(capCageID),
+				Double.toString(capVolume), 
+				Integer.toString(capPixels), 
+				capStimulus, 
+				capConcentration, 
+				capSide);
+		sbf.append(String.join("\t", row3));
+		return sbf.toString();
 	}
 	
 	private boolean loadFromXML_intervals(Node node) 

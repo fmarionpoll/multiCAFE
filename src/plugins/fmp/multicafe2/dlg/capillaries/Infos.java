@@ -86,13 +86,13 @@ public class Infos extends JPanel
 	
 	void setAllDescriptors(Capillaries cap) 
 	{
-		capillaryVolumeSpinner.setValue( cap.desc.volume);
-		capillaryPixelsSpinner.setValue( cap.desc.pixels);
+		capillaryVolumeSpinner.setValue( cap.capillariesDescription.volume);
+		capillaryPixelsSpinner.setValue( cap.capillariesDescription.pixels);
 	}
 		
 	void getDescriptors(Capillaries capList) {
-		capList.desc.volume = (double) capillaryVolumeSpinner.getValue();
-		capList.desc.pixels = (int) capillaryPixelsSpinner.getValue();
+		capList.capillariesDescription.volume = (double) capillaryVolumeSpinner.getValue();
+		capList.capillariesDescription.pixels = (int) capillaryPixelsSpinner.getValue();
 	}
 	
 	public int getLengthFirstCapillaryROI() {

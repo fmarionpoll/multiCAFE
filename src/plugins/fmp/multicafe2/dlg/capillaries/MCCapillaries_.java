@@ -135,7 +135,7 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	{
 		if (exp != null) {
 			SequenceKymosUtils.transferCamDataROIStoKymo(exp);
-			exp.capillaries.desc_old.copy(exp.capillaries.desc);
+			exp.capillaries.desc_old.copy(exp.capillaries.capillariesDescription);
 			tabInfos.setAllDescriptors(exp.capillaries);
 			tabCreate.setGroupingAndNumber(exp.capillaries);
 		}
@@ -178,9 +178,9 @@ public class MCCapillaries_ extends JPanel implements PropertyChangeListener, Ch
 	
 	public void transferPreviousExperimentCapillariesInfos(Experiment exp0, Experiment exp)
 	{
-		exp.capillaries.desc.grouping = exp0.capillaries.desc.grouping;
-		tabCreate.setGroupedBy2(exp0.capillaries.desc.grouping == 2);
-		exp.capillaries.desc.volume = exp0.capillaries.desc.volume;
+		exp.capillaries.capillariesDescription.grouping = exp0.capillaries.capillariesDescription.grouping;
+		tabCreate.setGroupedBy2(exp0.capillaries.capillariesDescription.grouping == 2);
+		exp.capillaries.capillariesDescription.volume = exp0.capillaries.capillariesDescription.volume;
 		tabInfos.setAllDescriptors(exp0.capillaries) ;
 	}
 

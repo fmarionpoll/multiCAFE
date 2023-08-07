@@ -220,6 +220,8 @@ public class CapillaryLevel  implements XMLPersistent
 		return roi;
 	}
 	
+	// ----------------------------------------------------------------------
+	
 	public int loadCapillaryLimitFromXML(Node node, String nodename, String header) 
 	{
 		final Node nodeMeta = XMLUtil.getElement(node, nodename);

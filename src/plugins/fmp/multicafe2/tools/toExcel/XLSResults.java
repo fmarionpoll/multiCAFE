@@ -9,17 +9,17 @@ import java.util.List;
 
 public class XLSResults 
 {
-	public String		name 		= null;
-	String 				stimulus	= null;
-	String 				concentration = null;
-	int 				nadded		= 1;
-	int 				cageID		= 0;
-	boolean[]			padded_out	= null;
+	public String				name 		= null;
+	String 						stimulus	= null;
+	String 						concentration = null;
+	int 						nadded		= 1;
+	int 						cageID		= 0;
+	boolean[]					padded_out	= null;
 	
 	public int 					dimension	= 0;
 	public int					nflies		= 1;
 	public EnumXLSExportType 	exportType 	= null;
-	public ArrayList<Integer > dataInt 	= null;
+	public ArrayList<Integer > 	dataInt 	= null;
 	public double []			valuesOut	= null;
 	
 	

@@ -897,12 +897,12 @@ public class Experiment
 				&& field_sex.contentEquals("..")
 				&& field_strain.contentEquals("..")) 
 		{
-			field_boxID = capillaries.desc.old_boxID;
-			field_experiment = capillaries.desc.old_experiment;
-			field_comment1 = capillaries.desc.old_comment1;
-			field_comment2 = capillaries.desc.old_comment2;
-			field_sex = capillaries.desc.old_sex;
-			field_strain = capillaries.desc.old_strain;
+			field_boxID = capillaries.capillariesDescription.old_boxID;
+			field_experiment = capillaries.capillariesDescription.old_experiment;
+			field_comment1 = capillaries.capillariesDescription.old_comment1;
+			field_comment2 = capillaries.capillariesDescription.old_comment2;
+			field_sex = capillaries.capillariesDescription.old_sex;
+			field_strain = capillaries.capillariesDescription.old_strain;
 		}
 		return flag;
 	}
@@ -960,7 +960,7 @@ public class Experiment
 		{
 			final Document doc = XMLUtil.loadDocument(filename);
 			if (doc != null) 
-				return capillaries.desc.xmlLoadCapillaryDescription(doc); 
+				return capillaries.capillariesDescription.xmlLoadCapillaryDescription(doc); 
 		}
 		return false;
 	}
@@ -981,12 +981,12 @@ public class Experiment
 	
 	private void transferExpDescriptorsToCapillariesDescriptors() 
 	{
-		capillaries.desc.old_boxID = field_boxID;
-		capillaries.desc.old_experiment = field_experiment;
-		capillaries.desc.old_comment1 = field_comment1;
-		capillaries.desc.old_comment2 = field_comment2;	
-		capillaries.desc.old_strain = field_strain;
-		capillaries.desc.old_sex = field_sex;
+		capillaries.capillariesDescription.old_boxID = field_boxID;
+		capillaries.capillariesDescription.old_experiment = field_experiment;
+		capillaries.capillariesDescription.old_comment1 = field_comment1;
+		capillaries.capillariesDescription.old_comment2 = field_comment2;	
+		capillaries.capillariesDescription.old_strain = field_strain;
+		capillaries.capillariesDescription.old_sex = field_sex;
 	}
 
 	public boolean loadReferenceImage() 

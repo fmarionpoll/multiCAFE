@@ -1,5 +1,8 @@
 package plugins.fmp.multicafe2.experiment;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -52,7 +55,47 @@ public class CapillariesDescription
 	
 	private final static String ID_NOPE 			= "..";
 
+	public String getCSVDescriptorHeader() {
+		StringBuffer sbf = new StringBuffer();
+		sbf.append("#\tDESCRIPTION\tCapillarytrack data\n");
+		List<String> row2 = Arrays.asList(
+				"Version",
+				ID_DESCGROUPING, 
+				ID_DESCVOLUMEUL, 
+				ID_DESCNPIXELS, 
+				ID_STIMR,
+				ID_CONCR,
+				ID_STIML,
+				ID_CONCL,
+				ID_BOXID, 
+				ID_EXPT, 
+				ID_COMMENT1, 
+				ID_COMMENT2, 
+				ID_STRAIN, 
+				ID_SEX);
+		sbf.append(String.join("\t", row2));
+		return sbf.toString();
+	}
 	
+	public String getCSVDescriptorData() {
+		StringBuffer sbf = new StringBuffer();
+		List<String> row3 = Arrays.asList(
+				Integer.toString(grouping),
+				Double.toString(volume), 
+				Integer.toString(pixels), 
+				stimulusR,
+				concentrationR,
+				stimulusL,
+				concentrationL,
+				old_boxID, 
+				old_experiment, 
+				old_comment1, 
+				old_comment2, 
+				old_strain, 
+				old_sex);
+		sbf.append(String.join("\t", row3));
+		return sbf.toString();
+	}
 
 	public void copy (CapillariesDescription desc) 
 	{
