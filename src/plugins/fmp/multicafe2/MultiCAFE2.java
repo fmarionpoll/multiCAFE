@@ -10,6 +10,7 @@ import icy.main.Icy;
 import icy.plugin.PluginLauncher;
 import icy.plugin.PluginLoader;
 import icy.plugin.abstract_.PluginActionable;
+import icy.preferences.GeneralPreferences;
 import plugins.fmp.multicafe2.dlg.JComponents.ExperimentCombo;
 import plugins.fmp.multicafe2.dlg.cages.MCCages_;
 import plugins.fmp.multicafe2.dlg.capillaries.MCCapillaries_;
@@ -63,6 +64,8 @@ public class MultiCAFE2 extends PluginActionable
 	public static void main (String[] args)
 	{
 		Icy.main(args);
+		//Boolean flag = GeneralPreferences.getSequencePersistence();
+		GeneralPreferences.setSequencePersistence(false);
 		PluginLauncher.start(PluginLoader.getPlugin(MultiCAFE2.class.getName()));
 	}
 

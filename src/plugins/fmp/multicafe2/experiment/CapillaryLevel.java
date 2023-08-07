@@ -280,15 +280,15 @@ public class CapillaryLevel  implements XMLPersistent
 	    }
 	}
 	
-	void saveLevel2XML(Node nodeMeta, Polyline2D line)  
+	void saveLevel2XML(Node nodeMeta, Polyline2D polyline)  
 	{
-		XMLUtil.setElementIntValue(nodeMeta, ID_NPOINTS, line.npoints);
-    	for (int i=0; i< line.npoints; i++) 
+		XMLUtil.setElementIntValue(nodeMeta, ID_NPOINTS, polyline.npoints);
+    	for (int i=0; i< polyline.npoints; i++) 
     	{
     		Element elmt = XMLUtil.setElement(nodeMeta, ID_N+i);
     		if (i==0)
-    			XMLUtil.setAttributeDoubleValue(elmt, ID_X, line.xpoints[i]);
-    		XMLUtil.setAttributeDoubleValue(elmt, ID_Y, line.ypoints[i]);
+    			XMLUtil.setAttributeDoubleValue(elmt, ID_X, polyline.xpoints[i]);
+    		XMLUtil.setAttributeDoubleValue(elmt, ID_Y, polyline.ypoints[i]);
     	}
 	}
 	
