@@ -13,6 +13,7 @@ import icy.file.xml.XMLPersistent;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.type.geom.Polyline2D;
+import icy.util.StringUtil;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
@@ -69,6 +70,44 @@ public class CapillaryGulps implements XMLPersistent
 	    }
         return flag;
 	}
+	
+	// -------------------------------
+	public String getCSVData(int indexKymograph) {
+
+		StringBuffer sbfN = new StringBuffer();
+		StringBuffer sbfX = new StringBuffer();
+		StringBuffer sbfY = new StringBuffer();
+		sbfN.append("N"+Integer.toString(indexKymograph)+"\t");
+		sbfX.append("X"+Integer.toString(indexKymograph)+"\t");
+		sbfY.append("Y"+Integer.toString(indexKymograph)+"\t");
+
+        for (int i =0; i< rois.size(); i++)
+        {
+        	Polyline2D polyline = ((ROI2DPolyLine) rois.get(i)).getPolyline2D();
+        	for (int j=0; j< polyline.npoints; j++)
+        	{
+        		sbfN.append(Integer.toString(i));
+                sbfN.append("\t");
+                sbfX.append(StringUtil.toString(polyline.xpoints[j]));
+                sbfX.append("\t");
+                sbfY.append(StringUtil.toString(polyline.ypoints[j]));
+                sbfY.append("\t");
+        	}
+        }
+
+		StringBuffer sbf = new StringBuffer();
+		sbf.append(sbfN);
+		sbf.append("\n");
+		sbf.append(sbfX);
+		sbf.append("\n");
+		sbf.append(sbfY);
+		sbf.append("\n");
+
+		return sbf.toString();
+	}
+	
+	
+	// -------------------------------
 	
 	boolean isThereAnyMeasuresDone() 
 	{

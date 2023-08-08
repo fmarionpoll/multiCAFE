@@ -536,34 +536,58 @@ public class Capillaries
 		capillariesList.clear();
 	}
 	
+	// --------------------------------
 	
 	boolean csvSaveCapillaryMeasures(String directory) {
 		try {
 			FileWriter csvWriter = new FileWriter(directory + File.separator +"CapillariesMeasures.csv");
 			
-			csvWriter.append(capillariesDescription.getCSVDescriptorHeader());
-			csvWriter.append("\n");
-			csvWriter.append(capillariesDescription.getCSVDescriptorData());
-			csvWriter.append("\n");
-			if (capillariesList.size() > 0)
-				csvWriter.append(capillariesList.get(0).getCSVDescriptorHeader());
-			csvWriter.append("\n");
-			for (Capillary cap:capillariesList) {
-				csvWriter.append(cap.getCSVDescriptorData());
-				csvWriter.append("\n");
-			}
-
+			csvSaveCapillariesMeasuresDescription(csvWriter);
+			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.TOPLEVEL);
+			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.BOTTOMLEVEL);
+			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.TOPDERIVATIVE);
+			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.GULPS);
 			csvWriter.flush();
 			csvWriter.close();
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return true;
 	}
 	
+	boolean csvSaveCapillariesMeasuresDescription(FileWriter csvWriter) {
+		try {
+			csvWriter.append(capillariesDescription.getCSVDescriptorHeader());
+			csvWriter.append(capillariesDescription.getCSVDescriptorData());
+			if (capillariesList.size() > 0)
+				csvWriter.append(capillariesList.get(0).getCSVDescriptorHeader());
+			for (Capillary cap:capillariesList) {
+				csvWriter.append(cap.getCSVDescriptorData());
+			}			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return true;
+	}
+	
+	boolean csvSaveCapillariesMeasures(FileWriter csvWriter, EnumCapillaryMeasureType measureType) {
+		try {
+			if (capillariesList.size() <= 1)
+				return false;
+			
+			csvWriter.append(capillariesList.get(0).getCSVCapillaryDataHeader(measureType));
+			for (Capillary cap:capillariesList) {
+				csvWriter.append(cap.getCSVCapillaryData(measureType, false, true));
+			}			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return true;
+	}
 	
 	
 	

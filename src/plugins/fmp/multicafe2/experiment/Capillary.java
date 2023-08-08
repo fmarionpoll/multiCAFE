@@ -558,48 +558,103 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	    return flag;
 	}
 	
+	// -----------------------------------------------------------------------------
+	
 	public String getCSVDescriptorHeader() {
 		StringBuffer sbf = new StringBuffer();
 		
 		sbf.append("#\tCAPILLARIES\tdescribe each capillary\n");
 		List<String> row2 = Arrays.asList(
-				ID_VERSION,
 				ID_INDEXIMAGE, 
-				ID_NAME, 
+				"kymo_filename", 
 				ID_NAMETIFF, 
-				ID_DESCOK,
-				ID_VERSIONINFOS,
-				ID_NFLIES,
 				ID_CAGENB,
+				ID_NFLIES,
 				ID_CAPVOLUME, 
 				ID_CAPPIXELS, 
 				ID_STIML, 
 				ID_CONCL, 
 				ID_SIDE);
 		sbf.append(String.join("\t", row2));
+		sbf.append("\n");
 		return sbf.toString();
 	}
 	
 	public String getCSVDescriptorData() {	
 		StringBuffer sbf = new StringBuffer();
-		List<String> row3 = Arrays.asList(
-				version,
+		List<String> row = Arrays.asList(
 				Integer.toString(indexKymograph), 
 				kymographName, 
 				filenameTIFF, 
-				"FALSE",
-				Integer.toString(versionInfos),
-				Integer.toString(capNFlies),
 				Integer.toString(capCageID),
+				Integer.toString(capNFlies),
 				Double.toString(capVolume), 
 				Integer.toString(capPixels), 
 				capStimulus, 
 				capConcentration, 
 				capSide);
-		sbf.append(String.join("\t", row3));
+		sbf.append(String.join("\t", row));
+		sbf.append("\n");
 		return sbf.toString();
 	}
 	
+	public String getCSVCapillaryDataHeader(EnumCapillaryMeasureType measureType) {
+		StringBuffer sbf = new StringBuffer();
+		switch(measureType) {
+			case TOPLEVEL:
+				sbf.append("#\tTOPLEVEL\tliquid level at the top\n");
+				sbf.append(getCSVCapillaryData(measureType, true, false));
+				break;
+			case BOTTOMLEVEL:
+				sbf.append("#\tBOTTOMtliquid level at the bottom\n");
+				sbf.append(getCSVCapillaryData(measureType, true, false));
+				break;
+			case TOPDERIVATIVE:
+				sbf.append("#\tTOPDERIVATIVE\tderivative of liquid level at the top\n");
+				sbf.append(getCSVCapillaryData(measureType, true, false));
+				break;
+			case GULPS:
+				sbf.append("#\tGULPS\tgulps\n");
+				break;
+			default:
+				sbf.append("#\tUNDEFINED\t------------\n");
+				break;
+		}
+		
+		return sbf.toString();
+	}
+	
+	public String getCSVCapillaryData(EnumCapillaryMeasureType measureType, boolean exportX, boolean exportY) {
+		switch(measureType) {
+			case BOTTOMLEVEL:
+				return getCSVCapillaryLevelData(ptsBottom, exportX, exportY);
+			case TOPDERIVATIVE:
+				return getCSVCapillaryLevelData(ptsDerivative, exportX, exportY);
+			case TOPLEVEL:
+				return getCSVCapillaryLevelData(ptsTop, exportX, exportY);
+			case GULPS:
+				return getCSVCapillaryGulpsData(gulpsRois);
+			default:
+				break;
+		}
+		
+		return null;
+	}
+	
+	private String getCSVCapillaryLevelData(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
+		if (ptsArray == null)
+			return null;
+		return ptsArray.getCSVData(exportX, exportY, indexKymograph);
+	}
+	
+	private String getCSVCapillaryGulpsData(CapillaryGulps capillaryGulps) {
+		if (capillaryGulps == null)
+			return null;
+		return capillaryGulps.getCSVData(indexKymograph);
+	}
+	
+	// -----------------------------------------------------------------------------
+
 	private boolean loadFromXML_intervals(Node node) 
 	{
 		roisForKymo.clear();

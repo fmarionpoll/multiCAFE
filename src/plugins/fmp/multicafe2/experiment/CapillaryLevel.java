@@ -11,6 +11,7 @@ import icy.file.xml.XMLPersistent;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.type.geom.Polyline2D;
+import icy.util.StringUtil;
 import icy.util.XMLUtil;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
@@ -346,4 +347,44 @@ public class CapillaryLevel  implements XMLPersistent
 		polylineLevel = polylineLevel.cropPolylineToNewSize(newSize);		
 	}
 	
+	// ----------------------------------------------------------------------
+	
+	public String getCSVData(boolean exportX, boolean exportY, int indexKymograph) {
+
+		StringBuffer sbf = new StringBuffer();
+		
+		if (exportX) {
+			sbf.append("X"+Integer.toString(indexKymograph)+"\t");
+			sbf.append(getCSVDataX());
+			sbf.append("\n");
+		}
+		
+		if (exportY) {
+			sbf.append("Y"+Integer.toString(indexKymograph)+"\t");
+			sbf.append(getCSVDataY());
+			sbf.append("\n");
+		}
+		
+		return sbf.toString();
+	}
+	
+	public String getCSVDataX() {	
+		StringBuffer sbf = new StringBuffer();
+        for (int i =0; i< polylineLevel.npoints; i++)
+        {
+            sbf.append(StringUtil.toString(polylineLevel.xpoints[i]));
+            sbf.append("\t");
+        }
+		return sbf.toString();
+	}
+	
+	public String getCSVDataY() {	
+		StringBuffer sbf = new StringBuffer();
+        for (int i =0; i< polylineLevel.npoints; i++)
+        {
+            sbf.append(StringUtil.toString(polylineLevel.ypoints[i]));
+            sbf.append("\t");
+        }
+		return sbf.toString();
+	}
 }

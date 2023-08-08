@@ -59,7 +59,6 @@ public class CapillariesDescription
 		StringBuffer sbf = new StringBuffer();
 		sbf.append("#\tDESCRIPTION\tCapillarytrack data\n");
 		List<String> row2 = Arrays.asList(
-				"Version",
 				ID_DESCGROUPING, 
 				ID_DESCVOLUMEUL, 
 				ID_DESCNPIXELS, 
@@ -74,6 +73,7 @@ public class CapillariesDescription
 				ID_STRAIN, 
 				ID_SEX);
 		sbf.append(String.join("\t", row2));
+		sbf.append("\n");
 		return sbf.toString();
 	}
 	
@@ -94,6 +94,7 @@ public class CapillariesDescription
 				old_strain, 
 				old_sex);
 		sbf.append(String.join("\t", row3));
+		sbf.append("\n");
 		return sbf.toString();
 	}
 
