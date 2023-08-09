@@ -116,24 +116,26 @@ public class Capillaries
 	
 	public boolean xmlLoadCapillaries_Measures(String directory) 
 	{
-		boolean flag = true;
+		boolean flag = false;
 		int ncapillaries = capillariesList.size();
-
+		
 		try {
-			csvLoadCapillariesData(directory);
+			flag = csvLoadCapillariesData(directory);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		for (int i = 0; i < ncapillaries; i++) 
-		{
-			String csFile = directory + File.separator + capillariesList.get(i).getKymographName() + ".xml";
-			final Document capdoc = XMLUtil.loadDocument(csFile);
-			Node node = XMLUtil.getRootElement(capdoc, true);
-			Capillary cap = capillariesList.get(i);
-			cap.indexKymograph = i;
-			flag |= cap.loadFromXML_MeasuresOnly(node);
+		if (!flag) {
+			for (int i = 0; i < ncapillaries; i++) 
+			{
+				String csFile = directory + File.separator + capillariesList.get(i).getKymographName() + ".xml";
+				final Document capdoc = XMLUtil.loadDocument(csFile);
+				Node node = XMLUtil.getRootElement(capdoc, true);
+				Capillary cap = capillariesList.get(i);
+				cap.indexKymograph = i;
+				flag |= cap.loadFromXML_MeasuresOnly(node);
+			}
 		}
 		return flag;
 	}
@@ -558,15 +560,19 @@ public class Capillaries
 		    		csvLoadCapillariesDescription (csvReader);
 		    		break;
 		    	case "TOPLEVEL":
+		    		System.out.println("toplevel\n" );
 		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.TOPLEVEL);
 		    		break;
 		    	case "BOTTOMLEVEL":
+		    		System.out.println("bottomlevel\n" );
 		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.BOTTOMLEVEL);
 		    		break;
 		    	case "TOPDERIVATIVE":
+		    		System.out.println("derivative\n");
 		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.TOPDERIVATIVE);
 		    		break;
 		    	case "GULPS":
+		    		System.out.println("gulps\n");
 		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.GULPS);
 		    		break;
 	    		default:
@@ -701,6 +707,7 @@ public class Capillaries
 					Capillary cap = getCapillaryFromKymographName(data[0]);
 					if (cap == null)
 						cap = new Capillary();
+					System.out.println(cap.getRoiName() );
 					cap.setCSVCapillaryData(measureType, dataIntN, dataIntX, dataIntY);
 				}
 				
