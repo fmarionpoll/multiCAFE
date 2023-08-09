@@ -97,6 +97,23 @@ public class CapillariesDescription
 		sbf.append("\n");
 		return sbf.toString();
 	}
+	
+	public void setCSVDescriptorData(String[] data) {
+		int i= 0; 
+		grouping = Integer.valueOf(data[i]); i++;
+		volume = Double.valueOf(data[i]); i++; 
+		pixels = Integer.valueOf(data[i]); i++; 
+		stimulusR = data[i]; i++;
+		concentrationR = data[i]; i++;
+		stimulusL = data[i]; i++;
+		concentrationL = data[i]; i++;
+		old_boxID= data[i]; i++; 
+		old_experiment= data[i]; i++; 
+		old_comment1= data[i]; i++; 
+		old_comment2= data[i]; i++; 
+		old_strain= data[i]; i++; 
+		old_sex= data[i]; 
+	}
 
 	public void copy (CapillariesDescription desc) 
 	{

@@ -1,7 +1,9 @@
 package plugins.fmp.multicafe2.experiment;
 
 import java.awt.Rectangle;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -32,7 +34,7 @@ public class Capillaries
 {	
 	public CapillariesDescription 	capillariesDescription	= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
-	public List <Capillary> 		capillariesList		= new ArrayList <Capillary>();
+	public ArrayList <Capillary> 	capillariesList		= new ArrayList <Capillary>();
 	private	KymoIntervals 			capillariesListTimeIntervals = null;
 		
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
@@ -70,7 +72,7 @@ public class Capillaries
 		for (Capillary cap: capillariesList) 
 			cap.xmlSaveCapillary_Measures(directory);
 		
-		csvSaveCapillaryMeasures(directory);
+		csvSaveCapillariesData(directory);
 		return true;
 	}
 	
@@ -117,6 +119,13 @@ public class Capillaries
 		boolean flag = true;
 		int ncapillaries = capillariesList.size();
 
+		try {
+			csvLoadCapillariesData(directory);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		for (int i = 0; i < ncapillaries; i++) 
 		{
 			String csFile = directory + File.separator + capillariesList.get(i).getKymographName() + ".xml";
@@ -127,26 +136,6 @@ public class Capillaries
 			flag |= cap.loadFromXML_MeasuresOnly(node);
 		}
 		return flag;
-	}
-	
-	public boolean xmlLoadCapillaries_Measures_Threaded(String directory) 
-	{
-		int ncapillaries = capillariesList.size();
-
-		for (int i = 0; i < ncapillaries; i++) 
-		{
-			final int item = i;
-			java.awt.EventQueue.invokeLater(new Runnable() {
-			    public void run() {
-			    	String csFile = directory + File.separator + capillariesList.get(item).getKymographName() + ".xml";
-					final Document capdoc = XMLUtil.loadDocument(csFile);
-					Node node = XMLUtil.getRootElement(capdoc, true);
-					Capillary cap = capillariesList.get(item);
-					cap.indexKymograph = item;
-					cap.loadFromXML_MeasuresOnly(node);
-			    }});
-		}
-		return true;
 	}
 	
 	private boolean xmlSaveListOfCapillaries(Document doc) 
@@ -331,7 +320,7 @@ public class Capillaries
 		if (letter .equals("R")) 
 		{	
 			String nameL = name.substring(0, name.length() - 1) + "L";
-			Capillary cap0 = getCapillaryFromName(nameL);
+			Capillary cap0 = getCapillaryFromRoiName(nameL);
 			if (cap0 != null) 
 			{
 //				cap.capNFlies = cap0.capNFlies;
@@ -340,11 +329,24 @@ public class Capillaries
 		}
 	}
 	
-	public Capillary getCapillaryFromName(String name) {
+	public Capillary getCapillaryFromRoiName(String name) {
 		Capillary capFound = null;
 		for (Capillary cap: capillariesList) 
 		{
 			if (cap.getRoiName().equals(name)) 
+			{
+				capFound = cap;
+				break;
+			}
+		}
+		return capFound;
+	}
+	
+	public Capillary getCapillaryFromKymographName(String name) {
+		Capillary capFound = null;
+		for (Capillary cap: capillariesList) 
+		{
+			if (cap.getKymographName().equals(name)) 
 			{
 				capFound = cap;
 				break;
@@ -537,12 +539,51 @@ public class Capillaries
 	}
 	
 	// --------------------------------
+	boolean csvLoadCapillariesData(String directory) throws Exception {
+		String pathToCsv = directory + File.separator +"CapillariesMeasures.csv";
+		File csvFile = new File(pathToCsv);
+		if (!csvFile.isFile()) 
+			return false;
+		
+		BufferedReader csvReader = new BufferedReader(new FileReader(pathToCsv));
+		String row;
+		while ((row = csvReader.readLine()) != null) {
+		    String[] data = row.split("\t");
+		    if (data[0] .equals( "#")) {
+		    	switch(data[1]) {
+		    	case "DESCRIPTION":
+		    		csvLoadDescription (csvReader);
+		    		break;
+		    	case "CAPILLARIES":
+		    		csvLoadCapillariesDescription (csvReader);
+		    		break;
+		    	case "TOPLEVEL":
+		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.TOPLEVEL);
+		    		break;
+		    	case "BOTTOMLEVEL":
+		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.BOTTOMLEVEL);
+		    		break;
+		    	case "TOPDERIVATIVE":
+		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.TOPDERIVATIVE);
+		    		break;
+		    	case "GULPS":
+		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.GULPS);
+		    		break;
+	    		default:
+	    			break;
+		    	}
+		    }
+		}
+		csvReader.close();
+		
+		return true;
+	}
 	
-	boolean csvSaveCapillaryMeasures(String directory) {
+	boolean csvSaveCapillariesData(String directory) {
 		try {
 			FileWriter csvWriter = new FileWriter(directory + File.separator +"CapillariesMeasures.csv");
 			
-			csvSaveCapillariesMeasuresDescription(csvWriter);
+			csvSaveCapillariesDescription(csvWriter);
 			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.TOPLEVEL);
 			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.BOTTOMLEVEL);
 			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.TOPDERIVATIVE);
@@ -557,20 +598,71 @@ public class Capillaries
 		return true;
 	}
 	
-	boolean csvSaveCapillariesMeasuresDescription(FileWriter csvWriter) {
+	boolean csvSaveCapillariesDescription(FileWriter csvWriter) {
 		try {
 			csvWriter.append(capillariesDescription.getCSVDescriptorHeader());
 			csvWriter.append(capillariesDescription.getCSVDescriptorData());
-			if (capillariesList.size() > 0)
+			csvWriter.append("n caps=\t" + Integer.toString(capillariesList.size()) + "\n");
+			csvWriter.append("#\t#\n");
+			
+			if (capillariesList.size() > 0) {
 				csvWriter.append(capillariesList.get(0).getCSVDescriptorHeader());
-			for (Capillary cap:capillariesList) {
-				csvWriter.append(cap.getCSVDescriptorData());
-			}			
+				for (Capillary cap:capillariesList) 
+					csvWriter.append(cap.getCSVDescriptorData());
+				csvWriter.append("#\t#\n");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		return true;
+	}
+	
+	String csvLoadCapillariesDescription (BufferedReader csvReader) {
+		String row;
+		try {
+			row = csvReader.readLine();			
+			while ((row = csvReader.readLine()) != null) {
+				String[] data = row.split("\t");
+				if (data[0] .equals( "#")) 
+					return data[1];
+				Capillary cap = getCapillaryFromKymographName(data[0]);
+				if (cap == null)
+					cap = new Capillary();
+				cap.setCSVDescriptorData(data);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	String csvLoadDescription (BufferedReader csvReader) {
+		String row;
+		try {
+			row = csvReader.readLine();
+			row = csvReader.readLine();
+			String[] data = row.split("\t");
+			capillariesDescription.setCSVDescriptorData(data);
+			row = csvReader.readLine();
+			data = row.split("\t");
+			if ( data[0].substring(0, Math.min( data[0].length(), 5)).equals("n cap")) {
+				int ncapillaries = Integer.valueOf(data[1]);
+				if (ncapillaries >= capillariesList.size())
+					capillariesList.ensureCapacity(ncapillaries);
+				else
+					capillariesList.subList(ncapillaries, capillariesList.size()).clear();
+				row = csvReader.readLine();
+				data = row.split("\t");
+			}
+			if (data[0] .equals( "#")) {
+			  	return data[1];
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	boolean csvSaveCapillariesMeasures(FileWriter csvWriter, EnumCapillaryMeasureType measureType) {
@@ -581,18 +673,52 @@ public class Capillaries
 			csvWriter.append(capillariesList.get(0).getCSVCapillaryDataHeader(measureType));
 			for (Capillary cap:capillariesList) {
 				csvWriter.append(cap.getCSVCapillaryData(measureType, false, true));
-			}			
+			}
+			csvWriter.append("#\t#\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		return true;
 	}
 	
+	String csvLoadCapillariesMeasures(BufferedReader csvReader, EnumCapillaryMeasureType measureType) {
+		String row;
+		int [] dataIntN = null;
+		int [] dataIntX = null;
+		int [] dataIntY = null;
+		try {
+			while ((row = csvReader.readLine()) != null) {
+				String[] data = row.split("\t");
+				if (data[0] .equals( "#")) 
+					return data[1];
+				
+				if (data[1].charAt(0) == 'N')
+					dataIntN = csvStringArrayToInt(data);
+				if (data[1].charAt(0) == 'X')
+					dataIntX = csvStringArrayToInt(data);
+				if (data[1].charAt(0) == 'Y') {
+					dataIntY = csvStringArrayToInt(data);
+					Capillary cap = getCapillaryFromKymographName(data[0]);
+					if (cap == null)
+						cap = new Capillary();
+					cap.setCSVCapillaryData(measureType, dataIntN, dataIntX, dataIntY);
+				}
+				
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
-	
-	
-	
+	int[] csvStringArrayToInt(String[] data) {
+		int length = data.length - 2;
+		int[] dataInt = new int[length];
+		for (int i=2; i<length; i++)
+			dataInt[i-2] = Integer.valueOf(data[i]);
+		return dataInt;
+	}
 
 
 }

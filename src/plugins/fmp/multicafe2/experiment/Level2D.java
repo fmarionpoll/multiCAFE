@@ -23,6 +23,11 @@ public class Level2D extends Polyline2D
 		super(xpoints, ypoints, npoints);
 	}
 	
+	public Level2D(int[] xpoints, int[] ypoints, int npoints) 
+	{
+		super(xpoints, ypoints, npoints);
+	}
+	
 	public Level2D(List<Point2D> limit) 
 	{
 		super();

@@ -260,7 +260,7 @@ public class EditCapillariesPositionWithTime extends JPanel implements ListSelec
 		for (ROI2D roi: listRois) {
 			if (!roi.getName().contains("line")) 
 				continue;
-			Capillary cap = exp.capillaries.getCapillaryFromName(roi.getName());
+			Capillary cap = exp.capillaries.getCapillaryFromRoiName(roi.getName());
 			if (cap != null) {
 				ROI2D roilocal = (ROI2D) roi.getCopy();
 				cap.getROI2DKymoAtIntervalT(intervalT).setRoi(roilocal);

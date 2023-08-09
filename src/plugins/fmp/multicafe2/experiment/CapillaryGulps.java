@@ -72,14 +72,14 @@ public class CapillaryGulps implements XMLPersistent
 	}
 	
 	// -------------------------------
-	public String getCSVData(int indexKymograph) {
+	public String getCSVData(String kymographName, int indexKymograph) {
 
 		StringBuffer sbfN = new StringBuffer();
 		StringBuffer sbfX = new StringBuffer();
 		StringBuffer sbfY = new StringBuffer();
-		sbfN.append("N"+Integer.toString(indexKymograph)+"\t");
-		sbfX.append("X"+Integer.toString(indexKymograph)+"\t");
-		sbfY.append("Y"+Integer.toString(indexKymograph)+"\t");
+		sbfN.append(kymographName + "\t"+ "N"+Integer.toString(indexKymograph)+"\t");
+		sbfX.append(kymographName + "\t"+ "X"+Integer.toString(indexKymograph)+"\t");
+		sbfY.append(kymographName + "\t"+ "Y"+Integer.toString(indexKymograph)+"\t");
 
         for (int i =0; i< rois.size(); i++)
         {
@@ -106,6 +106,27 @@ public class CapillaryGulps implements XMLPersistent
 		return sbf.toString();
 	}
 	
+	public void setCSVData(int[] dataN, int[] dataX, int [] dataY) {
+		int icurrent = -1;
+		List<Integer> xpoints = new ArrayList<Integer>();
+		List<Integer> ypoints =  new ArrayList<Integer>();
+		for (int i=0; i < dataN.length; i++) {
+			if (dataN[i] != icurrent || i == dataN.length -1) {
+				if (icurrent >= 0) {
+					addNewGulp(icurrent, xpoints, ypoints);
+					xpoints = new ArrayList<Integer>();
+					ypoints =  new ArrayList<Integer>();
+					icurrent = dataN[i];
+				}
+			}
+			xpoints.add(dataX[i]);
+			ypoints.add(dataY[i]);
+		}
+	}
+	
+	void addNewGulp(int icurrent, List<Integer> xpoints, List<Integer> ypoints ) {
+		
+	}
 	
 	// -------------------------------
 	

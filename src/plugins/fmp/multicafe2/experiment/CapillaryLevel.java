@@ -349,17 +349,19 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	// ----------------------------------------------------------------------
 	
-	public String getCSVData(boolean exportX, boolean exportY, int indexKymograph) {
+	public String getCSVData(String kymographName, boolean exportX, boolean exportY, int indexKymograph) {
 
 		StringBuffer sbf = new StringBuffer();
 		
 		if (exportX) {
+			sbf.append(kymographName + "\t");
 			sbf.append("X"+Integer.toString(indexKymograph)+"\t");
 			sbf.append(getCSVDataX());
 			sbf.append("\n");
 		}
 		
 		if (exportY) {
+			sbf.append(kymographName + "\t");
 			sbf.append("Y"+Integer.toString(indexKymograph)+"\t");
 			sbf.append(getCSVDataY());
 			sbf.append("\n");
@@ -370,7 +372,7 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	public String getCSVDataX() {	
 		StringBuffer sbf = new StringBuffer();
-        for (int i =0; i< polylineLevel.npoints; i++)
+        for (int i = 0; i< polylineLevel.npoints; i++)
         {
             sbf.append(StringUtil.toString(polylineLevel.xpoints[i]));
             sbf.append("\t");
@@ -380,11 +382,15 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	public String getCSVDataY() {	
 		StringBuffer sbf = new StringBuffer();
-        for (int i =0; i< polylineLevel.npoints; i++)
+        for (int i = 0; i< polylineLevel.npoints; i++)
         {
             sbf.append(StringUtil.toString(polylineLevel.ypoints[i]));
             sbf.append("\t");
         }
 		return sbf.toString();
+	}
+	
+	public void setCSVData(int[] dataX, int [] dataY) {
+		polylineLevel = new Level2D(dataX, dataY, dataX.length);
 	}
 }

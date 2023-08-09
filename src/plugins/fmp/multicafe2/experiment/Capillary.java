@@ -565,8 +565,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		
 		sbf.append("#\tCAPILLARIES\tdescribe each capillary\n");
 		List<String> row2 = Arrays.asList(
+				"kymographName", 
 				ID_INDEXIMAGE, 
-				"kymo_filename", 
 				ID_NAMETIFF, 
 				ID_CAGENB,
 				ID_NFLIES,
@@ -583,8 +583,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public String getCSVDescriptorData() {	
 		StringBuffer sbf = new StringBuffer();
 		List<String> row = Arrays.asList(
-				Integer.toString(indexKymograph), 
 				kymographName, 
+				Integer.toString(indexKymograph), 
 				filenameTIFF, 
 				Integer.toString(capCageID),
 				Integer.toString(capNFlies),
@@ -598,6 +598,20 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return sbf.toString();
 	}
 	
+	public void setCSVDescriptorData(String[] data) {
+		int i = 0;
+		kymographName = data[i]; i++; 
+		indexKymograph = Integer.valueOf(data[i]); i++; 
+		filenameTIFF = data[i]; i++; 
+		capCageID = Integer.valueOf(data[i]); i++;
+		capNFlies = Integer.valueOf(data[i]); i++;
+		capVolume = Double.valueOf(data[i]); i++; 
+		capPixels = Integer.valueOf(data[i]); i++; 
+		capStimulus = data[i]; i++; 
+		capConcentration = data[i]; i++; 
+		capSide = data[i]; 
+	}
+	
 	public String getCSVCapillaryDataHeader(EnumCapillaryMeasureType measureType) {
 		StringBuffer sbf = new StringBuffer();
 		switch(measureType) {
@@ -606,7 +620,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 				sbf.append(getCSVCapillaryData(measureType, true, false));
 				break;
 			case BOTTOMLEVEL:
-				sbf.append("#\tBOTTOMtliquid level at the bottom\n");
+				sbf.append("#\tBOTTOMLEVEL\tliquid level at the bottom\n");
 				sbf.append(getCSVCapillaryData(measureType, true, false));
 				break;
 			case TOPDERIVATIVE:
@@ -641,16 +655,35 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return null;
 	}
 	
+	public void setCSVCapillaryData(EnumCapillaryMeasureType measureType, int [] dataN, int [] dataX, int [] dataY) {
+		switch(measureType) {
+		case TOPLEVEL:
+			ptsTop.setCSVData(dataX, dataY);
+			break;
+		case BOTTOMLEVEL:
+			ptsBottom.setCSVData(dataX, dataY);
+			break;
+		case TOPDERIVATIVE:
+			ptsDerivative.setCSVData(dataX, dataY);
+			break;
+		case GULPS:
+			gulpsRois.setCSVData(dataN, dataX, dataN);
+			break;
+		default:
+			break;
+		}
+	}
+	
 	private String getCSVCapillaryLevelData(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
 		if (ptsArray == null)
 			return null;
-		return ptsArray.getCSVData(exportX, exportY, indexKymograph);
+		return ptsArray.getCSVData(kymographName, exportX, exportY, indexKymograph);
 	}
 	
 	private String getCSVCapillaryGulpsData(CapillaryGulps capillaryGulps) {
 		if (capillaryGulps == null)
 			return null;
-		return capillaryGulps.getCSVData(indexKymograph);
+		return capillaryGulps.getCSVData(kymographName, indexKymograph);
 	}
 	
 	// -----------------------------------------------------------------------------
