@@ -349,48 +349,33 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	// ----------------------------------------------------------------------
 	
-	public String getCSVData(String kymographName, boolean exportX, boolean exportY, int indexKymograph) {
+	public String getCSVData(String kymographName, int indexKymograph, boolean exportX, boolean exportY) {
 
 		StringBuffer sbf = new StringBuffer();
 		
 		if (exportX) {
-			sbf.append(kymographName + "\t");
-			sbf.append("X"+Integer.toString(indexKymograph)+"\t");
-			sbf.append(getCSVDataX());
-			sbf.append("\n");
+			exportToCSVRow(sbf, kymographName, indexKymograph, "X", polylineLevel.xpoints);
 		}
 		
 		if (exportY) {
-			sbf.append(kymographName + "\t");
-			sbf.append("Y"+Integer.toString(indexKymograph)+"\t");
-			sbf.append(getCSVDataY());
-			sbf.append("\n");
+			exportToCSVRow(sbf, kymographName, indexKymograph, "Y", polylineLevel.ypoints);
 		}
 		
 		return sbf.toString();
 	}
 	
-	public String getCSVDataX() {	
-		StringBuffer sbf = new StringBuffer();
-        for (int i = 0; i< polylineLevel.npoints; i++)
+	private void exportToCSVRow(StringBuffer sbf, String kymographName, int indexKymograph, String XorY, double[] points) {
+		sbf.append(kymographName + "\t"
+				+ XorY + Integer.toString(indexKymograph)+"\t"
+				+ name+ "\t" 
+				+ Integer.toString(polylineLevel.npoints)+ "\t");
+		for (int i = 0; i< polylineLevel.npoints; i++)
         {
-            sbf.append(StringUtil.toString(polylineLevel.xpoints[i]));
+            sbf.append(StringUtil.toString(points[i]));
             sbf.append("\t");
         }
-		return sbf.toString();
+		sbf.append("\n");
 	}
 	
-	public String getCSVDataY() {	
-		StringBuffer sbf = new StringBuffer();
-        for (int i = 0; i< polylineLevel.npoints; i++)
-        {
-            sbf.append(StringUtil.toString(polylineLevel.ypoints[i]));
-            sbf.append("\t");
-        }
-		return sbf.toString();
-	}
 	
-	public void setCSVData(int[] dataX, int [] dataY) {
-		polylineLevel = new Level2D(dataX, dataY, dataX.length);
-	}
 }

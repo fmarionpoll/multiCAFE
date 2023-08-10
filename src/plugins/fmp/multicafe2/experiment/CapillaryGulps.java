@@ -106,7 +106,7 @@ public class CapillaryGulps implements XMLPersistent
 		return sbf.toString();
 	}
 	
-	public void setCSVData(int[] dataN, int[] dataX, int [] dataY) {
+	public void setDataFrom3Arrays(int[] dataN, int[] dataX, int [] dataY) {
 		int icurrent = -1;
 		List<Integer> xpoints = new ArrayList<Integer>();
 		List<Integer> ypoints =  new ArrayList<Integer>();

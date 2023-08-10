@@ -617,15 +617,15 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		switch(measureType) {
 			case TOPLEVEL:
 				sbf.append("#\tTOPLEVEL\tliquid level at the top\n");
-				sbf.append(getCSVCapillaryData(measureType, true, false));
+				sbf.append(capillaryDataToCSVLine(measureType, true, false));
 				break;
 			case BOTTOMLEVEL:
 				sbf.append("#\tBOTTOMLEVEL\tliquid level at the bottom\n");
-				sbf.append(getCSVCapillaryData(measureType, true, false));
+				sbf.append(capillaryDataToCSVLine(measureType, true, false));
 				break;
 			case TOPDERIVATIVE:
 				sbf.append("#\tTOPDERIVATIVE\tderivative of liquid level at the top\n");
-				sbf.append(getCSVCapillaryData(measureType, true, false));
+				sbf.append(capillaryDataToCSVLine(measureType, true, false));
 				break;
 			case GULPS:
 				sbf.append("#\tGULPS\tgulps\n");
@@ -638,14 +638,14 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return sbf.toString();
 	}
 	
-	public String getCSVCapillaryData(EnumCapillaryMeasureType measureType, boolean exportX, boolean exportY) {
+	public String capillaryDataToCSVLine(EnumCapillaryMeasureType measureType, boolean exportX, boolean exportY) {
 		switch(measureType) {
 			case BOTTOMLEVEL:
-				return getCSVCapillaryLevelData(ptsBottom, exportX, exportY);
+				return dataToCSVString(ptsBottom, exportX, exportY);
 			case TOPDERIVATIVE:
-				return getCSVCapillaryLevelData(ptsDerivative, exportX, exportY);
+				return dataToCSVString(ptsDerivative, exportX, exportY);
 			case TOPLEVEL:
-				return getCSVCapillaryLevelData(ptsTop, exportX, exportY);
+				return dataToCSVString(ptsTop, exportX, exportY);
 			case GULPS:
 				return getCSVCapillaryGulpsData(gulpsRois);
 			default:
@@ -655,29 +655,29 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return null;
 	}
 	
-	public void setCSVCapillaryData(EnumCapillaryMeasureType measureType, int [] dataN, int [] dataX, int [] dataY) {
+	public void setCapillaryDataFromCSV(EnumCapillaryMeasureType measureType, int [] dataN, int [] dataX, int [] dataY) {
 		switch(measureType) {
 		case TOPLEVEL:
-			ptsTop.setCSVData(dataX, dataY);
+			ptsTop.polylineLevel = new Level2D(dataX, dataY, dataX.length);
 			break;
 		case BOTTOMLEVEL:
-			ptsBottom.setCSVData(dataX, dataY);
+			ptsBottom.polylineLevel = new Level2D(dataX, dataY, dataX.length);
 			break;
 		case TOPDERIVATIVE:
-			ptsDerivative.setCSVData(dataX, dataY);
+			ptsDerivative.polylineLevel = new Level2D(dataX, dataY, dataX.length);
 			break;
 		case GULPS:
-			gulpsRois.setCSVData(dataN, dataX, dataN);
+			gulpsRois.setDataFrom3Arrays(dataN, dataX, dataN);
 			break;
 		default:
 			break;
 		}
 	}
 	
-	private String getCSVCapillaryLevelData(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
+	private String dataToCSVString(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
 		if (ptsArray == null)
 			return null;
-		return ptsArray.getCSVData(kymographName, exportX, exportY, indexKymograph);
+		return ptsArray.getCSVData(kymographName, indexKymograph, exportX, exportY);
 	}
 	
 	private String getCSVCapillaryGulpsData(CapillaryGulps capillaryGulps) {

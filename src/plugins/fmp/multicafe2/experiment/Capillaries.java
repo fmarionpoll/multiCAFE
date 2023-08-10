@@ -125,7 +125,7 @@ public class Capillaries
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		flag = false;
 		if (!flag) {
 			for (int i = 0; i < ncapillaries; i++) 
 			{
@@ -678,7 +678,7 @@ public class Capillaries
 			
 			csvWriter.append(capillariesList.get(0).getCSVCapillaryDataHeader(measureType));
 			for (Capillary cap:capillariesList) {
-				csvWriter.append(cap.getCSVCapillaryData(measureType, false, true));
+				csvWriter.append(cap.capillaryDataToCSVLine(measureType, false, true));
 			}
 			csvWriter.append("#\t#\n");
 		} catch (IOException e) {
@@ -707,8 +707,9 @@ public class Capillaries
 					Capillary cap = getCapillaryFromKymographName(data[0]);
 					if (cap == null)
 						cap = new Capillary();
+					//cap.indexKymograph = Integer.valueOf(data[0].substring(0));
 					System.out.println(cap.getRoiName() );
-					cap.setCSVCapillaryData(measureType, dataIntN, dataIntX, dataIntY);
+					cap.setCapillaryDataFromCSV(measureType, dataIntN, dataIntX, dataIntY);
 				}
 				
 			}
