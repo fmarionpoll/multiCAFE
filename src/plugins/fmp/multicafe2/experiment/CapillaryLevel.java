@@ -349,10 +349,11 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	// ----------------------------------------------------------------------
 	
-	public String getCSVData(String kymographName, int indexKymograph, boolean exportX, boolean exportY) {
+	public String csvExportData(String kymographName, int indexKymograph, boolean exportX, boolean exportY) {
 
 		StringBuffer sbf = new StringBuffer();
-		
+		if (polylineLevel == null) 
+			return null;
 		if (exportX) {
 			exportToCSVRow(sbf, kymographName, indexKymograph, "X", polylineLevel.xpoints);
 		}

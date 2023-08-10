@@ -612,20 +612,20 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		capSide = data[i]; 
 	}
 	
-	public String getCSVCapillaryDataHeader(EnumCapillaryMeasureType measureType) {
+	public String csvExportCapillaryDataHeader(EnumCapillaryMeasureType measureType) {
 		StringBuffer sbf = new StringBuffer();
 		switch(measureType) {
 			case TOPLEVEL:
 				sbf.append("#\tTOPLEVEL\tliquid level at the top\n");
-				sbf.append(capillaryDataToCSVLine(measureType, true, false));
+				sbf.append(csvExportCapillaryData(measureType, true, false));
 				break;
 			case BOTTOMLEVEL:
 				sbf.append("#\tBOTTOMLEVEL\tliquid level at the bottom\n");
-				sbf.append(capillaryDataToCSVLine(measureType, true, false));
+				sbf.append(csvExportCapillaryData(measureType, true, false));
 				break;
 			case TOPDERIVATIVE:
 				sbf.append("#\tTOPDERIVATIVE\tderivative of liquid level at the top\n");
-				sbf.append(capillaryDataToCSVLine(measureType, true, false));
+				sbf.append(csvExportCapillaryData(measureType, true, false));
 				break;
 			case GULPS:
 				sbf.append("#\tGULPS\tgulps\n");
@@ -638,14 +638,14 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return sbf.toString();
 	}
 	
-	public String capillaryDataToCSVLine(EnumCapillaryMeasureType measureType, boolean exportX, boolean exportY) {
+	public String csvExportCapillaryData(EnumCapillaryMeasureType measureType, boolean exportX, boolean exportY) {
 		switch(measureType) {
 			case BOTTOMLEVEL:
-				return dataToCSVString(ptsBottom, exportX, exportY);
+				return csvExportDataArray2D(ptsBottom, exportX, exportY);
 			case TOPDERIVATIVE:
-				return dataToCSVString(ptsDerivative, exportX, exportY);
+				return csvExportDataArray2D(ptsDerivative, exportX, exportY);
 			case TOPLEVEL:
-				return dataToCSVString(ptsTop, exportX, exportY);
+				return csvExportDataArray2D(ptsTop, exportX, exportY);
 			case GULPS:
 				return getCSVCapillaryGulpsData(gulpsRois);
 			default:
@@ -655,7 +655,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return null;
 	}
 	
-	public void setCapillaryDataFromCSV(EnumCapillaryMeasureType measureType, int [] dataN, int [] dataX, int [] dataY) {
+	public void csvImportCapillaryData(EnumCapillaryMeasureType measureType, int [] dataN, int [] dataX, int [] dataY) {
 		switch(measureType) {
 		case TOPLEVEL:
 			ptsTop.polylineLevel = new Level2D(dataX, dataY, dataX.length);
@@ -674,10 +674,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		}
 	}
 	
-	private String dataToCSVString(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
+	private String csvExportDataArray2D(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
 		if (ptsArray == null)
 			return null;
-		return ptsArray.getCSVData(kymographName, indexKymograph, exportX, exportY);
+		return ptsArray.csvExportData(kymographName, indexKymograph, exportX, exportY);
 	}
 	
 	private String getCSVCapillaryGulpsData(CapillaryGulps capillaryGulps) {
