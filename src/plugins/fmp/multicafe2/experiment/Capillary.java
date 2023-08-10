@@ -713,9 +713,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public boolean loadFromXML_MeasuresOnly(Node node) 
 	{
 		String header = getLast2ofCapillaryName()+"_";
-		boolean result = ptsDerivative.loadCapillaryLimitFromXML(node, ID_DERIVATIVE, header) > 0;
-		result |= ptsTop.loadCapillaryLimitFromXML(node, ID_TOPLEVEL, header) > 0;
+		boolean result = ptsTop.loadCapillaryLimitFromXML(node, ID_TOPLEVEL, header) > 0;
 		result |= ptsBottom.loadCapillaryLimitFromXML(node, ID_BOTTOMLEVEL, header) > 0;
+		result |= ptsDerivative.loadCapillaryLimitFromXML(node, ID_DERIVATIVE, header) > 0;
 		result |= gulpsRois.loadFromXML(node);
 		return result;
 	}

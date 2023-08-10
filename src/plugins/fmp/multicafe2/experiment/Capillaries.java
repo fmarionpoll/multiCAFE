@@ -560,19 +560,19 @@ public class Capillaries
 		    		csvLoadCapillariesDescription (csvReader);
 		    		break;
 		    	case "TOPLEVEL":
-		    		System.out.println("toplevel\n" );
+		    		System.out.println("----------------toplevel" );
 		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.TOPLEVEL);
 		    		break;
 		    	case "BOTTOMLEVEL":
-		    		System.out.println("bottomlevel\n" );
+		    		System.out.println("----------------bottomlevel" );
 		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.BOTTOMLEVEL);
 		    		break;
 		    	case "TOPDERIVATIVE":
-		    		System.out.println("derivative\n");
+		    		System.out.println("----------------derivative");
 		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.TOPDERIVATIVE);
 		    		break;
 		    	case "GULPS":
-		    		System.out.println("gulps\n");
+		    		System.out.println("----------------gulps");
 		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.GULPS);
 		    		break;
 	    		default:
