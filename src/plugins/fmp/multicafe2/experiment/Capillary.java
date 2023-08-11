@@ -34,8 +34,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 
 	private ROI2D 						roi 			= null;
 	private ArrayList<KymoROI2D>		roisForKymo 	= new ArrayList<KymoROI2D>();
-	
 	private String						kymographName 	= null;
+	private String						roiNamePrefix	= null;
 	
 	public int							indexKymograph 	= -1;
 	public String 						version 		= null;
@@ -172,7 +172,11 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return roi.getName().substring(roi.getName().length() -2);
 	}
 	
-	public String getCapillarySide() 
+	public String getRoiNamePrefix() {
+		return roiNamePrefix;
+	}
+	
+ 	public String getCapillarySide() 
 	{
 		return roi.getName().substring(roi.getName().length() -1);
 	}
@@ -402,7 +406,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		gulpPoints.add(detectedPoint);
 		Point2D.Double detectedPoint2 = new Point2D.Double (indexPixel, ptsTop.polylineLevel.ypoints[indexPixel]);
 		gulpPoints.add(detectedPoint2);
-		gulpsRois.addGulp(new ROI2DPolyLine (gulpPoints), indexkymo, getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexPixel));
+		gulpsRois.addGulp(new ROI2DPolyLine (gulpPoints), 
+						indexkymo, 
+						getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexPixel));
 		
 		return lastPoint;
 	}
@@ -556,134 +562,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	        loadFromXML_intervals(node);
 	    }
 	    return flag;
-	}
-	
-	// -----------------------------------------------------------------------------
-	
-	public String getCSVDescriptorHeader() {
-		StringBuffer sbf = new StringBuffer();
-		
-		sbf.append("#\tCAPILLARIES\tdescribe each capillary\n");
-		List<String> row2 = Arrays.asList(
-				"kymographName", 
-				ID_INDEXIMAGE, 
-				ID_NAMETIFF, 
-				ID_CAGENB,
-				ID_NFLIES,
-				ID_CAPVOLUME, 
-				ID_CAPPIXELS, 
-				ID_STIML, 
-				ID_CONCL, 
-				ID_SIDE);
-		sbf.append(String.join("\t", row2));
-		sbf.append("\n");
-		return sbf.toString();
-	}
-	
-	public String getCSVDescriptorData() {	
-		StringBuffer sbf = new StringBuffer();
-		List<String> row = Arrays.asList(
-				kymographName, 
-				Integer.toString(indexKymograph), 
-				filenameTIFF, 
-				Integer.toString(capCageID),
-				Integer.toString(capNFlies),
-				Double.toString(capVolume), 
-				Integer.toString(capPixels), 
-				capStimulus, 
-				capConcentration, 
-				capSide);
-		sbf.append(String.join("\t", row));
-		sbf.append("\n");
-		return sbf.toString();
-	}
-	
-	public void setCSVDescriptorData(String[] data) {
-		int i = 0;
-		kymographName = data[i]; i++; 
-		indexKymograph = Integer.valueOf(data[i]); i++; 
-		filenameTIFF = data[i]; i++; 
-		capCageID = Integer.valueOf(data[i]); i++;
-		capNFlies = Integer.valueOf(data[i]); i++;
-		capVolume = Double.valueOf(data[i]); i++; 
-		capPixels = Integer.valueOf(data[i]); i++; 
-		capStimulus = data[i]; i++; 
-		capConcentration = data[i]; i++; 
-		capSide = data[i]; 
-	}
-	
-	public String csvExportCapillaryDataHeader(EnumCapillaryMeasureType measureType) {
-		StringBuffer sbf = new StringBuffer();
-		switch(measureType) {
-			case TOPLEVEL:
-				sbf.append("#\tTOPLEVEL\tliquid level at the top\n");
-				sbf.append(csvExportCapillaryData(measureType, true, false));
-				break;
-			case BOTTOMLEVEL:
-				sbf.append("#\tBOTTOMLEVEL\tliquid level at the bottom\n");
-				sbf.append(csvExportCapillaryData(measureType, true, false));
-				break;
-			case TOPDERIVATIVE:
-				sbf.append("#\tTOPDERIVATIVE\tderivative of liquid level at the top\n");
-				sbf.append(csvExportCapillaryData(measureType, true, false));
-				break;
-			case GULPS:
-				sbf.append("#\tGULPS\tgulps\n");
-				break;
-			default:
-				sbf.append("#\tUNDEFINED\t------------\n");
-				break;
-		}
-		
-		return sbf.toString();
-	}
-	
-	public String csvExportCapillaryData(EnumCapillaryMeasureType measureType, boolean exportX, boolean exportY) {
-		switch(measureType) {
-			case BOTTOMLEVEL:
-				return csvExportDataArray2D(ptsBottom, exportX, exportY);
-			case TOPDERIVATIVE:
-				return csvExportDataArray2D(ptsDerivative, exportX, exportY);
-			case TOPLEVEL:
-				return csvExportDataArray2D(ptsTop, exportX, exportY);
-			case GULPS:
-				return getCSVCapillaryGulpsData(gulpsRois);
-			default:
-				break;
-		}
-		
-		return null;
-	}
-	
-	public void csvImportCapillaryData(EnumCapillaryMeasureType measureType, int [] dataN, int [] dataX, int [] dataY) {
-		switch(measureType) {
-		case TOPLEVEL:
-			ptsTop.polylineLevel = new Level2D(dataX, dataY, dataX.length);
-			break;
-		case BOTTOMLEVEL:
-			ptsBottom.polylineLevel = new Level2D(dataX, dataY, dataX.length);
-			break;
-		case TOPDERIVATIVE:
-			ptsDerivative.polylineLevel = new Level2D(dataX, dataY, dataX.length);
-			break;
-		case GULPS:
-			gulpsRois.setDataFrom3Arrays(dataN, dataX, dataN);
-			break;
-		default:
-			break;
-		}
-	}
-	
-	private String csvExportDataArray2D(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
-		if (ptsArray == null)
-			return null;
-		return ptsArray.csvExportData(kymographName, indexKymograph, exportX, exportY);
-	}
-	
-	private String getCSVCapillaryGulpsData(CapillaryGulps capillaryGulps) {
-		if (capillaryGulps == null)
-			return null;
-		return capillaryGulps.csvExportData(kymographName, indexKymograph);
 	}
 	
 	// -----------------------------------------------------------------------------
@@ -931,4 +809,133 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		descriptionOK = true;
 	}
 	
+	// -----------------------------------------------------------------------------
+	
+	public String csvExportIndividualCapillaryDescriptionHeader() {
+		StringBuffer sbf = new StringBuffer();
+		
+		sbf.append("#\tCAPILLARIES\tdescribe each capillary\n");
+		List<String> row2 = Arrays.asList(
+				"cap_prefix",
+				"kymoIndex", 
+				"kymographName", 
+				"kymoFile", 
+				"cap_cage",
+				"cap_nflies",
+				"cap_volume", 
+				"cap_npixel", 
+				"cap_stim", 
+				"cap_conc", 
+				"cap_side");
+		sbf.append(String.join("\t", row2));
+		sbf.append("\n");
+		return sbf.toString();
+	}
+	
+	public String csvExportIndividualCapillaryDescription() {	
+		StringBuffer sbf = new StringBuffer();
+		List<String> row = Arrays.asList(
+				getLast2ofCapillaryName(),
+				Integer.toString(indexKymograph), 
+				kymographName, 
+				filenameTIFF, 
+				Integer.toString(capCageID),
+				Integer.toString(capNFlies),
+				Double.toString(capVolume), 
+				Integer.toString(capPixels), 
+				capStimulus, 
+				capConcentration, 
+				capSide);
+		sbf.append(String.join("\t", row));
+		sbf.append("\n");
+		return sbf.toString();
+	}
+	
+	public String csvExportCapillaryDataHeader(EnumCapillaryMeasureType measureType) {
+		StringBuffer sbf = new StringBuffer();
+		switch(measureType) {
+			case TOPLEVEL:
+				sbf.append("#\tTOPLEVEL\tliquid level at the top\n");
+				sbf.append(csvExportCapillaryData(measureType, true, false));
+				break;
+			case BOTTOMLEVEL:
+				sbf.append("#\tBOTTOMLEVEL\tliquid level at the bottom\n");
+				sbf.append(csvExportCapillaryData(measureType, true, false));
+				break;
+			case TOPDERIVATIVE:
+				sbf.append("#\tTOPDERIVATIVE\tderivative of liquid level at the top\n");
+				sbf.append(csvExportCapillaryData(measureType, true, false));
+				break;
+			case GULPS:
+				sbf.append("#\tGULPS\tgulps\n");
+				break;
+			default:
+				sbf.append("#\tUNDEFINED\t------------\n");
+				break;
+		}
+		return sbf.toString();
+	}
+	
+	public String csvExportCapillaryData(EnumCapillaryMeasureType measureType, boolean exportX, boolean exportY) {
+		switch(measureType) {
+			case TOPLEVEL:
+				return csvExportDataArray2D(ptsTop, exportX, exportY);
+			case BOTTOMLEVEL:
+				return csvExportDataArray2D(ptsBottom, exportX, exportY);
+			case TOPDERIVATIVE:
+				return csvExportDataArray2D(ptsDerivative, exportX, exportY);
+			case GULPS:
+				return getCSVCapillaryGulpsData(gulpsRois);
+			default:
+				break;
+		}
+		return null;
+	}
+	
+	public void csvImportIndividualCapillaryDescription(String[] data) {
+		int i = 0;
+		roiNamePrefix = data[i]; i++;
+		indexKymograph = Integer.valueOf(data[i]); i++; 
+		kymographName = data[i]; i++; 
+		filenameTIFF = data[i]; i++; 
+		capCageID = Integer.valueOf(data[i]); i++;
+		capNFlies = Integer.valueOf(data[i]); i++;
+		capVolume = Double.valueOf(data[i]); i++; 
+		capPixels = Integer.valueOf(data[i]); i++; 
+		capStimulus = data[i]; i++; 
+		capConcentration = data[i]; i++; 
+		capSide = data[i]; 
+	}
+	
+	public void csvImportCapillaryData(EnumCapillaryMeasureType measureType, int [] dataN, int [] dataX, int [] dataY) {
+		switch(measureType) {
+		case TOPLEVEL:
+			ptsTop.csvImportData( dataX, dataY, roiNamePrefix); 
+			break;
+		case BOTTOMLEVEL:
+			ptsBottom.csvImportData( dataX, dataY, roiNamePrefix); 
+			break;
+		case TOPDERIVATIVE:
+			ptsDerivative.csvImportData( dataX, dataY, roiNamePrefix); 
+			break;
+		case GULPS:
+			gulpsRois.csvImportGulpsFrom3Rows(dataN, dataX, dataY, roiNamePrefix, indexKymograph);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private String csvExportDataArray2D(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
+		if (ptsArray == null)
+			return null;
+		return ptsArray.csvExportData(exportX, exportY);
+	}
+	
+	private String getCSVCapillaryGulpsData(CapillaryGulps capillaryGulps) {
+		if (capillaryGulps == null)
+			return null;
+		return capillaryGulps.csvExportData(getLast2ofCapillaryName());
+	}
+		
 }

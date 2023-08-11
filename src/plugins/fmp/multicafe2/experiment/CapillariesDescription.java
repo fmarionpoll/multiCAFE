@@ -55,65 +55,7 @@ public class CapillariesDescription
 	
 	private final static String ID_NOPE 			= "..";
 
-	public String getCSVDescriptorHeader() {
-		StringBuffer sbf = new StringBuffer();
-		sbf.append("#\tDESCRIPTION\tCapillarytrack data\n");
-		List<String> row2 = Arrays.asList(
-				ID_DESCGROUPING, 
-				ID_DESCVOLUMEUL, 
-				ID_DESCNPIXELS, 
-				ID_STIMR,
-				ID_CONCR,
-				ID_STIML,
-				ID_CONCL,
-				ID_BOXID, 
-				ID_EXPT, 
-				ID_COMMENT1, 
-				ID_COMMENT2, 
-				ID_STRAIN, 
-				ID_SEX);
-		sbf.append(String.join("\t", row2));
-		sbf.append("\n");
-		return sbf.toString();
-	}
-	
-	public String getCSVDescriptorData() {
-		StringBuffer sbf = new StringBuffer();
-		List<String> row3 = Arrays.asList(
-				Integer.toString(grouping),
-				Double.toString(volume), 
-				Integer.toString(pixels), 
-				stimulusR,
-				concentrationR,
-				stimulusL,
-				concentrationL,
-				old_boxID, 
-				old_experiment, 
-				old_comment1, 
-				old_comment2, 
-				old_strain, 
-				old_sex);
-		sbf.append(String.join("\t", row3));
-		sbf.append("\n");
-		return sbf.toString();
-	}
-	
-	public void setCSVDescriptorData(String[] data) {
-		int i= 0; 
-		grouping = Integer.valueOf(data[i]); i++;
-		volume = Double.valueOf(data[i]); i++; 
-		pixels = Integer.valueOf(data[i]); i++; 
-		stimulusR = data[i]; i++;
-		concentrationR = data[i]; i++;
-		stimulusL = data[i]; i++;
-		concentrationL = data[i]; i++;
-		old_boxID= data[i]; i++; 
-		old_experiment= data[i]; i++; 
-		old_comment1= data[i]; i++; 
-		old_comment2= data[i]; i++; 
-		old_strain= data[i]; i++; 
-		old_sex= data[i]; 
-	}
+
 
 	public void copy (CapillariesDescription desc) 
 	{
@@ -261,6 +203,66 @@ public class CapillariesDescription
 		return true;
 	}
 	
-
+	// --------------------------------------
+	
+	public String csvExportCapillariesDescriptionDataHeader() {
+		StringBuffer sbf = new StringBuffer();
+		sbf.append("#\tDESCRIPTION\tCapillarytrack data\n");
+		List<String> row2 = Arrays.asList(
+				ID_DESCGROUPING, 
+				ID_DESCVOLUMEUL, 
+				ID_DESCNPIXELS, 
+				ID_STIMR,
+				ID_CONCR,
+				ID_STIML,
+				ID_CONCL,
+				ID_BOXID, 
+				ID_EXPT, 
+				ID_COMMENT1, 
+				ID_COMMENT2, 
+				ID_STRAIN, 
+				ID_SEX);
+		sbf.append(String.join("\t", row2));
+		sbf.append("\n");
+		return sbf.toString();
+	}
+	
+	public String csvExportCapillariesDescriptionData() {
+		StringBuffer sbf = new StringBuffer();
+		List<String> row3 = Arrays.asList(
+				Integer.toString(grouping),
+				Double.toString(volume), 
+				Integer.toString(pixels), 
+				stimulusR,
+				concentrationR,
+				stimulusL,
+				concentrationL,
+				old_boxID, 
+				old_experiment, 
+				old_comment1, 
+				old_comment2, 
+				old_strain, 
+				old_sex);
+		sbf.append(String.join("\t", row3));
+		sbf.append("\n");
+		return sbf.toString();
+	}
+	
+	public void csvImportCapillariesDescriptionData(String[] data) {
+		int i= 0; 
+		grouping = Integer.valueOf(data[i]); i++;
+		volume = Double.valueOf(data[i]); i++; 
+		pixels = Integer.valueOf(data[i]); i++; 
+		stimulusR = data[i]; i++;
+		concentrationR = data[i]; i++;
+		stimulusL = data[i]; i++;
+		concentrationL = data[i]; i++;
+		old_boxID= data[i]; i++; 
+		old_experiment= data[i]; i++; 
+		old_comment1= data[i]; i++; 
+		old_comment2= data[i]; i++; 
+		old_strain= data[i]; i++; 
+		old_sex= data[i]; 
+	}
 
 }

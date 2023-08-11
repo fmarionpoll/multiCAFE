@@ -349,34 +349,37 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	// ----------------------------------------------------------------------
 	
-	public String csvExportData(String kymographName, int indexKymograph, boolean exportX, boolean exportY) {
+	public String csvExportData(boolean exportX, boolean exportY) {
 
 		StringBuffer sbf = new StringBuffer();
 		if (polylineLevel == null) 
 			return null;
 		if (exportX) {
-			exportToCSVRow(sbf, kymographName, indexKymograph, "X", polylineLevel.xpoints);
+			csvExportToRow(sbf, "X", polylineLevel.xpoints);
 		}
 		
 		if (exportY) {
-			exportToCSVRow(sbf, kymographName, indexKymograph, "Y", polylineLevel.ypoints);
+			csvExportToRow(sbf, "Y", polylineLevel.ypoints);
 		}
 		
 		return sbf.toString();
 	}
 	
-	private void exportToCSVRow(StringBuffer sbf, String kymographName, int indexKymograph, String XorY, double[] points) {
-		sbf.append(kymographName + "\t"
-				+ XorY + Integer.toString(indexKymograph)+"\t"
-				+ name+ "\t" 
+	private void csvExportToRow(StringBuffer sbf, String XorY, double[] points) {
+		sbf.append(name.substring(0, 2)+ "\t"
+				+ XorY +"\t" 
 				+ Integer.toString(polylineLevel.npoints)+ "\t");
 		for (int i = 0; i< polylineLevel.npoints; i++)
         {
-            sbf.append(StringUtil.toString(points[i]));
+            sbf.append(StringUtil.toString((int) points[i]));
             sbf.append("\t");
         }
 		sbf.append("\n");
 	}
 	
+	public void csvImportData( int [] dataX, int [] dataY, String roiNamePrefix) {
+		polylineLevel = new Level2D(dataX, dataY, dataX.length);
+		name = roiNamePrefix + "_" + typename;
+	}
 	
 }

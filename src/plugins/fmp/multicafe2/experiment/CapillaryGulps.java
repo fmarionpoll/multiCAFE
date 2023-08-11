@@ -72,71 +72,6 @@ public class CapillaryGulps implements XMLPersistent
 	}
 	
 	// -------------------------------
-	public String csvExportData(String kymographName, int indexKymograph) {
-
-		StringBuffer sbfN = csvStringBufferFirstColumns(kymographName, indexKymograph, "N");
-		StringBuffer sbfX = csvStringBufferFirstColumns(kymographName, indexKymograph, "X");
-		StringBuffer sbfY = csvStringBufferFirstColumns(kymographName, indexKymograph, "Y");
-//		sbfN.append(kymographName + "\t"+ "N"+Integer.toString(indexKymograph)+"\t");
-//		sbfX.append(kymographName + "\t"+ "X"+Integer.toString(indexKymograph)+"\t");
-//		sbfY.append(kymographName + "\t"+ "Y"+Integer.toString(indexKymograph)+"\t");
-
-        for (int i =0; i< rois.size(); i++)
-        {
-        	Polyline2D polyline = ((ROI2DPolyLine) rois.get(i)).getPolyline2D();
-        	for (int j=0; j< polyline.npoints; j++)
-        	{
-        		sbfN.append(Integer.toString(i));
-                sbfN.append("\t");
-                sbfX.append(StringUtil.toString(polyline.xpoints[j]));
-                sbfX.append("\t");
-                sbfY.append(StringUtil.toString(polyline.ypoints[j]));
-                sbfY.append("\t");
-        	}
-        }
-
-		StringBuffer sbf = new StringBuffer();
-		sbf.append(sbfN);
-		sbf.append("\n");
-		sbf.append(sbfX);
-		sbf.append("\n");
-		sbf.append(sbfY);
-		sbf.append("\n");
-
-		return sbf.toString();
-	}
-	
-	private StringBuffer csvStringBufferFirstColumns(String kymographName, int indexKymograph, String XorYorN) {
-		StringBuffer sbf = new StringBuffer();
-		sbf.append(kymographName + "\t"
-				+ XorYorN + Integer.toString(indexKymograph)+"\t"
-				+ Integer.toString(rois.size())+ "\t");
-		return sbf;
-	}
-	
-	public void setDataFrom3Arrays(int[] dataN, int[] dataX, int [] dataY) {
-		int icurrent = -1;
-		List<Integer> xpoints = new ArrayList<Integer>();
-		List<Integer> ypoints =  new ArrayList<Integer>();
-		for (int i=0; i < dataN.length; i++) {
-			if (dataN[i] != icurrent || i == dataN.length -1) {
-				if (icurrent >= 0) {
-					addNewGulp(icurrent, xpoints, ypoints);
-					xpoints = new ArrayList<Integer>();
-					ypoints =  new ArrayList<Integer>();
-					icurrent = dataN[i];
-				}
-			}
-			xpoints.add(dataX[i]);
-			ypoints.add(dataY[i]);
-		}
-	}
-	
-	void addNewGulp(int icurrent, List<Integer> xpoints, List<Integer> ypoints ) {
-		
-	}
-	
-	// -------------------------------
 	
 	boolean isThereAnyMeasuresDone() 
 	{
@@ -258,15 +193,15 @@ public class CapillaryGulps implements XMLPersistent
 	
 	private void addROItoAmplitudeGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> amplitudeGulpsArray) 
 	{
-		Polyline2D roiLine2D = roi.getPolyline2D();
-		double yvalue = roiLine2D.ypoints[0];
-		int npoints = roiLine2D.npoints;
+		Polyline2D polyline2D = roi.getPolyline2D();
+		double yvalue = polyline2D.ypoints[0];
+		int npoints = polyline2D.npoints;
 		for (int j = 0; j < npoints; j++) 
 		{
-			int timeIndex =  (int) roiLine2D.xpoints[j];
-			int delta = (int) (roiLine2D.ypoints[j] - yvalue);
+			int timeIndex =  (int) polyline2D.xpoints[j];
+			int delta = (int) (polyline2D.ypoints[j] - yvalue);
 			amplitudeGulpsArray.set(timeIndex, delta);		
-			yvalue = roiLine2D.ypoints[j];
+			yvalue = polyline2D.ypoints[j];
 		}
 	}
 	
@@ -314,7 +249,9 @@ public class CapillaryGulps implements XMLPersistent
 		roi.setColor(Color.red);
 		roi.setStroke(1);
 		roi.setName(name);
-		roi.setT(indexkymo);	
+		roi.setT(indexkymo);
+		if (rois == null)
+			rois = new ArrayList <ROI2D> ();
 		rois.add(roi);
 	}
 	
@@ -338,4 +275,72 @@ public class CapillaryGulps implements XMLPersistent
 		}
 	}
 	
+	// -------------------------------
+		
+	public String csvExportData(String kymographName) {
+
+		StringBuffer sbfN = csvExportFirstColumns(kymographName, "N");
+		StringBuffer sbfX = csvExportFirstColumns(kymographName, "X");
+		StringBuffer sbfY = csvExportFirstColumns(kymographName, "Y");
+
+        for (int i =0; i< rois.size(); i++)
+        {
+        	Polyline2D polyline = ((ROI2DPolyLine) rois.get(i)).getPolyline2D();
+        	for (int j=0; j< polyline.npoints; j++)
+        	{
+        		sbfN.append(Integer.toString(i)); 
+                sbfN.append("\t");
+                sbfX.append(StringUtil.toString(polyline.xpoints[j]));
+                sbfX.append("\t");
+                sbfY.append(StringUtil.toString(polyline.ypoints[j]));
+                sbfY.append("\t");
+        	}
+        }
+
+		StringBuffer sbf = new StringBuffer();
+		sbf.append(sbfN);
+		sbf.append("\n");
+		sbf.append(sbfX);
+		sbf.append("\n");
+		sbf.append(sbfY);
+		sbf.append("\n");
+
+		return sbf.toString();
+	}
+	
+	private StringBuffer csvExportFirstColumns(String kymographName, String XorYorN) {
+		StringBuffer sbf = new StringBuffer();
+		sbf.append(kymographName + "\t"
+				+ XorYorN +"\t"
+				+ Integer.toString(rois.size())+ "\t");
+		return sbf;
+	}
+	
+	public void csvImportGulpsFrom3Rows(int[] dataN, int[] dataX, int [] dataY, String roiNamePrefix, int indexkymo) {
+		int icurrent = -1;
+		ArrayList<Integer> xpoints = new ArrayList<Integer>();
+		ArrayList<Integer> ypoints =  new ArrayList<Integer>();
+		for (int i = 0; i < dataN.length; i++) {
+			if (dataN[i] != icurrent || i == dataN.length -1) {
+				if (icurrent >= 0) {
+					addNewGulp(roiNamePrefix, indexkymo, icurrent, xpoints, ypoints);
+					xpoints = new ArrayList<Integer>();
+					ypoints =  new ArrayList<Integer>();
+					icurrent = dataN[i];
+				}
+			}
+			xpoints.add(dataX[i]);
+			ypoints.add(dataY[i]);
+			icurrent = dataN[i];
+		}
+	}
+	
+	void addNewGulp(String roiNamePrefix, int indexkymo, int icurrent, ArrayList<Integer> xpoints, ArrayList<Integer> ypoints ) {
+		int[] xInt = xpoints.stream().mapToInt(Integer::intValue).toArray();
+		int[] yInt = ypoints.stream().mapToInt(Integer::intValue).toArray();
+		ROI2DPolyLine roi = new ROI2DPolyLine(new Polyline2D (xInt, yInt, xInt.length));
+		String name = roiNamePrefix + "_gulp" + String.format("%07d", icurrent);
+		addGulp(roi, indexkymo, name);
+	}
+		
 }

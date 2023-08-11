@@ -44,7 +44,6 @@ public class DetectGulps extends BuildSeries
 		return flag;
 	}
 	
-
 	private void buildFilteredImage(Experiment exp) 
 	{
 		if (exp.seqKymos == null)
