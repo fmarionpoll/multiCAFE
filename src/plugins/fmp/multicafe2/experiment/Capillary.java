@@ -683,7 +683,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	private String getCSVCapillaryGulpsData(CapillaryGulps capillaryGulps) {
 		if (capillaryGulps == null)
 			return null;
-		return capillaryGulps.getCSVData(kymographName, indexKymograph);
+		return capillaryGulps.csvExportData(kymographName, indexKymograph);
 	}
 	
 	// -----------------------------------------------------------------------------

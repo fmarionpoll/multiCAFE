@@ -72,14 +72,14 @@ public class CapillaryGulps implements XMLPersistent
 	}
 	
 	// -------------------------------
-	public String getCSVData(String kymographName, int indexKymograph) {
+	public String csvExportData(String kymographName, int indexKymograph) {
 
-		StringBuffer sbfN = new StringBuffer();
-		StringBuffer sbfX = new StringBuffer();
-		StringBuffer sbfY = new StringBuffer();
-		sbfN.append(kymographName + "\t"+ "N"+Integer.toString(indexKymograph)+"\t");
-		sbfX.append(kymographName + "\t"+ "X"+Integer.toString(indexKymograph)+"\t");
-		sbfY.append(kymographName + "\t"+ "Y"+Integer.toString(indexKymograph)+"\t");
+		StringBuffer sbfN = csvStringBufferFirstColumns(kymographName, indexKymograph, "N");
+		StringBuffer sbfX = csvStringBufferFirstColumns(kymographName, indexKymograph, "X");
+		StringBuffer sbfY = csvStringBufferFirstColumns(kymographName, indexKymograph, "Y");
+//		sbfN.append(kymographName + "\t"+ "N"+Integer.toString(indexKymograph)+"\t");
+//		sbfX.append(kymographName + "\t"+ "X"+Integer.toString(indexKymograph)+"\t");
+//		sbfY.append(kymographName + "\t"+ "Y"+Integer.toString(indexKymograph)+"\t");
 
         for (int i =0; i< rois.size(); i++)
         {
@@ -104,6 +104,14 @@ public class CapillaryGulps implements XMLPersistent
 		sbf.append("\n");
 
 		return sbf.toString();
+	}
+	
+	private StringBuffer csvStringBufferFirstColumns(String kymographName, int indexKymograph, String XorYorN) {
+		StringBuffer sbf = new StringBuffer();
+		sbf.append(kymographName + "\t"
+				+ XorYorN + Integer.toString(indexKymograph)+"\t"
+				+ Integer.toString(rois.size())+ "\t");
+		return sbf;
 	}
 	
 	public void setDataFrom3Arrays(int[] dataN, int[] dataX, int [] dataY) {
