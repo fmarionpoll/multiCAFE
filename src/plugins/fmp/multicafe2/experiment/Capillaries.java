@@ -732,7 +732,14 @@ public class Capillaries
 		int length = data.length - numericDatataStartsAtIndex;
 		int[] dataInt = new int[length];
 		for (int i = 0; i < length; i++) {
-			dataInt[i] = Integer.valueOf(data[i+numericDatataStartsAtIndex]);
+			if (data[i+numericDatataStartsAtIndex].contains(".")) {
+				System.out.println("floating point: "+ data[i+numericDatataStartsAtIndex] + " at "+(i+numericDatataStartsAtIndex));
+				double dummy = Double.valueOf(numericDatataStartsAtIndex);
+				int idummy = (int) dummy;
+				dataInt[i] = idummy;
+			}
+			else
+				dataInt[i] = Integer.valueOf(data[i+numericDatataStartsAtIndex]);
 		}
 		return dataInt;
 	}
