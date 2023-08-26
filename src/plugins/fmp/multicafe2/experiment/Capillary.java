@@ -408,7 +408,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		gulpPoints.add(detectedPoint2);
 		gulpsRois.addGulp(new ROI2DPolyLine (gulpPoints), 
 						indexkymo, 
-						getLast2ofCapillaryName()+"_gulp"+String.format("%07d", indexPixel));
+						CapillaryGulps.getRoiGulpName(getLast2ofCapillaryName(), indexPixel));
 		
 		return lastPoint;
 	}

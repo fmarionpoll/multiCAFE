@@ -80,7 +80,7 @@ public class DetectGulps extends BuildSeries
 		{
 			final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
 			capi.setGulpsOptions(options);
-			
+			// TODO save date in poly2D instead in rois
 			final int icap = indexCapillary;
 			futures.add(processor.submit(new Runnable () 
 			{

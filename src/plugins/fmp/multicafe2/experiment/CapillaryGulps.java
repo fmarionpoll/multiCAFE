@@ -24,6 +24,7 @@ public class CapillaryGulps implements XMLPersistent
 {	
 	private final String ID_GULPS = "gulpsMC";
 	public ArrayList<ROI2D> rois = null; 
+	public ArrayList<Polyline2D> gulps = null;
 
 	// -------------------------------
 	
@@ -283,9 +284,11 @@ public class CapillaryGulps implements XMLPersistent
 		StringBuffer sbfX = csvExportFirstColumns(kymographName, "X");
 		StringBuffer sbfY = csvExportFirstColumns(kymographName, "Y");
 
+		System.out.println(" ---kymograph= "+kymographName);
         for (int i =0; i< rois.size(); i++)
         {
         	Polyline2D polyline = ((ROI2DPolyLine) rois.get(i)).getPolyline2D();
+        	System.out.println("csv save roi i="+i + " npoints= "+polyline.npoints);
         	for (int j=0; j< polyline.npoints; j++)
         	{
         		sbfN.append(Integer.toString(i)); 
@@ -339,8 +342,11 @@ public class CapillaryGulps implements XMLPersistent
 		int[] xInt = xpoints.stream().mapToInt(Integer::intValue).toArray();
 		int[] yInt = ypoints.stream().mapToInt(Integer::intValue).toArray();
 		ROI2DPolyLine roi = new ROI2DPolyLine(new Polyline2D (xInt, yInt, xInt.length));
-		String name = roiNamePrefix + "_gulp" + String.format("%07d", icurrent);
-		addGulp(roi, indexkymo, name);
+		addGulp(roi, indexkymo, getRoiGulpName(roiNamePrefix, icurrent));
+	}
+	
+	static String getRoiGulpName(String roiNamePrefix, int icurrent) {
+		return roiNamePrefix + "_gulp" + String.format("%07d", icurrent);
 	}
 		
 }
