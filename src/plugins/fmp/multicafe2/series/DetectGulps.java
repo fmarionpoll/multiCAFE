@@ -161,25 +161,7 @@ public class DetectGulps extends BuildSeries
 		return listOfMaxPoints;
 	}
 	
-//	private void transformPointsIntoProfile(List<Point2D> listOfMaxPoints, int indexkymo, Capillary cap) 
-//	{
-//		
-//		cap.ptsDerivative = new CapillaryLevel(
-//				cap.getLast2ofCapillaryName()+"_derivative", indexkymo,
-//				listOfMaxPoints);
-//	}
-	
-//	private void transformPointsIntoROIProfile(List<Point2D> listOfMaxPoints, int indexkymo, Capillary cap) 
-//	{
-//		ROI2DPolyLine roiDerivative = new ROI2DPolyLine ();
-//		roiDerivative.setName(cap.getLast2ofCapillaryName()+"_derivative");
-//		roiDerivative.setColor(Color.yellow);
-//		roiDerivative.setStroke(1);
-//		roiDerivative.setPoints(listOfMaxPoints);
-//		roiDerivative.setT(indexkymo);
-////		seq.addROI(roiDerivative, false);
-//		cap.ptsDerivative = new CapillaryLevel(roiDerivative.getName(), roiDerivative.getPolyline2D());
-//	}
+
 	
 }
 

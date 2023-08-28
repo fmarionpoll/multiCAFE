@@ -22,24 +22,23 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 public class CapillaryGulps implements XMLPersistent  
 {	
 	private final String ID_GULPS = "gulpsMC";
-	public ArrayList<ROI2D> rois = null; 
-	public ArrayList<Polyline2D> gulps = null;
+	public ArrayList<Polyline2D> gulps = new ArrayList<Polyline2D> ();
+	public String gulpNamePrefix = "haha"; 
 
 	// -------------------------------
 	
 	public void copy(CapillaryGulps capG) 
 	{
-		rois = new ArrayList <ROI2D> (capG.rois.size());
-		rois.addAll(capG.rois);	
 		gulps = new ArrayList <Polyline2D> (capG.gulps.size());
 		gulps.addAll(capG.gulps);
+		gulpNamePrefix = new String(capG.gulpNamePrefix);
 	}
 	
 	@Override
 	public boolean loadFromXML(Node node) 
 	{
 		boolean flag = false;
-		rois = new ArrayList <ROI2D> ();
+		ArrayList <ROI2D>rois = new ArrayList <ROI2D> ();
 		final Node nodeROIs = XMLUtil.getElement(node, ID_GULPS);
 		if (nodeROIs != null) 
 		{
@@ -51,6 +50,8 @@ public class CapillaryGulps implements XMLPersistent
         	   rois.add(roi);
            }
 		}
+		
+		buildGulpsFromROIs(rois);
         return flag;
 	}
 
@@ -58,6 +59,8 @@ public class CapillaryGulps implements XMLPersistent
 	public boolean saveToXML(Node node) 
 	{
 		boolean flag = false;
+		ArrayList<ROI2DPolyLine> rois = buildROIsFromGulps();
+		
 		final Node nodeROIs = XMLUtil.setElement(node, ID_GULPS);
         if (nodeROIs != null)
         {
@@ -149,8 +152,10 @@ public class CapillaryGulps implements XMLPersistent
 	
 	ArrayList<Integer> getCumSumFromRoisArray(int npoints) 
 	{
+		ArrayList<ROI2DPolyLine> rois = buildROIsFromGulps();
 		if (rois == null)
 			return null;
+		
 		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
 		for (ROI roi: rois) 
 			ROI2DUtilities.addROItoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
@@ -159,8 +164,10 @@ public class CapillaryGulps implements XMLPersistent
 	
 	private ArrayList<Integer> getIsGulpsFromRoisArray(int npoints) 
 	{
+		ArrayList<ROI2DPolyLine> rois = buildROIsFromGulps();
 		if (rois == null)
 			return null;
+		
 		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
 		for (ROI roi: rois) 
 			addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
@@ -185,6 +192,7 @@ public class CapillaryGulps implements XMLPersistent
 	
 	private ArrayList<Integer> getAmplitudeGulpsFromRoisArray(int npoints) 
 	{
+		ArrayList<ROI2DPolyLine> rois = buildROIsFromGulps();
 		if (rois == null)
 			return null;
 		ArrayList<Integer> amplitudeGulpsArray = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
@@ -234,57 +242,40 @@ public class CapillaryGulps implements XMLPersistent
 
 	public void transferROIsToMeasures(List<ROI> listRois) 
 	{	
-		rois = new ArrayList<ROI2D>();
+		ArrayList<ROI2D> rois = new ArrayList<ROI2D>();
 		for (ROI roi: listRois) 
 		{		
 			String roiname = roi.getName();
 			if (roi instanceof ROI2DPolyLine ) 
 			{
 				if (roiname .contains("gulp"))	
-					rois.add( (ROI2D) roi);
+					rois.add( (ROI2DPolyLine) roi);
 			}
 		}
+		buildGulpsFromROIs(rois);
 	}
 
-	public void addGulpRoi(ROI2DPolyLine roi, int indexkymo, String name) 
+	public ROI2DPolyLine getRoiFromGulp(int indexGulp, int indexKymo) 
 	{
-		roi.setColor(Color.red);
-		roi.setStroke(1);
-		roi.setName(name);
-		roi.setT(indexkymo);
-		if (rois == null)
-			rois = new ArrayList <ROI2D> ();
-		rois.add(roi);
+		ROI2DPolyLine roi = buildROIfromGulp(gulps.get(indexGulp));
+		roi.setT(indexKymo);
+		return roi;
 	}
 	
-	public ROI2DPolyLine getRoiFromGulp(int indexGulp, int indexKymo, String name) 
-	{
-		ROI2DPolyLine roi = new ROI2DPolyLine(gulps.get(indexGulp));
+	private ROI2DPolyLine buildROIfromGulp(Polyline2D gulpLine) {
+		ROI2DPolyLine roi = new ROI2DPolyLine (gulpLine);
+		roi.setName(buildRoiGulpName(gulpNamePrefix, (int) gulpLine.xpoints[0]));
 		roi.setColor(Color.red);
 		roi.setStroke(1);
-		roi.setName(name);
-		roi.setT(indexKymo);
+		
 		return roi;
 	}
 	
 	public List<ROI2D> addToROIs(List<ROI2D> listrois, int indexImage) 
 	{
-		if (rois != null) 
-			listrois.addAll(rois);
+		ArrayList<ROI2DPolyLine> rois = buildROIsFromGulps();
+		listrois.addAll(rois);
 		return listrois;
-	}
-	
-	public void removeROIsWithinInterval(int startPixel, int endPixel) 
-	{
-		Iterator <ROI2D> iterator = rois.iterator();
-		while (iterator.hasNext()) 
-		{
-			ROI2D roi = iterator.next();
-			// if roi.first >= startpixel && roi.first <= endpixel	
-			Rectangle rect = ((ROI2D) roi).getBounds();
-			if (rect.x >= startPixel && rect.x <= endPixel) 
-				iterator.remove();
-		}
 	}
 	
 	public void removeGulpsWithinInterval(int startPixel, int endPixel) 
@@ -361,14 +352,40 @@ public class CapillaryGulps implements XMLPersistent
 		int[] xInt = xpoints.stream().mapToInt(Integer::intValue).toArray();
 		int[] yInt = ypoints.stream().mapToInt(Integer::intValue).toArray();
 		ROI2DPolyLine roi = new ROI2DPolyLine(new Polyline2D (xInt, yInt, xInt.length));
-		addGulpRoi(roi, indexkymo, getRoiGulpName(roiNamePrefix, icurrent));
+		formatGulpRoi(roi, indexkymo, buildRoiGulpName(roiNamePrefix, icurrent));
+		
+		Polyline2D gulpLine = ((ROI2DPolyLine) roi).getPolyline2D();
+		gulps.add(gulpLine);
 	}
 	
-	public void buildROIsFromGulps() {
-		
+	private void formatGulpRoi(ROI2DPolyLine roi, int indexkymo, String name) 
+	{
+		roi.setColor(Color.red);
+		roi.setStroke(1);
+		roi.setName(name);
+		roi.setT(indexkymo);
 	}
-	static String getRoiGulpName(String roiNamePrefix, int icurrent) {
-		return roiNamePrefix + "_gulp" + String.format("%07d", icurrent);
+	
+	public ArrayList <ROI2DPolyLine> buildROIsFromGulps() {
+		ArrayList<ROI2DPolyLine> rois = new ArrayList<ROI2DPolyLine> (gulps.size());
+		for (Polyline2D gulpLine: gulps) {
+			ROI2DPolyLine roi = buildROIfromGulp(gulpLine); 
+			formatGulpRoi(roi, (int) gulpLine.xpoints[0], buildRoiGulpName(gulpNamePrefix, (int) gulpLine.xpoints[0]));
+			rois.add(roi);
+		}
+		return rois;
+	}
+	
+	public void buildGulpsFromROIs(ArrayList<ROI2D> rois ) {
+		gulps = new ArrayList<Polyline2D> (rois.size());
+		for (ROI2D roi : rois) {
+			Polyline2D gulpLine = ((ROI2DPolyLine) roi).getPolyline2D();
+			gulps.add(gulpLine);
+		}
+	}
+	
+	static String buildRoiGulpName(String rootName, int tIndex) {
+		return rootName + "_gulp" + String.format("%07d", tIndex);
 	}
 	
 
