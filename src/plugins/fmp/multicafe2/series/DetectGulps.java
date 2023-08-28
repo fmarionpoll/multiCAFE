@@ -67,6 +67,9 @@ public class DetectGulps extends BuildSeries
 		stopFlag = false;
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
 		
+		if (options.buildGulps)
+			ROI2DUtilities.removeRoisContainingString(-1, "gulp", seqCapillariesKymographs.seq);
+		
 		int nframes = lastCapillary - firstCapillary +1;
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detect_levels");
@@ -95,19 +98,21 @@ public class DetectGulps extends BuildSeries
 					if (options.buildGulps) 
 					{
 						capi.cleanGulps();
-						ROI2DUtilities.removeRoisContainingString(icap, "gulp", seqCapillariesKymographs.seq);
 						capi.detectGulps(icap);
-						if (capi.gulpsRois.rois.size() > 0) 
-						{
-							seqCapillariesKymographs.seq.addROIs(capi.gulpsRois.rois, false);
-//							System.out.println(capi.getRoiName() + "- save n rois:" + capi.gulpsRois.rois.size());
-						}
 					}
 					capi.xmlSaveCapillary_Measures(directory);
 				}}));
 		}
 		
 		waitFuturesCompletion(processor, futures, progressBar);
+		if (options.buildGulps) {
+			// TODO transfer to ROIS
+			for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
+			{
+				final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
+				seqCapillariesKymographs.seq.addROIs(capi.gulpsRois.getROIsFromGulps(), false);
+			}
+		}
 		seqCapillariesKymographs.seq.endUpdate();
 		progressBar.close();
 		processor.shutdown();
