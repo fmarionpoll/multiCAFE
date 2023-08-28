@@ -1,6 +1,6 @@
 package plugins.fmp.multicafe2.series;
 
-import java.awt.Color;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import plugins.fmp.multicafe2.experiment.CapillaryLevel;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
-import plugins.kernel.roi.roi2d.ROI2DPolyLine;
+
 
 
 
@@ -69,6 +69,8 @@ public class DetectGulps extends BuildSeries
 		
 		if (options.buildGulps)
 			ROI2DUtilities.removeRoisContainingString(-1, "gulp", seqCapillariesKymographs.seq);
+		if (options.buildDerivative) 
+			ROI2DUtilities.removeRoisContainingString(-1, "derivative", seqCapillariesKymographs.seq);
 		
 		int nframes = lastCapillary - firstCapillary +1;
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
@@ -78,10 +80,12 @@ public class DetectGulps extends BuildSeries
 		futures.clear();
 		
 		final String directory = exp.getKymosBinFullDirectory();
+		final Sequence seqAnalyzed = seqCapillariesKymographs.seq;
 		
 		for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
 		{
 			final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
+			
 			capi.setGulpsOptions(options);
 			// TODO save date in poly2D instead in rois
 			final int icap = indexCapillary;
@@ -92,33 +96,37 @@ public class DetectGulps extends BuildSeries
 				{
 					if (options.buildDerivative) 
 					{
-						ROI2DUtilities.removeRoisContainingString(icap, "derivative", seqCapillariesKymographs.seq);
-						transformPointsIntoProfile( getDerivativeProfile(seqCapillariesKymographs.seq, icap, capi, jitter), icap, capi);	
+						capi.ptsDerivative = new CapillaryLevel(
+								capi.getLast2ofCapillaryName()+"_derivative", 
+								capi.indexKymograph,
+								getDerivativeProfile(seqAnalyzed, capi, jitter));
 					}
+					
 					if (options.buildGulps) 
 					{
-						capi.cleanGulps();
+						capi.ptsGulps.gulps = new ArrayList <> ();
 						capi.detectGulps(icap);
 					}
-					capi.xmlSaveCapillary_Measures(directory);
+					capi.xmlSaveCapillary_Measures(directory);  // TODO: suppress
 				}}));
 		}
 		
 		waitFuturesCompletion(processor, futures, progressBar);
+		
 		if (options.buildGulps) {
-			// TODO transfer to ROIS
 			for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
 			{
-				final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
-				seqCapillariesKymographs.seq.addROIs(capi.getROIsFromGulps(), false);
+				Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
+				seqAnalyzed.addROIs(capi.getAllGulpsAsROIs(), false);
 			}
 		}
+		processor.shutdown();
+		
 		seqCapillariesKymographs.seq.endUpdate();
 		progressBar.close();
-		processor.shutdown();
 	}	
 
-	private List<Point2D> getDerivativeProfile(Sequence seq, int indexkymo, Capillary cap, int jitter) 
+	private List<Point2D> getDerivativeProfile(Sequence seq, Capillary cap, int jitter) 
 	{	
 		Polyline2D 	polyline = cap.ptsTop.polylineLevel;
 		if (polyline == null)
@@ -126,7 +134,7 @@ public class DetectGulps extends BuildSeries
 		
 		int z = seq.getSizeZ() -1;
 		int c = 0;
-		IcyBufferedImage image = seq.getImage(indexkymo, z, c);
+		IcyBufferedImage image = seq.getImage(cap.indexKymograph, z, c);
 		List<Point2D> listOfMaxPoints = new ArrayList<>();
 		int[] kymoImageValues = Array1DUtil.arrayToIntArray(image.getDataXY(c), image.isSignedDataType());	
 		int xwidth = image.getSizeX();
@@ -153,17 +161,25 @@ public class DetectGulps extends BuildSeries
 		return listOfMaxPoints;
 	}
 	
-	private void transformPointsIntoProfile(List<Point2D> listOfMaxPoints, int indexkymo, Capillary cap) 
-	{
-		ROI2DPolyLine roiDerivative = new ROI2DPolyLine ();
-		roiDerivative.setName(cap.getLast2ofCapillaryName()+"_derivative");
-		roiDerivative.setColor(Color.yellow);
-		roiDerivative.setStroke(1);
-		roiDerivative.setPoints(listOfMaxPoints);
-		roiDerivative.setT(indexkymo);
-//		seq.addROI(roiDerivative, false);
-		cap.ptsDerivative = new CapillaryLevel(roiDerivative.getName(), roiDerivative.getPolyline2D());
-	}
+//	private void transformPointsIntoProfile(List<Point2D> listOfMaxPoints, int indexkymo, Capillary cap) 
+//	{
+//		
+//		cap.ptsDerivative = new CapillaryLevel(
+//				cap.getLast2ofCapillaryName()+"_derivative", indexkymo,
+//				listOfMaxPoints);
+//	}
+	
+//	private void transformPointsIntoROIProfile(List<Point2D> listOfMaxPoints, int indexkymo, Capillary cap) 
+//	{
+//		ROI2DPolyLine roiDerivative = new ROI2DPolyLine ();
+//		roiDerivative.setName(cap.getLast2ofCapillaryName()+"_derivative");
+//		roiDerivative.setColor(Color.yellow);
+//		roiDerivative.setStroke(1);
+//		roiDerivative.setPoints(listOfMaxPoints);
+//		roiDerivative.setT(indexkymo);
+////		seq.addROI(roiDerivative, false);
+//		cap.ptsDerivative = new CapillaryLevel(roiDerivative.getName(), roiDerivative.getPolyline2D());
+//	}
 	
 }
 
