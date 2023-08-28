@@ -110,7 +110,7 @@ public class DetectGulps extends BuildSeries
 			for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
 			{
 				final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
-				seqCapillariesKymographs.seq.addROIs(capi.gulpsRois.getROIsFromGulps(), false);
+				seqCapillariesKymographs.seq.addROIs(capi.getROIsFromGulps(), false);
 			}
 		}
 		seqCapillariesKymographs.seq.endUpdate();

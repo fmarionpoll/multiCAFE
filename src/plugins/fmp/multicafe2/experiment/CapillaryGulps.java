@@ -244,7 +244,7 @@ public class CapillaryGulps implements XMLPersistent
 		}
 	}
 
-	public void addGulp(ROI2DPolyLine roi, int indexkymo, String name) 
+	public void addGulpRoi(ROI2DPolyLine roi, int indexkymo, String name) 
 	{
 		roi.setColor(Color.red);
 		roi.setStroke(1);
@@ -342,11 +342,13 @@ public class CapillaryGulps implements XMLPersistent
 		int[] xInt = xpoints.stream().mapToInt(Integer::intValue).toArray();
 		int[] yInt = ypoints.stream().mapToInt(Integer::intValue).toArray();
 		ROI2DPolyLine roi = new ROI2DPolyLine(new Polyline2D (xInt, yInt, xInt.length));
-		addGulp(roi, indexkymo, getRoiGulpName(roiNamePrefix, icurrent));
+		addGulpRoi(roi, indexkymo, getRoiGulpName(roiNamePrefix, icurrent));
 	}
 	
 	static String getRoiGulpName(String roiNamePrefix, int icurrent) {
 		return roiNamePrefix + "_gulp" + String.format("%07d", icurrent);
 	}
+	
+
 		
 }

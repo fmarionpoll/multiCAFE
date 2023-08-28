@@ -288,7 +288,7 @@ public class Capillaries
 			cap.ptsTop.adjustToImageWidth(imageWidth);
 			cap.ptsBottom.adjustToImageWidth(imageWidth);
 			cap.ptsDerivative.adjustToImageWidth(imageWidth);
-			cap.gulpsRois = null; // TODO: deal with gulps.. (simply remove?)
+			cap.ptsGulps = null; // TODO: deal with gulps.. (simply remove?)
 		}
 	}
 	
@@ -299,7 +299,7 @@ public class Capillaries
 			cap.ptsTop.cropToImageWidth(imageWidth);
 			cap.ptsBottom.cropToImageWidth(imageWidth);
 			cap.ptsDerivative.cropToImageWidth(imageWidth);
-			cap.gulpsRois = null; // TODO: deal with gulps.. (simply remove?)
+			cap.ptsGulps = null; // TODO: deal with gulps.. (simply remove?)
 		}
 	}
 

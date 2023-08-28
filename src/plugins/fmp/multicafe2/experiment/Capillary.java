@@ -62,7 +62,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public CapillaryLevel				ptsTop  		= new CapillaryLevel(ID_TOPLEVEL); 
 	public CapillaryLevel				ptsBottom 		= new CapillaryLevel(ID_BOTTOMLEVEL); 
 	public CapillaryLevel				ptsDerivative 	= new CapillaryLevel(ID_DERIVATIVE); 
-	public CapillaryGulps 				gulpsRois 		= new CapillaryGulps(); 
+	public CapillaryGulps 				ptsGulps 		= new CapillaryGulps(); 
 	
 	public boolean						valid			= true;
 
@@ -131,9 +131,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		capPixels 		= cap.capPixels;
 		
 		limitsOptions	= cap.limitsOptions;
-		gulpsRois.rois	= new ArrayList <ROI2D> ();
-		if (cap.gulpsRois.rois != null && cap.gulpsRois.rois.size() > 0)
-			gulpsRois.rois.addAll(cap.gulpsRois.rois);
+		ptsGulps.rois	= new ArrayList <ROI2D> ();
+		if (cap.ptsGulps.rois != null && cap.ptsGulps.rois.size() > 0)
+			ptsGulps.rois.addAll(cap.ptsGulps.rois);
 		
 		ptsTop.copy(cap.ptsTop); 
 		ptsBottom.copy(cap.ptsBottom); 
@@ -275,7 +275,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			yes= (ptsDerivative != null && ptsDerivative.isThereAnyMeasuresDone());
 			break;
 		case SUMGULPS:
-			yes= (gulpsRois!= null && gulpsRois.isThereAnyMeasuresDone());
+			yes= (ptsGulps!= null && ptsGulps.isThereAnyMeasuresDone());
 			break;
 		case BOTTOMLEVEL:
 			yes= ptsBottom.isThereAnyMeasuresDone();
@@ -307,8 +307,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		case AUTOCORREL_LR:
 		case CROSSCORREL:
 		case CROSSCORREL_LR:
-			if (gulpsRois != null)
-				datai = gulpsRois.getMeasuresFromGulps(option, ptsTop.getNPoints(), seriesBinMs, outputBinMs);
+			if (ptsGulps != null)
+				datai = ptsGulps.getMeasuresFromGulps(option, ptsTop.getNPoints(), seriesBinMs, outputBinMs);
 			break;
 		case BOTTOMLEVEL:
 			datai = ptsBottom.getMeasures(seriesBinMs, outputBinMs);
@@ -357,16 +357,16 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	public void cleanGulps() 
 	{
-		if (gulpsRois == null) 
+		if (ptsGulps == null) 
 		{
-			gulpsRois = new CapillaryGulps();
-			gulpsRois.rois = new ArrayList <> ();
+			ptsGulps = new CapillaryGulps();
+			ptsGulps.rois = new ArrayList <> ();
 		}
 		else {
 			if (limitsOptions.analyzePartOnly) 
-				gulpsRois.removeROIsWithinInterval(limitsOptions.columnFirst, limitsOptions.columnLast);
-			else if (gulpsRois.rois != null)
-				gulpsRois.rois.clear();
+				ptsGulps.removeROIsWithinInterval(limitsOptions.columnFirst, limitsOptions.columnLast);
+			else if (ptsGulps.rois != null)
+				ptsGulps.rois.clear();
 		}
 	}
 	
@@ -407,7 +407,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		gulpPoints.add(detectedPoint);
 		Point2D.Double detectedPoint2 = new Point2D.Double (indexPixel, ptsTop.polylineLevel.ypoints[indexPixel]);
 		gulpPoints.add(detectedPoint2);
-		gulpsRois.addGulp(new ROI2DPolyLine (gulpPoints), 
+		ptsGulps.addGulpRoi(new ROI2DPolyLine (gulpPoints), 
 						indexkymo, 
 						CapillaryGulps.getRoiGulpName(getLast2ofCapillaryName(), indexPixel));
 		
@@ -424,9 +424,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 				lastMeasure = ptsDerivative.getLastMeasure();
 			break;
 		case SUMGULPS:
-			if (gulpsRois != null) 
+			if (ptsGulps != null) 
 			{
-				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNPoints());
+				List<Integer> datai = ptsGulps.getCumSumFromRoisArray(ptsTop.getNPoints());
 				lastMeasure = datai.get(datai.size()-1);
 			}
 			break;
@@ -451,8 +451,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 				lastMeasure = ptsDerivative.getLastDeltaMeasure();
 			break;
 		case SUMGULPS:
-			if (gulpsRois != null) {
-				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNPoints());
+			if (ptsGulps != null) {
+				List<Integer> datai = ptsGulps.getCumSumFromRoisArray(ptsTop.getNPoints());
 				lastMeasure = datai.get(datai.size()-1) - datai.get(datai.size()-2);
 			}
 			break;
@@ -477,8 +477,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 				t0Measure = ptsDerivative.getT0Measure();
 			break;
 		case SUMGULPS:
-			if (gulpsRois != null) {
-				List<Integer> datai = gulpsRois.getCumSumFromRoisArray(ptsTop.getNPoints());
+			if (ptsGulps != null) {
+				List<Integer> datai = ptsGulps.getCumSumFromRoisArray(ptsTop.getNPoints());
 				t0Measure = datai.get(0);
 			}
 			break;
@@ -492,7 +492,18 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		}
 		return t0Measure;
 	}
-	
+
+	public ArrayList<ROI2D> getROIsFromGulps() 
+	{		
+		int igulp = 0;
+		for (Polyline2D poly: ptsGulps.gulps) {
+			ROI2DPolyLine roi = new ROI2DPolyLine(poly);
+			addGulpRoi(roi, indexkymo, ptsGulps.getRoiGulpName(roiNamePrefix, igulp));
+			igulp++;
+		}
+		return ptsGulps.rois;
+	}
+	public 
 	public List<ROI2D> transferMeasuresToROIs() 
 	{
 		List<ROI2D> listrois = new ArrayList<ROI2D> ();
@@ -500,8 +511,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			ptsTop.addToROIs(listrois, indexKymograph);
 		if (ptsBottom != null)
 			ptsBottom.addToROIs(listrois, indexKymograph);
-		if (gulpsRois != null)
-			gulpsRois.addToROIs(listrois, indexKymograph);
+		if (ptsGulps != null)
+			ptsGulps.addToROIs(listrois, indexKymograph);
 		if (ptsDerivative != null)
 			ptsDerivative.addToROIs(listrois, Color.yellow, 1., indexKymograph);
 		return listrois;
@@ -513,8 +524,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			ptsTop.transferROIsToMeasures(listRois);
 		if (ptsBottom != null)
 			ptsBottom.transferROIsToMeasures(listRois);
-		if (gulpsRois != null)
-			gulpsRois.transferROIsToMeasures(listRois);
+		if (ptsGulps != null)
+			ptsGulps.transferROIsToMeasures(listRois);
 		if (ptsDerivative != null)
 			ptsDerivative.transferROIsToMeasures(listRois);
 	}
@@ -595,7 +606,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		boolean result = ptsTop.loadCapillaryLimitFromXML(node, ID_TOPLEVEL, header) > 0;
 		result |= ptsBottom.loadCapillaryLimitFromXML(node, ID_BOTTOMLEVEL, header) > 0;
 		result |= ptsDerivative.loadCapillaryLimitFromXML(node, ID_DERIVATIVE, header) > 0;
-		result |= gulpsRois.loadFromXML(node);
+		result |= ptsGulps.loadFromXML(node);
 		return result;
 	}
 	
@@ -653,8 +664,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			ptsBottom.saveCapillaryLimit2XML(node, ID_BOTTOMLEVEL);
 		if (ptsDerivative != null)
 			ptsDerivative.saveCapillaryLimit2XML(node, ID_DERIVATIVE);
-		if (gulpsRois != null)
-			gulpsRois.saveToXML(node);
+		if (ptsGulps != null)
+			ptsGulps.saveToXML(node);
 	}
 	 
 	public boolean xmlSaveCapillary_Measures(String directory) 
@@ -886,7 +897,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			case TOPDERIVATIVE:
 				return csvExportDataArray2D(ptsDerivative, exportX, exportY);
 			case GULPS:
-				return getCSVCapillaryGulpsData(gulpsRois);
+				return getCSVCapillaryGulpsData(ptsGulps);
 			default:
 				break;
 		}
@@ -920,7 +931,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			ptsDerivative.csvImportData( dataX, dataY, roiNamePrefix); 
 			break;
 		case GULPS:
-			gulpsRois.csvImportGulpsFrom3Rows(dataN, dataX, dataY, roiNamePrefix, indexKymograph);
+			ptsGulps.csvImportGulpsFrom3Rows(dataN, dataX, dataY, roiNamePrefix, indexKymograph);
 			break;
 		default:
 			break;

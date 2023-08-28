@@ -80,7 +80,7 @@ public class DetectLevels  extends BuildSeries
 					
 					capi.indexKymograph = indexCapillary;
 					capi.ptsDerivative = null;
-					capi.gulpsRois = null;
+					capi.ptsGulps = null;
 					capi.limitsOptions.copyFrom(options);
 					
 					int columnFirst = 0;
