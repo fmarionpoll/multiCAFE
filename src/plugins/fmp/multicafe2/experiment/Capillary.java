@@ -374,6 +374,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	public void detectGulps(int indexkymo) 
 	{
+		System.out.println("--- detect from kymo " + indexkymo);
+		
 		int indexPixel = 0;
 		int firstPixel = 1;
 		if (ptsTop.polylineLevel == null)

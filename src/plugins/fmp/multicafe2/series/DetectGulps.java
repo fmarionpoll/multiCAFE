@@ -107,13 +107,14 @@ public class DetectGulps extends BuildSeries
 						capi.ptsGulps.gulps = new ArrayList <> ();
 						capi.detectGulps(icap);
 					}
-					capi.xmlSaveCapillary_Measures(directory);  // TODO: suppress
+//					capi.xmlSaveCapillary_Measures(directory);  // TODO: suppress
 				}}));
 		}
 		
 		waitFuturesCompletion(processor, futures, progressBar);
 		
 		if (options.buildGulps) {
+			exp.capillaries.xmlSaveCapillaries_Measures(directory) ;
 			for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
 			{
 				Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
@@ -160,8 +161,6 @@ public class DetectGulps extends BuildSeries
 		}
 		return listOfMaxPoints;
 	}
-	
-
 	
 }
 
