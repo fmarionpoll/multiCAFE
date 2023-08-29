@@ -117,25 +117,29 @@ public class Capillaries
 	public boolean xmlLoadCapillaries_Measures(String directory) 
 	{
 		boolean flag = false;
-		int ncapillaries = capillariesList.size();
-		
 		try {
 			flag = csvLoadCapillariesData(directory);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//flag = false;  //TODO: remove this line to keep data read from csv file 
-		if (!flag) {
-			for (int i = 0; i < ncapillaries; i++) 
-			{
-				String csFile = directory + File.separator + capillariesList.get(i).getKymographName() + ".xml";
-				final Document capdoc = XMLUtil.loadDocument(csFile);
-				Node node = XMLUtil.getRootElement(capdoc, true);
-				Capillary cap = capillariesList.get(i);
-				cap.indexKymograph = i;
-				flag |= cap.loadFromXML_MeasuresOnly(node);
-			}
+
+		if (!flag) 
+			flag = xmlLoadCapillariesData(directory);
+		return flag;
+	}
+	
+	private boolean xmlLoadCapillariesData(String directory) {
+		boolean flag = false;
+		int ncapillaries = capillariesList.size();
+		for (int i = 0; i < ncapillaries; i++) 
+		{
+			String csFile = directory + File.separator + capillariesList.get(i).getKymographName() + ".xml";
+			final Document capdoc = XMLUtil.loadDocument(csFile);
+			Node node = XMLUtil.getRootElement(capdoc, true);
+			Capillary cap = capillariesList.get(i);
+			cap.indexKymograph = i;
+			flag |= cap.loadFromXML_MeasuresOnly(node);
 		}
 		return flag;
 	}

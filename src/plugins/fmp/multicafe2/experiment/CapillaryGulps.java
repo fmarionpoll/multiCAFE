@@ -348,6 +348,8 @@ public class CapillaryGulps implements XMLPersistent
 		}
 	}
 	
+	// -------------------------------
+	
 	void addNewGulp(String roiNamePrefix, int indexkymo, int icurrent, ArrayList<Integer> xpoints, ArrayList<Integer> ypoints ) {
 		int[] xInt = xpoints.stream().mapToInt(Integer::intValue).toArray();
 		int[] yInt = ypoints.stream().mapToInt(Integer::intValue).toArray();

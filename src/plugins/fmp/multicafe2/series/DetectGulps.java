@@ -67,10 +67,10 @@ public class DetectGulps extends BuildSeries
 		stopFlag = false;
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
 		
-		if (options.buildGulps)
-			ROI2DUtilities.removeRoisContainingString(-1, "gulp", seqCapillariesKymographs.seq);
-		if (options.buildDerivative) 
-			ROI2DUtilities.removeRoisContainingString(-1, "derivative", seqCapillariesKymographs.seq);
+//		if (options.buildGulps)
+//			ROI2DUtilities.removeRoisContainingString(-1, "gulp", seqCapillariesKymographs.seq);
+//		if (options.buildDerivative) 
+//			ROI2DUtilities.removeRoisContainingString(-1, "derivative", seqCapillariesKymographs.seq);
 		
 		int nframes = lastCapillary - firstCapillary +1;
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
@@ -87,7 +87,6 @@ public class DetectGulps extends BuildSeries
 			final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
 			
 			capi.setGulpsOptions(options);
-			// TODO save date in poly2D instead in rois
 			final int icap = indexCapillary;
 			futures.add(processor.submit(new Runnable () 
 			{
@@ -104,23 +103,22 @@ public class DetectGulps extends BuildSeries
 					
 					if (options.buildGulps) 
 					{
-						capi.ptsGulps.gulps = new ArrayList <> ();
+						capi.initGulps();
 						capi.detectGulps(icap);
 					}
-//					capi.xmlSaveCapillary_Measures(directory);  // TODO: suppress
 				}}));
 		}
 		
 		waitFuturesCompletion(processor, futures, progressBar);
 		
-		if (options.buildGulps) {
-			exp.capillaries.xmlSaveCapillaries_Measures(directory) ;
-			for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
-			{
-				Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
-				seqAnalyzed.addROIs(capi.getAllGulpsAsROIs(), false);
-			}
-		}
+		exp.capillaries.xmlSaveCapillaries_Measures(directory) ;
+//		if (options.buildGulps) {
+//			for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
+//			{
+//				Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
+//				seqAnalyzed.addROIs(capi.getAllGulpsAsROIs(), false);
+//			}
+//		}
 		processor.shutdown();
 		
 		seqCapillariesKymographs.seq.endUpdate();

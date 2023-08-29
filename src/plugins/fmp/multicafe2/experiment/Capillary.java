@@ -372,9 +372,17 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		}
 	}
 	
+	public void initGulps() 
+	{
+		if (ptsGulps == null) 
+			ptsGulps = new CapillaryGulps();
+		ptsGulps.gulpNamePrefix = roiNamePrefix;
+		ptsGulps.gulps = new ArrayList <> ();
+	}
+	
 	public void detectGulps(int indexkymo) 
 	{
-		System.out.println("--- detect from kymo " + indexkymo);
+		System.out.println("--- detect from kymo " + indexkymo); // TODO
 		
 		int indexPixel = 0;
 		int firstPixel = 1;
@@ -438,7 +446,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			ypoints[i] = gulpPoints.get(i).getY();
 		}
 		Polyline2D gulpLine = new Polyline2D (xpoints, ypoints, npoints);
-		System.out.println("add gulp " + npoints);
+		System.out.println(indexKymograph + " "+ roiNamePrefix + ": add gulp " + npoints); // TODO
 		ptsGulps.gulps.add(gulpLine);
 	}
 	
