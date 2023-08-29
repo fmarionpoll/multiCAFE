@@ -476,7 +476,7 @@ public class Capillaries
 			
 			for (Capillary cap: capillariesList) 
 			{
-				for (KymoROI2D roiFK: cap.getRoisForKymo()) 
+				for (KymoROI2D roiFK: cap.getROIsForKymo()) 
 				{
 					Long[] interval = {roiFK.getStart(), (long) -1}; 
 					capillariesListTimeIntervals.addIfNew(interval);
@@ -493,7 +493,7 @@ public class Capillaries
 		
 		for (Capillary cap: capillariesList) 
 		{
-			List<KymoROI2D> listROI2DForKymo = cap.getRoisForKymo();
+			List<KymoROI2D> listROI2DForKymo = cap.getROIsForKymo();
 			ROI2D roi = cap.getRoi();
 			if (item>0 ) 
 				roi = (ROI2D) listROI2DForKymo.get(item-1).getRoi().getCopy();
@@ -626,9 +626,9 @@ public class Capillaries
 			csvWriter.append("#\t#\n");
 			
 			if (capillariesList.size() > 0) {
-				csvWriter.append(capillariesList.get(0).csvExportIndividualCapillaryDescriptionHeader());
+				csvWriter.append(capillariesList.get(0).csvExportCapillaryDescriptionHeader());
 				for (Capillary cap:capillariesList) 
-					csvWriter.append(cap.csvExportIndividualCapillaryDescription());
+					csvWriter.append(cap.csvExportCapillaryDescription());
 				csvWriter.append("#\t#\n");
 			}
 		} catch (IOException e) {
@@ -649,7 +649,7 @@ public class Capillaries
 				Capillary cap = getCapillaryFromKymographName(data[2]);
 				if (cap == null)
 					cap = new Capillary();
-				cap.csvImportIndividualCapillaryDescription(data);
+				cap.csvImportCapillaryDescription(data);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

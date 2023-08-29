@@ -382,8 +382,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	public void detectGulps(int indexkymo) 
 	{
-		System.out.println("--- detect from kymo " + indexkymo); // TODO
-		
 		int indexPixel = 0;
 		int firstPixel = 1;
 		if (ptsTop.polylineLevel == null)
@@ -446,7 +444,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			ypoints[i] = gulpPoints.get(i).getY();
 		}
 		Polyline2D gulpLine = new Polyline2D (xpoints, ypoints, npoints);
-		System.out.println(indexKymograph + " "+ roiNamePrefix + ": add gulp " + npoints); // TODO
 		ptsGulps.gulps.add(gulpLine);
 	}
 	
@@ -555,7 +552,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			ptsDerivative.addToROIs(listrois, Color.yellow, 1., indexKymograph);
 		return listrois;
 	}
-	
 	
 	public void transferROIsToMeasures(List<ROI> listRois) 
 	{
@@ -813,7 +809,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	// --------------------------------------------
 	
-	public List<KymoROI2D> getRoisForKymo() {
+	public List<KymoROI2D> getROIsForKymo() {
 		if (roisForKymo.size() < 1) 
 			initROI2DForKymoList();
 		return roisForKymo;
@@ -862,7 +858,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	// -----------------------------------------------------------------------------
 	
-	public String csvExportIndividualCapillaryDescriptionHeader() {
+	public String csvExportCapillaryDescriptionHeader() {
 		StringBuffer sbf = new StringBuffer();
 		
 		sbf.append("#\tCAPILLARIES\tdescribe each capillary\n");
@@ -883,7 +879,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return sbf.toString();
 	}
 	
-	public String csvExportIndividualCapillaryDescription() {	
+	public String csvExportCapillaryDescription() {	
 		StringBuffer sbf = new StringBuffer();
 		List<String> row = Arrays.asList(
 				getLast2ofCapillaryName(),
@@ -930,20 +926,33 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public String csvExportCapillaryData(EnumCapillaryMeasureType measureType, boolean exportX, boolean exportY) {
 		switch(measureType) {
 			case TOPLEVEL:
-				return csvExportDataArray2D(ptsTop, exportX, exportY);
+				return csvExportCapillaryLevel(ptsTop, exportX, exportY);
 			case BOTTOMLEVEL:
-				return csvExportDataArray2D(ptsBottom, exportX, exportY);
+				return csvExportCapillaryLevel(ptsBottom, exportX, exportY);
 			case TOPDERIVATIVE:
-				return csvExportDataArray2D(ptsDerivative, exportX, exportY);
+				return csvExportCapillaryLevel(ptsDerivative, exportX, exportY);
 			case GULPS:
-				return getCSVCapillaryGulpsData(ptsGulps);
+				return csvExportCapillaryGulps(ptsGulps);
 			default:
 				break;
 		}
 		return null;
 	}
 	
-	public void csvImportIndividualCapillaryDescription(String[] data) {
+	private String csvExportCapillaryLevel(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
+		if (ptsArray == null || ptsArray.polylineLevel == null )
+			return null;
+		return ptsArray.csvExportData(exportX, exportY);
+	}
+	
+	private String csvExportCapillaryGulps(CapillaryGulps capillaryGulps) {
+		if (capillaryGulps == null || capillaryGulps.gulps == null)
+			return null;
+		return capillaryGulps.csvExportData(getLast2ofCapillaryName());
+	}
+	// --------------------------------------------
+	
+	public void csvImportCapillaryDescription(String[] data) {
 		int i = 0;
 		roiNamePrefix = data[i]; i++;
 		indexKymograph = Integer.valueOf(data[i]); i++; 
@@ -957,8 +966,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		capConcentration = data[i]; i++; 
 		capSide = data[i]; 
 	}
-	
-	
+		
 	public void csvImportCapillaryData(EnumCapillaryMeasureType measureType, int [] dataN, int [] dataX, int [] dataY) {
 		switch(measureType) {
 		case TOPLEVEL:
@@ -976,20 +984,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		default:
 			break;
 		}
-	}
-	
-	
-	private String csvExportDataArray2D(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
-		if (ptsArray == null || ptsArray.polylineLevel == null || ptsArray.polylineLevel.npoints < 2 )
-			return null;
-		return ptsArray.csvExportData(exportX, exportY);
-	}
-	
-	
-	private String getCSVCapillaryGulpsData(CapillaryGulps capillaryGulps) {
-		if (capillaryGulps == null || capillaryGulps.gulps == null)
-			return null;
-		return capillaryGulps.csvExportData(getLast2ofCapillaryName());
 	}
 		
 }

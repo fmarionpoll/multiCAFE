@@ -239,7 +239,7 @@ public class BuildKymographs extends BuildSeries
 		
 		int imageHeight = 0;
 		for (Capillary cap: exp.capillaries.capillariesList) {
-			for (KymoROI2D capT : cap.getRoisForKymo()) {
+			for (KymoROI2D capT : cap.getROIsForKymo()) {
 				int imageHeight_i = buildMasks(capT, sizex, sizey);
 				if (imageHeight_i > imageHeight) imageHeight = imageHeight_i;
 			}
