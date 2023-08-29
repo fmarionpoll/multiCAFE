@@ -34,7 +34,7 @@ public class ClipCagesMeasuresToSmallest extends BuildSeries
 						ttcap.cropMeasuresToNPoints(minLength);
 				}
 			}
-			exp.capillaries.xmlSaveCapillaries_Measures(exp.getKymosBinFullDirectory());
+			exp.capillaries.saveCapillaries_Measures(exp.getKymosBinFullDirectory());
 		}
 		exp.seqCamData.closeSequence();
 		exp.seqKymos.closeSequence();

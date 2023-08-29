@@ -66,28 +66,27 @@ public class DetectLevels  extends BuildSeries
 		{
 			final int indexCapillary = index;
 			final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
+			
 			if (!options.detectR && capi.getKymographName().endsWith("2"))
 				continue;
 			if (!options.detectL && capi.getKymographName().endsWith("1"))
 				continue;
+			
+			capi.indexKymograph = indexCapillary;
+			capi.ptsDerivative = null;
+			capi.ptsGulps = null;
+			capi.limitsOptions.copyFrom(options);
 				
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
 				public void run() 
 				{	
-					final IcyBufferedImage rawImage = imageIORead(seqKymos.getFileName(indexCapillary));
-					
-					capi.indexKymograph = indexCapillary;
-					capi.ptsDerivative = null;
-					capi.ptsGulps = null;
-					capi.limitsOptions.copyFrom(options);
-					
-					int columnFirst = 0;
-					int columnLast = rawImage.getSizeX()-1;
+					IcyBufferedImage rawImage = imageIORead(seqKymos.getFileName(indexCapillary));
 					int imageWidth = rawImage.getSizeX();
 					int imageHeight = rawImage.getSizeY();
-					
+					int columnFirst = 0;
+					int columnLast = rawImage.getSizeX()-1;
 					if (options.analyzePartOnly) 
 					{
 						columnFirst = options.columnFirst;
@@ -95,58 +94,13 @@ public class DetectLevels  extends BuildSeries
 						if (columnLast > imageWidth-1)
 							columnLast = imageWidth -1;
 					} 
-					int n_measures = columnLast - columnFirst +1;
-					
 					
 					if (options.pass1) 
-					{		
-						int c = 0;
-						IcyBufferedImage transformedImage1 = transformPass1.getTransformedImage (rawImage, null);
-						Object transformedArray1 = transformedImage1.getDataXY(c);
-						int[] transformed1DArray1 = Array1DUtil.arrayToIntArray(transformedArray1, transformedImage1.isSignedDataType());
-						
-						int topSearchFrom = 0;
-						capi.ptsTop.limit = new int [n_measures];
-						capi.ptsBottom.limit = new int [n_measures];
-						
-						if (options.runBackwards) 
-							for (int ix = columnLast; ix >= columnFirst; ix--) 
-								topSearchFrom = detectLimitOnOneColumn(ix, columnFirst, topSearchFrom, jitter, imageWidth, imageHeight, capi, transformed1DArray1);
-						else
-							for (int ix = columnFirst; ix <= columnLast; ix++) 
-								topSearchFrom = detectLimitOnOneColumn(ix, columnFirst, topSearchFrom, jitter, imageWidth, imageHeight, capi, transformed1DArray1);
-						
-					}
+						detectPass1(rawImage, transformPass1, capi, imageWidth, imageHeight, columnFirst, columnLast, jitter);
+					
 					
 					if (options.pass2) 
-					{
-						if (capi.ptsTop.limit == null)
-							capi.ptsTop.setTempDataFromPolylineLevel();
-
-						int c = 0;
-						IcyBufferedImage transformedImage2 = transformPass2.getTransformedImage (rawImage, null);		
-						Object transformedArray2 = transformedImage2.getDataXY(c);
-						int[] transformed1DArray2 = Array1DUtil.arrayToIntArray(transformedArray2, transformedImage2.isSignedDataType());
-						switch (options.transform02)
-						{
-							case COLORDISTANCE_L1_Y:
-							case COLORDISTANCE_L2_Y:
-								findBestPosition(capi.ptsTop.limit, columnFirst, columnLast, transformed1DArray2, imageWidth, imageHeight, 5);
-								break;
-								
-							case SUBTRACT_1RSTCOL:
-							case L1DIST_TO_1RSTCOL:
-								detectThresholdUp(capi.ptsTop.limit, columnFirst, columnLast, transformed1DArray2, imageWidth, imageHeight, 20, options.detectLevel2Threshold);
-								break;
-								
-							case DERICHE:
-								findBestPosition(capi.ptsTop.limit, columnFirst, columnLast, transformed1DArray2, imageWidth, imageHeight, 5);
-								break;
-								
-							default:
-								break;
-						}
-					}
+						detectPass2(rawImage, transformPass2, capi, imageWidth, imageHeight, columnFirst, columnLast, jitter);
 
 					if (options.analyzePartOnly) 
 					{
@@ -160,16 +114,36 @@ public class DetectLevels  extends BuildSeries
 					}
 					capi.ptsTop.limit = null;
 					capi.ptsBottom.limit = null;
-					
-					capi.xmlSaveCapillary_Measures(directory);
 				}}));
 		}
 		waitFuturesCompletion(processor, futures, progressBar);
+		
+		exp.capillaries.saveCapillaries_Measures(directory) ;
 		seqKymos.seq.endUpdate();
 		
 		progressBar.close();
 		
 		return true;
+	}
+	
+	private void detectPass1(IcyBufferedImage rawImage, ImageTransformInterface transformPass1, Capillary capi, 
+							int imageWidth, int imageHeight, int columnFirst, int columnLast, int jitter) 
+	{
+		IcyBufferedImage transformedImage1 = transformPass1.getTransformedImage (rawImage, null);
+		Object transformedArray1 = transformedImage1.getDataXY(0);
+		int[] transformed1DArray1 = Array1DUtil.arrayToIntArray(transformedArray1, transformedImage1.isSignedDataType());
+		
+		int topSearchFrom = 0;
+		int n_measures = columnLast - columnFirst +1;
+		capi.ptsTop.limit = new int [n_measures];
+		capi.ptsBottom.limit = new int [n_measures];
+		
+		if (options.runBackwards) 
+			for (int ix = columnLast; ix >= columnFirst; ix--) 
+				topSearchFrom = detectLimitOnOneColumn(ix, columnFirst, topSearchFrom, jitter, imageWidth, imageHeight, capi, transformed1DArray1);
+		else
+			for (int ix = columnFirst; ix <= columnLast; ix++) 
+				topSearchFrom = detectLimitOnOneColumn(ix, columnFirst, topSearchFrom, jitter, imageWidth, imageHeight, capi, transformed1DArray1);
 	}
 	
 	private int detectLimitOnOneColumn(int ix, int istart, int topSearchFrom, int jitter, int imageWidth, int imageHeight, Capillary capi, int[] transformed1DArray1)
@@ -181,6 +155,35 @@ public class DetectLevels  extends BuildSeries
 		capi.ptsTop.limit[ix-istart] = iyTop;
 		capi.ptsBottom.limit[ix-istart] = iyBottom;
 		return iyTop;
+	}
+	
+	private void detectPass2(IcyBufferedImage rawImage, ImageTransformInterface transformPass2, Capillary capi, 
+			int imageWidth, int imageHeight, int columnFirst, int columnLast, int jitter) {
+		if (capi.ptsTop.limit == null)
+			capi.ptsTop.setTempDataFromPolylineLevel();
+
+		IcyBufferedImage transformedImage2 = transformPass2.getTransformedImage (rawImage, null);		
+		Object transformedArray2 = transformedImage2.getDataXY(0);
+		int[] transformed1DArray2 = Array1DUtil.arrayToIntArray(transformedArray2, transformedImage2.isSignedDataType());
+		switch (options.transform02)
+		{
+			case COLORDISTANCE_L1_Y:
+			case COLORDISTANCE_L2_Y:
+				findBestPosition(capi.ptsTop.limit, columnFirst, columnLast, transformed1DArray2, imageWidth, imageHeight, 5);
+				break;
+				
+			case SUBTRACT_1RSTCOL:
+			case L1DIST_TO_1RSTCOL:
+				detectThresholdUp(capi.ptsTop.limit, columnFirst, columnLast, transformed1DArray2, imageWidth, imageHeight, 20, options.detectLevel2Threshold);
+				break;
+				
+			case DERICHE:
+				findBestPosition(capi.ptsTop.limit, columnFirst, columnLast, transformed1DArray2, imageWidth, imageHeight, 5);
+				break;
+				
+			default:
+				break;
+		}
 	}
 	
 	private void findBestPosition(int [] limits, int firstColumn, int lastColumn, int[] transformed1DArray2, int imageWidth, int imageHeight, int delta) 

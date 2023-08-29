@@ -64,7 +64,7 @@ public class Capillaries
 		return false;
 	}
 	
-	public boolean xmlSaveCapillaries_Measures(String directory) 
+	public boolean saveCapillaries_Measures(String directory) 
 	{
 		if (directory == null)
 			return false;

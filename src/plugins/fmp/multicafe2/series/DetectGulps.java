@@ -17,7 +17,6 @@ import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.CapillaryLevel;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
-import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 
 
 
@@ -67,11 +66,6 @@ public class DetectGulps extends BuildSeries
 		stopFlag = false;
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
 		
-//		if (options.buildGulps)
-//			ROI2DUtilities.removeRoisContainingString(-1, "gulp", seqCapillariesKymographs.seq);
-//		if (options.buildDerivative) 
-//			ROI2DUtilities.removeRoisContainingString(-1, "derivative", seqCapillariesKymographs.seq);
-		
 		int nframes = lastCapillary - firstCapillary +1;
 	    final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("detect_levels");
@@ -110,15 +104,8 @@ public class DetectGulps extends BuildSeries
 		}
 		
 		waitFuturesCompletion(processor, futures, progressBar);
-		
-		exp.capillaries.xmlSaveCapillaries_Measures(directory) ;
-//		if (options.buildGulps) {
-//			for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
-//			{
-//				Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
-//				seqAnalyzed.addROIs(capi.getAllGulpsAsROIs(), false);
-//			}
-//		}
+		exp.capillaries.saveCapillaries_Measures(directory) ;
+
 		processor.shutdown();
 		
 		seqCapillariesKymographs.seq.endUpdate();

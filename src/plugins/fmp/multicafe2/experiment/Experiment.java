@@ -846,7 +846,7 @@ public class Experiment
 		{
 			seqKymos.validateRois();
 			seqKymos.transferKymosRoisToCapillaries_Measures(capillaries);
-			flag = capillaries.xmlSaveCapillaries_Measures(directory);
+			flag = capillaries.saveCapillaries_Measures(directory);
 		}
 		return flag;
 	}
@@ -974,7 +974,7 @@ public class Experiment
 	
 	public boolean xmlSaveMCCapillaries_Measures() 
 	{
-		return capillaries.xmlSaveCapillaries_Measures(getKymosBinFullDirectory());
+		return capillaries.saveCapillaries_Measures(getKymosBinFullDirectory());
 	}
 	
 	// ----------------------------------

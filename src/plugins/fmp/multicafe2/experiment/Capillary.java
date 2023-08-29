@@ -980,7 +980,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	
 	private String csvExportDataArray2D(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
-		if (ptsArray == null)
+		if (ptsArray == null || ptsArray.polylineLevel == null || ptsArray.polylineLevel.npoints < 2 )
 			return null;
 		return ptsArray.csvExportData(exportX, exportY);
 	}
