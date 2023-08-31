@@ -108,6 +108,7 @@ public class CapillaryGulps implements XMLPersistent
 	
 	boolean isThereAnyMeasuresDone() 
 	{
+		
 		return (gulps != null && gulps.size() > 0);
 	}
 	
