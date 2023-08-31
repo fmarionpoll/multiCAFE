@@ -286,7 +286,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return yes;
 	}
 		
-	public ArrayList<Integer> getCapillaryMeasuresForPass1(EnumXLSExportType option, long seriesBinMs, long outputBinMs) 
+	public ArrayList<Integer> getCapillaryMeasuresForXLSPass1(EnumXLSExportType option, long seriesBinMs, long outputBinMs) 
 	{
 		ArrayList<Integer> datai = null;
 		switch (option) 
