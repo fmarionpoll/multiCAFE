@@ -24,7 +24,8 @@ public class CapillaryLevel  implements XMLPersistent
 	public int [] 	limit			= null;
 	
 	public String 	typename 		= "notype";
-	public String	name 			= "noname";
+	public String	capName 		= "noname";
+	public int		capIndexKymo 	= -1;
 	public String 	header 			= null;
 	
 	private final String ID_NPOINTS	= "npoints";
@@ -38,24 +39,20 @@ public class CapillaryLevel  implements XMLPersistent
 	CapillaryLevel(String typename) 
 	{
 		this.typename = typename;
-		name = typename;
-	}
-	
-	public CapillaryLevel(String name, Polyline2D polyline) 
-	{
-		this.name = name;
-		polylineLevel = new Level2D(polyline);
+		capName = typename;
 	}
 	
 	public CapillaryLevel(String name, int indexImage, List<Point2D> limit) 
 	{
-		this.name = name;
+		this.capName = name;
+		this.capIndexKymo = indexImage;
 		polylineLevel = new Level2D(limit);
 	}
 	
-	public void setPolylineLevelFromTempData(String name, int start, int end) 
+	public void setPolylineLevelFromTempData(String name, int indexImage, int start, int end) 
 	{
-		this.name = name;
+		this.capName = name;
+		this.capIndexKymo = indexImage;
 		int npoints = end-start+1;
 		double [] xpoints = new double [npoints];
 		double [] ypoints = new double [npoints];
@@ -168,7 +165,7 @@ public class CapillaryLevel  implements XMLPersistent
 			ROI2D roi = transferPolyline2DToROI(indexImage);
 			roi.setColor(color);
 			roi.setStroke(stroke);
-			roi.setName(name);
+			roi.setName(capName);
 			listrois.add(roi);
 		}
 		return listrois;
@@ -179,10 +176,10 @@ public class CapillaryLevel  implements XMLPersistent
 		for (ROI roi: listRois) 
 		{		
 			String roiname = roi.getName();
-			if (roi instanceof ROI2DPolyLine && roiname .contains (name)) 
+			if (roi instanceof ROI2DPolyLine && roiname .contains (capName)) 
 			{
 				polylineLevel = new Level2D(((ROI2DPolyLine)roi).getPolyline2D());
-				name = roiname;	
+				capName = roiname;	
 			}
 		}
 	}
@@ -216,7 +213,7 @@ public class CapillaryLevel  implements XMLPersistent
 		if (polylineLevel == null)
 			return null;	
 		ROI2D roi = new ROI2DPolyLine(polylineLevel); 
-		roi.setName(name);
+		roi.setName(capName);
 		roi.setT(indexImage);
 		return roi;
 	}
@@ -230,11 +227,11 @@ public class CapillaryLevel  implements XMLPersistent
 		polylineLevel = null;
 	    if (nodeMeta != null)  
 	    {
-	    	name =  XMLUtil.getElementValue(nodeMeta, ID_NAME, nodename);
-	    	if (!name.contains("_")) 
+	    	capName =  XMLUtil.getElementValue(nodeMeta, ID_NAME, nodename);
+	    	if (!capName.contains("_")) 
 	    	{
 	    		this.header = header;
-	    		name = header + name;
+	    		capName = header + capName;
 	    	} 
 	    	polylineLevel = loadPolyline2DFromXML(nodeMeta);
 		    if (polylineLevel != null)
@@ -275,7 +272,7 @@ public class CapillaryLevel  implements XMLPersistent
 		final Node nodeMeta = XMLUtil.setElement(node, nodename);
 	    if (nodeMeta != null) 
 	    {
-	    	XMLUtil.setElementValue(nodeMeta, ID_NAME, name);
+	    	XMLUtil.setElementValue(nodeMeta, ID_NAME, capName);
 	    	saveLevel2XML(nodeMeta, polylineLevel);
 	    	final Node nodeMeta_old = XMLUtil.setElement(node, nodename+"old");
 		    if (polyline_old != null && polyline_old.npoints != polylineLevel.npoints) 
@@ -349,37 +346,26 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	// ----------------------------------------------------------------------
 	
-	public String csvExportData(boolean exportX, boolean exportY) {
-
-		StringBuffer sbf = new StringBuffer();
+	public boolean csvExportData(StringBuffer sbf) 
+	{
 		if (polylineLevel == null) 
-			return null;
-		if (exportX) {
-			csvExportToRow(sbf, "X", polylineLevel.xpoints);
-		}
+			return false;
 		
-		if (exportY) {
-			csvExportToRow(sbf, "Y", polylineLevel.ypoints);
-		}
+		sbf.append(Integer.toString(polylineLevel.npoints)+ "\t");
 		
-		return sbf.toString();
-	}
-	
-	private void csvExportToRow(StringBuffer sbf, String XorY, double[] points) {
-		sbf.append(name.substring(0, 2)+ "\t"
-				+ XorY +"\t" 
-				+ Integer.toString(polylineLevel.npoints)+ "\t");
-		for (int i = 0; i< polylineLevel.npoints; i++)
+		for (int i = 0; i < polylineLevel.npoints; i++)
         {
-            sbf.append(StringUtil.toString((int) points[i]));
+            sbf.append(StringUtil.toString((int) polylineLevel.xpoints[i]));
+            sbf.append("\t");
+            sbf.append(StringUtil.toString((int) polylineLevel.ypoints[i]));
             sbf.append("\t");
         }
-		sbf.append("\n");
+		return true;
 	}
 	
 	public void csvImportData( int [] dataX, int [] dataY, String roiNamePrefix) {
 		polylineLevel = new Level2D(dataX, dataY, dataX.length);
-		name = roiNamePrefix + "_" + typename;
+		capName = roiNamePrefix + "_" + typename;
 	}
 	
 }

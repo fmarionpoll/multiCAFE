@@ -62,17 +62,17 @@ public class DetectLevels  extends BuildSeries
 		final ImageTransformInterface transformPass1 = options.transform01.getFunction();
 		final ImageTransformInterface transformPass2 = options.transform02.getFunction();
 		
-		for (int index = firstKymo; index <= lastKymo; index++) 
+		for (int indexKymo = firstKymo; indexKymo <= lastKymo; indexKymo++) 
 		{
-			final int indexCapillary = index;
-			final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
+			//final int indexCapillary = indexKymo;
+			final Capillary capi = exp.capillaries.capillariesList.get(indexKymo);
 			
 			if (!options.detectR && capi.getKymographName().endsWith("2"))
 				continue;
 			if (!options.detectL && capi.getKymographName().endsWith("1"))
 				continue;
 			
-			capi.indexKymograph = indexCapillary;
+			capi.kymographIndex = indexKymo;
 			capi.ptsDerivative = null;
 			capi.ptsGulps = null;
 			capi.limitsOptions.copyFrom(options);
@@ -82,7 +82,7 @@ public class DetectLevels  extends BuildSeries
 				@Override
 				public void run() 
 				{	
-					IcyBufferedImage rawImage = imageIORead(seqKymos.getFileName(indexCapillary));
+					IcyBufferedImage rawImage = imageIORead(seqKymos.getFileName(capi.kymographIndex));
 					int imageWidth = rawImage.getSizeX();
 					int imageHeight = rawImage.getSizeY();
 					int columnFirst = 0;
@@ -108,9 +108,9 @@ public class DetectLevels  extends BuildSeries
 						if (capi.ptsBottom.limit != null)
 							capi.ptsBottom.polylineLevel.insertYPoints(capi.ptsBottom.limit, columnFirst, columnLast);
 					} else {
-						capi.ptsTop.setPolylineLevelFromTempData(capi.getLast2ofCapillaryName()+"_toplevel", columnFirst, columnLast);
+						capi.ptsTop.setPolylineLevelFromTempData(capi.getLast2ofCapillaryName()+"_toplevel", capi.kymographIndex, columnFirst, columnLast);
 						if (capi.ptsBottom.limit != null)
-							capi.ptsBottom.setPolylineLevelFromTempData(capi.getLast2ofCapillaryName()+"_bottomlevel", columnFirst, columnLast);
+							capi.ptsBottom.setPolylineLevelFromTempData(capi.getLast2ofCapillaryName()+"_bottomlevel", capi.kymographIndex, columnFirst, columnLast);
 					}
 					capi.ptsTop.limit = null;
 					capi.ptsBottom.limit = null;

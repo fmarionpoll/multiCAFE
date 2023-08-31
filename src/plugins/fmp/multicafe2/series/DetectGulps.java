@@ -81,7 +81,6 @@ public class DetectGulps extends BuildSeries
 			final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
 			
 			capi.setGulpsOptions(options);
-			final int icap = indexCapillary;
 			futures.add(processor.submit(new Runnable () 
 			{
 				@Override
@@ -91,14 +90,14 @@ public class DetectGulps extends BuildSeries
 					{
 						capi.ptsDerivative = new CapillaryLevel(
 								capi.getLast2ofCapillaryName()+"_derivative", 
-								capi.indexKymograph,
+								capi.kymographIndex,
 								getDerivativeProfile(seqAnalyzed, capi, jitter));
 					}
 					
 					if (options.buildGulps) 
 					{
 						capi.initGulps();
-						capi.detectGulps(icap);
+						capi.detectGulps();
 					}
 				}}));
 		}
@@ -120,7 +119,7 @@ public class DetectGulps extends BuildSeries
 		
 		int z = seq.getSizeZ() -1;
 		int c = 0;
-		IcyBufferedImage image = seq.getImage(cap.indexKymograph, z, c);
+		IcyBufferedImage image = seq.getImage(cap.kymographIndex, z, c);
 		List<Point2D> listOfMaxPoints = new ArrayList<>();
 		int[] kymoImageValues = Array1DUtil.arrayToIntArray(image.getDataXY(c), image.isSignedDataType());	
 		int xwidth = image.getSizeX();

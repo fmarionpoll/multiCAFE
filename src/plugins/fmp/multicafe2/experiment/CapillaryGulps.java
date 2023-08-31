@@ -14,6 +14,7 @@ import icy.file.xml.XMLPersistent;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.type.geom.Polyline2D;
+import icy.util.StringUtil;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
@@ -81,15 +82,7 @@ public class CapillaryGulps implements XMLPersistent
 	
 	// -------------------------------
 	
-	public void addNewGulpFromInt( ArrayList<Integer> xpoints, ArrayList<Integer> ypoints ) 
-	{
-		int npoints = xpoints.size();
-		int[] xValues = xpoints.stream().mapToInt(Integer::intValue).toArray();
-		int[] yValues = ypoints.stream().mapToInt(Integer::intValue).toArray();
-		Polyline2D gulpLine = new Polyline2D (xValues, yValues, npoints);
-		gulps.add(gulpLine);
-	}
-	
+		
 	public void addNewGulpFromPoints( ArrayList<Point2D> gulpPoints ) 
 	{
 		int npoints = gulpPoints.size();
@@ -219,63 +212,71 @@ public class CapillaryGulps implements XMLPersistent
 	
 	// -------------------------------
 		
-	public String csvExportData(String kymographName) 
+	public boolean csvExportData(StringBuffer sbf) 
 	{
-		StringBuffer sbfN = csvExportFirstColumns(kymographName, "N");
-		StringBuffer sbfX = csvExportFirstColumns(kymographName, "X");
-		StringBuffer sbfY = csvExportFirstColumns(kymographName, "Y");
-	
-	        for (int i = 0; i< gulps.size(); i++)
-	        	csvExportSingleGulpData(sbfN, sbfX, sbfY, i);
-	  
-			sbfN.append("\n");
-		sbfN.append(sbfX);
-		sbfN.append("\n");
-		sbfN.append(sbfY);
-		sbfN.append("\n");
-	
-		return sbfN.toString();
+		if (gulps == null)
+			return false;
+		
+		sbf.append(Integer.toString(gulps.size())+ "\t");
+	    for (int i = 0; i < gulps.size(); i++) {
+	    	Polyline2D gulp = gulps.get(i);
+	    	sbf.append(StringUtil.toString((int) gulp.npoints));
+            sbf.append("\t");
+            for (int j= 0; j< gulp.npoints; j++) {
+		    	sbf.append(StringUtil.toString((int) gulp.xpoints[j]));
+	            sbf.append("\t");
+	            sbf.append(StringUtil.toString((int) gulp.ypoints[j]));
+	            sbf.append("\t");
+            }
+	    }
+	  	
+		return true;
 	}
 	
-	private void csvExportSingleGulpData(StringBuffer sbfN, StringBuffer sbfX, StringBuffer sbfY, int i) 
-	{
-		Polyline2D polyline = gulps.get(i);
-		for (int j=0; j< polyline.npoints; j++)
-    	{
-    		sbfN.append(Integer.toString(i) + "\t"); 
-    		sbfX.append(Integer.toString((int) polyline.xpoints[j])+ "\t");
-            sbfY.append(Integer.toString((int) polyline.ypoints[j])+ "\t");
-    	}
-	}
+//	private void csvExportSingleGulpData(StringBuffer sbfN, StringBuffer sbfX, StringBuffer sbfY, int i) 
+//	{
+//		Polyline2D polyline = gulps.get(i);
+//		for (int j=0; j< polyline.npoints; j++)
+//    	{
+//    		sbfN.append(Integer.toString(i) + "\t"); 
+//    		sbfX.append(Integer.toString((int) polyline.xpoints[j])+ "\t");
+//            sbfY.append(Integer.toString((int) polyline.ypoints[j])+ "\t");
+//    	}
+//	}
 	
-	private StringBuffer csvExportFirstColumns(String kymographName, String XorYorN) 
-	{
-		StringBuffer sbf = new StringBuffer();
-		sbf.append(kymographName + "\t"
-				+ XorYorN +"\t"
-				+ Integer.toString(gulps.size())+ "\t");
-		return sbf;
-	}
 	
 	public void csvImportGulpsFrom3Rows(int[] dataN, int[] dataX, int[] dataY, String roiNamePrefix, int indexkymo) 
 	{
 		gulpNamePrefix = roiNamePrefix;
-		int gulpIndex = -1;
-		ArrayList<Integer> xpoints = new ArrayList<Integer>();
-		ArrayList<Integer> ypoints =  new ArrayList<Integer>();
-		
+		gulpIndexKymo = indexkymo;
+		int currentgulp = -1;
+		int npoints = 0;
+		int istart = 0;
 		for (int columnIndex = 0; columnIndex < dataN.length; columnIndex++) {
-			if (dataN[columnIndex] != gulpIndex || columnIndex == dataN.length -1) {
-				if (gulpIndex >= 0) {
-					addNewGulpFromInt(xpoints, ypoints);
-					xpoints = new ArrayList<Integer>();
-					ypoints =  new ArrayList<Integer>();
-				}
+			if (dataN[columnIndex] == currentgulp) {
+				npoints ++;
+				continue;
 			}
-			xpoints.add(dataX[columnIndex]);
-			ypoints.add(dataY[columnIndex]);
-			gulpIndex = dataN[columnIndex];
+			else {
+				if (npoints > 0)
+					addNewGulpFromInt(dataX, dataY, istart, npoints );
+				istart = columnIndex;
+				currentgulp = dataN[columnIndex];
+				npoints = 1;
+			}
 		}
+	}
+	
+	private void addNewGulpFromInt(int[] dataX, int[] dataY, int istart, int npoints ) 
+	{
+		int[] xValues = new int[npoints];
+		int[] yValues = new int[npoints];
+		for (int i=0; i < npoints; i++) {
+			xValues[i] = dataX[i+istart];
+			yValues[i] = dataY[i+istart];
+		}
+		Polyline2D gulpLine = new Polyline2D (xValues, yValues, npoints);
+		gulps.add(gulpLine);
 	}
 	
 	// -------------------------------

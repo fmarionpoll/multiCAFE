@@ -35,9 +35,9 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	private ROI2D 						roi 			= null;
 	private ArrayList<KymoROI2D>		roisForKymo 	= new ArrayList<KymoROI2D>();
 	private String						kymographName 	= null;
-	private String						roiNamePrefix	= null;
+	public int							kymographIndex 	= -1;
+	private String						kymographPrefix	= null;
 	
-	public int							indexKymograph 	= -1;
 	public String 						version 		= null;
 	public String						filenameTIFF	= null;
 	
@@ -116,7 +116,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	public void copy(Capillary cap) 
 	{
-		indexKymograph 	= cap.indexKymograph;
+		kymographIndex 	= cap.kymographIndex;
 		kymographName 	= cap.kymographName;
 		version 		= cap.version;
 		roi 			= (ROI2D) cap.roi.getCopy();
@@ -171,7 +171,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	}
 	
 	public String getRoiNamePrefix() {
-		return roiNamePrefix;
+		return kymographPrefix;
 	}
 	
  	public String getCapillarySide() 
@@ -358,8 +358,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		if (ptsGulps == null) 
 		{
 			ptsGulps = new CapillaryGulps();
-			ptsGulps.gulpNamePrefix = roiNamePrefix;
-			ptsGulps.gulpIndexKymo = indexKymograph;
+			ptsGulps.gulpNamePrefix = kymographPrefix;
+			ptsGulps.gulpIndexKymo = kymographIndex;
 			ptsGulps.gulps = new ArrayList <> ();
 		}
 		else {
@@ -377,12 +377,12 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	{
 		if (ptsGulps == null) 
 			ptsGulps = new CapillaryGulps();
-		ptsGulps.gulpNamePrefix = roiNamePrefix;
-		ptsGulps.gulpIndexKymo = indexKymograph;
+		ptsGulps.gulpNamePrefix = kymographPrefix;
+		ptsGulps.gulpIndexKymo = kymographIndex;
 		ptsGulps.gulps = new ArrayList <> ();
 	}
 	
-	public void detectGulps(int indexkymo) 
+	public void detectGulps() 
 	{
 		int indexPixel = 0;
 		int firstPixel = 1;
@@ -529,13 +529,13 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	{
 		List<ROI2D> listrois = new ArrayList<ROI2D> ();
 		if (ptsTop != null)
-			ptsTop.addToROIs(listrois, indexKymograph);
+			ptsTop.addToROIs(listrois, kymographIndex);
 		if (ptsBottom != null)
-			ptsBottom.addToROIs(listrois, indexKymograph);
+			ptsBottom.addToROIs(listrois, kymographIndex);
 		if (ptsGulps != null)
-			ptsGulps.addGulpsToROIs(listrois, indexKymograph);
+			ptsGulps.addGulpsToROIs(listrois, kymographIndex);
 		if (ptsDerivative != null)
-			ptsDerivative.addToROIs(listrois, Color.yellow, 1., indexKymograph);
+			ptsDerivative.addToROIs(listrois, Color.yellow, 1., kymographIndex);
 		return listrois;
 	}
 	
@@ -576,7 +576,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	    if (flag) 
 	    {
 	    	version 		= XMLUtil.getElementValue(nodeMeta, ID_VERSION, "0.0.0");
-	    	indexKymograph 	= XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, indexKymograph);
+	    	kymographIndex 	= XMLUtil.getElementIntValue(nodeMeta, ID_INDEXIMAGE, kymographIndex);
 	        kymographName 	= XMLUtil.getElementValue(nodeMeta, ID_NAME, kymographName);
 	        filenameTIFF 	= XMLUtil.getElementValue(nodeMeta, ID_NAMETIFF, filenameTIFF);	        
 	        descriptionOK 	= XMLUtil.getElementBooleanValue(nodeMeta, ID_DESCOK, false);
@@ -639,7 +639,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
     	if (version == null)
     		version = ID_VERSIONNUM;
     	XMLUtil.setElementValue(nodeMeta, ID_VERSION, version);
-        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, indexKymograph);
+        XMLUtil.setElementIntValue(nodeMeta, ID_INDEXIMAGE, kymographIndex);
         XMLUtil.setElementValue(nodeMeta, ID_NAME, kymographName);
         if (filenameTIFF != null ) {
         	String filename = Paths.get(filenameTIFF).getFileName().toString();
@@ -869,7 +869,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		StringBuffer sbf = new StringBuffer();
 		List<String> row = Arrays.asList(
 				getLast2ofCapillaryName(),
-				Integer.toString(indexKymograph), 
+				Integer.toString(kymographIndex), 
 				kymographName, 
 				filenameTIFF, 
 				Integer.toString(capCageID),
@@ -889,15 +889,12 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		switch(measureType) {
 			case TOPLEVEL:
 				sbf.append("#\tTOPLEVEL\tliquid level at the top\n");
-				sbf.append(csvExportCapillaryData(measureType, true, false));
 				break;
 			case BOTTOMLEVEL:
 				sbf.append("#\tBOTTOMLEVEL\tliquid level at the bottom\n");
-				sbf.append(csvExportCapillaryData(measureType, true, false));
 				break;
 			case TOPDERIVATIVE:
 				sbf.append("#\tTOPDERIVATIVE\tderivative of liquid level at the top\n");
-				sbf.append(csvExportCapillaryData(measureType, true, false));
 				break;
 			case GULPS:
 				sbf.append("#\tGULPS\tgulps\n");
@@ -909,39 +906,37 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return sbf.toString();
 	}
 	
-	public String csvExportCapillaryData(EnumCapillaryMeasureType measureType, boolean exportX, boolean exportY) {
+	public String csvExportCapillaryData(EnumCapillaryMeasureType measureType, boolean exportX, boolean exportY) 
+	{
+		StringBuffer sbf = new StringBuffer();
+		sbf.append(kymographName.substring(0, 2)+ "\t"+ kymographIndex +"\t");
+		
 		switch(measureType) {
 			case TOPLEVEL:
-				return csvExportCapillaryLevel(ptsTop, exportX, exportY);
+				if (ptsTop != null) ptsTop.csvExportData(sbf);
+				break;
 			case BOTTOMLEVEL:
-				return csvExportCapillaryLevel(ptsBottom, exportX, exportY);
+				if (ptsBottom != null)  ptsBottom.csvExportData(sbf);
+				break;
 			case TOPDERIVATIVE:
-				return csvExportCapillaryLevel(ptsDerivative, exportX, exportY);
+				if (ptsDerivative != null) ptsDerivative.csvExportData(sbf);
+				break;
 			case GULPS:
-				return csvExportCapillaryGulps(ptsGulps);
+				if (ptsGulps != null) ptsGulps.csvExportData(sbf);
+				break;
 			default:
 				break;
 		}
-		return null;
+		sbf.append("\n");
+		return sbf.toString();
 	}
 	
-	private String csvExportCapillaryLevel(CapillaryLevel ptsArray, boolean exportX, boolean exportY) {
-		if (ptsArray == null || ptsArray.polylineLevel == null )
-			return null;
-		return ptsArray.csvExportData(exportX, exportY);
-	}
-	
-	private String csvExportCapillaryGulps(CapillaryGulps capillaryGulps) {
-		if (capillaryGulps == null || capillaryGulps.gulps == null)
-			return null;
-		return capillaryGulps.csvExportData(getLast2ofCapillaryName());
-	}
 	// --------------------------------------------
 	
 	public void csvImportCapillaryDescription(String[] data) {
 		int i = 0;
-		roiNamePrefix = data[i]; i++;
-		indexKymograph = Integer.valueOf(data[i]); i++; 
+		kymographPrefix = data[i]; i++;
+		kymographIndex = Integer.valueOf(data[i]); i++; 
 		kymographName = data[i]; i++; 
 		filenameTIFF = data[i]; i++; 
 		capCageID = Integer.valueOf(data[i]); i++;
@@ -956,16 +951,16 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public void csvImportCapillaryData(EnumCapillaryMeasureType measureType, int [] dataN, int [] dataX, int [] dataY) {
 		switch(measureType) {
 		case TOPLEVEL:
-			ptsTop.csvImportData( dataX, dataY, roiNamePrefix); 
+			ptsTop.csvImportData( dataX, dataY, kymographPrefix); 
 			break;
 		case BOTTOMLEVEL:
-			ptsBottom.csvImportData( dataX, dataY, roiNamePrefix); 
+			ptsBottom.csvImportData( dataX, dataY, kymographPrefix); 
 			break;
 		case TOPDERIVATIVE:
-			ptsDerivative.csvImportData( dataX, dataY, roiNamePrefix); 
+			ptsDerivative.csvImportData( dataX, dataY, kymographPrefix); 
 			break;
 		case GULPS:
-			ptsGulps.csvImportGulpsFrom3Rows(dataN, dataX, dataY, roiNamePrefix, indexKymograph);
+			ptsGulps.csvImportGulpsFrom3Rows(dataN, dataX, dataY, kymographPrefix, kymographIndex);
 			break;
 		default:
 			break;
