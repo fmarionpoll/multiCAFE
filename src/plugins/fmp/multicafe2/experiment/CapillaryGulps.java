@@ -2,6 +2,7 @@ package plugins.fmp.multicafe2.experiment;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -24,9 +25,11 @@ public class CapillaryGulps implements XMLPersistent
 	private final String ID_GULPS = "gulpsMC";
 	public ArrayList<Polyline2D> gulps = new ArrayList<Polyline2D> ();
 	public String gulpNamePrefix = "haha"; 
+	public int	gulpIndexKymo = -1; 
 
 	// -------------------------------
 	
+
 	public void copy(CapillaryGulps capG) 
 	{
 		gulps = new ArrayList <Polyline2D> (capG.gulps.size());
@@ -59,7 +62,7 @@ public class CapillaryGulps implements XMLPersistent
 	public boolean saveToXML(Node node) 
 	{
 		boolean flag = false;
-		ArrayList<ROI2DPolyLine> rois = buildROIsFromGulps();
+		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
 		
 		final Node nodeROIs = XMLUtil.setElement(node, ID_GULPS);
         if (nodeROIs != null)
@@ -78,8 +81,34 @@ public class CapillaryGulps implements XMLPersistent
 	
 	// -------------------------------
 	
+	public void addNewGulpFromInt( ArrayList<Integer> xpoints, ArrayList<Integer> ypoints ) 
+	{
+		int npoints = xpoints.size();
+		int[] xValues = xpoints.stream().mapToInt(Integer::intValue).toArray();
+		int[] yValues = ypoints.stream().mapToInt(Integer::intValue).toArray();
+		Polyline2D gulpLine = new Polyline2D (xValues, yValues, npoints);
+		gulps.add(gulpLine);
+	}
+	
+	public void addNewGulpFromPoints( ArrayList<Point2D> gulpPoints ) 
+	{
+		int npoints = gulpPoints.size();
+		if (npoints <1)
+			return;
+		
+		double[] xpoints = new double[npoints] ;
+		double[] ypoints = new double[npoints] ;
+		for (int i = 0; i< npoints; i++) {
+			xpoints[i] = gulpPoints.get(i).getX();
+			ypoints[i] = gulpPoints.get(i).getY();
+		}
+		Polyline2D gulpLine = new Polyline2D (xpoints, ypoints, npoints);
+		gulps.add(gulpLine);
+	}
+	
 	boolean isThereAnyMeasuresDone() 
 	{
+		
 		return (gulps != null && gulps.size() > 0);
 	}
 	
@@ -118,20 +147,20 @@ public class CapillaryGulps implements XMLPersistent
 		{
 		case SUMGULPS:
 		case SUMGULPS_LR:
-			data_in = getCumSumFromRoisArray(npoints);
+			data_in = getCumSumFromROIsArray(npoints);
 			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
 		case NBGULPS:
-			data_in = getIsGulpsFromRoisArray(npoints);
+			data_in = getIsGulpsFromROIsArray(npoints);
 			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
 		case AMPLITUDEGULPS:
-			data_in = getAmplitudeGulpsFromRoisArray(npoints);
+			data_in = getAmplitudeGulpsFromROIsArray(npoints);
 			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
 		case TTOGULP:
 		case TTOGULP_LR:
-			List<Integer> datag = getIsGulpsFromRoisArray(npoints);
+			List<Integer> datag = getIsGulpsFromROIsArray(npoints);
 			data_in = getTToNextGulp(datag, npoints);
 			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
@@ -140,7 +169,7 @@ public class CapillaryGulps implements XMLPersistent
 		case AUTOCORREL_LR:
 		case CROSSCORREL:
 		case CROSSCORREL_LR:
-			data_in = getAmplitudeGulpsFromRoisArray(npoints);
+			data_in = getAmplitudeGulpsFromROIsArray(npoints);
 			convertPositiveAmplitudesIntoEvent(data_in);
 			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
@@ -149,72 +178,7 @@ public class CapillaryGulps implements XMLPersistent
 		}
 		return data_in;
 	}
-	
-	ArrayList<Integer> getCumSumFromRoisArray(int npoints) 
-	{
-		ArrayList<ROI2DPolyLine> rois = buildROIsFromGulps();
-		if (rois == null)
-			return null;
 		
-		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
-		for (ROI roi: rois) 
-			ROI2DUtilities.addROItoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
-		return arrayInt;
-	}
-	
-	private ArrayList<Integer> getIsGulpsFromRoisArray(int npoints) 
-	{
-		ArrayList<ROI2DPolyLine> rois = buildROIsFromGulps();
-		if (rois == null)
-			return null;
-		
-		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
-		for (ROI roi: rois) 
-			addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
-		return arrayInt;
-	}
-	
-	private void addROItoIsGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> isGulpsArrayList) 
-	{
-		Polyline2D roiline = roi.getPolyline2D();
-		double yvalue = roiline.ypoints[0];
-		int npoints = roiline.npoints;
-		for (int j = 0; j < npoints; j++) 
-		{
-			if (roiline.ypoints[j] != yvalue) 
-			{
-				int timeIndex =  (int) roiline.xpoints[j];
-				isGulpsArrayList.set(timeIndex, 1);
-			}
-			yvalue = roiline.ypoints[j];
-		}
-	}
-	
-	private ArrayList<Integer> getAmplitudeGulpsFromRoisArray(int npoints) 
-	{
-		ArrayList<ROI2DPolyLine> rois = buildROIsFromGulps();
-		if (rois == null)
-			return null;
-		ArrayList<Integer> amplitudeGulpsArray = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
-		for (ROI roi: rois) 
-			addROItoAmplitudeGulpsArray((ROI2DPolyLine) roi, amplitudeGulpsArray);
-		return amplitudeGulpsArray;
-	}
-	
-	private void addROItoAmplitudeGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> amplitudeGulpsArray) 
-	{
-		Polyline2D polyline2D = roi.getPolyline2D();
-		double yvalue = polyline2D.ypoints[0];
-		int npoints = polyline2D.npoints;
-		for (int j = 0; j < npoints; j++) 
-		{
-			int timeIndex =  (int) polyline2D.xpoints[j];
-			int delta = (int) (polyline2D.ypoints[j] - yvalue);
-			amplitudeGulpsArray.set(timeIndex, delta);		
-			yvalue = polyline2D.ypoints[j];
-		}
-	}
-	
 	ArrayList<Integer> getTToNextGulp(List<Integer> datai, int npoints) 
 	{
 		int nintervals = -1;
@@ -240,44 +204,6 @@ public class CapillaryGulps implements XMLPersistent
 		return data_out;
 	}
 
-	public void transferROIsToMeasures(List<ROI> listRois) 
-	{	
-		ArrayList<ROI2D> rois = new ArrayList<ROI2D>();
-		for (ROI roi: listRois) 
-		{		
-			String roiname = roi.getName();
-			if (roi instanceof ROI2DPolyLine ) 
-			{
-				if (roiname .contains("gulp"))	
-					rois.add( (ROI2DPolyLine) roi);
-			}
-		}
-		buildGulpsFromROIs(rois);
-	}
-
-	public ROI2DPolyLine getRoiFromGulp(int indexGulp, int indexKymo) 
-	{
-		ROI2DPolyLine roi = buildROIfromGulp(gulps.get(indexGulp));
-		roi.setT(indexKymo);
-		return roi;
-	}
-	
-	private ROI2DPolyLine buildROIfromGulp(Polyline2D gulpLine) {
-		ROI2DPolyLine roi = new ROI2DPolyLine (gulpLine);
-		roi.setName(buildROIGulpName(gulpNamePrefix, (int) gulpLine.xpoints[0]));
-		roi.setColor(Color.red);
-		roi.setStroke(1);
-		
-		return roi;
-	}
-	
-	public List<ROI2D> addToROIs(List<ROI2D> listrois, int indexImage) 
-	{
-		ArrayList<ROI2DPolyLine> rois = buildROIsFromGulps();
-		listrois.addAll(rois);
-		return listrois;
-	}
-	
 	public void removeGulpsWithinInterval(int startPixel, int endPixel) 
 	{
 		Iterator <Polyline2D> iterator = gulps.iterator();
@@ -293,25 +219,26 @@ public class CapillaryGulps implements XMLPersistent
 	
 	// -------------------------------
 		
-	public String csvExportData(String kymographName) {
-
+	public String csvExportData(String kymographName) 
+	{
 		StringBuffer sbfN = csvExportFirstColumns(kymographName, "N");
 		StringBuffer sbfX = csvExportFirstColumns(kymographName, "X");
 		StringBuffer sbfY = csvExportFirstColumns(kymographName, "Y");
-
-        for (int i = 0; i< gulps.size(); i++)
-        	csvExportSingleGulpData(sbfN, sbfX, sbfY, i);
-  
-		sbfN.append("\n");
+	
+	        for (int i = 0; i< gulps.size(); i++)
+	        	csvExportSingleGulpData(sbfN, sbfX, sbfY, i);
+	  
+			sbfN.append("\n");
 		sbfN.append(sbfX);
 		sbfN.append("\n");
 		sbfN.append(sbfY);
 		sbfN.append("\n");
-
+	
 		return sbfN.toString();
 	}
 	
-	private void csvExportSingleGulpData(StringBuffer sbfN, StringBuffer sbfX, StringBuffer sbfY, int i) {
+	private void csvExportSingleGulpData(StringBuffer sbfN, StringBuffer sbfX, StringBuffer sbfY, int i) 
+	{
 		Polyline2D polyline = gulps.get(i);
 		for (int j=0; j< polyline.npoints; j++)
     	{
@@ -321,7 +248,8 @@ public class CapillaryGulps implements XMLPersistent
     	}
 	}
 	
-	private StringBuffer csvExportFirstColumns(String kymographName, String XorYorN) {
+	private StringBuffer csvExportFirstColumns(String kymographName, String XorYorN) 
+	{
 		StringBuffer sbf = new StringBuffer();
 		sbf.append(kymographName + "\t"
 				+ XorYorN +"\t"
@@ -329,7 +257,8 @@ public class CapillaryGulps implements XMLPersistent
 		return sbf;
 	}
 	
-	public void csvImportGulpsFrom3Rows(int[] dataN, int[] dataX, int[] dataY, String roiNamePrefix, int indexkymo) {
+	public void csvImportGulpsFrom3Rows(int[] dataN, int[] dataX, int[] dataY, String roiNamePrefix, int indexkymo) 
+	{
 		gulpNamePrefix = roiNamePrefix;
 		int gulpIndex = -1;
 		ArrayList<Integer> xpoints = new ArrayList<Integer>();
@@ -338,7 +267,7 @@ public class CapillaryGulps implements XMLPersistent
 		for (int columnIndex = 0; columnIndex < dataN.length; columnIndex++) {
 			if (dataN[columnIndex] != gulpIndex || columnIndex == dataN.length -1) {
 				if (gulpIndex >= 0) {
-					addNewGulp(gulpNamePrefix, indexkymo, gulpIndex, xpoints, ypoints);
+					addNewGulpFromInt(xpoints, ypoints);
 					xpoints = new ArrayList<Integer>();
 					ypoints =  new ArrayList<Integer>();
 				}
@@ -351,35 +280,30 @@ public class CapillaryGulps implements XMLPersistent
 	
 	// -------------------------------
 	
-	void addNewGulp(String gulpNamePrefix, int indexkymo, int icurrent, ArrayList<Integer> xpoints, ArrayList<Integer> ypoints ) {
-		int[] xInt = xpoints.stream().mapToInt(Integer::intValue).toArray();
-		int[] yInt = ypoints.stream().mapToInt(Integer::intValue).toArray();
-		ROI2DPolyLine roi = new ROI2DPolyLine(new Polyline2D (xInt, yInt, xInt.length));
-		formatGulpROI(roi, indexkymo, buildROIGulpName(gulpNamePrefix, icurrent));
-		
-		Polyline2D gulpLine = ((ROI2DPolyLine) roi).getPolyline2D();
-		gulps.add(gulpLine);
+	static String buildROIGulpName(String rootName, int tIndex) {
+		return rootName + "_gulp" + String.format("%07d", tIndex);
 	}
 	
-	private void formatGulpROI(ROI2DPolyLine roi, int indexkymo, String name) 
+	public ArrayList <ROI2DPolyLine> getGulpsAsROIs() 
 	{
-		roi.setColor(Color.red);
-		roi.setStroke(1);
-		roi.setName(name);
-		roi.setT(indexkymo);
-	}
-	
-	public ArrayList <ROI2DPolyLine> buildROIsFromGulps() {
 		ArrayList<ROI2DPolyLine> rois = new ArrayList<ROI2DPolyLine> (gulps.size());
-		for (Polyline2D gulpLine: gulps) {
-			ROI2DPolyLine roi = buildROIfromGulp(gulpLine); 
-			formatGulpROI(roi, (int) gulpLine.xpoints[0], buildROIGulpName(gulpNamePrefix, (int) gulpLine.xpoints[0]));
-			rois.add(roi);
-		}
+		for (Polyline2D gulpLine: gulps) 
+			rois.add( buildROIfromGulp(gulpLine));
 		return rois;
 	}
 	
-	public void buildGulpsFromROIs(ArrayList<ROI2D> rois ) {
+	private ROI2DPolyLine buildROIfromGulp(Polyline2D gulpLine) 
+	{
+		ROI2DPolyLine roi = new ROI2DPolyLine (gulpLine);
+		roi.setName(buildROIGulpName(gulpNamePrefix, (int) gulpLine.xpoints[0]));
+		roi.setColor(Color.red);
+		roi.setStroke(1);
+		roi.setT(gulpIndexKymo);
+		return roi;
+	}
+	
+	public void buildGulpsFromROIs(ArrayList<ROI2D> rois ) 
+	{
 		gulps = new ArrayList<Polyline2D> (rois.size());
 		for (ROI2D roi : rois) {
 			Polyline2D gulpLine = ((ROI2DPolyLine) roi).getPolyline2D();
@@ -387,10 +311,91 @@ public class CapillaryGulps implements XMLPersistent
 		}
 	}
 	
-	static String buildROIGulpName(String rootName, int tIndex) {
-		return rootName + "_gulp" + String.format("%07d", tIndex);
+	public void transferROIsToMeasures(List<ROI> listRois) 
+	{	
+		ArrayList<ROI2D> rois = new ArrayList<ROI2D>();
+		for (ROI roi: listRois) 
+		{		
+			String roiname = roi.getName();
+			if (roi instanceof ROI2DPolyLine ) 
+			{
+				if (roiname .contains("gulp"))	
+					rois.add( (ROI2DPolyLine) roi);
+			}
+		}
+		buildGulpsFromROIs(rois);
+	}
+
+	public List<ROI2D> addGulpsToROIs(List<ROI2D> listrois, int indexImage) 
+	{
+		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
+		listrois.addAll(rois);
+		return listrois;
 	}
 	
-
+	ArrayList<Integer> getCumSumFromROIsArray(int npoints) 
+	{
+		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
+		if (rois == null)
+			return null;
 		
+		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
+		for (ROI roi: rois) 
+			ROI2DUtilities.addROItoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
+		return arrayInt;
+	}
+	
+	private ArrayList<Integer> getIsGulpsFromROIsArray(int npoints) 
+	{
+		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
+		if (rois == null)
+			return null;
+		
+		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
+		for (ROI roi: rois) 
+			addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
+		return arrayInt;
+	}
+	
+	private void addROItoIsGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> isGulpsArrayList) 
+	{
+		Polyline2D roiline = roi.getPolyline2D();
+		double yvalue = roiline.ypoints[0];
+		int npoints = roiline.npoints;
+		for (int j = 0; j < npoints; j++) 
+		{
+			if (roiline.ypoints[j] != yvalue) 
+			{
+				int timeIndex =  (int) roiline.xpoints[j];
+				isGulpsArrayList.set(timeIndex, 1);
+			}
+			yvalue = roiline.ypoints[j];
+		}
+	}
+	
+	private ArrayList<Integer> getAmplitudeGulpsFromROIsArray(int npoints) 
+	{
+		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
+		if (rois == null)
+			return null;
+		ArrayList<Integer> amplitudeGulpsArray = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
+		for (ROI roi: rois) 
+			addROItoAmplitudeGulpsArray((ROI2DPolyLine) roi, amplitudeGulpsArray);
+		return amplitudeGulpsArray;
+	}
+	
+	private void addROItoAmplitudeGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> amplitudeGulpsArray) 
+	{
+		Polyline2D polyline2D = roi.getPolyline2D();
+		double yvalue = polyline2D.ypoints[0];
+		int npoints = polyline2D.npoints;
+		for (int j = 0; j < npoints; j++) 
+		{
+			int timeIndex =  (int) polyline2D.xpoints[j];
+			int delta = (int) (polyline2D.ypoints[j] - yvalue);
+			amplitudeGulpsArray.set(timeIndex, delta);		
+			yvalue = polyline2D.ypoints[j];
+		}
+	}
+
 }
