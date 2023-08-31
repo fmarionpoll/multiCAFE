@@ -72,7 +72,7 @@ public class Capillaries
 		for (Capillary cap: capillariesList) 
 			cap.xmlSaveCapillary_Measures(directory);
 		
-		csvSaveCapillariesData(directory);
+		csvSaveCapillariesMeasures_Data(directory);
 		return true;
 	}
 	
@@ -650,30 +650,20 @@ public class Capillaries
 		return null;
 	}
 	
+	
 	String csvLoadCapillariesMeasures(BufferedReader csvReader, EnumCapillaryMeasureType measureType) 
 	{
 		String row;
-		int [] dataIntN = null;
-		int [] dataIntX = null;
-		int [] dataIntY = null;
 		try {
-			int numericDatataStartsAtIndex = 4;
 			while ((row = csvReader.readLine()) != null) {
 				String[] data = row.split("\t");
 				if (data[0] .equals( "#")) 
 					return data[1];
 				
-				if (data[2].charAt(0) == 'N')
-					dataIntN = csvStringArrayToInt(data, numericDatataStartsAtIndex);
-				if (data[2].charAt(0) == 'X')
-					dataIntX = csvStringArrayToInt(data, numericDatataStartsAtIndex);
-				if (data[2].charAt(0) == 'Y') {
-					dataIntY = csvStringArrayToInt(data, numericDatataStartsAtIndex);
-					Capillary cap = getCapillaryFromRoiNamePrefix(data[0]);
-					if (cap == null)
-						cap = new Capillary();
-					cap.csvImportCapillaryData(measureType, dataIntN, dataIntX, dataIntY);
-				}
+				Capillary cap = getCapillaryFromRoiNamePrefix(data[0]);
+				if (cap == null)
+					cap = new Capillary();
+				cap.csvImportCapillaryData(measureType, data);
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -682,12 +672,14 @@ public class Capillaries
 		return null;
 	}
 	
-	boolean csvSaveCapillariesData(String directory) 
+	// ---------------------------------
+	
+	boolean csvSaveCapillariesMeasures_Data(String directory) 
 	{
 		try {
 			FileWriter csvWriter = new FileWriter(directory + File.separator +"CapillariesMeasures.csv");
 			
-			csvSaveCapillariesDescription(csvWriter);
+			csvSaveDescriptionForAllCapillaries(csvWriter);
 			
 			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.TOPLEVEL);
 			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.BOTTOMLEVEL);
@@ -703,15 +695,16 @@ public class Capillaries
 		return true;
 	}
 	
-	boolean csvSaveCapillariesDescription(FileWriter csvWriter) {
+	boolean csvSaveDescriptionForAllCapillaries(FileWriter csvWriter) 
+	{
 		try {
-			csvWriter.append(capillariesDescription.csvExportCapillariesDescriptionDataHeader());
-			csvWriter.append(capillariesDescription.csvExportCapillariesDescriptionData());
+			csvWriter.append(capillariesDescription.csvExportHeaderRow());
+			csvWriter.append(capillariesDescription.csvExportHeaderData());
 			csvWriter.append("n caps=\t" + Integer.toString(capillariesList.size()) + "\n");
 			csvWriter.append("#\t#\n");
 			
 			if (capillariesList.size() > 0) {
-				csvWriter.append(capillariesList.get(0).csvExportCapillaryDescriptionHeader());
+				csvWriter.append(capillariesList.get(0).csvExportCapillaryMeasuresHeader());
 				for (Capillary cap:capillariesList) 
 					csvWriter.append(cap.csvExportCapillaryDescription());
 				csvWriter.append("#\t#\n");
@@ -728,7 +721,7 @@ public class Capillaries
 		try {
 			if (capillariesList.size() <= 1)
 				return false;
-			
+			csvWriter.append(capillariesList.get(0).csvExportMeasureHeader(measureType));
 			for (Capillary cap:capillariesList) 
 				csvWriter.append(cap.csvExportCapillaryData(measureType, false, true));
 			

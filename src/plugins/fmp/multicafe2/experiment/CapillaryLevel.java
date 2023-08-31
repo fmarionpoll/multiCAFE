@@ -346,7 +346,7 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	// ----------------------------------------------------------------------
 	
-	public boolean csvExportData(StringBuffer sbf) 
+	public boolean cvsExportDataToRow(StringBuffer sbf) 
 	{
 		if (polylineLevel == null) 
 			return false;
@@ -363,9 +363,11 @@ public class CapillaryLevel  implements XMLPersistent
 		return true;
 	}
 	
-	public void csvImportData( int [] dataX, int [] dataY, String roiNamePrefix) {
-		polylineLevel = new Level2D(dataX, dataY, dataX.length);
-		capName = roiNamePrefix + "_" + typename;
+	public void csvImportDataFromRow(String[] data, String roiNamePrefix) 
+	{
+		int essai = -1;
+//		polylineLevel = new Level2D(dataX, dataY, dataX.length);
+//		capName = roiNamePrefix + "_" + typename;
 	}
 	
 }

@@ -245,26 +245,26 @@ public class CapillaryGulps implements XMLPersistent
 //	}
 	
 	
-	public void csvImportGulpsFrom3Rows(int[] dataN, int[] dataX, int[] dataY, String roiNamePrefix, int indexkymo) 
+	public void csvImportDataFromRow(String [] data, String roiNamePrefix, int indexkymo) 
 	{
 		gulpNamePrefix = roiNamePrefix;
 		gulpIndexKymo = indexkymo;
 		int currentgulp = -1;
 		int npoints = 0;
 		int istart = 0;
-		for (int columnIndex = 0; columnIndex < dataN.length; columnIndex++) {
-			if (dataN[columnIndex] == currentgulp) {
-				npoints ++;
-				continue;
-			}
-			else {
-				if (npoints > 0)
-					addNewGulpFromInt(dataX, dataY, istart, npoints );
-				istart = columnIndex;
-				currentgulp = dataN[columnIndex];
-				npoints = 1;
-			}
-		}
+//		for (int columnIndex = 0; columnIndex < dataN.length; columnIndex++) {
+//			if (dataN[columnIndex] == currentgulp) {
+//				npoints ++;
+//				continue;
+//			}
+//			else {
+//				if (npoints > 0)
+//					addNewGulpFromInt(dataX, dataY, istart, npoints );
+//				istart = columnIndex;
+//				currentgulp = dataN[columnIndex];
+//				npoints = 1;
+//			}
+//		}
 	}
 	
 	private void addNewGulpFromInt(int[] dataX, int[] dataY, int istart, int npoints ) 

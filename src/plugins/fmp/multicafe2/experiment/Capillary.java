@@ -844,7 +844,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	// -----------------------------------------------------------------------------
 	
-	public String csvExportCapillaryDescriptionHeader() {
+	public String csvExportCapillaryMeasuresHeader() {
 		StringBuffer sbf = new StringBuffer();
 		
 		sbf.append("#\tCAPILLARIES\tdescribe each capillary\n");
@@ -884,7 +884,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return sbf.toString();
 	}
 	
-	public String csvExportCapillaryDataHeader(EnumCapillaryMeasureType measureType) {
+	public String csvExportMeasureHeader(EnumCapillaryMeasureType measureType) {
 		StringBuffer sbf = new StringBuffer();
 		switch(measureType) {
 			case TOPLEVEL:
@@ -913,13 +913,13 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		
 		switch(measureType) {
 			case TOPLEVEL:
-				if (ptsTop != null) ptsTop.csvExportData(sbf);
+				if (ptsTop != null) ptsTop.cvsExportDataToRow(sbf);
 				break;
 			case BOTTOMLEVEL:
-				if (ptsBottom != null)  ptsBottom.csvExportData(sbf);
+				if (ptsBottom != null)  ptsBottom.cvsExportDataToRow(sbf);
 				break;
 			case TOPDERIVATIVE:
-				if (ptsDerivative != null) ptsDerivative.csvExportData(sbf);
+				if (ptsDerivative != null) ptsDerivative.cvsExportDataToRow(sbf);
 				break;
 			case GULPS:
 				if (ptsGulps != null) ptsGulps.csvExportData(sbf);
@@ -933,7 +933,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	// --------------------------------------------
 	
-	public void csvImportCapillaryDescription(String[] data) {
+	public void csvImportCapillaryDescription(String[] data) 
+	{
 		int i = 0;
 		kymographPrefix = data[i]; i++;
 		kymographIndex = Integer.valueOf(data[i]); i++; 
@@ -948,19 +949,20 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		capSide = data[i]; 
 	}
 		
-	public void csvImportCapillaryData(EnumCapillaryMeasureType measureType, int [] dataN, int [] dataX, int [] dataY) {
+	public void csvImportCapillaryData(EnumCapillaryMeasureType measureType, String[] data) 
+	{
 		switch(measureType) {
 		case TOPLEVEL:
-			ptsTop.csvImportData( dataX, dataY, kymographPrefix); 
+			ptsTop.csvImportDataFromRow( data, kymographPrefix); 
 			break;
 		case BOTTOMLEVEL:
-			ptsBottom.csvImportData( dataX, dataY, kymographPrefix); 
+			ptsBottom.csvImportDataFromRow( data, kymographPrefix);
 			break;
 		case TOPDERIVATIVE:
-			ptsDerivative.csvImportData( dataX, dataY, kymographPrefix); 
+			ptsDerivative.csvImportDataFromRow( data, kymographPrefix); 
 			break;
 		case GULPS:
-			ptsGulps.csvImportGulpsFrom3Rows(dataN, dataX, dataY, kymographPrefix, kymographIndex);
+			ptsGulps.csvImportDataFromRow(data, kymographPrefix, kymographIndex);
 			break;
 		default:
 			break;

@@ -205,7 +205,7 @@ public class CapillariesDescription
 	
 	// --------------------------------------
 	
-	public String csvExportCapillariesDescriptionDataHeader() {
+	public String csvExportHeaderRow() {
 		StringBuffer sbf = new StringBuffer();
 		sbf.append("#\tDESCRIPTION\tCapillarytrack data\n");
 		List<String> row2 = Arrays.asList(
@@ -227,7 +227,7 @@ public class CapillariesDescription
 		return sbf.toString();
 	}
 	
-	public String csvExportCapillariesDescriptionData() {
+	public String csvExportHeaderData() {
 		StringBuffer sbf = new StringBuffer();
 		List<String> row3 = Arrays.asList(
 				Integer.toString(grouping),
