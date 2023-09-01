@@ -68,13 +68,35 @@ public class Capillaries
 	{
 		if (directory == null)
 			return false;
+		
 		csvSaveCapillariesMeasures_Data(directory);
 		
-		for (Capillary cap: capillariesList) 
-			cap.xmlSaveCapillary_Measures(directory);
+//		for (Capillary cap: capillariesList) 
+//			cap.xmlSaveCapillary_Measures(directory);
 
 		return true;
 	}
+	
+	private boolean xmlSaveListOfCapillaries(Document doc) 
+	{
+		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
+		if (node == null)
+			return false;
+		XMLUtil.setElementIntValue(node, "version", 2);
+		Node nodecaps = XMLUtil.setElement(node, ID_LISTOFCAPILLARIES);
+		XMLUtil.setElementIntValue(nodecaps, ID_NCAPILLARIES, capillariesList.size());
+		int i= 0;
+		Collections.sort(capillariesList);
+		for (Capillary cap: capillariesList) 
+		{
+			Node nodecapillary = XMLUtil.setElement(node, ID_CAPILLARY_+i);
+			cap.saveToXML_CapillaryOnly(nodecapillary);
+			i++;
+		}
+		return true;
+	}
+	
+	// ---------------------------------
 	
 	public boolean xmlLoadCapillaries_Descriptors(String csFileName) 
 	{	
@@ -144,24 +166,7 @@ public class Capillaries
 		return flag;
 	}
 	
-	private boolean xmlSaveListOfCapillaries(Document doc) 
-	{
-		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_CAPILLARYTRACK);
-		if (node == null)
-			return false;
-		XMLUtil.setElementIntValue(node, "version", 2);
-		Node nodecaps = XMLUtil.setElement(node, ID_LISTOFCAPILLARIES);
-		XMLUtil.setElementIntValue(nodecaps, ID_NCAPILLARIES, capillariesList.size());
-		int i= 0;
-		Collections.sort(capillariesList);
-		for (Capillary cap: capillariesList) 
-		{
-			Node nodecapillary = XMLUtil.setElement(node, ID_CAPILLARY_+i);
-			cap.saveToXML_CapillaryOnly(nodecapillary);
-			i++;
-		}
-		return true;
-	}
+	// ---------------------------------
 	
 	private void xmlLoadCapillaries_v0(Document doc, String csFileName) 
 	{
@@ -248,7 +253,7 @@ public class Capillaries
 		}
 	}	
 
-	// -----------------------
+	// ---------------------------------
 	
 	public void copy (Capillaries cap) 
 	{
@@ -292,7 +297,7 @@ public class Capillaries
 			cap.ptsTop.adjustToImageWidth(imageWidth);
 			cap.ptsBottom.adjustToImageWidth(imageWidth);
 			cap.ptsDerivative.adjustToImageWidth(imageWidth);
-			cap.ptsGulps = null; // TODO: deal with gulps.. (simply remove?)
+			cap.ptsGulps.gulps.clear(); 
 		}
 	}
 	
@@ -303,7 +308,7 @@ public class Capillaries
 			cap.ptsTop.cropToImageWidth(imageWidth);
 			cap.ptsBottom.cropToImageWidth(imageWidth);
 			cap.ptsDerivative.cropToImageWidth(imageWidth);
-			cap.ptsGulps = null; // TODO: deal with gulps.. (simply remove?)
+			cap.ptsGulps.gulps.clear();
 		}
 	}
 

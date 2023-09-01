@@ -226,6 +226,7 @@ public class CapillaryGulps implements XMLPersistent
 	
 	private void csvExportOneGulp(StringBuffer sbf, int indexgulp)
 	{
+		sbf.append("g"+indexgulp+",");
 		Polyline2D gulp = gulps.get(indexgulp);
     	sbf.append(StringUtil.toString((int) gulp.npoints));
         sbf.append(",");
@@ -235,7 +236,6 @@ public class CapillaryGulps implements XMLPersistent
             sbf.append(StringUtil.toString((int) gulp.ypoints[i]));
             sbf.append(",");
         }
-        sbf.append("x,");
 	}
 	
 	public void csvImportDataFromRow(String [] data, int startAt, String roiNamePrefix, int indexkymo) 
@@ -257,6 +257,7 @@ public class CapillaryGulps implements XMLPersistent
 	
 	private int csvImportOneGulp(String[] data, int offset) 
 	{
+		offset++;
 		int npoints = Integer.valueOf(data[offset]);
 		offset++;
 		
@@ -270,7 +271,7 @@ public class CapillaryGulps implements XMLPersistent
 		}
 		Polyline2D gulpLine = new Polyline2D (x, y, npoints);
 		gulps.add(gulpLine);
-		offset++;
+		
 		return offset;
 	}
 		

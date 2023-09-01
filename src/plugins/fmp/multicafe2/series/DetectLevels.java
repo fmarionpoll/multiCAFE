@@ -71,8 +71,8 @@ public class DetectLevels  extends BuildSeries
 				continue;
 			
 			capi.kymographIndex = indexKymo;
-			capi.ptsDerivative = null;
-			capi.ptsGulps = null;
+			capi.ptsDerivative.clear();
+			capi.ptsGulps.gulps.clear();
 			capi.limitsOptions.copyFrom(options);
 				
 			futures.add(processor.submit(new Runnable () 

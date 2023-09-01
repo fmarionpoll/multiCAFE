@@ -19,8 +19,8 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class CapillaryLevel  implements XMLPersistent  
 {
-	public Level2D 	polylineLevel 	= null;
-	public Level2D 	polyline_old 	= null;
+	public Level2D 	polylineLevel 	= new Level2D();
+	public Level2D 	polyline_old 	= new Level2D();
 	public int [] 	limit			= null;
 	
 	public String 	typename 		= "notype";
@@ -47,6 +47,11 @@ public class CapillaryLevel  implements XMLPersistent
 		this.capName = name;
 		this.capIndexKymo = indexImage;
 		polylineLevel = new Level2D(limit);
+	}
+	
+	public void clear() 
+	{
+		polylineLevel = new Level2D();
 	}
 	
 	public void setPolylineLevelFromTempData(String name, int indexImage, int start, int end) 
@@ -109,7 +114,7 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	ArrayList<Integer> getMeasures(long seriesBinMs, long outputBinMs) 
 	{
-		if (polylineLevel == null)
+		if (polylineLevel == null || polylineLevel.npoints == 0)
 			return null;
 		long maxMs = (polylineLevel.ypoints.length -1) * seriesBinMs;
 		long npoints = (maxMs / outputBinMs)+1;
@@ -129,7 +134,7 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	int getLastMeasure() 
 	{	
-		if (polylineLevel == null)
+		if (polylineLevel == null || polylineLevel.npoints == 0)
 			return 0;
 		int lastitem = polylineLevel.ypoints.length - 1;
 		int ivalue = (int) polylineLevel.ypoints[lastitem];
@@ -138,14 +143,14 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	int getT0Measure() 
 	{	
-		if (polylineLevel == null)
+		if (polylineLevel == null|| polylineLevel.npoints == 0)
 			return 0;
 		return (int) polylineLevel.ypoints[0];
 	}
 	
 	int getLastDeltaMeasure() 
 	{	
-		if (polylineLevel == null)
+		if (polylineLevel == null|| polylineLevel.npoints == 0)
 			return 0;
 		int lastitem = polylineLevel.ypoints.length - 1;
 		return (int) (polylineLevel.ypoints[lastitem] - polylineLevel.ypoints[lastitem-1]);
@@ -153,14 +158,14 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	List<ROI2D> addToROIs(List<ROI2D> listrois, int indexImage) 
 	{
-		if (polylineLevel != null) 
+		if (polylineLevel != null && polylineLevel.npoints > 0) 
 			listrois.add(transferPolyline2DToROI(indexImage));
 		return listrois;
 	}
 	
 	List<ROI2D> addToROIs(List<ROI2D> listrois, Color color, double stroke, int indexImage) 
 	{
-		if (polylineLevel != null) 
+		if (polylineLevel != null && polylineLevel.npoints > 0) 
 		{ 
 			ROI2D roi = transferPolyline2DToROI(indexImage);
 			roi.setColor(color);
@@ -200,7 +205,7 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	List<Integer> getIntegerArrayFromPolyline2D() 
 	{
-		if (polylineLevel == null)
+		if (polylineLevel == null || polylineLevel.npoints == 0)
 			return null;
 		List<Integer> arrayInt = new ArrayList<Integer>(polylineLevel.ypoints.length);
 		for (double i: polylineLevel.ypoints)
@@ -210,7 +215,7 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	public ROI2D transferPolyline2DToROI(int indexImage) 
 	{
-		if (polylineLevel == null)
+		if (polylineLevel == null || polylineLevel.npoints == 0)
 			return null;	
 		ROI2D roi = new ROI2DPolyLine(polylineLevel); 
 		roi.setName(capName);
@@ -267,7 +272,7 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	public void saveCapillaryLimit2XML(Node node, String nodename) 
 	{
-		if (polylineLevel == null)
+		if (polylineLevel == null || polylineLevel.npoints == 0)
 			return;
 		final Node nodeMeta = XMLUtil.setElement(node, nodename);
 	    if (nodeMeta != null) 
@@ -294,7 +299,7 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	public void adjustToImageWidth(int imageSize) 
 	{
-		if (polylineLevel == null)
+		if (polylineLevel == null || polylineLevel.npoints == 0)
 			return;
 		int npoints = polylineLevel.npoints;
 		int npoints_old = 0;
@@ -327,7 +332,7 @@ public class CapillaryLevel  implements XMLPersistent
 
 	public void cropToImageWidth(int imageSize) 
 	{
-		if (polylineLevel == null)
+		if (polylineLevel == null || polylineLevel.npoints == 0)
 			return;
 		int npoints = polylineLevel.npoints;
 		if (npoints == imageSize)
@@ -349,7 +354,7 @@ public class CapillaryLevel  implements XMLPersistent
 	public boolean cvsExportDataToRow(StringBuffer sbf) 
 	{
 		int npoints = 0;
-		if (polylineLevel != null) 
+		if (polylineLevel != null || polylineLevel.npoints == 0) 
 			npoints = polylineLevel.npoints;
 		sbf.append(Integer.toString(npoints)+ ",");
 		if (npoints > 0) {

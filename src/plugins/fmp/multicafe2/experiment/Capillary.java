@@ -270,10 +270,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		switch (option) 
 		{
 		case DERIVEDVALUES:
-			yes= (ptsDerivative != null && ptsDerivative.isThereAnyMeasuresDone());
+			yes= (ptsDerivative.isThereAnyMeasuresDone());
 			break;
 		case SUMGULPS:
-			yes= (ptsGulps!= null && ptsGulps.isThereAnyMeasuresDone());
+			yes= (ptsGulps.isThereAnyMeasuresDone());
 			break;
 		case BOTTOMLEVEL:
 			yes= ptsBottom.isThereAnyMeasuresDone();
@@ -292,8 +292,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		switch (option) 
 		{
 		case DERIVEDVALUES:
-			if (ptsDerivative != null) 
-				datai = ptsDerivative.getMeasures(seriesBinMs, outputBinMs);
+			datai = ptsDerivative.getMeasures(seriesBinMs, outputBinMs);
 			break;
 		case SUMGULPS:
 		case SUMGULPS_LR:
@@ -419,8 +418,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		switch (option) 
 		{
 		case DERIVEDVALUES:
-			if (ptsDerivative != null)
-				lastMeasure = ptsDerivative.getLastMeasure();
+			lastMeasure = ptsDerivative.getLastMeasure();
 			break;
 		case SUMGULPS:
 			if (ptsGulps != null) 
@@ -446,8 +444,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		switch (option) 
 		{
 		case DERIVEDVALUES:
-			if (ptsDerivative != null)
-				lastMeasure = ptsDerivative.getLastDeltaMeasure();
+			lastMeasure = ptsDerivative.getLastDeltaMeasure();
 			break;
 		case SUMGULPS:
 			if (ptsGulps != null) {
@@ -472,8 +469,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		switch (option) 
 		{
 		case DERIVEDVALUES:
-			if (ptsDerivative != null)
-				t0Measure = ptsDerivative.getT0Measure();
+			t0Measure = ptsDerivative.getT0Measure();
 			break;
 		case SUMGULPS:
 			if (ptsGulps != null) {
@@ -503,27 +499,19 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public List<ROI2D> transferMeasuresToROIs() 
 	{
 		List<ROI2D> listrois = new ArrayList<ROI2D> ();
-		if (ptsTop != null)
-			ptsTop.addToROIs(listrois, kymographIndex);
-		if (ptsBottom != null)
-			ptsBottom.addToROIs(listrois, kymographIndex);
-		if (ptsGulps != null)
-			ptsGulps.addGulpsToROIs(listrois, kymographIndex);
-		if (ptsDerivative != null)
-			ptsDerivative.addToROIs(listrois, Color.yellow, 1., kymographIndex);
+		ptsTop.addToROIs(listrois, kymographIndex);
+		ptsBottom.addToROIs(listrois, kymographIndex);
+		ptsGulps.addGulpsToROIs(listrois, kymographIndex);
+		ptsDerivative.addToROIs(listrois, Color.yellow, 1., kymographIndex);
 		return listrois;
 	}
 	
 	public void transferROIsToMeasures(List<ROI> listRois) 
 	{
-		if (ptsTop != null)
-			ptsTop.transferROIsToMeasures(listRois);
-		if (ptsBottom != null)
-			ptsBottom.transferROIsToMeasures(listRois);
-		if (ptsGulps != null)
-			ptsGulps.transferROIsToMeasures(listRois);
-		if (ptsDerivative != null)
-			ptsDerivative.transferROIsToMeasures(listRois);
+		ptsTop.transferROIsToMeasures(listRois);
+		ptsBottom.transferROIsToMeasures(listRois);
+		ptsGulps.transferROIsToMeasures(listRois);
+		ptsDerivative.transferROIsToMeasures(listRois);
 	}
 
 	// -------------------------------------------
@@ -654,14 +642,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	public void saveToXML_MeasuresOnly(Node node) 
 	{
-		if (ptsTop != null)
-			ptsTop.saveCapillaryLimit2XML(node, ID_TOPLEVEL);
-		if (ptsBottom != null)
-			ptsBottom.saveCapillaryLimit2XML(node, ID_BOTTOMLEVEL);
-		if (ptsDerivative != null)
-			ptsDerivative.saveCapillaryLimit2XML(node, ID_DERIVATIVE);
-		if (ptsGulps != null)
-			ptsGulps.saveToXML(node);
+		ptsTop.saveCapillaryLimit2XML(node, ID_TOPLEVEL);
+		ptsBottom.saveCapillaryLimit2XML(node, ID_BOTTOMLEVEL);
+		ptsDerivative.saveCapillaryLimit2XML(node, ID_DERIVATIVE);
+		ptsGulps.saveToXML(node);
 	}
 	 
 	public boolean xmlSaveCapillary_Measures(String directory) 
@@ -864,8 +848,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	public String csvExportMeasureSectionHeader(EnumCapillaryMeasureType measureType) {
 		StringBuffer sbf = new StringBuffer();
-		String explanation1 = "columns=,name,index, npts,npts*(xi;yi)\n";
-		String explanation2 = "columns=,name,index, n_gulps, n_gulps*(npts;npts*(xij;yij))\n";
+		String explanation1 = "columns=,name,index, npts,..,.(xi;yi)\n";
+		String explanation2 = "columns=,name,index, n_gulps(i), ..., gulp_i, .npts(j),.,(xij;yij))\n";
 		switch(measureType) {
 			case TOPLEVEL:
 				sbf.append("#,TOPLEVEL," + explanation1);
@@ -877,7 +861,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 				sbf.append("#,TOPDERIVATIVE,"+explanation1);
 				break;
 			case GULPS:
-				sbf.append("#,GULPS,---,"+explanation2);
+				sbf.append("#,GULPS,"+explanation2);
 				break;
 			default:
 				sbf.append("#,UNDEFINED,------------\n");
