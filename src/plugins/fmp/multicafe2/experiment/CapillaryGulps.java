@@ -309,15 +309,17 @@ public class CapillaryGulps implements XMLPersistent
 			int width =(int) gulpLine.xpoints[gulpLine.npoints-1] - (int) gulpLine.xpoints[0] +1; 
 			
 			List<Point2D> pts = interpolateMissingPointsAlongXAxis (gulpLine, width);
-			List<Integer> intArray = transferYPointsToIntList(pts);
+			if (pts == null || pts.size() < 1)
+				continue;
 			
+			List<Integer> intArray = transferYPointsToIntList(pts);
 			int jstart = (int) gulpLine.xpoints[0];
 			int previousY = intArray.get(0);
-			for (int i=1; i< intArray.size(); i++) {
+			for (int i = 1; i < intArray.size(); i++) {
 				int val = intArray.get(i);
 				int deltaY = val - previousY;
 				previousY = val;
-				for (int j = jstart+i; j< sumArrayList.size(); j++) 
+				for (int j = jstart+i; j < sumArrayList.size(); j++) 
 					sumArrayList.set(j, sumArrayList.get(j) +deltaY);
 			}
 		}

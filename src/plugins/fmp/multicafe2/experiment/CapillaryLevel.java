@@ -8,7 +8,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import icy.file.xml.XMLPersistent;
 import icy.roi.ROI;
-import icy.roi.ROI2D;
 import icy.type.geom.Polyline2D;
 import icy.util.StringUtil;
 import icy.util.XMLUtil;
@@ -154,18 +153,8 @@ public class CapillaryLevel  implements XMLPersistent
 		int lastitem = polylineLevel.ypoints.length - 1;
 		return (int) (polylineLevel.ypoints[lastitem] - polylineLevel.ypoints[lastitem-1]);
 	}
-	
-	public ROI2D transferPolyline2DToROI(int indexImage) 
-	{
-		if (polylineLevel == null || polylineLevel.npoints == 0)
-			return null;	
-		ROI2D roi = new ROI2DPolyLine(polylineLevel); 
-		roi.setName(capName);
-		roi.setT(indexImage);
-		return roi;
-	}
-	
-	void transferROIsToMeasures(List<ROI> listRois) 
+
+	boolean transferROIsToMeasures(List<ROI> listRois) 
 	{	
 		for (ROI roi: listRois) 
 		{		
@@ -173,9 +162,10 @@ public class CapillaryLevel  implements XMLPersistent
 			if (roi instanceof ROI2DPolyLine && roiname .contains (capName)) 
 			{
 				polylineLevel = new Level2D(((ROI2DPolyLine)roi).getPolyline2D());
-				capName = roiname;	
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	@Override

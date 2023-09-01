@@ -491,17 +491,16 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	public List<ROI2D> transferMeasuresToROIs() 
 	{
 		List<ROI2D> listrois = new ArrayList<ROI2D> ();
-		listrois.add(getROIFromCapillaryLevel(ptsTop));
-		listrois.add(getROIFromCapillaryLevel(ptsBottom));
-		listrois.add(getROIFromCapillaryLevel(ptsDerivative));
-		listrois.addAll(getROIsFromCapillaryGulps(ptsGulps));
-		
+		getROIFromCapillaryLevel(ptsTop, listrois);
+		getROIFromCapillaryLevel(ptsBottom, listrois);
+		getROIFromCapillaryLevel(ptsDerivative, listrois);
+		getROIsFromCapillaryGulps(ptsGulps, listrois);	
 		return listrois;
 	}
 	
-	private ROI2D getROIFromCapillaryLevel(CapillaryLevel capLevel) 
+	private void getROIFromCapillaryLevel(CapillaryLevel capLevel, List<ROI2D> listrois) 
 	{
-		ROI2D roi = capLevel.transferPolyline2DToROI(kymographIndex);
+		ROI2D roi = new ROI2DPolyLine(capLevel.polylineLevel);
 		String name = kymographPrefix + "_" + capLevel.typename;
 		roi.setName(name);
 		roi.setT(kymographIndex);
@@ -509,26 +508,28 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			roi.setColor(Color.yellow);
 			roi.setStroke(1);
 		}
-		return roi;
+		listrois.add( roi);
 	}
 	
-	private ArrayList<ROI2D> getROIsFromCapillaryGulps(CapillaryGulps capGulps) 
+	private void getROIsFromCapillaryGulps(CapillaryGulps capGulps, List<ROI2D> listrois) 
 	{
 		int ngulps = capGulps.gulps.size();
 		if (ngulps == 0)
-			return null;
+			return;
 		
 		ArrayList<ROI2D> rois = new ArrayList<ROI2D> (ngulps);
-		for (Polyline2D gulpLine: capGulps.gulps) { 
-			rois.add( getROIfromGulp(gulpLine));
-		}
-		return rois;
+		if (capGulps.gulps.size() > 0)
+			for (Polyline2D gulpLine: capGulps.gulps) 
+				rois.add( getROIfromGulp(gulpLine));
+		
+		listrois.addAll(rois);
 	}
 	
 	private ROI2D getROIfromGulp(Polyline2D gulpLine)
 	{
 		ROI2DPolyLine roi = new ROI2DPolyLine (gulpLine);
-		String name = kymographPrefix + "_gulp_at_" + String.format("%07d", gulpLine.xpoints[0]);
+		int startAt = (int) gulpLine.xpoints[0];
+		String name = kymographPrefix + "_gulp_at_" + String.format("%07d", startAt);
 		roi.setName(name);
 		roi.setColor(Color.red);
 		roi.setStroke(1);
