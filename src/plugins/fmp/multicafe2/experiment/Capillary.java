@@ -423,7 +423,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		case SUMGULPS:
 			if (ptsGulps != null) 
 			{
-				List<Integer> datai = ptsGulps.getCumSumFromROIsArray(ptsTop.getNPoints());
+				List<Integer> datai = ptsGulps.getCumSumFromGulps(ptsTop.getNPoints());
 				lastMeasure = datai.get(datai.size()-1);
 			}
 			break;
@@ -448,7 +448,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			break;
 		case SUMGULPS:
 			if (ptsGulps != null) {
-				List<Integer> datai = ptsGulps.getCumSumFromROIsArray(ptsTop.getNPoints());
+				List<Integer> datai = ptsGulps.getCumSumFromGulps(ptsTop.getNPoints());
 				lastMeasure = datai.get(datai.size()-1) - datai.get(datai.size()-2);
 			}
 			break;
@@ -473,7 +473,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			break;
 		case SUMGULPS:
 			if (ptsGulps != null) {
-				List<Integer> datai = ptsGulps.getCumSumFromROIsArray(ptsTop.getNPoints());
+				List<Integer> datai = ptsGulps.getCumSumFromGulps(ptsTop.getNPoints());
 				t0Measure = datai.get(0);
 			}
 			break;
@@ -488,22 +488,52 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return t0Measure;
 	}
 
-	public ArrayList<ROI2DPolyLine> getAllGulpsAsROIs() 
-	{	
-		if (ptsGulps.gulps == null)
-			return null; 
-		
-		return ptsGulps.getGulpsAsROIs();
-	}
-
 	public List<ROI2D> transferMeasuresToROIs() 
 	{
 		List<ROI2D> listrois = new ArrayList<ROI2D> ();
-		ptsTop.addToROIs(listrois, kymographIndex);
-		ptsBottom.addToROIs(listrois, kymographIndex);
-		ptsGulps.addGulpsToROIs(listrois, kymographIndex);
-		ptsDerivative.addToROIs(listrois, Color.yellow, 1., kymographIndex);
+		listrois.add(getROIFromCapillaryLevel(ptsTop));
+		listrois.add(getROIFromCapillaryLevel(ptsBottom));
+		listrois.add(getROIFromCapillaryLevel(ptsDerivative));
+		listrois.addAll(getROIsFromCapillaryGulps(ptsGulps));
+		
 		return listrois;
+	}
+	
+	private ROI2D getROIFromCapillaryLevel(CapillaryLevel capLevel) 
+	{
+		ROI2D roi = capLevel.transferPolyline2DToROI(kymographIndex);
+		String name = kymographPrefix + "_" + capLevel.typename;
+		roi.setName(name);
+		roi.setT(kymographIndex);
+		if (capLevel.typename.contains(ID_DERIVATIVE)) {
+			roi.setColor(Color.yellow);
+			roi.setStroke(1);
+		}
+		return roi;
+	}
+	
+	private ArrayList<ROI2D> getROIsFromCapillaryGulps(CapillaryGulps capGulps) 
+	{
+		int ngulps = capGulps.gulps.size();
+		if (ngulps == 0)
+			return null;
+		
+		ArrayList<ROI2D> rois = new ArrayList<ROI2D> (ngulps);
+		for (Polyline2D gulpLine: capGulps.gulps) { 
+			rois.add( getROIfromGulp(gulpLine));
+		}
+		return rois;
+	}
+	
+	private ROI2D getROIfromGulp(Polyline2D gulpLine)
+	{
+		ROI2DPolyLine roi = new ROI2DPolyLine (gulpLine);
+		String name = kymographPrefix + "_gulp_at_" + String.format("%07d", gulpLine.xpoints[0]);
+		roi.setName(name);
+		roi.setColor(Color.red);
+		roi.setStroke(1);
+		roi.setT(kymographIndex);
+		return roi;
 	}
 	
 	public void transferROIsToMeasures(List<ROI> listRois) 
@@ -803,7 +833,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	// -----------------------------------------------------------------------------
 	
-	public String csvExportCapillarySubSectionHeader() {
+	public String csvExportCapillarySubSectionHeader() 
+	{
 		StringBuffer sbf = new StringBuffer();
 		
 		sbf.append("#,CAPILLARIES,describe each capillary\n");
@@ -824,7 +855,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return sbf.toString();
 	}
 	
-	public String csvExportCapillaryDescription() {	
+	public String csvExportCapillaryDescription() 
+	{	
 		StringBuffer sbf = new StringBuffer();
 		if (kymographPrefix == null)
 			kymographPrefix = getLast2ofCapillaryName();
@@ -846,7 +878,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return sbf.toString();
 	}
 	
-	public String csvExportMeasureSectionHeader(EnumCapillaryMeasureType measureType) {
+	public String csvExportMeasureSectionHeader(EnumCapillaryMeasureType measureType) 
+	{
 		StringBuffer sbf = new StringBuffer();
 		String explanation1 = "columns=,name,index, npts,..,.(xi;yi)\n";
 		String explanation2 = "columns=,name,index, n_gulps(i), ..., gulp_i, .npts(j),.,(xij;yij))\n";

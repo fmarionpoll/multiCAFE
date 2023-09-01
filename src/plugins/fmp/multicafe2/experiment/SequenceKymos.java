@@ -172,6 +172,7 @@ public class SequenceKymos extends SequenceCamData
 	{
 		List<ROI2D> seqRoisList = seq.getROI2Ds(false);
 		ROI2DUtilities.removeROIsMissingChar(seqRoisList, '_');
+		
 		List<ROI2D> newRoisList = new ArrayList<ROI2D>();
 		int ncapillaries = capillaries.capillariesList.size();
 		for (int i=0; i < ncapillaries; i++) 

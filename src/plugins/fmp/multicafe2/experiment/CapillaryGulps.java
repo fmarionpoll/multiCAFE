@@ -1,6 +1,5 @@
 package plugins.fmp.multicafe2.experiment;
 
-import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -16,7 +15,6 @@ import icy.roi.ROI2D;
 import icy.type.geom.Polyline2D;
 import icy.util.StringUtil;
 import icy.util.XMLUtil;
-import plugins.fmp.multicafe2.tools.ROI2DUtilities;
 import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
@@ -63,20 +61,20 @@ public class CapillaryGulps implements XMLPersistent
 	public boolean saveToXML(Node node) 
 	{
 		boolean flag = false;
-		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
-		
-		final Node nodeROIs = XMLUtil.setElement(node, ID_GULPS);
-        if (nodeROIs != null)
-        {
-        	flag = true;
-        	if (rois != null && rois.size() > 0) 
-        	{
-        		List<ROI> roislocal = new ArrayList<ROI> (rois.size());
-        		for (ROI2D roi: rois)
-        			roislocal.add((ROI) roi);
-        		ROI.saveROIsToXML(nodeROIs, roislocal);
-        	}
-	    }
+//		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
+//		
+//		final Node nodeROIs = XMLUtil.setElement(node, ID_GULPS);
+//        if (nodeROIs != null)
+//        {
+//        	flag = true;
+//        	if (rois != null && rois.size() > 0) 
+//        	{
+//        		List<ROI> roislocal = new ArrayList<ROI> (rois.size());
+//        		for (ROI2D roi: rois)
+//        			roislocal.add((ROI) roi);
+//        		ROI.saveROIsToXML(nodeROIs, roislocal);
+//        	}
+//	    }
         return flag;
 	}
 	
@@ -139,7 +137,7 @@ public class CapillaryGulps implements XMLPersistent
 		{
 		case SUMGULPS:
 		case SUMGULPS_LR:
-			data_in = getCumSumFromROIsArray(npoints);
+			data_in = getCumSumFromGulps(npoints);
 			data_in = stretchArrayToOutputBins(data_in, seriesBinMs, outputBinMs);
 			break;
 		case NBGULPS:
@@ -276,28 +274,6 @@ public class CapillaryGulps implements XMLPersistent
 	}
 		
 	// -------------------------------
-		
-	static String buildROIGulpName(String rootName, int tIndex) {
-		return rootName + "_gulp" + String.format("%07d", tIndex);
-	}
-	
-	public ArrayList <ROI2DPolyLine> getGulpsAsROIs() 
-	{
-		ArrayList<ROI2DPolyLine> rois = new ArrayList<ROI2DPolyLine> (gulps.size());
-		for (Polyline2D gulpLine: gulps) 
-			rois.add( buildROIfromGulp(gulpLine));
-		return rois;
-	}
-	
-	private ROI2DPolyLine buildROIfromGulp(Polyline2D gulpLine) 
-	{
-		ROI2DPolyLine roi = new ROI2DPolyLine (gulpLine);
-		roi.setName(buildROIGulpName(gulpNamePrefix, (int) gulpLine.xpoints[0]));
-		roi.setColor(Color.red);
-		roi.setStroke(1);
-		roi.setT(gulpIndexKymo);
-		return roi;
-	}
 	
 	public void buildGulpsFromROIs(ArrayList<ROI2D> rois ) 
 	{
@@ -323,67 +299,115 @@ public class CapillaryGulps implements XMLPersistent
 		buildGulpsFromROIs(rois);
 	}
 
-	public List<ROI2D> addGulpsToROIs(List<ROI2D> listrois, int indexImage) 
+	ArrayList<Integer> getCumSumFromGulps(int npoints) 
 	{
-		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
-		listrois.addAll(rois);
-		return listrois;
-	}
-	
-	ArrayList<Integer> getCumSumFromROIsArray(int npoints) 
-	{
-		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
-		if (rois == null)
+		if (gulps == null || gulps.size() == 0)
 			return null;
 		
-		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
-		for (ROI roi: rois) 
-			ROI2DUtilities.addROItoCumulatedSumArray((ROI2DPolyLine) roi, arrayInt);
-		return arrayInt;
+		ArrayList<Integer> sumArrayList = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
+		for (Polyline2D gulpLine: gulps) { 
+			int width =(int) gulpLine.xpoints[gulpLine.npoints-1] - (int) gulpLine.xpoints[0] +1; 
+			
+			List<Point2D> pts = interpolateMissingPointsAlongXAxis (gulpLine, width);
+			List<Integer> intArray = transferYPointsToIntList(pts);
+			
+			int jstart = (int) gulpLine.xpoints[0];
+			int previousY = intArray.get(0);
+			for (int i=1; i< intArray.size(); i++) {
+				int val = intArray.get(i);
+				int deltaY = val - previousY;
+				previousY = val;
+				for (int j = jstart+i; j< sumArrayList.size(); j++) 
+					sumArrayList.set(j, sumArrayList.get(j) +deltaY);
+			}
+		}
+		return sumArrayList;
+	}
+	
+	private List<Integer> transferYPointsToIntList(List<Point2D> pts) 
+	{
+		List<Integer> intArray = new ArrayList<Integer> (pts.size());
+		for (int i=0; i< pts.size(); i++) 
+			intArray.add((int) pts.get(i).getY());
+		return intArray;
+	}
+	
+	private List<Point2D> interpolateMissingPointsAlongXAxis (Polyline2D polyline, int nintervals) 
+	{
+		if (nintervals <= 1)
+			return null;
+		// interpolate points so that each x step has a value	
+		// assume that points are ordered along x
+
+		int roiLine_npoints = polyline.npoints;
+		if (roiLine_npoints > nintervals)
+			roiLine_npoints = nintervals;
+
+		List<Point2D> pts = new ArrayList <Point2D>(roiLine_npoints);
+		double ylast = polyline.ypoints[roiLine_npoints-1];
+		int xfirst0 = (int) polyline.xpoints[0];
+		
+		for (int i = 1; i < roiLine_npoints; i++) 
+		{			
+			int xfirst = (int) polyline.xpoints[i-1];
+			if (xfirst < 0)
+				xfirst = 0;
+			int xlast = (int) polyline.xpoints[i];
+			if (xlast > xfirst0 + nintervals -1)
+				xlast = xfirst0 + nintervals -1;
+			double yfirst = polyline.ypoints[i-1];
+			ylast = polyline.ypoints[i]; 
+			for (int j = xfirst; j < xlast; j++) 
+			{
+				int val = (int) (yfirst + (ylast-yfirst)*(j-xfirst)/(xlast-xfirst));
+				Point2D pt = new Point2D.Double(j, val);
+				pts.add(pt);
+			}
+		}
+		Point2D pt = new Point2D.Double(polyline.xpoints[roiLine_npoints-1], ylast);
+		pts.add(pt);
+		return pts;
 	}
 	
 	private ArrayList<Integer> getIsGulpsFromROIsArray(int npoints) 
 	{
-		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
-		if (rois == null)
+		if (gulps == null || gulps.size() == 0)
 			return null;
 		
 		ArrayList<Integer> arrayInt = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
-		for (ROI roi: rois) 
-			addROItoIsGulpsArray((ROI2DPolyLine) roi, arrayInt);
+		for (Polyline2D gulpLine: gulps) 
+			addROItoIsGulpsArray(gulpLine, arrayInt);
 		return arrayInt;
 	}
 	
-	private void addROItoIsGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> isGulpsArrayList) 
+	private void addROItoIsGulpsArray (Polyline2D gulpLine, ArrayList<Integer> isGulpsArrayList) 
 	{
-		Polyline2D roiline = roi.getPolyline2D();
-		double yvalue = roiline.ypoints[0];
-		int npoints = roiline.npoints;
+		double yvalue = gulpLine.ypoints[0];
+		int npoints = gulpLine.npoints;
 		for (int j = 0; j < npoints; j++) 
 		{
-			if (roiline.ypoints[j] != yvalue) 
+			if (gulpLine.ypoints[j] != yvalue) 
 			{
-				int timeIndex =  (int) roiline.xpoints[j];
+				int timeIndex =  (int) gulpLine.xpoints[j];
 				isGulpsArrayList.set(timeIndex, 1);
 			}
-			yvalue = roiline.ypoints[j];
+			yvalue = gulpLine.ypoints[j];
 		}
 	}
 	
 	private ArrayList<Integer> getAmplitudeGulpsFromROIsArray(int npoints) 
 	{
-		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
-		if (rois == null)
+		if (gulps == null || gulps.size() == 0)
 			return null;
+		
 		ArrayList<Integer> amplitudeGulpsArray = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
-		for (ROI roi: rois) 
-			addROItoAmplitudeGulpsArray((ROI2DPolyLine) roi, amplitudeGulpsArray);
+		for (Polyline2D gulpLine: gulps) 
+			addROItoAmplitudeGulpsArray(gulpLine, amplitudeGulpsArray);
 		return amplitudeGulpsArray;
 	}
 	
-	private void addROItoAmplitudeGulpsArray (ROI2DPolyLine roi, ArrayList<Integer> amplitudeGulpsArray) 
+	private void addROItoAmplitudeGulpsArray (Polyline2D polyline2D, ArrayList<Integer> amplitudeGulpsArray) 
 	{
-		Polyline2D polyline2D = roi.getPolyline2D();
 		double yvalue = polyline2D.ypoints[0];
 		int npoints = polyline2D.npoints;
 		for (int j = 0; j < npoints; j++) 

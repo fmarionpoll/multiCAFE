@@ -1,6 +1,5 @@
 package plugins.fmp.multicafe2.experiment;
 
-import java.awt.Color;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -156,24 +155,14 @@ public class CapillaryLevel  implements XMLPersistent
 		return (int) (polylineLevel.ypoints[lastitem] - polylineLevel.ypoints[lastitem-1]);
 	}
 	
-	List<ROI2D> addToROIs(List<ROI2D> listrois, int indexImage) 
+	public ROI2D transferPolyline2DToROI(int indexImage) 
 	{
-		if (polylineLevel != null && polylineLevel.npoints > 0) 
-			listrois.add(transferPolyline2DToROI(indexImage));
-		return listrois;
-	}
-	
-	List<ROI2D> addToROIs(List<ROI2D> listrois, Color color, double stroke, int indexImage) 
-	{
-		if (polylineLevel != null && polylineLevel.npoints > 0) 
-		{ 
-			ROI2D roi = transferPolyline2DToROI(indexImage);
-			roi.setColor(color);
-			roi.setStroke(stroke);
-			roi.setName(capName);
-			listrois.add(roi);
-		}
-		return listrois;
+		if (polylineLevel == null || polylineLevel.npoints == 0)
+			return null;	
+		ROI2D roi = new ROI2DPolyLine(polylineLevel); 
+		roi.setName(capName);
+		roi.setT(indexImage);
+		return roi;
 	}
 	
 	void transferROIsToMeasures(List<ROI> listRois) 
@@ -212,17 +201,7 @@ public class CapillaryLevel  implements XMLPersistent
 			arrayInt.add((int) i);
 		return arrayInt;
 	}
-	
-	public ROI2D transferPolyline2DToROI(int indexImage) 
-	{
-		if (polylineLevel == null || polylineLevel.npoints == 0)
-			return null;	
-		ROI2D roi = new ROI2DPolyLine(polylineLevel); 
-		roi.setName(capName);
-		roi.setT(indexImage);
-		return roi;
-	}
-	
+
 	// ----------------------------------------------------------------------
 	
 	public int loadCapillaryLimitFromXML(Node node, String nodename, String header) 
