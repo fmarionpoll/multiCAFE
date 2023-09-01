@@ -81,17 +81,16 @@ public class CapillaryGulps implements XMLPersistent
 	}
 	
 	// -------------------------------
-	
 		
 	public void addNewGulpFromPoints( ArrayList<Point2D> gulpPoints ) 
 	{
 		int npoints = gulpPoints.size();
-		if (npoints <1)
+		if (npoints < 1)
 			return;
 		
 		double[] xpoints = new double[npoints] ;
 		double[] ypoints = new double[npoints] ;
-		for (int i = 0; i< npoints; i++) {
+		for (int i = 0; i < npoints; i++) {
 			xpoints[i] = gulpPoints.get(i).getX();
 			ypoints[i] = gulpPoints.get(i).getY();
 		}
@@ -212,75 +211,71 @@ public class CapillaryGulps implements XMLPersistent
 	
 	// -------------------------------
 		
-	public boolean csvExportData(StringBuffer sbf) 
+	public boolean csvExportDataToRow(StringBuffer sbf) 
 	{
-		if (gulps == null)
-			return false;
-		
-		sbf.append(Integer.toString(gulps.size())+ "\t");
-	    for (int i = 0; i < gulps.size(); i++) {
-	    	Polyline2D gulp = gulps.get(i);
-	    	sbf.append(StringUtil.toString((int) gulp.npoints));
-            sbf.append("\t");
-            for (int j= 0; j< gulp.npoints; j++) {
-		    	sbf.append(StringUtil.toString((int) gulp.xpoints[j]));
-	            sbf.append("\t");
-	            sbf.append(StringUtil.toString((int) gulp.ypoints[j]));
-	            sbf.append("\t");
-            }
-	    }
-	  	
+		int ngulps = 0;
+		if (gulps != null)
+			ngulps = gulps.size();
+		sbf.append(Integer.toString(ngulps) + ",");
+		if (ngulps > 0) {
+		    for (int indexgulp = 0; indexgulp < gulps.size(); indexgulp++) 
+		    	csvExportOneGulp(sbf, indexgulp);
+		}
 		return true;
 	}
 	
-//	private void csvExportSingleGulpData(StringBuffer sbfN, StringBuffer sbfX, StringBuffer sbfY, int i) 
-//	{
-//		Polyline2D polyline = gulps.get(i);
-//		for (int j=0; j< polyline.npoints; j++)
-//    	{
-//    		sbfN.append(Integer.toString(i) + "\t"); 
-//    		sbfX.append(Integer.toString((int) polyline.xpoints[j])+ "\t");
-//            sbfY.append(Integer.toString((int) polyline.ypoints[j])+ "\t");
-//    	}
-//	}
+	private void csvExportOneGulp(StringBuffer sbf, int indexgulp)
+	{
+		Polyline2D gulp = gulps.get(indexgulp);
+    	sbf.append(StringUtil.toString((int) gulp.npoints));
+        sbf.append(",");
+        for (int i = 0; i< gulp.npoints; i++) {
+	    	sbf.append(StringUtil.toString((int) gulp.xpoints[i]));
+            sbf.append(",");
+            sbf.append(StringUtil.toString((int) gulp.ypoints[i]));
+            sbf.append(",");
+        }
+        sbf.append("x,");
+	}
 	
-	
-	public void csvImportDataFromRow(String [] data, String roiNamePrefix, int indexkymo) 
+	public void csvImportDataFromRow(String [] data, int startAt, String roiNamePrefix, int indexkymo) 
 	{
 		gulpNamePrefix = roiNamePrefix;
 		gulpIndexKymo = indexkymo;
-		int currentgulp = -1;
-		int npoints = 0;
-		int istart = 0;
-//		for (int columnIndex = 0; columnIndex < dataN.length; columnIndex++) {
-//			if (dataN[columnIndex] == currentgulp) {
-//				npoints ++;
-//				continue;
-//			}
-//			else {
-//				if (npoints > 0)
-//					addNewGulpFromInt(dataX, dataY, istart, npoints );
-//				istart = columnIndex;
-//				currentgulp = dataN[columnIndex];
-//				npoints = 1;
-//			}
-//		}
-	}
 	
-	private void addNewGulpFromInt(int[] dataX, int[] dataY, int istart, int npoints ) 
-	{
-		int[] xValues = new int[npoints];
-		int[] yValues = new int[npoints];
-		for (int i=0; i < npoints; i++) {
-			xValues[i] = dataX[i+istart];
-			yValues[i] = dataY[i+istart];
+		if (data.length < startAt) 
+			return;
+			
+		int ngulps = Integer.valueOf(data[startAt]);
+		if (ngulps > 0) {
+			int offset = startAt+1;
+			for (int i = 0; i < ngulps; i++) {
+				offset = csvImportOneGulp(data, offset);
+			}
 		}
-		Polyline2D gulpLine = new Polyline2D (xValues, yValues, npoints);
-		gulps.add(gulpLine);
 	}
 	
+	private int csvImportOneGulp(String[] data, int offset) 
+	{
+		int npoints = Integer.valueOf(data[offset]);
+		offset++;
+		
+		int[] x = new int[npoints];
+		int[] y = new int[npoints];
+		for (int i = 0; i < npoints; i++) { 
+			x[i] = Integer.valueOf(data[offset]);
+			offset++;
+			y[i] = Integer.valueOf(data[offset]);
+			offset++;
+		}
+		Polyline2D gulpLine = new Polyline2D (x, y, npoints);
+		gulps.add(gulpLine);
+		offset++;
+		return offset;
+	}
+		
 	// -------------------------------
-	
+		
 	static String buildROIGulpName(String rootName, int tIndex) {
 		return rootName + "_gulp" + String.format("%07d", tIndex);
 	}

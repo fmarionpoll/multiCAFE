@@ -58,7 +58,7 @@ public class BuildSeriesOptions implements XMLPersistent
 	public 	int 		columnLast 				= -1;
 	public  int			spanDiffTop				= 3;
 	
-	public double		detectGulpsThresholdUL	= .3;
+	public double		detectGulpsThreshold_uL	= .3;
 	public ImageTransformEnums transformForGulps = ImageTransformEnums.XDIFFN;
 	public int			spanDiff				= 3;
 	public boolean 		detectAllGulps 			= true;
@@ -99,7 +99,7 @@ public class BuildSeriesOptions implements XMLPersistent
 		destination.detectLevel1Threshold 	= detectLevel1Threshold;
 		destination.detectAllKymos 			= detectAllKymos;
 		
-		destination.detectGulpsThresholdUL 	= detectGulpsThresholdUL;
+		destination.detectGulpsThreshold_uL 	= detectGulpsThreshold_uL;
 		destination.transformForGulps 		= transformForGulps;
 		destination.detectAllGulps 			= detectAllGulps;
 	}
@@ -113,7 +113,7 @@ public class BuildSeriesOptions implements XMLPersistent
 		detectLevel1Threshold 	= destination.detectLevel1Threshold;
 		detectAllKymos 			= destination.detectAllKymos;
 		
-		detectGulpsThresholdUL 	= destination.detectGulpsThresholdUL;
+		detectGulpsThreshold_uL 	= destination.detectGulpsThreshold_uL;
 		transformForGulps 		= destination.transformForGulps;
 		detectAllGulps 			= destination.detectAllGulps;
 	}

@@ -64,9 +64,7 @@ public class DetectLevels  extends BuildSeries
 		
 		for (int indexKymo = firstKymo; indexKymo <= lastKymo; indexKymo++) 
 		{
-			//final int indexCapillary = indexKymo;
 			final Capillary capi = exp.capillaries.capillariesList.get(indexKymo);
-			
 			if (!options.detectR && capi.getKymographName().endsWith("2"))
 				continue;
 			if (!options.detectL && capi.getKymographName().endsWith("1"))

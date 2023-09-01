@@ -176,7 +176,7 @@ public class LevelsToGulps extends JPanel  implements PropertyChangeListener
 			options.kymoFirst = 0;
 			options.kymoLast = parent0.paneKymos.tabDisplay.kymographsCombo.getItemCount()-1;
 		}
-		options.detectGulpsThresholdUL = (double) detectGulpsThresholdSpinner.getValue();
+		options.detectGulpsThreshold_uL = (double) detectGulpsThresholdSpinner.getValue();
 		options.transformForGulps = (ImageTransformEnums) transformForGulpsComboBox.getSelectedItem();
 		options.detectAllGulps 	= allKymosCheckBox.isSelected();
 		options.spanDiff		= (int) spanTransf2Spinner.getValue();
@@ -209,7 +209,7 @@ public class LevelsToGulps extends JPanel  implements PropertyChangeListener
 	void setInfos(Capillary cap) 
 	{
 		BuildSeriesOptions options = cap.getGulpsOptions();
-		detectGulpsThresholdSpinner.setValue(options.detectGulpsThresholdUL);
+		detectGulpsThresholdSpinner.setValue(options.detectGulpsThreshold_uL);
 		transformForGulpsComboBox.setSelectedItem(options.transformForGulps);
 		allKymosCheckBox.setSelected(options.detectAllGulps);
 	}

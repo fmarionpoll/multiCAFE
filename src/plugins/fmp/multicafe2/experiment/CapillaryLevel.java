@@ -348,26 +348,41 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	public boolean cvsExportDataToRow(StringBuffer sbf) 
 	{
-		if (polylineLevel == null) 
-			return false;
-		
-		sbf.append(Integer.toString(polylineLevel.npoints)+ "\t");
-		
-		for (int i = 0; i < polylineLevel.npoints; i++)
-        {
-            sbf.append(StringUtil.toString((int) polylineLevel.xpoints[i]));
-            sbf.append("\t");
-            sbf.append(StringUtil.toString((int) polylineLevel.ypoints[i]));
-            sbf.append("\t");
-        }
+		int npoints = 0;
+		if (polylineLevel != null) 
+			npoints = polylineLevel.npoints;
+		sbf.append(Integer.toString(npoints)+ ",");
+		if (npoints > 0) {
+			for (int i = 0; i < polylineLevel.npoints; i++)
+	        {
+	            sbf.append(StringUtil.toString((int) polylineLevel.xpoints[i]));
+	            sbf.append(",");
+	            sbf.append(StringUtil.toString((int) polylineLevel.ypoints[i]));
+	            sbf.append(",");
+	        }
+		}
 		return true;
 	}
 	
-	public void csvImportDataFromRow(String[] data, String roiNamePrefix) 
+	public boolean csvImportDataFromRow(String[] data, int startAt) 
 	{
-		int essai = -1;
-//		polylineLevel = new Level2D(dataX, dataY, dataX.length);
-//		capName = roiNamePrefix + "_" + typename;
+		if (data.length < startAt)
+			return false;
+		
+		int npoints = Integer.valueOf(data[startAt]);
+		if (npoints > 0) {
+			int[] x = new int[npoints];
+			int[] y = new int[npoints];
+			int offset = startAt+1;
+			for (int i = 0; i < npoints; i++) { 
+				x[i] = Integer.valueOf(data[offset]);
+				offset++;
+				y[i] = Integer.valueOf(data[offset]);
+				offset++;
+			}
+			polylineLevel = new Level2D(x, y, npoints);
+		}
+		return true;
 	}
 	
 }

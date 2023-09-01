@@ -205,9 +205,9 @@ public class CapillariesDescription
 	
 	// --------------------------------------
 	
-	public String csvExportHeaderRow() {
+	public String csvExportSectionHeader() {
 		StringBuffer sbf = new StringBuffer();
-		sbf.append("#\tDESCRIPTION\tCapillarytrack data\n");
+		sbf.append("#,DESCRIPTION,Capillarytrack data\n");
 		List<String> row2 = Arrays.asList(
 				ID_DESCGROUPING, 
 				ID_DESCVOLUMEUL, 
@@ -222,12 +222,12 @@ public class CapillariesDescription
 				ID_COMMENT2, 
 				ID_STRAIN, 
 				ID_SEX);
-		sbf.append(String.join("\t", row2));
+		sbf.append(String.join(",", row2));
 		sbf.append("\n");
 		return sbf.toString();
 	}
 	
-	public String csvExportHeaderData() {
+	public String csvExportExperimentDescriptors() {
 		StringBuffer sbf = new StringBuffer();
 		List<String> row3 = Arrays.asList(
 				Integer.toString(grouping),
@@ -243,7 +243,7 @@ public class CapillariesDescription
 				old_comment2, 
 				old_strain, 
 				old_sex);
-		sbf.append(String.join("\t", row3));
+		sbf.append(String.join(",", row3));
 		sbf.append("\n");
 		return sbf.toString();
 	}

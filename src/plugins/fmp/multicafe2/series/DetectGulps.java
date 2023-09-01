@@ -79,7 +79,6 @@ public class DetectGulps extends BuildSeries
 		for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
 		{
 			final Capillary capi = exp.capillaries.capillariesList.get(indexCapillary);
-			
 			capi.setGulpsOptions(options);
 			futures.add(processor.submit(new Runnable () 
 			{

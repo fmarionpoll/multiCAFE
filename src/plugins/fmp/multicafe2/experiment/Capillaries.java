@@ -68,11 +68,11 @@ public class Capillaries
 	{
 		if (directory == null)
 			return false;
+		csvSaveCapillariesMeasures_Data(directory);
 		
 		for (Capillary cap: capillariesList) 
 			cap.xmlSaveCapillary_Measures(directory);
-		
-		csvSaveCapillariesMeasures_Data(directory);
+
 		return true;
 	}
 	
@@ -570,7 +570,7 @@ public class Capillaries
 		BufferedReader csvReader = new BufferedReader(new FileReader(pathToCsv));
 		String row;
 		while ((row = csvReader.readLine()) != null) {
-		    String[] data = row.split("\t");
+		    String[] data = row.split(",");
 		    if (data[0] .equals( "#")) {
 		    	switch(data[1]) {
 		    	case "DESCRIPTION":
@@ -588,7 +588,7 @@ public class Capillaries
 		    	case "TOPDERIVATIVE":
 		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.TOPDERIVATIVE);
 		    		break;
-		    	case "GULPS": //System.out.println("----------------gulps");
+		    	case "GULPS": 
 		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.GULPS);
 		    		break;
 	    		default:
@@ -607,7 +607,7 @@ public class Capillaries
 		try {
 			row = csvReader.readLine();			
 			while ((row = csvReader.readLine()) != null) {
-				String[] data = row.split("\t");
+				String[] data = row.split(",");
 				if (data[0] .equals( "#")) 
 					return data[1];
 				Capillary cap = getCapillaryFromKymographName(data[2]);
@@ -628,10 +628,10 @@ public class Capillaries
 		try {
 			row = csvReader.readLine();
 			row = csvReader.readLine();
-			String[] data = row.split("\t");
+			String[] data = row.split(",");
 			capillariesDescription.csvImportCapillariesDescriptionData(data);
 			row = csvReader.readLine();
-			data = row.split("\t");
+			data = row.split(",");
 			if ( data[0].substring(0, Math.min( data[0].length(), 5)).equals("n cap")) {
 				int ncapillaries = Integer.valueOf(data[1]);
 				if (ncapillaries >= capillariesList.size())
@@ -639,7 +639,7 @@ public class Capillaries
 				else
 					capillariesList.subList(ncapillaries, capillariesList.size()).clear();
 				row = csvReader.readLine();
-				data = row.split("\t");
+				data = row.split(",");
 			}
 			if (data[0] .equals( "#")) {
 			  	return data[1];
@@ -650,13 +650,12 @@ public class Capillaries
 		return null;
 	}
 	
-	
 	String csvLoadCapillariesMeasures(BufferedReader csvReader, EnumCapillaryMeasureType measureType) 
 	{
 		String row;
 		try {
 			while ((row = csvReader.readLine()) != null) {
-				String[] data = row.split("\t");
+				String[] data = row.split(",");
 				if (data[0] .equals( "#")) 
 					return data[1];
 				
@@ -679,12 +678,12 @@ public class Capillaries
 		try {
 			FileWriter csvWriter = new FileWriter(directory + File.separator +"CapillariesMeasures.csv");
 			
-			csvSaveDescriptionForAllCapillaries(csvWriter);
+			csvSaveDescriptionSection(csvWriter);
 			
-			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.TOPLEVEL);
-			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.BOTTOMLEVEL);
-			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.TOPDERIVATIVE);
-			csvSaveCapillariesMeasures(csvWriter, EnumCapillaryMeasureType.GULPS);
+			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasureType.TOPLEVEL);
+			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasureType.BOTTOMLEVEL);
+			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasureType.TOPDERIVATIVE);
+			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasureType.GULPS);
 			csvWriter.flush();
 			csvWriter.close();
 			
@@ -695,19 +694,19 @@ public class Capillaries
 		return true;
 	}
 	
-	boolean csvSaveDescriptionForAllCapillaries(FileWriter csvWriter) 
+	boolean csvSaveDescriptionSection(FileWriter csvWriter) 
 	{
 		try {
-			csvWriter.append(capillariesDescription.csvExportHeaderRow());
-			csvWriter.append(capillariesDescription.csvExportHeaderData());
-			csvWriter.append("n caps=\t" + Integer.toString(capillariesList.size()) + "\n");
-			csvWriter.append("#\t#\n");
+			csvWriter.append(capillariesDescription.csvExportSectionHeader());
+			csvWriter.append(capillariesDescription.csvExportExperimentDescriptors());
+			csvWriter.append("n caps=," + Integer.toString(capillariesList.size()) + "\n");
+			csvWriter.append("#,#\n");
 			
 			if (capillariesList.size() > 0) {
-				csvWriter.append(capillariesList.get(0).csvExportCapillaryMeasuresHeader());
+				csvWriter.append(capillariesList.get(0).csvExportCapillarySubSectionHeader());
 				for (Capillary cap:capillariesList) 
 					csvWriter.append(cap.csvExportCapillaryDescription());
-				csvWriter.append("#\t#\n");
+				csvWriter.append("#,#\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -716,37 +715,22 @@ public class Capillaries
 		return true;
 	}
 	
-	boolean csvSaveCapillariesMeasures(FileWriter csvWriter, EnumCapillaryMeasureType measureType) 
+	boolean csvSaveMeasuresSection(FileWriter csvWriter, EnumCapillaryMeasureType measureType) 
 	{
 		try {
 			if (capillariesList.size() <= 1)
 				return false;
-			csvWriter.append(capillariesList.get(0).csvExportMeasureHeader(measureType));
-			for (Capillary cap:capillariesList) 
-				csvWriter.append(cap.csvExportCapillaryData(measureType, false, true));
 			
-			csvWriter.append("#\t#\n");
+			csvWriter.append(capillariesList.get(0).csvExportMeasureSectionHeader(measureType));
+			for (Capillary cap:capillariesList) 
+				csvWriter.append(cap.csvExportCapillaryData(measureType));
+			
+			csvWriter.append("#,#\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return true;
 	}
 	
-	private int[] csvStringArrayToInt(String[] data, int numericDatataStartsAtIndex) {
-		int length = data.length - numericDatataStartsAtIndex;
-		int[] dataInt = new int[length];
-		for (int i = 0; i < length; i++) {
-			if (data[i+numericDatataStartsAtIndex].contains(".")) {
-				System.out.println("floating point: "+ data[i+numericDatataStartsAtIndex] + " at "+(i+numericDatataStartsAtIndex));
-				double dummy = Double.valueOf(numericDatataStartsAtIndex);
-				int idummy = (int) dummy;
-				dataInt[i] = idummy;
-			}
-			else
-				dataInt[i] = Integer.valueOf(data[i+numericDatataStartsAtIndex]);
-		}
-		return dataInt;
-	}
-
 
 }
