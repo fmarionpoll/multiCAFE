@@ -86,12 +86,10 @@ public class DetectGulps extends BuildSeries
 				public void run() 
 				{
 					if (options.buildDerivative) 
-					{
 						capi.ptsDerivative = new CapillaryLevel(
 								capi.getLast2ofCapillaryName()+"_derivative", 
 								capi.kymographIndex,
 								getDerivativeProfile(seqAnalyzed, capi, jitter));
-					}
 					
 					if (options.buildGulps) 
 					{

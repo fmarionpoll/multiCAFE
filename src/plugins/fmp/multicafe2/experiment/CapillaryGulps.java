@@ -21,11 +21,9 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 public class CapillaryGulps implements XMLPersistent  
 {	
-	private final String ID_GULPS = "gulpsMC";
-	public ArrayList<Polyline2D> gulps = new ArrayList<Polyline2D> ();
-	public String gulpNamePrefix = "haha"; 
-	public int	gulpIndexKymo = -1; 
-
+	private final String ID_GULPS 		= "gulpsMC";
+	public ArrayList<Polyline2D> gulps 	= new ArrayList<Polyline2D> ();
+	
 	// -------------------------------
 	
 
@@ -33,7 +31,6 @@ public class CapillaryGulps implements XMLPersistent
 	{
 		gulps = new ArrayList <Polyline2D> (capG.gulps.size());
 		gulps.addAll(capG.gulps);
-		gulpNamePrefix = new String(capG.gulpNamePrefix);
 	}
 	
 	@Override
@@ -236,11 +233,8 @@ public class CapillaryGulps implements XMLPersistent
         }
 	}
 	
-	public void csvImportDataFromRow(String [] data, int startAt, String roiNamePrefix, int indexkymo) 
+	public void csvImportDataFromRow(String [] data, int startAt) 
 	{
-		gulpNamePrefix = roiNamePrefix;
-		gulpIndexKymo = indexkymo;
-	
 		if (data.length < startAt) 
 			return;
 			

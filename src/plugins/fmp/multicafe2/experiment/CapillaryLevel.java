@@ -21,7 +21,6 @@ public class CapillaryLevel  implements XMLPersistent
 	public Level2D 	polyline_old 	= new Level2D();
 	public int [] 	limit			= null;
 	
-	public String 	typename 		= "notype";
 	public String	capName 		= "noname";
 	public int		capIndexKymo 	= -1;
 	public String 	header 			= null;
@@ -34,10 +33,9 @@ public class CapillaryLevel  implements XMLPersistent
 	
 	// -------------------------
 	
-	CapillaryLevel(String typename) 
+	CapillaryLevel(String capName) 
 	{
-		this.typename = typename;
-		capName = typename;
+		this.capName = capName;
 	}
 	
 	public CapillaryLevel(String name, int indexImage, List<Point2D> limit) 
@@ -171,14 +169,14 @@ public class CapillaryLevel  implements XMLPersistent
 	@Override
 	public boolean loadFromXML(Node node) 
 	{
-		loadCapillaryLimitFromXML(node, typename, header);
+		loadCapillaryLimitFromXML(node, capName, header);
 		return false;
 	}
 
 	@Override
 	public boolean saveToXML(Node node) 
 	{
-		saveCapillaryLimit2XML(node, typename);
+		saveCapillaryLimit2XML(node, capName);
 		return false;
 	}
 	

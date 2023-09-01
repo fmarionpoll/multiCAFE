@@ -363,9 +363,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			ptsGulps.removeGulpsWithinInterval(limitsOptions.columnFirst, limitsOptions.columnLast);
 		else 
 			ptsGulps.gulps.clear();
-			
-		ptsGulps.gulpNamePrefix = kymographPrefix;
-		ptsGulps.gulpIndexKymo = kymographIndex;
 	}
 	
 	public void detectGulps() 
@@ -501,10 +498,10 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	private void getROIFromCapillaryLevel(CapillaryLevel capLevel, List<ROI2D> listrois) 
 	{
 		ROI2D roi = new ROI2DPolyLine(capLevel.polylineLevel);
-		String name = kymographPrefix + "_" + capLevel.typename;
+		String name = kymographPrefix + "_" + capLevel.capName;
 		roi.setName(name);
 		roi.setT(kymographIndex);
-		if (capLevel.typename.contains(ID_DERIVATIVE)) {
+		if (capLevel.capName.contains(ID_DERIVATIVE)) {
 			roi.setColor(Color.yellow);
 			roi.setStroke(1);
 		}
@@ -625,6 +622,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		return result;
 	}
 	
+	// -----------------------------------------------------------------------------
+
 	public boolean saveToXML_CapillaryOnly(Node node) 
 	{
 	    final Node nodeMeta = XMLUtil.setElement(node, ID_META);
@@ -960,7 +959,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 			ptsDerivative.csvImportDataFromRow( data, 2); 
 			break;
 		case GULPS:
-			ptsGulps.csvImportDataFromRow(data, 2, kymographPrefix, kymographIndex);
+			ptsGulps.csvImportDataFromRow(data, 2);
 			break;
 		default:
 			break;
