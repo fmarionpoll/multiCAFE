@@ -151,7 +151,8 @@ public class Capillaries
 		return flag;
 	}
 	
-	private boolean xmlLoadCapillariesData(String directory) {
+	private boolean xmlLoadCapillariesData(String directory) 
+	{
 		boolean flag = false;
 		int ncapillaries = capillariesList.size();
 		for (int i = 0; i < ncapillaries; i++) 
@@ -340,7 +341,8 @@ public class Capillaries
 		}
 	}
 	
-	public Capillary getCapillaryFromRoiName(String name) {
+	public Capillary getCapillaryFromRoiName(String name) 
+	{
 		Capillary capFound = null;
 		for (Capillary cap: capillariesList) 
 		{
@@ -353,7 +355,8 @@ public class Capillaries
 		return capFound;
 	}
 	
-	public Capillary getCapillaryFromKymographName(String name) {
+	public Capillary getCapillaryFromKymographName(String name) 
+	{
 		Capillary capFound = null;
 		for (Capillary cap: capillariesList) 
 		{
@@ -366,7 +369,8 @@ public class Capillaries
 		return capFound;
 	}
 	
-	public Capillary getCapillaryFromRoiNamePrefix(String name) {
+	public Capillary getCapillaryFromRoiNamePrefix(String name) 
+	{
 		Capillary capFound = null;
 		for (Capillary cap: capillariesList) 
 		{
@@ -524,7 +528,7 @@ public class Capillaries
 		return capillariesListTimeIntervals.get(selectedItem)[0];
 	}
 	
-	public double getScalingFactorToPhysicalUnits(EnumXLSExportType xlsoption ) 
+	public double getScalingFactorToPhysicalUnits(EnumXLSExportType xlsoption) 
 	{
 		double scalingFactorToPhysicalUnits; 
 		switch (xlsoption) 
@@ -559,7 +563,8 @@ public class Capillaries
 		return new ROI2DPolygon(polygon);
 	}
 	
-	public void deleteAllCapillaries() {
+	public void deleteAllCapillaries() 
+	{
 		capillariesList.clear();
 	}
 	

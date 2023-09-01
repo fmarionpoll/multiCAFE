@@ -295,10 +295,10 @@ public class CapillaryGulps implements XMLPersistent
 
 	ArrayList<Integer> getCumSumFromGulps(int npoints) 
 	{
-		if (gulps == null || gulps.size() == 0)
-			return null;
-		
 		ArrayList<Integer> sumArrayList = new ArrayList<Integer> (Collections.nCopies(npoints, 0));
+		if (gulps == null || gulps.size() == 0)
+			return sumArrayList;
+		
 		for (Polyline2D gulpLine: gulps) { 
 			int width =(int) gulpLine.xpoints[gulpLine.npoints-1] - (int) gulpLine.xpoints[0] +1; 
 			
