@@ -3,16 +3,13 @@ package plugins.fmp.multicafe2.experiment;
 import java.awt.Color;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
-import icy.file.xml.XMLPersistent;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.type.geom.Polyline2D;
@@ -29,7 +26,7 @@ import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 
 
 
-public class Capillary implements XMLPersistent, Comparable <Capillary>  
+public class Capillary implements Comparable <Capillary> 
 {
 
 	private ROI2D 						roi 			= null;
@@ -500,6 +497,8 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 	
 	private void getROIFromCapillaryLevel(CapillaryLevel capLevel, List<ROI2D> listrois) 
 	{
+		if (capLevel.polylineLevel == null)
+			return;
 		ROI2D roi = new ROI2DPolyLine(capLevel.polylineLevel);
 		String name = kymographPrefix + "_" + capLevel.capName;
 		roi.setName(name);
@@ -544,25 +543,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		ptsGulps.transferROIsToMeasures(listRois);
 		ptsDerivative.transferROIsToMeasures(listRois);
 	}
-
-	// -------------------------------------------
 	
-	@Override
-	public boolean loadFromXML(Node node) 
-	{
-		boolean result = loadFromXML_CapillaryOnly(node);	
-		result |= loadFromXML_MeasuresOnly( node);
-		return result;
-	}
-	
-	@Override
-	public boolean saveToXML(Node node) 
-	{
-		saveToXML_CapillaryOnly(node);
-		saveToXML_MeasuresOnly(node); 
-        return true;
-	}
-		
 	// -----------------------------------------------------------------------------
 
 	public boolean loadFromXML_CapillaryOnly(Node node) 
@@ -621,7 +602,7 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
 		boolean result = ptsTop.loadCapillaryLimitFromXML(node, ID_TOPLEVEL, header) > 0;
 		result |= ptsBottom.loadCapillaryLimitFromXML(node, ID_BOTTOMLEVEL, header) > 0;
 		result |= ptsDerivative.loadCapillaryLimitFromXML(node, ID_DERIVATIVE, header) > 0;
-		result |= ptsGulps.loadFromXML(node);
+		result |= ptsGulps.loadGulpsFromXML(node);
 		return result;
 	}
 	
@@ -671,27 +652,6 @@ public class Capillary implements XMLPersistent, Comparable <Capillary>
         	}
         }
         return true;
-	}
-	
-	public void saveToXML_MeasuresOnly(Node node) 
-	{
-		ptsTop.saveCapillaryLimit2XML(node, ID_TOPLEVEL);
-		ptsBottom.saveCapillaryLimit2XML(node, ID_BOTTOMLEVEL);
-		ptsDerivative.saveCapillaryLimit2XML(node, ID_DERIVATIVE);
-		ptsGulps.saveToXML(node);
-	}
-	 
-	public boolean xmlSaveCapillary_Measures(String directory) 
-	{
-		if (directory == null || getRoi() == null)
-			return false;
-		String tempname = directory + File.separator + getKymographName()+ ".xml";
-
-		final Document capdoc = XMLUtil.createDocument(true);
-		saveToXML(XMLUtil.getRootElement(capdoc, true));
-		XMLUtil.saveDocument(capdoc, tempname);
-		
-		return true;
 	}
 	
 	// -------------------------------------------

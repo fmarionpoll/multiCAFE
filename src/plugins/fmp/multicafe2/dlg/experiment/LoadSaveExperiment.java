@@ -160,8 +160,11 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 	{
 		if (exp != null) 
 		{
-			if (exp.seqCamData != null) 
+			if (exp.seqCamData != null) {
 				exp.xmlSaveMCExperiment();
+				if (exp.capillaries.capillariesList.size() > 0 && exp.capillaries.isSavedUnderOldFormat())
+					exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
+			}
 			exp.closeSequences();
 		}
 		parent0.paneKymos.tabDisplay.kymographsCombo.removeAllItems();
@@ -188,13 +191,6 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 	boolean openSelecteExperiment(Experiment exp) 
 	{
 		ProgressFrame progressFrame = new ProgressFrame("Load Data");
-
-//        // ----------------------- TODO
-//		long start, end;
-//		System.out.println("---------------------------openSelecteExperiment():" );
-//        start = System.nanoTime();
-//        // -----------------------
-		
 		exp.xmlLoadMCExperiment();
 
 		boolean flag = true;
@@ -233,15 +229,9 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 		parent0.paneExperiment.tabInfos.transferPreviousExperimentInfosToDialog(exp, exp);
 		progressFrame.close();
 		
-//		// ----------------------- TODO
-//		end = System.nanoTime();
-//		System.out.println("openSelecteExperiment(): duration=" + (end - start) / 1000000000 + " seconds");
-//		start = end;
-//        // -----------------------
 		return flag;
 	}
 	
-
 	// ------------------------
 	
 	private void defineActionListeners() 

@@ -39,7 +39,7 @@ public class DetectGulps extends BuildSeries
 		exp.xmlLoadMCExperiment();
 		boolean flag = exp.xmlLoadMCCapillaries_Only();
 		flag &= exp.loadKymographs();
-		flag &= exp.capillaries.xmlLoadCapillaries_Measures(exp.getKymosBinFullDirectory());
+		flag &= exp.capillaries.loadCapillaries_Measures(exp.getKymosBinFullDirectory());
 		return flag;
 	}
 	

@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.w3c.dom.Node;
 
-import icy.file.xml.XMLPersistent;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.type.geom.Polyline2D;
@@ -19,22 +18,20 @@ import plugins.fmp.multicafe2.tools.toExcel.EnumXLSExportType;
 import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
-public class CapillaryGulps implements XMLPersistent  
+public class CapillaryGulps
 {	
 	private final String ID_GULPS 		= "gulpsMC";
 	public ArrayList<Polyline2D> gulps 	= new ArrayList<Polyline2D> ();
 	
 	// -------------------------------
 	
-
 	public void copy(CapillaryGulps capG) 
 	{
 		gulps = new ArrayList <Polyline2D> (capG.gulps.size());
 		gulps.addAll(capG.gulps);
 	}
 	
-	@Override
-	public boolean loadFromXML(Node node) 
+	public boolean loadGulpsFromXML(Node node) 
 	{
 		boolean flag = false;
 		ArrayList <ROI2D>rois = new ArrayList <ROI2D> ();
@@ -51,27 +48,6 @@ public class CapillaryGulps implements XMLPersistent
 		}
 		
 		buildGulpsFromROIs(rois);
-        return flag;
-	}
-
-	@Override
-	public boolean saveToXML(Node node) 
-	{
-		boolean flag = false;
-//		ArrayList<ROI2DPolyLine> rois = getGulpsAsROIs();
-//		
-//		final Node nodeROIs = XMLUtil.setElement(node, ID_GULPS);
-//        if (nodeROIs != null)
-//        {
-//        	flag = true;
-//        	if (rois != null && rois.size() > 0) 
-//        	{
-//        		List<ROI> roislocal = new ArrayList<ROI> (rois.size());
-//        		for (ROI2D roi: rois)
-//        			roislocal.add((ROI) roi);
-//        		ROI.saveROIsToXML(nodeROIs, roislocal);
-//        	}
-//	    }
         return flag;
 	}
 	

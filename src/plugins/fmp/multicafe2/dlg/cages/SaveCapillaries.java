@@ -1,6 +1,5 @@
 package plugins.fmp.multicafe2.dlg.cages;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,30 +30,6 @@ public class SaveCapillaries {
 			}
 		}
 		return false;
-	}
-	
-	public boolean xmlSaveCapillaries_Measures(String directory, List <Capillary> capillariesArrayList) 
-	{
-		if (directory == null)
-			return false;
-		
-		for (Capillary cap: capillariesArrayList) 
-			xmlSaveCapillary_Measures(directory, cap);
-
-		return true;
-	}
-	
-	public boolean xmlSaveCapillary_Measures(String directory, Capillary cap) 
-	{
-		if (directory == null || cap.getRoi() == null)
-			return false;
-		String tempname = directory + File.separator + cap.getKymographName()+ ".xml";
-
-		final Document capdoc = XMLUtil.createDocument(true);
-		cap.saveToXML(XMLUtil.getRootElement(capdoc, true));
-		XMLUtil.saveDocument(capdoc, tempname);
-		
-		return true;
 	}
 	
 	private boolean xmlSaveListOfCapillaries(Document doc, List <Capillary> capillariesArrayList) 

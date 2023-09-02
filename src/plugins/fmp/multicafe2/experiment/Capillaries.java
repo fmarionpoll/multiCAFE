@@ -35,6 +35,7 @@ public class Capillaries
 	public CapillariesDescription 	capillariesDescription	= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public ArrayList <Capillary> 	capillariesList		= new ArrayList <Capillary>();
+	private boolean					isSavedUnderOldFormat = false;
 	private	KymoIntervals 			capillariesListTimeIntervals = null;
 		
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
@@ -44,7 +45,46 @@ public class Capillaries
 	private final static String ID_MCCAPILLARIES_XML 	= "MCcapillaries.xml";
 
 	// ---------------------------------
+	
+	public boolean loadCapillaries_Measures(String directory) 
+	{
+		boolean flag = false;
+		try {
+			setSavedUnderOldFormat(false);
+			flag = csvLoadCapillaries_Measures(directory);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (!flag) {
+			flag = xmlLoadCapillaries_Measures(directory);
+			if (flag)
+				setSavedUnderOldFormat(true);
+		}
+		return flag;
+	}
+	
+	public boolean saveCapillaries_Measures(String directory) 
+	{
+		if (directory == null)
+			return false;
 		
+		csvSaveCapillariesMeasures_Data(directory);
+		setSavedUnderOldFormat(false);
+		return true;
+	}
+	
+	// ---------------------------------
+	
+	public boolean isSavedUnderOldFormat() {
+		return isSavedUnderOldFormat;
+	}
+
+	public void setSavedUnderOldFormat(boolean isSavedUnderOldFormat) {
+		this.isSavedUnderOldFormat = isSavedUnderOldFormat;
+	}
+
 	public String getXMLNameToAppend() 
 	{
 		return ID_MCCAPILLARIES_XML;
@@ -64,18 +104,7 @@ public class Capillaries
 		return false;
 	}
 	
-	public boolean saveCapillaries_Measures(String directory) 
-	{
-		if (directory == null)
-			return false;
-		
-		csvSaveCapillariesMeasures_Data(directory);
-		
-//		for (Capillary cap: capillariesList) 
-//			cap.xmlSaveCapillary_Measures(directory);
-
-		return true;
-	}
+	// ---------------------------------
 	
 	private boolean xmlSaveListOfCapillaries(Document doc) 
 	{
@@ -95,8 +124,6 @@ public class Capillaries
 		}
 		return true;
 	}
-	
-	// ---------------------------------
 	
 	public boolean xmlLoadCapillaries_Descriptors(String csFileName) 
 	{	
@@ -136,22 +163,7 @@ public class Capillaries
 		return false;
 	}
 	
-	public boolean xmlLoadCapillaries_Measures(String directory) 
-	{
-		boolean flag = false;
-		try {
-			flag = csvLoadCapillariesData(directory);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		if (!flag) 
-			flag = xmlLoadCapillariesData(directory);
-		return flag;
-	}
-	
-	private boolean xmlLoadCapillariesData(String directory) 
+	private boolean xmlLoadCapillaries_Measures(String directory) 
 	{
 		boolean flag = false;
 		int ncapillaries = capillariesList.size();
@@ -166,8 +178,6 @@ public class Capillaries
 		}
 		return flag;
 	}
-	
-	// ---------------------------------
 	
 	private void xmlLoadCapillaries_v0(Document doc, String csFileName) 
 	{
@@ -570,7 +580,7 @@ public class Capillaries
 	
 	// --------------------------------
 	
-	boolean csvLoadCapillariesData(String directory) throws Exception 
+	private boolean csvLoadCapillaries_Measures(String directory) throws Exception 
 	{
 		String pathToCsv = directory + File.separator +"CapillariesMeasures.csv";
 		File csvFile = new File(pathToCsv);
@@ -611,7 +621,7 @@ public class Capillaries
 		return true;
 	}
 	
-	String csvLoadCapillariesDescription (BufferedReader csvReader) 
+	private String csvLoadCapillariesDescription (BufferedReader csvReader) 
 	{
 		String row;
 		try {
@@ -632,7 +642,7 @@ public class Capillaries
 		return null;
 	}
 	
-	String csvLoadDescription (BufferedReader csvReader) 
+	private String csvLoadDescription (BufferedReader csvReader) 
 	{
 		String row;
 		try {
@@ -660,7 +670,7 @@ public class Capillaries
 		return null;
 	}
 	
-	String csvLoadCapillariesMeasures(BufferedReader csvReader, EnumCapillaryMeasureType measureType) 
+	private String csvLoadCapillariesMeasures(BufferedReader csvReader, EnumCapillaryMeasureType measureType) 
 	{
 		String row;
 		try {
@@ -683,7 +693,7 @@ public class Capillaries
 	
 	// ---------------------------------
 	
-	boolean csvSaveCapillariesMeasures_Data(String directory) 
+	private boolean csvSaveCapillariesMeasures_Data(String directory) 
 	{
 		try {
 			FileWriter csvWriter = new FileWriter(directory + File.separator +"CapillariesMeasures.csv");
@@ -704,7 +714,7 @@ public class Capillaries
 		return true;
 	}
 	
-	boolean csvSaveDescriptionSection(FileWriter csvWriter) 
+	private boolean csvSaveDescriptionSection(FileWriter csvWriter) 
 	{
 		try {
 			csvWriter.append(capillariesDescription.csvExportSectionHeader());
@@ -725,7 +735,7 @@ public class Capillaries
 		return true;
 	}
 	
-	boolean csvSaveMeasuresSection(FileWriter csvWriter, EnumCapillaryMeasureType measureType) 
+	private boolean csvSaveMeasuresSection(FileWriter csvWriter, EnumCapillaryMeasureType measureType) 
 	{
 		try {
 			if (capillariesList.size() <= 1)

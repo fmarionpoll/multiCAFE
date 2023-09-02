@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import icy.file.xml.XMLPersistent;
+
 import icy.roi.ROI;
 import icy.type.geom.Polyline2D;
 import icy.util.StringUtil;
@@ -15,7 +15,7 @@ import plugins.kernel.roi.roi2d.ROI2DPolyLine;
 
 
 
-public class CapillaryLevel  implements XMLPersistent  
+public class CapillaryLevel 
 {
 	public Level2D 	polylineLevel 	= new Level2D();
 	public Level2D 	polyline_old 	= new Level2D();
@@ -165,21 +165,7 @@ public class CapillaryLevel  implements XMLPersistent
 		}
 		return false;
 	}
-	
-	@Override
-	public boolean loadFromXML(Node node) 
-	{
-		loadCapillaryLimitFromXML(node, capName, header);
-		return false;
-	}
 
-	@Override
-	public boolean saveToXML(Node node) 
-	{
-		saveCapillaryLimit2XML(node, capName);
-		return false;
-	}
-	
 	List<Integer> getIntegerArrayFromPolyline2D() 
 	{
 		if (polylineLevel == null || polylineLevel.npoints == 0)
@@ -321,8 +307,9 @@ public class CapillaryLevel  implements XMLPersistent
 	public boolean cvsExportDataToRow(StringBuffer sbf) 
 	{
 		int npoints = 0;
-		if (polylineLevel != null || polylineLevel.npoints == 0) 
-			npoints = polylineLevel.npoints;
+		if (polylineLevel != null && polylineLevel.npoints > 0)
+			npoints = polylineLevel.npoints; 
+			
 		sbf.append(Integer.toString(npoints)+ ",");
 		if (npoints > 0) {
 			for (int i = 0; i < polylineLevel.npoints; i++)

@@ -269,7 +269,7 @@ public class Experiment
 		if (loadCapillaries) 
 		{
 			xmlLoadMCCapillaries_Only();
-			if (!capillaries.xmlLoadCapillaries_Measures(getKymosBinFullDirectory())) 
+			if (!capillaries.loadCapillaries_Measures(getKymosBinFullDirectory())) 
 				return false;
 		}
 
@@ -833,7 +833,7 @@ public class Experiment
 		String xmlCapillaryFileName = findFile_3Locations(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
 		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
 		String kymosImagesDirectory = getKymosBinFullDirectory();
-		boolean flag2 = capillaries.xmlLoadCapillaries_Measures(kymosImagesDirectory);
+		boolean flag2 = capillaries.loadCapillaries_Measures(kymosImagesDirectory);
 		if (flag1 & flag2) 
 			seqKymos.loadListOfPotentialKymographsFromCapillaries(kymosImagesDirectory, capillaries);
 		return flag1 & flag2;
