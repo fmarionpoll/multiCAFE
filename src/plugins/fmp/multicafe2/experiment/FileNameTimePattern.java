@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 
 
-public class TimePattern {
+public class FileNameTimePattern {
 
 	public DateFormat 	dateFormat 				= null;
     public String 		patternString 			= null;
@@ -18,14 +18,14 @@ public class TimePattern {
     long timeFirstImageInMs = 0;
     
     
-    TimePattern(String dateFormatString, String patternString)  {
+    FileNameTimePattern(String dateFormatString, String patternString)  {
     	
     	this.dateFormat = new SimpleDateFormat(dateFormatString);
     	this.patternString = patternString;
     	patternCompiled = Pattern.compile(patternString);
     }
     
-    public TimePattern() {
+    public FileNameTimePattern() {
     	
 	}
 

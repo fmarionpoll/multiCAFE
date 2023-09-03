@@ -10,7 +10,7 @@ public class AdjustMeasuresToDimensions  extends BuildSeries
 	void analyzeExperiment(Experiment exp) 
 	{
 		exp.xmlLoadMCExperiment();
-		exp.xmlLoadMCCapillaries();
+		exp.loadMCCapillaries();
 		if (exp.loadKymographs()) 
 		{
 			exp.adjustCapillaryMeasuresDimensions();

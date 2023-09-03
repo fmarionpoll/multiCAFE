@@ -6,12 +6,11 @@ import java.awt.geom.Rectangle2D;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
-public class XYTaValue implements XMLPersistent 
+public class XYTaValue
 {
 	public Rectangle2D rectBounds = new Rectangle2D.Double(Double.NaN,Double.NaN,Double.NaN,Double.NaN);
 	public ROI2DArea flyRoi 	= null;
@@ -73,8 +72,9 @@ public class XYTaValue implements XMLPersistent
 				rectBounds.getY() + rectBounds.getHeight()/2);
 	}
 	
-	@Override
-	public boolean loadFromXML(Node node) 
+	// --------------------------------------------
+	
+	public boolean loadXYTvaluesFromXML(Node node) 
 	{
 		if (node == null)
 			return false;	
@@ -114,8 +114,7 @@ public class XYTaValue implements XMLPersistent
 		return false;
 	}
 
-	@Override
-	public boolean saveToXML(Node node) 
+	public boolean saveXYTvaluesToXML(Node node) 
 	{
 		if (node == null)
 			return false;

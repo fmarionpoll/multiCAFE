@@ -76,7 +76,7 @@ public class Cage
 	public boolean xmlSaveFlyPositions(Element xmlVal) 
 	{
 		Element xmlVal2 = XMLUtil.addElement(xmlVal, ID_FLYPOSITIONS);
-		flyPositions.saveToXML(xmlVal2);
+		flyPositions.saveXYTseriesToXML(xmlVal2);
 		return true;
 	}
 	
@@ -119,7 +119,7 @@ public class Cage
 		Element xmlVal2 = XMLUtil.getElement(xmlVal, ID_FLYPOSITIONS);
 		if (xmlVal2 != null) 
 		{
-			flyPositions.loadFromXML(xmlVal2);
+			flyPositions.loadXYTseriesFromXML(xmlVal2);
 			return true;
 		}
 		return false;

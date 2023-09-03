@@ -56,11 +56,11 @@ public class SequenceCamData
 	long 							timeFirstImageInMs		= 0;
 	int								indexTimePattern 		= -1;
 	
-    TimePattern[] timePatternArray = new TimePattern[] {
-    		new TimePattern(),
-    		new TimePattern("yyyy-MM-dd_HH-mm-ss", 	"\\d{4}-\\d{2}-\\d{2}_\\d{2}\\-\\d{2}\\-\\d{2}"),
-    		new TimePattern("yy-MM-dd_HH-mm-ss", 	"\\d{2}-\\d{2}-\\d{2}_\\d{2}\\-\\d{2}\\-\\d{2}"),
-    		new TimePattern("yy.MM.dd_HH.mm.ss", 	"\\d{2}.\\d{2}.\\d{2}_\\d{2}\\.\\d{2}\\.\\d{2}")
+    FileNameTimePattern[] timePatternArray = new FileNameTimePattern[] {
+    		new FileNameTimePattern(),
+    		new FileNameTimePattern("yyyy-MM-dd_HH-mm-ss", 	"\\d{4}-\\d{2}-\\d{2}_\\d{2}\\-\\d{2}\\-\\d{2}"),
+    		new FileNameTimePattern("yy-MM-dd_HH-mm-ss", 	"\\d{2}-\\d{2}-\\d{2}_\\d{2}\\-\\d{2}\\-\\d{2}"),
+    		new FileNameTimePattern("yy.MM.dd_HH.mm.ss", 	"\\d{2}.\\d{2}.\\d{2}_\\d{2}\\.\\d{2}\\.\\d{2}")
 		};
     
 	
@@ -197,7 +197,7 @@ public class SequenceCamData
 			{
 				indexTimePattern = findProperFilterIfAny(fileName);
 			}
-			TimePattern tp = timePatternArray[indexTimePattern];
+			FileNameTimePattern tp = timePatternArray[indexTimePattern];
 			timeInMs = tp.getTimeFromString(fileName, t);   
 		}
 

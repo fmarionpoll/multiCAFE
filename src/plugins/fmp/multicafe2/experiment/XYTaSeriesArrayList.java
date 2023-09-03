@@ -10,7 +10,6 @@ import java.util.List;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import icy.file.xml.XMLPersistent;
 import icy.util.XMLUtil;
 import plugins.fmp.multicafe2.tools.Comparators;
 import plugins.fmp.multicafe2.tools.ROI2DMeasures;
@@ -20,7 +19,7 @@ import plugins.kernel.roi.roi2d.ROI2DArea;
 
 
 
-public class XYTaSeriesArrayList implements XMLPersistent 
+public class XYTaSeriesArrayList
 {	
 	public Double 			moveThreshold 		= 50.;
 	public int				sleepThreshold		= 5;
@@ -117,8 +116,9 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		binsize = xySer.binsize;
 	}
 
-	@Override
-	public boolean loadFromXML(Node node) 
+	// -----------------------------------------------
+	
+	public boolean loadXYTseriesFromXML(Node node) 
 	{
 		if (node == null)
 			return false;
@@ -143,7 +143,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 			String elementi = "i"+i;
 			Element node_position_i = XMLUtil.getElement(node_position_list, elementi);
 			XYTaValue pos = new XYTaValue();
-			pos.loadFromXML(node_position_i);
+			pos.loadXYTvaluesFromXML(node_position_i);
 			if (pos.indexT < nb_items) 
 				xytArrayList.set(pos.indexT, pos);
 			else 
@@ -158,8 +158,7 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		return true;
 	}
 
-	@Override
-	public boolean saveToXML(Node node) 
+	public boolean saveXYTseriesToXML(Node node) 
 	{
 		if (node == null)
 			return false;
@@ -177,11 +176,13 @@ public class XYTaSeriesArrayList implements XMLPersistent
 		{
 			String elementi = "i"+i;
 			Element node_position_i = XMLUtil.addElement(node_position_list, elementi);
-			pos.saveToXML(node_position_i);
+			pos.saveXYTvaluesToXML(node_position_i);
 			i++;
 		}
 		return true;
 	}
+	
+	// -----------------------------------------------
 	
 	public int computeLastIntervalAlive() 
 	{

@@ -35,7 +35,6 @@ public class Capillaries
 	public CapillariesDescription 	capillariesDescription	= new CapillariesDescription();
 	public CapillariesDescription 	desc_old			= new CapillariesDescription();
 	public ArrayList <Capillary> 	capillariesList		= new ArrayList <Capillary>();
-	private boolean					isSavedUnderOldFormat = false;
 	private	KymoIntervals 			capillariesListTimeIntervals = null;
 		
 	private final static String ID_CAPILLARYTRACK 		= "capillaryTrack";
@@ -50,7 +49,6 @@ public class Capillaries
 	{
 		boolean flag = false;
 		try {
-			setSavedUnderOldFormat(false);
 			flag = csvLoadCapillaries_Measures(directory);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -59,8 +57,6 @@ public class Capillaries
 
 		if (!flag) {
 			flag = xmlLoadCapillaries_Measures(directory);
-			if (flag)
-				setSavedUnderOldFormat(true);
 		}
 		return flag;
 	}
@@ -71,20 +67,11 @@ public class Capillaries
 			return false;
 		
 		csvSaveCapillariesMeasures_Data(directory);
-		setSavedUnderOldFormat(false);
 		return true;
 	}
 	
 	// ---------------------------------
 	
-	public boolean isSavedUnderOldFormat() {
-		return isSavedUnderOldFormat;
-	}
-
-	public void setSavedUnderOldFormat(boolean isSavedUnderOldFormat) {
-		this.isSavedUnderOldFormat = isSavedUnderOldFormat;
-	}
-
 	public String getXMLNameToAppend() 
 	{
 		return ID_MCCAPILLARIES_XML;

@@ -13,7 +13,7 @@ public class ClipCagesMeasuresToSmallest extends BuildSeries
 	void analyzeExperiment(Experiment exp) 
 	{
 		exp.xmlLoadMCExperiment();
-		exp.xmlLoadMCCapillaries();
+		exp.loadMCCapillaries();
 		if (exp.loadKymographs()) 
 		{
 			SequenceKymos seqKymos = exp.seqKymos;

@@ -58,7 +58,7 @@ public class LoadSaveLevels  extends JPanel
 			{ 
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null)
-					loadCapillaries_Measures(exp);
+					dlg_levels_loadCapillaries_Measures(exp);
 			}}); 
 		
 		saveMeasuresButton.addActionListener(new ActionListener () 
@@ -68,13 +68,13 @@ public class LoadSaveLevels  extends JPanel
 				Experiment exp =(Experiment)  parent0.expListCombo.getSelectedItem();
 				if (exp != null)
 				{
-					saveCapillaries_Measures(exp);
+					dlg_levels_saveCapillaries_Measures(exp);
 					firePropertyChange("MEASURES_SAVE", false, true);
 				}
 			}});	
 	}
 
-	public boolean loadCapillaries_Measures(Experiment exp) 
+	public boolean dlg_levels_loadCapillaries_Measures(Experiment exp) 
 	{
 		boolean flag = false;
 		if (exp.seqKymos != null ) 
@@ -88,7 +88,7 @@ public class LoadSaveLevels  extends JPanel
 		return flag;
 	}
 	
-	public boolean saveCapillaries_Measures(Experiment exp) 
+	public boolean dlg_levels_saveCapillaries_Measures(Experiment exp) 
 	{
 		boolean flag = true;
 		if (exp.seqKymos != null ) 

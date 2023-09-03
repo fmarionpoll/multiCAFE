@@ -30,7 +30,7 @@ public class DetectLevels  extends BuildSeries
 	private boolean loadExperimentDataToDetectLevels(Experiment exp) 
 	{
 		exp.xmlLoadMCExperiment();
-		exp.xmlLoadMCCapillaries();
+		exp.loadMCCapillaries();
 		return exp.loadKymographs();
 	}
 	

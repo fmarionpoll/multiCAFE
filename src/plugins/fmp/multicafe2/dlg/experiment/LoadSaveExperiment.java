@@ -162,8 +162,7 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 		{
 			if (exp.seqCamData != null) {
 				exp.xmlSaveMCExperiment();
-				if (exp.capillaries.capillariesList.size() > 0 && exp.capillaries.isSavedUnderOldFormat())
-					exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
+				exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
 			}
 			exp.closeSequences();
 		}
@@ -207,7 +206,7 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 			parent0.paneKymos.tabFile.loadDefaultKymos(exp);
 			
 			if (exp.seqKymos != null) {	
-				parent0.paneLevels.tabFileLevels.loadCapillaries_Measures(exp);
+				parent0.paneLevels.tabFileLevels.dlg_levels_loadCapillaries_Measures(exp);
 				if (parent0.paneExperiment.tabOptions.graphsCheckBox.isSelected())
 					parent0.paneLevels.tabGraphs.displayGraphsPanels(exp);
 			}

@@ -67,20 +67,6 @@ public class Cages
 		}
 	}
 	
-	boolean isPresent(Cage cagenew) 
-	{
-		boolean flag = false;
-		for (Cage cage: cagesList) 
-		{
-			if (cage.cageRoi2D.getName().contentEquals(cagenew.cageRoi2D.getName())) 
-			{
-				flag = true;
-				break;
-			}
-		}
-		return flag;
-	}
-	
 	// -------------
 	
 	public boolean xmlWriteCagesToFile(String name, String directory) 
@@ -163,6 +149,7 @@ public class Cages
 		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_DROSOTRACK);
 		if (node == null)
 			return false;
+		
 		cagesList.clear();
 		Element xmlVal = XMLUtil.getElement(node, ID_CAGES);
 		if (xmlVal != null) 
@@ -203,6 +190,8 @@ public class Cages
 			cagesList.add(cagi);
 		}
 	}
+	
+	// --------------
 	
 	private void transferDataToCages_v0(List<ROI2D> cageLimitROIList, List<XYTaSeriesArrayList> flyPositionsList) 
 	{
@@ -247,42 +236,29 @@ public class Cages
 		flyPositionsList.clear();
 		int nb_items =  XMLUtil.getAttributeIntValue(xmlVal, ID_NBITEMS, 0);
 		int ielement = 0;
-		for (int i=0; i< nb_items; i++) 
+		for (int i =0; i < nb_items; i++) 
 		{
 			Element subnode = XMLUtil.getElement(xmlVal, "cage"+ielement);
 			XYTaSeriesArrayList pos = new XYTaSeriesArrayList();
-			pos.loadFromXML(subnode);
+			pos.loadXYTseriesFromXML(subnode);
 			flyPositionsList.add(pos);
 			ielement++;
 		}
 		return true;
 	}
 	
-	public void cagesToROIs(SequenceCamData seqCamData) 
+	private boolean isPresent(Cage cagenew) 
 	{
-		List <ROI2D> cageLimitROIList = getRoisWithCageName(seqCamData);
-		seqCamData.seq.removeROIs(cageLimitROIList, false);
-		for (Cage cage: cagesList) 
-			cageLimitROIList.add(cage.cageRoi2D);
-		seqCamData.seq.addROIs(cageLimitROIList, true);
-	}
-	
-	public void cagesFromROIs(SequenceCamData seqCamData) 
-	{
-		List <ROI2D> roiList = getRoisWithCageName(seqCamData);
-		Collections.sort(roiList, new Comparators.ROI2D_Name_Comparator());
-		addMissingCages(roiList);
-		removeOrphanCages(roiList);
-		Collections.sort(cagesList, new Comparators.Cage_Name_Comparator());
-	}
-	
-	public void setFirstAndLastCageToZeroFly() 
-	{
+		boolean flag = false;
 		for (Cage cage: cagesList) 
 		{
-			if (cage.cageRoi2D.getName().contains("000") || cage.cageRoi2D.getName().contains("009"))
-				cage.cageNFlies = 0;
+			if (cage.cageRoi2D.getName().contentEquals(cagenew.cageRoi2D.getName())) 
+			{
+				flag = true;
+				break;
+			}
 		}
+		return flag;
 	}
 	
 	private void addMissingCages(List<ROI2D> roiList) 
@@ -351,6 +327,35 @@ public class Cages
 			}
 		}
 		return cageList;
+	}
+	
+	// --------------
+	
+	public void cagesToROIs(SequenceCamData seqCamData) 
+	{
+		List <ROI2D> cageLimitROIList = getRoisWithCageName(seqCamData);
+		seqCamData.seq.removeROIs(cageLimitROIList, false);
+		for (Cage cage: cagesList) 
+			cageLimitROIList.add(cage.cageRoi2D);
+		seqCamData.seq.addROIs(cageLimitROIList, true);
+	}
+	
+	public void cagesFromROIs(SequenceCamData seqCamData) 
+	{
+		List <ROI2D> roiList = getRoisWithCageName(seqCamData);
+		Collections.sort(roiList, new Comparators.ROI2D_Name_Comparator());
+		addMissingCages(roiList);
+		removeOrphanCages(roiList);
+		Collections.sort(cagesList, new Comparators.Cage_Name_Comparator());
+	}
+	
+	public void setFirstAndLastCageToZeroFly() 
+	{
+		for (Cage cage: cagesList) 
+		{
+			if (cage.cageRoi2D.getName().contains("000") || cage.cageRoi2D.getName().contains("009"))
+				cage.cageNFlies = 0;
+		}
 	}
 	
 	public void removeAllRoiDetFromSequence(SequenceCamData seqCamData) 

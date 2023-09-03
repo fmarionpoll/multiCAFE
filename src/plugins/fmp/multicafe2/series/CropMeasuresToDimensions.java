@@ -6,7 +6,7 @@ public class CropMeasuresToDimensions  extends BuildSeries  {
 	void analyzeExperiment(Experiment exp) 
 	{
 		exp.xmlLoadMCExperiment();
-		exp.xmlLoadMCCapillaries();
+		exp.loadMCCapillaries();
 		if (exp.loadKymographs()) 
 		{
 			exp.cropCapillaryMeasuresDimensions();

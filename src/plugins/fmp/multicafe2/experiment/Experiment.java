@@ -410,71 +410,6 @@ public class Experiment
 		return name;
 	}
 	
-	private String findFile_3Locations(String xmlFileName, int first, int second, int third) 
-	{
-		// current directory
-		String xmlFullFileName = findFile_1Location(xmlFileName, first);
-		if (xmlFullFileName == null) 
-			xmlFullFileName = findFile_1Location(xmlFileName, second);
-		if (xmlFullFileName == null) 
-			xmlFullFileName = findFile_1Location(xmlFileName, third);
-		return xmlFullFileName;
-	}
-	
-	private String findFile_1Location(String xmlFileName, int item) 
-	{
-		String xmlFullFileName = File.separator + xmlFileName;
-		switch (item) 
-		{
-		case IMG_DIRECTORY:
-			strImagesDirectory = getRootWithNoResultNorBinString(strExperimentDirectory);
-			xmlFullFileName = strImagesDirectory + File.separator + xmlFileName;
-			break;
-			
-		case BIN_DIRECTORY:
-			// any directory (below)
-			Path dirPath = Paths.get(strExperimentDirectory);
-			List<Path> subFolders = Directories.getAllSubPathsOfDirectory(strExperimentDirectory, 1);
-			if (subFolders == null)
-				return null;
-			List<String> resultsDirList = Directories.getPathsContainingString(subFolders, RESULTS);
-			List<String> binDirList = Directories.getPathsContainingString(subFolders, BIN);
-			resultsDirList.addAll(binDirList);
-			for (String resultsSub : resultsDirList) 
-			{
-				Path dir = dirPath.resolve(resultsSub+ File.separator + xmlFileName);
-				if (Files.notExists(dir))
-					continue;
-				xmlFullFileName = dir.toAbsolutePath().toString();	
-				break;
-			}
-			break;
-			
-		case EXPT_DIRECTORY:
-		default:
-			xmlFullFileName = strExperimentDirectory + xmlFullFileName;
-			break;	
-		}
-		
-		// current directory
-		if(xmlFullFileName != null && fileExists (xmlFullFileName)) 
-		{
-			if (item == IMG_DIRECTORY) {
-				strImagesDirectory = getRootWithNoResultNorBinString(strExperimentDirectory);
-				ExperimentDirectories.moveAndRename(xmlFileName, strImagesDirectory, xmlFileName,strExperimentDirectory);
-				xmlFullFileName = strExperimentDirectory + xmlFullFileName;
-			}
-			return xmlFullFileName;
-		}
-		return null;
-	}
-	
-	private boolean fileExists (String fileName) 
-	{
-		File f = new File(fileName);
-		return (f.exists() && !f.isDirectory()); 
-	}
-
 	// -------------------------------
 	
 	public boolean xmlLoadMCExperiment () 
@@ -486,67 +421,6 @@ public class Experiment
 		}
 		boolean found = xmlLoadExperiment(concatenateExptDirectoryWithSubpathAndName(null, ID_MCEXPERIMENT_XML));
 		return found;
-	}
-	
-	private String concatenateExptDirectoryWithSubpathAndName(String subpath, String name) 
-	{
-		if (subpath != null)
-			return strExperimentDirectory + File.separator + subpath + File.separator + name;
-		else
-			return strExperimentDirectory + File.separator + name;
-	}
-	
-	private boolean xmlLoadExperiment (String csFileName) 
-	{	
-		final Document doc = XMLUtil.loadDocument(csFileName);
-		if (doc == null)
-			return false;
-		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_MCEXPERIMENT);
-		if (node == null)
-			return false;
-
-		String version = XMLUtil.getElementValue(node, ID_VERSION, ID_VERSIONNUM);
-		if (!version .equals(ID_VERSIONNUM))
-			return false;
-		camImageFirst_ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, 0);
-		camImageLast_ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, 0);
-		if (camImageLast_ms <= 0) 
-		{
-			camImageFirst_ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, 0)*60000;
-			camImageLast_ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, 0)*60000;
-		}
-
-		kymoFirst_ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, -1); 
-		kymoLast_ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
-		kymoBin_ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
-		
-		ugly_checkOffsetValues();
-		
-		if (field_boxID != null && field_boxID .contentEquals("..")) 
-		{
-			field_boxID		= XMLUtil.getElementValue(node, ID_BOXID, "..");
-	        field_experiment= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
-	        field_comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
-	        field_comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
-	        field_strain 	= XMLUtil.getElementValue(node, ID_STRAIN, "..");
-	        field_sex 		= XMLUtil.getElementValue(node, ID_SEX, "..");
-		}
-		return true;
-	}
-	
-	private void ugly_checkOffsetValues()
-	{
-		if (camImageFirst_ms < 0)
-			camImageFirst_ms = 0;
-		if (camImageLast_ms < 0)
-			camImageLast_ms = 0;
-		if (kymoFirst_ms < 0)
-			kymoFirst_ms = 0; 
-		if (kymoLast_ms < 0)
-			kymoLast_ms = 0;
-		
-		if (kymoBin_ms < 0)
-			kymoBin_ms = 60000;
 	}
 	
 	public boolean xmlSaveMCExperiment () 
@@ -684,34 +558,6 @@ public class Experiment
 		}
 	}
 	
-	private void addCapillariesValues(EnumXLSColumnHeader fieldEnumCode, List<String> textList)
-	{
-		if (capillaries.capillariesList.size() == 0)
-			xmlLoadMCCapillaries_Only();
-		for (Capillary cap:  capillaries.capillariesList) 
-			addValue(cap.getCapillaryField(fieldEnumCode), textList);
-	}
-	
-	private void addValue(String text, List<String> textList) {
-		if (!isFound(text, textList))
-			textList.add(text);
-	}
-	
-	private boolean isFound (String pattern, List<String> names) 
-	{
-		boolean found = false;
-		if (names.size() > 0) 
-		{
-			for (String name: names) 
-			{
-				found = name.equals(pattern);
-				if (found)
-					break;
-			}
-		}
-		return found;
-	}
-	
 	public boolean replaceExperimentFieldIfEqualOld (EnumXLSColumnHeader fieldEnumCode, String oldValue, String newValue)
 	{
 		boolean flag = getExperimentField(fieldEnumCode).equals (oldValue) ;
@@ -780,22 +626,6 @@ public class Experiment
 		xmlSaveMCExperiment();
 	}
 	
-	private boolean replaceCapillariesValuesIfEqualOld(EnumXLSColumnHeader fieldEnumCode, String oldValue, String newValue)
-	{
-		if (capillaries.capillariesList.size() == 0)
-			xmlLoadMCCapillaries_Only();
-		boolean flag = false;
-		for (Capillary cap:  capillaries.capillariesList) 
-		{
-			if (cap.getCapillaryField(fieldEnumCode) .equals(oldValue))
-			{
-				cap.setCapillaryField(fieldEnumCode, newValue);
-				flag = true;
-			}
-		}
-		return flag;
-	}
-	
 	// --------------------------------------------
 	
 	public boolean adjustCapillaryMeasuresDimensions() 
@@ -828,7 +658,7 @@ public class Experiment
 		return true;
 	}
 	
-	public boolean xmlLoadMCCapillaries() 
+	public boolean loadMCCapillaries() 
 	{
 		String xmlCapillaryFileName = findFile_3Locations(capillaries.getXMLNameToAppend(), EXPT_DIRECTORY, BIN_DIRECTORY, IMG_DIRECTORY);
 		boolean flag1 = capillaries.xmlLoadCapillaries_Descriptors(xmlCapillaryFileName);
@@ -906,6 +736,263 @@ public class Experiment
 		}
 		return flag;
 	}
+		
+	public boolean xmlSaveMCCapillaries_Only() 
+	{
+		String xmlCapillaryFileName = strExperimentDirectory + File.separator + capillaries.getXMLNameToAppend();
+		transferExpDescriptorsToCapillariesDescriptors();
+		return capillaries.xmlSaveCapillaries_Descriptors(xmlCapillaryFileName);
+	}
+	
+	public boolean xmlSaveMCCapillaries_Measures() 
+	{
+		return capillaries.saveCapillaries_Measures(getKymosBinFullDirectory());
+	}
+	
+	public boolean loadReferenceImage() 
+	{
+		BufferedImage image = null;
+		File inputfile = new File(getReferenceImageFullName());
+		boolean exists = inputfile.exists();
+		if (!exists) 
+			return false;	
+		image = ImageUtil.load(inputfile, true);
+		if (image == null) {
+			System.out.println("image not loaded / not found");
+			return false;
+		}			
+		seqCamData.refImage =  IcyBufferedImage.createFrom(image);
+		seqReference = new Sequence(seqCamData.refImage);
+		seqReference.setName("referenceImage");
+		return true;
+	}
+	
+	public boolean saveReferenceImage(IcyBufferedImage referenceImage) 
+	{
+		File outputfile = new File(getReferenceImageFullName());
+		RenderedImage image = ImageUtil.toRGBImage(referenceImage);
+		return ImageUtil.save(image, "jpg", outputfile);
+	}
+	
+	public void cleanPreviousDetectedFliesROIs() 
+	{
+		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
+		for (ROI2D roi: list) 
+		{
+			if (roi.getName().contains("det")) 
+				seqCamData.seq.removeROI(roi);
+		}
+	}
+
+	public String getMCDrosoTrackFullName() 
+	{
+		return strExperimentDirectory+File.separator+ID_MCDROSOTRACK_XML;
+	}
+	
+	public boolean xmlReadDrosoTrack(String filename) 
+	{
+		if (filename == null) 
+		{
+			filename = getXMLDrosoTrackLocation();
+			if (filename == null)
+				return false;
+		}
+		return cages.xmlReadCagesFromFileNoQuestion(filename, this);
+	}
+
+	public void updateROIsAt(int t) 
+	{
+		seqCamData.seq.beginUpdate();
+		List<ROI2D> rois = seqCamData.seq.getROI2Ds();
+		for (ROI2D roi: rois) 
+		{
+		    if (roi.getName().contains("det") ) 
+		    	seqCamData.seq.removeROI(roi);
+		}
+		seqCamData.seq.addROIs(cages.getPositionsAsListOfROI2DRectanglesAtT(t), false);
+		seqCamData.seq.endUpdate();
+	}
+		
+	public void saveDetRoisToPositions() 
+	{
+		List<ROI2D> detectedROIsList= seqCamData.seq.getROI2Ds();
+		for (Cage cage : cages.cagesList) 
+		{
+			cage.transferRoisToPositions(detectedROIsList);
+		}
+	}
+	
+	// ----------------------------------
+	
+	private String findFile_3Locations(String xmlFileName, int first, int second, int third) 
+	{
+		// current directory
+		String xmlFullFileName = findFile_1Location(xmlFileName, first);
+		if (xmlFullFileName == null) 
+			xmlFullFileName = findFile_1Location(xmlFileName, second);
+		if (xmlFullFileName == null) 
+			xmlFullFileName = findFile_1Location(xmlFileName, third);
+		return xmlFullFileName;
+	}
+	
+	private String findFile_1Location(String xmlFileName, int item) 
+	{
+		String xmlFullFileName = File.separator + xmlFileName;
+		switch (item) 
+		{
+		case IMG_DIRECTORY:
+			strImagesDirectory = getRootWithNoResultNorBinString(strExperimentDirectory);
+			xmlFullFileName = strImagesDirectory + File.separator + xmlFileName;
+			break;
+			
+		case BIN_DIRECTORY:
+			// any directory (below)
+			Path dirPath = Paths.get(strExperimentDirectory);
+			List<Path> subFolders = Directories.getAllSubPathsOfDirectory(strExperimentDirectory, 1);
+			if (subFolders == null)
+				return null;
+			List<String> resultsDirList = Directories.getPathsContainingString(subFolders, RESULTS);
+			List<String> binDirList = Directories.getPathsContainingString(subFolders, BIN);
+			resultsDirList.addAll(binDirList);
+			for (String resultsSub : resultsDirList) 
+			{
+				Path dir = dirPath.resolve(resultsSub+ File.separator + xmlFileName);
+				if (Files.notExists(dir))
+					continue;
+				xmlFullFileName = dir.toAbsolutePath().toString();	
+				break;
+			}
+			break;
+			
+		case EXPT_DIRECTORY:
+		default:
+			xmlFullFileName = strExperimentDirectory + xmlFullFileName;
+			break;	
+		}
+		
+		// current directory
+		if(xmlFullFileName != null && fileExists (xmlFullFileName)) 
+		{
+			if (item == IMG_DIRECTORY) {
+				strImagesDirectory = getRootWithNoResultNorBinString(strExperimentDirectory);
+				ExperimentDirectories.moveAndRename(xmlFileName, strImagesDirectory, xmlFileName,strExperimentDirectory);
+				xmlFullFileName = strExperimentDirectory + xmlFullFileName;
+			}
+			return xmlFullFileName;
+		}
+		return null;
+	}
+	
+	private boolean fileExists (String fileName) 
+	{
+		File f = new File(fileName);
+		return (f.exists() && !f.isDirectory()); 
+	}
+	
+	private boolean replaceCapillariesValuesIfEqualOld(EnumXLSColumnHeader fieldEnumCode, String oldValue, String newValue)
+	{
+		if (capillaries.capillariesList.size() == 0)
+			xmlLoadMCCapillaries_Only();
+		boolean flag = false;
+		for (Capillary cap:  capillaries.capillariesList) 
+		{
+			if (cap.getCapillaryField(fieldEnumCode) .equals(oldValue))
+			{
+				cap.setCapillaryField(fieldEnumCode, newValue);
+				flag = true;
+			}
+		}
+		return flag;
+	}
+	
+	private String concatenateExptDirectoryWithSubpathAndName(String subpath, String name) 
+	{
+		if (subpath != null)
+			return strExperimentDirectory + File.separator + subpath + File.separator + name;
+		else
+			return strExperimentDirectory + File.separator + name;
+	}
+	
+	private boolean xmlLoadExperiment (String csFileName) 
+	{	
+		final Document doc = XMLUtil.loadDocument(csFileName);
+		if (doc == null)
+			return false;
+		Node node = XMLUtil.getElement(XMLUtil.getRootElement(doc), ID_MCEXPERIMENT);
+		if (node == null)
+			return false;
+
+		String version = XMLUtil.getElementValue(node, ID_VERSION, ID_VERSIONNUM);
+		if (!version .equals(ID_VERSIONNUM))
+			return false;
+		camImageFirst_ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGEMS, 0);
+		camImageLast_ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGEMS, 0);
+		if (camImageLast_ms <= 0) 
+		{
+			camImageFirst_ms = XMLUtil.getElementLongValue(node, ID_TIMEFIRSTIMAGE, 0)*60000;
+			camImageLast_ms = XMLUtil.getElementLongValue(node, ID_TIMELASTIMAGE, 0)*60000;
+		}
+
+		kymoFirst_ms = XMLUtil.getElementLongValue(node, ID_FIRSTKYMOCOLMS, -1); 
+		kymoLast_ms = XMLUtil.getElementLongValue(node, ID_LASTKYMOCOLMS, -1);
+		kymoBin_ms = XMLUtil.getElementLongValue(node, ID_BINKYMOCOLMS, -1); 	
+		
+		ugly_checkOffsetValues();
+		
+		if (field_boxID != null && field_boxID .contentEquals("..")) 
+		{
+			field_boxID		= XMLUtil.getElementValue(node, ID_BOXID, "..");
+	        field_experiment= XMLUtil.getElementValue(node, ID_EXPERIMENT, "..");
+	        field_comment1 	= XMLUtil.getElementValue(node, ID_COMMENT1, "..");
+	        field_comment2 	= XMLUtil.getElementValue(node, ID_COMMENT2, "..");
+	        field_strain 	= XMLUtil.getElementValue(node, ID_STRAIN, "..");
+	        field_sex 		= XMLUtil.getElementValue(node, ID_SEX, "..");
+		}
+		return true;
+	}
+	
+	private void ugly_checkOffsetValues()
+	{
+		if (camImageFirst_ms < 0)
+			camImageFirst_ms = 0;
+		if (camImageLast_ms < 0)
+			camImageLast_ms = 0;
+		if (kymoFirst_ms < 0)
+			kymoFirst_ms = 0; 
+		if (kymoLast_ms < 0)
+			kymoLast_ms = 0;
+		
+		if (kymoBin_ms < 0)
+			kymoBin_ms = 60000;
+	}
+	
+	private void addCapillariesValues(EnumXLSColumnHeader fieldEnumCode, List<String> textList)
+	{
+		if (capillaries.capillariesList.size() == 0)
+			xmlLoadMCCapillaries_Only();
+		for (Capillary cap:  capillaries.capillariesList) 
+			addValue(cap.getCapillaryField(fieldEnumCode), textList);
+	}
+	
+	private void addValue(String text, List<String> textList) {
+		if (!isFound(text, textList))
+			textList.add(text);
+	}
+	
+	private boolean isFound (String pattern, List<String> names) 
+	{
+		boolean found = false;
+		if (names.size() > 0) 
+		{
+			for (String name: names) 
+			{
+				found = name.equals(pattern);
+				if (found)
+					break;
+			}
+		}
+		return found;
+	}
 	
 	private boolean xmlLoadOldCapillaries() 
 	{
@@ -964,21 +1051,7 @@ public class Experiment
 		}
 		return false;
 	}
-	
-	public boolean xmlSaveMCCapillaries_Only() 
-	{
-		String xmlCapillaryFileName = strExperimentDirectory + File.separator + capillaries.getXMLNameToAppend();
-		transferExpDescriptorsToCapillariesDescriptors();
-		return capillaries.xmlSaveCapillaries_Descriptors(xmlCapillaryFileName);
-	}
-	
-	public boolean xmlSaveMCCapillaries_Measures() 
-	{
-		return capillaries.saveCapillaries_Measures(getKymosBinFullDirectory());
-	}
-	
-	// ----------------------------------
-	
+
 	private void transferExpDescriptorsToCapillariesDescriptors() 
 	{
 		capillaries.capillariesDescription.old_boxID = field_boxID;
@@ -989,50 +1062,9 @@ public class Experiment
 		capillaries.capillariesDescription.old_sex = field_sex;
 	}
 
-	public boolean loadReferenceImage() 
-	{
-		BufferedImage image = null;
-		File inputfile = new File(getReferenceImageFullName());
-		boolean exists = inputfile.exists();
-		if (!exists) 
-			return false;	
-		image = ImageUtil.load(inputfile, true);
-		if (image == null) {
-			System.out.println("image not loaded / not found");
-			return false;
-		}			
-		seqCamData.refImage =  IcyBufferedImage.createFrom(image);
-		seqReference = new Sequence(seqCamData.refImage);
-		seqReference.setName("referenceImage");
-		return true;
-	}
-	
-	public boolean saveReferenceImage(IcyBufferedImage referenceImage) 
-	{
-		File outputfile = new File(getReferenceImageFullName());
-		RenderedImage image = ImageUtil.toRGBImage(referenceImage);
-		return ImageUtil.save(image, "jpg", outputfile);
-	}
-	
 	private String getReferenceImageFullName() 
 	{
 		return strExperimentDirectory+File.separator+"referenceImage.jpg";
-	}
-	
-	public void cleanPreviousDetectedFliesROIs() 
-	{
-		ArrayList<ROI2D> list = seqCamData.seq.getROI2Ds();
-		for (ROI2D roi: list) 
-		{
-			if (roi.getName().contains("det")) 
-				seqCamData.seq.removeROI(roi);
-		}
-	}
-	
-	// --------------------------
-	public String getMCDrosoTrackFullName() 
-	{
-		return strExperimentDirectory+File.separator+ID_MCDROSOTRACK_XML;
 	}
 	
 	private String getXMLDrosoTrackLocation() 
@@ -1043,41 +1075,8 @@ public class Experiment
 		return fileName;
 	}
 	
-	public boolean xmlReadDrosoTrack(String filename) 
-	{
-		if (filename == null) 
-		{
-			filename = getXMLDrosoTrackLocation();
-			if (filename == null)
-				return false;
-		}
-		return cages.xmlReadCagesFromFileNoQuestion(filename, this);
-	}
 	
-	// --------------------------
-		
-	public void updateROIsAt(int t) 
-	{
-		seqCamData.seq.beginUpdate();
-		List<ROI2D> rois = seqCamData.seq.getROI2Ds();
-		for (ROI2D roi: rois) 
-		{
-		    if (roi.getName().contains("det") ) 
-		    	seqCamData.seq.removeROI(roi);
-		}
-		seqCamData.seq.addROIs(cages.getPositionsAsListOfROI2DRectanglesAtT(t), false);
-		seqCamData.seq.endUpdate();
-	}
-		
-	public void saveDetRoisToPositions() 
-	{
-		List<ROI2D> detectedROIsList= seqCamData.seq.getROI2Ds();
-		for (Cage cage : cages.cagesList) 
-		{
-			cage.transferRoisToPositions(detectedROIsList);
-		}
-	}
-	
+
 	
 	
 }
