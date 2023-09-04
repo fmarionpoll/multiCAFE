@@ -2,6 +2,8 @@ package plugins.fmp.multicafe2.experiment;
 
 import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -41,6 +43,8 @@ public class Cages
 	private final String ID_CAGELIMITS 		= "Cage_Limits";
 	private final String ID_FLYDETECTED 	= "Fly_Detected";
 	
+	private final static String ID_MCDROSOTRACK_XML = "MCdrosotrack.xml";
+	
 	
 
 	public void clearAllMeasures(int option_detectCage) 
@@ -69,18 +73,10 @@ public class Cages
 	
 	// -------------
 	
-//	public boolean xmlWriteCagesToFile(String name, String directory) 
-//	{
-//		String csFile = Dialog.saveFileAs(name, directory, "xml");
-//		if (csFile == null)
-//			return false;
-//		csFile.toLowerCase();
-//		if (!csFile.contains(".xml")) 
-//			csFile += ".xml";
-//		return xmlWriteCagesToFileNoQuestion(csFile);
-//	}
-	public boolean saveCagesMeasures(String tempName) 
+	public boolean saveCagesMeasures(String directory) 
 	{
+		csvSaveCagesMeasures(directory);
+		String tempName = directory + File.separator + ID_MCDROSOTRACK_XML;
 		xmlWriteCagesToFileNoQuestion(tempName);
 		return true;
 	}
@@ -109,7 +105,46 @@ public class Cages
 	
 		return XMLUtil.saveDocument(doc, tempname);
 	}
+	
+	// -----------------------------------------------------
+	
+	private boolean csvSaveCagesMeasures(String directory) 
+	{
+		try {
+			FileWriter csvWriter = new FileWriter(directory + File.separator + "CagesMeasures.csv");
+			
+			csvSaveDescriptionSection(csvWriter);
+//			csvSaveMeasuresSection(csvWriter, EnumCageMeasures.POSITION);
+			
+			csvWriter.flush();
+			csvWriter.close();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
+		return true;
+	}
+	
+	private boolean csvSaveDescriptionSection(FileWriter csvWriter) 
+	{
+		try {
+			csvWriter.append("#,DESCRIPTION, Cages data\n");
+			csvWriter.append("n cages=," + Integer.toString(cagesList.size()) + "\n");
+			
+			if (cagesList.size() > 0) 
+				for (Cage cage:cagesList) 
+					csvWriter.append(cage.csvExportCageDescription());
+			
+			csvWriter.append("#,#\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	// ----------------------------------------------------
+	
 	public boolean xmlReadCagesFromFile(Experiment exp) 
 	{
 		String [] filedummy = null;

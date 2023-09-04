@@ -76,7 +76,7 @@ public class LoadSaveCapillaries extends JPanel
 	
 	public boolean loadCapillaries_File(Experiment exp) 
 	{	
-		boolean flag = exp.xmlLoadMCCapillaries_Only();
+		boolean flag = exp.loadMCCapillaries_Only();
 		exp.capillaries.transferCapillaryRoiToSequence(exp.seqCamData.seq);
 		return flag;
 	}
@@ -87,9 +87,9 @@ public class LoadSaveCapillaries extends JPanel
 		parent0.paneExperiment.getExperimentInfosFromDialog(exp);
 		exp.capillaries.transferDescriptionToCapillaries();
 	
-		exp.xmlSaveMCExperiment ();
+		exp.saveMCExperiment ();
 		exp.capillaries.updateCapillariesFromSequence(exp.seqCamData.seq);
-		return exp.xmlSaveMCCapillaries_Only();
+		return exp.saveMCCapillaries_Only();
 	}
 
 }

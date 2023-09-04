@@ -119,7 +119,7 @@ public class Infos  extends JPanel
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null) 
 				{
-					exp.xmlLoadMCExperiment ();
+					exp.loadMCExperiment ();
 					transferPreviousExperimentInfosToDialog(exp, exp);
 				}
 			}});
@@ -132,7 +132,7 @@ public class Infos  extends JPanel
 				if (exp != null) 
 				{
 					getExperimentInfosFromDialog(exp);
-					exp.xmlSaveMCExperiment();
+					exp.saveMCExperiment();
 				}
 			}});
 		

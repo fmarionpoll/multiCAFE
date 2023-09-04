@@ -36,8 +36,8 @@ public class DetectGulps extends BuildSeries
 	
 	private boolean loadExperimentDataToDetectGulps(Experiment exp) 
 	{
-		exp.xmlLoadMCExperiment();
-		boolean flag = exp.xmlLoadMCCapillaries_Only();
+		exp.loadMCExperiment();
+		boolean flag = exp.loadMCCapillaries_Only();
 		flag &= exp.loadKymographs();
 		flag &= exp.loadCapillariesMeasures();
 		return flag;

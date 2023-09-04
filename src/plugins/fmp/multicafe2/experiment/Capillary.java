@@ -497,8 +497,9 @@ public class Capillary implements Comparable <Capillary>
 	
 	private void getROIFromCapillaryLevel(CapillaryLevel capLevel, List<ROI2D> listrois) 
 	{
-		if (capLevel.polylineLevel == null)
+		if (capLevel.polylineLevel == null || capLevel.polylineLevel.npoints == 0)
 			return;
+		
 		ROI2D roi = new ROI2DPolyLine(capLevel.polylineLevel);
 		String name = kymographPrefix + "_" + capLevel.capName;
 		roi.setName(name);
@@ -518,14 +519,19 @@ public class Capillary implements Comparable <Capillary>
 		
 		ArrayList<ROI2D> rois = new ArrayList<ROI2D> (ngulps);
 		if (capGulps.gulps.size() > 0)
-			for (Polyline2D gulpLine: capGulps.gulps) 
-				rois.add( getROIfromGulp(gulpLine));
+			for (Polyline2D gulpLine: capGulps.gulps) {
+				ROI2D roi = getROIfromGulp(gulpLine);
+				if (roi != null)
+					rois.add( roi);
+			}
 		
 		listrois.addAll(rois);
 	}
 	
 	private ROI2D getROIfromGulp(Polyline2D gulpLine)
 	{
+		if (gulpLine.npoints == 0)
+			return null;
 		ROI2DPolyLine roi = new ROI2DPolyLine (gulpLine);
 		int startAt = (int) gulpLine.xpoints[0];
 		String name = kymographPrefix + "_gulp_at_" + String.format("%07d", startAt);
@@ -846,7 +852,7 @@ public class Capillary implements Comparable <Capillary>
 		return sbf.toString();
 	}
 	
-	public String csvExportMeasureSectionHeader(EnumCapillaryMeasureType measureType) 
+	public String csvExportMeasureSectionHeader(EnumCapillaryMeasures measureType) 
 	{
 		StringBuffer sbf = new StringBuffer();
 		String explanation1 = "columns=,name,index, npts,..,.(xi;yi)\n";
@@ -871,7 +877,7 @@ public class Capillary implements Comparable <Capillary>
 		return sbf.toString();
 	}
 	
-	public String csvExportCapillaryData(EnumCapillaryMeasureType measureType) 
+	public String csvExportCapillaryData(EnumCapillaryMeasures measureType) 
 	{
 		StringBuffer sbf = new StringBuffer();
 		sbf.append(kymographPrefix+ ","+ kymographIndex +",");
@@ -914,7 +920,7 @@ public class Capillary implements Comparable <Capillary>
 		capSide = data[i]; 
 	}
 		
-	public void csvImportCapillaryData(EnumCapillaryMeasureType measureType, String[] data) 
+	public void csvImportCapillaryData(EnumCapillaryMeasures measureType, String[] data) 
 	{
 		switch(measureType) {
 		case TOPLEVEL:

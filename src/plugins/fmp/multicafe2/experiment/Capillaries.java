@@ -112,17 +112,19 @@ public class Capillaries
 		return true;
 	}
 	
-	public boolean xmlLoadCapillaries_Descriptors(String csFileName) 
+	public boolean loadMCCapillaries_Descriptors(String csFileName) 
 	{	
+		boolean flag = false;
 		if (csFileName == null)
-			return false;
+			return flag;
+		
 		final Document doc = XMLUtil.loadDocument(csFileName);
 		if (doc != null) 
 		{
 			capillariesDescription.xmlLoadCapillaryDescription(doc);
-			return xmlLoadCapillaries_Only_v1(doc);		
+			flag = xmlLoadCapillaries_Only_v1(doc);
 		}
-		return false;
+		return flag;
 	}
 	
 	public boolean xmlLoadOldCapillaries_Only(String csFileName) 
@@ -587,16 +589,16 @@ public class Capillaries
 		    		csvLoadCapillariesDescription (csvReader);
 		    		break;
 		    	case "TOPLEVEL":
-		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.TOPLEVEL);
+		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasures.TOPLEVEL);
 		    		break;
 		    	case "BOTTOMLEVEL":
-		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.BOTTOMLEVEL);
+		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasures.BOTTOMLEVEL);
 		    		break;
 		    	case "TOPDERIVATIVE":
-		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.TOPDERIVATIVE);
+		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasures.TOPDERIVATIVE);
 		    		break;
 		    	case "GULPS": 
-		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasureType.GULPS);
+		    		csvLoadCapillariesMeasures(csvReader, EnumCapillaryMeasures.GULPS);
 		    		break;
 	    		default:
 	    			break;
@@ -657,7 +659,7 @@ public class Capillaries
 		return null;
 	}
 	
-	private String csvLoadCapillariesMeasures(BufferedReader csvReader, EnumCapillaryMeasureType measureType) 
+	private String csvLoadCapillariesMeasures(BufferedReader csvReader, EnumCapillaryMeasures measureType) 
 	{
 		String row;
 		try {
@@ -687,10 +689,10 @@ public class Capillaries
 			
 			csvSaveDescriptionSection(csvWriter);
 			
-			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasureType.TOPLEVEL);
-			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasureType.BOTTOMLEVEL);
-			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasureType.TOPDERIVATIVE);
-			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasureType.GULPS);
+			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasures.TOPLEVEL);
+			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasures.BOTTOMLEVEL);
+			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasures.TOPDERIVATIVE);
+			csvSaveMeasuresSection(csvWriter, EnumCapillaryMeasures.GULPS);
 			csvWriter.flush();
 			csvWriter.close();
 			
@@ -722,7 +724,7 @@ public class Capillaries
 		return true;
 	}
 	
-	private boolean csvSaveMeasuresSection(FileWriter csvWriter, EnumCapillaryMeasureType measureType) 
+	private boolean csvSaveMeasuresSection(FileWriter csvWriter, EnumCapillaryMeasures measureType) 
 	{
 		try {
 			if (capillariesList.size() <= 1)

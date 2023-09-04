@@ -54,7 +54,7 @@ public class BuildKymographs extends BuildSeries
 	
 	private boolean loadExperimentDataToBuildKymos(Experiment exp) 
 	{
-		boolean flag = exp.xmlLoadMCCapillaries_Only();
+		boolean flag = exp.loadMCCapillaries_Only();
 		exp.seqCamData.seq = exp.seqCamData.initSequenceFromFirstImage(exp.seqCamData.getImagesList(true));
 		return flag;
 	}
@@ -114,7 +114,7 @@ public class BuildKymographs extends BuildSeries
 		}
 		waitFuturesCompletion(processor, futuresArray, progressBar);
 		progressBar.close();
-		exp.xmlSaveMCExperiment();
+		exp.saveMCExperiment();
 	}
 	
 	private boolean buildKymo (Experiment exp) 

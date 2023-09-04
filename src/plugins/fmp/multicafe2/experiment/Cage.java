@@ -11,7 +11,9 @@ import icy.roi.BooleanMask2D;
 import icy.roi.ROI;
 import icy.roi.ROI2D;
 import icy.util.XMLUtil;
+import plugins.kernel.roi.roi2d.ROI2DPolygon;
 import plugins.kernel.roi.roi2d.ROI2DRectangle;
+import icy.type.geom.Polygon2D;
 
 
 
@@ -71,6 +73,35 @@ public class Cage
 			cageRoi2D.saveToXML(xmlVal2);
 		}
 		return true;
+	}
+	
+	public String csvExportCageDescription() 
+	{	
+		StringBuffer sbf = new StringBuffer();
+		List<String> row = new ArrayList<String>();
+		row.add(strCageNumber);
+		row.add(cageRoi2D.getName());
+		row.add(Integer.toString(cageNFlies));
+		row.add(Integer.toString(cageAge));
+		row.add(strCageComment);
+		row.add(strCageStrain);
+		row.add(strCageSex);
+		
+		int npoints = 0;
+		if (cageRoi2D != null) 
+		{			
+			Polygon2D polygon = ((ROI2DPolygon) cageRoi2D).getPolygon2D();
+			row.add(Integer.toString(polygon.npoints));
+			for (int i= 0; i< npoints; i++) {
+				row.add(Integer.toString((int) polygon.xpoints[i]));
+				row.add(Integer.toString((int) polygon.ypoints[i]));
+			}
+		}
+		else
+			row.add("0");
+		sbf.append(String.join(",", row));
+		sbf.append("\n");
+		return sbf.toString();
 	}
 	
 	public boolean xmlSaveFlyPositions(Element xmlVal) 

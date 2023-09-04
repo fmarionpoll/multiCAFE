@@ -1,5 +1,5 @@
 package plugins.fmp.multicafe2.experiment;
 
-public enum EnumCapillaryMeasureType {
+public enum EnumCapillaryMeasures {
 	TOPLEVEL, BOTTOMLEVEL, TOPDERIVATIVE, GULPS
 }

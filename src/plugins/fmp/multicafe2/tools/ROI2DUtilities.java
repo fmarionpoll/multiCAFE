@@ -39,6 +39,9 @@ public class ROI2DUtilities
 		// assume that points are ordered along x
 		Polyline2D polyline = roiLine.getPolyline2D();
 		int roiLine_npoints = polyline.npoints;
+		if (roiLine_npoints == 0)
+			return;
+		
 		if (roiLine_npoints > nintervals)
 			roiLine_npoints = nintervals;
 
