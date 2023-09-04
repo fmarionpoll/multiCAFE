@@ -58,7 +58,6 @@ public class DetectLevels  extends BuildSeries
 		futures.clear();
 
 		final int jitter = 10;
-		final String directory = exp.getKymosBinFullDirectory();
 		final ImageTransformInterface transformPass1 = options.transform01.getFunction();
 		final ImageTransformInterface transformPass2 = options.transform02.getFunction();
 		
@@ -116,7 +115,7 @@ public class DetectLevels  extends BuildSeries
 		}
 		waitFuturesCompletion(processor, futures, progressBar);
 		
-		exp.capillaries.saveCapillaries_Measures(directory) ;
+		exp.saveCapillariesMeasures() ;
 		seqKymos.seq.endUpdate();
 		
 		progressBar.close();

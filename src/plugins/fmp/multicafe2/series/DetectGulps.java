@@ -39,7 +39,7 @@ public class DetectGulps extends BuildSeries
 		exp.xmlLoadMCExperiment();
 		boolean flag = exp.xmlLoadMCCapillaries_Only();
 		flag &= exp.loadKymographs();
-		flag &= exp.capillaries.loadCapillaries_Measures(exp.getKymosBinFullDirectory());
+		flag &= exp.loadCapillariesMeasures();
 		return flag;
 	}
 	
@@ -73,7 +73,6 @@ public class DetectGulps extends BuildSeries
         ArrayList<Future<?>> futures = new ArrayList<Future<?>>(nframes);
 		futures.clear();
 		
-		final String directory = exp.getKymosBinFullDirectory();
 		final Sequence seqAnalyzed = seqCapillariesKymographs.seq;
 		
 		for (int indexCapillary = firstCapillary; indexCapillary <= lastCapillary; indexCapillary++) 
@@ -100,7 +99,7 @@ public class DetectGulps extends BuildSeries
 		}
 		
 		waitFuturesCompletion(processor, futures, progressBar);
-		exp.capillaries.saveCapillaries_Measures(directory) ;
+		exp.saveCapillariesMeasures() ;
 
 		processor.shutdown();
 		

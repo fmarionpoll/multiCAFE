@@ -69,17 +69,22 @@ public class Cages
 	
 	// -------------
 	
-	public boolean xmlWriteCagesToFile(String name, String directory) 
+//	public boolean xmlWriteCagesToFile(String name, String directory) 
+//	{
+//		String csFile = Dialog.saveFileAs(name, directory, "xml");
+//		if (csFile == null)
+//			return false;
+//		csFile.toLowerCase();
+//		if (!csFile.contains(".xml")) 
+//			csFile += ".xml";
+//		return xmlWriteCagesToFileNoQuestion(csFile);
+//	}
+	public boolean saveCagesMeasures(String tempName) 
 	{
-		String csFile = Dialog.saveFileAs(name, directory, "xml");
-		if (csFile == null)
-			return false;
-		csFile.toLowerCase();
-		if (!csFile.contains(".xml")) 
-			csFile += ".xml";
-		return xmlWriteCagesToFileNoQuestion(csFile);
+		xmlWriteCagesToFileNoQuestion(tempName);
+		return true;
 	}
-		
+	
 	public boolean xmlWriteCagesToFileNoQuestion(String tempname) 
 	{
 		if (tempname == null) 

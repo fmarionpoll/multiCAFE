@@ -466,10 +466,25 @@ public class Experiment
 		ImageFileDescriptor.getExistingFileNames(myList);
 		return seqKymos.loadImagesFromList(myList, true);
 	}
-		
-	public boolean loadDrosotrack() 
+	
+ 	public boolean loadCapillariesMeasures() 
+ 	{
+ 		return capillaries.loadCapillaries_Measures(strBinSubDirectory);
+ 	}
+ 	
+ 	public boolean saveCapillariesMeasures() 
+ 	{
+ 		return capillaries.saveCapillaries_Measures(strBinSubDirectory);
+ 	}
+ 	
+ 	public boolean loadCagesMeasures() 
 	{
 		return xmlReadDrosoTrack(null);
+	}
+	
+	public boolean saveCagesMeasures() 
+	{
+		return cages.saveCagesMeasures(getMCDrosoTrackFullName());
 	}
 	
 	// ----------------------------------
