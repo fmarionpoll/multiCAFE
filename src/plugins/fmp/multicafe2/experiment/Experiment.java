@@ -758,12 +758,7 @@ public class Experiment
 		transferExpDescriptorsToCapillariesDescriptors();
 		return capillaries.xmlSaveCapillaries_Descriptors(xmlCapillaryFileName);
 	}
-	
-	public boolean xmlSaveMCCapillaries_Measures() 
-	{
-		return capillaries.saveCapillaries_Measures(getKymosBinFullDirectory());
-	}
-	
+		
 	public boolean loadReferenceImage() 
 	{
 		BufferedImage image = null;
@@ -804,17 +799,6 @@ public class Experiment
 		return strExperimentDirectory+File.separator+ID_MCDROSOTRACK_XML;
 	}
 	
-	public boolean xmlReadDrosoTrack(String filename) 
-	{
-		if (filename == null) 
-		{
-			filename = getXMLDrosoTrackLocation();
-			if (filename == null)
-				return false;
-		}
-		return cages.xmlReadCagesFromFileNoQuestion(filename, this);
-	}
-
 	public void updateROIsAt(int t) 
 	{
 		seqCamData.seq.beginUpdate();
@@ -838,6 +822,17 @@ public class Experiment
 	}
 	
 	// ----------------------------------
+	
+	private boolean xmlReadDrosoTrack(String filename) 
+	{
+		if (filename == null) 
+		{
+			filename = getXMLDrosoTrackLocation();
+			if (filename == null)
+				return false;
+		}
+		return cages.xmlReadCagesFromFileNoQuestion(filename, this);
+	}
 	
 	private String findFile_3Locations(String xmlFileName, int first, int second, int third) 
 	{
@@ -1015,7 +1010,7 @@ public class Experiment
 		if (capillaries.xmlLoadOldCapillaries_Only(filename)) 
 		{
 			xmlSaveMCCapillaries_Only();
-			xmlSaveMCCapillaries_Measures();
+			saveCapillariesMeasures();
 			try {
 		        Files.delete(Paths.get(filename));
 		    } catch (IOException e) {

@@ -81,7 +81,7 @@ public class LoadSaveCages extends JPanel
 			return false;
 		ProgressFrame progress = new ProgressFrame("load fly positions");
 		
-		boolean flag = exp.xmlReadDrosoTrack(null);
+		boolean flag = exp.loadCagesMeasures();
 		if (flag) 
 		{
 //			parent0.paneCages.tabGraphics.moveCheckbox.setEnabled(true);
