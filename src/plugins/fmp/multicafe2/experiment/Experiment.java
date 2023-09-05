@@ -756,7 +756,7 @@ public class Experiment
 		return true;
 	}
 	
-	public boolean saveExperimentMeasures(String directory) 
+	public boolean saveCapillariesMeasures(String directory) 
 	{
 		boolean flag = false;
 		if (seqKymos != null && seqKymos.seq != null) 

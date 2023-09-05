@@ -29,9 +29,8 @@ public class FlyDetect1 extends BuildSeries
 			return;
 		
 		runFlyDetect1(exp);
-		exp.cages.orderFlyPositions();
 		if (!stopFlag)
-			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
+			exp.saveCagesMeasures() ;
 		exp.seqCamData.closeSequence();
 		closeSequence(seqNegative);
     }
@@ -44,6 +43,7 @@ public class FlyDetect1 extends BuildSeries
 		
 		openFlyDetectViewers(exp);
 		findFliesInAllFrames(exp);
+		exp.cages.orderFlyPositions();
 	}
 	
 	private void getReferenceImage (Experiment exp, int t, ImageTransformOptions options) 

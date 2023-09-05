@@ -94,7 +94,7 @@ public class LoadSaveLevels  extends JPanel
 		if (exp.seqKymos != null ) 
 		{
 			ProgressFrame progress = new ProgressFrame("save capillary measures");
-			flag = exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
+			flag = exp.saveCapillariesMeasures(exp.getKymosBinFullDirectory());
 			progress.close();
 		}
 		return flag;

@@ -195,7 +195,7 @@ public class LevelsToGulps extends JPanel  implements PropertyChangeListener
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null)
 		{
-			exp.saveExperimentMeasures(exp.getKymosBinFullDirectory());
+			exp.saveCapillariesMeasures(exp.getKymosBinFullDirectory());
 			threadDetectGulps = new DetectGulps();
 			threadDetectGulps.options = initBuildParameters(exp);
 			if (!bDetectGulps)

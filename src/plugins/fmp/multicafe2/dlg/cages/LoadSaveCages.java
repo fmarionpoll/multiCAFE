@@ -97,7 +97,7 @@ public class LoadSaveCages extends JPanel
 		if (exp != null) 
 		{
 			exp.cages.cagesFromROIs(exp.seqCamData);
-			exp.cages.xmlWriteCagesToFileNoQuestion(exp.getMCDrosoTrackFullName());
+			exp.saveCagesMeasures();
 		}
 	}
 	
