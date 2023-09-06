@@ -52,6 +52,7 @@ public class Experiment
 	public 	long			camImageFirst_ms		= -1;
 	public 	long			camImageLast_ms			= -1;
 	public 	long			camImageBin_ms			= -1;
+	public  long[] 			camImages_ms			= null;
 	
 	public 	long			kymoFirst_ms			= 0;
 	public 	long			kymoLast_ms				= 0;
@@ -367,6 +368,75 @@ public class Experiment
 				System.out.println("error / file intervals of " + seqCamData.getImagesDirectory());
 			}
 		}
+	}
+
+	public long[] getFileIntervalsFromSeqCamData_as_Array_ms() 
+	{
+		camImages_ms = new long[seqCamData.nTotalFrames];
+		
+		FileTime firstImage_FileTime = seqCamData.getFileTimeFromStructuredName(0);
+		long firstImage_ms = firstImage_FileTime.toMillis();
+		for (int i = 0; i < seqCamData.nTotalFrames; i++) {
+			FileTime image_FileTime = seqCamData.getFileTimeFromStructuredName(i);
+			long image_ms = image_FileTime.toMillis() - firstImage_ms;
+			camImages_ms[i] = image_ms;
+		}
+		return camImages_ms;
+	}
+	
+	public int getIndexOfClosestFrame(long time_from_start_ms) 
+	{
+		if (camImages_ms == null)
+			getFileIntervalsFromSeqCamData_as_Array_ms();
+		int closestInterval = -1;
+		boolean flag = false;
+		for (int i = 0; i < camImages_ms.length; i++) {
+			if (camImages_ms[i] <= time_from_start_ms) {
+				closestInterval = getClosestInterval(i, time_from_start_ms);
+				flag = true;
+				break;
+			}
+		}
+		if (!flag)
+			closestInterval = getClosestInterval(camImages_ms.length, time_from_start_ms);
+		return closestInterval;
+	}
+	
+	public int findNearestInterval(long value, int low, int high) {
+	    int result = -1;
+	    if(high-low>1){
+	            int mid = (low + high)/2;
+	        
+	            if(camImages_ms[mid]>value)
+	                result = findNearestInterval(value, low, mid);
+	            else if(camImages_ms[mid]<value)
+	                result = findNearestInterval(value, mid, high);
+	            else
+	                result = mid;
+	        } else
+	            result = Math.abs(value-camImages_ms[low]) < Math.abs(value-camImages_ms[high]) ? low : high;
+	        
+	        return result;
+	}
+	
+	private int getClosestInterval(int i, long valueToCompare)
+	{
+		if (camImages_ms[i] == valueToCompare)
+			return i;
+		int i1 = i-1;
+		int i2 = i;
+		if (i <= 0) {
+			i1 = 0;
+			i2 = 1;
+		}
+		if (i >= camImages_ms.length-1) {
+			i2 = camImages_ms.length-1;
+			i1 = i2 -1;
+		}
+		long delta1 = Math.abs(valueToCompare - camImages_ms[i1]);
+		long delta2 = Math.abs(valueToCompare - camImages_ms[i2]);
+		int ivalue = (delta1 >= delta2) ? i1 : i2;
+		return ivalue;
 	}
 
 	public String getBinNameFromKymoFrameStep() 

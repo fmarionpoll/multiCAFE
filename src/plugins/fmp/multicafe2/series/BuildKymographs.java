@@ -140,16 +140,23 @@ public class BuildKymographs extends BuildSeries
 		stopFlag = false;
 		ProgressFrame progressBar = new ProgressFrame("Processing with subthreads started");
 		int nframes = (int) ((exp.kymoLast_ms - exp.kymoFirst_ms) / exp.kymoBin_ms +1);
-	    	
-		for (int iframe = 0 ; iframe < nframes; iframe++) {
+		int iFrame = 0; 
+	    
+		exp.getFileIntervalsFromSeqCamData_as_Array_ms();
+		int ilow = exp.findNearestInterval(exp.kymoFirst_ms, 0, exp.seqCamData.nTotalFrames);
+		int ihigh = exp.findNearestInterval(exp.kymoLast_ms, 0, exp.seqCamData.nTotalFrames);
+		int isearchLow = ilow;
+		
+		for (long ii_ms = exp.kymoFirst_ms ; ii_ms <= exp.kymoLast_ms; ii_ms += exp.kymoBin_ms, iFrame++) {
 			
-			final int indexToFrame =  iframe;	
-			long iindexms = iframe *  exp.kymoBin_ms + exp.kymoFirst_ms;
-			final int indexFromFrame = (int) Math.round(((double)iindexms) / ((double) exp.camImageBin_ms));
-			if (indexFromFrame >= exp.seqCamData.nTotalFrames)
-				continue;
+			final int indexToFrame =  iFrame;	
+
+			final int indexFromFrame = exp.findNearestInterval(ii_ms, isearchLow, isearchLow+1);
+			isearchLow = indexFromFrame;
+			if ((isearchLow+1) > ihigh) 
+				isearchLow = ihigh-1;
 			
-			vData.setTitle("Frame: " + (iframe +1)+ " / " + nframes);
+			vData.setTitle("Frame: " + (iFrame +1)+ " / " + nframes);
 			
 			IcyBufferedImage sourceImage = loadImageFromIndex(exp, indexFromFrame);
 			seqData.setImage(0, 0, sourceImage);
