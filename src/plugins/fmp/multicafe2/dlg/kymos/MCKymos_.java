@@ -40,7 +40,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 		capPanel.setLayout(new BorderLayout());
 		capPopupPanel.collapse();
 		mainPanel.add(capPopupPanel);
-		GridLayout capLayout = new GridLayout(2, 1);
+		GridLayout capLayout = new GridLayout(3, 1);
 		
 		tabCreate.init(capLayout, parent0);
 		tabCreate.addPropertyChangeListener(this);
@@ -52,7 +52,7 @@ public class MCKymos_ extends JPanel implements PropertyChangeListener, ChangeLi
 
 		tabIntervals.init(capLayout, parent0);
 		tabIntervals.addPropertyChangeListener(this);
-		tabsPane.addTab("Intervals", null, tabIntervals, "Time resolution of kymograph");
+		tabsPane.addTab("Edit", null, tabIntervals, "Time resolution of kymograph");
 
 		tabFile.init(capLayout, parent0);
 		tabFile.addPropertyChangeListener(this);

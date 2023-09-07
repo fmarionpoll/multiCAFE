@@ -145,34 +145,37 @@ public class BuildKymographs extends BuildSeries
 		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("buildKymograph");
 	    processor.setPriority(Processor.NORM_PRIORITY);
-	    int nFutures = nKymographColumns;
-        ArrayList<Future<?>> futuresArray = new ArrayList<Future<?>>(nFutures );
-		futuresArray.clear();
-		nframestotal=0;
+	    int ntasks =  exp.capillaries.capillariesList.size(); //nKymographColumns
+	    ArrayList<Future<?>> tasks = new ArrayList<Future<?>>( ntasks);
+		tasks.clear();
+		int nframestotal=0;
 		
+		ProgressFrame progressBar1 = new ProgressFrame("Analyze stack frame ");
 		for (long ii_ms = exp.kymoFirst_ms ; ii_ms <= exp.kymoLast_ms; ii_ms += exp.kymoBin_ms, iToColumn++) {
 			
 			sourceImageIndex = exp.getClosestInterval(sourceImageIndex, ii_ms);
 			final int fromSourceImageIndex = sourceImageIndex;
 			final int kymographColumn =  iToColumn;	
-			
-			futuresArray.add(processor.submit(new Runnable () {
-				@Override
-				public void run() 
-				{
-					IcyBufferedImage sourceImage = loadImageFromIndex(exp, fromSourceImageIndex);										
-					for (Capillary cap: exp.capillaries.capillariesList) 
-					{	
-						analyzeCurrentImageWithCapillary(sourceImage, cap, fromSourceImageIndex, kymographColumn);
-					}
-					nframestotal ++;
-				}}));
-
+			final IcyBufferedImage sourceImage = loadImageFromIndex(exp, fromSourceImageIndex);
+			tasks.clear();
+			for (Capillary cap: exp.capillaries.capillariesList) 
+			{
+				final Capillary capi = cap;
+				tasks.add(processor.submit(new Runnable () {
+					@Override
+					public void run() {						
+						analyzeCurrentImageWithCapillary(sourceImage, capi, fromSourceImageIndex, kymographColumn);
+					}}));
+			}
+			waitFuturesCompletion(processor, tasks, null);
+			progressBar1.setMessage("Analyze frame: " + nframestotal + "//" + nKymographColumns);
+			nframestotal ++;
 		}
-		
-		ProgressFrame progressBar1 = new ProgressFrame("Analyze stack frame ");
-		waitFuturesCompletion(processor, futuresArray, progressBar1);
 		progressBar1.close();
+		
+//		ProgressFrame progressBar1 = new ProgressFrame("Analyze stack frame ");
+//		waitFuturesCompletion(processor, tasks, progressBar1);
+//		progressBar1.close();
 		
 		ProgressFrame progressBar2 = new ProgressFrame("Combine results into kymograph");
 		int sizeC = seqData.getSizeC();
