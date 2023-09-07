@@ -31,6 +31,9 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
 	public 	BuildSeriesOptions	options 		= new BuildSeriesOptions();
 	public	boolean 			stopFlag 		= false;
 	public 	boolean 			threadRunning 	= false;
+			int 				nframescomputed     = 0;
+			int					nframestotal		= 0;
+			
 			int 				selectedExperimentIndex = -1;
 			Sequence seqNegative = null;
 			Viewer vNegative = null;
@@ -104,13 +107,15 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
     protected void waitFuturesCompletion(Processor processor, ArrayList<Future<?>> futuresArray,  ProgressFrame progressBar) 
     {  	
   		 int frame= 1;
-  		 int nframes = futuresArray.size();
-
+  		 nframescomputed = futuresArray.size();
+  		 nframestotal = 0;
+  		 
     	 while (!futuresArray.isEmpty())
          {
              final Future<?> f = futuresArray.get(futuresArray.size() - 1);
              if (progressBar != null)
-   				 progressBar.setMessage("Analyze frame: " + (frame) + "//" + nframes);
+   				 progressBar.setMessage("Analyze frame: " + nframestotal + "//" + nframescomputed);
+             
              try
              {
                  f.get();
@@ -124,7 +129,7 @@ public abstract class BuildSeries extends SwingWorker<Integer, Integer>
             	 System.out.println("BuildSeries.java - Interrupted exception: " + e);
              }
              futuresArray.remove(f);
-             frame ++;
+           
          }
    }
 

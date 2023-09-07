@@ -370,7 +370,7 @@ public class Experiment
 		}
 	}
 
-	public long[] getFileIntervalsFromSeqCamData_as_Array_ms() 
+	public long[] build_MsTimeIntervalsArray_From_SeqCamData_FileNamesList() 
 	{
 		camImages_ms = new long[seqCamData.nTotalFrames];
 		
@@ -384,33 +384,15 @@ public class Experiment
 		return camImages_ms;
 	}
 	
-	public int getIndexOfClosestFrame(long time_from_start_ms) 
-	{
-		if (camImages_ms == null)
-			getFileIntervalsFromSeqCamData_as_Array_ms();
-		int closestInterval = -1;
-		boolean flag = false;
-		for (int i = 0; i < camImages_ms.length; i++) {
-			if (camImages_ms[i] <= time_from_start_ms) {
-				closestInterval = getClosestInterval(i, time_from_start_ms);
-				flag = true;
-				break;
-			}
-		}
-		if (!flag)
-			closestInterval = getClosestInterval(camImages_ms.length, time_from_start_ms);
-		return closestInterval;
-	}
-	
-	public int findNearestInterval(long value, int low, int high) {
+	public int findNearestIntervalWithBinarySearch(long value, int low, int high) {
 	    int result = -1;
 	    if(high-low>1){
 	            int mid = (low + high)/2;
 	        
 	            if(camImages_ms[mid]>value)
-	                result = findNearestInterval(value, low, mid);
+	                result = findNearestIntervalWithBinarySearch(value, low, mid);
 	            else if(camImages_ms[mid]<value)
-	                result = findNearestInterval(value, mid, high);
+	                result = findNearestIntervalWithBinarySearch(value, mid, high);
 	            else
 	                result = mid;
 	        } else
@@ -419,24 +401,38 @@ public class Experiment
 	        return result;
 	}
 	
-	private int getClosestInterval(int i, long valueToCompare)
+	public int getClosestInterval(int icentral, long valueToCompare)
 	{
-		if (camImages_ms[i] == valueToCompare)
-			return i;
-		int i1 = i-1;
-		int i2 = i;
-		if (i <= 0) {
-			i1 = 0;
-			i2 = 1;
+		long deltacentral = Math.abs(valueToCompare - camImages_ms[icentral]);
+		if (deltacentral == 0)
+			return icentral;
+		
+		int ilow = icentral-1;
+		int ihigh = icentral+1;
+		if (icentral <= 0) {
+			ilow = 0;
+			ihigh = 2;
 		}
-		if (i >= camImages_ms.length-1) {
-			i2 = camImages_ms.length-1;
-			i1 = i2 -1;
+		if (icentral >= camImages_ms.length-1) {
+			ihigh = camImages_ms.length-1;
+			ilow = ihigh -2;
 		}
-		long delta1 = Math.abs(valueToCompare - camImages_ms[i1]);
-		long delta2 = Math.abs(valueToCompare - camImages_ms[i2]);
-		int ivalue = (delta1 >= delta2) ? i1 : i2;
-		return ivalue;
+		long deltalow = Math.abs(valueToCompare - camImages_ms[ilow]);
+		long deltahigh = Math.abs(valueToCompare - camImages_ms[ihigh]);
+		
+		int ismallest = icentral;
+		long deltasmallest = deltacentral;
+		
+		if (deltalow <= deltasmallest) {
+			ismallest = ilow;
+			deltasmallest = deltalow;
+		}
+		
+		if (deltahigh <= deltasmallest) {
+		    ismallest = ihigh;
+		} 
+		
+		return ismallest;
 	}
 
 	public String getBinNameFromKymoFrameStep() 
