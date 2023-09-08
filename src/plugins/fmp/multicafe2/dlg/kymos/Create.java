@@ -82,6 +82,8 @@ public class Create extends JPanel implements PropertyChangeListener
 		panel2.add(binUnit);
 		add(panel2);
 		
+		binUnit.setSelectedIndex(2);
+		
 		JPanel panel1 = new JPanel(layoutLeft);
 		panel1.add(new JLabel("Analyze "));
 		panel1.add(isFloatingFrameButton);

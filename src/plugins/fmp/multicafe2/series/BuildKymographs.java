@@ -137,58 +137,41 @@ public class BuildKymographs extends BuildSeries
 		
 		final int nKymographColumns = (int) ((exp.kymoLast_ms - exp.kymoFirst_ms) / exp.kymoBin_ms +1);
 		int iToColumn = 0; 
-	    
 		exp.build_MsTimeIntervalsArray_From_SeqCamData_FileNamesList();
 		int sourceImageIndex = exp.findNearestIntervalWithBinarySearch(exp.kymoFirst_ms, 0, exp.seqCamData.nTotalFrames);
-		
+		String vDataTitle = new String(" / " + nKymographColumns);
+		ProgressFrame progressBar1 = new ProgressFrame("Analyze stack frame ");
+		//seqData.beginUpdate();
+
 		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("buildKymograph");
 	    processor.setPriority(Processor.NORM_PRIORITY);
-	    int ntasks =  nKymographColumns; //
+	    int ntasks =  exp.capillaries.capillariesList.size(); //
 	    ArrayList<Future<?>> tasks = new ArrayList<Future<?>>( ntasks);
-
-//		int nframestotal=0;
-//		String vDataTitle = new String(" / " + nKymographColumns);
-		//vData.setTitle("Analyzing " + nKymographColumns + " images");
-		//seqData.setImage(0, 0, sourceImage);
-		
-		ProgressFrame progressBar1 = new ProgressFrame("Analyze stack frame ");
-		//seqData.beginUpdate();
-		tasks.clear();
 		
 		for (long ii_ms = exp.kymoFirst_ms ; ii_ms <= exp.kymoLast_ms; ii_ms += exp.kymoBin_ms, iToColumn++) {
-//			final Capillary capi = cap;
+
 			sourceImageIndex = exp.getClosestInterval(sourceImageIndex, ii_ms);
-			final int fromSourceImageIndex = sourceImageIndex;
-			final int kymographColumn =  iToColumn;	
-			
-			tasks.add(processor.submit(new Runnable () {
-				@Override
-				public void run() {	
-					
-					final IcyBufferedImage sourceImage = loadImageFromIndex(exp, fromSourceImageIndex);
-					
-		//          seqData.setImage(0, 0, sourceImage);
-					
-		//			tasks.clear();
-					for (Capillary cap: exp.capillaries.capillariesList) 
-					{
-						final Capillary capi = cap;
-		//				tasks.add(processor.submit(new Runnable () {
-		//					@Override
-		//					public void run() {						
-								analyzeImageWithCapillary(sourceImage, capi, fromSourceImageIndex, kymographColumn);
-		//					}}));
-					}
-						
-		//			waitFuturesCompletion(processor, tasks, null);
-//					vData.setTitle("Analyzing frame: " + (fromSourceImageIndex +1)+ vDataTitle);
-//					seqData.setImage(0, 0, sourceImage);
-					progressBar1.setMessage("Analyze frame: " + fromSourceImageIndex + "//" + nKymographColumns);
-				}}));
-//			nframestotal ++;
+			int fromSourceImageIndex = sourceImageIndex;
+			int kymographColumn =  iToColumn;	
+			IcyBufferedImage sourceImage = loadImageFromIndex(exp, fromSourceImageIndex);
+
+			tasks.clear();
+			for (Capillary cap: exp.capillaries.capillariesList) 
+			{
+				final Capillary capi = cap;
+				tasks.add(processor.submit(new Runnable () {
+					@Override
+					public void run() {	
+						analyzeImageWithCapillary(sourceImage, capi, fromSourceImageIndex, kymographColumn);
+					}}));
+			}
+			waitFuturesCompletion(processor, tasks, null);
+			vData.setTitle("Analyzing frame: " + (fromSourceImageIndex +1)+ vDataTitle);
+			seqData.setImage(0, 0, sourceImage);
+			progressBar1.setMessage("Analyze frame: " + fromSourceImageIndex + "//" + nKymographColumns);	
 		}
-		waitFuturesCompletion(processor, tasks, null);
+
 		//seqData.endUpdate();
 		progressBar1.close();
 		
@@ -205,8 +188,9 @@ public class BuildKymographs extends BuildSeries
 	{
 		KymoROI2D capT = cap.getROI2DKymoAtIntervalT(fromSourceImageIndex);
 		int sizeC = sourceImage.getSizeC();
-		
-		for (int chan = 0; chan < sizeC; chan++) { 
+	  
+		for (int chan = 0; chan < sizeC; chan++) {
+			
 			int [] sourceImageChannel =  Array1DUtil.arrayToIntArray(sourceImage.getDataXY(chan), sourceImage.isSignedDataType()); 			
 			int [] capImageChannel = cap.cap_Integer.get(chan); 
 		
@@ -221,7 +205,8 @@ public class BuildKymographs extends BuildSeries
 					capImageChannel[cnt*kymoImageWidth + kymographColumn] = (int) (sum/mask.size()); 
 				cnt ++;
 			}
-		}		
+		}
+		
 	}
 	
 	private IcyBufferedImage loadImageFromIndex(Experiment exp, int indexFromFrame) 
