@@ -50,9 +50,7 @@ public class BuildKymographs extends BuildSeries
 		getTimeLimitsOfSequence(exp);
 		if (buildKymo(exp)) 
 			saveComputation(exp);
-		
-		
-		
+
 		closeKymoViewers();
 		exp.seqKymos.closeSequence();
 	}
@@ -149,29 +147,26 @@ public class BuildKymographs extends BuildSeries
 	    int ntasks =  exp.capillaries.capillariesList.size(); //
 	    ArrayList<Future<?>> tasks = new ArrayList<Future<?>>( ntasks);
 		
+	    tasks.clear();
 		for (long ii_ms = exp.kymoFirst_ms ; ii_ms <= exp.kymoLast_ms; ii_ms += exp.kymoBin_ms, iToColumn++) {
 
 			sourceImageIndex = exp.getClosestInterval(sourceImageIndex, ii_ms);
-			int fromSourceImageIndex = sourceImageIndex;
-			int kymographColumn =  iToColumn;	
-			IcyBufferedImage sourceImage = loadImageFromIndex(exp, fromSourceImageIndex);
-
-			tasks.clear();
-			for (Capillary cap: exp.capillaries.capillariesList) 
-			{
-				final Capillary capi = cap;
-				tasks.add(processor.submit(new Runnable () {
-					@Override
-					public void run() {	
+			final int fromSourceImageIndex = sourceImageIndex;
+			final int kymographColumn =  iToColumn;	
+			final IcyBufferedImage sourceImage = loadImageFromIndex(exp, fromSourceImageIndex);
+			
+			tasks.add(processor.submit(new Runnable () {
+				@Override
+				public void run() {	
+					for (Capillary capi: exp.capillaries.capillariesList) 
 						analyzeImageWithCapillary(sourceImage, capi, fromSourceImageIndex, kymographColumn);
-					}}));
-			}
-			waitFuturesCompletion(processor, tasks, null);
+				}}));
 			vData.setTitle("Analyzing frame: " + (fromSourceImageIndex +1)+ vDataTitle);
-			seqData.setImage(0, 0, sourceImage);
+//			seqData.setImage(0, 0, sourceImage);
 			progressBar1.setMessage("Analyze frame: " + fromSourceImageIndex + "//" + nKymographColumns);	
 		}
 
+		waitFuturesCompletion(processor, tasks, null);
 		//seqData.endUpdate();
 		progressBar1.close();
 		
