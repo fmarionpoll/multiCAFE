@@ -174,7 +174,7 @@ public class Display extends JPanel implements ViewerListener
 		Experiment exp = (Experiment)  parent0.expListCombo.getSelectedItem();
 		if (exp == null) 
 			return;		
-		Viewer v= exp.seqKymos.seq.getFirstViewer();
+		Viewer v = exp.seqKymos.seq.getFirstViewer();
 		if (v == null)
 			return;
 		IcyCanvas canvas = v.getCanvas();
@@ -208,9 +208,9 @@ public class Display extends JPanel implements ViewerListener
 			{
 				Viewer v = new Viewer(seqKymos.seq, true);
 				v.setRepeat(false);
-				v.addListener(this);;
+				v.addListener(this);
 //				if(parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())
-					placeKymoViewerNextToCamViewer(exp, v);
+				placeKymoViewerNextToCamViewer(exp, v);
 			}
 		}
 	}

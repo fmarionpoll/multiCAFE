@@ -331,6 +331,8 @@ public class LoadSaveExperiment extends JPanel implements PropertyChangeListener
 		if (sequenceEvent.getSourceType() == SequenceEventSourceType.SEQUENCE_DATA )
 		{
 			Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+			System.out.println(sequenceEvent.getSequence().getName());
+			
 			if (exp != null)
 			{
 				if (exp.seqCamData.seq != null 
