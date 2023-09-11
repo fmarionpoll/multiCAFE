@@ -162,7 +162,7 @@ public class BuildKymographs extends BuildSeries
 						analyzeImageWithCapillary(sourceImage, capi, fromSourceImageIndex, kymographColumn);
 				}}));
 			vData.setTitle("Analyzing frame: " + (fromSourceImageIndex +1)+ vDataTitle);
-//			seqData.setImage(0, 0, sourceImage);
+//			seqData.setImage(0, 0, sourceImage); // add option??
 			progressBar1.setMessage("Analyze frame: " + fromSourceImageIndex + "//" + nKymographColumns);	
 		}
 
