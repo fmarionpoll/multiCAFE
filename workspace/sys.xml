@@ -5,6 +5,7 @@
 <band name="Others">
 <item classname="plugins.adufour.activecontours.ActiveContours" priority="low"/>
 <item classname="plugins.vannary.morphomaths.AnalyzeSkeleton" priority="low"/>
+<item classname="plugins.fmp.multicafe2.viewer1D.Chart1DCanvas" priority="low"/>
 <item classname="plugins.fmp.multicafe2.tools.Image.Transforms.ChessboardImage" priority="low"/>
 <item classname="plugins.vannary.morphomaths.blocks.ClosingBinary" priority="low"/>
 <item classname="plugins.adufour.connectedcomponents.ConnectedComponents" priority="low"/>
@@ -18,6 +19,7 @@
 <item classname="plugins.adufour.roi.LabelExtractor" priority="low"/>
 <item classname="plugins.nchenouard.linearprogrammingfullsimplex.LinearProgrammingICYPlugin" priority="low"/>
 <item classname="plugins.nherve.maskeditor.MaskEditor" priority="low"/>
+<item classname="plugins.fmp.multicafe2.viewer1D.plugins.adufour.viewers.Montage2D" priority="low"/>
 <item classname="plugins.vannary.morphomaths.MorphoMaths" priority="low"/>
 <item classname="plugins.fmp.multicafe2.MultiCAFE2" priority="low"/>
 <item classname="plugins.vannary.morphomaths.blocks.OpeningBinary" priority="low"/>

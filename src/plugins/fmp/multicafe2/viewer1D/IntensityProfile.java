@@ -74,7 +74,6 @@ public class IntensityProfile  {
 	String OPTION_meanAlongZ = "Mean along Z";
 	String OPTION_meanAlongT = "Mean along T";	
 	
-	
 	CheckComboBox optionComboBox;
 	
 	private Sequence sequence;
@@ -88,8 +87,9 @@ public class IntensityProfile  {
 	
 	double pixelSize = 1.0;
 	int paintersSize = 0;
-	public IntensityProfile(IcyCanvas mainCav,Sequence seq){
-		
+	
+	public IntensityProfile(IcyCanvas mainCav, Sequence seq)
+	{	
 		sequence = seq;
 
 		// option
@@ -125,16 +125,13 @@ public class IntensityProfile  {
             	{
             		rowOColBtn.setText("column");
             		rowMode = false;	
-  
             		xlabel = "Column (Y)";
             		//title = "Intensity Profile of Each Column";
-  
             	}
             	else
             	{
             		rowOColBtn.setText("row");
             		rowMode = true;
-
             		xlabel = "Row (X)";
             		//title = "Intensity Profile of Each Row";
   
@@ -235,8 +232,6 @@ public class IntensityProfile  {
         });
         exportToFileBtn.setToolTipText("Print current line data to the console of Icy.");
         
-
-        
         indexLbl.setHorizontalAlignment(JLabel.RIGHT );
         maxIndexLbl.setHorizontalAlignment(JLabel.RIGHT );
         
@@ -274,6 +269,7 @@ public class IntensityProfile  {
             
             }
         });
+        
         ComponentUtil.setFixedHeight(slider, 22);
         String xlabel;
         //String title;

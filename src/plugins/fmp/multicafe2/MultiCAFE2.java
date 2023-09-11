@@ -64,7 +64,6 @@ public class MultiCAFE2 extends PluginActionable
 	public static void main (String[] args)
 	{
 		Icy.main(args);
-		//Boolean flag = GeneralPreferences.getSequencePersistence();
 		GeneralPreferences.setSequencePersistence(false);
 		PluginLauncher.start(PluginLoader.getPlugin(MultiCAFE2.class.getName()));
 	}

@@ -34,16 +34,13 @@ public class Chart1DCanvas extends PluginActionable implements PluginCanvas, Seq
      * @return 
      * @return a jfreechart to show the intensity profile of one row or column
      */
-	private ChartCanvas ChartCanvas;
+	private ChartCanvas chartCanvas;
 
-    
     @Override
     public void run()
     {
         final Sequence input = getActiveSequence();
         if (input == null) return;
-
-        
     }
     
     @Override
@@ -55,13 +52,12 @@ public class Chart1DCanvas extends PluginActionable implements PluginCanvas, Seq
     @Override
     public IcyCanvas createCanvas(Viewer viewer)
     {
-    	ChartCanvas = new ChartCanvas(viewer);
+    	chartCanvas = new ChartCanvas(viewer);
     	Sequence  sequence = viewer.getSequence();
     	sequence.addListener(this);
-        return ChartCanvas;
+        return chartCanvas;
     }
     
-
 	@Override
 	public void sequenceChanged(SequenceEvent sequenceEvent) {
 		
@@ -70,10 +66,10 @@ public class Chart1DCanvas extends PluginActionable implements PluginCanvas, Seq
             case SEQUENCE_DATA:
             	if(sequenceEvent.getType() != SequenceEventType.CHANGED)
             	{
-            		ChartCanvas.iprofile.updateXYNav();
+            		chartCanvas.iprofile.updateXYNav();
             	}
-            	ChartCanvas.iprofile.updateChart();
-            	ChartCanvas.iprofile.updateChannelPainters();
+            	chartCanvas.iprofile.updateChart();
+            	chartCanvas.iprofile.updateChannelPainters();
             	break;
 		default:
 			break;
@@ -85,14 +81,12 @@ public class Chart1DCanvas extends PluginActionable implements PluginCanvas, Seq
 		// TODO Auto-generated method stub
 		
 	}
-	
-	
-	
+
     public class ChartCanvas extends IcyCanvas 
     {
         private static final long serialVersionUID = 1L;
-        
         private IntensityProfile iprofile;
+        
         public ChartCanvas(Viewer viewer)
         {
         	super(viewer);
@@ -105,7 +99,6 @@ public class Chart1DCanvas extends PluginActionable implements PluginCanvas, Seq
             
         	getSequence();
             iprofile = new IntensityProfile(this,getSequence());
-
 
             // mouse infos panel setting: we want to see values for X only (1D view)
             mouseInfPanel.setInfoXVisible(true);
@@ -124,18 +117,20 @@ public class Chart1DCanvas extends PluginActionable implements PluginCanvas, Seq
             // refresh Z and T navigation bar state depending
             updateZNav();
             updateTNav();
-
         }
+        
 		@Override
 		public void refresh() {
 			// TODO Auto-generated method stub
 			iprofile.updateChart();
 		}
+		
 		@Override
 		public Component getViewComponent() {
 			// TODO Auto-generated method stub
 			return null;
 		}
+		
 		@Override
 		public BufferedImage getRenderedImage(int t, int z, int c,
 				boolean canvasView) {
@@ -160,6 +155,7 @@ public class Chart1DCanvas extends PluginActionable implements PluginCanvas, Seq
 				break;
 	        }
 	    }
+	    
 	    @Override
 	    public double getMouseImagePosX()
 	    {
@@ -182,7 +178,5 @@ public class Chart1DCanvas extends PluginActionable implements PluginCanvas, Seq
 	    }
  
     }
-
-
 
 }

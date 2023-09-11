@@ -246,15 +246,7 @@ public class ExperimentCombo extends JComboBox<Experiment>
 	}
 	
 	public void chainExperimentsUsingKymoIndexes(boolean collate) 
-	{
-//		for (int i = 0; i < getItemCount(); i++)
-//		{
-//			Experiment expi = getItemAt(i);
-//			resetChaining(expi);
-//		} 		
-//		if (!collate) 
-//			return;
-		
+	{	
 		for (int i = 0; i < getItemCount(); i++) 
 		{
 			Experiment expi = getItemAt(i);
