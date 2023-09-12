@@ -221,32 +221,33 @@ public class Display extends JPanel implements ViewerListener
 		if (vCamData == null)
 			return;
 		
-		Rectangle rectMaster = vCamData.getBounds();
-		int deltax = 5 + rectMaster.width;
+		Rectangle rectCamData = vCamData.getBounds();
+		int deltax = 5 + rectCamData.width;
 		int deltay = 5;
 
-		Rectangle rectDataView = v.getBounds();
-		rectDataView.height = rectMaster.height;
+		Rectangle rectKymograph = v.getBounds();
+		rectKymograph.height = rectCamData.height;
+		
 		IcyBufferedImage img = exp.seqKymos.seq.getFirstImage();
-		rectDataView.width = 100;
+		rectKymograph.width = 100;
 		if (img != null)
-			rectDataView.width = 20 + img.getSizeX() * rectMaster.height / img.getSizeY();
+			rectKymograph.width = 20 + img.getSizeX() * rectCamData.height / img.getSizeY();
 		int desktopwidth = Icy.getMainInterface().getMainFrame().getDesktopWidth();
-		if (rectDataView.width > desktopwidth)
+		if (rectKymograph.width > desktopwidth)
 		{
-			int height = img.getSizeY() * desktopwidth / rectDataView.width;
-			int width = img.getSizeX() * height / rectDataView.height;
-			rectDataView.setSize(width, height *3 /2);
-			rectDataView.x = 0;
-			rectDataView.y = rectMaster.y + rectMaster.height;
+			int height = img.getSizeY() * desktopwidth / rectKymograph.width;
+			int width = img.getSizeX() * height / rectKymograph.height;
+			rectKymograph.setSize(width, height *3 /2);
+			rectKymograph.x = 0;
+			rectKymograph.y = rectCamData.y + rectCamData.height;
 		} 
 		else
 		{
-			rectDataView.translate(
-				rectMaster.x + deltax - rectDataView.x, 
-				rectMaster.y + deltay - rectDataView.y);
+			rectKymograph.translate(
+				rectCamData.x + deltax - rectKymograph.x, 
+				rectCamData.y + deltay - rectKymograph.y);
 		}
-		v.setBounds(rectDataView);
+		v.setBounds(rectKymograph);
 	}
 	
 	void displayOFF()
