@@ -250,7 +250,6 @@ public class Display extends JPanel implements ViewerListener
 		scaleY = 1.;			// dummy value
 		Canvas2D canvas2D = (Canvas2D) viewerKymograph.getCanvas();
 		canvas2D.setScale(scaleX, scaleY, false, true);
-
 	}
 	
 	void displayOFF()
