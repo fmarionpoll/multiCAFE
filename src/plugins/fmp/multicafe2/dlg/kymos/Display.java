@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import icy.canvas.Canvas2D;
 import icy.canvas.IcyCanvas;
 import icy.canvas.Layer;
 import icy.gui.viewer.Viewer;
@@ -27,6 +28,7 @@ import icy.gui.viewer.ViewerListener;
 import icy.image.IcyBufferedImage;
 import icy.main.Icy;
 import icy.roi.ROI;
+import icy.sequence.Sequence;
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
@@ -210,41 +212,45 @@ public class Display extends JPanel implements ViewerListener
 				v.setRepeat(false);
 				v.addListener(this);
 //				if(parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())
-				placeKymoViewerNextToCamViewer(exp, v);
+				placeKymoViewerNextToCamViewer(exp);
 			}
 		}
 	}
 	
-	void placeKymoViewerNextToCamViewer(Experiment exp, Viewer vKymo)
+	void placeKymoViewerNextToCamViewer(Experiment exp)
 	{
-		Viewer vCamData = exp.seqCamData.seq.getFirstViewer();
-		if (vCamData == null)
+		Sequence seqCamData = exp.seqCamData.seq;
+		Viewer viewerCamData = seqCamData.getFirstViewer();
+		if (viewerCamData == null)
 			return;
 		
-		Rectangle rectCamData = vCamData.getBounds();
-		Rectangle rectKymograph = (Rectangle) rectCamData.clone();
-		int deltax = 5 + rectCamData.width;
-		rectKymograph.translate(deltax, 0);
+		Rectangle rectViewerCamData = viewerCamData.getBounds();
 		
-		IcyBufferedImage imgKymograph = exp.seqKymos.seq.getFirstImage();
-		if (imgKymograph != null) {
-			rectKymograph.width = 20 + imgKymograph.getSizeX() * rectCamData.height / imgKymograph.getSizeY();
-		}
-		
+		Sequence seqKymograph = exp.seqKymos.seq;
+		IcyBufferedImage imageKymograph = seqKymograph.getFirstImage();
+		if (imageKymograph == null)
+			return;
+		Rectangle rectViewerKymograph = (Rectangle) rectViewerCamData.clone();
+		rectViewerKymograph.width = 20 + (int) (imageKymograph.getSizeX() *  viewerCamData.getCanvas().getScaleY());
+				
 		int desktopwidth = Icy.getMainInterface().getMainFrame().getDesktopWidth();
-		if ((rectKymograph.width + rectKymograph.x) > desktopwidth)
+		rectViewerKymograph.translate(5 + rectViewerCamData.width, 0);
+				
+		if ((rectViewerKymograph.width + rectViewerKymograph.x) > desktopwidth)
 		{
-			rectKymograph.x = 0;
-			rectKymograph.y = rectCamData.y + rectCamData.height + 5;
-			rectKymograph.width = desktopwidth;
+			rectViewerKymograph.x = 0;
+			rectViewerKymograph.y = rectViewerCamData.y + rectViewerCamData.height + 5;
+			rectViewerKymograph.width = desktopwidth; 
 		} 
 		
-		double scaleX = vCamData.getCanvas().getScaleX();
-		double scaleY = vCamData.getCanvas().getScaleY();
-		vKymo.setBounds(rectKymograph);
-		vKymo.getCanvas().setScaleX(scaleX);
-		vKymo.getCanvas().setScaleY(scaleY);
-		System.out.println("x scale="+ scaleX + " y scale=" + scaleY);
+		Viewer viewerKymograph = seqKymograph.getFirstViewer();
+		viewerKymograph.setBounds(rectViewerKymograph);
+		double scaleY = viewerCamData.getCanvas().getScaleY();
+		double scaleX = .2;		// dummy value
+		scaleY = 1.;			// dummy value
+		Canvas2D canvas2D = (Canvas2D) viewerKymograph.getCanvas();
+		canvas2D.setScale(scaleX, scaleY, false, true);
+
 	}
 	
 	void displayOFF()
