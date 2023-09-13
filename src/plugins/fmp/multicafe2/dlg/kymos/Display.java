@@ -215,7 +215,7 @@ public class Display extends JPanel implements ViewerListener
 		}
 	}
 	
-	void placeKymoViewerNextToCamViewer(Experiment exp, Viewer v)
+	void placeKymoViewerNextToCamViewer(Experiment exp, Viewer vKymo)
 	{
 		Viewer vCamData = exp.seqCamData.seq.getFirstViewer();
 		if (vCamData == null)
@@ -239,7 +239,12 @@ public class Display extends JPanel implements ViewerListener
 			rectKymograph.width = desktopwidth;
 		} 
 		
-		v.setBounds(rectKymograph);
+		double scaleX = vCamData.getCanvas().getScaleX();
+		double scaleY = vCamData.getCanvas().getScaleY();
+		vKymo.setBounds(rectKymograph);
+		vKymo.getCanvas().setScaleX(scaleX);
+		vKymo.getCanvas().setScaleY(scaleY);
+		System.out.println("x scale="+ scaleX + " y scale=" + scaleY);
 	}
 	
 	void displayOFF()
