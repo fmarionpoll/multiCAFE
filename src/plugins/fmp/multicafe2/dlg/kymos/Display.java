@@ -25,10 +25,10 @@ import icy.canvas.Layer;
 import icy.gui.viewer.Viewer;
 import icy.gui.viewer.ViewerEvent;
 import icy.gui.viewer.ViewerListener;
-import icy.image.IcyBufferedImage;
 import icy.main.Icy;
 import icy.roi.ROI;
 import icy.sequence.Sequence;
+
 import plugins.fmp.multicafe2.MultiCAFE2;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
@@ -225,30 +225,31 @@ public class Display extends JPanel implements ViewerListener
 			return;
 		
 		Rectangle rectViewerCamData = viewerCamData.getBounds();
-		
 		Sequence seqKymograph = exp.seqKymos.seq;
-		IcyBufferedImage imageKymograph = seqKymograph.getFirstImage();
-		if (imageKymograph == null)
-			return;
+
 		Rectangle rectViewerKymograph = (Rectangle) rectViewerCamData.clone();
-		rectViewerKymograph.width = 20 + (int) (imageKymograph.getSizeX() *  viewerCamData.getCanvas().getScaleY());
-				
+		Rectangle rectImageKymograph = seqKymograph.getBounds2D();
 		int desktopwidth = Icy.getMainInterface().getMainFrame().getDesktopWidth();
-		rectViewerKymograph.translate(5 + rectViewerCamData.width, 0);
+		
+		rectViewerKymograph.width =  (int) rectImageKymograph.getWidth() ;
 				
 		if ((rectViewerKymograph.width + rectViewerKymograph.x) > desktopwidth)
 		{
 			rectViewerKymograph.x = 0;
 			rectViewerKymograph.y = rectViewerCamData.y + rectViewerCamData.height + 5;
 			rectViewerKymograph.width = desktopwidth; 
+			rectViewerKymograph.height = rectImageKymograph.height;
 		} 
+		else
+			rectViewerKymograph.translate(5 + rectViewerCamData.width, 0);
 		
 		Viewer viewerKymograph = seqKymograph.getFirstViewer();
 		viewerKymograph.setBounds(rectViewerKymograph);
 		double scaleY = viewerCamData.getCanvas().getScaleY();
-		double scaleX = .2;		// dummy value
 		scaleY = 1.;			// dummy value
+		double scaleX = .2;		// dummy value
 		Canvas2D canvas2D = (Canvas2D) viewerKymograph.getCanvas();
+		canvas2D.setFitToCanvas(false);
 		canvas2D.setScale(scaleX, scaleY, false, true);
 	}
 	
@@ -279,25 +280,14 @@ public class Display extends JPanel implements ViewerListener
 		if (kymographsCombo.getItemCount() < 1)
 			return;	
 		displayON();
+		
 		int item = kymographsCombo.getSelectedIndex();
 		if (item < 0) {
 			item = indexImagesCombo >= 0 ? indexImagesCombo : 0;
 			indexImagesCombo = -1;
-			kymographsCombo.setSelectedIndex(item);
+//			kymographsCombo.setSelectedIndex(item);
 		}
-		selectKymographImage(item); 
-	}
-	
-	void displayViews(boolean bEnable)
-	{
-		updateButton.setEnabled(bEnable);
-		previousButton.setEnabled(bEnable);
-		nextButton.setEnabled(bEnable);
-		kymographsCombo.setEnabled(bEnable);
-		if (bEnable)
-			displayUpdateOnSwingThread(); 
-		else
-			displayOFF();
+//		selectKymographImage(item); 
 	}
 	
 	public void selectKymographImage(int isel)
@@ -402,7 +392,7 @@ public class Display extends JPanel implements ViewerListener
 		exp.setBinSubDirectory(localString);
 		exp.seqKymos.seq.close();
 		exp.loadKymographs();
-		displayON();
+		//displayON();
 		parent0.paneKymos.updateDialogs(exp);
 	}
 
