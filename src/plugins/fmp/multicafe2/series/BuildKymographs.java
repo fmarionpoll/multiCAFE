@@ -139,7 +139,6 @@ public class BuildKymographs extends BuildSeries
 		int sourceImageIndex = exp.findNearestIntervalWithBinarySearch(exp.kymoFirst_ms, 0, exp.seqCamData.nTotalFrames);
 		String vDataTitle = new String(" / " + nKymographColumns);
 		ProgressFrame progressBar1 = new ProgressFrame("Analyze stack frame ");
-		//seqData.beginUpdate();
 
 		final Processor processor = new Processor(SystemUtil.getNumberOfCPUs());
 	    processor.setThreadName("buildKymograph");
@@ -167,7 +166,6 @@ public class BuildKymographs extends BuildSeries
 		}
 
 		waitFuturesCompletion(processor, tasks, null);
-		//seqData.endUpdate();
 		progressBar1.close();
 		
 		ProgressFrame progressBar2 = new ProgressFrame("Combine results into kymograph");
