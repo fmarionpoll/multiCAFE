@@ -7,7 +7,6 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,6 +29,7 @@ import icy.roi.ROI;
 import icy.sequence.Sequence;
 
 import plugins.fmp.multicafe2.MultiCAFE2;
+import plugins.fmp.multicafe2.experiment.Capillaries;
 import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
@@ -51,7 +51,9 @@ public class Display extends JPanel implements ViewerListener
 			JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("top/bottom level (green)", true);
 			JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
 			JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
-			JButton 	updateButton 			= new JButton("Update position of kymo view (experimental)");
+			JButton 	zoomImageButton			= new JButton("Zoom 1:1");
+			JButton 	shrinkImageButton		= new JButton("Shrink to fit");
+
 			
 	private MultiCAFE2 	parent0 				= null;
 	private boolean		isActionEnabled			= true;	
@@ -86,11 +88,11 @@ public class Display extends JPanel implements ViewerListener
 		add(panel2);
 		
 		JPanel panel3 = new JPanel (layout);
-		panel3.add(updateButton);
+		panel3.add(zoomImageButton);
+		panel3.add(shrinkImageButton);
 		add(panel3);
 		defineActionListeners();
 	}
-	
 	
 	private void defineActionListeners()
 	{		
@@ -151,15 +153,25 @@ public class Display extends JPanel implements ViewerListener
 				if (isActionEnabled)
 					changeBinSubdirectory(localString);
 			}});
-		
-		updateButton.addActionListener(new ActionListener ()
+				
+		zoomImageButton.addActionListener(new ActionListener ()
 		{ 
 			@Override public void actionPerformed( final ActionEvent e )
 			{ 
 				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 				if (exp != null)
-					placeKymoViewerNextToCamViewer( exp);
+					zoomImage_1_1( exp);
 			}});
+		
+		shrinkImageButton.addActionListener(new ActionListener ()
+		{ 
+			@Override public void actionPerformed( final ActionEvent e )
+			{ 
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+				if (exp != null)
+					shrinkImage_to_fit( exp);
+			}});
+		
 	}
 	
 	public void transferCapillaryNamesToComboBox(Experiment exp )
@@ -214,18 +226,22 @@ public class Display extends JPanel implements ViewerListener
 		Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
 		if (exp != null)
 		{
-			SequenceKymos seqKymos = exp.seqKymos;
-			if (seqKymos == null || seqKymos.seq == null )
+			SequenceKymos seqKymographs = exp.seqKymos;
+			if (seqKymographs == null || seqKymographs.seq == null )
 				return;
 			
-			ArrayList<Viewer>vList = seqKymos.seq.getViewers();
+			ArrayList<Viewer>vList = seqKymographs.seq.getViewers();
 			if (vList.size() == 0)
 			{
-				Viewer v = new Viewer(seqKymos.seq, true);
-				v.setRepeat(false);
-				v.addListener(this);
-//				if(parent0.paneExperiment.tabOptions.windowsCheckBox.isSelected())
+				Viewer viewerKymographs = new Viewer(seqKymographs.seq, true);
+				viewerKymographs.setRepeat(false);
+				viewerKymographs.addListener(this);
+
 				placeKymoViewerNextToCamViewer(exp);
+				zoomImage_1_1( exp);
+				
+				int isel = kymographsCombo.getSelectedIndex();
+				selectCapillary(exp, isel);
 			}
 		}
 	}
@@ -257,13 +273,45 @@ public class Display extends JPanel implements ViewerListener
 			rectViewerKymograph.translate(5 + rectViewerCamData.width, 0);
 		
 		Viewer viewerKymograph = seqKymograph.getFirstViewer();
+		if (viewerKymograph == null)
+			return; 
 		viewerKymograph.setBounds(rectViewerKymograph);
-		double scaleY = viewerCamData.getCanvas().getScaleY();
-		scaleY = 1;			// dummy value
-		double scaleX = 3;		// dummy value
+		((Canvas2D) viewerKymograph.getCanvas()).setFitToCanvas(false);
+	}
+	
+	void zoomImage_1_1(Experiment exp) 
+	{
+		Sequence seqKymograph = exp.seqKymos.seq;
+		Rectangle rectImage = seqKymograph.getBounds2D();
+		
+		Viewer viewerKymograph = seqKymograph.getFirstViewer();
+		if (viewerKymograph == null)
+			return;
 		Canvas2D canvas2D = (Canvas2D) viewerKymograph.getCanvas();
-		canvas2D.setFitToCanvas(false);
-		canvas2D.setScale(scaleX, scaleY, false, true);
+		Rectangle rectCanvas = canvas2D.getCanvasVisibleRect();
+		
+		double scaleY = .5;  //viewerCamData.getCanvas().getScaleY();
+		double scaleX = .5; //3;		// dummy value
+		int offsetX = (int) (rectCanvas.width / scaleX / 2); 
+		canvas2D.setMouseImagePos(offsetX, rectImage.height  / 2);
+		canvas2D.setScale(scaleX, scaleY, true, true);
+	}
+	
+	void shrinkImage_to_fit(Experiment exp) 
+	{
+		Sequence seqKymograph = exp.seqKymos.seq;
+		Rectangle rectImage = seqKymograph.getBounds2D();
+		Viewer viewerKymograph = seqKymograph.getFirstViewer();
+		if (viewerKymograph == null)
+			return;
+		
+		Canvas2D canvas2D = (Canvas2D) viewerKymograph.getCanvas();
+		Rectangle rectCanvas = canvas2D.getCanvasVisibleRect();
+		
+		double scaleX = rectCanvas.getWidth() / rectImage.getWidth(); 
+		double scaleY = rectCanvas.getHeight() / rectImage.getHeight();
+		canvas2D.setMouseImagePos(rectImage.width/2, rectImage.height/ 2);
+		canvas2D.setScale(scaleX, scaleY, true, true);
 	}
 	
 	void displayOFF()
@@ -298,9 +346,7 @@ public class Display extends JPanel implements ViewerListener
 		if (item < 0) {
 			item = indexImagesCombo >= 0 ? indexImagesCombo : 0;
 			indexImagesCombo = -1;
-//			kymographsCombo.setSelectedIndex(item);
 		}
-//		selectKymographImage(item); 
 	}
 	
 	public void selectKymographImage(int isel)
@@ -317,6 +363,7 @@ public class Display extends JPanel implements ViewerListener
 		if (isel >= seqKymos.seq.getSizeT() )
 			isel = seqKymos.seq.getSizeT() -1;
 		
+		exp.seqKymos.seq.beginUpdate();
 		int icurrent = kymographsCombo.getSelectedIndex();
 		if (icurrent != isel)
 		{
@@ -332,6 +379,19 @@ public class Display extends JPanel implements ViewerListener
 			
 			v.setTitle(getKymographTitle(isel));
 			parent0.paneKymos.tabDisplay.displayROIsAccordingToUserSelection();
+		}
+		
+		selectCapillary(exp, isel);
+		exp.seqKymos.seq.endUpdate();
+	}
+	
+	private void selectCapillary(Experiment exp, int isel)
+	{
+		Capillaries capillaries = exp.capillaries;
+		for (Capillary cap : capillaries.capillariesList) {
+			cap.getRoi().setSelected(false);
+		Capillary capSel = capillaries.capillariesList.get(isel);
+		capSel.getRoi().setSelected(true);
 		}
 	}
 	
