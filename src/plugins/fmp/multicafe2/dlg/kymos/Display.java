@@ -46,12 +46,13 @@ public class Display extends JPanel implements ViewerListener
 	public 	int			indexImagesCombo 		= -1;
 	public 	JComboBox<String> kymographsCombo 	= new JComboBox <String> (new String[] {"none"});
 			JComboBox<String> viewsCombo		= new JComboBox <String>();
-			JButton 	updateButton 			= new JButton("Update");
 			JButton  	previousButton		 	= new JButton("<");
 			JButton		nextButton				= new JButton(">");
 			JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("top/bottom level (green)", true);
 			JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
 			JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
+			JButton 	updateButton 			= new JButton("Update position of kymo view (experimental)");
+			
 	private MultiCAFE2 	parent0 				= null;
 	private boolean		isActionEnabled			= true;	
 	
@@ -78,12 +79,15 @@ public class Display extends JPanel implements ViewerListener
 		panel1.add(nextButton, BorderLayout.EAST);
 		add(panel1);
 		
-		JPanel panel3 = new JPanel (layout);
-		panel3.add(viewLevelsCheckbox);
-		panel3.add(viewDerivativeCheckbox);
-		panel3.add(viewGulpsCheckbox);
-		add(panel3);
+		JPanel panel2 = new JPanel (layout);
+		panel2.add(viewLevelsCheckbox);
+		panel2.add(viewDerivativeCheckbox);
+		panel2.add(viewGulpsCheckbox);
+		add(panel2);
 		
+		JPanel panel3 = new JPanel (layout);
+		panel3.add(updateButton);
+		add(panel3);
 		defineActionListeners();
 	}
 	
@@ -113,9 +117,9 @@ public class Display extends JPanel implements ViewerListener
 			}});
 		
 		viewLevelsCheckbox.addActionListener(new ActionListener ()
-{ 
+		{ 
 			@Override public void actionPerformed( final ActionEvent e )
-{ 
+			{ 
 			displayROIs("level", viewLevelsCheckbox.isSelected());
 			}});
 		
@@ -146,6 +150,15 @@ public class Display extends JPanel implements ViewerListener
 					localString = null;
 				if (isActionEnabled)
 					changeBinSubdirectory(localString);
+			}});
+		
+		updateButton.addActionListener(new ActionListener ()
+		{ 
+			@Override public void actionPerformed( final ActionEvent e )
+			{ 
+				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
+				if (exp != null)
+					placeKymoViewerNextToCamViewer( exp);
 			}});
 	}
 	
@@ -246,8 +259,8 @@ public class Display extends JPanel implements ViewerListener
 		Viewer viewerKymograph = seqKymograph.getFirstViewer();
 		viewerKymograph.setBounds(rectViewerKymograph);
 		double scaleY = viewerCamData.getCanvas().getScaleY();
-		scaleY = 1.;			// dummy value
-		double scaleX = .2;		// dummy value
+		scaleY = 1;			// dummy value
+		double scaleX = 3;		// dummy value
 		Canvas2D canvas2D = (Canvas2D) viewerKymograph.getCanvas();
 		canvas2D.setFitToCanvas(false);
 		canvas2D.setScale(scaleX, scaleY, false, true);
