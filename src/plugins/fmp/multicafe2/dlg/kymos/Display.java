@@ -54,7 +54,6 @@ public class Display extends JPanel implements ViewerListener
 			JButton 	zoomImageButton			= new JButton("Zoom 1:1");
 			JButton 	shrinkImageButton		= new JButton("Shrink to fit");
 
-			
 	private MultiCAFE2 	parent0 				= null;
 	private boolean		isActionEnabled			= true;	
 	
