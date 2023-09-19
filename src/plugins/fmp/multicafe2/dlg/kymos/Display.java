@@ -36,6 +36,7 @@ import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.tools.Directories;
 
 
+
 public class Display extends JPanel implements ViewerListener 
 {
 	/**
@@ -233,6 +234,7 @@ public class Display extends JPanel implements ViewerListener
 			if (vList.size() == 0)
 			{
 				Viewer viewerKymographs = new Viewer(seqKymographs.seq, true);
+//				viewerKymographs.setCanvas(KymosCanvas2DPlugin.getCanvasClassName());
 				viewerKymographs.setRepeat(false);
 				viewerKymographs.addListener(this);
 
