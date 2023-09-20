@@ -34,6 +34,7 @@ import plugins.fmp.multicafe2.experiment.Capillary;
 import plugins.fmp.multicafe2.experiment.Experiment;
 import plugins.fmp.multicafe2.experiment.SequenceKymos;
 import plugins.fmp.multicafe2.tools.Directories;
+import plugins.fmp.multicafe2.tools.KymosCanvas2D;
 
 
 
@@ -52,8 +53,7 @@ public class Display extends JPanel implements ViewerListener
 			JCheckBox 	viewLevelsCheckbox 		= new JCheckBox("top/bottom level (green)", true);
 			JCheckBox 	viewDerivativeCheckbox 	= new JCheckBox("derivative (yellow)", true);
 			JCheckBox 	viewGulpsCheckbox 		= new JCheckBox("gulps (red)", true);
-			JButton 	zoomImageButton			= new JButton("Zoom 1:1");
-			JButton 	shrinkImageButton		= new JButton("Shrink to fit");
+
 
 	private MultiCAFE2 	parent0 				= null;
 	private boolean		isActionEnabled			= true;	
@@ -87,10 +87,6 @@ public class Display extends JPanel implements ViewerListener
 		panel2.add(viewGulpsCheckbox);
 		add(panel2);
 		
-		JPanel panel3 = new JPanel (layout);
-		panel3.add(zoomImageButton);
-		panel3.add(shrinkImageButton);
-		add(panel3);
 		defineActionListeners();
 	}
 	
@@ -152,24 +148,6 @@ public class Display extends JPanel implements ViewerListener
 					localString = null;
 				if (isActionEnabled)
 					changeBinSubdirectory(localString);
-			}});
-				
-		zoomImageButton.addActionListener(new ActionListener ()
-		{ 
-			@Override public void actionPerformed( final ActionEvent e )
-			{ 
-				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null)
-					zoomImage_1_1( exp);
-			}});
-		
-		shrinkImageButton.addActionListener(new ActionListener ()
-		{ 
-			@Override public void actionPerformed( final ActionEvent e )
-			{ 
-				Experiment exp = (Experiment) parent0.expListCombo.getSelectedItem();
-				if (exp != null)
-					shrinkImage_to_fit( exp);
 			}});
 		
 	}
@@ -234,12 +212,13 @@ public class Display extends JPanel implements ViewerListener
 			if (vList.size() == 0)
 			{
 				Viewer viewerKymographs = new Viewer(seqKymographs.seq, true);
+				KymosCanvas2D kymoCanvas2D = new KymosCanvas2D(viewerKymographs);
+				viewerKymographs.setCanvas(kymoCanvas2D);
 //				viewerKymographs.setCanvas(KymosCanvas2DPlugin.getCanvasClassName());
 				viewerKymographs.setRepeat(false);
 				viewerKymographs.addListener(this);
 
 				placeKymoViewerNextToCamViewer(exp);
-				zoomImage_1_1( exp);
 				
 				int isel = kymographsCombo.getSelectedIndex();
 				selectCapillary(exp, isel);
@@ -278,41 +257,6 @@ public class Display extends JPanel implements ViewerListener
 			return; 
 		viewerKymograph.setBounds(rectViewerKymograph);
 		((Canvas2D) viewerKymograph.getCanvas()).setFitToCanvas(false);
-	}
-	
-	void zoomImage_1_1(Experiment exp) 
-	{
-		Sequence seqKymograph = exp.seqKymos.seq;
-		Rectangle rectImage = seqKymograph.getBounds2D();
-		
-		Viewer viewerKymograph = seqKymograph.getFirstViewer();
-		if (viewerKymograph == null)
-			return;
-		Canvas2D canvas2D = (Canvas2D) viewerKymograph.getCanvas();
-		Rectangle rectCanvas = canvas2D.getCanvasVisibleRect();
-		
-		double scaleY = .5;  //viewerCamData.getCanvas().getScaleY();
-		double scaleX = .5; //3;		// dummy value
-		int offsetX = (int) (rectCanvas.width / scaleX / 2); 
-		canvas2D.setMouseImagePos(offsetX, rectImage.height  / 2);
-		canvas2D.setScale(scaleX, scaleY, true, true);
-	}
-	
-	void shrinkImage_to_fit(Experiment exp) 
-	{
-		Sequence seqKymograph = exp.seqKymos.seq;
-		Rectangle rectImage = seqKymograph.getBounds2D();
-		Viewer viewerKymograph = seqKymograph.getFirstViewer();
-		if (viewerKymograph == null)
-			return;
-		
-		Canvas2D canvas2D = (Canvas2D) viewerKymograph.getCanvas();
-		Rectangle rectCanvas = canvas2D.getCanvasVisibleRect();
-		
-		double scaleX = rectCanvas.getWidth() / rectImage.getWidth(); 
-		double scaleY = rectCanvas.getHeight() / rectImage.getHeight();
-		canvas2D.setMouseImagePos(rectImage.width/2, rectImage.height/ 2);
-		canvas2D.setScale(scaleX, scaleY, true, true);
 	}
 	
 	void displayOFF()
