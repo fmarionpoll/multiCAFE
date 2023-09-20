@@ -19,7 +19,7 @@ public class KymosCanvas2D extends Canvas2D
 	 * 
 	 */
 	private static final long serialVersionUID = 8827595503996677250L;
-	final JButton nextButton 				= new JButton("NEXT");
+	final JButton nextButton 				= new JButton("NEXT IMG");
     final JButton previousButton 			= new JButton("PREVIOUS");
     final JButton zoomImageButton			= new JButton("Zoom 1:1");
     final JButton shrinkImageButton			= new JButton("Fit all");
@@ -85,9 +85,9 @@ public class KymosCanvas2D extends Canvas2D
 		Rectangle rectImage = seqKymograph.getBounds2D();
 		Rectangle rectCanvas = getCanvasVisibleRect();
 		
+		int offsetX = (int) (rectCanvas.width / getScaleX() / 2); 
 		double scaleY = rectCanvas.getHeight() / rectImage.getHeight();;  
 		double scaleX = scaleY; 
-		int offsetX = (int) (rectCanvas.width / scaleX / 2); 
 		setMouseImagePos(offsetX, rectImage.height  / 2);
 		setScale(scaleX, scaleY, true, true);
 	}
