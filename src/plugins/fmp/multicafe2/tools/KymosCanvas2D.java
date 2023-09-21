@@ -19,8 +19,8 @@ public class KymosCanvas2D extends Canvas2D
 	 * 
 	 */
 	private static final long serialVersionUID = 8827595503996677250L;
-	final JButton nextButton 				= new JButton("NEXT IMG");
-    final JButton previousButton 			= new JButton("PREVIOUS");
+	final JButton nextButton 				= new JButton("NEXT CAP");
+    final JButton previousButton 			= new JButton("PREVIOUS CAP");
     final JButton zoomImageButton			= new JButton("Zoom 1:1");
     final JButton shrinkImageButton			= new JButton("Fit all");
 
@@ -34,6 +34,7 @@ public class KymosCanvas2D extends Canvas2D
     public void customizeToolbar(JToolBar toolBar)
     {
         super.customizeToolbar(toolBar);
+        
         toolBar.add(previousButton);
         toolBar.add(nextButton);
         toolBar.add(zoomImageButton);
@@ -48,7 +49,6 @@ public class KymosCanvas2D extends Canvas2D
                 
             }
         });
-        
         
         nextButton.addActionListener(new ActionListener()
         {
