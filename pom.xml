@@ -6,21 +6,21 @@
 
     <!-- Inherited Icy Parent POM -->
     <parent>
+        <artifactId>pom-icy</artifactId>
         <groupId>org.bioimageanalysis.icy</groupId>
-        <artifactId>parent-pom-plugin</artifactId>
-        <version>1.0.1</version>
+        <version>2.1.0</version>
     </parent>
 
     <!-- Project Information -->
-    <artifactId>multiCAFE2</artifactId>
-    <version>2.1.00</version>
+    <artifactId>MultiCAFE2</artifactId>
+    <version>2.1.0</version>
     
     <packaging>jar</packaging>
 
     <name>MultiCAFE2 experiment analysis plugin</name>
     <description>Measure liquid consumption and activity of flies given access to capillaries filled with liquid and export data to Excel</description>
     <url></url>
-    <inceptionYear>2021</inceptionYear>
+    <inceptionYear>2022</inceptionYear>
 
     <organization>
         <name>IDEEV UMR EGCE (CNRS-IRD-Paris-Saclay)</name>
@@ -35,7 +35,7 @@
         </license>
     </licenses>
 
-    <developers>
+   <developers>
         <developer>
             <id>mygithublogin</id>
             <name>Frederic Marion-Poll</name>
@@ -65,25 +65,21 @@
 
     <!-- List of project's dependencies -->
     <dependencies>
-		<dependency>
-            <groupId>org.openpnp</groupId>
-            <artifactId>opencv</artifactId>
-            <version>4.5.1-2</version>
+        <!-- The core of Icy -->
+        <dependency>
+            <groupId>org.bioimageanalysis.icy</groupId>
+            <artifactId>icy-kernel</artifactId>
+            <version>2.1.4</version>
         </dependency>
 
-        <!-- The core of Icy -->
-		<dependency>
-        	<groupId>org.bioimageanalysis.icy</groupId>
-        	<artifactId>icy-kernel</artifactId>
-        	<version>2.4.3</version>
-		</dependency>
         <!-- The EzPlug library, simplifies writing UI for Icy plugins. -->
         <dependency>
             <groupId>org.bioimageanalysis.icy</groupId>
             <artifactId>ezplug</artifactId>
         </dependency>
 
-        <dependency>
+ 		<!-- other dependencies -->
+ 		 <dependency>
         	<groupId>org.bioimageanalysis.icy</groupId>
         	<artifactId>xuggler</artifactId>
         </dependency>
@@ -112,7 +108,11 @@
         	<groupId>org.bioimageanalysis.icy</groupId>
         	<artifactId>javacl</artifactId>
         </dependency>
-        
+        <dependency>
+            <groupId>org.openpnp</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.5.1-2</version>
+        </dependency>
         <dependency>
         	<groupId>org.apache.poi</groupId>
         	<artifactId>poi-ooxml</artifactId>
@@ -147,17 +147,7 @@
         </repository>
     </repositories>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>server-id</id>
-            <url>server's url</url>
-        </snapshotRepository>
-        <repository>
-            <id>server-id</id>
-            <url>server's url</url>
-        </repository>
-    </distributionManagement>
-    <dependencyManagement>
+ <dependencyManagement>
     	<dependencies>
     		<dependency>
     			<groupId>org.bioimageanalysis.icy</groupId>
@@ -201,4 +191,15 @@
     		</dependency>
     	</dependencies>
     </dependencyManagement>
+    
+    <distributionManagement>
+        <snapshotRepository>
+            <id>server-id</id>
+            <url>server's url</url>
+        </snapshotRepository>
+        <repository>
+            <id>server-id</id>
+            <url>server's url</url>
+        </repository>
+    </distributionManagement>
 </project>
